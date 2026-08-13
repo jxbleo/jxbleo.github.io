@@ -117,6 +117,17 @@ function formatDateTime(value) {
   }).format(date).replace(/\//g, "-");
 }
 
+function formatTime(value) {
+  const date = value ? new Date(value) : null;
+  if (!date || Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Shanghai",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+}
+
 function formatDuration(value) {
   const seconds = Math.max(0, Math.round(Number(value)));
   if (!Number.isFinite(seconds)) return "";
@@ -200,23 +211,25 @@ function chartHtml(attempts, assignment, newAttemptIds) {
     ? assignment.mastery_percentage : latestAttempt && latestAttempt.mastery_percentage);
   const masteryEnabled = assignment && typeof assignment.mastery_enabled === "boolean"
     ? assignment.mastery_enabled : attempts.some((attempt) => attempt.mastery_enabled === true);
-  const width = Math.max(58, Math.min(108, Math.floor(640 / Math.max(attempts.length, 1))));
+  const width = Math.max(42, Math.min(68, Math.floor(680 / Math.max(attempts.length, 1))));
   const bars = attempts.map((attempt, index) => {
     const percentage = Math.max(0, Math.min(100, effectivePercentage(attempt)));
     const barHeight = Math.max(5, Math.round(percentage * 1.2));
     const status = attemptStatus(attempt);
     const fresh = newAttemptIds.has(text(attempt.attempt_id));
     const outline = fresh ? "border:3px solid #236c54;" : "border:1px solid #d5dcd8;";
-    return `<td width="${width}" valign="bottom" style="padding:0 6px;text-align:center;vertical-align:bottom;">`
+    return `<td width="${width}" valign="bottom" style="padding:0 5px;text-align:center;vertical-align:bottom;">`
       + `<div style="font:700 12px Arial,sans-serif;color:#17362c;margin-bottom:5px;">${escapeHtml(formatPercent(percentage))}</div>`
-      + `<table role="presentation" width="100%" height="120" cellspacing="0" cellpadding="0" border="0" style="height:120px;background:#f2f5f3;border-radius:11px 11px 5px 5px;${outline}"><tr>`
+      + `<table role="presentation" width="100%" height="120" cellspacing="0" cellpadding="0" border="0" style="height:120px;background:#f2f5f3;border-radius:10px 10px 4px 4px;${outline}"><tr>`
       + `<td valign="bottom" align="center" style="height:120px;vertical-align:bottom;"><div style="width:24px;height:${barHeight}px;background:${status.color};border-radius:7px 7px 2px 2px;"></div></td></tr></table>`
-      + `<div style="font:800 11px Arial,sans-serif;color:#17362c;margin-top:6px;">#${escapeHtml(attempt.attempt_number || attempts.length - index)}</div>`
+      + `<div style="font:700 11px Arial,sans-serif;color:#52625c;margin-top:5px;">#${escapeHtml(attempt.attempt_number || index + 1)}</div>`
+      + `<div style="font:400 10px Arial,sans-serif;color:#78857f;white-space:nowrap;">${escapeHtml(formatTime(attempt.submitted_at))}</div>`
       + `${fresh ? '<div style="font:700 9px Arial,sans-serif;color:#236c54;margin-top:2px;">NEW</div>' : ""}</td>`;
   }).join("");
-  return `<div style="margin:0 0 15px;padding:18px;border:1px solid #dce4e0;border-radius:17px;background:#ffffff;">`
-    + `<div style="font:800 15px Arial,sans-serif;color:#17362c;margin-bottom:15px;text-transform:uppercase;letter-spacing:.04em;">Attempt history</div>`
-    + `<div style="overflow-x:auto;padding-bottom:3px;"><table role="presentation" cellspacing="0" cellpadding="0" border="0" style="min-width:${Math.max(320, attempts.length * width)}px;width:100%;table-layout:fixed;"><tr>${bars}</tr></table></div></div>`;
+  return `<div style="margin:22px 0 8px;"><div style="font:700 15px Arial,sans-serif;color:#17362c;margin-bottom:8px;">Attempt history</div>`
+    + `<div style="font:12px Arial,sans-serif;color:#52625c;margin-bottom:12px;">PASS ${escapeHtml(formatPercent(passing))}`
+    + `${masteryEnabled && Number.isFinite(mastery) ? ` &nbsp;·&nbsp; STAR ${escapeHtml(formatPercent(mastery))}` : ""}</div>`
+    + `<div style="overflow-x:auto;"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>${bars}</tr></table></div></div>`;
 }
 
 function wrongRowsHtml(attempt) {
@@ -225,29 +238,26 @@ function wrongRowsHtml(attempt) {
   return wrong.map((result) => `<div style="border-top:1px solid #e1e6e3;padding:12px 0;">`
     + `<div style="font:700 13px Arial,sans-serif;color:#17362c;">${escapeHtml(questionLabel(result.question_id, attempt.mode))}`
     + `${result.question_text_snapshot ? ` · ${escapeHtml(result.question_text_snapshot)}` : ""}</div>`
-    + `<div style="margin-top:9px;padding:10px 11px;border-radius:11px;background:#fff2f3;color:#923c43;font:13px/1.4 Arial,sans-serif;"><strong>Submitted</strong><br>${escapeHtml(formatAnswer(result.submitted_answer))}</div>`
-    + `<div style="margin-top:7px;padding:10px 11px;border-radius:11px;background:#eef7f1;color:#246447;font:13px/1.4 Arial,sans-serif;"><strong>Expected</strong><br>${escapeHtml(formatAnswer(result.correct_answer, "not available"))}</div>`
-    + `${result.explanation ? `<div style="margin-top:8px;padding:11px;border-left:3px solid #7c3aed;border-radius:4px 11px 11px 4px;background:#f6f2ff;color:#4e4760;font:12px/1.55 Arial,sans-serif;"><strong>Explanation</strong><br>${escapeHtml(result.explanation)}</div>` : ""}`
+    + `<div style="margin-top:6px;font:13px Arial,sans-serif;color:#8d343a;"><strong>Submitted:</strong> ${escapeHtml(formatAnswer(result.submitted_answer))}</div>`
+    + `<div style="margin-top:4px;font:13px Arial,sans-serif;color:#246447;"><strong>Expected:</strong> ${escapeHtml(formatAnswer(result.correct_answer, "not available"))}</div>`
+    + `${result.explanation ? `<div style="margin-top:6px;font:12px/1.5 Arial,sans-serif;color:#52625c;"><strong>Explanation:</strong> ${escapeHtml(result.explanation)}</div>` : ""}`
     + `</div>`).join("");
 }
 
-function attemptCardHtml(attempt, index, isNew, total) {
+function attemptCardHtml(attempt, index, isNew) {
   const status = attemptStatus(attempt);
   const durations = [
     attempt.duration_seconds == null ? "" : `Page ${formatDuration(attempt.duration_seconds)}`,
     attempt.audio_to_submit_seconds == null ? "" : `Audio ${formatDuration(attempt.audio_to_submit_seconds)}`,
   ].filter(Boolean);
   const vocab = text(attempt.mode).startsWith("vocabulary_") ? vocabularyContext(attempt) : "";
-  const number = attempt.attempt_number || total - index;
-  return `<section style="margin-top:15px;overflow:hidden;border:1px solid ${isNew ? "#75a794" : "#dce4e0"};border-radius:17px;background:#ffffff;">`
-    + `<div style="padding:14px 16px;background:${isNew ? "#edf5f1" : "#f4f6f5"};">`
-    + `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>`
-    + `<td><strong style="font:800 16px Arial,sans-serif;color:#17362c;">#${escapeHtml(number)}</strong>${isNew ? ' <span style="margin-left:7px;color:#267158;font:800 10px Arial,sans-serif;">NEW</span>' : ""}</td>`
-    + `<td align="right" style="color:#53665f;font:11px Arial,sans-serif;">${escapeHtml(formatDateTime(attempt.submitted_at))}</td></tr></table>`
-    + `<div style="margin-top:5px;color:#53665f;font:12px Arial,sans-serif;">${escapeHtml(formatPercent(attempt.percentage))} · <span style="color:${status.color};font-weight:700;">${status.label}</span>${durations.length ? ` · ${escapeHtml(durations.join(" · "))}` : ""}</div>`
-    + `${vocab ? `<div style="margin-top:6px;color:#4f645c;font:700 11px Arial,sans-serif;">${escapeHtml(vocab)}</div>` : ""}</div>`
-    + `<div style="padding:16px;"><div style="margin-bottom:10px;color:#53665f;font:800 11px Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;">Wrong questions</div>`
-    + wrongRowsHtml(attempt) + `</div></section>`;
+  return `<section style="margin-top:16px;border:1px solid ${isNew ? "#72a994" : "#dce3df"};border-radius:14px;padding:16px;background:#ffffff;">`
+    + `<div style="font:700 15px Arial,sans-serif;color:#17362c;">Attempt #${escapeHtml(attempt.attempt_number || index + 1)}${isNew ? ' <span style="color:#236c54;">· NEW</span>' : ""}</div>`
+    + `<div style="margin-top:5px;font:12px Arial,sans-serif;color:#66756f;">${escapeHtml(formatDateTime(attempt.submitted_at))} · ${escapeHtml(formatPercent(attempt.percentage))} · <span style="color:${status.color};font-weight:700;">${status.label}</span>${durations.length ? ` · ${escapeHtml(durations.join(" · "))}` : ""}</div>`
+    + `${vocab ? `<div style="margin-top:6px;font:700 11px Arial,sans-serif;color:#4f645c;">${escapeHtml(vocab)}</div>` : ""}`
+    + `<div style="margin-top:12px;font:700 12px Arial,sans-serif;color:#52625c;text-transform:uppercase;letter-spacing:.05em;">Wrong answers</div>`
+    + wrongRowsHtml(attempt)
+    + `</section>`;
 }
 
 function emailSubject(context) {
@@ -267,29 +277,24 @@ function renderAttemptEmail(context) {
   const newIds = new Set((context.newAttemptIds || []).map(text));
   const latest = attempts.at(-1) || {};
   const studentName = studentDisplayName(context.student);
+  const loginId = text(context.student && context.student.student_id);
   const title = text(context.set && context.set.title) || text(latest.set_id) || "Learning task";
   const source = latest.assignment_id ? "Assigned" : "Self study";
-  const best = attempts.length ? Math.max(...attempts.map((attempt) => effectivePercentage(attempt))) : 0;
-  const passing = Number(context.assignment && context.assignment.passing_percentage != null
-    ? context.assignment.passing_percentage : latest.passing_percentage);
-  const mastery = Number(context.assignment && context.assignment.mastery_percentage != null
-    ? context.assignment.mastery_percentage : latest.mastery_percentage);
-  const masteryEnabled = context.assignment && typeof context.assignment.mastery_enabled === "boolean"
-    ? context.assignment.mastery_enabled : attempts.some((attempt) => attempt.mastery_enabled === true);
-  const cards = displayAttempts.map((attempt, index) => attemptCardHtml(attempt, index, newIds.has(text(attempt.attempt_id)), attempts.length)).join("");
-  const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#edf2ef;padding:24px 12px;color:#17362c;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">`
-    + `<div style="max-width:720px;margin:0 auto;overflow:hidden;border:1px solid #d7e0dc;border-radius:22px;background:#f9fbfa;">`
-    + `<div style="padding:24px;background:#eef4f1;border-bottom:1px solid #dce5e1;">`
-    + `<h1 style="margin:0;color:#17362c;font:700 25px/1.18 Arial,sans-serif;letter-spacing:-.02em;">${escapeHtml(studentName)}</h1>`
-    + `<div style="margin-top:6px;color:#53665f;font:700 15px/1.35 Arial,sans-serif;">${escapeHtml(title)}</div>`
-    + `<div style="margin-top:15px;">`
-    + `<span style="display:inline-block;margin:0 5px 5px 0;padding:7px 11px;border-radius:999px;background:#ffffff;color:#246447;font:800 12px Arial,sans-serif;">Best ${escapeHtml(formatPercent(best))}</span>`
-    + `<span style="display:inline-block;margin:0 5px 5px 0;padding:7px 11px;border-radius:999px;background:#ffffff;color:#53665f;font:800 12px Arial,sans-serif;">PASS ${escapeHtml(formatPercent(passing))}</span>`
-    + `${masteryEnabled && Number.isFinite(mastery) ? `<span style="display:inline-block;margin:0 5px 5px 0;padding:7px 11px;border-radius:999px;background:#fff7df;color:#9a6b08;font:800 12px Arial,sans-serif;">STAR ${escapeHtml(formatPercent(mastery))}</span>` : ""}`
-    + `</div></div><div style="padding:22px 18px 24px;">`
-    + chartHtml(displayAttempts, context.assignment, newIds) + cards
-    + `<div style="margin:20px 5px 0;color:#73817c;font:11px/1.55 Arial,sans-serif;">Private teacher notification · ${escapeHtml(source)} · Latest ${escapeHtml(formatDateTime(latest.submitted_at))}</div>`
-    + `</div></div></body></html>`;
+  const status = attemptStatus(latest);
+  const cards = displayAttempts.map((attempt, index) => attemptCardHtml(attempt, index, newIds.has(text(attempt.attempt_id)))).join("");
+  const teacherUrl = text(context.teacherUrl);
+  const html = `<!doctype html><html><body style="margin:0;background:#edf2ef;padding:20px;color:#17362c;">`
+    + `<div style="max-width:760px;margin:0 auto;background:#f9fbfa;border:1px solid #d8e1dc;border-radius:20px;padding:24px;">`
+    + `<div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;color:#39715e;">MR. CAT ACADEMY</div>`
+    + `<h1 style="font:700 24px/1.25 Arial,sans-serif;margin:8px 0 4px;color:#17362c;">${escapeHtml(studentName)} · ${escapeHtml(title)}</h1>`
+    + `<div style="font:13px Arial,sans-serif;color:#66756f;">${loginId ? `Login ID ${escapeHtml(loginId)} · ` : ""}${escapeHtml(source)} · Latest ${escapeHtml(formatDateTime(latest.submitted_at))}</div>`
+    + `<div style="margin-top:16px;padding:14px;background:#edf5f1;border-radius:12px;font:13px Arial,sans-serif;">`
+    + `<strong>${escapeHtml(context.newAttemptIds.length)} new attempt${context.newAttemptIds.length === 1 ? "" : "s"}</strong> · Latest ${escapeHtml(formatPercent(latest.percentage))} · Best ${escapeHtml(formatPercent(Math.max(...attempts.map((attempt) => effectivePercentage(attempt)))))} · <span style="color:${status.color};font-weight:700;">${status.label}</span></div>`
+    + chartHtml(displayAttempts, context.assignment, newIds)
+    + cards
+    + `${teacherUrl ? `<div style="text-align:center;margin-top:24px;"><a href="${escapeHtml(teacherUrl)}" style="display:inline-block;background:#236c54;color:#fff;text-decoration:none;border-radius:999px;padding:12px 20px;font:700 13px Arial,sans-serif;">Open Teacher notifications</a></div>` : ""}`
+    + `<div style="margin-top:22px;font:11px/1.5 Arial,sans-serif;color:#7c8984;">This private teacher email contains only recorded attempt history for this student and task. Opening the Teacher page still requires authentication.</div>`
+    + `</div></body></html>`;
   const plain = [
     `${studentName} · ${title}`,
     `${source} · Latest ${formatDateTime(latest.submitted_at)}`,
@@ -299,6 +304,7 @@ function renderAttemptEmail(context) {
       const wrong = (attempt.question_results || []).filter((result) => result.correct !== true);
       return [`Attempt #${attempt.attempt_number || attempts.length - index}`, ...wrong.map((result) => `${questionLabel(result.question_id, attempt.mode)} Submitted: ${formatAnswer(result.submitted_answer)} Expected: ${formatAnswer(result.correct_answer, "not available")}${result.explanation ? ` Explanation: ${result.explanation}` : ""}`)].join("\n");
     }),
+    teacherUrl ? `Teacher notifications: ${teacherUrl}` : "",
   ].filter(Boolean).join("\n\n");
   return { subject: emailSubject({ ...context, attempts }), html, text: plain };
 }
