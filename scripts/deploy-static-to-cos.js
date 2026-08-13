@@ -90,12 +90,7 @@ async function uploadFile(file) {
           : "public, max-age=3600",
       };
       if (file.size >= multipartThreshold) {
-        await cosRequest("sliceUploadFile", {
-          ...commonParameters,
-          FilePath: file.absolutePath,
-          ChunkSize: multipartChunkSize,
-          AsyncLimit: 1,
-        });
+        await uploadMultipartFile(file, commonParameters);
       } else {
         await cosRequest("putObject", {
           ...commonParameters,
@@ -117,6 +112,91 @@ async function uploadFile(file) {
   }
 }
 
+async function uploadPartWithRetry(parameters, fileKey, partNumber) {
+  for (let attempt = 1; attempt <= maximumUploadAttempts; attempt += 1) {
+    try {
+      return await cosRequest("multipartUpload", parameters);
+    } catch (error) {
+      if (!isRetryableUploadError(error) || attempt === maximumUploadAttempts) {
+        throw error;
+      }
+      console.warn(
+        `Retrying ${fileKey} part ${partNumber} after ${error.code} ` +
+          `(attempt ${attempt + 1}/${maximumUploadAttempts}).`
+      );
+      await delay(1000 * attempt * attempt);
+    }
+  }
+}
+
+async function uploadMultipartFile(file, commonParameters) {
+  const initialized = await cosRequest("multipartInit", commonParameters);
+  const uploadId = initialized.UploadId;
+  const parts = [];
+
+  try {
+    for (
+      let offset = 0, partNumber = 1;
+      offset < file.size;
+      offset += multipartChunkSize, partNumber += 1
+    ) {
+      const end = Math.min(offset + multipartChunkSize, file.size);
+      const result = await uploadPartWithRetry(
+        {
+          Bucket: bucket,
+          Region: region,
+          Key: file.key,
+          UploadId: uploadId,
+          PartNumber: partNumber,
+          Body: fs.createReadStream(file.absolutePath, {
+            start: offset,
+            end: end - 1,
+          }),
+          ContentLength: end - offset,
+        },
+        file.key,
+        partNumber
+      );
+      parts.push({ PartNumber: partNumber, ETag: result.ETag });
+    }
+
+    await cosRequest("multipartComplete", {
+      Bucket: bucket,
+      Region: region,
+      Key: file.key,
+      UploadId: uploadId,
+      Parts: parts,
+    });
+  } catch (error) {
+    await cosRequest("multipartAbort", {
+      Bucket: bucket,
+      Region: region,
+      Key: file.key,
+      UploadId: uploadId,
+    }).catch(() => {});
+    throw error;
+  }
+}
+
+function etagForBuffer(buffer) {
+  if (buffer.length < multipartThreshold) {
+    return crypto.createHash("md5").update(buffer).digest("hex");
+  }
+  const partHashes = [];
+  for (let offset = 0; offset < buffer.length; offset += multipartChunkSize) {
+    partHashes.push(
+      crypto
+        .createHash("md5")
+        .update(buffer.subarray(offset, offset + multipartChunkSize))
+        .digest()
+    );
+  }
+  return (
+    crypto.createHash("md5").update(Buffer.concat(partHashes)).digest("hex") +
+    `-${partHashes.length}`
+  );
+}
+
 function listLocalFiles(directory, relativeDirectory = "") {
   const files = [];
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -125,11 +205,12 @@ function listLocalFiles(directory, relativeDirectory = "") {
     if (entry.isDirectory()) {
       files.push(...listLocalFiles(absolutePath, relativePath));
     } else if (entry.isFile()) {
+      const contents = fs.readFileSync(absolutePath);
       files.push({
         absolutePath,
         key: relativePath,
         size: fs.statSync(absolutePath).size,
-        etag: crypto.createHash("md5").update(fs.readFileSync(absolutePath)).digest("hex"),
+        etag: etagForBuffer(contents),
       });
     }
   }
