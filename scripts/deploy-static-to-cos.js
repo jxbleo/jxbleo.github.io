@@ -24,8 +24,9 @@ function normalizeCredential(value, name) {
     normalized = normalized.slice(1, -1).trim();
   }
 
-  if (!normalized || /[\r\n]/.test(normalized)) {
-    throw new Error(`${name} contains an invalid line break.`);
+  normalized = normalized.replace(/\s+/g, "");
+  if (!normalized) {
+    throw new Error(`${name} is empty after removing whitespace.`);
   }
   return normalized;
 }
