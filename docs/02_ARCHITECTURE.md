@@ -480,7 +480,11 @@ submission time and are claimed separately. Before rendering, the dispatcher
 loads the same assignment/self-study thread through the current event cutoff,
 joins the private grading key for legacy missing snapshots, and builds the
 cumulative score chart plus mistake-only comparisons. Stable subjects and
-`In-Reply-To` metadata encourage email clients to keep one task together.
+`In-Reply-To` metadata encourage email clients to keep one task together. Every
+actual SMTP handoff receives a fresh `Message-ID`; the outbox event identity and
+transactional claim provide business idempotency instead of reusing a mailbox
+message identity. This prevents QQ Mail from silently suppressing a retry or
+manual resend as a duplicate after the SMTP server accepted it.
 Sent/retry/failed audit state remains in the outbox; email never changes the
 teacher profile's bell read markers.
 

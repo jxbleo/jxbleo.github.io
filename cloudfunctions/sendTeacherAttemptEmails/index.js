@@ -270,18 +270,17 @@ async function failJobs(claimed, error, now) {
   }
 }
 
-function deterministicMessageId(claimed, config) {
-  const eventIds = claimed.jobs
-    .map((job) => text(job.event_id || job.attempt_id || job._id))
-    .filter(Boolean)
-    .sort()
-    .join("|");
-  const digest = crypto.createHash("sha256").update(eventIds).digest("hex").slice(0, 32);
+function deliveryMessageId(claimed, config) {
+  const eventId = text(claimed.jobs[0] && (
+    claimed.jobs[0].event_id || claimed.jobs[0].attempt_id || claimed.jobs[0]._id
+  )) || "attempt";
+  const eventDigest = crypto.createHash("sha256").update(eventId).digest("hex").slice(0, 12);
+  const deliveryId = crypto.randomUUID().replace(/-/g, "");
   const configuredDomain = text(config.user).split("@").at(-1);
   const domain = configuredDomain && configuredDomain !== config.user
     ? configuredDomain.replace(/[^a-zA-Z0-9.-]/g, "")
     : "mrcat-academy.invalid";
-  return `<mrcat-${digest}@${domain || "mrcat-academy.invalid"}>`;
+  return `<mrcat-${eventDigest}-${deliveryId}@${domain || "mrcat-academy.invalid"}>`;
 }
 
 async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
@@ -298,7 +297,10 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
       subject: rendered.subject,
       text: rendered.text,
       html: rendered.html,
-      messageId: deterministicMessageId(claimed, config),
+      // A retry is a new SMTP delivery and must have a new Message-ID. QQ Mail
+      // silently drops a second handoff that repeats an already-seen ID even
+      // when the SMTP server reports a successful queue response.
+      messageId: deliveryMessageId(claimed, config),
       headers: {
         "X-Mr-Cat-Thread": text(claimed.jobs[0].thread_key),
       },
@@ -386,6 +388,6 @@ exports.main = async (event = {}) => {
 
 module.exports._test = {
   authorizedTimerEvent,
-  deterministicMessageId,
+  deliveryMessageId,
   smtpConfiguration,
 };
