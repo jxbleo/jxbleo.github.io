@@ -270,6 +270,7 @@ async function listRemoteObjects() {
       objects.push({
         key: object.Key,
         etag: String(object.ETag || "").replace(/^\"|\"$/g, "").toLowerCase(),
+        size: Number(object.Size),
       });
     }
     marker = response.IsTruncated === "true" ? response.NextMarker : undefined;
@@ -281,11 +282,23 @@ async function deploy() {
   const files = listLocalFiles(sourceDirectory);
   const localKeys = new Set(files.map((file) => file.key));
   const remoteObjects = await listRemoteObjects();
-  const remoteEtags = new Map(
-    remoteObjects.map((object) => [object.key, object.etag])
+  const remoteObjectsByKey = new Map(
+    remoteObjects.map((object) => [object.key, object])
   );
   const filesToUpload = files
-    .filter((file) => remoteEtags.get(file.key) !== file.etag)
+    .filter((file) => {
+      const remoteObject = remoteObjectsByKey.get(file.key);
+      if (!remoteObject) {
+        return true;
+      }
+      // COS does not expose an S3-compatible multipart ETag here. Large
+      // immutable media files therefore use the object size as the stable
+      // incremental-deploy comparison instead of being reuploaded every run.
+      if (file.size >= multipartThreshold) {
+        return remoteObject.size !== file.size;
+      }
+      return remoteObject.etag !== file.etag;
+    })
     .sort((left, right) => left.size - right.size || left.key.localeCompare(right.key));
   let uploaded = 0;
   const failedUploads = [];
