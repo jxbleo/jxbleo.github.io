@@ -9,6 +9,7 @@ const bucket = process.env.COS_BUCKET || "mrcatenglish-web-1441914554";
 const region = process.env.COS_REGION || "ap-shanghai";
 const concurrency = 4;
 const maximumUploadAttempts = 5;
+const maximumMultipartFileAttempts = 2;
 const multipartThreshold = 5 * 1024 * 1024;
 const multipartChunkSize = 1024 * 1024;
 
@@ -78,7 +79,11 @@ function isRetryableUploadError(error) {
 }
 
 async function uploadFile(file) {
-  for (let attempt = 1; attempt <= maximumUploadAttempts; attempt += 1) {
+  const attempts =
+    file.size >= multipartThreshold
+      ? maximumMultipartFileAttempts
+      : maximumUploadAttempts;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const commonParameters = {
         Bucket: bucket,
@@ -100,12 +105,12 @@ async function uploadFile(file) {
       }
       return;
     } catch (error) {
-      if (!isRetryableUploadError(error) || attempt === maximumUploadAttempts) {
+      if (!isRetryableUploadError(error) || attempt === attempts) {
         throw error;
       }
       console.warn(
         `Retrying ${file.key} after ${error.code} ` +
-          `(attempt ${attempt + 1}/${maximumUploadAttempts}).`
+          `(attempt ${attempt + 1}/${attempts}).`
       );
       await delay(1000 * attempt * attempt);
     }
@@ -279,10 +284,11 @@ async function deploy() {
   const remoteEtags = new Map(
     remoteObjects.map((object) => [object.key, object.etag])
   );
-  const filesToUpload = files.filter(
-    (file) => remoteEtags.get(file.key) !== file.etag
-  );
+  const filesToUpload = files
+    .filter((file) => remoteEtags.get(file.key) !== file.etag)
+    .sort((left, right) => left.size - right.size || left.key.localeCompare(right.key));
   let uploaded = 0;
+  const failedUploads = [];
 
   console.log(
     `Deploying ${files.length} public files to cos://${bucket}/: ` +
@@ -298,12 +304,34 @@ async function deploy() {
     );
   }
   await runConcurrent(filesToUpload, async (file) => {
-    await uploadFile(file);
-    uploaded += 1;
-    if (uploaded % 100 === 0 || uploaded === filesToUpload.length) {
-      console.log(`Uploaded ${uploaded}/${filesToUpload.length} changed files.`);
+    try {
+      await uploadFile(file);
+      uploaded += 1;
+      if (
+        uploaded % 100 === 0 ||
+        file.size >= multipartThreshold ||
+        uploaded === filesToUpload.length
+      ) {
+        console.log(`Uploaded ${uploaded}/${filesToUpload.length}: ${file.key}`);
+      }
+    } catch (error) {
+      failedUploads.push({ file, error });
+      console.error(
+        `Skipping ${file.key} after upload retries: ${error?.code || error?.message || error}`
+      );
     }
   });
+
+  if (failedUploads.length > 0) {
+    const sample = failedUploads
+      .slice(0, 10)
+      .map(({ file, error }) => `${file.key} (${error?.code || "unknown error"})`)
+      .join(", ");
+    throw new Error(
+      `${failedUploads.length} file(s) could not be uploaded; rerun to retry only ` +
+        `the remaining files. First failures: ${sample}`
+    );
+  }
 
   const obsoleteKeys = remoteObjects
     .map((object) => object.key)
