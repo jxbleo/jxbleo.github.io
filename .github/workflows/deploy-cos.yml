@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: deploy-cos-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 90
     steps:
       - name: Check out source
         uses: actions/checkout@v4

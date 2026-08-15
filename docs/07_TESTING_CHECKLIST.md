@@ -63,9 +63,13 @@ Run `npm run test:attempt-emails` and keep these cases:
 - legacy missing per-question answers/explanations are joined only from the
   private grading key inside the trusted function.
 - a second Vocabulary email contains both attempts and their selected-group
-  context; its subject contains only student name, exercise title, and
-  historical best score, while stable reply metadata supports one mailbox
-  thread.
+  context; Quiz and timed Practice subjects include their mode, current `No.`,
+  and historical best score. Vocabulary mail has no reply/reference headers,
+  so every submission is an independent mailbox message; BBC alone keeps reply
+  threading.
+- the approved static email body has no product-brand heading, Login ID, or
+  website/paper link; it contains Best/PASS/eligible STAR capsules and distinct
+  submitted, expected, and explanation surfaces.
 - `submitAttempt` catches outbox errors after the recorded attempt, while the
   dispatcher transactionally claims work, recovers claims older than ten
   minutes, assigns a deterministic SMTP `Message-ID`, and requires the private
@@ -76,7 +80,8 @@ Development CloudBase verification after owner deployment:
 - one BBC attempt produces no email before the seven-minute boundary; retries
   in that window produce one email with all new bars and complete prior history;
 - one Vocabulary Quiz/Timed Practice email arrives on the next minute tick;
-  a second submission produces a second email containing attempts #1 and #2;
+  a second submission produces a separately visible second email containing
+  attempts #1 and #2, with no conversation-header link to the first;
 - an SMTP failure leaves the student submission successful, advances bounded
   retry state, and does not normally resend an event already marked `sent`;
 - simulate a provider-accepted/database-update-failed edge case and confirm the
@@ -1498,12 +1503,20 @@ For each new set:
 
 Before saying a deploy is complete:
 
+- `npm run build:static` succeeds and `dist/` contains `index.html` but no
+  `cloudfunctions/`, `scripts/`, `docs/`, or `AGENTS.md`
+- the latest `Deploy static site to Tencent COS` GitHub Actions run is green;
+  its summary accounts for all built files as uploaded or unchanged
+- the COS static-website homepage and at least one changed page/resource return
+  HTTP 200 before DNS is switched
 - static files are pushed/published
 - changed cloud functions have rebuilt ZIPs
 - CloudBase development functions are uploaded
 - required collections exist and are `ADMINONLY`
 - `teacher_attempt_email_events` exists and remains `ADMINONLY`; its event ID
   uniqueness and due/thread query indexes exist before the email timer is enabled
+- a newly sent attempt-email event records the SMTP accepted/rejected counts,
+  final response code, and provider queue response without storing credentials
 - Learning Reports V1: `classes`, `class_memberships`, and `learning_reports`
   exist and remain `ADMINONLY`; required uniqueness/query indexes exist before
   the report functions or timer are enabled

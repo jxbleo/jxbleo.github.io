@@ -3,14 +3,20 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-15
+
+### Changed
+
+- Moved the production static release track to a dedicated Tencent COS static
+  website while retaining GitHub `main` as the source of truth and CloudBase as
+  the trusted backend.
+- Made GitHub-to-COS publication incremental and resumable. Large media use
+  bounded multipart uploads, completed objects survive a failed run, and later
+  runs skip the already synchronized public artifact.
+- Restored ordinary deployments to a 90-minute timeout with stale in-progress
+  runs cancelled when a newer `main` release starts.
+
 ## 2026-08-13
-
-### Fixed
-
-- Fixed QQ Mail silently suppressing attempt-email retries or resends whose
-  `Message-ID` had already been delivered. Every SMTP handoff now uses a fresh
-  ID while the private outbox event and transactional claim retain business
-  idempotency and `In-Reply-To` retains task conversation grouping.
 
 ### Added
 
@@ -32,6 +38,11 @@
   the locked one-pass flow is named Test Mode and is the only recorded path.
 - New IELTS Reading and Listening Argue requests are disabled in runtime UI and
   trusted backend actions while historical dispute records remain intact.
+- Vocabulary Quiz and timed Practice now send every recorded submission as an
+  independent mailbox message. Subjects include `Quiz No. n` or
+  `Practice No. n`, while second and later messages retain cumulative history
+  for the same assignment/self-study set. BBC keeps its existing reply-threaded
+  seven-minute batches.
 - Counted Vocabulary Quiz sessions now lock the exact assignment or self-study
   context from start through draft restore and submission. A second open-task
   lookup can no longer move the first submission to another assignment.
@@ -45,6 +56,8 @@
   Exercise Progress, completion timestamps, historical best scores, and
   protected STARs. Reassignment still initializes from the historical global
   best and may therefore be immediately complete.
+- Changed the development attempt-email sender display name to `猫先生英语`
+  while retaining the existing iCloud sender address.
 
 ## 2026-08-11
 
@@ -74,6 +87,9 @@
   source and deployment transcripts.
 - Changed attempt-email subjects to student name, exercise title, and historical
   best score only, and reversed chart/detail/plain-text history to newest first.
+- Matched the email body to the approved static Teacher attempt-card preview:
+  identity plus threshold capsules, newest-first chart/cards, and distinct
+  submitted/expected/explanation surfaces, without branding or website links.
 
 ### Fixed
 

@@ -3,32 +3,6 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
-## 2026-08-13: Separate Outbox Idempotency From SMTP Message Identity
-
-Decision:
-
-Keep one unique outbox `event_id` per attempt and transactional claims as the
-system's duplicate-send control. Generate a fresh SMTP `Message-ID` for every
-actual handoff, including retries or explicit resends. Keep task grouping with
-stable subjects plus `In-Reply-To` / `References` to a prior successfully sent
-event; do not reuse that prior message's identity.
-
-Reason:
-
-Controlled delivery tests showed that iCloud SMTP returned `250 queued` for a
-message with a previously delivered ID, while QQ Mail did not surface it. The
-same content, BCC envelope, subject, and threading metadata arrived when the ID
-was new. A deterministic per-event ID therefore converted a recoverable retry
-into a silent recipient-side loss.
-
-Trade-offs:
-
-- Good: an accepted retry or manual resend remains visible to QQ Mail.
-- Good: database idempotency and mailbox conversation grouping remain intact.
-- Cost: if SMTP accepts a message but the following outbox update fails, the
-  retry can create a visible duplicate. That is preferable to silently losing
-  the teacher notification and remains bounded by retry limits.
-
 ## 2026-08-11: Use a Private Outbox and SMTP for Teacher Attempt Email
 
 Decision:
@@ -39,7 +13,11 @@ sends them through ordinary-email SMTP. BBC uses a fixed seven-minute window
 anchored to the first submission. Every Vocabulary Quiz and timed Practice
 event is immediately due and renders cumulative history through that event.
 Email reuses the Teacher bell's thread key and mistake-only private projection,
-but never changes bell read state.
+but never changes bell read state. The thread key remains a data-grouping key:
+only BBC batches continue an SMTP conversation with `In-Reply-To` and
+`References`. Every Vocabulary Quiz and timed Practice event sends as an
+independent mailbox message with its mode and attempt number in the subject,
+while retaining cumulative thread history in the body.
 
 Nodemailer 9.0.5 is the only new runtime dependency. It is bundled into the
 `sendTeacherAttemptEmails` deployment ZIP. SMTP credentials remain CloudBase
@@ -62,6 +40,8 @@ Trade-offs:
 - Good: student submission remains successful when SMTP is unavailable.
 - Good: one event per `attempt_id` plus transactional claims limits duplicates.
 - Good: later Vocabulary messages include all earlier attempts in the thread.
+- Good: every Vocabulary submission remains individually visible instead of
+  being hidden inside an email client's conversation fold.
 - Cost: a new `ADMINONLY` collection, indexes, timer, environment settings, and
   delivery monitoring are required.
 - Cost: “immediate” means the next one-minute dispatcher tick plus provider
@@ -819,13 +799,15 @@ Review condition:
 
 Revisit if the owner later wants archived editions hidden from Student Library
 or Teacher Assign. No archive behavior is part of the current release.
-## 2026-08-12: Publish the GitHub Main Branch to CloudBase Static Hosting
+## 2026-08-12: Publish the GitHub Main Branch to Tencent COS Static Hosting
 
 Decision:
 
 Keep GitHub as the source of truth and automatically publish successful
-`main`-branch static builds to Tencent CloudBase hosting. Build an explicit
-`dist/` allowlist rather than serving the repository root.
+`main`-branch static builds to a Tencent COS static-website bucket through
+GitHub Actions. Build an explicit `dist/` allowlist rather than serving the
+repository root. CloudBase remains the trusted backend and is deployed
+separately.
 
 Reason:
 
@@ -838,8 +820,12 @@ Trade-offs:
 
 - Good: one reviewed Git history drives both collaboration and static release.
 - Good: the hosted artifact contains only intended public frontend resources.
+- Good: incremental object synchronization avoids retransmitting the full
+  audio library after an ordinary source change.
 - Cost: every new public top-level file type or public directory must be added
   deliberately to `scripts/build-static-site.js`.
+- Cost: the COS bucket, custom-domain certificate, DNS, and narrowly scoped CAM
+  deployment identity require separate owner-managed configuration.
 - Cost: automatic static publication does not deploy CloudBase functions or
   apply database changes; those remain separately owner-gated.
 

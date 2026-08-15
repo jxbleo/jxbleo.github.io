@@ -138,14 +138,18 @@ COS by `.github/workflows/deploy-cos.yml`. The workflow runs
 `npm run build:static`, verifies the public-only `dist/` boundary, and then runs
 `scripts/deploy-static-to-cos.js`. COS object keys never begin with `/`, so the
 bucket website's default `index.html` remains reachable at the domain root.
-Before upload, the script lists existing COS objects and compares their ETags
-with local MD5 hashes. Unchanged files are skipped, changed files are uploaded,
-and obsolete public objects are removed after successful uploads. This keeps
-later GitHub-to-Shanghai deployments incremental rather than retransmitting the
-complete audio library.
+Before upload, the script lists existing COS objects. Small objects use their
+ETag/local MD5 for comparison; files handled by multipart upload use byte size
+because the COS multipart ETag returned by object listing is not a portable
+local content checksum. Unchanged files are skipped, changed files are
+uploaded, and obsolete public objects are removed only after all uploads
+succeed. This keeps later GitHub-to-Shanghai deployments incremental rather
+than retransmitting the complete audio library.
 Uploads use bounded concurrency and retry transient COS/network failures per
 file. A failed or cancelled first publication can therefore resume safely on
-the next `main` run without retransmitting completed objects.
+the next `main` run without retransmitting completed objects. Files of at least
+5 MB use 1 MB multipart chunks so audio uploads from GitHub's overseas runner
+do not depend on one long-lived connection to Shanghai COS.
 
 The repository must define these GitHub Actions secrets:
 
@@ -154,6 +158,10 @@ The repository must define these GitHub Actions secrets:
 
 They belong to a programming-access-only CAM sub-user with the minimum required
 permissions for this one bucket: `GetBucket`, `PutObject`, and `DeleteObject`.
+Multipart audio upload additionally requires `InitiateMultipartUpload`,
+`UploadPart`, `ListParts`, `CompleteMultipartUpload`, and
+`AbortMultipartUpload` for the same bucket only. Do not grant console login or
+account-wide administrator access to this deployment identity.
 The deployment script logs only COS error codes, HTTP status, and request IDs;
 it must never print either credential.
 
@@ -608,7 +616,7 @@ submission for end-to-end verification.
    TEACHER_ATTEMPT_SMTP_SECURE=false
    TEACHER_ATTEMPT_SMTP_USER=jxbleo@icloud.com
    TEACHER_ATTEMPT_SMTP_PASS=<SMTP authorization code or app password>
-   TEACHER_ATTEMPT_EMAIL_FROM=Mr. Cat Academy <jxbleo@icloud.com>
+   TEACHER_ATTEMPT_EMAIL_FROM=猫先生英语 <jxbleo@icloud.com>
    TEACHER_ATTEMPT_EMAIL_REPLY_TO=<optional reply address>
    TEACHER_ATTEMPT_EMAIL_TEACHER_URL=<optional authenticated teacher-page HTTPS URL>
    TZ=Asia/Shanghai
@@ -641,10 +649,13 @@ submission for end-to-end verification.
    official SCF `CreateTrigger` API if the console/CLI shortcut cannot set
    `CustomArgument`, and sanitize any response that might echo the token.
 6. Enable the timer last and test with a dedicated development student. A
-   Vocabulary email normally arrives on the next timer tick. A BBC email is
-   eligible seven minutes after the first submission in its fixed batch, then
-   sends on the next tick. SMTP/network failures retry with bounded backoff;
-   a processing claim older than ten minutes is automatically recovered.
+   Vocabulary email normally arrives on the next timer tick. Every Quiz/timed
+   Practice submission must be a separate mailbox message; its subject carries
+   the mode and current `No.`, while second and later submissions include prior
+   attempts in the body. A BBC email is eligible seven minutes after the first
+   submission in its fixed batch, then sends on the next tick. SMTP/network
+   failures retry with bounded backoff; a processing claim older than ten
+   minutes is automatically recovered.
 7. In Teacher Personal Center, add the owner's QQ and iCloud addresses and keep
    both enabled for the comparison period. Submit one development Vocabulary
    attempt, confirm both inboxes receive the same BCC message, then pause one
@@ -704,23 +715,26 @@ The first import command is a dry run. This changes defaults for new
 assignments and independent practice; it does not rewrite threshold snapshots
 already stored on existing assignments.
 
-CloudBase static hosting may automatically publish successful builds from the
-GitHub `main` branch, as explicitly selected by the owner. This authorization
-applies only to the public static artifact produced by:
+GitHub Actions automatically publishes successful builds from the GitHub
+`main` branch to the dedicated Tencent COS static-website bucket, as explicitly
+selected by the owner. This authorization applies only to the public static
+artifact produced by:
 
 ```bash
 npm run build:static
 ```
 
-Configure the Git deployment with target directory `./`, no install command,
-build command `npm run build:static`, artifact directory `./dist`, and deploy
-path `/`. The allowlist contains root HTML/web-manifest files plus `assets/`,
-`bbc-audio/`, `content/`, and `data/`; it excludes cloud functions, scripts,
-documentation, deployment packages, and local/private files.
+The workflow is `.github/workflows/deploy-cos.yml`. It installs locked npm
+dependencies, runs `npm run build:static`, verifies the public boundary, and
+runs `scripts/deploy-static-to-cos.js`. The allowlist contains root
+HTML/web-manifest files plus `assets/`, `bbc-audio/`, `content/`, and `data/`;
+it excludes cloud functions, scripts, documentation, deployment packages, and
+local/private files.
 
 Automatic static publication does not authorize function deployment, database
-imports, DNS changes, secrets, environment variables, timers, billing changes,
-or other CloudBase resource mutations. Those remain separately owner-gated.
+imports, DNS changes, certificate changes, secrets, environment variables,
+timers, billing changes, or other Tencent resource mutations. Those remain
+separately owner-gated.
 
 ## 7. CloudBase Data Import
 
@@ -861,8 +875,9 @@ Teacher flow:
   private evidence history work
 - teacher report preview saves comments/goals, finalizes once after the cutoff,
   shows full authorized class detail, and copies a valid ordinary-WeChat link/text
-- a Vocabulary Quiz and timed Practice submission each create a prompt email;
-  retry emails contain the earlier attempts and comparison chart
+- every Vocabulary Quiz and timed Practice submission creates a separately
+  visible prompt email with mode/current `No.` in its subject; second and later
+  emails contain the earlier attempts and comparison chart
 - BBC retries submitted within the fixed first-submission-plus-seven-minute
   window produce one email containing the complete batch history
 - email mistake rows match the Teacher bell's authorized paper view: correct
