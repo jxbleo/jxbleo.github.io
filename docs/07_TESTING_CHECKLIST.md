@@ -1548,6 +1548,13 @@ Before saying a deploy is complete:
 
 ## 10. Known Testing Gaps
 
+Parent Mode regression checks:
+
+- a student with two period-overlapping membership-history rows appears in
+  exactly one class-matrix column;
+- task cards, matrix task rows, task detail summaries, and chart threshold
+  lines use `合格线：80%`-style Chinese labels and never `PASS 80%`.
+
 - No automated CloudBase integration tests.
 - No pure unit tests for assignment status, STAR, and Argue rules yet.
 - No automated browser smoke for teacher/student login yet.

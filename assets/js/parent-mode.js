@@ -158,7 +158,7 @@
         var meta = [];
         if (task.due_at) meta.push('截止 ' + formatDate(task.due_at, true));
         if (task.source === 'self_study') meta.push('自主学习');
-        if (task.passing_percentage != null) meta.push('PASS ' + percent(task.passing_percentage));
+        if (task.passing_percentage != null) meta.push('合格线：' + percent(task.passing_percentage));
         return '<button class="parent-task-card" type="button" data-parent-task' +
             ' data-assignment-id="' + escapeHtml(task.assignment_id || '') + '"' +
             ' data-set-id="' + escapeHtml(task.set_id || '') + '">' +
@@ -253,7 +253,7 @@
         }).join('') + '</tr></thead>';
         var body = '<tbody>' + matrix.tasks.map(function(task, taskIndex) {
             return '<tr><th scope="row" class="task-column"><span class="parent-task-title">' + escapeHtml(task.title) + '</span>' +
-                '<span class="parent-task-meta">PASS ' + escapeHtml(percent(task.passing_percentage)) +
+                '<span class="parent-task-meta">合格线：' + escapeHtml(percent(task.passing_percentage)) +
                 (task.mastery_enabled ? ' · STAR ' + escapeHtml(percent(task.mastery_percentage)) : '') +
                 '<br>截止 ' + escapeHtml(formatDate(task.due_at, false)) + '</span></th>' +
                 matrix.students.map(function(student, studentIndex) {
@@ -356,17 +356,17 @@
         var attempts = result.attempts || [];
         var threshold = function(label, value, className) {
             return '<span class="parent-threshold ' + className + '" style="bottom:' + (32 + Number(value || 0) * 1.5) + 'px"><span>' +
-                escapeHtml(label + ' ' + percent(value)) + '</span></span>';
+                escapeHtml(label + percent(value)) + '</span></span>';
         };
         modalContent.innerHTML = '<p class="parent-eyebrow">TASK DETAIL</p><h2 id="parent-task-dialog-title">' + escapeHtml(task.title) + '</h2>' +
             '<div class="parent-task-summary"><span>最好成绩：<strong>' + escapeHtml(percent(task.best_percentage) || '未提交') + '</strong></span>' +
-            '<span>PASS：' + escapeHtml(percent(task.passing_percentage)) + '</span>' +
+            '<span>合格线：' + escapeHtml(percent(task.passing_percentage)) + '</span>' +
             (task.mastery_enabled ? '<span>STAR：' + escapeHtml(percent(task.mastery_percentage)) + '</span>' : '') +
             (task.due_at ? '<span>截止：' + escapeHtml(formatDate(task.due_at, true)) + '</span>' : '<span>自主学习</span>') +
             (task.score_locked ? '<span>答案已查看，最好成绩已锁定</span>' : '') + '</div>' +
             (attempts.length ? '<div class="parent-attempt-chart-shell"><div class="parent-attempt-chart">' +
-                threshold('PASS', task.passing_percentage, 'pass') +
-                (task.mastery_enabled ? threshold('STAR', task.mastery_percentage, 'star') : '') +
+                threshold('合格线：', task.passing_percentage, 'pass') +
+                (task.mastery_enabled ? threshold('STAR：', task.mastery_percentage, 'star') : '') +
                 attempts.map(function(attempt) { return attemptBar(attempt, task, task.best_percentage); }).join('') +
                 '</div></div><div class="parent-review" id="parent-attempt-review"><div class="parent-empty">点击任意柱子查看该次提交的错题。</div></div>'
                 : '<div class="parent-empty">这份任务还没有正式提交记录。</div>');

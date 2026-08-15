@@ -21,7 +21,14 @@ const rows = {
   classes: [{ _id: "class-doc", class_id: "class-a", name: "Class A", active: true }],
   class_memberships: [
     { _id: "member-a", class_id: "class-a", student_uid: "uid-a", active: true, started_at: startedAt, ended_at: null },
-    { _id: "member-b", class_id: "class-a", student_uid: "uid-b", active: true, started_at: startedAt, ended_at: null },
+    {
+      _id: "member-b-old", class_id: "class-a", student_uid: "uid-b", active: false,
+      started_at: startedAt, ended_at: new Date(period.start_at.getTime() + 3600000),
+    },
+    {
+      _id: "member-b-new", class_id: "class-a", student_uid: "uid-b", active: true,
+      started_at: new Date(period.start_at.getTime() + 3600001), ended_at: null,
+    },
   ],
   sets: [{ _id: "set-doc", set_id: "BBC-test", title: "BBC Test", visible: true, passing_percentage: 80, mastery_percentage: 95 }],
   assignments: [
@@ -137,6 +144,9 @@ async function main() {
   const matrix = await service.main({ action: "classMatrix", scope: "week", ...auth });
   assert.equal(matrix.success, true);
   assert.equal(matrix.tasks.length, 1);
+  assert.equal(matrix.students.length, 2, "multiple overlapping membership records still produce one column per student");
+  assert.equal(matrix.students.filter((item) => item.english_name === "David").length, 1,
+    "a student who leaves and rejoins the same class is not duplicated");
   assert.equal(matrix.students[0].own_student, true, "own child is fixed in first column");
   assert.equal(matrix.students[1].best_percentage, undefined, "student aggregate does not expose an extra score field");
   assert.equal(matrix.students[1].cells[0].best_percentage, 90, "peer task best score is visible");
