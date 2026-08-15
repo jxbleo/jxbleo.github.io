@@ -3,6 +3,33 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-15: Retry Authentication Reads and Atomically Deduplicate Vocabulary Writes
+
+Decision:
+
+Use CloudBase browser SDK 2.32.0. Before Vocabulary Quiz/timed Practice writes,
+retry only the read-only login-state preflight once when credential bootstrap
+hits the known null-scope failure. Never automatically retry the mutating cloud
+function call. Give each recorded Vocabulary submit action a stable client ID,
+derive a student/set/mode-scoped 32-character attempt document ID, and create it
+atomically with `doc(id).create` so a replay returns the immutable attempt.
+
+Reason:
+
+SDK 2.28.6 can dereference `credentials.scope` while credentials are null, and
+a request response may be lost after the server has stored the attempt. Retrying
+only the authentication read avoids duplicate writes; atomic attempt creation
+handles explicit, sequential, and concurrent replays without a new collection.
+
+Trade-offs:
+
+- Existing cached clients without a client submission ID retain the legacy
+  random attempt-ID path until refreshed.
+- The deterministic ID is a hash scoped by authenticated UID and does not trust
+  a browser identity, score, or assignment.
+- Quiz session timing, heartbeat, visibility interruption, selected-question
+  snapshot, and assignment lock stay independent and unchanged.
+
 ## 2026-08-11: Use a Private Outbox and SMTP for Teacher Attempt Email
 
 Decision:

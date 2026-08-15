@@ -66,6 +66,21 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-08-15
+
+- Diagnosed Vocabulary Quiz/timed Practice Safari error
+  `null is not an object (evaluating 't.scope')` as a CloudBase JS SDK 2.28.6
+  credential-bootstrap null dereference before `submitAttempt` was invoked.
+- Upgraded shared browser SDK references to 2.32.0, added a one-retry
+  authenticated preflight that never retries the mutating call, and added
+  friendly login-verification errors. Timed Practice starts its timer only
+  after that preflight succeeds.
+- Added stable Vocabulary client submission IDs and deterministic attempt
+  document IDs so Quiz and timed Practice replays return one immutable record.
+  Verified syntax, release checks, and Quiz/Practice sequential and concurrent
+  idempotency tests. No CloudBase data migration or collection change is
+  required.
+
 ### 2026-08-10
 
 - Added Student Dashboard stale-while-revalidate startup: a redacted,

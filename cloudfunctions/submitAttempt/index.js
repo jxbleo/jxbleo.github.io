@@ -1,4 +1,5 @@
 const cloudbase = require("@cloudbase/node-sdk");
+const crypto = require("crypto");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
 const attemptEmailNotifications = require("../_shared/attempt-email-notifications");
@@ -16,6 +17,57 @@ const VOCABULARY_TEST_MIN_GROUPS = 5;
 const VOCABULARY_TEST_SECONDS_PER_GROUP = 90;
 const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 60 * 1000;
 const VOCABULARY_TEST_SUBMIT_GRACE_MS = 30 * 1000;
+
+function clientSubmissionId(value) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return "";
+  if (normalized.length > 220 || !/^[A-Za-z0-9._:-]+$/.test(normalized)) {
+    throw new Error("CLIENT_SUBMISSION_ID_INVALID");
+  }
+  return normalized;
+}
+
+function vocabularySubmissionAttemptId(studentUid, setId, mode, submissionId) {
+  if (!submissionId || !["vocabulary_test", "vocabulary_practice_timed"].includes(mode)) return "";
+  return crypto.createHash("sha256")
+    .update([studentUid, setId, mode, submissionId].join("\n"))
+    .digest("hex")
+    .slice(0, 32);
+}
+
+function replayAttemptResponse(attempt) {
+  const passed = Boolean(attempt.passed);
+  const mastered = Boolean(attempt.mastered);
+  const status = attempt.assignment_status || attempt.attempt_status
+    || (mastered ? "mastered" : passed ? "passed" : "to_do");
+  return {
+    success: true,
+    recorded: true,
+    idempotent_replay: true,
+    attempt_id: attempt.attempt_id,
+    assignment_id: attempt.assignment_id || null,
+    attempt_number: attempt.attempt_number,
+    correct_count: attempt.correct_count,
+    question_count: attempt.question_count,
+    raw_percentage: attempt.raw_percentage,
+    percentage: attempt.percentage,
+    display_percentage: attempt.display_percentage == null ? attempt.percentage : attempt.display_percentage,
+    passing_percentage: attempt.passing_percentage,
+    mastery_percentage: attempt.mastery_percentage,
+    mastery_enabled: attempt.mastery_enabled,
+    passed,
+    mastered,
+    status,
+    assignment_status: status,
+    attempt_status: attempt.attempt_status || status,
+    mastery_eligible: Boolean(attempt.mastery_eligible),
+    mastery_blocked_reason: attempt.mastery_blocked_reason || "",
+    question_results: attempt.question_results || [],
+    bbc_mc_locked_answers: attempt.bbc_mc_locked_answers || {},
+    group_results: attempt.group_results || [],
+    feedback_locked: Boolean(attempt.feedback_locked),
+  };
+}
 
 function normalize(value) {
   return String(value == null ? "" : value).trim().toLowerCase().replace(/\s+/g, " ");
@@ -804,11 +856,28 @@ exports.main = async (event = {}) => {
     if (action === "heartbeatVocabularyTestSession") return await heartbeatVocabularyTestSession(student, event);
     if (action === "abandonVocabularyTestSession") return await abandonVocabularyTestSession(student, event);
 
+    const requestedSetId = String(event.set_id || "");
+    const requestedMode = String(event.mode || "default");
+    const requestedClientSubmissionId = clientSubmissionId(event.client_submission_id);
+    const idempotentAttemptId = vocabularySubmissionAttemptId(
+      student.auth_uid,
+      requestedSetId,
+      requestedMode,
+      requestedClientSubmissionId
+    );
+    if (idempotentAttemptId) {
+      const recordedAttempt = await getOne("attempts", {
+        attempt_id: idempotentAttemptId,
+        student_uid: student.auth_uid,
+      });
+      if (recordedAttempt) return replayAttemptResponse(recordedAttempt);
+    }
+
     await assertNoOtherActiveVocabularyTest(student, event);
 
-    const setId = String(event.set_id || "");
+    const setId = requestedSetId;
     let assignmentId = event.assignment_id ? String(event.assignment_id) : null;
-    const mode = String(event.mode || "default");
+    const mode = requestedMode;
     let answers = event.answers && typeof event.answers === "object" ? event.answers : {};
     let selectedGroupCountForAttempt = event.selected_group_count || null;
     let selectedGroupIdsForAttempt = uniqueStrings(event.selected_group_ids || [], 80);
@@ -927,7 +996,7 @@ exports.main = async (event = {}) => {
       assignment_id: assignmentId,
     }).count();
     const attemptNumber = Number(previousAttempts.total || 0) + 1;
-    const attemptId = [
+    const attemptId = idempotentAttemptId || [
       student.auth_uid,
       setId,
       Date.now(),
@@ -950,6 +1019,7 @@ exports.main = async (event = {}) => {
       : [];
     const attempt = {
       attempt_id: attemptId,
+      client_submission_id: requestedClientSubmissionId || null,
       student_uid: student.auth_uid,
       student_id_snapshot: student.student_id,
       set_id: setId,
@@ -969,6 +1039,8 @@ exports.main = async (event = {}) => {
       mastery_enabled: assignment ? assignmentMasteryEnabled(assignment) : !isVocabularyTimedPractice,
       passed,
       mastered,
+      attempt_status: attemptStatus,
+      assignment_status: assignmentStatus,
       mastery_eligible: mastered,
       mastery_blocked_reason: assignment && !assignmentMasteryEnabled(assignment)
         ? "mastery_disabled"
@@ -985,11 +1057,26 @@ exports.main = async (event = {}) => {
       selected_group_count: selectedGroupCountForAttempt,
       selected_group_ids: selectedGroupIdsForAttempt,
       group_results: groupResults,
+      feedback_locked: !mayShowFeedback,
       test_session_id: vocabularyTestSession && vocabularyTestSession.test_session_id || null,
       bbc_mc_locked_answers: mode === "bbc" ? bbcMultipleChoiceAnswers(answers, bbcMcQuestionIds) : null,
     };
 
-    await db.collection("attempts").add(attempt);
+    try {
+      if (idempotentAttemptId) {
+        await db.collection("attempts").doc(idempotentAttemptId).create(attempt);
+      } else {
+        await db.collection("attempts").add(attempt);
+      }
+    } catch (addError) {
+      if (!idempotentAttemptId) throw addError;
+      const recordedAttempt = await getOne("attempts", {
+        attempt_id: idempotentAttemptId,
+        student_uid: student.auth_uid,
+      });
+      if (recordedAttempt) return replayAttemptResponse(recordedAttempt);
+      throw addError;
+    }
 
     let finalAssignmentStatus = assignmentStatus;
     if (!isVocabularyTimedPractice) {

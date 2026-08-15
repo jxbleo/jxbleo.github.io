@@ -64,6 +64,44 @@
         return Promise.resolve(getAuth().getLoginState());
     }
 
+    function authErrorMarker(error) {
+        if (!error) return '';
+        return [error.code, error.message, error.errMsg, String(error)]
+            .filter(Boolean)
+            .join(' ');
+    }
+
+    function isCredentialBootstrapError(error) {
+        return /null is not an object.*scope|credentials?\.scope|evaluating ['\"]?[a-z]\.scope|AUTH_TEMPORARILY_UNAVAILABLE/i
+            .test(authErrorMarker(error));
+    }
+
+    function authenticatedState() {
+        var attempts = 0;
+        function check() {
+            attempts += 1;
+            return Promise.resolve().then(function() {
+                return getLoginState();
+            }).then(function(state) {
+                if (!state) throw new Error('LOGIN_REQUIRED');
+                return state;
+            }).catch(function(error) {
+                if (attempts < 2 && isCredentialBootstrapError(error)) {
+                    return new Promise(function(resolve) {
+                        window.setTimeout(resolve, 180);
+                    }).then(check);
+                }
+                if (isCredentialBootstrapError(error)) {
+                    var friendly = new Error('Your login could not be verified. Please check the network and try again. Your answers have not been submitted.');
+                    friendly.code = 'AUTH_TEMPORARILY_UNAVAILABLE';
+                    throw friendly;
+                }
+                throw error;
+            });
+        }
+        return check();
+    }
+
     function signIn(username, password) {
         return getAuth().signInWithUsernameAndPassword(username, password);
     }
@@ -93,6 +131,15 @@
                 }));
             }
             return result;
+        });
+    }
+
+    function callAuthenticatedFunction(name, data) {
+        // Only the read-only login preflight may retry. The mutating cloud
+        // function call is invoked exactly once so submission semantics remain
+        // under the caller's and server's idempotency controls.
+        return authenticatedState().then(function() {
+            return callFunction(name, data);
         });
     }
 
@@ -173,10 +220,13 @@
         getApp: getApp,
         getAuth: getAuth,
         getLoginState: getLoginState,
+        authenticatedState: authenticatedState,
+        isCredentialBootstrapError: isCredentialBootstrapError,
         signIn: signIn,
         signInAnonymously: signInAnonymously,
         signOut: signOut,
         callFunction: callFunction,
+        callAuthenticatedFunction: callAuthenticatedFunction,
         uploadWithMetadata: uploadWithMetadata,
         prepareEvidenceImage: prepareEvidenceImage,
         getDeviceId: getDeviceId,

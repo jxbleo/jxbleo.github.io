@@ -81,6 +81,7 @@
 | Vocabulary 本地直接打开加载失败 | `fetch` 被 file:// 限制，缺 JS fallback 或本地 server | `content/vocabulary/*.js` fallback；用本地 HTTP server |
 | Vocabulary Test 做到一半弹 `Quiz interrupted` / `Network request error` | 旧前端把单次 CloudBase heartbeat 网络错误当成致命错误，或新前端已连续 60 秒无法恢复 | 发布最新版 `vocabulary.html` 与四个 session-aware 云函数；确认页面先显示 reconnecting 并按 2/5/10 秒节奏重试，服务器 timeout 为 60 秒；切换 App/页签仍会按规则立即中断 |
 | Vocabulary Quiz 第一次提交报 `VOCABULARY_TEST_SESSION_MISMATCH`，关闭重做后成功 | 旧 `submitAttempt` 在开考与提交时分别自动选择开放 assignment；重复开放记录、相同 due week、Quiz 期间新增任务或旧草稿可能让两次选择不同 | 部署锁定 assignment 的最新版 `submitAttempt` 和 `vocabulary.html`；提交必须读取 session 的 `assignment_id` / `assignment_doc_id`，不要删除 attempts 或让学生反复刷新 |
+| Vocabulary Quiz/Practice 提交提示 `null is not an object (evaluating 't.scope')` | CloudBase JS SDK 2.28.6 在临时凭据为空时先读取 `credentials.scope`，请求尚未到达 `submitAttempt`；网络切换、Safari 恢复页面、登录凭据刷新窗口都可能触发 | 发布统一使用 SDK 2.32.0 和最新版 `cloudbase-client.js` / `vocabulary.html` 的静态站点，并部署最新版 `submitAttempt`。只允许重试只读登录预检，不能自动重开 Quiz 或盲目重发写请求；用 `client_submission_id` 的稳定 attempt 文档 ID 处理响应丢失后的重放 |
 | Git push 超时或失败 | 网络或 GitHub HTTPS 问题，不一定本地提交失败 | `git log`、`git status`、`rev-parse HEAD origin/main` |
 | 多个 Codex 窗口互相影响 | 同一工作树存在 unrelated dirty files | 每次先 `git status --short`；只 stage 当前任务文件 |
 

@@ -255,6 +255,16 @@ Active or relevant functions:
 - `sendTeacherAttemptEmails`
 - `parentMode`
 
+Vocabulary credential/idempotency rollout has two tracks and no data migration:
+
+1. Publish the static site so every shared page loads CloudBase JS SDK 2.32.0,
+   the new `cloudbase-client.js` cache version, and the matching app config.
+2. Rebuild and deploy `deploy-packages/submitAttempt.zip` from the same source.
+
+No collection, index, permission, environment-variable, grading-key, or content
+import change is required. After both tracks, submit one timed Practice and one
+Quiz with a development student, then confirm one attempt/email event per submit.
+
 Common validation:
 
 ```bash
