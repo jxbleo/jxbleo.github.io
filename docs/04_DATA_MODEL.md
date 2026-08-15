@@ -172,6 +172,9 @@ Rules:
   browser cannot choose membership scope or effective dates.
 - Closed rows are history and are never hard-deleted merely because a student
   transfers classes.
+- Parent Mode collapses all period-overlapping membership history by stable
+  `student_uid` before constructing class-matrix columns. Historical leave and
+  rejoin rows must never duplicate one student in the matrix.
 - A report's rank eligibility is calculated from membership coverage of the
   entire Shanghai period. A partial period (new admission, transfer, withdrawal)
   leaves a student out of the public ranking but retains that student's personal

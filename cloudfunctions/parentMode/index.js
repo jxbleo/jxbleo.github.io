@@ -426,12 +426,27 @@ async function classMatrix(student, event) {
   const studentUids = [...new Set(periodMemberships.map((membership) => parentRules.text(membership.student_uid)).filter(Boolean))];
   const students = await getByFieldIn("students", "auth_uid", studentUids);
   const studentByUid = new Map(students.map((profile) => [parentRules.text(profile.auth_uid), profile]));
+  const membershipsByStudent = new Map();
+  periodMemberships.forEach((membership) => {
+    const studentUid = parentRules.text(membership.student_uid);
+    if (!studentUid) return;
+    const rows = membershipsByStudent.get(studentUid) || [];
+    rows.push(membership);
+    membershipsByStudent.set(studentUid, rows);
+  });
   const currentPeriod = parentRules.dateValue(period.end_at) >= now.getTime();
-  const visibleMemberships = periodMemberships.filter((membership) => {
-    const profile = studentByUid.get(parentRules.text(membership.student_uid));
+  const visibleMembershipGroups = [...membershipsByStudent.entries()].map(([studentUid, rows]) => ({
+    student_uid: studentUid,
+    memberships: rows,
+    representative: rows.slice().sort((left, right) =>
+      parentRules.dateValue(right.started_at || right.created_at)
+      - parentRules.dateValue(left.started_at || left.created_at)
+    )[0],
+  })).filter((group) => {
+    const profile = studentByUid.get(group.student_uid);
     return !currentPeriod || profile && profile.active !== false && profile.deleted_at == null;
   });
-  const visibleUids = new Set(visibleMemberships.map((membership) => parentRules.text(membership.student_uid)));
+  const visibleUids = new Set(visibleMembershipGroups.map((group) => group.student_uid));
   const classAssignments = assignmentRows.filter((assignment) =>
     assignment.assignment_scope === "class"
     && parentRules.text(assignment.class_task_id)
@@ -488,8 +503,9 @@ async function classMatrix(student, event) {
       group,
     };
   });
-  const matrixStudents = visibleMemberships.map((membership) => {
-    const studentUid = parentRules.text(membership.student_uid);
+  const matrixStudents = visibleMembershipGroups.map((membershipGroup) => {
+    const studentUid = membershipGroup.student_uid;
+    const membership = membershipGroup.representative;
     const profile = studentByUid.get(studentUid) || {};
     const cells = tasks.map((task) => {
       const assignment = task.group.rows.find((row) => parentRules.text(row.student_uid) === studentUid) || null;
@@ -514,7 +530,9 @@ async function classMatrix(student, event) {
       student_uid: studentUid,
       ...displayNames(profile, membership),
       own_student: studentUid === student.auth_uid,
-      ranking_eligible: parentRules.membershipCovers(membership, period, cutoffAt),
+      ranking_eligible: membershipGroup.memberships.some((row) =>
+        parentRules.membershipCovers(row, period, cutoffAt)
+      ),
       cells,
     };
   });

@@ -7,6 +7,8 @@
 
 ### Changed
 
+- Parent Mode now collapses overlapping class-membership history to one student
+  column and labels passing thresholds as `合格线：80%` throughout its family UI.
 - Moved the production static release track to a dedicated Tencent COS static
   website while retaining GitHub `main` as the source of truth and CloudBase as
   the trusted backend.

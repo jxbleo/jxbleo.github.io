@@ -91,7 +91,9 @@ assert(client.includes("data-parent-task") && client.includes("attemptReview"));
 assert(client.includes("ensureParentAuth") && client.includes("signInAnonymously"),
   "Parent Mode establishes an invisible CloudBase identity before calling its function");
 assert(client.includes("parentCall('login'"), "name entry uses the authenticated Parent Mode call wrapper");
-assert(page.includes("cloudbase-client.js?v=20260815-1") && page.includes("parent-mode.js?v=20260815-2"),
+assert(client.includes("合格线：") && !client.includes("PASS ") && !client.includes("PASS："),
+  "Parent Mode labels passing thresholds in Chinese");
+assert(page.includes("cloudbase-client.js?v=20260815-2") && page.includes("parent-mode.js?v=20260815-3"),
   "Parent Mode busts cached client scripts after the anonymous-auth fix");
 assert(!page.includes("Student ID"), "Parent Mode login does not reuse student credentials");
 

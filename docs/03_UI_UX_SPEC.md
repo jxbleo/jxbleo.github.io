@@ -25,6 +25,7 @@
 | `vocabulary.html` | Vocabulary learning, spelling, use/test |
 | `attempt-review.html` | Attempt review surface |
 | `reports.html` | Authenticated weekly/monthly class reports and teacher preview editing |
+| `parent-mode.html` | Read-only child progress and class comparison for families |
 | `dse-topic-bank.html` | HKDSE Writing/Speaking visitor preview and protected student report |
 | `hk8-dse-jupas-weighting-report-2026-27.html` | Unlisted JUPAS weighting preview and student-only full report |
 
@@ -128,6 +129,15 @@ The form has no visible `STUDENT ENTRY` eyebrow; its accessible `Student sign
 in` heading remains available to assistive technology.
 On mobile, the welcome panel shrink-wraps the brand and quote instead of
 retaining the former fixed 430px minimum height and a large empty lower half.
+
+### Parent Mode
+
+The class matrix renders tasks as rows and students as columns. It projects
+historical class membership once per stable student identity, so a student who
+leaves and later rejoins the same class never appears in duplicate columns.
+Task cards, matrix rows, task summaries, and chart threshold lines label the
+passing threshold in Chinese using the `合格线：80%` format; Parent Mode does not
+show `PASS 80%`.
 
 ## 3. Student Dashboard
 
