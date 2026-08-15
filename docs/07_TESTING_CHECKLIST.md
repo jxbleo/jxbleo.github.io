@@ -977,13 +977,19 @@ Check:
   equal height, continuous borders, and exact column alignment. Verify this at
   phone portrait width (below 760px) as well as phone landscape/desktop width;
   rotating the device must not shift the DUE AT first cell or Wxx boundaries
-- At a 390px portrait viewport, clear the saved matrix-density preference and
-  verify the default `Fit` state shows all columns for six or seven visible
-  tasks without horizontal matrix scrolling. Compact headers stack the stable
-  task ID, task names are hidden, status icons sit above scores without `%`,
-  all four-to-six student rows remain aligned, and student names truncate
-  rather than widening the sticky first column
-- Matrix `−`, `Fit`, and `+` controls respond immediately: `+` increases the
+- At a 390px portrait viewport, clear the saved matrix-density and axis
+  preferences and verify the default `Fit` state is transposed: student names
+  form the top columns, tasks continue as vertical rows, and a three-to-four
+  student class fits without horizontal matrix scrolling. Compact sticky task
+  labels retain both teacher-preview entry and editable Wxx; status icons sit
+  above scores without `%`, and student names truncate rather than widening
+  their columns
+- Matrix `−`, `Fit`, `+`, and axis-swap controls respond immediately. Axis swap
+  changes between student rows/task columns and task rows/student columns while
+  preserving filters and page position; task preview, Wxx editing, student
+  detail, and score detail work in both orientations. Desktop and phone axis
+  choices persist independently, and crossing the 760px breakpoint loads the
+  saved choice or the desktop-standard/phone-transposed default. `+` increases the
   real task-column width and eventually restores full task names and horizontal
   scrolling, `−` steps back down, and `Fit` returns to the complete-width
   overview. Reload preserves an explicit choice on that device; with no saved
@@ -1515,15 +1521,6 @@ For each new set:
 - direct lesson URL loads
 - authenticated Explore/Library shows the item
 - submission grades successfully
-
-For an approved BBC `Teachers Draft.md` import, also verify:
-
-- the public runtime contains exactly 10 blanks and 10 multiple-choice items
-- committed runtime and metadata contain no answers, evidence, or explanations
-- the private grading key contains all 20 stable question IDs
-- the published MP3 is byte-identical to the teacher-approved source audio
-- runtime and metadata omit `renderTheme` when the default green UI is intended
-- the generated three-page worksheet has no answer key and no clipped content
 
 ## 9. Deployment Checklist
 

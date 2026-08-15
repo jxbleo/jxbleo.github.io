@@ -2,6 +2,7 @@
     'use strict';
 
     var MATRIX_DENSITY_STORAGE_KEY = 'mrcat.teacher.matrix-density.v1';
+    var MATRIX_AXIS_STORAGE_KEY = 'mrcat.teacher.matrix-axis.v1';
     var MATRIX_DENSITY_TASK_WIDTHS = [31, 56, 72, 92, 112, 132];
     var TEACHER_HISTORY_STATE_KEY = 'mrcatTeacherWorkspace';
     var TEACHER_HISTORY_STATE_VERSION = 1;
@@ -49,6 +50,27 @@
             window.localStorage.setItem(MATRIX_DENSITY_STORAGE_KEY, String(value));
         } catch (error) {
             // The matrix still resizes for this session when storage is unavailable.
+        }
+    }
+
+    function readMatrixTransposePreference() {
+        var phoneLayout = matrixUsesPhoneLayout();
+        try {
+            var stored = window.localStorage.getItem(MATRIX_AXIS_STORAGE_KEY + (phoneLayout ? '.phone' : '.desktop'));
+            if (stored === 'transposed') return true;
+            if (stored === 'standard') return false;
+        } catch (error) {
+            // Use the responsive default when storage is unavailable.
+        }
+        return phoneLayout;
+    }
+
+    function saveMatrixTransposePreference(value) {
+        try {
+            var key = MATRIX_AXIS_STORAGE_KEY + (matrixUsesPhoneLayout() ? '.phone' : '.desktop');
+            window.localStorage.setItem(key, value ? 'transposed' : 'standard');
+        } catch (error) {
+            // The matrix still swaps axes for this session when storage is unavailable.
         }
     }
 
@@ -131,6 +153,7 @@
         matrixColumnFilter: '',
         matrixDateFilter: 'all',
         matrixDensityStep: readMatrixDensityPreference(),
+        matrixTransposed: readMatrixTransposePreference(),
         selectedMatrixCell: '',
         selectedMatrixStudentKey: '',
         matrixStudentProgressSelections: {},
@@ -2131,6 +2154,9 @@
             && matrix.density_step < MATRIX_DENSITY_TASK_WIDTHS.length) {
             state.matrixDensityStep = matrix.density_step;
         }
+        if (matrix.phone_layout === matrixUsesPhoneLayout() && typeof matrix.transposed === 'boolean') {
+            state.matrixTransposed = matrix.transposed;
+        }
         state.assignProgressMode = snapshot.progress_mode === 'task' ? 'task' : 'student';
         state.expandedAssignProgressGroups = trueStateMap(snapshot.expanded_progress_groups);
         state.expandedAssignProgress = trueStateMap(snapshot.expanded_progress_rows);
@@ -2174,7 +2200,8 @@
                 column_filter: state.matrixColumnFilter || '',
                 date_filter: state.matrixDateFilter || 'all',
                 phone_layout: matrixUsesPhoneLayout(),
-                density_step: resolvedMatrixDensityStep()
+                density_step: resolvedMatrixDensityStep(),
+                transposed: state.matrixTransposed === true
             },
             progress_mode: state.assignProgressMode === 'task' ? 'task' : 'student',
             expanded_progress_groups: trueStateKeys(state.expandedAssignProgressGroups),
@@ -5424,6 +5451,9 @@
                 '" aria-label="Fit the complete matrix to this screen" title="Fit to screen">Fit</button>' +
             '<button class="matrix-density-button" type="button" data-matrix-density-action="larger"' +
                 (step === lastStep ? ' disabled' : '') + ' aria-label="Make matrix larger" title="Larger">+</button>' +
+            '<button class="matrix-axis-button' + (state.matrixTransposed ? ' active' : '') + '" type="button" ' +
+                'data-matrix-axis-swap aria-pressed="' + (state.matrixTransposed ? 'true' : 'false') +
+                '" aria-label="Swap students and tasks" title="Swap students and tasks">⇄</button>' +
         '</div>';
     }
 
@@ -5456,6 +5486,23 @@
         saveMatrixDensityPreference(step);
         renderAssignmentOverview();
         restoreMatrixScroll(snapshot);
+    }
+
+    function toggleMatrixAxis() {
+        var container = document.getElementById('assignment-overview');
+        var snapshot = matrixScrollSnapshot(container);
+        state.matrixTransposed = !state.matrixTransposed;
+        state.selectedMatrixCell = '';
+        state.selectedMatrixStudentKey = '';
+        state.selectedMatrixReviewAttemptId = '';
+        saveMatrixTransposePreference(state.matrixTransposed);
+        renderAssignmentOverview();
+        restoreMatrixScroll({
+            left: 0,
+            top: snapshot && snapshot.top || 0,
+            windowX: snapshot && snapshot.windowX || 0,
+            windowY: snapshot && snapshot.windowY || 0
+        });
     }
 
     function matrixAttemptsForItem(item) {
@@ -6439,104 +6486,144 @@
         students.forEach(function(student) {
             student.displayName = matrixStudentDisplayName(student.name, densityStep);
         });
-        var selectedItem = null;
+        var selectedItem = state.selectedMatrixCell
+            ? matrixItems.find(function(item) { return matrixCellKey(item) === state.selectedMatrixCell; })
+            : null;
         var maxStudentNameWidth = students.reduce(function(max, student) {
             return Math.max(max, matrixTextWidthCh(student.displayName));
         }, Math.max(matrixTextWidthCh(studentHeaderLabel), matrixTextWidthCh(dueHeaderLabel)));
         var studentColCh = Math.max(densityStep === 0 ? 3 : 5, Math.min(20, maxStudentNameWidth + 2));
         var taskColumnWidth = MATRIX_DENSITY_TASK_WIDTHS[densityStep];
-        var matrixStyle = '--matrix-cols:' + sets.length +
-            ';--matrix-student-col:' + studentColCh + 'ch' +
-            ';--matrix-task-col:' + taskColumnWidth + 'px' +
-            ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * taskColumnWidth) + 'px)' +
-            ';--matrix-student-col-fit:var(--matrix-student-col)' +
-            ';--matrix-fit-min:calc(var(--matrix-student-col-fit) + ' + (sets.length * MATRIX_DENSITY_TASK_WIDTHS[0]) + 'px)';
-        var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
-            '<span class="progress-matrix-student-cell" aria-label="Students"></span>' +
-            sets.map(function(set) {
-                var title = set.title || set.id || 'Task';
-                var compactId = compactMatrixSetId(set.set_id || set.id);
-                var sourceSet = state.sets.find(function(item) {
-                    return String(item.set_id || item.id || '') === String(set.set_id || '');
-                }) || set;
-                var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
-                var tag = href && href !== '#' ? 'a' : 'span';
-                return '<' + tag + ' class="progress-matrix-task-head" title="' + escapeHtml(title) + '"' +
-                    ' data-matrix-column-key="' + escapeHtml(set.id) + '"' +
-                    (tag === 'a' ? ' href="' + escapeHtml(href) + '" data-open-href="' + escapeHtml(href) +
-                        '" data-entry-kind="Teacher preview" data-entry-title="' + escapeHtml(title) +
-                        '" aria-haspopup="dialog" aria-label="Confirm teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
-                    '<strong class="progress-matrix-task-id-full">' + escapeHtml(set.set_id || set.id) + '</strong>' +
-                    '<strong class="progress-matrix-task-id-compact" aria-hidden="true"><span>' +
-                        escapeHtml(compactId.lead) + '</span>' +
-                        (compactId.tail ? '<span>' + escapeHtml(compactId.tail) + '</span>' : '') + '</strong>' +
-                    '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
-                '</' + tag + '>';
-            }).join('') +
-        '</div>';
-        var dueRow = '<div class="progress-matrix-row progress-matrix-due-row" style="' + escapeHtml(matrixStyle) + '">' +
-            '<span class="progress-matrix-student-cell" title="Editable assignment parameters" aria-label="Due at parameters">' +
-                '<span class="matrix-due-parameter-label">' +
-                    '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
-                        '<path d="M3 6h14M3 14h14"></path><circle cx="8" cy="6" r="2"></circle><circle cx="13" cy="14" r="2"></circle>' +
-                    '</svg><span>' + escapeHtml(dueHeaderLabel) + '</span>' +
-                '</span>' +
-            '</span>' +
-            sets.map(function(set) {
-                var title = set.title || set.id || 'Task';
-                var dueLabel = set.week_label || '—';
-                var editScope = registerMatrixColumnEditScope(set);
-                var tag = editScope ? 'button' : 'span';
-                return '<' + tag + ' class="progress-matrix-due-cell"' +
-                    (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
-                        '"' + assignmentEditTriggerAttributes(
-                            state.assignmentEditScopes[editScope] && state.assignmentEditScopes[editScope].items || [],
-                            title,
-                            state.assignmentEditScopes[editScope] && state.assignmentEditScopes[editScope].subtitle || ''
-                        ) +
-                        ' title="Edit class parameters for ' + escapeHtml(title) +
-                        '" aria-label="Edit class parameters for ' + escapeHtml(title) + ', due ' + escapeHtml(dueLabel) + '"' : '') + '>' +
-                    '<span class="matrix-due-parameter-pill">' + escapeHtml(dueLabel) + '</span></' + tag + '>';
-            }).join('') +
-        '</div>';
-        var rows = students.map(function(student) {
-            return '<div class="progress-matrix-row" style="' + escapeHtml(matrixStyle) + '">' +
-                '<button class="progress-matrix-student-cell progress-matrix-student-button' +
-                    (student.key === state.selectedMatrixStudentKey ? ' selected' : '') +
-                    '" type="button" data-matrix-student="' + escapeHtml(student.key) + '" title="' +
-                    escapeHtml(student.name) + '" aria-label="Open progress for ' + escapeHtml(student.name) + '">' +
-                    '<strong>' + escapeHtml(student.displayName) + '</strong></button>' +
-                sets.map(function(set) {
-                    var item = student.items[set.id];
-                    if (!item) return '<span class="progress-matrix-cell empty">-</span>';
-                    var title = set.title || set.set_id || set.id || 'Task';
-                    var status = normalizedAssignmentStatus(item.status);
-                    var score = numericPercent(item.best_percentage);
-                    var statusIcon = matrixStatusIcon(item, status);
-                    var label = status === 'cancelled' ? 'Cancelled' : score == null ? '—' : formatPercent(score);
-                    var compactLabel = status === 'cancelled' ? '—' : compactMatrixPercent(score);
-                    var cellKey = matrixCellKey(item);
-                    if (cellKey === state.selectedMatrixCell) selectedItem = item;
-                    return '<button class="progress-matrix-cell ' + escapeHtml(status) +
-                        (cellKey === state.selectedMatrixCell ? ' selected' : '') +
-                        '" type="button" data-matrix-cell="' + escapeHtml(cellKey) + '" aria-label="' +
-                        escapeHtml(student.name + ', ' + title + ', ' + label + ' best') + '" title="' +
-                        escapeHtml(formatPercent(item.best_percentage) + ' best · click for answers') + '">' +
-                        '<span class="progress-matrix-status-icon" aria-hidden="true">' + escapeHtml(statusIcon) + '</span>' +
-                        '<span class="progress-matrix-status-score progress-matrix-status-score-full">' + escapeHtml(label) + '</span>' +
-                        '<span class="progress-matrix-status-score progress-matrix-status-score-compact" aria-hidden="true">' +
-                            escapeHtml(compactLabel) + '</span>' +
-                        '</button>';
+        function taskHeaderContent(set, className) {
+            var title = set.title || set.id || 'Task';
+            var compactId = compactMatrixSetId(set.set_id || set.id);
+            var sourceSet = state.sets.find(function(item) {
+                return String(item.set_id || item.id || '') === String(set.set_id || '');
+            }) || set;
+            var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
+            var tag = href && href !== '#' ? 'a' : 'span';
+            return '<' + tag + ' class="' + className + '" title="' + escapeHtml(title) + '"' +
+                (tag === 'a' ? ' href="' + escapeHtml(href) + '" data-open-href="' + escapeHtml(href) +
+                    '" data-entry-kind="Teacher preview" data-entry-title="' + escapeHtml(title) +
+                    '" aria-haspopup="dialog" aria-label="Confirm teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
+                '<strong class="progress-matrix-task-id-full">' + escapeHtml(set.set_id || set.id) + '</strong>' +
+                '<strong class="progress-matrix-task-id-compact" aria-hidden="true"><span>' +
+                    escapeHtml(compactId.lead) + '</span>' +
+                    (compactId.tail ? '<span>' + escapeHtml(compactId.tail) + '</span>' : '') + '</strong>' +
+                '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
+            '</' + tag + '>';
+        }
+        function dueCellContent(set, className) {
+            var title = set.title || set.id || 'Task';
+            var dueLabel = set.week_label || '—';
+            var editScope = registerMatrixColumnEditScope(set);
+            var tag = editScope ? 'button' : 'span';
+            return '<' + tag + ' class="' + className + '"' +
+                (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
+                    '"' + assignmentEditTriggerAttributes(
+                        state.assignmentEditScopes[editScope] && state.assignmentEditScopes[editScope].items || [],
+                        title,
+                        state.assignmentEditScopes[editScope] && state.assignmentEditScopes[editScope].subtitle || ''
+                    ) +
+                    ' title="Edit class parameters for ' + escapeHtml(title) +
+                    '" aria-label="Edit class parameters for ' + escapeHtml(title) + ', due ' + escapeHtml(dueLabel) + '"' : '') + '>' +
+                '<span class="matrix-due-parameter-pill">' + escapeHtml(dueLabel) + '</span></' + tag + '>';
+        }
+        function scoreCellContent(student, set) {
+            var item = student.items[set.id];
+            if (!item) return '<span class="progress-matrix-cell empty">-</span>';
+            var title = set.title || set.set_id || set.id || 'Task';
+            var status = normalizedAssignmentStatus(item.status);
+            var score = numericPercent(item.best_percentage);
+            var statusIcon = matrixStatusIcon(item, status);
+            var label = status === 'cancelled' ? 'Cancelled' : score == null ? '—' : formatPercent(score);
+            var compactLabel = status === 'cancelled' ? '—' : compactMatrixPercent(score);
+            var cellKey = matrixCellKey(item);
+            return '<button class="progress-matrix-cell ' + escapeHtml(status) +
+                (cellKey === state.selectedMatrixCell ? ' selected' : '') +
+                '" type="button" data-matrix-cell="' + escapeHtml(cellKey) + '" aria-label="' +
+                escapeHtml(student.name + ', ' + title + ', ' + label + ' best') + '" title="' +
+                escapeHtml(formatPercent(item.best_percentage) + ' best · click for answers') + '">' +
+                '<span class="progress-matrix-status-icon" aria-hidden="true">' + escapeHtml(statusIcon) + '</span>' +
+                '<span class="progress-matrix-status-score progress-matrix-status-score-full">' + escapeHtml(label) + '</span>' +
+                '<span class="progress-matrix-status-score progress-matrix-status-score-compact" aria-hidden="true">' +
+                    escapeHtml(compactLabel) + '</span>' +
+                '</button>';
+        }
+        var matrixStyle;
+        var header;
+        var dueRow = '';
+        var rows;
+        if (state.matrixTransposed) {
+            var studentAxisWidth = Math.max(52, Math.min(124, maxStudentNameWidth * 8 + 18));
+            var taskAxisWidth = Math.max(densityStep === 0 ? 76 : 104, taskColumnWidth);
+            matrixStyle = '--matrix-cols:' + students.length +
+                ';--matrix-task-axis-col:' + taskAxisWidth + 'px' +
+                ';--matrix-student-axis-col:' + studentAxisWidth + 'px' +
+                ';--matrix-transposed-min:calc(var(--matrix-task-axis-col) + ' + (students.length * studentAxisWidth) + 'px)';
+            header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
+                '<span class="progress-matrix-student-cell" aria-label="Tasks"></span>' +
+                students.map(function(student) {
+                    return '<button class="progress-matrix-column-student-button' +
+                        (student.key === state.selectedMatrixStudentKey ? ' selected' : '') +
+                        '" type="button" data-matrix-student="' + escapeHtml(student.key) +
+                        '" data-matrix-column-key="' + escapeHtml(student.key) + '" title="' + escapeHtml(student.name) +
+                        '" aria-label="Open progress for ' + escapeHtml(student.name) + '"><strong>' +
+                        escapeHtml(student.displayName) + '</strong></button>';
                 }).join('') +
             '</div>';
-        }).join('');
+            rows = sets.map(function(set) {
+                return '<div class="progress-matrix-row progress-matrix-transposed-row" style="' + escapeHtml(matrixStyle) + '">' +
+                    '<div class="progress-matrix-task-axis-cell">' +
+                        taskHeaderContent(set, 'progress-matrix-transposed-task-head') +
+                        dueCellContent(set, 'progress-matrix-transposed-due-cell') +
+                    '</div>' +
+                    students.map(function(student) { return scoreCellContent(student, set); }).join('') +
+                '</div>';
+            }).join('');
+        } else {
+            matrixStyle = '--matrix-cols:' + sets.length +
+                ';--matrix-student-col:' + studentColCh + 'ch' +
+                ';--matrix-task-col:' + taskColumnWidth + 'px' +
+                ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * taskColumnWidth) + 'px)' +
+                ';--matrix-student-col-fit:var(--matrix-student-col)' +
+                ';--matrix-fit-min:calc(var(--matrix-student-col-fit) + ' + (sets.length * MATRIX_DENSITY_TASK_WIDTHS[0]) + 'px)';
+            header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
+                '<span class="progress-matrix-student-cell" aria-label="Students"></span>' +
+            sets.map(function(set) {
+                return taskHeaderContent(set, 'progress-matrix-task-head')
+                    .replace(' title=', ' data-matrix-column-key="' + escapeHtml(set.id) + '" title=');
+            }).join('') +
+            '</div>';
+            dueRow = '<div class="progress-matrix-row progress-matrix-due-row" style="' + escapeHtml(matrixStyle) + '">' +
+                '<span class="progress-matrix-student-cell" title="Editable assignment parameters" aria-label="Due at parameters">' +
+                    '<span class="matrix-due-parameter-label">' +
+                        '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+                            '<path d="M3 6h14M3 14h14"></path><circle cx="8" cy="6" r="2"></circle><circle cx="13" cy="14" r="2"></circle>' +
+                        '</svg><span>' + escapeHtml(dueHeaderLabel) + '</span>' +
+                    '</span>' +
+                '</span>' +
+                sets.map(function(set) { return dueCellContent(set, 'progress-matrix-due-cell'); }).join('') +
+            '</div>';
+            rows = students.map(function(student) {
+                return '<div class="progress-matrix-row" style="' + escapeHtml(matrixStyle) + '">' +
+                    '<button class="progress-matrix-student-cell progress-matrix-student-button' +
+                        (student.key === state.selectedMatrixStudentKey ? ' selected' : '') +
+                        '" type="button" data-matrix-student="' + escapeHtml(student.key) + '" title="' +
+                        escapeHtml(student.name) + '" aria-label="Open progress for ' + escapeHtml(student.name) + '">' +
+                        '<strong>' + escapeHtml(student.displayName) + '</strong></button>' +
+                    sets.map(function(set) { return scoreCellContent(student, set); }).join('') +
+                '</div>';
+            }).join('');
+        }
         var detailHtml = selectedItem
             ? renderMatrixCellModal(selectedItem)
             : renderMatrixStudentModal(state.selectedMatrixStudentKey, items);
         return '<section class="progress-matrix-card">' +
             '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '</div>' +
                 renderMatrixDensityControls() + '</div>' +
-            '<div class="progress-matrix-scroll ' + escapeHtml(matrixDensityClass(densityStep)) + '">' + header + dueRow + rows + '</div>' +
+            '<div class="progress-matrix-scroll ' + escapeHtml(matrixDensityClass(densityStep)) +
+                (state.matrixTransposed ? ' matrix-transposed' : '') + '">' + header + dueRow + rows + '</div>' +
         '</section>' +
         detailHtml;
     }
@@ -6616,6 +6703,9 @@
                 if (action === 'smaller') setMatrixDensityStep(step - 1);
                 if (action === 'larger') setMatrixDensityStep(step + 1);
             });
+        });
+        container.querySelectorAll('[data-matrix-axis-swap]').forEach(function(button) {
+            button.addEventListener('click', toggleMatrixAxis);
         });
         container.querySelectorAll('[data-matrix-student]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -8352,6 +8442,7 @@
         if (nextPhoneLayout === matrixAutoPhoneLayout) return;
         matrixAutoPhoneLayout = nextPhoneLayout;
         state.matrixDensityStep = nextPhoneLayout ? null : readMatrixDensityPreference();
+        state.matrixTransposed = readMatrixTransposePreference();
         var overview = document.getElementById('assignment-overview');
         if (overview && overview.querySelector('.progress-matrix-scroll')) renderAssignmentOverview();
     }, { passive: true });

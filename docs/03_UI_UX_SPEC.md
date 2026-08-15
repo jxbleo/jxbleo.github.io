@@ -1078,10 +1078,15 @@ It should include:
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix
   scrolling must not block normal vertical page scrolling.
-- matrix size controls sit beside/below the filters as `−`, `Fit`, and `+`.
-  Phone portrait defaults to `Fit`, which uses real responsive grid tracks (not
-  a transformed screenshot) to keep the complete set of visible columns on
-  screen for the normal six-to-seven-task teaching view. `+` progressively
+- matrix size controls sit beside/below the filters as `−`, `Fit`, `+`, and an
+  axis-swap control. Desktop defaults to students as rows and tasks as columns.
+  Phone portrait defaults to the transposed matrix: students are columns and
+  tasks are rows, so a small class stays visible across the screen while a long
+  task list continues vertically with ordinary page scrolling. The teacher may
+  swap either viewport back to the other orientation; phone and desktop choices
+  are remembered independently on that device. Phone portrait also defaults to
+  `Fit`, which uses real responsive grid tracks rather than a transformed
+  screenshot. `+` progressively
   restores wider columns and internal horizontal scrolling; `−` reduces them,
   and `Fit` returns to the full-width overview. Desktop defaults to the current
   comfortable width. An explicit size choice is remembered locally on that
@@ -1112,6 +1117,12 @@ It should include:
   fill the shared grid track instead of deriving their rendered width from
   their own font size. Fit may hide the `DUE AT` text while retaining its
   sliders icon and accessible label.
+- in the transposed orientation, the top row contains clickable student names,
+  the sticky first column contains one task per row, and each task label keeps
+  both its teacher-preview entry and its editable Wxx capsule. Score cells keep
+  the same status, detail-dialog, tooltip, and accessible-label behavior in
+  either orientation. Swapping axes closes any open matrix detail and returns
+  the internal horizontal position to the first column without moving the page.
 - clicking a task's `Wxx` cell in the `DUE AT` row opens assignment management
   for all records
   represented by that visible column. A class/individual filter limits the edit

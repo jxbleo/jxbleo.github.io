@@ -5801,7 +5801,8 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: 0 6px 16px rgba(83,45,145,0.06);
 }
 .matrix-density-button,
-.matrix-density-fit-button {
+.matrix-density-fit-button,
+.matrix-axis-button {
     display: inline-grid;
     place-items: center;
     min-width: 30px;
@@ -5818,11 +5819,22 @@ body:not(.teacher-page) .tab-button.active {
 }
 .matrix-density-button { font-size: 1rem; }
 .matrix-density-button:active,
-.matrix-density-fit-button:active { transform: scale(0.94); }
+.matrix-density-fit-button:active,
+.matrix-axis-button:active { transform: scale(0.94); }
 .matrix-density-fit-button.active {
     color: #fff;
     background: #2563eb;
     box-shadow: 0 5px 12px rgba(37,99,235,0.22);
+}
+.matrix-axis-button {
+    margin-left: 2px;
+    border-left: 1px solid rgba(124,58,237,0.13);
+    border-radius: 0 8px 8px 0;
+    font-size: 1rem;
+}
+.matrix-axis-button.active {
+    color: #1d4ed8;
+    background: rgba(37,99,235,0.11);
 }
 .matrix-density-button:disabled {
     cursor: default;
@@ -5849,6 +5861,12 @@ body:not(.teacher-page) .tab-button.active {
     grid-template-columns: var(--matrix-student-col-fit, 64px) repeat(var(--matrix-cols, 6), minmax(31px, 1fr));
     width: max(100%, var(--matrix-fit-min, 340px));
     min-width: var(--matrix-fit-min, 340px);
+}
+.progress-matrix-scroll.matrix-transposed .progress-matrix-row,
+.progress-matrix-scroll.matrix-transposed.matrix-density-fit .progress-matrix-row {
+    grid-template-columns: var(--matrix-task-axis-col, 92px) repeat(var(--matrix-cols, 4), minmax(var(--matrix-student-axis-col, 72px), 1fr));
+    width: max(100%, var(--matrix-transposed-min, 380px));
+    min-width: var(--matrix-transposed-min, 380px);
 }
 .progress-matrix-row > span,
 .progress-matrix-row > a,
@@ -5888,8 +5906,33 @@ body:not(.teacher-page) .tab-button.active {
     cursor: pointer;
 }
 .progress-matrix-student-button:hover,
-.progress-matrix-student-button.selected {
+.progress-matrix-student-button.selected,
+.progress-matrix-column-student-button:hover,
+.progress-matrix-column-student-button.selected {
     background: #def8ec;
+}
+.progress-matrix-column-student-button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 9px 6px;
+    overflow: hidden;
+    border: 0;
+    border-left: 1px solid rgba(124,58,237,0.10);
+    color: var(--ink);
+    background: rgba(124,58,237,0.07);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 850;
+    text-align: center;
+    text-overflow: ellipsis;
+    text-transform: none !important;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.progress-matrix-column-student-button strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .progress-matrix-head > span,
 .progress-matrix-head > a,
@@ -5922,6 +5965,70 @@ body:not(.teacher-page) .tab-button.active {
     font: inherit;
     text-align: center;
     text-decoration: none;
+}
+.progress-matrix-task-axis-cell {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 4px;
+    min-width: 0;
+    padding: 6px;
+    border-top: 1px solid rgba(124,58,237,0.10);
+    background: rgba(255,255,255,0.9);
+    box-shadow: inset -1px 0 0 rgba(124,58,237,0.10);
+}
+.progress-matrix-transposed-task-head {
+    display: grid;
+    min-width: 0;
+    color: inherit;
+    font-size: 0.7rem;
+    line-height: 1.1;
+    text-align: left;
+    text-decoration: none;
+}
+.progress-matrix-transposed-task-head strong,
+.progress-matrix-transposed-task-head small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.progress-matrix-transposed-due-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    color: #62547c;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+.progress-matrix-transposed-due-cell .matrix-due-parameter-pill {
+    min-width: 0;
+    min-height: 19px;
+    padding: 2px 6px;
+    font-size: 0.62rem;
+}
+.progress-matrix-transposed-due-cell:hover .matrix-due-parameter-pill,
+.progress-matrix-transposed-due-cell:focus-visible .matrix-due-parameter-pill {
+    border-color: rgba(105,82,157,0.56);
+    color: #493370;
+    background: #fff;
+}
+.matrix-transposed.matrix-density-tight .progress-matrix-column-student-button,
+.matrix-transposed.matrix-density-tight .progress-matrix-cell {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-size: 0.62rem;
+}
+.matrix-transposed.matrix-density-tight .progress-matrix-column-student-button {
+    min-height: 52px;
+}
+.matrix-transposed.matrix-density-tight .progress-matrix-task-axis-cell {
+    padding: 5px;
 }
 .progress-matrix-due-row > span,
 .progress-matrix-due-row > button.progress-matrix-due-cell {

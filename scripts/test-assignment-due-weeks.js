@@ -530,6 +530,12 @@ function testTeacherPhoneMatrixDensityIsolation() {
   assert(teacherSource.includes("state.matrixDensityStep = nextPhoneLayout ? null : readMatrixDensityPreference();"));
   assert(cssSource.includes(".matrix-density-fit .progress-matrix-row"));
   assert(cssSource.includes("minmax(0, var(--matrix-student-col-fit, 5ch))"));
+  assert(teacherSource.includes("return phoneLayout;"));
+  assert(teacherSource.includes("data-matrix-axis-swap"));
+  assert(teacherSource.includes("state.matrixTransposed = readMatrixTransposePreference();"));
+  assert(teacherSource.includes("students.map(function(student) { return scoreCellContent(student, set); }).join('')"));
+  assert(cssSource.includes(".progress-matrix-scroll.matrix-transposed .progress-matrix-row"));
+  assert(cssSource.includes(".progress-matrix-task-axis-cell"));
 }
 
 function testStudentCalendarModel() {
