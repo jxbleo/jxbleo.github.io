@@ -146,6 +146,20 @@ For BBC transcript-only intake:
 3. Use line references such as `L23` or `L23-L25`.
 4. Do not create public website data until the owner approves the draft.
 
+For an approved HKDSE Paper 3 teacher draft in the current
+`Teachers Draft.md` format, import the reviewed Markdown and same-basename MP3
+with:
+
+```bash
+node scripts/import-bbc-teacher-drafts.js \
+  "/absolute/path/to/example-exercises Teachers Draft.md"
+```
+
+The importer requires Questions 1-10 as note-completion blanks and Questions
+11-20 as four-option multiple choice. It validates the three-word answer limit,
+keeps answers and explanations in ignored private source, copies the matching
+audio, and generates the public runtime, metadata, and no-answer worksheet.
+
 BBC public runtime rules:
 
 - Use shared `bbc.html` for permanent BBC lessons.
@@ -159,6 +173,9 @@ BBC public runtime rules:
 - Optional `renderTheme` metadata may change only the front-end presentation in
   shared `bbc.html`; it must not change question IDs, grading keys, attempts,
   History/Clear, Explain, or Argue behavior.
+- The shared runtime's default presentation is the green BBC interface. Omit
+  `renderTheme` when that interface is wanted; do not invent a separate green
+  theme value.
 - BBC practice pages can expose generated no-answer worksheet PDFs from
   `assets/pdf/bbc-six-minute-english/<set_id>/<set_id>-worksheet.pdf`. Generate
   them with `python3 scripts/generate-bbc-worksheets.py` for all BBC lessons or

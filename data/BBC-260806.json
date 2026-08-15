@@ -1,0 +1,180 @@
+{
+  "id": "BBC-260806",
+  "title": "How Do Climate Scientists Make Predictions?",
+  "audioSrc": "bbc-audio/260806-how-do-climate-scientists-make-predictions.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Supercomputers receive large amounts of physical and _____ data.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The processed data produce pictures of _____ on Earth.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Models make _____, rather than fixed predictions.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Each projection's _____ on other factors means its outcome is not fixed.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The main human influence is _____.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Clouds have a _____ on the planet.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "They cool the Earth by _____.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "They also warm it through their own _____.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Because clouds move and change constantly, they are _____.",
+      "section": "How climate scientists model possible futures"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Since humans created the warming problem, people still have _____ over its solution.",
+      "section": "How climate scientists model possible futures"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the central point about the results produced by climate models?",
+      "options": [
+        "They calculate one exact temperature that the Earth will reach.",
+        "They present conditional future scenarios rather than guaranteed outcomes.",
+        "They mainly reconstruct past climate conditions from historical records.",
+        "They remove the need to consider future human behaviour."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What role do supercomputers play in the modelling process?",
+      "options": [
+        "They compare incoming sunlight with radiation leaving the Earth.",
+        "They track only the movement of clouds around the world.",
+        "They decide which climate policies people should follow.",
+        "They process scientific data to create pictures of possible futures."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does a projection differ from a prediction in the discussion?",
+      "options": [
+        "A projection links an outcome to a condition, while a prediction states what is expected to happen.",
+        "A projection describes past events, while a prediction describes present conditions.",
+        "A projection gives a certain result, while a prediction depends on future choices.",
+        "A projection uses chemical data, while a prediction uses only physical data."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why may different future scenarios appear in climate models?",
+      "options": [
+        "Temperature records automatically determine which scenario is correct.",
+        "Clouds directly create the greenhouse gas emissions used in each scenario.",
+        "The outcomes depend on factors such as human activity and emissions.",
+        "Supercomputers reduce global warming whenever they process more data."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Which description best captures the contrasting effects of clouds?",
+      "options": [
+        "They cool the planet by blocking sunlight but have no warming effect.",
+        "They block sunlight to cool the planet and trap heat to warm it.",
+        "They admit sunlight to warm the planet and trap heat to cool it.",
+        "They affect climate only because they are always moving and changing."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What practical concern is raised about producing accurate projections?",
+      "options": [
+        "Models may be unable to use information collected outside the UK.",
+        "Information from different countries will always contradict itself.",
+        "Models may have to replace all direct observation of the climate.",
+        "Supercomputers may require a very large amount of worldwide information."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What position does the climate scientist take on further scientific work?",
+      "options": [
+        "It remains essential because completely avoiding climate change is no longer an available option.",
+        "It should stop until climate models can remove every uncertainty.",
+        "It is useful only if it can prevent all climate change.",
+        "It becomes unnecessary once societies begin to adapt."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What can be inferred from the discussion of adaptation and complex models?",
+      "options": [
+        "Societies should delay planning until models provide exact predictions.",
+        "Models should leave human activity out to become easier to understand.",
+        "Imperfect guidance can still help societies prepare for unavoidable change.",
+        "Adaptation is needed because scientific research causes climate change."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the function of the final statement about humans causing global warming?",
+      "options": [
+        "To prove that every climate projection will definitely occur",
+        "To show that the effects of clouds no longer need to be studied",
+        "To shift responsibility for climate change from people to models",
+        "To connect human responsibility for the problem with the ability to address it"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall implication does the discussion offer about responding to global warming?",
+      "options": [
+        "Climate science is useful only when it produces completely certain forecasts.",
+        "Human action remains central because people helped create the problem and can influence the solution.",
+        "Uncertainty about clouds prevents people from making meaningful climate decisions.",
+        "Continued warming makes both mitigation and adaptation pointless."
+      ]
+    }
+  ],
+  "matching": []
+}

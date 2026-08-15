@@ -1,0 +1,180 @@
+{
+  "id": "BBC-260730",
+  "title": "The Enhanced Games",
+  "audioSrc": "bbc-audio/260730-the-enhanced-games.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "It is described as a _____ sporting competition.",
+      "section": "Nature and aims of the event"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Of its three sports, one is _____.",
+      "section": "Nature and aims of the event"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Its main target is to break _____.",
+      "section": "Nature and aims of the event"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Some former Olympic medallists compete for _____.",
+      "section": "Nature and aims of the event"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Athletes may use drugs that are prohibited in _____.",
+      "section": "What makes the event different"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "One speaker believes fair sport requires _____ for all athletes.",
+      "section": "What makes the event different"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Competitors are allowed to take the drugs under _____.",
+      "section": "Arguments for and against the event"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Organisers claim that open, monitored drug use offers greater _____ than secret use.",
+      "section": "Arguments for and against the event"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Critics say the event crosses an _____.",
+      "section": "Arguments for and against the event"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "They also warn that it could damage the _____ of sport.",
+      "section": "Arguments for and against the event"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why is The Enhanced Games presented as turning the usual debate about drugs in sport upside down?",
+      "options": [
+        "It excludes athletes who have previously used banned drugs.",
+        "It transfers the testing of sports drugs from competitions to laboratories.",
+        "It makes drug enhancement a permitted feature of the competition.",
+        "It removes drug restrictions from mainstream professional sport."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which description best reflects the design of The Enhanced Games?",
+      "options": [
+        "It focuses on three sports and aims to produce world-record performances.",
+        "It includes the full Olympic programme and aims to improve drug research.",
+        "It centres on team sports and gives participation priority over results.",
+        "It is limited to weightlifting and accepts only former Olympic medallists."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which group of substances is explicitly permitted at the event?",
+      "options": [
+        "Steroids, painkillers and antibiotics",
+        "Vitamins, growth hormones and painkillers",
+        "Stimulants, antibiotics and vitamins",
+        "Steroids, growth hormones and stimulants"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Which principle is behind the sports fan's refusal to support the event?",
+      "options": [
+        "Spectators should receive full medical information about every athlete.",
+        "Competitors should begin and perform under comparable conditions.",
+        "Only regular sports viewers can judge whether competition is fair.",
+        "Performance benefits should remain secret until an event has finished."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why do the organisers compare open drug use with secret drug use elsewhere?",
+      "options": [
+        "To argue that approval and supervision make their approach relatively safer",
+        "To suggest that secret users are more likely to break world records",
+        "To show that professional competitions already permit the same substances",
+        "To claim that medical supervision removes every possible health danger"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Which concern best represents the critics' view of the event?",
+      "options": [
+        "Its narrow choice of sports makes its records difficult to compare.",
+        "Its drug-approval procedure is too secret for competitors to trust.",
+        "It may damage sport's integrity and put participants' health at risk.",
+        "Its former Olympians are more interested in money than in competition."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the sports fan respond after hearing arguments from both sides?",
+      "options": [
+        "He accepts the event because the drug use is medically supervised.",
+        "He becomes uncertain because both sides offer reasonable arguments.",
+        "He supports it only if every athlete receives the same drugs.",
+        "He remains opposed because unfair competition defeats sport's purpose."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What limitation is implied in the organisers' claim that their approach is safer?",
+      "options": [
+        "It applies only to competitors who have never taken drugs secretly.",
+        "It is a comparison with secret use, not a claim that no risk exists.",
+        "It depends on all other sporting competitions ending their drug bans.",
+        "It concerns athletic performance rather than the way drugs are taken."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "How does the idea of \"setting a bad example\" support the critics' warning about normalising doping?",
+      "options": [
+        "It suggests that imitation could make doping seem increasingly acceptable.",
+        "It proves that every spectator will begin taking performance drugs.",
+        "It shows that medical staff are responsible for changing sports rules.",
+        "It means that former Olympians have already influenced all younger athletes."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall conclusion is best supported by the discussion?",
+      "options": [
+        "Official drug approval resolves both the fairness and health objections.",
+        "A small range of sports prevents the event from affecting wider attitudes.",
+        "Medical controls have not settled the broader controversy over enhanced sport.",
+        "Continued criticism shows that secret drug use is the safer alternative."
+      ]
+    }
+  ],
+  "matching": []
+}
