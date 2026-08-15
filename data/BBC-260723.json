@@ -1,0 +1,180 @@
+{
+  "id": "BBC-260723",
+  "title": "Children in War Zones",
+  "audioSrc": "bbc-audio/260723-children-in-warzones.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "In 2024, _____ children were living in conflict zones.",
+      "section": "The scale of the problem"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "This represented about one in _____ children across the world.",
+      "section": "The scale of the problem"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The reporter grew up with an _____.",
+      "section": "How early trauma may affect a person"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Although researchers differ on some issues, they have _____ on one key point.",
+      "section": "What researchers say about recovery"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Recovery from war trauma is not possible while a child is still experiencing _____.",
+      "section": "What researchers say about recovery"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A relatively new approach recommends a pace that is _____.",
+      "section": "A careful way to help"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Children should not be made to confront _____ again.",
+      "section": "A careful way to help"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Instead, they may begin with an everyday step such as learning to _____.",
+      "section": "A careful way to help"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "During the war, constant fear had led some children to sleep with _____.",
+      "section": "A careful way to help"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "If they are given a chance, children can show remarkable _____.",
+      "section": "A lesson about children"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main significance of the 2024 figure given at the start of the discussion?",
+      "options": [
+        "It identifies the age group most likely to develop war-related stress.",
+        "It shows that conflict affects a substantial share of the world's children.",
+        "It compares the effects of conflict across several different countries.",
+        "It suggests that the number of children in conflict zones is falling."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why is the reporter's family background introduced?",
+      "options": [
+        "To show that he began reporting from dangerous places as a child.",
+        "To explain how his father trained him to recognise physical danger.",
+        "To prove that he avoided reporting on children because of his past.",
+        "To raise the possibility that childhood trauma influenced his reporting."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What best describes the reporter's behaviour from a very young age?",
+      "options": [
+        "He continually checked his surroundings for possible threats.",
+        "He concentrated mainly on disagreements among researchers.",
+        "He reacted only after a real danger had already appeared.",
+        "He remained calm by staying physically close to a parent."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "According to the researchers' shared view, what prevents recovery from war trauma?",
+      "options": [
+        "Discussing traumatic experiences before conducting more research.",
+        "Failing to agree on every finding about children in war zones.",
+        "Remaining exposed to traumatic conditions while trying to recover.",
+        "Starting with ordinary routines instead of confronting major events."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How are the researchers' views contrasted?",
+      "options": [
+        "They agree about children's experiences but differ over possible treatments.",
+        "They differ on some matters but agree on a condition necessary for recovery.",
+        "They once supported gradual recovery but now prefer immediate confrontation.",
+        "They share a general theory but disagree about whether trauma can continue."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What principle underlies the relatively new approach to helping affected children?",
+      "options": [
+        "Begin carefully with manageable activities linked to their fears.",
+        "Recreate the worst events so children can face them directly.",
+        "Separate children from their parents as quickly as possible.",
+        "Treat ordinary sleep problems as unrelated to wartime experiences."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why had some children become used to sleeping with a parent during the war?",
+      "options": [
+        "Researchers had advised families that this would speed up recovery.",
+        "The children had experienced ordinary nightmares without lasting trauma.",
+        "Parents wanted to prepare them to confront violent events again.",
+        "Persistent terror had changed the children's normal sleeping habits."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What can be inferred from the comparison with a child who has had a nightmare?",
+      "options": [
+        "Nightmares are the main cause of trauma among children in war zones.",
+        "Children without trauma usually find it impossible to sleep alone.",
+        "A simple-looking step may still demand considerable effort from a child.",
+        "Parents can remove wartime trauma by treating it like a bad dream."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the purpose of the example of learning to sleep alone?",
+      "options": [
+        "To illustrate how the effects of wartime fear can remain in everyday behaviour.",
+        "To establish a rule that every traumatised child must follow at home.",
+        "To show that sleep difficulties are more serious than all other effects of war.",
+        "To suggest that practical routines can replace all professional support."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall conclusion does the reporter draw about children affected by severe hardship?",
+      "options": [
+        "Their recovery happens naturally once the conflict itself has ended.",
+        "Their positive attitude prevents difficult experiences from affecting them.",
+        "Their ability to recover is weaker than that of the human spirit generally.",
+        "Their capacity to recover can be exceptional when they are given an opportunity."
+      ]
+    }
+  ],
+  "matching": []
+}

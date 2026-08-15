@@ -5,6 +5,14 @@
 
 ## 2026-08-15
 
+### Added
+
+- Added five approved July-August 2026 BBC 6 Minute English listening sets with
+  shared green runtime data, matching audio, and three-page no-answer worksheets.
+- Added a secure importer for approved `Teachers Draft.md` files that validates
+  the 10-plus-10 exercise structure and separates public lesson data from
+  ignored private answers, explanations, and grading records.
+
 ### Changed
 
 - Parent Mode now collapses overlapping class-membership history to one student

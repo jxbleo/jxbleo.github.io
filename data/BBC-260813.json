@@ -1,0 +1,180 @@
+{
+  "id": "BBC-260813",
+  "title": "Who Does the Housework?",
+  "audioSrc": "bbc-audio/260813-who-does-the-housework.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "UN Women figures suggest that women spend _____ more each day on unpaid care and domestic work than men.",
+      "section": "The global pattern"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Men have traditionally worked as _____ or fishermen.",
+      "section": "Traditional roles on the Indonesian island of Rote"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Domestic jobs are particularly slow because there are few washing machines and _____.",
+      "section": "Traditional roles on the Indonesian island of Rote"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The NGO ARUNGI wants to bring about an _____ concerning women's roles.",
+      "section": "Traditional roles on the Indonesian island of Rote"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Local people expect childcare, washing dishes and cooking to be done by _____.",
+      "section": "Traditional roles on the Indonesian island of Rote"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The apparently fair division of work is misleading because women also help in _____.",
+      "section": "Traditional roles on the Indonesian island of Rote"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Combining domestic duties with farming or fishing gives women a _____.",
+      "section": "Traditional roles on the Indonesian island of Rote"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Research shows that women also do much more unpaid care work in _____.",
+      "section": "The issue beyond traditional societies"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "In Croatia, workshops encourage _____ to reduce the pressure on mothers.",
+      "section": "The issue beyond traditional societies"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "One humorous observation is that men sharing the chores may result in _____ from women.",
+      "section": "The issue beyond traditional societies"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Which statement best captures the pattern introduced at the beginning of the discussion?",
+      "options": [
+        "Couples generally divide domestic work according to their paid working hours.",
+        "Time-consuming chores are mainly a problem in places without modern equipment.",
+        "Women often carry a larger share of household and unpaid care work.",
+        "Men contribute less at home because they usually work in agriculture."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "According to the UN Women figures, how much more time do women spend on unpaid care and domestic work each day?",
+      "options": [
+        "About three hours",
+        "About one hour",
+        "About two hours",
+        "About four hours"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which pair of activities traditionally belongs to men's work on Rote?",
+      "options": [
+        "Caring for children and older people",
+        "Cooking meals and sweeping floors",
+        "Washing dishes and cleaning homes",
+        "Growing rice and catching fish"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why do domestic chores take so long on Rote?",
+      "options": [
+        "Homes are far from the farming and fishing areas.",
+        "Washing machines are scarce and running water is unavailable.",
+        "Women must attend community workshops before starting chores.",
+        "Community leaders require all household work to be done by hand."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is the apparently fair division of labour on Rote misleading?",
+      "options": [
+        "Men are responsible for most care work as well as farming.",
+        "Women replace their household duties with work in the fields.",
+        "Women add farming or fishing work to their domestic responsibilities.",
+        "Men and women exchange their roles at different times each day."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How is the expression \"women's work\" presented in the discussion of Rote?",
+      "options": [
+        "As a negative label for repetitive chores traditionally assigned by gender",
+        "As a neutral name for the paid occupations available to island women",
+        "As a respectful title for women who manage community projects",
+        "As a temporary description of duties performed while men are in the fields"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What view supports the design of the Superdads workshops in Croatia?",
+      "options": [
+        "Mothers should leave their careers so that they can rest more.",
+        "Only adult men, rather than boys, need to change their domestic habits.",
+        "Wealthy countries have already achieved an equal sharing of care work.",
+        "Fathers and sons can ease mothers' burden by sharing household tasks."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What can be inferred from the benefits described for mothers when men share the chores?",
+      "options": [
+        "Domestic work affects only mothers who are pursuing careers.",
+        "An unequal workload can limit mothers' time for personal goals and rest.",
+        "Mothers usually value hobbies more than help from family members.",
+        "Men's participation removes every source of conflict within the home."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why are careers, hobbies and rest listed in the discussion?",
+      "options": [
+        "To illustrate different ways mothers could use time freed by shared chores",
+        "To rank the three activities that mothers value most highly",
+        "To show that paid employment is the only meaningful form of relief",
+        "To explain why mothers become less willing to complete household duties"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall implication is shared by the two NGO projects?",
+      "options": [
+        "Unequal housework can be solved only in remote communities.",
+        "Better equipment is more important than changing family attitudes.",
+        "Fairer sharing of housework can improve the wellbeing of the household.",
+        "Every family member must perform exactly the same domestic tasks."
+      ]
+    }
+  ],
+  "matching": []
+}

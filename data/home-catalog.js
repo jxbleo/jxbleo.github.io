@@ -1121,6 +1121,81 @@ window.__HOME_CATALOG__ = {
       "visible": true
     },
     {
+      "id": "BBC-260716",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What's in a Footballer's Brain?",
+      "href": "bbc.html?set=BBC-260716",
+      "displayValue": "2026-07-16",
+      "sortValue": "2026-07-16",
+      "topic": "Sport / Neuroscience",
+      "tags": [
+        "Sport",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260723",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Children in War Zones",
+      "href": "bbc.html?set=BBC-260723",
+      "displayValue": "2026-07-23",
+      "sortValue": "2026-07-23",
+      "topic": "Conflict / Childhood",
+      "tags": [
+        "Society",
+        "Children"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260730",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Enhanced Games",
+      "href": "bbc.html?set=BBC-260730",
+      "displayValue": "2026-07-30",
+      "sortValue": "2026-07-30",
+      "topic": "Sport / Ethics",
+      "tags": [
+        "Sport",
+        "Ethics"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260806",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Do Climate Scientists Make Predictions?",
+      "href": "bbc.html?set=BBC-260806",
+      "displayValue": "2026-08-06",
+      "sortValue": "2026-08-06",
+      "topic": "Climate / Science",
+      "tags": [
+        "Climate",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260813",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Who Does the Housework?",
+      "href": "bbc.html?set=BBC-260813",
+      "displayValue": "2026-08-13",
+      "sortValue": "2026-08-13",
+      "topic": "Society / Gender",
+      "tags": [
+        "Society",
+        "Gender"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
       "id": "DSE-TOPIC-BANK-SPEAKING",
       "sectionId": "dse-english-paper-4",
       "title": "HKDSE Writing & Speaking Topic Bank",

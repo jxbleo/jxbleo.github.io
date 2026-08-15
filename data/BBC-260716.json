@@ -1,0 +1,180 @@
+{
+  "id": "BBC-260716",
+  "title": "What's in a Footballer's Brain?",
+  "audioSrc": "bbc-audio/260716-whats-in-a-footballers-brain.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Modern players are faster, but the game also demands _____.",
+      "section": "Why the brain matters"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Players make choices under the _____ and intensities.",
+      "section": "Why the brain matters"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Compared with that of similar players, Neymar's brain showed _____ when he moved his ankle.",
+      "section": "What expert movement looks like"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "This pattern showed his _____ in moving his feet.",
+      "section": "What expert movement looks like"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Clubs are showing growing interest in _____.",
+      "section": "How clubs are responding"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "If players cannot store much information, coaches may make them feel mentally _____.",
+      "section": "How clubs are responding"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "This challenge is introduced in a _____, such as training.",
+      "section": "How clubs are responding"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Control of a player's emotional state can be _____.",
+      "section": "Emotions and important kicks"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Excessive emotion may reduce _____.",
+      "section": "Emotions and important kicks"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Before penalties, corners and free kicks, players are taught to _____.",
+      "section": "Emotions and important kicks"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Which new performance factor are some football clubs examining?",
+      "options": [
+        "The physical speed needed throughout a match",
+        "The athletic demands created by modern competitions",
+        "The mental activity involved in rapid, pressured decisions",
+        "The passion that makes football attractive to supporters"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What did the 2014 study observe when Neymar moved his right ankle?",
+      "options": [
+        "His brain showed less activity than the brains of comparable players.",
+        "His brain reacted more slowly than those of comparable players.",
+        "His foot moved more accurately than those of comparable players.",
+        "His emotional response was weaker than those of comparable players."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "According to the neuroscientist, what did Neymar's reduced cortical activity indicate?",
+      "options": [
+        "He was protecting his brain from the pressure of competition.",
+        "He was relying mainly on his emotional control during movement.",
+        "He needed less physical energy than other professional players.",
+        "He had mastered the movement so well that little conscious effort was needed."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How may coaches respond when players struggle to hold a large amount of information?",
+      "options": [
+        "They remove complex decisions until the players enter a competition.",
+        "They deliberately overload the players during a safe training session.",
+        "They measure the players' brainwaves after every difficult exercise.",
+        "They replace cognitive practice with sessions focused on physical speed."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What contrast is central to the training approach described?",
+      "options": [
+        "Players face controlled mental overload in training so they may improve in real matches.",
+        "Players practise without pressure before facing identical tasks in cup competitions.",
+        "Players first develop physically and then begin separate neurological training.",
+        "Players store match information but avoid using it during practice sessions."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What view is expressed about the emotional side of performance?",
+      "options": [
+        "It matters only during set pieces such as penalties and corners.",
+        "It is fixed by personality and therefore difficult for coaching to change.",
+        "It strongly influences performance but can be brought under greater control.",
+        "It becomes useful only when players stop making conscious decisions."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is the likely effect of having too much emotion during play?",
+      "options": [
+        "It helps a player act automatically with less mental effort.",
+        "It makes accurate and concentrated play more difficult.",
+        "It allows a player to manage larger amounts of information.",
+        "It increases the value of physical training over brain training."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why are penalties, corners and free kicks especially suitable for focused mental coaching?",
+      "options": [
+        "They are the only occasions when emotions affect a player's performance.",
+        "They require players to store more information than any other match situation.",
+        "They allow brain activity to stop briefly before physical movement begins.",
+        "They provide brief pauses in which players can manage their mental state."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the purpose of mentioning difficulty in delivering an accurate corner?",
+      "options": [
+        "To illustrate how scattered attention can weaken execution at a decisive moment",
+        "To prove that corners are mentally harder than penalties and free kicks",
+        "To show that brainwave measurement directly improves kicking technique",
+        "To suggest that technical ability becomes irrelevant in high-pressure situations"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall implication can be drawn from the discussion of small margins?",
+      "options": [
+        "Brain training can remove the uncertainty from close football matches.",
+        "Emotional control matters more than skill in determining every match result.",
+        "Only major neurological changes are likely to affect competitive performance.",
+        "Small gains in focus may have an important effect on the final outcome."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1516,6 +1516,15 @@ For each new set:
 - authenticated Explore/Library shows the item
 - submission grades successfully
 
+For an approved BBC `Teachers Draft.md` import, also verify:
+
+- the public runtime contains exactly 10 blanks and 10 multiple-choice items
+- committed runtime and metadata contain no answers, evidence, or explanations
+- the private grading key contains all 20 stable question IDs
+- the published MP3 is byte-identical to the teacher-approved source audio
+- runtime and metadata omit `renderTheme` when the default green UI is intended
+- the generated three-page worksheet has no answer key and no clipped content
+
 ## 9. Deployment Checklist
 
 Before saying a deploy is complete:
