@@ -31,6 +31,7 @@
     var modal = document.getElementById('parent-task-modal');
     var modalContent = document.getElementById('parent-task-dialog-content');
     var lastFocused = null;
+    var parentAuthPromise = null;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -96,16 +97,28 @@
         localStorage.removeItem(SESSION_KEY);
     }
 
+    function ensureParentAuth() {
+        if (parentAuthPromise) return parentAuthPromise;
+        parentAuthPromise = window.MrCatCloud.getLoginState().then(function(loginState) {
+            if (loginState) return loginState;
+            return window.MrCatCloud.signInAnonymously();
+        }).catch(function(error) {
+            parentAuthPromise = null;
+            throw error;
+        });
+        return parentAuthPromise;
+    }
+
     function parentCall(action, data) {
         var payload = Object.assign({}, data || {}, { action: action });
         if (state.session) payload.session_token = state.session.token;
-        return window.MrCatCloud.callFunction('parentMode', payload).then(function(result) {
-            if (!result || !result.success) {
-                var error = new Error(result && result.message || 'Parent Mode 暂时无法加载。');
-                error.code = result && result.code || 'PARENT_MODE_UNAVAILABLE';
-                throw error;
-            }
-            return result;
+        return ensureParentAuth().then(function() {
+            return window.MrCatCloud.callFunction('parentMode', payload);
+        }).then(function(result) {
+            if (result && result.success) return result;
+            var error = new Error(result && result.message || 'Parent Mode 暂时无法加载。');
+            error.code = result && result.code || 'PARENT_MODE_UNAVAILABLE';
+            throw error;
         });
     }
 
@@ -409,14 +422,7 @@
         }
         loginButton.disabled = true;
         loginButton.textContent = '正在验证…';
-        window.MrCatCloud.callFunction('parentMode', {
-            action: 'login', chinese_name: chinese, english_name: english
-        }).then(function(result) {
-            if (!result || !result.success) {
-                var error = new Error(result && result.message || '学生信息不匹配。');
-                error.code = result && result.code;
-                throw error;
-            }
+        parentCall('login', { chinese_name: chinese, english_name: english }).then(function(result) {
             saveSession(result.session_token, result.expires_at);
             loginForm.reset();
             return loadAll();

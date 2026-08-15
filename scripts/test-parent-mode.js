@@ -88,6 +88,11 @@ const client = fs.readFileSync(path.join(root, "assets/js/parent-mode.js"), "utf
 assert(home.includes('id="parent-mode-button"'), "homepage exposes Parent Mode entry");
 assert(page.includes('id="parent-login-form"') && page.includes('id="parent-matrix-shell"'));
 assert(client.includes("data-parent-task") && client.includes("attemptReview"));
+assert(client.includes("ensureParentAuth") && client.includes("signInAnonymously"),
+  "Parent Mode establishes an invisible CloudBase identity before calling its function");
+assert(client.includes("parentCall('login'"), "name entry uses the authenticated Parent Mode call wrapper");
+assert(page.includes("cloudbase-client.js?v=20260815-1") && page.includes("parent-mode.js?v=20260815-2"),
+  "Parent Mode busts cached client scripts after the anonymous-auth fix");
 assert(!page.includes("Student ID"), "Parent Mode login does not reuse student credentials");
 
 console.log("Parent Mode rule tests passed.");
