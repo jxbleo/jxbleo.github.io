@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-16
+
+### Changed
+
+- Lowered the Tencent COS multipart-upload threshold from 5 MB to 4 MB after a
+  4.79 MB BBC audio object stalled on the single-request upload path. The
+  resumable deploy now routes that file through the proven 1 MB chunk path.
+
 ## 2026-08-15
 
 ### Added
