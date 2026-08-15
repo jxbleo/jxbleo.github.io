@@ -126,6 +126,21 @@ and deploy the function before publishing `parent-mode.html`,
 `index.html`. Collection creation, index creation, function deployment, and
 static-site publication remain owner-gated production actions.
 
+The environment-level cloud-function security rule must preserve authenticated,
+non-anonymous access for every other function while allowing the unauthenticated
+Parent Mode name-entry request to reach its own server-side session boundary:
+
+```json
+{
+  "*": { "invoke": "auth != null && auth.loginType != 'ANONYMOUS'" },
+  "parentMode": { "invoke": true }
+}
+```
+
+Do not replace the wildcard rule with a public default. `parentMode` remains
+responsible for generic name-match errors, login throttling, device-bound hashed
+sessions, owned-detail authorization, and peer-data redaction.
+
 Prepare the built-in curated lexicon with the normal content command. To merge
 the 30,000 highest-frequency ECDICT-only records without committing the source
 CSV, provide a local path or HTTPS URL:
