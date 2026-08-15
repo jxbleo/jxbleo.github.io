@@ -19,6 +19,7 @@
     "test:self-study-completions": "node scripts/test-self-study-completions.js",
     "test:global-progress": "node scripts/test-global-exercise-progress.js",
     "test:attempt-emails": "node scripts/test-attempt-email-notifications.js",
+    "test:parent-mode": "node scripts/test-parent-mode.js && node scripts/test-parent-mode-service.js",
     "test:teacher-quick-accept": "node scripts/test-teacher-quick-accept.js",
     "test:protected-resources": "node scripts/test-protected-resource.js",
     "prepare:dse-topic-bank": "node scripts/prepare-protected-resource.js",
