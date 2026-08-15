@@ -7,11 +7,10 @@
 
 ### Added
 
-- Added five approved July-August 2026 BBC 6 Minute English listening sets with
-  shared green runtime data, matching audio, and three-page no-answer worksheets.
-- Added a secure importer for approved `Teachers Draft.md` files that validates
-  the 10-plus-10 exercise structure and separates public lesson data from
-  ignored private answers, explanations, and grading records.
+- Added a Teacher View matrix axis-swap control beside the size controls.
+  Desktop defaults to student rows/task columns, while phone portrait defaults
+  to student columns/task rows for small-class scanning and long vertical task
+  lists; each responsive orientation preference is remembered independently.
 
 ### Changed
 
