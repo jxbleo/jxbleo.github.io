@@ -30,8 +30,9 @@
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 学生提交成功但教师邮箱没有新通知 | outbox 集合/索引未创建、`submitAttempt` 或 dispatcher 未部署、Cron/token/SMTP 未配置、教师个人中心没有启用邮箱，或事件正在 7 分钟 BBC 窗口内 | 先确认个人中心地址为 `Receiving notifications`，再查 `teacher_attempt_email_events` 是否有该 `attempt_id` 及其 `status`/`due_at`/`last_error`/`skip_reason`；用精确 event ID 查函数日志，不输出答案或 SMTP 值 |
-| SMTP 显示 `250 queued`，测试邮件能到 QQ，但某次重试/补发完全看不到 | 重复使用已投递过的 `Message-ID`，QQ 在收件端静默去重；这不是 BCC、主题或 iCloud SMTP 拒收 | 对同一正文做单变量测试：新 ID 可见、旧 ID 不可见即可确认。每次 SMTP handoff 生成新 ID；不要用固定 per-event ID 实现幂等，改由 outbox `event_id` 和事务 claim 防重复 |
+| 邮件事件显示 `sent`，但 QQ 和 iCloud 都没有收到 | 旧 dispatcher 只保存本地生成的 Message-ID，无法证明 SMTP 是否接受收件人；CloudBase 实例或出网链路也可能出现瞬时异常 | 查 `smtp_accepted_count`、`smtp_rejected_count`、`smtp_response_code` 和 `smtp_response` 中的 provider queue ID。若没有这些字段，先部署带 SMTP 回执审计的 dispatcher；不要把本地生成的 `provider_message_id` 当成投递凭证 |
 | Vocabulary 邮件重复或第二封没有第 1 次记录 | 同一 `event_id` 被重复插入、dispatcher 未事务认领、线程 key/cutoff 规则漂移，或线上仍是旧函数 | 确认事件文档 ID 等于 `attempt_id`、状态只走 pending/processing/sent、第二封 cutoff 为第二次 `submitted_at`，并部署同一源码打包的三个函数 |
+| Vocabulary 第 3/4 次提交在铃铛可见但邮箱像是没收到 | 旧 dispatcher 为后续邮件写入 `In-Reply-To` / `References`，邮箱把多次提交折叠进同一会话；主题也可能过于相似 | 部署独立邮件版本的 `sendTeacherAttemptEmails`；确认 Vocabulary 主题带 `Quiz No. n` / `Practice No. n` 且原始邮件无 reply/reference 头。正文仍应累计同一线程此前 attempts |
 | BBC 每次重试各发一封，或超过 7 分钟仍没有邮件 | dispatcher 没按第一条 due event 的固定 `window_ends_at` 合并，Cron 没有每分钟运行，或 SMTP 重试改写了原窗口 | 查同一 `thread_key` 的事件；`window_ends_at` 保持原值，只有失败时 `due_at` 可以后移 |
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |
 | 登录 Teacher 显示 `The size of HTTP response body exceeds the upper limit (6MB)` | 旧版 `teacherAdmin.listAttempts` / `listProgress` 一次返回全部历史的逐题答案和 explanation，且 progress 重复嵌套 attempts | 部署轻量摘要与 `getAttemptDetail` 版本的 `teacherAdmin.zip`，并发布最新版 `teacher.html` / `teacher.js`；不需要删除 attempts |
@@ -725,6 +726,24 @@ STAR 不阻止未来重新布置同一个 set。
 ```
 
 如果只是普通 UI 小修，不一定要写这里；如果涉及 CloudBase、数据结构、评分、作业、STAR、Argue、导入、缓存、部署，就应该记录。
+
+### 2026-08-15：GitHub 到上海 COS 的首次全量上传反复超时
+
+已做：
+- 静态发布改为先列出 COS 现有对象，再只上传变化对象；失败重跑会保留并跳过已成功文件。
+- 5 MB 及以上文件使用 1 MB 分片的显式 multipart 上传，降低海外 GitHub runner 到上海 COS 的单连接风险。
+- 小文件继续用 ETag/MD5 判断变化；multipart 大文件改用对象字节数判断，避免 COS 列表 ETag 与本地 S3 风格 multipart ETag 不一致而重复上传。
+
+技术规则：
+- 只有全部上传成功后才删除 `dist/` 中已经不存在的远端对象。
+- 正常增量发布使用 90 分钟上限；同一生产发布组只保留最新运行。
+
+重复问题：
+- 若日志出现 `UserNetworkTooSlow`，先直接重跑；不要清空存储桶。成功对象会成为下一次运行的断点。
+- 若每次都重复上传全部大音频，检查比较逻辑是否误用 multipart ETag，而不是先增加并发或延长超时。
+
+部署/数据：
+- 2026-08-15 首次完整发布已核对 1224 个公开文件；最后一次补传后为 1 个上传、1223 个未变化、0 个删除。
 
 ### 2026-08-04：CloudBase 事务内并发查询导致 TransactionBusy
 

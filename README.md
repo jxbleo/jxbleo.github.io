@@ -35,7 +35,7 @@ boundaries matter more than visual polish right now.
 | Layer | Current choice |
 | --- | --- |
 | Frontend | Static HTML, CSS, vanilla JavaScript |
-| Hosting | Static site / GitHub Pages style deployment |
+| Hosting | Tencent COS static website; GitHub `main` is the source of truth |
 | Backend | Tencent CloudBase cloud functions |
 | Auth | CloudBase username/password Authentication |
 | Database | CloudBase database collections with `ADMINONLY` permissions |
@@ -44,7 +44,9 @@ boundaries matter more than visual polish right now.
 | Function runtime | Node.js 18 |
 | Scheduled reports | CloudBase timer invokes a trusted report-generation function |
 
-There is no frontend build step at the moment.
+`npm run build:static` creates the public-only `dist/` release artifact. It is
+an allowlist copy step rather than a bundler: Cloud functions, scripts,
+documentation, and private local files are never published with the website.
 
 ## Local Run
 
@@ -89,7 +91,8 @@ deploy plan, but they do not log in to CloudBase or deploy anything.
 
 Static site deployment and CloudBase deployment are separate:
 
-- Static files: commit and push HTML/CSS/JS/data/audio changes.
+- Static files: commit and push HTML/CSS/JS/data/audio changes. GitHub Actions
+  builds `dist/` and incrementally synchronizes it to Tencent COS.
 - Cloud functions: edit `cloudfunctions/<name>/`, rebuild the matching ZIP in
   `deploy-packages/`, then upload it in the CloudBase console.
 - CloudBase data: run `node scripts/prepare-cloudbase-data.js`, then dry-run

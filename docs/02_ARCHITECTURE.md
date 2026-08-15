@@ -24,7 +24,7 @@ This is a good fit for the current project because the owner needs a maintainabl
 | Layer | Current choice |
 | --- | --- |
 | Frontend | Static HTML, CSS, vanilla JavaScript |
-| Hosting | Tencent CloudBase static hosting for the custom domain; GitHub remains the source repository |
+| Hosting | Tencent COS static website for the custom domain; GitHub remains the source repository |
 | Backend | Tencent CloudBase cloud functions |
 | Auth | CloudBase username/password Authentication |
 | Database | CloudBase database collections |
@@ -82,11 +82,13 @@ Shared frontend assets:
 - `assets/css/reports.css`
 - `assets/css/my-words.css`
 
-CloudBase Git deployment tracks the GitHub `main` branch. Its static build
-copies only root HTML/web-manifest files plus `assets/`, `bbc-audio/`,
-`content/`, and `data/` into `dist/`. Cloud functions, deployment packages,
-scripts, repository documentation, and local/private configuration are not
-published as website files.
+GitHub Actions tracks the GitHub `main` branch and synchronizes successful
+static builds to the production Tencent COS bucket. The build copies only root
+HTML/web-manifest files plus `assets/`, `bbc-audio/`, `content/`, and `data/`
+into `dist/`. Cloud functions, deployment packages, scripts, repository
+documentation, and local/private configuration are not published as website
+files. CloudBase continues to provide authentication, functions, database, and
+private storage; static hosting is a separate release track.
 
 The shared Liquid Glass layer is presentation-only on login and public Library.
 The authenticated Student Dashboard and Teacher desk additionally use the
@@ -480,11 +482,11 @@ submission time and are claimed separately. Before rendering, the dispatcher
 loads the same assignment/self-study thread through the current event cutoff,
 joins the private grading key for legacy missing snapshots, and builds the
 cumulative score chart plus mistake-only comparisons. Stable subjects and
-`In-Reply-To` metadata encourage email clients to keep one task together. Every
-actual SMTP handoff receives a fresh `Message-ID`; the outbox event identity and
-transactional claim provide business idempotency instead of reusing a mailbox
-message identity. This prevents QQ Mail from silently suppressing a retry or
-manual resend as a duplicate after the SMTP server accepted it.
+deterministic `Message-ID` values keep retries idempotent. Only BBC batches use
+`In-Reply-To` / `References` to continue one mailbox conversation. Each
+Vocabulary Quiz or timed Practice event is a separate mailbox message whose
+subject includes its mode and current attempt number, while its body remains a
+cumulative projection through that event.
 Sent/retry/failed audit state remains in the outbox; email never changes the
 teacher profile's bell read markers.
 
