@@ -67,6 +67,7 @@ All project collections should remain `ADMINONLY`:
 - `classes`
 - `class_memberships`
 - `learning_reports`
+- `parent_view_sessions`
 - `teacher_attempt_email_events`
 
 Recommended unique indexes where supported:
@@ -112,8 +113,18 @@ Recommended query index:
 - `teacher_attempt_email_events.status + due_at`
 - `teacher_attempt_email_events.thread_key + status + submitted_at`
 - `teacher_attempt_email_events.status + processing_started_at`
+- `parent_view_sessions.record_type + token_hash + status`
+- `parent_view_sessions.record_type + guard_key`
 
 Create required collections before deploying functions that depend on them.
+
+Parent Mode specifically requires `parent_view_sessions` with `ADMINONLY`
+permissions before the `parentMode` function is invoked. Create the two query
+indexes listed above, package with `npm run package:functions -- parentMode`,
+and deploy the function before publishing `parent-mode.html`,
+`assets/js/parent-mode.js`, `assets/css/parent-mode.css`, and the updated
+`index.html`. Collection creation, index creation, function deployment, and
+static-site publication remain owner-gated production actions.
 
 Prepare the built-in curated lexicon with the normal content command. To merge
 the 30,000 highest-frequency ECDICT-only records without committing the source
@@ -219,6 +230,7 @@ Active or relevant functions:
 - `learningReports`
 - `generateLearningReports`
 - `sendTeacherAttemptEmails`
+- `parentMode`
 
 Common validation:
 

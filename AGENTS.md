@@ -288,6 +288,7 @@ All collections use `ADMINONLY`:
 - `classes`: stable teacher-managed class records
 - `class_memberships`: time-bounded student-to-class history
 - `learning_reports`: preview and immutable published learning-report snapshots
+- `parent_view_sessions`: hashed Parent Mode sessions and anti-enumeration login guards
 
 Read exact schemas in `docs/04_DATA_MODEL.md` and current code before adding
 fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
@@ -471,6 +472,32 @@ public PDF URL. Scheduled generation must be idempotent, derive periods from
 server Shanghai time, and require a CloudBase-only environment token. Timer
 configuration, collection creation, migration apply, and function deployment
 remain owner-gated.
+
+### Parent Mode
+
+`Parent Mode` is a separate read-only family surface, not a parent account and
+not student impersonation. Its entry requires one active student's exact
+Chinese and English names together. A successful match creates a random,
+device-bound seven-day session whose raw token is never stored in CloudBase;
+only its hash is retained in `parent_view_sessions`. Failed-name guards combine
+a hashed network/device key and must not reveal which name field matched.
+
+The personal card has `Overdue`, `This week`, `Upcoming`, and `Completed` views.
+Only countable server submissions drive its Unsubmitted, Not Qualified, and
+Qualified states. Qualified self-study may appear under Completed; unqualified
+self-study stays hidden. Parent Mode never tracks browser drafts or unfinished
+answers. Task detail returns all score bars for the viewed child, but loads one
+owned attempt's wrong answers at a time. Correct answers and explanations must
+follow the same feedback-reveal boundary as the student surface.
+
+The class card uses Class Tasks only. Tasks are rows; students are columns. The
+viewed child is the fixed first student column and peers sort by qualified-task
+completion, then by the average Best Score across the same period tasks with
+unsubmitted items treated as zero for this tie-break only. Peer cells may expose
+real names, task Best Scores, state, completion progress, and rank; they must
+never expose peer assignment locators, attempts, durations, answers, wrong
+questions, disputes, or self-study. Parent Mode has no write actions, teacher
+preview, teacher enable switch, or teacher revocation action.
 
 ## 8. Submission, Grading, and Status
 

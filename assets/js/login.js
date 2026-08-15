@@ -6,6 +6,7 @@
     var password = document.getElementById('password');
     var message = document.getElementById('login-message');
     var loginButton = document.getElementById('login-button');
+    var parentModeButton = document.getElementById('parent-mode-button');
     var visitorButton = document.getElementById('visitor-button');
     var motivationalQuote = document.getElementById('login-motivational-quote');
     var motivationalQuotes = [
@@ -161,4 +162,10 @@
             window.location.href = studentDestination();
         });
     });
+
+    if (parentModeButton) {
+        parentModeButton.addEventListener('click', function() {
+            window.location.href = 'parent-mode.html';
+        });
+    }
 })();

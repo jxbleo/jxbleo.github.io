@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <title>Parent Mode | Mr. Cat Academy</title>
+    <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260815-1">
+    <link rel="stylesheet" href="assets/css/parent-mode.css?v=20260815-1">
+</head>
+<body class="parent-mode-page">
+    <main>
+        <section class="parent-login-shell" id="parent-login-shell">
+            <a class="parent-back-link" href="index.html">← 返回登录首页</a>
+            <article class="parent-login-card" aria-labelledby="parent-login-title">
+                <p class="parent-eyebrow">MR. CAT ACADEMY</p>
+                <h1 id="parent-login-title">Parent Mode</h1>
+                <p class="parent-login-intro">输入孩子的中文名和英文名，查看学习任务、提交成绩与同班完成情况。</p>
+                <form id="parent-login-form" novalidate>
+                    <label for="parent-chinese-name">学生中文名</label>
+                    <input id="parent-chinese-name" name="chinese_name" type="text" autocomplete="off" required>
+                    <label for="parent-english-name">学生英文名</label>
+                    <input id="parent-english-name" name="english_name" type="text" autocomplete="off" autocapitalize="words" required>
+                    <p class="parent-form-message" id="parent-login-message" role="alert"></p>
+                    <button class="parent-primary-button" id="parent-login-button" type="submit">进入 Parent Mode</button>
+                </form>
+                <p class="parent-privacy-note">进入后可查看该孩子的详细学习记录，以及同班学生的任务完成情况和最好成绩。Parent Mode 永远只读。</p>
+            </article>
+        </section>
+
+        <section class="parent-app" id="parent-app" hidden>
+            <header class="parent-app-header">
+                <div>
+                    <p class="parent-eyebrow">PARENT MODE</p>
+                    <h1 id="parent-student-name">学习进度</h1>
+                    <p id="parent-last-updated">正在加载最新数据…</p>
+                </div>
+                <div class="parent-header-actions">
+                    <button type="button" id="parent-refresh-button">刷新数据</button>
+                    <button type="button" id="parent-logout-button">退出</button>
+                </div>
+            </header>
+
+            <p class="parent-page-message" id="parent-page-message" role="status"></p>
+
+            <section class="parent-panel personal-panel" aria-labelledby="personal-panel-title">
+                <div class="parent-panel-heading">
+                    <div>
+                        <p class="parent-eyebrow">MY CHILD</p>
+                        <h2 id="personal-panel-title">我的孩子</h2>
+                    </div>
+                    <div class="parent-overall-progress" aria-label="当前列表任务完成进度">
+                        <span id="personal-progress-fill"></span>
+                    </div>
+                </div>
+                <div class="parent-tab-row" id="personal-tabs" role="tablist" aria-label="个人任务范围">
+                    <button type="button" data-personal-tab="overdue" role="tab">已逾期 <span data-personal-count="overdue"></span></button>
+                    <button type="button" data-personal-tab="this_week" role="tab" aria-selected="true">本周 <span data-personal-count="this_week"></span></button>
+                    <button type="button" data-personal-tab="upcoming" role="tab">接下来 <span data-personal-count="upcoming"></span></button>
+                    <button type="button" data-personal-tab="completed" role="tab">已完成 <span data-personal-count="completed"></span></button>
+                </div>
+                <div class="parent-task-list" id="parent-task-list" aria-live="polite"></div>
+            </section>
+
+            <section class="parent-panel class-panel" aria-labelledby="class-panel-title">
+                <div class="parent-panel-heading class-heading">
+                    <div>
+                        <p class="parent-eyebrow">CLASS PROGRESS</p>
+                        <h2 id="class-panel-title">同班完成情况</h2>
+                        <p id="parent-class-name"></p>
+                    </div>
+                    <div class="parent-class-actions">
+                        <div class="parent-tab-row compact" id="class-tabs" role="tablist" aria-label="班级统计范围">
+                            <button type="button" data-class-scope="week" aria-selected="true">本周</button>
+                            <button type="button" data-class-scope="month">本月</button>
+                            <button type="button" data-class-scope="history">历史</button>
+                        </div>
+                        <label class="parent-history-label" id="parent-history-label" hidden>月份
+                            <select id="parent-history-month"></select>
+                        </label>
+                    </div>
+                </div>
+                <div class="parent-matrix-shell" id="parent-matrix-shell" aria-live="polite"></div>
+            </section>
+        </section>
+    </main>
+
+    <div class="parent-modal-overlay" id="parent-task-modal" hidden>
+        <section class="parent-task-dialog" role="dialog" aria-modal="true" aria-labelledby="parent-task-dialog-title">
+            <button class="parent-modal-close" id="parent-task-close" type="button" aria-label="关闭任务详情">×</button>
+            <div id="parent-task-dialog-content"></div>
+        </section>
+    </div>
+
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js?v=20260802-1"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
+    <script src="assets/js/parent-mode.js?v=20260815-1"></script>
+</body>
+</html>

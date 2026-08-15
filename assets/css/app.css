@@ -314,6 +314,7 @@ html.teacher-modal-scroll-locked {
 .primary-button:disabled { cursor: wait; opacity: 0.65; }
 .secondary-button { border: 1px solid var(--line); color: var(--ink); background: white; }
 .secondary-button:hover { border-color: #abc9bf; background: #f8fbfa; }
+.login-card #parent-mode-button { margin-bottom: 8px; }
 
 .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #91a29d; font-size: 0.78rem; }
 .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
