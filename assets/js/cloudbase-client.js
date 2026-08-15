@@ -68,6 +68,10 @@
         return getAuth().signInWithUsernameAndPassword(username, password);
     }
 
+    function signInAnonymously() {
+        return getAuth().signInAnonymously();
+    }
+
     function signOut() {
         return Promise.resolve(getAuth().signOut());
     }
@@ -170,6 +174,7 @@
         getAuth: getAuth,
         getLoginState: getLoginState,
         signIn: signIn,
+        signInAnonymously: signInAnonymously,
         signOut: signOut,
         callFunction: callFunction,
         uploadWithMetadata: uploadWithMetadata,

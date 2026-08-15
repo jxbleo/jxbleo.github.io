@@ -141,6 +141,14 @@ Do not replace the wildcard rule with a public default. `parentMode` remains
 responsible for generic name-match errors, login throttling, device-bound hashed
 sessions, owned-detail authorization, and peer-data redaction.
 
+CloudBase Anonymous Login must also be enabled for the environment. The current
+Web SDK requires a credential before `callFunction`, even when the function rule
+allows an unauthenticated caller. `parent-mode.js` silently creates that
+temporary SDK identity when no existing login is present; it never asks the
+parent for an account, password, or verification code. The wildcard function
+rule above continues to reject anonymous identities everywhere except
+`parentMode`.
+
 Prepare the built-in curated lexicon with the normal content command. To merge
 the 30,000 highest-frequency ECDICT-only records without committing the source
 CSV, provide a local path or HTTPS URL:
