@@ -15,6 +15,17 @@
   runs skip the already synchronized public artifact.
 - Restored ordinary deployments to a 90-minute timeout with stale in-progress
   runs cancelled when a newer `main` release starts.
+- Upgraded the shared browser CloudBase SDK from `2.28.6` to `2.32.0` to avoid
+  the credential-bootstrap null dereference reported as
+  `null is not an object (evaluating 't.scope')`.
+- Vocabulary Quiz and timed Practice now retry only a read-only authenticated
+  login preflight, show a friendly non-submission error when authentication
+  cannot be verified, and never blindly retry the mutating submit call.
+- Recorded Vocabulary Quiz and timed Practice submissions now carry a stable
+  client submission ID. `submitAttempt` derives an atomic document ID from it
+  and returns the existing immutable attempt on a replay, preventing duplicate
+  attempts and downstream side effects. Quiz timing, heartbeat, assignment
+  locking, visibility interruption, and anti-cheat deadlines are unchanged.
 
 ## 2026-08-13
 

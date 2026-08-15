@@ -2228,9 +2228,9 @@
         </div>
     </div>
 
-    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260711-1"></script>
-    <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js?v=20260815-1"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/practice-session.js?v=20260808-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/vocabulary-worksheet-pdf.js?v=20260712-1"></script>
@@ -2267,6 +2267,7 @@
         var testRemainingSeconds = 0;
         var activeTestSessionId = '';
         var activeTestAssignmentId = '';
+        var activeClientSubmissionId = '';
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
         var activeTestSetIndex = 0;
@@ -2337,6 +2338,13 @@
             return String(unitData && unitData.contentVersion || '');
         }
 
+        function newClientSubmissionId(prefix) {
+            var value = window.crypto && typeof window.crypto.randomUUID === 'function'
+                ? window.crypto.randomUUID()
+                : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+            return String(prefix || 'vocab') + '-' + value;
+        }
+
         function testDraftKey() {
             return 'vocab-test-' + setId + '-v' + vocabularyContentVersion() + '-' +
                 (assignmentId || currentUserId() || 'visitor');
@@ -2356,6 +2364,7 @@
                     group_count: activeTestGroupCount,
                     test_session_id: activeTestSessionId || '',
                     assignment_id: activeTestAssignmentId || null,
+                    client_submission_id: activeClientSubmissionId || '',
                     started_at: testStartedAt,
                     total_seconds: testDurationSecondsForGroupCount(activeTestGroupCount),
                     answers: answers
@@ -2408,8 +2417,17 @@
 
         function sessionError(error, fallback) {
             var message = error && (error.message || error.code || String(error)) || '';
+            if (/AUTH_TEMPORARILY_UNAVAILABLE|null is not an object.*scope|credentials?\.scope|evaluating ['\"]?[a-z]\.scope/i.test(message)) {
+                return new Error('Your login could not be verified. Check the network and try again. Your answers have not been submitted.');
+            }
+            if (/AUTH_REQUIRED|LOGIN_REQUIRED|UNAUTHENTICATED|INVALID_LOGIN_STATE/i.test(message)) {
+                return new Error('Your login has expired. Sign in again before submitting. Your answers have not been submitted.');
+            }
             if (/VOCABULARY_TEST_DEVICE_BLOCKED/i.test(message)) {
                 return new Error('This account is already taking a vocabulary test on another device or browser tab. Finish that test before opening student features here.');
+            }
+            if (/VOCABULARY_TEST_ACTIVE/i.test(message)) {
+                return new Error('A vocabulary Quiz is already active. Finish or leave that Quiz before starting timed Practice.');
             }
             if (/VOCABULARY_TEST_SESSION_EXPIRED|VOCABULARY_TEST_SESSION_CLOSED/i.test(message)) {
                 return new Error('This vocabulary test has ended because the page was left or the heartbeat expired. Please start again when you are ready.');
@@ -2427,10 +2445,10 @@
         }
 
         function callVocabularyTestSession(action, payload) {
-            if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') {
+            if (!window.MrCatCloud || typeof window.MrCatCloud.callAuthenticatedFunction !== 'function') {
                 return Promise.reject(new Error('LOGIN_REQUIRED'));
             }
-            return window.MrCatCloud.callFunction('submitAttempt', Object.assign({
+            return window.MrCatCloud.callAuthenticatedFunction('submitAttempt', Object.assign({
                 action: action,
                 set_id: setId,
                 assignment_id: assignmentId || null,
@@ -2451,6 +2469,9 @@
             session = session || {};
             activeTestSessionId = session.test_session_id || '';
             activeTestAssignmentId = session.assignment_id || '';
+            activeClientSubmissionId = activeTestSessionId
+                ? 'vocab-quiz-' + activeTestSessionId
+                : activeClientSubmissionId;
             testStartedAt = normalizeDateString(session.started_at);
         }
 
@@ -2567,6 +2588,7 @@
             if (!isCountedGroupCount(groups.length)) {
                 activeTestSessionId = '';
                 activeTestAssignmentId = '';
+                activeClientSubmissionId = newClientSubmissionId('vocab-quiz');
                 testStartedAt = new Date().toISOString();
                 return Promise.resolve(null);
             }
@@ -4582,6 +4604,7 @@
                 }
                 activeTestSessionId = draft.test_session_id;
                 activeTestAssignmentId = draft.assignment_id || '';
+                activeClientSubmissionId = draft.client_submission_id || ('vocab-quiz-' + draft.test_session_id);
                 return resumeVocabularyTestSession(draft.test_session_id).then(function(response) {
                     var seconds = response.remaining_seconds == null ? remaining : Math.max(1, Number(response.remaining_seconds || 0));
                     return renderStartedTest(selected, draft.answers || {}, seconds, false, 'test');
@@ -4594,6 +4617,7 @@
             }
             activeTestSessionId = '';
             activeTestAssignmentId = '';
+            activeClientSubmissionId = draft.client_submission_id || newClientSubmissionId('vocab-quiz');
             return Promise.resolve(renderStartedTest(selected, draft.answers || {}, remaining, false, 'test'));
         }
 
@@ -4715,11 +4739,19 @@
                 });
             });
             if (!selected.length) return;
-            testStartedAt = new Date().toISOString();
-            activeTestSessionId = '';
             setStartPracticeButtonStarting(true);
-            renderStartedTest(selected, {}, testDurationSecondsForGroupCount(selected.length), true, 'practice');
-            setStartPracticeButtonStarting(false);
+            callVocabularyTestSession('checkVocabularyTestAccess').then(function(response) {
+                if (response && response.active_session) throw new Error('VOCABULARY_TEST_ACTIVE');
+                testStartedAt = new Date().toISOString();
+                activeTestSessionId = '';
+                activeTestAssignmentId = '';
+                activeClientSubmissionId = newClientSubmissionId('vocab-practice');
+                renderStartedTest(selected, {}, testDurationSecondsForGroupCount(selected.length), true, 'practice');
+            }).catch(function(error) {
+                alert(sessionError(error, 'Unable to verify your login before Practice.').message);
+            }).then(function() {
+                if (!testLocked) setStartPracticeButtonStarting(false);
+            });
         }
 
         function resetTestSelection() {
@@ -4728,6 +4760,7 @@
             testTimerId = null;
             testRemainingSeconds = 0;
             activeTestSessionId = '';
+            activeClientSubmissionId = '';
             activeTestGroups = [];
             activeTestGroupCount = 0;
             activeTestSetIndex = 0;
@@ -4830,12 +4863,13 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
 
-            window.MrCatCloud.callFunction('submitAttempt', {
+            window.MrCatCloud.callAuthenticatedFunction('submitAttempt', {
                 set_id: setId,
                 assignment_id: activeTestMode === 'practice' ? null : activeTestAssignmentId || null,
                 mode: activeTestMode === 'practice' ? 'vocabulary_practice_timed' : 'vocabulary_test',
                 content_version: vocabularyContentVersion(),
                 test_session_id: activeTestMode === 'practice' ? null : activeTestSessionId || null,
+                client_submission_id: activeClientSubmissionId || null,
                 answers: answers,
                 selected_group_count: activeTestGroupCount,
                 selected_group_ids: activeTestGroups.map(function(group) { return group.id; }),
@@ -4894,6 +4928,7 @@
                 stopTestHeartbeat();
                 activeTestSessionId = '';
                 activeTestAssignmentId = '';
+                activeClientSubmissionId = '';
                 testSubmitting = false;
                 clearTestDraft();
             }).catch(function(error) {

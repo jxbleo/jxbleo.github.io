@@ -84,12 +84,27 @@ function collection(name) {
       return { total: rows.filter((record) => matches(record, state.where)).length };
     },
     async add(record) {
-      const stored = { ...record, _id: `${name}-${nextId++}` };
+      const requestedId = record && record._id ? String(record._id) : "";
+      if (requestedId && rows.some((item) => item._id === requestedId)) {
+        const error = new Error("DOCUMENT_ALREADY_EXISTS");
+        error.code = "DATABASE_DUPLICATE_KEY";
+        throw error;
+      }
+      const stored = { ...record, _id: requestedId || `${name}-${nextId++}` };
       rows.push(stored);
       return { id: stored._id };
     },
     doc(id) {
       return {
+        async create(record) {
+          if (rows.some((item) => item._id === id)) {
+            const error = new Error("DOCUMENT_ALREADY_EXISTS");
+            error.code = "DATABASE_DUPLICATE_KEY";
+            throw error;
+          }
+          rows.push({ ...record, _id: id });
+          return { id };
+        },
         async get() {
           const record = rows.find((item) => item._id === id);
           return { data: record ? [record] : [] };
@@ -224,6 +239,51 @@ async function submit(session, extra = {}) {
   );
   assert.equal(cancelledSession.status, "abandoned");
   assert.equal(cancelledSession.abandoned_reason, "assignment_cancelled");
+
+  collections.assignments.splice(0, collections.assignments.length);
+  const idempotentStart = await start();
+  const attemptsBefore = collections.attempts.length;
+  const firstIdempotentSubmit = await submit(idempotentStart, {
+    client_submission_id: "vocab-quiz-idempotency-test",
+  });
+  const replayedSubmit = await submit(idempotentStart, {
+    client_submission_id: "vocab-quiz-idempotency-test",
+  });
+  assert.equal(firstIdempotentSubmit.success, true);
+  assert.equal(replayedSubmit.success, true);
+  assert.equal(replayedSubmit.idempotent_replay, true);
+  assert.equal(replayedSubmit.attempt_id, firstIdempotentSubmit.attempt_id);
+  assert.equal(collections.attempts.length, attemptsBefore + 1);
+
+  const practiceAttemptsBefore = collections.attempts.length;
+  const practicePayload = sessionPayload({
+    mode: "vocabulary_practice_timed",
+    answers,
+    client_submission_id: "vocab-practice-idempotency-test",
+    started_at: new Date("2026-08-15T12:00:00.000Z").toISOString(),
+  });
+  const firstPracticeSubmit = await submitAttempt.main(practicePayload);
+  const replayedPracticeSubmit = await submitAttempt.main(practicePayload);
+  assert.equal(firstPracticeSubmit.success, true);
+  assert.equal(replayedPracticeSubmit.idempotent_replay, true);
+  assert.equal(replayedPracticeSubmit.attempt_id, firstPracticeSubmit.attempt_id);
+  assert.equal(collections.attempts.length, practiceAttemptsBefore + 1);
+
+  const concurrentAttemptsBefore = collections.attempts.length;
+  const concurrentPayload = sessionPayload({
+    mode: "vocabulary_practice_timed",
+    answers,
+    client_submission_id: "vocab-practice-concurrent-test",
+    started_at: new Date("2026-08-15T12:10:00.000Z").toISOString(),
+  });
+  const concurrentResults = await Promise.all([
+    submitAttempt.main(concurrentPayload),
+    submitAttempt.main(concurrentPayload),
+  ]);
+  assert.equal(concurrentResults[0].success, true);
+  assert.equal(concurrentResults[1].success, true);
+  assert.equal(concurrentResults[0].attempt_id, concurrentResults[1].attempt_id);
+  assert.equal(collections.attempts.length, concurrentAttemptsBefore + 1);
 
   console.log("Vocabulary session assignment-lock tests passed.");
 })().catch((error) => {

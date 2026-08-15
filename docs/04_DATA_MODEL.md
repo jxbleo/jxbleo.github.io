@@ -422,6 +422,7 @@ Core fields:
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `attempt_id` | string | unique attempt |
+| `client_submission_id` | string/null | browser-generated stable ID for one recorded Vocabulary Quiz/timed Practice submit action |
 | `student_uid` | string | owner |
 | `student_id_snapshot` | string | display snapshot |
 | `set_id` | string | set |
@@ -437,6 +438,8 @@ Core fields:
 | `display_percentage` | number | display score |
 | `passed` | boolean | this attempt passed |
 | `mastered` | boolean | this attempt mastered |
+| `attempt_status` | string | status earned by this immutable attempt |
+| `assignment_status` | string | linked-assignment projection calculated when the attempt was accepted |
 | `grading_version` | string | grading key version |
 | `adjusted_question_results` | array | upward-only regraded per-question result |
 | `adjusted_percentage` | number | upward-only regraded score |
@@ -450,10 +453,18 @@ Core fields:
 | `selected_group_count` | number/null | Vocabulary group count for recorded Quiz/timed Practice |
 | `selected_group_ids` | array | ordered Vocabulary group IDs selected for recorded Quiz/timed Practice |
 | `group_results` | array | per-group score summaries for recorded Quiz/timed Practice |
+| `feedback_locked` | boolean | whether complete feedback was withheld in the original response |
 
 Rules:
 
 - Attempts are append-only.
+- New recorded Vocabulary Quiz and timed Practice requests derive their
+  32-character attempt/document ID from the authenticated student, set, mode,
+  and `client_submission_id`. Replaying the same request returns that immutable
+  attempt with `idempotent_replay: true`; it must not create a second attempt,
+  increment the attempt number, re-run assignment/STAR updates, or queue a
+  second email event. Legacy clients without `client_submission_id` retain the
+  previous random-ID path until their cached page is refreshed.
 - IELTS Listening Practice self-checks use `mode: "ielts_listening_practice"`
   only for the grading request and never create an attempt. Recorded Test
   submissions use `mode: "ielts_listening_test"` and `practice_mode: "test"`.

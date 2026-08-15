@@ -187,7 +187,10 @@ await db.collection("students").add(student);
 
 Never use `add({ data: student })`. That creates a nested `data` object and
 causes `Profile incomplete`, failed lookups, and apparently missing accounts.
-The same direct-add rule applies to `assignments` and `attempts`.
+The same top-level direct-write rule applies to `assignments` and `attempts`.
+An immutable attempt that needs an atomic idempotency key may use
+`collection.doc(stableId).create(attempt)`; keep the attempt fields top-level,
+and never replace that create with `set`, which could overwrite history.
 
 ### Login ID uniqueness
 
@@ -1084,7 +1087,8 @@ For backend/data work verify at least:
 - profile fields are top-level
 - teacher authorization is server-side
 - browser-provided identity does not grant access
-- direct database `add(document)` is used
+- direct top-level database `add(document)` is used, or immutable idempotent
+  attempts use `doc(stableId).create(document)`
 - failed attempts are stored and keep or mark assignments `to_do`
 - passing retries are stored and move assignments to `passed` or `mastered`
 - independent practice uses `assignment_id: null`

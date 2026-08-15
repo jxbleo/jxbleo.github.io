@@ -31,6 +31,7 @@ npm run test:star-rewards
 npm run test:attempt-emails
 npm run test:protected-resources
 npm run test:learning-reports
+npm run test:cloudbase-auth
 ```
 
 BBC/Vocabulary result-audio checks:
@@ -1247,6 +1248,7 @@ Check:
 - normalized matching still accepts case and surrounding-space differences,
   while a genuinely different answer remains wrong;
 - run `npm run test:vocabulary` for version/snapshot rule tests and
+  `npm run test:cloudbase-auth` for credential-preflight retry boundaries, and
   `npm run verify:release` for all-unit schema, key, Word Bank, and JSON/JS
   parity checks;
 - before deployment, smoke test an old-version start request, a current-version
@@ -1335,6 +1337,18 @@ Check:
 - Cloze Practice at 1-4, 5, or more selected groups does not update assignment
   status, student progress, FINISHED, self-study STAR records, learning reports,
   or Teacher View matrix scores.
+- Quiz and timed Practice run an authenticated preflight before their mutating
+  submission call. Simulate the historical SDK `t.scope` credential failure:
+  only the read-only login check retries once, the submit function is not
+  called, the Practice timer has not started, and the page shows a friendly
+  message saying no answers were submitted.
+- Re-send one completed Quiz payload and one timed Practice payload with the
+  same `client_submission_id`: each replay returns the original `attempt_id`
+  with `idempotent_replay: true`, while the attempts collection, attempt number,
+  assignment/STAR projections, and email outbox each remain unchanged.
+- Reusing a `client_submission_id` under a different authenticated student,
+  set, or Vocabulary mode produces a different attempt ID and never exposes
+  another student's attempt.
 - running Test mode shows a sticky top bar with numbered test-set capsules and
   the timer centered in the same row; clicking a number jumps to that set
 - Test set numbers remain gold, while Practice set numbers and set badges are
@@ -1378,6 +1392,9 @@ Check:
   more than 60 seconds become abandoned
 - explicit expired/closed/device-blocked/content-outdated heartbeat errors
   still end the test immediately, and hiding/leaving the page still abandons it
+- auth-preflight retry and an idempotent response replay do not change the
+  original Quiz `started_at`, deadline, heartbeat timeout, submit grace period,
+  device/tab ownership, selected questions, or locked assignment
 - group metadata is stored
 - the Dashboard notebook opens a glass preview with no more than the seven most
   recent active words. Each row shows English, POS, a one-line Chinese meaning,

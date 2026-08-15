@@ -761,6 +761,8 @@ flowchart TD
 - heartbeat 每 10 秒发送一次。普通网络错误不得因单次请求失败立即作废测试；前端应在
   60 秒恢复窗口内自动重试并保留当前答案，只有明确的 session/auth/content 错误或
   连续网络不可用达到恢复窗口时才结束测试
+- 鉴权预检或提交重放不得重建 session、延长开始/截止/heartbeat/grace 时间，或改变
+  page-instance、题目快照和 assignment 锁定；这些服务端边界继续作为反作弊依据
 - 切换 App、切换页签、离开页面、heartbeat 超时或测试过期会把 session 标记为
   `abandoned`
 - `abandoned` / `invalidated` 不写入正式 attempt，不改变 assignment 状态，
@@ -951,6 +953,11 @@ IndexedDB 快照可立即显示脱敏作业摘要、周进度数量、STAR 数�
   点击单题 `?` 时，可以在未点击 `Check` 的情况下请求该题正确答案和解析用于自学反馈
 - Vocabulary Cloze 内的计时 Practice 记录 `mode: "vocabulary_practice_timed"`
   activity attempt，供教师铃铛和试卷查看；它强制 `assignment_id: null`
+- Vocabulary Quiz 和计时 Practice 在写提交前先验证当前登录。只有只读鉴权预检可重试；
+  写提交本身不得盲目自动重试。计时 Practice 必须在预检成功后才开始计时
+- 每次 recorded Vocabulary Quiz/计时 Practice 提交携带稳定的
+  `client_submission_id`；同一学生、set、mode、submission ID 的顺序或并发重放只能
+  创建一个 immutable attempt，也不能重复触发 assignment、STAR 或邮件副作用
 - Vocabulary Quiz 提交后应立即返回错题复盘所需的正确答案和解析；
   这不改变 attempt 记录规则，只改变学生提交后的反馈可见性
 

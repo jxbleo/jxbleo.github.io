@@ -364,13 +364,18 @@ Rules:
 
 ### Assignment Submit
 
-1. Practice page submits answers to `submitAttempt`.
+1. Authenticated Vocabulary flows run a read-only login preflight, then the
+   practice page invokes the mutating `submitAttempt` call exactly once. Only
+   the preflight may retry.
 2. Function verifies student and set visibility.
 3. If an `assignment_id` is present, the function verifies ownership.
 4. If no `assignment_id` is present, the function auto-binds the student's open assignment for the same `set_id`, when one exists.
 5. Function loads private `grading_keys`.
 6. Function grades on the server.
-7. Function writes an immutable `attempts` record.
+7. Function writes an immutable `attempts` record. Recorded Vocabulary Quiz
+   and timed Practice requests derive a stable document ID from authenticated
+   student, set, mode, and `client_submission_id`; an atomic duplicate create
+   returns the existing attempt before downstream side effects run again.
 8. Shared `cloudfunctions/_shared/exercise-progress.js` recomputes the student's
    set-wide latest/best/status summary from every countable attempt for the same
    `student_uid + set_id`. Vocabulary timed Practice is excluded. For BBC, the
@@ -411,6 +416,9 @@ Class Task's `assignment_id`.
    heartbeat, or time expiry
    closes the session as `abandoned` without creating an attempt or changing
    assignment status.
+8. Login preflight retry and idempotent response replay reuse the original
+   session and never extend its server start, deadline, heartbeat timeout,
+   grace period, page ownership, question snapshot, or assignment lock.
 
 Teacher progress and student dashboard reads use paginated CloudBase reads for
 owned or relevant records instead of assuming the first page contains every

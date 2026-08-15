@@ -1621,6 +1621,12 @@ Shared rules:
   in teacher notifications, but never affects assignments, STAR, student
   progress, FINISHED, the student calendar, learning reports, or the Teacher
   View matrix.
+- Quiz and timed Practice verify the current authenticated login before their
+  mutating submission call. A credential-bootstrap failure may retry only that
+  read-only login check; it must not start a second Quiz session or invoke the
+  submission function twice. Practice does not start its timer until the
+  preflight succeeds. A failed preflight preserves the setup state and shows a
+  friendly message that no answers were submitted.
 - Starting a Vocabulary Test opens a gold confirmation dialog matching the Quiz
   setup bar and in-quiz controls, warning that the timer cannot be paused or
   stopped. Its `Start Quiz` action remains visually primary while `Cancel`
@@ -1656,6 +1662,10 @@ Shared rules:
   session/auth/content error, switching apps, switching tabs, hiding or leaving
   the page, or exhausting the recovery window ends the session as abandoned
   and returns the student to Test setup without recording a score.
+- Auth preflight and submission recovery never extend `started_at`, the server
+  deadline, heartbeat timeout, or grace period. The existing visibility,
+  device/tab ownership, session snapshot, assignment lock, and server-time
+  checks remain authoritative anti-cheat boundaries.
 - While another page instance is taking a countable Vocabulary Test, student
   cloud-backed features opened from other devices or tabs show a blocked
   session message instead of entering the student surface.
