@@ -10,7 +10,7 @@ const region = process.env.COS_REGION || "ap-shanghai";
 const concurrency = 4;
 const maximumUploadAttempts = 5;
 const maximumMultipartFileAttempts = 2;
-const multipartThreshold = 5 * 1024 * 1024;
+const multipartThreshold = 4 * 1024 * 1024;
 const multipartChunkSize = 1024 * 1024;
 
 function normalizeCredential(value, name) {

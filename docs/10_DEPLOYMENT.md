@@ -182,7 +182,7 @@ than retransmitting the complete audio library.
 Uploads use bounded concurrency and retry transient COS/network failures per
 file. A failed or cancelled first publication can therefore resume safely on
 the next `main` run without retransmitting completed objects. Files of at least
-5 MB use 1 MB multipart chunks so audio uploads from GitHub's overseas runner
+4 MB use 1 MB multipart chunks so audio uploads from GitHub's overseas runner
 do not depend on one long-lived connection to Shanghai COS.
 
 The repository must define these GitHub Actions secrets:
