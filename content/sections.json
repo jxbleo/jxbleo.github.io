@@ -13,17 +13,6 @@
       "emptyNote": "New BBC listening lessons will appear here."
     },
     {
-      "id": "intensive-listening",
-      "groupId": "basics",
-      "title": "Intensive Listening",
-      "searchEnabled": true,
-      "searchPlaceholder": "Search intensive listening materials...",
-      "sortType": "date_asc",
-      "titleMode": "title",
-      "emptyMessage": "Developing",
-      "emptyNote": "New intensive listening materials will appear here."
-    },
-    {
       "id": "vocabulary",
       "groupId": "basics",
       "title": "Vocabulary",

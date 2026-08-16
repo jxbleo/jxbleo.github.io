@@ -14,6 +14,8 @@
 
 ### Changed
 
+- Kept Intensive Listening as a single contextual entry on linked BBC lesson
+  cards and removed its separate Student Library category and card.
 - Unified BBC, Vocabulary, IELTS Reading, and IELTS Listening `Back` / `Home`
   confirmations with the Student Logout Apple-style glass alert, including
   action-specific labels, focus containment/restoration, scroll locking, and

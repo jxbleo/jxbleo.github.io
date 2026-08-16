@@ -54,6 +54,7 @@ function run() {
   const root = path.resolve(__dirname, "..");
   const metadata = JSON.parse(fs.readFileSync(path.join(root, "content/intensive-listening/IL-BBC-260813.json"), "utf8"));
   assert.strictEqual(metadata.href, "intensive-listening.html?set=IL-BBC-260813");
+  assert.strictEqual(metadata.catalogVisible, false, "intensive listening must not create a Library entry");
   assert.ok(fs.existsSync(path.join(root, "bbc-audio/260813-who-does-the-housework.mp3")));
   assert.strictEqual(fs.existsSync(path.join(root, "data/IL-BBC-260813.json")), false, "private words must not be copied into public data");
 
@@ -62,6 +63,10 @@ function run() {
   const bbcRuntime = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
   assert.ok(bbcRuntime.includes('id="lesson-intensive-listening"'));
   assert.ok(bbcRuntime.includes("intensive-listening.html?set="));
+
+  const homeCatalog = JSON.parse(fs.readFileSync(path.join(root, "data/home-catalog.json"), "utf8"));
+  assert.strictEqual(homeCatalog.sections.some((section) => section.id === "intensive-listening"), false);
+  assert.strictEqual(homeCatalog.items.some((item) => item.id === "IL-BBC-260813"), false);
 
   console.log("Intensive Listening tests passed");
 }
