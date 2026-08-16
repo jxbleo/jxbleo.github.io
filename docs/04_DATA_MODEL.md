@@ -1027,4 +1027,8 @@ speaker, start/end seconds, reviewed text, and word slots. Browser bootstrap
 receives timing, speaker, slot IDs, and punctuation only. Progress stores
 redacted correct-position booleans, effective-check counts, assisted/completed
 flags, replay counts, and monotonic best percentage; exact wrong entries are not
-retained. Temporary replay records are separate and cannot overwrite best data.
+retained. Version `1` preserves the legacy progress identity; later
+`content_version` values use a version-scoped progress identity so a revised
+segmentation cannot inherit incompatible unit state. Earlier progress remains
+stored. Temporary replay records are separate, version-scoped, and cannot
+overwrite best data.

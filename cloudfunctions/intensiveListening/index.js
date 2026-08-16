@@ -45,7 +45,7 @@ async function loadMaterial(event) {
 }
 
 function progressId(student, material) {
-  return stableId(student.auth_uid, material.material_id || material.set_id);
+  return stableId(student.auth_uid, service.progressScope(material));
 }
 
 async function loadBestRecord(student, material) {
@@ -56,6 +56,7 @@ async function loadBestRecord(student, material) {
     student_id_snapshot: student.student_id,
     set_id: material.set_id,
     material_id: material.material_id || material.set_id,
+    content_version: String(material.content_version || "1"),
     unit_states: {},
     best_percentage: 0,
     created_at: new Date(),
@@ -68,6 +69,7 @@ async function loadReplayRecord(student, material, replayId) {
     replay_id: id,
     student_uid: student.auth_uid,
     material_id: material.material_id || material.set_id,
+    content_version: String(material.content_version || "1"),
   });
   if (!replay || replay.status !== "active") throw new Error("REPLAY_NOT_ACTIVE");
   return replay;
@@ -85,6 +87,7 @@ function recordPayload(student, material, record, unitStates, now, replayMode) {
     student_id_snapshot: student.student_id,
     set_id: material.set_id,
     material_id: material.material_id || material.set_id,
+    content_version: String(material.content_version || "1"),
     unit_states: unitStates,
     completed_unit_count: summary.completed_count,
     independent_unit_count: summary.independent_count,
@@ -253,6 +256,7 @@ async function startReplay(student, material) {
     student_id_snapshot: student.student_id,
     set_id: material.set_id,
     material_id: material.material_id || material.set_id,
+    content_version: String(material.content_version || "1"),
     status: "active",
     unit_states: {},
     percentage: 0,

@@ -20,6 +20,8 @@ function unit() {
 
 function run() {
   assert.strictEqual(service.normalizeAnswer(" IT’S "), "it's");
+  assert.strictEqual(service.progressScope({ material_id: "IL-TEST", content_version: "1" }), "IL-TEST");
+  assert.notStrictEqual(service.progressScope({ material_id: "IL-TEST", content_version: "2" }), "IL-TEST");
 
   const first = service.gradeUnit(unit(), ["", "", "", ""], null, "student:unit");
   assert.strictEqual(first.effective, true);
@@ -52,21 +54,27 @@ function run() {
   assert.strictEqual(publicView.units[0].slots[3].suffix, ".");
 
   const root = path.resolve(__dirname, "..");
-  const metadata = JSON.parse(fs.readFileSync(path.join(root, "content/intensive-listening/IL-BBC-260813.json"), "utf8"));
-  assert.strictEqual(metadata.href, "intensive-listening.html?set=IL-BBC-260813");
-  assert.strictEqual(metadata.catalogVisible, false, "intensive listening must not create a Library entry");
-  assert.ok(fs.existsSync(path.join(root, "bbc-audio/260813-who-does-the-housework.mp3")));
-  assert.strictEqual(fs.existsSync(path.join(root, "data/IL-BBC-260813.json")), false, "private words must not be copied into public data");
-
-  const bbcPractice = JSON.parse(fs.readFileSync(path.join(root, "data/BBC-260813.json"), "utf8"));
-  assert.strictEqual(bbcPractice.intensiveListeningSetId, "IL-BBC-260813");
+  const metadataDir = path.join(root, "content/intensive-listening");
+  const metadataFiles = fs.readdirSync(metadataDir).filter((name) => name.startsWith("IL-BBC-26") && name.endsWith(".json"));
+  assert.ok(metadataFiles.length >= 17, "the imported BBC intensive listening batch must remain complete");
+  metadataFiles.forEach((name) => {
+    const metadata = JSON.parse(fs.readFileSync(path.join(metadataDir, name), "utf8"));
+    const setId = name.slice(0, -5);
+    const bbcId = setId.replace(/^IL-/, "");
+    const bbcPractice = JSON.parse(fs.readFileSync(path.join(root, "data", bbcId + ".json"), "utf8"));
+    assert.strictEqual(metadata.href, "intensive-listening.html?set=" + setId);
+    assert.strictEqual(metadata.catalogVisible, false, setId + " must not create a Library entry");
+    assert.strictEqual(bbcPractice.intensiveListeningSetId, setId);
+    assert.ok(fs.existsSync(path.join(root, bbcPractice.audioSrc)), bbcId + " audio must exist");
+    assert.strictEqual(fs.existsSync(path.join(root, "data", setId + ".json")), false, "private words must not be copied into public data");
+  });
   const bbcRuntime = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
   assert.ok(bbcRuntime.includes('id="lesson-intensive-listening"'));
   assert.ok(bbcRuntime.includes("intensive-listening.html?set="));
 
   const homeCatalog = JSON.parse(fs.readFileSync(path.join(root, "data/home-catalog.json"), "utf8"));
   assert.strictEqual(homeCatalog.sections.some((section) => section.id === "intensive-listening"), false);
-  assert.strictEqual(homeCatalog.items.some((item) => item.id === "IL-BBC-260813"), false);
+  assert.strictEqual(homeCatalog.items.some((item) => /^IL-BBC-/.test(item.id)), false);
 
   console.log("Intensive Listening tests passed");
 }

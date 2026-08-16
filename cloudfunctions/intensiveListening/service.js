@@ -142,6 +142,12 @@ function publicMaterial(material) {
   };
 }
 
+function progressScope(material) {
+  const materialId = String(material && (material.material_id || material.set_id) || "");
+  const version = String(material && material.content_version || "1");
+  return version === "1" ? materialId : materialId + "\ncontent_version:" + version;
+}
+
 function publicProgress(material, record) {
   const states = record && record.unit_states && typeof record.unit_states === "object" ? record.unit_states : {};
   const summary = progressSummary(material, states);
@@ -172,5 +178,6 @@ module.exports = {
   revealUnit,
   progressSummary,
   publicMaterial,
+  progressScope,
   publicProgress,
 };
