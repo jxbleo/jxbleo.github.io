@@ -20,6 +20,8 @@
   cards and removed its separate Student Library category and card.
 - Reimported `IL-BBC-260813` with 83 millisecond-timed source units; the complete
   17-material batch contains 1,447 units and 16,495 private word slots.
+- Switched all 2026 BBC Listening lessons to the default green-glass rendering
+  by removing their blue theme overrides.
 - Unified BBC, Vocabulary, IELTS Reading, and IELTS Listening `Back` / `Home`
   confirmations with the Student Logout Apple-style glass alert, including
   a consistent warning hierarchy, focus containment/restoration, scroll locking, and

@@ -187,6 +187,9 @@ Open:
 - at least one IELTS Listening page
 - at least one Vocabulary page
 
+For every `BBC-26YYMMDD` runtime, confirm the page uses the default green BBC
+presentation and its public JSON contains no `renderTheme` override.
+
 IELTS Listening mode checks:
 
 - a fresh student, assignment, visitor, or teacher-preview entry defaults to
