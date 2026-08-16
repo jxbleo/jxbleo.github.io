@@ -54,6 +54,8 @@ Intensive Listening checks:
   by keyboard/checking;
 - student and teacher Spelling Exemption requests enter Argue, `provide` updates
   the private material and policy revision, and Keep leaves spelling required;
+- a successful student Intensive Listening Argue transitions to the BBC-style
+  animated-heart thank-you state and exposes its external Close action;
 - Teacher Argue renders spelling exemptions as dedicated green target-word cards
   with sentence/audio context and only Reject/Approve actions; Add/Replace remain
   limited to ordinary answer disputes;
