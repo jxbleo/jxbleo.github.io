@@ -18,9 +18,12 @@
   cards and removed its separate Student Library category and card.
 - Unified BBC, Vocabulary, IELTS Reading, and IELTS Listening `Back` / `Home`
   confirmations with the Student Logout Apple-style glass alert, including
-  action-specific labels, focus containment/restoration, scroll locking, and
+  a consistent warning hierarchy, focus containment/restoration, scroll locking, and
   accessibility fallbacks. IELTS Listening now uses the shared practice alert
   instead of its legacy leave-page dialog.
+- Simplified that shared leave alert to one uniformly styled warning sentence,
+  retained the green `Cancel`, and standardized the only destructive action as
+  red-text `Leave` for both Back and Home.
 - Added the same explicit Apple-style confirmation before Teacher Personal
   Center logout; only the confirmed action clears the teacher cache and session.
 - Lowered the Tencent COS multipart-upload threshold from 5 MB to 4 MB after a

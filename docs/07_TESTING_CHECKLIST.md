@@ -346,11 +346,13 @@ Practice navigation checks:
   Reading and IELTS Listening show both controls in the exam top bar
 - on BBC, Vocabulary, IELTS Reading, and IELTS Listening, both leave
   confirmations match the compact Student Logout alert: a translucent 320-pixel
-  card, dimmed/blurred backdrop, and one hairline-separated bottom row. `Cancel`
-  on the left dismisses without navigating, while red-text `Back` or `Home` on
-  the right performs the selected navigation; neither dialog shows a separate
-  `Close` action. Background scroll remains fixed, Tab stays inside the alert,
-  Escape cancels, and Cancel restores focus to the originating control
+  card, dimmed/blurred backdrop, and one hairline-separated bottom row. Confirm
+  there is no separate `Leave this page?` title: the card contains one uniformly
+  styled warning sentence. Green `Cancel` on the left dismisses without
+  navigating, while red-text `Leave` on the right performs either Back or Home;
+  neither dialog shows a separate `Close` action. Background scroll remains
+  fixed, Tab stays inside the alert, Escape cancels, and Cancel restores focus
+  to the originating control
 - static practice data requests use the public app-version query, not
   timestamp cache busting such as `?_=` + `Date.now()`
 - IELTS Reading shows the set code only in the black exam bar, reduces paragraph
