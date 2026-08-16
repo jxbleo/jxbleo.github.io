@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260815-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260816-1">
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
@@ -353,6 +353,21 @@
 
     <div id="teacher-modal-root"></div>
 
+    <section class="logout-confirm-overlay" id="teacher-logout-confirm-overlay" data-teacher-modal hidden>
+        <div class="logout-confirm-stack">
+            <section class="logout-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="teacher-logout-confirm-title" aria-describedby="teacher-logout-confirm-message">
+                <div class="logout-confirm-copy">
+                    <strong id="teacher-logout-confirm-title">Ready to leave?</strong>
+                    <p id="teacher-logout-confirm-message">Your teacher workspace is saved. You can sign in again anytime.</p>
+                </div>
+                <div class="logout-confirm-actions">
+                    <button class="outline-button logout-confirm-cancel" id="teacher-logout-confirm-cancel" type="button">Cancel</button>
+                    <button class="danger-button logout-confirm-submit" id="teacher-logout-confirm-submit" type="button">Log out</button>
+                </div>
+            </section>
+        </div>
+    </section>
+
     <section class="teacher-updates-panel teacher-utility-modal" id="teacher-updates-panel" data-teacher-modal hidden>
         <div class="teacher-updates-shell teacher-utility-shell">
             <div class="teacher-updates-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Student attempt notifications">
@@ -409,7 +424,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/teacher.js?v=20260815-2"></script>
+    <script src="assets/js/teacher.js?v=20260816-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260810-2"></script>
 </body>
 </html>

@@ -3806,22 +3806,22 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 650;
     transition: background 100ms ease-out, opacity 100ms ease-out;
 }
-#logout-confirm-cancel { color: var(--accent); }
-#logout-confirm-submit {
+.logout-confirm-cancel { color: var(--accent); }
+.logout-confirm-submit {
     border-left: 0.5px solid rgba(24,49,43,0.16);
     color: var(--danger);
     background: transparent;
 }
-#logout-confirm-cancel:hover,
-#logout-confirm-submit:hover {
+.logout-confirm-cancel:hover,
+.logout-confirm-submit:hover {
     background: rgba(24,49,43,0.06);
 }
-#logout-confirm-cancel:active,
-#logout-confirm-submit:active {
+.logout-confirm-cancel:active,
+.logout-confirm-submit:active {
     transform: none;
     background: rgba(24,49,43,0.1);
 }
-#logout-confirm-submit:disabled { opacity: 0.62; cursor: wait; }
+.logout-confirm-submit:disabled { opacity: 0.62; cursor: wait; }
 @media (prefers-reduced-motion: reduce) {
     .logout-confirm-dialog { animation-duration: 1ms !important; }
 }
