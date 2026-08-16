@@ -54,6 +54,9 @@ Intensive Listening checks:
   by keyboard/checking;
 - student and teacher Spelling Exemption requests enter Argue, `provide` updates
   the private material and policy revision, and Keep leaves spelling required;
+- Teacher Argue renders spelling exemptions as dedicated green target-word cards
+  with sentence/audio context and only Reject/Approve actions; Add/Replace remain
+  limited to ordinary answer disputes;
 - teacher Export Latest JSON contains modes and 1-based
   `providedWordPositions` without publishing that JSON statically.
 - the Unit/Speaker row exposes previous/next sentence arrows, disables invalid

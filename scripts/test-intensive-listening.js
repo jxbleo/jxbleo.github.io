@@ -118,6 +118,16 @@ function run() {
   assert.ok(intensivePage.includes('aria-label="Previous sentence"'));
   assert.ok(intensivePage.includes('id="next-unit-button"'));
   assert.ok(intensivePage.includes('aria-label="Next sentence"'));
+
+  const teacherRuntime = fs.readFileSync(path.join(root, "assets/js/teacher.js"), "utf8");
+  assert.ok(teacherRuntime.includes("renderIntensiveSpellingDispute"));
+  assert.ok(teacherRuntime.includes("data-intensive-audio"));
+  assert.ok(teacherRuntime.includes("Confirm Approve"));
+  assert.ok(teacherRuntime.includes('data-decision="keep">Reject'));
+  assert.ok(teacherRuntime.includes('data-decision="provide">Approve'));
+  const teacherStyles = fs.readFileSync(path.join(root, "assets/css/app.css"), "utf8");
+  assert.ok(teacherStyles.includes(".intensive-spelling-card"));
+  assert.ok(teacherStyles.includes(".intensive-dispute-actions"));
   assert.ok(intensivePage.includes('class="il-passive-input"'));
   assert.ok(intensivePage.includes('value="No typing needed for this sentence."'));
 

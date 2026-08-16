@@ -480,6 +480,8 @@
     var teacherLogoutOpener = null;
     var teacherStarPanel = document.getElementById('teacher-star-panel');
     var teacherStarList = document.getElementById('teacher-star-list');
+    var intensiveDisputeAudio = null;
+    var intensiveDisputeAudioButton = null;
 
     var questionTextCache = {};
 
@@ -7488,44 +7490,137 @@
         '</article>';
     }
 
+    function highlightIntensiveTarget(sentence, target) {
+        var source = String(sentence || '');
+        var word = String(target || '');
+        var index = word ? source.toLocaleLowerCase().indexOf(word.toLocaleLowerCase()) : -1;
+        if (index < 0) return escapeHtml(source);
+        return escapeHtml(source.slice(0, index)) + '<mark>' +
+            escapeHtml(source.slice(index, index + word.length)) + '</mark>' +
+            escapeHtml(source.slice(index + word.length));
+    }
+
+    function intensiveDecisionText(item) {
+        if (item.status === 'pending') return 'Pending teacher decision';
+        return item.decision === 'provide'
+            ? 'Provided to every student'
+            : 'Spelling still required';
+    }
+
+    function stopIntensiveDisputeAudio() {
+        if (intensiveDisputeAudio) {
+            intensiveDisputeAudio.pause();
+            intensiveDisputeAudio.removeAttribute('src');
+            intensiveDisputeAudio.load();
+        }
+        if (intensiveDisputeAudioButton && intensiveDisputeAudioButton.isConnected) {
+            intensiveDisputeAudioButton.classList.remove('playing');
+            intensiveDisputeAudioButton.setAttribute('aria-pressed', 'false');
+            intensiveDisputeAudioButton.innerHTML = '<span aria-hidden="true">▶</span> Hear sentence';
+        }
+        intensiveDisputeAudioButton = null;
+    }
+
+    function playIntensiveDisputeAudio(button) {
+        if (intensiveDisputeAudioButton === button && intensiveDisputeAudio && !intensiveDisputeAudio.paused) {
+            stopIntensiveDisputeAudio();
+            return;
+        }
+        stopIntensiveDisputeAudio();
+        var source = button.dataset.audioSrc;
+        if (!source) return;
+        var start = Math.max(0, Number(button.dataset.audioStart) || 0);
+        var end = Math.max(start, Number(button.dataset.audioEnd) || start);
+        var previewAudio = new Audio(source);
+        intensiveDisputeAudio = previewAudio;
+        intensiveDisputeAudioButton = button;
+        button.classList.add('playing');
+        button.setAttribute('aria-pressed', 'true');
+        button.innerHTML = '<span aria-hidden="true">Ⅱ</span> Stop preview';
+        try { previewAudio.currentTime = start; } catch (error) { /* metadata will settle */ }
+        previewAudio.addEventListener('loadedmetadata', function() {
+            if (intensiveDisputeAudio !== previewAudio) return;
+            try { previewAudio.currentTime = start; } catch (error) { /* no-op */ }
+        }, { once: true });
+        previewAudio.addEventListener('timeupdate', function() {
+            if (intensiveDisputeAudio === previewAudio && previewAudio.currentTime >= end) stopIntensiveDisputeAudio();
+        });
+        previewAudio.addEventListener('ended', function() {
+            if (intensiveDisputeAudio === previewAudio) stopIntensiveDisputeAudio();
+        });
+        previewAudio.play().catch(function() {
+            if (intensiveDisputeAudio === previewAudio) stopIntensiveDisputeAudio();
+            showMessage('Audio preview could not start.', 'error');
+        });
+    }
+
+    function renderIntensiveSpellingDispute(item) {
+        var pending = item.status === 'pending';
+        var target = answerText(item.answer_snapshot);
+        var sentence = getQuestionText(item);
+        var requesterLabel = item.requester_role === 'teacher' ? 'Teacher note' : 'Student note';
+        var speaker = item.speaker_snapshot || 'Speaker not labelled';
+        var audioAvailable = Boolean(item.audio_src_snapshot) && Number(item.end_seconds_snapshot) > Number(item.start_seconds_snapshot);
+        return '<article class="dispute-detail intensive-spelling-detail ' + escapeHtml(item.status) + '" data-dispute-id="' +
+            escapeHtml(item.dispute_id) + '" data-dispute-type="intensive_spelling_exemption">' +
+            '<div class="intensive-spelling-context">' +
+                '<span>' + escapeHtml(speaker) + '</span>' +
+                '<span>' + escapeHtml(item.unit_id || 'Unit') + '</span>' +
+                '<span>' + escapeHtml(formatDuration(item.start_seconds_snapshot)) + ' – ' + escapeHtml(formatDuration(item.end_seconds_snapshot)) + '</span>' +
+            '</div>' +
+            '<div class="intensive-target-word"><span>Target word</span><strong>' + escapeHtml(target) + '</strong></div>' +
+            (sentence
+                ? '<p class="intensive-sentence">' + highlightIntensiveTarget(sentence, target) + '</p>'
+                : '<p class="intensive-sentence missing">Sentence text is unavailable.</p>') +
+            (audioAvailable
+                ? '<button class="intensive-audio-preview" type="button" aria-pressed="false" data-intensive-audio data-audio-src="' + escapeHtml(item.audio_src_snapshot) +
+                  '" data-audio-start="' + escapeHtml(item.start_seconds_snapshot) + '" data-audio-end="' + escapeHtml(item.end_seconds_snapshot) + '"><span aria-hidden="true">▶</span> Hear sentence</button>'
+                : '') +
+            '<p class="dispute-reason intensive-student-note"><strong>' + requesterLabel + ':</strong> ' +
+                escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
+            (pending
+                ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher reply (optional)"></textarea>' +
+                  '<p class="intensive-impact-note">Providing this word changes the live material for every student.</p>' +
+                  '<div class="intensive-dispute-actions">' +
+                    '<button class="intensive-keep-button" type="button" data-decision="keep">Reject</button>' +
+                    '<button class="intensive-provide-button" type="button" data-decision="provide">Approve</button>' +
+                  '</div>'
+                : '<div class="intensive-decision-result ' + escapeHtml(item.decision || '') + '"><strong>' + escapeHtml(intensiveDecisionText(item)) + '</strong>' +
+                  (item.teacher_note ? '<span>' + escapeHtml(item.teacher_note) + '</span>' : '') + '</div>') +
+        '</article>';
+    }
+
     function renderDisputeDetail(item) {
+        if (item.dispute_type === 'intensive_spelling_exemption') return renderIntensiveSpellingDispute(item);
         var pending = item.status === 'pending';
         var questionText = getQuestionText(item);
         var requesterLabel = item.requester_role === 'teacher' ? 'Teacher note' : 'Student note';
         var statusText = item.status === 'rejected' ? 'rejected' : item.status;
-        var spellingExemption = item.dispute_type === 'intensive_spelling_exemption';
         return '<article class="dispute-detail ' + escapeHtml(item.status) + '" data-dispute-id="' +
             escapeHtml(item.dispute_id) + '">' +
             '<div class="dispute-detail-head">' +
-                '<div><strong>' + (spellingExemption ? 'Spelling exemption · ' : 'Question ') + escapeHtml(spellingExemption ? answerText(item.answer_snapshot) : item.question_id) + '</strong>' +
+                '<div><strong>Question ' + escapeHtml(item.question_id) + '</strong>' +
                 '<small>' + escapeHtml(formatDate(item.created_at)) + '</small></div>' +
                 '<span class="badge dispute-status ' + escapeHtml(pending ? 'pending' : item.status) + '">' + escapeHtml(statusText) + '</span>' +
             '</div>' +
             (questionText
                 ? '<p class="dispute-question-text">' + escapeHtml(questionText) + '</p>'
                 : '<p class="dispute-question-text missing">Question text is not available from the current public data.</p>') +
-            (spellingExemption
-                ? '<div class="dispute-comparison"><div><span>Target word</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
-                  '<div><span>Current rule</span><strong>Spelling required</strong></div></div>' +
-                  '<p class="dispute-explanation"><strong>Audio range:</strong> ' + escapeHtml(formatDuration(item.start_seconds_snapshot)) +
-                  ' – ' + escapeHtml(formatDuration(item.end_seconds_snapshot)) + '</p>'
-                : '<div class="dispute-comparison">' +
+            '<div class="dispute-comparison">' +
                   '<div><span>Submitted answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
                   '<div><span>Correct answer snapshot</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
-                  '</div>') +
-            (!spellingExemption && (item.explanation || item.explanation_snapshot)
+                  '</div>' +
+            ((item.explanation || item.explanation_snapshot)
                 ? '<p class="dispute-explanation"><strong>Explanation:</strong> ' + escapeHtml(item.explanation || item.explanation_snapshot) + '</p>'
-                : (!spellingExemption ? '<p class="dispute-explanation missing"><strong>Explanation:</strong> No explanation is stored for this question.</p>' : '')) +
+                : '<p class="dispute-explanation missing"><strong>Explanation:</strong> No explanation is stored for this question.</p>') +
             '<p class="dispute-reason"><strong>' + requesterLabel + ':</strong> ' +
                 escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
             (pending
                 ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher note (optional)"></textarea>' +
                   '<div class="dispute-actions">' +
-                    '<button class="outline-button" type="button" data-decision="keep">' + (spellingExemption ? 'Keep Spelling Required' : 'Keep Original Ruling') + '</button>' +
-                    (spellingExemption
-                        ? '<button class="primary-button" type="button" data-decision="provide">Provide This Word</button>'
-                        : '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
-                          '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>') +
+                    '<button class="outline-button" type="button" data-decision="keep">Keep Original Ruling</button>' +
+                    '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
+                    '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>' +
                   '</div>'
                 : '<p class="muted">Decision: ' + escapeHtml(item.decision || item.status) +
                   (item.teacher_note ? ' · ' + escapeHtml(item.teacher_note) : '') + '</p>') +
@@ -7533,6 +7628,7 @@
     }
 
     function renderDisputes() {
+        stopIntensiveDisputeAudio();
         var list = document.getElementById('dispute-list');
         updateTopBadges();
         if (!list) return;
@@ -7574,6 +7670,22 @@
             var displayDate = status === 'pending'
                 ? (item.created_at || item.updated_at || item.resolved_at)
                 : (item.resolved_at || item.updated_at || item.created_at);
+            if (item.dispute_type === 'intensive_spelling_exemption') {
+                var target = answerText(item.answer_snapshot);
+                var intensiveStatus = status === 'pending' ? 'pending' : intensiveDecisionText(item);
+                return '<article class="profile-card dispute-card intensive-spelling-card ' + escapeHtml(status) +
+                    '" data-dispute-card="' + escapeHtml(item.dispute_id) + '">' +
+                    '<button class="intensive-spelling-capsule" type="button" data-toggle-dispute="' + escapeHtml(item.dispute_id) + '" aria-expanded="' + expanded + '">' +
+                        '<span class="intensive-wave-icon" aria-hidden="true"><i></i><i></i><i></i></span>' +
+                        '<span class="intensive-spelling-summary"><small>INTENSIVE LISTENING · SPELLING EXEMPTION</small>' +
+                            '<strong>' + escapeHtml(target) + '</strong>' +
+                            '<span>' + escapeHtml(item.set_title || item.set_id) + ' · ' + escapeHtml(requester) + ' · ' + escapeHtml(formatDate(displayDate, '—', 'compact')) + '</span>' +
+                        '</span>' +
+                        '<span class="intensive-spelling-status ' + escapeHtml(status) + '">' + escapeHtml(intensiveStatus) + '</span>' +
+                    '</button>' +
+                    (expanded ? '<div class="intensive-spelling-body">' + renderIntensiveSpellingDispute(item) + '</div>' : '') +
+                '</article>';
+            }
             return '<article class="profile-card dispute-card ' + escapeHtml(status) +
                 '" data-dispute-card="' + escapeHtml(item.dispute_id) + '">' +
                 '<button class="dispute-capsule" type="button" data-toggle-dispute="' + escapeHtml(item.dispute_id) + '" aria-expanded="' + expanded + '">' +
@@ -7644,11 +7756,27 @@
             });
         });
 
+        list.querySelectorAll('[data-intensive-audio]').forEach(function(button) {
+            button.addEventListener('click', function() { playIntensiveDisputeAudio(button); });
+        });
+
         list.querySelectorAll('[data-decision]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var card = button.closest('[data-dispute-id]');
                 var decision = button.dataset.decision;
                 if (decision === 'replace' && !confirm('Replace the correct answer for future submissions? The previous rule will remain in history.')) {
+                    return;
+                }
+                if (decision === 'provide' && button.dataset.confirmProvide !== '1') {
+                    button.dataset.confirmProvide = '1';
+                    button.classList.add('confirming');
+                    button.textContent = 'Confirm Approve';
+                    window.setTimeout(function() {
+                        if (!button.isConnected || button.dataset.confirmProvide !== '1') return;
+                        delete button.dataset.confirmProvide;
+                        button.classList.remove('confirming');
+                        button.textContent = 'Approve';
+                    }, 5000);
                     return;
                 }
                 card.querySelectorAll('button').forEach(function(item) { item.disabled = true; });

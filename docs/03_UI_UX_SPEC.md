@@ -1457,8 +1457,14 @@ Shared rules:
   skips them and server checking excludes them.
 - After Show Answer, each required answer token is clickable for a Spelling
   Exemption Argue. Teacher preview may reveal immediately; student reveal retains
-  the three-effective-check gate. The teacher Argue queue offers Keep Spelling
-  Required or Provide This Word. Teacher preview also exposes Export Latest JSON.
+  the three-effective-check gate. In Teacher Argue, these requests use a distinct
+  green Intensive Listening card instead of the generic answer-comparison card.
+  It foregrounds the target word, highlights it in the sentence, shows the
+  speaker/unit/time context, and offers a bounded sentence-audio preview. Its only
+  decisions are Reject (keep spelling required) and Approve (provide the word);
+  Approve warns that the live rule changes for every student and requires a
+  second in-card confirmation. Generic Add/Replace answer actions never appear on this card.
+  Teacher preview also exposes Export Latest JSON.
 - `Tab` replays the current unit. Correct slots lock green; incorrect slots
   remain editable red. The server reveals answers only after three effective
   checks and keeps independent/assisted completion counts separate.
