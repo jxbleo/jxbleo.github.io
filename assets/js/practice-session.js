@@ -56,7 +56,7 @@
             '.mrcat-practice-nav button:hover{color:#0b4f49;border-color:rgba(15,118,110,.36);transform:translateY(-1px)}' +
             '.mrcat-back-modal{position:fixed;z-index:10001;inset:0;display:none;place-items:center;padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));background:rgba(17,38,34,.3);-webkit-backdrop-filter:blur(8px) saturate(118%);backdrop-filter:blur(8px) saturate(118%)}' +
             '.mrcat-back-modal.show{display:grid}.mrcat-back-box{width:min(320px,calc(100% - 32px));overflow:hidden;border:1px solid rgba(255,255,255,.88);border-radius:22px;color:#18312b;background:rgba(247,249,248,.82);-webkit-backdrop-filter:blur(32px) saturate(165%);backdrop-filter:blur(32px) saturate(165%);box-shadow:0 22px 64px rgba(20,54,47,.24),0 2px 8px rgba(20,54,47,.08);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;animation:mrcat-alert-materialize 260ms cubic-bezier(.2,.8,.2,1) both}' +
-            '.mrcat-back-copy{padding:24px 22px 20px;text-align:center}.mrcat-back-box h2{margin:0;color:#18312b;font-size:1.2rem;line-height:1.25;letter-spacing:-.018em}.mrcat-back-box p{max-width:270px;margin:8px auto 0;color:#697b76;font-size:.88rem;line-height:1.45}.mrcat-back-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:.5px solid rgba(24,49,43,.16)}' +
+            '.mrcat-back-copy{padding:24px 22px 20px;text-align:center}.mrcat-back-box p{max-width:270px;margin:0 auto;color:#536963;font-size:.95rem;font-weight:500;line-height:1.5}.mrcat-back-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:.5px solid rgba(24,49,43,.16)}' +
             '.mrcat-back-actions button{min-height:48px;padding:0 10px;border:0;border-radius:0;background:transparent;box-shadow:none;font:650 .93rem -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;transition:background 100ms ease-out,opacity 100ms ease-out,transform 100ms ease-out}.mrcat-back-actions button+button{border-left:.5px solid rgba(24,49,43,.16)}' +
             '.mrcat-back-confirm{color:#c9403a}.mrcat-back-cancel{color:#0f766e}.mrcat-back-actions button:hover{background:rgba(24,49,43,.06)}.mrcat-back-actions button:active{transform:scale(.98);background:rgba(24,49,43,.1)}.mrcat-back-actions button:focus-visible{position:relative;z-index:1;outline:3px solid rgba(15,118,110,.26);outline-offset:-3px}' +
             '@keyframes mrcat-alert-materialize{from{opacity:0;transform:scale(.965);filter:blur(4px)}to{opacity:1;transform:scale(1);filter:blur(0)}}@keyframes mrcat-alert-fade{from{opacity:0}to{opacity:1}}' +
@@ -171,19 +171,17 @@
         modal.innerHTML =
             '<div class="mrcat-back-box">' +
                 '<div class="mrcat-back-copy">' +
-                    '<h2 id="mrcat-leave-title">Leave this page?</h2>' +
                     '<p id="mrcat-leave-copy">Unsaved answers on this page may be lost.</p>' +
                 '</div>' +
                 '<div class="mrcat-back-actions">' +
                     '<button class="mrcat-back-cancel" type="button">Cancel</button>' +
-                    '<button class="mrcat-back-confirm" type="button">Back</button>' +
+                    '<button class="mrcat-back-confirm" type="button">Leave</button>' +
                 '</div>' +
             '</div>';
         var box = modal.querySelector('.mrcat-back-box');
         box.setAttribute('role', 'alertdialog');
         box.setAttribute('aria-modal', 'true');
-        box.setAttribute('aria-labelledby', 'mrcat-leave-title');
-        box.setAttribute('aria-describedby', 'mrcat-leave-copy');
+        box.setAttribute('aria-labelledby', 'mrcat-leave-copy');
         modal.querySelector('.mrcat-back-confirm').addEventListener('click', function() {
             var action = modal.getAttribute('data-leave-action');
             if (action === 'home') goHome();
@@ -246,16 +244,14 @@
         leaveDialogOpener = null;
     }
 
-    function showLeaveModal(action, label, copy) {
+    function showLeaveModal(action, copy) {
         var modal = document.querySelector('.mrcat-back-modal') || buildBackModal();
         leaveDialogOpener = document.activeElement;
         modal.setAttribute('data-leave-action', action);
-        var title = modal.querySelector('#mrcat-leave-title');
         var text = modal.querySelector('#mrcat-leave-copy');
         var confirm = modal.querySelector('.mrcat-back-confirm');
-        if (title) title.textContent = 'Leave this page?';
         if (text) text.textContent = copy;
-        if (confirm) confirm.textContent = label;
+        if (confirm) confirm.textContent = 'Leave';
         lockLeaveDialogBackground();
         modal.classList.add('show');
         window.requestAnimationFrame(function() {
@@ -265,11 +261,11 @@
     }
 
     function confirmBack() {
-        showLeaveModal('back', 'Back', 'You will return to the page that opened this practice. Unsaved answers on this page may be lost.');
+        showLeaveModal('back', 'You will return to the page that opened this practice. Unsaved answers on this page may be lost.');
     }
 
     function confirmHome() {
-        showLeaveModal('home', 'Home', 'You will go to your main learning page. Unsaved answers on this page may be lost.');
+        showLeaveModal('home', 'You will go to your main learning page. Unsaved answers on this page may be lost.');
     }
 
     function buildVisitorModal() {

@@ -472,10 +472,12 @@ Student cards should show:
   `teacher=1` preview pages. Across BBC, Vocabulary, IELTS Reading, and IELTS
   Listening, both leave confirmations use the same compact Apple-style alert as
   Student Logout: a 320-pixel translucent glass card, softly dimmed/blurred
-  backdrop, and one hairline-separated bottom action row. `Cancel` on the left
-  dismisses the dialog, while a red-text action-specific `Back` or `Home` on the
-  right performs the selected navigation. The dialog does not show a heading
-  bar, back arrow, or separate `Close` action. It locks background scrolling,
+  backdrop, and one hairline-separated bottom action row. The dialog has no
+  separate title: one consistently styled sentence states the destination and
+  unsaved-answer warning. Green `Cancel` on the left dismisses the dialog,
+  while red-text `Leave` on the right performs either the selected Back or Home
+  navigation. The dialog does not show a heading bar, back arrow, or separate
+  `Close` action. It locks background scrolling,
   traps keyboard focus, supports Escape as Cancel, and restores focus to the
   originating navigation control when cancelled. Reduced-motion,
   reduced-transparency, and increased-contrast preferences receive appropriate
