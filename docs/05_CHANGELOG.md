@@ -16,6 +16,10 @@
 
 ### Changed
 
+- Added Previous Sentence and Next Sentence arrows beside the Intensive
+  Listening Unit/Speaker labels. Adjacent navigation preserves local drafts,
+  skips excluded segments, autoplays the selected segment, and disables invalid
+  directions at material boundaries.
 - Reclassified 232 fixed BBC idents, host greetings, website/worksheet
   promotions, and closing segments as Skip while preserving source text and
   timestamps. The 16 version-1 materials advance to content version 2;

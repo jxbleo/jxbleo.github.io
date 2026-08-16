@@ -41,7 +41,10 @@ button:active, a:active { transform: scale(.975); }
 
 .il-practice-card { margin-top: 2rem; overflow: hidden; border: 1px solid #d7e3df; border-radius: 1.5rem; background: rgba(255,255,255,.94); box-shadow: 0 24px 70px rgba(26,75,61,.09); }
 .il-unit-bar { padding: 1.15rem 1.4rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--il-line); }
-.il-unit-bar > div { display: flex; align-items: baseline; gap: .7rem; }
+.il-unit-navigation { display: flex; align-items: center; gap: .7rem; }
+.il-unit-identity { min-width: 8.5rem; display: flex; align-items: baseline; justify-content: center; gap: .7rem; }
+.il-unit-step { width: 2.25rem; height: 2.25rem; display: grid; place-items: center; border: 1px solid var(--il-line); border-radius: 50%; color: var(--il-green); background: #fff; font-size: 1.15rem; font-weight: 800; line-height: 1; transition: color 120ms ease, background 120ms ease, border-color 120ms ease; }
+.il-unit-step:hover:not(:disabled), .il-unit-step:focus-visible { border-color: var(--il-green); background: var(--il-green-soft); outline: none; }
 .il-speaker { color: var(--il-muted); font-size: .82rem; }
 .il-unit-position { color: var(--il-muted); font-weight: 760; font-variant-numeric: tabular-nums; }
 .il-audio-row { padding: 1.2rem 1.4rem; display: flex; align-items: center; gap: .9rem; background: linear-gradient(90deg, #eff8f4, #f9fcfb); }
@@ -133,6 +136,9 @@ button:disabled { cursor: default; opacity: .58; }
   .il-header-progress { min-width: 0; grid-template-columns: 3rem 1fr; }
   .il-actions { grid-template-columns: 1fr 1fr; }
   .il-check-count { grid-column: 1 / -1; grid-row: 1; text-align: center; }
+  .il-unit-bar { padding-inline: 1rem; }
+  .il-unit-navigation { gap: .45rem; }
+  .il-unit-identity { min-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
