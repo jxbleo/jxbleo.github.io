@@ -1465,6 +1465,9 @@ Shared rules:
   Approve warns that the live rule changes for every student and requires a
   second in-card confirmation. Generic Add/Replace answer actions never appear on this card.
   Teacher preview also exposes Export Latest JSON.
+- After a new Intensive Listening Argue submits successfully, its dialog uses
+  the same animated heart, `Sent to teacher.` / `Thanks for your feedback.`
+  confirmation, and external Close capsule as the BBC question-level Argue flow.
 - `Tab` replays the current unit. Correct slots lock green; incorrect slots
   remain editable red. The server reveals answers only after three effective
   checks and keeps independent/assisted completion counts separate.

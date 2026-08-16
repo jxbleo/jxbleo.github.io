@@ -483,9 +483,14 @@
       ? (existing.status === 'pending' ? 'Waiting for teacher review.' : existing.status === 'approved' ? 'Approved — this word is now provided.' : 'The teacher kept spelling required.') : '';
     $('#argue-reason').disabled = Boolean(existing); $('#argue-submit').hidden = Boolean(existing);
     $('#argue-submit').disabled = false; $('#argue-submit').textContent = 'Send Argue';
+    $('#argue-box').classList.remove('sent');
     $('#argue-modal').hidden = false; if (!existing) $('#argue-reason').focus();
   }
-  function closeArgue() { $('#argue-modal').hidden = true; state.selectedArgue = null; }
+  function closeArgue() {
+    $('#argue-modal').hidden = true;
+    $('#argue-box').classList.remove('sent');
+    state.selectedArgue = null;
+  }
   function submitArgue() {
     if (!state.selectedArgue || state.busy) return;
     var selected = state.selectedArgue; var button = $('#argue-submit');
@@ -496,6 +501,8 @@
       state.slotDisputes[disputeKey(selected.unit.unit_id, selected.slot.slot_id)] = { dispute_id: result.dispute_id || '', status: result.status || 'pending' };
       $('#argue-status').textContent = result.status === 'approved' ? 'Approved — this word is now provided.' : 'Sent to teacher.';
       $('#argue-reason').disabled = true; button.hidden = true; renderAnswerTokens();
+      $('#argue-box').classList.add('sent');
+      window.setTimeout(function() { if (!$('#argue-modal').hidden) $('#argue-sent-close').focus(); }, 450);
     }).catch(function(error) {
       $('#argue-status').textContent = error.message; button.disabled = false; button.textContent = 'Send Argue';
     });
@@ -578,6 +585,7 @@
   $('#leave-modal').addEventListener('click', function(event) { if (event.target === $('#leave-modal')) $('#leave-modal').hidden = true; });
   $('#argue-close').addEventListener('click', closeArgue);
   $('#argue-cancel').addEventListener('click', closeArgue);
+  $('#argue-sent-close').addEventListener('click', closeArgue);
   $('#argue-submit').addEventListener('click', submitArgue);
   $('#argue-modal').addEventListener('click', function(event) { if (event.target === $('#argue-modal')) closeArgue(); });
   document.addEventListener('keydown', function(event) {

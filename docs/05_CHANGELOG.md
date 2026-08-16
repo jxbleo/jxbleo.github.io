@@ -19,6 +19,8 @@
 
 ### Changed
 
+- Matched the student Intensive Listening Argue success state to BBC Argue with
+  the animated heart, thank-you message, and external Close action.
 - Replaced the generic Teacher Argue treatment for Intensive Listening spelling
   exemptions with a dedicated green target-word card, sentence highlight,
   timestamped audio preview, global-impact warning, and only the two valid

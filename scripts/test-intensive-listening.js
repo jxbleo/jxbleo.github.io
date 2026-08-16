@@ -118,6 +118,10 @@ function run() {
   assert.ok(intensivePage.includes('aria-label="Previous sentence"'));
   assert.ok(intensivePage.includes('id="next-unit-button"'));
   assert.ok(intensivePage.includes('aria-label="Next sentence"'));
+  assert.ok(intensivePage.includes('class="il-argue-heart"'));
+  assert.ok(intensivePage.includes('<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>'));
+  assert.ok(intensivePage.includes('id="argue-sent-close"'));
+  assert.ok(intensiveRuntime.includes("$('#argue-box').classList.add('sent')"));
 
   const teacherRuntime = fs.readFileSync(path.join(root, "assets/js/teacher.js"), "utf8");
   assert.ok(teacherRuntime.includes("renderIntensiveSpellingDispute"));

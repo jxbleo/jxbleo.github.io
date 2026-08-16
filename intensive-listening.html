@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#123f35">
   <title>Intensive Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260817-2">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260817-3">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
@@ -100,15 +100,24 @@
   </div>
 
   <div class="il-leave-modal" id="argue-modal" hidden>
-    <div class="il-argue-box" role="dialog" aria-modal="true" aria-labelledby="argue-title">
-      <button class="il-argue-close" id="argue-close" type="button" aria-label="Close">×</button>
-      <span class="il-eyebrow">SPELLING EXEMPTION</span>
-      <h2 id="argue-title">Should this word be provided?</h2>
-      <strong class="il-argue-word" id="argue-word"></strong>
-      <p>This asks the teacher to show the word automatically instead of requiring students to spell it.</p>
-      <textarea id="argue-reason" maxlength="1000" placeholder="Reason (optional)"></textarea>
-      <div class="il-argue-status" id="argue-status" role="status"></div>
-      <div class="il-argue-actions"><button id="argue-cancel" type="button">Cancel</button><button id="argue-submit" type="button">Send Argue</button></div>
+    <div class="il-argue-shell">
+      <div class="il-argue-box" id="argue-box" role="dialog" aria-modal="true" aria-labelledby="argue-title">
+        <div class="il-argue-content">
+          <button class="il-argue-close" id="argue-close" type="button" aria-label="Close">×</button>
+          <span class="il-eyebrow">SPELLING EXEMPTION</span>
+          <h2 id="argue-title">Should this word be provided?</h2>
+          <strong class="il-argue-word" id="argue-word"></strong>
+          <p>This asks the teacher to show the word automatically instead of requiring students to spell it.</p>
+          <textarea id="argue-reason" maxlength="1000" placeholder="Reason (optional)"></textarea>
+          <div class="il-argue-status" id="argue-status" role="status"></div>
+          <div class="il-argue-actions"><button id="argue-cancel" type="button">Cancel</button><button id="argue-submit" type="button">Send Argue</button></div>
+        </div>
+        <div class="il-argue-sent-message" aria-live="polite"><div>
+          <span class="il-argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32"><path class="il-argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/><path class="il-argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/></svg></span>
+          <strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>
+        </div></div>
+      </div>
+      <button class="il-argue-sent-close" id="argue-sent-close" type="button">Close</button>
     </div>
   </div>
 
@@ -116,6 +125,6 @@
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-  <script src="assets/js/intensive-listening.js?v=20260817-2"></script>
+  <script src="assets/js/intensive-listening.js?v=20260817-3"></script>
 </body>
 </html>
