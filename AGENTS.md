@@ -145,6 +145,28 @@ Useful pitfalls from the 2025 BBC batch import:
   with `git log --oneline --decorate -5` and compare `git rev-parse HEAD
   origin/main`; matching hashes mean the push reached GitHub.
 
+### BBC Intensive Listening timestamped-JSON intake
+
+When the owner supplies a BBC timestamped transcript JSON, treat each supplied
+segment boundary as the starting Intensive Listening unit. Preserve its
+millisecond start/end values and normalize it into the self-contained source
+format used by `scripts/import-intensive-listening.js`. Before publication,
+mark the fixed programme ident, presenter greeting/self-introduction, website /
+transcript / worksheet / quiz promotion, and closing goodbye sequence as
+`practiceMode: "skip"`; preserve real programme discussion and real quiz
+questions as `dictation`. Review the resulting Skip list instead of relying on
+filename or position alone, because BBC wording and ASR splitting vary.
+
+For every completed material, retain both owner backups under iCloud:
+
+- `猫先生英语/BBC/Scripts JSON/IL-BBC-<date>.json`: complete machine-readable source
+- `猫先生英语/BBC/Scripts MD/IL-BBC-<date>.md`: readable source with timestamps,
+  speaker, and practice mode
+
+MP3 remains outside this backup. Import only the intended `IL-BBC-*` records
+into the ADMINONLY CloudBase material collection and link the existing BBC
+lesson card; never publish full transcript answers in static `data/`.
+
 ## 5. Authentication Has Two Linked Layers
 
 A working student account always has both:

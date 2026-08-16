@@ -13,6 +13,9 @@
   live policy refresh, Provided Words, and teacher-only latest-JSON export.
 - Added private iCloud source backups for all 17 BBC Intensive Listening
   materials as self-contained JSON plus readable Markdown transcripts.
+- Added four further BBC Intensive Listening materials: `IL-BBC-260611`,
+  `IL-BBC-260618`, `IL-BBC-260716`, and `IL-BBC-260806`, bringing every visible
+  2026 BBC lesson through 13 August into the shared runtime.
 
 ### Changed
 
@@ -26,6 +29,8 @@
   `IL-BBC-260813` advances from version 2 to version 3.
 - Made CloudBase the live published source after import while retaining private
   iCloud JSON as the portable authoring and recovery package.
+- Standardized repeat timestamped-JSON intake and renamed the owner backup
+  folders to `Scripts JSON` and `Scripts MD`.
 
 ## 2026-08-16
 
