@@ -134,9 +134,10 @@ Never commit `.cloudbase-private/`.
 ### Intensive Listening import
 
 The editable/backup master lives outside the public repository under the
-owner's iCloud `猫先生英语/BBC/JSON` folder; matching readable Markdown lives
-under `猫先生英语/BBC/文稿`. MP3 files are intentionally excluded from this iCloud
-backup. The full JSON is never copied into public `data/` or `content/`.
+owner's iCloud `猫先生英语/BBC/Scripts JSON` folder; matching readable Markdown
+lives under `猫先生英语/BBC/Scripts MD`. MP3 files are intentionally excluded from
+this iCloud backup. The full JSON is never copied into public `data/` or
+`content/`.
 CloudBase becomes the live published source after import because online teacher
 Argue decisions cannot write back to a local file. Teacher `Export Latest JSON`
 reconstructs a new portable master with current `practiceMode`,
@@ -161,6 +162,22 @@ node scripts/build-home-catalog.js
 When replacing the segmentation or slot structure of an already published
 material, pass a new `--content-version` value. Version `1` remains the default;
 later versions start compatible fresh progress while preserving older records.
+
+Recurring BBC timestamped-JSON intake:
+
+1. Accept the owner's timestamped JSON and keep its millisecond boundaries.
+2. Normalize it to the self-contained source object and link the existing
+   `BBC-<date>` lesson/audio.
+3. Mark fixed BBC idents, host greetings/self-introductions, website /
+   transcript / worksheet / quiz promotions, and the closing sequence as
+   `practiceMode: "skip"`. Keep real discussion and real quiz questions as
+   `dictation`; inspect the produced Skip list because ASR may split one fixed
+   phrase across several records.
+4. Generate matching `IL-BBC-<date>.json` and `.md` backups in `Scripts JSON`
+   and `Scripts MD` respectively. Do not copy MP3 into iCloud.
+5. Run the Intensive Listening tests and static release verification, publish
+   the metadata/link change, then import only the named set/material rows into
+   CloudBase with one large material per chunk.
 
 The importer writes public metadata with `catalogVisible: false` and ignored
 private material/import rows. The material therefore remains addressable and

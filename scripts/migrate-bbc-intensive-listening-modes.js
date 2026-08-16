@@ -14,7 +14,9 @@ const compact = (value) => String(value || "").replace(/\s+/g, " ").trim();
 function opening(segment, index) {
   if (index > 7) return false;
   const text = compact(segment.text);
-  return /^(?:six|6)\s*minute(?:s)?\s+english\.?$/i.test(text)
+  return /^hello[.!]?$/i.test(text)
+    || /^this is (?:six|6)\s*minute(?:s)?\s+english\s+from\s+b\s*bc/i.test(text)
+    || /^(?:six|6)\s*minute(?:s)?\s+english\.?$/i.test(text)
     || /^(?:from\s+)?b\s*bc\s+learning\s*english/i.test(text)
     || /^(?:from\s+)?bbclearningenglish/i.test(text)
     || /^com\.?$/i.test(text)
@@ -43,6 +45,7 @@ function tailStart(segments) {
     const text = compact(segments[index].text);
     if (/\bonce again,? (?:our )?six minutes are up\b/i.test(text)
       || /\bthat['’]?s it for this episode\b/i.test(text)
+      || /\bthat['’]?s the end of this episode\b/i.test(text)
       || /\bokay,? once again (?:our )?six minutes are up\b/i.test(text)
       || /\bthanks for joining us\b/i.test(text)
       || /\bsee you\b.*\bgoodbye\b/i.test(text)
