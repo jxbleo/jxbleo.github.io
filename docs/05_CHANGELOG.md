@@ -19,6 +19,10 @@
 
 ### Changed
 
+- Replaced the generic Teacher Argue treatment for Intensive Listening spelling
+  exemptions with a dedicated green target-word card, sentence highlight,
+  timestamped audio preview, global-impact warning, and only the two valid
+  Reject/Approve decisions.
 - Skip and Listen Only segments now remain visible and audible in the student
   sequence. They use the normal practice card with a disabled no-typing field,
   advance after playback, and remain excluded from completion and replay totals.

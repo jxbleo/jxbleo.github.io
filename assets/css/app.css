@@ -10095,6 +10095,42 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .dispute-card { padding: 0; overflow: hidden; }
 .dispute-card.approved, .dispute-card.rejected { opacity: 0.82; }
+.dispute-card.intensive-spelling-card { border-color: rgba(23,108,88,.26); background: linear-gradient(135deg, rgba(234,248,242,.96), rgba(255,255,255,.96)); box-shadow: 0 14px 38px rgba(23,108,88,.09); opacity: 1; }
+.intensive-spelling-capsule { width: 100%; display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 14px; align-items: center; padding: 17px 19px; border: 0; color: inherit; background: transparent; text-align: left; cursor: pointer; }
+.intensive-spelling-capsule:hover { background: rgba(23,108,88,.055); }
+.intensive-wave-icon { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; gap: 3px; border-radius: 50%; color: #fff; background: #176c58; box-shadow: 0 8px 18px rgba(23,108,88,.18); }
+.intensive-wave-icon i { width: 3px; border-radius: 999px; background: currentColor; }
+.intensive-wave-icon i:nth-child(1), .intensive-wave-icon i:nth-child(3) { height: 12px; }
+.intensive-wave-icon i:nth-child(2) { height: 22px; }
+.intensive-spelling-summary { min-width: 0; display: grid; gap: 2px; }
+.intensive-spelling-summary small { color: #176c58; font-size: .66rem; font-weight: 900; letter-spacing: .1em; }
+.intensive-spelling-summary strong { overflow: hidden; color: #0d3f34; font-size: 1.35rem; line-height: 1.15; text-overflow: ellipsis; }
+.intensive-spelling-summary span { overflow: hidden; color: var(--muted); font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+.intensive-spelling-status { max-width: 12rem; padding: 6px 9px; border-radius: 999px; color: #7a5528; background: #fff1da; font-size: .68rem; font-weight: 850; text-align: center; }
+.intensive-spelling-status.approved { color: #176c58; background: #dff3ea; }
+.intensive-spelling-status.rejected { color: #5f6e69; background: #eaf0ed; }
+.intensive-spelling-body { padding: 0 19px 19px; }
+.intensive-spelling-detail { padding: 18px; border-color: rgba(23,108,88,.18); background: rgba(255,255,255,.76); }
+.intensive-spelling-context { display: flex; flex-wrap: wrap; gap: 7px; }
+.intensive-spelling-context span { padding: 5px 8px; border-radius: 999px; color: #47645b; background: #e8f3ef; font-size: .7rem; font-weight: 800; }
+.intensive-target-word { margin: 18px 0 12px; display: grid; justify-items: center; }
+.intensive-target-word span { color: var(--muted); font-size: .7rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.intensive-target-word strong { margin-top: 3px; color: #0d3f34; font-size: clamp(2rem,5vw,3rem); line-height: 1; overflow-wrap: anywhere; }
+.intensive-sentence { margin: 0; padding: 16px; border-radius: 14px; color: #19362f; background: #edf7f3; font-size: 1rem; line-height: 1.65; text-align: center; overflow-wrap: anywhere; }
+.intensive-sentence mark { padding: 2px 4px; border-radius: 5px; color: #0d3f34; background: #bfe8d8; font-weight: 900; }
+.intensive-sentence.missing { color: var(--muted); }
+.intensive-audio-preview { min-height: 40px; margin: 12px auto 0; padding: 0 14px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid rgba(23,108,88,.24); border-radius: 999px; color: #176c58; background: #fff; font-size: .76rem; font-weight: 850; cursor: pointer; }
+.intensive-audio-preview.playing { color: #fff; background: #176c58; }
+.intensive-student-note { margin: 16px 0 10px; padding: 12px 13px; border-radius: 12px; background: #f7faf9; }
+.intensive-impact-note { margin: 10px 0 0; color: #8a5a17; font-size: .75rem; text-align: center; }
+.intensive-dispute-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
+.intensive-dispute-actions button { min-height: 44px; padding: 8px 12px; border-radius: 12px; font-size: .77rem; font-weight: 850; cursor: pointer; }
+.intensive-keep-button { border: 1px solid rgba(23,108,88,.2); color: #294c43; background: #fff; }
+.intensive-provide-button { border: 0; color: #fff; background: #176c58; }
+.intensive-provide-button.confirming { color: #553500; background: #f4c96b; }
+.intensive-decision-result { margin-top: 14px; padding: 13px; display: grid; gap: 3px; border-radius: 12px; color: #40534d; background: #edf2f0; text-align: center; }
+.intensive-decision-result.provide { color: #176c58; background: #dff3ea; }
+.intensive-decision-result span { font-size: .76rem; }
 .dispute-capsule {
     width: 100%;
     display: grid;
@@ -10149,6 +10185,12 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 .dispute-note { width: 100%; min-height: 72px; padding: 11px; border: 1px solid var(--line); border-radius: 12px; resize: vertical; }
 .dispute-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
 .dispute-actions button { min-height: 42px; padding: 7px 10px; border-radius: 11px; font-size: 0.75rem; font-weight: 800; }
+@media (max-width: 620px) {
+    .intensive-spelling-capsule { grid-template-columns: auto minmax(0,1fr); }
+    .intensive-spelling-status { grid-column: 2; justify-self: start; }
+    .intensive-spelling-summary span { white-space: normal; }
+    .intensive-dispute-actions { grid-template-columns: 1fr; }
+}
 .data-placeholder {
     padding: clamp(34px, 7vw, 76px);
     border: 1px solid var(--line);
