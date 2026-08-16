@@ -28,8 +28,9 @@
     });
   }
   function unitMode(unit) {
-    var mode = String(unit && unit.practice_mode || 'dictation');
-    return ['dictation', 'listen_only', 'skip'].indexOf(mode) >= 0 ? mode : 'dictation';
+    var mode = String(unit && unit.practice_mode || '').trim();
+    if (['dictation', 'listen_only', 'skip'].indexOf(mode) >= 0) return mode;
+    return unit && Array.isArray(unit.slots) && unit.slots.length === 0 ? 'skip' : 'dictation';
   }
   function isDictation(unit) { return unitMode(unit) === 'dictation'; }
   function isProvided(slot) { return String(slot && slot.spelling_requirement || 'required') === 'provided'; }
@@ -100,8 +101,7 @@
     };
   }
   function firstPlayableIndex() {
-    var index = state.material.units.findIndex(function(unit) { return unitMode(unit) !== 'skip'; });
-    return index < 0 ? 0 : index;
+    return 0;
   }
   function hydrateLocalUnits() {
     var draft = readDraft();
@@ -258,10 +258,8 @@
     });
   }
   function adjacentPlayableIndex(offset) {
-    for (var index = state.currentIndex + offset; index >= 0 && index < state.material.units.length; index += offset) {
-      if (unitMode(state.material.units[index]) !== 'skip') return index;
-    }
-    return -1;
+    var index = state.currentIndex + offset;
+    return index >= 0 && index < state.material.units.length ? index : -1;
   }
   function updateUnitNavigation() {
     var locked = state.busy || state.autoAdvancing;
@@ -275,20 +273,19 @@
     var local = currentLocal();
     var server = currentServer();
     var position = dictationPosition(state.currentIndex);
-    $('#unit-label').textContent = mode === 'listen_only' ? 'JUST LISTEN' : 'UNIT ' + String(position).padStart(2, '0');
+    $('#unit-label').textContent = mode === 'dictation' ? 'UNIT ' + String(position).padStart(2, '0') : 'JUST LISTEN';
     $('#speaker-label').textContent = unit.speaker || '';
     $('#unit-position').textContent = mode === 'dictation' ? position + ' / ' + state.material.unit_count : 'LISTEN';
     updateUnitNavigation();
     $('#time-range').textContent = formatTime(unit.start_seconds) + ' – ' + formatTime(unit.end_seconds);
     $('#practice-card').dataset.mode = mode;
-    if (mode === 'skip') { window.setTimeout(advanceUnit, 0); return; }
-    var listenOnly = mode === 'listen_only';
-    $('#listen-only-panel').hidden = !listenOnly;
-    $('#word-slots').hidden = listenOnly;
-    $('#feedback').hidden = listenOnly;
-    $('#practice-card .il-actions').hidden = listenOnly;
-    $('#answer-panel').hidden = listenOnly || !local.answerVisible;
-    if (listenOnly) {
+    var passiveListening = mode !== 'dictation';
+    $('#listen-only-panel').hidden = !passiveListening;
+    $('#word-slots').hidden = passiveListening;
+    $('#feedback').hidden = passiveListening;
+    $('#practice-card .il-actions').hidden = passiveListening;
+    $('#answer-panel').hidden = passiveListening || !local.answerVisible;
+    if (passiveListening) {
       $('#audio-status').textContent = state.playing ? 'Listening…' : 'Press Replay to hear this part';
       saveDraft();
       return;
@@ -378,15 +375,7 @@
   }
 
   function nextPlaybackEndIndex(startIndex) {
-    if (unitMode(state.material.units[startIndex]) !== 'listen_only') return startIndex;
-    var endIndex = startIndex;
-    for (var index = startIndex + 1; index < state.material.units.length; index += 1) {
-      var unit = state.material.units[index];
-      if (unitMode(unit) === 'skip') break;
-      endIndex = index;
-      if (unitMode(unit) === 'dictation') break;
-    }
-    return endIndex;
+    return startIndex;
   }
   function pauseAudio(message) {
     $('#audio').pause(); state.playing = false; $('#replay-button').textContent = '▶';
@@ -395,7 +384,7 @@
   function finishPlayback() {
     pauseAudio('');
     if (!currentUnit()) return;
-    if (unitMode(currentUnit()) === 'listen_only') {
+    if (!isDictation(currentUnit())) {
       $('#audio-status').textContent = 'Listening part finished'; advanceUnit(); return;
     }
     $('#audio-status').textContent = state.teacherMode ? 'Unit finished · show the reviewed answer' : 'Unit finished · type what you heard';
@@ -404,8 +393,6 @@
   function advanceUnit() {
     if (state.currentIndex >= state.material.units.length - 1) { finishSession(); return; }
     state.currentIndex += 1;
-    while (state.currentIndex < state.material.units.length && unitMode(currentUnit()) === 'skip') state.currentIndex += 1;
-    if (state.currentIndex >= state.material.units.length) { finishSession(); return; }
     $('#feedback').className = 'il-feedback';
     $('#feedback').textContent = isDictation(currentUnit()) ? 'Listen once, then type one word in each slot.' : '';
     renderUnit(); replayUnit(false);
@@ -422,7 +409,7 @@
     replayUnit(false);
   }
   function replayUnit(countReplay) {
-    if (!state.material || state.busy || unitMode(currentUnit()) === 'skip') return;
+    if (!state.material || state.busy) return;
     var audio = $('#audio'); var unit = currentUnit();
     if (countReplay && isDictation(unit) && !state.teacherMode) {
       currentLocal().replayDelta += 1; renderProgress(); saveDraft();
@@ -454,6 +441,16 @@
   function finishSession() {
     pauseAudio('');
     if (state.teacherMode) { window.location.href = safeReturnUrl(); return; }
+    var firstIncomplete = state.material.units.findIndex(function(unit) {
+      return isDictation(unit) && !(state.progress.unit_progress[unit.unit_id] || {}).completed;
+    });
+    if (firstIncomplete >= 0) {
+      state.currentIndex = firstIncomplete;
+      $('#feedback').className = 'il-feedback';
+      $('#feedback').textContent = 'This unit still needs your answer.';
+      renderUnit(); replayUnit(false);
+      return;
+    }
     var progress = state.progress;
     $('#completion-percent').textContent = (Number(progress.percentage) || 0) + '%';
     $('#completion-summary').textContent = progress.independent_count + ' completed independently · ' + progress.assisted_count + ' completed with answer';

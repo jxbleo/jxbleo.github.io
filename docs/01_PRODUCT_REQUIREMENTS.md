@@ -323,8 +323,11 @@ BBC 这类内容应尽量保留老师可读 Markdown 源。IELTS 这类内容可
 这是学生端唯一的精听入口；Library 不显示独立精听专栏或材料卡片。
 
 每个时间戳段落显式使用 `dictation`、`listen_only` 或 `skip`。只有
-`dictation` 产生词位并计入完成率；`listen_only` 连续播放但不输入；`skip`
-不播放也不计进度。教师和已打开答案的学生都可对单个词位提交“拼写豁免”
+`dictation` 产生词位并计入完成率；`listen_only` 和 `skip` 仍按原顺序显示并
+播放，但在同一练习卡中显示 `JUST LISTEN` 和一个禁用输入框，框内明确提示
+`No typing needed for this sentence.`。两者播放结束后自动进入下一段，没有
+Check / Show Answer，也不计入完成率、有效检查或重播统计。`skip` 在数据层表示
+不要求作答和不计分，而不是从完整音频序列中删除。教师和已打开答案的学生都可对单个词位提交“拼写豁免”
 Argue。教师批准后该词成为所有学生直接可见且不评分的 Provided Word；教师拒绝
 则继续要求拼写。教师模式可导出包含当前段落模式与已批准词位的最新版私有 JSON。
 

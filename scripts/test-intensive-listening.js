@@ -105,7 +105,10 @@ function run() {
 
   const intensiveRuntime = fs.readFileSync(path.join(root, "assets/js/intensive-listening.js"), "utf8");
   assert.ok(intensiveRuntime.includes("submitSpellingDispute"));
-  assert.ok(intensiveRuntime.includes("unitMode(currentUnit()) === 'skip'"));
+  assert.ok(intensiveRuntime.includes("var passiveListening = mode !== 'dictation'"));
+  assert.ok(intensiveRuntime.includes("if (!isDictation(currentUnit()))"));
+  assert.strictEqual(intensiveRuntime.includes("while (state.currentIndex < state.material.units.length && unitMode(currentUnit()) === 'skip')"), false);
+  assert.ok(intensiveRuntime.includes("This unit still needs your answer."));
   assert.ok(intensiveRuntime.includes("exportMaterial"));
   assert.ok(intensiveRuntime.includes("moveToUnit(-1)"));
   assert.ok(intensiveRuntime.includes("moveToUnit(1)"));
@@ -115,6 +118,8 @@ function run() {
   assert.ok(intensivePage.includes('aria-label="Previous sentence"'));
   assert.ok(intensivePage.includes('id="next-unit-button"'));
   assert.ok(intensivePage.includes('aria-label="Next sentence"'));
+  assert.ok(intensivePage.includes('class="il-passive-input"'));
+  assert.ok(intensivePage.includes('value="No typing needed for this sentence."'));
 
   const homeCatalog = JSON.parse(fs.readFileSync(path.join(root, "data/home-catalog.json"), "utf8"));
   assert.strictEqual(homeCatalog.sections.some((section) => section.id === "intensive-listening"), false);

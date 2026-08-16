@@ -1425,9 +1425,9 @@ Shared rules:
   than requiring a grammatical sentence ending.
 - The Unit/Speaker title row includes Previous Sentence and Next Sentence arrow
   buttons. Moving in either direction preserves the current unit's local draft,
-  skips segments marked Skip, switches immediately to the adjacent playable
-  segment, and plays it once. The unavailable direction is disabled at the
-  material boundaries.
+  switches immediately to the adjacent source segment, and plays it once.
+  Dictation, Listen Only, and Skip segments all occupy a visible navigation
+  position. The unavailable direction is disabled at the material boundaries.
 - The active unit reveals its expected word count as one equal-width Word Slot
   per reviewed word. Slot width must not reveal the expected word's character
   count. Sentence punctuation—including commas, periods, question marks,
@@ -1446,10 +1446,13 @@ Shared rules:
   edit, and check the unit again. Only an explicit `Show Answer` action reveals
   the complete reviewed text.
 - One source segment keeps its reviewed boundary and is explicitly Dictation,
-  Listen Only, or Skip. Dictation shows Word Slots; Listen Only shows a compact
-  `JUST LISTEN` state and continues into the next eligible segment without an
-  input stop; Skip is never played or counted. The first playable segment waits
-  behind a three-second Start Ritual; later playable segments autoplay.
+  Listen Only, or Skip. Dictation shows Word Slots. Listen Only and Skip both
+  remain visible and play in source order, using the same `JUST LISTEN` card and
+  a disabled input-shaped field reading `No typing needed for this sentence.`
+  They expose no Check or Show Answer action, advance automatically after their
+  own timestamp range, and never count toward progress or replay totals. The
+  first source segment waits behind a three-second Start Ritual; later segments
+  autoplay.
 - Provided Words render inline in green instead of as inputs. Keyboard movement
   skips them and server checking excludes them.
 - After Show Answer, each required answer token is clickable for a Spelling

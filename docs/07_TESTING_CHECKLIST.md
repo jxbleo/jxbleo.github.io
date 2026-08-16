@@ -46,8 +46,10 @@ Intensive Listening checks:
   and reveal requires three effective checks;
 - all Intensive Listening collections remain `ADMINONLY` and authenticated
   bootstrap returns the full redacted sequence once;
-- `dictation` alone counts toward progress, `listen_only` produces no inputs,
-  and `skip` never plays;
+- `dictation` alone counts toward progress; `listen_only` and `skip` both appear
+  in source order, play their own timestamp range, show the disabled
+  `No typing needed for this sentence.` field, expose no grading actions, and
+  then advance without changing progress or replay totals;
 - required answers remain redacted while a Provided Word is returned and skipped
   by keyboard/checking;
 - student and teacher Spelling Exemption requests enter Argue, `provide` updates
@@ -55,8 +57,8 @@ Intensive Listening checks:
 - teacher Export Latest JSON contains modes and 1-based
   `providedWordPositions` without publishing that JSON statically.
 - the Unit/Speaker row exposes previous/next sentence arrows, disables invalid
-  directions at the material boundaries, skips excluded segments, and preserves
-  typed drafts while moving between playable units.
+  directions at the material boundaries, includes every source segment, and
+  preserves typed drafts while moving between units.
 
 BBC/Vocabulary result-audio checks:
 
