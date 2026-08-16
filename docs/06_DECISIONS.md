@@ -3,6 +3,14 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-16: Keep Intensive Listening Answers Behind Server Checks
+
+The static browser receives the complete safe unit/timing/slot structure once,
+but never receives reviewed words before the three-check reveal boundary.
+`intensiveListening` grades each unit and stores redacted progress in three
+`ADMINONLY` collections. Timestamped transcript records remain final units; the
+website does not re-segment them or create per-unit audio files.
+
 ## 2026-08-15: Retry Authentication Reads and Atomically Deduplicate Vocabulary Writes
 
 Decision:

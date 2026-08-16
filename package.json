@@ -28,7 +28,9 @@
     "package:functions": "node scripts/package-cloudfunctions.js",
     "package:functions:all": "node scripts/package-cloudfunctions.js --all",
     "release:plan": "node scripts/generate-deploy-plan.js",
-    "cloudbase:import:content": "node scripts/cloudbase-import-content.js"
+    "cloudbase:import:content": "node scripts/cloudbase-import-content.js",
+    "import:intensive-listening": "node scripts/import-intensive-listening.js",
+    "test:intensive-listening": "node scripts/test-intensive-listening.js"
   },
   "devDependencies": {
     "@cloudbase/manager-node": "5.5.2",

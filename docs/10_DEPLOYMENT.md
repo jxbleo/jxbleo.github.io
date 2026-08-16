@@ -67,6 +67,9 @@ All project collections should remain `ADMINONLY`:
 - `classes`
 - `class_memberships`
 - `learning_reports`
+- `intensive_listening_materials`
+- `intensive_listening_progress`
+- `intensive_listening_replays`
 - `parent_view_sessions`
 - `teacher_attempt_email_events`
 
@@ -800,6 +803,7 @@ Important files:
 - `sets-cloudbase.json`: import into `sets`
 - `grading-keys-cloudbase.json`: import into `grading_keys`
 - `system-config-cloudbase.json`: import into `system_config`
+- `intensive-listening-materials-cloudbase.json`: import into `intensive_listening_materials`
 
 These files are one JSON document per line. Do not wrap them in an array before
 console import.
@@ -837,6 +841,17 @@ npm run cloudbase:import:content -- --apply --only grading_keys --ids NGSL-C --o
 For multiple records, pass a comma-separated list such as
 `--ids NGSL-A,NGSL-B,NGSL-C`. The filter matches each collection's key field
 (`set_id` for `sets` and `grading_keys`, `config_key` for `system_config`).
+
+For one Intensive Listening release:
+
+```bash
+npm run cloudbase:import:content -- --apply \
+  --only sets,intensive_listening_materials --ids IL-BBC-260813
+```
+
+Create `intensive_listening_materials`, `intensive_listening_progress`, and
+`intensive_listening_replays` as `ADMINONLY`, then deploy the bundled
+`intensiveListening` Node.js 18 function before publishing the static page.
 
 The script uses these defaults unless overridden:
 

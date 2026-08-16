@@ -1438,6 +1438,11 @@ Shared rules:
   it does not reveal or replace it with the reviewed word. The student may replay,
   edit, and check the unit again. Only an explicit `Show Answer` action reveals
   the complete reviewed text.
+- One source segment is one listening unit. The first unit waits behind a
+  three-second Start Ritual; subsequent units autoplay once on entry.
+- `Tab` replays the current unit. Correct slots lock green; incorrect slots
+  remain editable red. The server reveals answers only after three effective
+  checks and keeps independent/assisted completion counts separate.
 - The top bar defaults to `Practice Mode`, with pause/play, a draggable progress
   bar, elapsed/total time, and `0.75× / 1× / 1.25× / 1.5× / 2×` speed choices.
 - `Test Mode` requires confirmation, clears Practice answers/feedback, restarts
@@ -1450,6 +1455,11 @@ Shared rules:
   History, or teacher-preview surfaces.
 
 ### BBC Practice
+
+- A BBC lesson with an explicit `intensiveListeningSetId` shows an
+  `Intensive Listening` capsule in the top lesson card beside the worksheet
+  tool. It preserves the BBC URL as the return target. Lessons without the
+  explicit relationship show no capsule.
 
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,

@@ -57,6 +57,7 @@ Important pages:
 - `teacher.html`: teacher interface
 - `library.html`: public/learning library surface
 - `bbc.html`: BBC listening runtime
+- `intensive-listening.html`: authenticated shared word-slot listening runtime
 - `ielts-reading.html`: IELTS Reading runtime
 - `ielts-listening.html`: IELTS Listening runtime
 - `vocabulary.html`: Vocabulary runtime
@@ -78,6 +79,8 @@ Shared frontend assets:
 - `assets/js/teacher.js`
 - `assets/js/practice-session.js`
 - `assets/js/personal-vocab.js`
+- `assets/js/intensive-listening.js`
+- `assets/css/intensive-listening.css`
 - `assets/js/reports.js`
 - `assets/css/reports.css`
 - `assets/css/my-words.css`
@@ -125,6 +128,12 @@ Current frontend philosophy:
 - Keep isolated design previews, such as `my-words-modal-preview.html`, clearly
   unlinked from production navigation and free of real student/backend data.
 - Preserve cache query strings on changed scripts.
+
+Intensive Listening imports publish catalog metadata only. Reviewed text,
+accepted slot answers, and timestamps are imported into
+`intensive_listening_materials`; the authenticated `intensiveListening` cloud
+function returns redacted slot structure and performs every check/reveal/progress
+write. Progress and temporary replays use separate private collections.
 
 ### Teacher Workspace Return and Local Cache
 

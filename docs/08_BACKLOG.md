@@ -5,6 +5,9 @@
 
 ## High Priority
 
+- Add teacher-managed accepted spelling variants and a bounded abandoned-replay
+  cleanup policy after the first Intensive Listening classroom trial.
+
 - Verify deployed P0 backend fixes in CloudBase development:
   - low-score retry does not downgrade passed assignment
   - completed/STAR work can be reassigned

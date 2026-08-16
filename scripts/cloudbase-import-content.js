@@ -17,6 +17,10 @@ const COLLECTIONS = {
     file: ".cloudbase-private/import/grading-keys-cloudbase.json",
     keyField: "set_id",
   },
+  intensive_listening_materials: {
+    file: ".cloudbase-private/import/intensive-listening-materials-cloudbase.json",
+    keyField: "material_id",
+  },
   system_config: {
     file: ".cloudbase-private/import/system-config-cloudbase.json",
     keyField: "config_key",
@@ -35,7 +39,7 @@ Default mode is a dry run. Add --apply to write to CloudBase.
 
 Options:
   --apply                    Execute CloudBase writes
-  --only <list>              Comma-separated collections: sets,grading_keys,system_config,vocabulary_lexicon
+  --only <list>              Comma-separated collections: sets,grading_keys,intensive_listening_materials,system_config,vocabulary_lexicon
   --ids <list>               Comma-separated keys to import, matched against each collection key field
   --offset <number>           Skip this many input records before importing, default 0
   --overwrite-existing       Update existing records instead of insert-missing only
@@ -57,7 +61,7 @@ Examples:
 function parseArgs(argv) {
   const options = {
     apply: false,
-    only: ["sets", "grading_keys"],
+    only: ["sets", "grading_keys", "intensive_listening_materials"],
     ids: null,
     offset: 0,
     overwriteExisting: false,

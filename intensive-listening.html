@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#123f35">
+  <title>Intensive Listening · Mr. Cat Academy</title>
+  <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260816-1">
+</head>
+<body data-practice-nav="manual">
+  <header class="il-header">
+    <button class="il-back" id="back-button" type="button">‹ Dashboard</button>
+    <div class="il-header-progress">
+      <strong id="header-progress-label">0%</strong>
+      <progress id="header-progress" max="100" value="0"></progress>
+    </div>
+    <span class="il-mode">INTENSIVE LISTENING</span>
+  </header>
+
+  <main class="il-shell" id="practice-shell" hidden>
+    <section class="il-material-heading">
+      <span class="il-eyebrow">LISTEN · TYPE · CHECK</span>
+      <h1 id="material-title">Loading…</h1>
+      <div class="il-stats" aria-label="Practice summary">
+        <span><strong id="completed-count">0</strong> completed</span>
+        <span><strong id="independent-count">0</strong> independently</span>
+        <span><strong id="assisted-count">0</strong> with answer</span>
+        <span><strong id="replay-count">0</strong> replays</span>
+      </div>
+    </section>
+
+    <section class="il-practice-card" id="practice-card">
+      <div class="il-unit-bar">
+        <div><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label"></span></div>
+        <span class="il-unit-position" id="unit-position">1 / 1</span>
+      </div>
+
+      <div class="il-audio-row">
+        <button class="il-replay" id="replay-button" type="button" aria-label="Replay this unit">▶</button>
+        <div><strong id="audio-status">Ready when you are</strong><span>Tab replays · Space moves forward · Enter checks</span></div>
+        <span class="il-time-range" id="time-range"></span>
+      </div>
+
+      <div class="il-word-slots" id="word-slots" aria-label="Transcription word slots"></div>
+      <div class="il-feedback" id="feedback" role="status" aria-live="polite">Listen once, then type one word in each slot.</div>
+
+      <div class="il-actions">
+        <button class="il-answer" id="answer-button" type="button">Show Answer</button>
+        <span class="il-check-count" id="check-count">0 / 3 checks</span>
+        <button class="il-check" id="check-button" type="button">Check · Enter</button>
+      </div>
+
+      <div class="il-answer-panel" id="answer-panel" hidden>
+        <span class="il-eyebrow">ANSWER</span>
+        <p id="answer-text"></p>
+        <button class="il-continue" id="continue-button" type="button">Continue</button>
+      </div>
+    </section>
+  </main>
+
+  <section class="il-start-screen" id="start-screen">
+    <div class="il-start-card">
+      <span class="il-eyebrow">FOCUS SESSION</span>
+      <h1 id="start-title">Intensive Listening</h1>
+      <p id="start-copy">Preparing your material…</p>
+      <button class="il-start-button" id="start-button" type="button" disabled><span id="start-button-label">Loading</span></button>
+      <span class="il-start-note" id="start-note">The first unit waits for you. Later units play once automatically.</span>
+    </div>
+  </section>
+
+  <section class="il-completion-screen" id="completion-screen" hidden>
+    <div class="il-completion-card">
+      <span class="il-eyebrow">MATERIAL COMPLETE</span>
+      <strong id="completion-percent">100%</strong>
+      <h1>Listening finished.</h1>
+      <p id="completion-summary"></p>
+      <div class="il-completion-actions">
+        <a class="il-finish" href="dashboard.html">Finish</a>
+        <button class="il-restart" id="restart-button" type="button">Clear &amp; Start Again</button>
+      </div>
+      <span class="il-restart-note">A new run is temporary. Your 100% best record stays locked.</span>
+    </div>
+  </section>
+
+  <div class="il-leave-modal" id="leave-modal" hidden>
+    <div class="il-leave-box" role="alertdialog" aria-modal="true" aria-labelledby="leave-title" aria-describedby="leave-copy">
+      <div><h2 id="leave-title">Leave this practice?</h2><p id="leave-copy">Your completed progress is safe. Unchecked words stay only on this device.</p></div>
+      <footer><button id="leave-cancel" type="button">Keep Listening</button><button id="leave-confirm" type="button">Leave</button></footer>
+    </div>
+  </div>
+
+  <audio id="audio" preload="auto"></audio>
+  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+  <script src="assets/js/config.public.js?v=20260815-1"></script>
+  <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
+  <script src="assets/js/intensive-listening.js?v=20260816-1"></script>
+</body>
+</html>
