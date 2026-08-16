@@ -130,6 +130,22 @@ in` heading remains available to assistive technology.
 On mobile, the welcome panel shrink-wraps the brand and quote instead of
 retaining the former fixed 430px minimum height and a large empty lower half.
 
+#### Login entry and return behavior
+
+`index.html` is the only credential form. Every inner `Log In` action navigates
+there through the shared same-origin return helper; it must not open a second
+credential dialog or trust a URL-supplied identity. The public Library header
+returns an authenticated student to Dashboard `Library`, while a login prompt
+from a specific BBC, IELTS Reading, IELTS Listening, or Vocabulary exercise
+returns to that exact exercise URL, preserving its query and hash.
+
+Dashboard Visitor words/profile actions, My Words, and Attempt Review retain
+their current full URL when sending a signed-out user to login. The helper
+rejects external or malformed return targets and removes legacy `user` and
+`visitor` parameters. Visitor mode remains an explicit browse-only state, and
+browser identity labels, cached profiles, and query parameters never authorize
+CloudBase data access.
+
 ### Parent Mode
 
 The class matrix renders tasks as rows and students as columns. It projects

@@ -200,6 +200,53 @@ Open:
 - at least one IELTS Listening page
 - at least one Vocabulary page
 
+### Login routing and return-target manual QA
+
+Use a dedicated development teacher/student pair and a clean browser profile.
+The following checks are required after any change to the shared login helper
+or an inner login action:
+
+- **Public Library header:** while signed out, open the public Library and use
+  its header `Log In`. After a valid student sign-in, land on the authenticated
+  Dashboard `Library` view, not the assignment list or a generic blank page.
+- **Public Library exercise:** from a public Library card, trigger login and
+  then sign in. Return to the exact selected exercise URL, including its set
+  query and any hash; do not lose the exercise or fall back to Dashboard.
+- **Direct BBC/IELTS:** open a BBC, IELTS Reading, or IELTS Listening URL while
+  signed out, including a representative query/hash. Use the page's login
+  prompt, sign in with the development student, and verify the exact original
+  exercise URL is restored. Repeat for at least one BBC and one IELTS page.
+- **Visitor-to-login:** choose `Continue as Visitor`, open Dashboard, then use
+  the Visitor Dashboard words login and profile login actions. Both must go to
+  `index.html` with the current Dashboard URL/view as the validated return;
+  after sign-in, the same Dashboard view is restored. Visitor mode must not
+  authorize answers, submissions, or personal words.
+- **New student ID:** create or use a newly created development Student ID,
+  sign in from the central `index.html` form, and verify the account reaches its
+  normal Dashboard without inheriting another browser's cached identity or
+  being redirected by a stale legacy parameter.
+- **Old `?user` ignored:** open Dashboard, My Words, and a practice URL with an
+  old `?user=...` (and, where applicable, `?visitor=1`) parameter while signed
+  out. The parameter must not identify a student, grant access, or be copied
+  into the next route; only explicit Visitor state or CloudBase authentication
+  controls behavior.
+- **External return rejected:** open `index.html?return=https%3A%2F%2Fevil.example%2F`;
+  after student sign-in, verify the app uses the safe default destination and
+  never navigates to the external origin. Repeat with a malformed return and
+  a non-HTML path if the browser harness permits it.
+- **My Words and Attempt Review context:** while signed out, open My Words and
+  `attempt-review.html?attempt=<dev-attempt>#details`. Verify both redirects
+  return to login and that successful sign-in restores the exact query/hash;
+  an unauthorized attempt must still be rejected by the backend.
+- **Script order and cache:** inspect each affected page source and verify
+  `assets/js/login-navigation.js` appears before its page-specific script, with
+  the same cache-busting version on Dashboard, My Words, and Attempt Review.
+
+These are static/frontend routing checks only. They do not require CloudBase
+collection creation, data import, function deployment, or migration; use the
+existing development accounts and existing attempt data where an authenticated
+exercise review is needed.
+
 For every `BBC-26YYMMDD` runtime, confirm the page uses the default green BBC
 presentation and its public JSON contains no `renderTheme` override.
 

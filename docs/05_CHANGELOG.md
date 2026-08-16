@@ -34,6 +34,19 @@
   iCloud JSON as the portable authoring and recovery package.
 - Standardized repeat timestamped-JSON intake and renamed the owner backup
   folders to `Scripts JSON` and `Scripts MD`.
+- Unified inner login routing across Dashboard, My Words, and Attempt Review.
+  `index.html` remains the sole credential entry; validated same-origin return
+  targets preserve Dashboard views, exact exercise URLs, attempt query/hash
+  context, and public Library-to-Dashboard Library delivery.
+- Removed reliance on legacy `user` / `visitor` URL parameters for identity or
+  routing. Browser identity remains presentation state only; CloudBase remains
+  the authorization boundary.
+
+### Deployment scope
+
+- Static-only release: publish the changed HTML/JavaScript and documentation
+  after review. No CloudBase function deployment, collection change, data
+  import, or migration is required.
 
 ## 2026-08-16
 

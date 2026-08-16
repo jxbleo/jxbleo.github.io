@@ -370,6 +370,24 @@ Rules:
 - During an active countable Vocabulary Test, student cloud-function surfaces
   reject requests from other browser page instances for the same student.
 
+### Browser login navigation boundary
+
+`index.html` is the sole credential entry point. Inner `Log In` controls do not
+authenticate locally; they call the shared `MrCatLoginNavigation.loginHref`
+helper to create an `index.html` URL with a validated same-origin `.html`
+return target. The helper rejects external, malformed, and unsupported targets
+and strips legacy `user` / `visitor` identity parameters. This keeps context
+restoration in the browser navigation layer while leaving authentication and
+authorization in CloudBase.
+
+The return contract is explicit: the public Library header returns a verified
+student to the authenticated Dashboard Library view, while an exercise-specific
+entry returns to the exact BBC/IELTS/Vocabulary URL, including its query and
+hash. Dashboard, My Words, and Attempt Review use their current full URL when
+redirecting a signed-out session. A browser profile, URL parameter, visitor
+flag, or displayed identity is never an authorization grant; cloud functions
+derive ownership from authenticated context.
+
 ## 8. Main Data Flows
 
 ### Student Login
@@ -619,6 +637,9 @@ Static site:
 
 - Publish committed HTML/CSS/JS/data/audio changes.
 - Bump script query strings when shared JS changes.
+- The login-navigation repair is static-only: it changes HTML/JavaScript
+  routing and documentation, with no CloudBase function deployment, collection
+  change, data import, or migration.
 
 CloudBase functions:
 

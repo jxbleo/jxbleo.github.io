@@ -730,13 +730,8 @@
 <div class="container" id="app">
     <div id="login-overlay" class="login-overlay" style="display:none;">
         <div class="login-modal">
-            <div class="custom-login" style="display:flex;gap:8px;margin-top:14px;">
-                <input type="text" id="ielts-custom-id-input" placeholder="Enter a student ID" autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;" />
-                <button id="ielts-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
-            </div>
-            <button id="ielts-saved-identity-btn" style="display:none;width:100%;margin-top:12px;padding:12px;background:transparent;color:var(--text-light);border:1px solid var(--border-color);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue</button>
-            <div id="ielts-login-error" style="font-size:0.85em;color:var(--text-muted);margin-top:6px;min-height:1.2em;"></div>
-            <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-muted);font-size:0.85em;"><span style="flex:1;border-top:1px solid var(--border);"></span><span>or</span><span style="flex:1;border-top:1px solid var(--border);"></span></div>
+            <p>Log in with your official Mr. Cat Academy account to answer.</p>
+            <button id="ielts-official-login-btn" style="display:block;width:100%;padding:12px;background:#13766d;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:700;cursor:pointer;">Log In</button>
             <button id="ielts-visitor-btn" style="display:block;width:100%;padding:12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue as Visitor</button>
         </div>
     </div>
@@ -799,7 +794,8 @@
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260815-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-<script src="assets/js/practice-session.js?v=20260816-3"></script>
+<script src="assets/js/login-navigation.js?v=20260817-1"></script>
+<script src="assets/js/practice-session.js?v=20260817-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
@@ -808,7 +804,7 @@
 
     var params = new URLSearchParams(window.location.search);
     var setId = params.get('set');
-    var userId = params.get('user');
+    var userId = '';
     var assignmentId = params.get('assignment') || '';
     var prefillAttemptId = params.get('prefill') || '';
     var historyAttemptId = params.get('history') || prefillAttemptId;
@@ -2431,23 +2427,8 @@
         });
     }
 
-    var students = [
-        { id: 'EI6688', label: '甘昕雨Eilene' },
-        { id: 'EV3389', label: '刘榆雯Eva' },
-        { id: 'LEO6666', label: 'jxbleo' }
-    ];
-
-    var validIds = ['EI6688', 'EV3389', 'LEO6666'];
-
-    function getStudentLabel(id) {
-        for (var i = 0; i < students.length; i++) {
-            if (students[i].id === id) return students[i].label;
-        }
-        return id;
-    }
-
     function englishName(value) {
-        var textValue = String(value && (value.name || value.student_id) || value || '').trim();
+        var textValue = String(value && (value.english_name || value.name || value.student_id) || value || '').trim();
         if (!textValue) return 'Student';
         var englishParts = textValue.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
         return englishParts && englishParts.length
@@ -2455,10 +2436,14 @@
             : textValue;
     }
 
+    function currentProfile() {
+        return window.MrCatPractice && window.MrCatPractice.profile || null;
+    }
+
     function updateExamHeaderLabel() {
         var el = document.getElementById('exam-set-id');
         if (!el) return;
-        var profile = window.MrCatPractice && window.MrCatPractice.profile;
+        var profile = currentProfile();
         var id = userId || getStoredIdentity();
         var name = teacherMode
             ? 'Teacher'
@@ -2466,12 +2451,15 @@
                 ? 'Visitor'
                 : profile
                     ? englishName(profile)
-                    : englishName(getStudentLabel(id || 'Student'));
+                    : 'Login';
         el.textContent = name + ' · ' + setId;
     }
 
     function getStoredIdentity() {
-        return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+        var practice = window.MrCatPractice || {};
+        if (practice.isVisitor && practice.isVisitor()) return 'VISITOR';
+        var profile = currentProfile();
+        return profile && profile.student_id ? String(profile.student_id) : '';
     }
 
     function updateDashboardCapsuleLabel(label, attempt) {
@@ -2491,33 +2479,30 @@
         var el = document.getElementById('identity-status');
         if (!el) return;
         var id = userId || getStoredIdentity();
-        var label = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
+        var label = teacherMode
+            ? 'Teacher'
+            : id === 'VISITOR'
+                ? 'Visitor'
+                : currentProfile()
+                    ? englishName(currentProfile())
+                    : 'Login';
         el.textContent = label;
         updateDashboardCapsuleLabel(label);
         updateExamHeaderLabel();
     }
 
-    function loginAsUser(id) {
-        userId = id;
-        localStorage.setItem('opencode_user', id);
-        localStorage.removeItem('opencode_visitor');
-        updateIdentityStatus();
-        loginOverlay.style.display = 'none';
-        var url = new URL(window.location);
-        url.searchParams.set('user', id);
-        window.history.replaceState({}, '', url);
-        initAfterLogin();
-    }
-
     function loginAsVisitor() {
         userId = 'VISITOR';
-        localStorage.removeItem('opencode_user');
-        localStorage.setItem('opencode_visitor', 'true');
+        if (window.MrCatPractice && typeof window.MrCatPractice.enableVisitorMode === 'function') {
+            window.MrCatPractice.enableVisitorMode();
+        } else {
+            localStorage.removeItem('mrcat_student_profile');
+            localStorage.removeItem('opencode_user');
+            localStorage.setItem('mrcat_visitor', 'true');
+            localStorage.setItem('opencode_visitor', 'true');
+        }
         updateIdentityStatus();
         loginOverlay.style.display = 'none';
-        var url = new URL(window.location);
-        url.searchParams.delete('user');
-        window.history.replaceState({}, '', url);
         initAfterLogin();
     }
 
@@ -2530,13 +2515,6 @@
         startReadingTimer();
 
         if (!userId) userId = getStoredIdentity();
-        if (params.get('user') && params.get('user') !== 'VISITOR') {
-            localStorage.setItem('opencode_user', params.get('user'));
-            localStorage.removeItem('opencode_visitor');
-        } else if (params.get('user') === 'VISITOR') {
-            localStorage.removeItem('opencode_user');
-            localStorage.setItem('opencode_visitor', 'true');
-        }
         updateIdentityStatus();
 
         if (teacherMode) {
@@ -2552,42 +2530,16 @@
             }
             loginOverlay.style.display = 'flex';
             loadingDisplay.style.display = 'none';
-            var customInput = document.getElementById('ielts-custom-id-input');
-            var customBtn = document.getElementById('ielts-custom-login-btn');
-            var errorEl = document.getElementById('ielts-login-error');
+            var loginBtn = document.getElementById('ielts-official-login-btn');
             var visitorBtn = document.getElementById('ielts-visitor-btn');
-            var savedBtn = document.getElementById('ielts-saved-identity-btn');
-
-            if (customInput) customInput.value = '';
-            if (errorEl) errorEl.textContent = '';
-            var stored = localStorage.getItem('opencode_user') || '';
-            if (savedBtn && stored) {
-                savedBtn.style.display = 'block';
-                savedBtn.textContent = 'Continue as ' + getStudentLabel(stored);
-                savedBtn.onclick = function() { loginAsUser(stored); };
-            } else if (savedBtn) {
-                savedBtn.style.display = 'none';
-            }
-
-            function handleCustomLogin() {
-                var id = customInput.value.trim();
-                if (!id) { errorEl.textContent = 'Please enter a student ID.'; return; }
-                if (validIds.indexOf(id) !== -1) {
-                    errorEl.textContent = '';
-                    loginAsUser(id);
+            if (loginBtn) loginBtn.onclick = function() {
+                if (window.MrCatLoginNavigation && typeof window.MrCatLoginNavigation.loginHref === 'function') {
+                    window.location.href = window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html');
                 } else {
-                    errorEl.textContent = 'Unknown ID: "' + id + '"';
-                    if (confirm('No matching ID for "' + id + '". Continue as visitor?')) {
-                        loginAsVisitor();
-                    }
+                    window.location.href = 'index.html';
                 }
-            }
-
-            customBtn.addEventListener('click', handleCustomLogin);
-            customInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') handleCustomLogin();
-            });
-            visitorBtn.addEventListener('click', loginAsVisitor);
+            };
+            if (visitorBtn) visitorBtn.onclick = loginAsVisitor;
 
             return;
         }

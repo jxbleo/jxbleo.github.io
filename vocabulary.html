@@ -2231,7 +2231,8 @@
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260815-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-    <script src="assets/js/practice-session.js?v=20260816-3"></script>
+    <script src="assets/js/login-navigation.js?v=20260817-1"></script>
+    <script src="assets/js/practice-session.js?v=20260817-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/vocabulary-worksheet-pdf.js?v=20260712-1"></script>
     <script>
@@ -2297,37 +2298,31 @@
         var testReviewMode = false;
         var testIntegrityEnded = false;
         var pendingIntegrityNotice = '';
-        var students = [
-            { id: 'EI6688', label: '甘昕雨Eilene' },
-            { id: 'EV3389', label: '刘榆雯Eva' },
-            { id: 'LEO6666', label: 'jxbleo' }
-        ];
-
-        function getStudentLabel(id) {
-            for (var i = 0; i < students.length; i++) {
-                if (students[i].id === id) return students[i].label;
-            }
-            return id;
-        }
-
         function updateIdentityStatus() {
             var el = document.getElementById('identity-status');
             if (!el) return;
-            var urlUser = params.get('user');
-            if (urlUser && urlUser !== 'VISITOR') {
-                localStorage.setItem('opencode_user', urlUser);
-                localStorage.removeItem('opencode_visitor');
-            } else if (urlUser === 'VISITOR') {
-                localStorage.removeItem('opencode_user');
-                localStorage.setItem('opencode_visitor', 'true');
+            var practice = window.MrCatPractice || {};
+            var profile = practice.profile;
+            var isVisitor = practice.isVisitor && practice.isVisitor();
+            if (isVisitor) {
+                el.textContent = 'Visitor';
+                return;
             }
-            var user = localStorage.getItem('opencode_user') || '';
-            var isVisitor = localStorage.getItem('opencode_visitor') === 'true';
-            el.textContent = user ? getStudentLabel(user) : (isVisitor ? 'Visitor' : 'Login');
+            if (!profile) {
+                el.textContent = 'Login';
+                return;
+            }
+            var direct = String(profile.english_name || '').trim();
+            var full = String(profile.name || profile.student_id || '').trim();
+            var matches = full.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+            el.textContent = direct || (matches && matches.length ? matches[matches.length - 1] : full) || 'Student';
         }
 
         function currentUserId() {
-            return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+            var practice = window.MrCatPractice || {};
+            if (practice.isVisitor && practice.isVisitor()) return 'VISITOR';
+            var profile = practice.profile;
+            return profile && profile.student_id ? String(profile.student_id) : '';
         }
 
         function contentVersion() {
