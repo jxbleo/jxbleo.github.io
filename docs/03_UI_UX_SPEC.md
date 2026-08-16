@@ -469,11 +469,17 @@ Student cards should show:
   verified, `Back` navigates to the safe `return` URL or the appropriate home
   fallback rather than risking older login or unrelated tab history. `Home`
   always goes directly to the student's dashboard, or to Teacher Library for
-  `teacher=1` preview pages. On BBC and Vocabulary practice pages, both leave
-  confirmations use one bottom action row inside the card: `Cancel` on the left
-  dismisses the dialog, and `Confirm` on the right performs the selected
-  `Back` or `Home` navigation. These dialogs do not show a separate `Close`
-  action.
+  `teacher=1` preview pages. Across BBC, Vocabulary, IELTS Reading, and IELTS
+  Listening, both leave confirmations use the same compact Apple-style alert as
+  Student Logout: a 320-pixel translucent glass card, softly dimmed/blurred
+  backdrop, and one hairline-separated bottom action row. `Cancel` on the left
+  dismisses the dialog, while a red-text action-specific `Back` or `Home` on the
+  right performs the selected navigation. The dialog does not show a heading
+  bar, back arrow, or separate `Close` action. It locks background scrolling,
+  traps keyboard focus, supports Escape as Cancel, and restores focus to the
+  originating navigation control when cancelled. Reduced-motion,
+  reduced-transparency, and increased-contrast preferences receive appropriate
+  fallbacks.
 
 My Words:
 
@@ -682,6 +688,11 @@ Student account menu:
   `Cancel` and a red-text `Log out`; Cancel restores Personal Center, while only
   the destructive confirmation clears the local identity, signs out, and
   returns to login.
+- Teacher Personal Center `Log Out` follows the same confirmation rule and uses
+  the same compact Apple-style alert, wording hierarchy, glass material, and
+  hairline-separated `Cancel` / red-text `Log out` actions. Cancel restores the
+  Teacher Personal Center and focus to its `Log Out` control; only confirmation
+  clears the teacher workspace cache and authentication session.
 - Opening `Finished` from Personal Center replaces that card in the exact same
   centered 430-by-490-pixel maximum spatial footprint, including the external
   Close capsule position and dimensions. Its top-left back arrow restores

@@ -730,21 +730,10 @@
         </div>
     </div>
 </div>
-<div class="audio-start-modal" id="leave-page-modal" role="dialog" aria-modal="true" aria-labelledby="leave-page-title">
-    <div class="audio-start-box">
-        <h2 id="leave-page-title">Leave This Page?</h2>
-        <p>Are you sure you want to go back? You will leave this listening practice page.</p>
-        <div class="audio-start-actions">
-            <button class="audio-start-cancel" id="leave-page-cancel" type="button">Stay Here</button>
-            <button class="audio-start-confirm" id="leave-page-confirm" type="button">Back</button>
-        </div>
-    </div>
-</div>
-
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260815-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-<script src="assets/js/practice-session.js?v=20260712-1"></script>
+<script src="assets/js/practice-session.js?v=20260816-2"></script>
 <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
 <script>
 (function() {
@@ -1024,16 +1013,6 @@
             audioStartPromptShown = false;
             updateAudioUi();
         }
-    }
-
-    function showLeavePageDialog() {
-        var modal = document.getElementById('leave-page-modal');
-        if (modal) modal.classList.add('show');
-    }
-
-    function hideLeavePageDialog() {
-        var modal = document.getElementById('leave-page-modal');
-        if (modal) modal.classList.remove('show');
     }
 
     function goBackFromListening() {
@@ -1504,7 +1483,11 @@
 
     function bindEvents() {
         document.getElementById('dashboard-btn').addEventListener('click', function() {
-            showLeavePageDialog();
+            if (window.MrCatPractice && window.MrCatPractice.confirmBack) {
+                window.MrCatPractice.confirmBack();
+            } else {
+                goBackFromListening();
+            }
         });
         document.getElementById('home-btn').addEventListener('click', function() {
             if (window.MrCatPractice && window.MrCatPractice.confirmHome) {
@@ -1545,8 +1528,6 @@
         var audioStartConfirm = document.getElementById('audio-start-confirm');
         audioStartConfirm.addEventListener(window.PointerEvent ? 'pointerup' : 'click', startExamAudio);
         document.getElementById('audio-start-cancel').addEventListener('click', cancelAudioStartDialog);
-        document.getElementById('leave-page-cancel').addEventListener('click', hideLeavePageDialog);
-        document.getElementById('leave-page-confirm').addEventListener('click', goBackFromListening);
         function handleQuestionInput(event) {
             if (!event.target.matches('[data-question]')) return;
             saveDraft();

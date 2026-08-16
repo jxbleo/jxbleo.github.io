@@ -331,10 +331,13 @@ Practice navigation checks:
   Library for `teacher=1`
 - BBC and Vocabulary shared practice pages show both `Back` and `Home`; IELTS
   Reading and IELTS Listening show both controls in the exam top bar
-- on BBC and Vocabulary practice pages, both leave confirmations show one
-  bottom action row inside the white card: `Cancel` on the left dismisses the
-  dialog without navigating, while `Confirm` on the right performs the selected
-  `Back` or `Home` navigation; neither dialog shows a separate `Close` action
+- on BBC, Vocabulary, IELTS Reading, and IELTS Listening, both leave
+  confirmations match the compact Student Logout alert: a translucent 320-pixel
+  card, dimmed/blurred backdrop, and one hairline-separated bottom row. `Cancel`
+  on the left dismisses without navigating, while red-text `Back` or `Home` on
+  the right performs the selected navigation; neither dialog shows a separate
+  `Close` action. Background scroll remains fixed, Tab stays inside the alert,
+  Escape cancels, and Cancel restores focus to the originating control
 - static practice data requests use the public app-version query, not
   timestamp cache busting such as `?_=` + `Date.now()`
 - IELTS Reading shows the set code only in the black exam bar, reduces paragraph
@@ -389,6 +392,9 @@ Check:
   contains `Cancel` and a red-text `Log out`; Cancel restores Personal Center
   and focus to `Log out`, while only confirmation clears the session and
   returns to login
+- Teacher Personal Center `Log Out` opens that same alert family; Cancel restores
+  the Personal Center and `Log Out` focus, while confirmation clears the teacher
+  workspace cache, signs out, and returns to login
 - Student ID, Class, and System rows respond to pointer and keyboard activation
   with a restrained text movement but do not navigate or edit data; no row
   retains a selected background or pressed scale after activation, and reduced

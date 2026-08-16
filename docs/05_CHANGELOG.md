@@ -7,6 +7,13 @@
 
 ### Changed
 
+- Unified BBC, Vocabulary, IELTS Reading, and IELTS Listening `Back` / `Home`
+  confirmations with the Student Logout Apple-style glass alert, including
+  action-specific labels, focus containment/restoration, scroll locking, and
+  accessibility fallbacks. IELTS Listening now uses the shared practice alert
+  instead of its legacy leave-page dialog.
+- Added the same explicit Apple-style confirmation before Teacher Personal
+  Center logout; only the confirmed action clears the teacher cache and session.
 - Lowered the Tencent COS multipart-upload threshold from 5 MB to 4 MB after a
   4.79 MB BBC audio object stalled on the single-request upload path. The
   resumable deploy now routes that file through the proven 1 MB chunk path.

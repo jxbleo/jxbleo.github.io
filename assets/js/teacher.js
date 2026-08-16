@@ -474,6 +474,10 @@
     var notificationAttemptRoot = document.getElementById('teacher-notification-attempt-root');
     var teacherAccountPanel = document.getElementById('teacher-account-panel');
     var teacherAccountContent = document.getElementById('teacher-account-content');
+    var teacherLogoutConfirmOverlay = document.getElementById('teacher-logout-confirm-overlay');
+    var teacherLogoutConfirmCancel = document.getElementById('teacher-logout-confirm-cancel');
+    var teacherLogoutConfirmSubmit = document.getElementById('teacher-logout-confirm-submit');
+    var teacherLogoutOpener = null;
     var teacherStarPanel = document.getElementById('teacher-star-panel');
     var teacherStarList = document.getElementById('teacher-star-list');
 
@@ -922,6 +926,73 @@
         });
     }
 
+    function setTeacherLogoutConfirmOpen(open) {
+        if (!teacherLogoutConfirmOverlay) return;
+        teacherLogoutConfirmOverlay.hidden = open !== true;
+        if (open === true) {
+            teacherLogoutOpener = document.getElementById('teacher-logout');
+            if (teacherAccountPanel) teacherAccountPanel.hidden = true;
+            window.requestAnimationFrame(function() {
+                if (teacherLogoutConfirmCancel) teacherLogoutConfirmCancel.focus({ preventScroll: true });
+            });
+            return;
+        }
+        teacherLogoutConfirmOverlay.removeAttribute('aria-busy');
+        if (teacherLogoutConfirmSubmit) {
+            teacherLogoutConfirmSubmit.disabled = false;
+            teacherLogoutConfirmSubmit.textContent = 'Log out';
+        }
+        if (state.accountPanelOpen && teacherAccountPanel) teacherAccountPanel.hidden = false;
+        if (teacherLogoutOpener && teacherLogoutOpener.focus) teacherLogoutOpener.focus({ preventScroll: true });
+        teacherLogoutOpener = null;
+    }
+
+    function openTeacherLogoutConfirm() {
+        setTeacherLogoutConfirmOpen(true);
+    }
+
+    if (teacherLogoutConfirmCancel) {
+        teacherLogoutConfirmCancel.addEventListener('click', function() {
+            setTeacherLogoutConfirmOpen(false);
+        });
+    }
+    if (teacherLogoutConfirmSubmit) {
+        teacherLogoutConfirmSubmit.addEventListener('click', function() {
+            teacherLogoutConfirmSubmit.disabled = true;
+            teacherLogoutConfirmSubmit.textContent = 'Logging out...';
+            teacherLogoutConfirmOverlay.setAttribute('aria-busy', 'true');
+            clearTeacherWorkspaceCache(state.profile).then(function() {
+                return window.MrCatAuth.logout();
+            }).catch(function(error) {
+                setTeacherLogoutConfirmOpen(false);
+                setMessage(error.message || 'Unable to log out. Please try again.', 'error');
+            });
+        });
+    }
+    if (teacherLogoutConfirmOverlay) {
+        teacherLogoutConfirmOverlay.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                setTeacherLogoutConfirmOpen(false);
+                return;
+            }
+            if (event.key !== 'Tab') return;
+            var controls = [teacherLogoutConfirmCancel, teacherLogoutConfirmSubmit].filter(Boolean).filter(function(button) {
+                return !button.disabled;
+            });
+            if (!controls.length) return;
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        });
+    }
+
     function renderTeacherAccount() {
         if (!teacherAccountContent) return;
         var profile = state.profile || {};
@@ -954,12 +1025,7 @@
         bindTeacherEmailControls();
         var logout = document.getElementById('teacher-logout');
         if (logout) {
-            logout.addEventListener('click', function() {
-                logout.disabled = true;
-                clearTeacherWorkspaceCache(state.profile).then(function() {
-                    return window.MrCatAuth.logout();
-                });
-            });
+            logout.addEventListener('click', openTeacherLogoutConfirm);
         }
     }
 
