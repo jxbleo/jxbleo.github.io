@@ -5,6 +5,13 @@
 
 ## 2026-08-16
 
+### Added
+
+- Added the authenticated shared Intensive Listening runtime, private server
+  checking/progress function, timestamped JSON importer, and first material
+  `IL-BBC-260813` with 33 source-defined units and 982 private word slots.
+- Added an `Intensive Listening` capsule to explicitly linked BBC lesson cards.
+
 ### Changed
 
 - Unified BBC, Vocabulary, IELTS Reading, and IELTS Listening `Back` / `Home`

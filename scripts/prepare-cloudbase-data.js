@@ -376,6 +376,7 @@ function buildSet(meta, overrides = {}) {
 function main() {
   const sets = [];
   const gradingKeys = [];
+  const intensiveListeningMaterials = [];
   const vocabularyLexicon = new Map();
 
   listJson(path.join(projectRoot, "data"))
@@ -446,6 +447,25 @@ function main() {
     );
   });
 
+  listJson(path.join(projectRoot, "content", "intensive-listening")).filter(selectedFile).forEach((metaPath) => {
+    const meta = readJson(metaPath);
+    const material = privateSourceFor("intensive-listening", meta.id);
+    if (!material || !Array.isArray(material.units) || !material.units.length) {
+      throw new Error(`Intensive Listening ${meta.id} is missing its private material source`);
+    }
+    if (String(material.set_id || "") !== String(meta.id)) {
+      throw new Error(`Intensive Listening ${meta.id} private set_id does not match`);
+    }
+    sets.push(buildSet(meta, {
+      type: "intensive-listening",
+      course: "Intensive Listening",
+      estimatedMinutes: Math.max(1, Math.ceil(Number(material.units.at(-1).end_seconds || 0) / 60)),
+      passingPercentage: 100,
+      masteryPercentage: 100,
+    }));
+    intensiveListeningMaterials.push(material);
+  });
+
   const systemConfig = [{
     config_key: "grading_defaults",
     value: {
@@ -462,9 +482,11 @@ function main() {
 
   writeJson(path.join(privateRoot, "sets.json"), sets);
   writeJson(path.join(privateRoot, "grading_keys.json"), gradingKeys);
+  writeJson(path.join(privateRoot, "intensive_listening_materials.json"), intensiveListeningMaterials);
   writeJson(path.join(privateRoot, "system_config.json"), systemConfig);
   writeJsonLines(path.join(privateRoot, "sets-cloudbase.json"), sets);
   writeJsonLines(path.join(privateRoot, "grading-keys-cloudbase.json"), gradingKeys);
+  writeJsonLines(path.join(privateRoot, "intensive-listening-materials-cloudbase.json"), intensiveListeningMaterials);
   writeJsonLines(path.join(privateRoot, "system-config-cloudbase.json"), systemConfig);
 
   const vocabularyLexiconCount = prepareVocabularyLexicon(
@@ -473,6 +495,7 @@ function main() {
 
   console.log(`Prepared ${sets.length} sets`);
   console.log(`Prepared ${gradingKeys.length} private grading keys`);
+  console.log(`Prepared ${intensiveListeningMaterials.length} private Intensive Listening materials`);
   console.log(`Prepared ${vocabularyLexiconCount} shared vocabulary lexicon entries`);
   if (selectedIds) console.log(`ID filter: ${[...selectedIds].join(", ")}`);
   console.log(`Output: ${outputRoot}`);

@@ -829,6 +829,7 @@
 
     function defaultPracticeLink(setId) {
         var id = String(setId || '');
+        if (/^IL-/i.test(id)) return 'intensive-listening.html?set=' + encodeURIComponent(id);
         if (/^BBC-/i.test(id)) return 'bbc.html?set=' + encodeURIComponent(id);
         if (/^C\d+-T\d+-S\d+/i.test(id)) return 'ielts-listening.html?set=' + encodeURIComponent(id);
         if (/^C\d+-T\d+-P\d+/i.test(id)) return 'ielts-reading.html?set=' + encodeURIComponent(id);
@@ -2473,6 +2474,7 @@
 
     var LIBRARY_SUB_TABS = {
         general: [
+            { id: 'intensive-listening', sectionId: 'intensive-listening', label: 'Intensive' },
             { id: 'bbc-2024', sectionId: 'bbc-six-minute-english', label: 'BBC2024', itemYear: '2024' },
             { id: 'bbc-2025', sectionId: 'bbc-six-minute-english', label: 'BBC2025', itemYear: '2025' },
             { id: 'bbc-2026', sectionId: 'bbc-six-minute-english', label: 'BBC2026', itemYear: '2026' },
@@ -2496,6 +2498,7 @@
 
     function librarySectionLabel(sectionId, fallback) {
         var labels = {
+            'intensive-listening': 'Intensive Listening',
             'ielts-reading': 'ielts-reading',
             'ielts-listening': 'ielts-listening',
             'dse-english-paper-1': 'DSE Reading',

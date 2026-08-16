@@ -196,6 +196,23 @@
             transform: translateY(-1px);
         }
 
+        .hero-tool-btn:active {
+            transform: scale(0.97);
+            transition-duration: 100ms;
+        }
+
+        .hero-tool-btn:focus-visible {
+            outline: 3px solid rgba(255,255,255,0.72);
+            outline-offset: 3px;
+        }
+
+        .hero-tool-intensive {
+            color: var(--accent-dark);
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(255,255,255,0.68);
+            box-shadow: 0 12px 28px rgba(9, 60, 55, 0.16);
+        }
+
         #bbc-audio {
             display: none;
         }
@@ -3349,7 +3366,27 @@
         if (!tools) return;
         var hero = tools.closest ? tools.closest('.lesson-hero') : null;
         var href = worksheetPdfHref(lessonData);
-        if (!href) {
+        var intensiveSetId = String(lessonData && lessonData.intensiveListeningSetId || '').trim();
+        var buttons = [];
+        if (intensiveSetId && !teacherMode) {
+            var returnTarget = 'bbc.html' + window.location.search + window.location.hash;
+            var intensiveHref = 'intensive-listening.html?set=' + encodeURIComponent(intensiveSetId) + '&return=' + encodeURIComponent(returnTarget);
+            buttons.push(
+                '<a class="hero-tool-btn hero-tool-intensive" id="lesson-intensive-listening" href="' + escapeHtml(intensiveHref) + '" aria-label="Open Intensive Listening practice">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true">' +
+                        '<path d="M4 12v2"></path><path d="M8 8v10"></path><path d="M12 5v14"></path><path d="M16 8v10"></path><path d="M20 11v4"></path>' +
+                    '</svg>Intensive Listening</a>'
+            );
+        }
+        if (href) {
+            buttons.push(
+                '<a class="hero-tool-btn hero-tool-download" id="lesson-worksheet-download" href="' + escapeHtml(href) + '" download="' + escapeHtml(href.split('/').pop() || '') + '">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
+                        '<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>' +
+                    '</svg>Download Worksheet</a>'
+            );
+        }
+        if (!buttons.length) {
             tools.innerHTML = '';
             tools.classList.remove('has-download');
             if (hero) hero.classList.remove('has-download');
@@ -3357,11 +3394,7 @@
         }
         tools.classList.add('has-download');
         if (hero) hero.classList.add('has-download');
-        tools.innerHTML =
-            '<a class="hero-tool-btn hero-tool-download" id="lesson-worksheet-download" href="' + escapeHtml(href) + '" download="' + escapeHtml(href.split('/').pop() || '') + '">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
-                    '<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>' +
-                '</svg>Download Worksheet</a>';
+        tools.innerHTML = buttons.join('');
     }
 
     function renderLessonWords(words, message) {

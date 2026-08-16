@@ -41,6 +41,9 @@ Only CloudBase cloud functions should read or write private collections.
 | `classes` | stable class entities used by class work and reports |
 | `class_memberships` | current and historical student-class relationships |
 | `learning_reports` | preview and published weekly/monthly report snapshots |
+| `intensive_listening_materials` | private reviewed units, timings, words, accepted variants |
+| `intensive_listening_progress` | one permanent best record per student/material |
+| `intensive_listening_replays` | temporary restart summaries that never lower the best record |
 
 All collections should remain `ADMINONLY`.
 
@@ -1015,3 +1018,13 @@ those fields.
 
 `getDashboard.library_progress` is a response-only redacted array keyed by
 concrete `set_id`; it is not a new collection.
+
+## 15. Intensive Listening
+
+All three Intensive Listening collections remain `ADMINONLY`. Materials store
+`material_id`, `set_id`, `audio_src`, `content_version`, and ordered units with
+speaker, start/end seconds, reviewed text, and word slots. Browser bootstrap
+receives timing, speaker, slot IDs, and punctuation only. Progress stores
+redacted correct-position booleans, effective-check counts, assisted/completed
+flags, replay counts, and monotonic best percentage; exact wrong entries are not
+retained. Temporary replay records are separate and cannot overwrite best data.

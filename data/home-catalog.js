@@ -13,6 +13,17 @@ window.__HOME_CATALOG__ = {
       "emptyNote": "New BBC listening lessons will appear here."
     },
     {
+      "id": "intensive-listening",
+      "groupId": "basics",
+      "title": "Intensive Listening",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search intensive listening materials...",
+      "sortType": "date_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "New intensive listening materials will appear here."
+    },
+    {
       "id": "vocabulary",
       "groupId": "basics",
       "title": "Vocabulary",
@@ -2114,6 +2125,21 @@ window.__HOME_CATALOG__ = {
         "Ants"
       ],
       "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "IL-BBC-260813",
+      "sectionId": "intensive-listening",
+      "title": "Who Does the Housework?",
+      "href": "intensive-listening.html?set=IL-BBC-260813",
+      "displayValue": "2026-08-13",
+      "sortValue": "2026-08-13",
+      "topic": "BBC 6 Minute English",
+      "tags": [
+        "Intensive Listening",
+        "BBC"
+      ],
+      "note": "33 listening units",
       "visible": true
     },
     {

@@ -274,6 +274,7 @@ Agent 需要：
 - BBC Six Minute English Listening
 - IELTS Reading
 - IELTS Listening
+- Intensive Listening（精听）
 - Vocabulary
 
 IELTS Listening 默认进入 `Practice Mode`。Practice 允许暂停、拖动音频及
@@ -305,6 +306,20 @@ Argue，包括学生、History 和 teacher preview；历史 Argue 审计记录�
 | 临时材料 | 课堂讲义 | 临时主题或活动 | 可独立存在的 HTML 页面 |
 
 BBC 这类内容应尽量保留老师可读 Markdown 源。IELTS 这类内容可以直接从原始材料生成网站数据。
+
+### 4.3 Intensive Listening（精听）
+
+精听使用共享的 `intensive-listening.html` 学生页面。每份带时间戳 JSON 的记录
+直接成为一个播放单元；一个审核后的单词对应一个等宽词位，标点直接显示，核对
+只做忽略大小写的固定位置机械比较。首单元由学生通过三秒倒计时主动开始，后续
+单元首次进入时自动播放；`Tab` 重播、`Space` 前进词位、`Enter` 检查。
+
+正确词位锁定，错误词位标红并聚焦第一个错误位置。三次有效检查后才可查看答案；
+自主完成与查看答案完成分别统计。永久最高完成记录单调不降，`Clear & Start Again`
+只创建临时重练。答案、可接受拼写和逐词状态只存在于 `ADMINONLY` 数据和可信云函数。
+
+拥有显式 `intensiveListeningSetId` 的 BBC 习题在顶部课程卡片显示
+`Intensive Listening` 胶囊入口；没有绑定的 BBC 习题不显示入口。
 
 ## 5. 高层架构
 

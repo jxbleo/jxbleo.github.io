@@ -66,6 +66,7 @@ depend on them.
 | IELTS Reading | `C<book>-T<test>-P<passage>` | `C7-T1-P2` |
 | IELTS Listening | `C<book>-T<test>-S<section>` | `C7-T1-S1` |
 | Vocabulary | source/group code | `NGSL-A`, `Oxford5000-A` |
+| Intensive Listening | `IL-<source-id>` | `IL-BBC-260813` |
 
 Do not rename a `set_id` after it has been assigned or attempted unless the
 owner approves a deliberate migration.
@@ -129,6 +130,22 @@ explicit owner review.
 CloudBase console import of the JSON Lines files remains a fallback.
 
 Never commit `.cloudbase-private/`.
+
+### Intensive Listening import
+
+Use timestamped JSON plus the matching public audio:
+
+```bash
+npm run import:intensive-listening -- transcript.json \
+  --set-id IL-BBC-260813 --title "Material title" \
+  --audio-src bbc-audio/example.mp3
+node scripts/build-home-catalog.js
+```
+
+The importer writes public metadata and ignored private material/import rows.
+For `IL-BBC-*`, it also writes the explicit `intensiveListeningSetId` into an
+existing matching BBC runtime and canonical record so the lesson-card capsule
+appears without title matching.
 
 ## 7. BBC Workflow
 

@@ -32,7 +32,18 @@ npm run test:attempt-emails
 npm run test:protected-resources
 npm run test:learning-reports
 npm run test:cloudbase-auth
+npm run test:intensive-listening
 ```
+
+Intensive Listening checks:
+
+- public static output contains no reviewed word answers;
+- `BBC-260813` shows one capsule linking `IL-BBC-260813`, while an unlinked BBC
+  lesson shows none;
+- unchanged wrong checks do not advance the reveal gate, correct positions lock,
+  and reveal requires three effective checks;
+- all three database collections remain `ADMINONLY` and authenticated bootstrap
+  returns all 33 redacted units in one response.
 
 BBC/Vocabulary result-audio checks:
 
