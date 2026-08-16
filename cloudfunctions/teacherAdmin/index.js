@@ -2721,6 +2721,7 @@ function disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap) {
   const explanations = gradingKey.explanations || {};
   return {
     dispute_id: dispute.dispute_id || dispute._id,
+    dispute_type: dispute.dispute_type || "answer_acceptance",
     requester_role: dispute.requester_role || "student",
     student_uid: dispute.student_uid,
     student_id: student.student_id || dispute.student_id_snapshot || "",
@@ -2730,6 +2731,13 @@ function disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap) {
     attempt_id: dispute.attempt_id,
     assignment_id: dispute.assignment_id || null,
     question_id: dispute.question_id,
+    unit_id: dispute.unit_id || null,
+    slot_id: dispute.slot_id || null,
+    speaker_snapshot: dispute.speaker_snapshot || "",
+    start_seconds_snapshot: Number(dispute.start_seconds_snapshot) || 0,
+    end_seconds_snapshot: Number(dispute.end_seconds_snapshot) || 0,
+    audio_src_snapshot: dispute.audio_src_snapshot || "",
+    content_version: dispute.content_version || null,
     question_text_snapshot: dispute.question_text_snapshot || "",
     submitted_answer: dispute.submitted_answer,
     answer_snapshot: dispute.answer_snapshot,
@@ -2745,6 +2753,68 @@ function disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap) {
     explanation_snapshot: dispute.explanation_snapshot || "",
     explanation: explanations[dispute.question_id] || "",
   };
+}
+
+async function resolveIntensiveSpellingDispute(dispute, decision, teacher, teacherNote) {
+  if (!["keep", "provide"].includes(decision)) throw new Error("DISPUTE_DECISION_REQUIRED");
+  const material = await getOne("intensive_listening_materials", {
+    set_id: dispute.set_id,
+    content_version: String(dispute.content_version || "1"),
+  });
+  if (!material) throw new Error("MATERIAL_NOT_FOUND");
+  const units = Array.isArray(material.units) ? material.units.map((unit) => ({
+    ...unit,
+    slots: Array.isArray(unit.slots) ? unit.slots.map((slot) => ({ ...slot })) : [],
+  })) : [];
+  const unit = units.find((candidate) => String(candidate.unit_id) === String(dispute.unit_id));
+  const slot = unit && unit.slots.find((candidate) => String(candidate.slot_id) === String(dispute.slot_id));
+  if (!unit || !slot) throw new Error("SLOT_NOT_FOUND");
+  const now = new Date();
+  let policyRevision = Math.max(1, Number(material.policy_revision) || 1);
+  if (decision === "provide" && slot.spelling_requirement !== "provided") {
+    const before = slot.spelling_requirement || "required";
+    slot.spelling_requirement = "provided";
+    if (unit.slots.length && unit.slots.every((candidate) => candidate.spelling_requirement === "provided")) {
+      unit.practice_mode = "listen_only";
+    }
+    policyRevision += 1;
+    const historyRecord = {
+      history_id: [dispute.set_id, dispute.unit_id, dispute.slot_id, Date.now()].join("::"),
+      set_id: dispute.set_id,
+      question_id: dispute.question_id,
+      dispute_id: dispute.dispute_id || dispute._id,
+      change_type: "intensive_spelling_exemption",
+      content_version: String(material.content_version || "1"),
+      policy_revision_before: policyRevision - 1,
+      policy_revision_after: policyRevision,
+      answer_before: before,
+      answer_after: "provided",
+      changed_by_teacher_uid: teacher.auth_uid,
+      changed_at: now,
+      applied: false,
+    };
+    const historyAdd = await db.collection("grading_key_history").add(historyRecord);
+    await db.collection("intensive_listening_materials").doc(material._id).update({
+      units,
+      policy_revision: policyRevision,
+      updated_at: now,
+    });
+    if (historyAdd && historyAdd.id) {
+      await db.collection("grading_key_history").doc(historyAdd.id).update({ applied: true, applied_at: now });
+    }
+  }
+  await db.collection("answer_disputes").doc(dispute._id).update({
+    status: decision === "keep" ? "rejected" : "approved",
+    decision,
+    teacher_note: teacherNote,
+    resolved_by_teacher_uid: teacher.auth_uid,
+    policy_revision_after: policyRevision,
+    student_seen: false,
+    student_seen_at: null,
+    resolved_at: now,
+    updated_at: now,
+  });
+  return { success: true, policy_revision: policyRevision };
 }
 
 function normalizedDisputeStatus(dispute) {
@@ -3359,12 +3429,15 @@ async function resolveDispute(event, teacher) {
   const disputeId = text(event.dispute_id);
   const decision = text(event.decision);
   const teacherNote = text(event.teacher_note).slice(0, 1000);
-  if (!disputeId || !["keep", "add", "replace"].includes(decision)) {
+  if (!disputeId || !["keep", "add", "replace", "provide"].includes(decision)) {
     throw new Error("DISPUTE_DECISION_REQUIRED");
   }
   const dispute = await getOne("answer_disputes", { dispute_id: disputeId });
   if (!dispute) throw new Error("DISPUTE_NOT_FOUND");
   if (dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
+  if (dispute.dispute_type === "intensive_spelling_exemption") {
+    return resolveIntensiveSpellingDispute(dispute, decision, teacher, teacherNote);
+  }
 
   const now = new Date();
   if (decision !== "keep") {

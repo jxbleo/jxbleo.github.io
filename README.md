@@ -84,6 +84,12 @@ git diff --check
 `scripts/prepare-cloudbase-data.js` writes ignored private output under
 `.cloudbase-private/`. Do not commit that directory.
 
+
+Intensive Listening accepts a self-contained private JSON whose segments use
+`dictation`, `listen_only`, or `skip`. The importer keeps full text and
+answers under ignored private output; only metadata enters the static site.
+Teacher-approved Provided Words can later be exported back to a current JSON.
+
 The release scripts are owner-gated. They verify, package, and generate a local
 deploy plan, but they do not log in to CloudBase or deploy anything.
 

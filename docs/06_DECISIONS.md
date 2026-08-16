@@ -3,6 +3,35 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+
+## 2026-08-17: Separate Intensive Listening Authoring Packages from Live Policy
+
+Decision:
+
+Keep self-contained transcript JSON and readable Markdown in the owner's private
+iCloud folder as portable authoring and backup artifacts. After import,
+`intensive_listening_materials` is the live runtime source. Segment behavior is
+explicitly Dictation, Listen Only, or Skip. Teacher-approved Spelling Exemptions
+update a slot-level policy and `policy_revision` without changing the material's
+segmentation version. Teacher export reconstructs a current source JSON.
+
+Reason:
+
+A browser cannot safely rewrite a local iCloud file, while teacher and student
+Argue must affect active practice without publishing complete answers or waiting
+for a static deployment. Keeping the live rule in the ADMINONLY material also
+lets current students receive a small revision-triggered refresh.
+
+Trade-offs:
+
+- The local JSON is a portable master package, not the live database after
+  publication; export it after online policy changes when an offline snapshot is
+  wanted.
+- Segmentation changes still require a new `contentVersion`; a spelling
+  exemption is a compatible, relaxing policy revision.
+- No new collection is introduced: requests reuse `answer_disputes`, accepted
+  audit uses `grading_key_history`, and the material holds the active rule.
+
 ## 2026-08-16: Keep Intensive Listening Answers Behind Server Checks
 
 The static browser receives the complete safe unit/timing/slot structure once,

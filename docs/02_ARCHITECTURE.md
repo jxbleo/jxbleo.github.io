@@ -120,6 +120,14 @@ non-recent sorting, Review period statistics, and Export explicitly finish the
 remaining pages before claiming complete results; ordinary entry never waits for
 the full collection.
 
+Intensive Listening uses a two-source lifecycle. The private iCloud JSON is the
+portable authoring/backup package; after import, the ADMINONLY CloudBase material
+is the live runtime source so teacher Argue decisions can take effect without a
+static redeploy. Only metadata and audio are public. Approved spelling exemptions
+increment a policy revision, and open student pages poll that lightweight revision
+and refresh the redacted material only when it changes. Teacher export reconstructs
+a current source JSON from the private material.
+
 Current frontend philosophy:
 
 - Reuse shared practice pages.

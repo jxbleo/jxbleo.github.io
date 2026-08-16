@@ -6,6 +6,7 @@ const service = require("../cloudfunctions/intensiveListening/service");
 function unit() {
   return {
     unit_id: "unit-01",
+    practice_mode: "dictation",
     text: "It's a good boy.",
     start_seconds: 0,
     end_seconds: 3,
@@ -52,6 +53,35 @@ function run() {
   const publicView = service.publicMaterial(material);
   assert.strictEqual(JSON.stringify(publicView).includes("It's"), false, "bootstrap must not expose answers");
   assert.strictEqual(publicView.units[0].slots[3].suffix, ".");
+  assert.strictEqual(publicView.units[0].practice_mode, "dictation");
+
+  const providedUnit = unit();
+  providedUnit.slots[1].spelling_requirement = "provided";
+  const providedGrade = service.gradeUnit(providedUnit, ["it's", "", "good", "boy"], null, "student:provided");
+  assert.deepStrictEqual(providedGrade.marks, [true, true, true, true]);
+  assert.strictEqual(providedGrade.state.completed, true, "provided words do not require student spelling");
+  const mixedMaterial = {
+    material_id: "IL-MIXED",
+    set_id: "IL-MIXED",
+    title: "Mixed",
+    audio_src: "audio.mp3",
+    policy_revision: 2,
+    units: [
+      { unit_id: "skip-1", practice_mode: "skip", text: "BBC ident", start_seconds: 0, end_seconds: 1, slots: [] },
+      { unit_id: "listen-1", practice_mode: "listen_only", text: "Listen", start_seconds: 1, end_seconds: 2, slots: [] },
+      providedUnit,
+    ],
+  };
+  const mixedPublic = service.publicMaterial(mixedMaterial);
+  assert.strictEqual(mixedPublic.unit_count, 1, "only dictation units count toward progress");
+  assert.strictEqual(mixedPublic.sequence_count, 3);
+  assert.strictEqual(mixedPublic.units[0].text, undefined, "skipped text stays private");
+  assert.strictEqual(mixedPublic.units[2].slots[0].provided_text, "", "required answers stay private");
+  assert.strictEqual(mixedPublic.units[2].slots[1].provided_text, "a", "provided words may be displayed");
+  assert.strictEqual(service.progressSummary(mixedMaterial, { "unit-01": providedGrade.state }).percentage, 100);
+  const exported = service.sourceMaterial(mixedMaterial);
+  assert.deepStrictEqual(exported.segments[2].providedWordPositions, [2]);
+  assert.strictEqual(exported.segments[0].practiceMode, "skip");
 
   const root = path.resolve(__dirname, "..");
   const metadataDir = path.join(root, "content/intensive-listening");
@@ -71,6 +101,12 @@ function run() {
   const bbcRuntime = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
   assert.ok(bbcRuntime.includes('id="lesson-intensive-listening"'));
   assert.ok(bbcRuntime.includes("intensive-listening.html?set="));
+  assert.ok(bbcRuntime.includes("teacherMode ? '&teacher=1'"), "teacher preview keeps the BBC Intensive Listening capsule");
+
+  const intensiveRuntime = fs.readFileSync(path.join(root, "assets/js/intensive-listening.js"), "utf8");
+  assert.ok(intensiveRuntime.includes("submitSpellingDispute"));
+  assert.ok(intensiveRuntime.includes("unitMode(currentUnit()) === 'skip'"));
+  assert.ok(intensiveRuntime.includes("exportMaterial"));
 
   const homeCatalog = JSON.parse(fs.readFileSync(path.join(root, "data/home-catalog.json"), "utf8"));
   assert.strictEqual(homeCatalog.sections.some((section) => section.id === "intensive-listening"), false);

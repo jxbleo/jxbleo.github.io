@@ -7,20 +7,22 @@ const db = app.database();
 const MATERIALS = "intensive_listening_materials";
 const PROGRESS = "intensive_listening_progress";
 const REPLAYS = "intensive_listening_replays";
+const DISPUTES = "answer_disputes";
 
 async function getOne(collection, query) {
   const result = await db.collection(collection).where(query).limit(1).get();
   return result.data && result.data[0] || null;
 }
 
-async function getAuthenticatedStudent() {
+async function getAuthenticatedProfile() {
   const userInfo = await app.auth().getUserInfo();
   const uid = userInfo && (userInfo.uid || userInfo.userId);
   if (!uid) throw new Error("AUTH_REQUIRED");
-  const student = await getOne("students", { auth_uid: String(uid), active: true });
-  if (!student) throw new Error("STUDENT_NOT_LINKED");
-  if ((student.role || "student") !== "student") throw new Error("STUDENT_REQUIRED");
-  return student;
+  const profile = await getOne("students", { auth_uid: String(uid), active: true });
+  if (!profile) throw new Error("STUDENT_NOT_LINKED");
+  const role = String(profile.role || "student");
+  if (role !== "student" && role !== "teacher") throw new Error("PROFILE_ROLE_REQUIRED");
+  return profile;
 }
 
 function stableId(...parts) {
@@ -57,6 +59,7 @@ async function loadBestRecord(student, material) {
     set_id: material.set_id,
     material_id: material.material_id || material.set_id,
     content_version: String(material.content_version || "1"),
+    policy_revision: Math.max(1, Number(material.policy_revision) || 1),
     unit_states: {},
     best_percentage: 0,
     created_at: new Date(),
@@ -88,6 +91,7 @@ function recordPayload(student, material, record, unitStates, now, replayMode) {
     set_id: material.set_id,
     material_id: material.material_id || material.set_id,
     content_version: String(material.content_version || "1"),
+    policy_revision: Math.max(1, Number(material.policy_revision) || 1),
     unit_states: unitStates,
     completed_unit_count: summary.completed_count,
     independent_unit_count: summary.independent_count,
@@ -160,8 +164,17 @@ function findUnit(material, unitId) {
   const id = safeId(unitId, "UNIT_REQUIRED");
   const unit = material.units.find((candidate) => String(candidate.unit_id) === id);
   if (!unit) throw new Error("UNIT_NOT_FOUND");
+  if (service.practiceMode(unit) !== "dictation") throw new Error("UNIT_NOT_DICTATION");
   if (!Array.isArray(unit.slots) || !unit.slots.length || unit.slots.length > 120) throw new Error("UNIT_INVALID");
   return unit;
+}
+
+function findSlot(material, unitId, slotId) {
+  const unit = findUnit(material, unitId);
+  const id = safeId(slotId, "SLOT_REQUIRED");
+  const slot = unit.slots.find((candidate) => String(candidate.slot_id) === id);
+  if (!slot) throw new Error("SLOT_NOT_FOUND");
+  return { unit, slot };
 }
 
 function entriesFromEvent(event, slotCount) {
@@ -179,18 +192,65 @@ function responseProgress(material, record, bestRecord) {
   return progress;
 }
 
-async function bootstrap(student, event, set, material) {
-  const best = await loadBestRecord(student, material);
+async function repairPolicyProgress(student, set, material, record, replayMode) {
+  const unitStates = record.unit_states && typeof record.unit_states === "object" ? record.unit_states : {};
+  if (!record._id && !Object.keys(unitStates).length) return record;
+  const summary = service.progressSummary(material, unitStates);
+  if (Number(record.percentage) === summary.percentage
+    && Number(record.completed_unit_count) === summary.completed_count
+    && String(record.policy_revision || "") === String(material.policy_revision || 1)) return record;
+  const saved = await saveSessionRecord(student, material, record, unitStates, replayMode);
+  saved.policy_revision = Math.max(1, Number(material.policy_revision) || 1);
+  const collection = replayMode ? REPLAYS : PROGRESS;
+  const documentId = saved._id || (replayMode ? saved.replay_id : saved.progress_id);
+  await db.collection(collection).doc(documentId).update({ policy_revision: saved.policy_revision });
+  if (!replayMode) await syncAssignments(student, set, saved.best_percentage, new Date());
+  return saved;
+}
+
+async function requesterDisputes(profile, material) {
+  const result = await db.collection(DISPUTES).where({
+    student_uid: profile.auth_uid,
+    set_id: material.set_id,
+    content_version: String(material.content_version || "1"),
+    dispute_type: "intensive_spelling_exemption",
+  }).limit(100).get();
+  return (result.data || []).map((item) => ({
+    dispute_id: item.dispute_id || item._id,
+    unit_id: String(item.unit_id || ""),
+    slot_id: String(item.slot_id || ""),
+    status: String(item.status || "pending"),
+    teacher_note: String(item.teacher_note || ""),
+  }));
+}
+
+async function bootstrap(profile, event, set, material) {
+  if (profile.role === "teacher") {
+    return {
+      success: true,
+      teacher_mode: true,
+      material: service.publicMaterial(material),
+      progress: service.publicProgress(material, { unit_states: {}, best_percentage: 0 }),
+      slot_disputes: await requesterDisputes(profile, material),
+      replay_id: null,
+      assignment_id: null,
+    };
+  }
+  const student = profile;
+  let best = await loadBestRecord(student, material);
+  best = await repairPolicyProgress(student, set, material, best, false);
   let active = best;
   let replayMode = false;
   if (event.replay_id) {
     active = await loadReplayRecord(student, material, event.replay_id);
+    active = await repairPolicyProgress(student, set, material, active, true);
     replayMode = true;
   }
   return {
     success: true,
     material: service.publicMaterial(material),
     progress: responseProgress(material, active, replayMode ? best : null),
+    slot_disputes: await requesterDisputes(profile, material),
     replay_id: replayMode ? active.replay_id : null,
     assignment_id: event.assignment_id ? String(event.assignment_id) : null,
   };
@@ -223,6 +283,17 @@ async function checkUnit(student, event, set, material) {
 }
 
 async function revealAnswer(student, event, set, material) {
+  if (student.role === "teacher") {
+    const unit = findUnit(material, event.unit_id);
+    return {
+      success: true,
+      answer_available: true,
+      answer_text: String(unit.text || ""),
+      answers: unit.slots.map((slot) => String(slot.answer || "")),
+      completed: false,
+      teacher_mode: true,
+    };
+  }
   const replayMode = Boolean(event.replay_id);
   const record = await loadSessionRecord(student, material, event.replay_id);
   const unit = findUnit(material, event.unit_id);
@@ -242,6 +313,87 @@ async function revealAnswer(student, event, set, material) {
     checks: result.state.checks,
     completed: true,
     progress: responseProgress(material, saved, replayMode ? await loadBestRecord(student, material) : null),
+  };
+}
+
+async function submitSpellingDispute(profile, event, material) {
+  const { unit, slot } = findSlot(material, event.unit_id, event.slot_id);
+  if (service.isProvided(slot)) {
+    return { success: true, already_applied: true, status: "approved" };
+  }
+  if (profile.role !== "teacher") {
+    const record = await loadSessionRecord(profile, material, event.replay_id);
+    const state = service.normalizedUnitState(
+      record.unit_states && record.unit_states[unit.unit_id],
+      unit.slots.length
+    );
+    if (!state.assisted) throw new Error("ANSWER_REVEAL_REQUIRED");
+  }
+  const disputeId = stableId(
+    "intensive_spelling_exemption",
+    profile.auth_uid,
+    material.material_id || material.set_id,
+    String(material.content_version || "1"),
+    unit.unit_id,
+    slot.slot_id
+  );
+  const existing = await getOne(DISPUTES, { dispute_id: disputeId });
+  if (existing) {
+    return {
+      success: true,
+      dispute_id: disputeId,
+      status: String(existing.status || "pending"),
+      already_exists: true,
+    };
+  }
+  const now = new Date();
+  await db.collection(DISPUTES).add({
+    dispute_id: disputeId,
+    dispute_type: "intensive_spelling_exemption",
+    requester_role: profile.role === "teacher" ? "teacher" : "student",
+    student_uid: profile.auth_uid,
+    student_id_snapshot: profile.student_id || "",
+    student_name_snapshot: profile.name || profile.student_id || "",
+    set_id: material.set_id,
+    material_id: material.material_id || material.set_id,
+    content_version: String(material.content_version || "1"),
+    policy_revision_snapshot: Math.max(1, Number(material.policy_revision) || 1),
+    attempt_id: null,
+    assignment_id: event.assignment_id ? String(event.assignment_id) : null,
+    question_id: `${unit.unit_id}:${slot.slot_id}`,
+    unit_id: unit.unit_id,
+    slot_id: slot.slot_id,
+    speaker_snapshot: String(unit.speaker || ""),
+    start_seconds_snapshot: Number(unit.start_seconds) || 0,
+    end_seconds_snapshot: Number(unit.end_seconds) || 0,
+    audio_src_snapshot: String(material.audio_src || ""),
+    question_text_snapshot: String(unit.text || "").slice(0, 2000),
+    submitted_answer: String(slot.answer || ""),
+    answer_snapshot: String(slot.answer || ""),
+    student_reason: String(event.reason || "").trim().slice(0, 1000),
+    status: "pending",
+    created_at: now,
+    updated_at: now,
+  });
+  return { success: true, dispute_id: disputeId, status: "pending" };
+}
+
+function exportMaterial(profile, material) {
+  if (profile.role !== "teacher") throw new Error("TEACHER_REQUIRED");
+  return {
+    success: true,
+    filename: `${material.material_id || material.set_id}.json`,
+    material: service.sourceMaterial(material),
+  };
+}
+
+function policyStatus(event, material) {
+  const currentRevision = Math.max(1, Number(material.policy_revision) || 1);
+  const clientRevision = Math.max(0, Number(event.policy_revision) || 0);
+  return {
+    success: true,
+    policy_revision: currentRevision,
+    material_update: clientRevision && clientRevision !== currentRevision ? service.publicMaterial(material) : null,
   };
 }
 
@@ -281,11 +433,17 @@ function errorResponse(error) {
   const messages = {
     AUTH_REQUIRED: "Please log in.",
     STUDENT_NOT_LINKED: "This login is not linked to an active student.",
+    PROFILE_ROLE_REQUIRED: "This account cannot open Intensive Listening.",
     STUDENT_REQUIRED: "Student access is required.",
+    TEACHER_REQUIRED: "Teacher access is required.",
     MATERIAL_REQUIRED: "No listening material was selected.",
     MATERIAL_NOT_FOUND: "This listening material is unavailable.",
     MATERIAL_EMPTY: "This listening material has no units.",
     UNIT_NOT_FOUND: "This listening unit is unavailable.",
+    UNIT_NOT_DICTATION: "This segment does not require spelling.",
+    SLOT_REQUIRED: "No word was selected.",
+    SLOT_NOT_FOUND: "This word is unavailable.",
+    ANSWER_REVEAL_REQUIRED: "Open Show Answer before submitting this Argue request.",
     SLOT_COUNT_MISMATCH: "The word slots changed. Reload the material and try again.",
     SLOT_TOO_LONG: "One word entry is too long.",
     MATERIAL_NOT_COMPLETE: "Finish the material before starting again.",
@@ -296,13 +454,22 @@ function errorResponse(error) {
 
 exports.main = async (event = {}) => {
   try {
-    const student = await getAuthenticatedStudent();
+    const profile = await getAuthenticatedProfile();
     const action = String(event.action || "bootstrap");
     const { set, material } = await loadMaterial(event);
-    if (action === "bootstrap" || action === "warm") return bootstrap(student, event, set, material);
-    if (action === "check") return checkUnit(student, event, set, material);
-    if (action === "reveal") return revealAnswer(student, event, set, material);
-    if (action === "startReplay") return startReplay(student, material);
+    if (action === "bootstrap" || action === "warm") return bootstrap(profile, event, set, material);
+    if (action === "check") {
+      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
+      return checkUnit(profile, event, set, material);
+    }
+    if (action === "reveal") return revealAnswer(profile, event, set, material);
+    if (action === "policy") return policyStatus(event, material);
+    if (action === "submitSpellingDispute") return submitSpellingDispute(profile, event, material);
+    if (action === "exportMaterial") return exportMaterial(profile, material);
+    if (action === "startReplay") {
+      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
+      return startReplay(profile, material);
+    }
     throw new Error("ACTION_NOT_SUPPORTED");
   } catch (error) {
     console.error("intensiveListening failed", error);

@@ -28,6 +28,8 @@ button:active, a:active { transform: scale(.975); }
 .il-header-progress strong { text-align: right; font-size: 1.15rem; font-weight: 850; font-variant-numeric: tabular-nums; }
 .il-header-progress progress { width: 100%; height: .72rem; border: 0; accent-color: var(--il-green); }
 .il-mode { justify-self: end; padding: .36rem .58rem; border-radius: 999px; color: var(--il-muted); background: #edf2f0; font-size: .68rem; font-weight: 850; letter-spacing: .08em; }
+.il-header-tools { justify-self: end; display: flex; align-items: center; gap: .55rem; }
+.il-export { padding: .45rem .7rem; border: 1px solid var(--il-line); border-radius: 999px; color: var(--il-green); background: #fff; font-size: .72rem; font-weight: 800; }
 
 .il-shell { width: min(1120px, calc(100% - 2rem)); margin: 3rem auto 5rem; }
 .il-material-heading { text-align: center; }
@@ -48,6 +50,15 @@ button:active, a:active { transform: scale(.975); }
 .il-replay { flex: 0 0 auto; width: 3rem; height: 3rem; border: 0; border-radius: 50%; color: #fff; background: var(--il-green); font-weight: 850; box-shadow: 0 8px 20px rgba(23,108,88,.19); }
 .il-time-range { margin-left: auto; font-variant-numeric: tabular-nums; }
 
+.il-listen-only { min-height: 17rem; padding: 3rem 1.4rem; display: grid; place-items: center; align-content: center; gap: .7rem; color: var(--il-green); background: radial-gradient(circle, #edf9f4, #fff 68%); text-align: center; }
+.il-listen-only > strong { font-size: clamp(1.8rem, 5vw, 3.4rem); letter-spacing: .04em; }
+.il-listen-only > span:last-child { color: var(--il-muted); }
+.il-listen-wave { height: 3.2rem; display: flex; align-items: center; gap: .32rem; }
+.il-listen-wave i { width: .34rem; height: 1.1rem; border-radius: 999px; background: var(--il-green); animation: il-wave .9s ease-in-out infinite alternate; }
+.il-listen-wave i:nth-child(2), .il-listen-wave i:nth-child(4) { animation-delay: -.45s; }
+.il-listen-wave i:nth-child(3) { animation-delay: -.2s; }
+@keyframes il-wave { to { height: 3rem; } }
+
 .il-word-slots { min-height: 17rem; padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 3rem); display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 1.25rem .4rem; }
 .il-word-token { display: inline-flex; align-items: flex-end; }
 .il-punctuation { padding: 0 .05rem .55rem; font-size: 1.15rem; font-weight: 680; }
@@ -56,6 +67,7 @@ button:active, a:active { transform: scale(.975); }
 .il-word-slot.correct { border-color: var(--il-success); color: var(--il-success); background: var(--il-success-soft); }
 .il-word-slot.incorrect { border-color: var(--il-red); color: var(--il-red); background: var(--il-red-soft); animation: il-nudge 180ms ease-out; }
 .il-word-slot:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
+.il-provided-word { min-width: 4rem; padding: .62rem .55rem .5rem; border-radius: .55rem; color: var(--il-green-deep); background: #dff2ea; text-align: center; font-weight: 820; }
 @keyframes il-nudge { 35% { transform: translateX(-3px); } 70% { transform: translateX(3px); } }
 
 .il-feedback { min-height: 3rem; padding: .85rem 1.4rem; border-top: 1px solid var(--il-line); color: var(--il-muted); text-align: center; }
@@ -67,7 +79,13 @@ button:active, a:active { transform: scale(.975); }
 .il-check { justify-self: end; border: 0; color: #fff; background: var(--il-green); }
 .il-check-count { color: var(--il-muted); font-size: .78rem; font-variant-numeric: tabular-nums; }
 .il-answer-panel { margin: 0 1.4rem 1.4rem; padding: 1.2rem; border-radius: 1rem; background: var(--il-green-soft); text-align: center; }
-.il-answer-panel p { margin: .45rem 0 1rem; font-size: 1.2rem; font-weight: 720; }
+.il-answer-tokens { margin: .65rem 0 1rem; display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; font-size: 1.05rem; font-weight: 720; }
+.il-answer-token { padding: .4rem .5rem; border: 1px solid transparent; border-radius: .55rem; color: var(--il-ink); background: rgba(255,255,255,.7); }
+button.il-answer-token { cursor: pointer; }
+button.il-answer-token:hover, button.il-answer-token:focus-visible { border-color: var(--il-green); outline: none; }
+.il-answer-token.provided { color: var(--il-green); background: #d4eee4; }
+.il-answer-token.pending { border-color: #d69b27; color: #835600; background: #fff6df; }
+.il-answer-token.approved { color: var(--il-green); background: #d4eee4; }
 .il-continue { border: 0; color: #fff; background: var(--il-green-deep); }
 button:disabled { cursor: default; opacity: .58; }
 
@@ -95,9 +113,23 @@ button:disabled { cursor: default; opacity: .58; }
 #leave-cancel { color: var(--il-green); }
 #leave-confirm { border-left: 1px solid rgba(24,49,43,.16); color: #c9403a; }
 
+.il-argue-box { position: relative; width: min(430px, 100%); padding: 1.6rem; border: 1px solid rgba(255,255,255,.88); border-radius: 22px; background: rgba(247,249,248,.96); box-shadow: 0 22px 64px rgba(20,54,47,.24); text-align: center; }
+.il-argue-box h2 { margin: .45rem 0; }
+.il-argue-box p { color: var(--il-muted); font-size: .88rem; }
+.il-argue-close { position: absolute; top: .65rem; right: .75rem; width: 2rem; height: 2rem; border: 0; border-radius: 50%; color: var(--il-muted); background: #eaf0ed; font-size: 1.25rem; }
+.il-argue-word { display: inline-block; margin: .65rem 0; padding: .55rem .85rem; border-radius: .7rem; color: var(--il-green-deep); background: var(--il-green-soft); font-size: 1.2rem; }
+.il-argue-box textarea { width: 100%; min-height: 6.5rem; padding: .75rem; resize: vertical; border: 1px solid var(--il-line); border-radius: .8rem; background: #fff; }
+.il-argue-status { min-height: 1.5rem; margin-top: .5rem; color: var(--il-muted); font-size: .82rem; }
+.il-argue-actions { margin-top: .8rem; display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.il-argue-actions button { min-height: 2.8rem; border-radius: .75rem; font-weight: 800; }
+#argue-cancel { border: 1px solid var(--il-line); background: #fff; }
+#argue-submit { border: 0; color: #fff; background: var(--il-green); }
+
 @media (max-width: 760px) {
   .il-header { grid-template-columns: auto 1fr; }
   .il-mode { display: none; }
+  .il-header-tools { min-width: 0; }
+  .il-export { white-space: nowrap; }
   .il-header-progress { min-width: 0; grid-template-columns: 3rem 1fr; }
   .il-actions { grid-template-columns: 1fr 1fr; }
   .il-check-count { grid-column: 1 / -1; grid-row: 1; text-align: center; }

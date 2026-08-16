@@ -133,6 +133,22 @@ Never commit `.cloudbase-private/`.
 
 ### Intensive Listening import
 
+The editable/backup master lives outside the public repository under the
+owner's iCloud `猫先生英语/BBC/JSON` folder; matching readable Markdown lives
+under `猫先生英语/BBC/文稿`. MP3 files are intentionally excluded from this iCloud
+backup. The full JSON is never copied into public `data/` or `content/`.
+CloudBase becomes the live published source after import because online teacher
+Argue decisions cannot write back to a local file. Teacher `Export Latest JSON`
+reconstructs a new portable master with current `practiceMode`,
+`contentVersion`, `policyRevision`, and `providedWordPositions`.
+
+A self-contained source object may provide `materialId`, `sourceSetId`,
+`title`, `audioSrc`, `contentVersion`, and `segments`. Every segment
+accepts `dictation`, `listen_only`, or `skip`; omitted mode defaults to
+`dictation` for legacy inputs. Increment `contentVersion` when boundaries or
+slot positions change. Do not increment it for an approved spelling exemption.
+
+
 Use timestamped JSON plus the matching public audio:
 
 ```bash
