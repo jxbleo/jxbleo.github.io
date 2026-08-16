@@ -1468,6 +1468,8 @@ Shared rules:
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,
   submission behavior, History/Clear, Explain, Argue, or answer feedback rules.
+- All 2026 BBC Listening lessons use the default green-glass presentation;
+  their runtime metadata omits `renderTheme`.
 - BBC practice pages show a `Download Worksheet` control when the current set
   has a generated worksheet PDF under
   `assets/pdf/bbc-six-minute-english/<set_id>/<set_id>-worksheet.pdf`. The
