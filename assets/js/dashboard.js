@@ -2474,7 +2474,6 @@
 
     var LIBRARY_SUB_TABS = {
         general: [
-            { id: 'intensive-listening', sectionId: 'intensive-listening', label: 'Intensive' },
             { id: 'bbc-2024', sectionId: 'bbc-six-minute-english', label: 'BBC2024', itemYear: '2024' },
             { id: 'bbc-2025', sectionId: 'bbc-six-minute-english', label: 'BBC2025', itemYear: '2025' },
             { id: 'bbc-2026', sectionId: 'bbc-six-minute-english', label: 'BBC2026', itemYear: '2026' },
@@ -2498,7 +2497,6 @@
 
     function librarySectionLabel(sectionId, fallback) {
         var labels = {
-            'intensive-listening': 'Intensive Listening',
             'ielts-reading': 'ielts-reading',
             'ielts-listening': 'ielts-listening',
             'dse-english-paper-1': 'DSE Reading',

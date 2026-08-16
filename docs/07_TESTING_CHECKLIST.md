@@ -40,6 +40,8 @@ Intensive Listening checks:
 - public static output contains no reviewed word answers;
 - `BBC-260813` shows one capsule linking `IL-BBC-260813`, while an unlinked BBC
   lesson shows none;
+- Student Library contains no Intensive subtab, section, or standalone material
+  card;
 - unchanged wrong checks do not advance the reveal gate, correct positions lock,
   and reveal requires three effective checks;
 - all three database collections remain `ADMINONLY` and authenticated bootstrap

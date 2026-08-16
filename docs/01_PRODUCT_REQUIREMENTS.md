@@ -320,6 +320,7 @@ BBC 这类内容应尽量保留老师可读 Markdown 源。IELTS 这类内容可
 
 拥有显式 `intensiveListeningSetId` 的 BBC 习题在顶部课程卡片显示
 `Intensive Listening` 胶囊入口；没有绑定的 BBC 习题不显示入口。
+这是学生端唯一的精听入口；Library 不显示独立精听专栏或材料卡片。
 
 ## 5. 高层架构
 

@@ -1460,6 +1460,8 @@ Shared rules:
   `Intensive Listening` capsule in the top lesson card beside the worksheet
   tool. It preserves the BBC URL as the return target. Lessons without the
   explicit relationship show no capsule.
+- This BBC lesson-card capsule is the only student-facing entry. Student
+  Library shows neither an Intensive subtab nor standalone Intensive cards.
 
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,

@@ -116,7 +116,10 @@ function validateEditionFamilies(items) {
 function main() {
   const { sections, map } = getSectionMap();
   const itemFiles = listItemFiles();
-  const items = itemFiles.map((filePath) => {
+  const items = itemFiles.filter((filePath) => {
+    const item = readJson(filePath);
+    return item.catalogVisible !== false;
+  }).map((filePath) => {
     const item = readJson(filePath);
     const section = map.get(item.sectionId);
     if (!section) {

@@ -153,6 +153,7 @@ const meta = {
   topic: "BBC 6 Minute English",
   tags: ["Intensive Listening", "BBC"],
   note: `${units.length} listening units`,
+  catalogVisible: false,
   visible: true,
 };
 

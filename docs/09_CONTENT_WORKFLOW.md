@@ -142,7 +142,9 @@ npm run import:intensive-listening -- transcript.json \
 node scripts/build-home-catalog.js
 ```
 
-The importer writes public metadata and ignored private material/import rows.
+The importer writes public metadata with `catalogVisible: false` and ignored
+private material/import rows. The material therefore remains addressable and
+assignable without creating a second Student Library entry.
 For `IL-BBC-*`, it also writes the explicit `intensiveListeningSetId` into an
 existing matching BBC runtime and canonical record so the lesson-card capsule
 appears without title matching.
