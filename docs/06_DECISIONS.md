@@ -3,6 +3,38 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-17: Keep one credential entry with validated same-origin returns
+
+Decision:
+
+Use `index.html` as the only credential entry. Inner login actions build their
+destination with `MrCatLoginNavigation.loginHref(currentUrl, fallback)`, which
+accepts only a validated same-origin `.html` return target and removes legacy
+`user` / `visitor` parameters. Dashboard, My Words, and Attempt Review pass
+their current full URL so query strings and hashes survive a signed-out
+redirect.
+
+Reason:
+
+One credential surface avoids divergent login behavior and makes it possible to
+preserve the user's actual work context. Same-origin validation prevents a
+return parameter from becoming an open redirect, while ignoring browser-supplied
+identity keeps authorization in CloudBase authenticated context.
+
+Trade-offs:
+
+- Good: public Library login can return to the authenticated Dashboard Library,
+  and exercise-specific login can return to the exact exercise.
+- Good: no backend schema, function, or data migration is needed.
+- Cost: every page with an inner login action must load the shared helper before
+  its page-specific JavaScript and keep its cache-busting version aligned.
+
+Review condition:
+
+Revisit only if the site adds a new credential provider or a route that cannot
+be represented by a same-origin `.html` URL; do not restore `user` / `visitor`
+URL identity semantics as a shortcut.
+
 
 ## 2026-08-17: Separate Intensive Listening Authoring Packages from Live Policy
 

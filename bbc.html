@@ -2745,13 +2745,8 @@
 
     <div id="login-modal" class="modal-overlay">
         <div class="modal-box">
-            <div style="display:flex;gap:8px;margin-top:14px;">
-                <input type="text" id="bbc-custom-id-input" placeholder="Enter a student ID" autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;background:var(--bg-page);color:var(--text-primary);" />
-                <button id="bbc-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
-            </div>
-            <button id="bbc-saved-identity-btn" style="display:none;width:100%;margin-top:12px;padding:12px;background:transparent;color:var(--text-light);border:1px solid var(--border-color);border-radius:8px;font-size:0.9em;cursor:pointer;"></button>
-            <div id="bbc-login-error" style="font-size:0.85em;color:var(--text-muted);margin-top:6px;min-height:1.2em;"></div>
-            <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-muted);font-size:0.85em;"><span style="flex:1;border-top:1px solid var(--border);"></span><span>or</span><span style="flex:1;border-top:1px solid var(--border);"></span></div>
+            <p>Please log in with your official Mr. Cat Academy account to answer.</p>
+            <button id="bbc-official-login-btn" style="display:block;width:100%;padding:12px;background:#13766d;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:700;cursor:pointer;">Log In</button>
             <button id="bbc-visitor-btn" style="display:block;width:100%;padding:12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue as Visitor</button>
         </div>
     </div>
@@ -2835,7 +2830,8 @@
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260815-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-<script src="assets/js/practice-session.js?v=20260816-3"></script>
+<script src="assets/js/login-navigation.js?v=20260817-1"></script>
+<script src="assets/js/practice-session.js?v=20260817-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
 <script>
 (function() {
@@ -2919,27 +2915,6 @@
         'Keep going. Your English ear is getting cleaner.'
     ];
 
-    var students = [
-        { id: 'EI6688', label: '甘昕雨Eilene' },
-        { id: 'EV3389', label: '刘榆雯Eva' },
-        { id: 'LEO6666', label: 'jxbleo' }
-    ];
-
-    var validIds = ['EI6688', 'EV3389', 'LEO6666'];
-
-    function getStudentLabel(id) {
-        for (var i = 0; i < students.length; i++) {
-            if (students[i].id === id) return students[i].label;
-        }
-        return id;
-    }
-
-    function getStudentEnglishName(id) {
-        var label = getStudentLabel(id);
-        var matches = String(label || '').match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
-        return matches && matches.length ? matches[matches.length - 1] : label;
-    }
-
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;')
@@ -2950,7 +2925,21 @@
     }
 
     function getStoredIdentity() {
-        return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+        var practice = window.MrCatPractice || {};
+        if (practice.isVisitor && practice.isVisitor()) return 'VISITOR';
+        var profile = practice.profile;
+        return profile && profile.student_id ? String(profile.student_id) : '';
+    }
+
+    function profileDisplayName() {
+        var practice = window.MrCatPractice || {};
+        var profile = practice.profile;
+        if (!profile) return '';
+        var direct = String(profile.english_name || '').trim();
+        if (direct) return direct;
+        var full = String(profile.name || profile.student_id || '').trim();
+        var matches = full.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        return matches && matches.length ? matches[matches.length - 1] : full;
     }
 
     function contentVersion() {
@@ -2959,7 +2948,11 @@
 
     function updateIdentityStatus() {
         var id = studentId || getStoredIdentity();
-        var label = id ? (id === 'VISITOR' ? '' : getStudentEnglishName(id)) : 'Login';
+        var label = teacherMode
+            ? 'Teacher'
+            : id === 'VISITOR'
+                ? 'Visitor'
+                : profileDisplayName() || (id ? 'Student' : 'Login');
         var ids = ['identity-status'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
@@ -3522,66 +3515,35 @@
     function showLoginPrompt() {
         document.getElementById('loading-message').style.display = 'none';
         var modal = document.getElementById('login-modal');
-        var customInput = document.getElementById('bbc-custom-id-input');
-        var customBtn = document.getElementById('bbc-custom-login-btn');
-        var errorEl = document.getElementById('bbc-login-error');
+        var loginBtn = document.getElementById('bbc-official-login-btn');
         var visitorBtn = document.getElementById('bbc-visitor-btn');
-        var savedBtn = document.getElementById('bbc-saved-identity-btn');
-        if (customInput) customInput.value = '';
-        if (errorEl) errorEl.textContent = '';
-        var stored = localStorage.getItem('opencode_user') || '';
-        if (savedBtn && stored) {
-            savedBtn.style.display = 'block';
-            savedBtn.textContent = 'Continue as ' + getStudentLabel(stored);
-            savedBtn.onclick = function() { selectStudent(stored); };
-        } else if (savedBtn) {
-            savedBtn.style.display = 'none';
-        }
-
-        function handleCustomLogin() {
-            var id = customInput.value.trim();
-            if (!id) { errorEl.textContent = 'Please enter a student ID.'; return; }
-            if (validIds.indexOf(id) !== -1) {
-                errorEl.textContent = '';
-                selectStudent(id);
-            } else {
-                errorEl.textContent = 'Unknown ID: "' + id + '"';
-                if (confirm('No matching ID for "' + id + '". Continue as visitor?')) {
-                    selectVisitor();
-                }
-            }
-        }
 
         function selectVisitor() {
             studentId = 'VISITOR';
-            localStorage.removeItem('opencode_user');
-            localStorage.setItem('opencode_visitor', 'true');
+            if (window.MrCatPractice && typeof window.MrCatPractice.enableVisitorMode === 'function') {
+                window.MrCatPractice.enableVisitorMode();
+            } else {
+                localStorage.removeItem('mrcat_student_profile');
+                localStorage.removeItem('opencode_user');
+                localStorage.setItem('mrcat_visitor', 'true');
+                localStorage.setItem('opencode_visitor', 'true');
+            }
             updateIdentityStatus();
             logEvent('login', { studentId: 'VISITOR' });
             modal.classList.remove('show');
             fetchLesson();
         }
 
-        if (customBtn) customBtn.addEventListener('click', handleCustomLogin);
-        if (customInput) customInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') handleCustomLogin();
-        });
-        if (visitorBtn) visitorBtn.addEventListener('click', selectVisitor);
+        if (loginBtn) loginBtn.onclick = function() {
+            if (window.MrCatLoginNavigation && typeof window.MrCatLoginNavigation.loginHref === 'function') {
+                window.location.href = window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html');
+            } else {
+                window.location.href = 'index.html';
+            }
+        };
+        if (visitorBtn) visitorBtn.onclick = selectVisitor;
 
         modal.classList.add('show');
-    }
-
-    function selectStudent(id) {
-        studentId = id;
-        localStorage.setItem('opencode_user', id);
-        localStorage.removeItem('opencode_visitor');
-        updateIdentityStatus();
-        var url = new URL(window.location.href);
-        url.searchParams.set('user', studentId);
-        window.history.replaceState({}, '', url);
-        logEvent('login', { studentId: studentId });
-        document.getElementById('login-modal').classList.remove('show');
-        fetchLesson();
     }
 
     function init() {
@@ -3596,14 +3558,7 @@
         assignmentStatus = params.status || '';
         historyFeedbackEligible = assignmentStatus === 'passed' || assignmentStatus === 'mastered';
         teacherMode = params.teacher === '1';
-        studentId = params.user || getStoredIdentity();
-        if (params.user && params.user !== 'VISITOR') {
-            localStorage.setItem('opencode_user', params.user);
-            localStorage.removeItem('opencode_visitor');
-        } else if (params.user === 'VISITOR') {
-            localStorage.removeItem('opencode_user');
-            localStorage.setItem('opencode_visitor', 'true');
-        }
+        studentId = getStoredIdentity();
         updateIdentityStatus();
 
         logEvent('page_enter', { set: setId, user: studentId });

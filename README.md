@@ -72,6 +72,7 @@ npm run verify:release
 npm run test:assignment-schedule
 npm run test:content-editions
 npm run test:my-words
+npm run test:login-redirect
 npm run test:learning-reports
 npm run test:attempt-emails
 npm run package:functions:all

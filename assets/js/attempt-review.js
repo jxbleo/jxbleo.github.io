@@ -17,7 +17,7 @@
 
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode !== 'student') {
-            window.location.replace('index.html');
+            window.location.replace(window.MrCatLoginNavigation.loginHref(window.location.href, 'attempt-review.html'));
             return null;
         }
         if (!attemptId) throw new Error('Attempt not specified.');
