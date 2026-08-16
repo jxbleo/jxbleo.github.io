@@ -142,6 +142,10 @@ npm run import:intensive-listening -- transcript.json \
 node scripts/build-home-catalog.js
 ```
 
+When replacing the segmentation or slot structure of an already published
+material, pass a new `--content-version` value. Version `1` remains the default;
+later versions start compatible fresh progress while preserving older records.
+
 The importer writes public metadata with `catalogVisible: false` and ignored
 private material/import rows. The material therefore remains addressable and
 assignable without creating a second Student Library entry.

@@ -9,13 +9,17 @@
 
 - Added the authenticated shared Intensive Listening runtime, private server
   checking/progress function, timestamped JSON importer, and first material
-  `IL-BBC-260813` with 33 source-defined units and 982 private word slots.
+  `IL-BBC-260813`.
 - Added an `Intensive Listening` capsule to explicitly linked BBC lesson cards.
+- Added 16 more BBC Intensive Listening materials from `BBC-260319` through
+  `BBC-260730`, using the teacher-provided source segments as student units.
 
 ### Changed
 
 - Kept Intensive Listening as a single contextual entry on linked BBC lesson
   cards and removed its separate Student Library category and card.
+- Reimported `IL-BBC-260813` with 83 millisecond-timed source units; the complete
+  17-material batch contains 1,447 units and 16,495 private word slots.
 - Unified BBC, Vocabulary, IELTS Reading, and IELTS Listening `Back` / `Home`
   confirmations with the Student Logout Apple-style glass alert, including
   a consistent warning hierarchy, focus containment/restoration, scroll locking, and

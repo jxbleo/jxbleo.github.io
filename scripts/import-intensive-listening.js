@@ -8,7 +8,7 @@ const args = process.argv.slice(2);
 
 function usage() {
   console.log(`Usage:
-  node scripts/import-intensive-listening.js <transcript.json> --set-id <IL-ID> --title <title> --audio-src <public/path.mp3>
+  node scripts/import-intensive-listening.js <transcript.json> --set-id <IL-ID> --title <title> --audio-src <public/path.mp3> [--content-version <version>]
 
 Each timestamped transcript record becomes one final Intensive Listening unit.
 The public content record contains metadata only; words and accepted answers are
@@ -34,6 +34,7 @@ const setId = option("--set-id");
 const title = option("--title");
 const audioSrc = option("--audio-src");
 const publishedOn = option("--published-on", false);
+const contentVersion = option("--content-version", false) || "1";
 
 if (!/^IL-[A-Za-z0-9-]+$/.test(setId)) throw new Error("--set-id must start with IL-");
 if (/^(?:https?:)?\/\//i.test(audioSrc) || audioSrc.startsWith("/")) throw new Error("--audio-src must be a same-site relative path");
@@ -137,7 +138,7 @@ const material = {
   set_id: setId,
   title,
   audio_src: audioSrc,
-  content_version: "1",
+  content_version: contentVersion,
   visible: true,
   source_format: "timestamped_transcript",
   segmentation_policy: "source_segments",
