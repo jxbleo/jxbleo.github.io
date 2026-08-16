@@ -107,6 +107,14 @@ function run() {
   assert.ok(intensiveRuntime.includes("submitSpellingDispute"));
   assert.ok(intensiveRuntime.includes("unitMode(currentUnit()) === 'skip'"));
   assert.ok(intensiveRuntime.includes("exportMaterial"));
+  assert.ok(intensiveRuntime.includes("moveToUnit(-1)"));
+  assert.ok(intensiveRuntime.includes("moveToUnit(1)"));
+
+  const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
+  assert.ok(intensivePage.includes('id="previous-unit-button"'));
+  assert.ok(intensivePage.includes('aria-label="Previous sentence"'));
+  assert.ok(intensivePage.includes('id="next-unit-button"'));
+  assert.ok(intensivePage.includes('aria-label="Next sentence"'));
 
   const homeCatalog = JSON.parse(fs.readFileSync(path.join(root, "data/home-catalog.json"), "utf8"));
   assert.strictEqual(homeCatalog.sections.some((section) => section.id === "intensive-listening"), false);

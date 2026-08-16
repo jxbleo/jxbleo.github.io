@@ -15,6 +15,7 @@
     playing: false,
     stopAt: 0,
     busy: false,
+    autoAdvancing: false,
     localUnits: {},
     slotDisputes: {},
     selectedArgue: null
@@ -256,6 +257,17 @@
       button.addEventListener('click', function() { openArgue(Number(button.dataset.argueSlotIndex)); });
     });
   }
+  function adjacentPlayableIndex(offset) {
+    for (var index = state.currentIndex + offset; index >= 0 && index < state.material.units.length; index += offset) {
+      if (unitMode(state.material.units[index]) !== 'skip') return index;
+    }
+    return -1;
+  }
+  function updateUnitNavigation() {
+    var locked = state.busy || state.autoAdvancing;
+    $('#previous-unit-button').disabled = locked || adjacentPlayableIndex(-1) < 0;
+    $('#next-unit-button').disabled = locked || adjacentPlayableIndex(1) < 0;
+  }
   function renderUnit() {
     var unit = currentUnit();
     if (!unit) return;
@@ -266,6 +278,7 @@
     $('#unit-label').textContent = mode === 'listen_only' ? 'JUST LISTEN' : 'UNIT ' + String(position).padStart(2, '0');
     $('#speaker-label').textContent = unit.speaker || '';
     $('#unit-position').textContent = mode === 'dictation' ? position + ' / ' + state.material.unit_count : 'LISTEN';
+    updateUnitNavigation();
     $('#time-range').textContent = formatTime(unit.start_seconds) + ' – ' + formatTime(unit.end_seconds);
     $('#practice-card').dataset.mode = mode;
     if (mode === 'skip') { window.setTimeout(advanceUnit, 0); return; }
@@ -306,6 +319,7 @@
 
   function setBusy(busy, message) {
     state.busy = busy;
+    updateUnitNavigation();
     if (currentUnit() && isDictation(currentUnit())) {
       $('#check-button').disabled = busy || state.teacherMode || currentServer().completed === true;
       $('#answer-button').disabled = busy || currentLocal().answerVisible;
@@ -323,7 +337,10 @@
       if (result.completed) {
         $('#feedback').className = 'il-feedback success';
         $('#feedback').textContent = 'Perfect. Moving to the next unit…';
-        renderUnit(); window.setTimeout(advanceUnit, 650); return;
+        state.autoAdvancing = true;
+        renderUnit();
+        window.setTimeout(function() { state.autoAdvancing = false; advanceUnit(); }, 650);
+        return;
       }
       renderUnit();
       var firstWrong = result.marks.findIndex(function(mark, index) { return !mark && !isProvided(unit.slots[index]); });
@@ -392,6 +409,17 @@
     $('#feedback').className = 'il-feedback';
     $('#feedback').textContent = isDictation(currentUnit()) ? 'Listen once, then type one word in each slot.' : '';
     renderUnit(); replayUnit(false);
+  }
+  function moveToUnit(offset) {
+    if (!state.material || state.busy || state.autoAdvancing) return;
+    var targetIndex = adjacentPlayableIndex(offset);
+    if (targetIndex < 0) return;
+    pauseAudio('');
+    state.currentIndex = targetIndex;
+    $('#feedback').className = 'il-feedback';
+    $('#feedback').textContent = isDictation(currentUnit()) ? 'Listen once, then type one word in each slot.' : '';
+    renderUnit();
+    replayUnit(false);
   }
   function replayUnit(countReplay) {
     if (!state.material || state.busy || unitMode(currentUnit()) === 'skip') return;
@@ -531,6 +559,8 @@
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);
   $('#continue-button').addEventListener('click', advanceUnit);
+  $('#previous-unit-button').addEventListener('click', function() { moveToUnit(-1); });
+  $('#next-unit-button').addEventListener('click', function() { moveToUnit(1); });
   $('#restart-button').addEventListener('click', startTemporaryReplay);
   $('#export-button').addEventListener('click', exportLatest);
   $('#audio').addEventListener('timeupdate', function() {

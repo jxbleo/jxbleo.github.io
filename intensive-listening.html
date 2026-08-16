@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#123f35">
   <title>Intensive Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260816-2">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260817-1">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
@@ -32,7 +32,11 @@
 
     <section class="il-practice-card" id="practice-card">
       <div class="il-unit-bar">
-        <div><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label"></span></div>
+        <div class="il-unit-navigation">
+          <button class="il-unit-step" id="previous-unit-button" type="button" aria-label="Previous sentence" title="Previous sentence">←</button>
+          <div class="il-unit-identity"><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label"></span></div>
+          <button class="il-unit-step" id="next-unit-button" type="button" aria-label="Next sentence" title="Next sentence">→</button>
+        </div>
         <span class="il-unit-position" id="unit-position">1 / 1</span>
       </div>
 
@@ -112,6 +116,6 @@
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-  <script src="assets/js/intensive-listening.js?v=20260816-2"></script>
+  <script src="assets/js/intensive-listening.js?v=20260817-1"></script>
 </body>
 </html>

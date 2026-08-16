@@ -1423,6 +1423,11 @@ Shared rules:
 - One teacher-approved Intensive Listening Unit is active at a time. A unit
   follows a natural speech boundary and manageable transcription length rather
   than requiring a grammatical sentence ending.
+- The Unit/Speaker title row includes Previous Sentence and Next Sentence arrow
+  buttons. Moving in either direction preserves the current unit's local draft,
+  skips segments marked Skip, switches immediately to the adjacent playable
+  segment, and plays it once. The unavailable direction is disabled at the
+  material boundaries.
 - The active unit reveals its expected word count as one equal-width Word Slot
   per reviewed word. Slot width must not reveal the expected word's character
   count. Sentence punctuation—including commas, periods, question marks,

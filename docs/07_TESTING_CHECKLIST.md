@@ -54,6 +54,9 @@ Intensive Listening checks:
   the private material and policy revision, and Keep leaves spelling required;
 - teacher Export Latest JSON contains modes and 1-based
   `providedWordPositions` without publishing that JSON statically.
+- the Unit/Speaker row exposes previous/next sentence arrows, disables invalid
+  directions at the material boundaries, skips excluded segments, and preserves
+  typed drafts while moving between playable units.
 
 BBC/Vocabulary result-audio checks:
 
