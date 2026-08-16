@@ -3,6 +3,26 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+
+## 2026-08-17
+
+### Added
+
+- Added Dictation, Listen Only, and Skip segment behavior to Intensive Listening.
+- Added student/teacher word-level Spelling Exemption Argue, teacher approval,
+  live policy refresh, Provided Words, and teacher-only latest-JSON export.
+- Added private iCloud source backups for all 17 BBC Intensive Listening
+  materials as self-contained JSON plus readable Markdown transcripts.
+
+### Changed
+
+- Reclassified 232 fixed BBC idents, host greetings, website/worksheet
+  promotions, and closing segments as Skip while preserving source text and
+  timestamps. The 16 version-1 materials advance to content version 2;
+  `IL-BBC-260813` advances from version 2 to version 3.
+- Made CloudBase the live published source after import while retaining private
+  iCloud JSON as the portable authoring and recovery package.
+
 ## 2026-08-16
 
 ### Added

@@ -322,6 +322,13 @@ BBC 这类内容应尽量保留老师可读 Markdown 源。IELTS 这类内容可
 `Intensive Listening` 胶囊入口；没有绑定的 BBC 习题不显示入口。
 这是学生端唯一的精听入口；Library 不显示独立精听专栏或材料卡片。
 
+每个时间戳段落显式使用 `dictation`、`listen_only` 或 `skip`。只有
+`dictation` 产生词位并计入完成率；`listen_only` 连续播放但不输入；`skip`
+不播放也不计进度。教师和已打开答案的学生都可对单个词位提交“拼写豁免”
+Argue。教师批准后该词成为所有学生直接可见且不评分的 Provided Word；教师拒绝
+则继续要求拼写。教师模式可导出包含当前段落模式与已批准词位的最新版私有 JSON。
+
+
 ## 5. 高层架构
 
 系统由三层组成：

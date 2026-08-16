@@ -28,6 +28,15 @@ without explicit owner approval.
 A feature may require one, two, or all three tracks. Always state which tracks
 are still required.
 
+Intensive Listening mode/Argue releases require the static runtime plus both
+`intensiveListening` and `teacherAdmin` functions. Material mode changes also
+require an overwrite import of `intensive_listening_materials`; use one-record
+chunks because complete transcript documents can exceed safe command-argument
+batch sizes. Publish the static runtime and functions before importing a material
+whose modes depend on the new code. No new collection or permission change is
+required; spelling requests reuse `answer_disputes` and their approved audit
+uses `grading_key_history`.
+
 Teacher attempt-response slimming requires both the rebuilt `teacherAdmin`
 function ZIP and the matching static `teacher.html` / `assets/js/teacher.js`.
 Deploy them from the same commit. Publish the backward-compatible static files

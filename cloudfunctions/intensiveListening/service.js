@@ -26,6 +26,20 @@ function isCorrect(entry, slot) {
   return acceptedAnswers(slot).includes(normalized);
 }
 
+function practiceMode(unit) {
+  const mode = String(unit && unit.practice_mode || "dictation");
+  return ["dictation", "listen_only", "skip"].includes(mode) ? mode : "dictation";
+}
+
+function isProvided(slot) {
+  return String(slot && slot.spelling_requirement || "required") === "provided";
+}
+
+function dictationUnits(material) {
+  return (Array.isArray(material && material.units) ? material.units : [])
+    .filter((unit) => practiceMode(unit) === "dictation");
+}
+
 function emptyUnitState(slotCount) {
   return {
     checks: 0,
@@ -52,17 +66,31 @@ function normalizedUnitState(value, slotCount) {
   };
 }
 
+function normalizedStateForUnit(value, unit) {
+  const slots = Array.isArray(unit && unit.slots) ? unit.slots : [];
+  const state = normalizedUnitState(value, slots.length);
+  slots.forEach((slot, index) => {
+    if (isProvided(slot)) {
+      state.correct_positions[index] = true;
+      state.last_marks[index] = true;
+      state.last_wrong_hashes[index] = "";
+    }
+  });
+  if (slots.length && state.correct_positions.every(Boolean)) state.completed = true;
+  return state;
+}
+
 function gradeUnit(unit, entries, previousValue, context, replayDelta = 0) {
   const slots = Array.isArray(unit && unit.slots) ? unit.slots : [];
   if (!slots.length) throw new Error("UNIT_HAS_NO_SLOTS");
   if (!Array.isArray(entries) || entries.length !== slots.length) throw new Error("SLOT_COUNT_MISMATCH");
-  const previous = normalizedUnitState(previousValue, slots.length);
+  const previous = normalizedStateForUnit(previousValue, unit);
   if (previous.completed) {
     return { state: previous, marks: previous.correct_positions, effective: false, alreadyCompleted: true };
   }
 
-  const marks = slots.map((slot, index) => previous.correct_positions[index] || isCorrect(entries[index], slot));
-  const hashes = entries.map((entry, index) => entryHash(entry, `${context}:${index}`));
+  const marks = slots.map((slot, index) => isProvided(slot) || previous.correct_positions[index] || isCorrect(entries[index], slot));
+  const hashes = entries.map((entry, index) => isProvided(slots[index]) ? "" : entryHash(entry, `${context}:${index}`));
   const effective = previous.checks === 0 || previous.last_marks.some((mark, index) => (
     mark === false && hashes[index] !== previous.last_wrong_hashes[index]
   ));
@@ -81,7 +109,7 @@ function gradeUnit(unit, entries, previousValue, context, replayDelta = 0) {
 
 function revealUnit(unit, previousValue, replayDelta = 0) {
   const slots = Array.isArray(unit && unit.slots) ? unit.slots : [];
-  const previous = normalizedUnitState(previousValue, slots.length);
+  const previous = normalizedStateForUnit(previousValue, unit);
   if (previous.checks < 3) {
     return { allowed: false, remaining: 3 - previous.checks, state: previous };
   }
@@ -103,8 +131,8 @@ function revealUnit(unit, previousValue, replayDelta = 0) {
 }
 
 function progressSummary(material, unitStates) {
-  const units = Array.isArray(material && material.units) ? material.units : [];
-  const states = units.map((unit) => normalizedUnitState(unitStates && unitStates[unit.unit_id], (unit.slots || []).length));
+  const units = dictationUnits(material);
+  const states = units.map((unit) => normalizedStateForUnit(unitStates && unitStates[unit.unit_id], unit));
   const completed = states.filter((state) => state.completed).length;
   const assisted = states.filter((state) => state.completed && state.assisted).length;
   const independent = completed - assisted;
@@ -121,24 +149,62 @@ function progressSummary(material, unitStates) {
 
 function publicMaterial(material) {
   const units = Array.isArray(material && material.units) ? material.units : [];
+  const dictation = dictationUnits(material);
   return {
     material_id: String(material.material_id || material.set_id || ""),
     set_id: String(material.set_id || material.material_id || ""),
     title: String(material.title || "Intensive Listening"),
     audio_src: String(material.audio_src || ""),
     content_version: String(material.content_version || "1"),
-    unit_count: units.length,
+    policy_revision: Math.max(1, Number(material.policy_revision) || 1),
+    unit_count: dictation.length,
+    sequence_count: units.length,
     units: units.map((unit) => ({
       unit_id: String(unit.unit_id || ""),
       speaker: String(unit.speaker || ""),
       start_seconds: Number(unit.start_seconds) || 0,
       end_seconds: Number(unit.end_seconds) || 0,
+      practice_mode: practiceMode(unit),
       slots: (unit.slots || []).map((slot) => ({
         slot_id: String(slot.slot_id || ""),
         prefix: String(slot.prefix || ""),
         suffix: String(slot.suffix || ""),
+        spelling_requirement: isProvided(slot) ? "provided" : "required",
+        provided_text: isProvided(slot) ? String(slot.answer || "") : "",
       })),
     })),
+  };
+}
+
+function sourceMaterial(material) {
+  const secondsClock = (value) => {
+    const milliseconds = Math.max(0, Math.round((Number(value) || 0) * 1000));
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor(milliseconds % 3600000 / 60000);
+    const seconds = Math.floor(milliseconds % 60000 / 1000);
+    const millis = milliseconds % 1000;
+    return [hours, minutes, seconds].map((part) => String(part).padStart(2, "0")).join(":")
+      + "." + String(millis).padStart(3, "0");
+  };
+  return {
+    schemaVersion: 1,
+    materialId: String(material.material_id || material.set_id || ""),
+    sourceSetId: String(material.source_set_id || material.set_id || "").replace(/^IL-/, ""),
+    title: String(material.title || ""),
+    audioSrc: String(material.audio_src || ""),
+    contentVersion: String(material.content_version || "1"),
+    policyRevision: Math.max(1, Number(material.policy_revision) || 1),
+    segments: (material.units || []).map((unit) => {
+      const output = {
+        speaker: String(unit.speaker || ""),
+        text: String(unit.text || ""),
+        timestamp: `${secondsClock(unit.start_seconds)}-${secondsClock(unit.end_seconds)}`,
+        practiceMode: practiceMode(unit),
+      };
+      const provided = (unit.slots || []).map((slot, index) => isProvided(slot) ? index + 1 : 0).filter(Boolean);
+      if (provided.length) output.providedWordPositions = provided;
+      return output;
+    }),
   };
 }
 
@@ -152,8 +218,8 @@ function publicProgress(material, record) {
   const states = record && record.unit_states && typeof record.unit_states === "object" ? record.unit_states : {};
   const summary = progressSummary(material, states);
   const unitProgress = {};
-  (material.units || []).forEach((unit) => {
-    const state = normalizedUnitState(states[unit.unit_id], (unit.slots || []).length);
+  dictationUnits(material).forEach((unit) => {
+    const state = normalizedStateForUnit(states[unit.unit_id], unit);
     unitProgress[unit.unit_id] = {
       checks: state.checks,
       completed: state.completed,
@@ -176,8 +242,12 @@ module.exports = {
   normalizedUnitState,
   gradeUnit,
   revealUnit,
+  practiceMode,
+  isProvided,
+  dictationUnits,
   progressSummary,
   publicMaterial,
+  sourceMaterial,
   progressScope,
   publicProgress,
 };

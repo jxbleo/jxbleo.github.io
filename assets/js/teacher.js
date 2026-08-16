@@ -7493,31 +7493,39 @@
         var questionText = getQuestionText(item);
         var requesterLabel = item.requester_role === 'teacher' ? 'Teacher note' : 'Student note';
         var statusText = item.status === 'rejected' ? 'rejected' : item.status;
+        var spellingExemption = item.dispute_type === 'intensive_spelling_exemption';
         return '<article class="dispute-detail ' + escapeHtml(item.status) + '" data-dispute-id="' +
             escapeHtml(item.dispute_id) + '">' +
             '<div class="dispute-detail-head">' +
-                '<div><strong>Question ' + escapeHtml(item.question_id) + '</strong>' +
+                '<div><strong>' + (spellingExemption ? 'Spelling exemption · ' : 'Question ') + escapeHtml(spellingExemption ? answerText(item.answer_snapshot) : item.question_id) + '</strong>' +
                 '<small>' + escapeHtml(formatDate(item.created_at)) + '</small></div>' +
                 '<span class="badge dispute-status ' + escapeHtml(pending ? 'pending' : item.status) + '">' + escapeHtml(statusText) + '</span>' +
             '</div>' +
             (questionText
                 ? '<p class="dispute-question-text">' + escapeHtml(questionText) + '</p>'
                 : '<p class="dispute-question-text missing">Question text is not available from the current public data.</p>') +
-            '<div class="dispute-comparison">' +
-                '<div><span>Submitted answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
-                '<div><span>Correct answer snapshot</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
-            '</div>' +
-            (item.explanation || item.explanation_snapshot
+            (spellingExemption
+                ? '<div class="dispute-comparison"><div><span>Target word</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
+                  '<div><span>Current rule</span><strong>Spelling required</strong></div></div>' +
+                  '<p class="dispute-explanation"><strong>Audio range:</strong> ' + escapeHtml(formatDuration(item.start_seconds_snapshot)) +
+                  ' – ' + escapeHtml(formatDuration(item.end_seconds_snapshot)) + '</p>'
+                : '<div class="dispute-comparison">' +
+                  '<div><span>Submitted answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
+                  '<div><span>Correct answer snapshot</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
+                  '</div>') +
+            (!spellingExemption && (item.explanation || item.explanation_snapshot)
                 ? '<p class="dispute-explanation"><strong>Explanation:</strong> ' + escapeHtml(item.explanation || item.explanation_snapshot) + '</p>'
-                : '<p class="dispute-explanation missing"><strong>Explanation:</strong> No explanation is stored for this question.</p>') +
+                : (!spellingExemption ? '<p class="dispute-explanation missing"><strong>Explanation:</strong> No explanation is stored for this question.</p>' : '')) +
             '<p class="dispute-reason"><strong>' + requesterLabel + ':</strong> ' +
                 escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
             (pending
                 ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher note (optional)"></textarea>' +
                   '<div class="dispute-actions">' +
-                    '<button class="outline-button" type="button" data-decision="keep">Keep Original Ruling</button>' +
-                    '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
-                    '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>' +
+                    '<button class="outline-button" type="button" data-decision="keep">' + (spellingExemption ? 'Keep Spelling Required' : 'Keep Original Ruling') + '</button>' +
+                    (spellingExemption
+                        ? '<button class="primary-button" type="button" data-decision="provide">Provide This Word</button>'
+                        : '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
+                          '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>') +
                   '</div>'
                 : '<p class="muted">Decision: ' + escapeHtml(item.decision || item.status) +
                   (item.teacher_note ? ' · ' + escapeHtml(item.teacher_note) : '') + '</p>') +

@@ -8,11 +8,12 @@ const args = process.argv.slice(2);
 
 function usage() {
   console.log(`Usage:
-  node scripts/import-intensive-listening.js <transcript.json> --set-id <IL-ID> --title <title> --audio-src <public/path.mp3> [--content-version <version>]
+  node scripts/import-intensive-listening.js <material.json> [--set-id <IL-ID>] [--title <title>] [--audio-src <public/path.mp3>] [--content-version <version>]
 
-Each timestamped transcript record becomes one final Intensive Listening unit.
-The public content record contains metadata only; words and accepted answers are
-written to ignored .cloudbase-private/source/intensive-listening/.`);
+The JSON may be an array of transcript records or a self-contained object with
+materialId, sourceSetId, title, audioSrc, contentVersion, and segments. Segment
+practiceMode values are dictation, listen_only, or skip. Public content contains
+metadata only; text and answers are written to ignored private source data.`);
 }
 
 function option(name, required = true) {
@@ -30,16 +31,7 @@ if (args.includes("--help") || args.includes("-h")) {
 const sourceArg = args[0] && !args[0].startsWith("--") ? args[0] : "";
 if (!sourceArg) throw new Error("A timestamped transcript JSON path is required");
 const sourcePath = path.resolve(sourceArg);
-const setId = option("--set-id");
-const title = option("--title");
-const audioSrc = option("--audio-src");
 const publishedOn = option("--published-on", false);
-const contentVersion = option("--content-version", false) || "1";
-
-if (!/^IL-[A-Za-z0-9-]+$/.test(setId)) throw new Error("--set-id must start with IL-");
-if (/^(?:https?:)?\/\//i.test(audioSrc) || audioSrc.startsWith("/")) throw new Error("--audio-src must be a same-site relative path");
-const audioPath = path.join(projectRoot, audioSrc);
-if (!fs.existsSync(audioPath)) throw new Error(`Audio file is missing: ${audioSrc}`);
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
@@ -113,6 +105,22 @@ function slotsForText(text, unitNumber) {
 }
 
 const payload = readJson(sourcePath);
+const setId = option("--set-id", false)
+  || String(payload && (payload.materialId || payload.material_id || payload.setId || payload.set_id) || "").trim();
+const title = option("--title", false) || String(payload && payload.title || "").trim();
+const audioSrc = option("--audio-src", false)
+  || String(payload && (payload.audioSrc || payload.audio_src) || "").trim();
+const contentVersion = option("--content-version", false)
+  || String(payload && (payload.contentVersion || payload.content_version) || "1").trim();
+const sourceSetId = String(payload && (payload.sourceSetId || payload.source_set_id) || setId.replace(/^IL-/, "")).trim();
+
+if (!/^IL-[A-Za-z0-9-]+$/.test(setId)) throw new Error("The material ID must start with IL- (use materialId or --set-id)");
+if (!title) throw new Error("A material title is required (use title or --title)");
+if (!audioSrc) throw new Error("A public audio path is required (use audioSrc or --audio-src)");
+if (/^(?:https?:)?\/\//i.test(audioSrc) || audioSrc.startsWith("/")) throw new Error("audioSrc must be a same-site relative path");
+const audioPath = path.join(projectRoot, audioSrc);
+if (!fs.existsSync(audioPath)) throw new Error(`Audio file is missing: ${audioSrc}`);
+
 const records = Array.isArray(payload)
   ? payload
   : ["segments", "transcript", "items", "results"].map((key) => payload && payload[key]).find(Array.isArray);
@@ -123,37 +131,63 @@ const units = records.map((record, index) => {
   const text = String(record.text == null ? record.transcript || "" : record.text).trim();
   if (!text) throw new Error(`Record ${index + 1} has no text`);
   const range = timeRange(record, index + 1);
+  let practiceMode = String(record.practiceMode || record.practice_mode || "dictation").trim().toLowerCase();
+  if (!["dictation", "listen_only", "skip"].includes(practiceMode)) {
+    throw new Error(`Record ${index + 1} has unsupported practiceMode: ${practiceMode}`);
+  }
+  const slots = practiceMode === "dictation" ? slotsForText(text, index + 1) : [];
+  const providedPositions = record.providedWordPositions || record.provided_word_positions || [];
+  if (!Array.isArray(providedPositions)) throw new Error(`Record ${index + 1} providedWordPositions must be an array`);
+  const uniqueProvided = [...new Set(providedPositions.map(Number))];
+  uniqueProvided.forEach((position) => {
+    if (!Number.isInteger(position) || position < 1 || position > slots.length) {
+      throw new Error(`Record ${index + 1} has invalid provided word position: ${position}`);
+    }
+    slots[position - 1].spelling_requirement = "provided";
+  });
+  if (slots.length && slots.every((slot) => slot.spelling_requirement === "provided")) {
+    practiceMode = "listen_only";
+  }
   return {
     unit_id: `unit-${String(index + 1).padStart(2, "0")}`,
     speaker: String(record.speaker || record.speaker_name || "").trim(),
     text,
     start_seconds: range.start,
     end_seconds: range.end,
-    slots: slotsForText(text, index + 1),
+    practice_mode: practiceMode,
+    slots,
   };
 });
+
+const dictationUnits = units.filter((unit) => unit.practice_mode === "dictation");
+if (!dictationUnits.length) throw new Error("The material must contain at least one dictation segment");
 
 const material = {
   material_id: setId,
   set_id: setId,
+  source_set_id: sourceSetId,
   title,
   audio_src: audioSrc,
   content_version: contentVersion,
+  policy_revision: Number(payload && (payload.policyRevision || payload.policy_revision)) || 1,
   visible: true,
   source_format: "timestamped_transcript",
   segmentation_policy: "source_segments",
   units,
 };
 
+const metaPath = path.join(projectRoot, "content", "intensive-listening", `${setId}.json`);
+const existingMeta = fs.existsSync(metaPath) ? readJson(metaPath) : {};
+
 const meta = {
   id: setId,
   sectionId: "intensive-listening",
   title,
   href: `intensive-listening.html?set=${encodeURIComponent(setId)}`,
-  publishedOn: publishedOn || new Date().toISOString().slice(0, 10),
+  publishedOn: publishedOn || String(payload && payload.publishedOn || existingMeta.publishedOn || "") || new Date().toISOString().slice(0, 10),
   topic: "BBC 6 Minute English",
   tags: ["Intensive Listening", "BBC"],
-  note: `${units.length} listening units`,
+  note: `${dictationUnits.length} dictation units`,
   catalogVisible: false,
   visible: true,
 };
@@ -174,12 +208,11 @@ function upsertJsonLine(filePath, keyField, record) {
   fs.writeFileSync(filePath, existing.map((item) => JSON.stringify(item)).join("\n") + "\n");
 }
 
-const metaPath = path.join(projectRoot, "content", "intensive-listening", `${setId}.json`);
 const privatePath = path.join(projectRoot, ".cloudbase-private", "source", "intensive-listening", `${setId}.json`);
 writeJson(metaPath, meta);
 writeJson(privatePath, material);
 
-const linkedBbcId = setId.replace(/^IL-/, "");
+const linkedBbcId = sourceSetId || setId.replace(/^IL-/, "");
 const linkedBbcPaths = [
   path.join(projectRoot, "content", "bbc-six-minute-english", `${linkedBbcId}.json`),
   path.join(projectRoot, "data", `${linkedBbcId}.json`),
@@ -212,8 +245,12 @@ upsertJsonLine(
   material
 );
 
-const slotCount = units.reduce((sum, unit) => sum + unit.slots.length, 0);
-console.log(`Imported ${setId}: ${units.length} units, ${slotCount} private word slots`);
+const slotCount = dictationUnits.reduce((sum, unit) => sum + unit.slots.length, 0);
+const modeCounts = units.reduce((counts, unit) => {
+  counts[unit.practice_mode] += 1;
+  return counts;
+}, { dictation: 0, listen_only: 0, skip: 0 });
+console.log(`Imported ${setId}: ${modeCounts.dictation} dictation, ${modeCounts.listen_only} listen-only, ${modeCounts.skip} skipped, ${slotCount} private word slots`);
 console.log(`Public metadata: ${path.relative(projectRoot, metaPath)}`);
 console.log(`Private source: ${path.relative(projectRoot, privatePath)}`);
 if (linkedBbcFiles.length) console.log(`Linked BBC practice: ${linkedBbcId}`);

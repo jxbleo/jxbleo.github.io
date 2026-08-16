@@ -117,6 +117,42 @@ The real-name, period-specific ordering of eligible Class members by Completed
 Class Items, with equal counts sharing the same rank.
 _Avoid_: Overall ability ranking, cross-course score ranking
 
+## Intensive Listening
+
+**Listening Segment**:
+One timestamped part of an Intensive Listening Material whose teaching behavior
+is explicitly Dictation, Listen Only, or Skip.
+_Avoid_: Sentence, physically cut audio file
+
+**Dictation Segment**:
+A Listening Segment whose required Word Slots must be transcribed before the
+segment is complete.
+_Avoid_: Every transcript row, listen-only passage
+
+**Listen-Only Segment**:
+A Listening Segment that students hear in sequence without typing or grading.
+_Avoid_: Skipped Segment, free-answer question
+
+**Skipped Segment**:
+A Listening Segment intentionally omitted from student playback and progress,
+such as a fixed ident, greeting, promotion, or closing.
+_Avoid_: Listen-Only Segment, deleted source text
+
+**Word Slot**:
+One fixed positional word in a Dictation Segment. It is either Spelling Required
+or a Provided Word; punctuation remains outside the slot.
+_Avoid_: Character-length hint, automatically aligned answer
+
+**Spelling Exemption**:
+A teacher-approved rule that changes one Spelling Required Word Slot into a
+Provided Word for every learner using that material version.
+_Avoid_: Accepted spelling variant, corrected transcript
+
+**Provided Word**:
+A Word Slot whose reviewed word is shown automatically and does not need to be
+typed or graded.
+_Avoid_: Revealed answer, accepted typo
+
 ## Personal Vocabulary
 
 **My Words Entry**:

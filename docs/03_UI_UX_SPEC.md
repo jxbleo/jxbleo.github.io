@@ -1440,8 +1440,17 @@ Shared rules:
   it does not reveal or replace it with the reviewed word. The student may replay,
   edit, and check the unit again. Only an explicit `Show Answer` action reveals
   the complete reviewed text.
-- One source segment is one listening unit. The first unit waits behind a
-  three-second Start Ritual; subsequent units autoplay once on entry.
+- One source segment keeps its reviewed boundary and is explicitly Dictation,
+  Listen Only, or Skip. Dictation shows Word Slots; Listen Only shows a compact
+  `JUST LISTEN` state and continues into the next eligible segment without an
+  input stop; Skip is never played or counted. The first playable segment waits
+  behind a three-second Start Ritual; later playable segments autoplay.
+- Provided Words render inline in green instead of as inputs. Keyboard movement
+  skips them and server checking excludes them.
+- After Show Answer, each required answer token is clickable for a Spelling
+  Exemption Argue. Teacher preview may reveal immediately; student reveal retains
+  the three-effective-check gate. The teacher Argue queue offers Keep Spelling
+  Required or Provide This Word. Teacher preview also exposes Export Latest JSON.
 - `Tab` replays the current unit. Correct slots lock green; incorrect slots
   remain editable red. The server reveals answers only after three effective
   checks and keeps independent/assisted completion counts separate.

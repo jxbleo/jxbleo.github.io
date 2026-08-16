@@ -44,8 +44,16 @@ Intensive Listening checks:
   card;
 - unchanged wrong checks do not advance the reveal gate, correct positions lock,
   and reveal requires three effective checks;
-- all three database collections remain `ADMINONLY` and authenticated bootstrap
-  returns all 33 redacted units in one response.
+- all Intensive Listening collections remain `ADMINONLY` and authenticated
+  bootstrap returns the full redacted sequence once;
+- `dictation` alone counts toward progress, `listen_only` produces no inputs,
+  and `skip` never plays;
+- required answers remain redacted while a Provided Word is returned and skipped
+  by keyboard/checking;
+- student and teacher Spelling Exemption requests enter Argue, `provide` updates
+  the private material and policy revision, and Keep leaves spelling required;
+- teacher Export Latest JSON contains modes and 1-based
+  `providedWordPositions` without publishing that JSON statically.
 
 BBC/Vocabulary result-audio checks:
 

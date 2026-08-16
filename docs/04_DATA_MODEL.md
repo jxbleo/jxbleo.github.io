@@ -1032,3 +1032,17 @@ retained. Version `1` preserves the legacy progress identity; later
 segmentation cannot inherit incompatible unit state. Earlier progress remains
 stored. Temporary replay records are separate, version-scoped, and cannot
 overwrite best data.
+
+Each material unit stores `practice_mode` as `dictation`, `listen_only`, or
+`skip`. Progress summaries include only Dictation units. Dictation slots store
+`spelling_requirement` as `required` or `provided`; only a Provided Word may
+be returned to the browser before answer reveal. `policy_revision` changes when
+a teacher approves a spelling exemption without changing segmentation or
+`content_version`. Existing position arrays remain compatible and Provided
+positions normalize as correct.
+
+Intensive spelling requests reuse `answer_disputes` with
+`dispute_type: "intensive_spelling_exemption"` plus `material_id`,
+`content_version`, `unit_id`, and `slot_id`. The decisions are `keep` and
+`provide`; accepted changes append an immutable `grading_key_history` rule
+revision.

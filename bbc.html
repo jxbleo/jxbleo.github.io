@@ -3368,9 +3368,10 @@
         var href = worksheetPdfHref(lessonData);
         var intensiveSetId = String(lessonData && lessonData.intensiveListeningSetId || '').trim();
         var buttons = [];
-        if (intensiveSetId && !teacherMode) {
+        if (intensiveSetId) {
             var returnTarget = 'bbc.html' + window.location.search + window.location.hash;
-            var intensiveHref = 'intensive-listening.html?set=' + encodeURIComponent(intensiveSetId) + '&return=' + encodeURIComponent(returnTarget);
+            var intensiveHref = 'intensive-listening.html?set=' + encodeURIComponent(intensiveSetId) +
+                (teacherMode ? '&teacher=1' : '') + '&return=' + encodeURIComponent(returnTarget);
             buttons.push(
                 '<a class="hero-tool-btn hero-tool-intensive" id="lesson-intensive-listening" href="' + escapeHtml(intensiveHref) + '" aria-label="Open Intensive Listening practice">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true">' +
