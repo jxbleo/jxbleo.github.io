@@ -1,5 +1,5 @@
 const cloudbase = require("@cloudbase/node-sdk");
-const CloudBaseManager = require("@cloudbase/manager-node");
+const CloudBaseManager = require("../_shared/cloudbase-user-manager");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
@@ -7,7 +7,10 @@ const teacherEmailSettings = require("../_shared/teacher-email-settings");
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const envId = process.env.TENCENTCLOUD_TCB_ENVID || "mrcat-dev-d9gwy2v1icdfdf597";
-const manager = CloudBaseManager.init({ envId });
+const manager = CloudBaseManager.init({
+  envId,
+  region: process.env.TCB_REGION || process.env.TENCENTCLOUD_REGION || "ap-shanghai",
+});
 const READ_PAGE_LIMIT = 500;
 const VOCAB_ITEM_COLLECTION = "student_vocabulary_items";
 const LEXICON_COLLECTION = "vocabulary_lexicon";
@@ -2756,7 +2759,7 @@ function disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap) {
 }
 
 async function resolveIntensiveSpellingDispute(dispute, decision, teacher, teacherNote) {
-  if (!["keep", "provide"].includes(decision)) throw new Error("DISPUTE_DECISION_REQUIRED");
+  if (!["keep", "provide"].includes(decision)) throw new Error("INTENSIVE_DECISION_REQUIRED");
   const material = await getOne("intensive_listening_materials", {
     set_id: dispute.set_id,
     content_version: String(dispute.content_version || "1"),

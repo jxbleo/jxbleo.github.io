@@ -281,7 +281,24 @@ Common validation:
 
 ```bash
 find cloudfunctions -name index.js -exec node --check {} \;
+npm run test:teacheradmin-package
 ```
+
+`test:teacheradmin-package` rebuilds `deploy-packages/teacherAdmin.zip`, checks
+that the archive contains only the bundled `index.js` and generated
+`package.json`, sums their uncompressed sizes, and fails above the project's
+1,500,000-byte guardrail. It also checks that the bundle retains the Intensive
+Listening dispute type, `dispute_type` projection, and the
+`INTENSIVE_DECISION_REQUIRED` business marker. This guardrail is intentionally below the observed CloudBase
+`CodeUnzipSizeLimit`; it catches growth before a console upload can fail.
+
+`teacherAdmin` uses the official `@cloudbase/node-sdk` for database and caller
+identity operations. Its five end-user account operations use the small local
+`cloudfunctions/_shared/cloudbase-user-manager.js` adapter instead of bundling
+the `@cloudbase/manager-node` top-level entry, which imports unrelated storage,
+function, and deployment services. The adapter signs the same Tencent TCB
+`2018-06-08` API requests and reads credentials only from CloudBase runtime
+environment variables. It does not change the teacher account behavior.
 
 Function runtime expectation:
 
@@ -744,6 +761,7 @@ What each command does:
 | --- | --- | --- |
 | `npm run verify:release` | syntax-check cloud functions, parse public JSON, check required docs, warn about dirty files | deploy, read secrets, modify CloudBase |
 | `npm run package:functions:all` | bundle runtime dependencies and rebuild local ZIPs in `deploy-packages/` | upload ZIPs or change function settings |
+| `npm run test:teacheradmin-package` | rebuild and inspect `teacherAdmin.zip`, enforce the uncompressed-size guardrail, and smoke-test the local TCB signer | deploy, read production data, request credentials |
 | `npm run release:plan` | write `.cloudbase-private/deploy-plan.md` for owner review | deploy, import data, request credentials |
 | `npm run cloudbase:import:content` | dry-run CloudBase data import plan | write CloudBase unless `-- --apply` is passed |
 

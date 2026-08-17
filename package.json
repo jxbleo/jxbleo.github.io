@@ -30,7 +30,8 @@
     "release:plan": "node scripts/generate-deploy-plan.js",
     "cloudbase:import:content": "node scripts/cloudbase-import-content.js",
     "import:intensive-listening": "node scripts/import-intensive-listening.js",
-    "test:intensive-listening": "node scripts/test-intensive-listening.js"
+    "test:intensive-listening": "node scripts/test-intensive-listening.js",
+    "test:teacheradmin-package": "node scripts/test-teacheradmin-package.js"
   },
   "devDependencies": {
     "@cloudbase/manager-node": "5.5.2",

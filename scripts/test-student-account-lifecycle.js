@@ -203,7 +203,7 @@ Module._load = function mockedLoad(request, parent, isMain) {
   if (request === "@cloudbase/node-sdk") {
     return { SYMBOL_CURRENT_ENV: Symbol("current-env"), init: () => app };
   }
-  if (request === "@cloudbase/manager-node") {
+  if (request === "@cloudbase/manager-node" || request === "../_shared/cloudbase-user-manager") {
     return { init: () => manager };
   }
   return originalLoad.call(this, request, parent, isMain);

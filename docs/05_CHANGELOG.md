@@ -19,6 +19,11 @@
 
 ### Changed
 
+- Reduced the `teacherAdmin` deployment bundle by replacing its unused
+  top-level CloudBase manager entry with a small, protocol-compatible end-user
+  API adapter. Added a reproducible package-size gate and artifact checks so
+  `CodeUnzipSizeLimit` failures are caught before owner upload; teacher account
+  operations and Intensive Listening Argue behavior remain unchanged.
 - Matched the student Intensive Listening Argue success state to BBC Argue with
   the animated heart, thank-you message, and external Close action.
 - Replaced the generic Teacher Argue treatment for Intensive Listening spelling
