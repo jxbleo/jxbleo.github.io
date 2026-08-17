@@ -75,6 +75,7 @@
 | Argue 批准后历史匹配答案没有补分或 STAR 没出现 | 批量向上重算没有扫描到同 set/question/submitted answer，或改判流程没有调用 STAR 保护逻辑 | `teacherAdmin.applyAcceptedAnswerToHistoricalAttempts`、`teacherAdmin.improveAttemptForAcceptedAnswer` |
 | 老师改过答案后再次导入被覆盖 | 本地 `prepare-cloudbase-data.js` 重新生成 `grading_version: "1"` | 需要 grading key reconcile 流程 |
 | `tcb fn code update --dir ...` 对小函数仍报 ZIP 超过 1.5MB，或 COS 60 秒超时 | CloudBase CLI 3.7.0 仍可能按命令的当前工作目录打包；从仓库根目录传绝对 `--dir` 时，实测会把整个仓库和 `.git` 打进 ZIP | 先进入仅含 `index.js`、`package.json` 的函数 bundle 目录，再执行 `tcb fn code update <name> --dir . --deployMode zip`；若失败，检查系统临时目录中的 `.cloudbase_temp_<name>/<name>.zip` 内容，确认没有仓库文件 |
+| `teacherAdmin` 更新状态为 `UpdateFailed`，错误为 `LimitExceeded.CodeUnzipSizeLimit`，而前端仍显示普通 Argue 三按钮 | `@cloudbase/manager-node` 顶层入口会把全部管理服务及其依赖打进 bundle；压缩 ZIP 可能小于 1.5 MB，但解压后的代码仍超过 CloudBase 限制，导致新 `dispute_type` 投影没有上线 | 运行 `npm run test:teacheradmin-package`；它会重建仅含 `index.js`/`package.json` 的 ZIP、检查解压体积不超过 1,500,000 bytes，并确认 `intensive_spelling_exemption`、`dispute_type`、`INTENSIVE_DECISION_REQUIRED` 业务标记都在产物中。仅上传该 ZIP；不要点击旧版三按钮，也不要改数据库记录 |
 | STAR migration apply 在 10 秒处报 `FUNCTIONS_TIME_LIMIT_EXCEEDED` | `teacherAdmin` 可能在超时前已经完成部分幂等 ledger/achievement 写入 | 不要假定整批回滚，也不要盲目连续 apply；先重新运行 `migrateStarRewards` dry-run，只有 pending count 非零时才再次 apply，最后确认两个 pending count 都为 0 |
 | `tcb fn log` 报底层日志接口已下线 | CloudBase CLI 3.7.0 的旧函数日志命令仍调用已废弃接口 | 改用 `tcb logs search -e <env> -q 'function_name:"<name>"' -t 30m --json`；涉及学生数据时增加精确关键词并只输出必要汇总字段 |
 | BBC 填空输入框后面多出下划线 | 数据里用了 6 个或更多 `_` | 扫描 `data/BBC-*.json` 的 `_{6,}` |
@@ -761,3 +762,19 @@ STAR 不阻止未来重新布置同一个 set。
 
 部署/数据：
 - 代码修复需要重新部署 `teacherAdmin`；失败的事务不会自动把该批次标记为班级任务，可通过 dry-run 的 `already_scoped` 复核。
+
+### 2026-08-17：teacherAdmin 解压体积导致 Intensive Argue 前端回退
+
+已做：
+- 确认线上 `teacherAdmin` 的 `UpdateFailed` 根因是 `LimitExceeded.CodeUnzipSizeLimit`，不是数据库字段缺失或静态缓存；旧包解压后的 `index.js` 为 3,652,349 bytes。
+- 将 `teacherAdmin` 的 `@cloudbase/manager-node` 顶层入口替换为只覆盖五个 end-user API 的本地 TCB 签名适配器，并移除该函数不再需要的依赖锁定。
+- 新增 `npm run test:teacheradmin-package`，检查 ZIP 内容、解压体积、Intensive Argue 业务标记和本地签名请求。
+
+技术规则：
+- teacherAdmin 仍用官方 `@cloudbase/node-sdk` 做数据库和调用者身份；账号创建、启停、删除、重置仍调用同一套 `2018-06-08` `DescribeEndUsers` / `CreateEndUserAccount` / `ModifyEndUser` / `DeleteEndUser` / `ModifyEndUserAccount` API。
+- 仅使用 CloudBase 运行时的 `TENCENTCLOUD_SECRETID`、`TENCENTCLOUD_SECRETKEY`、session token 和环境 ID；任何密钥不得进入源码、ZIP 检查输出或文档。
+- 发布前包的总解压体积必须不超过项目 guardrail 1,500,000 bytes，且只含打包后的 `index.js` 与生成的 `package.json`。
+
+部署/数据：
+- 只需重新打包并上传最新版 `deploy-packages/teacherAdmin.zip`；不需要迁移 answer_disputes、grading_keys 或 intensive_listening_materials。
+- 新版函数返回 `dispute_type: "intensive_spelling_exemption"` 后，已有精听 Argue 会进入 Reject/Approve 专用卡片；旧三按钮请求不要继续点击。

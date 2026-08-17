@@ -33,7 +33,20 @@ npm run test:protected-resources
 npm run test:learning-reports
 npm run test:cloudbase-auth
 npm run test:intensive-listening
+npm run test:teacheradmin-package
 ```
+
+TeacherAdmin deployment-package checks:
+
+- `test:teacheradmin-package` rebuilds the function ZIP from source and fails
+  if any entry other than `index.js` / generated `package.json` is present;
+- the total uncompressed archive size stays at or below 1,500,000 bytes;
+- the bundled code contains the stable business markers
+  `intensive_spelling_exemption`, `dispute_type`, and
+  `INTENSIVE_DECISION_REQUIRED`, and does not contain the top-level
+  `@cloudbase/manager-node` bundle;
+- the local end-user adapter smoke test verifies all five signed end-user API
+  request shapes without contacting CloudBase or reading production credentials.
 
 Intensive Listening checks:
 
@@ -1576,6 +1589,8 @@ Before saying a deploy is complete:
   HTTP 200 before DNS is switched
 - static files are pushed/published
 - changed cloud functions have rebuilt ZIPs
+- `npm run test:teacheradmin-package` passes for any `teacherAdmin` release and
+  the recorded archive stays below the uncompressed-size guardrail
 - CloudBase development functions are uploaded
 - required collections exist and are `ADMINONLY`
 - `teacher_attempt_email_events` exists and remains `ADMINONLY`; its event ID
