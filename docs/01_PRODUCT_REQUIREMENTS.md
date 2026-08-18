@@ -15,6 +15,7 @@
 
 | 日期 | 变化 | 说明 |
 | --- | --- | --- |
+| 2026-08-17 | 统一登录入口与安全回跳 | `index.html` 是唯一凭据入口；站内登录动作使用校验过的同源回跳，旧 `user` / `visitor` 参数不再参与身份或路由判断 |
 | 2026-08-03 | 学习报告 V1 需求冻结 | 新增班级成员历史、周/月固定快照、老师预览点评和登录后共享报告链接；部署仍待 owner 授权 |
 | 2026-06-16 | 初版 | 根据现有文档、CloudBase 后端、内容管线和当前开放问题整理成人类可读 PRD |
 
@@ -58,6 +59,24 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 大规模自动排课
 
 系统应保持目的明确：给一个老师稳定管理内容、学生、作业、评分和学习记录。
+
+### 2.3 登录入口与回跳规则
+
+- `index.html` 是唯一的账号凭据入口。Dashboard、My Words、Attempt Review、公开
+  Library 和练习页中的 `Log In` 动作都必须导航到这里，不得在内页复制登录表单。
+- 内页登录动作通过共享 `MrCatLoginNavigation.loginHref(currentUrl, fallback)`
+  生成链接。helper 只接受经过校验的同源 `.html` 回跳目标；无效、外部或无法解析的
+  目标必须回退到安全的默认页面。
+- 公开 Library 顶部的登录完成后进入已认证学生 Dashboard 的 `Library` 视图；从具体
+  BBC、IELTS Reading、IELTS Listening 或 Vocabulary 练习触发登录，完成后回到包含
+  原查询参数和 hash 的准确练习地址。
+- Dashboard 的 `mode=none`、Visitor Dashboard 的 words/profile 登录、My Words
+  和 Attempt Review 都必须保留当前页面上下文，不得把用户送到一个丢失任务、视图、
+  attempt 或 hash 的通用首页。
+- 旧的 `?user=`、`?visitor=` 等 URL 参数不再是身份来源，也不应被新导航继续传播；
+  Visitor 必须由明确的前端 Visitor 状态表示。浏览器里的 profile、localStorage、URL
+  参数和任何 identity label 都不是授权依据；所有数据所有权和权限仍由 CloudBase
+  authenticated context 与服务端 profile 决定。
 
 ## 3. 核心用户与使用场景
 

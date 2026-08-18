@@ -3713,7 +3713,7 @@
                 '<div class="my-words-message"><p class="muted">Log in as a student to save words and phrases.</p>' +
                 '<div class="profile-actions"><button class="primary-button" id="words-login">Log In</button></div></div>';
             document.getElementById('words-login').addEventListener('click', function() {
-                window.location.href = 'index.html';
+                window.location.href = window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html');
             });
             return;
         }
@@ -3859,7 +3859,7 @@
                 '<div class="profile-card"><h2>Visitor Mode</h2><p class="muted">You can browse resources, but answers and submissions are locked.</p>' +
                 '<div class="profile-actions"><button class="primary-button" id="profile-login">Log In</button></div></div>';
             document.getElementById('profile-login').addEventListener('click', function() {
-                window.location.href = 'index.html';
+                window.location.href = window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html');
             });
             return;
         }
@@ -4747,7 +4747,7 @@
     window.MrCatAuth.getSession()
         .then(function(session) {
             if (session.mode === 'none') {
-                window.location.replace('index.html');
+                window.location.replace(window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html'));
                 return null;
             }
             if (session.mode === 'teacher') {

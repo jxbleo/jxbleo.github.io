@@ -203,23 +203,6 @@
         .login-status .user-btn:hover {
             background: rgba(255,255,255,0.3);
         }
-        .login-status .user-name {
-            font-weight: 600;
-        }
-        .login-status .logout-btn {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.7);
-            cursor: pointer;
-            font-size: 0.8em;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .login-status .logout-btn:hover {
-            color: #fff;
-            background: rgba(255,255,255,0.15);
-        }
-
         .container {
             max-width: 1120px;
             margin: 30px auto 0;
@@ -599,55 +582,6 @@
             color: var(--text-muted);
         }
 
-        .user-dropdown {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-        }
-        .user-name {
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9em;
-            color: var(--text-primary);
-        }
-        .user-arrow {
-            font-size: 0.75em;
-            margin-left: 2px;
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 6px;
-            background: rgba(255,255,255,0.9);
-            border: 1px solid rgba(255,255,255,0.8);
-            border-radius: 14px;
-            box-shadow: var(--shadow-soft);
-            z-index: 1001;
-            min-width: 100px;
-            overflow: hidden;
-            backdrop-filter: blur(16px);
-        }
-        .dropdown-menu.show {
-            display: block;
-        }
-        .dropdown-menu .logout-btn {
-            display: block;
-            width: 100%;
-            padding: 10px 16px;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 0.85em;
-            cursor: pointer;
-            text-align: left;
-            white-space: nowrap;
-        }
-        .dropdown-menu .logout-btn:hover {
-            background: var(--bg-hover);
-        }
-
         .search-btn {
             display: block;
             width: fit-content;
@@ -809,25 +743,13 @@
             margin: 0 0 20px;
             font-size: 0.9em;
         }
-        .custom-login {
-            display: flex;
-            gap: 8px;
-            margin-top: 14px;
+        .login-actions {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
         }
-        .custom-login input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.95em;
-            background: var(--bg-page);
-            color: var(--text-primary);
-            outline: none;
-        }
-        .custom-login input:focus {
-            border-color: var(--accent);
-        }
-        .custom-login button {
+        .official-login-btn {
+            width: 100%;
             padding: 12px 20px;
             background: var(--accent);
             color: #fff;
@@ -836,30 +758,9 @@
             font-size: 0.95em;
             font-weight: 600;
             cursor: pointer;
-            white-space: nowrap;
         }
-        .custom-login button:hover {
+        .official-login-btn:hover {
             background: #0d5f59;
-        }
-        .modal-hint {
-            font-size: 0.85em;
-            color: var(--text-muted);
-            margin-top: 6px;
-            min-height: 1.2em;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 16px 0;
-            color: var(--text-muted);
-            font-size: 0.85em;
-        }
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-top: 1px solid var(--border);
         }
         .visitor-btn {
             display: block;
@@ -999,19 +900,21 @@
     <div class="modal-overlay" id="login-modal">
         <div class="modal-box">
             <div class="modal-header">
+                <div>
+                    <h2 id="login-modal-title">Choose how to continue</h2>
+                    <p>Log in to open this exercise with your student account, or browse it in view-only visitor mode.</p>
+                </div>
                 <button class="modal-close" id="modal-close">&times;</button>
             </div>
-            <div class="custom-login">
-                <input type="text" id="custom-id-input" placeholder="Enter a student ID" autocomplete="off" />
-                <button id="custom-login-btn">Login</button>
+            <div class="login-actions">
+                <button class="official-login-btn" id="official-login-btn" type="button">Log In</button>
+                <button class="visitor-btn" id="visitor-btn" type="button">Continue as Visitor</button>
             </div>
-            <button class="visitor-btn" id="saved-identity-btn" style="display:none;margin-top:12px;"></button>
-            <div id="login-error" class="modal-hint"></div>
-            <div class="divider"><span>or</span></div>
-            <button class="visitor-btn" id="visitor-btn">Continue as Visitor</button>
+            <p class="login-note">Visitor mode is view-only and does not save student work.</p>
         </div>
     </div>
 
+    <script src="assets/js/login-navigation.js?v=20260817-1"></script>
 <script>
     var homeCatalog = null;
     var staticVersion = '20260802-1';
@@ -1161,21 +1064,6 @@
     var activeTab = 'general';
     var activeSubTab = '';
 
-    function applyUserToPracticeLinks(user) {
-        var links = document.querySelectorAll('a.practice-link');
-        for (var i = 0; i < links.length; i++) {
-            var href = links[i].getAttribute('href');
-            if (!href) continue;
-            var cleanHref = href.replace(/[?&]user=[^&]*/, '').replace(/\?$/, '');
-            if (user) {
-                var sep = cleanHref.indexOf('?') !== -1 ? '&' : '?';
-                links[i].href = cleanHref + sep + 'user=' + encodeURIComponent(user);
-            } else {
-                links[i].href = cleanHref;
-            }
-        }
-    }
-
     function normalizeSearchText(value) {
         return String(value || '').toLowerCase();
     }
@@ -1221,8 +1109,6 @@
         resultsEl.innerHTML = html;
         resultsEl.classList.add('show');
 
-        var user = getCurrentUser();
-        if (user) applyUserToPracticeLinks(user);
     }
 
     function getTabSections(tabId) {
@@ -1360,8 +1246,6 @@
 
         root.innerHTML = '<ul class="menu-list">' + cardsHtml + '</ul>';
 
-        var user = getCurrentUser();
-        if (user) applyUserToPracticeLinks(user);
         var globalInput = document.getElementById('global-search-input');
         if (globalInput && globalInput.value.trim()) runGlobalSearch();
     }
@@ -1409,53 +1293,36 @@
             });
     }
 
-    var students = [
-        { id: 'EI6688', label: '甘昕雨Eilene' },
-        { id: 'EV3389', label: '刘榆雯Eva' },
-        { id: 'LEO6666', label: 'jxbleo' }
-    ];
-
-    var validIds = ['EI6688', 'EV3389', 'LEO6666'];
-
     var pendingHref = null;
 
-    function getCurrentUser() {
-        return localStorage.getItem('opencode_user') || '';
-    }
-
     function isVisitor() {
-        return localStorage.getItem('opencode_visitor') === 'true';
+        return localStorage.getItem('mrcat_visitor') === 'true';
     }
 
-    function selectStudent(id) {
-        localStorage.setItem('opencode_user', id);
-        localStorage.removeItem('opencode_visitor');
-        hideLoginModal(false);
-        updateLoginStatus();
-        navigateAfterLogin();
+    function hasAuthenticatedProfile() {
+        if (isVisitor()) return false;
+        try {
+            var profile = JSON.parse(localStorage.getItem('mrcat_student_profile') || 'null');
+            return Boolean(profile && profile.student_id);
+        } catch (error) {
+            return false;
+        }
     }
 
     function setVisitorMode() {
+        localStorage.setItem('mrcat_visitor', 'true');
+        localStorage.removeItem('mrcat_student_profile');
         localStorage.removeItem('opencode_user');
-        localStorage.setItem('opencode_visitor', 'true');
+        localStorage.removeItem('opencode_visitor');
     }
 
     function showLoginModal(href) {
         pendingHref = href;
-        var input = document.getElementById('custom-id-input');
-        if (input) input.value = '';
-        var err = document.getElementById('login-error');
-        if (err) err.textContent = '';
-        var savedBtn = document.getElementById('saved-identity-btn');
-        var savedUser = getCurrentUser();
-        if (savedBtn && savedUser) {
-            savedBtn.style.display = 'block';
-            savedBtn.textContent = 'Continue as ' + getStudentLabel(savedUser);
-        } else if (savedBtn) {
-            savedBtn.style.display = 'none';
-        }
         document.getElementById('login-modal').classList.add('active');
-        if (input) setTimeout(function() { input.focus(); }, 100);
+        setTimeout(function() {
+            var loginButton = document.getElementById('official-login-btn');
+            if (loginButton) loginButton.focus();
+        }, 100);
     }
 
     function hideLoginModal(clearPending) {
@@ -1463,85 +1330,22 @@
         if (clearPending !== false) pendingHref = null;
     }
 
-    function navigateAfterLogin() {
-        if (!pendingHref) return;
-        var user = localStorage.getItem('opencode_user');
-        if (user) {
-            var sep = pendingHref.indexOf('?') !== -1 ? '&' : '?';
-            window.location.href = pendingHref + sep + 'user=' + encodeURIComponent(user);
-        } else {
-            window.location.href = pendingHref;
-        }
-        pendingHref = null;
-    }
-
-    function handleCustomLogin() {
-        var input = document.getElementById('custom-id-input');
-        var id = input.value.trim();
-        var errEl = document.getElementById('login-error');
-        if (!id) {
-            errEl.textContent = 'Please enter a student ID.';
-            return;
-        }
-        if (validIds.indexOf(id) !== -1) {
-            errEl.textContent = '';
-            selectStudent(id);
-        } else {
-            errEl.textContent = 'Unknown ID: "' + id + '"';
-            if (confirm('No matching ID for "' + id + '". Continue as visitor?')) {
-                setVisitorMode();
-                hideLoginModal();
-                updateLoginStatus();
-                navigateAfterLogin();
-            }
-        }
-    }
-
-    function getStudentLabel(id) {
-        for (var i = 0; i < students.length; i++) {
-            if (students[i].id === id) return students[i].label;
-        }
-        return id;
-    }
-
-    function logoutUser() {
-        localStorage.removeItem('opencode_user');
-        localStorage.removeItem('opencode_visitor');
-        updateLoginStatus();
-        applyUserToPracticeLinks('');
+    function withVisitorParam(href) {
+        var target = new URL(href || 'library.html', window.location.href);
+        target.searchParams.set('visitor', '1');
+        return target.href;
     }
 
     function updateLoginStatus() {
         var statusEl = document.getElementById('login-status');
-        var user = getCurrentUser();
-        if (user) {
-            var label = getStudentLabel(user);
-            statusEl.innerHTML = '<div class="user-dropdown">' +
-                '<span class="user-name" id="user-name-trigger">' + label + ' <span class="user-arrow">&#9662;</span></span>' +
-                '<div class="dropdown-menu" id="dropdown-menu">' +
-                    '<button class="logout-btn" id="logout-btn">Logout</button>' +
-                '</div>' +
-            '</div>';
-            document.getElementById('user-name-trigger').addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.getElementById('dropdown-menu').classList.toggle('show');
-            });
-            document.getElementById('logout-btn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.getElementById('dropdown-menu').classList.remove('show');
-                logoutUser();
-            });
-            document.addEventListener('click', function() {
-                var menu = document.getElementById('dropdown-menu');
-                if (menu) menu.classList.remove('show');
-            }, { once: false });
-        } else {
-            statusEl.innerHTML = '<button class="user-btn" id="login-btn-header">' + (isVisitor() ? 'Visitor' : 'Login') + '</button>';
-            document.getElementById('login-btn-header').addEventListener('click', function() {
-                localStorage.removeItem('opencode_visitor');
+        statusEl.innerHTML = '<button class="user-btn" id="login-btn-header" type="button">' + (isVisitor() ? 'Visitor' : 'Log In') + '</button>';
+        document.getElementById('login-btn-header').addEventListener('click', function() {
+            if (isVisitor()) {
                 showLoginModal(null);
-            });
-        }
+                return;
+            }
+            window.location.href = MrCatLoginNavigation.loginHref('dashboard.html', 'dashboard.html');
+        });
     }
 
     document.addEventListener('click', function(e) {
@@ -1594,15 +1398,9 @@
         var link = e.target.closest('a.practice-link');
         if (!link) return;
         var href = link.getAttribute('href');
-        if (!href || href.indexOf('user=') !== -1) return;
+        if (!href) return;
         e.preventDefault();
-        var storedUser = localStorage.getItem('opencode_user');
-        if (storedUser) {
-            var sep = href.indexOf('?') !== -1 ? '&' : '?';
-            window.location.href = href + sep + 'user=' + encodeURIComponent(storedUser);
-            return;
-        }
-        if (isVisitor()) {
+        if (isVisitor() || hasAuthenticatedProfile()) {
             window.location.href = href;
             return;
         }
@@ -1613,9 +1411,12 @@
     document.getElementById('login-modal').addEventListener('click', function(e) {
         if (e.target === this) hideLoginModal();
     });
-    document.getElementById('custom-login-btn').addEventListener('click', handleCustomLogin);
-    document.getElementById('custom-id-input').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') handleCustomLogin();
+    document.getElementById('official-login-btn').addEventListener('click', function() {
+        if (pendingHref) {
+            window.location.href = MrCatLoginNavigation.loginHref(pendingHref, pendingHref);
+            return;
+        }
+        window.location.href = MrCatLoginNavigation.loginHref('dashboard.html', 'dashboard.html');
     });
     document.getElementById('global-search-input').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') runGlobalSearch();
@@ -1624,15 +1425,11 @@
         if (!e.target.value.trim()) runGlobalSearch();
     });
     document.getElementById('visitor-btn').addEventListener('click', function() {
+        var destination = pendingHref || 'library.html';
         setVisitorMode();
-        hideLoginModal(false);
+        hideLoginModal();
         updateLoginStatus();
-        navigateAfterLogin();
-    });
-    document.getElementById('saved-identity-btn').addEventListener('click', function() {
-        hideLoginModal(false);
-        updateLoginStatus();
-        navigateAfterLogin();
+        window.location.href = withVisitorParam(destination);
     });
 
     document.addEventListener('input', function(e) {
@@ -1642,21 +1439,7 @@
     });
 
     loadHomeCatalog();
-
-    (function() {
-        var urlMatch = window.location.search.match(/[?&]user=([^&]*)/);
-        var urlUser = urlMatch ? decodeURIComponent(urlMatch[1].replace(/\+/g, ' ')) : null;
-        var storedUser = localStorage.getItem('opencode_user');
-        var user = urlUser || storedUser;
-        if (urlUser && urlUser !== storedUser) {
-            localStorage.setItem('opencode_user', urlUser);
-            localStorage.removeItem('opencode_visitor');
-        }
-        if (user) {
-            applyUserToPracticeLinks(user);
-        }
-        updateLoginStatus();
-    })();
+    updateLoginStatus();
 </script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
