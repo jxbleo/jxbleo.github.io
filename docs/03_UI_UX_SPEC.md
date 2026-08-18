@@ -1547,9 +1547,16 @@ Shared rules:
   a known correct or wrong result.
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
+- Closing the BBC result dialog automatically returns to the same worksheet in
+  correction mode. Only incorrect fill-blank and matching controls are editable;
+  correct controls and all multiple-choice radio groups remain disabled. The
+  repeat-submit control stays disabled until the student changes an editable
+  answer, and each repeat submission remains a new attempt.
 - BBC multiple-choice answers lock after the first submitted attempt. Reopening
   finished work or loading History should restore the submitted MC choices and
-  keep those radio groups disabled.
+  keep those radio groups disabled. Inline correction never unlocks them and
+  does not add a lock icon; the server continues scoring them from the first
+  submitted choice.
 - Clear removes visible answers, feedback, Explain, Argue, and local blank
   locks, but it must not unlock submitted BBC multiple-choice answers.
 - BBC MC option selection may add only lightweight sound and visual state; do
