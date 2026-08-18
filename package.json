@@ -13,6 +13,7 @@
     "test:my-words": "node scripts/test-my-words-features.js",
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
     "test:login-redirect": "node scripts/test-login-redirect.js",
+    "test:bbc-correction": "node scripts/test-bbc-inline-correction.js",
     "test:assignment-schedule": "node scripts/test-assignment-due-weeks.js",
     "test:content-editions": "node scripts/test-content-editions.js",
     "test:learning-reports": "node scripts/test-learning-reports.js && node scripts/test-learning-report-service.js",

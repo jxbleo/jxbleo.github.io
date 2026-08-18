@@ -4,6 +4,17 @@
 > Do not record every tiny CSS tweak or variable rename here.
 
 
+## 2026-08-18
+
+### Changed
+
+- BBC result Close now returns students directly to inline correction on the
+  same worksheet. Only incorrect fill-blank and matching controls reopen;
+  correct answers and every multiple-choice group stay disabled. Repeat submit
+  activates after an editable answer changes, creates a new immutable attempt,
+  and preserves server-enforced first-submission scoring for all BBC MC items.
+
+
 ## 2026-08-17
 
 ### Added

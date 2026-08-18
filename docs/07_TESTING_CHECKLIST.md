@@ -404,6 +404,13 @@ explanation text.
 After submitting a representative BBC lesson with both correct and incorrect
 answers, verify correct blanks/matching/MC cards are green, incorrect ones are
 light red, and the yellow MC locked-answer state does not cover either result.
+Close the result dialog and verify the page stays on the same worksheet, only
+incorrect blanks and matching selects are editable, every correct control and
+every MC radio remains disabled, and no lock icon is added. `Submit Again`
+must remain disabled until an editable answer changes; after the repeat submit,
+verify a new attempt is recorded while every MC result is still scored from its
+first submitted choice. Run `npm run test:bbc-correction` for the corresponding
+static regression gate.
 For a `classroom-worksheet` lesson, also verify Show Answers and History/Explain
 content spans the complete fill-blank or multiple-choice card at phone, iPad,
 and desktop widths instead of collapsing into the question-number column.

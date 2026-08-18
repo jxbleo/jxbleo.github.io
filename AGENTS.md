@@ -620,6 +620,14 @@ future policy that reveals complete answers only after passing.
 `Try Again` clears browser answers, grading marks, and explanations while
 preserving prior attempt records in CloudBase.
 
+BBC is the exception for immediate post-submit correction. Closing its result
+dialog keeps the submitted answers in place and automatically reopens only
+incorrect fill-blank and matching controls. Correct controls and every
+multiple-choice radio group remain disabled. A BBC multiple-choice answer is
+permanently scored from its first submitted choice; later attempts must keep
+that server-enforced first-choice lock, and the student UI does not need a lock
+icon. Each repeat submission is still a new immutable attempt.
+
 Historical STAR review normally returns only the student's submitted answers and
 a correct/incorrect flag. It must not return correct answers or explanations
 unless the linked assignment has already recorded `answer_revealed: true`. After

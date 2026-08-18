@@ -69,6 +69,7 @@ audio, or JS fallback data.
 
 ```bash
 npm run verify:release
+npm run test:bbc-correction
 npm run test:assignment-schedule
 npm run test:content-editions
 npm run test:my-words
