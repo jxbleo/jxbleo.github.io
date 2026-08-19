@@ -58,6 +58,14 @@ Login-routing checks:
 - signed-out My Words and Attempt Review return to their exact query/hash, and public Library header login returns to Dashboard Library;
 - Visitor mode never becomes an authenticated identity and still blocks answer, submission, and personal-word writes.
 
+Registration-footer checks:
+
+- the public login/home footer shows both `粤ICP备2026107102号-1` and
+  `粤公网安备44030002015814号`;
+- the public-security record includes the official badge and opens the Public
+  Security Bureau query for code `44030002015814`;
+- both records remain visible and readable at phone width.
+
 Intensive Listening checks:
 
 - public static output contains no reviewed word answers;
