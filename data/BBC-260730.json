@@ -1,6 +1,7 @@
 {
   "id": "BBC-260730",
   "title": "The Enhanced Games",
+  "renderTheme": "milk-sage",
   "audioSrc": "bbc-audio/260730-the-enhanced-games.mp3",
   "blanks": [
     {

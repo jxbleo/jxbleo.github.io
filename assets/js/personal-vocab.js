@@ -91,6 +91,25 @@
         return '';
     }
 
+    function textForRange(range, limit) {
+        if (!range || typeof range.cloneContents !== 'function') {
+            var fallbackSelection = window.getSelection && window.getSelection();
+            return compactText(fallbackSelection ? fallbackSelection.toString() : '', limit);
+        }
+        try {
+            var fragment = range.cloneContents();
+            if (fragment.querySelectorAll) {
+                fragment.querySelectorAll('[data-mrcat-vocab-ignore]').forEach(function(node) {
+                    node.remove();
+                });
+            }
+            return compactText(fragment.textContent || '', limit);
+        } catch (error) {
+            var currentSelection = window.getSelection && window.getSelection();
+            return compactText(currentSelection ? currentSelection.toString() : '', limit);
+        }
+    }
+
     function selectionRect(range) {
         var rect = range.getBoundingClientRect();
         if (rect && (rect.width || rect.height)) return rect;
@@ -132,11 +151,15 @@
         var style = document.createElement('style');
         style.id = 'mrcat-vocab-style';
         style.textContent =
-            '.mrcat-vocab-popover{position:fixed;z-index:10020;display:none;min-height:38px;padding:0 13px;border:1px solid rgba(19,118,109,.2);border-radius:999px;color:#fff;background:#13766d;box-shadow:0 14px 38px rgba(10,52,47,.22);font:850 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:nowrap;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}' +
+            '[data-mrcat-vocab-ignore]{-webkit-user-select:none;user-select:none}' +
+            '.mrcat-vocab-popover{position:fixed;z-index:10020;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border:1px solid rgba(19,118,109,.2);border-radius:999px;color:#fff;background:#13766d;box-shadow:0 8px 22px rgba(10,52,47,.12);font:850 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,6px) scale(.94);transform-origin:50% 100%;transition:opacity 130ms ease-in,transform 140ms cubic-bezier(.4,0,1,1),visibility 0s linear 140ms,box-shadow 140ms ease-in;will-change:opacity,transform;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}' +
             '.mrcat-vocab-popover *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}' +
-            '.mrcat-vocab-popover.show{display:inline-flex;align-items:center;justify-content:center}.mrcat-vocab-popover:disabled{opacity:.72;cursor:wait}' +
+            '.mrcat-vocab-popover.show{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0) scale(1);box-shadow:0 14px 38px rgba(10,52,47,.22);transition:opacity 160ms ease-out,transform 200ms cubic-bezier(.2,.8,.2,1),visibility 0s linear 0s,box-shadow 200ms ease-out}' +
+            '.mrcat-vocab-popover.show:active{transform:translate(-50%,1px) scale(.97);transition-duration:100ms}' +
+            '.mrcat-vocab-popover:disabled{opacity:.72;cursor:wait}' +
             '.mrcat-vocab-toast{position:fixed;z-index:10021;left:50%;bottom:24px;max-width:min(420px,calc(100% - 32px));padding:12px 15px;border:1px solid rgba(19,118,109,.16);border-radius:14px;color:#18332f;background:rgba(255,255,255,.97);box-shadow:0 18px 52px rgba(10,52,47,.18);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:0;transform:translate(-50%,12px);transition:opacity 160ms ease,transform 160ms ease;pointer-events:none}' +
-            '.mrcat-vocab-toast.show{opacity:1;transform:translate(-50%,0)}';
+            '.mrcat-vocab-toast.show{opacity:1;transform:translate(-50%,0)}' +
+            '@media (prefers-reduced-motion:reduce){.mrcat-vocab-popover{transform:translate(-50%,0);transition:opacity 120ms linear,visibility 0s linear 120ms,box-shadow 120ms linear}.mrcat-vocab-popover.show,.mrcat-vocab-popover.show:active{transform:translate(-50%,0);transition:opacity 120ms linear,visibility 0s linear 0s,box-shadow 120ms linear}}';
         document.head.appendChild(style);
     }
 
@@ -206,7 +229,7 @@
             hideButton();
             return;
         }
-        var text = compactText(window.getSelection().toString(), 140);
+        var text = textForRange(range, 140);
         if (selectedTextError(text)) {
             hideButton();
             return;
@@ -225,7 +248,7 @@
         var top = Math.max(12, rect.top - 46);
         popover.style.left = left + 'px';
         popover.style.top = top + 'px';
-        popover.style.transform = 'translateX(-50%)';
+        if (!popover.classList.contains('show')) popover.getBoundingClientRect();
         popover.classList.add('show');
     }
 
@@ -305,6 +328,8 @@
     }, true);
     window.addEventListener('scroll', hideButton, true);
     window.addEventListener('resize', hideButton);
+
+    ensureStyles();
 
     window.MrCatPersonalVocab = {
         showToast: showToast,
