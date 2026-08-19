@@ -120,7 +120,8 @@ than a feature billboard. The current direction keeps the established
 two-column welcome/form composition inside one neutral, translucent glass
 surface, with no decorative object movement. Keep the visible text minimal:
 `Mr. Cat Academy`, one central quote, the Student ID/password fields, `Sign
-in`, `Continue as Visitor`, and a short visitor-mode note. The central quote is
+in`, an `or` divider, and the `Continue as parent` / `Continue as visitor`
+secondary actions. The central quote is
 randomly selected on each page load from the same existing motivational-sentence
 collection used by the student Dashboard. The left welcome
 column keeps the quote close below the brand instead of distributing both items
@@ -1874,13 +1875,14 @@ Important mobile rules:
   History, STAR, Argue, and report entries never show the selector.
 ### ICP and public-security registration footer
 
-- The public login/home page ends with a centered, low-emphasis registration
-  row containing the two official records: `粤ICP备2026107102号-1` and
-  `粤公网安备44030002015814号`.
+- The public login/home page ends with a centered, low-emphasis footer bar. It
+  shows `@猫先生英语` before the two official records:
+  `粤ICP备2026107102号-1` and `粤公网安备44030002015814号`.
 - The ICP record opens `https://beian.miit.gov.cn/`; the public-security record
   includes the official badge and opens the exact Public Security Bureau query
   URL for code `44030002015814`. Both links open in a new tab.
-- The row remains visible below the main login panel on desktop and wraps cleanly
-  on mobile without hiding either record.
+- The bar remains visible below the main login panel on desktop. On mobile the
+  handle occupies its own first row and the two official records wrap cleanly
+  below it without hiding either record.
 - The public homepage is the canonical registration display surface;
   individual practice and authenticated application pages do not repeat it.

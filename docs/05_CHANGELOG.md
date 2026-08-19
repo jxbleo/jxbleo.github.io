@@ -14,6 +14,12 @@
 
 ### Changed
 
+- Simplified the public login alternatives to an `or` divider followed by
+  `Continue as parent` and `Continue as visitor`, removing the separate
+  visitor-mode note.
+- Added the low-emphasis `@猫先生英语` handle to the official registration footer
+  and grouped the handle, ICP record, and public-security record in one
+  responsive footer bar.
 - Unified Dashboard, My Words, Attempt Review, public Library, BBC, IELTS, and Vocabulary login routing through the central `index.html` form. Validated same-origin return targets preserve the original page query/hash while rejecting external or nested destinations and stripping legacy `user`/`visitor` identity parameters.
 - Removed embedded Student ID entry from public Library, BBC, and IELTS Reading. Practice pages now derive identity from authenticated CloudBase profile state or explicit Visitor mode.
 
