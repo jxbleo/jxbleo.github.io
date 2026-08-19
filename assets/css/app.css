@@ -137,6 +137,10 @@ html.teacher-modal-scroll-locked {
 
 .site-filing-footer {
     align-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     text-align: center;
 }
@@ -154,6 +158,18 @@ html.teacher-modal-scroll-locked {
     color: rgba(27, 37, 43, 0.9);
     text-decoration: underline;
     text-underline-offset: 3px;
+}
+
+.site-filing-footer .public-security-filing {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.public-security-filing img {
+    width: 18px;
+    height: 20px;
+    object-fit: contain;
 }
 
 .auth-shell {

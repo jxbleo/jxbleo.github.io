@@ -6,6 +6,12 @@
 
 ## 2026-08-19
 
+### Added
+
+- Added the approved Public Security Bureau registration badge and
+  `粤公网安备44030002015814号` verification link beside the existing ICP record
+  in the public homepage footer.
+
 ### Changed
 
 - Unified Dashboard, My Words, Attempt Review, public Library, BBC, IELTS, and Vocabulary login routing through the central `index.html` form. Validated same-origin return targets preserve the original page query/hash while rejecting external or nested destinations and stripping legacy `user`/`visitor` identity parameters.

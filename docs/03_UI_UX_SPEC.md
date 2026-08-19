@@ -1872,11 +1872,15 @@ Important mobile rules:
   score, and Enter destination below it.
 - Teacher Assign shows editions as separate selectable work rows. Concrete Assignment,
   History, STAR, Argue, and report entries never show the selector.
-### ICP registration footer
+### ICP and public-security registration footer
 
 - The public login/home page ends with a centered, low-emphasis registration
-  link displaying `粤ICP备2026107102号-1`.
-- The link opens `https://beian.miit.gov.cn/` in a new tab and remains visible
-  below the main login panel on desktop and mobile.
+  row containing the two official records: `粤ICP备2026107102号-1` and
+  `粤公网安备44030002015814号`.
+- The ICP record opens `https://beian.miit.gov.cn/`; the public-security record
+  includes the official badge and opens the exact Public Security Bureau query
+  URL for code `44030002015814`. Both links open in a new tab.
+- The row remains visible below the main login panel on desktop and wraps cleanly
+  on mobile without hiding either record.
 - The public homepage is the canonical registration display surface;
   individual practice and authenticated application pages do not repeat it.
