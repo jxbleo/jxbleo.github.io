@@ -1494,8 +1494,15 @@ Shared rules:
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,
   submission behavior, History/Clear, Explain, Argue, or answer feedback rules.
-- All 2026 BBC Listening lessons use the default green-glass presentation;
-  their runtime metadata omits `renderTheme`.
+- BBC 2026 lessons use the shared Luminous Milk family with four fixed variants:
+  `milk-sage`, `milk-blue`, `milk-pink`, and `milk-purple`. Every variant keeps
+  the default BBC layout but replaces the dark or grey-tinted material with a
+  bright white surface, a lightly colored ambient glow, a translucent white
+  audio bar, and one readable deep accent color. The lesson-level assignment is
+  random-looking but stable: the same `set_id` must keep the same variant on
+  every visit. Correct, wrong, and locked-answer feedback retains the shared
+  green, red, and yellow semantic colors instead of being recolored by the
+  lesson theme.
 - BBC practice pages show a `Download Worksheet` control when the current set
   has a generated worksheet PDF under
   `assets/pdf/bbc-six-minute-english/<set_id>/<set_id>-worksheet.pdf`. The
@@ -1832,6 +1839,14 @@ Important mobile rules:
   content regions, including text inside disabled answer-feedback buttons, but
   should still avoid active form controls, buttons, login dialogs, and
   teacher-only controls.
+- Structural BBC question numbers and option labels are not selectable and are
+  removed again from the captured Range before saving, so selecting the first
+  word never adds its adjacent question number to My Words. Real numeric word
+  content such as `5G` remains valid.
+- The anchored `Add to My Words` capsule materializes from the selection with a
+  short fade, 6px lift, and subtle scale/shadow transition, then exits along the
+  same path. It has immediate pressed feedback, no decorative bounce, and uses
+  a short opacity-only equivalent when reduced motion is requested.
 - On touch devices, My Words must preserve the browser's native selection
   highlight and selection handles after a long press. Tapping the site save
   button must not clear the captured word or phrase before it is saved.

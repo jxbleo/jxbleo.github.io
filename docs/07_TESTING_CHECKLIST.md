@@ -218,8 +218,12 @@ Open:
 - at least one IELTS Listening page
 - at least one Vocabulary page
 
-For every `BBC-26YYMMDD` runtime, confirm the page uses the default green BBC
-presentation and its public JSON contains no `renderTheme` override.
+Run `node scripts/assign-bbc-render-themes.js 2026 --check` and confirm every
+BBC 2026 runtime file and matching metadata file uses the same stable Luminous
+Milk theme. Open one representative lesson for each of `milk-sage`,
+`milk-blue`, `milk-pink`, and `milk-purple` at desktop and mobile widths; the
+surface remains bright and readable while correct/wrong/locked feedback keeps
+its shared green/red/yellow meaning.
 
 IELTS Listening mode checks:
 
@@ -1514,6 +1518,13 @@ Check:
   visible download button at every list scroll depth
 - My Words can save selected text from answer, explanation, feedback, and
   result regions, including disabled answer-feedback buttons
+- in a BBC fill-blank question, multiple-choice question, option, and matching
+  instruction, selecting the first word excludes the adjacent question/option
+  label both from the visible selection and the saved My Words text; genuine
+  numeric content such as `5G technology` is preserved
+- the anchored `Add to My Words` capsule fades, lifts, and scales into place
+  without a bounce, reverses cleanly when dismissed, and becomes a short
+  opacity-only transition with reduced motion enabled
 - long-pressing selectable lesson text on iPhone and iPad keeps the native
   selection highlight and handles visible while `Add to My Words` is offered
 - tapping `Add to My Words` on a touch device saves the captured text once,

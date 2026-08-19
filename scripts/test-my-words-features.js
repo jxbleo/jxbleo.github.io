@@ -50,6 +50,8 @@ async function main() {
   const root = path.resolve(__dirname, "..");
   const dashboardHtml = fs.readFileSync(path.join(root, "dashboard.html"), "utf8");
   const dashboardJs = fs.readFileSync(path.join(root, "assets/js/dashboard.js"), "utf8");
+  const bbcHtml = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
+  const personalVocabJs = fs.readFileSync(path.join(root, "assets/js/personal-vocab.js"), "utf8");
   const myWordsHtml = fs.readFileSync(path.join(root, "my-words.html"), "utf8");
   const myWordsJs = fs.readFileSync(path.join(root, "assets/js/my-words.js"), "utf8");
   const myWordsCss = fs.readFileSync(path.join(root, "assets/css/my-words.css"), "utf8");
@@ -63,6 +65,11 @@ async function main() {
   assert(dashboardJs.includes("activeWords.slice(0, 7)"), "the Dashboard preview must show at most seven recent active words");
   assert(dashboardJs.includes("data-preview-speak"), "preview rows must provide pronunciation");
   assert(dashboardJs.includes("window.location.hash === '#my-words'"), "legacy Dashboard My Words links must redirect");
+  assert(bbcHtml.includes('class="blank-num" data-mrcat-vocab-ignore'), "BBC fill-blank question numbers must stay outside My Words selections");
+  assert(bbcHtml.includes('class="mc-num" data-mrcat-vocab-ignore'), "BBC multiple-choice question numbers must stay outside My Words selections");
+  assert(personalVocabJs.includes("fragment.querySelectorAll('[data-mrcat-vocab-ignore]')"), "My Words must remove structural labels from captured selection text");
+  assert(personalVocabJs.includes("transform:translate(-50%,6px) scale(.94)"), "the selection popover must enter from a restrained anchored offset");
+  assert(personalVocabJs.includes("@media (prefers-reduced-motion:reduce)"), "the selection popover must provide a reduced-motion transition");
   assert(/assets\/css\/app\.css\?v=\d{8}-\d+/.test(dashboardHtml));
   assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));
   assert(myWordsHtml.includes("assets/js/my-words-export.js?v=20260801-1"));

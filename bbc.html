@@ -2644,6 +2644,408 @@
             display: none;
         }
 
+        /*
+         * Luminous Milk themes share the default BBC layout and behavior.
+         * Only material, light, and accent color change; grading feedback keeps
+         * the existing green/red/yellow semantic states defined above.
+         */
+        body.bbc-theme-milk-sage {
+            --primary: #165a43;
+            --accent: #2eae79;
+            --accent-bright: #62d3a2;
+            --bg: #fbfffd;
+            --card-bg: rgba(255,255,255,0.94);
+            --text-main: #165a43;
+            --text-light: #5f8174;
+            --border-color: rgba(25,128,90,0.13);
+            --ink: #165a43;
+            --muted: #5f8174;
+            --line: rgba(25,128,90,0.13);
+            --border: rgba(25,128,90,0.13);
+            --bg-page: #fbfffd;
+            --text-primary: #165a43;
+            --text-secondary: #5f8174;
+            --text-muted: #5f8174;
+            --accent-dark: #19805a;
+            --milk-accent: #62d3a2;
+            --milk-accent-strong: #2eae79;
+            --milk-deep: #19805a;
+            --milk-ink: #165a43;
+            --milk-muted: #5f8174;
+            --milk-rgb: 98, 211, 162;
+            --milk-deep-rgb: 25, 128, 90;
+            --milk-page:
+                radial-gradient(circle at 3% 4%, rgba(145,239,194,0.38), transparent 32rem),
+                radial-gradient(circle at 96% 16%, rgba(146,215,247,0.12), transparent 28rem),
+                radial-gradient(circle at 55% 106%, rgba(255,210,170,0.10), transparent 34rem),
+                linear-gradient(145deg, #fbfffd 0%, #fffefd 54%, #f8fffc 100%);
+            --milk-hero:
+                radial-gradient(circle 320px at 8% 0%, rgba(255,255,255,0.98), transparent 72%),
+                radial-gradient(circle 300px at 92% 18%, rgba(166,241,204,0.42), transparent 72%),
+                linear-gradient(135deg, #fffefd 0%, #f0fff7 50%, #d9f8e8 100%);
+            --milk-player:
+                radial-gradient(circle 210px at 16% -70%, #fff, transparent 72%),
+                linear-gradient(135deg, rgba(255,255,255,0.97), rgba(227,250,239,0.91));
+            --milk-paper:
+                linear-gradient(rgba(255,255,255,0.91), rgba(255,255,255,0.91)),
+                radial-gradient(circle at 94% 3%, rgba(155,238,198,0.25), transparent 26rem);
+            --milk-section: linear-gradient(90deg, rgba(233,255,244,0.98), rgba(255,255,255,0.76));
+            --milk-progress: linear-gradient(90deg, #49c68d, #bcefd7 72%, #fff);
+            --milk-submit: linear-gradient(135deg, #45bd86, #19805a);
+        }
+
+        body.bbc-theme-milk-blue {
+            --primary: #155879;
+            --accent: #289ed2;
+            --accent-bright: #66c9f1;
+            --bg: #fbfeff;
+            --card-bg: rgba(255,255,255,0.94);
+            --text-main: #155879;
+            --text-light: #5d7d8c;
+            --border-color: rgba(23,111,158,0.13);
+            --ink: #155879;
+            --muted: #5d7d8c;
+            --line: rgba(23,111,158,0.13);
+            --border: rgba(23,111,158,0.13);
+            --bg-page: #fbfeff;
+            --text-primary: #155879;
+            --text-secondary: #5d7d8c;
+            --text-muted: #5d7d8c;
+            --accent-dark: #176f9e;
+            --milk-accent: #66c9f1;
+            --milk-accent-strong: #289ed2;
+            --milk-deep: #176f9e;
+            --milk-ink: #155879;
+            --milk-muted: #5d7d8c;
+            --milk-rgb: 102, 201, 241;
+            --milk-deep-rgb: 23, 111, 158;
+            --milk-page:
+                radial-gradient(circle at 3% 4%, rgba(128,213,248,0.44), transparent 32rem),
+                radial-gradient(circle at 96% 16%, rgba(255,190,164,0.10), transparent 28rem),
+                radial-gradient(circle at 55% 106%, rgba(137,234,199,0.10), transparent 34rem),
+                linear-gradient(145deg, #fbfeff 0%, #fffefd 54%, #f8fdff 100%);
+            --milk-hero:
+                radial-gradient(circle 320px at 8% 0%, rgba(255,255,255,0.98), transparent 72%),
+                radial-gradient(circle 300px at 92% 18%, rgba(152,220,249,0.44), transparent 72%),
+                linear-gradient(135deg, #fffefd 0%, #f0fbff 50%, #d9f3ff 100%);
+            --milk-player:
+                radial-gradient(circle 210px at 16% -70%, #fff, transparent 72%),
+                linear-gradient(135deg, rgba(255,255,255,0.97), rgba(227,246,253,0.92));
+            --milk-paper:
+                linear-gradient(rgba(255,255,255,0.91), rgba(255,255,255,0.91)),
+                radial-gradient(circle at 94% 3%, rgba(151,220,249,0.26), transparent 26rem);
+            --milk-section: linear-gradient(90deg, rgba(233,249,255,0.98), rgba(255,255,255,0.76));
+            --milk-progress: linear-gradient(90deg, #55bde8, #c6efff 72%, #fff);
+            --milk-submit: linear-gradient(135deg, #42addb, #176f9e);
+        }
+
+        body.bbc-theme-milk-pink {
+            --primary: #7f294c;
+            --accent: #e36d95;
+            --accent-bright: #ff9fbd;
+            --bg: #fffafd;
+            --card-bg: rgba(255,255,255,0.94);
+            --text-main: #7f294c;
+            --text-light: #8f6877;
+            --border-color: rgba(173,63,104,0.13);
+            --ink: #7f294c;
+            --muted: #8f6877;
+            --line: rgba(173,63,104,0.13);
+            --border: rgba(173,63,104,0.13);
+            --bg-page: #fffafd;
+            --text-primary: #7f294c;
+            --text-secondary: #8f6877;
+            --text-muted: #8f6877;
+            --accent-dark: #ad3f68;
+            --milk-accent: #ff9fbd;
+            --milk-accent-strong: #e36d95;
+            --milk-deep: #ad3f68;
+            --milk-ink: #7f294c;
+            --milk-muted: #8f6877;
+            --milk-rgb: 255, 159, 189;
+            --milk-deep-rgb: 173, 63, 104;
+            --milk-page:
+                radial-gradient(circle at 3% 4%, rgba(255,168,197,0.40), transparent 32rem),
+                radial-gradient(circle at 96% 16%, rgba(255,209,165,0.11), transparent 28rem),
+                radial-gradient(circle at 55% 106%, rgba(151,220,249,0.08), transparent 34rem),
+                linear-gradient(145deg, #fffafd 0%, #fffefd 54%, #fff9fc 100%);
+            --milk-hero:
+                radial-gradient(circle 320px at 8% 0%, rgba(255,255,255,0.98), transparent 72%),
+                radial-gradient(circle 300px at 92% 18%, rgba(255,184,207,0.42), transparent 72%),
+                linear-gradient(135deg, #fffefd 0%, #fff2f7 50%, #ffdce8 100%);
+            --milk-player:
+                radial-gradient(circle 210px at 16% -70%, #fff, transparent 72%),
+                linear-gradient(135deg, rgba(255,255,255,0.97), rgba(255,230,239,0.91));
+            --milk-paper:
+                linear-gradient(rgba(255,255,255,0.91), rgba(255,255,255,0.91)),
+                radial-gradient(circle at 94% 3%, rgba(255,183,207,0.25), transparent 26rem);
+            --milk-section: linear-gradient(90deg, rgba(255,238,244,0.98), rgba(255,255,255,0.76));
+            --milk-progress: linear-gradient(90deg, #f285a9, #ffd1df 72%, #fff);
+            --milk-submit: linear-gradient(135deg, #eb779d, #ad3f68);
+        }
+
+        body.bbc-theme-milk-purple {
+            --primary: #49317d;
+            --accent: #8a68e0;
+            --accent-bright: #b79cff;
+            --bg: #fdfbff;
+            --card-bg: rgba(255,255,255,0.94);
+            --text-main: #49317d;
+            --text-light: #756889;
+            --border-color: rgba(99,68,173,0.13);
+            --ink: #49317d;
+            --muted: #756889;
+            --line: rgba(99,68,173,0.13);
+            --border: rgba(99,68,173,0.13);
+            --bg-page: #fdfbff;
+            --text-primary: #49317d;
+            --text-secondary: #756889;
+            --text-muted: #756889;
+            --accent-dark: #6344ad;
+            --milk-accent: #b79cff;
+            --milk-accent-strong: #8a68e0;
+            --milk-deep: #6344ad;
+            --milk-ink: #49317d;
+            --milk-muted: #756889;
+            --milk-rgb: 183, 156, 255;
+            --milk-deep-rgb: 99, 68, 173;
+            --milk-page:
+                radial-gradient(circle at 3% 4%, rgba(193,174,255,0.42), transparent 32rem),
+                radial-gradient(circle at 96% 16%, rgba(255,190,183,0.09), transparent 28rem),
+                radial-gradient(circle at 55% 106%, rgba(139,219,239,0.08), transparent 34rem),
+                linear-gradient(145deg, #fdfbff 0%, #fffefd 54%, #fbf9ff 100%);
+            --milk-hero:
+                radial-gradient(circle 320px at 8% 0%, rgba(255,255,255,0.98), transparent 72%),
+                radial-gradient(circle 300px at 92% 18%, rgba(205,190,255,0.42), transparent 72%),
+                linear-gradient(135deg, #fffefd 0%, #f5f1ff 50%, #e8ddff 100%);
+            --milk-player:
+                radial-gradient(circle 210px at 16% -70%, #fff, transparent 72%),
+                linear-gradient(135deg, rgba(255,255,255,0.97), rgba(239,233,255,0.92));
+            --milk-paper:
+                linear-gradient(rgba(255,255,255,0.91), rgba(255,255,255,0.91)),
+                radial-gradient(circle at 94% 3%, rgba(205,190,255,0.25), transparent 26rem);
+            --milk-section: linear-gradient(90deg, rgba(243,239,255,0.98), rgba(255,255,255,0.76));
+            --milk-progress: linear-gradient(90deg, #a98bed, #ddd1ff 72%, #fff);
+            --milk-submit: linear-gradient(135deg, #9273df, #6344ad);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) {
+            color: var(--milk-ink);
+            background: var(--milk-page);
+            background-attachment: fixed;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .lesson-hero {
+            color: var(--milk-ink);
+            border-color: rgba(255,255,255,0.98);
+            background: var(--milk-hero);
+            box-shadow:
+                0 30px 82px rgba(var(--milk-rgb),0.14),
+                0 4px 16px rgba(var(--milk-rgb),0.07),
+                inset 0 1px 0 #fff,
+                inset 1px 0 0 rgba(255,255,255,0.90),
+                inset 0 -1px 0 rgba(var(--milk-rgb),0.12);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .lesson-hero::before {
+            background: radial-gradient(circle, rgba(255,255,255,0.72), transparent 68%);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .lesson-hero::after {
+            border: 1px solid rgba(var(--milk-rgb),0.18);
+            background: rgba(255,255,255,0.16);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) h1 {
+            color: var(--milk-ink);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .hero-subtitle,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .hero-meta {
+            color: rgba(var(--milk-deep-rgb),0.68);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .hero-tool-btn {
+            color: var(--milk-deep);
+            border-color: rgba(255,255,255,0.98);
+            background: rgba(255,255,255,0.88);
+            box-shadow: 0 12px 28px rgba(var(--milk-rgb),0.17), inset 0 1px 0 #fff;
+            backdrop-filter: blur(18px) saturate(170%);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .hero-tool-btn:hover {
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 14px 32px rgba(var(--milk-rgb),0.22), inset 0 1px 0 #fff;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .hero-tool-btn:focus-visible {
+            outline-color: rgba(var(--milk-deep-rgb),0.36);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .sticky-player {
+            color: var(--milk-deep);
+            border-color: rgba(255,255,255,0.98);
+            background: var(--milk-player);
+            box-shadow:
+                0 17px 42px rgba(var(--milk-rgb),0.18),
+                inset 0 1px 0 #fff,
+                inset 0 -1px 0 rgba(var(--milk-rgb),0.14);
+            backdrop-filter: blur(20px) saturate(175%);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .sticky-player .play-btn,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .sticky-player .back-btn {
+            color: var(--milk-deep);
+            border: 1px solid rgba(255,255,255,0.98);
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 10px 24px rgba(var(--milk-rgb),0.19), inset 0 1px 0 #fff;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .progress-track {
+            background: rgba(var(--milk-rgb),0.18);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .progress-fill {
+            background: var(--milk-progress);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .time-row,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .sticky-identity {
+            color: rgba(var(--milk-deep-rgb),0.70);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .content-card {
+            border-color: rgba(255,255,255,0.98);
+            background: var(--milk-paper);
+            box-shadow:
+                0 18px 46px rgba(var(--milk-rgb),0.12),
+                inset 0 1px 0 #fff,
+                inset 0 -1px 0 rgba(var(--milk-rgb),0.08);
+            backdrop-filter: blur(20px) saturate(155%);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .font-size-btn {
+            color: var(--milk-deep);
+            border-color: rgba(var(--milk-rgb),0.22);
+            background: rgba(255,255,255,0.94);
+            box-shadow: 0 8px 20px rgba(var(--milk-rgb),0.13), inset 0 1px 0 #fff;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .font-size-btn:hover {
+            background: rgba(var(--milk-rgb),0.13);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) ul.fill-blanks li.blank-question {
+            border-color: rgba(var(--milk-rgb),0.18);
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 8px 20px rgba(var(--milk-rgb),0.07);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .blank-section-title {
+            color: var(--milk-accent-strong);
+            border-color: rgba(var(--milk-rgb),0.20);
+            border-left-color: var(--milk-accent);
+            background: var(--milk-section);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .blank-num {
+            color: #fff;
+            background: var(--milk-deep);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.30);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .blank-input:not(.correct):not(.wrong):not(.attempt-locked) {
+            color: var(--milk-deep);
+            border-bottom-color: var(--milk-accent-strong);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-question:not(.correct):not(.wrong):not(.mc-locked-reminder),
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .matching-section {
+            border-color: rgba(var(--milk-rgb),0.18);
+            background: rgba(255,255,255,0.84);
+            box-shadow: 0 8px 22px rgba(var(--milk-rgb),0.055);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li:not(.correct):not(.wrong):not(.mc-locked-answer) {
+            border-color: rgba(var(--milk-rgb),0.18);
+            border-left-color: rgba(var(--milk-rgb),0.22);
+            background: rgba(255,255,255,0.94);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li:hover:not(.disabled):not(.correct):not(.wrong):not(.mc-locked-answer) {
+            border-left-color: var(--milk-accent);
+            background: rgba(var(--milk-rgb),0.11);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li:has(input[type="radio"]:checked):not(.correct):not(.wrong):not(.mc-locked-answer) {
+            border-color: rgba(var(--milk-deep-rgb),0.44);
+            border-left-color: var(--milk-accent-strong);
+            background: rgba(var(--milk-rgb),0.16);
+            box-shadow: 0 9px 22px rgba(var(--milk-rgb),0.12), inset 0 1px 0 #fff;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li:has(input[type="radio"]:checked)::after,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .option-label {
+            color: var(--milk-accent-strong);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li.correct .option-label,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li.correct:has(input[type="radio"]:checked)::after {
+            color: #15803d;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li.wrong .option-label,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li.wrong:has(input[type="radio"]:checked)::after {
+            color: #dc2626;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li.mc-locked-answer:not(.correct):not(.wrong) .option-label,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li.mc-locked-answer:not(.correct):not(.wrong):has(input[type="radio"]:checked)::after {
+            color: #a66b00;
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .matching-table th,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .matching-table td {
+            border-color: rgba(var(--milk-rgb),0.18);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .matching-table th,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .matching-table tr:nth-child(even) td {
+            background: rgba(var(--milk-rgb),0.07);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .submit-btn {
+            border-radius: 999px;
+            background: var(--milk-submit);
+            box-shadow: 0 17px 36px rgba(var(--milk-rgb),0.28), inset 0 1px 0 rgba(255,255,255,0.38);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .history-toolbar button {
+            color: var(--milk-deep);
+            border-color: rgba(255,255,255,0.98);
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 11px 30px rgba(var(--milk-rgb),0.16), inset 0 1px 0 #fff;
+            backdrop-filter: blur(20px) saturate(170%);
+        }
+
+        @media (prefers-reduced-transparency: reduce) {
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .hero-tool-btn,
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .sticky-player,
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .content-card,
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .history-toolbar button {
+                backdrop-filter: none;
+            }
+        }
+
+        @media (prefers-contrast: more) {
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .content-card,
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-question,
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) ul.fill-blanks li.blank-question,
+            body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .mc-options li {
+                border-color: rgba(var(--milk-deep-rgb),0.45);
+            }
+        }
+
         @media screen and (max-width: 768px) {
             body { padding: 10px 5px; }
             .container { padding: 25px 15px; }
@@ -2836,7 +3238,7 @@
 <script src="assets/js/config.public.js?v=20260815-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
 <script src="assets/js/practice-session.js?v=20260816-3"></script>
-<script src="assets/js/personal-vocab.js?v=20260725-1"></script>
+<script src="assets/js/personal-vocab.js?v=20260818-1"></script>
 <script>
 (function() {
     'use strict';
@@ -3213,7 +3615,7 @@
             var sentence = b.sentence;
             var inputHtml = ' <input type="text" name="' + b.id + '" class="blank-input" placeholder="' + num + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">';
             sentence = sentence.replace('_____', inputHtml);
-            html += '<li class="blank-question" data-question-font-group="' + currentGroup + '"><span class="blank-num">' + num + '</span><span class="blank-text">' + sentence + '</span></li>';
+            html += '<li class="blank-question" data-question-font-group="' + currentGroup + '"><span class="blank-num" data-mrcat-vocab-ignore>' + num + '</span><span class="blank-text">' + sentence + '</span></li>';
         }
         container.innerHTML = html;
 
@@ -3243,7 +3645,7 @@
             var m = mcItems[i];
             var qNum = m.number || (i + 1);
             html += '<div class="mc-question" data-id="' + m.id + '" data-question-font-group="mc-section">';
-            html += '<div class="mc-title"><span class="mc-num">' + qNum + '</span><span class="mc-title-text">' + m.question + '</span></div>';
+            html += '<div class="mc-title"><span class="mc-num" data-mrcat-vocab-ignore>' + qNum + '</span><span class="mc-title-text">' + m.question + '</span></div>';
             html += '<ul class="mc-options">';
             for (var o = 0; o < m.options.length; o++) {
                 var opt = m.options[o];
@@ -3255,7 +3657,7 @@
                 html += '<li>';
                 html += '<label>';
                 html += '<input type="radio" name="' + m.id + '" value="' + letter + '">';
-                html += '<span class="option-label">' + letter + '.</span><span class="option-text">' + displayOpt.substring(letter.length + 2) + '</span>';
+                html += '<span class="option-label" data-mrcat-vocab-ignore>' + letter + '.</span><span class="option-text">' + displayOpt.substring(letter.length + 2) + '</span>';
                 html += '</label>';
                 html += '</li>';
             }
@@ -3286,7 +3688,7 @@
             var m = matching[i];
             var pairs = m.pairs;
             html += '<div class="matching-section" data-id="' + m.id + '">';
-            html += '<div class="matching-instruction">' + (i + 1) + '. ' + m.instruction + '</div>';
+            html += '<div class="matching-instruction"><span data-mrcat-vocab-ignore>' + (i + 1) + '. </span>' + m.instruction + '</div>';
             html += '<table class="matching-table">';
             html += '<thead><tr><th>Item</th><th>Your Match</th></tr></thead>';
             html += '<tbody>';
