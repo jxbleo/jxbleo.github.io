@@ -73,6 +73,7 @@ Shared frontend assets:
 - `assets/js/config.public.js`
 - `assets/js/cloudbase-client.js`
 - `assets/js/auth.js`
+- `assets/js/login-navigation.js`
 - `assets/js/dashboard.js`
 - `assets/js/my-words.js`
 - `assets/js/liquid-glass-shell.js`
@@ -367,6 +368,8 @@ Rules:
 - Teacher authority comes from a `students` document with `role: "teacher"` and `active: true`.
 - Frontend role flags are never trusted.
 - Visitors are frontend-only browsing state and cannot write CloudBase data.
+- index.html is the only credential-entry surface. Shared login-navigation.js validates same-origin root HTML return targets, preserves query/hash context, and strips legacy user/visitor identity parameters before navigation.
+- Practice pages derive displayed student identity from the authenticated profile or explicit visitor state; URL parameters and legacy localStorage keys are never authorization sources.
 - During an active countable Vocabulary Test, student cloud-function surfaces
   reject requests from other browser page instances for the same student.
 

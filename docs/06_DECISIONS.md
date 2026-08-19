@@ -4,6 +4,22 @@
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
 
+## 2026-08-19: Centralize Login Entry and Validate Return Routing
+
+Decision:
+
+Keep `index.html` as the only credential-entry surface. A dependency-free shared `login-navigation.js` accepts only same-origin root-level HTML destinations, preserves their query/hash context, strips legacy `user`/`visitor` parameters, and supplies a safe page fallback. Inner pages may offer explicit Visitor mode but may not keep a separate Student ID allowlist or treat URL/local presentation identity as authorization.
+
+Reason:
+
+Duplicated inner login forms drifted from CloudBase Authentication, lost deep-link context, and allowed stale browser identity parameters to influence presentation. One validated route keeps authentication consistent while preserving the exact exercise, report, assignment, attempt, and focus location that initiated login.
+
+Trade-offs:
+
+- Every page that calls the helper must load it before its page-specific script and bump both cache query strings together.
+- This is frontend routing only; CloudBase functions remain the authorization boundary.
+- Visitor browsing remains available, but switching from Visitor to login performs a full central-login navigation.
+
 ## 2026-08-17: Separate Intensive Listening Authoring Packages from Live Policy
 
 Decision:

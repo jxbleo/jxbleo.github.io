@@ -21,6 +21,7 @@
         || storageGet('mrcat_visitor') === 'true';
     var teacherMode = params.get('teacher') === '1';
     var profile = null;
+    var visitorGuardInstalled = false;
     var leaveDialogOpener = null;
     var leaveDialogScrollY = 0;
 
@@ -39,12 +40,22 @@
         profile = null;
     }
 
-    if (visitor) {
+    function isVisitorMode() {
+        return visitor
+            || params.get('visitor') === '1'
+            || storageGet('mrcat_visitor') === 'true';
+    }
+
+    if (isVisitorMode()) {
+        visitor = true;
         storageSet('mrcat_visitor', 'true');
         storageRemove('opencode_user');
         storageSet('opencode_visitor', 'true');
     } else if (profile && profile.student_id) {
         storageSet('opencode_user', profile.student_id);
+        storageRemove('opencode_visitor');
+    } else {
+        storageRemove('opencode_user');
         storageRemove('opencode_visitor');
     }
 
@@ -84,6 +95,28 @@
         }
     }
 
+    function stripIdentityParams(url) {
+        if (!url) return '';
+        try {
+            var target = new URL(url, window.location.href);
+            target.searchParams.delete('visitor');
+            target.searchParams.delete('user');
+            return target.href;
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function sanitizedReturnUrl(value) {
+        var navigation = window.MrCatLoginNavigation;
+        if (navigation && typeof navigation.safeTarget === 'function') {
+            var helperValue = navigation.safeTarget(value, '');
+            var helperUrl = safeLocalUrl(helperValue);
+            if (helperUrl) return stripIdentityParams(helperUrl);
+        }
+        return stripIdentityParams(safeLocalUrl(value));
+    }
+
     function samePage(url) {
         if (!url) return false;
         try {
@@ -101,9 +134,9 @@
     }
 
     function returnUrl() {
-        var explicit = safeLocalUrl(params.get('return'));
+        var explicit = sanitizedReturnUrl(params.get('return'));
         if (explicit && !samePage(explicit)) return explicit;
-        var referrer = safeLocalUrl(document.referrer);
+        var referrer = sanitizedReturnUrl(document.referrer);
         if (referrer && !samePage(referrer)) return referrer;
         return homeUrl();
     }
@@ -283,7 +316,11 @@
                 '</div>' +
             '</div>';
         modal.querySelector('.mrcat-login-action').addEventListener('click', function() {
-            window.location.href = 'index.html';
+            if (window.MrCatLoginNavigation && typeof window.MrCatLoginNavigation.loginHref === 'function') {
+                window.location.href = window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html');
+            } else {
+                window.location.href = 'index.html';
+            }
         });
         modal.querySelector('.mrcat-continue-action').addEventListener('click', function() {
             modal.classList.remove('show');
@@ -311,6 +348,8 @@
     }
 
     function installVisitorGuard(modal) {
+        if (visitorGuardInstalled) return;
+        visitorGuardInstalled = true;
         function block(event) {
             if (!isAnswerControl(event.target)) return;
             event.preventDefault();
@@ -326,10 +365,24 @@
         document.addEventListener('change', block, true);
     }
 
+    function enableVisitorMode() {
+        visitor = true;
+        profile = null;
+        storageRemove('mrcat_student_profile');
+        storageRemove('opencode_user');
+        storageSet('mrcat_visitor', 'true');
+        storageSet('opencode_visitor', 'true');
+        if (window.MrCatPractice) window.MrCatPractice.profile = null;
+        if (document.body) {
+            var modal = document.querySelector('.mrcat-visitor-modal') || buildVisitorModal();
+            installVisitorGuard(modal);
+        }
+    }
+
     function init() {
         addStyles();
         addPracticeNav();
-        if (visitor) installVisitorGuard(buildVisitorModal());
+        if (isVisitorMode()) installVisitorGuard(buildVisitorModal());
     }
 
     if (document.readyState === 'loading') {
@@ -339,7 +392,8 @@
     }
 
     window.MrCatPractice = {
-        isVisitor: function() { return visitor; },
+        isVisitor: function() { return isVisitorMode(); },
+        enableVisitorMode: enableVisitorMode,
         profile: profile,
         confirmBack: confirmBack,
         confirmHome: confirmHome,
