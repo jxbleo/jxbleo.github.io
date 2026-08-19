@@ -137,27 +137,72 @@ html.teacher-modal-scroll-locked {
 
 .site-filing-footer {
     align-self: end;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
     width: 100%;
+    color: rgba(27, 37, 43, 0.62);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Segoe UI", sans-serif;
+}
+
+.site-filing-bar {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    width: min(1040px, 100%);
+    margin: 0 auto;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.14);
     text-align: center;
+    -webkit-backdrop-filter: blur(12px) saturate(125%);
+    backdrop-filter: blur(12px) saturate(125%);
+}
+
+.site-brand-handle {
+    flex: 0 0 auto;
+    color: rgba(27, 37, 43, 0.68);
+    font-size: 0.74rem;
+    font-weight: 650;
+    letter-spacing: 0.015em;
+    white-space: nowrap;
+}
+
+.site-filing-separator {
+    flex: 0 0 1px;
+    width: 1px;
+    height: 22px;
+    background: rgba(76, 96, 104, 0.15);
+}
+
+.site-filing-links {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
 }
 
 .site-filing-footer a {
-    display: inline-block;
-    padding: 6px 10px;
-    color: rgba(27, 37, 43, 0.62);
-    font-size: 0.76rem;
-    line-height: 1.4;
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    padding: 0 8px;
+    border-radius: 10px;
+    color: inherit;
+    font-size: 0.71rem;
+    line-height: 1.2;
     text-decoration: none;
+    transition: color 120ms ease-out, background 120ms ease-out, transform 100ms ease-out;
 }
 
 .site-filing-footer a:hover {
     color: rgba(27, 37, 43, 0.9);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    background: rgba(255, 255, 255, 0.42);
+}
+
+.site-filing-footer a:active {
+    transform: scale(0.97);
 }
 
 .site-filing-footer .public-security-filing {
@@ -167,9 +212,52 @@ html.teacher-modal-scroll-locked {
 }
 
 .public-security-filing img {
-    width: 18px;
-    height: 20px;
+    width: 14px;
+    height: 16px;
     object-fit: contain;
+    opacity: 0.72;
+}
+
+@media (max-width: 820px) {
+    .site-filing-bar {
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        padding: 10px 12px;
+    }
+
+    .site-brand-handle {
+        flex-basis: 100%;
+    }
+
+    .site-filing-separator {
+        display: none;
+    }
+
+    .site-filing-links {
+        flex: 1 1 auto;
+    }
+}
+
+@media (max-width: 540px) {
+    .site-filing-links {
+        flex-basis: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .site-filing-bar {
+        background: #f7f9f8;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+@media (prefers-contrast: more) {
+    .site-filing-bar {
+        border-color: rgba(27, 37, 43, 0.42);
+        background: rgba(255, 255, 255, 0.94);
+    }
 }
 
 .auth-shell {
