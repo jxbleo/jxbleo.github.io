@@ -130,6 +130,8 @@ in` heading remains available to assistive technology.
 On mobile, the welcome panel shrink-wraps the brand and quote instead of
 retaining the former fixed 430px minimum height and a large empty lower half.
 
+The central login page is the only Student ID/password entry. Dashboard, My Words, Attempt Review, public Library, BBC, IELTS, and Vocabulary login actions route through it with a validated same-origin return target. The target preserves the original root HTML page, query, and hash, rejects external or nested destinations, and removes legacy user/visitor identity parameters. Practice login prompts offer only Log In and Continue as Visitor; they never contain a second Student ID field.
+
 ### Parent Mode
 
 The class matrix renders tasks as rows and students as columns. It projects

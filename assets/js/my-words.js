@@ -1516,7 +1516,7 @@
 
     function renderVisitor() {
         setFeedback('Log in as a student to open your personal My Words.');
-        recentList.innerHTML = '<div class="my-words-empty-state"><div><p>Your personal words are available after login.</p><a class="primary-button" href="index.html">Log In</a></div></div>';
+        recentList.innerHTML = '<div class="my-words-empty-state"><div><p>Your personal words are available after login.</p><a class="primary-button" href="' + escapeHtml(window.MrCatLoginNavigation.loginHref(window.location.href, 'my-words.html')) + '">Log In</a></div></div>';
         indexList.innerHTML = '<div class="my-words-empty-state"><p>Student login required.</p></div>';
         desktopDetail.innerHTML = '<div class="my-words-detail-empty"><p>Log in to open word details.</p></div>';
         addTrigger.disabled = true;
@@ -1543,7 +1543,7 @@
         recentList.innerHTML = '<div class="my-words-loading-state"><p>Loading My Words...</p></div>';
         window.MrCatAuth.getSession().then(function(session) {
             if (session.mode === 'none') {
-                window.location.replace('index.html');
+                window.location.replace(window.MrCatLoginNavigation.loginHref(window.location.href, 'my-words.html'));
                 return null;
             }
             if (session.mode === 'teacher') {

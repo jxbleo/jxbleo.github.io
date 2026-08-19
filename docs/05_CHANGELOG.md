@@ -4,6 +4,17 @@
 > Do not record every tiny CSS tweak or variable rename here.
 
 
+## 2026-08-19
+
+### Changed
+
+- Unified Dashboard, My Words, Attempt Review, public Library, BBC, IELTS, and Vocabulary login routing through the central `index.html` form. Validated same-origin return targets preserve the original page query/hash while rejecting external or nested destinations and stripping legacy `user`/`visitor` identity parameters.
+- Removed embedded Student ID entry from public Library, BBC, and IELTS Reading. Practice pages now derive identity from authenticated CloudBase profile state or explicit Visitor mode.
+
+### Deployment scope
+
+- Static-only release. No CloudBase function, collection, data import, or migration is required.
+
 ## 2026-08-18
 
 ### Changed

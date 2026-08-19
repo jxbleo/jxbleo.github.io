@@ -21,10 +21,12 @@ Run after JavaScript changes:
 
 ```bash
 find cloudfunctions -name index.js -exec node --check {} \;
+node --check assets/js/login-navigation.js
 node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
 node --check assets/js/my-words.js
 node --check assets/js/practice-session.js
+npm run test:login-redirect
 npm run test:my-words
 npm run test:assignment-schedule
 npm run test:star-rewards
@@ -47,6 +49,14 @@ TeacherAdmin deployment-package checks:
   `@cloudbase/manager-node` bundle;
 - the local end-user adapter smoke test verifies all five signed end-user API
   request shapes without contacting CloudBase or reading production credentials.
+
+Login-routing checks:
+
+- npm run test:login-redirect rejects external, protocol-relative, nested, malformed, and login-page return targets;
+- exact exercise/report query and hash context survives central login, while user and visitor parameters are stripped;
+- index.html, Dashboard, My Words, Attempt Review, public Library, BBC, IELTS Reading/Listening, and Vocabulary load login-navigation.js before their dependent script;
+- signed-out My Words and Attempt Review return to their exact query/hash, and public Library header login returns to Dashboard Library;
+- Visitor mode never becomes an authenticated identity and still blocks answer, submission, and personal-word writes.
 
 Intensive Listening checks:
 
