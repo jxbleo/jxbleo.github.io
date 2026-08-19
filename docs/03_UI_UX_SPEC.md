@@ -50,6 +50,14 @@ Existing semantic/category colors and green/red learning-result colors remain
 unchanged. The shell must provide reduced-transparency, increased-contrast, and
 reduced-motion fallbacks.
 
+### Home-screen identity
+
+Every root page uses one curriculum-neutral Mr. Cat face for browser tabs and
+Add to Home Screen. iOS uses the 180 px Apple touch export; installable browsers
+use the 192 px and 512 px manifest exports. DSE and IELTS remain curriculum
+labels only and must not replace the site icon or add separate logos beside
+those labels.
+
 ### Protected report preview
 
 The HKDSE topic bank gives visitors useful coverage metrics, two representative

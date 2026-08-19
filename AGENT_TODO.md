@@ -66,6 +66,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-08-19
+
+- Replaced all curriculum-specific home-screen assets with deterministic size
+  exports of the owner-supplied Mr. Cat face. Every root HTML page now uses one
+  favicon, Apple touch icon, and manifest. Removed old DSE, IELTS, and standalone
+  cat image assets and removed runtime curriculum switching.
+- Verified manifest JSON, JavaScript syntax, icon dimensions, complete page
+  head coverage, static build output, and absence of legacy icon references.
+  CloudBase deployment is not required; publish the static site for devices to
+  receive the new icon.
+
 ### 2026-08-15
 
 - Diagnosed Vocabulary Quiz/timed Practice Safari error

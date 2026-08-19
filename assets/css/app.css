@@ -9635,20 +9635,8 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 .system-tag {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     min-width: 0;
     vertical-align: middle;
-}
-.system-tag img {
-    width: 34px;
-    height: 20px;
-    object-fit: contain;
-    object-position: left center;
-    flex: 0 0 auto;
-}
-.student-info-edit .system-tag img {
-    width: 46px;
-    height: 28px;
 }
 .student-account-actions {
     display: flex;
