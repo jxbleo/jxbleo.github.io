@@ -1,6 +1,6 @@
 {
-  "name": "Mr. Cat Academy DSE",
-  "short_name": "DSE",
+  "name": "Mr. Cat Academy",
+  "short_name": "Mr. Cat",
   "description": "Mr. Cat Academy student dashboard.",
   "start_url": "dashboard.html",
   "scope": "./",
@@ -9,12 +9,12 @@
   "theme_color": "#f4f8f5",
   "icons": [
     {
-      "src": "assets/icons/dse-icon-192.png",
+      "src": "assets/icons/mrcat-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/dse-icon-512.png",
+      "src": "assets/icons/mrcat-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

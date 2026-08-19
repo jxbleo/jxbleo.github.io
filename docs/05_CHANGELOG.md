@@ -14,6 +14,10 @@
 
 ### Changed
 
+- Unified the favicon and Add to Home Screen identity across every root page
+  using the owner-supplied Mr. Cat face. Removed the separate DSE/IELTS icon
+  sets, manifests, curriculum-logo images, old standalone cat image, and
+  profile-driven icon switching.
 - Simplified the public login alternatives to an `or` divider followed by
   `Continue as parent` and `Continue as visitor`, removing the separate
   visitor-mode note.

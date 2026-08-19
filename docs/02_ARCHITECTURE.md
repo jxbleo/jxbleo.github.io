@@ -85,6 +85,9 @@ Shared frontend assets:
 - `assets/js/reports.js`
 - `assets/css/reports.css`
 - `assets/css/my-words.css`
+- `assets/icons/mrcat-favicon-32.png` and `mrcat-apple-touch-icon.png`
+- `assets/icons/mrcat-icon-192.png`, `mrcat-icon-512.png`, and `mrcat-icon-1024.png`
+- `site.webmanifest`
 
 GitHub Actions tracks the GitHub `main` branch and synchronizes successful
 static builds to the production Tencent COS bucket. The build copies only root
@@ -93,6 +96,11 @@ into `dist/`. Cloud functions, deployment packages, scripts, repository
 documentation, and local/private configuration are not published as website
 files. CloudBase continues to provide authentication, functions, database, and
 private storage; static hosting is a separate release track.
+
+All root HTML pages declare the same favicon, Apple touch icon, and
+`site.webmanifest`. The manifest is curriculum-neutral and references only the
+supplied Mr. Cat face at standard 192 px and 512 px sizes; DSE and IELTS no
+longer switch home-screen identity.
 
 The shared Liquid Glass layer is presentation-only on login and public Library.
 The authenticated Student Dashboard and Teacher desk additionally use the

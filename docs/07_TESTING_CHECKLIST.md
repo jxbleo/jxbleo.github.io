@@ -66,6 +66,14 @@ Registration-footer checks:
   Security Bureau query for code `44030002015814`;
 - both records remain visible and readable at phone width.
 
+Home-screen icon checks:
+
+- every root HTML page declares `mrcat-favicon-32.png`,
+  `mrcat-apple-touch-icon.png`, and the single `site.webmanifest`;
+- the manifest parses and references only the 192 px and 512 px Mr. Cat exports;
+- icon dimensions are 32, 180, 192, 512, and 1024 square pixels, and no
+  DSE/IELTS manifest, icon, logo, or legacy standalone cat asset remains.
+
 Intensive Listening checks:
 
 - public static output contains no reviewed word answers;

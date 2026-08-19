@@ -666,20 +666,10 @@
         return category === 'ngsl' || category === 'nawl' || category === 'tk2' || category === 'oxford5000';
     }
 
-    function systemLogoPath(value) {
-        var system = String(value || '').trim().toUpperCase();
-        if (system === 'DSE') return 'assets/logos/dse-logo.png';
-        if (system === 'IELTS') return 'assets/logos/ielts-logo.png';
-        return '';
-    }
-
     function renderSystemTag(value, emptyLabel) {
         var label = String(value || '').trim();
         if (!label) return escapeHtml(emptyLabel || 'Not set');
-        var logo = systemLogoPath(label);
-        return '<span class="system-tag' + (logo ? ' has-logo' : '') + '">' +
-            (logo ? '<img src="' + escapeHtml(logo) + '" alt="" loading="lazy">' : '') +
-            '<span>' + escapeHtml(label) + '</span></span>';
+        return '<span class="system-tag"><span>' + escapeHtml(label) + '</span></span>';
     }
 
     function studentMetaHtml(student) {
