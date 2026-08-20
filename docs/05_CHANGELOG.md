@@ -1718,3 +1718,32 @@ required.
 ### Fixed
 
 - Separated teacher answer reveal from student answer reveal.
+
+## 2026-08-20 — AI Tutor Writing foundation
+
+### Added
+
+- Added the independent AI Tutor writing workspace and Dashboard entry.
+- Added private multi-photo OCR, student confirmation, standardized content
+  review, sentence language coaching, batch rewrite checking, and portfolio/profile data.
+- Added strict versioned AI schemas and authoritative IELTS/HKDSE framework prompts.
+- Added teacher per-student daily word limits, idempotent usage accounting, and
+  metadata-only teacher email outbox/delivery function.
+- Enabled Cambridge International AS & A Level English Language 9093 Paper 2
+  with separate Shorter Writing, Reflective Commentary, and Extended Writing rubrics.
+- Simplified student-facing framework names to IELTS Task 1/2, DSE Paper 2, and
+  A Level 9093 task variants; hid General Training Task 1 from new selections.
+- Added deterministic server derivation for overall scores, rewrite-required
+  state, and rewrite acceptance; scoped idempotency keys to one Composition
+  revision/mode/Rubric and made review-plus-usage finalization atomic.
+- Preserved the standardized Rubric identity when a reviewed Composition moves
+  into general language coaching.
+- Replaced the vendor-specific model call with independently configurable text
+  and vision adapters for mainland OpenAI-compatible providers, including local
+  schema validation and one repair retry for JSON Object models. Stored safe
+  model/protocol metadata with each AI artifact for future provider comparison.
+- Made same-Composition replacement success-then-swap: candidate text is staged
+  until the replacement review succeeds, so failed re-upload evaluation keeps
+  the prior manuscript, reviews, and observations.
+- Retained one logical evaluate/rewrite operation ID across lost-response retries
+  to prevent duplicate model work and quota charges.

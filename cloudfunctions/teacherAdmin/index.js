@@ -22,6 +22,8 @@ const STAR_REQUEST_COLLECTION = "star_redemption_requests";
 const STAR_EVIDENCE_COLLECTION = "star_redemption_evidence";
 const CLASS_COLLECTION = "classes";
 const CLASS_MEMBERSHIP_COLLECTION = "class_memberships";
+const WRITING_USAGE_COLLECTION = "writing_ai_usage_events";
+const DEFAULT_WRITING_AI_DAILY_WORD_LIMIT = 5000;
 const NOTIFICATION_FEED_PAGE_SIZE = 10;
 const DISPUTE_FEED_PAGE_SIZE = 5;
 
@@ -711,6 +713,64 @@ async function listStudents() {
       .map(studentView)
       .sort((a, b) => String(a.student_id || "").localeCompare(String(b.student_id || ""))),
   };
+}
+
+function shanghaiDayKey(value = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
+function writingDailyLimit(student) {
+  const configured = Number(student && student.writing_ai_daily_word_limit);
+  if (Number.isInteger(configured) && configured >= 0 && configured <= 100000) return configured;
+  const fallback = Number(process.env.WRITING_AI_DEFAULT_DAILY_WORD_LIMIT || DEFAULT_WRITING_AI_DAILY_WORD_LIMIT);
+  return Number.isInteger(fallback) && fallback >= 0 ? fallback : DEFAULT_WRITING_AI_DAILY_WORD_LIMIT;
+}
+
+async function writingTutorStudentFromEvent(event) {
+  const authUid = text(event.auth_uid);
+  if (!authUid) throw new Error("STUDENT_NOT_FOUND");
+  const student = await getOne("students", { auth_uid: authUid, role: "student" });
+  if (!student || student.deleted_at) throw new Error("STUDENT_NOT_FOUND");
+  return student;
+}
+
+function writingTutorSettingsView(student) {
+  const dayKey = shanghaiDayKey();
+  return {
+    daily_word_limit: writingDailyLimit(student),
+    words_used_today: text(student.writing_ai_usage_day) === dayKey
+      ? Math.max(0, Number(student.writing_ai_words_used_today || 0))
+      : 0,
+    day_key: dayKey,
+    // Deliberately excludes manuscript text and avoids expanding teacher startup payloads.
+    recent_events: [],
+  };
+}
+
+async function getWritingTutorStudentSettings(event) {
+  const student = await writingTutorStudentFromEvent(event);
+  return { success: true, settings: writingTutorSettingsView(student) };
+}
+
+async function updateWritingTutorStudentSettings(event, teacher) {
+  const student = await writingTutorStudentFromEvent(event);
+  const limit = Number(event.daily_word_limit);
+  if (!Number.isInteger(limit) || limit < 0 || limit > 100000) {
+    throw new Error("WRITING_AI_LIMIT_INVALID");
+  }
+  const now = new Date();
+  await db.collection("students").doc(student._id).update({
+    writing_ai_daily_word_limit: limit,
+    writing_ai_limit_updated_at: now,
+    writing_ai_limit_updated_by_teacher_uid: teacher.auth_uid,
+    updated_at: now,
+  });
+  return { success: true, settings: writingTutorSettingsView({ ...student, writing_ai_daily_word_limit: limit }) };
 }
 
 async function listClasses() {
@@ -4077,6 +4137,8 @@ exports.main = async (event) => {
     const teacher = await getAuthenticatedTeacher();
     const action = text(event.action);
     if (action === "listStudents") return await listStudents();
+    if (action === "getWritingTutorStudentSettings") return await getWritingTutorStudentSettings(event);
+    if (action === "updateWritingTutorStudentSettings") return await updateWritingTutorStudentSettings(event, teacher);
     if (action === "listClasses") return await listClasses();
     if (action === "getTeacherEmailSettings") return await getTeacherEmailSettings(teacher);
     if (action === "addTeacherEmail") return await mutateTeacherEmailSettings(event, teacher, "add");

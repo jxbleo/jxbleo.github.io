@@ -1046,3 +1046,45 @@ Intensive spelling requests reuse `answer_disputes` with
 `content_version`, `unit_id`, and `slot_id`. The decisions are `keep` and
 `provide`; accepted changes append an immutable `grading_key_history` rule
 revision.
+
+## AI Tutor Writing Collections
+
+All collections are `ADMINONLY`.
+
+- `writing_compositions`: one current student-owned Composition. Stable fields
+  include `composition_id`, `student_uid`, `confirmed_text`, `prompt_text`,
+  `assessment_mode`, current `rubric_id`, preserved `standardized_rubric_id`,
+  `revision`, `status`, current review payloads, and prompt/schema/rubric
+  versions. Each standardized review also freezes its Rubric ID, label, and
+  prompt/schema/rubric versions. OCR and each review/check payload retain safe
+  model metadata (`protocol`, `model`, provider hostname, structural-repair
+  flag) for later comparison; API keys and full endpoint URLs are never stored.
+  Replacement stages candidate fields under `pending_replacement`; only a
+  successful review transaction updates this row in place and clears prior
+  current review payloads. A failed model call preserves the committed version.
+- `writing_photo_uploads`: short-lived private upload audit rows with ownership,
+  page order, expected size, CloudBase file ID, expiry, and deletion status.
+- `writing_observations`: evidence-linked language observations for the current
+  Composition revision; replacement removes that Composition's stale rows.
+- `writing_ai_usage_events`: append-only metadata-only quota/idempotency ledger
+  keyed by student plus operation ID. The immutable scope also includes
+  Composition revision, mode, and Rubric; cross-scope key reuse is rejected. It
+  never contains manuscript text.
+- `writing_teacher_email_events`: metadata-only private delivery outbox. It
+  contains student identity, mode, framework, word count, and Shanghai day, but
+  no prompt, manuscript, sentence, feedback, or image.
+
+`students.writing_ai_daily_word_limit`, `writing_ai_usage_day`, and
+`writing_ai_words_used_today` store the teacher-controlled limit and current
+Shanghai-day counter snapshot. The usage ledger remains the audit source.
+
+Required indexes, in addition to CloudBase defaults:
+
+- `writing_compositions`: unique `composition_id`; `student_uid`
+- `writing_photo_uploads`: unique `photo_id`; `student_uid`;
+  `composition_id + student_uid + status`
+- `writing_observations`: unique `observation_id`; `student_uid`;
+  `composition_id + student_uid`
+- `writing_ai_usage_events`: unique `usage_id`; `usage_id + status`
+- `writing_teacher_email_events`: unique `event_id`; `status`;
+  `event_id + status`

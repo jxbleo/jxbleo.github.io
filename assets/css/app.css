@@ -1982,6 +1982,78 @@ html.teacher-modal-scroll-locked {
         radial-gradient(circle at 18% 112%, rgba(179, 230, 214, 0.56), transparent 36%),
         linear-gradient(145deg, #fbfff8 0%, #ecf8f3 48%, #d6f0e7 100%);
 }
+.student-ai-tutor-entry {
+    margin: 18px 0 28px;
+}
+
+.student-ai-tutor-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    min-height: 126px;
+    padding: 22px 24px;
+    overflow: hidden;
+    color: #173f38;
+    text-decoration: none;
+    border: 1px solid rgba(73, 142, 124, 0.22);
+    border-radius: 28px;
+    background:
+        radial-gradient(circle at 82% 8%, rgba(255, 225, 159, 0.48), transparent 36%),
+        linear-gradient(135deg, rgba(231, 248, 241, 0.98), rgba(249, 252, 242, 0.94));
+    box-shadow: 0 18px 42px rgba(38, 87, 75, 0.1);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.student-ai-tutor-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(52, 127, 106, 0.4);
+    box-shadow: 0 22px 48px rgba(38, 87, 75, 0.15);
+}
+
+.student-ai-tutor-card:focus-visible {
+    outline: 3px solid rgba(41, 128, 105, 0.32);
+    outline-offset: 3px;
+}
+
+.student-ai-tutor-icon {
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    border-radius: 20px;
+    color: #f9fffc;
+    background: linear-gradient(145deg, #216d5d, #3b9b7e);
+    box-shadow: 0 12px 24px rgba(28, 99, 82, 0.22);
+}
+
+.student-ai-tutor-icon svg {
+    width: 31px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.student-ai-tutor-copy { display: grid; gap: 5px; }
+.student-ai-tutor-copy strong { font-size: clamp(1.15rem, 2vw, 1.45rem); letter-spacing: -0.025em; }
+.student-ai-tutor-copy > span:last-child { color: rgba(23, 63, 56, 0.68); line-height: 1.5; }
+.student-ai-tutor-eyebrow { color: #2b806b; font-size: 0.73rem; font-weight: 800; letter-spacing: 0.13em; }
+.student-ai-tutor-arrow { font-size: 1.8rem; transition: transform 180ms ease; }
+.student-ai-tutor-card:hover .student-ai-tutor-arrow { transform: translateX(4px); }
+
+@media (max-width: 640px) {
+    .student-ai-tutor-card { gap: 14px; min-height: 112px; padding: 18px; border-radius: 24px; }
+    .student-ai-tutor-icon { width: 52px; height: 52px; border-radius: 17px; }
+    .student-ai-tutor-arrow { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .student-ai-tutor-card,
+    .student-ai-tutor-arrow { transition-duration: 1ms; }
+}
 .student-progress-hero::before {
     background:
         conic-gradient(from 160deg,

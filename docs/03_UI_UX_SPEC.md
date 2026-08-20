@@ -1917,3 +1917,21 @@ Important mobile rules:
   below it without hiding either record.
 - The public homepage is the canonical registration display surface;
   individual practice and authenticated application pages do not repeat it.
+
+## AI Tutor Writing
+
+- AI Tutor is a self-contained student workspace with New Writing, Writing
+  Portfolio, and Writing Profile views.
+- OCR comparison is split-screen on tablet/desktop. Mobile opens text first and
+  exposes an explicit photo comparison control.
+- The two review modes are visually mutually exclusive. Standardized review
+  shows framework criteria and score; language review never shows a score.
+- Language training defaults to one sentence at a time with numbered capsules.
+  A small marker remains under skipped or unfinished capsules. A control toggles
+  the same state into a sentence list without losing work.
+- Analysis and the reference revision are collapsed by default. Opening the
+  reference temporarily replaces/hides the rewrite input; closing it restores
+  the student's draft. Batch feedback appears only after Submit.
+- Completed portfolio items are read-only. `Use as new` creates another
+  Composition; `重新上传` exists only inside an active Composition and clearly
+  states that successful confirmation replaces its current review.

@@ -719,3 +719,42 @@ the concrete `set_id`.
 per concrete set so the version buttons can display independent scores without
 returning answer details. Unversioned catalog items need no migration and retain
 the existing one-click confirmation flow.
+
+## AI Tutor Writing Architecture
+
+`ai-tutor.html` calls the authenticated `writingTutor` function. Photos use a
+two-phase private CloudBase upload, receive short-lived URLs only inside the
+function, and are sent to a vision model for transcription. The browser edits
+the OCR result; `saveDraft` confirms text and triggers best-effort photo deletion.
+
+The function owns four versioned AI boundaries: OCR, standardized review,
+language sentence review, and rewrite checking. `model-provider.js` keeps those
+boundaries independent from the vendor. Text and vision may use separate
+mainland-accessible OpenAI-compatible Chat Completions endpoints and models.
+Supported transports are Chat JSON Schema, Chat JSON Object, and a compatibility
+Responses JSON Schema path. JSON Object providers receive the complete schema,
+are checked by the same local schema validator, and receive one automatic repair
+attempt for malformed structure. Server-side `Intl.Segmenter` assigns stable
+sentence IDs before language review; responses are rejected if IDs or originals
+do not align. Student text is delimited as untrusted data in every prompt.
+
+This allows, for example, Qwen Vision for handwriting OCR with Qwen, DeepSeek,
+or Kimi for text evaluation. A provider's advertised OpenAI compatibility is
+never treated as proof of strict schema support. Canonical server rules compute
+overall scores and state transitions after structural validation.
+
+Daily quota reservation is server-side and idempotent by authenticated student
+plus client operation ID. A failed model request releases its reservation. A
+successful review updates the Composition and completes the usage ledger event
+in one transaction, then appends a metadata-only teacher email outbox event.
+Email delivery is a separate timer function and cannot make a successful review
+fail.
+
+When a reviewed Composition is re-uploaded or its manuscript changes, `saveDraft`
+stores the candidate under `pending_replacement`. The committed manuscript,
+reviews, and Writing Profile observations remain active until the replacement
+model call succeeds. The successful review transaction swaps in the staged
+revision and clears the superseded current payloads; a failed call leaves the
+committed version intact. Client operation IDs are retained for the same logical
+request across a lost network response and are replaced only after a definitive
+server failure or changed input.

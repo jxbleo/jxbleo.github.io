@@ -1707,3 +1707,31 @@ High priority improvement:
 - Catalog build rejects duplicate edition numbers or multiple latest editions.
 - Optional BBC `contentVersion` must match the private grading version; stale
   submissions are rejected instead of graded with mismatched keys.
+
+## AI Tutor Writing
+
+- Run `npm run test:writing-tutor` and all release verification.
+- Verify direct text and 2–8 page photo flows; OCR must preserve errors and
+  uncertain text, while confirmed photos become unavailable after cleanup.
+- Verify both modes are mutually exclusive; standardized review requires prompt
+  and framework, while language review works without a prompt and shows no score.
+- Submit an obvious IELTS response under HKDSE and confirm the selected framework
+  is retained without warning or reclassification.
+- Confirm strict schema rejection and sentence ID/original alignment rejection.
+- Confirm duplicate/missing criterion and sentence IDs are rejected. Confirm
+  IELTS overall band is calculated from its four criterion scores, DSE total is
+  the sum of its three domain marks, and A Level totals use their single AO mark
+  rather than trusting the model's `overall_score` string.
+- Confirm an operation ID replays only for the same Composition revision, mode,
+  and Rubric; cross-scope reuse must fail without another charge or result.
+- Confirm reference revision and rewrite input never display together, skipped
+  capsules remain marked, and feedback is batch-only.
+- Retry one operation ID and confirm one quota event/charge. Force AI failure and
+  confirm quota release. Test boundary at exactly the daily limit and limit zero.
+- Confirm replacement failure preserves the current Composition; successful
+  confirmation clears prior current reviews without deleting the usage ledger.
+- Confirm teacher settings load lazily, accept 0–100000, and email contains no
+  student prompt, manuscript, feedback, or image.
+- Confirm Cambridge 9093 Paper 2 exposes three separate Rubrics and enforces
+  whole-mark ranges of 0–15, 0–10, and 0–25 for Shorter Writing, Reflective
+  Commentary, and Extended Writing respectively.
