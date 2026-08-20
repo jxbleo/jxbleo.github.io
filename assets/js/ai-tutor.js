@@ -521,7 +521,7 @@
             '<strong>' + (uploadPending ? '正在确认照片上传状态' : '照片已安全上传，可以离开此页面') + '</strong>' +
             '<p>' + (uploadPending ? '照片尚未完整确认，暂时不能保证后台继续。如果长时间没有变化，请在同一篇作文里重新上传。' : (status === 'queued' || status === 'ocr_queued' ? 'OCR 已进入队列。' : 'OCR 正在云端识别。') + '离开或刷新不会中断，也不会创建新的作文。') + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            (uploadPending ? '<button class="primary-button" type="button" data-reupload>重新上传照片</button>' : '<button class="primary-button" type="button" data-stay-ocr>留在此页等待</button>') + '</div>' +
+            (uploadPending ? '<button class="primary-button" type="button" data-reupload>重新上传照片</button>' : '<button class="secondary-button" type="button" data-reupload>重新上传</button><button class="primary-button" type="button" data-stay-ocr>留在此页等待</button>') + '</div>' +
             '<p class="section-hint" id="ocr-poll-status" role="status" aria-live="polite">每 5 秒自动查询一次同一篇作文。</p></section>';
         if (autoPoll) startOcrPolling();
     }
@@ -571,6 +571,7 @@
         stopOcrPolling();
         var code = firstText(error && error.code, error && error.result && error.result.code, state.current && state.current.ocr_job && state.current.ocr_job.error_code);
         var messages = {
+            LEGACY_OCR_JOB_NOT_RESUMABLE: '这次识别来自旧版流程，无法在后台恢复。请在同一篇作文中重新上传，不会新建作品。',
             PHOTO_UPLOAD_EXPIRED: '照片上传没有在 30 分钟内完整确认。请在同一篇作文中重新上传，不会新建作品。',
             WRITING_AI_OCR_EMPTY: '照片中没有识别到作文文字。请检查清晰度、方向和页面顺序，然后重新上传。',
             WRITING_AI_SCHEMA_RESPONSE_INVALID: 'AI 已读取照片，但没有返回完整的 OCR 格式。你可以重新检查状态，或重新上传更清晰的照片。',
