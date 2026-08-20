@@ -66,6 +66,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-08-20
+
+- Added `jxbleo@foxmail.com` as a clickable homepage-footer email beside
+  `@猫先生英语`, with responsive contact/registration rows. Verified desktop
+  and phone layouts, `mailto:` behavior, static build output, and release
+  checks. CloudBase deployment is not required.
+
 ### 2026-08-19
 
 - Replaced all curriculum-specific home-screen assets with deterministic size

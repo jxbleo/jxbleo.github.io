@@ -60,11 +60,15 @@ Login-routing checks:
 
 Registration-footer checks:
 
+- the contact group shows `@猫先生英语` and a clickable
+  `mailto:jxbleo@foxmail.com` link;
 - the public login/home footer shows both `粤ICP备2026107102号-1` and
   `粤公网安备44030002015814号`;
 - the public-security record includes the official badge and opens the Public
   Security Bureau query for code `44030002015814`;
 - both records remain visible and readable at phone width.
+- phone widths place the contact group and registration links on separate
+  centered rows without horizontal overflow.
 
 Home-screen icon checks:
 

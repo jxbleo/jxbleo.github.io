@@ -168,6 +168,25 @@ html.teacher-modal-scroll-locked {
     white-space: nowrap;
 }
 
+.site-contact-links {
+    display: flex;
+    flex: 0 1 auto;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+}
+
+.site-contact-separator {
+    flex: 0 0 auto;
+    color: rgba(76, 96, 104, 0.32);
+    font-size: 0.72rem;
+}
+
+.site-contact-email {
+    white-space: nowrap;
+}
+
 .site-filing-separator {
     flex: 0 0 1px;
     width: 1px;
@@ -225,8 +244,9 @@ html.teacher-modal-scroll-locked {
         padding: 10px 12px;
     }
 
-    .site-brand-handle {
+    .site-contact-links {
         flex-basis: 100%;
+        flex-wrap: wrap;
     }
 
     .site-filing-separator {
