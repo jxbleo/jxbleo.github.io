@@ -189,6 +189,35 @@ check("Qwen JSON wrappers are normalized before strict validation", () => {
   );
 });
 
+check("Qwen OCR defaults to the low-latency vision model", () => {
+  const provider = require(path.join(root, providerPath));
+  const previous = {
+    apiKey: process.env.WRITING_AI_API_KEY,
+    apiUrl: process.env.WRITING_AI_API_URL,
+    model: process.env.WRITING_AI_MODEL,
+    visionModel: process.env.WRITING_AI_VISION_MODEL,
+  };
+  try {
+    process.env.WRITING_AI_API_KEY = "test-key";
+    process.env.WRITING_AI_API_URL = "https://workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions";
+    process.env.WRITING_AI_MODEL = "qwen3.7-plus";
+    delete process.env.WRITING_AI_VISION_MODEL;
+    assert.strictEqual(provider._test.providerConfig(true).model, "qwen3.7-flash");
+    assert.strictEqual(provider._test.providerConfig(false).model, "qwen3.7-plus");
+  } finally {
+    const keys = {
+      apiKey: "WRITING_AI_API_KEY",
+      apiUrl: "WRITING_AI_API_URL",
+      model: "WRITING_AI_MODEL",
+      visionModel: "WRITING_AI_VISION_MODEL",
+    };
+    Object.entries(previous).forEach(([key, value]) => {
+      if (value === undefined) delete process.env[keys[key]];
+      else process.env[keys[key]] = value;
+    });
+  }
+});
+
 check("server canonicalization overrides contradictory AI summary fields", () => {
   const backend = require(path.join(root, functionPath));
   const rubrics = require(path.join(root, rubricPath));

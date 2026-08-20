@@ -1751,3 +1751,6 @@ required.
   single-item array wrapper before applying the same strict schema validation.
   Replaced the misleading client-side Network error with actionable OCR
   format/timeout guidance.
+- Defaulted Qwen photo OCR to `qwen3.7-flash` when no separate vision model is
+  configured, while keeping `qwen3.7-plus` for writing evaluation. This keeps
+  OCR below the browser wait boundary without weakening the grading model.

@@ -1720,6 +1720,8 @@ High priority improvement:
 - Confirm strict schema rejection and sentence ID/original alignment rejection.
 - Confirm OCR accepts a valid object wrapped once as a JSON string or one-item
   array, while malformed or schema-invalid content is still rejected.
+- With only the shared Qwen model configured as `qwen3.7-plus`, confirm OCR uses
+  `qwen3.7-flash` and text evaluation continues to use `qwen3.7-plus`.
 - Confirm duplicate/missing criterion and sentence IDs are rejected. Confirm
   IELTS overall band is calculated from its four criterion scores, DSE total is
   the sum of its three domain marks, and A Level totals use their single AO mark
