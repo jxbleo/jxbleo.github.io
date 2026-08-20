@@ -1754,3 +1754,6 @@ required.
 - Defaulted Qwen photo OCR to `qwen3.7-flash` when no separate vision model is
   configured, while keeping `qwen3.7-plus` for writing evaluation. This keeps
   OCR below the browser wait boundary without weakening the grading model.
+- Made OCR tolerant of Qwen returning one structured object per photo page and
+  added persisted OCR job state plus client polling. A browser request timeout
+  now keeps waiting on the same Composition, and refresh/reopen resumes it.

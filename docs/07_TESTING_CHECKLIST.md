@@ -1719,7 +1719,11 @@ High priority improvement:
   is retained without warning or reclassification.
 - Confirm strict schema rejection and sentence ID/original alignment rejection.
 - Confirm OCR accepts a valid object wrapped once as a JSON string or one-item
-  array, while malformed or schema-invalid content is still rejected.
+  array, and merges a valid multi-page array in page order, while malformed or
+  schema-invalid content is still rejected.
+- Force the browser request to disconnect while OCR is still running. Confirm
+  the page polls the same Composition, does not upload/call the model again,
+  and refresh/reopen resumes `ocr_job` until success or a specific failure.
 - With only the shared Qwen model configured as `qwen3.7-plus`, confirm OCR uses
   `qwen3.7-flash` and text evaluation continues to use `qwen3.7-plus`.
 - Confirm duplicate/missing criterion and sentence IDs are rejected. Confirm

@@ -1924,6 +1924,9 @@ Important mobile rules:
   Portfolio, and Writing Profile views.
 - OCR comparison is split-screen on tablet/desktop. Mobile opens text first and
   exposes an explicit photo comparison control.
+- While OCR continues after a browser request disconnect, the student sees an
+  in-progress message rather than `Network error`; the page automatically polls,
+  and reopening an `正在识别` Composition resumes the same wait.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
 - Language training defaults to one sentence at a time with numbered capsules.

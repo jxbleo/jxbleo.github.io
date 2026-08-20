@@ -99,6 +99,52 @@ function responseOutputText(payload, protocol) {
   return "";
 }
 
+function isOcrSchema(schema) {
+  const properties = schema && schema.type === "object" && schema.properties;
+  return Boolean(properties && properties.full_text && properties.paragraphs && properties.uncertain_spans);
+}
+
+function normalizeOcrPages(value) {
+  if (!Array.isArray(value) || !value.length) return value;
+  const paragraphs = [];
+  const fullTextPages = [];
+  const uncertainSpans = [];
+  for (const page of value) {
+    if (typeof page === "string") {
+      const pageText = text(page, 50000);
+      if (pageText) {
+        fullTextPages.push(pageText);
+        paragraphs.push(pageText);
+      }
+      continue;
+    }
+    if (!page || typeof page !== "object" || Array.isArray(page)) return value;
+    const pageParagraphs = Array.isArray(page.paragraphs)
+      ? page.paragraphs.map((item) => text(item, 50000)).filter(Boolean)
+      : [];
+    const pageText = text(page.full_text || page.text || page.content, 50000)
+      || pageParagraphs.join("\n\n");
+    if (pageText) fullTextPages.push(pageText);
+    if (pageParagraphs.length) paragraphs.push(...pageParagraphs);
+    else if (pageText) paragraphs.push(pageText);
+    if (Array.isArray(page.uncertain_spans)) {
+      for (const span of page.uncertain_spans) {
+        if (!span || typeof span !== "object" || Array.isArray(span)) continue;
+        uncertainSpans.push({
+          text: text(span.text, 1000),
+          reason: text(span.reason, 1000) || "Handwriting may be unclear",
+        });
+      }
+    }
+  }
+  if (!fullTextPages.length && !paragraphs.length) return value;
+  return {
+    full_text: fullTextPages.join("\n\n"),
+    paragraphs,
+    uncertain_spans: uncertainSpans,
+  };
+}
+
 function parseStructuredOutput(output, schema) {
   let parsed;
   let candidate = text(output, 200000);
@@ -121,7 +167,14 @@ function parseStructuredOutput(output, schema) {
     && parsed.length === 1 && parsed[0] && typeof parsed[0] === "object" && !Array.isArray(parsed[0])) {
     parsed = parsed[0];
   }
+  if (isOcrSchema(schema) && Array.isArray(parsed)) parsed = normalizeOcrPages(parsed);
   return parsed;
+}
+
+function safeResultShape(value) {
+  if (Array.isArray(value)) return { root_type: "array", array_length: value.length };
+  if (value && typeof value === "object") return { root_type: "object", keys: Object.keys(value).slice(0, 20) };
+  return { root_type: value === null ? "null" : typeof value };
 }
 
 async function imageContent(url, transport) {
@@ -203,6 +256,8 @@ async function callOnce(config, options, correction) {
   const parsed = parseStructuredOutput(output, options.schema);
   const schemaErrors = validateAgainstSchema(parsed, options.schema);
   if (schemaErrors.length) {
+    // Shape-only diagnostics keep student writing out of logs while making provider drift debuggable.
+    console.error("writingTutor AI schema shape", config.model, safeResultShape(parsed));
     const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
     error.validationMessage = schemaErrors.join("; ");
     throw error;
@@ -236,5 +291,5 @@ async function callStructuredModel(options) {
 
 module.exports = {
   callStructuredModel,
-  _test: { validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig },
+  _test: { validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig, normalizeOcrPages },
 };

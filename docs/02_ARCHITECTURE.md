@@ -726,6 +726,12 @@ the existing one-click confirmation flow.
 two-phase private CloudBase upload, receive short-lived URLs only inside the
 function, and are sent to a vision model for transcription. The browser edits
 the OCR result; `saveDraft` confirms text and triggers best-effort photo deletion.
+OCR writes a sanitized `ocr_job` state before calling the provider. If the
+browser's function request disconnects before the provider finishes, the client
+polls `getComposition`; success, failure, refresh, and reopening all converge on
+the same Composition instead of starting another model call. Multi-page Qwen
+array roots are normalized into one page-ordered OCR object before strict local
+schema validation.
 
 The function owns four versioned AI boundaries: OCR, standardized review,
 language sentence review, and rewrite checking. `model-provider.js` keeps those
