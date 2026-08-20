@@ -1059,15 +1059,26 @@ All collections are `ADMINONLY`.
   prompt/schema/rubric versions. OCR and each review/check payload retain safe
   model metadata (`protocol`, `model`, provider hostname, structural-repair
   flag) for later comparison; API keys and full endpoint URLs are never stored.
-  `ocr_job` stores only operation ID, processing/succeeded/failed state,
-  error code, timestamps, and the prior Composition status. It lets the browser
-  recover a long-running OCR result without storing image or manuscript data in
-  logs or exposing provider credentials.
+  `active_job_id` identifies the only durable job allowed to publish into the
+  Composition. `active_job`/compatibility `ocr_job` are safe projections of job
+  ID, type, operation ID, state, attempt count, error code, and timestamps. They
+  let the browser recover a long-running OCR result without exposing dispatch or
+  lease tokens, image identifiers, manuscript data, or provider credentials.
+  `pending_upload` records only the current upload operation ID, ordered photo
+  IDs, safe state, and timestamps. It lets `getComposition` repair a browser
+  disconnect between storage upload and durable OCR-job activation without
+  exposing file IDs or creating a second logical request.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.
 - `writing_photo_uploads`: short-lived private upload audit rows with ownership,
-  page order, expected size, CloudBase file ID, expiry, and deletion status.
+  upload-operation ID, page order, expected size, CloudBase file ID, expiry,
+  and deletion status.
+- `writing_ai_jobs` (`ADMINONLY`): durable metadata-only AI work queue with stable
+  job/operation identity, Composition ownership, job type, photo IDs for OCR,
+  queued/processing/succeeded/failed/superseded state, bounded attempts, lease
+  token/expiry, retry time, timestamps, and safe error codes. Dispatch tokens remain
+  private and manuscript/OCR text is never copied into a job row.
 - `writing_observations`: evidence-linked language observations for the current
   Composition revision; replacement removes that Composition's stale rows.
 - `writing_ai_usage_events`: append-only metadata-only quota/idempotency ledger
@@ -1086,7 +1097,10 @@ Required indexes, in addition to CloudBase defaults:
 
 - `writing_compositions`: unique `composition_id`; `student_uid`
 - `writing_photo_uploads`: unique `photo_id`; `student_uid`;
-  `composition_id + student_uid + status`
+  `composition_id + student_uid + status`; `status + expires_at`
+- `writing_ai_jobs`: unique `job_id`; `student_uid`;
+  `composition_id + student_uid`; `status + next_retry_at`;
+  `status + lease_until`
 - `writing_observations`: unique `observation_id`; `student_uid`;
   `composition_id + student_uid`
 - `writing_ai_usage_events`: unique `usage_id`; `usage_id + status`

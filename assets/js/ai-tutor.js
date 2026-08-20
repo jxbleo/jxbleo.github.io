@@ -32,6 +32,8 @@
         correctionRound: 0,
         busy: false,
         autosaveTimer: null,
+        ocrPollGeneration: 0,
+        ocrPollActive: false,
         sidebarOpen: false
     };
 
@@ -135,7 +137,7 @@
 
     function statusLabel(status) {
         var labels = {
-            draft: '草稿', ocr_processing: '正在识别', ocr_ready: '待确认', ocr_review: '待确认', ready: '等待批改', queued: '等待批改', evaluating: '正在批改',
+            draft: '草稿', photo_uploading: '正在确认照片', ocr_queued: '等待识别', ocr_processing: '正在识别', ocr_failed: '识别失败', ocr_ready: '待确认', ocr_review: '待确认', ready: '等待批改', queued: '等待批改', evaluating: '正在批改',
             review_ready: '待训练', reviewed: '评估完成', sentence_training: '待逐句训练', needs_revision: '需要再修改', completed: '已完成', failed: '稍后继续'
         };
         return labels[status] || status || '草稿';
@@ -163,6 +165,11 @@
         Array.prototype.forEach.call(document.querySelectorAll('[data-disable-when-busy]'), function(button) {
             button.disabled = Boolean(busy);
         });
+    }
+
+    function stopOcrPolling() {
+        state.ocrPollActive = false;
+        state.ocrPollGeneration += 1;
     }
 
     function writingCall(action, payload) {
@@ -265,6 +272,7 @@
     }
 
     function resetDraft(composition) {
+        stopOcrPolling();
         state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = composition || null;
         state.review = null;
@@ -290,6 +298,7 @@
 
     function createNewWriting() {
         if (state.busy) return;
+        stopOcrPolling();
         setStatus('');
         renderLoading('正在准备一张新的写作纸…', '你的输入会自动关联到这篇新作文。');
         setBusy(true);
@@ -398,13 +407,19 @@
     }
 
     function uploadAndExtract() {
-        var ocrOperation = '';
+        var ocrOperation = logicalOperationId('ocr', JSON.stringify({
+            composition_id: compositionId(state.current),
+            files: state.photoFiles.map(function(file) {
+                return [file.name || '', file.size || 0, file.lastModified || 0, file.type || ''];
+            })
+        }));
         renderLoading('正在准备作文照片…', '照片上传后会先提取文字，再交给你确认。');
         Promise.all(state.photoFiles.map(function(file) {
             return window.MrCatCloud.prepareEvidenceImage(file);
         })).then(function(preparedPages) {
-            return writingCall('startPhotoUpload', {
+            return retryNetworkTask(function() { return writingCall('startPhotoUpload', {
                 composition_id: compositionId(state.current),
+                operation_id: ocrOperation,
                 replace_current: Boolean(state.review || state.current && (state.current.standardized_review || state.current.language_review)),
                 pages: preparedPages.map(function(prepared, index) {
                     return {
@@ -414,6 +429,7 @@
                     };
                 })
             }).then(function(started) {
+                if (started && started.job) return started;
                 var uploads = safeArray(started.uploads);
                 if (uploads.length !== preparedPages.length) throw new Error('照片上传信息不完整。');
                 return Promise.all(uploads.map(function(upload, index) {
@@ -421,15 +437,15 @@
                 })).then(function() {
                     state.photoIds = uploads.map(function(upload) { return upload.photo_id; });
                     return writingCall('finishPhotoUpload', {
-                        composition_id: compositionId(state.current), photo_ids: state.photoIds
+                        composition_id: compositionId(state.current),
+                        photo_ids: state.photoIds,
+                        operation_id: ocrOperation,
+                        replace_current: Boolean(state.review || state.current && (state.current.standardized_review || state.current.language_review))
                     });
                 });
-            });
-        }).then(function() {
-            ocrOperation = logicalOperationId('ocr', JSON.stringify({
-                composition_id: compositionId(state.current),
-                photo_ids: state.photoIds
-            }));
+            }); }, 2);
+        }).then(function(finished) {
+            if (finished && (finished.job || finished.composition && finished.composition.ocr_job)) return finished;
             return writingCall('extractOcr', {
                 composition_id: compositionId(state.current),
                 photo_ids: state.photoIds,
@@ -437,22 +453,24 @@
                 replace_current: Boolean(state.review || state.current && (state.current.standardized_review || state.current.language_review))
             });
         }).then(function(result) {
-            if (!result.ocr) return waitForOcrResult(ocrOperation);
-            return result;
-        }).catch(function(error) {
-            if (!isNetworkDisconnect(error)) throw error;
-            renderLoading('照片已收到，正在识别文字…', '网络连接中断不会停止识别，页面会自动查询结果，请稍候。');
-            return waitForOcrResult(ocrOperation);
-        }).then(function(result) {
-            clearLogicalOperation('ocr');
-            state.ocr = result.ocr || {};
-            state.confirmedText = firstText(state.ocr.full_text, safeArray(state.ocr.paragraphs).join('\n\n'));
             if (result.composition) state.current = result.composition;
-            renderOcr();
+            restoreOcrPhotoUrls(result);
+            if (result.ocr || state.current && state.current.pending_ocr) {
+                showOcrResult(result);
+                return;
+            }
+            renderOcrWaiting(result.job || state.current && state.current.ocr_job, false);
             syncCurrentSummary();
         }).catch(function(error) {
-            if (error && error.result) clearLogicalOperation('ocr');
-            renderFatalAction(error);
+            if (isNetworkDisconnect(error) && compositionId(state.current)) {
+                renderOcrFailure({
+                    code: 'PHOTO_UPLOAD_UNCONFIRMED',
+                    message: '网络中断，暂时无法确认照片是否完整上传。请重新检查状态，或在同一篇作文里重新上传。'
+                });
+                return;
+            }
+            clearLogicalOperation('ocr');
+            renderOcrFailure(error);
         }).finally(function() { setBusy(false); });
     }
 
@@ -460,38 +478,111 @@
         return /network(?: request)? error|failed to fetch|networkerror|timeout/i.test(firstText(error && error.message));
     }
 
-    function delay(milliseconds) {
-        return new Promise(function(resolve) { window.setTimeout(resolve, milliseconds); });
+    function retryNetworkTask(task, retriesLeft) {
+        return task().catch(function(error) {
+            if (!isNetworkDisconnect(error) || retriesLeft < 1) throw error;
+            return new Promise(function(resolve) { window.setTimeout(resolve, 1200); })
+                .then(function() { return retryNetworkTask(task, retriesLeft - 1); });
+        });
     }
 
-    function waitForOcrResult(operationIdValue) {
-        var deadline = Date.now() + 120000;
+    function restoreOcrPhotoUrls(result) {
+        var raw = safeArray(result && result.ocr_photo_urls).length
+            ? result.ocr_photo_urls
+            : safeArray(result && result.composition && result.composition.ocr_photo_urls);
+        if (!raw.length) return;
+        state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
+        state.photoUrls = raw.map(function(item) {
+            return typeof item === 'string' ? item : firstText(item && item.url, item && item.temp_file_url, item && item.tempFileURL);
+        }).filter(Boolean);
+    }
+
+    function ocrJobFrom(result) {
+        return result && result.job || result && result.composition && result.composition.ocr_job || state.current && state.current.ocr_job || {};
+    }
+
+    function showOcrResult(result) {
+        stopOcrPolling();
+        if (result && result.composition) state.current = result.composition;
+        restoreOcrPhotoUrls(result);
+        state.ocr = result && result.ocr || state.current && state.current.pending_ocr || {};
+        state.confirmedText = firstText(state.ocr.full_text, safeArray(state.ocr.paragraphs).join('\n\n'));
+        clearLogicalOperation('ocr');
+        renderOcr();
+        syncCurrentSummary();
+    }
+
+    function renderOcrWaiting(job, autoPoll) {
+        var status = firstText(job && job.status, state.current && state.current.status).toLowerCase();
+        var uploadPending = status === 'photo_uploading';
+        state.screen = 'ocr-waiting';
+        mobileContext.textContent = 'OCR 后台识别';
+        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
+            '<strong>' + (uploadPending ? '正在确认照片上传状态' : '照片已安全上传，可以离开此页面') + '</strong>' +
+            '<p>' + (uploadPending ? '照片尚未完整确认，暂时不能保证后台继续。如果长时间没有变化，请在同一篇作文里重新上传。' : (status === 'queued' || status === 'ocr_queued' ? 'OCR 已进入队列。' : 'OCR 正在云端识别。') + '离开或刷新不会中断，也不会创建新的作文。') + '</p>' +
+            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
+            (uploadPending ? '<button class="primary-button" type="button" data-reupload>重新上传照片</button>' : '<button class="primary-button" type="button" data-stay-ocr>留在此页等待</button>') + '</div>' +
+            '<p class="section-hint" id="ocr-poll-status" role="status" aria-live="polite">每 5 秒自动查询一次同一篇作文。</p></section>';
+        if (autoPoll) startOcrPolling();
+    }
+
+    function startOcrPolling() {
+        if (state.ocrPollActive || !compositionId(state.current)) return;
+        state.ocrPollActive = true;
+        state.ocrPollGeneration += 1;
+        var generation = state.ocrPollGeneration;
+        var status = document.getElementById('ocr-poll-status');
+        var uploadPending = compositionStatus(state.current) === 'photo_uploading';
+        if (status) status.textContent = uploadPending
+            ? '正在确认照片是否完整上传；看到“照片已安全上传”后即可离开。'
+            : '正在等待云端 OCR；每 5 秒查询一次。你随时可以离开。';
         function poll() {
-            return writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
+            if (!state.ocrPollActive || generation !== state.ocrPollGeneration) return;
+            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
+                if (!state.ocrPollActive || generation !== state.ocrPollGeneration) return;
                 var composition = result.composition || {};
-                var job = composition.ocr_job || {};
-                var ocr = composition.pending_ocr || null;
-                if (ocr && (!job.status || job.status === 'succeeded')) {
-                    return { success: true, ocr: ocr, composition: composition };
+                state.current = composition;
+                restoreOcrPhotoUrls(result);
+                var job = ocrJobFrom(result);
+                if (composition.pending_ocr) {
+                    showOcrResult({ composition: composition, ocr: composition.pending_ocr, ocr_photo_urls: result.ocr_photo_urls });
+                    return;
                 }
-                if (job.status === 'failed' && (!operationIdValue || !job.operation_id || job.operation_id === operationIdValue)) {
-                    var failed = new Error('OCR 识别没有完成。');
-                    failed.code = job.error_code || 'WRITING_AI_OCR_FAILED';
-                    failed.result = { success: false, code: failed.code };
-                    throw failed;
+                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'ocr_failed') {
+                    renderOcrFailure({ code: job.error_code || 'WRITING_AI_OCR_FAILED', message: 'OCR 识别没有完成。' });
+                    return;
                 }
-                if (Date.now() >= deadline) {
-                    var timedOut = new Error('OCR 仍在云端处理中，请稍后继续这篇作文。');
-                    timedOut.code = 'WRITING_AI_TIMEOUT';
-                    throw timedOut;
-                }
-                return delay(3000).then(poll);
+                syncCurrentSummary();
+                window.setTimeout(poll, 5000);
             }).catch(function(error) {
-                if (error && error.result || Date.now() >= deadline) throw error;
-                return delay(3000).then(poll);
+                if (!state.ocrPollActive || generation !== state.ocrPollGeneration) return;
+                var pollStatus = document.getElementById('ocr-poll-status');
+                var stillUploading = compositionStatus(state.current) === 'photo_uploading';
+                if (pollStatus) pollStatus.textContent = stillUploading
+                    ? '暂时无法确认上传，请保持此页面；网络恢复后会继续。'
+                    : '暂时无法查询，网络恢复后会继续。作文和照片都已保存。';
+                window.setTimeout(poll, 5000);
             });
         }
-        return poll();
+        poll();
+    }
+
+    function renderOcrFailure(error) {
+        stopOcrPolling();
+        var code = firstText(error && error.code, error && error.result && error.result.code, state.current && state.current.ocr_job && state.current.ocr_job.error_code);
+        var messages = {
+            PHOTO_UPLOAD_EXPIRED: '照片上传没有在 30 分钟内完整确认。请在同一篇作文中重新上传，不会新建作品。',
+            WRITING_AI_OCR_EMPTY: '照片中没有识别到作文文字。请检查清晰度、方向和页面顺序，然后重新上传。',
+            WRITING_AI_SCHEMA_RESPONSE_INVALID: 'AI 已读取照片，但没有返回完整的 OCR 格式。你可以重新检查状态，或重新上传更清晰的照片。',
+            WRITING_AI_TIMEOUT: '云端 OCR 本次没有完成。原作文记录仍然保留。'
+        };
+        var message = messages[code] || firstText(error && error.message, 'OCR 本次没有完成。你可以重新检查云端状态，或重新上传照片。');
+        state.screen = 'ocr-failed';
+        mobileContext.textContent = 'OCR 需要处理';
+        stage.innerHTML = '<section class="surface error-state"><strong>OCR 识别没有完成</strong><p>' + escapeHtml(message) + '</p>' +
+            '<div class="form-actions"><button class="secondary-button" type="button" data-retry-ocr>重新检查状态</button>' +
+            '<button class="primary-button" type="button" data-reupload>重新上传照片</button></div>' +
+            '<button class="quiet-button" type="button" data-return-home>返回 AI Tutor</button></section>';
     }
 
     function renderOcr() {
@@ -780,6 +871,7 @@
 
     function beginReplacement(method) {
         var current = state.current;
+        if ((method || 'photo') === 'photo') clearLogicalOperation('ocr');
         var keptTitle = state.title || firstText(current && current.title);
         var keptPrompt = state.promptText || firstText(current && current.prompt_text);
         resetDraft(current);
@@ -801,24 +893,25 @@
             var savedMode = compositionMode(composition);
             var review = result.review || composition.review || (savedMode === 'standardized' ? composition.standardized_review : composition.language_review) || null;
             resetDraft(composition);
+            restoreOcrPhotoUrls(result);
             state.review = review;
             state.assessmentMode = compositionMode(composition);
             state.readOnly = forceReadOnly !== false && compositionStatus(composition) === 'completed';
             state.confirmedText = firstText(composition.confirmed_text, composition.full_text);
-            if (composition.ocr_job && composition.ocr_job.status === 'processing') {
-                renderLoading('照片已收到，正在识别文字…', '页面会自动查询云端结果，请稍候。');
-                return waitForOcrResult(composition.ocr_job.operation_id).then(function(waited) {
-                    state.current = waited.composition || composition;
-                    state.ocr = waited.ocr || {};
-                    state.confirmedText = firstText(state.ocr.full_text, safeArray(state.ocr.paragraphs).join('\n\n'));
-                    renderOcr();
-                    syncCurrentSummary();
-                });
-            }
             if (composition.pending_ocr) {
-                state.ocr = composition.pending_ocr;
-                state.confirmedText = firstText(state.ocr.full_text, safeArray(state.ocr.paragraphs).join('\n\n'));
-                renderOcr();
+                showOcrResult({ composition: composition, ocr: composition.pending_ocr, ocr_photo_urls: result.ocr_photo_urls });
+                return;
+            }
+            var ocrJob = composition.ocr_job || {};
+            var ocrStatus = firstText(ocrJob.status, composition.status).toLowerCase();
+            if (composition.pending_upload || ocrStatus === 'photo_uploading' || ocrStatus === 'queued' || ocrStatus === 'processing' || ocrStatus === 'ocr_queued' || ocrStatus === 'ocr_processing') {
+                renderOcrWaiting(ocrJob, true);
+                if (!state.ocrPollActive) startOcrPolling();
+                syncCurrentSummary();
+                return;
+            }
+            if (ocrStatus === 'failed' || composition.status === 'ocr_failed') {
+                renderOcrFailure({ code: ocrJob.error_code || 'WRITING_AI_OCR_FAILED', message: 'OCR 识别没有完成。' });
                 syncCurrentSummary();
                 return;
             }
@@ -910,7 +1003,7 @@
         var button = event.target.closest('button,[data-open-composition]');
         if (!button) return;
         if (button.matches('[data-start-new]')) createNewWriting();
-        else if (button.matches('[data-return-home]')) { setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
+        else if (button.matches('[data-return-home]')) { stopOcrPolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
         else if (button.matches('[data-remove-photo]')) {
@@ -938,6 +1031,12 @@
             if (!state.confirmedText) { setStatus('请先确认或补全 OCR 文本。'); return; }
             setBusy(true); saveAndEvaluate();
         }
+        else if (button.matches('[data-stay-ocr]')) {
+            startOcrPolling();
+            button.disabled = true;
+            button.textContent = '正在等待 OCR…';
+        }
+        else if (button.matches('[data-retry-ocr]')) loadComposition(compositionId(state.current), false);
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');
         else if (button.matches('[data-enter-language]')) enterLanguage();
