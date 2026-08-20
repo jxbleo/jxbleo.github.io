@@ -1785,3 +1785,29 @@ cloudfunctions/
 - 当前所有版本均对学生可见、对教师可布置；不实现归档，也不区分新老学生。
 - 同一 set 的小修订可保留 `question_id`。旧原始成绩不向下调整；合理答案修正可以向上修复
   Passed、Mastery 和 STAR。历史报告必须优先使用提交时快照。
+
+## AI Tutor Writing Workspace
+
+- Student Dashboard 在 Library 之前提供独立的 `AI Tutor` 入口。作文作品不是 Assignment、
+  Attempt、Exercise Progress 或 STAR；老师分享 Library 题目只会预填 Writing Prompt。
+- 学生可直接输入，或上传最多八张作文照片。OCR 必须保留原始错误并标出不确定处；学生确认
+  Confirmed Manuscript 后才可评估。确认后删除作文图片，只长期保存文字。
+- 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
+  Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
+- AI 只负责返回受约束的分项判断。标化总分由服务器按照所选 Rubric 的求和或加权规则计算；
+  是否需要改写以及改写是否通过也由服务器根据明确字段推导，模型自相矛盾的汇总字段不能直接
+  决定产品状态。
+- 标化内容评估后可电子修改或再次手写上传，也可把最新文本带入语言批改。通用语言批改按
+  稳定句子编号展示分析、建议和默认折叠的参考句；学生可自由跳转，未完成胶囊保留 Review 标记。
+- 参考句可以随时查看，但查看参考句与输入改写不得同时发生。改写采用语义验收而不是精确匹配，
+  全部提交后统一反馈。完成必要逐句训练即通过；整篇重写为可选训练。
+- 同一活跃 Composition 的 `重新上传` 成功确认后覆盖其旧文本和 AI 结果；失败不覆盖。只有从
+  New Writing 开始才创建新作品。已完成作品只读，学生不能删除任何已提交作品。
+- 教师可为每名学生设置上海自然日 AI 批改字数上限。仅成功的正式评估计费，OCR、失败调用和
+  重试不计；使用记录无作文正文并通过私有邮件摘要通知已启用的教师地址。
+- A Level 首发采用 Cambridge International AS & A Level English Language 9093，并把 Paper 2
+  Shorter Writing、Reflective Commentary 和 Extended Writing 分成三个明确选项，避免混用
+  15、10、25 分的不同量表。
+- 学生端评分标准使用简短名称：`IELTS Task 1`、`IELTS Task 2`、`DSE Paper 2`，以及三个
+  `A Level 9093` Paper 2 题型。IELTS Task 1 默认指 Academic；General Training Task 1 不在
+  新建选择中展示，但保留后台兼容标识。

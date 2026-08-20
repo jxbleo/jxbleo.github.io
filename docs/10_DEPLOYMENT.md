@@ -1016,3 +1016,49 @@ functions. Publish in this order:
 
 No current collection migration or production deployment is authorized by this
 documentation change.
+
+## AI Tutor Writing deployment (owner-gated)
+
+Before enabling the feature, the owner must create the five `ADMINONLY`
+collections documented in `04_DATA_MODEL.md`, deploy `writingTutor` and
+`sendWritingTutorEmails`, and configure only CloudBase environment variables:
+
+- Text provider: `WRITING_AI_TEXT_API_KEY`, `WRITING_AI_TEXT_API_URL`,
+  `WRITING_AI_TEXT_MODEL`, and `WRITING_AI_TEXT_PROTOCOL`
+- Vision/OCR provider: `WRITING_AI_VISION_API_KEY`,
+  `WRITING_AI_VISION_API_URL`, `WRITING_AI_VISION_MODEL`, and
+  `WRITING_AI_VISION_PROTOCOL`
+- Protocol is one of `chat_json_schema`, `chat_json_object`, or
+  `responses_json_schema`. Prefer `chat_json_schema` only for a model whose
+  provider documentation explicitly supports strict JSON Schema.
+- `WRITING_AI_VISION_IMAGE_TRANSPORT` is `url` for providers such as Qwen that
+  can fetch short-lived CloudBase URLs, or `base64` for providers such as Kimi
+  whose vision endpoint requires inline image data.
+- Optional shared fallbacks are `WRITING_AI_API_KEY`, `WRITING_AI_API_URL`,
+  `WRITING_AI_MODEL`, and `WRITING_AI_PROTOCOL`; optional operational settings are
+  `WRITING_AI_TIMEOUT_MS` and `WRITING_AI_DEFAULT_DAILY_WORD_LIMIT`.
+- Optional `WRITING_AI_TEXT_MAX_OUTPUT_TOKENS` and
+  `WRITING_AI_VISION_MAX_OUTPUT_TOKENS` override the conservative 8000-token
+  defaults when the selected provider supports a larger response.
+- `WRITING_TUTOR_EMAIL_CRON_TOKEN`; the sender reuses the existing private
+  teacher SMTP environment variables
+
+Recommended first mainland profile: use a Qwen vision model with
+`chat_json_object` for OCR and a Qwen text model that explicitly supports
+`chat_json_schema` for all three text calls. DeepSeek or Kimi can replace the
+text provider through `chat_json_object`; local validation and one repair retry
+remain mandatory. Do not copy any provider key into frontend configuration or
+Git.
+
+Create a timer trigger for the email sender whose message contains the matching
+internal token. Package and run the release plan locally first. Production
+collection creation, environment changes, timer configuration, and function
+deployment require a separate explicit owner action; this implementation does
+not perform them automatically.
+
+Development rollout status (2026-08-20): the five `ADMINONLY` collections and
+required indexes exist; `writingTutor`, `sendWritingTutorEmails`, and the
+teacher daily-limit actions are deployed. The metadata-only email sender has a
+private one-minute timer and passed an empty-outbox smoke test. Static publication
+and the Qwen environment variables remain pending; no model call can occur until
+the owner enters the API key and compatible endpoint in CloudBase.

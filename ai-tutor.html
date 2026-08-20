@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f3f8f6">
+    <title>AI Tutor | Mr. Cat Academy</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
+    <link rel="manifest" href="site-dse.webmanifest">
+    <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260820-1">
+</head>
+<body class="ai-tutor-page">
+    <a class="skip-link" href="#ai-tutor-main">跳到主要内容</a>
+    <div class="ai-tutor-shell" id="ai-tutor-app" aria-busy="true">
+        <header class="ai-tutor-header">
+            <a class="icon-button header-back" href="dashboard.html" aria-label="返回 Dashboard">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path><path d="M8 12h11"></path></svg>
+            </a>
+            <div class="brand-lockup">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M7.4 8 5.7 4.4 9.8 6a8 8 0 0 1 4.4 0l4.1-1.6L16.6 8A6.8 6.8 0 1 1 7.4 8Z"></path><path d="M9.2 13.5h.1M14.7 13.5h.1M10.5 16c1 .7 2 .7 3 0"></path></svg>
+                </span>
+                <span><strong>AI Tutor</strong><small>Writing Studio</small></span>
+            </div>
+            <div class="header-actions">
+                <span class="student-chip" id="student-chip" hidden></span>
+                <button class="primary-button compact" id="header-new-writing" type="button">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+                    <span>新作文</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="ai-tutor-workspace">
+            <aside class="portfolio-sidebar" id="portfolio-sidebar" aria-label="写作作品库">
+                <div class="sidebar-heading">
+                    <div><p class="eyebrow">WRITING PORTFOLIO</p><h1>我的作文</h1></div>
+                    <button class="icon-button sidebar-close" id="sidebar-close" type="button" aria-label="关闭作品库">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+                    </button>
+                </div>
+                <div class="portfolio-summary" id="portfolio-summary" aria-live="polite"></div>
+                <section class="writing-profile-card" aria-labelledby="writing-profile-title">
+                    <p class="eyebrow">LANGUAGE &amp; WRITING PROFILE</p>
+                    <h2 id="writing-profile-title">最近的语言重点</h2>
+                    <div id="writing-profile-summary"></div>
+                </section>
+                <div class="portfolio-filters" role="group" aria-label="筛选作文">
+                    <button type="button" data-portfolio-filter="all" aria-pressed="true">全部</button>
+                    <button type="button" data-portfolio-filter="language" aria-pressed="false">语言</button>
+                    <button type="button" data-portfolio-filter="standardized" aria-pressed="false">标化</button>
+                </div>
+                <div class="portfolio-list" id="portfolio-list" aria-live="polite"></div>
+            </aside>
+
+            <div class="sidebar-scrim" id="sidebar-scrim" hidden></div>
+
+            <main class="ai-tutor-main" id="ai-tutor-main" tabindex="-1">
+                <div class="mobile-toolbar">
+                    <button class="secondary-button compact" id="portfolio-toggle" type="button" aria-expanded="false" aria-controls="portfolio-sidebar">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"></path></svg>
+                        作品库
+                    </button>
+                    <span id="mobile-context">AI 写作工作区</span>
+                </div>
+                <div class="global-status" id="global-status" role="status" aria-live="polite"></div>
+                <div class="stage" id="ai-tutor-stage">
+                    <section class="loading-state" aria-label="正在载入">
+                        <span class="loading-orbit" aria-hidden="true"></span>
+                        <strong>正在打开你的写作空间…</strong>
+                        <p>作品和草稿会安全地保存在你的账号中。</p>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <noscript><p class="noscript-message">AI Tutor 需要启用 JavaScript 才能使用。</p></noscript>
+
+    <template id="ai-tutor-mode-template">
+        <input type="radio" name="assessment-mode" value="language">
+        <input type="radio" name="assessment-mode" value="standardized">
+    </template>
+
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js?v=20260815-1"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
+    <script src="assets/js/auth.js?v=20260810-1"></script>
+    <script src="assets/js/ai-tutor.js?v=20260820-1"></script>
+</body>
+</html>

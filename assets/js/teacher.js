@@ -131,6 +131,7 @@
         studentLookupOpen: false,
         studentMetricView: null,
         studentAccountView: null,
+        writingTutorStudentSettings: {},
         createStudentReturnToLookup: false,
         attemptsSeenAt: null,
         activityReadAllAt: null,
@@ -1903,6 +1904,108 @@
         }, 0);
     }
 
+    function writingTutorSettingsForStudent(authUid) {
+        var key = String(authUid || '');
+        if (!state.writingTutorStudentSettings[key]) {
+            state.writingTutorStudentSettings[key] = {
+                loaded: false,
+                loading: false,
+                saving: false,
+                daily_word_limit: null,
+                words_used_today: 0,
+                day_key: '',
+                notice: '',
+                noticeType: ''
+            };
+        }
+        return state.writingTutorStudentSettings[key];
+    }
+
+    function applyWritingTutorStudentSettings(authUid, result) {
+        var current = writingTutorSettingsForStudent(authUid);
+        var settings = result && result.settings || {};
+        var dailyLimit = Number(settings.daily_word_limit);
+        var usedToday = Number(settings.words_used_today);
+        current.loaded = true;
+        current.loading = false;
+        current.saving = false;
+        current.daily_word_limit = Number.isFinite(dailyLimit) && dailyLimit >= 0 ? Math.floor(dailyLimit) : 0;
+        current.words_used_today = Number.isFinite(usedToday) && usedToday >= 0 ? Math.floor(usedToday) : 0;
+        current.day_key = String(settings.day_key || '');
+    }
+
+    function writingTutorStudentSettingsHtml(student) {
+        var settings = writingTutorSettingsForStudent(student.auth_uid);
+        if (settings.loading && !settings.loaded) {
+            return '<strong>Loading today\'s usage...</strong>';
+        }
+        if (!settings.loaded) {
+            return '<strong>Settings unavailable</strong>' +
+                (settings.notice ? '<p class="teacher-email-notice error" role="alert">' + escapeHtml(settings.notice) + '</p>' : '') +
+                '<button class="outline-button" type="button" data-writing-tutor-settings-retry>Try again</button>';
+        }
+        var busy = settings.loading || settings.saving;
+        var notice = settings.notice
+            ? '<p class="teacher-email-notice ' + escapeHtml(settings.noticeType) + '" aria-live="polite">' + escapeHtml(settings.notice) + '</p>'
+            : '';
+        return '<strong>' + escapeHtml(settings.words_used_today) + ' / ' + escapeHtml(settings.daily_word_limit) + ' words used today</strong>' +
+            '<form class="student-info-editor" data-writing-tutor-settings-form>' +
+                '<label for="writing-tutor-daily-word-limit"><span>Daily word limit</span>' +
+                    '<input id="writing-tutor-daily-word-limit" name="daily_word_limit" type="number" min="0" step="1" inputmode="numeric" value="' + escapeHtml(settings.daily_word_limit) + '" required' + (busy ? ' disabled' : '') + '>' +
+                '</label>' +
+                '<button class="primary-button" type="submit"' + (busy ? ' disabled' : '') + '>' + (settings.saving ? 'Saving...' : 'Save') + '</button>' +
+            '</form>' + notice;
+    }
+
+    function loadWritingTutorStudentSettings(authUid) {
+        var settings = writingTutorSettingsForStudent(authUid);
+        if (settings.loading || settings.saving) return Promise.resolve();
+        settings.loading = true;
+        settings.notice = '';
+        settings.noticeType = '';
+        if (state.studentAccountView && state.studentAccountView.studentUid === authUid) renderStudentAccountModal();
+        return teacherCall('getWritingTutorStudentSettings', { auth_uid: authUid }).then(function(result) {
+            applyWritingTutorStudentSettings(authUid, result);
+        }).catch(function(error) {
+            settings.loading = false;
+            settings.notice = error.message || 'Unable to load AI Tutor settings.';
+            settings.noticeType = 'error';
+        }).then(function() {
+            if (state.studentAccountView && state.studentAccountView.studentUid === authUid) renderStudentAccountModal();
+        });
+    }
+
+    function saveWritingTutorStudentSettings(student, form) {
+        var settings = writingTutorSettingsForStudent(student.auth_uid);
+        if (settings.loading || settings.saving) return;
+        var input = form && form.elements.daily_word_limit;
+        var limit = Number(input && input.value);
+        if (!Number.isInteger(limit) || limit < 0 || limit > 100000) {
+            settings.notice = 'Enter a whole number from 0 to 100000.';
+            settings.noticeType = 'error';
+            renderStudentAccountModal();
+            return;
+        }
+        settings.saving = true;
+        settings.notice = '';
+        settings.noticeType = '';
+        renderStudentAccountModal();
+        teacherCall('updateWritingTutorStudentSettings', {
+            auth_uid: student.auth_uid,
+            daily_word_limit: limit
+        }).then(function(result) {
+            applyWritingTutorStudentSettings(student.auth_uid, result);
+            settings.notice = 'AI Tutor daily limit saved.';
+            settings.noticeType = 'success';
+        }).catch(function(error) {
+            settings.saving = false;
+            settings.notice = error.message || 'Unable to save AI Tutor settings.';
+            settings.noticeType = 'error';
+        }).then(function() {
+            if (state.studentAccountView && state.studentAccountView.studentUid === student.auth_uid) renderStudentAccountModal();
+        });
+    }
+
     function renderStudentAccountModal() {
         var view = state.studentAccountView;
         if (!view) return;
@@ -1956,6 +2059,7 @@
                                 '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
                             '</form>' : '') +
                         '</div>' +
+                        '<div class="student-info-item"><span>AI Tutor</span>' + writingTutorStudentSettingsHtml(student) + '</div>' +
                     '</div>' +
                     '<div class="student-account-actions">' +
                         '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
@@ -2028,6 +2132,19 @@
                 });
             });
         });
+        var writingTutorForm = modal.querySelector('[data-writing-tutor-settings-form]');
+        if (writingTutorForm) {
+            writingTutorForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                saveWritingTutorStudentSettings(student, writingTutorForm);
+            });
+        }
+        var writingTutorRetry = modal.querySelector('[data-writing-tutor-settings-retry]');
+        if (writingTutorRetry) {
+            writingTutorRetry.addEventListener('click', function() {
+                loadWritingTutorStudentSettings(student.auth_uid);
+            });
+        }
         modal.querySelector('#delete-student-account').addEventListener('click', function() {
             deleteStudentAccount(student).then(function() {
                 var stillExists = state.students.some(function(item) { return item.auth_uid === student.auth_uid; });
@@ -2048,6 +2165,7 @@
         state.studentInfoEdit = '';
         state.studentAccountView = { studentUid: student.auth_uid };
         renderStudentAccountModal();
+        loadWritingTutorStudentSettings(student.auth_uid);
     }
 
     function setCategory(set) {

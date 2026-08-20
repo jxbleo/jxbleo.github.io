@@ -106,3 +106,7 @@ Before commercial use, review:
 - manual admin procedures
 - grading key backup and restore
 - security review of cloud functions and database permissions
+- AI Tutor: consider Cambridge 9093 Papers 1, 3, and 4 only if source-text and language-data inputs are added
+- AI Tutor: optional CEFR A2/B1/C1 language-upgrade variants
+- AI Tutor: targeted grammar/content lessons generated from repeated Writing Observations
+- AI Tutor: human moderation and model-quality evaluation dataset before high-stakes use

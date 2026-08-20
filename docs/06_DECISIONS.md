@@ -913,3 +913,46 @@ Review condition:
 
 Revisit if the project adopts a frontend bundler, needs staged promotion, or
 adds public resources outside the current allowlist.
+
+## AI Tutor model boundary and record ownership
+
+Decision:
+
+- AI output is treated as typed data, not trusted prose. Every model call uses a
+  versioned strict JSON Schema and server-side semantic alignment checks. The
+  server derives standardized overall scores from canonical criterion scores,
+  derives whether a sentence requires rewriting from its canonical status, and
+  derives rewrite acceptance from meaning preservation, target resolution, and
+  absence of new errors; it never trusts contradictory summary flags from AI.
+- The model boundary is vendor-neutral and optimized for mainland deployment.
+  Text and vision endpoints are configured separately. Qwen, DeepSeek, Kimi, or
+  another compatible provider may be selected without changing product code.
+  Native JSON Schema is preferred; JSON Object is accepted only with local
+  schema validation and one automatic structural repair attempt. Every result
+  freezes non-secret provider/model/protocol metadata so model changes can be
+  evaluated later without exposing credentials.
+- The student's selected Assessment Framework is authoritative. The system does
+  not spend another model call attempting to classify or override it.
+- AI Tutor uses Composition and usage-ledger records outside the existing
+  Assignment/Attempt/STAR model.
+- Same-screen re-upload is success-then-swap on one Composition; successful AI
+  usage remains append-only even when the current Composition is replaced.
+- An operation ID is valid for exactly one student, Composition revision, mode,
+  and Rubric. Reuse under another scope is rejected rather than replaying an
+  unrelated result. Review persistence and usage-ledger success are committed
+  together before metadata-only email and profile-observation side effects.
+- The first release supports official IELTS framework summaries, HKDSE Paper 2,
+  and Cambridge International AS & A Level English Language 9093 Paper 2. The
+  Cambridge shorter writing, reflective commentary, and extended writing tasks
+  remain separate Rubrics because their AO and maximum marks differ.
+
+Why:
+
+This makes UI parsing deterministic, prevents accidental exam reclassification,
+keeps quota billing auditable, and preserves the established meanings of
+Assignment and Attempt.
+
+Review condition:
+
+Revisit when adding a new assessment board, CEFR level-up variants, or a human
+moderation workflow.
