@@ -257,6 +257,21 @@ async function ocrPhotoUrls(student, composition) {
 
 async function getComposition(student, event) {
   let composition = await ownedComposition(student, event.composition_id);
+  const legacyOcrJob = composition.ocr_job && typeof composition.ocr_job === "object"
+    ? composition.ocr_job : null;
+  if (!composition.active_job_id && legacyOcrJob && !legacyOcrJob.job_id
+    && ["queued", "processing"].includes(legacyOcrJob.status)) {
+    const now = new Date();
+    await db.collection(COMPOSITIONS).doc(composition._id).update({
+      status: "ocr_failed",
+      ocr_job: {
+        ...legacyOcrJob, status: "failed",
+        error_code: "LEGACY_OCR_JOB_NOT_RESUMABLE", finished_at: now,
+      },
+      updated_at: now,
+    });
+    composition = await ownedComposition(student, event.composition_id);
+  }
   if (composition.pending_upload && !composition.pending_ocr) {
     try {
       await finishPhotoUpload(student, {
