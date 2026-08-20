@@ -319,7 +319,7 @@ def page_html(part: dict, body: str) -> str:
     <section class="paper-contact-banner">
       <div>
         <strong>{contact_heading}</strong>
-        <span>请在抖音或小红书搜索「猫先生英语」这个账号并联系。</span>
+        <span>请在小红书、抖音或微信视频号搜索「猫先生英语」这个账号并联系。</span>
       </div>
       <a href="index.html">了解 Mr. Cat English</a>
     </section>
@@ -329,7 +329,7 @@ def page_html(part: dict, body: str) -> str:
     <section class="paper-end-card">
       <p class="paper-kicker">END OF PART {number} / 5</p>
       <h2>这只是完整讲义的其中一部分</h2>
-      <p>如果你想继续看下一部分，或想了解完整的 DSE English 训练安排，请在抖音或小红书搜索「猫先生英语」这个账号。</p>
+      <p>如果你想继续看下一部分，或想了解完整的 DSE English 训练安排，请在小红书、抖音或微信视频号搜索「猫先生英语」这个账号。</p>
       <a class="paper-primary-action" href="index.html">返回 Mr. Cat English 主页</a>
     </section>
   </main>
