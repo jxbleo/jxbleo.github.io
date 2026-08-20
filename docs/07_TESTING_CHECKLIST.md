@@ -243,6 +243,24 @@ Open:
 - at least one IELTS Reading page
 - at least one IELTS Listening page
 - at least one Vocabulary page
+- `http://127.0.0.1:8000/dse-writing-guide.html`
+- `http://127.0.0.1:8000/dse-writing-formats.html`
+
+Public-share resource checks:
+
+- both stable pages load without login and contain canonical `mrcatenglish.com` URLs,
+  descriptions, Open Graph titles/descriptions/images, and the common site icon;
+- login, Dashboard, Library, `content/sections.json`, and generated home catalog
+  contain no link to either stable public resource;
+- the brand, top `进入学习平台`, bottom CTA, and footer all lead to `index.html`;
+- Share uses the native share sheet when available and otherwise copies the
+  canonical URL; the old `temp-*` paths redirect and declare `noindex`;
+- guide tabs, format tabs, checklist controls, and all six AI prompt-copy buttons
+  work with pointer and keyboard input; no undefined `sendPrompt` error remains;
+- at 390 px, tab rows scroll horizontally, content has no page-level horizontal
+  overflow, CTA remains readable, and reduced-motion/transparency fallbacks work;
+- `npm run build:static` includes both stable pages, both redirect aliases, and
+  `assets/css/public-resource.css` plus `assets/js/public-resource.js`.
 
 Run `node scripts/assign-bbc-render-themes.js 2026 --check` and confirm every
 BBC 2026 runtime file and matching metadata file uses the same stable Luminous

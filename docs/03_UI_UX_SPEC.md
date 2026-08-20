@@ -28,6 +28,25 @@
 | `parent-mode.html` | Read-only child progress and class comparison for families |
 | `dse-topic-bank.html` | HKDSE Writing/Speaking visitor preview and protected student report |
 | `hk8-dse-jupas-weighting-report-2026-27.html` | Unlisted JUPAS weighting preview and student-only full report |
+| `dse-writing-guide.html` | Unlisted public Article/Essay study guide for external sharing |
+| `dse-writing-formats.html` | Unlisted public Paper 2 writing-format quick reference |
+
+### Public share resources
+
+The two free DSE share pages are mobile-first editorial reading surfaces, not
+student practice runtimes and not Library cards. Each page has a lightweight
+sticky Mr. Cat Academy header, a direct share control, a clear free-resource
+hero, readable module tabs, and a bottom CTA back to `index.html`. The header
+and footer provide wayfinding without adding a reverse link from login,
+Dashboard, or Library.
+
+The shared presentation uses one calm glass layer for navigation and hero
+depth, with an opaque paper surface for long-form reading. Tabs remain
+horizontally scrollable on phones; buttons respond on press; reduced motion,
+reduced transparency, higher contrast, keyboard focus, and print fallbacks are
+required. The Article/Essay guide's AI helper copies an explicit prompt for the
+reader to paste into their chosen assistant; it must not imply an unavailable
+on-site AI service.
 
 ### Shared System Shell
 

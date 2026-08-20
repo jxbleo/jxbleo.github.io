@@ -64,16 +64,20 @@ Important pages:
 - `attempt-review.html`: attempt history/review helper
 - `reports.html`: authenticated weekly/monthly class-report reader and teacher preview workspace
 - `dse-topic-bank.html`: public preview shell and authenticated full-report reader
+- `dse-writing-guide.html`: unlisted public DSE Article/Essay study guide
+- `dse-writing-formats.html`: unlisted public DSE Paper 2 format reference
 
 Shared frontend assets:
 
 - `assets/css/app.css`
 - `assets/css/liquid-glass-shell.css`
+- `assets/css/public-resource.css`
 - `assets/css/spatial-workspace.css`
 - `assets/js/config.public.js`
 - `assets/js/cloudbase-client.js`
 - `assets/js/auth.js`
 - `assets/js/login-navigation.js`
+- `assets/js/public-resource.js`
 - `assets/js/dashboard.js`
 - `assets/js/my-words.js`
 - `assets/js/liquid-glass-shell.js`
@@ -101,6 +105,14 @@ All root HTML pages declare the same favicon, Apple touch icon, and
 `site.webmanifest`. The manifest is curriculum-neutral and references only the
 supplied Mr. Cat face at standard 192 px and 512 px sizes; DSE and IELTS no
 longer switch home-screen identity.
+
+The two public DSE share pages are intentionally absent from the login,
+Dashboard, Library, and generated catalog navigation. Their stable URLs are
+external acquisition entry points; their own brand, header, CTA, and footer may
+link one way to `index.html`. Legacy `temp-*` paths are lightweight `noindex`
+redirect aliases so previously shared URLs keep working. These pages are fully
+public static content and must never be used for protected reports or private
+answer material.
 
 The shared Liquid Glass layer is presentation-only on login and public Library.
 The authenticated Student Dashboard and Teacher desk additionally use the
