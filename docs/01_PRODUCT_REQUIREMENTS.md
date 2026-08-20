@@ -1792,6 +1792,8 @@ cloudfunctions/
   Attempt、Exercise Progress 或 STAR；老师分享 Library 题目只会预填 Writing Prompt。
 - 学生可直接输入，或上传最多八张作文照片。OCR 必须保留原始错误并标出不确定处；学生确认
   Confirmed Manuscript 后才可评估。确认后删除作文图片，只长期保存文字。
+- OCR 是可恢复的后台长任务：浏览器连接提前断开时，当前 Composition 自动查询云端结果，
+  刷新或稍后重新打开同一作品也继续等待，不新建作品且不要求学生重复上传。
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
   Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
 - AI 只负责返回受约束的分项判断。标化总分由服务器按照所选 Rubric 的求和或加权规则计算；

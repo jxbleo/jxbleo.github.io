@@ -1059,6 +1059,10 @@ All collections are `ADMINONLY`.
   prompt/schema/rubric versions. OCR and each review/check payload retain safe
   model metadata (`protocol`, `model`, provider hostname, structural-repair
   flag) for later comparison; API keys and full endpoint URLs are never stored.
+  `ocr_job` stores only operation ID, processing/succeeded/failed state,
+  error code, timestamps, and the prior Composition status. It lets the browser
+  recover a long-running OCR result without storing image or manuscript data in
+  logs or exposing provider credentials.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.

@@ -106,6 +106,15 @@ function summaryView(composition) {
 }
 
 function compositionView(composition) {
+  const ocrJob = composition.ocr_job && typeof composition.ocr_job === "object"
+    ? {
+      operation_id: composition.ocr_job.operation_id || null,
+      status: composition.ocr_job.status || null,
+      error_code: composition.ocr_job.error_code || null,
+      started_at: composition.ocr_job.started_at || null,
+      finished_at: composition.ocr_job.finished_at || null,
+    }
+    : null;
   return {
     ...summaryView(composition),
     confirmed_text: composition.confirmed_text || "",
@@ -114,6 +123,7 @@ function compositionView(composition) {
     language_review: composition.language_review || null,
     rewrite_results: composition.rewrite_results || null,
     replacement_pending: Boolean(composition.pending_replacement),
+    ocr_job: ocrJob,
     prompt_version: composition.prompt_version || null,
     schema_version: composition.schema_version || null,
     rubric_version: composition.rubric_version || null,
@@ -239,29 +249,76 @@ async function finishPhotoUpload(student, event) {
 async function extractOcr(student, event) {
   const composition = await ownedComposition(student, event.composition_id);
   if (composition.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
+  const operationId = text(event.operation_id, 160);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const currentJob = composition.ocr_job && typeof composition.ocr_job === "object" ? composition.ocr_job : null;
+  if (currentJob && currentJob.operation_id === operationId) {
+    if (currentJob.status === "succeeded" && composition.pending_ocr) {
+      return { success: true, ocr: composition.pending_ocr, composition: compositionView(composition) };
+    }
+    if (currentJob.status === "processing") {
+      return { success: true, accepted: true, composition: compositionView(composition) };
+    }
+  }
+  if (currentJob && currentJob.status === "processing" && dateMs(currentJob.started_at) > Date.now() - 5 * 60 * 1000) {
+    throw new Error("AI_OPERATION_IN_PROGRESS");
+  }
   const photoIds = Array.isArray(event.photo_ids) ? event.photo_ids.slice(0, MAX_UPLOAD_PAGES) : [];
   const rows = await photoRows(student, composition.composition_id, photoIds);
   if (!rows.length || rows.some((row) => row.status !== "uploaded")) throw new Error("PHOTO_UPLOAD_INCOMPLETE");
-  const urls = await app.getTempFileURL({ fileList: rows.map((row) => ({ fileID: row.file_id, maxAge: 600 })) });
-  const urlMap = new Map((urls.fileList || []).map((item) => [item.fileID, item.tempFileURL]));
-  const imageUrls = rows.map((row) => urlMap.get(row.file_id)).filter(Boolean);
-  if (imageUrls.length !== rows.length) throw new Error("PHOTO_URL_FAILED");
-  const ocrResponse = await callStructuredModel({
-    system: ocrPrompt(),
-    userText: "Transcribe the attached composition pages in page order. Return only the required structured result.",
-    schemaName: "writing_ocr_v1", schema: OCR_SCHEMA, images: imageUrls, vision: true,
-  });
-  const ocr = ocrResponse.data;
-  const pendingOcr = {
-    full_text: text(ocr.full_text, MAX_COMPOSITION_CHARS),
-    paragraphs: Array.isArray(ocr.paragraphs) ? ocr.paragraphs.map((item) => text(item, MAX_COMPOSITION_CHARS)) : [],
-    uncertain_spans: Array.isArray(ocr.uncertain_spans) ? ocr.uncertain_spans.slice(0, 100) : [],
-    replace_current: event.replace_current === true || rows.some((row) => row.replace_current === true),
-    model_metadata: ocrResponse.metadata,
-    extracted_at: new Date(),
+  const startedAt = new Date();
+  const previousStatus = composition.status || "draft";
+  const processingJob = {
+    operation_id: operationId,
+    status: "processing",
+    error_code: null,
+    previous_status: previousStatus,
+    started_at: startedAt,
+    finished_at: null,
   };
-  await db.collection(COMPOSITIONS).doc(composition._id).update({ pending_ocr: pendingOcr, status: "ocr_review", updated_at: new Date() });
-  return { success: true, ocr: pendingOcr, composition: compositionView({ ...composition, pending_ocr: pendingOcr, status: "ocr_review" }) };
+  await db.collection(COMPOSITIONS).doc(composition._id).update({
+    ocr_job: processingJob, status: "ocr_processing", updated_at: startedAt,
+  });
+  try {
+    const urls = await app.getTempFileURL({ fileList: rows.map((row) => ({ fileID: row.file_id, maxAge: 600 })) });
+    const urlMap = new Map((urls.fileList || []).map((item) => [item.fileID, item.tempFileURL]));
+    const imageUrls = rows.map((row) => urlMap.get(row.file_id)).filter(Boolean);
+    if (imageUrls.length !== rows.length) throw new Error("PHOTO_URL_FAILED");
+    const ocrResponse = await callStructuredModel({
+      system: ocrPrompt(),
+      userText: "Transcribe the attached composition pages in page order. Return only the required structured result.",
+      schemaName: "writing_ocr_v1", schema: OCR_SCHEMA, images: imageUrls, vision: true,
+    });
+    const ocr = ocrResponse.data;
+    const fullText = text(ocr.full_text, MAX_COMPOSITION_CHARS);
+    const paragraphs = Array.isArray(ocr.paragraphs)
+      ? ocr.paragraphs.map((item) => text(item, MAX_COMPOSITION_CHARS)).filter(Boolean)
+      : [];
+    if (!fullText && !paragraphs.length) throw new Error("WRITING_AI_OCR_EMPTY");
+    const pendingOcr = {
+      full_text: fullText || paragraphs.join("\n\n"),
+      paragraphs,
+      uncertain_spans: Array.isArray(ocr.uncertain_spans) ? ocr.uncertain_spans.slice(0, 100) : [],
+      replace_current: event.replace_current === true || rows.some((row) => row.replace_current === true),
+      model_metadata: ocrResponse.metadata,
+      extracted_at: new Date(),
+    };
+    const succeededJob = { ...processingJob, status: "succeeded", finished_at: new Date() };
+    const update = { pending_ocr: pendingOcr, ocr_job: succeededJob, status: "ocr_review", updated_at: new Date() };
+    await db.collection(COMPOSITIONS).doc(composition._id).update(update);
+    return {
+      success: true,
+      ocr: pendingOcr,
+      composition: compositionView({ ...composition, ...update }),
+    };
+  } catch (error) {
+    const code = error && error.message || "WRITING_TUTOR_ERROR";
+    const failedJob = { ...processingJob, status: "failed", error_code: code, finished_at: new Date() };
+    await db.collection(COMPOSITIONS).doc(composition._id).update({
+      ocr_job: failedJob, status: previousStatus, updated_at: new Date(),
+    });
+    throw error;
+  }
 }
 
 async function deleteUploadedPhotos(rows) {

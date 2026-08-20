@@ -183,10 +183,29 @@ check("Qwen JSON wrappers are normalized before strict validation", () => {
   const doubleEncoded = JSON.stringify(JSON.stringify(expected));
   assert.deepStrictEqual(provider._test.parseStructuredOutput(doubleEncoded, schemas.OCR_SCHEMA), expected);
   assert.deepStrictEqual(provider._test.parseStructuredOutput(JSON.stringify([expected]), schemas.OCR_SCHEMA), expected);
+  assert.deepStrictEqual(
+    provider._test.parseStructuredOutput(JSON.stringify([
+      { full_text: "Page one", paragraphs: ["Page one"], uncertain_spans: [] },
+      { full_text: "Page two", paragraphs: ["Page two"], uncertain_spans: [{ text: "two", reason: "unclear" }] },
+    ]), schemas.OCR_SCHEMA),
+    {
+      full_text: "Page one\n\nPage two",
+      paragraphs: ["Page one", "Page two"],
+      uncertain_spans: [{ text: "two", reason: "unclear" }],
+    }
+  );
   assert.throws(
     () => provider._test.parseStructuredOutput("not json", schemas.OCR_SCHEMA),
     /WRITING_AI_SCHEMA_RESPONSE_INVALID/
   );
+});
+
+check("OCR survives a browser request disconnect by polling the Composition", () => {
+  const client = read(clientPath);
+  const backend = read(functionPath);
+  requireEvery(client, ["waitForOcrResult", "ocr_job", "getComposition"], "AI Tutor OCR polling client");
+  requireEvery(backend, ["ocr_job", "processing", "succeeded", "failed"], "writingTutor OCR job state");
+  assert(/network(?: request)? error|failed to fetch|networkerror/i.test(client), "OCR polling must recognize network disconnects");
 });
 
 check("Qwen OCR defaults to the low-latency vision model", () => {
