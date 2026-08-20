@@ -15,6 +15,9 @@
 
 ### Changed
 
+- Added the clickable `jxbleo@foxmail.com` contact address beside
+  `@猫先生英语` in the homepage footer, with a separate centered contact row on
+  narrow screens.
 - Replaced the broken Article/Essay `sendPrompt` behavior with a working copyable
   AI-coaching prompt and made guide tabs/checklist controls keyboard accessible.
 - Kept login, Dashboard, Library, and generated catalogs free of reverse links
