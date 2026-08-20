@@ -15,6 +15,8 @@ function providerConfig(vision) {
   const apiKey = text(process.env[`${prefix}_API_KEY`] || process.env[`${fallbackPrefix}_API_KEY`], 4000);
   const apiUrl = text(process.env[`${prefix}_API_URL`] || process.env[`${fallbackPrefix}_API_URL`], 1000);
   const model = text(process.env[`${prefix}_MODEL`] || process.env[`${fallbackPrefix}_MODEL`], 200);
+  const qwenCompatible = /(?:dashscope|\.maas\.)[^/]*aliyuncs\.com/i.test(apiUrl)
+    || /dashscope/i.test(apiUrl);
   const imageTransport = text(process.env.WRITING_AI_VISION_IMAGE_TRANSPORT, 40) || "url";
   const configuredMaxTokens = Number(process.env[`${prefix}_MAX_OUTPUT_TOKENS`] || process.env.WRITING_AI_MAX_OUTPUT_TOKENS || 8000);
   const maxOutputTokens = Number.isInteger(configuredMaxTokens) && configuredMaxTokens >= 1000
@@ -25,7 +27,7 @@ function providerConfig(vision) {
     throw new Error("WRITING_AI_PROTOCOL_INVALID");
   }
   if (!['url', 'base64'].includes(imageTransport)) throw new Error("WRITING_AI_IMAGE_TRANSPORT_INVALID");
-  return { protocol, apiKey, apiUrl, model, imageTransport, maxOutputTokens };
+  return { protocol, apiKey, apiUrl, model, imageTransport, maxOutputTokens, qwenCompatible };
 }
 
 function validateAgainstSchema(value, schema, path = "$") {
@@ -137,6 +139,9 @@ async function requestBody(config, options, correction) {
       ? { type: "json_schema", json_schema: { name: schemaName, strict: true, schema } }
       : { type: "json_object" },
   };
+  // Qwen multimodal structured output is most deterministic in non-thinking mode.
+  // Keep this vendor field away from other OpenAI-compatible providers.
+  if (config.qwenCompatible) body.enable_thinking = false;
   return body;
 }
 
