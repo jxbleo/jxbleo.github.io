@@ -935,6 +935,13 @@ Decision:
   not spend another model call attempting to classify or override it.
 - AI Tutor uses Composition and usage-ledger records outside the existing
   Assignment/Attempt/STAR model.
+- Long model calls use a CloudBase-database durable queue rather than a browser
+  request as the owner of work. The authenticated action creates a stable
+  metadata-only job, internal asynchronous dispatch begins processing, and a
+  token-protected one-minute worker recovers queued jobs and expired leases.
+  Publishing verifies both the active Composition job ID and the worker lease in
+  one transaction. This choice avoids a new queue service while preserving
+  refresh/re-login recovery and safe same-Composition replacement.
 - Same-screen re-upload is success-then-swap on one Composition; successful AI
   usage remains append-only even when the current Composition is replaced.
 - An operation ID is valid for exactly one student, Composition revision, mode,

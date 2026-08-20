@@ -715,10 +715,12 @@ STAR 不阻止未来重新布置同一个 set。
 12. 版本按钮没有成绩：检查 `getDashboard.library_progress` 与具体 `set_id` 是否一致。
 13. 新版能看但不能提交：检查新版 `sets`、`grading_keys` 和可选 `content_version` 是否全部一致。
 14. 旧报告显示新版答案：教师报告必须优先使用 Attempt 内的答案、解释和题目文字快照。
-15. AI Tutor 拍照后显示 Network request error：先查 `writingTutor` 最新日志。若云函数仍运行
-    80–90 秒，浏览器连接只是先断开；OCR 必须通过 Composition 的 `ocr_job` 自动轮询恢复。
-    若日志为 `$ must be an object`，检查国内模型是否按页面返回数组，并保留多页归一化后再做
-    严格 schema 校验，不要让学生更换写作评估模型名。
+15. AI Tutor 拍照后一直显示云端处理中：先查 `writingTutor` 的函数详情而不只看部署命令输出。
+    若状态是 `UpdateFailed`、`ResourceNotFound.Entryfile`，说明所谓部署成功并未成为活动版本；
+    必须用 `scripts/package-cloudfunctions.js` 生成的 ZIP 更新，并再次确认最终状态是 `Active`。
+    活动版本应立即创建 `writing_ai_jobs`，由 `writingAiWorker` 恢复队列/过期租约；浏览器只轮询
+    Composition。若模型日志为 `$ must be an object`，检查国内模型的多页数组归一化，不要让学生
+    更换写作评估模型名。
 
 ## 6. 维护规则
 

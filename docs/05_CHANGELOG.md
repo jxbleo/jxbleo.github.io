@@ -1757,3 +1757,10 @@ required.
 - Made OCR tolerant of Qwen returning one structured object per photo page and
   added persisted OCR job state plus client polling. A browser request timeout
   now keeps waiting on the same Composition, and refresh/reopen resumes it.
+- Replaced request-bound OCR with an `ADMINONLY` durable AI-job queue. Upload
+  confirmation now enqueues OCR in the same server handoff; async dispatch plus
+  a one-minute recovery worker survives tab/browser closure, retries transient
+  failures with leases, and rejects stale results after re-upload.
+- Added explicit leave-and-resume OCR UX and seven-day timed deletion for
+  unconfirmed private photos. Corrected deployment verification to require the
+  cloud function's final `Active` state after uploading a bundled ZIP.

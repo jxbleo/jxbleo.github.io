@@ -110,3 +110,6 @@ Before commercial use, review:
 - AI Tutor: optional CEFR A2/B1/C1 language-upgrade variants
 - AI Tutor: targeted grammar/content lessons generated from repeated Writing Observations
 - AI Tutor: human moderation and model-quality evaluation dataset before high-stakes use
+- AI Tutor: move standardized review, language review, and rewrite checking onto
+  the same durable `writing_ai_jobs` execution model after OCR production metrics
+  confirm the queue/lease settings; the current durable worker covers OCR first.

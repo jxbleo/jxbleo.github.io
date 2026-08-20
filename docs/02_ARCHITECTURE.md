@@ -723,15 +723,27 @@ the existing one-click confirmation flow.
 ## AI Tutor Writing Architecture
 
 `ai-tutor.html` calls the authenticated `writingTutor` function. Photos use a
-two-phase private CloudBase upload, receive short-lived URLs only inside the
-function, and are sent to a vision model for transcription. The browser edits
-the OCR result; `saveDraft` confirms text and triggers best-effort photo deletion.
-OCR writes a sanitized `ocr_job` state before calling the provider. If the
-browser's function request disconnects before the provider finishes, the client
-polls `getComposition`; success, failure, refresh, and reopening all converge on
-the same Composition instead of starting another model call. Multi-page Qwen
-array roots are normalized into one page-ordered OCR object before strict local
-schema validation.
+two-phase private CloudBase upload and receive short-lived URLs only inside a
+function. `startPhotoUpload` derives page IDs from the stable operation ID, so a
+lost response replays the same batch and refreshes its upload metadata instead
+of creating orphan pages. `finishPhotoUpload` confirms storage and creates a stable
+`writing_ai_jobs` row in the same server request, then returns without waiting
+for the vision model. `writingTutor` dispatches that job asynchronously to its
+private processor; the one-minute `writingAiWorker` timer redispatches queued
+jobs and expired leases if the first dispatch is lost. Jobs use create-only IDs,
+bounded attempts, leases, and `queued/processing/succeeded/failed/superseded`
+states. Only the job referenced by `Composition.active_job_id`, with its current
+lease token, may transactionally publish a result. Thus a stale worker or
+superseded re-upload cannot overwrite the current Composition.
+
+The browser edits the OCR result; `saveDraft` confirms text and deletes the
+private photos. `writingAiWorker` also deletes unconfirmed uploaded photos at
+their seven-day expiry. `getComposition` returns the safe active-job projection
+and temporary owned photo previews, so refresh, re-login, and reopening converge
+on the same Composition without another model call. Job rows contain identifiers,
+photo IDs, state, attempts, leases, and safe error codes only—never manuscript or
+OCR text. Multi-page Qwen array roots are normalized into one page-ordered OCR
+object before strict local schema validation.
 
 The function owns four versioned AI boundaries: OCR, standardized review,
 language sentence review, and rewrite checking. `model-provider.js` keeps those

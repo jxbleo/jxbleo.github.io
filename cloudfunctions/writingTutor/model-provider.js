@@ -1,6 +1,7 @@
 "use strict";
 
 const DEFAULT_TIMEOUT_MS = 90000;
+const MAX_PROVIDER_TIMEOUT_MS = 300000;
 const MAX_VALIDATION_ERRORS = 12;
 
 function text(value, limit = 30000) {
@@ -172,7 +173,17 @@ function parseStructuredOutput(output, schema) {
 }
 
 function safeResultShape(value) {
-  if (Array.isArray(value)) return { root_type: "array", array_length: value.length };
+  if (Array.isArray(value)) {
+    return {
+      root_type: "array",
+      array_length: value.length,
+      item_shapes: value.slice(0, 5).map((item) => Array.isArray(item)
+        ? { type: "array", length: item.length }
+        : item && typeof item === "object"
+          ? { type: "object", keys: Object.keys(item).slice(0, 12) }
+          : { type: item === null ? "null" : typeof item }),
+    };
+  }
   if (value && typeof value === "object") return { root_type: "object", keys: Object.keys(value).slice(0, 20) };
   return { root_type: value === null ? "null" : typeof value };
 }
@@ -229,7 +240,10 @@ async function requestBody(config, options, correction) {
 
 async function callOnce(config, options, correction) {
   const controller = new AbortController();
-  const timeoutMs = Number(process.env.WRITING_AI_TIMEOUT_MS || DEFAULT_TIMEOUT_MS);
+  const requestedTimeoutMs = Number(process.env.WRITING_AI_TIMEOUT_MS || DEFAULT_TIMEOUT_MS);
+  const timeoutMs = Number.isFinite(requestedTimeoutMs)
+    ? Math.min(MAX_PROVIDER_TIMEOUT_MS, Math.max(1000, requestedTimeoutMs))
+    : DEFAULT_TIMEOUT_MS;
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   let response;
   try {

@@ -1924,9 +1924,15 @@ Important mobile rules:
   Portfolio, and Writing Profile views.
 - OCR comparison is split-screen on tablet/desktop. Mobile opens text first and
   exposes an explicit photo comparison control.
-- While OCR continues after a browser request disconnect, the student sees an
-  in-progress message rather than `Network error`; the page automatically polls,
-  and reopening an `正在识别` Composition resumes the same wait.
+- Before confirmation, the browser retries the same stable upload batch and
+  never claims that cloud processing can continue. An interrupted or partial
+  upload stays in the same Composition and exposes `重新上传照片`; only a fully
+  confirmed batch crosses the safe-to-leave boundary.
+- After the upload is confirmed, the OCR waiting screen explicitly says the
+  photo is safely uploaded and the student may leave. It offers `返回 AI Tutor`
+  and `留在此页等待`; staying polls every five seconds without a client deadline.
+  Returning, refreshing, re-login, or reopening a queued/processing Composition
+  resumes the same job and shows its eventual OCR review or specific failure.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
 - Language training defaults to one sentence at a time with numbered capsules.
