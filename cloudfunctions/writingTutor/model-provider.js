@@ -14,9 +14,13 @@ function providerConfig(vision) {
     || "chat_json_object";
   const apiKey = text(process.env[`${prefix}_API_KEY`] || process.env[`${fallbackPrefix}_API_KEY`], 4000);
   const apiUrl = text(process.env[`${prefix}_API_URL`] || process.env[`${fallbackPrefix}_API_URL`], 1000);
-  const model = text(process.env[`${prefix}_MODEL`] || process.env[`${fallbackPrefix}_MODEL`], 200);
+  const providerModel = text(process.env[`${prefix}_MODEL`], 200);
+  let model = providerModel || text(process.env[`${fallbackPrefix}_MODEL`], 200);
   const qwenCompatible = /(?:dashscope|\.maas\.)[^/]*aliyuncs\.com/i.test(apiUrl)
     || /dashscope/i.test(apiUrl);
+  if (vision && !providerModel && qwenCompatible && model === "qwen3.7-plus") {
+    model = "qwen3.7-flash";
+  }
   const imageTransport = text(process.env.WRITING_AI_VISION_IMAGE_TRANSPORT, 40) || "url";
   const configuredMaxTokens = Number(process.env[`${prefix}_MAX_OUTPUT_TOKENS`] || process.env.WRITING_AI_MAX_OUTPUT_TOKENS || 8000);
   const maxOutputTokens = Number.isInteger(configuredMaxTokens) && configuredMaxTokens >= 1000
