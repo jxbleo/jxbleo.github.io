@@ -409,6 +409,13 @@ the priority.
 Promote temporary material into the shared content system only when it becomes
 recurring, assignable, or countable.
 
+When the owner promotes a standalone handout specifically for public social
+sharing, give it a topic-stable filename, canonical/share metadata, a visible
+free-resource identity, and a one-way `index.html` CTA. Keep it out of
+`content/sections.json` and generated catalogs unless the owner separately asks
+for a Library entry. Preserve any historical URL with a `noindex` redirect, and
+verify the public page contains no private grading or student data.
+
 ### Protected reference reports
 
 When a report should offer only a visitor preview and a student-only full edition:

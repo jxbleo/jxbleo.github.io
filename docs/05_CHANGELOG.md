@@ -4,6 +4,28 @@
 > Do not record every tiny CSS tweak or variable rename here.
 
 
+## 2026-08-20
+
+### Added
+
+- Promoted the two former `Champ` DSE writing handouts to stable public share
+  URLs with a shared mobile-first Mr. Cat Academy editorial shell, social
+  metadata, native-share/copy fallback, print styling, and one-way homepage CTA.
+- Added `noindex` compatibility redirects from both historical `temp-*` URLs.
+
+### Changed
+
+- Replaced the broken Article/Essay `sendPrompt` behavior with a working copyable
+  AI-coaching prompt and made guide tabs/checklist controls keyboard accessible.
+- Kept login, Dashboard, Library, and generated catalogs free of reverse links
+  to the public share resources.
+
+### Deployment scope
+
+- Static-only release. No CloudBase function, collection, data import, or
+  migration is required.
+
+
 ## 2026-08-19
 
 ### Added
