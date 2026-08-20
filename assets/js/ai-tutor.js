@@ -760,7 +760,14 @@
 
     function renderFatalAction(error) {
         setStatus('');
-        var message = error && error.message || '发生了一个暂时无法完成的错误。';
+        var code = error && (error.code || error.result && error.result.code) || '';
+        var rawMessage = error && error.message || '';
+        var message = rawMessage || '发生了一个暂时无法完成的错误。';
+        if (code === 'WRITING_AI_SCHEMA_RESPONSE_INVALID') {
+            message = 'AI 已读取照片，但返回格式不完整。请继续这篇作文后重试 OCR。';
+        } else if (code === 'WRITING_AI_TIMEOUT' || /network error/i.test(rawMessage)) {
+            message = 'OCR 等待超时。照片已上传，请继续这篇作文后重试；不会新建作文记录。';
+        }
         stage.innerHTML = '<section class="surface error-state"><strong>这一步没有完成</strong><p>' + escapeHtml(message) + '</p><div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
             (state.current ? '<button class="primary-button" type="button" data-resume-current>继续这篇作文</button>' : '') + '</div></section>';
     }
