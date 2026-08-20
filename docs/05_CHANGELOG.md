@@ -1747,3 +1747,7 @@ required.
   the prior manuscript, reviews, and observations.
 - Retained one logical evaluate/rewrite operation ID across lost-response retries
   to prevent duplicate model work and quota charges.
+- Normalized Qwen OCR responses that contain one extra JSON string or
+  single-item array wrapper before applying the same strict schema validation.
+  Replaced the misleading client-side Network error with actionable OCR
+  format/timeout guidance.

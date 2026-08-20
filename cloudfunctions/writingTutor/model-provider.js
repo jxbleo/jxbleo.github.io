@@ -95,6 +95,31 @@ function responseOutputText(payload, protocol) {
   return "";
 }
 
+function parseStructuredOutput(output, schema) {
+  let parsed;
+  let candidate = text(output, 200000);
+  for (let depth = 0; depth < 3; depth += 1) {
+    if (typeof candidate !== "string") break;
+    const trimmed = candidate.trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/, "");
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch (_error) {
+      const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
+      error.validationMessage = "response is not valid JSON";
+      throw error;
+    }
+    candidate = parsed;
+    if (typeof parsed !== "string") break;
+  }
+  if (schema && schema.type === "object" && Array.isArray(parsed)
+    && parsed.length === 1 && parsed[0] && typeof parsed[0] === "object" && !Array.isArray(parsed[0])) {
+    parsed = parsed[0];
+  }
+  return parsed;
+}
+
 async function imageContent(url, transport) {
   if (transport === "url") return { type: "image_url", image_url: { url } };
   const response = await fetch(url);
@@ -171,14 +196,7 @@ async function callOnce(config, options, correction) {
   const payload = await response.json();
   const output = responseOutputText(payload, config.protocol);
   if (!output) throw new Error("WRITING_AI_EMPTY_RESPONSE");
-  let parsed;
-  try {
-    parsed = JSON.parse(output);
-  } catch (_error) {
-    const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
-    error.validationMessage = "response is not valid JSON";
-    throw error;
-  }
+  const parsed = parseStructuredOutput(output, options.schema);
   const schemaErrors = validateAgainstSchema(parsed, options.schema);
   if (schemaErrors.length) {
     const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
@@ -214,5 +232,5 @@ async function callStructuredModel(options) {
 
 module.exports = {
   callStructuredModel,
-  _test: { validateAgainstSchema, responseOutputText, providerConfig },
+  _test: { validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig },
 };

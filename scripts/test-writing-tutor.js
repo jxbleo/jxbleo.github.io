@@ -176,6 +176,19 @@ check("domestic-model adapters validate every returned JSON object locally", () 
   assert(/WRITING_AI_(?:TEXT|VISION)_/.test(source), "text and vision providers must be independently configurable");
 });
 
+check("Qwen JSON wrappers are normalized before strict validation", () => {
+  const provider = require(path.join(root, providerPath));
+  const schemas = require(path.join(root, schemaPath));
+  const expected = { full_text: "Text", paragraphs: ["Text"], uncertain_spans: [] };
+  const doubleEncoded = JSON.stringify(JSON.stringify(expected));
+  assert.deepStrictEqual(provider._test.parseStructuredOutput(doubleEncoded, schemas.OCR_SCHEMA), expected);
+  assert.deepStrictEqual(provider._test.parseStructuredOutput(JSON.stringify([expected]), schemas.OCR_SCHEMA), expected);
+  assert.throws(
+    () => provider._test.parseStructuredOutput("not json", schemas.OCR_SCHEMA),
+    /WRITING_AI_SCHEMA_RESPONSE_INVALID/
+  );
+});
+
 check("server canonicalization overrides contradictory AI summary fields", () => {
   const backend = require(path.join(root, functionPath));
   const rubrics = require(path.join(root, rubricPath));

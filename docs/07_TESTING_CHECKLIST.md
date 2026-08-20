@@ -1718,6 +1718,8 @@ High priority improvement:
 - Submit an obvious IELTS response under HKDSE and confirm the selected framework
   is retained without warning or reclassification.
 - Confirm strict schema rejection and sentence ID/original alignment rejection.
+- Confirm OCR accepts a valid object wrapped once as a JSON string or one-item
+  array, while malformed or schema-invalid content is still rejected.
 - Confirm duplicate/missing criterion and sentence IDs are rejected. Confirm
   IELTS overall band is calculated from its four criterion scores, DSE total is
   the sum of its three domain marks, and A Level totals use their single AO mark
