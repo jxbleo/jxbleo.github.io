@@ -1972,6 +1972,12 @@ Important mobile rules:
   shows framework criteria and score; language review never shows a score.
 - Completed language review uses exactly three primary cards in order:
   `Language Review`, `Draft`, and `Sentence Revision`.
+- At the beginning of `Language Review`, show `CEFR Writing Estimate` with
+  the manuscript's A1–C2 band, localized within-band position (`偏下`, `中段`,
+  or `偏上`), and one concise Simplified Chinese rationale. It appears before
+  the broader overview and must be described as an estimate of this manuscript's
+  writing performance, not a certified or global student level. Historical
+  reviews without the structured field remain readable and simply omit this row.
 - The Sentence Revision card begins with a horizontally scrollable row of
   numbered capsules. Selecting a number immediately scrolls to and highlights its
   corresponding sentence in the list. Every capsule uses the same 1px solid border.

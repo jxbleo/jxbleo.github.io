@@ -1788,6 +1788,12 @@ High priority improvement:
 - After language review completes, confirm the page has exactly three primary
   cards in this order: `Language Review`, `Draft`, and `Sentence Revision`.
   Confirm there is no fourth layout container presented as a card.
+- Confirm `Language Review` begins with `CEFR Writing Estimate` before its
+  overview. Test A1 and C2 boundaries plus lower/middle/upper positions; verify
+  the localized labels are 偏下/中段/偏上 and the rationale is Simplified Chinese.
+  Confirm the copy scopes the estimate to this manuscript rather than claiming
+  a certified or overall student level. Open a historical review without
+  `cefr_estimate` and confirm it remains readable without a fabricated value.
 - In Sentence Revision, confirm the number capsules scroll horizontally on
   touch and pointer devices; selecting a number scrolls to and highlights the
   matching sentence. Confirm the full sentence list is always present and there

@@ -1060,6 +1060,11 @@ All collections are `ADMINONLY`.
   prompt/schema/rubric versions. OCR and each review/check payload retain safe
   model metadata (`protocol`, `model`, provider hostname, structural-repair
   flag) for later comparison; API keys and full endpoint URLs are never stored.
+  Each new general-language review also stores a closed `cefr_estimate` object:
+  `level` is one of A1–C2, `position` is `lower|middle|upper`, and
+  `commentary_zh` is the concise Simplified Chinese manuscript-specific
+  rationale. It is part of the versioned review snapshot, not a student-profile
+  proficiency claim.
   `active_job_id` identifies the only durable job allowed to publish into the
   Composition. `active_job`/compatibility `ocr_job` are safe projections of job
   ID, type, operation ID, state, attempt count, error code, and timestamps. They
