@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260821-3">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260821-4">
 </head>
 <body class="ai-tutor-page">
     <a class="skip-link" href="#ai-tutor-main">跳到主要内容</a>
@@ -69,15 +69,14 @@
 
     <div class="confirmation-layer" id="leave-confirmation" hidden>
         <div class="confirmation-scrim" data-cancel-leave></div>
-        <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="leave-confirmation-title" aria-describedby="leave-confirmation-copy">
-            <span class="confirmation-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M5 12h14M10 7l-5 5 5 5"></path></svg>
-            </span>
-            <h2 id="leave-confirmation-title">返回主页？</h2>
-            <p id="leave-confirmation-copy">已经保存的内容不会丢失。正在进行的文字识别或 AI 批改会继续在后台完成。</p>
+        <section class="confirmation-dialog" role="alertdialog" aria-modal="true" aria-labelledby="leave-confirmation-title" aria-describedby="leave-confirmation-copy">
+            <div class="confirmation-copy">
+                <strong id="leave-confirmation-title">Leave this writing?</strong>
+                <p id="leave-confirmation-copy">Your saved work is safe. OCR and AI review will continue in the background.</p>
+            </div>
             <div class="confirmation-actions">
-                <button class="secondary-button" type="button" data-cancel-leave>继续写作</button>
-                <button class="primary-button" type="button" data-confirm-leave>返回主页</button>
+                <button class="confirmation-cancel" type="button" data-cancel-leave>Cancel</button>
+                <button class="confirmation-leave" type="button" data-confirm-leave>Leave</button>
             </div>
         </section>
     </div>
@@ -93,6 +92,6 @@
     <script src="assets/js/config.public.js?v=20260815-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
-    <script src="assets/js/ai-tutor.js?v=20260821-7"></script>
+    <script src="assets/js/ai-tutor.js?v=20260821-8"></script>
 </body>
 </html>

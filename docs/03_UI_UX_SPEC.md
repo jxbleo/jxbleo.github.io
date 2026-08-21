@@ -1927,6 +1927,9 @@ Important mobile rules:
   copy explains that saved work remains available and active OCR or review jobs
   continue in the cloud. The dialog keeps keyboard focus inside it, returns focus
   on cancel, and supports `Escape` as cancel.
+- The back arrow is red. Its confirmation matches the compact Dashboard/BBC
+  Apple-style alert: a 320px glass surface with centered copy and a divided
+  two-button footer, green `Cancel` on the left and red `Leave` on the right.
 - Remove the brand mark and the `AI Tutor / Writing Studio` lockup. The Writing
   Portfolio icon takes that position and reflects open/closed state with
   `aria-expanded`. The portfolio is an initially closed left drawer on phone,
@@ -1962,6 +1965,16 @@ Important mobile rules:
   corresponding sentence in the list. A small marker remains under skipped or
   unfinished capsules. The list is the only layout: there is no one-sentence mode,
   layout toggle, or pair of layout icons.
+- When the numbered capsule bar reaches the viewport top, it visually replaces
+  the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
+  not continue occupying a second row above it.
+- Sentence colors are positional and consistent: the original-manuscript mark,
+  numbered capsule, correction-card accent, and highlighted source sentence all
+  use the same palette entry. Both the original sentence mark and capsule are
+  interactive routes to the same correction row.
+- Phone layouts constrain every card, grid, and dynamic text block to the
+  viewport. Long unbroken model text wraps; photo previews collapse to one
+  column; horizontal overflow is confined to the capsule row.
 - Analysis and the reference revision are collapsed by default. Opening the
   reference temporarily replaces/hides the rewrite input; closing it restores
   the student's draft. Batch feedback appears only after Submit.

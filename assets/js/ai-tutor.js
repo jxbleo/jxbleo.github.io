@@ -132,6 +132,36 @@
         return isPlaceholderTitle(stored) ? '' : stored;
     }
 
+    var sentencePalette = [
+        { color: '#0f766e', soft: '#dff4ed', active: '#c9eee2', ring: 'rgba(15,118,110,.22)' },
+        { color: '#3e71c8', soft: '#eaf1ff', active: '#dbe7ff', ring: 'rgba(62,113,200,.22)' },
+        { color: '#ad681f', soft: '#fff2df', active: '#ffe6c4', ring: 'rgba(173,104,31,.22)' },
+        { color: '#7a58b5', soft: '#f1eafe', active: '#e6dafa', ring: 'rgba(122,88,181,.22)' },
+        { color: '#b34f68', soft: '#fdebf0', active: '#f8dbe3', ring: 'rgba(179,79,104,.22)' },
+        { color: '#287b91', soft: '#e2f4f7', active: '#cfecef', ring: 'rgba(40,123,145,.22)' }
+    ];
+
+    function sentenceColorStyle(index) {
+        var palette = sentencePalette[index % sentencePalette.length];
+        return '--sentence-color:' + palette.color + ';--sentence-soft:' + palette.soft + ';--sentence-active:' + palette.active + ';--sentence-ring:' + palette.ring;
+    }
+
+    function highlightedManuscriptHtml(manuscript, sentences) {
+        var source = String(manuscript || '');
+        var cursor = 0;
+        var html = '';
+        sentences.forEach(function(sentence, index) {
+            var original = String(sentence && sentence.original || '');
+            if (!original) return;
+            var matchAt = source.indexOf(original, cursor);
+            if (matchAt < 0) return;
+            html += escapeHtml(source.slice(cursor, matchAt));
+            html += '<button class="manuscript-sentence-highlight' + (index === state.activeSentence ? ' is-active' : '') + '" type="button" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(original) + '</button>';
+            cursor = matchAt + original.length;
+        });
+        return html + escapeHtml(source.slice(cursor));
+    }
+
     function compositionStatus(composition) {
         return firstText(composition && composition.status, 'draft');
     }
@@ -923,7 +953,7 @@
         var manuscript = firstText(state.current && state.current.confirmed_text, state.confirmedText, '暂无原文。');
         stage.innerHTML = '<div class="language-review-stack">' +
             '<section class="surface language-review-card language-overall-card"><p class="eyebrow">LANGUAGE REVIEW</p><h2>整体评价</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
-            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><span>02</span><h2>原文</h2></div><div class="manuscript-text">' + escapeHtml(manuscript) + '</div></section>' +
+            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><span>02</span><h2>原文</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
             '<section class="surface language-review-card language-sentence-review-card">' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div>' +
             '<div class="language-toolbar-bottom"><span class="progress-copy">' + (state.readOnly ? progress.accepted + ' / ' + progress.required + ' 已完成' : progress.filled + ' / ' + progress.required + ' 已填写') + '</span><span class="capsule-hint">左右滑动数字，点击定位句子</span></div></nav>' +
@@ -940,7 +970,7 @@
         var done = !rewriteRequired(sentence) || result && result.accepted === true;
         var review = result && result.accepted === false;
         var missing = rewriteRequired(sentence) && !done && (!firstText(state.rewrites[id]) || state.skipped[id]);
-        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + (missing ? '，尚未完成' : '') + '">' + (index + 1) + '</button>';
+        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + (missing ? '，尚未完成' : '') + '">' + (index + 1) + '</button>';
     }
 
     function sentenceCardHtml(sentence, index) {
@@ -953,9 +983,9 @@
         var referenceOpen = visibility.referenceVisible;
         var issues = safeArray(sentence.issues);
         var status = accepted ? '已完成' : needsReview ? '需要再修改' : required ? '等待改写' : '表达正确';
-        return '<article class="sentence-card' + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '') + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '">' +
+        return '<article class="sentence-card' + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '') + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">' +
             '<div class="sentence-card-header"><span class="sentence-number">SENTENCE ' + (index + 1) + '</span><span class="sentence-status">' + status + '</span></div>' +
-            '<p class="original-sentence">' + escapeHtml(sentence.original) + '</p>' +
+            '<p class="original-sentence"><span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span></p>' +
             (issues.length ? '<div class="issue-list">' + issues.map(function(issue) {
                 var issueCopy = [firstText(issue.explanation), firstText(issue.suggestion)].filter(Boolean).join(' · ');
                 return '<div class="issue"><b>' + escapeHtml(firstText(issue.category, issue.span, 'LANGUAGE')) + '</b><p>' + escapeHtml(issueCopy) + '</p></div>';
@@ -1322,7 +1352,14 @@
         else if (button.matches('[data-sentence-index]')) {
             state.activeSentence = Number(button.getAttribute('data-sentence-index')) || 0;
             Array.prototype.forEach.call(document.querySelectorAll('.sentence-capsule'), function(item) {
-                var active = item === button;
+                var active = Number(item.getAttribute('data-sentence-index')) === state.activeSentence;
+                item.classList.toggle('is-active', active);
+                item.setAttribute('aria-pressed', String(active));
+                if (active) { item.setAttribute('aria-current', 'true'); item.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' }); }
+                else item.removeAttribute('aria-current');
+            });
+            Array.prototype.forEach.call(document.querySelectorAll('[data-manuscript-sentence]'), function(item) {
+                var active = Number(item.getAttribute('data-sentence-index')) === state.activeSentence;
                 item.classList.toggle('is-active', active);
                 if (active) item.setAttribute('aria-current', 'true');
                 else item.removeAttribute('aria-current');
@@ -1374,6 +1411,9 @@
             if (state.leaveDialogOpen) closeLeaveConfirmation();
             else if (state.sidebarOpen) closeSidebar();
         }
+    });
+    window.addEventListener('pageshow', function() {
+        if (state.leaveDialogOpen) closeLeaveConfirmation();
     });
 
     function init() {
