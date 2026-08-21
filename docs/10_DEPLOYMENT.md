@@ -1076,7 +1076,9 @@ private one-minute timer and passed an empty-outbox smoke test. Static publicati
 and the Qwen environment variables were subsequently configured. The durable
 `writing_ai_jobs` collection, `writingAiWorker` function/timer, and bundled
 `writingTutor` OCR recovery update were deployed and verified Active on 2026-08-21.
-Review and rewrite-check jobs share that worker. Enabling durable rewrite
-checking requires redeploying `writingTutor` plus the static AI Tutor client;
-`writingAiWorker` needs no code update because it generically dispatches eligible
-queue rows back to `writingTutor`.
+Review and rewrite-check jobs share that worker. On 2026-08-22, the updated
+`writingTutor` bundle was redeployed and verified `Active` / `Available`; this
+activated guarded empty-placeholder cleanup and durable rewrite checking. The
+matching static AI Tutor client was published from `main`. `writingAiWorker`
+needed no code update because it generically dispatches eligible queue rows back
+to `writingTutor`.
