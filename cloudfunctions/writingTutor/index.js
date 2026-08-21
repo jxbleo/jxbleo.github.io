@@ -1159,25 +1159,32 @@ async function enqueueReviewEmail(student, usage, composition, mode) {
 }
 
 function validateLanguageResult(result, units) {
-  const expected = new Map(units.map((unit) => [unit.sentence_id, unit.original]));
+  const expectedIds = new Set(units.map((unit) => unit.sentence_id));
   const received = Array.isArray(result.sentences) ? result.sentences : [];
   if (received.length !== units.length) throw new Error("WRITING_AI_SENTENCE_ALIGNMENT_FAILED");
   const seen = new Set();
   for (const item of received) {
-    if (!expected.has(item.sentence_id) || seen.has(item.sentence_id)) throw new Error("WRITING_AI_SENTENCE_ALIGNMENT_FAILED");
-    if (item.original !== expected.get(item.sentence_id)) throw new Error("WRITING_AI_SENTENCE_ALIGNMENT_FAILED");
+    if (!expectedIds.has(item.sentence_id) || seen.has(item.sentence_id)) {
+      throw new Error("WRITING_AI_SENTENCE_ALIGNMENT_FAILED");
+    }
     seen.add(item.sentence_id);
   }
 }
 
 function canonicalLanguageResult(result, units) {
   validateLanguageResult(result, units);
+  const byId = new Map(result.sentences.map((item) => [item.sentence_id, item]));
   return {
     ...result,
-    sentences: result.sentences.map((item) => ({
-      ...item,
-      rewrite_required: item.status !== "effective",
-    })),
+    sentences: units.map((unit) => {
+      const item = byId.get(unit.sentence_id);
+      return {
+        ...item,
+        sentence_id: unit.sentence_id,
+        original: unit.original,
+        rewrite_required: item.status !== "effective",
+      };
+    }),
     prompt_version: PROMPT_VERSION,
     schema_version: SCHEMA_VERSION,
   };

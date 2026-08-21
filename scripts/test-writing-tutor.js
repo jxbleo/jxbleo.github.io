@@ -546,11 +546,18 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   const language = backend._test.canonicalLanguageResult({
     overview: "Overview", profile_observations: [],
     sentences: [{
-      sentence_id: "s001", original: "I goes home.", status: "needs_revision",
+      sentence_id: "s001", original: "I go home.", status: "needs_revision",
       rewrite_required: false, issues: [], coaching_summary: "Agreement", reference_revision: "I go home.",
     }],
   }, [{ sentence_id: "s001", original: "I goes home." }]);
   assert.strictEqual(language.sentences[0].rewrite_required, true);
+  assert.strictEqual(language.sentences[0].original, "I goes home.",
+    "server must restore the exact source sentence instead of trusting the model echo");
+  assert.throws(() => backend._test.canonicalLanguageResult({
+    overview: "Overview", profile_observations: [],
+    sentences: [{ sentence_id: "s999", original: "Wrong", status: "effective", issues: [],
+      coaching_summary: "", reference_revision: "" }],
+  }, [{ sentence_id: "s001", original: "I goes home." }]), /WRITING_AI_SENTENCE_ALIGNMENT_FAILED/);
 
   const rewrites = backend._test.canonicalRewriteResults([{
     sentence_id: "s001", accepted: true, meaning_preserved: true, target_resolved: true,
