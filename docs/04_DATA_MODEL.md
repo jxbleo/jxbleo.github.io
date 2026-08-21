@@ -1073,11 +1073,18 @@ All collections are `ADMINONLY`.
   Composition: its stable operation ID, Composition revision, sentence IDs,
   student rewrite text, and safe timestamps. This is the authoritative input a
   claimed rewrite-check worker reads after a browser disconnect; it is never
-  copied into `writing_ai_jobs` or logs. A successful current-lease transaction
+  copied into `writing_ai_jobs` or logs. Network uncertainty and retryable or
+  terminal provider failure do not delete this staged body. A successful
+  current-lease transaction
   atomically replaces the entire `rewrite_results` field with `db.command.set`,
   clears `pending_rewrite_check`, completes the job, and updates training status.
   This whole-field replacement is required when the previous
   `rewrite_results` value is `null`.
+  Before `Check`, per-sentence typing drafts exist only in authenticated,
+  ownership-scoped browser storage and are not a CloudBase collection or Job
+  field. They are cleared after successful result publication; when a result asks
+  for another revision, its stored `student_rewrite` is the server-side recovery
+  source for the next round.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.

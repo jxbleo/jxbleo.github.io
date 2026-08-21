@@ -1968,17 +1968,25 @@ Important mobile rules:
   use a dot in that same reserved slot, but no progress copy or instructional hint
   appears beneath the capsule row. The list is the only layout: there is no one-sentence
   mode, layout toggle, or pair of layout icons.
-- Each revision-required sentence row contains only the original English sentence,
-  one compact grammar box containing a single paragraph of Simplified Chinese feedback,
-  and the student's revision input. Do not render a `Grammar Analysis` heading, issue
+- Each revision-required sentence row is one two-sided card. Its front contains
+  the original English sentence and one compact, single-paragraph Simplified Chinese
+  grammar analysis; its back repeats the original sentence beside the student's revision input. Never
+  show the two faces together. Do not render a `Grammar Analysis` heading, issue
   categories such as `Word Choice`, or separate issue/summary/result blocks. The optional
-  reference answer belongs to the third input area and temporarily replaces the input.
+  reference answer may expand on the analysis face, but it disappears with the
+  analysis when the student turns to the input face.
   An effective sentence instead shows only its original sentence followed by an
   accessible 22px circular SVG checkmark matching the Teacher matrix completion mark;
   its circle inherits the sentence color and it has no grammar box or revision input.
 - Every Sentence Revision row begins with its corresponding one-based sentence number.
   The card footer contains only one trailing `Check` button in editable mode; it has no
   explanatory copy, dynamic long label, or arrow icon.
+- The face control exposes its state and destination in an accessible name. Click,
+  Enter, and Space all switch the same card; focus remains on the corresponding
+  control or moves predictably to the revision input. The inactive face is hidden
+  from pointer, keyboard, and screen-reader interaction—not merely rotated out of
+  sight. Under `prefers-reduced-motion: reduce`, remove the 3D rotation and use an
+  immediate swap or short opacity transition while preserving mutual exclusion.
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.
@@ -1998,9 +2006,15 @@ Important mobile rules:
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
   column; horizontal overflow is confined to the capsule row.
-- Opening the reference temporarily replaces/hides the rewrite input; closing it
-  restores the student's draft. Batch feedback appears only after Submit and is
-  folded into the consolidated grammar-analysis area.
+- Opening the reference on the analysis face never discards the rewrite draft.
+  Turning to the rewrite face hides both analysis and reference. Batch feedback
+  appears only after Submit and is folded into the consolidated grammar-analysis area.
+- Typing a revision saves it locally without waiting for `Check`. Reloading the
+  page restores the user/Composition/revision/sentence-scoped value. After
+  `Check`, keep that local draft while the matching cloud
+  `pending_rewrite_check` is queued, processing, failed, or delivery is uncertain.
+  Clear both layers only after a successfully persisted check result; unsuccessful
+  or rejected work must still reopen with recoverable student text.
 - Completed portfolio items are read-only. `Use as new` creates another
   Composition; `重新上传` exists only inside an active Composition and clearly
   states that successful confirmation replaces its current review.

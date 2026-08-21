@@ -947,6 +947,15 @@ Decision:
   `pending_rewrite_check`; the queue stores only its stable operation,
   Composition/revision scope, lifecycle, lease, and safe error metadata. The
   worker resolves the staged body only after claiming the current job.
+- Rewrite drafts deliberately use a two-stage durability boundary. Local,
+  ownership-scoped persistence protects every keystroke before submission;
+  `pending_rewrite_check` becomes the cloud authority only after `Check`. Neither
+  layer is cleared on uncertain delivery or model failure, and successful result
+  publication is the sole cleanup boundary.
+- Sentence analysis and rewriting are two modes of one card, not adjacent panels.
+  Mutual exclusion keeps the student from copying while composing; the same
+  explicit state supports pointer, keyboard, assistive technology, and a
+  non-spatial reduced-motion alternative.
 - Nested AI artifacts are whole values at the database boundary. Publishing the
   first rewrite result over `rewrite_results: null` must use
   `db.command.set(...)` in the guarded completion transaction, just like first
