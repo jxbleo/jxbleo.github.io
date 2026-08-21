@@ -1922,6 +1922,9 @@ Important mobile rules:
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
+- Its header toolbar keeps the red-text `Home` action by itself on the left and
+  groups `History` and `New` together on the right. `History` opens the writing
+  portfolio drawer without changing the current Composition.
 - The page exposes only the top toolbar above card-based content. Its leftmost
   arrow opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs

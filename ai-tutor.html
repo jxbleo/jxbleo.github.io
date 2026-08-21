@@ -9,24 +9,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260821-6">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260821-7">
 </head>
 <body class="ai-tutor-page">
     <a class="skip-link" href="#ai-tutor-main">跳到主要内容</a>
     <div class="ai-tutor-shell" id="ai-tutor-app" aria-busy="true">
         <header class="ai-tutor-header">
-            <button class="icon-button header-back" id="header-back" type="button" aria-label="返回主页">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path><path d="M8 12h11"></path></svg>
-            </button>
-            <button class="icon-button portfolio-toggle" id="portfolio-toggle" type="button" aria-label="打开作品库" aria-expanded="false" aria-controls="portfolio-sidebar">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5.5h5.5A2.5 2.5 0 0 1 13 8v11H7.5A2.5 2.5 0 0 1 5 16.5v-11Z"></path><path d="M19 5.5h-3.5A2.5 2.5 0 0 0 13 8v11h3.5a2.5 2.5 0 0 0 2.5-2.5v-11Z"></path></svg>
-            </button>
+            <button class="toolbar-home compact header-back" id="header-back" type="button">Home</button>
             <div class="header-actions">
                 <span class="student-chip" id="student-chip" hidden></span>
-                <button class="primary-button compact" id="header-new-writing" type="button">
-                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
-                    <span>新作文</span>
-                </button>
+                <div class="toolbar-pair" role="group" aria-label="作文操作">
+                    <button class="secondary-button compact portfolio-toggle" id="portfolio-toggle" type="button" aria-label="打开历史" aria-expanded="false" aria-controls="portfolio-sidebar">History</button>
+                    <button class="primary-button compact header-new-writing" id="header-new-writing" type="button">New</button>
+                </div>
             </div>
         </header>
 

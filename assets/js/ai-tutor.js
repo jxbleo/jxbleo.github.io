@@ -1200,7 +1200,7 @@
         portfolioSidebar.classList.add('is-open');
         sidebarScrim.hidden = false;
         portfolioToggle.setAttribute('aria-expanded', 'true');
-        portfolioToggle.setAttribute('aria-label', '关闭作品库');
+        portfolioToggle.setAttribute('aria-label', '关闭历史');
         updateOverlayLock();
     }
 
@@ -1209,7 +1209,7 @@
         portfolioSidebar.classList.remove('is-open');
         sidebarScrim.hidden = true;
         portfolioToggle.setAttribute('aria-expanded', 'false');
-        portfolioToggle.setAttribute('aria-label', '打开作品库');
+        portfolioToggle.setAttribute('aria-label', '打开历史');
         updateOverlayLock();
     }
 
