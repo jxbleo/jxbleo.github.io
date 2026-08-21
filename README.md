@@ -150,6 +150,9 @@ Supporting docs:
 - [docs/03_UI_UX_SPEC.md](docs/03_UI_UX_SPEC.md)
 - [docs/05_CHANGELOG.md](docs/05_CHANGELOG.md)
 - [docs/06_DECISIONS.md](docs/06_DECISIONS.md)
+- [docs/adr/0003-durable-canonical-ai-boundaries.md](docs/adr/0003-durable-canonical-ai-boundaries.md):
+  reusable AI-provider incident log, durable-job rules, canonicalization rules,
+  observability limits, and release gate
 - [docs/07_TESTING_CHECKLIST.md](docs/07_TESTING_CHECKLIST.md)
 - [docs/08_BACKLOG.md](docs/08_BACKLOG.md)
 - [docs/09_CONTENT_WORKFLOW.md](docs/09_CONTENT_WORKFLOW.md)

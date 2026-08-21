@@ -1721,6 +1721,8 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor review jobs
 
+- Added `docs/adr/0003-durable-canonical-ai-boundaries.md` as the reusable incident log and release gate for future AI features; it records no credentials or student content.
+
 - Fixed Qwen language-review rejection when the model normalized whitespace or punctuation in its echoed `original`;
   sentence IDs remain strict while the server restores the authoritative original text.
 
