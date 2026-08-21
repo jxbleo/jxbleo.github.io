@@ -1000,6 +1000,16 @@ function jobCompositionStatus(job, status) {
   return null;
 }
 
+function replaceWholeFields(update, fieldNames) {
+  const persistenceUpdate = { ...update };
+  for (const fieldName of fieldNames) {
+    if (Object.prototype.hasOwnProperty.call(persistenceUpdate, fieldName)) {
+      persistenceUpdate[fieldName] = db.command.set(persistenceUpdate[fieldName]);
+    }
+  }
+  return persistenceUpdate;
+}
+
 async function enqueueReviewJob(student, composition, prepared, event, mode, usage) {
   const operationId = text(event.operation_id, 160);
   const jobId = stableId("writing_job", student.auth_uid, operationId);
@@ -1362,7 +1372,9 @@ async function performReviewJob(student, job) {
       return;
     }
     if (!usageRow) throw new Error("AI_USAGE_RESERVATION_LOST");
-    await transaction.collection(COMPOSITIONS).doc(current._id).update(update);
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields(update, [
+      "standardized_review", "language_review", "rewrite_results", "active_job",
+    ]));
     await transaction.collection(JOBS).doc(currentJob._id).update({
       status: "succeeded", error_code: null, lease_token: null, lease_until: null,
       next_retry_at: null, finished_at: now, updated_at: now,
@@ -1523,6 +1535,6 @@ exports.main = async (event = {}) => {
 exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, roundedToStep,
-  usageMatchesScope, PROMPT_BUNDLE_VERSION,
+  usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },
 };
