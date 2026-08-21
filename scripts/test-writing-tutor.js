@@ -290,25 +290,28 @@ check("each revision-required sentence renders only source, consolidated analysi
   const styles = read(stylePath);
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   requireEvery(cardSource, [
-    "original-sentence", "grammar-analysis", "grammar-analysis-point",
-    "sentence.coaching_summary", "result.feedback", "sentence-response", "rewrite-input",
+    "original-sentence", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
+    "sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion",
+    "result.feedback", "sentence-response", "rewrite-input",
   ], "three-part sentence row");
-  assert(!/sentence-card-header|sentence-status|issue-list|coaching-summary|sentence-feedback/.test(cardSource),
-    "sentence rows must not render separate status, issue, summary, or feedback blocks");
-  requireEvery(styles, [".grammar-analysis", ".grammar-analysis-point", ".sentence-response"],
-    "consolidated sentence styles");
-  assert(!/\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
-    "legacy split feedback styles must be removed");
+  assert(!/grammar-analysis-label|grammar-analysis-point|grammar-analysis-summary|grammar-analysis-result|issue\.category|result\.next_step/.test(cardSource),
+    "the grammar box must not render headings, categories, split feedback blocks, or English result enums");
+  requireEvery(styles, [".grammar-analysis", ".grammar-analysis-copy", ".sentence-response"],
+    "single-paragraph grammar analysis styles");
+  assert(!/\.grammar-analysis-(?:label|point|points|summary|result)\s*\{|\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
+    "legacy split grammar-feedback styles must be removed");
 });
 
-check("effective sentences collapse to the source sentence and a thumbs-up icon", () => {
+check("effective sentences use the matrix-style colored checkmark and no coaching controls", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
+  const teacher = read("assets/js/teacher.js");
+  const appStyles = read("assets/css/app.css");
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   const effectiveStart = cardSource.indexOf("if (!required)");
   const effectiveEnd = cardSource.indexOf("var visibility");
   const effectiveBranch = cardSource.slice(effectiveStart, effectiveEnd);
-  requireEvery(effectiveBranch, ["sentence-effective-icon", "thumbUp", "这句话无需修改"],
+  requireEvery(effectiveBranch, ["sentence-effective-icon", "icon('check')", "这句话无需修改"],
     "effective sentence summary");
   assert(!/grammar-analysis|sentence-response|rewrite-input|你的改写/.test(effectiveBranch),
     "effective sentences must not render analysis or rewrite controls");
@@ -318,6 +321,13 @@ check("effective sentences collapse to the source sentence and a thumbs-up icon"
     "legacy effective sentences without rewrite_required must remain exempt from rewriting");
   requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-effective-icon"],
     "effective sentence styling");
+  assert(/function matrixStatusIcon[\s\S]{0,300}status === 'passed'\) return '✓'/.test(teacher),
+    "the teacher matrix comparison target must remain its completed checkmark");
+  assert(/\.progress-matrix-status-icon\s*\{[^}]*width\s*:\s*22px[^}]*height\s*:\s*22px/is.test(appStyles),
+    "the teacher matrix checkmark must retain its 22px circular frame");
+  assert(/\.sentence-effective-icon\s*\{[^}]*width\s*:\s*22px[^}]*height\s*:\s*22px[^}]*color\s*:\s*#fff[^}]*background\s*:\s*var\(--sentence-color\)/is.test(styles),
+    "the writing checkmark must match the matrix circle while inheriting its sentence color");
+  assert(!/thumbUp/.test(client), "the superseded thumbs-up icon must be removed");
 });
 
 check("sentence correction has one list mode and no layout-switch controls", () => {

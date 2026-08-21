@@ -203,7 +203,6 @@
             camera: '<rect x="3" y="6.5" width="18" height="13" rx="3"></rect><path d="m8 6.5 1.3-2h5.4l1.3 2"></path><circle cx="12" cy="13" r="3.2"></circle>',
             text: '<path d="M5 6h14M8 11h8M8 16h8"></path>',
             check: '<path d="m5 12 4.2 4.2L19 6.5"></path>',
-            thumbUp: '<path d="M7 10v10H4V10h3Zm0 8h10.2a2 2 0 0 0 2-1.7l1-6A2 2 0 0 0 18.2 8H14l.7-3.1A1.6 1.6 0 0 0 13.2 3h-.4L7 10v8Z"></path>',
             arrow: '<path d="M5 12h14M14 7l5 5-5 5"></path>',
             edit: '<path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0-3-3L4 16Z"></path>',
             upload: '<path d="M12 16V4M7 9l5-5 5 5M5 16v3h14v-3"></path>',
@@ -982,23 +981,28 @@
         var original = '<span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span>';
         if (!required) {
             return cardStart +
-                '<p class="original-sentence">' + original + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('thumbUp') + '</span></p>' +
+                '<p class="original-sentence">' + original + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></p>' +
                 '</article>';
         }
         var visibility = coordinateReferenceAndRewrite(state.referenceOpen[id]);
         var referenceOpen = visibility.referenceVisible;
         var issues = safeArray(sentence.issues);
-        var issueRows = issues.map(function(issue) {
-            var issueCopy = [firstText(issue.explanation), firstText(issue.suggestion)].filter(Boolean).join(' · ');
-            return '<div class="grammar-analysis-point"><b>' + escapeHtml(firstText(issue.category, issue.span, '语言建议')) + '</b><p>' + escapeHtml(issueCopy) + '</p></div>';
-        }).join('');
-        var summary = firstText(sentence.coaching_summary, issues.length ? '' : '这句话表达清楚，没有需要修改的语言问题。');
-        var rewriteFeedback = result ? firstText(result.feedback, result.next_step, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。') : '';
-        var analysis = '<section class="grammar-analysis" aria-label="语法分析"><span class="grammar-analysis-label">Grammar Analysis</span>' +
-            (issueRows ? '<div class="grammar-analysis-points">' + issueRows + '</div>' : '') +
-            (summary ? '<p class="grammar-analysis-summary">' + escapeHtml(summary) + '</p>' : '') +
-            (rewriteFeedback ? '<p class="grammar-analysis-result' + (result.accepted ? ' accepted' : '') + '">' + escapeHtml(rewriteFeedback) + '</p>' : '') +
-            '</section>';
+        var rewriteFeedback = result ? firstText(result.feedback, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。') : '';
+        var analysisParts = [];
+        function addAnalysisPart(value) {
+            var copy = firstText(value);
+            if (copy && analysisParts.indexOf(copy) === -1) analysisParts.push(copy);
+        }
+        addAnalysisPart(sentence.coaching_summary);
+        issues.forEach(function(issue) {
+            addAnalysisPart(issue && issue.explanation);
+            addAnalysisPart(issue && issue.suggestion);
+        });
+        addAnalysisPart(rewriteFeedback);
+        var analysisCopy = analysisParts.map(function(part) {
+            return /[。！？!?；;.]$/.test(part) ? part : part + '。';
+        }).join(' ') || '请根据建议调整这句话。';
+        var analysis = '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>';
         var response = visibility.rewriteInputHidden
             ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>'
             : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';

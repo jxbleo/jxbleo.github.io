@@ -1726,9 +1726,12 @@ required.
   one consolidated Chinese grammar analysis, and the student input area; removed
   the capsule-row progress copy and instructional hint.
 - Collapsed effective sentences in Sentence Revision to the original sentence and
-  an accessible thumbs-up icon. These rows no longer show a Grammar Analysis panel
-  or disabled revision input, while the server-normalized rewrite requirement remains
-  the authoritative decision.
+  an accessible matrix-style circular SVG checkmark colored by sentence. These rows
+  no longer show a grammar box or disabled revision input, while the server-normalized
+  rewrite requirement remains the authoritative decision.
+- Reduced each required sentence's grammar box to one paragraph of Chinese feedback.
+  Removed the `Grammar Analysis` heading, issue-category labels such as `Word Choice`,
+  and the separate issue, summary, and result rows.
 - Restored the confirmed manuscript's paragraph flow in `Draft`. Sentence highlights
   now use keyboard-accessible inline fragments and keep boundary spaces/newlines
   outside the highlight, so multiple colored sentences remain in their original paragraph.
