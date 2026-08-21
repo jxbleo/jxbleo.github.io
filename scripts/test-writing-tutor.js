@@ -423,18 +423,16 @@ check("rewrite draft cleanup removes only accepted sentences and retains failure
     "network-disconnect recovery must return without clearing any sentence drafts");
 });
 
-check("effective sentences use the matrix-style colored checkmark and no coaching controls", () => {
+check("effective sentences use the static CORRECT status and no coaching controls", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const teacher = read("assets/js/teacher.js");
-  const appStyles = read("assets/css/app.css");
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   const effectiveStart = cardSource.indexOf("if (!required)");
   const effectiveEnd = cardSource.indexOf("var visibility");
   const effectiveBranch = cardSource.slice(effectiveStart, effectiveEnd);
   requireEvery(effectiveBranch, [
     "sentence-flip-card", "sentence-card-inner-static", "sentence-card-face",
-    "sentence-effective-face", "sentence-effective-icon", "icon('check')", "这句话无需修改",
+    "sentence-effective-face", "sentenceMeta",
   ],
     "effective sentence summary");
   assert(!/grammar-analysis|sentence-response|rewrite-input|你的改写/.test(effectiveBranch),
@@ -445,14 +443,12 @@ check("effective sentences use the matrix-style colored checkmark and no coachin
     "the removed disabled no-rewrite textarea must not remain in source or styles");
   assert(/function rewriteRequired[\s\S]{0,260}["']effective["']/.test(client),
     "legacy effective sentences without rewrite_required must remain exempt from rewriting");
-  requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-effective-icon"],
+  requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-state.is-correct"],
     "effective sentence styling");
-  assert(/function matrixStatusIcon[\s\S]{0,300}status === 'passed'\) return '✓'/.test(teacher),
-    "the teacher matrix comparison target must remain its completed checkmark");
-  assert(/\.progress-matrix-status-icon\s*\{[^}]*width\s*:\s*22px[^}]*height\s*:\s*22px/is.test(appStyles),
-    "the teacher matrix checkmark must retain its 22px circular frame");
-  assert(/\.sentence-effective-icon\s*\{[^}]*width\s*:\s*22px[^}]*height\s*:\s*22px[^}]*color\s*:\s*#fff[^}]*background\s*:\s*var\(--sentence-color\)/is.test(styles),
-    "the writing checkmark must match the matrix circle while inheriting its sentence color");
+  requireEvery(cardSource, ["'correct'", "'CORRECT'", "revisionMark", "'✓'", "sentence-state-mark"],
+    "CORRECT status label");
+  assert(!/sentence-effective-icon|sentence-corrected-icon/.test(`${client}\n${styles}`),
+    "checks must live after the status label rather than inline after sentence text");
   assert(!/thumbUp/.test(client), "the superseded thumbs-up icon must be removed");
 });
 
@@ -490,8 +486,10 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "done and review states must not visually thicken or dash the capsule border");
   assert(/\.sentence-capsule\.is-done::after\s*\{[^}]*content\s*:\s*["']✓["']/is.test(styles),
     "completed capsules must show a small checkmark beneath the number");
-  assert(/\.sentence-capsule\.is-review::after,\s*\.sentence-capsule\.has-gap::after\s*\{[^}]*content\s*:\s*["']\?["']/is.test(styles),
-    "unresolved capsules must show a small question mark beneath the number");
+  assert(/\.sentence-capsule\.is-done::after\s*\{[^}]*color\s*:\s*var\(--ai-success\)/is.test(styles),
+    "completed capsule checks must always use semantic green");
+  assert(/\.sentence-capsule\.is-review::after,\s*\.sentence-capsule\.has-gap::after\s*\{[^}]*content\s*:\s*["']×["'][^}]*color\s*:\s*var\(--ai-danger\)/is.test(styles),
+    "unresolved capsules must show a semantic red cross beneath the number");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
     "the capsule row must reserve space for its status marks");
 });
@@ -501,10 +499,10 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
-  requireEvery(cardSource, ["numberedOriginal", "sentence-row-number", "sentence-line-content", "aria-hidden=\"true\""],
+  requireEvery(cardSource, ["sentenceNumber", "sentence-card-meta", "sentence-row-number", "aria-hidden=\"true\""],
     "sentence-row numbering");
-  assert((cardSource.match(/numberedOriginal/g) || []).length >= 3,
-    "required and effective sentence rows must share the same numbered original");
+  assert((cardSource.match(/sentenceMeta/g) || []).length >= 4,
+    "required and effective sentence rows must share the same top metadata row");
   assert(/data-submit-rewrites[^>]*>Check<\/button>/.test(renderSource),
     "the editable footer must expose exactly the concise Check action");
   assert(!/未完成的句子|全部完成，提交检查|再次提交检查|icon\('arrow'\)/.test(renderSource),
@@ -513,11 +511,15 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
     "the lone desktop Check action must align to the trailing edge");
   assert(/\.sentence-row-number\s*\{[^}]*(?:display\s*:\s*inline-block)[^}]*border\s*:\s*0[^}]*border-radius\s*:\s*0[^}]*background\s*:\s*transparent/is.test(styles),
     "sentence rows must use the BBC worksheet-style plain sequence number rather than a capsule");
-  assert(/\.original-sentence,\s*\.corrected-sentence\s*\{[^}]*display\s*:\s*grid[^}]*grid-template-columns\s*:\s*18px\s+minmax\(0,1fr\)[^}]*align-items\s*:\s*baseline/is.test(styles),
-    "the sentence body must use a hanging grid so wrapped lines align with the first letter rather than the number");
+  assert(/\.sentence-card-meta\s*\{[^}]*display\s*:\s*flex/is.test(styles)
+      && /\.sentence-card-meta\s*\{[^}]*justify-content\s*:\s*space-between/is.test(styles)
+      && /\.sentence-card-meta\s*\{[^}]*align-items\s*:\s*baseline/is.test(styles),
+    "the bare sequence number and revision status must share a compact top metadata row");
+  assert(!/\.original-sentence,\s*\.corrected-sentence\s*\{[^}]*grid-template-columns/is.test(styles),
+    "the number must not consume sentence width or alter wrapped line alignment");
 });
 
-check("accepted revisions default to the corrected sentence and show an inline check", () => {
+check("accepted revisions default to the corrected sentence and show REVISED status", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const prepareSource = functionSource(client, "prepareLanguageReview", "sentenceId");
@@ -526,12 +528,48 @@ check("accepted revisions default to the corrected sentence and show an inline c
     "accepted revision default face");
   requireEvery(cardSource, [
     "correctedSentence", "corrected-sentence", "sentence-corrected-highlight",
-    "sentence-corrected-icon", "这句话已订正正确", "icon('check')",
+    "'revised'", "'REVISED'", "sentence-state-mark",
   ], "accepted corrected sentence");
   assert(/accepted\s*\?\s*correctedResponse\s*:\s*editableResponse/.test(cardSource),
     "accepted revisions must replace the input face with the persisted corrected sentence");
-  requireEvery(styles, [".corrected-sentence", ".sentence-corrected-highlight", ".sentence-corrected-icon"],
+  requireEvery(styles, [".corrected-sentence", ".sentence-corrected-highlight", ".sentence-state.is-revised"],
     "accepted corrected sentence styling");
+  assert(!/sentence-corrected-icon/.test(`${client}\n${styles}`),
+    "accepted checks must not appear inline after the corrected sentence");
+});
+
+check("sentence cards expose three explicit top-right revision states", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(cardSource, [
+    "revisionState", "!required ? 'correct'", "accepted ? 'revised' : 'needs-revision'",
+    "'CORRECT'", "'REVISED'", "'NEEDS REVISION'", "revisionMark",
+    "revisionState === 'needs-revision' ? '×' : '✓'",
+  ], "three-state revision label");
+  requireEvery(styles, [
+    ".sentence-state.is-correct", ".sentence-state.is-revised",
+    ".sentence-state.is-needs-revision", "var(--ai-success)", "var(--ai-danger)",
+  ], "revision state colors");
+});
+
+check("sentence flip cards resize to the active face without reserved blank space", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(client, [
+    "function activeSentenceCardFace", "function syncSentenceCardHeight",
+    "function observeSentenceCardHeights", "window.ResizeObserver", "face.offsetHeight",
+    "has-measured-height", "window.requestAnimationFrame(observeSentenceCardHeights)",
+  ], "active-face height measurement");
+  const flipSource = client.slice(client.indexOf("else if (button.matches('[data-flip-sentence]'))"), client.indexOf("else if (button.matches('[data-sentence-index]'))"));
+  requireEvery(flipSource, ["syncSentenceCardHeight(flipInner)", "observeSentenceCardHeights()"],
+    "flip-time height synchronization");
+  assert(/\.sentence-card-inner\s*\{[^}]*height\s+320ms\s+cubic-bezier\(\.22,1,\.36,1\)/is.test(styles),
+    "height changes must use the restrained card transition");
+  assert(/\.sentence-card-face\s*\{[^}]*align-self\s*:\s*start/is.test(styles),
+    "the initial grid must preserve each face's natural content height for measurement");
+  assert(/\.sentence-card-inner\.has-measured-height\s+\.sentence-card-face\s*\{[^}]*position\s*:\s*absolute/is.test(styles),
+    "measured faces must stop reserving the hidden face's height");
 });
 
 check("sentence cards flip from the whole surface and keep Sample as the sole secondary action", () => {
