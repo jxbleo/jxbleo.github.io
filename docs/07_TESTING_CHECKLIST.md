@@ -1766,6 +1766,10 @@ High priority improvement:
   matching sentence. Confirm the full sentence list is always present and there
   is no progress copy, instructional hint, sequential mode, layout toggle, or
   pair of layout icons beneath or beside the capsule row.
+- Compare normal, active, completed, and review capsules and confirm every computed
+  border is the same 1px solid width. Completed capsules show a tiny check below the
+  number; incomplete/review capsules never show that completion check, and the status
+  slot is not clipped by the horizontal scroller. Completed aria-labels include “已完成”.
 - Scroll until the capsule bar reaches the top and confirm it replaces the main
   toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
   after leaving the Sentence Revision card.
@@ -1795,6 +1799,11 @@ High priority improvement:
   following 22px circular SVG checkmark render—without a grammar box, “你的改写”, a
   textarea, or a reference-answer action. Confirm the circle matches the Teacher matrix
   completion mark but uses the sentence's indexed color. Its capsule remains complete.
+- Confirm every Sentence Revision source row begins with exactly one matching one-based
+  number, including effective rows. In editable mode, the footer contains only one
+  `Check` button aligned right on desktop and full-width on phone; the old unfinished
+  hint, long submit labels, and arrow icon are absent. Empty submission still returns
+  the student to the first unfinished sentence.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display

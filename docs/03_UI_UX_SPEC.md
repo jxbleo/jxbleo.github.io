@@ -1963,10 +1963,11 @@ Important mobile rules:
   `Language Review`, `Draft`, and `Sentence Revision`.
 - The Sentence Revision card begins with a horizontally scrollable row of
   numbered capsules. Selecting a number immediately scrolls to and highlights its
-  corresponding sentence in the list. A small marker remains on skipped or
-  unfinished capsules, but no progress copy or instructional hint appears beneath
-  the capsule row. The list is the only layout: there is no one-sentence mode,
-  layout toggle, or pair of layout icons.
+  corresponding sentence in the list. Every capsule uses the same 1px solid border.
+  A tiny checkmark appears below a completed number; incomplete or review states may
+  use a dot in that same reserved slot, but no progress copy or instructional hint
+  appears beneath the capsule row. The list is the only layout: there is no one-sentence
+  mode, layout toggle, or pair of layout icons.
 - Each revision-required sentence row contains only the original English sentence,
   one compact grammar box containing a single paragraph of Simplified Chinese feedback,
   and the student's revision input. Do not render a `Grammar Analysis` heading, issue
@@ -1975,6 +1976,9 @@ Important mobile rules:
   An effective sentence instead shows only its original sentence followed by an
   accessible 22px circular SVG checkmark matching the Teacher matrix completion mark;
   its circle inherits the sentence color and it has no grammar box or revision input.
+- Every Sentence Revision row begins with its corresponding one-based sentence number.
+  The card footer contains only one trailing `Check` button in editable mode; it has no
+  explanatory copy, dynamic long label, or arrow icon.
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.

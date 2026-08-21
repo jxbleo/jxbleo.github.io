@@ -290,7 +290,7 @@ check("each revision-required sentence renders only source, consolidated analysi
   const styles = read(stylePath);
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   requireEvery(cardSource, [
-    "original-sentence", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
+    "original-sentence", "sentence-row-number", "index + 1", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
     "sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion",
     "result.feedback", "sentence-response", "rewrite-input",
   ], "three-part sentence row");
@@ -348,6 +348,7 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
   const capsuleSource = functionSource(client, "sentenceCapsuleHtml", "sentenceCardHtml");
   requireEvery(renderSource, ["句子导航", "capsule-row", "sentenceCapsuleHtml"], "sentence number navigation");
   requireEvery(capsuleSource, ["data-sentence-index", "aria-label", "aria-current"], "sentence number button");
+  requireEvery(capsuleSource, ["is-done", "capsuleStatus", "，已完成"], "sentence completion status");
   assert(/data-sentence-index[\s\S]{0,1800}scrollIntoView/.test(client),
     "clicking a sentence number must scroll the corresponding list row into view");
   assert(/\.capsule-row\s*\{[^}]*overflow-x\s*:\s*auto/i.test(styles),
@@ -356,6 +357,32 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "sentence number scrolling must preserve native touch momentum or horizontal pan behavior");
   assert(!/language-toolbar-bottom|progress-copy|capsule-hint|已填写|左右滑动数字/.test(`${client}\n${styles}`),
     "the capsule bar must not show progress copy or navigation instructions beneath the numbers");
+  assert(/\.sentence-capsule\s*\{[^}]*border\s*:\s*1px\s+solid/is.test(styles),
+    "every sentence capsule must use the same one-pixel solid border");
+  assert(!/\.sentence-capsule\.is-done[^}]*\{[^}]*(?:inset|border-width)/is.test(styles)
+      && !/\.sentence-capsule\.is-review[^}]*\{[^}]*border-style\s*:\s*dashed/is.test(styles),
+    "done and review states must not visually thicken or dash the capsule border");
+  assert(/\.sentence-capsule\.is-done::after\s*\{[^}]*content\s*:\s*["']✓["']/is.test(styles),
+    "completed capsules must show a small checkmark beneath the number");
+  assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
+    "the capsule row must reserve space for its status marks");
+});
+
+check("Sentence Revision numbers every row and ends with one Check action", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(cardSource, ["numberedOriginal", "sentence-row-number", "aria-hidden=\"true\""],
+    "sentence-row numbering");
+  assert((cardSource.match(/numberedOriginal/g) || []).length >= 3,
+    "required and effective sentence rows must share the same numbered original");
+  assert(/data-submit-rewrites[^>]*>Check<\/button>/.test(renderSource),
+    "the editable footer must expose exactly the concise Check action");
+  assert(!/未完成的句子|全部完成，提交检查|再次提交检查|icon\('arrow'\)/.test(renderSource),
+    "the footer must remove the old hint, dynamic labels, and arrow icon");
+  assert(/\.batch-actions\s*\{[^}]*justify-content\s*:\s*flex-end/is.test(styles),
+    "the lone desktop Check action must align to the trailing edge");
 });
 
 check("sentence navigation replaces the primary toolbar when it reaches the top", () => {
