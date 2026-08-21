@@ -56,6 +56,7 @@
     var portfolioToggle = document.getElementById('portfolio-toggle');
     var studentChip = document.getElementById('student-chip');
     var leaveConfirmation = document.getElementById('leave-confirmation');
+    var sentenceCardResizeObserver = null;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -1142,6 +1143,37 @@
         };
     }
 
+    function activeSentenceCardFace(inner) {
+        if (!inner) return null;
+        return inner.querySelector(inner.classList.contains('show-rewrite')
+            ? '.sentence-rewrite-face'
+            : '.sentence-analysis-face');
+    }
+
+    function syncSentenceCardHeight(inner) {
+        if (!inner || inner.classList.contains('sentence-card-inner-static')) return;
+        var face = activeSentenceCardFace(inner);
+        if (!face) return;
+        inner.style.height = Math.ceil(face.offsetHeight) + 'px';
+        inner.classList.add('has-measured-height');
+    }
+
+    function observeSentenceCardHeights() {
+        if (sentenceCardResizeObserver) sentenceCardResizeObserver.disconnect();
+        if (!window.ResizeObserver) return;
+        sentenceCardResizeObserver = sentenceCardResizeObserver || new window.ResizeObserver(function(entries) {
+            entries.forEach(function(entry) {
+                var inner = entry.target.closest('.sentence-card-inner');
+                if (inner && activeSentenceCardFace(inner) === entry.target) syncSentenceCardHeight(inner);
+            });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.sentence-card-inner:not(.sentence-card-inner-static)'), function(inner) {
+            syncSentenceCardHeight(inner);
+            var face = activeSentenceCardFace(inner);
+            if (face) sentenceCardResizeObserver.observe(face);
+        });
+    }
+
     function renderLanguage() {
         state.screen = 'language';
         var sentences = safeArray(state.review && state.review.sentences);
@@ -1162,6 +1194,7 @@
             (!state.readOnly ? '<div class="batch-actions"><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Check</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
             '</section></div>';
+        window.requestAnimationFrame(observeSentenceCardHeights);
     }
 
     function sentenceCapsuleHtml(sentence, index) {
@@ -1184,13 +1217,17 @@
         var cardStart = '<article class="' + cardClass + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">';
         var original = '<span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span>';
         var sentenceNumber = '<span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span>';
-        var numberedOriginal = sentenceNumber + '<span class="sentence-line-content">' + original + '</span>';
+        var revisionState = !required ? 'correct' : accepted ? 'revised' : 'needs-revision';
+        var revisionLabel = revisionState === 'correct' ? 'CORRECT' : revisionState === 'revised' ? 'REVISED' : 'NEEDS REVISION';
+        var revisionMark = revisionState === 'needs-revision' ? '×' : '✓';
+        var sentenceMeta = '<div class="sentence-card-meta">' + sentenceNumber +
+            '<span class="sentence-state is-' + revisionState + '">' + revisionLabel +
+            ' <span class="sentence-state-mark" aria-hidden="true">' + revisionMark + '</span></span></div>';
         if (!required) {
-            var effectiveLine = sentenceNumber + '<span class="sentence-line-content">' + original +
-                '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></span>';
             return cardStart +
                 '<div class="sentence-flip-card"><div class="sentence-card-inner sentence-card-inner-static">' +
-                '<section class="sentence-card-face sentence-effective-face"><p class="original-sentence">' + effectiveLine + '</p></section>' +
+                '<section class="sentence-card-face sentence-effective-face">' + sentenceMeta +
+                '<p class="original-sentence">' + original + '</p></section>' +
                 '</div></div></article>';
         }
         var showRewrite = Boolean(state.rewriteFace[id]);
@@ -1221,16 +1258,16 @@
         var analysisFace = '<section class="sentence-card-face sentence-analysis-face" id="' + escapeHtml(analysisFaceId) + '" aria-hidden="' + visibility.analysisHidden + '"' + (visibility.analysisHidden ? ' inert' : '') + '>' +
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="翻到句子改写面"></button>' +
             '<div class="sentence-face-content">' +
-            '<p class="original-sentence">' + numberedOriginal + '</p>' +
+            sentenceMeta + '<p class="original-sentence">' + original + '</p>' +
             '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>' +
             sampleButton + reference + '</div></section>';
         var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
-        var correctedResponse = '<p class="corrected-sentence">' + sentenceNumber + '<span class="sentence-line-content"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span><span class="sentence-effective-icon sentence-corrected-icon" role="img" aria-label="这句话已订正正确">' + icon('check') + '</span></span></p>';
-        var editableResponse = '<p class="original-sentence">' + numberedOriginal + '</p>' +
+        var correctedResponse = '<p class="corrected-sentence"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span></p>';
+        var editableResponse = '<p class="original-sentence">' + original + '</p>' +
             '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="翻到句子分析面"></button>' +
-            '<div class="sentence-face-content"><div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
+            '<div class="sentence-face-content">' + sentenceMeta + '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
             '</div></div></section>';
         return cardStart + '<div class="sentence-flip-card"><div class="sentence-card-inner' + (showRewrite ? ' show-rewrite' : '') + '" data-face="' + (showRewrite ? 'rewrite' : 'analysis') + '">' + analysisFace + rewriteFace + '</div></div></article>';
     }
@@ -1632,6 +1669,8 @@
                 var controlsRewrite = control.getAttribute('data-face') === 'rewrite';
                 control.setAttribute('aria-pressed', String(controlsRewrite === showRewriteFace));
             });
+            syncSentenceCardHeight(flipInner);
+            observeSentenceCardHeights();
             window.requestAnimationFrame(function() {
                 var focusTarget = showRewriteFace
                     ? flipCard.querySelector('[data-rewrite-id]:not([disabled])') || flipCard.querySelector('[data-face="analysis"]')

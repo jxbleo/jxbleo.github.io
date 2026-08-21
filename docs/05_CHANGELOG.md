@@ -1721,6 +1721,12 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor jobs
 
+- Replaced inline sentence checks with explicit top-right `CORRECT ✓`, `REVISED ✓`,
+  and `NEEDS REVISION ×` states. Navigation capsules now use semantic-green checks
+  for completed sentences and semantic-red crosses for unresolved sentences.
+- Moved each bare sentence number into a compact top metadata row so the sentence
+  keeps the full card width. Flip cards now measure the active face and animate to
+  its natural height, eliminating hidden-face blank space after a successful revision.
 - Added two-layer Sentence Revision draft persistence: typing is saved locally
   per student/Composition/revision/sentence, while `Check` stages the submitted
   batch in `pending_rewrite_check`. Both layers survive refresh, disconnect, and

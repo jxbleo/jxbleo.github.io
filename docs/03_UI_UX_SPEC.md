@@ -1967,8 +1967,8 @@ Important mobile rules:
 - The Sentence Revision card begins with a horizontally scrollable row of
   numbered capsules. Selecting a number immediately scrolls to and highlights its
   corresponding sentence in the list. Every capsule uses the same 1px solid border.
-  A tiny checkmark appears below a completed number; incomplete or review states may
-  use a dot in that same reserved slot, but no progress copy or instructional hint
+  A tiny semantic-green checkmark appears below a completed number; incomplete or review states
+  use a semantic-red cross in that same reserved slot, but no progress copy or instructional hint
   appears beneath the capsule row. The list is the only layout: there is no one-sentence
   mode, layout toggle, or pair of layout icons.
 - Each revision-required sentence row is one two-sided card. Its front contains
@@ -1978,29 +1978,34 @@ Important mobile rules:
   categories such as `Word Choice`, or separate issue/summary/result blocks. The optional
   reference answer may expand on the analysis face, but it disappears with the
   analysis when the student turns to the input face.
-  An effective sentence instead shows only its original sentence followed by an
-  accessible 22px circular SVG checkmark matching the Teacher matrix completion mark;
-  its circle inherits the sentence color and it has no grammar box or revision input.
+  Every card uses one compact metadata row: a bare sequence number at top-left and
+  `CORRECT ✓`, `REVISED ✓`, or `NEEDS REVISION ×` at top-right. An effective sentence
+  shows only that row and its original sentence; it has no grammar box, revision input,
+  or inline icon after the sentence.
 - Every Sentence Revision row begins with its corresponding one-based sentence number.
   This row number matches the BBC classroom worksheet fill-blank sequence treatment:
   a small heavy baseline-aligned number with no border, circular background, or pill.
   It remains distinct from the horizontal navigation capsule.
   The card footer contains only one trailing `Check` button in editable mode; it has no
   explanatory copy, dynamic long label, or arrow icon.
-- An unresolved navigation capsule uses a small question mark beneath its number,
-  whether it is still empty or failed the latest Check; never use the former dot.
-  A completed capsule keeps its small checkmark.
+- An unresolved navigation capsule uses a small red cross beneath its number,
+  whether it is still empty or failed the latest Check; never use a dot or question mark.
+  A completed capsule keeps its small green checkmark regardless of sentence accent color.
 - After a student revision is accepted, that sentence card opens on the corrected
-  sentence rather than the analysis. The persisted student sentence is highlighted
-  and followed inline by the same colored circular SVG checkmark. It is display text,
+  sentence rather than the analysis. The persisted student sentence is highlighted,
+  while the top-right state reads `REVISED ✓`. It is display text,
   not a disabled textarea. Flipping the card is the only way to return to the original
   sentence and analysis.
 - Effective/no-change source sentences retain the same bordered card surface as
-  revision-required sentences. They use one static face with the original sentence
-  and colored check; no analysis, input, or false flip target is added.
-- Sentence text uses an 18px number column plus a flexible content column with
-  baseline alignment and a 6px gap. Wrapped lines begin under the first letter of
-  the sentence content, never under the sequence number.
+  revision-required sentences. They use one static face with `CORRECT ✓` and the original
+  sentence; no analysis, input, inline icon, or false flip target is added.
+- The sequence number sits in the top metadata row rather than a sentence-text column.
+  Sentence text therefore uses the card's full width, and wrapped lines begin under
+  the first letter of the sentence content.
+- A flip card's outer height follows the currently visible face's natural content height.
+  The hidden analysis/input face never reserves blank space under a shorter completed face.
+  Height is remeasured after flips, content/textarea changes, and responsive-width changes;
+  the transition is restrained and is removed under Reduced Motion.
 - Remove visible “remember/start writing” and “return to analysis” controls. A native
   transparent button covers each available face so a click anywhere on the card turns
   it; the textarea, its label, and Sample remain independently interactive above that

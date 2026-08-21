@@ -1793,8 +1793,8 @@ High priority improvement:
   is no progress copy, instructional hint, sequential mode, layout toggle, or
   pair of layout icons beneath or beside the capsule row.
 - Compare normal, active, completed, and review capsules and confirm every computed
-  border is the same 1px solid width. Completed capsules show a tiny check below the
-  number; incomplete/review capsules never show that completion check, and the status
+  border is the same 1px solid width. Completed capsules show a tiny green check below the
+  number; incomplete/review capsules show a tiny red cross, and the status
   slot is not clipped by the horizontal scroller. Completed aria-labels include “已完成”.
 - Scroll until the capsule bar reaches the top and confirm it replaces the main
   toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
@@ -1823,10 +1823,9 @@ High priority improvement:
   `Word Choice`, other category labels, and separate issue/summary/result rows are absent;
   opening the reference answer on the analysis face must not expose or erase the
   back input, and flipping to the input must hide both analysis and reference. For
-  an effective sentence, confirm only the original sentence and its
-  following 22px circular SVG checkmark render—without a grammar box, “你的改写”, a
-  textarea, or a reference-answer action. Confirm the circle matches the Teacher matrix
-  completion mark but uses the sentence's indexed color. Its capsule remains complete.
+  an effective sentence, confirm only the top metadata row (`CORRECT ✓`) and original
+  sentence render—without a grammar box, “你的改写”, a textarea, an inline sentence
+  icon, or a reference-answer action. Its capsule remains complete with a green check.
 - Switch a revision card front/back with click, Enter, and Space. Confirm state,
   focus order, accessible names, textarea draft, capsule, and sentence identity
   remain synchronized. Enable reduced motion and confirm there is no 3D rotation;
@@ -1840,14 +1839,18 @@ High priority improvement:
   circular background, or capsule shape. This must remain visually distinct from
   the top navigation capsules.
 - Before Check and after a rejected Check, confirm the unresolved capsule shows a
-  small question mark rather than a dot. After acceptance, confirm both the capsule
-  check and an inline colored circular SVG check appear. The accepted card must open
+  small red cross rather than a dot or question mark. After acceptance, confirm the capsule
+  shows a green check and the card's top-right state reads `REVISED ✓`. The accepted card must open
   on the persisted corrected sentence as display text, with no disabled textarea;
   only an explicit flip may reveal the original sentence and grammar analysis.
 - Confirm an effective/no-change sentence has the same bordered face as every other
   Sentence Revision card, while still exposing no grammar analysis, textarea, Sample,
-  or flip target. Use long wrapped sentences and verify line two aligns under the
-  first sentence letter, not under the sequence number, at desktop and phone widths.
+  or flip target. Confirm the bare number is top-left and `CORRECT ✓` is top-right.
+  Use long wrapped sentences and verify the sentence takes the full card width and line
+  two aligns under the first sentence letter at desktop and phone widths.
+- Compare a long analysis face with a short accepted rewrite face. After every flip,
+  confirm the card smoothly follows the visible content height and leaves no blank block
+  for the hidden face. Repeat after resizing phone-to-tablet and with Reduced Motion on.
 - Confirm “我记住了，开始改写”“返回查看分析”“查看参考句” are absent. Click the
   analysis text, blank card space, and corrected sentence to flip the same physical
   card. Then click and type in the textarea and click its label; none may flip the
