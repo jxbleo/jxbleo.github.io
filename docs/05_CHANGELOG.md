@@ -1721,6 +1721,13 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor review jobs
 
+- Reorganized the completed language-review screen into exactly three primary
+  cards: Overall Evaluation, Original Manuscript, and Sentence Corrections.
+  Sentence Corrections now uses a horizontally scrollable number navigator over
+  one continuous list; removed the sequential/list switch and both layout icons.
+- Required Simplified Chinese sentence commentary, explanations, and suggestions
+  while preserving English source sentences and reference revisions.
+
 - Fixed first-review persistence from `language_review: null` or
   `standardized_review: null` by atomically replacing nested result objects;
   CloudBase must not expand the initial payload into dotted child updates.

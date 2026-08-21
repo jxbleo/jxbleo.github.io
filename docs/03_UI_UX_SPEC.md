@@ -1941,9 +1941,15 @@ Important mobile rules:
   refresh or re-login. A final failure preserves the manuscript and offers a fresh submission after quota release.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
-- Language training defaults to one sentence at a time with numbered capsules.
-  A small marker remains under skipped or unfinished capsules. A control toggles
-  the same state into a sentence list without losing work.
+- Completed language review uses exactly three primary cards in order: Overall
+  Evaluation, Original Manuscript, and Sentence Corrections. Sentence feedback,
+  issue explanations, and revision suggestions are written in Simplified Chinese;
+  source sentences and reference revisions remain in English.
+- The Sentence Corrections card begins with a horizontally scrollable row of
+  numbered capsules. Selecting a number immediately scrolls to and highlights its
+  corresponding sentence in the list. A small marker remains under skipped or
+  unfinished capsules. The list is the only layout: there is no one-sentence mode,
+  layout toggle, or pair of layout icons.
 - Analysis and the reference revision are collapsed by default. Opening the
   reference temporarily replaces/hides the rewrite input; closing it restores
   the student's draft. Batch feedback appears only after Submit.
