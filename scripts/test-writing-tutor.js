@@ -356,6 +356,12 @@ check("each sentence shares one color across manuscript, capsule, and correction
     "clicking a manuscript sentence must use the shared sentence navigation path");
   requireEvery(styles, ["--sentence-color", "--sentence-soft", ".manuscript-sentence-highlight", ".sentence-original-highlight"],
     "sentence color styles");
+  const paletteSource = client.slice(client.indexOf("var sentencePalette"), client.indexOf("function compositionStatus"));
+  assert(paletteSource.includes("var sentencePalette") && !/#0f766e|#0b5d57|#287b91|#dff4ed|#c9eee2/i.test(paletteSource),
+    "the sentence palette must avoid the interface's established green and teal family");
+  assert(!/\.manuscript-sentence-highlight[^}]*\{[^}]*box-shadow\s*:\s*inset\s+0\s+-/i.test(styles)
+      && !/\.sentence-original-highlight\s*\{[^}]*box-shadow\s*:\s*inset\s+0\s+-/i.test(styles),
+    "sentence highlights must not draw an underline-like inset shadow");
 });
 
 check("writingTutor exposes every public action used by the workspace", () => {

@@ -1725,6 +1725,9 @@ required.
   `Sentence Revision`. Simplified every sentence row to the original sentence,
   one consolidated Chinese grammar analysis, and the student input area; removed
   the capsule-row progress copy and instructional hint.
+- Removed sentence-highlight underlines and changed the shared manuscript,
+  capsule, and revision accent cycle to blue, purple, orange, magenta, indigo,
+  and coral, keeping the site's primary green reserved for its existing meaning.
 - Simplified AI Tutor to one top toolbar over card-based content. Removed the
   brand icon and `AI Tutor / Writing Studio` lockup, moved the portfolio control
   into that position, and made the left portfolio drawer initially collapsible

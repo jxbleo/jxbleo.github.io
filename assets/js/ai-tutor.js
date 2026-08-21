@@ -133,12 +133,12 @@
     }
 
     var sentencePalette = [
-        { color: '#0f766e', soft: '#dff4ed', active: '#c9eee2', ring: 'rgba(15,118,110,.22)' },
-        { color: '#3e71c8', soft: '#eaf1ff', active: '#dbe7ff', ring: 'rgba(62,113,200,.22)' },
-        { color: '#ad681f', soft: '#fff2df', active: '#ffe6c4', ring: 'rgba(173,104,31,.22)' },
-        { color: '#7a58b5', soft: '#f1eafe', active: '#e6dafa', ring: 'rgba(122,88,181,.22)' },
-        { color: '#b34f68', soft: '#fdebf0', active: '#f8dbe3', ring: 'rgba(179,79,104,.22)' },
-        { color: '#287b91', soft: '#e2f4f7', active: '#cfecef', ring: 'rgba(40,123,145,.22)' }
+        { color: '#4169c1', soft: '#eaf1ff', active: '#dbe7ff', ring: 'rgba(65,105,193,.22)' },
+        { color: '#b56a1f', soft: '#fff1dc', active: '#ffe3ba', ring: 'rgba(181,106,31,.22)' },
+        { color: '#7652b8', soft: '#f0e9fd', active: '#e4d8fa', ring: 'rgba(118,82,184,.22)' },
+        { color: '#b54868', soft: '#fce9ef', active: '#f7d8e1', ring: 'rgba(181,72,104,.22)' },
+        { color: '#5060ad', soft: '#ebedff', active: '#dce0ff', ring: 'rgba(80,96,173,.22)' },
+        { color: '#c45c3d', soft: '#ffeae4', active: '#ffd9cf', ring: 'rgba(196,92,61,.22)' }
     ];
 
     function sentenceColorStyle(index) {
