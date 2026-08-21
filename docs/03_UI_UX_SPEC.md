@@ -1968,12 +1968,13 @@ Important mobile rules:
   the capsule row. The list is the only layout: there is no one-sentence mode,
   layout toggle, or pair of layout icons.
 - Each revision-required sentence row contains only the original English sentence,
-  one consolidated Simplified Chinese grammar analysis, and the student's revision
-  input. Do not split issues and suggestions into repeated sub-panels. The optional
-  reference answer belongs to the third input area and temporarily replaces the input
-  rather than becoming a fourth area. An effective sentence instead shows only its
-  original sentence followed by an accessible thumbs-up icon; it has no Grammar
-  Analysis panel or revision input.
+  one compact grammar box containing a single paragraph of Simplified Chinese feedback,
+  and the student's revision input. Do not render a `Grammar Analysis` heading, issue
+  categories such as `Word Choice`, or separate issue/summary/result blocks. The optional
+  reference answer belongs to the third input area and temporarily replaces the input.
+  An effective sentence instead shows only its original sentence followed by an
+  accessible 22px circular SVG checkmark matching the Teacher matrix completion mark;
+  its circle inherits the sentence color and it has no grammar box or revision input.
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.
