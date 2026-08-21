@@ -1856,6 +1856,8 @@ High priority improvement:
   analysis paragraph's trailing edge with the revealed reference directly below.
   Toggling Sample must not flip the card, erase a draft, or change its accessible
   face state.
+- Confirm idle `History` and `New` use identical white-background, green-text
+  secondary styling. Opening History may invert only History; New remains secondary.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display

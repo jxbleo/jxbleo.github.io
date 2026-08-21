@@ -1759,6 +1759,8 @@ required.
   to a tiny checkmark below the number. Added the one-based number before every
   Sentence Revision source sentence, and reduced the footer to one `Check` button
   without the former unfinished-sentence hint or arrow.
+- Matched the AI Tutor `New` toolbar action to idle `History` with a white
+  background and green text instead of a filled-green primary button.
 - Restored the confirmed manuscript's paragraph flow in `Draft`. Sentence highlights
   now use keyboard-accessible inline fragments and keep boundary spaces/newlines
   outside the highlight, so multiple colored sentences remain in their original paragraph.

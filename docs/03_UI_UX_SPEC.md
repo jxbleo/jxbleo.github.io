@@ -1925,6 +1925,9 @@ Important mobile rules:
 - Its header toolbar keeps the red-text `Home` action by itself on the left and
   groups `History` and `New` together on the right. `History` opens the writing
   portfolio drawer without changing the current Composition.
+- `History` and `New` use the same quiet secondary treatment when idle: white
+  background, green text, and the same border. `New` must not use the filled-green
+  primary treatment. `History` may still invert while its drawer is open.
 - The page exposes only the top toolbar above card-based content. Its leftmost
   arrow opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs
