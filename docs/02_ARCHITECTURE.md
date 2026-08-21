@@ -764,6 +764,12 @@ or Kimi for text evaluation. A provider's advertised OpenAI compatibility is
 never treated as proof of strict schema support. Canonical server rules compute
 overall scores and state transitions after structural validation.
 
+CloudBase `update()` expands ordinary nested objects into dotted paths. Review
+payloads, rewrite payloads, and active-job projections therefore use the SDK's
+atomic `command.set(...)` operator when publishing a result. This permits the
+first transition from a stored `null` review to a complete object and prevents
+`PathNotViable` failures on nested fields such as `model_metadata`.
+
 Daily quota reservation is server-side and idempotent by authenticated student
 plus client operation ID. A failed model request releases its reservation. A
 successful review updates the Composition and completes the usage ledger event

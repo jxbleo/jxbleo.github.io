@@ -1721,6 +1721,10 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor review jobs
 
+- Fixed first-review persistence from `language_review: null` or
+  `standardized_review: null` by atomically replacing nested result objects;
+  CloudBase must not expand the initial payload into dotted child updates.
+
 - Added `docs/adr/0003-durable-canonical-ai-boundaries.md` as the reusable incident log and release gate for future AI features; it records no credentials or student content.
 
 - Fixed Qwen language-review rejection when the model normalized whitespace or punctuation in its echoed `original`;

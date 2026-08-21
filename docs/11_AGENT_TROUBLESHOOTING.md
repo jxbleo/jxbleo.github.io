@@ -805,6 +805,9 @@ STAR 不阻止未来重新布置同一个 set。
 - 加入稳定 operation/job/usage ID、异步派发、每分钟恢复、租约、三次尝试、active-job 结果守卫和失败退额度。
 - 兼容千问的 JSON 字符串包装、多页数组根，并在严格 Schema 之后执行服务器领域校正。
 - 修复千问回显原句时调整空格或标点导致的 `WRITING_AI_SENTENCE_ALIGNMENT_FAILED`：完整唯一句子 ID 仍严格，原句由服务器填回。
+- 修复模型结构已经合格、但首次写入 `language_review: null` 时 CloudBase 报
+  `PathNotViable ... model_metadata`：嵌套 review/rewrite/active-job 对象必须用
+  `db.command.set(...)` 原子替换，不能让 `update()` 展开为 dotted paths。
 
 技术规则：
 - 所有未来慢速 AI 功能默认使用持久任务；网页只发起和查看状态，不拥有模型执行生命周期。

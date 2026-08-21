@@ -553,6 +553,13 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(language.sentences[0].rewrite_required, true);
   assert.strictEqual(language.sentences[0].original, "I goes home.",
     "server must restore the exact source sentence instead of trusting the model echo");
+  const persistenceUpdate = backend._test.replaceWholeFields({
+    status: "sentence_training",
+    language_review: { model_metadata: { model: "test" }, sentences: [] },
+  }, ["language_review"]);
+  assert.strictEqual(persistenceUpdate.language_review.operator, "set",
+    "a first review must atomically replace language_review instead of creating paths below a null field");
+  assert.strictEqual(persistenceUpdate.status, "sentence_training");
   assert.throws(() => backend._test.canonicalLanguageResult({
     overview: "Overview", profile_observations: [],
     sentences: [{ sentence_id: "s999", original: "Wrong", status: "effective", issues: [],
