@@ -1097,6 +1097,12 @@ All collections are `ADMINONLY`.
   `title_updated_at`; that state is permanent for overwrite precedence, so no
   later AI review or replacement may change the title. AI title generation is
   part of the review payload and creates no extra job or usage-ledger row.
+  A newly created `status: "draft"` row with revision 1 is a discardable placeholder only
+  while title, prompt, confirmed text, library source, uploads/OCR, pending work, active jobs,
+  reviews, rewrites, completion time, and word count are all empty. History excludes these
+  rows immediately. An authenticated owner-only action rechecks the complete predicate before
+  removing one; stale placeholders may be pruned after 30 minutes. This is not a general
+  Composition deletion path and can never remove a non-empty or submitted work.
 - `writing_photo_uploads`: short-lived private upload audit rows with ownership,
   upload-operation ID, page order, expected size, CloudBase file ID, expiry,
   and deletion status.

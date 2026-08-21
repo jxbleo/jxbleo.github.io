@@ -1928,6 +1928,10 @@ Important mobile rules:
 - `History` and `New` use the same quiet secondary treatment when idle: white
   background, green text, and the same border. `New` must not use the filled-green
   primary treatment. `History` may still invert while its drawer is open.
+- A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
+  AI job, or result is invisible in History and excluded from the portfolio count. Leaving
+  it or selecting New again triggers guarded automatic cleanup; there is no visible Delete
+  action, and any non-empty or submitted Composition remains permanent.
 - The page exposes only the top toolbar above card-based content. Its leftmost
   arrow opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs

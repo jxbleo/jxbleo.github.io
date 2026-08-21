@@ -25,6 +25,7 @@ const MAX_UPLOAD_PAGES = 8;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const INCOMPLETE_UPLOAD_TTL_MS = 30 * 60 * 1000;
 const CONFIRMED_UPLOAD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const EMPTY_DRAFT_RETENTION_MS = 30 * 60 * 1000;
 const JOB_LEASE_MS = 6 * 60 * 1000;
 const MAX_JOB_ATTEMPTS = 3;
 const PROMPT_BUNDLE_VERSION = `${PROMPT_VERSION}|${SCHEMA_VERSION}|${RUBRIC_VERSION}`;
@@ -176,6 +177,33 @@ function summaryView(composition) {
   };
 }
 
+function isDiscardableEmptyComposition(composition) {
+  if (!composition || (composition.status || "draft") !== "draft") return false;
+  if (Number(composition.revision || 1) !== 1 || Number(composition.word_count || 0) > 0) return false;
+  if (visibleTitle(composition) || text(composition.prompt_text) || text(composition.confirmed_text)) return false;
+  if (text(composition.library_prompt_id, 120)) return false;
+  return !composition.pending_upload
+    && !composition.pending_ocr
+    && !composition.pending_replacement
+    && !composition.pending_rewrite_check
+    && !composition.active_job_id
+    && !composition.active_job
+    && !composition.ocr_job
+    && !composition.standardized_review
+    && !composition.language_review
+    && !composition.rewrite_results
+    && !composition.completed_at;
+}
+
+async function discardEmptyComposition(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  if (!isDiscardableEmptyComposition(composition)) {
+    return { success: true, discarded: false, composition: summaryView(composition) };
+  }
+  await db.collection(COMPOSITIONS).doc(composition._id).remove();
+  return { success: true, discarded: true, composition_id: composition.composition_id };
+}
+
 function publicJobView(job) {
   if (!job || typeof job !== "object") return null;
   return {
@@ -281,7 +309,21 @@ async function createComposition(student, event) {
 async function listCompositions(student) {
   const result = await db.collection(COMPOSITIONS).where({ student_uid: student.auth_uid }).limit(200).get();
   const rows = (result.data || []).sort((a, b) => dateMs(b.updated_at) - dateMs(a.updated_at));
-  return { success: true, compositions: rows.map(summaryView), rubrics: publicRubrics() };
+  const now = Date.now();
+  const visibleRows = [];
+  const staleEmptyRows = [];
+  rows.forEach((row) => {
+    if (!isDiscardableEmptyComposition(row)) {
+      visibleRows.push(row);
+      return;
+    }
+    const createdAt = dateMs(row.created_at);
+    if (!createdAt || now - createdAt >= EMPTY_DRAFT_RETENTION_MS) staleEmptyRows.push(row);
+  });
+  await Promise.all(staleEmptyRows.filter((row) => row._id).map((row) => (
+    db.collection(COMPOSITIONS).doc(row._id).remove()
+  )));
+  return { success: true, compositions: visibleRows.map(summaryView), rubrics: publicRubrics() };
 }
 
 async function ocrPhotoUrls(student, composition) {
@@ -1835,6 +1877,7 @@ exports.main = async (event = {}) => {
     await retryPrivatePhotoCleanup(student);
     if (action === "createComposition") return await createComposition(student, event);
     if (action === "listCompositions") return await listCompositions(student);
+    if (action === "discardEmptyComposition") return await discardEmptyComposition(student, event);
     if (action === "getComposition") return await getComposition(student, event);
     if (action === "startPhotoUpload") return await startPhotoUpload(student, event);
     if (action === "finishPhotoUpload") return await finishPhotoUpload(student, event);
@@ -1856,5 +1899,6 @@ exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, roundedToStep,
   usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
+  isDiscardableEmptyComposition,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },
 };

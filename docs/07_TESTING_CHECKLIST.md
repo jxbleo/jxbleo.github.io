@@ -1861,6 +1861,10 @@ High priority improvement:
   face state.
 - Confirm idle `History` and `New` use identical white-background, green-text
   secondary styling. Opening History may invert only History; New remains secondary.
+- Click `New` and enter nothing. Confirm the placeholder never appears in History or
+  its total, then leave and verify it is discarded. Repeat by clicking `New` twice.
+  Add a title, prompt, manuscript, selected/uploaded photo, queued job, or result and
+  confirm the non-empty Composition is never removed and no Delete control appears.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display

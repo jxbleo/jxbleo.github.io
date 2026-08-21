@@ -133,6 +133,7 @@ check("AI Tutor header groups the approved Home, History, and New actions", () =
 const publicActions = [
   "listCompositions",
   "createComposition",
+  "discardEmptyComposition",
   "startPhotoUpload",
   "finishPhotoUpload",
   "extractOcr",
@@ -1357,6 +1358,32 @@ check("students have no composition-deletion action", () => {
   const client = read(clientPath);
   assert(!/deleteComposition|removeComposition/.test(`${backend}\n${client}`), "students must not be offered a composition deletion action");
   assert(!/data-(?:delete|remove)-composition/.test(client), "students must not see a composition deletion control");
+});
+
+check("empty New Writing placeholders are hidden and safely discarded", () => {
+  const backend = read(functionPath);
+  const client = read(clientPath);
+  const emptyGuard = functionSource(backend, "isDiscardableEmptyComposition", "discardEmptyComposition");
+  const discardAction = functionSource(backend, "discardEmptyComposition", "createComposition");
+  const listSource = functionSource(backend, "listCompositions", "ocrPhotoUrls");
+  requireEvery(emptyGuard, [
+    'status || "draft"', "revision", "word_count", "visibleTitle", "prompt_text",
+    "confirmed_text", "library_prompt_id", "pending_upload", "pending_ocr",
+    "active_job_id", "standardized_review", "language_review", "completed_at",
+  ], "server empty-draft guard");
+  assert(/isDiscardableEmptyComposition\s*\(\s*composition\s*\)[\s\S]{0,220}\.remove\s*\(/.test(discardAction),
+    "the discard action may remove only a server-verified empty draft");
+  requireEvery(listSource, ["isDiscardableEmptyComposition", "visibleRows", "staleEmptyRows", "EMPTY_DRAFT_RETENTION_MS"],
+    "History empty-draft cleanup");
+  requireEvery(client, [
+    "function isEmptyCompositionDraft", "function portfolioCompositions",
+    "function discardCurrentEmptyComposition", "discardEmptyComposition",
+    "function returnToTutorHome",
+  ], "client empty-draft lifecycle");
+  assert(/function renderPortfolio[\s\S]{0,500}portfolioCompositions\s*\(\s*\)/.test(client),
+    "History counts and rows must exclude empty New Writing placeholders immediately");
+  assert(!/data-(?:delete|remove|discard)-composition/.test(client),
+    "empty cleanup must not introduce a student-facing delete control");
 });
 
 check("successful reviews enqueue metadata-only teacher email events", () => {

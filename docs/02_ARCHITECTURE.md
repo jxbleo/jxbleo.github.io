@@ -722,6 +722,14 @@ the existing one-click confirmation flow.
 
 ## AI Tutor Writing Architecture
 
+Zero-data New Writing rows are placeholders rather than student works. The browser
+filters them from History and its count immediately. Leaving an untouched placeholder
+calls the owner-scoped `discardEmptyComposition` action; the function reloads the row,
+applies the complete empty-draft predicate, and refuses to remove anything containing
+student content, upload/OCR state, AI work, or results. `listCompositions` also omits
+empty placeholders and prunes abandoned rows only after a 30-minute safety window.
+There is no general student Composition deletion endpoint or UI.
+
 `ai-tutor.html` calls the authenticated `writingTutor` function. Photos use a
 two-phase private CloudBase upload and receive short-lived URLs only inside a
 function. `startPhotoUpload` derives page IDs from the stable operation ID, so a

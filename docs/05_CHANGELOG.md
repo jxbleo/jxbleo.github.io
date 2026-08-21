@@ -1721,6 +1721,9 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor jobs
 
+- Hid zero-data New Writing placeholders from History and portfolio counts. Leaving
+  one now calls an owner-scoped, server-guarded discard action; abandoned empty rows
+  are pruned after a short safety window without exposing general Composition deletion.
 - Replaced inline sentence checks with explicit top-right `CORRECT ✓`, `REVISED ✓`,
   and `NEEDS REVISION ×` states. Navigation capsules now use semantic-green checks
   for completed sentences and semantic-red crosses for unresolved sentences.
