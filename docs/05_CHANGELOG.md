@@ -1725,6 +1725,10 @@ required.
   `Sentence Revision`. Simplified every sentence row to the original sentence,
   one consolidated Chinese grammar analysis, and the student input area; removed
   the capsule-row progress copy and instructional hint.
+- Collapsed effective sentences in Sentence Revision to the original sentence and
+  an accessible thumbs-up icon. These rows no longer show a Grammar Analysis panel
+  or disabled revision input, while the server-normalized rewrite requirement remains
+  the authoritative decision.
 - Removed sentence-highlight underlines and changed the shared manuscript,
   capsule, and revision accent cycle to eight colors: blue, orange, purple, rose,
   indigo, coral, gold, and deep pink, keeping the site's primary green reserved

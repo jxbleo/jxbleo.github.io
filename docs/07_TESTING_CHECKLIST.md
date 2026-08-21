@@ -1779,10 +1779,13 @@ High priority improvement:
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must
   remain viewport-width; only the capsule row may scroll horizontally.
-- Confirm every sentence row contains only its original English sentence, one
-  consolidated Simplified Chinese grammar analysis, and the student revision
-  input area. Confirm separate issue and suggestion panels are absent; opening
-  the reference answer must replace the third input area rather than add a fourth.
+- Confirm every revision-required sentence row contains only its original English
+  sentence, one consolidated Simplified Chinese grammar analysis, and the student
+  revision input area. Confirm separate issue and suggestion panels are absent;
+  opening the reference answer must replace the third input area rather than add a
+  fourth. For an effective sentence, confirm only the original sentence and its
+  following thumbs-up icon render—without Grammar Analysis, “你的改写”, a textarea,
+  or a reference-answer action. Its capsule must remain complete and unmarked.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display

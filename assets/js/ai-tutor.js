@@ -198,6 +198,7 @@
             camera: '<rect x="3" y="6.5" width="18" height="13" rx="3"></rect><path d="m8 6.5 1.3-2h5.4l1.3 2"></path><circle cx="12" cy="13" r="3.2"></circle>',
             text: '<path d="M5 6h14M8 11h8M8 16h8"></path>',
             check: '<path d="m5 12 4.2 4.2L19 6.5"></path>',
+            thumbUp: '<path d="M7 10v10H4V10h3Zm0 8h10.2a2 2 0 0 0 2-1.7l1-6A2 2 0 0 0 18.2 8H14l.7-3.1A1.6 1.6 0 0 0 13.2 3h-.4L7 10v8Z"></path>',
             arrow: '<path d="M5 12h14M14 7l5 5-5 5"></path>',
             edit: '<path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0-3-3L4 16Z"></path>',
             upload: '<path d="M12 16V4M7 9l5-5 5 5M5 16v3h14v-3"></path>',
@@ -927,7 +928,9 @@
     }
 
     function sentenceId(sentence, index) { return firstText(sentence && sentence.sentence_id, sentence && sentence.id, 's' + ((index || 0) + 1)); }
-    function rewriteRequired(sentence) { return sentence && sentence.rewrite_required !== false && sentence.status !== 'correct' && sentence.status !== 'no_change'; }
+    function rewriteRequired(sentence) {
+        return Boolean(sentence) && sentence.rewrite_required !== false && ['effective', 'correct', 'no_change'].indexOf(sentence.status) === -1;
+    }
     function coordinateReferenceAndRewrite(referenceOpen) {
         return { referenceVisible: Boolean(referenceOpen), rewriteInputHidden: Boolean(referenceOpen) };
     }
@@ -969,6 +972,14 @@
         var result = state.rewriteResults[id];
         var accepted = !required || result && result.accepted === true;
         var needsReview = result && result.accepted === false;
+        var cardClass = 'sentence-card' + (!required ? ' is-effective' : '') + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '');
+        var cardStart = '<article class="' + cardClass + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">';
+        var original = '<span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span>';
+        if (!required) {
+            return cardStart +
+                '<p class="original-sentence">' + original + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('thumbUp') + '</span></p>' +
+                '</article>';
+        }
         var visibility = coordinateReferenceAndRewrite(state.referenceOpen[id]);
         var referenceOpen = visibility.referenceVisible;
         var issues = safeArray(sentence.issues);
@@ -983,18 +994,16 @@
             (summary ? '<p class="grammar-analysis-summary">' + escapeHtml(summary) + '</p>' : '') +
             (rewriteFeedback ? '<p class="grammar-analysis-result' + (result.accepted ? ' accepted' : '') + '">' + escapeHtml(rewriteFeedback) + '</p>' : '') +
             '</section>';
-        var response = required
-            ? (visibility.rewriteInputHidden
-                ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>'
-                : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>')
-            : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input no-rewrite-needed" id="rewrite-' + escapeHtml(id) + '" disabled placeholder="这句话表达清楚，无需改写。"></textarea></div>';
-        return '<article class="sentence-card' + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '') + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">' +
-            '<p class="original-sentence"><span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span></p>' +
+        var response = visibility.rewriteInputHidden
+            ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>'
+            : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
+        return cardStart +
+            '<p class="original-sentence">' + original + '</p>' +
             analysis +
             '<div class="sentence-response">' + response +
-            (required ? '<div class="sentence-actions">' +
-                (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考，开始重写' : '查看参考句') + '</button>' : '<span></span>') +
-                '</div>' : '') + '</div>' +
+            '<div class="sentence-actions">' +
+            (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考，开始重写' : '查看参考句') + '</button>' : '<span></span>') +
+            '</div></div>' +
             '</article>';
     }
 
