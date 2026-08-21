@@ -1723,6 +1723,9 @@ High priority improvement:
   Cancel by button and `Escape`, then confirm leaving during queued OCR and queued
   review returns to Dashboard without cancelling either cloud job; reopening the
   Composition resumes the same job.
+- Confirm the Back arrow is red and the alert matches the Dashboard/BBC compact
+  glass style: `Cancel` is the green left split action, `Leave` is the red right
+  split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
 - Verify both modes are mutually exclusive; standardized review requires prompt
@@ -1762,6 +1765,15 @@ High priority improvement:
   touch and pointer devices; selecting a number scrolls to and highlights the
   matching sentence. Confirm the full sentence list is always present and there
   is no sequential mode, layout toggle, or pair of layout icons.
+- Scroll until the capsule bar reaches the top and confirm it replaces the main
+  toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
+  after leaving the Sentence Corrections card.
+- Confirm each manuscript sentence uses the same color as its number capsule and
+  correction-source highlight. Click both the manuscript mark and capsule and
+  confirm they activate the same index and scroll to the same correction row.
+- At 320px, 375px, and 430px widths, test long unbroken English/model text,
+  multi-photo preview, reference answers, and correction cards. The page must
+  remain viewport-width; only the capsule row may scroll horizontally.
 - Confirm sentence commentary, issue explanations, revision suggestions, and
   rewrite feedback are Simplified Chinese, while original sentences and reference
   revisions remain English.

@@ -1732,6 +1732,11 @@ required.
   two to six English words for unnamed work. Student-authored titles are never
   overwritten; legacy `Untitled writing` can be renamed manually or filled by a
   later review, with no extra AI request or quota charge.
+- Refined AI Tutor navigation with a red Back arrow and the shared compact
+  `Cancel / Leave` Apple-style alert used by student practice surfaces.
+- Made the sentence-number bar replace the primary toolbar at the top of the
+  viewport, corrected phone-width overflow, and linked each manuscript sentence,
+  number capsule, and correction source through one consistent color and scroll target.
 - Reorganized the completed language-review screen into exactly three primary
   cards: Overall Evaluation, Original Manuscript, and Sentence Corrections.
   Sentence Corrections now uses a horizontally scrollable number navigator over

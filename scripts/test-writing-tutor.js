@@ -197,7 +197,7 @@ check("toolbar back action uses a custom confirmation before Dashboard navigatio
   assert(backTag, "the toolbar back control must be a button so it cannot navigate immediately");
   assert(!/<a\b[^>]*(?:id=["']header-back["']|class=["'][^"']*header-back)/i.test(page),
     "the toolbar back control must not be a direct Dashboard anchor");
-  requireEvery(page, ["leave-confirmation", "role=\"dialog\"", "aria-modal=\"true\"", "data-cancel-leave", "data-confirm-leave"],
+  requireEvery(page, ["leave-confirmation", "role=\"alertdialog\"", "aria-modal=\"true\"", "data-cancel-leave", "data-confirm-leave"],
     "custom leave-confirmation dialog");
   assert(/header-back[\s\S]{0,1000}addEventListener\s*\(\s*["']click["'][\s\S]{0,500}(?:leave-confirmation|openLeave|showLeave|confirm)/i.test(client)
       || /getElementById\s*\(\s*["']header-back["']\s*\)[\s\S]{0,650}(?:leave-confirmation|openLeave|showLeave|confirm)/i.test(client)
@@ -208,6 +208,21 @@ check("toolbar back action uses a custom confirmation before Dashboard navigatio
     "only the dialog confirmation action may navigate back to Dashboard");
   assert(!/header-back[^\n]{0,400}(?:href\s*=\s*["'][^"']*dashboard|location\.(?:href|assign|replace)\s*\(?\s*["'][^"']*dashboard)/i.test(`${page}\n${client}`),
     "the Back control must not navigate directly before confirmation");
+});
+
+check("writing Back and Leave dialog use the approved red and Apple-style treatment", () => {
+  const page = read(pagePath);
+  const styles = read(stylePath);
+  assert(/\.header-back\s*\{[^}]*color\s*:\s*#(?:c9403a|aa4141)/i.test(styles),
+    "the top-left Back arrow must be red");
+  requireEvery(page, [">Cancel<", ">Leave<"], "Leave dialog actions");
+  assert(/\.confirmation-dialog\s*\{[^}]*width\s*:\s*min\(320px[^}]*border-radius\s*:\s*22px/is.test(styles),
+    "Leave dialog must use the compact 320px Apple-style glass box");
+  assert(/\.confirmation-actions\s*\{[^}]*grid-template-columns\s*:\s*repeat\(2[^}]*border-top/is.test(styles),
+    "Cancel and Leave must use the split-button action row");
+  assert(/\.confirmation-cancel\s*\{[^}]*color\s*:\s*var\(--ai-accent\)/i.test(styles)
+      && /\.confirmation-leave\s*\{[^}]*color\s*:\s*#c9403a/i.test(styles),
+    "Cancel must be green and Leave must be red");
 });
 
 check("portfolio titles support inline student editing through updateCompositionTitle", () => {
@@ -284,6 +299,43 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "sentence numbers must support horizontal scrolling");
   assert(/\.capsule-row\s*\{[^}]*(?:-webkit-overflow-scrolling\s*:\s*touch|touch-action\s*:\s*pan-x)/i.test(styles),
     "sentence number scrolling must preserve native touch momentum or horizontal pan behavior");
+});
+
+check("sentence navigation replaces the primary toolbar when it reaches the top", () => {
+  const styles = read(stylePath);
+  assert(/\.language-toolbar\s*\{[^}]*position\s*:\s*sticky[^}]*z-index\s*:\s*100[^}]*top\s*:\s*0/is.test(styles),
+    "the sentence-number toolbar must stick to the viewport top above the primary toolbar");
+  assert(/\.language-sentence-review-card\s*\{[^}]*position\s*:\s*relative[^}]*z-index\s*:\s*90/is.test(styles),
+    "the sticky sentence toolbar's card must sit above the primary toolbar stacking context");
+  assert(!/@media\s*\(max-width:\s*760px\)[\s\S]{0,2400}\.language-toolbar\s*\{[^}]*top\s*:\s*(?:9|1[01])\dpx/i.test(styles),
+    "mobile rules must not pin sentence navigation below the primary toolbar");
+});
+
+check("writing cards shrink to the phone viewport without horizontal page overflow", () => {
+  const styles = read(stylePath);
+  requireEvery(styles, [
+    ".ai-tutor-main, .stage", ".language-review-stack", ".language-review-card, .sentence-list, .sentence-card",
+    "overflow-wrap: anywhere", ".photo-preview-grid { grid-template-columns: minmax(0,1fr);",
+  ], "phone-width safeguards");
+  assert(/\.capsule-row\s*\{[^}]*min-width\s*:\s*0[^}]*overflow-x\s*:\s*auto/is.test(styles),
+    "only the sentence capsule row may scroll horizontally");
+});
+
+check("each sentence shares one color across manuscript, capsule, and correction", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(client, [
+    "sentencePalette", "sentenceColorStyle", "highlightedManuscriptHtml", "data-manuscript-sentence",
+    "manuscript-sentence-highlight", "sentence-original-highlight",
+  ], "sentence color coordination");
+  const capsuleSource = functionSource(client, "sentenceCapsuleHtml", "sentenceCardHtml");
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  assert(capsuleSource.includes("sentenceColorStyle(index)") && cardSource.includes("sentenceColorStyle(index)"),
+    "the capsule and correction card must receive the same indexed color variables");
+  assert(/data-manuscript-sentence[\s\S]{0,1200}scrollIntoView/.test(client),
+    "clicking a manuscript sentence must use the shared sentence navigation path");
+  requireEvery(styles, ["--sentence-color", "--sentence-soft", ".manuscript-sentence-highlight", ".sentence-original-highlight"],
+    "sentence color styles");
 });
 
 check("writingTutor exposes every public action used by the workspace", () => {
