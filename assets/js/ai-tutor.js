@@ -323,16 +323,38 @@
         return safeArray(result && (result.compositions || result.items || result.results)).filter(Boolean);
     }
 
+    function isEmptyCompositionDraft(item) {
+        if (!item || compositionStatus(item) !== 'draft') return false;
+        return !firstText(item.title)
+            && !firstText(item.prompt_text)
+            && !firstText(item.confirmed_text, item.full_text)
+            && Number(item.word_count || 0) === 0
+            && !item.has_standardized_review
+            && !item.has_language_review
+            && !item.standardized_review
+            && !item.language_review
+            && !item.active_job
+            && !item.pending_upload
+            && !item.pending_ocr
+            && !item.replacement_pending
+            && !item.rewrite_check_pending;
+    }
+
+    function portfolioCompositions() {
+        return state.compositions.filter(function(item) { return !isEmptyCompositionDraft(item); });
+    }
+
     function renderPortfolio() {
-        var items = state.compositions.filter(function(item) {
+        var portfolioItems = portfolioCompositions();
+        var items = portfolioItems.filter(function(item) {
             return state.filter === 'all' || compositionMode(item) === state.filter;
         });
-        var completed = state.compositions.filter(function(item) { return compositionStatus(item) === 'completed'; }).length;
-        portfolioSummary.innerHTML = '<span class="summary-stat"><strong>' + state.compositions.length + '</strong>全部作品</span>' +
+        var completed = portfolioItems.filter(function(item) { return compositionStatus(item) === 'completed'; }).length;
+        portfolioSummary.innerHTML = '<span class="summary-stat"><strong>' + portfolioItems.length + '</strong>全部作品</span>' +
             '<span class="summary-stat"><strong>' + completed + '</strong>已经完成</span>';
         renderWritingProfile();
         if (!items.length) {
-            portfolioList.innerHTML = '<div class="empty-sidebar">' + (state.compositions.length ? '这个筛选中还没有作文。' : '第一篇作文会出现在这里。') + '</div>';
+            portfolioList.innerHTML = '<div class="empty-sidebar">' + (portfolioItems.length ? '这个筛选中还没有作文。' : '第一篇作文会出现在这里。') + '</div>';
             return;
         }
         portfolioList.innerHTML = items.map(function(item) {
@@ -442,12 +464,13 @@
 
     function renderWelcome() {
         state.screen = 'welcome';
+        var recentCompositions = portfolioCompositions();
         stage.innerHTML = '<section class="surface">' +
             '<div class="hero"><p class="eyebrow">YOUR AI WRITING STUDIO</p><h2>把一篇作文，变成一次真正的训练。</h2>' +
             '<p>拍下手写作文或直接粘贴文字。你可以选择逐句改善英语，或按真实考试标准检查内容与结构。</p>' +
             (state.quota ? '<p><strong>今日还可批改 ' + escapeHtml(state.quota.words_remaining) + ' 词</strong> · 每日上限 ' + escapeHtml(state.quota.daily_word_limit) + ' 词</p>' : '') +
             '<div class="hero-actions"><button class="primary-button" type="button" data-start-new>' + icon('plus') + '开始新作文</button>' +
-            (state.compositions.length ? '<button class="secondary-button" type="button" data-open-composition="' + escapeHtml(compositionId(state.compositions[0])) + '">继续最近作品</button>' : '') + '</div></div>' +
+            (recentCompositions.length ? '<button class="secondary-button" type="button" data-open-composition="' + escapeHtml(compositionId(recentCompositions[0])) + '">继续最近作品</button>' : '') + '</div></div>' +
             '<div class="feature-grid"><article class="feature-card"><span class="feature-icon">' + icon('camera') + '</span><h3>拍照或输入</h3><p>OCR 后先由你确认文字，潦草笔迹也不会直接进入批改。</p></article>' +
             '<article class="feature-card"><span class="feature-icon">' + icon('text') + '</span><h3>两种批改</h3><p>通用语言批改不评分；标化考试内容批改忠实使用你选择的 Rubric。</p></article>' +
             '<article class="feature-card"><span class="feature-icon">' + icon('check') + '</span><h3>亲手重写</h3><p>读完建议后亲自改写，再一次性提交检查，让反馈变成能力。</p></article></div>' +
@@ -481,6 +504,36 @@
         state.correctionRound = 0;
     }
 
+    function discardCurrentEmptyComposition() {
+        var current = state.current;
+        var id = compositionId(current);
+        var draftSnapshot = Object.assign({}, current || {}, {
+            title: state.title,
+            prompt_text: state.promptText,
+            confirmed_text: state.confirmedText
+        });
+        if (!id || !isEmptyCompositionDraft(draftSnapshot) || state.photoFiles.length || state.photoIds.length) {
+            return Promise.resolve({ discarded: false });
+        }
+        window.clearTimeout(state.autosaveTimer);
+        state.compositions = state.compositions.filter(function(item) { return compositionId(item) !== id; });
+        return writingCall('discardEmptyComposition', { composition_id: id }).catch(function() {
+            return { success: false, discarded: false };
+        });
+    }
+
+    function returnToTutorHome() {
+        stopOcrPolling();
+        stopReviewPolling();
+        stopRewritePolling();
+        discardCurrentEmptyComposition();
+        setStatus('');
+        state.current = null;
+        state.review = null;
+        renderPortfolio();
+        renderWelcome();
+    }
+
     function createNewWriting() {
         if (state.busy) return;
         stopOcrPolling();
@@ -488,7 +541,9 @@
         setStatus('');
         renderLoading('正在准备一张新的写作纸…', '你的输入会自动关联到这篇新作文。');
         setBusy(true);
-        writingCall('createComposition', { assessment_mode: apiMode('language') }).then(function(result) {
+        discardCurrentEmptyComposition().then(function() {
+            return writingCall('createComposition', { assessment_mode: apiMode('language') });
+        }).then(function(result) {
             var composition = result.composition || result.item || {};
             if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
             if (!compositionId(composition) && result.composition_id) composition.composition_id = result.composition_id;
@@ -1582,7 +1637,7 @@
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
         else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
         else if (button.matches('[data-start-new]')) createNewWriting();
-        else if (button.matches('[data-return-home]')) { stopOcrPolling(); stopReviewPolling(); stopRewritePolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
+        else if (button.matches('[data-return-home]')) returnToTutorHome();
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
         else if (button.matches('[data-remove-photo]')) {
