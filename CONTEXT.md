@@ -35,6 +35,39 @@ The question, submitted answer, grading result, and grading context retained
 from one countable submission for faithful historical review.
 _Avoid_: Current answer key, live exercise content
 
+## AI Tutor Writing
+
+**Writing Composition**:
+One student's writing work from initial prompt/manuscript through review and
+training. Re-uploading within the same workspace revises this Composition;
+starting New Writing creates another one.
+_Avoid_: Assignment, attempt, uploaded photo
+
+**Confirmed Manuscript**:
+The student-approved text that becomes the authoritative source for writing
+review, whether it was typed directly or corrected after OCR.
+_Avoid_: OCR output, uploaded image, model transcription
+
+**Assessment Mode**:
+The one review purpose selected for a Writing Composition at a time: General
+Language Review or Standardized Content Review.
+_Avoid_: Automatically detected exam type, combined review
+
+**Standardized Content Review**:
+Writing feedback evaluated against the student's selected examination Rubric,
+including an estimated score derived under that Rubric.
+_Avoid_: Official exam score, General Language Review
+
+**General Language Review**:
+Sentence-level language feedback that preserves the student's intended meaning
+and does not produce an examination score.
+_Avoid_: Content score, automatic language upgrade
+
+**Sentence Training**:
+The follow-up activity in which the student rewrites identified sentences after
+reading language feedback; required sentences complete together before feedback.
+_Avoid_: Full Composition rewrite, answer copying
+
 ## Exercise Progress and Assignment Participation
 
 **Exercise Progress**:

@@ -963,3 +963,6 @@ Review condition:
 
 Revisit when adding a new assessment board, CEFR level-up variants, or a human
 moderation workflow.
+
+Detailed incident evidence and the reusable gate for every future AI feature are
+recorded in `docs/adr/0003-durable-canonical-ai-boundaries.md`.

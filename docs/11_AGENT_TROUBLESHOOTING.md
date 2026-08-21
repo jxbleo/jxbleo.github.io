@@ -797,3 +797,27 @@ STAR 不阻止未来重新布置同一个 set。
 部署/数据：
 - 只需重新打包并上传最新版 `deploy-packages/teacherAdmin.zip`；不需要迁移 answer_disputes、grading_keys 或 intensive_listening_materials。
 - 新版函数返回 `dispute_type: "intensive_spelling_exemption"` 后，已有精听 Argue 会进入 Reject/Approve 专用卡片；旧三按钮请求不要继续点击。
+
+### 2026-08-21：AI Tutor 首次作文批改上线故障链
+
+已做：
+- 把照片上传确认、OCR、标化内容评估和通用语言批改从浏览器长请求迁移到 `writing_ai_jobs`。
+- 加入稳定 operation/job/usage ID、异步派发、每分钟恢复、租约、三次尝试、active-job 结果守卫和失败退额度。
+- 兼容千问的 JSON 字符串包装、多页数组根，并在严格 Schema 之后执行服务器领域校正。
+- 修复千问回显原句时调整空格或标点导致的 `WRITING_AI_SENTENCE_ALIGNMENT_FAILED`：完整唯一句子 ID 仍严格，原句由服务器填回。
+
+技术规则：
+- 所有未来慢速 AI 功能默认使用持久任务；网页只发起和查看状态，不拥有模型执行生命周期。
+- 结构化返回采用“Schema 验证 + 稳定领域 ID + 服务器 canonicalization”，不能要求模型逐字符回显权威数据。
+- AI job 和运行日志只记录安全元数据，绝不记录密钥、内部 token、作文正文、OCR 文本、反馈或学生身份。
+- 完整事故表、可观测字段和未来 AI 发布门槛见 `docs/adr/0003-durable-canonical-ai-boundaries.md`。
+
+重复问题：
+- 先按 safe error code 判断层次：网络等待、provider HTTP/timeout、Schema、领域 ID 对齐、active-job/lease、quota。
+- 先读 `writing_ai_jobs` 和 `writing_ai_usage_events` 的安全投影，不要为了排错输出完整数据库行或函数环境变量。
+- 不要用“更换模型”掩盖请求生命周期、幂等、canonicalization 或部署未生效的问题。
+
+部署/数据：
+- `writingTutor`、`writingAiWorker` 和一分钟 timer 已部署；`writing_ai_jobs` 为 `ADMINONLY`。
+- 失败任务只保留安全错误代码并已事务化退回额度；未在文档中保存生产 job/Composition/usage ID。
+- 相关生产修复提交为 `b2b5d72` 和 `e1dc73d`。
