@@ -248,6 +248,10 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .language-overall-card { padding: clamp(24px,4vw,44px); color: #fff; background: linear-gradient(135deg, #0d665e, #159282); }
 .language-overall-card h2 { margin: 0; font-size: clamp(1.65rem,4vw,2.6rem); letter-spacing: -.04em; }
 .language-overall-card > p:last-child { max-width: 760px; margin: 12px 0 0; color: rgba(255,255,255,.87); line-height: 1.75; }
+.cefr-estimate { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 18px; max-width: 760px; margin-top: 20px; padding: 16px 18px; border: 1px solid rgba(255,255,255,.22); border-radius: 18px; background: rgba(255,255,255,.12); }
+.cefr-estimate-label { align-self: center; color: rgba(255,255,255,.76); font-size: .68rem; font-weight: 780; letter-spacing: .06em; text-transform: uppercase; }
+.cefr-estimate strong { font-size: clamp(1rem,2vw,1.18rem); letter-spacing: -.015em; }
+.cefr-estimate p { grid-column: 1 / -1; margin: 3px 0 0; color: rgba(255,255,255,.9); font-size: .78rem; line-height: 1.65; }
 .language-readonly-note { display: inline-flex; margin: 14px 0 0; padding: 6px 10px; border-radius: 999px; color: #fff; background: rgba(255,255,255,.14); font-size: .7rem; font-weight: 760; }
 .language-manuscript-card { padding: clamp(22px,3.5vw,38px); }
 .language-section-heading { display: flex; align-items: center; gap: 11px; }
@@ -399,11 +403,15 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 @media (prefers-reduced-transparency: reduce) {
     .ai-tutor-header, .portfolio-sidebar, .language-toolbar, .batch-actions, .surface, .confirmation-dialog { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
     .language-overall-card { color: #fff; background: #0d665e; }
+    .cefr-estimate { color: #0d514b; border-color: #fff; background: #fff; }
+    .cefr-estimate-label, .cefr-estimate p { color: inherit; }
 }
 @media (prefers-contrast: more) {
     :root { --ai-line: rgba(9,50,41,.48); --ai-muted: #405d55; }
     .ai-tutor-header, .portfolio-sidebar, .surface, .sentence-card { border-width: 2px; background: #fff; }
     .language-overall-card { color: var(--ai-ink); }
     .language-overall-card .eyebrow, .language-overall-card > p:last-child { color: var(--ai-ink); }
+    .cefr-estimate { border-color: currentColor; background: transparent; }
+    .cefr-estimate-label, .cefr-estimate p { color: currentColor; }
     .sentence-card { background: var(--sentence-soft); box-shadow: none; }
 }

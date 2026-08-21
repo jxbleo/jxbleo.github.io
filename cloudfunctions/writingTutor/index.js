@@ -1436,7 +1436,7 @@ async function performReviewJob(student, job) {
     const units = sentenceUnits(prepared.confirmed_text);
     if (!units.length) throw new Error("MANUSCRIPT_REQUIRED");
     const modelResponse = await callStructuredModel({
-      system: languagePrompt(), schemaName: "language_sentence_review_v1", schema: LANGUAGE_SCHEMA,
+      system: languagePrompt(), schemaName: "language_sentence_review_v2", schema: LANGUAGE_SCHEMA,
       userText: `TASK_PROMPT_DATA (may be empty):\n<task_prompt>${prepared.prompt_text || ""}</task_prompt>\nSENTENCE_DATA_JSON:\n${JSON.stringify(units)}`,
     });
     review = { ...canonicalLanguageResult(modelResponse.data, units), model_metadata: modelResponse.metadata };

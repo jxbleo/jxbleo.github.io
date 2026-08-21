@@ -5,6 +5,9 @@
 
 ## 2026-08-22 — AI Tutor composition continuity
 
+- Added a required structured CEFR Writing Estimate to new General Language
+  Reviews: A1–C2, lower/middle/upper position, and a concise Simplified Chinese
+  manuscript-specific rationale displayed before the Language Review overview.
 - Reduced the writing toolbar to History, the current title, and required-sentence
   revision percentage. Moved Home and New into History and removed the post-Check
   instruction banner.

@@ -63,6 +63,11 @@ Sentence-level language feedback that preserves the student's intended meaning
 and does not produce an examination score.
 _Avoid_: Content score, automatic language upgrade
 
+**CEFR Writing Estimate**:
+An approximate CEFR band and lower/middle/upper position evidenced by one
+Confirmed Manuscript's writing performance, not the student's overall proficiency.
+_Avoid_: Certified CEFR level, examination score
+
 **Sentence Training**:
 The follow-up activity in which the student rewrites identified sentences after
 reading language feedback; required sentences complete together before feedback.

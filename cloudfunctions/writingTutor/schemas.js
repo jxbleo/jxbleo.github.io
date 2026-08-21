@@ -1,6 +1,6 @@
 "use strict";
 
-const SCHEMA_VERSION = "writing-ai-schemas-2026-08-21.3";
+const SCHEMA_VERSION = "writing-ai-schemas-2026-08-22.1";
 
 const stringArray = { type: "array", items: { type: "string" } };
 
@@ -60,9 +60,19 @@ const STANDARDIZED_SCHEMA = {
 const LANGUAGE_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["suggested_title", "overview", "sentences", "profile_observations"],
+  required: ["suggested_title", "cefr_estimate", "overview", "sentences", "profile_observations"],
   properties: {
     suggested_title: { type: "string", minLength: 1, maxLength: 80, description: "A natural 2–6 word English title summarising the manuscript's central topic, without quotation marks or ending punctuation." },
+    cefr_estimate: {
+      type: "object",
+      additionalProperties: false,
+      required: ["level", "position", "commentary_zh"],
+      properties: {
+        level: { type: "string", enum: ["A1", "A2", "B1", "B2", "C1", "C2"], description: "Approximate CEFR writing-performance band demonstrated by this manuscript." },
+        position: { type: "string", enum: ["lower", "middle", "upper"], description: "The manuscript's approximate position within the selected CEFR band." },
+        commentary_zh: { type: "string", description: "Concise student-friendly Simplified Chinese explanation of the CEFR writing estimate and the most useful next improvement." },
+      },
+    },
     overview: { type: "string", description: "Concise overall evaluation written in student-friendly Simplified Chinese." },
     sentences: {
       type: "array",

@@ -818,6 +818,13 @@ or unknown IDs; the server then restores each exact original sentence by ID inst
 of trusting the model to echo whitespace and punctuation unchanged. Student text is
 delimited as untrusted data in every prompt.
 
+The language-review boundary requires one structured `cefr_estimate` object
+before the free-text overview. Its closed enums carry the A1–C2 band and
+lower/middle/upper position; only the concise rationale is model-authored
+Simplified Chinese. The browser derives the localized position label instead of
+parsing prose. This estimate is scoped to the current Confirmed Manuscript and is
+not promoted to a certified or student-wide proficiency record.
+
 This allows, for example, Qwen Vision for handwriting OCR with Qwen, DeepSeek,
 or Kimi for text evaluation. A provider's advertised OpenAI compatibility is
 never treated as proof of strict schema support. Canonical server rules compute

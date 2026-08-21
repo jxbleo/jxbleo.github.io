@@ -360,6 +360,10 @@ check("language review renders exactly three primary cards in the approved order
   const sentenceReviewIndex = renderSource.indexOf("language-sentence-review-card");
   assert(overallIndex < manuscriptIndex && manuscriptIndex < sentenceReviewIndex,
     "language review primary cards must stay ordered as overall, manuscript, then sentence correction");
+  requireEvery(renderSource, ["cefr_estimate", "CEFR Writing Estimate", "lower: '偏下'", "middle: '中段'", "upper: '偏上'"],
+    "CEFR writing estimate presentation");
+  assert(renderSource.indexOf("cefrHtml") < renderSource.indexOf("state.review && state.review.overview"),
+    "the CEFR writing estimate must appear before the general Language Review overview");
 });
 
 check("each revision-required sentence renders only source, consolidated analysis, and response area", () => {
@@ -782,6 +786,19 @@ check("domestic-model adapters validate every returned JSON object locally", () 
   const errors = provider._test.validateAgainstSchema(invalid, schemas.OCR_SCHEMA);
   assert(errors.some((message) => message.includes("paragraphs") && message.includes("array")));
   assert(errors.some((message) => message.includes("extra") && message.includes("not allowed")));
+  const languageWithoutCefr = {
+    suggested_title: "A Draft", overview: "总体建议。", sentences: [], profile_observations: [],
+  };
+  assert(provider._test.validateAgainstSchema(languageWithoutCefr, schemas.LANGUAGE_SCHEMA)
+    .some((message) => message.includes("cefr_estimate") && message.includes("required")),
+  "new language reviews must contain a CEFR writing estimate");
+  const languageWithInvalidCefr = {
+    ...languageWithoutCefr,
+    cefr_estimate: { level: "B1", position: "top", commentary_zh: "整体接近 B1 上段。" },
+  };
+  assert(provider._test.validateAgainstSchema(languageWithInvalidCefr, schemas.LANGUAGE_SCHEMA)
+    .some((message) => message.includes("position") && message.includes("lower, middle, upper")),
+  "CEFR within-band position must use the closed enum");
   const source = read(providerPath);
   requireEvery(source, ["chat_json_schema", "chat_json_object", "responses_json_schema"], "model provider protocols");
   assert(/WRITING_AI_(?:TEXT|VISION)_/.test(source), "text and vision providers must be independently configurable");
@@ -1206,7 +1223,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(dseResult.overall_score, "18");
 
   const language = backend._test.canonicalLanguageResult({
-    suggested_title: "Going Home", overview: "Overview", profile_observations: [],
+    suggested_title: "Going Home", cefr_estimate: { level: "B1", position: "upper", commentary_zh: "整体接近 B1 上段。" }, overview: "Overview", profile_observations: [],
     sentences: [{
       sentence_id: "s001", original: "I go home.", status: "needs_revision",
       rewrite_required: false, issues: [], coaching_summary: "Agreement", reference_revision: "I go home.",
@@ -1216,7 +1233,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(language.sentences[0].original, "I goes home.",
     "server must restore the exact source sentence instead of trusting the model echo");
   const effectiveLanguage = backend._test.canonicalLanguageResult({
-    suggested_title: "Going Home", overview: "Overview", profile_observations: [],
+    suggested_title: "Going Home", cefr_estimate: { level: "B1", position: "middle", commentary_zh: "整体处于 B1 中段。" }, overview: "Overview", profile_observations: [],
     sentences: [{
       sentence_id: "s001", original: "I go home.", status: "effective",
       rewrite_required: true, issues: [], coaching_summary: "表达准确。", reference_revision: "",
@@ -1238,7 +1255,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(rewritePersistenceUpdate.rewrite_results.operator, "set",
     "a first rewrite check must atomically replace rewrite_results instead of creating paths below a null field");
   assert.throws(() => backend._test.canonicalLanguageResult({
-    suggested_title: "Wrong Sentence", overview: "Overview", profile_observations: [],
+    suggested_title: "Wrong Sentence", cefr_estimate: { level: "A2", position: "lower", commentary_zh: "证据有限。" }, overview: "Overview", profile_observations: [],
     sentences: [{ sentence_id: "s999", original: "Wrong", status: "effective", issues: [],
       coaching_summary: "", reference_revision: "" }],
   }, [{ sentence_id: "s001", original: "I goes home." }]), /WRITING_AI_SENTENCE_ALIGNMENT_FAILED/);
@@ -1268,6 +1285,13 @@ check("prompts are versioned and make the selected Rubric authoritative", () => 
   assert(/authoritative/i.test(standardized), "selected rubric must be authoritative");
   assert(/do not replace|do not reclassify/i.test(standardized), "standardized prompt must forbid automatic replacement/reclassification");
   assert(/no numerical score/i.test(promptModule.languagePrompt()), "general language prompt must explicitly forbid scoring");
+  const languagePrompt = promptModule.languagePrompt();
+  requireEvery(languagePrompt, ["A1", "A2", "B1", "B2", "C1", "C2", "lower", "middle", "upper", "cefr_estimate.commentary_zh"],
+    "CEFR writing estimate prompt contract");
+  assert(/manuscript-specific|this manuscript/i.test(languagePrompt),
+    "CEFR estimate must describe this manuscript rather than the student's overall level");
+  assert(/not.{0,80}(?:overall English proficiency|formal CEFR certificate)/i.test(languagePrompt),
+    "CEFR estimate must explicitly avoid claiming certified or global proficiency");
 });
 
 check("language coaching prompts bind commentary fields to Simplified Chinese", () => {
@@ -1297,6 +1321,7 @@ check("language and rewrite schemas describe Chinese commentary and English sour
   const chinese = /Simplified Chinese|简体中文/i;
   const english = /English|英文/i;
   const languageProperties = schemas.LANGUAGE_SCHEMA.properties;
+  const cefrProperties = languageProperties.cefr_estimate.properties;
   const sentenceProperties = languageProperties.sentences.items.properties;
   const issueProperties = sentenceProperties.issues.items.properties;
   const observationProperties = languageProperties.profile_observations.items.properties;
@@ -1304,6 +1329,10 @@ check("language and rewrite schemas describe Chinese commentary and English sour
   const rewriteResultProperties = rewriteProperties.results.items.properties;
 
   assertDescriptionMatches(languageProperties.overview, chinese, "LANGUAGE_SCHEMA.overview");
+  assert(schemas.LANGUAGE_SCHEMA.required.includes("cefr_estimate"), "LANGUAGE_SCHEMA must require cefr_estimate");
+  assert.deepStrictEqual(cefrProperties.level.enum, ["A1", "A2", "B1", "B2", "C1", "C2"]);
+  assert.deepStrictEqual(cefrProperties.position.enum, ["lower", "middle", "upper"]);
+  assertDescriptionMatches(cefrProperties.commentary_zh, chinese, "LANGUAGE_SCHEMA.cefr_estimate.commentary_zh");
   ["category", "explanation", "suggestion"].forEach((field) => {
     assertDescriptionMatches(issueProperties[field], chinese, `LANGUAGE_SCHEMA.sentences[].issues[].${field}`);
   });
