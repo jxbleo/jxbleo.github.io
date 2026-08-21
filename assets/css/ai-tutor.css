@@ -270,6 +270,9 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .sentence-card.needs-review { box-shadow: inset 3px 0 var(--sentence-color); }
 .original-sentence { margin: 0 0 18px; font: 1.18rem/1.65 ui-serif, Georgia, serif; overflow-wrap: anywhere; }
 .sentence-original-highlight { padding: .16em .28em; border-radius: .42em; background: var(--sentence-active); box-shadow: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.sentence-card.is-effective .original-sentence { margin-bottom: 0; }
+.sentence-effective-icon { display: inline-flex; align-items: center; justify-content: center; width: 1.45em; height: 1.45em; margin-left: .38em; border-radius: 999px; color: var(--sentence-color); background: var(--sentence-soft); vertical-align: -.28em; }
+.sentence-effective-icon svg { width: .92em; height: .92em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .grammar-analysis { margin-bottom: 18px; padding: 15px 16px; border: 1px solid var(--sentence-ring); border-radius: 16px; color: #31574e; background: var(--sentence-soft); overflow-wrap: anywhere; word-break: break-word; }
 .grammar-analysis-label { display: block; margin-bottom: 9px; color: var(--sentence-color); font-size: .64rem; font-weight: 880; letter-spacing: .09em; text-transform: uppercase; }
 .grammar-analysis-points { display: grid; gap: 10px; }
@@ -287,7 +290,6 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .rewrite-area { display: grid; gap: 8px; }
 .rewrite-area label { font-size: .72rem; font-weight: 850; }
 .rewrite-input { min-height: 92px; padding: 12px 13px; resize: vertical; line-height: 1.55; }
-.rewrite-input.no-rewrite-needed { color: var(--ai-muted); background: rgba(246,249,248,.82); }
 .sentence-actions { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .batch-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; padding: 18px clamp(18px,3.5vw,34px); border-top: 1px solid var(--ai-line); background: rgba(245,250,248,.72); }
 .batch-actions p { margin: 0; color: var(--ai-muted); font-size: .72rem; }

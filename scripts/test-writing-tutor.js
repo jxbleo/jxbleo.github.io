@@ -285,7 +285,7 @@ check("language review renders exactly three primary cards in the approved order
     "language review primary cards must stay ordered as overall, manuscript, then sentence correction");
 });
 
-check("each sentence renders only source, consolidated analysis, and response area", () => {
+check("each revision-required sentence renders only source, consolidated analysis, and response area", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
@@ -299,6 +299,25 @@ check("each sentence renders only source, consolidated analysis, and response ar
     "consolidated sentence styles");
   assert(!/\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
     "legacy split feedback styles must be removed");
+});
+
+check("effective sentences collapse to the source sentence and a thumbs-up icon", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  const effectiveStart = cardSource.indexOf("if (!required)");
+  const effectiveEnd = cardSource.indexOf("var visibility");
+  const effectiveBranch = cardSource.slice(effectiveStart, effectiveEnd);
+  requireEvery(effectiveBranch, ["sentence-effective-icon", "thumbUp", "这句话无需修改"],
+    "effective sentence summary");
+  assert(!/grammar-analysis|sentence-response|rewrite-input|你的改写/.test(effectiveBranch),
+    "effective sentences must not render analysis or rewrite controls");
+  assert(!/no-rewrite-needed/.test(`${client}\n${styles}`),
+    "the removed disabled no-rewrite textarea must not remain in source or styles");
+  assert(/function rewriteRequired[\s\S]{0,260}["']effective["']/.test(client),
+    "legacy effective sentences without rewrite_required must remain exempt from rewriting");
+  requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-effective-icon"],
+    "effective sentence styling");
 });
 
 check("sentence correction has one list mode and no layout-switch controls", () => {
@@ -758,6 +777,15 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(language.sentences[0].rewrite_required, true);
   assert.strictEqual(language.sentences[0].original, "I goes home.",
     "server must restore the exact source sentence instead of trusting the model echo");
+  const effectiveLanguage = backend._test.canonicalLanguageResult({
+    suggested_title: "Going Home", overview: "Overview", profile_observations: [],
+    sentences: [{
+      sentence_id: "s001", original: "I go home.", status: "effective",
+      rewrite_required: true, issues: [], coaching_summary: "表达准确。", reference_revision: "",
+    }],
+  }, [{ sentence_id: "s001", original: "I go home." }]);
+  assert.strictEqual(effectiveLanguage.sentences[0].rewrite_required, false,
+    "server must exempt effective sentences even when the model returns a contradictory rewrite flag");
   const persistenceUpdate = backend._test.replaceWholeFields({
     status: "sentence_training",
     language_review: { model_metadata: { model: "test" }, sentences: [] },

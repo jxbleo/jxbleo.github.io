@@ -1967,11 +1967,13 @@ Important mobile rules:
   unfinished capsules, but no progress copy or instructional hint appears beneath
   the capsule row. The list is the only layout: there is no one-sentence mode,
   layout toggle, or pair of layout icons.
-- Each sentence row contains only the original English sentence, one consolidated
-  Simplified Chinese grammar analysis, and the student's revision input. Do not
-  split issues and suggestions into repeated sub-panels. The optional reference
-  answer belongs to the third input area and temporarily replaces the input rather
-  than becoming a fourth area.
+- Each revision-required sentence row contains only the original English sentence,
+  one consolidated Simplified Chinese grammar analysis, and the student's revision
+  input. Do not split issues and suggestions into repeated sub-panels. The optional
+  reference answer belongs to the third input area and temporarily replaces the input
+  rather than becoming a fourth area. An effective sentence instead shows only its
+  original sentence followed by an accessible thumbs-up icon; it has no Grammar
+  Analysis panel or revision input.
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.
