@@ -1728,6 +1728,9 @@ required.
 - Replaced simultaneous analysis/input presentation with one mutually exclusive
   two-sided sentence card: analysis on the front, original sentence plus input on
   the back. Added keyboard semantics and a non-rotating reduced-motion state swap.
+- Restyled Sentence Revision row numbers as BBC worksheet-style bare sequence
+  numbers, replaced unresolved capsule dots with question marks, and made accepted
+  cards open on the student's corrected sentence with an inline colored check.
 - Migrated Sentence Revision `Check` from a synchronous browser-owned model call
   to a durable `writing_ai_jobs` rewrite-check job. Submitted rewrite text is
   staged only in `writing_compositions.pending_rewrite_check`; the queue remains

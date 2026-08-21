@@ -315,12 +315,14 @@ check("each revision-required sentence is one accessible two-face card", () => {
   ], "sentence flip-card markup");
   assert((cardSource.match(/<article/g) || []).length <= 1,
     "a revision-required sentence must not split its analysis and input into separate article cards");
-  assert(/sentence-analysis-face[\s\S]*grammar-analysis[\s\S]*sentence-rewrite-face[\s\S]*rewrite-input/.test(cardSource),
+  assert(/sentence-analysis-face[\s\S]*grammar-analysis/.test(cardSource)
+      && /sentence-rewrite-face[\s\S]*editableResponse/.test(cardSource)
+      && /editableResponse[\s\S]*rewrite-input/.test(cardSource),
     "the analysis and rewrite faces must live inside the same sentence card");
   const rewriteFaceStart = cardSource.indexOf("sentence-rewrite-face");
   const rewriteFaceEnd = cardSource.indexOf("</section>", rewriteFaceStart);
   const rewriteFaceSource = cardSource.slice(rewriteFaceStart, rewriteFaceEnd);
-  assert(rewriteFaceStart >= 0 && /rewrite-input/.test(rewriteFaceSource),
+  assert(rewriteFaceStart >= 0 && /editableResponse/.test(rewriteFaceSource),
     "the back face must contain the student's rewrite input");
   assert(!/grammar-analysis|analysisCopy|coaching_summary|issue\.explanation|issue\.suggestion/.test(rewriteFaceSource),
     "the rewrite face must not expose the sentence analysis at the same time");
@@ -481,6 +483,8 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "done and review states must not visually thicken or dash the capsule border");
   assert(/\.sentence-capsule\.is-done::after\s*\{[^}]*content\s*:\s*["']✓["']/is.test(styles),
     "completed capsules must show a small checkmark beneath the number");
+  assert(/\.sentence-capsule\.is-review::after,\s*\.sentence-capsule\.has-gap::after\s*\{[^}]*content\s*:\s*["']\?["']/is.test(styles),
+    "unresolved capsules must show a small question mark beneath the number");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
     "the capsule row must reserve space for its status marks");
 });
@@ -500,6 +504,25 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
     "the footer must remove the old hint, dynamic labels, and arrow icon");
   assert(/\.batch-actions\s*\{[^}]*justify-content\s*:\s*flex-end/is.test(styles),
     "the lone desktop Check action must align to the trailing edge");
+  assert(/\.sentence-row-number\s*\{[^}]*(?:display\s*:\s*inline-block)[^}]*border\s*:\s*0[^}]*border-radius\s*:\s*0[^}]*background\s*:\s*transparent/is.test(styles),
+    "sentence rows must use the BBC worksheet-style plain sequence number rather than a capsule");
+});
+
+check("accepted revisions default to the corrected sentence and show an inline check", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const prepareSource = functionSource(client, "prepareLanguageReview", "sentenceId");
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(prepareSource, ["stored.accepted === true", "state.rewriteFace[id] = true"],
+    "accepted revision default face");
+  requireEvery(cardSource, [
+    "correctedSentence", "corrected-sentence", "sentence-corrected-highlight",
+    "sentence-corrected-icon", "这句话已订正正确", "icon('check')",
+  ], "accepted corrected sentence");
+  assert(/accepted\s*\?\s*correctedResponse\s*:\s*editableResponse/.test(cardSource),
+    "accepted revisions must replace the input face with the persisted corrected sentence");
+  requireEvery(styles, [".corrected-sentence", ".sentence-corrected-highlight", ".sentence-corrected-icon"],
+    "accepted corrected sentence styling");
 });
 
 check("sentence navigation replaces the primary toolbar when it reaches the top", () => {

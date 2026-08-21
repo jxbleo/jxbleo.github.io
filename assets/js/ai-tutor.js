@@ -1116,7 +1116,10 @@
             var id = sentenceId(sentence);
             var stored = storedById[id] || sentence.rewrite_result;
             state.rewrites[id] = firstText(sentence.student_rewrite, sentence.rewrite_text, stored && stored.student_rewrite);
-            if (stored) state.rewriteResults[id] = stored;
+            if (stored) {
+                state.rewriteResults[id] = stored;
+                if (stored.accepted === true) state.rewriteFace[id] = true;
+            }
         });
         safeArray(state.current && state.current.pending_rewrite_items).forEach(function(item) {
             var id = firstText(item && item.sentence_id);
@@ -1213,11 +1216,14 @@
             '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>' + reference +
             '<div class="sentence-actions">' +
             (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考句' : '查看参考句') + '</button>' : '<span></span>') +
-            '<button class="secondary-button compact" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="' + (accepted || state.readOnly ? '查看我的改写' : '记住分析并开始改写') + '">' + (accepted || state.readOnly ? '查看我的改写' : '我记住了，开始改写') + '</button></div></section>';
+            '<button class="secondary-button compact" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="' + (accepted || state.readOnly ? '查看已订正句子' : '记住分析并开始改写') + '">' + (accepted || state.readOnly ? '查看已订正句子' : '我记住了，开始改写') + '</button></div></section>';
+        var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
+        var correctedResponse = '<p class="corrected-sentence"><span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span><span class="sentence-effective-icon sentence-corrected-icon" role="img" aria-label="这句话已订正正确">' + icon('check') + '</span></p>';
+        var editableResponse = '<p class="original-sentence">' + numberedOriginal + '</p>' +
+            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
-            '<p class="original-sentence">' + numberedOriginal + '</p>' +
-            '<div class="sentence-response"><div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>' +
-            '<div class="sentence-actions"><button class="quiet-button" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="返回查看语法分析">返回查看分析</button></div></div></section>';
+            '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
+            '<div class="sentence-actions"><button class="quiet-button" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="查看语法分析">' + (accepted ? '查看分析' : '返回查看分析') + '</button></div></div></section>';
         return cardStart + '<div class="sentence-flip-card"><div class="sentence-card-inner' + (showRewrite ? ' show-rewrite' : '') + '" data-face="' + (showRewrite ? 'rewrite' : 'analysis') + '">' + analysisFace + rewriteFace + '</div></div></article>';
     }
 

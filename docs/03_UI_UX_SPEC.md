@@ -1979,8 +1979,19 @@ Important mobile rules:
   accessible 22px circular SVG checkmark matching the Teacher matrix completion mark;
   its circle inherits the sentence color and it has no grammar box or revision input.
 - Every Sentence Revision row begins with its corresponding one-based sentence number.
+  This row number matches the BBC classroom worksheet fill-blank sequence treatment:
+  a small heavy baseline-aligned number with no border, circular background, or pill.
+  It remains distinct from the horizontal navigation capsule.
   The card footer contains only one trailing `Check` button in editable mode; it has no
   explanatory copy, dynamic long label, or arrow icon.
+- An unresolved navigation capsule uses a small question mark beneath its number,
+  whether it is still empty or failed the latest Check; never use the former dot.
+  A completed capsule keeps its small checkmark.
+- After a student revision is accepted, that sentence card opens on the corrected
+  sentence rather than the analysis. The persisted student sentence is highlighted
+  and followed inline by the same colored circular SVG checkmark. It is display text,
+  not a disabled textarea. Flipping the card is the only way to return to the original
+  sentence and analysis.
 - The face control exposes its state and destination in an accessible name. Click,
   Enter, and Space all switch the same card; focus remains on the corresponding
   control or moves predictably to the revision input. The inactive face is hidden
