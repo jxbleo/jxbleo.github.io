@@ -368,6 +368,25 @@ check("writing cards shrink to the phone viewport without horizontal page overfl
     "only the sentence capsule row may scroll horizontally");
 });
 
+check("Draft preserves paragraph breaks while sentence highlights remain inline", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const highlightSource = functionSource(client, "highlightedManuscriptHtml", "compositionStatus");
+  requireEvery(highlightSource, [
+    "source.slice(cursor, matchAt)", "leadingWhitespace", "trailingWhitespace",
+    "visibleSentence", 'role="button"', 'tabindex="0"', "</span>",
+  ], "paragraph-preserving manuscript highlights");
+  assert(!/<button class=["']manuscript-sentence-highlight/.test(highlightSource),
+    "Draft sentence highlights must not use atomic button boxes");
+  assert(/\.manuscript-text\s*\{[^}]*white-space\s*:\s*pre-wrap/i.test(styles),
+    "Draft must preserve the manuscript's original paragraph whitespace");
+  assert(/\.manuscript-sentence-highlight\s*\{[^}]*display\s*:\s*inline/i.test(styles),
+    "sentence highlights must remain in the paragraph's inline formatting flow");
+  assert(/closest\([^)]*data-manuscript-sentence/.test(client)
+      && /data-manuscript-sentence[\s\S]{0,500}(?:Enter|event\.key !== ' ')[\s\S]{0,300}\.click\(\)/.test(client),
+    "inline sentence navigation must remain clickable and keyboard accessible");
+});
+
 check("each sentence shares one color across manuscript, capsule, and correction", () => {
   const client = read(clientPath);
   const styles = read(stylePath);

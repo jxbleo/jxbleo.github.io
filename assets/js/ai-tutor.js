@@ -157,8 +157,13 @@
             if (!original) return;
             var matchAt = source.indexOf(original, cursor);
             if (matchAt < 0) return;
-            html += escapeHtml(source.slice(cursor, matchAt));
-            html += '<button class="manuscript-sentence-highlight' + (index === state.activeSentence ? ' is-active' : '') + '" type="button" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(original) + '</button>';
+            var leadingWhitespace = (original.match(/^\s*/) || [''])[0];
+            var withoutLeading = original.slice(leadingWhitespace.length);
+            var trailingWhitespace = (withoutLeading.match(/\s*$/) || [''])[0];
+            var visibleSentence = withoutLeading.slice(0, withoutLeading.length - trailingWhitespace.length);
+            html += escapeHtml(source.slice(cursor, matchAt) + leadingWhitespace);
+            html += '<span class="manuscript-sentence-highlight' + (index === state.activeSentence ? ' is-active' : '') + '" role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(visibleSentence) + '</span>';
+            html += escapeHtml(trailingWhitespace);
             cursor = matchAt + original.length;
         });
         return html + escapeHtml(source.slice(cursor));
@@ -1305,7 +1310,7 @@
     });
 
     document.addEventListener('click', function(event) {
-        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave]');
+        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-manuscript-sentence]');
         if (!button) return;
         if (button.matches('#header-back')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
@@ -1389,6 +1394,13 @@
         else if (button.matches('[data-full-rewrite]')) startOptionalFullRewrite();
         else if (button.matches('[data-open-current-readonly]')) { state.readOnly = true; prepareLanguageReview(); }
         else if (button.matches('[data-resume-current]')) { if (state.review) state.assessmentMode === 'standardized' ? renderStandardized() : prepareLanguageReview(); else renderSource(); }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        var sentence = event.target.closest && event.target.closest('[data-manuscript-sentence]');
+        if (!sentence || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        sentence.click();
     });
 
     document.getElementById('header-new-writing').addEventListener('click', createNewWriting);

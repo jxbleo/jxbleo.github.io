@@ -1772,6 +1772,13 @@ High priority improvement:
 - Confirm each manuscript sentence uses the same color as its number capsule and
   correction-source highlight. Click both the manuscript mark and capsule and
   confirm they activate the same index and scroll to the same correction row.
+- Use one manuscript containing multiple sentences in one paragraph and at least
+  two paragraphs separated by a blank line. Confirm `Draft` keeps same-paragraph
+  sentences together, preserves the blank-line paragraph boundary, and applies a
+  different indexed color to each sentence. Repeat with a long sentence at 320px;
+  it must wrap naturally rather than becoming an atomic sentence-width block.
+- Focus a highlighted Draft sentence with the keyboard and confirm Enter and Space
+  activate its capsule and revision row just like a pointer click.
 - Confirm sentence highlighting has no underline or bottom border, uses no site
   primary green, and repeats blue, orange, purple, rose, indigo, coral, gold, and
   deep pink only after eight sentences, in the same positional order across

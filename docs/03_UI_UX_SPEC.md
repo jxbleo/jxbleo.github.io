@@ -1981,6 +1981,11 @@ Important mobile rules:
   numbered capsule, correction-card accent, and highlighted source sentence all
   use the same palette entry. Both the original sentence mark and capsule are
   interactive routes to the same correction row.
+- `Draft` preserves the confirmed manuscript's original spaces and paragraph
+  breaks. Sentence highlights remain inline within that text flow, so differently
+  colored sentences in one paragraph continue on the same paragraph instead of
+  becoming sentence-sized blocks. Boundary whitespace stays outside the interactive
+  highlight while click, Enter, and Space still locate the matching revision row.
 - Sentence highlighting uses no text underline or bottom-border treatment. Its
   repeating palette deliberately excludes the site's primary green so navigation
   colors cannot be mistaken for a primary action or success state. Use blue,
