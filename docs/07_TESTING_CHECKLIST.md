@@ -1835,7 +1835,15 @@ High priority improvement:
   number, including effective rows. In editable mode, the footer contains only one
   `Check` button aligned right on desktop and full-width on phone; the old unfinished
   hint, long submit labels, and arrow icon are absent. Empty submission still returns
-  the student to the first unfinished sentence.
+  the student to the first unfinished sentence. Confirm the row number follows the
+  BBC classroom worksheet treatment—small, heavy, baseline-aligned, with no border,
+  circular background, or capsule shape. This must remain visually distinct from
+  the top navigation capsules.
+- Before Check and after a rejected Check, confirm the unresolved capsule shows a
+  small question mark rather than a dot. After acceptance, confirm both the capsule
+  check and an inline colored circular SVG check appear. The accepted card must open
+  on the persisted corrected sentence as display text, with no disabled textarea;
+  only an explicit flip may reveal the original sentence and grammar analysis.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display
