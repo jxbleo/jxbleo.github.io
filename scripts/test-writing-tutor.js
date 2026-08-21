@@ -574,13 +574,102 @@ check("OCR action enqueues a durable job and returns immediately", () => {
 
 check("evaluate enqueues a durable review job and returns without waiting for the model", () => {
   const backend = read(functionPath);
-  const evaluateSource = functionSource(backend, "evaluate", "submitRewrites");
+  const evaluateSource = matchingFunctionSource(backend, "evaluate", "evaluate action");
   assert(!/await\s+callStructuredModel\s*\(/.test(evaluateSource),
     "evaluate still waits for the language model inside the browser request; it must only reserve/enqueue and return");
   assert(/enqueue[A-Z\w]*Review[A-Z\w]*Job\s*\(/.test(evaluateSource),
     "evaluate must enqueue a persistent review job");
   assert(/(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])[\s\S]{0,300}\bjob\b|\bjob\b[\s\S]{0,300}(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])/.test(evaluateSource),
     "evaluate must immediately return an accepted/queued job projection");
+});
+
+check("submitRewrites enqueues a durable rewrite job without waiting for the model", () => {
+  const backend = read(functionPath);
+  const submitSource = matchingFunctionSource(backend, "submitRewrites", "submitRewrites");
+  const enqueueSource = matchingFunctionSource(backend, "enqueue[A-Z\\w]*Rewrite[A-Z\\w]*Job", "rewrite-job enqueue function");
+  assert(!/await\s+callStructuredModel\s*\(/.test(submitSource),
+    "submitRewrites must not keep the browser request open while the rewrite-check model runs");
+  assert(/enqueue[A-Z\w]*Rewrite[A-Z\w]*Job\s*\(|(?:writing_ai_jobs|\bJOBS\b)[\s\S]{0,800}job_type\s*:\s*["']rewrite["']/.test(submitSource),
+    "submitRewrites must enqueue a persistent rewrite job");
+  assert(/(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])[\s\S]{0,320}\bjob\b|\bjob\b[\s\S]{0,320}(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])/.test(`${submitSource}\n${enqueueSource}`),
+    "submitRewrites must immediately return an accepted/queued rewrite-job projection");
+});
+
+check("rewrite jobs use a stable create-only identity and run the model only in performRewriteJob", () => {
+  const backend = read(functionPath);
+  const enqueueSource = matchingFunctionSource(backend, "enqueue[A-Z\\w]*Rewrite[A-Z\\w]*Job", "rewrite-job enqueue function");
+  const performSource = matchingFunctionSource(backend, "performRewriteJob", "rewrite-job processor function");
+  requireEvery(enqueueSource, ["operationId", "stableId", "jobId", "items", "composition_revision"], "rewrite-job identity and payload");
+  assert(/job_type\s*:\s*["']rewrite["']/.test(enqueueSource),
+    "rewrite job must persist job_type rewrite");
+  assert(/status\s*:\s*["']queued["']/.test(enqueueSource),
+    "new rewrite job must start queued");
+  assert(/\.doc\s*\(\s*jobId\s*\)\.create\s*\(/.test(enqueueSource),
+    "rewrite job creation must be create-only under its stable job_id");
+  assert(/getOne\s*\(\s*JOBS[\s\S]{0,700}(?:existing|idempoten|replay)|(?:existing|idempoten|replay)[\s\S]{0,700}getOne\s*\(\s*JOBS/.test(enqueueSource),
+    "same rewrite operation_id must reuse its existing durable job");
+  assert(/await\s+callStructuredModel\s*\(/.test(performSource),
+    "performRewriteJob must execute the rewrite-check model");
+  requireEvery(performSource, ["student_rewrite_check_v1", "REWRITE_SCHEMA"], "rewrite-job model call");
+});
+
+check("performRewriteJob transactionally guards its lease and atomically replaces rewrite_results", () => {
+  const backend = read(functionPath);
+  const performSource = matchingFunctionSource(backend, "performRewriteJob", "rewrite-job processor function");
+  requireEvery(performSource, ["runTransaction", "active_job_id", "lease_token", "processing", "rewrite_results"],
+    "rewrite-job publication guard");
+  assert(/active_job_id[\s\S]{0,220}(?:===|!==|==|!=)[\s\S]{0,100}(?:job\.job_id|job_id)|(?:job\.job_id|job_id)[\s\S]{0,100}(?:===|!==|==|!=)[\s\S]{0,220}active_job_id/.test(performSource),
+    "performRewriteJob must reject a result when the Composition no longer owns the job");
+  assert(/currentJob[\s\S]{0,220}status[\s\S]{0,100}["']processing["']/.test(performSource)
+      && /(?:secretMatches\s*\([^)]*lease_token|lease_token[\s\S]{0,160}(?:===|!==|==|!=)[\s\S]{0,160}lease_token)/.test(performSource),
+    "performRewriteJob must re-check the processing job and its lease token inside the publication path");
+  assert(/transaction\.collection\s*\(\s*COMPOSITIONS\s*\)[\s\S]*\.update\s*\(\s*replaceWholeFields\s*\([\s\S]*["']rewrite_results["']/.test(performSource),
+    "rewrite_results must be published through replaceWholeFields in the same transaction as the job result");
+});
+
+check("job status projection and queued-job dispatch support rewrite jobs", () => {
+  const backend = read(functionPath);
+  const statusSource = functionSource(backend, "jobCompositionStatus", "replaceWholeFields");
+  const processSource = functionSource(backend, "processQueuedJob", "extractOcr");
+  assert(/job\.job_type\s*={2,3}\s*["']rewrite["']/.test(statusSource),
+    "jobCompositionStatus must project rewrite-job states onto the Composition");
+  ["rewrite_queued", "rewrite_processing", "rewrite_failed"].forEach((status) => {
+    assert(statusSource.includes(status), `jobCompositionStatus must expose ${status}`);
+  });
+  assert(/claimed\.job_type\s*={2,3}\s*["']rewrite["'][\s\S]{0,240}performRewriteJob|performRewriteJob[\s\S]{0,240}claimed\.job_type\s*={2,3}\s*["']rewrite["']/.test(processSource),
+    "processQueuedJob must dispatch claimed rewrite jobs to performRewriteJob");
+  const claimIndex = processSource.indexOf("await claimQueuedJob");
+  const publishIndex = processSource.indexOf("await publishProcessingJob");
+  const rewriteRunIndex = processSource.search(/await\s+(?:performRewriteJob|rewriteRunner|runner)\s*\(/);
+  assert(claimIndex >= 0 && publishIndex > claimIndex && rewriteRunIndex > publishIndex,
+    "the rewrite model must run only after claimQueuedJob and publishProcessingJob succeed");
+});
+
+check("rewrite Check polls, survives disconnects, and resumes after reopening the Composition", () => {
+  const client = read(clientPath);
+  const submitSource = matchingFunctionSource(client, "submitRewrites", "submitRewrites client action");
+  const pollingSource = matchingFunctionSource(client, "startRewritePolling", "rewrite polling function");
+  const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
+  requireEvery(client, ["rewritePollActive", "rewritePollGeneration", "stopRewritePolling"], "rewrite polling state");
+  requireEvery(submitSource, ["logicalOperationId", "submitRewrites", "renderRewriteWaiting", "isNetworkDisconnect"],
+    "rewrite Check network recovery");
+  assert(/\.then\s*\([^)]*\)[\s\S]{0,1600}renderRewriteWaiting|renderRewriteWaiting[\s\S]{0,1600}\.then\s*\(/.test(submitSource),
+    "an accepted rewrite job must switch to the durable waiting/polling UI");
+  assert(/isNetworkDisconnect\s*\(\s*error\s*\)[\s\S]{0,500}renderRewriteWaiting/.test(submitSource),
+    "a lost submit response must reconcile the same Composition instead of rendering a fatal Network error");
+  const networkIndex = submitSource.search(/isNetworkDisconnect\s*\(\s*error\s*\)/);
+  const networkReturnIndex = submitSource.indexOf("return", networkIndex);
+  const clearOperationIndex = submitSource.indexOf("clearLogicalOperation('rewrites')", networkIndex);
+  assert(networkIndex >= 0 && networkReturnIndex > networkIndex
+      && (clearOperationIndex < 0 || networkReturnIndex < clearOperationIndex),
+    "the network-disconnect branch must return before clearing the rewrite operation_id");
+  requireEvery(pollingSource, ["getComposition", "rewrite_results", "setTimeout"], "rewrite result polling");
+  assert(/\.catch\s*\([\s\S]{0,500}setTimeout/.test(pollingSource),
+    "rewrite polling must keep retrying after a transient network failure");
+  assert(/job_type\s*={2,3}\s*["']rewrite["']/.test(loadSource)
+      && /queued|processing/.test(loadSource)
+      && /renderRewriteWaiting|startRewritePolling/.test(loadSource),
+    "loadComposition must resume queued/processing rewrite work after refresh or login");
 });
 
 check("review jobs cover both assessment modes and use the durable job lifecycle", () => {
@@ -596,10 +685,10 @@ check("review jobs cover both assessment modes and use the durable job lifecycle
   const claimIndex = processSource.indexOf("await claimQueuedJob");
   const noClaimReturnIndex = processSource.search(/if\s*\(\s*!claimed\s*\)\s*return/);
   const publishIndex = processSource.indexOf("await publishProcessingJob");
-  const reviewRunIndex = processSource.search(/await\s+reviewRunner\s*\(/);
+  const reviewRunIndex = processSource.search(/await\s+(?:reviewRunner|runner)\s*\(/);
   assert(claimIndex >= 0 && noClaimReturnIndex > claimIndex && publishIndex > noClaimReturnIndex
       && reviewRunIndex > publishIndex,
-    "reviewRunner must execute only after a successful lease claim, the empty-claim return guard, and active-job processing publication");
+    "the review runner must execute only after a successful lease claim, the empty-claim return guard, and active-job processing publication");
   assert(/active_job_id/.test(performSource) && /runTransaction|transaction/.test(performSource),
     "review-result publication must transactionally re-check Composition.active_job_id");
   ["queued", "processing", "succeeded", "failed", "superseded"].forEach((status) => {
@@ -849,6 +938,12 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(persistenceUpdate.language_review.operator, "set",
     "a first review must atomically replace language_review instead of creating paths below a null field");
   assert.strictEqual(persistenceUpdate.status, "sentence_training");
+  const rewritePersistenceUpdate = backend._test.replaceWholeFields({
+    status: "completed",
+    rewrite_results: { checked_at: new Date(), results: [] },
+  }, ["rewrite_results"]);
+  assert.strictEqual(rewritePersistenceUpdate.rewrite_results.operator, "set",
+    "a first rewrite check must atomically replace rewrite_results instead of creating paths below a null field");
   assert.throws(() => backend._test.canonicalLanguageResult({
     suggested_title: "Wrong Sentence", overview: "Overview", profile_observations: [],
     sentences: [{ sentence_id: "s999", original: "Wrong", status: "effective", issues: [],

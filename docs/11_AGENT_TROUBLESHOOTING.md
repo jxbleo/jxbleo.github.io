@@ -726,6 +726,13 @@ STAR 不阻止未来重新布置同一个 set。
     最终失败才释放配额。只提高网页超时时间不能解决关闭浏览器后的恢复问题。
     若错误为 `WRITING_AI_SENTENCE_ALIGNMENT_FAILED`，先确认是否只有模型回显的 original 空格或标点变化；
     服务器应按稳定 sentence ID 填回权威原句，只对缺失、重复或未知 ID 判定对齐失败。
+ 17. Sentence Revision 点击 `Check` 后出现 Network error：不要只提高 Web SDK 或函数超时。
+    `submitRewrites` 必须把输入暂存到 Composition 的 `pending_rewrite_check`、创建元数据-only
+    rewrite job 并立即返回；浏览器轮询 Composition，关闭或重新登录后恢复同一 operation/job。
+    若千问已经完成但首次保存失败并出现 `PathNotViable`，检查是否在
+    `rewrite_results: null` 上执行了普通嵌套 `update()`；必须以 `db.command.set(...)` 原子替换
+    整个 `rewrite_results`，并在当前 lease/active-job 事务中清除 staged payload。相同 operation ID
+    在 queued、processing 和 succeeded 状态都不能再次调用模型。
 
 ## 6. 维护规则
 
@@ -802,12 +809,17 @@ STAR 不阻止未来重新布置同一个 set。
 
 已做：
 - 把照片上传确认、OCR、标化内容评估和通用语言批改从浏览器长请求迁移到 `writing_ai_jobs`。
+- 把 Sentence Revision `Check` 也迁移到同一持久队列：学生改写正文只暂存在
+  `writing_compositions.pending_rewrite_check`，job 与日志继续只保存安全元数据；网页轮询并可在
+  网络断开、刷新、关闭浏览器或重新登录后恢复同一任务。
 - 加入稳定 operation/job/usage ID、异步派发、每分钟恢复、租约、三次尝试、active-job 结果守卫和失败退额度。
 - 兼容千问的 JSON 字符串包装、多页数组根，并在严格 Schema 之后执行服务器领域校正。
 - 修复千问回显原句时调整空格或标点导致的 `WRITING_AI_SENTENCE_ALIGNMENT_FAILED`：完整唯一句子 ID 仍严格，原句由服务器填回。
 - 修复模型结构已经合格、但首次写入 `language_review: null` 时 CloudBase 报
   `PathNotViable ... model_metadata`：嵌套 review/rewrite/active-job 对象必须用
   `db.command.set(...)` 原子替换，不能让 `update()` 展开为 dotted paths。
+- 同一规则覆盖首次 `rewrite_results: null`：rewrite job 成功事务必须整字段替换结果、清除
+  `pending_rewrite_check` 并完成当前 job，不能在模型成功后又因 dotted path 写入失败。
 
 技术规则：
 - 所有未来慢速 AI 功能默认使用持久任务；网页只发起和查看状态，不拥有模型执行生命周期。

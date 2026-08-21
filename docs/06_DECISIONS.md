@@ -942,6 +942,15 @@ Decision:
   Publishing verifies both the active Composition job ID and the worker lease in
   one transaction. This choice avoids a new queue service while preserving
   refresh/re-login recovery and safe same-Composition replacement.
+- Durable jobs remain metadata-only even when their recoverable input contains
+  student text. Rewrite checking stages that input under the owned Composition's
+  `pending_rewrite_check`; the queue stores only its stable operation,
+  Composition/revision scope, lifecycle, lease, and safe error metadata. The
+  worker resolves the staged body only after claiming the current job.
+- Nested AI artifacts are whole values at the database boundary. Publishing the
+  first rewrite result over `rewrite_results: null` must use
+  `db.command.set(...)` in the guarded completion transaction, just like first
+  review publication; dotted child updates are not an acceptable substitute.
 - Same-screen re-upload is success-then-swap on one Composition; successful AI
   usage remains append-only even when the current Composition is replaced.
 - An operation ID is valid for exactly one student, Composition revision, mode,

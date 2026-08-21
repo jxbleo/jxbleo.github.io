@@ -10,7 +10,8 @@ future AI feature in Mr. Cat Academy:
 
 1. A browser request is not a durable owner of a slow model call. Both OCR and
    writing review returned `Network error` when CloudBase or the browser stopped
-   waiting before Qwen finished.
+   waiting before Qwen finished; synchronous rewrite checking later exposed the
+   same boundary.
 2. Upload completion and AI-job creation cannot be separate browser-dependent
    steps. A closed tab can otherwise leave private files without recoverable
    work.
@@ -27,6 +28,12 @@ future AI feature in Mr. Cat Academy:
 7. A successful upload command is not proof that production is serving new
    code. CloudBase function status and the static cache-busted asset must both
    be verified.
+8. A metadata-only queue may still process text, but the recoverable text body
+   belongs on its already private domain aggregate. Rewrite-check input is staged
+   on the Composition and referenced—not copied—by the job.
+9. CloudBase nested updates are not whole-object replacement. Publishing the
+   first `rewrite_results` below an existing `null` requires an explicit atomic
+   field set, just like the first review payload.
 
 No incident record may contain API keys, full endpoint URLs, dispatch or lease
 tokens, student manuscripts, OCR text, model feedback, or student identity.
@@ -38,6 +45,9 @@ Every slow AI capability must use the following boundary:
 1. The authenticated action validates input, creates a stable `operation_id`,
    reserves quota idempotently when applicable, and creates a metadata-only
    durable job. It returns immediately.
+   When recoverable model input contains submitted rewrite text, the action
+   stages it under `Composition.pending_rewrite_check`; the job retains metadata
+   only and the claimed worker resolves the body from the Composition.
 2. A cloud worker claims the job with a bounded attempt count and expiring lease.
    A timer recovers queued jobs and expired leases without a browser session.
 3. The model response is normalized for explicitly supported provider wrappers,
@@ -49,6 +59,8 @@ Every slow AI capability must use the following boundary:
 5. Result publication, job completion, and usage success are guarded by the
    current lease plus `Composition.active_job_id` in a transaction. A stale job
    becomes `superseded` and cannot overwrite newer work.
+   Nested review/rewrite result objects are published with whole-field
+   `db.command.set(...)`, including the first transition from stored `null`.
 6. Retryable failures keep the reservation. Terminal failure releases it
    idempotently. Successful use is charged exactly once.
 7. The client polls the Composition, supports refresh/re-login/reopen, and keeps
@@ -85,8 +97,10 @@ protocol decisions, never credential values.
 | OCR remains “in cloud” forever | Function update was not active, a dispatch was lost, or an old row had no durable job ID | Verify function deployment; timer redispatches queued/expired leases; convert non-resumable legacy state to a specific recoverable failure | Do not ask the student to create another Composition automatically |
 | `$ must be an object` or schema-invalid OCR | Provider returned a JSON string wrapper or a page-array root | Normalize only documented wrappers/page arrays, then run the same strict local validation | Do not disable schema validation |
 | OCR succeeds, `开始批改` returns `Network error` | Standardized/language review still awaited the text model synchronously | Enqueue `job_type: review`, return queued state, and poll the Composition | Do not change the model name without an error indicating model availability |
+| Sentence Revision `Check` returns `Network error` | Rewrite checking still awaited Qwen inside the browser's short-lived function request | Stage `pending_rewrite_check`, enqueue one metadata-only rewrite job, return queued state, and poll/reopen the Composition | Do not only raise Web SDK or function timeouts |
 | `WRITING_AI_SENTENCE_ALIGNMENT_FAILED` with all expected sentence IDs | Qwen normalized whitespace/punctuation in echoed `original` | Validate complete unique IDs, order by server sentence units, and restore exact originals from the manuscript | Do not weaken missing/duplicate/unknown-ID checks |
 | `PathNotViable` while creating `language_review.model_metadata` below `language_review: null` | CloudBase `update()` expanded a nested first-review object into dotted child paths | Publish review/rewrite/active-job objects with atomic `db.command.set(...)` replacement | Do not treat a valid model result as another provider-format failure |
+| `PathNotViable` while first saving fields below `rewrite_results: null` | Synchronous rewrite completion used an ordinary nested update after a valid model result | In the current lease/active-job transaction, atomically replace the whole `rewrite_results`, clear staged input, and complete the job | Do not call the model again to repair a persistence failure |
 | Lost response or repeated click | The client could generate another operation identity | Keep a stable logical operation ID; create job/usage rows under stable IDs and replay them | Do not use random IDs per HTTP retry |
 | Replacement model call fails | Old review was cleared before new AI work succeeded | Stage `pending_replacement` and publish success-then-swap | Do not destroy the committed review at draft-save time |
 | Provider call fails after quota reservation | Reservation and failure handling were separate/non-idempotent | Release only a still-`reserved` usage row in a transaction | Do not decrement quota outside an idempotent guard |
@@ -123,6 +137,8 @@ Keep these fields out of logs and job rows:
   reordered-ID, and normalized-source-text responses.
 - Verify canonical server rules override contradictory model fields.
 - Verify one logical operation creates one job and one quota charge.
+- For rewrite checking, verify one operation creates one provider call, staged
+  text stays on the Composition, and the job/logs remain metadata-only.
 - Verify terminal failure refunds quota and preserves committed user data.
 - Verify deployed function status, timer recovery, asset cache version, and the
   public release workflow.
@@ -131,6 +147,6 @@ Keep these fields out of logs and job rows:
 
 AI features require more backend state and contract testing, but model latency,
 browser lifetime, and harmless provider formatting variations no longer control
-product correctness. The remaining synchronous `submitRewrites` model call is a
-known exception and should move onto the same durable job boundary before it is
-treated as production-hardened.
+product correctness. OCR, standardized review, language review, and rewrite
+checking now share the same durable ownership boundary; no production AI step
+depends on the initiating browser request remaining open.

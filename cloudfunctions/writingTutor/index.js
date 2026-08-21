@@ -194,6 +194,13 @@ function publicJobView(job) {
 
 function compositionView(composition) {
   const activeJob = publicJobView(composition.active_job || composition.ocr_job);
+  const pendingRewriteItems = composition.pending_rewrite_check
+    && Array.isArray(composition.pending_rewrite_check.items)
+    ? composition.pending_rewrite_check.items.map((item) => ({
+      sentence_id: text(item && item.sentence_id, 40),
+      text: text(item && item.text, 3000),
+    })).filter((item) => item.sentence_id && item.text)
+    : [];
   const pendingUpload = composition.pending_upload && typeof composition.pending_upload === "object"
     ? {
       status: composition.pending_upload.status || "uploading",
@@ -209,6 +216,8 @@ function compositionView(composition) {
     standardized_review: composition.standardized_review || null,
     language_review: composition.language_review || null,
     rewrite_results: composition.rewrite_results || null,
+    rewrite_check_pending: Boolean(composition.pending_rewrite_check),
+    pending_rewrite_items: pendingRewriteItems,
     replacement_pending: Boolean(composition.pending_replacement),
     pending_upload: pendingUpload,
     active_job: activeJob,
@@ -825,7 +834,11 @@ async function processQueuedJob(event) {
   if (!jobId || !dispatchToken) throw new Error("AI_JOB_UNAUTHORIZED");
   const claimed = await claimQueuedJob(jobId, dispatchToken);
   if (!claimed) return { success: true, accepted: false };
-  const reviewRunner = claimed.job_type === "review" ? performReviewJob : null;
+  const runner = claimed.job_type === "review"
+    ? performReviewJob
+    : claimed.job_type === "rewrite"
+      ? performRewriteJob
+      : null;
   let student = null;
   if (claimed.job_type === "review") {
     const students = await db.collection("students").where({
@@ -851,8 +864,8 @@ async function processQueuedJob(event) {
     if (!student) throw new Error("STUDENT_NOT_LINKED");
     const result = claimed.job_type === "ocr"
       ? await performOcrJob(student, claimed)
-      : reviewRunner
-        ? await reviewRunner(student, claimed)
+      : runner
+        ? await runner(student, claimed)
         : (() => { throw new Error("AI_JOB_TYPE_INVALID"); })();
     if (claimed.job_type === "review" && result.status === "superseded") {
       await releaseUsage(student, { usage_id: claimed.usage_id }, "AI_JOB_SUPERSEDED");
@@ -1064,6 +1077,7 @@ function reviewScopeMatches(job, composition, mode, rubricId) {
 function jobCompositionStatus(job, status) {
   if (job.job_type === "ocr") return status === "processing" ? "ocr_processing" : status === "queued" ? "ocr_queued" : "ocr_failed";
   if (job.job_type === "review") return status === "processing" ? "review_processing" : status === "queued" ? "review_queued" : "review_failed";
+  if (job.job_type === "rewrite") return status === "processing" ? "rewrite_processing" : status === "queued" ? "rewrite_queued" : "rewrite_failed";
   return null;
 }
 
@@ -1511,23 +1525,186 @@ async function evaluate(student, event) {
   }
 }
 
-async function submitRewrites(student, event) {
-  const composition = await ownedComposition(student, event.composition_id);
-  const language = composition.language_review;
+function preparedRewriteItems(language, submitted) {
   if (!language || !Array.isArray(language.sentences)) throw new Error("LANGUAGE_REVIEW_REQUIRED");
-  const submitted = Array.isArray(event.items) ? event.items : [];
-  const expected = new Map(language.sentences.map((item) => [item.sentence_id, item]));
-  const items = submitted.map((item) => ({ sentence_id: text(item.sentence_id, 40), text: text(item.text, 3000) }))
-    .filter((item) => expected.has(item.sentence_id) && item.text);
+  const expected = new Map(language.sentences
+    .filter((item) => item.rewrite_required === true)
+    .map((item) => [item.sentence_id, item]));
+  const unique = new Map();
+  for (const item of Array.isArray(submitted) ? submitted : []) {
+    const sentenceId = text(item && item.sentence_id, 40);
+    const rewriteText = text(item && item.text, 3000);
+    if (expected.has(sentenceId) && rewriteText) unique.set(sentenceId, { sentence_id: sentenceId, text: rewriteText });
+  }
+  const items = Array.from(unique.values());
   if (!items.length) throw new Error("REWRITES_REQUIRED");
+  return { items, expected };
+}
+
+function rewritePayloadHash(composition, items) {
+  return stableId("rewrite_payload", composition.composition_id, String(Number(composition.revision || 1)), JSON.stringify(items));
+}
+
+function rewriteScopeMatches(job, composition, payloadHash) {
+  return job && job.job_type === "rewrite"
+    && Number(job.composition_revision || 1) === Number(composition.revision || 1)
+    && job.payload_hash === payloadHash;
+}
+
+async function enqueueRewriteJob(student, composition, event, items) {
   const operationId = text(event.operation_id, 160);
   if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
-  const resultId = stableId("rewrite_check", student.auth_uid, operationId);
-  if (composition.rewrite_results && composition.rewrite_results.operation_id === operationId) {
-    return { success: true, idempotent_replay: true, results: composition.rewrite_results.results, overall_feedback: composition.rewrite_results.overall_feedback };
+  const jobId = stableId("writing_job", student.auth_uid, operationId);
+  const payloadHash = rewritePayloadHash(composition, items);
+  const existing = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+  if (existing) {
+    if (existing.composition_id !== composition.composition_id || !rewriteScopeMatches(existing, composition, payloadHash)) {
+      throw new Error("IDEMPOTENCY_KEY_REUSED");
+    }
+    const latest = await ownedComposition(student, composition.composition_id);
+    if (existing.status === "succeeded"
+      && latest.rewrite_results && latest.rewrite_results.operation_id === operationId) {
+      return {
+        success: true, accepted: false, idempotent_replay: true,
+        results: latest.rewrite_results.results || [],
+        overall_feedback: latest.rewrite_results.overall_feedback || "",
+        passed: latest.rewrite_results.passed === true,
+        job: publicJobView(existing), composition: compositionView(latest),
+      };
+    }
+    if (["queued", "processing"].includes(existing.status)
+      && latest.active_job_id === jobId
+      && latest.pending_rewrite_check
+      && latest.pending_rewrite_check.payload_hash === payloadHash) {
+      if (existing.status === "queued") {
+        try {
+          await invokeFunctionAsync("writingTutor", {
+            action: "processQueuedJob", job_id: jobId, dispatch_token: existing.dispatch_token,
+          });
+        } catch (error) {
+          console.error("writingTutor rewrite replay dispatch deferred", jobId, error && error.message);
+        }
+      }
+      return {
+        success: true, accepted: true, idempotent_replay: true,
+        job: publicJobView(existing), composition: compositionView(latest),
+      };
+    }
+    return {
+      success: true, accepted: false, idempotent_replay: true,
+      job: publicJobView(existing), composition: compositionView(latest),
+    };
   }
-  const coaching = items.map((item) => {
-    const source = expected.get(item.sentence_id);
+  const now = new Date();
+  const job = {
+    job_id: jobId,
+    job_type: "rewrite",
+    operation_id: operationId,
+    dispatch_token: crypto.randomBytes(32).toString("hex"),
+    student_uid: student.auth_uid,
+    composition_id: composition.composition_id,
+    composition_revision: Number(composition.revision || 1),
+    payload_hash: payloadHash,
+    sentence_ids: items.map((item) => item.sentence_id),
+    prompt_bundle_version: PROMPT_BUNDLE_VERSION,
+    status: "queued",
+    attempt_count: 0,
+    error_code: null,
+    lease_token: null,
+    lease_until: null,
+    next_retry_at: now,
+    created_at: now,
+    updated_at: now,
+    started_at: null,
+    finished_at: null,
+  };
+  const pending = {
+    operation_id: operationId,
+    composition_revision: Number(composition.revision || 1),
+    payload_hash: payloadHash,
+    items,
+    created_at: now,
+  };
+  const activeJob = publicJobView(job);
+  try {
+    await db.runTransaction(async (transaction) => {
+      const compositionResult = await transaction.collection(COMPOSITIONS).where({
+        composition_id: composition.composition_id, student_uid: student.auth_uid,
+      }).limit(1).get();
+      const current = compositionResult.data && compositionResult.data[0];
+      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      if (Number(current.revision || 1) !== Number(job.composition_revision || 1)) {
+        throw new Error("COMPOSITION_REVISION_CHANGED");
+      }
+      if (!current.language_review || !Array.isArray(current.language_review.sentences)) {
+        throw new Error("LANGUAGE_REVIEW_REQUIRED");
+      }
+      if (current.active_job_id && current.active_job_id !== jobId) {
+        const priorResult = await transaction.collection(JOBS).where({
+          job_id: current.active_job_id, student_uid: student.auth_uid,
+          composition_id: composition.composition_id,
+        }).limit(1).get();
+        const prior = priorResult.data && priorResult.data[0];
+        if (prior && ["queued", "processing", "failed"].includes(prior.status)) {
+          await transaction.collection(JOBS).doc(prior._id).update({
+            status: "superseded", superseded_by_job_id: jobId,
+            lease_token: null, lease_until: null, next_retry_at: null,
+            finished_at: now, updated_at: now,
+          });
+        }
+      }
+      const created = await transaction.collection(JOBS).doc(jobId).create(job);
+      if (created && created.code) throw created;
+      await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
+        pending_rewrite_check: pending,
+        active_job_id: jobId,
+        active_job: activeJob,
+        status: "rewrite_queued",
+        updated_at: now,
+      }, ["pending_rewrite_check", "active_job"]));
+    });
+  } catch (error) {
+    const raced = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+    if (!raced || raced.composition_id !== composition.composition_id || !rewriteScopeMatches(raced, composition, payloadHash)) {
+      throw error;
+    }
+    const latest = await ownedComposition(student, composition.composition_id);
+    return {
+      success: true, accepted: ["queued", "processing"].includes(raced.status), idempotent_replay: true,
+      job: publicJobView(raced), composition: compositionView(latest),
+    };
+  }
+  try {
+    await invokeFunctionAsync("writingTutor", {
+      action: "processQueuedJob", job_id: jobId, dispatch_token: job.dispatch_token,
+    });
+  } catch (error) {
+    console.error("writingTutor rewrite async dispatch deferred", jobId, error && error.message);
+  }
+  return {
+    success: true, accepted: true, job: activeJob,
+    composition: compositionView({
+      ...composition, pending_rewrite_check: pending,
+      active_job_id: jobId, active_job: activeJob,
+      status: "rewrite_queued", updated_at: now,
+    }),
+  };
+}
+
+async function performRewriteJob(student, job) {
+  const composition = await ownedComposition(student, job.composition_id);
+  if (composition.active_job_id !== job.job_id) return { status: "superseded" };
+  const pending = composition.pending_rewrite_check;
+  if (!pending || pending.operation_id !== job.operation_id
+    || pending.payload_hash !== job.payload_hash
+    || !rewriteScopeMatches(job, composition, pending.payload_hash)) {
+    throw new Error("REWRITE_CHECK_SUPERSEDED");
+  }
+  const language = composition.language_review;
+  const prepared = preparedRewriteItems(language, pending.items);
+  if (rewritePayloadHash(composition, prepared.items) !== job.payload_hash) throw new Error("REWRITE_CHECK_SUPERSEDED");
+  const coaching = prepared.items.map((item) => {
+    const source = prepared.expected.get(item.sentence_id);
     return {
       sentence_id: item.sentence_id, original: source.original, issues: source.issues,
       coaching_summary: source.coaching_summary, reference_revision: source.reference_revision,
@@ -1539,23 +1716,80 @@ async function submitRewrites(student, event) {
     userText: `COACHING_AND_STUDENT_REWRITE_DATA_JSON:\n${JSON.stringify(coaching)}`,
   });
   const checked = checkedResponse.data;
-  const results = Array.isArray(checked.results) ? checked.results : [];
-  const enrichedResults = canonicalRewriteResults(results, items);
-  const allRequired = language.sentences.filter((item) => item.rewrite_required).map((item) => item.sentence_id);
-  const previous = composition.rewrite_results && Array.isArray(composition.rewrite_results.results) ? composition.rewrite_results.results : [];
+  const enrichedResults = canonicalRewriteResults(Array.isArray(checked.results) ? checked.results : [], prepared.items);
+  const previous = composition.rewrite_results && Array.isArray(composition.rewrite_results.results)
+    ? composition.rewrite_results.results : [];
   const merged = new Map(previous.map((item) => [item.sentence_id, item]));
   enrichedResults.forEach((item) => merged.set(item.sentence_id, item));
+  const allRequired = language.sentences.filter((item) => item.rewrite_required).map((item) => item.sentence_id);
   const passed = allRequired.every((id) => merged.get(id) && merged.get(id).accepted === true);
+  const now = new Date();
   const record = {
-    result_id: resultId, operation_id: operationId, results: Array.from(merged.values()),
-    overall_feedback: checked.overall_feedback, passed,
-    prompt_version: PROMPT_VERSION, schema_version: SCHEMA_VERSION,
-    model_metadata: checkedResponse.metadata, checked_at: new Date(),
+    result_id: stableId("rewrite_check", student.auth_uid, job.operation_id),
+    operation_id: job.operation_id,
+    results: Array.from(merged.values()),
+    overall_feedback: checked.overall_feedback,
+    passed,
+    prompt_version: PROMPT_VERSION,
+    schema_version: SCHEMA_VERSION,
+    model_metadata: checkedResponse.metadata,
+    checked_at: now,
   };
-  const update = { rewrite_results: record, status: passed ? "completed" : "sentence_training", updated_at: new Date() };
-  if (passed) update.completed_at = new Date();
-  await db.collection(COMPOSITIONS).doc(composition._id).update(update);
-  return { success: true, results: enrichedResults, overall_feedback: checked.overall_feedback, passed };
+  const succeededJob = publicJobView({ ...job, status: "succeeded", finished_at: now });
+  let outcome = "lease_lost";
+  await db.runTransaction(async (transaction) => {
+    const compositionResult = await transaction.collection(COMPOSITIONS).where({
+      composition_id: job.composition_id, student_uid: job.student_uid,
+    }).limit(1).get();
+    const jobResult = await transaction.collection(JOBS).where({ job_id: job.job_id }).limit(1).get();
+    const current = compositionResult.data && compositionResult.data[0];
+    const currentJob = jobResult.data && jobResult.data[0];
+    if (!currentJob || currentJob.status !== "processing"
+      || !secretMatches(currentJob.lease_token, job.lease_token)) return;
+    const currentPending = current && current.pending_rewrite_check;
+    if (!current || current.active_job_id !== job.job_id
+      || Number(current.revision || 1) !== Number(job.composition_revision || 1)
+      || !currentPending || currentPending.operation_id !== job.operation_id
+      || currentPending.payload_hash !== job.payload_hash) {
+      await transaction.collection(JOBS).doc(currentJob._id).update({
+        status: "superseded", lease_token: null, lease_until: null, next_retry_at: null,
+        finished_at: now, updated_at: now,
+      });
+      outcome = "superseded";
+      return;
+    }
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
+      rewrite_results: record,
+      pending_rewrite_check: null,
+      active_job: succeededJob,
+      status: passed ? "completed" : "sentence_training",
+      completed_at: passed ? now : null,
+      updated_at: now,
+    }, ["rewrite_results", "pending_rewrite_check", "active_job"]));
+    await transaction.collection(JOBS).doc(currentJob._id).update({
+      status: "succeeded", error_code: null, lease_token: null, lease_until: null,
+      next_retry_at: null, finished_at: now, updated_at: now,
+    });
+    outcome = "succeeded";
+  });
+  return { status: outcome, results: outcome === "succeeded" ? enrichedResults : null };
+}
+
+async function submitRewrites(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  const prepared = preparedRewriteItems(composition.language_review, event.items);
+  const operationId = text(event.operation_id, 160);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  if (composition.rewrite_results && composition.rewrite_results.operation_id === operationId) {
+    return {
+      success: true, accepted: false, idempotent_replay: true,
+      results: composition.rewrite_results.results || [],
+      overall_feedback: composition.rewrite_results.overall_feedback || "",
+      passed: composition.rewrite_results.passed === true,
+      composition: compositionView(composition),
+    };
+  }
+  return await enqueueRewriteJob(student, composition, event, prepared.items);
 }
 
 async function getProfile(student) {

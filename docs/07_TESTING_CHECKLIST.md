@@ -1743,8 +1743,24 @@ High priority improvement:
 - Disconnect immediately after `开始批改` in both modes. Confirm `evaluate` returns a queued review job, the
   one-minute worker finishes it without the browser, reopening resumes queued/processing state, and the original
   standardized review remains present when the same Composition proceeds to language review.
+- Click Sentence Revision `Check`, then disconnect or close the browser before
+  the model returns. Confirm `submitRewrites` has staged exactly one
+  `pending_rewrite_check`, created exactly one metadata-only rewrite job, and
+  returned queued state without waiting for Qwen. Refresh, re-login, and reopen
+  the Composition independently; each must resume the same queued/processing
+  check and render its eventual result.
+- Repeat the same rewrite operation ID while its job is queued and processing,
+  and again after success. Confirm all deliveries resolve to one job and one
+  provider call. Confirm the job row and logs contain no original sentence,
+  student rewrite, coaching text, reference revision, or model feedback.
+- On the first rewrite submission where stored `rewrite_results` is `null`,
+  confirm the completion transaction uses whole-field `db.command.set`, produces
+  a readable result object without `PathNotViable`, clears
+  `pending_rewrite_check`, and changes status only for the current active job and
+  lease. Force a stale/superseded worker and confirm it cannot publish.
 - Force one transient provider failure and confirm queued retry, bounded attempt
-  count, lease expiry recovery, and final success/failure. Start a replacement
+  count, lease expiry recovery, and final success/failure for OCR, review, and
+  rewrite-check jobs. Start a replacement
   job while the first is processing and confirm only `active_job_id` can publish.
 - Confirm unconfirmed photos remain privately previewable during OCR but are
   deleted no later than seven days; confirming text deletes them immediately.
