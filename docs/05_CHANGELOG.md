@@ -1729,6 +1729,9 @@ required.
   an accessible thumbs-up icon. These rows no longer show a Grammar Analysis panel
   or disabled revision input, while the server-normalized rewrite requirement remains
   the authoritative decision.
+- Restored the confirmed manuscript's paragraph flow in `Draft`. Sentence highlights
+  now use keyboard-accessible inline fragments and keep boundary spaces/newlines
+  outside the highlight, so multiple colored sentences remain in their original paragraph.
 - Removed sentence-highlight underlines and changed the shared manuscript,
   capsule, and revision accent cycle to eight colors: blue, orange, purple, rose,
   indigo, coral, gold, and deep pink, keeping the site's primary green reserved
