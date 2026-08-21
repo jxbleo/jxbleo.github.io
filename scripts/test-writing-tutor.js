@@ -311,7 +311,7 @@ check("each revision-required sentence is one accessible two-face card", () => {
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   requireEvery(cardSource, [
     "sentence-flip-card", "sentence-card-inner", "sentence-card-face", "sentence-analysis-face",
-    "sentence-rewrite-face", "grammar-analysis", "rewrite-input", "data-flip-sentence",
+    "sentence-rewrite-face", "sentence-face-flip-hit", "grammar-analysis", "rewrite-input", "data-flip-sentence",
   ], "sentence flip-card markup");
   assert((cardSource.match(/<article/g) || []).length <= 1,
     "a revision-required sentence must not split its analysis and input into separate article cards");
@@ -430,10 +430,15 @@ check("effective sentences use the matrix-style colored checkmark and no coachin
   const effectiveStart = cardSource.indexOf("if (!required)");
   const effectiveEnd = cardSource.indexOf("var visibility");
   const effectiveBranch = cardSource.slice(effectiveStart, effectiveEnd);
-  requireEvery(effectiveBranch, ["sentence-effective-icon", "icon('check')", "这句话无需修改"],
+  requireEvery(effectiveBranch, [
+    "sentence-flip-card", "sentence-card-inner-static", "sentence-card-face",
+    "sentence-effective-face", "sentence-effective-icon", "icon('check')", "这句话无需修改",
+  ],
     "effective sentence summary");
   assert(!/grammar-analysis|sentence-response|rewrite-input|你的改写/.test(effectiveBranch),
     "effective sentences must not render analysis or rewrite controls");
+  assert(!/data-flip-sentence/.test(effectiveBranch),
+    "already-correct source sentences must use the same bordered card without pretending to have another face");
   assert(!/no-rewrite-needed/.test(`${client}\n${styles}`),
     "the removed disabled no-rewrite textarea must not remain in source or styles");
   assert(/function rewriteRequired[\s\S]{0,260}["']effective["']/.test(client),
@@ -494,7 +499,7 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
-  requireEvery(cardSource, ["numberedOriginal", "sentence-row-number", "aria-hidden=\"true\""],
+  requireEvery(cardSource, ["numberedOriginal", "sentence-row-number", "sentence-line-content", "aria-hidden=\"true\""],
     "sentence-row numbering");
   assert((cardSource.match(/numberedOriginal/g) || []).length >= 3,
     "required and effective sentence rows must share the same numbered original");
@@ -506,6 +511,8 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
     "the lone desktop Check action must align to the trailing edge");
   assert(/\.sentence-row-number\s*\{[^}]*(?:display\s*:\s*inline-block)[^}]*border\s*:\s*0[^}]*border-radius\s*:\s*0[^}]*background\s*:\s*transparent/is.test(styles),
     "sentence rows must use the BBC worksheet-style plain sequence number rather than a capsule");
+  assert(/\.original-sentence,\s*\.corrected-sentence\s*\{[^}]*display\s*:\s*grid[^}]*grid-template-columns\s*:\s*18px\s+minmax\(0,1fr\)[^}]*align-items\s*:\s*baseline/is.test(styles),
+    "the sentence body must use a hanging grid so wrapped lines align with the first letter rather than the number");
 });
 
 check("accepted revisions default to the corrected sentence and show an inline check", () => {
@@ -523,6 +530,27 @@ check("accepted revisions default to the corrected sentence and show an inline c
     "accepted revisions must replace the input face with the persisted corrected sentence");
   requireEvery(styles, [".corrected-sentence", ".sentence-corrected-highlight", ".sentence-corrected-icon"],
     "accepted corrected sentence styling");
+});
+
+check("sentence cards flip from the whole surface and keep Sample as the sole secondary action", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(cardSource, [
+    "sentence-face-flip-hit", "翻到句子改写面", "翻到句子分析面",
+    "sample-action", "sample-button", ">Sample</button>",
+  ], "whole-card flip and Sample controls");
+  assert(!/我记住了，开始改写|返回查看分析|查看已订正句子|查看参考句|隐藏参考句/.test(cardSource),
+    "the removed instructional flip buttons and old reference label must not render");
+  assert(/grammar-analysis[\s\S]{0,1200}sampleButton\s*\+\s*reference/.test(cardSource),
+    "Sample must sit immediately after the analysis and directly control the following reference panel");
+  assert(/\.sentence-face-flip-hit\s*\{[^}]*position\s*:\s*absolute[^}]*inset\s*:\s*0[^}]*cursor\s*:\s*pointer/is.test(styles),
+    "a native button must cover the available card surface");
+  assert(/\.sample-action\s*\{[^}]*justify-content\s*:\s*flex-end/is.test(styles),
+    "Sample must use the trailing analysis position");
+  assert(/\.sentence-face-content[^}]*pointer-events\s*:\s*none/is.test(styles)
+      && /\.sentence-face-content button[^}]*pointer-events\s*:\s*auto/is.test(styles),
+    "Sample and form controls must remain independently interactive above the card flip surface");
 });
 
 check("sentence navigation replaces the primary toolbar when it reaches the top", () => {

@@ -1992,6 +1992,20 @@ Important mobile rules:
   and followed inline by the same colored circular SVG checkmark. It is display text,
   not a disabled textarea. Flipping the card is the only way to return to the original
   sentence and analysis.
+- Effective/no-change source sentences retain the same bordered card surface as
+  revision-required sentences. They use one static face with the original sentence
+  and colored check; no analysis, input, or false flip target is added.
+- Sentence text uses an 18px number column plus a flexible content column with
+  baseline alignment and a 6px gap. Wrapped lines begin under the first letter of
+  the sentence content, never under the sequence number.
+- Remove visible “remember/start writing” and “return to analysis” controls. A native
+  transparent button covers each available face so a click anywhere on the card turns
+  it; the textarea, its label, and Sample remain independently interactive above that
+  hit surface. The cover button owns the accessible face destination and focus ring.
+- Rename the reference control exactly `Sample`. Place the compact button at the
+  trailing edge immediately after the analysis paragraph, with its controlled
+  reference panel directly below. Keep the label unchanged while `aria-expanded`
+  communicates open state.
 - The face control exposes its state and destination in an accessible name. Click,
   Enter, and Space all switch the same card; focus remains on the corresponding
   control or moves predictably to the revision input. The inactive face is hidden

@@ -1731,6 +1731,10 @@ required.
 - Restyled Sentence Revision row numbers as BBC worksheet-style bare sequence
   numbers, replaced unresolved capsule dots with question marks, and made accepted
   cards open on the student's corrected sentence with an inline colored check.
+- Unified effective sentences into the same bordered card system, aligned wrapped
+  sentence text with a hanging number column, made the whole available card surface
+  the flip target, removed instructional flip buttons, and replaced the reference
+  control with a trailing `Sample` action.
 - Migrated Sentence Revision `Check` from a synchronous browser-owned model call
   to a durable `writing_ai_jobs` rewrite-check job. Submitted rewrite text is
   staged only in `writing_compositions.pending_rewrite_check`; the queue remains

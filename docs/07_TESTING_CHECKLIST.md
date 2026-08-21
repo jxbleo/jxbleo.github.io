@@ -1844,6 +1844,18 @@ High priority improvement:
   check and an inline colored circular SVG check appear. The accepted card must open
   on the persisted corrected sentence as display text, with no disabled textarea;
   only an explicit flip may reveal the original sentence and grammar analysis.
+- Confirm an effective/no-change sentence has the same bordered face as every other
+  Sentence Revision card, while still exposing no grammar analysis, textarea, Sample,
+  or flip target. Use long wrapped sentences and verify line two aligns under the
+  first sentence letter, not under the sequence number, at desktop and phone widths.
+- Confirm “我记住了，开始改写”“返回查看分析”“查看参考句” are absent. Click the
+  analysis text, blank card space, and corrected sentence to flip the same physical
+  card. Then click and type in the textarea and click its label; none may flip the
+  card accidentally. Keyboard-focus the full-face native button and use Enter/Space.
+- Confirm the only reference control is exactly `Sample`, positioned at the
+  analysis paragraph's trailing edge with the revealed reference directly below.
+  Toggling Sample must not flip the card, erase a draft, or change its accessible
+  face state.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display
