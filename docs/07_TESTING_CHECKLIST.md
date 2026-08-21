@@ -1711,6 +1711,18 @@ High priority improvement:
 ## AI Tutor Writing
 
 - Run `npm run test:writing-tutor` and all release verification.
+- At phone, iPad, and desktop widths, confirm the page shows only one top toolbar
+  over card content: back arrow, portfolio icon in the former brand position,
+  student chip when applicable, and New Writing. Confirm there is no brand mark,
+  `AI Tutor / Writing Studio` label, secondary toolbar, or persistent sidebar.
+- Confirm Portfolio starts closed at every width. Open it, then separately close
+  it by re-clicking the trigger, its close button, the scrim, and `Escape`.
+  Confirm `aria-expanded`, focus restoration, background scroll lock, and prior
+  page scroll position are correct for every path.
+- Click the back arrow and confirm the custom dialog appears before navigation.
+  Cancel by button and `Escape`, then confirm leaving during queued OCR and queued
+  review returns to Dashboard without cancelling either cloud job; reopening the
+  Composition resumes the same job.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
 - Verify both modes are mutually exclusive; standardized review requires prompt
@@ -1753,6 +1765,14 @@ High priority improvement:
 - Confirm sentence commentary, issue explanations, revision suggestions, and
   rewrite feedback are Simplified Chinese, while original sentences and reference
   revisions remain English.
+- Review an unnamed new Composition in both assessment modes. Confirm the same
+  successful model response supplies one two-to-six-English-word title, creates
+  no second provider call/job/quota event, and replaces the empty/legacy display
+  title atomically with the review.
+- Rename a portfolio item inline, verify cancel and validation behavior, and
+  confirm later review/re-upload never overwrites a student-authored title.
+  Confirm a historical literal `Untitled writing` remains manually editable and
+  a future review may fill it only when it has never been manually named.
 - Retry one operation ID and confirm one quota event/charge. Force AI failure and
   confirm quota release. Test boundary at exactly the daily limit and limit zero.
 - Confirm replacement failure preserves the current Composition; successful

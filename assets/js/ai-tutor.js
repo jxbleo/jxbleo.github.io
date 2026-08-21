@@ -35,7 +35,11 @@
         ocrPollActive: false,
         reviewPollGeneration: 0,
         reviewPollActive: false,
-        sidebarOpen: false
+        sidebarOpen: false,
+        editingTitleId: '',
+        titleEditError: '',
+        leaveDialogOpen: false,
+        returnFocus: null
     };
 
     var app = document.getElementById('ai-tutor-app');
@@ -48,7 +52,7 @@
     var sidebarScrim = document.getElementById('sidebar-scrim');
     var portfolioToggle = document.getElementById('portfolio-toggle');
     var studentChip = document.getElementById('student-chip');
-    var mobileContext = document.getElementById('mobile-context');
+    var leaveConfirmation = document.getElementById('leave-confirmation');
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -112,8 +116,20 @@
 
     function apiMode(mode) { return mode === 'standardized' ? 'standardized_content' : 'general_language'; }
 
+    function isPlaceholderTitle(value) {
+        return /^untitled writing$/i.test(firstText(value));
+    }
+
     function compositionTitle(composition) {
-        return firstText(composition && composition.title, composition && composition.prompt_title, composition && composition.prompt_text, 'Untitled writing');
+        var stored = firstText(composition && composition.title);
+        if (stored && !isPlaceholderTitle(stored)) return stored;
+        if (composition && composition.title_source === 'pending_ai') return '等待 AI 生成标题…';
+        return '未命名作文';
+    }
+
+    function editableCompositionTitle(composition) {
+        var stored = firstText(composition && composition.title);
+        return isPlaceholderTitle(stored) ? '' : stored;
     }
 
     function compositionStatus(composition) {
@@ -214,13 +230,65 @@
             var mode = compositionMode(item);
             var active = state.current && compositionId(state.current) === id;
             var score = item.overall_score != null ? ' · ' + escapeHtml(item.overall_score) : '';
-            return '<button class="portfolio-item' + (active ? ' is-active' : '') + '" type="button" data-open-composition="' + escapeHtml(id) + '">' +
+            if (state.editingTitleId === id) {
+                return '<article class="portfolio-item is-editing' + (active ? ' is-active' : '') + '"><form class="portfolio-title-form" data-title-form="' + escapeHtml(id) + '">' +
+                    '<label for="portfolio-title-' + escapeHtml(id) + '">修改作文标题<input id="portfolio-title-' + escapeHtml(id) + '" name="title" maxlength="80" autocomplete="off" value="' + escapeHtml(editableCompositionTitle(item)) + '" placeholder="输入一个短标题"></label>' +
+                    (state.titleEditError ? '<p class="portfolio-title-error" role="alert">' + escapeHtml(state.titleEditError) + '</p>' : '') +
+                    '<div class="portfolio-title-actions"><button class="quiet-button compact" type="button" data-cancel-title>取消</button><button class="primary-button compact" type="submit">保存</button></div></form></article>';
+            }
+            return '<article class="portfolio-item' + (active ? ' is-active' : '') + '"><button class="portfolio-open" type="button" data-open-composition="' + escapeHtml(id) + '">' +
                 '<strong>' + escapeHtml(compositionTitle(item)) + '</strong>' +
                 '<small>' + escapeHtml(formatDate(item.updated_at || item.created_at)) + score + '</small>' +
                 '<span class="portfolio-item-meta"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + modeLabel(mode) + '</span>' +
-                '<span class="mini-badge">' + escapeHtml(statusLabel(compositionStatus(item))) + '</span></span>' +
-            '</button>';
+                '<span class="mini-badge">' + escapeHtml(statusLabel(compositionStatus(item))) + '</span></span></button>' +
+                '<button class="icon-button portfolio-title-edit" type="button" data-edit-title="' + escapeHtml(id) + '" aria-label="修改《' + escapeHtml(compositionTitle(item)) + '》的标题">' + icon('edit') + '</button></article>';
         }).join('');
+    }
+
+    function beginTitleEdit(id) {
+        if (!id) return;
+        state.editingTitleId = id;
+        state.titleEditError = '';
+        renderPortfolio();
+        window.requestAnimationFrame(function() {
+            var input = document.getElementById('portfolio-title-' + id);
+            if (input) { input.focus(); input.select(); }
+        });
+    }
+
+    function cancelTitleEdit() {
+        state.editingTitleId = '';
+        state.titleEditError = '';
+        renderPortfolio();
+    }
+
+    function savePortfolioTitle(form) {
+        var id = form.getAttribute('data-title-form');
+        var input = form.querySelector('input[name="title"]');
+        var title = firstText(input && input.value);
+        if (!title) {
+            state.titleEditError = '请输入作文标题。';
+            renderPortfolio();
+            return;
+        }
+        var submit = form.querySelector('button[type="submit"]');
+        if (submit) submit.disabled = true;
+        state.titleEditError = '';
+        writingCall('updateCompositionTitle', { composition_id: id, title: title }).then(function(result) {
+            var updated = result.composition || {};
+            state.compositions = state.compositions.map(function(item) {
+                return compositionId(item) === id ? Object.assign({}, item, updated) : item;
+            });
+            if (state.current && compositionId(state.current) === id) {
+                state.current = Object.assign({}, state.current, updated);
+                state.title = editableCompositionTitle(state.current);
+            }
+            state.editingTitleId = '';
+            renderPortfolio();
+        }).catch(function(error) {
+            state.titleEditError = firstText(error && error.message, '标题没有保存，请重试。');
+            renderPortfolio();
+        });
     }
 
     function renderWritingProfile() {
@@ -264,7 +332,6 @@
 
     function renderWelcome() {
         state.screen = 'welcome';
-        mobileContext.textContent = 'AI 写作工作区';
         stage.innerHTML = '<section class="surface">' +
             '<div class="hero"><p class="eyebrow">YOUR AI WRITING STUDIO</p><h2>把一篇作文，变成一次真正的训练。</h2>' +
             '<p>拍下手写作文或直接粘贴文字。你可以选择逐句改善英语，或按真实考试标准检查内容与结构。</p>' +
@@ -287,7 +354,7 @@
         state.inputMethod = 'text';
         state.assessmentMode = compositionMode(composition);
         state.rubricId = firstText(composition && composition.rubric_id);
-        state.title = firstText(composition && composition.title);
+        state.title = editableCompositionTitle(composition);
         state.promptText = firstText(composition && composition.prompt_text);
         state.confirmedText = firstText(composition && composition.confirmed_text, composition && composition.full_text);
         state.photoFiles = [];
@@ -322,7 +389,6 @@
 
     function renderSource() {
         state.screen = 'source';
-        mobileContext.textContent = '开始新作文';
         var standardized = state.assessmentMode === 'standardized';
         var hasPhoto = state.photoUrls.length > 0;
         stage.innerHTML = '<section class="surface surface-pad"><div class="page-heading"><div><p class="eyebrow">NEW WRITING</p><h2>这一次想练什么？</h2>' +
@@ -334,7 +400,7 @@
             '<section class="section-block"><p class="section-label">输入方式</p><div class="input-switch" role="group" aria-label="输入作文的方式">' +
             '<button type="button" data-input-method="text" aria-pressed="' + (state.inputMethod === 'text') + '">' + icon('text') + '直接输入</button>' +
             '<button type="button" data-input-method="photo" aria-pressed="' + (state.inputMethod === 'photo') + '">' + icon('camera') + '拍照上传</button></div></section>' +
-            '<section class="section-block"><label class="field"><span>作文名称 <small>（方便以后找到）</small></span><input id="writing-title" maxlength="160" autocomplete="off" placeholder="例如：My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
+            '<section class="section-block"><label class="field"><span>作文名称 <small>（可选，留空由 AI 自动生成）</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="例如：My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
             '<label class="field"><span>作文题目' + (standardized ? ' <em>必填</em>' : ' <small>（语言批改可不填）</small>') + '</span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' +
             (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
             '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(hasPhoto) : textSourceHtml()) + '</section>' +
@@ -396,7 +462,6 @@
     }
 
     function validateSource() {
-        if (!state.title) state.title = state.promptText ? state.promptText.slice(0, 80) : 'Untitled writing';
         if (state.assessmentMode === 'standardized' && !state.promptText) return '标化考试内容批改需要填写作文题目。';
         if (state.assessmentMode === 'standardized' && !state.rubricId) return '请选择这次使用的考试评分标准。';
         if (state.inputMethod === 'photo' && !state.photoFiles.length) return '请先拍照或选择至少一张作文照片。';
@@ -523,7 +588,6 @@
         var status = firstText(job && job.status, state.current && state.current.status).toLowerCase();
         var uploadPending = status === 'photo_uploading';
         state.screen = 'ocr-waiting';
-        mobileContext.textContent = 'OCR 后台识别';
         stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
             '<strong>' + (uploadPending ? '正在确认照片上传状态' : '照片已安全上传，可以离开此页面') + '</strong>' +
             '<p>' + (uploadPending ? '照片尚未完整确认，暂时不能保证后台继续。如果长时间没有变化，请在同一篇作文里重新上传。' : (status === 'queued' || status === 'ocr_queued' ? 'OCR 已进入队列。' : 'OCR 正在云端识别。') + '离开或刷新不会中断，也不会创建新的作文。') + '</p>' +
@@ -586,7 +650,6 @@
         };
         var message = messages[code] || firstText(error && error.message, 'OCR 本次没有完成。你可以重新检查云端状态，或重新上传照片。');
         state.screen = 'ocr-failed';
-        mobileContext.textContent = 'OCR 需要处理';
         stage.innerHTML = '<section class="surface error-state"><strong>OCR 识别没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-retry-ocr>重新检查状态</button>' +
             '<button class="primary-button" type="button" data-reupload>重新上传照片</button></div>' +
@@ -595,7 +658,6 @@
 
     function renderOcr() {
         state.screen = 'ocr';
-        mobileContext.textContent = '确认识别文字';
         var uncertainCount = safeArray(state.ocr && state.ocr.uncertain_spans).length;
         stage.innerHTML = '<section class="surface surface-pad"><div class="page-heading"><div><p class="eyebrow">OCR REVIEW</p><h2>先确认识别文字</h2><p>请把文字和原图对照。你确认的电子文本才会进入 AI 批改。</p></div><span class="step-indicator">第 2 步 · 核对文字</span></div>' +
             (uncertainCount ? '<p class="notice">有 ' + uncertainCount + ' 处笔迹可能不够清楚，请重点检查后再继续。</p>' : '') +
@@ -686,7 +748,6 @@
     function renderReviewWaiting(job, autoPoll, allowRetry) {
         var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
         state.screen = 'review-waiting';
-        mobileContext.textContent = 'AI 后台批改';
         stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
             '<strong>作文已经提交，可以离开此页面</strong>' +
             '<p>' + (jobStatus === 'queued' || jobStatus === 'review_queued' ? '批改已进入队列。' : 'AI 正在云端批改。') + '离开、刷新或重新登录都不会中断，也不会重复扣除字数额度。</p>' +
@@ -778,7 +839,6 @@
         var message = messages[code] || firstText(error && error.message, 'AI 批改本次没有完成。作文仍然安全保存。');
         clearLogicalOperation('evaluate');
         state.screen = 'review-failed';
-        mobileContext.textContent = '批改需要处理';
         stage.innerHTML = '<section class="surface error-state"><strong>AI 批改没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
             (code === 'WRITING_AI_DAILY_LIMIT_REACHED' ? '' : '<button class="primary-button" type="button" data-retry-review>重新提交批改</button>') + '</div></section>';
@@ -791,7 +851,6 @@
 
     function renderStandardized() {
         state.screen = 'standardized';
-        mobileContext.textContent = '标化考试内容评估';
         var review = state.review || {};
         var criteria = safeArray(review.criteria);
         var strengths = safeArray(review.strengths);
@@ -853,7 +912,6 @@
 
     function renderLanguage() {
         state.screen = 'language';
-        mobileContext.textContent = state.correctionRound ? '需要再修改' : '句子批改';
         var sentences = safeArray(state.review && state.review.sentences);
         if (!sentences.length) {
             stage.innerHTML = '<section class="surface empty-state"><strong>没有需要重写的句子</strong><p>这次批改没有返回逐句训练内容。</p><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button></section>';
@@ -989,7 +1047,6 @@
 
     function renderCompletion() {
         state.screen = 'completed';
-        mobileContext.textContent = '训练完成';
         stage.innerHTML = '<section class="surface completion-card"><span class="completion-icon">' + icon('check') + '</span><p class="eyebrow">WRITING COMPLETE</p><h2>这次训练完成了。</h2>' +
             '<p>你的原文、语言观察和改写记录已经保存到 Writing Portfolio。查看过参考句同样算完成，它只是帮助方式的一部分。</p>' +
             '<div class="hero-actions" style="justify-content:center"><button class="secondary-button" type="button" data-open-current-readonly>查看本篇记录</button><button class="secondary-button" type="button" data-full-rewrite>整篇重写（可选）</button><button class="primary-button" type="button" data-start-new>' + icon('plus') + '开始新作文</button></div></section>';
@@ -1108,12 +1165,17 @@
             (state.current ? '<button class="primary-button" type="button" data-resume-current>继续这篇作文</button>' : '') + '</div></section>';
     }
 
+    function updateOverlayLock() {
+        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen);
+    }
+
     function openSidebar() {
         state.sidebarOpen = true;
         portfolioSidebar.classList.add('is-open');
         sidebarScrim.hidden = false;
         portfolioToggle.setAttribute('aria-expanded', 'true');
-        document.documentElement.style.overflow = 'hidden';
+        portfolioToggle.setAttribute('aria-label', '关闭作品库');
+        updateOverlayLock();
     }
 
     function closeSidebar() {
@@ -1121,7 +1183,37 @@
         portfolioSidebar.classList.remove('is-open');
         sidebarScrim.hidden = true;
         portfolioToggle.setAttribute('aria-expanded', 'false');
-        document.documentElement.style.overflow = '';
+        portfolioToggle.setAttribute('aria-label', '打开作品库');
+        updateOverlayLock();
+    }
+
+    function openLeaveConfirmation() {
+        if (state.leaveDialogOpen) return;
+        state.returnFocus = document.activeElement;
+        state.leaveDialogOpen = true;
+        leaveConfirmation.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var cancel = leaveConfirmation.querySelector('button[data-cancel-leave]');
+            if (cancel) cancel.focus();
+        });
+    }
+
+    function closeLeaveConfirmation() {
+        if (!state.leaveDialogOpen) return;
+        state.leaveDialogOpen = false;
+        leaveConfirmation.hidden = true;
+        app.inert = false;
+        updateOverlayLock();
+        if (state.returnFocus && typeof state.returnFocus.focus === 'function') state.returnFocus.focus();
+        state.returnFocus = null;
+    }
+
+    function confirmLeave() {
+        stopOcrPolling();
+        stopReviewPolling();
+        window.location.assign('dashboard.html');
     }
 
     function updateSourceState(target) {
@@ -1164,15 +1256,26 @@
     });
 
     document.addEventListener('submit', function(event) {
-        if (event.target.id !== 'writing-source-form') return;
-        event.preventDefault();
-        submitSource();
+        if (event.target.matches('[data-title-form]')) {
+            event.preventDefault();
+            savePortfolioTitle(event.target);
+            return;
+        }
+        if (event.target.id === 'writing-source-form') {
+            event.preventDefault();
+            submitSource();
+        }
     });
 
     document.addEventListener('click', function(event) {
-        var button = event.target.closest('button,[data-open-composition]');
+        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave]');
         if (!button) return;
-        if (button.matches('[data-start-new]')) createNewWriting();
+        if (button.matches('#header-back')) openLeaveConfirmation();
+        else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
+        else if (button.matches('[data-confirm-leave]')) confirmLeave();
+        else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
+        else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
+        else if (button.matches('[data-start-new]')) createNewWriting();
         else if (button.matches('[data-return-home]')) { stopOcrPolling(); stopReviewPolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
@@ -1257,7 +1360,21 @@
         });
         renderPortfolio();
     });
-    window.addEventListener('keydown', function(event) { if (event.key === 'Escape' && state.sidebarOpen) closeSidebar(); });
+    window.addEventListener('keydown', function(event) {
+        if (state.leaveDialogOpen && event.key === 'Tab') {
+            var controls = leaveConfirmation.querySelectorAll('button:not(:disabled)');
+            if (!controls.length) return;
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            return;
+        }
+        if (event.key === 'Escape') {
+            if (state.leaveDialogOpen) closeLeaveConfirmation();
+            else if (state.sidebarOpen) closeSidebar();
+        }
+    });
 
     function init() {
         if (!window.MrCatAuth) { renderFatalAction(new Error('登录组件没有载入，请刷新页面。')); return; }

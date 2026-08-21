@@ -737,6 +737,16 @@ states. Only the job referenced by `Composition.active_job_id`, with its current
 lease token, may transactionally publish a result. Thus a stale worker or
 superseded re-upload cannot overwrite the current Composition.
 
+The page shell has one persistent top toolbar and a single overlay controller.
+The back action opens an application-owned confirmation dialog before navigating
+to Dashboard; navigation never cancels a durable AI job. The portfolio control
+occupies the former brand-lockup position and toggles the same initially closed,
+left-side drawer at phone, tablet, and desktop widths. Button reactivation, the
+drawer close control, scrim activation, and `Escape` all converge on one close
+path that restores focus and scroll state. The main workspace has no secondary
+toolbar or permanently allocated sidebar column; its content is composed of
+cards beneath the header.
+
 The browser edits the OCR result; `saveDraft` confirms text and deletes the
 private photos. `writingAiWorker` also deletes unconfirmed uploaded photos at
 their seven-day expiry. `getComposition` returns the safe active-job projection
@@ -763,6 +773,16 @@ This allows, for example, Qwen Vision for handwriting OCR with Qwen, DeepSeek,
 or Kimi for text evaluation. A provider's advertised OpenAI compatibility is
 never treated as proof of strict schema support. Canonical server rules compute
 overall scores and state transitions after structural validation.
+
+Both standardized-review and language-review schemas may return a `suggested_title`
+of two to six English words. It is generated inside the already required review
+request, so title creation has no separate provider call, queue job, quota event,
+or charge. During the successful review transaction, the server applies that
+suggestion only when the Composition has no meaningful title or still carries
+the `Untitled writing` fallback and its `title_source` remains `pending_ai`.
+A dedicated authenticated title-update action writes the
+student's inline portfolio edit and permanently marks the title as student-owned;
+subsequent model results may never overwrite it.
 
 CloudBase `update()` expands ordinary nested objects into dotted paths. Review
 payloads, rewrite payloads, and active-job projections therefore use the SDK's

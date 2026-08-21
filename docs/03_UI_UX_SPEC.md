@@ -1922,6 +1922,18 @@ Important mobile rules:
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
+- The page exposes only the top toolbar above card-based content. Its leftmost
+  arrow opens a custom confirmation dialog before returning to Dashboard; the
+  copy explains that saved work remains available and active OCR or review jobs
+  continue in the cloud. The dialog keeps keyboard focus inside it, returns focus
+  on cancel, and supports `Escape` as cancel.
+- Remove the brand mark and the `AI Tutor / Writing Studio` lockup. The Writing
+  Portfolio icon takes that position and reflects open/closed state with
+  `aria-expanded`. The portfolio is an initially closed left drawer on phone,
+  iPad, and desktop alike—not a permanently visible tablet/desktop column.
+  Clicking the same icon again, its close button, the page scrim, or `Escape`
+  closes it and restores focus to the trigger. Opening the drawer locks background
+  scrolling without losing the previous page position.
 - OCR comparison is split-screen on tablet/desktop. Mobile opens text first and
   exposes an explicit photo comparison control.
 - Before confirmation, the browser retries the same stable upload batch and
@@ -1956,3 +1968,11 @@ Important mobile rules:
 - Completed portfolio items are read-only. `Use as new` creates another
   Composition; `重新上传` exists only inside an active Composition and clearly
   states that successful confirmation replaces its current review.
+- Portfolio rows expose an inline title-edit control. Saving updates the row
+  without opening the Composition; cancel leaves the stored title unchanged.
+  A student title is authoritative and is never replaced by later AI work.
+- When a new Composition has no student title, its first successful review uses
+  the same model response to supply a concise `2–6` English-word title. There is
+  no visible extra generation step. Legacy `Untitled writing` remains editable
+  and may be replaced by a future review suggestion only while it has never been
+  manually edited.

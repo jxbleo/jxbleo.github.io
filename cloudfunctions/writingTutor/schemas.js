@@ -1,6 +1,6 @@
 "use strict";
 
-const SCHEMA_VERSION = "writing-ai-schemas-2026-08-21.2";
+const SCHEMA_VERSION = "writing-ai-schemas-2026-08-21.3";
 
 const stringArray = { type: "array", items: { type: "string" } };
 
@@ -26,8 +26,9 @@ const OCR_SCHEMA = {
 const STANDARDIZED_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["overall_score", "score_scale", "summary", "criteria", "strengths", "priorities"],
+  required: ["suggested_title", "overall_score", "score_scale", "summary", "criteria", "strengths", "priorities"],
   properties: {
+    suggested_title: { type: "string", minLength: 1, maxLength: 80, description: "A natural 2–6 word English title summarising the manuscript's central topic, without quotation marks or ending punctuation." },
     overall_score: { type: "string" },
     score_scale: { type: "string" },
     summary: { type: "string" },
@@ -59,8 +60,9 @@ const STANDARDIZED_SCHEMA = {
 const LANGUAGE_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["overview", "sentences", "profile_observations"],
+  required: ["suggested_title", "overview", "sentences", "profile_observations"],
   properties: {
+    suggested_title: { type: "string", minLength: 1, maxLength: 80, description: "A natural 2–6 word English title summarising the manuscript's central topic, without quotation marks or ending punctuation." },
     overview: { type: "string", description: "Concise overall evaluation written in student-friendly Simplified Chinese." },
     sentences: {
       type: "array",

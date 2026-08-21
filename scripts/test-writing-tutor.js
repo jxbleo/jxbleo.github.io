@@ -126,6 +126,7 @@ const publicActions = [
   "saveDraft",
   "evaluate",
   "submitRewrites",
+  "updateCompositionTitle",
   "getComposition",
   "getProfile",
 ];
@@ -149,6 +150,76 @@ check("student dashboard exposes the AI Tutor workspace", () => {
   const dashboard = `${read("dashboard.html")}\n${read("assets/js/dashboard.js")}`;
   assert(dashboard.includes("AI Tutor"), "missing AI Tutor label");
   assert(dashboard.includes("ai-tutor.html"), "missing ai-tutor.html link");
+});
+
+check("AI Tutor keeps only back, portfolio, and actions in its top toolbar", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
+  assert(header, "missing AI Tutor top toolbar");
+  requireEvery(header[1], ["header-back", "portfolio-toggle", "header-actions"], "AI Tutor top toolbar");
+  assert(!/brand-lockup|AI Tutor Writing Studio/i.test(`${page}\n${client}`),
+    "the removed AI Tutor Writing Studio brand lockup must not remain in the writing workspace");
+  assert(!/mobile-toolbar|mobile-context/.test(`${page}\n${client}`),
+    "the writing workspace must not render a second mobile toolbar below the primary toolbar");
+});
+
+check("portfolio is a dismissible fixed drawer at every viewport", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(page, [
+    'id="portfolio-toggle"', 'aria-expanded="false"', 'aria-controls="portfolio-sidebar"',
+    'id="portfolio-sidebar"', 'id="sidebar-close"', 'id="sidebar-scrim"', "hidden",
+  ], "portfolio drawer markup");
+  assert(/\.portfolio-sidebar\s*\{[^}]*position\s*:\s*fixed[^}]*(?:transform\s*:\s*translateX|visibility\s*:\s*hidden)/is.test(styles),
+    "portfolio must default to a hidden fixed drawer, including on iPad and desktop");
+  assert(/\.portfolio-sidebar\.is-open\s*\{[^}]*(?:translateX\s*\(\s*0\s*\)|visibility\s*:\s*visible)/is.test(styles),
+    "the drawer needs one explicit open state");
+  assert(!/@media[^{}]*\([^)]*min-width[^)]*\)[\s\S]{0,1400}\.portfolio-sidebar\s*\{[^}]*(?:position\s*:\s*(?:sticky|relative|static)|transform\s*:\s*none|visibility\s*:\s*visible)/i.test(styles),
+    "wide-screen media rules must not pin the portfolio open");
+  requireEvery(client, ["openSidebar", "closeSidebar", "portfolioToggle", "sidebar-close", "sidebarScrim", "Escape"],
+    "portfolio drawer interactions");
+  assert(/portfolioToggle\.addEventListener\s*\(\s*["']click["'][\s\S]{0,240}(?:openSidebar|closeSidebar)/.test(client),
+    "portfolio toolbar button must toggle the drawer");
+  assert(/sidebar-close[^\n]{0,160}addEventListener\s*\(\s*["']click["'][^\n]{0,120}closeSidebar/.test(client),
+    "drawer close button must hide the portfolio");
+  assert(/sidebarScrim\.addEventListener\s*\(\s*["']click["']\s*,\s*closeSidebar/.test(client),
+    "clicking the scrim must hide the portfolio");
+  assert(/event\.key\s*={2,3}\s*["']Escape["'][\s\S]{0,240}state\.sidebarOpen[\s\S]{0,120}closeSidebar/.test(client),
+    "Escape must hide an open portfolio drawer");
+});
+
+check("toolbar back action uses a custom confirmation before Dashboard navigation", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const backTag = /<button\b[^>]*id=["']header-back["'][^>]*>/i.exec(page);
+  assert(backTag, "the toolbar back control must be a button so it cannot navigate immediately");
+  assert(!/<a\b[^>]*(?:id=["']header-back["']|class=["'][^"']*header-back)/i.test(page),
+    "the toolbar back control must not be a direct Dashboard anchor");
+  requireEvery(page, ["leave-confirmation", "role=\"dialog\"", "aria-modal=\"true\"", "data-cancel-leave", "data-confirm-leave"],
+    "custom leave-confirmation dialog");
+  assert(/header-back[\s\S]{0,1000}addEventListener\s*\(\s*["']click["'][\s\S]{0,500}(?:leave-confirmation|openLeave|showLeave|confirm)/i.test(client)
+      || /getElementById\s*\(\s*["']header-back["']\s*\)[\s\S]{0,650}(?:leave-confirmation|openLeave|showLeave|confirm)/i.test(client)
+      || /matches\s*\(\s*["']#header-back["']\s*\)[\s\S]{0,120}(?:openLeave|showLeave|confirm)/i.test(client),
+    "clicking Back must open the custom confirmation dialog");
+  assert(/data-confirm-leave[\s\S]{0,180}(?:confirmLeave|dashboard\.html|window\.location)/i.test(client)
+      && /function\s+confirmLeave\s*\([^)]*\)[\s\S]{0,400}(?:dashboard\.html|window\.location)/i.test(client),
+    "only the dialog confirmation action may navigate back to Dashboard");
+  assert(!/header-back[^\n]{0,400}(?:href\s*=\s*["'][^"']*dashboard|location\.(?:href|assign|replace)\s*\(?\s*["'][^"']*dashboard)/i.test(`${page}\n${client}`),
+    "the Back control must not navigate directly before confirmation");
+});
+
+check("portfolio titles support inline student editing through updateCompositionTitle", () => {
+  const client = read(clientPath);
+  const renderSource = functionSource(client, "renderPortfolio", "renderWritingProfile");
+  requireEvery(renderSource, ["portfolio-title-form", "data-edit-title", "data-cancel-title"],
+    "inline portfolio title editor");
+  assert(/writingCall\s*\(\s*["']updateCompositionTitle["']/.test(client),
+    "saving the inline title editor must call updateCompositionTitle");
+  assert(/addEventListener\s*\(\s*["']submit["'][\s\S]{0,1800}(?:data-title-form|portfolio-title-form)/.test(client)
+      || /(?:data-title-form|portfolio-title-form)[\s\S]{0,1800}writingCall\s*\(\s*["']updateCompositionTitle["']/.test(client),
+    "the inline form submit path must save the edited title");
 });
 
 check("the two evaluation modes use the approved product labels", () => {
@@ -568,7 +639,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   const backend = require(path.join(root, functionPath));
   const rubrics = require(path.join(root, rubricPath));
   const base = {
-    overall_score: "0", score_scale: "wrong", summary: "Summary", strengths: [], priorities: [],
+    suggested_title: "A Short Title", overall_score: "0", score_scale: "wrong", summary: "Summary", strengths: [], priorities: [],
   };
   const ielts = rubrics.getRubric("ielts_task_2");
   const ieltsResult = backend._test.canonicalStandardizedResult({
@@ -590,7 +661,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(dseResult.overall_score, "18");
 
   const language = backend._test.canonicalLanguageResult({
-    overview: "Overview", profile_observations: [],
+    suggested_title: "Going Home", overview: "Overview", profile_observations: [],
     sentences: [{
       sentence_id: "s001", original: "I go home.", status: "needs_revision",
       rewrite_required: false, issues: [], coaching_summary: "Agreement", reference_revision: "I go home.",
@@ -607,7 +678,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
     "a first review must atomically replace language_review instead of creating paths below a null field");
   assert.strictEqual(persistenceUpdate.status, "sentence_training");
   assert.throws(() => backend._test.canonicalLanguageResult({
-    overview: "Overview", profile_observations: [],
+    suggested_title: "Wrong Sentence", overview: "Overview", profile_observations: [],
     sentences: [{ sentence_id: "s999", original: "Wrong", status: "effective", issues: [],
       coaching_summary: "", reference_revision: "" }],
   }, [{ sentence_id: "s001", original: "I goes home." }]), /WRITING_AI_SENTENCE_ALIGNMENT_FAILED/);
@@ -690,6 +761,62 @@ check("language and rewrite schemas describe Chinese commentary and English sour
     : rewriteResultProperties.new_errors;
   assertDescriptionMatches(newErrorsDescription, chinese, "REWRITE_SCHEMA.results[].new_errors[]");
   assertDescriptionMatches(rewriteProperties.overall_feedback, chinese, "REWRITE_SCHEMA.overall_feedback");
+});
+
+check("both initial-review contracts return one short English suggested title", () => {
+  const schemas = require(path.join(root, schemaPath));
+  const prompts = require(path.join(root, promptPath));
+  const shortEnglishTitle = /(?:2\s*(?:-|\u2013|\u2014|to)\s*6[\s\S]{0,30}English[\s\S]{0,30}(?:title|words?)|English[\s\S]{0,30}(?:title|words?)[\s\S]{0,30}2\s*(?:-|\u2013|\u2014|to)\s*6)/i;
+  ["STANDARDIZED_SCHEMA", "LANGUAGE_SCHEMA"].forEach((schemaName) => {
+    const schema = schemas[schemaName];
+    const suggestedTitle = schema && schema.properties && schema.properties.suggested_title;
+    assert(suggestedTitle, `${schemaName} must declare suggested_title`);
+    assert(schema.required.includes("suggested_title"), `${schemaName} must require suggested_title`);
+    assertDescriptionMatches(suggestedTitle, shortEnglishTitle, `${schemaName}.suggested_title`);
+  });
+  [
+    ["standardizedPrompt", prompts.standardizedPrompt(require(path.join(root, rubricPath)).getRubric("ielts_task_2"))],
+    ["languagePrompt", prompts.languagePrompt()],
+  ].forEach(([name, prompt]) => {
+    assert(prompt.includes("suggested_title"), `${name} must request suggested_title in the same review call`);
+    assert(shortEnglishTitle.test(prompt), `${name} must require a 2-6 English word title`);
+  });
+});
+
+check("AI review persists its suggested title only until the student names the Composition", () => {
+  const backend = read(functionPath);
+  const performSource = matchingFunctionSource(backend,
+    "(?:perform|process|run)[A-Z\\w]*Review[A-Z\\w]*Job", "review-job processor function");
+  requireEvery(performSource, ["suggested_title", "title_source"], "review title persistence");
+  assert(/titleSource\s*\([^)]*\)\s*={2,3}\s*["']student["'][\s\S]{0,500}if\s*\(\s*(?:current|candidate)TitleIsStudent\s*\)/.test(performSource)
+      || /title_source[\s\S]{0,320}(?:!={1,2}|not)[\s\S]{0,120}["']student["']|["']student["'][\s\S]{0,120}(?:!={1,2}|not)[\s\S]{0,320}title_source/i.test(performSource),
+    "review publication must check that title_source is not student before persisting the AI title");
+  assert(/suggested_title[\s\S]{0,500}title_source\s*(?::|=)\s*["']ai["']|title_source\s*(?::|=)\s*["']ai["'][\s\S]{0,500}suggested_title/i.test(performSource),
+    "an accepted suggested title must be marked with title_source: ai");
+});
+
+check("manual title editing is allowed after completion without changing activity ordering", () => {
+  const backend = read(functionPath);
+  const updateSource = functionSource(backend, "updateCompositionTitle", "usageMatchesScope");
+  requireEvery(updateSource, ["ownedComposition", "title", "title_source", "student"],
+    "manual title update action");
+  assert(!/status\s*={2,3}\s*["']completed["'][\s\S]{0,180}(?:throw|COMPOSITION_READ_ONLY)|COMPOSITION_READ_ONLY/.test(updateSource),
+    "updateCompositionTitle must remain available for completed writing");
+  assert(!/(?:^|[,{])\s*updated_at\s*:/m.test(updateSource),
+    "editing a title must not change updated_at or reorder the portfolio by learning activity");
+  assert(/action\s*={2,3}\s*["']updateCompositionTitle["'][\s\S]{0,120}updateCompositionTitle\s*\(/.test(backend),
+    "the authenticated writingTutor router must expose updateCompositionTitle");
+});
+
+check("title generation reuses the two review model calls", () => {
+  const backend = read(functionPath);
+  const performSource = matchingFunctionSource(backend,
+    "(?:perform|process|run)[A-Z\\w]*Review[A-Z\\w]*Job", "review-job processor function");
+  const modelCalls = Array.from(performSource.matchAll(/callStructuredModel\s*\(/g));
+  assert.strictEqual(modelCalls.length, 2,
+    "performReviewJob must keep exactly its standardized and language review calls, with no independent title-generation call");
+  assert(!/(?:generate|create|suggest)[A-Z\w]*Title\s*\([^)]*\)[\s\S]{0,500}callStructuredModel/i.test(backend),
+    "the backend must not add a separate model request just to generate a title");
 });
 
 check("Cambridge 9093 Paper 2 task types keep their official score scales separate", () => {

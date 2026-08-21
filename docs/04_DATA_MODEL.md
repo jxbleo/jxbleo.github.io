@@ -1052,7 +1052,8 @@ revision.
 All collections are `ADMINONLY`.
 
 - `writing_compositions`: one current student-owned Composition. Stable fields
-  include `composition_id`, `student_uid`, `confirmed_text`, `prompt_text`,
+  include `composition_id`, `student_uid`, `title`, `title_source`,
+  `title_updated_at`, `confirmed_text`, `prompt_text`,
   `assessment_mode`, current `rubric_id`, preserved `standardized_rubric_id`,
   `revision`, `status`, current review payloads, and prompt/schema/rubric
   versions. Each standardized review also freezes its Rubric ID, label, and
@@ -1071,6 +1072,15 @@ All collections are `ADMINONLY`.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.
+  `title_source` is `pending_ai`, `ai`, or `student`. New unnamed work and a
+  historical literal `Untitled writing` that has never been manually renamed are
+  treated as `pending_ai`, never as proof of a student choice. A successful review
+  may atomically apply its schema-validated two-to-six-English-word
+  `suggested_title` only to a `pending_ai` title. The
+  authenticated inline rename action sets `title_source: "student"` and
+  `title_updated_at`; that state is permanent for overwrite precedence, so no
+  later AI review or replacement may change the title. AI title generation is
+  part of the review payload and creates no extra job or usage-ledger row.
 - `writing_photo_uploads`: short-lived private upload audit rows with ownership,
   upload-operation ID, page order, expected size, CloudBase file ID, expiry,
   and deletion status.

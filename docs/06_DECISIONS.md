@@ -966,3 +966,36 @@ moderation workflow.
 
 Detailed incident evidence and the reusable gate for every future AI feature are
 recorded in `docs/adr/0003-durable-canonical-ai-boundaries.md`.
+
+## AI Tutor shell and title ownership
+
+Decision:
+
+- AI Tutor has one top toolbar and card-based page content. The former brand
+  lockup is removed; its position becomes the portfolio trigger. Portfolio is a
+  single, initially closed overlay drawer at every breakpoint rather than a
+  persistent tablet/desktop layout column. All close affordances converge on one
+  accessible controller.
+- Returning to Dashboard uses an application confirmation dialog. Leaving the
+  page does not cancel OCR or review because durable jobs, not the browser, own
+  their execution.
+- An unnamed review may receive one two-to-six-English-word suggested title in
+  the existing structured model response. This does not justify another model
+  request, durable job, quota reservation, or usage charge.
+- Title precedence is explicit: a student-authored title is permanent authority;
+  AI may fill only a `pending_ai` title, including an eligible historical
+  `Untitled writing` fallback. The Composition
+  records that ownership instead of inferring it from current title text after a
+  student rename.
+
+Why:
+
+One shell model avoids breakpoint-dependent navigation, while explicit title
+ownership prevents a useful AI convenience from erasing student intent. Folding
+the suggestion into an already billable review keeps cost and idempotency stable.
+
+Review condition:
+
+Revisit if portfolio becomes a full-page information architecture, collaborative
+title editing is introduced, or titles need localization beyond short English
+labels.

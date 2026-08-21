@@ -1721,6 +1721,17 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor review jobs
 
+- Simplified AI Tutor to one top toolbar over card-based content. Removed the
+  brand icon and `AI Tutor / Writing Studio` lockup, moved the portfolio control
+  into that position, and made the left portfolio drawer initially collapsible
+  across phone, iPad, and desktop. Toggle, close, scrim, and `Escape` now share
+  the same close behavior.
+- Added an application confirmation before the toolbar back arrow returns to
+  Dashboard, explicitly preserving durable OCR and review work in the cloud.
+- Added editable portfolio titles and a same-review-response AI suggestion of
+  two to six English words for unnamed work. Student-authored titles are never
+  overwritten; legacy `Untitled writing` can be renamed manually or filled by a
+  later review, with no extra AI request or quota charge.
 - Reorganized the completed language-review screen into exactly three primary
   cards: Overall Evaluation, Original Manuscript, and Sentence Corrections.
   Sentence Corrections now uses a horizontally scrollable number navigator over
