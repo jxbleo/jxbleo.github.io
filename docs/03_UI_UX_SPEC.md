@@ -1922,12 +1922,11 @@ Important mobile rules:
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
-- Its header toolbar keeps the red-text `Home` action by itself on the left and
-  groups `History` and `New` together on the right. `History` opens the writing
-  portfolio drawer without changing the current Composition.
-- `History` and `New` use the same quiet secondary treatment when idle: white
-  background, green text, and the same border. `New` must not use the filled-green
-  primary treatment. `History` may still invert while its drawer is open.
+- Its header toolbar contains only `History` at the far left, the current
+  Composition title in the center, and language-revision percentage at the far
+  right. Home, New, student identity, and all other controls stay out of the bar.
+  `History` opens the writing portfolio without changing the current Composition;
+  Home and New live together inside that drawer.
 - While a Composition is open, the flexible center of the top toolbar displays its
   AI-generated or student-edited title. A long title travels horizontally within
   that space with restrained pauses at both ends, matching task-title behavior;
@@ -1937,12 +1936,12 @@ Important mobile rules:
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
   it or selecting New again triggers guarded automatic cleanup; there is no visible Delete
   action, and any non-empty or submitted Composition remains permanent.
-- The page exposes only the top toolbar above card-based content. Its leftmost
-  arrow opens a custom confirmation dialog before returning to Dashboard; the
+- The page exposes only the top toolbar above card-based content. Home inside
+  History opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs
   continue in the cloud. The dialog keeps keyboard focus inside it, returns focus
   on cancel, and supports `Escape` as cancel.
-- The back arrow is red. Its confirmation matches the compact Dashboard/BBC
+- Home inside History uses red leave-navigation treatment. Its confirmation matches the compact Dashboard/BBC
   Apple-style alert: a 320px glass surface with centered copy and a divided
   two-button footer, green `Cancel` on the left and red `Leave` on the right.
 - Remove the brand mark and the `AI Tutor / Writing Studio` lockup. The Writing
@@ -2000,6 +1999,11 @@ Important mobile rules:
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.
+- The far-right toolbar percentage is accepted required revisions divided by all
+  required revisions. Originally correct sentences do not inflate it; a review
+  with no required revisions reads `100%`, and the value stays hidden before a
+  language sentence review exists. Its accessible name states completed, total,
+  and remaining counts. Do not show the removed post-Check “统一检查完成” status below the toolbar.
 - An unresolved navigation capsule uses a small red cross beneath its number,
   whether it is still empty or failed the latest Check; never use a dot or question mark.
   A completed capsule keeps its small green checkmark regardless of sentence accent color.

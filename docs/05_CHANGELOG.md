@@ -5,6 +5,9 @@
 
 ## 2026-08-22 — AI Tutor composition continuity
 
+- Reduced the writing toolbar to History, the current title, and required-sentence
+  revision percentage. Moved Home and New into History and removed the post-Check
+  instruction banner.
 - Preserved the open Composition in the page URL so refresh returns to the same
   owner-checked server workflow instead of the AI Tutor home.
 - Added the current AI/student title to the flexible toolbar center, with measured
