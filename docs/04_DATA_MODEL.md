@@ -1062,7 +1062,7 @@ All collections are `ADMINONLY`.
   `active_job_id` identifies the only durable job allowed to publish into the
   Composition. `active_job`/compatibility `ocr_job` are safe projections of job
   ID, type, operation ID, state, attempt count, error code, and timestamps. They
-  let the browser recover a long-running OCR result without exposing dispatch or
+  let the browser recover long-running OCR and review results without exposing dispatch or
   lease tokens, image identifiers, manuscript data, or provider credentials.
   `pending_upload` records only the current upload operation ID, ordered photo
   IDs, safe state, and timestamps. It lets `getComposition` repair a browser
@@ -1076,6 +1076,7 @@ All collections are `ADMINONLY`.
   and deletion status.
 - `writing_ai_jobs` (`ADMINONLY`): durable metadata-only AI work queue with stable
   job/operation identity, Composition ownership, job type, photo IDs for OCR,
+  review mode/Rubric/usage-ledger ID for content or language review,
   queued/processing/succeeded/failed/superseded state, bounded attempts, lease
   token/expiry, retry time, timestamps, and safe error codes. Dispatch tokens remain
   private and manuscript/OCR text is never copied into a job row.

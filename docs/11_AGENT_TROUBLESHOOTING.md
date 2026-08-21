@@ -721,6 +721,9 @@ STAR 不阻止未来重新布置同一个 set。
     活动版本应立即创建 `writing_ai_jobs`，由 `writingAiWorker` 恢复队列/过期租约；浏览器只轮询
     Composition。若模型日志为 `$ must be an object`，检查国内模型的多页数组归一化，不要让学生
     更换写作评估模型名。
+ 16. AI Tutor OCR 成功但点击开始批改出现 Network error：检查线上 `writingTutor` 是否仍在请求内同步调用
+    模型。正式评估必须创建 `job_type: review` 的持久任务并立即返回；浏览器应轮询 Composition，
+    最终失败才释放配额。只提高网页超时时间不能解决关闭浏览器后的恢复问题。
 
 ## 6. 维护规则
 

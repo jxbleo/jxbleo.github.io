@@ -1936,6 +1936,9 @@ Important mobile rules:
   Returning, refreshing, re-login, or reopening a queued/processing Composition
   resumes the same job and shows its eventual OCR review or specific failure.
   Queued/processing screens also retain a same-Composition `重新上传` action.
+- After `开始批改`, standardized and language review use the same leave-and-resume pattern. The waiting screen
+  starts five-second polling immediately, states that the student may leave, and restores the same review job after
+  refresh or re-login. A final failure preserves the manuscript and offers a fresh submission after quota release.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
 - Language training defaults to one sentence at a time with numbered capsules.

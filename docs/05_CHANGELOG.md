@@ -1719,6 +1719,15 @@ required.
 
 - Separated teacher answer reveal from student answer reveal.
 
+## 2026-08-21 — Durable AI Tutor review jobs
+
+- Moved standardized-content and general-language evaluation off the browser request and onto the existing
+  `writing_ai_jobs` queue, with stable operation identity, lease/retry recovery, active Composition guards, and
+  terminal quota release.
+- Added leave, refresh, re-login, and same-request retry UX for review work; entering language review preserves the
+  prior standardized result on the same Composition.
+- Kept manuscripts and AI feedback out of job rows; review jobs store metadata-only mode, Rubric, usage, and version scope.
+
 ## 2026-08-20 — AI Tutor Writing foundation
 
 ### Added
