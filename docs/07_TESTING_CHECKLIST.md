@@ -1712,18 +1712,19 @@ High priority improvement:
 
 - Run `npm run test:writing-tutor` and all release verification.
 - At phone, iPad, and desktop widths, confirm the page shows only one top toolbar
-  over card content: back arrow, portfolio icon in the former brand position,
-  student chip when applicable, and New Writing. Confirm there is no brand mark,
+  over card content: `History` at far left, current title centered, and revision
+  percentage at far right. Confirm Home and New appear inside History and that
+  there is no student chip, brand mark,
   `AI Tutor / Writing Studio` label, secondary toolbar, or persistent sidebar.
 - Confirm Portfolio starts closed at every width. Open it, then separately close
   it by re-clicking the trigger, its close button, the scrim, and `Escape`.
   Confirm `aria-expanded`, focus restoration, background scroll lock, and prior
   page scroll position are correct for every path.
-- Click the back arrow and confirm the custom dialog appears before navigation.
+- Click Home inside History and confirm the custom dialog appears before navigation.
   Cancel by button and `Escape`, then confirm leaving during queued OCR and queued
   review returns to Dashboard without cancelling either cloud job; reopening the
   Composition resumes the same job.
-- Confirm the Back arrow is red and the alert matches the Dashboard/BBC compact
+- Confirm History Home is red and the alert matches the Dashboard/BBC compact
   glass style: `Cancel` is the green left split action, `Leave` is the red right
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
@@ -1860,7 +1861,13 @@ High priority improvement:
   Toggling Sample must not flip the card, erase a draft, or change its accessible
   face state.
 - Confirm idle `History` and `New` use identical white-background, green-text
-  secondary styling. Opening History may invert only History; New remains secondary.
+  secondary styling inside their respective surfaces. Opening History may invert
+  only the toolbar trigger; New remains inside the drawer.
+- With six required sentences, accept three and confirm the far-right toolbar value
+  reads `50%`; originally correct sentences must not change the denominator. Confirm
+  the accessible name reports completed, total, and remaining counts, a review with
+  no required sentences reads `100%`, and the value is hidden before sentence review.
+  After a rejected Check, confirm no “统一检查完成” instruction appears below the toolbar.
 - Open a saved Composition at each workflow state, refresh the browser, and confirm
   the same Composition and server-backed step return instead of the AI Tutor home.
   Confirm returning home clears the locator, while an already-pruned empty locator

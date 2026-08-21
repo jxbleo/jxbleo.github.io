@@ -120,14 +120,27 @@ const promptPath = "cloudfunctions/writingTutor/prompts.js";
 const rubricPath = "cloudfunctions/writingTutor/rubrics.js";
 const schemaPath = "cloudfunctions/writingTutor/schemas.js";
 
-check("AI Tutor header groups the approved Home, History, and New actions", () => {
+check("AI Tutor header keeps only History, the current title, and revision percentage", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
-  requireEvery(page, [">Home</button>", ">History</button>", ">New</button>"], "AI Tutor toolbar");
-  assert(/<div class="toolbar-pair"[\s\S]*?>History<\/button>[\s\S]*?>New<\/button>[\s\S]*?<\/div>/.test(page), "History and New must share the right-side toolbar group");
-  assert(/class="secondary-button compact portfolio-toggle"[^>]*>History<\/button>[\s\S]{0,300}class="secondary-button compact header-new-writing"[^>]*>New<\/button>/.test(page),
-    "History and New must share the same white-background green-text button style");
-  assert(/\.toolbar-home\s*\{[\s\S]*?color:\s*#c9403a/.test(styles), "Home must retain red text styling");
+  const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
+  assert(header, "missing AI Tutor top toolbar");
+  requireEvery(header[1], [">History</button>", "current-writing-title-window", "revision-progress"], "AI Tutor toolbar");
+  assert(!/>Home<|>New<|header-back|header-new-writing|student-chip|header-actions/.test(header[1]),
+    "Home, New, and student identity must not remain in the top toolbar");
+  assert(/\.ai-tutor-header\s*\{[^}]*grid-template-columns/is.test(styles),
+    "the sparse toolbar must keep a centered title between balanced edge columns");
+});
+
+check("History owns both Home and New actions", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const sidebar = /<aside\b[^>]*id=["']portfolio-sidebar["'][^>]*>([\s\S]*?)<\/aside>/.exec(page);
+  assert(sidebar, "missing History drawer");
+  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-home"', ">Home</button>", 'id="history-new-writing"', "New"],
+    "History navigation actions");
+  assert(/history-new-writing[\s\S]{0,500}closeSidebar\(\)[\s\S]{0,120}createNewWriting\(\)/.test(client),
+    "New from History must close the drawer before creating the Composition");
 });
 
 const publicActions = [
@@ -166,12 +179,12 @@ check("student dashboard exposes the AI Tutor workspace", () => {
   assert(dashboard.includes("ai-tutor.html"), "missing ai-tutor.html link");
 });
 
-check("AI Tutor keeps only back, portfolio, and actions in its top toolbar", () => {
+check("AI Tutor keeps one sparse top toolbar", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
   assert(header, "missing AI Tutor top toolbar");
-  requireEvery(header[1], ["header-back", "portfolio-toggle", "header-actions"], "AI Tutor top toolbar");
+  requireEvery(header[1], ["portfolio-toggle", "current-writing-title-window", "revision-progress"], "AI Tutor top toolbar");
   assert(!/brand-lockup|AI Tutor Writing Studio/i.test(`${page}\n${client}`),
     "the removed AI Tutor Writing Studio brand lockup must not remain in the writing workspace");
   assert(!/mobile-toolbar|mobile-context/.test(`${page}\n${client}`),
@@ -204,20 +217,38 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, ["current-writing-title-window", "current-writing-title-track"], "current writing title markup");
-  assert(/header-back[\s\S]*current-writing-title-window[\s\S]*header-actions/.test(page),
-    "the current title must occupy the flexible space between Home and the right actions");
+  assert(/portfolio-toggle[\s\S]*current-writing-title-window[\s\S]*revision-progress/.test(page),
+    "the current title must remain between History and the right-edge percentage");
   const titleSource = functionSource(client, "updateCurrentWritingTitle", "sentencePalette");
   requireEvery(titleSource, ["editableCompositionTitle(state.current)", "document.title", "aria-label"],
     "current writing title projection");
   requireEvery(client, ["scrollWidth", "clientWidth", "ResizeObserver", "prefers-reduced-motion"],
     "responsive title overflow behavior");
-  assert(/\.current-writing-title-window\s*\{[^}]*flex\s*:\s*1\s+1\s+0[^}]*min-width\s*:\s*0[^}]*overflow\s*:\s*hidden/is.test(styles),
+  assert(/\.current-writing-title-window\s*\{[^}]*min-width\s*:\s*0[^}]*overflow\s*:\s*hidden/is.test(styles)
+      && /\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:[^;}]*minmax\(0,3fr\)/is.test(styles),
     "the toolbar title must shrink within the available mobile width");
   assert(/\.current-writing-title-window\.is-overflowing\s+\.current-writing-title-track\s*\{[^}]*animation[^}]*infinite\s+alternate/is.test(styles),
     "long titles must move horizontally with pauses in both directions");
   const reducedMotion = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([\s\S]*?)\n\}/i.exec(styles);
   assert(reducedMotion && /current-writing-title-track[\s\S]*text-overflow\s*:\s*ellipsis/i.test(reducedMotion[1]),
     "reduced-motion users must receive a stable ellipsis instead of title animation");
+});
+
+check("toolbar percentage measures accepted required revisions only", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const summarySource = functionSource(client, "revisionProgressSummary", "updateRevisionProgress");
+  const updateSource = functionSource(client, "updateRevisionProgress", "sentencePalette");
+  requireEvery(page, ['id="revision-progress"', "hidden"], "revision percentage output");
+  requireEvery(summarySource, ["rewriteRequired(sentence)", "accepted === true", "completed / total", "Math.round"],
+    "required-sentence progress calculation");
+  requireEvery(updateSource, ["progress.percentage + '%'", "progress.completed", "progress.total", "progress.remaining", "aria-label"],
+    "revision progress display and accessible detail");
+  assert(/\.revision-progress\s*\{[^}]*justify-self\s*:\s*end[^}]*font-variant-numeric\s*:\s*tabular-nums/is.test(styles),
+    "the percentage must remain stable at the far-right edge of the toolbar");
+  assert(!/统一检查完成：只需要再处理标记为/.test(client),
+    "the removed post-Check instruction must not appear below the toolbar");
 });
 
 check("portfolio is a dismissible fixed drawer at every viewport", () => {
@@ -246,31 +277,29 @@ check("portfolio is a dismissible fixed drawer at every viewport", () => {
     "Escape must hide an open portfolio drawer");
 });
 
-check("toolbar back action uses a custom confirmation before Dashboard navigation", () => {
+check("History Home uses a custom confirmation before Dashboard navigation", () => {
   const page = read(pagePath);
   const client = read(clientPath);
-  const backTag = /<button\b[^>]*id=["']header-back["'][^>]*>/i.exec(page);
-  assert(backTag, "the toolbar back control must be a button so it cannot navigate immediately");
-  assert(!/<a\b[^>]*(?:id=["']header-back["']|class=["'][^"']*header-back)/i.test(page),
-    "the toolbar back control must not be a direct Dashboard anchor");
+  const homeTag = /<button\b[^>]*id=["']history-home["'][^>]*>/i.exec(page);
+  assert(homeTag, "History Home must be a button so it cannot navigate immediately");
+  assert(!/<a\b[^>]*id=["']history-home["']/i.test(page),
+    "History Home must not be a direct Dashboard anchor");
   requireEvery(page, ["leave-confirmation", "role=\"alertdialog\"", "aria-modal=\"true\"", "data-cancel-leave", "data-confirm-leave"],
     "custom leave-confirmation dialog");
-  assert(/header-back[\s\S]{0,1000}addEventListener\s*\(\s*["']click["'][\s\S]{0,500}(?:leave-confirmation|openLeave|showLeave|confirm)/i.test(client)
-      || /getElementById\s*\(\s*["']header-back["']\s*\)[\s\S]{0,650}(?:leave-confirmation|openLeave|showLeave|confirm)/i.test(client)
-      || /matches\s*\(\s*["']#header-back["']\s*\)[\s\S]{0,120}(?:openLeave|showLeave|confirm)/i.test(client),
-    "clicking Back must open the custom confirmation dialog");
+  assert(/matches\s*\(\s*["']#history-home["']\s*\)[\s\S]{0,120}(?:openLeave|showLeave|confirm)/i.test(client),
+    "clicking History Home must open the custom confirmation dialog");
   assert(/data-confirm-leave[\s\S]{0,180}(?:confirmLeave|dashboard\.html|window\.location)/i.test(client)
       && /function\s+confirmLeave\s*\([^)]*\)[\s\S]{0,400}(?:dashboard\.html|window\.location)/i.test(client),
     "only the dialog confirmation action may navigate back to Dashboard");
-  assert(!/header-back[^\n]{0,400}(?:href\s*=\s*["'][^"']*dashboard|location\.(?:href|assign|replace)\s*\(?\s*["'][^"']*dashboard)/i.test(`${page}\n${client}`),
-    "the Back control must not navigate directly before confirmation");
+  assert(!/history-home[^\n]{0,400}(?:href\s*=\s*["'][^"']*dashboard|location\.(?:href|assign|replace)\s*\(?\s*["'][^"']*dashboard)/i.test(`${page}\n${client}`),
+    "History Home must not navigate directly before confirmation");
 });
 
-check("writing Back and Leave dialog use the approved red and Apple-style treatment", () => {
+check("History Home and Leave dialog use the approved red and Apple-style treatment", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
-  assert(/\.header-back\s*\{[^}]*color\s*:\s*#(?:c9403a|aa4141)/i.test(styles),
-    "the top-left Back arrow must be red");
+  assert(/\.sidebar-home-action\s*\{[^}]*color\s*:\s*#(?:c9403a|aa4141)/i.test(styles),
+    "Home inside History must retain the red leave-navigation treatment");
   requireEvery(page, [">Cancel<", ">Leave<"], "Leave dialog actions");
   assert(/\.confirmation-dialog\s*\{[^}]*width\s*:\s*min\(320px[^}]*border-radius\s*:\s*22px/is.test(styles),
     "Leave dialog must use the compact 320px Apple-style glass box");

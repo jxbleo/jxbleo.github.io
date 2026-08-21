@@ -54,7 +54,7 @@
     var portfolioSidebar = document.getElementById('portfolio-sidebar');
     var sidebarScrim = document.getElementById('sidebar-scrim');
     var portfolioToggle = document.getElementById('portfolio-toggle');
-    var studentChip = document.getElementById('student-chip');
+    var revisionProgress = document.getElementById('revision-progress');
     var currentWritingTitleWindow = document.getElementById('current-writing-title-window');
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var leaveConfirmation = document.getElementById('leave-confirmation');
@@ -237,6 +237,7 @@
     }
 
     function updateCurrentWritingTitle() {
+        updateRevisionProgress();
         if (!currentWritingTitleWindow || !currentWritingTitleTrack) return;
         var title = editableCompositionTitle(state.current);
         currentWritingTitleTrack.textContent = title;
@@ -244,6 +245,41 @@
         currentWritingTitleWindow.setAttribute('aria-label', title ? '当前作文：' + title : '当前没有打开作文');
         document.title = title ? title + ' | AI Tutor' : 'AI Tutor | Mr. Cat Academy';
         scheduleCurrentWritingTitleOverflow();
+    }
+
+    function revisionProgressSummary() {
+        var sentences = safeArray(state.review && state.review.sentences);
+        if (!state.current || !sentences.length) return null;
+        var total = 0;
+        var completed = 0;
+        sentences.forEach(function(sentence, index) {
+            if (!rewriteRequired(sentence)) return;
+            total += 1;
+            var result = state.rewriteResults[sentenceId(sentence, index)];
+            if (result && result.accepted === true) completed += 1;
+        });
+        return {
+            total: total,
+            completed: completed,
+            remaining: Math.max(0, total - completed),
+            percentage: total ? Math.round((completed / total) * 100) : 100
+        };
+    }
+
+    function updateRevisionProgress() {
+        if (!revisionProgress) return;
+        var progress = revisionProgressSummary();
+        revisionProgress.hidden = !progress;
+        if (!progress) {
+            revisionProgress.textContent = '';
+            revisionProgress.removeAttribute('aria-label');
+            revisionProgress.removeAttribute('title');
+            return;
+        }
+        var label = '句子订正进度：' + progress.completed + ' / ' + progress.total + ' 已完成，剩余 ' + progress.remaining + ' 句';
+        revisionProgress.textContent = progress.percentage + '%';
+        revisionProgress.setAttribute('aria-label', label);
+        revisionProgress.setAttribute('title', label);
     }
 
     var sentencePalette = [
@@ -285,10 +321,6 @@
 
     function compositionStatus(composition) {
         return firstText(composition && composition.status, 'draft');
-    }
-
-    function profileName(profile) {
-        return firstText(profile && profile.english_name, profile && profile.chinese_name, profile && profile.name, profile && profile.student_id, 'Student');
     }
 
     function formatDate(value) {
@@ -1124,7 +1156,6 @@
                 return answer && answer.accepted === false;
             }));
             renderLanguage();
-            setStatus('统一检查完成：只需要再处理标记为“需要再修改”的句子。');
         }
         refreshPortfolio().catch(function() {});
     }
@@ -1284,6 +1315,7 @@
 
     function renderLanguage() {
         state.screen = 'language';
+        updateRevisionProgress();
         var sentences = safeArray(state.review && state.review.sentences);
         if (!sentences.length) {
             stage.innerHTML = '<section class="surface empty-state"><strong>没有需要重写的句子</strong><p>这次批改没有返回逐句训练内容。</p><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button></section>';
@@ -1444,6 +1476,7 @@
 
     function renderCompletion() {
         state.screen = 'completed';
+        updateRevisionProgress();
         stage.innerHTML = '<section class="surface completion-card"><span class="completion-icon">' + icon('check') + '</span><p class="eyebrow">WRITING COMPLETE</p><h2>这次训练完成了。</h2>' +
             '<p>你的原文、语言观察和改写记录已经保存到 Writing Portfolio。查看过参考句同样算完成，它只是帮助方式的一部分。</p>' +
             '<div class="hero-actions" style="justify-content:center"><button class="secondary-button" type="button" data-open-current-readonly>查看本篇记录</button><button class="secondary-button" type="button" data-full-rewrite>整篇重写（可选）</button><button class="primary-button" type="button" data-start-new>' + icon('plus') + '开始新作文</button></div></section>';
@@ -1697,7 +1730,7 @@
     document.addEventListener('click', function(event) {
         var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-manuscript-sentence]');
         if (!button) return;
-        if (button.matches('#header-back')) openLeaveConfirmation();
+        if (button.matches('#history-home')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
@@ -1841,7 +1874,10 @@
         sentence.click();
     });
 
-    document.getElementById('header-new-writing').addEventListener('click', createNewWriting);
+    document.getElementById('history-new-writing').addEventListener('click', function() {
+        closeSidebar();
+        createNewWriting();
+    });
     portfolioToggle.addEventListener('click', function() { state.sidebarOpen ? closeSidebar() : openSidebar(); });
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
     sidebarScrim.addEventListener('click', closeSidebar);
@@ -1902,8 +1938,6 @@
             state.quota = results[1].quota || null;
             state.rubrics = safeArray(results[1].rubrics).length ? results[1].rubrics : safeArray(results[2].rubrics);
             state.compositions = normalizeCompositions(results[2]);
-            studentChip.textContent = profileName(state.profile);
-            studentChip.hidden = false;
             app.setAttribute('aria-busy', 'false');
             renderPortfolio();
             var requestedId = requestedCompositionId();
