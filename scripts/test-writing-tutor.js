@@ -266,13 +266,31 @@ check("language review renders exactly three primary cards in the approved order
   const cardMarkers = Array.from(renderSource.matchAll(/language-(overall|manuscript|sentence-review)-card/g), (match) => match[1]);
   assert.deepStrictEqual(cardMarkers, ["overall", "manuscript", "sentence-review"],
     "language review must render only the overall, original-manuscript, and sentence-review primary cards, in that order");
-  requireEvery(renderSource, ["整体评价", "原文", "句子批改"], "language review card headings");
+  requireEvery(renderSource, ["Language Review", "Draft", "Sentence Revision"], "language review card headings");
+  assert(!/整体评价|>原文<|句子批改/.test(renderSource),
+    "the three language-review card titles must use only the approved English names");
 
   const overallIndex = renderSource.indexOf("language-overall-card");
   const manuscriptIndex = renderSource.indexOf("language-manuscript-card");
   const sentenceReviewIndex = renderSource.indexOf("language-sentence-review-card");
   assert(overallIndex < manuscriptIndex && manuscriptIndex < sentenceReviewIndex,
     "language review primary cards must stay ordered as overall, manuscript, then sentence correction");
+});
+
+check("each sentence renders only source, consolidated analysis, and response area", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(cardSource, [
+    "original-sentence", "grammar-analysis", "grammar-analysis-point",
+    "sentence.coaching_summary", "result.feedback", "sentence-response", "rewrite-input",
+  ], "three-part sentence row");
+  assert(!/sentence-card-header|sentence-status|issue-list|coaching-summary|sentence-feedback/.test(cardSource),
+    "sentence rows must not render separate status, issue, summary, or feedback blocks");
+  requireEvery(styles, [".grammar-analysis", ".grammar-analysis-point", ".sentence-response"],
+    "consolidated sentence styles");
+  assert(!/\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
+    "legacy split feedback styles must be removed");
 });
 
 check("sentence correction has one list mode and no layout-switch controls", () => {
@@ -299,6 +317,8 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "sentence numbers must support horizontal scrolling");
   assert(/\.capsule-row\s*\{[^}]*(?:-webkit-overflow-scrolling\s*:\s*touch|touch-action\s*:\s*pan-x)/i.test(styles),
     "sentence number scrolling must preserve native touch momentum or horizontal pan behavior");
+  assert(!/language-toolbar-bottom|progress-copy|capsule-hint|已填写|左右滑动数字/.test(`${client}\n${styles}`),
+    "the capsule bar must not show progress copy or navigation instructions beneath the numbers");
 });
 
 check("sentence navigation replaces the primary toolbar when it reaches the top", () => {

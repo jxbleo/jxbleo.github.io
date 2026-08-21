@@ -1956,15 +1956,19 @@ Important mobile rules:
   refresh or re-login. A final failure preserves the manuscript and offers a fresh submission after quota release.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
-- Completed language review uses exactly three primary cards in order: Overall
-  Evaluation, Original Manuscript, and Sentence Corrections. Sentence feedback,
-  issue explanations, and revision suggestions are written in Simplified Chinese;
-  source sentences and reference revisions remain in English.
-- The Sentence Corrections card begins with a horizontally scrollable row of
+- Completed language review uses exactly three primary cards in order:
+  `Language Review`, `Draft`, and `Sentence Revision`.
+- The Sentence Revision card begins with a horizontally scrollable row of
   numbered capsules. Selecting a number immediately scrolls to and highlights its
-  corresponding sentence in the list. A small marker remains under skipped or
-  unfinished capsules. The list is the only layout: there is no one-sentence mode,
+  corresponding sentence in the list. A small marker remains on skipped or
+  unfinished capsules, but no progress copy or instructional hint appears beneath
+  the capsule row. The list is the only layout: there is no one-sentence mode,
   layout toggle, or pair of layout icons.
+- Each sentence row contains only the original English sentence, one consolidated
+  Simplified Chinese grammar analysis, and the student's revision input. Do not
+  split issues and suggestions into repeated sub-panels. The optional reference
+  answer belongs to the third input area and temporarily replaces the input rather
+  than becoming a fourth area.
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.
@@ -1975,9 +1979,9 @@ Important mobile rules:
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
   column; horizontal overflow is confined to the capsule row.
-- Analysis and the reference revision are collapsed by default. Opening the
-  reference temporarily replaces/hides the rewrite input; closing it restores
-  the student's draft. Batch feedback appears only after Submit.
+- Opening the reference temporarily replaces/hides the rewrite input; closing it
+  restores the student's draft. Batch feedback appears only after Submit and is
+  folded into the consolidated grammar-analysis area.
 - Completed portfolio items are read-only. `Use as new` creates another
   Composition; `重新上传` exists only inside an active Composition and clearly
   states that successful confirmation replaces its current review.

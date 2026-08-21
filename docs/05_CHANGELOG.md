@@ -1721,6 +1721,10 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor review jobs
 
+- Renamed the three language-review cards to `Language Review`, `Draft`, and
+  `Sentence Revision`. Simplified every sentence row to the original sentence,
+  one consolidated Chinese grammar analysis, and the student input area; removed
+  the capsule-row progress copy and instructional hint.
 - Simplified AI Tutor to one top toolbar over card-based content. Removed the
   brand icon and `AI Tutor / Writing Studio` lockup, moved the portfolio control
   into that position, and made the left portfolio drawer initially collapsible
@@ -1738,8 +1742,8 @@ required.
   viewport, corrected phone-width overflow, and linked each manuscript sentence,
   number capsule, and correction source through one consistent color and scroll target.
 - Reorganized the completed language-review screen into exactly three primary
-  cards: Overall Evaluation, Original Manuscript, and Sentence Corrections.
-  Sentence Corrections now uses a horizontally scrollable number navigator over
+  cards: Language Review, Draft, and Sentence Revision.
+  Sentence Revision now uses a horizontally scrollable number navigator over
   one continuous list; removed the sequential/list switch and both layout icons.
 - Required Simplified Chinese sentence commentary, explanations, and suggestions
   while preserving English source sentences and reference revisions.

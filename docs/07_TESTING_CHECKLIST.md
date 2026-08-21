@@ -1759,24 +1759,26 @@ High priority improvement:
 - Confirm reference revision and rewrite input never display together, skipped
   capsules remain marked, and feedback is batch-only.
 - After language review completes, confirm the page has exactly three primary
-  cards in this order: Overall Evaluation, Original Manuscript, and Sentence
-  Corrections. Confirm there is no fourth layout container presented as a card.
-- In Sentence Corrections, confirm the number capsules scroll horizontally on
+  cards in this order: `Language Review`, `Draft`, and `Sentence Revision`.
+  Confirm there is no fourth layout container presented as a card.
+- In Sentence Revision, confirm the number capsules scroll horizontally on
   touch and pointer devices; selecting a number scrolls to and highlights the
   matching sentence. Confirm the full sentence list is always present and there
-  is no sequential mode, layout toggle, or pair of layout icons.
+  is no progress copy, instructional hint, sequential mode, layout toggle, or
+  pair of layout icons beneath or beside the capsule row.
 - Scroll until the capsule bar reaches the top and confirm it replaces the main
   toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
-  after leaving the Sentence Corrections card.
+  after leaving the Sentence Revision card.
 - Confirm each manuscript sentence uses the same color as its number capsule and
   correction-source highlight. Click both the manuscript mark and capsule and
   confirm they activate the same index and scroll to the same correction row.
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must
   remain viewport-width; only the capsule row may scroll horizontally.
-- Confirm sentence commentary, issue explanations, revision suggestions, and
-  rewrite feedback are Simplified Chinese, while original sentences and reference
-  revisions remain English.
+- Confirm every sentence row contains only its original English sentence, one
+  consolidated Simplified Chinese grammar analysis, and the student revision
+  input area. Confirm separate issue and suggestion panels are absent; opening
+  the reference answer must replace the third input area rather than add a fourth.
 - Review an unnamed new Composition in both assessment modes. Confirm the same
   successful model response supplies one two-to-six-English-word title, creates
   no second provider call/job/quota event, and replaces the empty/legacy display
