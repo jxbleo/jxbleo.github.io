@@ -1976,6 +1976,10 @@ Important mobile rules:
   numbered capsule, correction-card accent, and highlighted source sentence all
   use the same palette entry. Both the original sentence mark and capsule are
   interactive routes to the same correction row.
+- Sentence highlighting uses no text underline or bottom-border treatment. Its
+  repeating palette deliberately excludes the site's primary green so navigation
+  colors cannot be mistaken for a primary action or success state. Use blue,
+  purple, orange, magenta, indigo, and coral in that order before repeating.
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
   column; horizontal overflow is confined to the capsule row.
