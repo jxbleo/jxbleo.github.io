@@ -125,6 +125,8 @@ check("AI Tutor header groups the approved Home, History, and New actions", () =
   const styles = read(stylePath);
   requireEvery(page, [">Home</button>", ">History</button>", ">New</button>"], "AI Tutor toolbar");
   assert(/<div class="toolbar-pair"[\s\S]*?>History<\/button>[\s\S]*?>New<\/button>[\s\S]*?<\/div>/.test(page), "History and New must share the right-side toolbar group");
+  assert(/class="secondary-button compact portfolio-toggle"[^>]*>History<\/button>[\s\S]{0,300}class="secondary-button compact header-new-writing"[^>]*>New<\/button>/.test(page),
+    "History and New must share the same white-background green-text button style");
   assert(/\.toolbar-home\s*\{[\s\S]*?color:\s*#c9403a/.test(styles), "Home must retain red text styling");
 });
 
