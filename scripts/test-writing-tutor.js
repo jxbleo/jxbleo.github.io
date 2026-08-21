@@ -178,6 +178,48 @@ check("AI Tutor keeps only back, portfolio, and actions in its top toolbar", () 
     "the writing workspace must not render a second mobile toolbar below the primary toolbar");
 });
 
+check("the open Composition survives refresh through an authenticated URL locator", () => {
+  const client = read(clientPath);
+  const locatorSource = functionSource(client, "requestedCompositionId", "syncCompositionLocator");
+  const syncSource = functionSource(client, "syncCompositionLocator", "updateCurrentWritingTitleOverflow");
+  const resetSource = functionSource(client, "resetDraft", "discardCurrentEmptyComposition");
+  const homeSource = functionSource(client, "returnToTutorHome", "createNewWriting");
+  const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
+  const initSource = functionSource(client, "init");
+  requireEvery(locatorSource, ["URLSearchParams", "composition"], "Composition URL reader");
+  requireEvery(syncSource, ["history.replaceState", "searchParams.set('composition'", "searchParams.delete('composition'"],
+    "Composition URL writer");
+  assert(/syncCompositionLocator\s*\(\s*compositionId\s*\(\s*state\.current\s*\)\s*\)/.test(resetSource),
+    "opening or creating a Composition must store its locator in the current URL");
+  assert(/syncCompositionLocator\s*\(\s*['\"]['\"]\s*\)/.test(homeSource),
+    "returning to the AI Tutor home must clear the Composition locator");
+  requireEvery(initSource, ["requestedCompositionId()", "loadComposition(requestedId)"],
+    "refresh restoration");
+  assert(/COMPOSITION_NOT_FOUND[\s\S]{0,500}syncCompositionLocator\s*\(\s*['\"]['\"]\s*\)/.test(loadSource),
+    "a stale empty locator must be cleared instead of trapping the student on an error page");
+});
+
+check("the toolbar shows and safely scrolls the current AI-generated title", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(page, ["current-writing-title-window", "current-writing-title-track"], "current writing title markup");
+  assert(/header-back[\s\S]*current-writing-title-window[\s\S]*header-actions/.test(page),
+    "the current title must occupy the flexible space between Home and the right actions");
+  const titleSource = functionSource(client, "updateCurrentWritingTitle", "sentencePalette");
+  requireEvery(titleSource, ["editableCompositionTitle(state.current)", "document.title", "aria-label"],
+    "current writing title projection");
+  requireEvery(client, ["scrollWidth", "clientWidth", "ResizeObserver", "prefers-reduced-motion"],
+    "responsive title overflow behavior");
+  assert(/\.current-writing-title-window\s*\{[^}]*flex\s*:\s*1\s+1\s+0[^}]*min-width\s*:\s*0[^}]*overflow\s*:\s*hidden/is.test(styles),
+    "the toolbar title must shrink within the available mobile width");
+  assert(/\.current-writing-title-window\.is-overflowing\s+\.current-writing-title-track\s*\{[^}]*animation[^}]*infinite\s+alternate/is.test(styles),
+    "long titles must move horizontally with pauses in both directions");
+  const reducedMotion = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([\s\S]*?)\n\}/i.exec(styles);
+  assert(reducedMotion && /current-writing-title-track[\s\S]*text-overflow\s*:\s*ellipsis/i.test(reducedMotion[1]),
+    "reduced-motion users must receive a stable ellipsis instead of title animation");
+});
+
 check("portfolio is a dismissible fixed drawer at every viewport", () => {
   const page = read(pagePath);
   const client = read(clientPath);
@@ -493,6 +535,19 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "unresolved capsules must show a semantic red cross beneath the number");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
     "the capsule row must reserve space for its status marks");
+});
+
+check("every Sentence Revision row keeps its indexed soft background without a left accent line", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(cardSource, ["sentenceColorStyle(index)", "sentence-card"], "indexed sentence-card color binding");
+  assert(/\.sentence-card\s*\{[^}]*background\s*:\s*var\(--sentence-soft\)[^}]*box-shadow\s*:\s*none/is.test(styles),
+    "every sentence row must show its pale indexed background before interaction");
+  assert(/\.sentence-card\.is-active\s*\{[^}]*background\s*:\s*var\(--sentence-soft\)/is.test(styles),
+    "navigation focus must preserve rather than introduce the row background");
+  assert(!/\.sentence-card[^}]*box-shadow\s*:[^;}]*inset[^;}]*var\(--sentence-color\)/is.test(styles),
+    "sentence rows must not render the former dark indexed line on the left");
 });
 
 check("Sentence Revision numbers every row and ends with one Check action", () => {

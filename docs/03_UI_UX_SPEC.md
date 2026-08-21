@@ -1928,6 +1928,11 @@ Important mobile rules:
 - `History` and `New` use the same quiet secondary treatment when idle: white
   background, green text, and the same border. `New` must not use the filled-green
   primary treatment. `History` may still invert while its drawer is open.
+- While a Composition is open, the flexible center of the top toolbar displays its
+  AI-generated or student-edited title. A long title travels horizontally within
+  that space with restrained pauses at both ends, matching task-title behavior;
+  Reduced Motion uses a stable single-line ellipsis. The center collapses when no
+  Composition is open. Refreshing the page must reopen the same Composition.
 - A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
   it or selecting New again triggers guarded automatic cleanup; there is no visible Delete
@@ -1992,6 +1997,9 @@ Important mobile rules:
   It remains distinct from the horizontal navigation capsule.
   The card footer contains only one trailing `Check` button in editable mode; it has no
   explanatory copy, dynamic long label, or arrow icon.
+- Every Sentence Revision row permanently shows its indexed pale sentence color,
+  including before capsule navigation. Activating a row does not introduce a new
+  background. Do not draw a dark vertical accent or inset shadow along its left edge.
 - An unresolved navigation capsule uses a small red cross beneath its number,
   whether it is still empty or failed the latest Check; never use a dot or question mark.
   A completed capsule keeps its small green checkmark regardless of sentence accent color.

@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-22 — AI Tutor composition continuity
+
+- Preserved the open Composition in the page URL so refresh returns to the same
+  owner-checked server workflow instead of the AI Tutor home.
+- Added the current AI/student title to the flexible toolbar center, with measured
+  bidirectional overflow motion and a Reduced Motion ellipsis fallback.
+- Made indexed Sentence Revision backgrounds visible before interaction and removed
+  the former dark left-edge accent.
+
 
 ## 2026-08-20
 

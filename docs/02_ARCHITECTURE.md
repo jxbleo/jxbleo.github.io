@@ -758,6 +758,15 @@ path that restores focus and scroll state. The main workspace has no secondary
 toolbar or permanently allocated sidebar column; its content is composed of
 cards beneath the header.
 
+The browser mirrors the open Composition ID in the `composition` query parameter
+with `history.replaceState`. This value is only a resumable locator, never an
+authorization token: initialization still authenticates the student and calls
+`getComposition`, whose owner check remains authoritative. Opening or creating a
+Composition replaces the locator, returning to the workspace home clears it, and
+a stale locator for a safely pruned empty placeholder falls back to the home state.
+The centered toolbar title is derived only from the currently loaded Composition;
+its overflow measurement is presentation state and is never persisted.
+
 The browser edits the OCR result; `saveDraft` confirms text and deletes the
 private photos. `writingAiWorker` also deletes unconfirmed uploaded photos at
 their seven-day expiry. `getComposition` returns the safe active-job projection

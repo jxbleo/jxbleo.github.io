@@ -55,8 +55,11 @@
     var sidebarScrim = document.getElementById('sidebar-scrim');
     var portfolioToggle = document.getElementById('portfolio-toggle');
     var studentChip = document.getElementById('student-chip');
+    var currentWritingTitleWindow = document.getElementById('current-writing-title-window');
+    var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var sentenceCardResizeObserver = null;
+    var currentWritingTitleResizeObserver = null;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -197,6 +200,50 @@
     function editableCompositionTitle(composition) {
         var stored = firstText(composition && composition.title);
         return isPlaceholderTitle(stored) ? '' : stored;
+    }
+
+    function requestedCompositionId() {
+        try { return firstText(new URLSearchParams(window.location.search).get('composition')); }
+        catch (error) { return ''; }
+    }
+
+    function syncCompositionLocator(id) {
+        if (!window.history || !window.history.replaceState) return;
+        try {
+            var url = new URL(window.location.href);
+            if (id) url.searchParams.set('composition', id);
+            else url.searchParams.delete('composition');
+            window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+        } catch (error) {}
+    }
+
+    function updateCurrentWritingTitleOverflow() {
+        if (!currentWritingTitleWindow || !currentWritingTitleTrack || currentWritingTitleWindow.hidden) return;
+        var overflow = Math.ceil(currentWritingTitleTrack.scrollWidth - currentWritingTitleWindow.clientWidth);
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var shouldScroll = !reduceMotion && currentWritingTitleWindow.clientWidth > 0 && overflow > 2;
+        currentWritingTitleWindow.classList.toggle('is-overflowing', shouldScroll || (reduceMotion && overflow > 2));
+        if (!shouldScroll) {
+            currentWritingTitleWindow.style.removeProperty('--current-writing-title-shift');
+            currentWritingTitleWindow.style.removeProperty('--current-writing-title-duration');
+            return;
+        }
+        currentWritingTitleWindow.style.setProperty('--current-writing-title-shift', (-overflow) + 'px');
+        currentWritingTitleWindow.style.setProperty('--current-writing-title-duration', Math.max(7, Math.min(14, 6 + (overflow / 28))) + 's');
+    }
+
+    function scheduleCurrentWritingTitleOverflow() {
+        window.requestAnimationFrame(updateCurrentWritingTitleOverflow);
+    }
+
+    function updateCurrentWritingTitle() {
+        if (!currentWritingTitleWindow || !currentWritingTitleTrack) return;
+        var title = editableCompositionTitle(state.current);
+        currentWritingTitleTrack.textContent = title;
+        currentWritingTitleWindow.hidden = !title;
+        currentWritingTitleWindow.setAttribute('aria-label', title ? '当前作文：' + title : '当前没有打开作文');
+        document.title = title ? title + ' | AI Tutor' : 'AI Tutor | Mr. Cat Academy';
+        scheduleCurrentWritingTitleOverflow();
     }
 
     var sentencePalette = [
@@ -414,6 +461,7 @@
             if (state.current && compositionId(state.current) === id) {
                 state.current = Object.assign({}, state.current, updated);
                 state.title = editableCompositionTitle(state.current);
+                updateCurrentWritingTitle();
             }
             state.editingTitleId = '';
             renderPortfolio();
@@ -449,6 +497,7 @@
     }
 
     function syncCurrentSummary() {
+        updateCurrentWritingTitle();
         if (!state.current) return;
         var id = compositionId(state.current);
         if (!id) return;
@@ -502,6 +551,8 @@
         state.referenceOpen = {};
         state.rewriteFace = {};
         state.correctionRound = 0;
+        syncCompositionLocator(compositionId(state.current));
+        updateCurrentWritingTitle();
     }
 
     function discardCurrentEmptyComposition() {
@@ -530,6 +581,8 @@
         setStatus('');
         state.current = null;
         state.review = null;
+        syncCompositionLocator('');
+        updateCurrentWritingTitle();
         renderPortfolio();
         renderWelcome();
     }
@@ -1506,7 +1559,20 @@
             else if (review) prepareLanguageReview();
             else renderSource();
             syncCurrentSummary();
-        }).catch(renderFatalAction).finally(function() { setBusy(false); });
+        }).catch(function(error) {
+            var code = error && (error.code || error.result && error.result.code) || '';
+            if (code === 'COMPOSITION_NOT_FOUND') {
+                state.current = null;
+                state.review = null;
+                syncCompositionLocator('');
+                updateCurrentWritingTitle();
+                renderPortfolio();
+                renderWelcome();
+                setStatus('这篇空白或过期作文已被清理。');
+                return;
+            }
+            renderFatalAction(error);
+        }).finally(function() { setBusy(false); });
     }
 
     function renderFatalAction(error) {
@@ -1807,6 +1873,19 @@
         if (state.leaveDialogOpen) closeLeaveConfirmation();
     });
 
+    if (currentWritingTitleWindow && window.ResizeObserver) {
+        currentWritingTitleResizeObserver = new ResizeObserver(scheduleCurrentWritingTitleOverflow);
+        currentWritingTitleResizeObserver.observe(currentWritingTitleWindow);
+    } else {
+        window.addEventListener('resize', scheduleCurrentWritingTitleOverflow);
+    }
+    if (window.matchMedia) {
+        var currentWritingTitleMotionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (currentWritingTitleMotionPreference.addEventListener) {
+            currentWritingTitleMotionPreference.addEventListener('change', scheduleCurrentWritingTitleOverflow);
+        }
+    }
+
     function init() {
         if (!window.MrCatAuth) { renderFatalAction(new Error('登录组件没有载入，请刷新页面。')); return; }
         Promise.all([
@@ -1827,7 +1906,9 @@
             studentChip.hidden = false;
             app.setAttribute('aria-busy', 'false');
             renderPortfolio();
-            renderWelcome();
+            var requestedId = requestedCompositionId();
+            if (requestedId) loadComposition(requestedId);
+            else renderWelcome();
         }).catch(function(error) {
             app.setAttribute('aria-busy', 'false');
             stage.innerHTML = '<section class="surface error-state"><strong>需要学生登录</strong><p>' + escapeHtml(error && error.message || '无法打开 AI Tutor。') + '</p><a class="primary-button" href="index.html">前往登录</a></section>';

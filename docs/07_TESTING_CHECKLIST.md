@@ -1861,6 +1861,17 @@ High priority improvement:
   face state.
 - Confirm idle `History` and `New` use identical white-background, green-text
   secondary styling. Opening History may invert only History; New remains secondary.
+- Open a saved Composition at each workflow state, refresh the browser, and confirm
+  the same Composition and server-backed step return instead of the AI Tutor home.
+  Confirm returning home clears the locator, while an already-pruned empty locator
+  falls back cleanly without an error loop.
+- Confirm the current AI/student title appears between Home and History/New. Test a
+  long title at phone, iPad, and desktop widths: it must stay inside the toolbar and
+  travel horizontally with end pauses. With Reduced Motion enabled it must remain
+  still and truncate with an ellipsis.
+- Before clicking any capsule, confirm every Sentence Revision row already shows its
+  indexed pale background. Navigate among rows and confirm the background remains
+  stable and no dark vertical line appears on the left edge.
 - Click `New` and enter nothing. Confirm the placeholder never appears in History or
   its total, then leave and verify it is discarded. Repeat by clicking `New` twice.
   Add a title, prompt, manuscript, selected/uploaded photo, queued job, or result and
