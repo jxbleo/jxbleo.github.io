@@ -930,16 +930,6 @@
         return { referenceVisible: Boolean(referenceOpen), rewriteInputHidden: Boolean(referenceOpen) };
     }
 
-    function languageProgress(sentences) {
-        var required = sentences.filter(rewriteRequired);
-        var done = required.filter(function(sentence, index) {
-            var id = sentenceId(sentence, index);
-            return state.rewriteResults[id] && state.rewriteResults[id].accepted === true;
-        });
-        var filled = required.filter(function(sentence, index) { return firstText(state.rewrites[sentenceId(sentence, index)]); });
-        return { required: required.length, accepted: done.length, filled: filled.length };
-    }
-
     function renderLanguage() {
         state.screen = 'language';
         var sentences = safeArray(state.review && state.review.sentences);
@@ -948,16 +938,14 @@
             return;
         }
         if (state.activeSentence >= sentences.length) state.activeSentence = Math.max(0, sentences.length - 1);
-        var progress = languageProgress(sentences);
         var cards = sentences.map(sentenceCardHtml).join('');
         var manuscript = firstText(state.current && state.current.confirmed_text, state.confirmedText, '暂无原文。');
         stage.innerHTML = '<div class="language-review-stack">' +
-            '<section class="surface language-review-card language-overall-card"><p class="eyebrow">LANGUAGE REVIEW</p><h2>整体评价</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
-            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><span>02</span><h2>原文</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
+            '<section class="surface language-review-card language-overall-card"><h2>Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
+            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2>Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
             '<section class="surface language-review-card language-sentence-review-card">' +
-            '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div>' +
-            '<div class="language-toolbar-bottom"><span class="progress-copy">' + (state.readOnly ? progress.accepted + ' / ' + progress.required + ' 已完成' : progress.filled + ' / ' + progress.required + ' 已填写') + '</span><span class="capsule-hint">左右滑动数字，点击定位句子</span></div></nav>' +
-            '<div class="language-section-heading sentence-review-heading"><span>03</span><h2>句子批改</h2></div>' +
+            '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
+            '<div class="language-section-heading sentence-review-heading"><h2>Sentence Revision</h2></div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
             (!state.readOnly ? '<div class="batch-actions"><p>未完成的句子会在数字下方显示小圆点；完成后统一检查。</p><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>' + (state.correctionRound ? '再次提交检查' : '全部完成，提交检查') + icon('arrow') + '</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
@@ -982,21 +970,29 @@
         var visibility = coordinateReferenceAndRewrite(state.referenceOpen[id]);
         var referenceOpen = visibility.referenceVisible;
         var issues = safeArray(sentence.issues);
-        var status = accepted ? '已完成' : needsReview ? '需要再修改' : required ? '等待改写' : '表达正确';
+        var issueRows = issues.map(function(issue) {
+            var issueCopy = [firstText(issue.explanation), firstText(issue.suggestion)].filter(Boolean).join(' · ');
+            return '<div class="grammar-analysis-point"><b>' + escapeHtml(firstText(issue.category, issue.span, '语言建议')) + '</b><p>' + escapeHtml(issueCopy) + '</p></div>';
+        }).join('');
+        var summary = firstText(sentence.coaching_summary, issues.length ? '' : '这句话表达清楚，没有需要修改的语言问题。');
+        var rewriteFeedback = result ? firstText(result.feedback, result.next_step, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。') : '';
+        var analysis = '<section class="grammar-analysis" aria-label="语法分析"><span class="grammar-analysis-label">Grammar Analysis</span>' +
+            (issueRows ? '<div class="grammar-analysis-points">' + issueRows + '</div>' : '') +
+            (summary ? '<p class="grammar-analysis-summary">' + escapeHtml(summary) + '</p>' : '') +
+            (rewriteFeedback ? '<p class="grammar-analysis-result' + (result.accepted ? ' accepted' : '') + '">' + escapeHtml(rewriteFeedback) + '</p>' : '') +
+            '</section>';
+        var response = required
+            ? (visibility.rewriteInputHidden
+                ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>'
+                : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>')
+            : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input no-rewrite-needed" id="rewrite-' + escapeHtml(id) + '" disabled placeholder="这句话表达清楚，无需改写。"></textarea></div>';
         return '<article class="sentence-card' + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '') + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">' +
-            '<div class="sentence-card-header"><span class="sentence-number">SENTENCE ' + (index + 1) + '</span><span class="sentence-status">' + status + '</span></div>' +
             '<p class="original-sentence"><span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span></p>' +
-            (issues.length ? '<div class="issue-list">' + issues.map(function(issue) {
-                var issueCopy = [firstText(issue.explanation), firstText(issue.suggestion)].filter(Boolean).join(' · ');
-                return '<div class="issue"><b>' + escapeHtml(firstText(issue.category, issue.span, 'LANGUAGE')) + '</b><p>' + escapeHtml(issueCopy) + '</p></div>';
-            }).join('') + '</div>' : '') +
-            (sentence.coaching_summary ? '<p class="coaching-summary">' + escapeHtml(sentence.coaching_summary) + '</p>' : '') +
-            (required ? (visibility.rewriteInputHidden ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>' :
-                '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>') : '') +
-            (result ? '<p class="sentence-feedback ' + (result.accepted ? 'accepted' : '') + '">' + escapeHtml(firstText(result.feedback, result.next_step, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。')) + '</p>' : '') +
+            analysis +
+            '<div class="sentence-response">' + response +
             (required ? '<div class="sentence-actions">' +
                 (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考，开始重写' : '查看参考句') + '</button>' : '<span></span>') +
-                '</div>' : '') +
+                '</div>' : '') + '</div>' +
             '</article>';
     }
 
