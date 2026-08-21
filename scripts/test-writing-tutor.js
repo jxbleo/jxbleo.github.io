@@ -65,6 +65,15 @@ function functionSource(source, functionName, nextFunctionName) {
   return source.slice(start, end >= 0 ? end : source.length);
 }
 
+function matchingFunctionSource(source, namePattern, context) {
+  const declaration = new RegExp(`(?:async\\s+)?function\\s+(${namePattern})\\s*\\(`).exec(source);
+  assert(declaration, `missing ${context}`);
+  const start = declaration.index;
+  const rest = source.slice(start + declaration[0].length);
+  const next = rest.search(/\n(?:async\s+)?function\s+[A-Za-z_$][\w$]*\s*\(/);
+  return source.slice(start, next >= 0 ? start + declaration[0].length + next : source.length);
+}
+
 function sourceFilesUnder(relativeDirectory) {
   const start = path.join(root, relativeDirectory);
   if (!fs.existsSync(start)) return [];
@@ -281,6 +290,99 @@ check("OCR action enqueues a durable job and returns immediately", () => {
   assert(/(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])/.test(backend)
       && /\bjob_id\b/.test(backend),
     "extractOcr response must immediately expose accepted/queued plus job_id");
+});
+
+check("evaluate enqueues a durable review job and returns without waiting for the model", () => {
+  const backend = read(functionPath);
+  const evaluateSource = functionSource(backend, "evaluate", "submitRewrites");
+  assert(!/await\s+callStructuredModel\s*\(/.test(evaluateSource),
+    "evaluate still waits for the language model inside the browser request; it must only reserve/enqueue and return");
+  assert(/enqueue[A-Z\w]*Review[A-Z\w]*Job\s*\(/.test(evaluateSource),
+    "evaluate must enqueue a persistent review job");
+  assert(/(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])[\s\S]{0,300}\bjob\b|\bjob\b[\s\S]{0,300}(?:accepted\s*:\s*true|status\s*:\s*["']queued["'])/.test(evaluateSource),
+    "evaluate must immediately return an accepted/queued job projection");
+});
+
+check("review jobs cover both assessment modes and use the durable job lifecycle", () => {
+  const backend = read(functionPath);
+  const enqueueSource = matchingFunctionSource(backend, "enqueue[A-Z\\w]*Review[A-Z\\w]*Job", "review-job enqueue function");
+  const performSource = matchingFunctionSource(backend, "(?:perform|process|run)[A-Z\\w]*Review[A-Z\\w]*Job", "review-job processor function");
+  const processSource = functionSource(backend, "processQueuedJob", "extractOcr");
+  const reviewSources = `${enqueueSource}\n${performSource}\n${processSource}`;
+  requireEvery(reviewSources, ["standardized_content", "general_language"], "review job modes");
+  assert(/job_type\s*:\s*["'](?:review|writing_review|standardized_review|language_review)["']|review_mode\s*:\s*mode/.test(enqueueSource),
+    "review job must persist a review-specific job_type or review_mode");
+  assert(/status\s*:\s*["']queued["']/.test(enqueueSource), "new review job must start queued");
+  const claimIndex = processSource.indexOf("await claimQueuedJob");
+  const noClaimReturnIndex = processSource.search(/if\s*\(\s*!claimed\s*\)\s*return/);
+  const publishIndex = processSource.indexOf("await publishProcessingJob");
+  const reviewRunIndex = processSource.search(/await\s+reviewRunner\s*\(/);
+  assert(claimIndex >= 0 && noClaimReturnIndex > claimIndex && publishIndex > noClaimReturnIndex
+      && reviewRunIndex > publishIndex,
+    "reviewRunner must execute only after a successful lease claim, the empty-claim return guard, and active-job processing publication");
+  assert(/active_job_id/.test(performSource) && /runTransaction|transaction/.test(performSource),
+    "review-result publication must transactionally re-check Composition.active_job_id");
+  ["queued", "processing", "succeeded", "failed", "superseded"].forEach((status) => {
+    assert(new RegExp(`["']${status}["']`).test(backend), `review-job backend is missing lifecycle status ${status}`);
+  });
+});
+
+check("one review operation cannot double-charge quota or invoke the model twice", () => {
+  const backend = read(functionPath);
+  const enqueueSource = matchingFunctionSource(backend, "enqueue[A-Z\\w]*Review[A-Z\\w]*Job", "review-job enqueue function");
+  const reserveSource = functionSource(backend, "reserveUsage", "releaseUsage");
+  const processSource = functionSource(backend, "processQueuedJob", "extractOcr");
+  requireEvery(enqueueSource, ["operationId", "stableId", "jobId"], "review-job idempotency");
+  assert(/getOne\s*\(\s*JOBS[\s\S]{0,500}(?:existing|idempoten|replay)|(?:existing|idempoten|replay)[\s\S]{0,500}getOne\s*\(\s*JOBS/.test(enqueueSource),
+    "same operation_id must return the existing review job before creating another logical job");
+  assert(/\.doc\s*\(\s*jobId\s*\)\.create\s*\(/.test(enqueueSource),
+    "review job creation must be create-only under its stable job_id");
+  assert(/stableId\s*\([\s\S]{0,220}operationId/.test(reserveSource)
+      && /existing[\s\S]{0,500}(?:duplicate|reserved|succeeded)/.test(reserveSource),
+    "quota reservation must reuse the same operation_id and existing usage row on retry");
+  assert(/const\s+claimed\s*=\s*await\s+claimQueuedJob[\s\S]{0,220}if\s*\(\s*!claimed\s*\)\s*return/.test(processSource),
+    "duplicate worker delivery must return before any review-model call when the job cannot be claimed");
+});
+
+check("terminal review-job failure releases its reserved word quota", () => {
+  const backend = read(functionPath);
+  const failureSource = functionSource(backend, "finishFailedJobAttempt", "processQueuedJob");
+  const processSource = functionSource(backend, "processQueuedJob", "extractOcr");
+  const releaseSource = functionSource(backend, "releaseUsage", "commitReviewAndUsage");
+  assert(/outcome\s*=\s*await\s+finishFailedJobAttempt[\s\S]{0,500}outcome\.committed[\s\S]{0,180}!outcome\.shouldRetry[\s\S]{0,250}await\s+releaseUsage/.test(processSource),
+    "processQueuedJob must release review usage only after finishFailedJobAttempt commits a terminal, non-retryable outcome");
+  assert(/claimed\.terminal_failure[\s\S]{0,350}await\s+releaseUsage/.test(processSource),
+    "an attempt-exhausted review job returned by claimQueuedJob must also release its usage reservation");
+  assert((/status\s*!={1,2}\s*["']reserved["']/.test(releaseSource)
+      || /where\s*\(\s*\{[\s\S]{0,260}status\s*:\s*["']reserved["']/.test(releaseSource))
+      && /runTransaction|transaction/.test(releaseSource),
+    "releaseUsage must be idempotently guarded by reserved status and use a transaction for the quota refund");
+  assert(/active_job_id/.test(failureSource),
+    "finishFailedJobAttempt must update only the still-active review job before processQueuedJob releases quota");
+});
+
+check("reopening a Composition resumes queued or processing review work", () => {
+  const backend = read(functionPath);
+  const client = read(clientPath);
+  const compositionViewSource = functionSource(backend, "compositionView", "uploadMetadataView");
+  const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
+  assert(/active_job|review_job/.test(compositionViewSource) && /job_type/.test(compositionViewSource),
+    "getComposition projection must expose the active review job type and state");
+  assert(/active_job|review_job/.test(loadSource),
+    "loadComposition must inspect the restored review job instead of only ocr_job");
+  assert(/review|standardized_content|general_language/.test(loadSource)
+      && /queued|processing/.test(loadSource)
+      && /poll|start[A-Z\w]*Polling|resume/i.test(loadSource),
+    "loadComposition must resume polling for queued/processing review jobs after reopening");
+});
+
+check("language review after standardized review preserves the standardized result", () => {
+  const backend = read(functionPath);
+  const performSource = matchingFunctionSource(backend, "(?:perform|process|run)[A-Z\\w]*Review[A-Z\\w]*Job", "review-job processor function");
+  assert(/standardized_review\s*:\s*job\.review_mode\s*={2,3}\s*["']standardized_content["']\s*\?\s*review\s*:\s*(?:composition|current|candidate|prepared)\.standardized_review/.test(performSource),
+    "general_language review must retain the Composition's existing standardized_review");
+  assert(!/standardized_review\s*:\s*job\.review_mode\s*={2,3}\s*["']general_language["']\s*\?\s*null/.test(performSource),
+    "ordinary general_language review must not clear standardized_review");
 });
 
 check("a cloud-side async dispatcher processes AI jobs without a browser connection", () => {

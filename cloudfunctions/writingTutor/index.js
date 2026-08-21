@@ -143,6 +143,7 @@ function publicJobView(job) {
     job_id: job.job_id || null,
     operation_id: job.operation_id || null,
     job_type: job.job_type || null,
+    review_mode: job.review_mode || null,
     status: job.status || null,
     error_code: job.error_code || null,
     attempt_count: Number(job.attempt_count || 0),
@@ -683,10 +684,11 @@ async function claimQueuedJob(jobId, dispatchToken) {
         await transaction.collection(COMPOSITIONS).doc(composition._id).update({
           active_job: failedJob,
           ocr_job: current.job_type === "ocr" ? failedJob : composition.ocr_job || null,
-          status: current.job_type === "ocr" ? "ocr_failed" : composition.status,
+          status: jobCompositionStatus(current, "failed") || composition.status,
           updated_at: now,
         });
       }
+      claimed = { ...current, status: "failed", terminal_failure: true };
       return;
     }
     if (current.status === "queued" && dateMs(current.next_retry_at) > Date.now()) return;
@@ -733,7 +735,7 @@ async function publishProcessingJob(job) {
     await transaction.collection(COMPOSITIONS).doc(composition._id).update({
       active_job: activeJob,
       ocr_job: job.job_type === "ocr" ? activeJob : composition.ocr_job || null,
-      status: job.job_type === "ocr" ? "ocr_processing" : composition.status,
+      status: jobCompositionStatus(job, "processing") || composition.status,
       updated_at: now,
     });
     active = true;
@@ -766,7 +768,7 @@ async function finishFailedJobAttempt(job, code) {
       await transaction.collection(COMPOSITIONS).doc(composition._id).update({
         active_job: activeJob,
         ocr_job: job.job_type === "ocr" ? activeJob : composition.ocr_job || null,
-        status: status === "queued" ? "ocr_queued" : "ocr_failed",
+        status: jobCompositionStatus(job, status) || composition.status,
         updated_at: now,
       });
     }
@@ -781,20 +783,45 @@ async function processQueuedJob(event) {
   if (!jobId || !dispatchToken) throw new Error("AI_JOB_UNAUTHORIZED");
   const claimed = await claimQueuedJob(jobId, dispatchToken);
   if (!claimed) return { success: true, accepted: false };
-  if (!await publishProcessingJob(claimed)) return { success: true, status: "superseded" };
-  try {
+  const reviewRunner = claimed.job_type === "review" ? performReviewJob : null;
+  let student = null;
+  if (claimed.job_type === "review") {
     const students = await db.collection("students").where({
       auth_uid: claimed.student_uid, active: true, role: "student",
     }).limit(1).get();
-    const student = students.data && students.data[0];
+    student = students.data && students.data[0];
+    if (claimed.terminal_failure) {
+      await releaseUsage(student || { auth_uid: claimed.student_uid }, { usage_id: claimed.usage_id }, claimed.error_code || "WRITING_AI_ATTEMPTS_EXHAUSTED");
+      return { success: false, status: "failed", code: claimed.error_code || "WRITING_AI_ATTEMPTS_EXHAUSTED" };
+    }
+  }
+  if (!await publishProcessingJob(claimed)) {
+    if (claimed.job_type === "review") await releaseUsage(student || { auth_uid: claimed.student_uid }, { usage_id: claimed.usage_id }, "AI_JOB_SUPERSEDED");
+    return { success: true, status: "superseded" };
+  }
+  try {
+    if (!student) {
+      const students = await db.collection("students").where({
+        auth_uid: claimed.student_uid, active: true, role: "student",
+      }).limit(1).get();
+      student = students.data && students.data[0];
+    }
     if (!student) throw new Error("STUDENT_NOT_LINKED");
     const result = claimed.job_type === "ocr"
       ? await performOcrJob(student, claimed)
-      : (() => { throw new Error("AI_JOB_TYPE_INVALID"); })();
+      : reviewRunner
+        ? await reviewRunner(student, claimed)
+        : (() => { throw new Error("AI_JOB_TYPE_INVALID"); })();
+    if (claimed.job_type === "review" && result.status === "superseded") {
+      await releaseUsage(student, { usage_id: claimed.usage_id }, "AI_JOB_SUPERSEDED");
+    }
     return { success: result.status === "succeeded", status: result.status };
   } catch (error) {
     const code = error && error.message || "WRITING_TUTOR_ERROR";
     const outcome = await finishFailedJobAttempt(claimed, code);
+    if (claimed.job_type === "review" && outcome.committed && !outcome.shouldRetry) {
+      await releaseUsage(student || { auth_uid: claimed.student_uid }, { usage_id: claimed.usage_id }, code);
+    }
     console.error("writingTutor AI job attempt failed", claimed.job_id, claimed.attempt_count, code);
     return { success: false, status: outcome.committed ? outcome.status : "lease_lost", code };
   }
@@ -913,7 +940,8 @@ async function reserveUsage(student, composition, event, mode) {
   if (existing) {
     if (!usageMatchesScope(existing, composition, mode)) throw new Error("IDEMPOTENCY_KEY_REUSED");
     if (existing.status === "succeeded") return { duplicate: true, usage: existing };
-    throw new Error(existing.status === "reserved" ? "AI_OPERATION_IN_PROGRESS" : "AI_OPERATION_ALREADY_FAILED");
+    if (existing.status === "reserved") return { duplicate: false, reused: true, usage: existing };
+    throw new Error("AI_OPERATION_ALREADY_FAILED");
   }
   const words = wordCount(composition.confirmed_text);
   const dayKey = shanghaiDayKey();
@@ -952,12 +980,141 @@ async function reserveUsage(student, composition, event, mode) {
   return { duplicate: false, usage: { usage_id: usageId, word_count: words, day_key: dayKey, limit } };
 }
 
+function reviewCandidate(composition) {
+  return composition.pending_replacement
+    ? { ...composition, ...composition.pending_replacement }
+    : composition;
+}
+
+function reviewScopeMatches(job, composition, mode, rubricId) {
+  const candidate = reviewCandidate(composition);
+  return job && job.job_type === "review"
+    && Number(job.composition_revision || 1) === Number(candidate.revision || 1)
+    && job.review_mode === mode
+    && String(job.rubric_id || "") === String(rubricId || "");
+}
+
+function jobCompositionStatus(job, status) {
+  if (job.job_type === "ocr") return status === "processing" ? "ocr_processing" : status === "queued" ? "ocr_queued" : "ocr_failed";
+  if (job.job_type === "review") return status === "processing" ? "review_processing" : status === "queued" ? "review_queued" : "review_failed";
+  return null;
+}
+
+async function enqueueReviewJob(student, composition, prepared, event, mode, usage) {
+  const operationId = text(event.operation_id, 160);
+  const jobId = stableId("writing_job", student.auth_uid, operationId);
+  const existing = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+  if (existing) {
+    if (existing.composition_id !== composition.composition_id || !reviewScopeMatches(existing, composition, mode, prepared.rubric_id)
+      || existing.usage_id !== usage.usage_id) throw new Error("IDEMPOTENCY_KEY_REUSED");
+    let latest = composition;
+    if (["queued", "processing"].includes(existing.status) && composition.active_job_id !== jobId) {
+      const activeJob = publicJobView(existing);
+      await db.collection(COMPOSITIONS).doc(composition._id).update({
+        active_job_id: jobId,
+        active_job: activeJob,
+        status: jobCompositionStatus(existing, existing.status),
+        updated_at: new Date(),
+      });
+      latest = await ownedComposition(student, composition.composition_id);
+    }
+    if (existing.status === "queued") {
+      try {
+        await invokeFunctionAsync("writingTutor", {
+          action: "processQueuedJob", job_id: jobId, dispatch_token: existing.dispatch_token,
+        });
+      } catch (error) {
+        console.error("writingTutor review replay dispatch deferred", jobId, error && error.message);
+      }
+    }
+    return {
+      success: true,
+      accepted: ["queued", "processing"].includes(existing.status),
+      idempotent_replay: true,
+      job: publicJobView(existing),
+      composition: compositionView(latest),
+      review: mode === "standardized_content" ? latest.standardized_review || null : latest.language_review || null,
+    };
+  }
+  const now = new Date();
+  const job = {
+    job_id: jobId,
+    job_type: "review",
+    review_mode: mode,
+    operation_id: operationId,
+    dispatch_token: crypto.randomBytes(32).toString("hex"),
+    student_uid: student.auth_uid,
+    composition_id: composition.composition_id,
+    composition_revision: Number(prepared.revision || 1),
+    rubric_id: prepared.rubric_id || null,
+    usage_id: usage.usage_id,
+    prompt_bundle_version: PROMPT_BUNDLE_VERSION,
+    status: "queued",
+    attempt_count: 0,
+    error_code: null,
+    lease_token: null,
+    lease_until: null,
+    next_retry_at: now,
+    created_at: now,
+    updated_at: now,
+    started_at: null,
+    finished_at: null,
+  };
+  const activeJob = publicJobView(job);
+  try {
+    await db.runTransaction(async (transaction) => {
+      const compositionResult = await transaction.collection(COMPOSITIONS).where({
+        composition_id: composition.composition_id, student_uid: student.auth_uid,
+      }).limit(1).get();
+      const current = compositionResult.data && compositionResult.data[0];
+      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      const currentCandidate = reviewCandidate(current);
+      if (Number(currentCandidate.revision || 1) !== Number(job.composition_revision || 1)) {
+        throw new Error("COMPOSITION_REVISION_CHANGED");
+      }
+      const created = await transaction.collection(JOBS).doc(jobId).create(job);
+      if (created && created.code) throw created;
+      await transaction.collection(COMPOSITIONS).doc(current._id).update({
+        active_job_id: jobId,
+        active_job: activeJob,
+        status: "review_queued",
+        updated_at: now,
+      });
+    });
+  } catch (error) {
+    const raced = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+    if (!raced || raced.composition_id !== composition.composition_id || raced.job_type !== "review") throw error;
+    const latest = await ownedComposition(student, composition.composition_id);
+    return {
+      success: true, accepted: ["queued", "processing"].includes(raced.status), idempotent_replay: true,
+      job: publicJobView(raced), composition: compositionView(latest),
+    };
+  }
+  try {
+    await invokeFunctionAsync("writingTutor", {
+      action: "processQueuedJob", job_id: jobId, dispatch_token: job.dispatch_token,
+    });
+  } catch (error) {
+    console.error("writingTutor review async dispatch deferred", jobId, error && error.message);
+  }
+  return {
+    success: true, accepted: true, job: activeJob,
+    composition: compositionView({
+      ...composition, active_job_id: jobId, active_job: activeJob,
+      status: "review_queued", updated_at: now,
+    }),
+  };
+}
+
 async function releaseUsage(student, usage, code) {
   if (!usage || !usage.usage_id) return;
-  const row = await getOne(USAGE, { usage_id: usage.usage_id, student_uid: student.auth_uid });
-  if (!row || row.status !== "reserved") return;
   await db.runTransaction(async (transaction) => {
-    const result = await transaction.collection("students").where({ auth_uid: student.auth_uid, active: true }).limit(1).get();
+    const usageResult = await transaction.collection(USAGE).where({
+      usage_id: usage.usage_id, student_uid: student.auth_uid, status: "reserved",
+    }).limit(1).get();
+    const row = usageResult.data && usageResult.data[0];
+    if (!row) return;
+    const result = await transaction.collection("students").where({ auth_uid: student.auth_uid }).limit(1).get();
     const current = result.data && result.data[0];
     if (current && text(current.writing_ai_usage_day, 20) === row.day_key) {
       await transaction.collection("students").doc(current._id).update({
@@ -965,8 +1122,10 @@ async function releaseUsage(student, usage, code) {
         updated_at: new Date(),
       });
     }
+    await transaction.collection(USAGE).doc(row._id).update({
+      status: "failed", failure_code: text(code, 120), released_at: new Date(), updated_at: new Date(),
+    });
   });
-  await db.collection(USAGE).doc(row._id).update({ status: "failed", failure_code: text(code, 120), released_at: new Date(), updated_at: new Date() });
 }
 
 async function commitReviewAndUsage(composition, usage, update) {
@@ -1114,90 +1273,137 @@ async function replaceObservations(student, composition, observations) {
   }
 }
 
+async function performReviewJob(student, job) {
+  const composition = await ownedComposition(student, job.composition_id);
+  if (composition.active_job_id !== job.job_id) return { status: "superseded" };
+  const prepared = { ...reviewCandidate(composition), assessment_mode: job.review_mode, rubric_id: job.rubric_id || null };
+  if (!reviewScopeMatches(job, composition, job.review_mode, job.rubric_id)) throw new Error("COMPOSITION_REVISION_CHANGED");
+  if (!prepared.confirmed_text) throw new Error("MANUSCRIPT_REQUIRED");
+  const rubric = job.review_mode === "standardized_content" ? getRubric(job.rubric_id) : null;
+  if (rubric && !text(prepared.prompt_text, MAX_PROMPT_CHARS)) throw new Error("WRITING_PROMPT_REQUIRED");
+  let review;
+  if (job.review_mode === "standardized_content") {
+    const modelResponse = await callStructuredModel({
+      system: standardizedPrompt(rubric), schemaName: "standardized_writing_review_v1", schema: STANDARDIZED_SCHEMA,
+      userText: `SELECTED_FRAMEWORK_ID: ${rubric.rubric_id}\nTASK_PROMPT_DATA:\n<task_prompt>${prepared.prompt_text}</task_prompt>\nSTUDENT_MANUSCRIPT_DATA:\n<student_manuscript>${prepared.confirmed_text}</student_manuscript>`,
+    });
+    review = { ...canonicalStandardizedResult(modelResponse.data, rubric), model_metadata: modelResponse.metadata };
+  } else {
+    const units = sentenceUnits(prepared.confirmed_text);
+    if (!units.length) throw new Error("MANUSCRIPT_REQUIRED");
+    const modelResponse = await callStructuredModel({
+      system: languagePrompt(), schemaName: "language_sentence_review_v1", schema: LANGUAGE_SCHEMA,
+      userText: `TASK_PROMPT_DATA (may be empty):\n<task_prompt>${prepared.prompt_text || ""}</task_prompt>\nSENTENCE_DATA_JSON:\n${JSON.stringify(units)}`,
+    });
+    review = { ...canonicalLanguageResult(modelResponse.data, units), model_metadata: modelResponse.metadata };
+  }
+  const now = new Date();
+  const pendingReplacement = Boolean(composition.pending_replacement);
+  const languageNeedsTraining = job.review_mode === "general_language"
+    && Array.isArray(review.sentences)
+    && review.sentences.some((sentence) => sentence.rewrite_required === true);
+  const succeededJob = publicJobView({ ...job, status: "succeeded", finished_at: now });
+  const update = {
+    assessment_mode: job.review_mode,
+    rubric_id: rubric ? rubric.rubric_id : null,
+    standardized_rubric_id: rubric ? rubric.rubric_id : composition.standardized_rubric_id || null,
+    standardized_review: job.review_mode === "standardized_content" ? review : composition.standardized_review || null,
+    language_review: job.review_mode === "general_language" ? review : composition.language_review || null,
+    rewrite_results: job.review_mode === "general_language" ? null : composition.rewrite_results || null,
+    status: job.review_mode === "general_language" ? (languageNeedsTraining ? "sentence_training" : "completed") : "reviewed",
+    prompt_version: PROMPT_VERSION,
+    schema_version: SCHEMA_VERSION,
+    rubric_version: rubric ? RUBRIC_VERSION : null,
+    last_ai_review_at: now,
+    active_job: succeededJob,
+    updated_at: now,
+  };
+  if (pendingReplacement) {
+    Object.assign(update, {
+      title: prepared.title,
+      prompt_text: prepared.prompt_text,
+      confirmed_text: prepared.confirmed_text,
+      word_count: prepared.word_count,
+      revision: Number(prepared.revision || composition.revision || 1),
+      pending_replacement: null,
+      standardized_rubric_id: rubric ? rubric.rubric_id : null,
+      standardized_review: job.review_mode === "standardized_content" ? review : null,
+      language_review: job.review_mode === "general_language" ? review : null,
+      rewrite_results: null,
+      completed_at: job.review_mode === "general_language" && !languageNeedsTraining ? now : null,
+    });
+  }
+  if (job.review_mode === "general_language" && !languageNeedsTraining) update.completed_at = now;
+  let outcome = "lease_lost";
+  let usageRow = null;
+  await db.runTransaction(async (transaction) => {
+    const compositionResult = await transaction.collection(COMPOSITIONS).where({
+      composition_id: job.composition_id, student_uid: job.student_uid,
+    }).limit(1).get();
+    const jobResult = await transaction.collection(JOBS).where({ job_id: job.job_id }).limit(1).get();
+    const usageResult = await transaction.collection(USAGE).where({ usage_id: job.usage_id, status: "reserved" }).limit(1).get();
+    const current = compositionResult.data && compositionResult.data[0];
+    const currentJob = jobResult.data && jobResult.data[0];
+    usageRow = usageResult.data && usageResult.data[0];
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, job.lease_token)) return;
+    if (!current || current.active_job_id !== job.job_id || !reviewScopeMatches(job, current, job.review_mode, job.rubric_id)) {
+      await transaction.collection(JOBS).doc(currentJob._id).update({
+        status: "superseded", lease_token: null, lease_until: null, next_retry_at: null,
+        finished_at: now, updated_at: now,
+      });
+      outcome = "superseded";
+      return;
+    }
+    if (!usageRow) throw new Error("AI_USAGE_RESERVATION_LOST");
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(update);
+    await transaction.collection(JOBS).doc(currentJob._id).update({
+      status: "succeeded", error_code: null, lease_token: null, lease_until: null,
+      next_retry_at: null, finished_at: now, updated_at: now,
+    });
+    await transaction.collection(USAGE).doc(usageRow._id).update({ status: "succeeded", succeeded_at: now, updated_at: now });
+    outcome = "succeeded";
+  });
+  if (outcome === "succeeded") {
+    if (job.review_mode === "general_language") {
+      try { await replaceObservations(student, prepared, review.profile_observations); }
+      catch (error) { console.error("writingTutor profile observation update failed", error); }
+    } else if (pendingReplacement) {
+      try { await db.collection(OBSERVATIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).remove(); }
+      catch (error) { console.error("writingTutor stale observation cleanup failed", error); }
+    }
+    await enqueueReviewEmail(student, usageRow || { usage_id: job.usage_id }, prepared, job.review_mode);
+  }
+  return { status: outcome, review: outcome === "succeeded" ? review : null };
+}
+
 async function evaluate(student, event) {
   const composition = await ownedComposition(student, event.composition_id);
-  const pendingReplacement = composition.pending_replacement || null;
-  const candidate = pendingReplacement ? { ...composition, ...pendingReplacement } : composition;
+  const candidate = reviewCandidate(composition);
   if (!candidate.confirmed_text) throw new Error("MANUSCRIPT_REQUIRED");
   const mode = text(event.assessment_mode || candidate.assessment_mode, 80);
   if (!["general_language", "standardized_content"].includes(mode)) throw new Error("ASSESSMENT_MODE_REQUIRED");
   const prepared = { ...candidate, assessment_mode: mode };
-  if (mode === "standardized_content") prepared.rubric_id = text(event.rubric_id || candidate.rubric_id, 120);
-  else prepared.rubric_id = null;
-  const rubric = mode === "standardized_content" ? getRubric(prepared.rubric_id) : null;
-  if (mode === "standardized_content" && !text(prepared.prompt_text, MAX_PROMPT_CHARS)) throw new Error("WRITING_PROMPT_REQUIRED");
+  prepared.rubric_id = mode === "standardized_content" ? text(event.rubric_id || candidate.rubric_id, 120) : null;
+  if (mode === "standardized_content") {
+    getRubric(prepared.rubric_id);
+    if (!text(prepared.prompt_text, MAX_PROMPT_CHARS)) throw new Error("WRITING_PROMPT_REQUIRED");
+  }
+  if (composition.active_job_id) {
+    const active = await getOne(JOBS, { job_id: composition.active_job_id, student_uid: student.auth_uid });
+    if (active && ["queued", "processing"].includes(active.status)
+      && reviewScopeMatches(active, composition, mode, prepared.rubric_id)) {
+      return { success: true, accepted: true, idempotent_replay: true, job: publicJobView(active), composition: compositionView(composition) };
+    }
+  }
   const reservation = await reserveUsage(student, prepared, event, mode);
   if (reservation.duplicate) {
     const latest = await ownedComposition(student, composition.composition_id);
     return { success: true, idempotent_replay: true, composition: compositionView(latest), review: mode === "standardized_content" ? latest.standardized_review : latest.language_review };
   }
   try {
-    let review;
-    if (mode === "standardized_content") {
-      const modelResponse = await callStructuredModel({
-        system: standardizedPrompt(rubric), schemaName: "standardized_writing_review_v1", schema: STANDARDIZED_SCHEMA,
-        userText: `SELECTED_FRAMEWORK_ID: ${rubric.rubric_id}\nTASK_PROMPT_DATA:\n<task_prompt>${prepared.prompt_text}</task_prompt>\nSTUDENT_MANUSCRIPT_DATA:\n<student_manuscript>${prepared.confirmed_text}</student_manuscript>`,
-      });
-      review = { ...canonicalStandardizedResult(modelResponse.data, rubric), model_metadata: modelResponse.metadata };
-    } else {
-      const units = sentenceUnits(prepared.confirmed_text);
-      if (!units.length) throw new Error("MANUSCRIPT_REQUIRED");
-      const modelResponse = await callStructuredModel({
-        system: languagePrompt(), schemaName: "language_sentence_review_v1", schema: LANGUAGE_SCHEMA,
-        userText: `TASK_PROMPT_DATA (may be empty):\n<task_prompt>${prepared.prompt_text || ""}</task_prompt>\nSENTENCE_DATA_JSON:\n${JSON.stringify(units)}`,
-      });
-      review = { ...canonicalLanguageResult(modelResponse.data, units), model_metadata: modelResponse.metadata };
-    }
-    const now = new Date();
-    const languageNeedsTraining = mode === "general_language"
-      && Array.isArray(review.sentences)
-      && review.sentences.some((sentence) => sentence.rewrite_required === true);
-    const update = {
-      assessment_mode: mode, rubric_id: rubric ? rubric.rubric_id : null,
-      standardized_rubric_id: rubric ? rubric.rubric_id : composition.standardized_rubric_id || null,
-      standardized_review: mode === "standardized_content" ? review : composition.standardized_review || null,
-      language_review: mode === "general_language" ? review : composition.language_review || null,
-      rewrite_results: mode === "general_language" ? null : composition.rewrite_results || null,
-      status: mode === "general_language" ? (languageNeedsTraining ? "sentence_training" : "completed") : "reviewed",
-      prompt_version: PROMPT_VERSION, schema_version: SCHEMA_VERSION,
-      rubric_version: rubric ? RUBRIC_VERSION : null, last_ai_review_at: now, updated_at: now,
-    };
-    if (pendingReplacement) {
-      Object.assign(update, {
-        title: prepared.title,
-        prompt_text: prepared.prompt_text,
-        confirmed_text: prepared.confirmed_text,
-        word_count: prepared.word_count,
-        revision: Number(prepared.revision || composition.revision || 1),
-        pending_replacement: null,
-        standardized_rubric_id: rubric ? rubric.rubric_id : null,
-        standardized_review: mode === "standardized_content" ? review : null,
-        language_review: mode === "general_language" ? review : null,
-        rewrite_results: null,
-        completed_at: mode === "general_language" && !languageNeedsTraining ? now : null,
-      });
-    }
-    if (mode === "general_language" && !languageNeedsTraining) update.completed_at = now;
-    await commitReviewAndUsage(composition, reservation.usage, update);
-    if (mode === "general_language") {
-      try {
-        await replaceObservations(student, prepared, review.profile_observations);
-      } catch (observationError) {
-        console.error("writingTutor profile observation update failed", observationError);
-      }
-    } else if (pendingReplacement) {
-      try {
-        await db.collection(OBSERVATIONS).where({
-          composition_id: composition.composition_id, student_uid: student.auth_uid,
-        }).remove();
-      } catch (observationError) {
-        console.error("writingTutor stale observation cleanup failed", observationError);
-      }
-    }
-    await enqueueReviewEmail(student, reservation.usage, prepared, mode);
-    return { success: true, composition: compositionView({ ...prepared, ...update }), review };
+    return await enqueueReviewJob(student, composition, prepared, event, mode, reservation.usage);
   } catch (error) {
-    await releaseUsage(student, reservation.usage, error.message);
+    if (!reservation.reused) await releaseUsage(student, reservation.usage, error.message);
     throw error;
   }
 }
@@ -1311,5 +1517,5 @@ exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, roundedToStep,
   usageMatchesScope, PROMPT_BUNDLE_VERSION,
-  collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS },
+  collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },
 };

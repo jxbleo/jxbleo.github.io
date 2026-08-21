@@ -1725,6 +1725,9 @@ High priority improvement:
   `finishPhotoUpload` has created exactly one stable `writing_ai_jobs` row, OCR
   continues without the browser, and refresh/re-login/reopen resumes that job.
   Confirm a retry reuses its operation/job ID and does not call the model twice.
+- Disconnect immediately after `开始批改` in both modes. Confirm `evaluate` returns a queued review job, the
+  one-minute worker finishes it without the browser, reopening resumes queued/processing state, and the original
+  standardized review remains present when the same Composition proceeds to language review.
 - Force one transient provider failure and confirm queued retry, bounded attempt
   count, lease expiry recovery, and final success/failure. Start a replacement
   job while the first is processing and confirm only `active_job_id` can publish.

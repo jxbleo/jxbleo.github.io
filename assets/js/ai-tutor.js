@@ -34,6 +34,8 @@
         autosaveTimer: null,
         ocrPollGeneration: 0,
         ocrPollActive: false,
+        reviewPollGeneration: 0,
+        reviewPollActive: false,
         sidebarOpen: false
     };
 
@@ -138,7 +140,7 @@
     function statusLabel(status) {
         var labels = {
             draft: '草稿', photo_uploading: '正在确认照片', ocr_queued: '等待识别', ocr_processing: '正在识别', ocr_failed: '识别失败', ocr_ready: '待确认', ocr_review: '待确认', ready: '等待批改', queued: '等待批改', evaluating: '正在批改',
-            review_ready: '待训练', reviewed: '评估完成', sentence_training: '待逐句训练', needs_revision: '需要再修改', completed: '已完成', failed: '稍后继续'
+            review_queued: '等待批改', review_processing: '正在批改', review_failed: '批改失败', standardized_ready: '评估完成', language_ready: '待逐句训练', review_ready: '待训练', reviewed: '评估完成', sentence_training: '待逐句训练', needs_revision: '需要再修改', completed: '已完成', failed: '稍后继续'
         };
         return labels[status] || status || '草稿';
     }
@@ -170,6 +172,11 @@
     function stopOcrPolling() {
         state.ocrPollActive = false;
         state.ocrPollGeneration += 1;
+    }
+
+    function stopReviewPolling() {
+        state.reviewPollActive = false;
+        state.reviewPollGeneration += 1;
     }
 
     function writingCall(action, payload) {
@@ -273,6 +280,7 @@
 
     function resetDraft(composition) {
         stopOcrPolling();
+        stopReviewPolling();
         state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = composition || null;
         state.review = null;
@@ -299,6 +307,7 @@
     function createNewWriting() {
         if (state.busy) return;
         stopOcrPolling();
+        stopReviewPolling();
         setStatus('');
         renderLoading('正在准备一张新的写作纸…', '你的输入会自动关联到这篇新作文。');
         setBusy(true);
@@ -619,19 +628,162 @@
                 operation_id: evaluateOperation
             });
         }).then(function(result) {
-            clearLogicalOperation('evaluate');
             if (result.composition) state.current = result.composition;
-            state.review = result.review || (result.composition && result.composition.review) || {};
-            state.readOnly = false;
+            if (result.review || reviewReady(state.current)) {
+                showReviewResult(result);
+                return;
+            }
+            renderReviewWaiting(reviewJobFrom(result), true, false);
             syncCurrentSummary();
-            if (state.assessmentMode === 'standardized') renderStandardized();
-            else prepareLanguageReview();
-        }).then(function() {
-            return Promise.all([refreshPortfolio(), refreshWritingProfile()]);
         }).catch(function(error) {
+            if (isNetworkDisconnect(error) && compositionId(state.current)) {
+                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                setStatus('网络暂时中断。系统会查询同一篇作文；如请求未送达，可用同一个请求编号安全重试。');
+                return;
+            }
+            if (reviewRequestMayBeRunning(error)) {
+                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                return;
+            }
             if (error && error.result) clearLogicalOperation('evaluate');
-            renderFatalAction(error);
+            renderReviewFailure(error);
         }).finally(function() { setBusy(false); });
+    }
+
+    function reviewJobFrom(result) {
+        var job = result && result.job || result && result.composition && result.composition.active_job || state.current && state.current.active_job || {};
+        return !job.job_type || job.job_type === 'review' ? job : {};
+    }
+
+    function reviewRequestMayBeRunning(error) {
+        var code = firstText(error && error.code, error && error.result && error.result.code);
+        return code === 'AI_OPERATION_IN_PROGRESS' || code === 'AI_JOB_ALREADY_QUEUED' || code === 'AI_JOB_PROCESSING';
+    }
+
+    function reviewReady(composition) {
+        var status = compositionStatus(composition);
+        if (status === 'standardized_ready') return Boolean(composition && composition.standardized_review);
+        if (status === 'language_ready') return Boolean(composition && composition.language_review);
+        var job = composition && composition.active_job || {};
+        return job.job_type === 'review' && job.status === 'succeeded'
+            && Boolean(composition.standardized_review || composition.language_review);
+    }
+
+    function showReviewResult(result) {
+        stopReviewPolling();
+        if (result && result.composition) state.current = result.composition;
+        var mode = compositionMode(state.current);
+        state.assessmentMode = mode;
+        state.review = result && result.review || (mode === 'standardized'
+            ? state.current && state.current.standardized_review
+            : state.current && state.current.language_review) || {};
+        state.readOnly = false;
+        clearLogicalOperation('evaluate');
+        syncCurrentSummary();
+        if (mode === 'standardized') renderStandardized();
+        else prepareLanguageReview();
+        Promise.all([refreshPortfolio(), refreshWritingProfile()]).catch(function() {});
+    }
+
+    function renderReviewWaiting(job, autoPoll, allowRetry) {
+        var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
+        state.screen = 'review-waiting';
+        mobileContext.textContent = 'AI 后台批改';
+        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
+            '<strong>作文已经提交，可以离开此页面</strong>' +
+            '<p>' + (jobStatus === 'queued' || jobStatus === 'review_queued' ? '批改已进入队列。' : 'AI 正在云端批改。') + '离开、刷新或重新登录都不会中断，也不会重复扣除字数额度。</p>' +
+            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
+            (allowRetry ? '<button class="secondary-button" type="button" data-retry-review>用同一请求安全重试</button>' : '') +
+            '<button class="primary-button" type="button" data-stay-review>留在此页等待</button></div>' +
+            '<p class="section-hint" id="review-poll-status" role="status" aria-live="polite">每 5 秒查询一次同一篇作文。</p></section>';
+        if (autoPoll) startReviewPolling();
+    }
+
+    function startReviewPolling() {
+        if (state.reviewPollActive || !compositionId(state.current)) return;
+        state.reviewPollActive = true;
+        state.reviewPollGeneration += 1;
+        var generation = state.reviewPollGeneration;
+        var status = document.getElementById('review-poll-status');
+        if (status) status.textContent = '正在等待云端批改；每 5 秒查询一次。你随时可以离开。';
+        function poll() {
+            if (!state.reviewPollActive || generation !== state.reviewPollGeneration) return;
+            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
+                if (!state.reviewPollActive || generation !== state.reviewPollGeneration) return;
+                var composition = result.composition || {};
+                state.current = composition;
+                var job = reviewJobFrom(result);
+                if (reviewReady(composition)) {
+                    showReviewResult({ composition: composition });
+                    return;
+                }
+                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'review_failed') {
+                    renderReviewFailure({ code: job.error_code || 'WRITING_AI_REVIEW_FAILED', message: 'AI 批改没有完成。' });
+                    return;
+                }
+                syncCurrentSummary();
+                window.setTimeout(poll, 5000);
+            }).catch(function() {
+                if (!state.reviewPollActive || generation !== state.reviewPollGeneration) return;
+                var pollStatus = document.getElementById('review-poll-status');
+                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。作文已经安全保存。';
+                window.setTimeout(poll, 5000);
+            });
+        }
+        poll();
+    }
+
+    function retryReviewRequest() {
+        if (state.busy || !compositionId(state.current)) return;
+        var fingerprint = JSON.stringify({
+            composition_id: compositionId(state.current),
+            revision: state.current && state.current.revision,
+            mode: apiMode(state.assessmentMode),
+            rubric_id: state.assessmentMode === 'standardized' ? state.rubricId : null,
+            prompt_text: state.promptText,
+            confirmed_text: state.confirmedText
+        });
+        var operation = logicalOperationId('evaluate', fingerprint);
+        setBusy(true);
+        renderReviewWaiting(state.current && state.current.active_job, true, false);
+        writingCall('evaluate', {
+            composition_id: compositionId(state.current),
+            assessment_mode: apiMode(state.assessmentMode),
+            rubric_id: state.assessmentMode === 'standardized' ? state.rubricId : null,
+            operation_id: operation
+        }).then(function(result) {
+            if (result.composition) state.current = result.composition;
+            if (result.review || reviewReady(state.current)) showReviewResult(result);
+            else renderReviewWaiting(reviewJobFrom(result), true, false);
+        }).catch(function(error) {
+            if (isNetworkDisconnect(error)) {
+                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                return;
+            }
+            if (reviewRequestMayBeRunning(error)) {
+                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                return;
+            }
+            if (error && error.result) clearLogicalOperation('evaluate');
+            renderReviewFailure(error);
+        }).finally(function() { setBusy(false); });
+    }
+
+    function renderReviewFailure(error) {
+        stopReviewPolling();
+        var code = firstText(error && error.code, error && error.result && error.result.code, state.current && state.current.active_job && state.current.active_job.error_code);
+        var messages = {
+            WRITING_AI_TIMEOUT: '云端模型本次没有在时限内完成批改。作文仍然保留，可以使用同一请求安全重试。',
+            WRITING_AI_SCHEMA_RESPONSE_INVALID: 'AI 返回的批改格式不完整。作文仍然保留，可以使用同一请求安全重试。',
+            WRITING_AI_DAILY_LIMIT_REACHED: '今天的 AI 批改字数额度已经用完。请联系老师调整额度。'
+        };
+        var message = messages[code] || firstText(error && error.message, 'AI 批改本次没有完成。作文仍然安全保存。');
+        clearLogicalOperation('evaluate');
+        state.screen = 'review-failed';
+        mobileContext.textContent = '批改需要处理';
+        stage.innerHTML = '<section class="surface error-state"><strong>AI 批改没有完成</strong><p>' + escapeHtml(message) + '</p>' +
+            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
+            (code === 'WRITING_AI_DAILY_LIMIT_REACHED' ? '' : '<button class="primary-button" type="button" data-retry-review>重新提交批改</button>') + '</div></section>';
     }
 
     function renderLoading(title, description) {
@@ -916,6 +1068,23 @@
                 syncCurrentSummary();
                 return;
             }
+            var activeJob = composition.active_job || {};
+            var reviewStatus = compositionStatus(composition);
+            if ((activeJob.job_type === 'review' && (activeJob.status === 'queued' || activeJob.status === 'processing'))
+                || reviewStatus === 'review_queued' || reviewStatus === 'review_processing') {
+                renderReviewWaiting(activeJob, true, false);
+                syncCurrentSummary();
+                return;
+            }
+            if ((activeJob.job_type === 'review' && activeJob.status === 'failed') || reviewStatus === 'review_failed') {
+                renderReviewFailure({ code: activeJob.error_code || 'WRITING_AI_REVIEW_FAILED', message: 'AI 批改没有完成。' });
+                syncCurrentSummary();
+                return;
+            }
+            if (reviewReady(composition)) {
+                showReviewResult({ composition: composition });
+                return;
+            }
             if (state.assessmentMode === 'standardized' && review) renderStandardized();
             else if (review) prepareLanguageReview();
             else renderSource();
@@ -1004,7 +1173,7 @@
         var button = event.target.closest('button,[data-open-composition]');
         if (!button) return;
         if (button.matches('[data-start-new]')) createNewWriting();
-        else if (button.matches('[data-return-home]')) { stopOcrPolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
+        else if (button.matches('[data-return-home]')) { stopOcrPolling(); stopReviewPolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
         else if (button.matches('[data-remove-photo]')) {
@@ -1037,6 +1206,12 @@
             button.disabled = true;
             button.textContent = '正在等待 OCR…';
         }
+        else if (button.matches('[data-stay-review]')) {
+            startReviewPolling();
+            button.disabled = true;
+            button.textContent = '正在等待批改…';
+        }
+        else if (button.matches('[data-retry-review]')) retryReviewRequest();
         else if (button.matches('[data-retry-ocr]')) loadComposition(compositionId(state.current), false);
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');

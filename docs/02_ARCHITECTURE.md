@@ -727,8 +727,9 @@ two-phase private CloudBase upload and receive short-lived URLs only inside a
 function. `startPhotoUpload` derives page IDs from the stable operation ID, so a
 lost response replays the same batch and refreshes its upload metadata instead
 of creating orphan pages. `finishPhotoUpload` confirms storage and creates a stable
-`writing_ai_jobs` row in the same server request, then returns without waiting
-for the vision model. `writingTutor` dispatches that job asynchronously to its
+OCR `writing_ai_jobs` row in the same server request. `evaluate` reserves quota
+idempotently and creates a stable review job for either assessment mode. Both
+actions return without waiting for the model. `writingTutor` dispatches that job asynchronously to its
 private processor; the one-minute `writingAiWorker` timer redispatches queued
 jobs and expired leases if the first dispatch is lost. Jobs use create-only IDs,
 bounded attempts, leases, and `queued/processing/succeeded/failed/superseded`
