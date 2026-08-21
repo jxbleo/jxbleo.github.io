@@ -1726,8 +1726,9 @@ required.
   one consolidated Chinese grammar analysis, and the student input area; removed
   the capsule-row progress copy and instructional hint.
 - Removed sentence-highlight underlines and changed the shared manuscript,
-  capsule, and revision accent cycle to blue, purple, orange, magenta, indigo,
-  and coral, keeping the site's primary green reserved for its existing meaning.
+  capsule, and revision accent cycle to eight colors: blue, orange, purple, rose,
+  indigo, coral, gold, and deep pink, keeping the site's primary green reserved
+  for its existing meaning.
 - Simplified AI Tutor to one top toolbar over card-based content. Removed the
   brand icon and `AI Tutor / Writing Studio` lockup, moved the portfolio control
   into that position, and made the left portfolio drawer initially collapsible

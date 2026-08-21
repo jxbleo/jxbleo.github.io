@@ -138,7 +138,9 @@
         { color: '#7652b8', soft: '#f0e9fd', active: '#e4d8fa', ring: 'rgba(118,82,184,.22)' },
         { color: '#b54868', soft: '#fce9ef', active: '#f7d8e1', ring: 'rgba(181,72,104,.22)' },
         { color: '#5060ad', soft: '#ebedff', active: '#dce0ff', ring: 'rgba(80,96,173,.22)' },
-        { color: '#c45c3d', soft: '#ffeae4', active: '#ffd9cf', ring: 'rgba(196,92,61,.22)' }
+        { color: '#c45c3d', soft: '#ffeae4', active: '#ffd9cf', ring: 'rgba(196,92,61,.22)' },
+        { color: '#856000', soft: '#fff6d8', active: '#ffedb0', ring: 'rgba(133,96,0,.22)' },
+        { color: '#93306f', soft: '#fbeaf5', active: '#f5d5e9', ring: 'rgba(147,48,111,.22)' }
     ];
 
     function sentenceColorStyle(index) {
