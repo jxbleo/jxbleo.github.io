@@ -1183,11 +1183,15 @@
         var cardClass = 'sentence-card' + (!required ? ' is-effective' : '') + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '');
         var cardStart = '<article class="' + cardClass + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">';
         var original = '<span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span>';
-        var numberedOriginal = '<span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span>' + original;
+        var sentenceNumber = '<span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span>';
+        var numberedOriginal = sentenceNumber + '<span class="sentence-line-content">' + original + '</span>';
         if (!required) {
+            var effectiveLine = sentenceNumber + '<span class="sentence-line-content">' + original +
+                '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></span>';
             return cardStart +
-                '<p class="original-sentence">' + numberedOriginal + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></p>' +
-                '</article>';
+                '<div class="sentence-flip-card"><div class="sentence-card-inner sentence-card-inner-static">' +
+                '<section class="sentence-card-face sentence-effective-face"><p class="original-sentence">' + effectiveLine + '</p></section>' +
+                '</div></div></article>';
         }
         var showRewrite = Boolean(state.rewriteFace[id]);
         var referenceOpen = Boolean(state.referenceOpen[id]);
@@ -1211,19 +1215,23 @@
         var analysisFaceId = 'sentence-analysis-' + id;
         var rewriteFaceId = 'sentence-rewrite-' + id;
         var reference = '<div class="reference-panel" aria-hidden="' + visibility.referenceHidden + '"' + (visibility.referenceHidden ? ' hidden' : '') + '><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>';
+        var sampleButton = firstText(sentence.reference_revision)
+            ? '<div class="sample-action"><button class="quiet-button compact sample-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">Sample</button></div>'
+            : '';
         var analysisFace = '<section class="sentence-card-face sentence-analysis-face" id="' + escapeHtml(analysisFaceId) + '" aria-hidden="' + visibility.analysisHidden + '"' + (visibility.analysisHidden ? ' inert' : '') + '>' +
+            '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="翻到句子改写面"></button>' +
+            '<div class="sentence-face-content">' +
             '<p class="original-sentence">' + numberedOriginal + '</p>' +
-            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>' + reference +
-            '<div class="sentence-actions">' +
-            (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考句' : '查看参考句') + '</button>' : '<span></span>') +
-            '<button class="secondary-button compact" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="' + (accepted || state.readOnly ? '查看已订正句子' : '记住分析并开始改写') + '">' + (accepted || state.readOnly ? '查看已订正句子' : '我记住了，开始改写') + '</button></div></section>';
+            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>' +
+            sampleButton + reference + '</div></section>';
         var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
-        var correctedResponse = '<p class="corrected-sentence"><span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span><span class="sentence-effective-icon sentence-corrected-icon" role="img" aria-label="这句话已订正正确">' + icon('check') + '</span></p>';
+        var correctedResponse = '<p class="corrected-sentence">' + sentenceNumber + '<span class="sentence-line-content"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span><span class="sentence-effective-icon sentence-corrected-icon" role="img" aria-label="这句话已订正正确">' + icon('check') + '</span></span></p>';
         var editableResponse = '<p class="original-sentence">' + numberedOriginal + '</p>' +
             '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
-            '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
-            '<div class="sentence-actions"><button class="quiet-button" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="查看语法分析">' + (accepted ? '查看分析' : '返回查看分析') + '</button></div></div></section>';
+            '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="翻到句子分析面"></button>' +
+            '<div class="sentence-face-content"><div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
+            '</div></div></section>';
         return cardStart + '<div class="sentence-flip-card"><div class="sentence-card-inner' + (showRewrite ? ' show-rewrite' : '') + '" data-face="' + (showRewrite ? 'rewrite' : 'analysis') + '">' + analysisFace + rewriteFace + '</div></div></article>';
     }
 
