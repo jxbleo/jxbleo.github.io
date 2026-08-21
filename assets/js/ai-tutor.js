@@ -956,7 +956,7 @@
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
             '<div class="language-section-heading sentence-review-heading"><h2>Sentence Revision</h2></div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
-            (!state.readOnly ? '<div class="batch-actions"><p>未完成的句子会在数字下方显示小圆点；完成后统一检查。</p><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>' + (state.correctionRound ? '再次提交检查' : '全部完成，提交检查') + icon('arrow') + '</button></div>' : '') +
+            (!state.readOnly ? '<div class="batch-actions"><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Check</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
             '</section></div>';
     }
@@ -967,7 +967,8 @@
         var done = !rewriteRequired(sentence) || result && result.accepted === true;
         var review = result && result.accepted === false;
         var missing = rewriteRequired(sentence) && !done && (!firstText(state.rewrites[id]) || state.skipped[id]);
-        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + (missing ? '，尚未完成' : '') + '">' + (index + 1) + '</button>';
+        var capsuleStatus = done ? '，已完成' : review ? '，需要再修改' : missing ? '，尚未完成' : '';
+        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + capsuleStatus + '">' + (index + 1) + '</button>';
     }
 
     function sentenceCardHtml(sentence, index) {
@@ -979,9 +980,10 @@
         var cardClass = 'sentence-card' + (!required ? ' is-effective' : '') + (index === state.activeSentence ? ' is-active' : '') + (accepted ? ' is-accepted' : '') + (needsReview ? ' needs-review' : '');
         var cardStart = '<article class="' + cardClass + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">';
         var original = '<span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span>';
+        var numberedOriginal = '<span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span>' + original;
         if (!required) {
             return cardStart +
-                '<p class="original-sentence">' + original + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></p>' +
+                '<p class="original-sentence">' + numberedOriginal + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></p>' +
                 '</article>';
         }
         var visibility = coordinateReferenceAndRewrite(state.referenceOpen[id]);
@@ -1007,7 +1009,7 @@
             ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>'
             : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         return cardStart +
-            '<p class="original-sentence">' + original + '</p>' +
+            '<p class="original-sentence">' + numberedOriginal + '</p>' +
             analysis +
             '<div class="sentence-response">' + response +
             '<div class="sentence-actions">' +

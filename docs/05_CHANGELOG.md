@@ -1732,6 +1732,10 @@ required.
 - Reduced each required sentence's grammar box to one paragraph of Chinese feedback.
   Removed the `Grammar Analysis` heading, issue-category labels such as `Word Choice`,
   and the separate issue, summary, and result rows.
+- Unified every sentence capsule to one 1px solid outline and moved completion state
+  to a tiny checkmark below the number. Added the one-based number before every
+  Sentence Revision source sentence, and reduced the footer to one `Check` button
+  without the former unfinished-sentence hint or arrow.
 - Restored the confirmed manuscript's paragraph flow in `Draft`. Sentence highlights
   now use keyboard-accessible inline fragments and keep boundary spaces/newlines
   outside the highlight, so multiple colored sentences remain in their original paragraph.
