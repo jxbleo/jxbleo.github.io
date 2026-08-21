@@ -359,6 +359,8 @@ check("each sentence shares one color across manuscript, capsule, and correction
   const paletteSource = client.slice(client.indexOf("var sentencePalette"), client.indexOf("function compositionStatus"));
   assert(paletteSource.includes("var sentencePalette") && !/#0f766e|#0b5d57|#287b91|#dff4ed|#c9eee2/i.test(paletteSource),
     "the sentence palette must avoid the interface's established green and teal family");
+  assert.strictEqual((paletteSource.match(/\{\s*color:/g) || []).length, 8,
+    "the sentence palette must provide eight colors before repeating");
   assert(!/\.manuscript-sentence-highlight[^}]*\{[^}]*box-shadow\s*:\s*inset\s+0\s+-/i.test(styles)
       && !/\.sentence-original-highlight\s*\{[^}]*box-shadow\s*:\s*inset\s+0\s+-/i.test(styles),
     "sentence highlights must not draw an underline-like inset shadow");

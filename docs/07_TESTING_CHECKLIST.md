@@ -1773,8 +1773,9 @@ High priority improvement:
   correction-source highlight. Click both the manuscript mark and capsule and
   confirm they activate the same index and scroll to the same correction row.
 - Confirm sentence highlighting has no underline or bottom border, uses no site
-  primary green, and repeats blue, purple, orange, magenta, indigo, and coral in
-  the same positional order across manuscript marks, capsules, and revision rows.
+  primary green, and repeats blue, orange, purple, rose, indigo, coral, gold, and
+  deep pink only after eight sentences, in the same positional order across
+  manuscript marks, capsules, and revision rows.
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must
   remain viewport-width; only the capsule row may scroll horizontally.
