@@ -769,6 +769,25 @@ reopen without submitting another provider request. A repeated delivery with the
 same operation identity replays the existing queued, processing, or completed
 work instead of calling the model again.
 
+Sentence rewrites use two persistence layers with different handoff points.
+While the student types, the browser stores a user/Composition/revision/sentence-
+scoped local draft and restores it before rendering the editable card. Pressing
+`Check` does not discard that layer: the server first atomically stages the same
+batch under `pending_rewrite_check` and creates/replays its durable job. Local and
+cloud-staged drafts survive uncertain delivery, refresh, provider failure, and
+browser closure. The successful result-publication transaction clears the cloud
+staging area; the browser removes only accepted sentence drafts, while a rejected
+sentence remains locally recoverable and is also present in the persisted rewrite
+result for the next editing round. Local keys are ownership-scoped so another
+account using the device cannot hydrate the draft.
+
+Each revision-required sentence is one stateful two-sided card rather than two
+simultaneous panels. Its analysis face and rewrite face share sentence identity,
+completion state, and focus controller, but only the active face is rendered to
+interaction and accessibility APIs. Pointer and keyboard activation use the same
+state transition. The default transition may communicate a physical flip;
+reduced-motion replaces rotation with an immediate swap or brief crossfade.
+
 The function owns four versioned AI boundaries: OCR, standardized review,
 language sentence review, and rewrite checking. `model-provider.js` keeps those
 boundaries independent from the vendor. Text and vision may use separate
@@ -805,7 +824,8 @@ complete object and prevents `PathNotViable` failures on nested fields such as
 `model_metadata`. Rewrite completion transactionally replaces the whole
 `rewrite_results` object, completes the claimed job, clears the staged
 `pending_rewrite_check`, and updates the Composition status only while the job's
-lease and active-job guard remain current.
+lease and active-job guard remain current. Neither a retryable nor terminal
+provider failure clears the staged rewrite body.
 
 Daily quota reservation is server-side and idempotent by authenticated student
 plus client operation ID. A failed model request releases its reservation. A

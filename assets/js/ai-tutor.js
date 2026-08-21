@@ -28,6 +28,7 @@
         rewriteResults: {},
         skipped: {},
         referenceOpen: {},
+        rewriteFace: {},
         correctionRound: 0,
         busy: false,
         autosaveTimer: null,
@@ -103,6 +104,69 @@
         var key = 'mrcat-writing-operation:' + prefix + ':' + compositionId(state.current);
         try { window.sessionStorage.removeItem(key); } catch (error) {}
         if (state.logicalOperations) delete state.logicalOperations[key];
+    }
+
+    function rewriteDraftStorageKey(composition) {
+        var id = compositionId(composition);
+        if (!id) return '';
+        var owner = firstText(state.profile && state.profile.student_id, state.profile && state.profile._id, 'student');
+        return 'mrcat-writing-rewrite-draft:v1:' + owner + ':' + id + ':' + Number(composition && composition.revision || 1);
+    }
+
+    function restoreRewriteDraftSnapshot(composition) {
+        var key = rewriteDraftStorageKey(composition);
+        if (!key) return {};
+        try {
+            var record = JSON.parse(window.localStorage.getItem(key) || 'null');
+            if (!record || record.composition_id !== compositionId(composition)
+                || Number(record.revision || 1) !== Number(composition && composition.revision || 1)
+                || !record.rewrites || typeof record.rewrites !== 'object') return {};
+            var restored = {};
+            Object.keys(record.rewrites).slice(0, 100).forEach(function(id) {
+                var value = String(record.rewrites[id] == null ? '' : record.rewrites[id]).slice(0, 3000);
+                if (id && value) restored[id] = value;
+            });
+            Object.keys(restored).forEach(function(id) { state.rewrites[id] = restored[id]; });
+            return restored;
+        } catch (error) { return {}; }
+    }
+
+    function saveRewriteDraftSnapshot() {
+        var key = rewriteDraftStorageKey(state.current);
+        if (!key) return;
+        var rewrites = {};
+        Object.keys(state.rewrites || {}).slice(0, 100).forEach(function(id) {
+            var value = String(state.rewrites[id] == null ? '' : state.rewrites[id]).slice(0, 3000);
+            if (id && value) rewrites[id] = value;
+        });
+        try {
+            if (!Object.keys(rewrites).length) {
+                window.localStorage.removeItem(key);
+                return;
+            }
+            window.localStorage.setItem(key, JSON.stringify({
+                version: 1,
+                composition_id: compositionId(state.current),
+                revision: Number(state.current && state.current.revision || 1),
+                rewrites: rewrites,
+                updated_at: new Date().toISOString()
+            }));
+        } catch (error) {}
+    }
+
+    function clearAcceptedRewriteDrafts(results, passed) {
+        if (passed === true) {
+            var completedKey = rewriteDraftStorageKey(state.current);
+            try { if (completedKey) window.localStorage.removeItem(completedKey); } catch (error) {}
+            return;
+        }
+        safeArray(results).forEach(function(item) {
+            var id = firstText(item && item.sentence_id, item && item.id);
+            if (!id) return;
+            if (item.accepted === true) delete state.rewrites[id];
+            else if (firstText(item.student_rewrite)) state.rewrites[id] = item.student_rewrite;
+        });
+        saveRewriteDraftSnapshot();
     }
 
     function compositionId(composition) {
@@ -412,6 +476,7 @@
         state.rewriteResults = {};
         state.skipped = {};
         state.referenceOpen = {};
+        state.rewriteFace = {};
         state.correctionRound = 0;
     }
 
@@ -934,6 +999,8 @@
                 passed: result && result.passed === true
             };
         }
+        clearAcceptedRewriteDrafts(results,
+            record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed');
         state.review = state.current && state.current.language_review || state.review;
         clearLogicalOperation('rewrites');
         syncCurrentSummary();
@@ -1043,6 +1110,7 @@
         state.rewriteResults = {};
         state.skipped = {};
         state.referenceOpen = {};
+        state.rewriteFace = {};
         state.activeSentence = 0;
         sentences.forEach(function(sentence) {
             var id = sentenceId(sentence);
@@ -1054,6 +1122,8 @@
             var id = firstText(item && item.sentence_id);
             if (id) state.rewrites[id] = firstText(item && item.text, state.rewrites[id]);
         });
+        restoreRewriteDraftSnapshot(state.current);
+        if (safeArray(state.current && state.current.pending_rewrite_items).length) saveRewriteDraftSnapshot();
         renderLanguage();
     }
 
@@ -1061,8 +1131,12 @@
     function rewriteRequired(sentence) {
         return Boolean(sentence) && sentence.rewrite_required !== false && ['effective', 'correct', 'no_change'].indexOf(sentence.status) === -1;
     }
-    function coordinateReferenceAndRewrite(referenceOpen) {
-        return { referenceVisible: Boolean(referenceOpen), rewriteInputHidden: Boolean(referenceOpen) };
+    function coordinateReferenceAndRewrite(showRewrite, referenceOpen) {
+        return {
+            analysisHidden: Boolean(showRewrite),
+            rewriteHidden: !showRewrite,
+            referenceHidden: Boolean(showRewrite) || !referenceOpen
+        };
     }
 
     function renderLanguage() {
@@ -1112,8 +1186,9 @@
                 '<p class="original-sentence">' + numberedOriginal + '<span class="sentence-effective-icon" role="img" aria-label="这句话无需修改">' + icon('check') + '</span></p>' +
                 '</article>';
         }
-        var visibility = coordinateReferenceAndRewrite(state.referenceOpen[id]);
-        var referenceOpen = visibility.referenceVisible;
+        var showRewrite = Boolean(state.rewriteFace[id]);
+        var referenceOpen = Boolean(state.referenceOpen[id]);
+        var visibility = coordinateReferenceAndRewrite(showRewrite, referenceOpen);
         var issues = safeArray(sentence.issues);
         var rewriteFeedback = result ? firstText(result.feedback, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。') : '';
         var analysisParts = [];
@@ -1130,18 +1205,20 @@
         var analysisCopy = analysisParts.map(function(part) {
             return /[。！？!?；;.]$/.test(part) ? part : part + '。';
         }).join(' ') || '请根据建议调整这句话。';
-        var analysis = '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>';
-        var response = visibility.rewriteInputHidden
-            ? '<div class="reference-panel"><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>'
-            : '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
-        return cardStart +
+        var analysisFaceId = 'sentence-analysis-' + id;
+        var rewriteFaceId = 'sentence-rewrite-' + id;
+        var reference = '<div class="reference-panel" aria-hidden="' + visibility.referenceHidden + '"' + (visibility.referenceHidden ? ' hidden' : '') + '><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>';
+        var analysisFace = '<section class="sentence-card-face sentence-analysis-face" id="' + escapeHtml(analysisFaceId) + '" aria-hidden="' + visibility.analysisHidden + '"' + (visibility.analysisHidden ? ' inert' : '') + '>' +
             '<p class="original-sentence">' + numberedOriginal + '</p>' +
-            analysis +
-            '<div class="sentence-response">' + response +
+            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>' + reference +
             '<div class="sentence-actions">' +
-            (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考，开始重写' : '查看参考句') + '</button>' : '<span></span>') +
-            '</div></div>' +
-            '</article>';
+            (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考句' : '查看参考句') + '</button>' : '<span></span>') +
+            '<button class="secondary-button compact" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="' + (accepted || state.readOnly ? '查看我的改写' : '记住分析并开始改写') + '">' + (accepted || state.readOnly ? '查看我的改写' : '我记住了，开始改写') + '</button></div></section>';
+        var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
+            '<p class="original-sentence">' + numberedOriginal + '</p>' +
+            '<div class="sentence-response"><div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (accepted || state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>' +
+            '<div class="sentence-actions"><button class="quiet-button" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="返回查看语法分析">返回查看分析</button></div></div></section>';
+        return cardStart + '<div class="sentence-flip-card"><div class="sentence-card-inner' + (showRewrite ? ' show-rewrite' : '') + '" data-face="' + (showRewrite ? 'rewrite' : 'analysis') + '">' + analysisFace + rewriteFace + '</div></div></article>';
     }
 
     function submitRewrites() {
@@ -1164,7 +1241,12 @@
             var result = state.rewriteResults[sentenceId(sentence, index)];
             return !(result && result.accepted === true);
         });
-        if (!pending.length) { renderCompletion(); return; }
+        if (!pending.length) {
+            clearAcceptedRewriteDrafts(Object.keys(state.rewriteResults).map(function(id) { return state.rewriteResults[id]; }), true);
+            renderCompletion();
+            return;
+        }
+        saveRewriteDraftSnapshot();
         setStatus('');
         renderLoading('正在统一检查你的改写…', '会检查是否保留原意、修复目标问题，以及有没有产生新的错误。');
         setBusy(true);
@@ -1263,6 +1345,7 @@
             state.review = review;
             state.assessmentMode = compositionMode(composition);
             state.readOnly = forceReadOnly !== false && compositionStatus(composition) === 'completed';
+            if (state.readOnly) clearAcceptedRewriteDrafts([], true);
             state.confirmedText = firstText(composition.confirmed_text, composition.full_text);
             if (composition.pending_ocr) {
                 showOcrResult({ composition: composition, ocr: composition.pending_ocr, ocr_photo_urls: result.ocr_photo_urls });
@@ -1407,6 +1490,7 @@
             var id = target.getAttribute('data-rewrite-id');
             state.rewrites[id] = target.value;
             delete state.skipped[id];
+            saveRewriteDraftSnapshot();
         }
         if (target.id === 'ocr-text') state.confirmedText = target.value;
     });
@@ -1500,6 +1584,47 @@
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');
         else if (button.matches('[data-enter-language]')) enterLanguage();
+        else if (button.matches('[data-flip-sentence]')) {
+            var flipId = button.getAttribute('data-flip-sentence');
+            var showRewriteFace = button.getAttribute('data-face') === 'rewrite';
+            state.rewriteFace[flipId] = showRewriteFace;
+            var flipCard = document.getElementById('sentence-card-' + flipId);
+            var flipInner = flipCard && flipCard.querySelector('.sentence-card-inner');
+            if (!flipInner) {
+                renderLanguage();
+                return;
+            }
+            flipInner.classList.toggle('show-rewrite', showRewriteFace);
+            flipInner.setAttribute('data-face', showRewriteFace ? 'rewrite' : 'analysis');
+            var analysisSide = flipCard.querySelector('.sentence-analysis-face');
+            var rewriteSide = flipCard.querySelector('.sentence-rewrite-face');
+            if (analysisSide) {
+                analysisSide.setAttribute('aria-hidden', String(showRewriteFace));
+                if (showRewriteFace) analysisSide.setAttribute('inert', '');
+                else analysisSide.removeAttribute('inert');
+            }
+            if (rewriteSide) {
+                rewriteSide.setAttribute('aria-hidden', String(!showRewriteFace));
+                if (showRewriteFace) rewriteSide.removeAttribute('inert');
+                else rewriteSide.setAttribute('inert', '');
+            }
+            var referencePanel = flipCard.querySelector('.reference-panel');
+            if (referencePanel) {
+                var hideReference = showRewriteFace || !state.referenceOpen[flipId];
+                referencePanel.hidden = hideReference;
+                referencePanel.setAttribute('aria-hidden', String(hideReference));
+            }
+            Array.prototype.forEach.call(flipCard.querySelectorAll('[data-flip-sentence]'), function(control) {
+                var controlsRewrite = control.getAttribute('data-face') === 'rewrite';
+                control.setAttribute('aria-pressed', String(controlsRewrite === showRewriteFace));
+            });
+            window.requestAnimationFrame(function() {
+                var focusTarget = showRewriteFace
+                    ? flipCard.querySelector('[data-rewrite-id]:not([disabled])') || flipCard.querySelector('[data-face="analysis"]')
+                    : flipCard.querySelector('[data-face="rewrite"]');
+                if (focusTarget) focusTarget.focus();
+            });
+        }
         else if (button.matches('[data-sentence-index]')) {
             state.activeSentence = Number(button.getAttribute('data-sentence-index')) || 0;
             Array.prototype.forEach.call(document.querySelectorAll('.sentence-capsule'), function(item) {

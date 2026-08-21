@@ -733,6 +733,11 @@ STAR 不阻止未来重新布置同一个 set。
     `rewrite_results: null` 上执行了普通嵌套 `update()`；必须以 `db.command.set(...)` 原子替换
     整个 `rewrite_results`，并在当前 lease/active-job 事务中清除 staged payload。相同 operation ID
     在 queued、processing 和 succeeded 状态都不能再次调用模型。
+ 18. Sentence Revision 刷新后丢失输入或正反面同时出现：先分别检查两层草稿和卡片状态，不要把
+    它们当成同一个问题。输入时必须按 student/Composition/revision/sentence 保存浏览器本地草稿；
+    `Check` 后必须同时保留本地草稿和 Composition 的 `pending_rewrite_check`，只有结果成功发布才
+    清理。网络断开、provider 失败或页面刷新不得清空。双面卡片的 inactive face 必须真正 hidden/
+    inert，而不是只靠视觉旋转；键盘切换和 reduced-motion 也必须走同一互斥状态。
 
 ## 6. 维护规则
 
@@ -812,6 +817,10 @@ STAR 不阻止未来重新布置同一个 set。
 - 把 Sentence Revision `Check` 也迁移到同一持久队列：学生改写正文只暂存在
   `writing_compositions.pending_rewrite_check`，job 与日志继续只保存安全元数据；网页轮询并可在
   网络断开、刷新、关闭浏览器或重新登录后恢复同一任务。
+- 增加逐句改写双层草稿：输入即写入 ownership-scoped 浏览器本地层，`Check` 后再写入
+  `pending_rewrite_check` 云端层；失败和不确定交付保留两层，成功发布才清理。
+- Sentence Revision 的分析与改写改为同一卡片互斥正反面，并为键盘、屏幕阅读器和
+  reduced-motion 提供同一状态机下的替代交互。
 - 加入稳定 operation/job/usage ID、异步派发、每分钟恢复、租约、三次尝试、active-job 结果守卫和失败退额度。
 - 兼容千问的 JSON 字符串包装、多页数组根，并在严格 Schema 之后执行服务器领域校正。
 - 修复千问回显原句时调整空格或标点导致的 `WRITING_AI_SENTENCE_ALIGNMENT_FAILED`：完整唯一句子 ID 仍严格，原句由服务器填回。

@@ -1721,6 +1721,13 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor jobs
 
+- Added two-layer Sentence Revision draft persistence: typing is saved locally
+  per student/Composition/revision/sentence, while `Check` stages the submitted
+  batch in `pending_rewrite_check`. Both layers survive refresh, disconnect, and
+  failed checks and are cleared only after successful result publication.
+- Replaced simultaneous analysis/input presentation with one mutually exclusive
+  two-sided sentence card: analysis on the front, original sentence plus input on
+  the back. Added keyboard semantics and a non-rotating reduced-motion state swap.
 - Migrated Sentence Revision `Check` from a synchronous browser-owned model call
   to a durable `writing_ai_jobs` rewrite-check job. Submitted rewrite text is
   staged only in `writing_compositions.pending_rewrite_check`; the queue remains

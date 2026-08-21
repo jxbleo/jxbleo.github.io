@@ -1749,6 +1749,16 @@ High priority improvement:
   returned queued state without waiting for Qwen. Refresh, re-login, and reopen
   the Composition independently; each must resume the same queued/processing
   check and render its eventual result.
+- Type distinct partial rewrites in several sentences without pressing `Check`,
+  refresh, close/reopen, and briefly disconnect. Confirm each value restores only
+  for the same authenticated student, Composition revision, and sentence ID; a
+  second account on the same device must not hydrate it.
+- After pressing `Check`, inspect both layers: the local draft must remain while
+  the exact batch exists in `pending_rewrite_check`. Force request-delivery
+  uncertainty, retryable provider failure, terminal failure, refresh, and browser
+  closure; both layers must remain recoverable. Only successful result publication
+  may clear them. If a result requires another revision, confirm the submitted
+  text is restored from persisted rewrite results.
 - Repeat the same rewrite operation ID while its job is queued and processing,
   and again after success. Confirm all deliveries resolve to one job and one
   provider call. Confirm the job row and logs contain no original sentence,
@@ -1806,15 +1816,21 @@ High priority improvement:
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must
   remain viewport-width; only the capsule row may scroll horizontally.
-- Confirm every revision-required sentence row contains only its original English
-  sentence, one grammar box containing a single Chinese paragraph, and the student
-  revision input area. Confirm `Grammar Analysis`, `Word Choice`, other category labels,
-  and separate issue/summary/result rows are absent;
-  opening the reference answer must replace the third input area rather than add a
-  fourth. For an effective sentence, confirm only the original sentence and its
+- Confirm every revision-required sentence uses one two-sided card. The front
+  contains the original English sentence and one single-paragraph Chinese analysis;
+  the back contains the same original sentence and student revision input. Confirm the two faces are
+  never visible or exposed to accessibility APIs together, and that `Grammar Analysis`,
+  `Word Choice`, other category labels, and separate issue/summary/result rows are absent;
+  opening the reference answer on the analysis face must not expose or erase the
+  back input, and flipping to the input must hide both analysis and reference. For
+  an effective sentence, confirm only the original sentence and its
   following 22px circular SVG checkmark render—without a grammar box, “你的改写”, a
   textarea, or a reference-answer action. Confirm the circle matches the Teacher matrix
   completion mark but uses the sentence's indexed color. Its capsule remains complete.
+- Switch a revision card front/back with click, Enter, and Space. Confirm state,
+  focus order, accessible names, textarea draft, capsule, and sentence identity
+  remain synchronized. Enable reduced motion and confirm there is no 3D rotation;
+  an immediate swap or short crossfade still exposes exactly one face.
 - Confirm every Sentence Revision source row begins with exactly one matching one-based
   number, including effective rows. In editable mode, the footer contains only one
   `Check` button aligned right on desktop and full-width on phone; the old unfinished

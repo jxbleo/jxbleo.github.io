@@ -74,8 +74,11 @@ function matchingFunctionSource(source, namePattern, context) {
   const declaration = new RegExp(`(?:async\\s+)?function\\s+(${namePattern})\\s*\\(`).exec(source);
   assert(declaration, `missing ${context}`);
   const start = declaration.index;
+  const lineStart = source.lastIndexOf("\n", start) + 1;
+  const indent = source.slice(lineStart, start);
+  const escapedIndent = indent.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const rest = source.slice(start + declaration[0].length);
-  const next = rest.search(/\n(?:async\s+)?function\s+[A-Za-z_$][\w$]*\s*\(/);
+  const next = rest.search(new RegExp(`\\n${escapedIndent}(?:async\\s+)?function\\s+[A-Za-z_$][\\w$]*\\s*\\(`));
   return source.slice(start, next >= 0 ? start + declaration[0].length + next : source.length);
 }
 
@@ -300,6 +303,120 @@ check("each revision-required sentence renders only source, consolidated analysi
     "single-paragraph grammar analysis styles");
   assert(!/\.grammar-analysis-(?:label|point|points|summary|result)\s*\{|\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
     "legacy split grammar-feedback styles must be removed");
+});
+
+check("each revision-required sentence is one accessible two-face card", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  requireEvery(cardSource, [
+    "sentence-flip-card", "sentence-card-inner", "sentence-card-face", "sentence-analysis-face",
+    "sentence-rewrite-face", "grammar-analysis", "rewrite-input", "data-flip-sentence",
+  ], "sentence flip-card markup");
+  assert((cardSource.match(/<article/g) || []).length <= 1,
+    "a revision-required sentence must not split its analysis and input into separate article cards");
+  assert(/sentence-analysis-face[\s\S]*grammar-analysis[\s\S]*sentence-rewrite-face[\s\S]*rewrite-input/.test(cardSource),
+    "the analysis and rewrite faces must live inside the same sentence card");
+  const rewriteFaceStart = cardSource.indexOf("sentence-rewrite-face");
+  const rewriteFaceEnd = cardSource.indexOf("</section>", rewriteFaceStart);
+  const rewriteFaceSource = cardSource.slice(rewriteFaceStart, rewriteFaceEnd);
+  assert(rewriteFaceStart >= 0 && /rewrite-input/.test(rewriteFaceSource),
+    "the back face must contain the student's rewrite input");
+  assert(!/grammar-analysis|analysisCopy|coaching_summary|issue\.explanation|issue\.suggestion/.test(rewriteFaceSource),
+    "the rewrite face must not expose the sentence analysis at the same time");
+  requireEvery(cardSource, ["aria-hidden", "aria-controls", "aria-pressed"], "flip-card accessibility state");
+  assert(/<button[^>]*data-flip-sentence/.test(cardSource),
+    "card flipping must use native keyboard-operable buttons");
+  assert(/data-flip-sentence[\s\S]{0,1800}(?:state\.[A-Za-z_$][\w$]*Faces|state\.[A-Za-z_$][\w$]*Face)[\s\S]{0,600}renderLanguage/.test(client),
+    "clicking a flip control must toggle that sentence's face and rerender it");
+
+  requireEvery(styles, [".sentence-flip-card", ".sentence-card-inner", ".sentence-card-face", "backface-visibility", "rotateY(180deg)"],
+    "physical two-face card styling");
+  assert(/\.sentence-card-inner(?:\.is-flipped|\.show-rewrite|\[data-face=[^\]]+\])\s*\{[^}]*transform\s*:\s*rotateY\(180deg\)/is.test(styles),
+    "the rewrite state must visibly turn the shared card to its other face");
+});
+
+check("sentence-card flipping honors keyboard, ARIA, and reduced-motion preferences", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  assert(/<button[^>]*data-flip-sentence[^>]*(?:aria-label|aria-controls)[^>]*>/.test(cardSource)
+      || /<button[^>]*(?:aria-label|aria-controls)[^>]*data-flip-sentence[^>]*>/.test(cardSource),
+    "every flip action needs a native button and an accessible relationship or name");
+  assert(/aria-hidden=["'][^"']*(?:showRewrite|rewriteFace|face)[^"']*["']|aria-hidden=["']\s*["']\s*\+/.test(cardSource),
+    "the inactive card face must be hidden from assistive technology");
+  const reducedMotionStart = styles.search(/@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+  const reducedMotionEnd = styles.indexOf("@media", reducedMotionStart + 10);
+  const reducedMotion = styles.slice(reducedMotionStart, reducedMotionEnd >= 0 ? reducedMotionEnd : styles.length);
+  assert(reducedMotionStart >= 0, "missing prefers-reduced-motion rules");
+  assert(/sentence-card-inner|sentence-flip-card/.test(reducedMotion)
+      && /transition(?:-duration)?\s*:\s*(?:none|0s|\.01ms)(?:\s*!important)?/.test(reducedMotion),
+    "reduced-motion mode must remove the card-turn transition");
+});
+
+check("sentence rewrite drafts persist by Composition revision and restore on reopen", () => {
+  const client = read(clientPath);
+  const keySource = matchingFunctionSource(client, "rewriteDraftStorageKey", "rewrite-draft storage key");
+  const saveSource = matchingFunctionSource(client, "saveRewriteDraftSnapshot", "rewrite-draft save function");
+  const restoreSource = matchingFunctionSource(client, "restoreRewriteDraftSnapshot", "rewrite-draft restore function");
+  const prepareSource = functionSource(client, "prepareLanguageReview", "sentenceId");
+  requireEvery(keySource, ["compositionId", "revision"], "rewrite-draft identity");
+  assert(/compositionId\s*\([^)]*\)[\s\S]{0,300}(?:\.revision|revision)|(?:\.revision|revision)[\s\S]{0,300}compositionId\s*\(/.test(keySource),
+    "rewrite draft keys must include both composition_id and revision");
+  requireEvery(saveSource, ["localStorage", "setItem", "state.rewrites", "rewriteDraftStorageKey"],
+    "rewrite-draft persistence");
+  assert(!/sessionStorage/.test(`${saveSource}\n${restoreSource}`),
+    "sentence drafts must survive closing the browser, not only the current tab session");
+  requireEvery(restoreSource, ["localStorage", "getItem", "state.rewrites", "rewriteDraftStorageKey"],
+    "rewrite-draft restoration");
+  assert(/data-rewrite-id[\s\S]{0,500}saveRewriteDraftSnapshot\s*\(/.test(client),
+    "every sentence textarea input must synchronously update its saved browser draft");
+  assert(/restoreRewriteDraftSnapshot\s*\(/.test(prepareSource),
+    "opening a saved language review must restore its sentence drafts before rendering");
+});
+
+check("Check snapshots sentence drafts before starting the durable rewrite request", () => {
+  const client = read(clientPath);
+  const backend = read(functionPath);
+  const submitSource = matchingFunctionSource(client, "submitRewrites", "submitRewrites client action");
+  const enqueueSource = matchingFunctionSource(backend, "enqueue[A-Z\\w]*Rewrite[A-Z\\w]*Job", "rewrite-job enqueue function");
+  const performSource = matchingFunctionSource(backend, "performRewriteJob", "rewrite-job processor function");
+  const saveIndex = submitSource.indexOf("saveRewriteDraftSnapshot");
+  const requestIndex = submitSource.indexOf("writingCall('submitRewrites'");
+  assert(saveIndex >= 0 && requestIndex > saveIndex,
+    "Check must synchronously save the exact local submission snapshot before the network request");
+  requireEvery(enqueueSource, ["pending_rewrite_check", "items", "runTransaction", "invokeFunctionAsync"],
+    "durable rewrite submission snapshot");
+  const pendingWriteIndex = enqueueSource.indexOf("pending_rewrite_check: pending");
+  const dispatchIndex = enqueueSource.lastIndexOf("invokeFunctionAsync");
+  assert(pendingWriteIndex >= 0 && dispatchIndex > pendingWriteIndex,
+    "pending_rewrite_check must be durably stored before the rewrite worker is dispatched");
+  const pendingReadIndex = performSource.indexOf("pending_rewrite_check");
+  const modelIndex = performSource.indexOf("callStructuredModel");
+  assert(pendingReadIndex >= 0 && modelIndex > pendingReadIndex,
+    "performRewriteJob must load the durable pending snapshot before calling the model");
+});
+
+check("rewrite draft cleanup removes only accepted sentences and retains failures", () => {
+  const client = read(clientPath);
+  const cleanupSource = matchingFunctionSource(client, "clearAcceptedRewriteDrafts", "accepted rewrite-draft cleanup");
+  const successSource = matchingFunctionSource(client, "applyRewriteResult", "rewrite success application");
+  const failureSource = matchingFunctionSource(client, "renderRewriteFailure", "rewrite failure UI");
+  const submitSource = matchingFunctionSource(client, "submitRewrites", "submitRewrites client action");
+  requireEvery(cleanupSource, ["accepted", "state.rewrites", "delete", "saveRewriteDraftSnapshot"],
+    "accepted-only rewrite draft cleanup");
+  assert(/accepted\s*={2,3}\s*true[\s\S]{0,300}delete\s+state\.rewrites|if\s*\([^)]*accepted[^)]*\)[\s\S]{0,300}delete\s+state\.rewrites/.test(cleanupSource),
+    "rejected or unchecked sentence drafts must not be deleted");
+  assert(/clearAcceptedRewriteDrafts\s*\(/.test(successSource),
+    "successful rewrite results must prune their accepted local drafts");
+  assert(!/clearAcceptedRewriteDrafts|localStorage\.removeItem/.test(failureSource),
+    "terminal AI failure must retain all local sentence drafts");
+  const networkIndex = submitSource.search(/isNetworkDisconnect\s*\(\s*error\s*\)/);
+  const networkReturnIndex = submitSource.indexOf("return", networkIndex);
+  const cleanupIndex = submitSource.indexOf("clearAcceptedRewriteDrafts", networkIndex);
+  assert(networkIndex >= 0 && networkReturnIndex > networkIndex
+      && (cleanupIndex < 0 || networkReturnIndex < cleanupIndex),
+    "network-disconnect recovery must return without clearing any sentence drafts");
 });
 
 check("effective sentences use the matrix-style colored checkmark and no coaching controls", () => {
@@ -663,7 +780,7 @@ check("rewrite Check polls, survives disconnects, and resumes after reopening th
   assert(networkIndex >= 0 && networkReturnIndex > networkIndex
       && (clearOperationIndex < 0 || networkReturnIndex < clearOperationIndex),
     "the network-disconnect branch must return before clearing the rewrite operation_id");
-  requireEvery(pollingSource, ["getComposition", "rewrite_results", "setTimeout"], "rewrite result polling");
+  requireEvery(pollingSource, ["getComposition", "rewriteReady", "setTimeout"], "rewrite result polling");
   assert(/\.catch\s*\([\s\S]{0,500}setTimeout/.test(pollingSource),
     "rewrite polling must keep retrying after a transient network failure");
   assert(/job_type\s*={2,3}\s*["']rewrite["']/.test(loadSource)
