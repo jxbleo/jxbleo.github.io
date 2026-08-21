@@ -728,8 +728,11 @@ function. `startPhotoUpload` derives page IDs from the stable operation ID, so a
 lost response replays the same batch and refreshes its upload metadata instead
 of creating orphan pages. `finishPhotoUpload` confirms storage and creates a stable
 OCR `writing_ai_jobs` row in the same server request. `evaluate` reserves quota
-idempotently and creates a stable review job for either assessment mode. Both
-actions return without waiting for the model. `writingTutor` dispatches that job asynchronously to its
+idempotently and creates a stable review job for either assessment mode.
+`submitRewrites` stages the submitted sentence rewrites under the owned
+Composition's `pending_rewrite_check` and creates a stable rewrite-check job in
+the same server handoff. All three actions return without waiting for the model.
+`writingTutor` dispatches that job asynchronously to its
 private processor; the one-minute `writingAiWorker` timer redispatches queued
 jobs and expired leases if the first dispatch is lost. Jobs use create-only IDs,
 bounded attempts, leases, and `queued/processing/succeeded/failed/superseded`
@@ -755,6 +758,16 @@ on the same Composition without another model call. Job rows contain identifiers
 photo IDs, state, attempts, leases, and safe error codes only—never manuscript or
 OCR text. Multi-page Qwen array roots are normalized into one page-ordered OCR
 object before strict local schema validation.
+
+Rewrite bodies are durable but do not belong in the queue row. The authenticated
+submission stores the operation/revision scope and submitted sentence text only
+inside `writing_compositions.pending_rewrite_check`; the related
+`writing_ai_jobs` record contains identifiers and execution metadata only. The
+worker reads the staged payload from the owned Composition after claiming the
+job. The client polls the same Composition and can refresh, close, re-login, or
+reopen without submitting another provider request. A repeated delivery with the
+same operation identity replays the existing queued, processing, or completed
+work instead of calling the model again.
 
 The function owns four versioned AI boundaries: OCR, standardized review,
 language sentence review, and rewrite checking. `model-provider.js` keeps those
@@ -787,8 +800,12 @@ subsequent model results may never overwrite it.
 CloudBase `update()` expands ordinary nested objects into dotted paths. Review
 payloads, rewrite payloads, and active-job projections therefore use the SDK's
 atomic `command.set(...)` operator when publishing a result. This permits the
-first transition from a stored `null` review to a complete object and prevents
-`PathNotViable` failures on nested fields such as `model_metadata`.
+first transition from a stored `null` review or `rewrite_results: null` to a
+complete object and prevents `PathNotViable` failures on nested fields such as
+`model_metadata`. Rewrite completion transactionally replaces the whole
+`rewrite_results` object, completes the claimed job, clears the staged
+`pending_rewrite_check`, and updates the Composition status only while the job's
+lease and active-job guard remain current.
 
 Daily quota reservation is server-side and idempotent by authenticated student
 plus client operation ID. A failed model request releases its reservation. A

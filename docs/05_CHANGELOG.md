@@ -1719,8 +1719,17 @@ required.
 
 - Separated teacher answer reveal from student answer reveal.
 
-## 2026-08-21 — Durable AI Tutor review jobs
+## 2026-08-21 — Durable AI Tutor jobs
 
+- Migrated Sentence Revision `Check` from a synchronous browser-owned model call
+  to a durable `writing_ai_jobs` rewrite-check job. Submitted rewrite text is
+  staged only in `writing_compositions.pending_rewrite_check`; the queue remains
+  metadata-only. The client now polls and restores queued/processing/completed
+  checks across network loss, refresh, browser closure, and re-login without a
+  duplicate provider call.
+- Fixed first rewrite-result persistence when `rewrite_results` is `null` by
+  atomically replacing the whole field with `db.command.set(...)` in the
+  successful job transaction, avoiding CloudBase `PathNotViable` expansion.
 - Renamed the three language-review cards to `Language Review`, `Draft`, and
   `Sentence Revision`. Simplified every sentence row to the original sentence,
   one consolidated Chinese grammar analysis, and the student input area; removed

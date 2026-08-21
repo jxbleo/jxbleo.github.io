@@ -35,6 +35,8 @@
         ocrPollActive: false,
         reviewPollGeneration: 0,
         reviewPollActive: false,
+        rewritePollGeneration: 0,
+        rewritePollActive: false,
         sidebarOpen: false,
         editingTitleId: '',
         titleEditError: '',
@@ -192,7 +194,8 @@
     function statusLabel(status) {
         var labels = {
             draft: '草稿', photo_uploading: '正在确认照片', ocr_queued: '等待识别', ocr_processing: '正在识别', ocr_failed: '识别失败', ocr_ready: '待确认', ocr_review: '待确认', ready: '等待批改', queued: '等待批改', evaluating: '正在批改',
-            review_queued: '等待批改', review_processing: '正在批改', review_failed: '批改失败', standardized_ready: '评估完成', language_ready: '待逐句训练', review_ready: '待训练', reviewed: '评估完成', sentence_training: '待逐句训练', needs_revision: '需要再修改', completed: '已完成', failed: '稍后继续'
+            review_queued: '等待批改', review_processing: '正在批改', review_failed: '批改失败', standardized_ready: '评估完成', language_ready: '待逐句训练', review_ready: '待训练', reviewed: '评估完成', sentence_training: '待逐句训练', needs_revision: '需要再修改', completed: '已完成', failed: '稍后继续',
+            rewrite_queued: '等待检查', rewrite_processing: '正在检查', rewrite_failed: '检查失败'
         };
         return labels[status] || status || '草稿';
     }
@@ -229,6 +232,11 @@
     function stopReviewPolling() {
         state.reviewPollActive = false;
         state.reviewPollGeneration += 1;
+    }
+
+    function stopRewritePolling() {
+        state.rewritePollActive = false;
+        state.rewritePollGeneration += 1;
     }
 
     function writingCall(action, payload) {
@@ -384,6 +392,7 @@
     function resetDraft(composition) {
         stopOcrPolling();
         stopReviewPolling();
+        stopRewritePolling();
         state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = composition || null;
         state.review = null;
@@ -881,6 +890,119 @@
             (code === 'WRITING_AI_DAILY_LIMIT_REACHED' ? '' : '<button class="primary-button" type="button" data-retry-review>重新提交批改</button>') + '</div></section>';
     }
 
+    function rewriteJobFrom(result) {
+        var job = result && result.job || result && result.composition && result.composition.active_job || state.current && state.current.active_job || {};
+        return job.job_type === 'rewrite' ? job : {};
+    }
+
+    function rewriteReady(composition) {
+        var job = composition && composition.active_job || {};
+        var record = composition && composition.rewrite_results || {};
+        return job.job_type === 'rewrite' && job.status === 'succeeded'
+            && Boolean(record.operation_id) && record.operation_id === job.operation_id;
+    }
+
+    function renderRewriteWaiting(job, autoPoll, allowRetry) {
+        var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
+        state.screen = 'rewrite-waiting';
+        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
+            '<strong>改写已经提交，可以离开此页面</strong>' +
+            '<p>' + (jobStatus === 'queued' || jobStatus === 'rewrite_queued' ? '检查已进入队列。' : 'AI 正在云端检查你的句子。') + '关闭浏览器、刷新或重新登录都不会中断，也不会重复调用 AI。</p>' +
+            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
+            (allowRetry ? '<button class="secondary-button" type="button" data-retry-rewrite>用同一请求安全重试</button>' : '') +
+            '<button class="primary-button" type="button" data-stay-rewrite>留在此页等待</button></div>' +
+            '<p class="section-hint" id="rewrite-poll-status" role="status" aria-live="polite">每 5 秒查询一次同一篇作文。</p></section>';
+        if (autoPoll) startRewritePolling();
+    }
+
+    function applyRewriteResult(result) {
+        stopRewritePolling();
+        if (result && result.composition) state.current = result.composition;
+        var record = state.current && state.current.rewrite_results || {};
+        var results = safeArray(record.results).length ? safeArray(record.results) : safeArray(result && result.results);
+        results.forEach(function(item) {
+            var id = firstText(item && item.sentence_id, item && item.id);
+            if (!id) return;
+            state.rewriteResults[id] = Object.assign({}, item, {
+                student_rewrite: firstText(item.student_rewrite, state.rewrites[id])
+            });
+        });
+        if (state.current && !state.current.rewrite_results && results.length) {
+            state.current.rewrite_results = {
+                operation_id: firstText(result && result.job && result.job.operation_id),
+                results: results,
+                passed: result && result.passed === true
+            };
+        }
+        state.review = state.current && state.current.language_review || state.review;
+        clearLogicalOperation('rewrites');
+        syncCurrentSummary();
+        if (record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed') {
+            renderCompletion();
+        } else {
+            state.correctionRound += 1;
+            prepareLanguageReview();
+            var sentences = safeArray(state.review && state.review.sentences);
+            state.activeSentence = Math.max(0, sentences.findIndex(function(sentence, index) {
+                var answer = state.rewriteResults[sentenceId(sentence, index)];
+                return answer && answer.accepted === false;
+            }));
+            renderLanguage();
+            setStatus('统一检查完成：只需要再处理标记为“需要再修改”的句子。');
+        }
+        refreshPortfolio().catch(function() {});
+    }
+
+    function renderRewriteFailure(error) {
+        stopRewritePolling();
+        clearLogicalOperation('rewrites');
+        var code = firstText(error && error.code, error && error.result && error.result.code);
+        var messages = {
+            WRITING_AI_SCHEMA_RESPONSE_INVALID: 'AI 返回的检查格式不完整。你的改写已经保存，可以直接重新检查。',
+            WRITING_AI_TIMEOUT: 'AI 本次检查超时。你的改写已经保存，可以直接重新检查。',
+            WRITING_AI_UNAVAILABLE: 'AI 服务暂时不可用。你的改写已经保存，可以稍后重新检查。',
+            WRITING_AI_ATTEMPTS_EXHAUSTED: '多次自动重试仍未完成。你的改写已经保存，请稍后重新检查。'
+        };
+        var message = messages[code] || firstText(error && error.message, 'AI 本次没有完成检查。你的改写已经保存。');
+        state.screen = 'rewrite-failed';
+        stage.innerHTML = '<section class="surface error-state"><strong>改写检查没有完成</strong><p>' + escapeHtml(message) + '</p>' +
+            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
+            '<button class="primary-button" type="button" data-return-rewrites>返回逐句修改</button></div></section>';
+    }
+
+    function startRewritePolling() {
+        if (state.rewritePollActive || !compositionId(state.current)) return;
+        state.rewritePollActive = true;
+        state.rewritePollGeneration += 1;
+        var generation = state.rewritePollGeneration;
+        function poll() {
+            if (!state.rewritePollActive || generation !== state.rewritePollGeneration) return;
+            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
+                if (!state.rewritePollActive || generation !== state.rewritePollGeneration) return;
+                var composition = result.composition || {};
+                state.current = composition;
+                state.review = composition.language_review || state.review;
+                var job = rewriteJobFrom(result);
+                if (rewriteReady(composition)) {
+                    applyRewriteResult({ composition: composition });
+                    return;
+                }
+                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'rewrite_failed') {
+                    renderRewriteFailure({ code: job.error_code || 'WRITING_AI_REWRITE_FAILED', message: 'AI 改写检查没有完成。' });
+                    return;
+                }
+                syncCurrentSummary();
+                window.setTimeout(poll, 5000);
+            }).catch(function() {
+                if (!state.rewritePollActive || generation !== state.rewritePollGeneration) return;
+                var pollStatus = document.getElementById('rewrite-poll-status');
+                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。你的改写已经安全保存。';
+                window.setTimeout(poll, 5000);
+            });
+        }
+        poll();
+    }
+
     function renderLoading(title, description) {
         state.screen = 'loading';
         stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span><strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(description || '') + '</p></section>';
@@ -927,6 +1049,10 @@
             var stored = storedById[id] || sentence.rewrite_result;
             state.rewrites[id] = firstText(sentence.student_rewrite, sentence.rewrite_text, stored && stored.student_rewrite);
             if (stored) state.rewriteResults[id] = stored;
+        });
+        safeArray(state.current && state.current.pending_rewrite_items).forEach(function(item) {
+            var id = firstText(item && item.sentence_id);
+            if (id) state.rewrites[id] = firstText(item && item.text, state.rewrites[id]);
         });
         renderLanguage();
     }
@@ -1051,45 +1177,27 @@
             revision: state.current && state.current.revision,
             items: submittedItems
         });
+        var rewriteOperation = logicalOperationId('rewrites', rewriteFingerprint);
         writingCall('submitRewrites', {
             composition_id: compositionId(state.current),
-            operation_id: logicalOperationId('rewrites', rewriteFingerprint),
+            operation_id: rewriteOperation,
             items: submittedItems
         }).then(function(result) {
-            clearLogicalOperation('rewrites');
-            safeArray(result.results).forEach(function(item) {
-                var id = firstText(item.sentence_id, item.id);
-                if (id) {
-                    state.rewriteResults[id] = Object.assign({}, item, {
-                        student_rewrite: firstText(item.student_rewrite, state.rewrites[id])
-                    });
-                }
-            });
-            if (state.current) {
-                state.current.rewrite_results = {
-                    results: Object.keys(state.rewriteResults).map(function(id) { return state.rewriteResults[id]; }),
-                    passed: safeArray(result.results).every(function(item) { return item.accepted === true; })
-                };
-            }
             if (result.composition) state.current = result.composition;
-            var rejected = safeArray(result.results).filter(function(item) { return item.accepted !== true; });
-            if (!rejected.length) {
-                if (state.current) state.current.status = 'completed';
-                syncCurrentSummary();
-                renderCompletion();
-            } else {
-                state.correctionRound += 1;
-                state.activeSentence = Math.max(0, sentences.findIndex(function(sentence, index) {
-                    var answer = state.rewriteResults[sentenceId(sentence, index)];
-                    return answer && answer.accepted === false;
-                }));
-                renderLanguage();
-                setStatus('统一检查完成：只需要再处理标记为“需要再修改”的句子。');
+            if (safeArray(result.results).length || rewriteReady(state.current)) {
+                applyRewriteResult(result);
+                return;
             }
-            refreshPortfolio().catch(function() {});
+            renderRewriteWaiting(rewriteJobFrom(result), true, false);
+            syncCurrentSummary();
         }).catch(function(error) {
+            if (isNetworkDisconnect(error) && compositionId(state.current)) {
+                renderRewriteWaiting(state.current && state.current.active_job, true, true);
+                setStatus('网络暂时中断。系统会继续查询同一次改写检查，不会重复调用 AI。');
+                return;
+            }
             if (error && error.result) clearLogicalOperation('rewrites');
-            renderFatalAction(error);
+            renderRewriteFailure(error);
         }).finally(function() { setBusy(false); });
     }
 
@@ -1175,6 +1283,21 @@
             }
             var activeJob = composition.active_job || {};
             var reviewStatus = compositionStatus(composition);
+            if ((activeJob.job_type === 'rewrite' && (activeJob.status === 'queued' || activeJob.status === 'processing'))
+                || reviewStatus === 'rewrite_queued' || reviewStatus === 'rewrite_processing') {
+                renderRewriteWaiting(activeJob, true, false);
+                syncCurrentSummary();
+                return;
+            }
+            if ((activeJob.job_type === 'rewrite' && activeJob.status === 'failed') || reviewStatus === 'rewrite_failed') {
+                renderRewriteFailure({ code: activeJob.error_code || 'WRITING_AI_REWRITE_FAILED', message: 'AI 改写检查没有完成。' });
+                syncCurrentSummary();
+                return;
+            }
+            if (!state.readOnly && rewriteReady(composition)) {
+                applyRewriteResult({ composition: composition });
+                return;
+            }
             if ((activeJob.job_type === 'review' && (activeJob.status === 'queued' || activeJob.status === 'processing'))
                 || reviewStatus === 'review_queued' || reviewStatus === 'review_processing') {
                 renderReviewWaiting(activeJob, true, false);
@@ -1324,7 +1447,7 @@
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
         else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
         else if (button.matches('[data-start-new]')) createNewWriting();
-        else if (button.matches('[data-return-home]')) { stopOcrPolling(); stopReviewPolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
+        else if (button.matches('[data-return-home]')) { stopOcrPolling(); stopReviewPolling(); stopRewritePolling(); setStatus(''); state.current = null; state.review = null; renderPortfolio(); renderWelcome(); }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
         else if (button.matches('[data-remove-photo]')) {
@@ -1361,6 +1484,16 @@
             startReviewPolling();
             button.disabled = true;
             button.textContent = '正在等待批改…';
+        }
+        else if (button.matches('[data-stay-rewrite]')) {
+            startRewritePolling();
+            button.disabled = true;
+            button.textContent = '正在等待检查…';
+        }
+        else if (button.matches('[data-retry-rewrite]')) submitRewrites();
+        else if (button.matches('[data-return-rewrites]')) {
+            state.review = state.current && state.current.language_review || state.review;
+            prepareLanguageReview();
         }
         else if (button.matches('[data-retry-review]')) retryReviewRequest();
         else if (button.matches('[data-retry-ocr]')) loadComposition(compositionId(state.current), false);

@@ -1069,6 +1069,15 @@ All collections are `ADMINONLY`.
   IDs, safe state, and timestamps. It lets `getComposition` repair a browser
   disconnect between storage upload and durable OCR-job activation without
   exposing file IDs or creating a second logical request.
+  `pending_rewrite_check` durably stages one submitted rewrite batch on the
+  Composition: its stable operation ID, Composition revision, sentence IDs,
+  student rewrite text, and safe timestamps. This is the authoritative input a
+  claimed rewrite-check worker reads after a browser disconnect; it is never
+  copied into `writing_ai_jobs` or logs. A successful current-lease transaction
+  atomically replaces the entire `rewrite_results` field with `db.command.set`,
+  clears `pending_rewrite_check`, completes the job, and updates training status.
+  This whole-field replacement is required when the previous
+  `rewrite_results` value is `null`.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.
@@ -1087,9 +1096,12 @@ All collections are `ADMINONLY`.
 - `writing_ai_jobs` (`ADMINONLY`): durable metadata-only AI work queue with stable
   job/operation identity, Composition ownership, job type, photo IDs for OCR,
   review mode/Rubric/usage-ledger ID for content or language review,
+  and Composition revision scope for rewrite checking. Every job has
   queued/processing/succeeded/failed/superseded state, bounded attempts, lease
-  token/expiry, retry time, timestamps, and safe error codes. Dispatch tokens remain
-  private and manuscript/OCR text is never copied into a job row.
+  token/expiry, retry time, timestamps, and safe error codes. Rewrite jobs never
+  store submitted sentence text; they resolve it from `pending_rewrite_check` on
+  the owned Composition. Dispatch tokens remain private and manuscript/OCR text
+  is never copied into a job row.
 - `writing_observations`: evidence-linked language observations for the current
   Composition revision; replacement removes that Composition's stale rows.
 - `writing_ai_usage_events`: append-only metadata-only quota/idempotency ledger

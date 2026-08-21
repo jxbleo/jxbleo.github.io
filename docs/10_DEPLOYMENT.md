@@ -1055,7 +1055,8 @@ Git.
 
 Create timer triggers for the email sender and `writingAiWorker` whose messages
 contain their matching internal tokens. The worker cron is once per minute and
-recovers queued OCR or review jobs, expired processing leases, and expired private photos.
+recovers queued OCR, review, or rewrite-check jobs, expired processing leases,
+and expired private photos.
 Package `writingTutor` and `writingAiWorker` with
 `node scripts/package-cloudfunctions.js writingTutor writingAiWorker`; deploy the
 generated bundled ZIP contents, not the raw multi-file source directory. After
@@ -1075,4 +1076,7 @@ private one-minute timer and passed an empty-outbox smoke test. Static publicati
 and the Qwen environment variables were subsequently configured. The durable
 `writing_ai_jobs` collection, `writingAiWorker` function/timer, and bundled
 `writingTutor` OCR recovery update were deployed and verified Active on 2026-08-21.
-Review jobs share that worker and require redeploying `writingTutor` plus the static AI Tutor client.
+Review and rewrite-check jobs share that worker. Enabling durable rewrite
+checking requires redeploying `writingTutor` plus the static AI Tutor client;
+`writingAiWorker` needs no code update because it generically dispatches eligible
+queue rows back to `writingTutor`.
