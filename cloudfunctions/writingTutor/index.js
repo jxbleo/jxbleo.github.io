@@ -20,6 +20,7 @@ const JOBS = "writing_ai_jobs";
 const DEFAULT_DAILY_WORD_LIMIT = 5000;
 const MAX_COMPOSITION_CHARS = 30000;
 const MAX_PROMPT_CHARS = 10000;
+const MAX_TITLE_CHARS = 80;
 const MAX_UPLOAD_PAGES = 8;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const INCOMPLETE_UPLOAD_TTL_MS = 30 * 60 * 1000;
@@ -30,6 +31,42 @@ const PROMPT_BUNDLE_VERSION = `${PROMPT_VERSION}|${SCHEMA_VERSION}|${RUBRIC_VERS
 
 function text(value, limit = 30000) {
   return String(value == null ? "" : value).trim().slice(0, limit);
+}
+
+function normalizedTitle(value) {
+  return String(value == null ? "" : value).trim().replace(/\s+/g, " ").slice(0, MAX_TITLE_CHARS).trim();
+}
+
+function normalizedSuggestedTitle(value) {
+  const words = String(value == null ? "" : value)
+    .match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g);
+  if (!words || !words.length) return "Student Writing";
+  const selected = words.slice(0, 6).map((word) => word.slice(0, 36));
+  if (selected.length === 1) {
+    if (selected[0].toLowerCase() === "essay") selected.unshift("Student");
+    else selected.push("Essay");
+  }
+  const fitted = [];
+  for (const word of selected) {
+    if ([...fitted, word].join(" ").length > MAX_TITLE_CHARS) break;
+    fitted.push(word);
+  }
+  return fitted.length >= 2 ? fitted.join(" ") : "Student Writing";
+}
+
+function isLegacyUntitled(value) {
+  return normalizedTitle(value).toLowerCase() === "untitled writing";
+}
+
+function titleSource(composition) {
+  if (composition && composition.title_source) return composition.title_source;
+  const legacyTitle = normalizedTitle(composition && composition.title);
+  return legacyTitle && !isLegacyUntitled(legacyTitle) ? "student" : "pending_ai";
+}
+
+function visibleTitle(composition) {
+  const title = normalizedTitle(composition && composition.title);
+  return titleSource(composition) === "pending_ai" && isLegacyUntitled(title) ? "" : title;
 }
 
 function randomId(prefix) {
@@ -120,7 +157,9 @@ async function ownedComposition(student, compositionId) {
 function summaryView(composition) {
   return {
     composition_id: composition.composition_id,
-    title: composition.title || "Untitled writing",
+    title: visibleTitle(composition),
+    title_source: titleSource(composition),
+    title_updated_at: composition.title_updated_at || null,
     prompt_text: composition.prompt_text || "",
     assessment_mode: composition.assessment_mode || null,
     rubric_id: composition.rubric_id || null,
@@ -209,10 +248,13 @@ function sentenceUnits(manuscript) {
 
 async function createComposition(student, event) {
   const now = new Date();
+  const requestedTitle = normalizedTitle(event.title);
+  const title = isLegacyUntitled(requestedTitle) ? "" : requestedTitle;
   const composition = {
     composition_id: randomId("composition"),
     student_uid: student.auth_uid,
-    title: text(event.title, 160) || "Untitled writing",
+    title,
+    title_source: title ? "student" : "pending_ai",
     prompt_text: text(event.prompt_text, MAX_PROMPT_CHARS),
     confirmed_text: text(event.confirmed_text, MAX_COMPOSITION_CHARS),
     status: "draft",
@@ -874,8 +916,17 @@ async function saveDraft(student, event) {
   const contentChanged = confirmedText !== String(composition.confirmed_text || "");
   const invalidatesCurrentReview = replacing || contentChanged;
   const now = new Date();
+  const currentCandidate = reviewCandidate(composition);
+  const submittedTitleRaw = normalizedTitle(event.title);
+  const existingTitle = normalizedTitle(currentCandidate.title);
+  const existingTitleSource = titleSource(currentCandidate);
+  const submittedTitle = existingTitleSource === "pending_ai" && isLegacyUntitled(submittedTitleRaw)
+    ? "" : submittedTitleRaw;
+  const preservesAiTitle = submittedTitle && submittedTitle === existingTitle
+    && ["ai", "generated"].includes(existingTitleSource);
   const draft = {
-    title: text(event.title, 160) || composition.title || "Untitled writing",
+    title: submittedTitle,
+    title_source: submittedTitle ? (preservesAiTitle ? existingTitleSource : "student") : "pending_ai",
     prompt_text: text(event.prompt_text, MAX_PROMPT_CHARS),
     confirmed_text: confirmedText,
     assessment_mode: mode || composition.assessment_mode || null,
@@ -891,7 +942,13 @@ async function saveDraft(student, event) {
       revision: pendingRevision,
       staged_at: now,
     };
-    const stagedUpdate = { pending_replacement: pendingReplacement, pending_ocr: null, updated_at: now };
+    const stagedUpdate = {
+      title: draft.title,
+      title_source: draft.title_source,
+      pending_replacement: pendingReplacement,
+      pending_ocr: null,
+      updated_at: now,
+    };
     await db.collection(COMPOSITIONS).doc(composition._id).update(stagedUpdate);
     const allUploads = await db.collection(UPLOADS).where({
       composition_id: composition.composition_id, student_uid: student.auth_uid, status: "uploaded",
@@ -922,6 +979,16 @@ async function saveDraft(student, event) {
   await db.collection(COMPOSITIONS).doc(composition._id).update(update);
   const allUploads = await db.collection(UPLOADS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid, status: "uploaded" }).limit(MAX_UPLOAD_PAGES * 3).get();
   await deleteUploadedPhotos(allUploads.data || []);
+  return { success: true, composition: compositionView({ ...composition, ...update }) };
+}
+
+async function updateCompositionTitle(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  const title = normalizedTitle(event.title);
+  if (!title) throw new Error("TITLE_REQUIRED");
+  const now = new Date();
+  const update = { title, title_source: "student", title_updated_at: now };
+  await db.collection(COMPOSITIONS).doc(composition._id).update(update);
   return { success: true, composition: compositionView({ ...composition, ...update }) };
 }
 
@@ -1184,8 +1251,10 @@ function validateLanguageResult(result, units) {
 function canonicalLanguageResult(result, units) {
   validateLanguageResult(result, units);
   const byId = new Map(result.sentences.map((item) => [item.sentence_id, item]));
+  const suggestedTitle = normalizedSuggestedTitle(result.suggested_title);
   return {
     ...result,
+    suggested_title: suggestedTitle,
     sentences: units.map((unit) => {
       const item = byId.get(unit.sentence_id);
       return {
@@ -1242,8 +1311,10 @@ function canonicalStandardizedResult(result, rubric) {
   if (!Number.isFinite(overall) || overall < 0 || overall > Number(rubric.overall_max)) {
     throw new Error("WRITING_AI_RUBRIC_SCORE_INVALID");
   }
+  const suggestedTitle = normalizedSuggestedTitle(result.suggested_title);
   return {
     ...result,
+    suggested_title: suggestedTitle,
     overall_score: String(overall),
     score_scale: rubric.score_scale,
     criteria: canonicalCriteria,
@@ -1337,7 +1408,6 @@ async function performReviewJob(student, job) {
   };
   if (pendingReplacement) {
     Object.assign(update, {
-      title: prepared.title,
       prompt_text: prepared.prompt_text,
       confirmed_text: prepared.confirmed_text,
       word_count: prepared.word_count,
@@ -1372,7 +1442,21 @@ async function performReviewJob(student, job) {
       return;
     }
     if (!usageRow) throw new Error("AI_USAGE_RESERVATION_LOST");
-    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields(update, [
+    const persistenceUpdate = { ...update };
+    const currentCandidate = reviewCandidate(current);
+    const currentTitleIsStudent = titleSource(current) === "student";
+    const candidateTitleIsStudent = titleSource(currentCandidate) === "student";
+    if (currentTitleIsStudent) {
+      persistenceUpdate.title = normalizedTitle(current.title);
+      persistenceUpdate.title_source = "student";
+    } else if (candidateTitleIsStudent) {
+      persistenceUpdate.title = normalizedTitle(currentCandidate.title);
+      persistenceUpdate.title_source = "student";
+    } else {
+      persistenceUpdate.title = normalizedSuggestedTitle(review.suggested_title);
+      persistenceUpdate.title_source = "ai";
+    }
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields(persistenceUpdate, [
       "standardized_review", "language_review", "rewrite_results", "active_job",
     ]));
     await transaction.collection(JOBS).doc(currentJob._id).update({
@@ -1499,6 +1583,7 @@ function friendlyMessage(code) {
   const messages = {
     AUTH_REQUIRED: "Please sign in first.", STUDENT_NOT_LINKED: "This student account is not linked.",
     COMPOSITION_NOT_FOUND: "This writing record could not be found.", COMPOSITION_READ_ONLY: "Completed writing is read-only. Use it as a new composition to continue.",
+    TITLE_REQUIRED: "Please enter a title.",
     MANUSCRIPT_REQUIRED: "Please confirm your writing first.", WRITING_PROMPT_REQUIRED: "A task prompt is required for standardized assessment.",
     RUBRIC_REQUIRED: "Choose an assessment framework.", RUBRIC_NOT_AVAILABLE: "This assessment framework is not available yet.",
     WRITING_AI_DAILY_LIMIT_REACHED: "Today's AI writing word limit has been reached. Ask your teacher to adjust it if needed.",
@@ -1521,6 +1606,7 @@ exports.main = async (event = {}) => {
     if (action === "finishPhotoUpload") return await finishPhotoUpload(student, event);
     if (action === "extractOcr") return await extractOcr(student, event);
     if (action === "saveDraft") return await saveDraft(student, event);
+    if (action === "updateCompositionTitle") return await updateCompositionTitle(student, event);
     if (action === "evaluate") return await evaluate(student, event);
     if (action === "submitRewrites") return await submitRewrites(student, event);
     if (action === "getProfile") return await getProfile(student);

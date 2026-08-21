@@ -9,21 +9,18 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260821-2">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260821-3">
 </head>
 <body class="ai-tutor-page">
     <a class="skip-link" href="#ai-tutor-main">跳到主要内容</a>
     <div class="ai-tutor-shell" id="ai-tutor-app" aria-busy="true">
         <header class="ai-tutor-header">
-            <a class="icon-button header-back" href="dashboard.html" aria-label="返回 Dashboard">
+            <button class="icon-button header-back" id="header-back" type="button" aria-label="返回主页">
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path><path d="M8 12h11"></path></svg>
-            </a>
-            <div class="brand-lockup">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><path d="M7.4 8 5.7 4.4 9.8 6a8 8 0 0 1 4.4 0l4.1-1.6L16.6 8A6.8 6.8 0 1 1 7.4 8Z"></path><path d="M9.2 13.5h.1M14.7 13.5h.1M10.5 16c1 .7 2 .7 3 0"></path></svg>
-                </span>
-                <span><strong>AI Tutor</strong><small>Writing Studio</small></span>
-            </div>
+            </button>
+            <button class="icon-button portfolio-toggle" id="portfolio-toggle" type="button" aria-label="打开作品库" aria-expanded="false" aria-controls="portfolio-sidebar">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5.5h5.5A2.5 2.5 0 0 1 13 8v11H7.5A2.5 2.5 0 0 1 5 16.5v-11Z"></path><path d="M19 5.5h-3.5A2.5 2.5 0 0 0 13 8v11h3.5a2.5 2.5 0 0 0 2.5-2.5v-11Z"></path></svg>
+            </button>
             <div class="header-actions">
                 <span class="student-chip" id="student-chip" hidden></span>
                 <button class="primary-button compact" id="header-new-writing" type="button">
@@ -58,13 +55,6 @@
             <div class="sidebar-scrim" id="sidebar-scrim" hidden></div>
 
             <main class="ai-tutor-main" id="ai-tutor-main" tabindex="-1">
-                <div class="mobile-toolbar">
-                    <button class="secondary-button compact" id="portfolio-toggle" type="button" aria-expanded="false" aria-controls="portfolio-sidebar">
-                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"></path></svg>
-                        作品库
-                    </button>
-                    <span id="mobile-context">AI 写作工作区</span>
-                </div>
                 <div class="global-status" id="global-status" role="status" aria-live="polite"></div>
                 <div class="stage" id="ai-tutor-stage">
                     <section class="loading-state" aria-label="正在载入">
@@ -75,6 +65,21 @@
                 </div>
             </main>
         </div>
+    </div>
+
+    <div class="confirmation-layer" id="leave-confirmation" hidden>
+        <div class="confirmation-scrim" data-cancel-leave></div>
+        <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="leave-confirmation-title" aria-describedby="leave-confirmation-copy">
+            <span class="confirmation-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 12h14M10 7l-5 5 5 5"></path></svg>
+            </span>
+            <h2 id="leave-confirmation-title">返回主页？</h2>
+            <p id="leave-confirmation-copy">已经保存的内容不会丢失。正在进行的文字识别或 AI 批改会继续在后台完成。</p>
+            <div class="confirmation-actions">
+                <button class="secondary-button" type="button" data-cancel-leave>继续写作</button>
+                <button class="primary-button" type="button" data-confirm-leave>返回主页</button>
+            </div>
+        </section>
     </div>
 
     <noscript><p class="noscript-message">AI Tutor 需要启用 JavaScript 才能使用。</p></noscript>
@@ -88,6 +93,6 @@
     <script src="assets/js/config.public.js?v=20260815-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
-    <script src="assets/js/ai-tutor.js?v=20260821-6"></script>
+    <script src="assets/js/ai-tutor.js?v=20260821-7"></script>
 </body>
 </html>
