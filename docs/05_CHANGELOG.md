@@ -1721,6 +1721,9 @@ required.
 
 ## 2026-08-21 — Durable AI Tutor review jobs
 
+- Fixed Qwen language-review rejection when the model normalized whitespace or punctuation in its echoed `original`;
+  sentence IDs remain strict while the server restores the authoritative original text.
+
 - Moved standardized-content and general-language evaluation off the browser request and onto the existing
   `writing_ai_jobs` queue, with stable operation identity, lease/retry recovery, active Composition guards, and
   terminal quota release.

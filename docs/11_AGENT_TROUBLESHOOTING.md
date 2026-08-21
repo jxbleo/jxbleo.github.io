@@ -724,6 +724,8 @@ STAR 不阻止未来重新布置同一个 set。
  16. AI Tutor OCR 成功但点击开始批改出现 Network error：检查线上 `writingTutor` 是否仍在请求内同步调用
     模型。正式评估必须创建 `job_type: review` 的持久任务并立即返回；浏览器应轮询 Composition，
     最终失败才释放配额。只提高网页超时时间不能解决关闭浏览器后的恢复问题。
+    若错误为 `WRITING_AI_SENTENCE_ALIGNMENT_FAILED`，先确认是否只有模型回显的 original 空格或标点变化；
+    服务器应按稳定 sentence ID 填回权威原句，只对缺失、重复或未知 ID 判定对齐失败。
 
 ## 6. 维护规则
 
