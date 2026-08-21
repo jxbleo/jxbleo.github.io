@@ -1743,6 +1743,16 @@ High priority improvement:
   and Rubric; cross-scope reuse must fail without another charge or result.
 - Confirm reference revision and rewrite input never display together, skipped
   capsules remain marked, and feedback is batch-only.
+- After language review completes, confirm the page has exactly three primary
+  cards in this order: Overall Evaluation, Original Manuscript, and Sentence
+  Corrections. Confirm there is no fourth layout container presented as a card.
+- In Sentence Corrections, confirm the number capsules scroll horizontally on
+  touch and pointer devices; selecting a number scrolls to and highlights the
+  matching sentence. Confirm the full sentence list is always present and there
+  is no sequential mode, layout toggle, or pair of layout icons.
+- Confirm sentence commentary, issue explanations, revision suggestions, and
+  rewrite feedback are Simplified Chinese, while original sentences and reference
+  revisions remain English.
 - Retry one operation ID and confirm one quota event/charge. Force AI failure and
   confirm quota release. Test boundary at exactly the daily limit and limit zero.
 - Confirm replacement failure preserves the current Composition; successful

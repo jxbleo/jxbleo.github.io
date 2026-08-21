@@ -1,6 +1,6 @@
 "use strict";
 
-const SCHEMA_VERSION = "writing-ai-schemas-2026-08-20.1";
+const SCHEMA_VERSION = "writing-ai-schemas-2026-08-21.2";
 
 const stringArray = { type: "array", items: { type: "string" } };
 
@@ -61,7 +61,7 @@ const LANGUAGE_SCHEMA = {
   additionalProperties: false,
   required: ["overview", "sentences", "profile_observations"],
   properties: {
-    overview: { type: "string" },
+    overview: { type: "string", description: "Concise overall evaluation written in student-friendly Simplified Chinese." },
     sentences: {
       type: "array",
       items: {
@@ -69,7 +69,8 @@ const LANGUAGE_SCHEMA = {
         additionalProperties: false,
         required: ["sentence_id", "original", "status", "rewrite_required", "issues", "coaching_summary", "reference_revision"],
         properties: {
-          sentence_id: { type: "string" }, original: { type: "string" },
+          sentence_id: { type: "string" },
+          original: { type: "string", description: "The exact English source sentence supplied for this sentence_id; do not translate or paraphrase it." },
           status: { type: "string", enum: ["effective", "improvable", "needs_revision"] },
           rewrite_required: { type: "boolean" },
           issues: {
@@ -79,12 +80,15 @@ const LANGUAGE_SCHEMA = {
               additionalProperties: false,
               required: ["category", "span", "explanation", "suggestion"],
               properties: {
-                category: { type: "string" }, span: { type: "string" },
-                explanation: { type: "string" }, suggestion: { type: "string" },
+                category: { type: "string", description: "Short issue category written in Simplified Chinese." },
+                span: { type: "string", description: "The exact relevant English span from original; do not translate it." },
+                explanation: { type: "string", description: "Concise explanation written in student-friendly Simplified Chinese." },
+                suggestion: { type: "string", description: "Actionable suggestion written in student-friendly Simplified Chinese." },
               },
             },
           },
-          coaching_summary: { type: "string" }, reference_revision: { type: "string" },
+          coaching_summary: { type: "string", description: "The sentence-level coaching summary written in student-friendly Simplified Chinese." },
+          reference_revision: { type: "string", description: "One natural English reference revision; keep this field in English." },
         },
       },
     },
@@ -94,7 +98,11 @@ const LANGUAGE_SCHEMA = {
         type: "object",
         additionalProperties: false,
         required: ["category", "observation", "evidence_sentence_ids"],
-        properties: { category: { type: "string" }, observation: { type: "string" }, evidence_sentence_ids: stringArray },
+        properties: {
+          category: { type: "string", description: "Short observation category written in Simplified Chinese." },
+          observation: { type: "string", description: "Concise profile observation written in student-friendly Simplified Chinese." },
+          evidence_sentence_ids: stringArray,
+        },
       },
     },
   },
@@ -114,12 +122,17 @@ const REWRITE_SCHEMA = {
         properties: {
           sentence_id: { type: "string" }, accepted: { type: "boolean" },
           meaning_preserved: { type: "boolean" }, target_resolved: { type: "boolean" },
-          new_errors: stringArray, feedback: { type: "string" },
+          new_errors: {
+            type: "array",
+            description: "Material new errors, each described concisely in Simplified Chinese.",
+            items: { type: "string" },
+          },
+          feedback: { type: "string", description: "Student-friendly feedback written in Simplified Chinese." },
           next_step: { type: "string", enum: ["complete", "revise_again"] },
         },
       },
     },
-    overall_feedback: { type: "string" },
+    overall_feedback: { type: "string", description: "Concise batch feedback written in student-friendly Simplified Chinese." },
   },
 };
 

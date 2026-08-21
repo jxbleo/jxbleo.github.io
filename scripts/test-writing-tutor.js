@@ -58,6 +58,11 @@ function assertClosedObjectSchemas(schema, location) {
   if (schema.type === "array") assertClosedObjectSchemas(schema.items, `${location}[]`);
 }
 
+function assertDescriptionMatches(schema, pattern, location) {
+  assert(schema && typeof schema.description === "string", `${location} must declare a description`);
+  assert(pattern.test(schema.description), `${location} description must match ${pattern}`);
+}
+
 function functionSource(source, functionName, nextFunctionName) {
   const start = source.indexOf(`function ${functionName}(`);
   assert(start >= 0, `missing function ${functionName}`);
@@ -167,6 +172,47 @@ check("the two evaluation modes are mutually exclusive", () => {
     return values.length === 2 && /language|general/.test(joined) && /standard|exam|rubric/.test(joined);
   });
   assert(modeGroup, "expected exactly two same-name radio inputs for general language and standardized exam modes");
+});
+
+check("language review renders exactly three primary cards in the approved order", () => {
+  const client = read(clientPath);
+  const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
+  const cardMarkers = Array.from(renderSource.matchAll(/language-(overall|manuscript|sentence-review)-card/g), (match) => match[1]);
+  assert.deepStrictEqual(cardMarkers, ["overall", "manuscript", "sentence-review"],
+    "language review must render only the overall, original-manuscript, and sentence-review primary cards, in that order");
+  requireEvery(renderSource, ["整体评价", "原文", "句子批改"], "language review card headings");
+
+  const overallIndex = renderSource.indexOf("language-overall-card");
+  const manuscriptIndex = renderSource.indexOf("language-manuscript-card");
+  const sentenceReviewIndex = renderSource.indexOf("language-sentence-review-card");
+  assert(overallIndex < manuscriptIndex && manuscriptIndex < sentenceReviewIndex,
+    "language review primary cards must stay ordered as overall, manuscript, then sentence correction");
+});
+
+check("sentence correction has one list mode and no layout-switch controls", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
+  assert(/class=["']sentence-list["']/.test(renderSource), "sentence corrections must render as the default list");
+  assert(!/data-layout|view-toggle|state\.layout|data-next-sentence/.test(client),
+    "sentence correction must not expose the removed layout or next-sentence controls");
+  assert(!/sentence-list\.sequential|\.sentence-list\s*\.sequential/.test(styles),
+    "styles must not retain a sequential-only sentence mode");
+});
+
+check("sentence number navigation is horizontal, accessible, and locates its list row", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
+  const capsuleSource = functionSource(client, "sentenceCapsuleHtml", "sentenceCardHtml");
+  requireEvery(renderSource, ["句子导航", "capsule-row", "sentenceCapsuleHtml"], "sentence number navigation");
+  requireEvery(capsuleSource, ["data-sentence-index", "aria-label", "aria-current"], "sentence number button");
+  assert(/data-sentence-index[\s\S]{0,1800}scrollIntoView/.test(client),
+    "clicking a sentence number must scroll the corresponding list row into view");
+  assert(/\.capsule-row\s*\{[^}]*overflow-x\s*:\s*auto/i.test(styles),
+    "sentence numbers must support horizontal scrolling");
+  assert(/\.capsule-row\s*\{[^}]*(?:-webkit-overflow-scrolling\s*:\s*touch|touch-action\s*:\s*pan-x)/i.test(styles),
+    "sentence number scrolling must preserve native touch momentum or horizontal pan behavior");
 });
 
 check("writingTutor exposes every public action used by the workspace", () => {
@@ -591,6 +637,59 @@ check("prompts are versioned and make the selected Rubric authoritative", () => 
   assert(/authoritative/i.test(standardized), "selected rubric must be authoritative");
   assert(/do not replace|do not reclassify/i.test(standardized), "standardized prompt must forbid automatic replacement/reclassification");
   assert(/no numerical score/i.test(promptModule.languagePrompt()), "general language prompt must explicitly forbid scoring");
+});
+
+check("language coaching prompts bind commentary fields to Simplified Chinese", () => {
+  const promptModule = require(path.join(root, promptPath));
+  const language = promptModule.languagePrompt();
+  const rewrites = promptModule.rewritePrompt();
+  assert(/Simplified Chinese|简体中文/i.test(language),
+    "language coaching prompt must explicitly require Simplified Chinese commentary");
+  requireEvery(language, [
+    "overview", "category", "explanation", "suggestion", "coaching_summary",
+    "observation", "original", "span", "reference_revision",
+  ], "language coaching language contract");
+  assert(/profile[_ -]?observations?|profile observation/i.test(language),
+    "language coaching prompt must bind profile observations to its language requirement");
+  assert(/(?:original|span)[\s\S]{0,500}(?:English|英文)|(?:English|英文)[\s\S]{0,500}(?:original|span)/i.test(language),
+    "language coaching prompt must preserve source English in original/span fields");
+  assert(/reference_revision[\s\S]{0,240}(?:English|英文)|(?:English|英文)[\s\S]{0,240}reference_revision/i.test(language),
+    "language coaching prompt must keep reference revisions in English");
+
+  assert(/Simplified Chinese|简体中文/i.test(rewrites),
+    "rewrite-check prompt must explicitly require Simplified Chinese feedback");
+  requireEvery(rewrites, ["feedback", "new_errors", "overall_feedback"], "rewrite feedback language contract");
+});
+
+check("language and rewrite schemas describe Chinese commentary and English source fields", () => {
+  const schemas = require(path.join(root, schemaPath));
+  const chinese = /Simplified Chinese|简体中文/i;
+  const english = /English|英文/i;
+  const languageProperties = schemas.LANGUAGE_SCHEMA.properties;
+  const sentenceProperties = languageProperties.sentences.items.properties;
+  const issueProperties = sentenceProperties.issues.items.properties;
+  const observationProperties = languageProperties.profile_observations.items.properties;
+  const rewriteProperties = schemas.REWRITE_SCHEMA.properties;
+  const rewriteResultProperties = rewriteProperties.results.items.properties;
+
+  assertDescriptionMatches(languageProperties.overview, chinese, "LANGUAGE_SCHEMA.overview");
+  ["category", "explanation", "suggestion"].forEach((field) => {
+    assertDescriptionMatches(issueProperties[field], chinese, `LANGUAGE_SCHEMA.sentences[].issues[].${field}`);
+  });
+  assertDescriptionMatches(sentenceProperties.coaching_summary, chinese, "LANGUAGE_SCHEMA.sentences[].coaching_summary");
+  ["category", "observation"].forEach((field) => {
+    assertDescriptionMatches(observationProperties[field], chinese, `LANGUAGE_SCHEMA.profile_observations[].${field}`);
+  });
+  assertDescriptionMatches(sentenceProperties.original, english, "LANGUAGE_SCHEMA.sentences[].original");
+  assertDescriptionMatches(issueProperties.span, english, "LANGUAGE_SCHEMA.sentences[].issues[].span");
+  assertDescriptionMatches(sentenceProperties.reference_revision, english, "LANGUAGE_SCHEMA.sentences[].reference_revision");
+
+  assertDescriptionMatches(rewriteResultProperties.feedback, chinese, "REWRITE_SCHEMA.results[].feedback");
+  const newErrorsDescription = rewriteResultProperties.new_errors.items.description
+    ? rewriteResultProperties.new_errors.items
+    : rewriteResultProperties.new_errors;
+  assertDescriptionMatches(newErrorsDescription, chinese, "REWRITE_SCHEMA.results[].new_errors[]");
+  assertDescriptionMatches(rewriteProperties.overall_feedback, chinese, "REWRITE_SCHEMA.overall_feedback");
 });
 
 check("Cambridge 9093 Paper 2 task types keep their official score scales separate", () => {

@@ -23,7 +23,6 @@
         photoUrls: [],
         photoIds: [],
         ocr: null,
-        layout: 'sequential',
         activeSentence: 0,
         rewrites: {},
         rewriteResults: {},
@@ -295,7 +294,6 @@
         state.photoUrls = [];
         state.photoIds = [];
         state.ocr = null;
-        state.layout = 'sequential';
         state.activeSentence = 0;
         state.rewrites = {};
         state.rewriteResults = {};
@@ -855,7 +853,7 @@
 
     function renderLanguage() {
         state.screen = 'language';
-        mobileContext.textContent = state.correctionRound ? '需要再修改' : '逐句语言训练';
+        mobileContext.textContent = state.correctionRound ? '需要再修改' : '句子批改';
         var sentences = safeArray(state.review && state.review.sentences);
         if (!sentences.length) {
             stage.innerHTML = '<section class="surface empty-state"><strong>没有需要重写的句子</strong><p>这次批改没有返回逐句训练内容。</p><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button></section>';
@@ -864,14 +862,18 @@
         if (state.activeSentence >= sentences.length) state.activeSentence = Math.max(0, sentences.length - 1);
         var progress = languageProgress(sentences);
         var cards = sentences.map(sentenceCardHtml).join('');
-        stage.innerHTML = (state.readOnly ? '<p class="readonly-banner">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') +
-            '<section class="result-banner language"><p class="eyebrow">GENERAL LANGUAGE COACHING</p><h2>' + (state.correctionRound ? '再检查几句话' : '现在，轮到你来改写。') + '</h2><p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '参考语言分析，亲手重写需要改善的句子。全部完成后，AI 会一次性检查。')) + '</p></section>' +
+        var manuscript = firstText(state.current && state.current.confirmed_text, state.confirmedText, '暂无原文。');
+        stage.innerHTML = '<div class="language-review-stack">' +
+            '<section class="surface language-review-card language-overall-card"><p class="eyebrow">LANGUAGE REVIEW</p><h2>整体评价</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
+            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><span>02</span><h2>原文</h2></div><div class="manuscript-text">' + escapeHtml(manuscript) + '</div></section>' +
+            '<section class="surface language-review-card language-sentence-review-card">' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div>' +
-            '<div class="language-toolbar-bottom"><span class="progress-copy">' + (state.readOnly ? progress.accepted + ' / ' + progress.required + ' 已完成' : progress.filled + ' / ' + progress.required + ' 已填写') + '</span>' +
-            '<div class="view-toggle" role="group" aria-label="训练布局"><button type="button" data-layout="sequential" aria-pressed="' + (state.layout === 'sequential') + '">' + icon('focus') + '逐句</button><button type="button" data-layout="list" aria-pressed="' + (state.layout === 'list') + '">' + icon('list') + '列表</button></div></div></nav>' +
-            '<div class="sentence-stage"><div class="sentence-list ' + escapeHtml(state.layout) + '">' + cards + '</div></div>' +
-            (!state.readOnly ? '<div class="batch-actions"><p>未完成的句子会在数字胶囊下方显示小圆点。提交后统一检查。</p><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>' + (state.correctionRound ? '再次提交检查' : '全部完成，提交检查') + icon('arrow') + '</button></div>' : '') +
-            (state.readOnly ? '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '');
+            '<div class="language-toolbar-bottom"><span class="progress-copy">' + (state.readOnly ? progress.accepted + ' / ' + progress.required + ' 已完成' : progress.filled + ' / ' + progress.required + ' 已填写') + '</span><span class="capsule-hint">左右滑动数字，点击定位句子</span></div></nav>' +
+            '<div class="language-section-heading sentence-review-heading"><span>03</span><h2>句子批改</h2></div>' +
+            '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
+            (!state.readOnly ? '<div class="batch-actions"><p>未完成的句子会在数字下方显示小圆点；完成后统一检查。</p><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>' + (state.correctionRound ? '再次提交检查' : '全部完成，提交检查') + icon('arrow') + '</button></div>' : '') +
+            (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
+            '</section></div>';
     }
 
     function sentenceCapsuleHtml(sentence, index) {
@@ -880,7 +882,7 @@
         var done = !rewriteRequired(sentence) || result && result.accepted === true;
         var review = result && result.accepted === false;
         var missing = rewriteRequired(sentence) && !done && (!firstText(state.rewrites[id]) || state.skipped[id]);
-        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '" aria-label="第 ' + (index + 1) + ' 句' + (missing ? '，尚未完成' : '') + '">' + (index + 1) + '</button>';
+        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + (missing ? '，尚未完成' : '') + '">' + (index + 1) + '</button>';
     }
 
     function sentenceCardHtml(sentence, index) {
@@ -906,7 +908,7 @@
             (result ? '<p class="sentence-feedback ' + (result.accepted ? 'accepted' : '') + '">' + escapeHtml(firstText(result.feedback, result.next_step, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。')) + '</p>' : '') +
             (required ? '<div class="sentence-actions">' +
                 (!state.readOnly && !accepted ? '<button class="quiet-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">' + (referenceOpen ? '隐藏参考，开始重写' : '查看参考句') + '</button>' : '<span></span>') +
-                (!state.readOnly && state.layout === 'sequential' ? '<button class="secondary-button compact" type="button" data-next-sentence="' + index + '">' + (index === safeArray(state.review.sentences).length - 1 ? '回到未完成' : '下一句') + icon('arrow') + '</button>' : '') + '</div>' : '') +
+                '</div>' : '') +
             '</article>';
     }
 
@@ -922,7 +924,6 @@
             var missingId = sentenceId(missing, sentences.indexOf(missing));
             state.skipped[missingId] = true;
             state.activeSentence = sentences.indexOf(missing);
-            state.layout = 'sequential';
             setStatus('还有句子没有完成。已带你回到第一个未完成的位置。');
             renderLanguage();
             return;
@@ -976,7 +977,6 @@
                     var answer = state.rewriteResults[sentenceId(sentence, index)];
                     return answer && answer.accepted === false;
                 }));
-                state.layout = 'sequential';
                 renderLanguage();
                 setStatus('统一检查完成：只需要再处理标记为“需要再修改”的句子。');
             }
@@ -1216,32 +1216,22 @@
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');
         else if (button.matches('[data-enter-language]')) enterLanguage();
-        else if (button.matches('[data-layout]')) { state.layout = button.getAttribute('data-layout'); renderLanguage(); }
         else if (button.matches('[data-sentence-index]')) {
             state.activeSentence = Number(button.getAttribute('data-sentence-index')) || 0;
-            if (state.layout === 'sequential') renderLanguage();
-            else {
-                Array.prototype.forEach.call(document.querySelectorAll('.sentence-capsule'), function(item) { item.classList.toggle('is-active', item === button); });
-                var card = document.querySelectorAll('[data-sentence-card]')[state.activeSentence];
-                if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-        else if (button.matches('[data-next-sentence]')) {
-            var sentences = safeArray(state.review && state.review.sentences);
-            var index = Number(button.getAttribute('data-next-sentence')) || 0;
-            var sentence = sentences[index];
-            var id = sentenceId(sentence, index);
-            if (rewriteRequired(sentence) && !firstText(state.rewrites[id])) state.skipped[id] = true;
-            var next = index + 1;
-            if (next >= sentences.length) {
-                next = sentences.findIndex(function(item, itemIndex) {
-                    var itemId = sentenceId(item, itemIndex);
-                    return rewriteRequired(item) && !firstText(state.rewrites[itemId]);
-                });
-                if (next < 0) next = 0;
-            }
-            state.activeSentence = next;
-            renderLanguage();
+            Array.prototype.forEach.call(document.querySelectorAll('.sentence-capsule'), function(item) {
+                var active = item === button;
+                item.classList.toggle('is-active', active);
+                if (active) item.setAttribute('aria-current', 'true');
+                else item.removeAttribute('aria-current');
+            });
+            Array.prototype.forEach.call(document.querySelectorAll('[data-sentence-card]'), function(item, index) {
+                item.classList.toggle('is-active', index === state.activeSentence);
+            });
+            var card = document.querySelectorAll('[data-sentence-card]')[state.activeSentence];
+            if (card) card.scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                block: 'start'
+            });
         }
         else if (button.matches('[data-toggle-reference]')) {
             var referenceId = button.getAttribute('data-toggle-reference');
