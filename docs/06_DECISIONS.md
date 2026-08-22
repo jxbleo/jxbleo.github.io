@@ -958,6 +958,14 @@ Decision:
   `pending_rewrite_check` becomes the cloud authority only after `Check`. Neither
   layer is cleared on uncertain delivery or model failure, and successful result
   publication is the sole cleanup boundary.
+- Rewrite publication keeps two deliberately different projections. The merged
+  `rewrite_results.results` remains the latest per-sentence completion state used
+  by progress and retry behavior, while append-style
+  `rewrite_results.feedback_history` batches preserve every successful model
+  feedback round for the student. Batch `operation_id` values make publication
+  idempotent. When a legacy record has only its latest merged result, the next
+  successful check promotes that recoverable snapshot to round 1 before appending
+  the new round; feedback overwritten before this release cannot be reconstructed.
 - Sentence analysis and rewriting are two modes of one card, not adjacent panels.
   Mutual exclusion keeps the student from copying while composing; the same
   explicit state supports pointer, keyboard, assistive technology, and a

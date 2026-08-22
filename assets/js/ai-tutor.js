@@ -1481,6 +1481,23 @@
         };
     }
 
+    function sentenceRewriteFeedbackHistory(id, result) {
+        var record = state.current && state.current.rewrite_results || {};
+        var rounds = safeArray(record.feedback_history).map(function(batch, index) {
+            var item = safeArray(batch && batch.results).find(function(entry) {
+                return firstText(entry && entry.sentence_id) === id;
+            });
+            if (!item) return null;
+            return {
+                round: Number(batch && batch.round) > 0 ? Number(batch.round) : index + 1,
+                feedback: firstText(item.feedback, item.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。')
+            };
+        }).filter(Boolean);
+        if (rounds.length) return rounds;
+        var legacyFeedback = firstText(result && result.feedback);
+        return legacyFeedback ? [{ round: 1, feedback: legacyFeedback }] : [];
+    }
+
     function activeSentenceCardFace(inner) {
         if (!inner) return null;
         return inner.querySelector(inner.classList.contains('show-rewrite')
@@ -1869,7 +1886,6 @@
         var referenceOpen = Boolean(state.referenceOpen[id]);
         var visibility = coordinateReferenceAndRewrite(showRewrite, referenceOpen);
         var issues = safeArray(sentence.issues);
-        var rewriteFeedback = result ? firstText(result.feedback, result.accepted ? '这句话已经修复。' : '请根据反馈再修改一次。') : '';
         var analysisParts = [];
         function addAnalysisPart(value) {
             var copy = firstText(value);
@@ -1880,10 +1896,12 @@
             addAnalysisPart(issue && issue.explanation);
             addAnalysisPart(issue && issue.suggestion);
         });
-        addAnalysisPart(rewriteFeedback);
         var analysisCopy = analysisParts.map(function(part) {
             return /[。！？!?；;.]$/.test(part) ? part : part + '。';
         }).join(' ') || '请根据建议调整这句话。';
+        var feedbackHistoryHtml = sentenceRewriteFeedbackHistory(id, result).map(function(entry) {
+            return '<section class="rewrite-feedback-round" aria-label="第 ' + entry.round + ' 次点评"><span>第 ' + entry.round + ' 次点评</span><p>' + escapeHtml(entry.feedback) + '</p></section>';
+        }).join('');
         var analysisFaceId = 'sentence-analysis-' + id;
         var rewriteFaceId = 'sentence-rewrite-' + id;
         var reference = '<div class="reference-panel" aria-hidden="' + visibility.referenceHidden + '"' + (visibility.referenceHidden ? ' hidden' : '') + '><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>';
@@ -1894,7 +1912,7 @@
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="翻到句子改写面"></button>' +
             '<div class="sentence-face-content">' +
             sentenceMeta + '<p class="original-sentence">' + original + '</p>' +
-            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p></section>' +
+            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p>' + feedbackHistoryHtml + '</section>' +
             sampleButton + reference + '</div></section>';
         var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
         var correctedResponse = '<p class="corrected-sentence"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span></p>';

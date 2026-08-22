@@ -1090,6 +1090,16 @@ All collections are `ADMINONLY`.
   clears `pending_rewrite_check`, completes the job, and updates training status.
   This whole-field replacement is required when the previous
   `rewrite_results` value is `null`.
+  `rewrite_results.results` remains the latest merged per-sentence state used for
+  acceptance and completion. `rewrite_results.check_round` is the newest persisted
+  round number. `rewrite_results.feedback_history[]` is an ordered durable batch
+  history containing `round`, stable `operation_id`, `checked_at`, `overall_feedback`,
+  prompt/schema/model metadata, and only that batch's submitted sentence results
+  (including `student_rewrite`, `feedback`, acceptance fields, and new errors).
+  Replaying an operation ID cannot append a duplicate round. When a legacy record has
+  `results` but no history, its existing latest snapshot becomes round 1 before the
+  next successful batch is appended as round 2; already-lost pre-migration rounds
+  cannot be reconstructed.
   Before `Check`, per-sentence typing drafts exist only in authenticated,
   ownership-scoped browser storage and are not a CloudBase collection or Job
   field. They are cleared after successful result publication; when a result asks

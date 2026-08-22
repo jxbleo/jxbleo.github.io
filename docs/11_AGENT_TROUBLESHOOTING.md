@@ -869,6 +869,11 @@ STAR 不阻止未来重新布置同一个 set。
   missing、out-of-range 或空 marker；不要只调整 OCR prompt。
 - 若扫描导入后草稿内容异常，检查 Import 是否只提交了当前卡片的 sentence ID 与编辑文字，并检查
   pending scan result 到 confirmed scanned draft 的事务边界。
+- 若重复 Submit 后只看到一轮点评或出现重复轮次，先检查 Composition 的
+  `rewrite_results.feedback_history`、`check_round` 和各批次 `operation_id`。
+  `rewrite_results.results` 只是每句当前合并状态，不能当作历史来源；相同 operation ID 的重放必须
+  返回原轮次，不能追加重复批次。旧记录没有历史数组时，下一次成功发布只可把当时仍存在的最新
+  点评恢复为第 1 轮，更早已被覆盖的点评无法追溯。
 
 ### 2026-08-22：`pending_upload: null` 阻断拍照请求
 

@@ -400,7 +400,8 @@ check("each revision-required sentence renders only source, consolidated analysi
   requireEvery(cardSource, [
     "original-sentence", "sentence-row-number", "index + 1", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
     "sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion",
-    "result.feedback", "sentence-response", "rewrite-input", "Your Attempt",
+    "sentenceRewriteFeedbackHistory", "rewrite-feedback-round", "次点评",
+    "sentence-response", "rewrite-input", "Your Attempt",
   ], "three-part sentence row");
   assert(/\.rewrite-area label\s*\{[^}]*color\s*:\s*var\(--ai-muted\)/is.test(styles),
     "Your Attempt must use the muted supporting-text color");
@@ -408,6 +409,8 @@ check("each revision-required sentence renders only source, consolidated analysi
     "the grammar box must not render headings, categories, split feedback blocks, or English result enums");
   requireEvery(styles, [".grammar-analysis", ".grammar-analysis-copy", ".sentence-response"],
     "single-paragraph grammar analysis styles");
+  assert(/\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
+    "each submitted feedback round must begin with a visible divider");
   assert(!/\.grammar-analysis-(?:label|point|points|summary|result)\s*\{|\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
     "legacy split grammar-feedback styles must be removed");
 });
@@ -1530,6 +1533,34 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(rewrites[0].accepted, false);
   assert.strictEqual(rewrites[0].next_step, "revise_again");
   assert.strictEqual(rewrites[0].student_rewrite, "I went home tomorrow.");
+
+  const legacyFeedback = {
+    operation_id: "rewrite-round-1", overall_feedback: "First batch", checked_at: new Date("2026-08-22T10:00:00Z"),
+    results: [{ sentence_id: "s001", student_rewrite: "I go home.", accepted: false, feedback: "请修改时态。" }],
+  };
+  const feedbackHistory = backend._test.appendRewriteFeedbackHistory(legacyFeedback, {
+    operation_id: "rewrite-round-2", overall_feedback: "Second batch", checked_at: new Date("2026-08-22T10:05:00Z"),
+    results: [{ sentence_id: "s001", student_rewrite: "I went home.", accepted: true, feedback: "时态已修正。" }],
+  });
+  assert.strictEqual(feedbackHistory.round, 2);
+  assert.deepStrictEqual(feedbackHistory.history.map((batch) => batch.round), [1, 2]);
+  assert.deepStrictEqual(feedbackHistory.history.map((batch) => batch.results[0].feedback), ["请修改时态。", "时态已修正。"]);
+  const feedbackReplay = backend._test.appendRewriteFeedbackHistory({ feedback_history: feedbackHistory.history }, {
+    operation_id: "rewrite-round-2", results: [],
+  });
+  assert.strictEqual(feedbackReplay.history.length, 2,
+    "an idempotent rewrite replay must not append the same feedback round twice");
+});
+
+check("rewrite checks preserve every feedback round before replacing the current result view", () => {
+  const backend = read(functionPath);
+  const performSource = functionSource(backend, "performRewriteJob", "submitRewrites");
+  requireEvery(performSource, [
+    "appendRewriteFeedbackHistory", "feedback_history", "check_round",
+    "previousRecord", "enrichedResults", "rewrite_results: record",
+  ], "durable rewrite feedback history");
+  assert(performSource.indexOf("appendRewriteFeedbackHistory") < performSource.indexOf("rewrite_results: record"),
+    "the new feedback round must be assembled before the whole rewrite result is published");
 });
 
 check("prompts are versioned and make the selected Rubric authoritative", () => {

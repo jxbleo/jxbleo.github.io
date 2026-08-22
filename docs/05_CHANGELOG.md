@@ -61,6 +61,10 @@
   Sentence Revision footer action from `Check` to `Submit`.
 - Removed the Sentence Revision instruction line and moved Scan Revisions beside
   `Submit` as a compact, accessible camera-only footer button on every viewport.
+- Preserved per-sentence rewrite feedback across Submit rounds instead of replacing
+  the previous commentary. Analysis cards now separate chronologically numbered
+  feedback rounds with a thin divider, including safe round-1 migration for legacy
+  latest-only rewrite results and operation-ID replay protection.
 
 
 ## 2026-08-20

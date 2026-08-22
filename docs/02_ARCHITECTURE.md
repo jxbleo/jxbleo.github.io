@@ -877,7 +877,11 @@ complete object and prevents `PathNotViable` failures on nested fields such as
 `rewrite_results` object, completes the claimed job, clears the staged
 `pending_rewrite_check`, and updates the Composition status only while the job's
 lease and active-job guard remain current. Neither a retryable nor terminal
-provider failure clears the staged rewrite body.
+provider failure clears the staged rewrite body. Before whole-field replacement,
+the worker carries forward `feedback_history`, migrates a legacy latest-only result
+into round 1 when needed, and appends the current model result as one operation-ID-
+idempotent batch. The merged `results` array remains the current acceptance
+projection; history is the durable source for the student-facing round timeline.
 
 Daily quota reservation is server-side and idempotent by authenticated student
 plus client operation ID. A failed model request releases its reservation. A
