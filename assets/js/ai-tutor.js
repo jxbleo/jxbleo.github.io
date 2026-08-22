@@ -1900,7 +1900,7 @@
             return /[。！？!?；;.]$/.test(part) ? part : part + '。';
         }).join(' ') || '请根据建议调整这句话。';
         var feedbackHistoryHtml = sentenceRewriteFeedbackHistory(id, result).map(function(entry) {
-            return '<section class="rewrite-feedback-round" aria-label="第 ' + entry.round + ' 次点评"><span>第 ' + entry.round + ' 次点评</span><p>' + escapeHtml(entry.feedback) + '</p></section>';
+            return '<div class="rewrite-feedback-round"><p>' + escapeHtml(entry.feedback) + '</p></div>';
         }).join('');
         var analysisFaceId = 'sentence-analysis-' + id;
         var rewriteFaceId = 'sentence-rewrite-' + id;
