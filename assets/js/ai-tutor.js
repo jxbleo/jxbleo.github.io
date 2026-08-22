@@ -1780,11 +1780,14 @@
         }).then(function(result) {
             if (result && result.composition) state.current = result.composition;
             selected.forEach(function(item) { state.rewrites[item.sentence_id] = item.text; delete state.skipped[item.sentence_id]; });
+            safeArray(state.review && state.review.sentences).forEach(function(sentence, index) {
+                if (rewriteRequired(sentence)) state.rewriteFace[sentenceId(sentence, index)] = true;
+            });
             saveRewriteDraftSnapshot();
             syncRevisionScanFromComposition(state.current);
             clearLogicalOperation('revision-scan');
             renderLanguage();
-            setStatus('已导入选中的扫描草稿。请继续检查，完成后再按 Check。');
+            setStatus('已导入选中的扫描草稿。请继续检查，完成后再按 Submit。');
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanReview();
@@ -1819,10 +1822,10 @@
             '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2>Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
             '<section class="surface language-review-card language-sentence-review-card">' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
-            '<div class="language-section-heading sentence-review-heading"><div><h2>Sentence Revision</h2><p class="section-hint">亲自重写后再按 Check；也可以扫描纸上已经写好的句子。</p></div>' +
+            '<div class="language-section-heading sentence-review-heading"><div><h2>Sentence Revision</h2><p class="section-hint">亲自重写后再按 Submit；也可以扫描纸上已经写好的句子。</p></div>' +
             (!state.readOnly && revisionScanSentences().length ? '<div class="sentence-review-actions"><button class="secondary-button scan-revision-trigger" type="button" data-start-revision-scan>' + icon('camera') + 'Scan Revisions</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden></div>' : '') + '</div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
-            (!state.readOnly ? '<div class="batch-actions"><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Check</button></div>' : '') +
+            (!state.readOnly ? '<div class="batch-actions"><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Submit</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
             '</section></div>';
         window.requestAnimationFrame(observeSentenceCardHeights);
@@ -1895,7 +1898,7 @@
         var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
         var correctedResponse = '<p class="corrected-sentence"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span></p>';
         var editableResponse = '<p class="original-sentence">' + original + '</p>' +
-            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">你的改写</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
+            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">Your Attempt</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="翻到句子分析面"></button>' +
             '<div class="sentence-face-content">' + sentenceMeta + '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +

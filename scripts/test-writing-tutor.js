@@ -400,8 +400,10 @@ check("each revision-required sentence renders only source, consolidated analysi
   requireEvery(cardSource, [
     "original-sentence", "sentence-row-number", "index + 1", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
     "sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion",
-    "result.feedback", "sentence-response", "rewrite-input",
+    "result.feedback", "sentence-response", "rewrite-input", "Your Attempt",
   ], "three-part sentence row");
+  assert(/\.rewrite-area label\s*\{[^}]*color\s*:\s*var\(--ai-muted\)/is.test(styles),
+    "Your Attempt must use the muted supporting-text color");
   assert(!/grammar-analysis-label|grammar-analysis-point|grammar-analysis-summary|grammar-analysis-result|issue\.category|result\.next_step/.test(cardSource),
     "the grammar box must not render headings, categories, split feedback blocks, or English result enums");
   requireEvery(styles, [".grammar-analysis", ".grammar-analysis-copy", ".sentence-response"],
@@ -552,7 +554,7 @@ check("effective sentences use the static CORRECT status and no coaching control
     "sentence-effective-face", "sentenceMeta",
   ],
     "effective sentence summary");
-  assert(!/grammar-analysis|sentence-response|rewrite-input|你的改写/.test(effectiveBranch),
+  assert(!/grammar-analysis|sentence-response|rewrite-input|Your Attempt/.test(effectiveBranch),
     "effective sentences must not render analysis or rewrite controls");
   assert(!/data-flip-sentence/.test(effectiveBranch),
     "already-correct source sentences must use the same bordered card without pretending to have another face");
@@ -624,7 +626,7 @@ check("every Sentence Revision row keeps its indexed soft background without a l
     "sentence rows must not render the former dark indexed line on the left");
 });
 
-check("Sentence Revision numbers every row and ends with one Check action", () => {
+check("Sentence Revision numbers every row and ends with one Submit action", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
@@ -633,12 +635,12 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
     "sentence-row numbering");
   assert((cardSource.match(/sentenceMeta/g) || []).length >= 4,
     "required and effective sentence rows must share the same top metadata row");
-  assert(/data-submit-rewrites[^>]*>Check<\/button>/.test(renderSource),
-    "the editable footer must expose exactly the concise Check action");
+  assert(/data-submit-rewrites[^>]*>Submit<\/button>/.test(renderSource),
+    "the editable footer must expose exactly the concise Submit action");
   assert(!/未完成的句子|全部完成，提交检查|再次提交检查|icon\('arrow'\)/.test(renderSource),
     "the footer must remove the old hint, dynamic labels, and arrow icon");
   assert(/\.batch-actions\s*\{[^}]*justify-content\s*:\s*flex-end/is.test(styles),
-    "the lone desktop Check action must align to the trailing edge");
+    "the lone desktop Submit action must align to the trailing edge");
   assert(/\.sentence-row-number\s*\{[^}]*(?:display\s*:\s*inline-block)[^}]*border\s*:\s*0[^}]*border-radius\s*:\s*0[^}]*background\s*:\s*transparent/is.test(styles),
     "sentence rows must use the BBC worksheet-style plain sequence number rather than a capsule");
   assert(/\.sentence-card-meta\s*\{[^}]*display\s*:\s*flex/is.test(styles)
@@ -839,6 +841,8 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
     "Review Scan must not retain the removed typed-versus-scanned choice state");
   assert(/selected\.forEach\([\s\S]{0,180}state\.rewrites\[item\.sentence_id\]\s*=\s*item\.text/.test(importSource),
     "explicit import must place each reviewed scanned sentence into its selected draft");
+  assert(/state\.review[\s\S]{0,220}rewriteRequired\(sentence\)[\s\S]{0,120}state\.rewriteFace\[sentenceId\(sentence, index\)\]\s*=\s*true/.test(importSource),
+    "successful scan import must return with every revision-required card showing its attempt face");
 });
 
 check("revision photo upload retries one logical start-upload-finish task without a false handoff claim", () => {

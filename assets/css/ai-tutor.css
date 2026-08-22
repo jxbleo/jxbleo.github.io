@@ -354,7 +354,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .reference-panel small { display: block; margin-bottom: 6px; font-weight: 850; }
 .reference-panel p { margin: 0; font: 1rem/1.55 ui-serif, Georgia, serif; overflow-wrap: anywhere; word-break: break-word; }
 .rewrite-area { display: grid; gap: 8px; }
-.rewrite-area label { font-size: .72rem; font-weight: 850; }
+.rewrite-area label { color: var(--ai-muted); font-size: .72rem; font-weight: 760; }
 .rewrite-input { min-height: 92px; padding: 12px 13px; resize: vertical; line-height: 1.55; }
 .batch-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin: 0; padding: 18px clamp(18px,3.5vw,34px); border-top: 1px solid var(--ai-line); background: rgba(245,250,248,.72); }
 .language-card-footer { padding: 18px clamp(18px,3.5vw,34px); border-top: 1px solid var(--ai-line); }
