@@ -78,6 +78,104 @@
         return '';
     }
 
+    function normalizedOcrText(value) {
+        return String(value == null ? '' : value).replace(/\r\n?/g, '\n');
+    }
+
+    function ocrUncertainRanges(text, spans) {
+        var source = normalizedOcrText(text);
+        var lowerSource = source.toLowerCase();
+        var nextStart = {};
+        var ranges = [];
+        safeArray(spans).forEach(function(span) {
+            var needle = firstText(span && span.text);
+            if (!needle) return;
+            var key = needle.toLowerCase();
+            var searchFrom = nextStart[key] || 0;
+            var start = source.indexOf(needle, searchFrom);
+            if (start < 0) start = lowerSource.indexOf(key, searchFrom);
+            while (start >= 0 && ranges.some(function(range) {
+                return start < range.end && start + needle.length > range.start;
+            })) {
+                start = lowerSource.indexOf(key, start + Math.max(1, needle.length));
+            }
+            if (start < 0) return;
+            ranges.push({ start: start, end: start + needle.length, text: source.slice(start, start + needle.length) });
+            nextStart[key] = start + needle.length;
+        });
+        return ranges.sort(function(a, b) { return a.start - b.start; });
+    }
+
+    function ocrEditorHtml(text, spans) {
+        var source = normalizedOcrText(text);
+        var ranges = ocrUncertainRanges(source, spans);
+        function renderSegment(start, end) {
+            var cursor = start;
+            var html = '';
+            ranges.forEach(function(range) {
+                if (range.start < start || range.end > end) return;
+                html += escapeHtml(source.slice(cursor, range.start)).replace(/\n/g, '<br>');
+                html += '<mark class="ocr-uncertain" data-ocr-uncertain data-original="' + escapeHtml(range.text) +
+                    '" aria-label="OCR may be unclear: ' + escapeHtml(range.text) + '">' + escapeHtml(range.text) + '</mark>';
+                cursor = range.end;
+            });
+            html += escapeHtml(source.slice(cursor, end)).replace(/\n/g, '<br>');
+            return html || '<br>';
+        }
+        var paragraphs = [];
+        var paragraphStart = 0;
+        var boundary = /\n{2,}/g;
+        var match;
+        while ((match = boundary.exec(source))) {
+            paragraphs.push(renderSegment(paragraphStart, match.index));
+            paragraphStart = boundary.lastIndex;
+        }
+        paragraphs.push(renderSegment(paragraphStart, source.length));
+        return paragraphs.map(function(paragraph) { return '<p>' + paragraph + '</p>'; }).join('');
+    }
+
+    function ocrEditorText(editor) {
+        if (!editor) return '';
+        var blocks = Array.prototype.slice.call(editor.children).filter(function(child) {
+            return child.nodeType === 1 && child.tagName !== 'BR';
+        });
+        if (!blocks.length) return normalizedOcrText(editor.innerText || editor.textContent || '');
+        return blocks.map(function(block) {
+            return normalizedOcrText(block.innerText || block.textContent || '').replace(/\n+$/g, '');
+        }).join('\n\n');
+    }
+
+    function unwrapOcrMark(mark, preserveCaret) {
+        if (!mark || !mark.parentNode) return;
+        var markText = mark.textContent || '';
+        var caretOffset = markText.length;
+        var selection = window.getSelection && window.getSelection();
+        if (preserveCaret && selection && selection.rangeCount && mark.contains(selection.focusNode)) {
+            try {
+                var beforeCaret = document.createRange();
+                beforeCaret.selectNodeContents(mark);
+                beforeCaret.setEnd(selection.focusNode, selection.focusOffset);
+                caretOffset = beforeCaret.toString().length;
+            } catch (error) {}
+        }
+        var textNode = document.createTextNode(markText);
+        mark.parentNode.replaceChild(textNode, mark);
+        if (preserveCaret && selection) {
+            var nextRange = document.createRange();
+            nextRange.setStart(textNode, Math.min(caretOffset, markText.length));
+            nextRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(nextRange);
+        }
+    }
+
+    function clearChangedOcrMarks(editor) {
+        if (!editor) return;
+        Array.prototype.slice.call(editor.querySelectorAll('[data-ocr-uncertain]')).forEach(function(mark) {
+            if ((mark.textContent || '') !== (mark.getAttribute('data-original') || '')) unwrapOcrMark(mark, false);
+        });
+    }
+
     function operationId(prefix) {
         var suffix = window.crypto && typeof window.crypto.randomUUID === 'function'
             ? window.crypto.randomUUID()
@@ -830,7 +928,9 @@
         if (result && result.composition) state.current = result.composition;
         restoreOcrPhotoUrls(result);
         state.ocr = result && result.ocr || state.current && state.current.pending_ocr || {};
-        state.confirmedText = firstText(state.ocr.full_text, safeArray(state.ocr.paragraphs).join('\n\n'));
+        state.confirmedText = safeArray(state.ocr.paragraphs).length
+            ? state.ocr.paragraphs.join('\n\n')
+            : firstText(state.ocr.full_text);
         clearLogicalOperation('ocr');
         renderOcr();
         syncCurrentSummary();
@@ -910,13 +1010,11 @@
 
     function renderOcr() {
         state.screen = 'ocr';
-        var uncertainCount = safeArray(state.ocr && state.ocr.uncertain_spans).length;
-        stage.innerHTML = '<section class="surface surface-pad"><div class="page-heading"><div><p class="eyebrow">OCR REVIEW</p><h2>先确认识别文字</h2><p>请把文字和原图对照。你确认的电子文本才会进入 AI 批改。</p></div><span class="step-indicator">第 2 步 · 核对文字</span></div>' +
-            (uncertainCount ? '<p class="notice">有 ' + uncertainCount + ' 处笔迹可能不够清楚，请重点检查后再继续。</p>' : '') +
-            '<button class="secondary-button compact mobile-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + '显示原图对照</button>' +
-            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo"><div class="panel-label"><span>原始照片（' + state.photoUrls.length + ' 页）</span></div>' + state.photoUrls.map(function(url, index) { return '<img src="' + escapeHtml(url) + '" alt="作文原始照片第 ' + (index + 1) + ' 页">'; }).join('') + '</section>' +
-            '<section class="ocr-editor"><div class="panel-label"><span>可编辑 OCR 文本</span><small>请自行修正识别错误</small></div><textarea id="ocr-text" maxlength="30000" aria-label="OCR 识别文本">' + escapeHtml(state.confirmedText) + '</textarea></section></div>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-reupload>重新上传</button><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>文字无误，开始批改' + icon('arrow') + '</button></div></section>';
+        stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading"><h2>OCR Review</h2>' +
+            '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
+            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="Uploaded composition images">' + state.photoUrls.map(function(url, index) { return '<img src="' + escapeHtml(url) + '" alt="Uploaded composition page ' + (index + 1) + '">'; }).join('') + '</section>' +
+            '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(state.confirmedText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
+            '<div class="form-actions ocr-review-actions"><button class="secondary-button" type="button" data-reupload>Upload Again</button><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm Text &amp; Start Review' + icon('arrow') + '</button></div></section>';
     }
 
     function saveAndEvaluate() {
@@ -1705,7 +1803,11 @@
             delete state.skipped[id];
             saveRewriteDraftSnapshot();
         }
-        if (target.id === 'ocr-text') state.confirmedText = target.value;
+        if (target.id === 'ocr-text' || target.closest && target.closest('#ocr-text')) {
+            var editor = target.id === 'ocr-text' ? target : target.closest('#ocr-text');
+            clearChangedOcrMarks(editor);
+            state.confirmedText = ocrEditorText(editor);
+        }
     });
 
     document.addEventListener('change', function(event) {
@@ -1736,6 +1838,12 @@
     });
 
     document.addEventListener('click', function(event) {
+        var ocrMark = event.target.closest && event.target.closest('[data-ocr-uncertain]');
+        if (ocrMark) {
+            unwrapOcrMark(ocrMark, true);
+            state.confirmedText = ocrEditorText(document.getElementById('ocr-text'));
+            return;
+        }
         var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-manuscript-sentence]');
         if (!button) return;
         if (button.matches('#history-home')) openLeaveConfirmation();
@@ -1765,10 +1873,9 @@
             var layout = document.getElementById('ocr-layout');
             var visible = layout.classList.toggle('show-photo');
             button.setAttribute('aria-pressed', String(visible));
-            button.innerHTML = icon('camera') + (visible ? '隐藏原图' : '显示原图对照');
         }
         else if (button.matches('[data-confirm-ocr]')) {
-            state.confirmedText = firstText(document.getElementById('ocr-text').value);
+            state.confirmedText = firstText(ocrEditorText(document.getElementById('ocr-text')));
             if (!state.confirmedText) { setStatus('请先确认或补全 OCR 文本。'); return; }
             setBusy(true); saveAndEvaluate();
         }

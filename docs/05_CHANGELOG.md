@@ -5,6 +5,10 @@
 
 ## 2026-08-22 — AI Tutor composition continuity
 
+- Rebuilt OCR Review as a focused paragraph editor with only `OCR Review`,
+  `Compare with Image`, and the two English footer actions. Structured uncertain
+  OCR substrings now appear as dismissible pale-red inline marks, while one Enter
+  creates a visibly spaced paragraph without storing presentation markup.
 - Changed student-facing CEFR levels from Chinese within-band labels to compact
   minus/base/plus notation such as `B1-`, `B1`, and `B1+`.
 - Added a required structured CEFR Writing Estimate to new General Language

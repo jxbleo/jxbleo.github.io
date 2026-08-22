@@ -1951,8 +1951,25 @@ Important mobile rules:
   Clicking the same icon again, its close button, the page scrim, or `Escape`
   closes it and restores focus to the trigger. Opening the drawer locks background
   scrolling without losing the previous page position.
-- OCR comparison is split-screen on tablet/desktop. Mobile opens text first and
-  exposes an explicit photo comparison control.
+- OCR Review is a deliberately sparse editing card. Its top row contains only
+  `OCR Review` and the persistent `Compare with Image` toggle; the editable
+  manuscript follows immediately, with `Upload Again` and
+  `Confirm Text & Start Review` as the only footer actions. Remove the former
+  Chinese heading, explanatory copy, step indicator, uncertainty count, photo
+  label, and editor label.
+- Image comparison is closed by default on every viewport. `Compare with Image`
+  opens a split view on tablet/desktop and places the images above the editor on
+  mobile; pressing it again returns to the text-only layout without changing its
+  label or the confirmed text.
+- Genuinely uncertain OCR substrings appear directly inside the editor with a
+  pale-red fill and dark-red text, without an underline. The highlight means
+  “check the image,” not a writing error. Clicking an unchanged mark acknowledges
+  it and removes the color while preserving the caret; editing the marked text
+  also removes it. Only plain text is saved.
+- Each manuscript paragraph is one editable block. One Enter creates the next
+  paragraph and CSS supplies its visual gap; the student must not type an extra
+  blank line merely to make paragraphs legible. OCR paragraph items are rendered
+  with the same spacing and serialize back to plain-text paragraph boundaries.
 - Before confirmation, the browser retries the same stable upload batch and
   never claims that cloud processing can continue. An interrupted or partial
   upload stays in the same Composition and exposes `重新上传照片`; only a fully
