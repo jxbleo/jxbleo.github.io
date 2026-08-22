@@ -1850,7 +1850,8 @@ cloudfunctions/
   分析与改写输入。语法分析不得显示 `Grammar Analysis`、`Word Choice`、语法类别或拆分后的建议
   区块。每张卡片左上角显示不占正文宽度的裸序号，右上角显示英文状态：原句无需修改为
   `CORRECT ✓`，学生改写已经通过为 `REVISED ✓`，尚未通过为 `NEEDS REVISION ×`。无需修改的句子只
-  显示这一状态行和原句，不得显示语法框、`Your Attempt` 或句末图标。需订正句的输入标签固定为弱化灰色的 `Your Attempt`，底部唯一提交按钮固定为 `Submit`。
+  显示这一状态行和原句，不得显示语法框、`Your Attempt` 或句末图标。需订正句的输入标签固定为弱化灰色的 `Your Attempt`。
+  Sentence Revision 标题下不显示“亲自重写后再按 Submit”等说明；底部操作栏只在 `Submit` 左侧显示一个带可访问名称的小相机图标按钮，不显示 `Scan Revisions` 文字。
 - Sentence Revision 行首编号采用 BBC classroom worksheet 填空题的裸序号风格：小号粗体、
   baseline 对齐，不使用边框、圆底或胶囊背景。数字导航胶囊中，已完成在下方显示语义绿色小勾；
   尚未完成或检查后仍需订正的句子在下方显示语义红色小叉，不再显示圆点或问号。

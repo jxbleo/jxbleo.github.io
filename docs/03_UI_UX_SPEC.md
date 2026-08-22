@@ -2054,9 +2054,12 @@ Important mobile rules:
   a small heavy baseline-aligned number with no border, circular background, or pill.
   It remains distinct from the horizontal navigation capsule.
   The revision input label is exactly `Your Attempt` and uses the muted supporting-text
-  color so the student's sentence remains visually primary. The card footer contains
-  only one trailing `Submit` button in editable mode; it has no explanatory copy,
-  dynamic long label, or arrow icon.
+  color so the student's sentence remains visually primary. Remove the explanatory
+  sentence under the `Sentence Revision` heading. In editable mode, place one compact
+  44px camera-only Scan Revisions button immediately to the left of the trailing
+  `Submit` button in the bottom action row. Its visible surface contains only the
+  existing camera SVG, while `aria-label` and `title` preserve its accessible name.
+  Keep both controls on one row on phone, with Submit taking the remaining width.
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.

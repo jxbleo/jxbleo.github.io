@@ -1822,10 +1822,11 @@
             '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2>Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
             '<section class="surface language-review-card language-sentence-review-card">' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
-            '<div class="language-section-heading sentence-review-heading"><div><h2>Sentence Revision</h2><p class="section-hint">亲自重写后再按 Submit；也可以扫描纸上已经写好的句子。</p></div>' +
-            (!state.readOnly && revisionScanSentences().length ? '<div class="sentence-review-actions"><button class="secondary-button scan-revision-trigger" type="button" data-start-revision-scan>' + icon('camera') + 'Scan Revisions</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden></div>' : '') + '</div>' +
+            '<div class="language-section-heading sentence-review-heading"><h2>Sentence Revision</h2></div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
-            (!state.readOnly ? '<div class="batch-actions"><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Submit</button></div>' : '') +
+            (!state.readOnly ? '<div class="batch-actions">' +
+                (revisionScanSentences().length ? '<button class="secondary-button scan-revision-trigger" type="button" data-start-revision-scan aria-label="Scan Revisions" title="Scan Revisions">' + icon('camera') + '</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' : '') +
+                '<button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Submit</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
             '</section></div>';
         window.requestAnimationFrame(observeSentenceCardHeights);
