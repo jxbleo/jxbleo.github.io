@@ -35,8 +35,8 @@
   while preserving the existing iPad and desktop behavior.
 - Added `Scan Revisions` inside editable Sentence Revision. Students may capture
   or select answer photos, review durable OCR mappings, manually assign unresolved
-  rows, and explicitly import confirmed rows into revision drafts. Existing typed
-  drafts require an explicit keep/replace choice; scan import never runs
+  rows, and explicitly import confirmed rows into revision drafts. Import adopts
+  the reviewed scan text for the corresponding unfinished draft but never runs
   `Check` automatically. Number markers accept `8`, `8.`, `8、`, `8)`, and `(8)`.
 - Bound revision OCR to private uploads, a durable `revision_ocr` job, strict
   schema validation, server canonicalization, and a pending scan result before
@@ -52,6 +52,10 @@
   unfinished revision-required sentences, already-correct/accepted work is excluded
   by both client and server, and another card's target is disabled to prevent
   duplicate assignment.
+- Reduced Review Scan to its sentence cards and footer actions. Removed page-level
+  instructions, matching labels, handwritten-number copy, and typed/scanned choice
+  controls; confidence is now a tiny accessible high/medium/low symbol, and Import
+  is the explicit boundary that adopts the reviewed scan text for unfinished drafts.
 
 
 ## 2026-08-20

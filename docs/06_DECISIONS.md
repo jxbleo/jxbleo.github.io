@@ -1006,9 +1006,10 @@ Decision:
   canonicalization validates the number against the current sentence list and
   preserves unresolved or ambiguous rows for human review.
 - OCR output first lands in a guarded pending scan result. The student must review
-  mapped, `check`, and unresolved rows, manually assign a sentence where
-  necessary, and explicitly choose how each scan interacts with an existing typed
-  draft. Only confirmed rows are persisted as scanned revision drafts, and they
+  each sentence card, manually assign a sentence where necessary, and explicitly
+  press Import to adopt the reviewed card text. Import replaces the corresponding
+  unfinished draft; returning without Import preserves it. Only confirmed rows are
+  persisted as scanned revision drafts, and they
   flow through the existing `Check` action; import never auto-checks.
 
 Why:

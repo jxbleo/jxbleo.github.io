@@ -1100,10 +1100,10 @@ All collections are `ADMINONLY`.
   mappings, confidence/error codes, and safe timestamps, but is not the live
   rewrite draft and cannot mark a sentence complete. After an explicit student
   import, the confirmed mapped rows are persisted as `scanned_rewrite_drafts`
-  under the same Composition revision. A row with an existing typed draft is
-  imported only after an explicit `keep_typed` or `replace_with_scan` choice.
-  Confirming all rows as `keep_typed` clears the pending scan without changing
-  any draft; returning without confirmation leaves it reviewable. Scan import does not create an attempt, invoke `Check`, or
+  under the same Composition revision. Import is the single explicit adoption
+  boundary: every reviewed mapped row replaces the corresponding unfinished browser
+  draft, while returning without confirmation leaves the pending scan reviewable
+  and does not mutate the draft. Scan import does not create an attempt, invoke `Check`, or
   publish a rewrite result; the existing `pending_rewrite_check` flow remains the
   only path to model checking.
   Eligibility is derived from the current language-review sentences minus every

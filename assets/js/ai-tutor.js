@@ -499,7 +499,6 @@
                 job: null,
                 pending: null,
                 candidates: [],
-                choices: {},
                 message: ''
             };
         }
@@ -563,13 +562,6 @@
         scan.job = revisionScanJobFrom(composition);
         if (pending && Array.isArray(pending.items)) {
             scan.candidates = revisionScanCandidates(pending);
-            scan.choices = scan.choices || {};
-            scan.candidates.forEach(function(candidate) {
-                if (!scan.choices[candidate.candidate_id]) {
-                    var typed = firstText(state.rewrites[candidate.sentence_id]);
-                    scan.choices[candidate.candidate_id] = typed ? '' : 'scanned';
-                }
-            });
             scan.status = 'ready';
         } else if (scan.job && scan.job.status) {
             scan.status = firstText(scan.job.status).toLowerCase();
@@ -1537,16 +1529,16 @@
         });
     }
 
-    function revisionScanStatusLabel(status) {
-        return ({ mapped: '已匹配', check: '请检查', unresolved: '需要处理' })[status] || '需要处理';
-    }
-
     function revisionScanStatusClass(status) {
         return ['mapped', 'check', 'unresolved'].indexOf(status) >= 0 ? status : 'unresolved';
     }
 
-    function revisionScanConfidenceLabel(confidence) {
-        return ({ high: '高', medium: '中', low: '低' })[confidence] || '低';
+    function revisionScanConfidenceMeta(confidence) {
+        return ({
+            high: { symbol: '✓', label: '识别置信度：高' },
+            medium: { symbol: '!', label: '识别置信度：中，请检查' },
+            low: { symbol: '?', label: '识别置信度：低，请仔细检查' }
+        })[confidence] || { symbol: '?', label: '识别置信度：低，请仔细检查' };
     }
 
     function revisionScanWarningLabel(warning) {
@@ -1566,13 +1558,6 @@
         return scan.candidates.find(function(item) { return item.candidate_id === id; }) || candidate;
     }
 
-    function revisionScanSelection(candidate, index) {
-        var id = revisionScanCandidateId(candidate, index);
-        var scan = revisionScanState();
-        if (scan.choices && Object.prototype.hasOwnProperty.call(scan.choices, id)) return scan.choices[id];
-        return firstText(state.rewrites[candidate && candidate.sentence_id]) ? '' : 'scanned';
-    }
-
     function revisionScanDuplicateIds() {
         var counts = {};
         var eligible = revisionScanSentences().map(function(sentence, index) { return sentenceId(sentence, index); });
@@ -1587,14 +1572,14 @@
         var scan = revisionScanState();
         var id = revisionScanCandidateId(candidate, index);
         var sentenceIdValue = firstText(candidate.sentence_id);
-        var typed = '';
         var status = revisionScanStatusClass(candidate.status);
         if (!sentenceIdValue || !revisionScanSentences().some(function(sentence, sentenceIndex) {
             return sentenceId(sentence, sentenceIndex) === sentenceIdValue;
         })) status = 'unresolved';
-        if (status !== 'unresolved') typed = firstText(state.rewrites[sentenceIdValue]);
         var duplicate = revisionScanDuplicateIds().indexOf(sentenceIdValue) >= 0;
         var selectedDetails = revisionScanSentenceDetails(status === 'unresolved' ? '' : sentenceIdValue);
+        var confidence = ['high', 'medium', 'low'].indexOf(candidate.confidence) >= 0 ? candidate.confidence : 'low';
+        var confidenceMeta = revisionScanConfidenceMeta(confidence);
         var claimedByAnother = revisionScanState().candidates.reduce(function(ids, item) {
             var sid = firstText(item.sentence_id);
             if (item.candidate_id !== id && sid && ids.indexOf(sid) < 0) ids.push(sid);
@@ -1611,24 +1596,16 @@
         var warnings = safeArray(candidate.warnings).map(function(warning) {
             return '<li>' + escapeHtml(revisionScanWarningLabel(warning)) + '</li>';
         }).join('');
-        var choice = revisionScanSelection(candidate, index);
-        var choiceHtml = typed ? '<fieldset class="revision-scan-choice"><legend>已有手写草稿</legend>' +
-            '<label><input type="radio" name="scan-choice-' + escapeHtml(id) + '" value="typed" data-scan-choice="typed" data-scan-candidate="' + escapeHtml(id) + '"' + (choice === 'typed' ? ' checked' : '') + '><span>Keep typed</span></label>' +
-            '<label><input type="radio" name="scan-choice-' + escapeHtml(id) + '" value="scanned" data-scan-choice="scanned" data-scan-candidate="' + escapeHtml(id) + '"' + (choice === 'scanned' ? ' checked' : '') + '><span>Use scanned</span></label></fieldset>' :
-            '<p class="revision-scan-import-note">将导入扫描文字；你仍可在逐句修改中继续编辑。</p>';
         return '<article class="revision-scan-candidate is-' + status + (duplicate ? ' has-duplicate' : '') + '" data-scan-candidate-row="' + escapeHtml(id) + '">' +
             '<label class="revision-scan-target' + (selectedDetails ? '' : ' is-unassigned') + '">' +
-            '<span class="revision-scan-target-topline"><span>NEEDS REVISION</span><span class="revision-scan-status is-' + status + '">' + escapeHtml(revisionScanStatusLabel(status)) + '</span></span>' +
             '<span class="revision-scan-target-main"><strong class="revision-scan-target-number">' + (selectedDetails ? selectedDetails.number : '?') + '</strong>' +
             '<span class="revision-scan-target-copy">' + escapeHtml(selectedDetails ? firstText(selectedDetails.sentence && selectedDetails.sentence.original) : 'Select the sentence this rewrite belongs to') + '</span>' +
             '<span class="revision-scan-target-chevron" aria-hidden="true">⌄</span></span>' +
             '<select data-scan-sentence="' + escapeHtml(id) + '" aria-label="为识别项 ' + (index + 1) + ' 选择仍需订正的原句"><option value="">Select sentence</option>' + options + '</select></label>' +
-            '<label class="revision-scan-recognized"><span class="revision-scan-recognized-label">SCANNED REVISION' +
-            (candidate.written_number != null ? ' · 手写编号 ' + escapeHtml(candidate.written_number) : '') +
-            (candidate.confidence ? ' · 置信度' + escapeHtml(revisionScanConfidenceLabel(candidate.confidence)) : '') + '</span>' +
+            '<label class="revision-scan-recognized"><span class="revision-scan-confidence is-' + confidence + '" role="img" aria-label="' + escapeHtml(confidenceMeta.label) + '" title="' + escapeHtml(confidenceMeta.label) + '">' + confidenceMeta.symbol + '</span>' +
             '<textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="编辑识别项 ' + (index + 1) + ' 的文字">' + escapeHtml(candidate.recognized_text) + '</textarea></label>' +
             (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') +
-            (warnings ? '<ul class="revision-scan-warning-list">' + warnings + '</ul>' : '') + choiceHtml + '</article>';
+            (warnings ? '<ul class="revision-scan-warning-list">' + warnings + '</ul>' : '') + '</article>';
     }
 
     function renderRevisionScanReview() {
@@ -1637,11 +1614,7 @@
         scan.status = 'ready';
         state.screen = 'revision-scan-review';
         var candidates = scan.candidates || [];
-        var missingIds = safeArray(scan.pending && scan.pending.missing_sentence_ids);
-        var missingSummary = missingIds.length ? '<div class="revision-scan-missing" role="status"><strong>还有句子没有在照片中找到：</strong> ' + missingIds.map(function(id) { return escapeHtml(revisionScanSentenceLabel(id)); }).join('、') + '。这些句子会保留原有草稿，不会被自动清空。</div>' : '';
-        stage.innerHTML = '<section class="surface surface-pad revision-scan-surface"><div class="revision-scan-heading"><div><p class="eyebrow">SENTENCE REVISION</p><h2>Review Scan</h2><p>先检查编号和识别文字，再决定哪些内容要放入你的改写草稿。现有 typed 草稿不会被自动覆盖。</p></div><span class="revision-scan-count">' + candidates.length + ' 项</span></div>' +
-            '<div class="revision-scan-instructions"><strong>拍照小提示</strong><p>支持 <code>8</code>、<code>8.</code>、<code>8、</code>、<code>8)</code>、<code>(8)</code>。编号放在项目开头，并在编号后留一个空格，识别会更稳定。</p></div>' +
-            missingSummary +
+        stage.innerHTML = '<section class="surface surface-pad revision-scan-surface" aria-label="扫描改写确认">' +
             (candidates.length ? '<div class="revision-scan-candidate-list">' + candidates.map(revisionScanCandidateHtml).join('') + '</div>' : '<p class="section-hint">没有可供确认的识别项目。你可以重新拍一张更清晰的照片。</p>') +
             '<div class="form-actions revision-scan-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>返回 Sentence Revision</button>' +
             '<button class="primary-button" type="button" data-confirm-revision-scan data-disable-when-busy' + (candidates.length ? '' : ' disabled') + '>导入选中的草稿</button></div></section>';
@@ -1654,7 +1627,7 @@
         state.screen = 'revision-scan-waiting';
         stage.innerHTML = '<section class="surface loading-state revision-scan-waiting"><span class="loading-orbit" aria-hidden="true"></span><strong>' +
             (status === 'queued' ? '照片已收到，正在排队识别' : '照片已收到，正在识别改写') + '</strong>' +
-            '<p>识别会在云端继续。你可以离开或重新打开这篇作文，结果会从已保存的状态恢复，不会丢失当前 typed 草稿。</p>' +
+            '<p>识别会在云端继续。你可以离开或重新打开这篇作文，结果会从已保存的状态恢复，不会丢失当前改写草稿。</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
             (allowRetry ? '<button class="secondary-button" type="button" data-retry-revision-scan>重新检查状态</button>' : '') +
             '<button class="primary-button" type="button" data-stay-revision-scan>留在此页等待</button></div>' +
@@ -1664,7 +1637,7 @@
 
     function renderRevisionScanFailure(error) {
         stopRevisionScanPolling();
-        var message = firstText(error && error.message, '照片识别没有完成。你的作文和现有 typed 草稿仍然安全保存。');
+        var message = firstText(error && error.message, '照片识别没有完成。你的作文和现有改写草稿仍然安全保存。');
         state.screen = 'revision-scan-failed';
         stage.innerHTML = '<section class="surface error-state revision-scan-failure"><strong>Revision Scan 没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-retry-revision-scan>重新检查状态</button><button class="primary-button" type="button" data-reupload-revision-scan>重新拍照</button></div>' +
@@ -1699,7 +1672,7 @@
             }).catch(function() {
                 if (!state.revisionScanPollActive || generation !== state.revisionScanPollGeneration) return;
                 var pollStatus = document.getElementById('revision-scan-poll-status');
-                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。当前 typed 草稿已经安全保存。';
+                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。当前改写草稿已经安全保存。';
                 window.setTimeout(poll, 5000);
             });
         }
@@ -1714,7 +1687,6 @@
         scan.files = selectedFiles;
         scan.photoIds = [];
         scan.candidates = [];
-        scan.choices = {};
         scan.pending = null;
         scan.operationId = logicalOperationId('revision-scan', JSON.stringify({
             composition_id: compositionId(state.current), revision: state.current && state.current.revision,
@@ -1760,7 +1732,7 @@
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanFailure({
-                    message: '网络中断，暂时无法确认照片是否已经完整交给云端。请重新检查状态；如果照片没有完成上传，再重新拍照。当前 typed 草稿不会丢失。'
+                    message: '网络中断，暂时无法确认照片是否已经完整交给云端。请重新检查状态；如果照片没有完成上传，再重新拍照。当前改写草稿不会丢失。'
                 });
                 return;
             }
@@ -1779,9 +1751,7 @@
         scan.candidates.forEach(function(candidate, index) {
             var id = revisionScanCandidateId(candidate, index);
             var chosenSentenceId = firstText(candidate.sentence_id);
-            var choice = revisionScanSelection(candidate, index);
             var text = normalizedOcrText(candidate.recognized_text).trim();
-            var typed = firstText(state.rewrites[chosenSentenceId]);
             if (!chosenSentenceId || validIds.indexOf(chosenSentenceId) < 0) {
                 errors.push('识别项 ' + (index + 1) + ' 还没有选择有效句子。');
                 return;
@@ -1790,11 +1760,6 @@
                 errors.push(revisionScanSentenceLabel(chosenSentenceId) + '被重复匹配，请调整识别项。');
                 return;
             }
-            if (typed && choice !== 'typed' && choice !== 'scanned') {
-                errors.push(revisionScanSentenceLabel(chosenSentenceId) + '已有 typed 草稿，请先选择 Keep typed 或 Use scanned。');
-                return;
-            }
-            if (choice === 'typed') return;
             if (!text) {
                 errors.push('识别项 ' + (index + 1) + ' 没有文字。');
                 return;
@@ -1819,13 +1784,11 @@
             syncRevisionScanFromComposition(state.current);
             clearLogicalOperation('revision-scan');
             renderLanguage();
-            setStatus(selected.length
-                ? '已导入选中的扫描草稿。请继续检查，完成后再按 Check。'
-                : '已保留现有 typed 草稿并关闭本次扫描结果。');
+            setStatus('已导入选中的扫描草稿。请继续检查，完成后再按 Check。');
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanReview();
-                setStatus('网络暂时中断。导入状态尚未确认；请稍后重试，当前 typed 草稿不会丢失。');
+                setStatus('网络暂时中断。导入状态尚未确认；请稍后重试，当前改写草稿不会丢失。');
                 return;
             }
             setStatus(firstText(error && error.message, '扫描草稿导入没有完成，请重试。'));
@@ -2092,7 +2055,7 @@
                 return;
             }
             if (!state.readOnly && composition.pending_upload && composition.pending_upload.kind === 'revision_scan') {
-                renderRevisionScanFailure({ message: '订正照片的上传尚未完整确认。请重新检查状态；如果仍未完成，再重新拍照。当前 typed 草稿不会丢失。' });
+                renderRevisionScanFailure({ message: '订正照片的上传尚未完整确认。请重新检查状态；如果仍未完成，再重新拍照。当前改写草稿不会丢失。' });
                 syncCurrentSummary();
                 return;
             }
@@ -2290,13 +2253,9 @@
             });
             if (sentenceCandidate) {
                 sentenceCandidate.sentence_id = target.value || null;
-                revisionScanState().choices[sentenceCandidate.candidate_id] = firstText(state.rewrites[sentenceCandidate.sentence_id]) ? '' : 'scanned';
                 sentenceCandidate.status = sentenceCandidate.sentence_id ? 'check' : 'unresolved';
                 renderRevisionScanReview();
             }
-        }
-        if (target.matches('[data-scan-choice]')) {
-            revisionScanState().choices[target.getAttribute('data-scan-candidate')] = target.value;
         }
     });
 

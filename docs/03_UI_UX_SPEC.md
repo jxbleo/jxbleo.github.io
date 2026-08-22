@@ -1988,20 +1988,21 @@ Important mobile rules:
   native-select-backed target box uses the Vocabulary wrong-answer treatment
   (`#fca5a5` border and `#fef2f2` fill), showing the global sentence number and
   full original sentence; selecting anywhere in that box opens the target list.
-  The lower inset box contains the editable OCR rewrite. The target list contains
+  The lower inset box contains only the editable OCR rewrite plus one tiny
+  confidence mark: green `✓` for high, amber `!` for medium, and red `?` for low,
+  each with an accessible label. The target list contains
   only unfinished `rewrite_required` sentences, excludes originally correct and
   already accepted sentences, and disables a sentence while another scan card
   claims it. The existing global sentence number appears when mapped, with a
-  `Check` visual state when the marker is medium/low-confidence or ambiguous,
-  and an `Unresolved` state when no safe sentence can be chosen.
-  These states use text plus accessible color/shape semantics, not color alone.
+  `?` placeholder when no safe sentence can be chosen.
   The student can manually assign an unresolved answer to a sentence from the
   current list, then review the resulting mapping before importing. Import is an
   explicit action and places text into editable revision drafts only; it does not
-  press `Check` or show a passed result. If a sentence already has a typed draft,
-  the review surface requires an explicit per-sentence conflict choice before
-  replacing it. Closing, retrying, or abandoning a scan keeps typed drafts and
-  never silently overwrites them.
+  press `Check` or show a passed result. The page omits its former heading,
+  instructions, missing-sentence summary, mapping badges, scan labels, handwritten
+  marker text, and typed/scanned choice controls. Pressing Import explicitly adopts
+  every reviewed card and replaces the corresponding unfinished draft; returning
+  without Import leaves the prior draft unchanged.
 - Before confirmation, the browser retries the same stable upload batch and
   never claims that cloud processing can continue. An interrupted or partial
   upload stays in the same Composition and exposes `重新上传照片`; only a fully
