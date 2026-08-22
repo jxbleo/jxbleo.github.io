@@ -926,8 +926,9 @@ Decision:
   absence of new errors; it never trusts contradictory summary flags from AI.
 - General Language Review represents CEFR as a manuscript-scoped typed estimate:
   one A1–C2 enum, one lower/middle/upper enum, and one Simplified Chinese
-  rationale. The UI localizes the position from the enum and never parses a
-  free-text level. This prevents a writing sample estimate from becoming an
+  rationale. The UI maps the position to minus/no-suffix/plus compact notation
+  and never parses a free-text level or exposes Chinese position labels. This
+  prevents a writing sample estimate from becoming an
   implied official score or a permanent student-wide proficiency label.
 - The model boundary is vendor-neutral and optimized for mainland deployment.
   Text and vision endpoints are configured separately. Qwen, DeepSeek, Kimi, or

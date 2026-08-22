@@ -1790,7 +1790,8 @@ High priority improvement:
   Confirm there is no fourth layout container presented as a card.
 - Confirm `Language Review` begins with `CEFR Writing Estimate` before its
   overview. Test A1 and C2 boundaries plus lower/middle/upper positions; verify
-  the localized labels are 偏下/中段/偏上 and the rationale is Simplified Chinese.
+  they render as A1-/A1/A1+ and C2-/C2/C2+, the rationale is Simplified Chinese,
+  and no 偏下/中段/偏上 position label appears.
   Confirm the copy scopes the estimate to this manuscript rather than claiming
   a certified or overall student level. Open a historical review without
   `cefr_estimate` and confirm it remains readable without a fabricated value.

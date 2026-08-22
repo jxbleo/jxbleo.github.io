@@ -1325,11 +1325,12 @@
         var cards = sentences.map(sentenceCardHtml).join('');
         var manuscript = firstText(state.current && state.current.confirmed_text, state.confirmedText, '暂无原文。');
         var cefrEstimate = state.review && state.review.cefr_estimate;
-        var cefrPositionLabels = { lower: '偏下', middle: '中段', upper: '偏上' };
-        var cefrPosition = cefrEstimate && cefrPositionLabels[cefrEstimate.position] || '';
+        var cefrPositionSuffixes = { lower: '-', middle: '', upper: '+' };
+        var cefrSuffix = cefrEstimate && Object.prototype.hasOwnProperty.call(cefrPositionSuffixes, cefrEstimate.position) ?
+            cefrPositionSuffixes[cefrEstimate.position] : '';
         var cefrHtml = cefrEstimate && cefrEstimate.level ?
             '<div class="cefr-estimate"><span class="cefr-estimate-label">CEFR Writing Estimate</span>' +
-            '<strong>' + escapeHtml(cefrEstimate.level) + (cefrPosition ? ' · ' + escapeHtml(cefrPosition) : '') + '</strong>' +
+            '<strong>' + escapeHtml(cefrEstimate.level + cefrSuffix) + '</strong>' +
             (cefrEstimate.commentary_zh ? '<p>' + escapeHtml(cefrEstimate.commentary_zh) + '</p>' : '') + '</div>' : '';
         stage.innerHTML = '<div class="language-review-stack">' +
             '<section class="surface language-review-card language-overall-card"><h2>Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +

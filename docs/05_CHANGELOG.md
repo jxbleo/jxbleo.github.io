@@ -5,6 +5,8 @@
 
 ## 2026-08-22 — AI Tutor composition continuity
 
+- Changed student-facing CEFR levels from Chinese within-band labels to compact
+  minus/base/plus notation such as `B1-`, `B1`, and `B1+`.
 - Added a required structured CEFR Writing Estimate to new General Language
   Reviews: A1–C2, lower/middle/upper position, and a concise Simplified Chinese
   manuscript-specific rationale displayed before the Language Review overview.

@@ -1973,8 +1973,9 @@ Important mobile rules:
 - Completed language review uses exactly three primary cards in order:
   `Language Review`, `Draft`, and `Sentence Revision`.
 - At the beginning of `Language Review`, show `CEFR Writing Estimate` with
-  the manuscript's A1–C2 band, localized within-band position (`偏下`, `中段`,
-  or `偏上`), and one concise Simplified Chinese rationale. It appears before
+  the manuscript's compact three-way CEFR level (`B1-`, `B1`, or `B1+`)
+  and one concise Simplified Chinese rationale. Never render `偏下`, `中段`,
+  or `偏上` as the position label. It appears before
   the broader overview and must be described as an estimate of this manuscript's
   writing performance, not a certified or global student level. Historical
   reviews without the structured field remain readable and simply omit this row.
