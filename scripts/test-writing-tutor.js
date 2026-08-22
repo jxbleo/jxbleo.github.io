@@ -842,6 +842,22 @@ check("revision photo upload retries one logical start-upload-finish task withou
     "an unconfirmed network disconnect must not claim that cloud OCR is definitely continuing");
 });
 
+check("photo upload state atomically replaces nullable pending-upload fields", () => {
+  const backend = read(functionPath);
+  const photoUploadSource = functionSource(backend, "startPhotoUpload", "photoRows");
+  const revisionUploadSource = functionSource(backend, "startRevisionScanUpload", "finishRevisionScanUpload");
+  const revisionFinishSource = functionSource(backend, "finishRevisionScanUpload", "retryableJobError");
+  [
+    [photoUploadSource, "composition photo upload"],
+    [revisionUploadSource, "revision photo upload"],
+  ].forEach(([source, context]) => {
+    assert(/\.update\s*\(\s*replaceWholeFields\s*\(\s*\{[\s\S]*pending_upload\s*:[\s\S]*\}\s*,\s*\[\s*["']pending_upload["']\s*\]\s*\)\s*\)/.test(source),
+      `${context} must replace pending_upload atomically when the stored field is null`);
+  });
+  assert(/\.update\s*\(\s*replaceWholeFields\s*\(\s*\{[\s\S]*pending_upload\s*:\s*null[\s\S]*active_job\s*:[\s\S]*\[[^\]]*["']pending_upload["'][^\]]*["']pending_revision_scan["'][^\]]*["']active_job["'][^\]]*\]\s*\)\s*\)/.test(revisionFinishSource),
+    "revision upload handoff must atomically clear nullable upload state and replace active_job");
+});
+
 check("revision OCR uses a strict durable job and canonical server mapping", () => {
   const backend = read(functionPath);
   const prompts = read(promptPath);
@@ -1459,6 +1475,12 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   }, ["rewrite_results"]);
   assert.strictEqual(rewritePersistenceUpdate.rewrite_results.operator, "set",
     "a first rewrite check must atomically replace rewrite_results instead of creating paths below a null field");
+  const uploadPersistenceUpdate = backend._test.replaceWholeFields({
+    status: "revision_photo_uploading",
+    pending_upload: { kind: "revision_scan", composition_revision: 2 },
+  }, ["pending_upload"]);
+  assert.strictEqual(uploadPersistenceUpdate.pending_upload.operator, "set",
+    "a new photo batch must atomically replace pending_upload instead of creating paths below a null field");
   assert.throws(() => backend._test.canonicalLanguageResult({
     suggested_title: "Wrong Sentence", cefr_estimate: { level: "A2", position: "lower", commentary_zh: "证据有限。" }, overview: "Overview", profile_observations: [],
     sentences: [{ sentence_id: "s999", original: "Wrong", status: "effective", issues: [],

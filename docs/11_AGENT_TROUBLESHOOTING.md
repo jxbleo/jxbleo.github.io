@@ -869,3 +869,19 @@ STAR 不阻止未来重新布置同一个 set。
   missing、out-of-range 或空 marker；不要只调整 OCR prompt。
 - 若扫描导入后已有草稿消失，检查是否记录了明确的 keep/replace conflict choice，并检查
   pending scan result 到 confirmed scanned draft 的事务边界。
+
+### 2026-08-22：`pending_upload: null` 阻断拍照请求
+
+现象与根因：
+- `Scan Revisions` 在选择图片后立即返回通用 AI 错误，CLS 显示 `Cannot create field
+  'composition_revision' in element {pending_upload: null}`。这发生在模型调用之前，不是视觉模型、
+  API Key、图片清晰度或结构化返回问题。
+- CloudBase `update()` 会把普通嵌套对象展开为 dotted paths；当旧值明确为 `null` 时，不能直接创建
+  `pending_upload.*` 子字段。普通作文重新上传也存在同一边界。
+
+固定规则：
+- 从 `null`、缺失值或旧对象写入新的 `pending_upload` 时，必须通过
+  `replaceWholeFields(..., ["pending_upload"])` / `db.command.set(...)` 整字段替换。
+- 上传确认转为 `revision_ocr` job 时，`pending_upload`、`pending_revision_scan` 和 `active_job`
+  也按完整字段原子更新，避免清理状态与新 job 投影部分合并。
+- 回归测试必须同时覆盖普通作文上传和 Sentence Revision 扫描，不能只检查模型调用或 Schema。

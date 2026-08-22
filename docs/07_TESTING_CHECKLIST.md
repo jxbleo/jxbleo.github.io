@@ -1925,6 +1925,12 @@ High priority improvement:
   verify both accessible camera capture and photo-library selection. Check marker
   variants `8`, `8.`, `8、`, `8)`, and `(8)`, with omitted punctuation and with
   recommended whitespace before the answer.
+- Repeat both ordinary photo upload/re-upload and `Scan Revisions` on a saved
+  Composition whose `pending_upload` field is explicitly `null`. Confirm the
+  start call replaces the entire upload object, returns upload metadata, and
+  reaches durable OCR enqueue without `Cannot create field ... in element
+  {pending_upload: null}`. The contract test must verify `db.command.set(...)`
+  coverage for both upload entry points and the revision-job handoff.
 - Verify duplicate, missing, out-of-range, and empty markers never auto-map to a
   sentence. Exercise low-confidence markers, line-wrapped handwriting, and a
   page with both mapped and unresolved answers; confirm mapped, `Check`, and

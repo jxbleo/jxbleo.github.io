@@ -525,7 +525,7 @@ async function startPhotoUpload(student, event) {
     }
     uploads.push({ photo_id: photoId, ...view });
   }
-  await db.collection(COMPOSITIONS).doc(composition._id).update({
+  await db.collection(COMPOSITIONS).doc(composition._id).update(replaceWholeFields({
     pending_upload: {
       operation_id: operationId,
       photo_ids: uploads.map((upload) => upload.photo_id),
@@ -535,7 +535,7 @@ async function startPhotoUpload(student, event) {
     },
     status: "photo_uploading",
     updated_at: now,
-  });
+  }, ["pending_upload"]));
   return { success: true, uploads };
 }
 
@@ -745,12 +745,12 @@ async function startRevisionScanUpload(student, event) {
     }
     uploads.push({ photo_id: photoId, ...view });
   }
-  await db.collection(COMPOSITIONS).doc(composition._id).update({
+  await db.collection(COMPOSITIONS).doc(composition._id).update(replaceWholeFields({
     pending_upload: { kind: "revision_scan", operation_id: operationId,
       photo_ids: uploads.map((upload) => upload.photo_id), status: "uploading",
       composition_revision: Number(composition.revision || 1), created_at: now },
     status: "revision_photo_uploading", updated_at: now,
-  });
+  }, ["pending_upload"]));
   return { success: true, uploads };
 }
 
@@ -815,7 +815,10 @@ async function finishRevisionScanUpload(student, event) {
           expires_at: new Date(now.getTime() + CONFIRMED_UPLOAD_TTL_MS), updated_at: now,
         });
       }
-      await transaction.collection(COMPOSITIONS).doc(current._id).update({ pending_upload: null, pending_revision_scan: null, active_job_id: jobId, active_job: activeJob, status: "revision_ocr_queued", updated_at: now });
+      await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
+        pending_upload: null, pending_revision_scan: null, active_job_id: jobId,
+        active_job: activeJob, status: "revision_ocr_queued", updated_at: now,
+      }, ["pending_upload", "pending_revision_scan", "active_job"]));
     });
   } catch (error) {
     const raced = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
