@@ -1081,4 +1081,9 @@ Review and rewrite-check jobs share that worker. On 2026-08-22, the updated
 activated guarded empty-placeholder cleanup and durable rewrite checking. The
 matching static AI Tutor client was published from `main`. `writingAiWorker`
 needed no code update because it generically dispatches eligible queue rows back
-to `writingTutor`.
+to `writingTutor`. Later on 2026-08-22, the CEFR Writing Estimate update was
+uploaded through the CloudBase console, verified `Active` / `Available`, and
+downloaded again for byte-identical comparison with the approved bundle. The
+deployed code contains `writing-prompts-2026-08-22.1`,
+`writing-ai-schemas-2026-08-22.1`, `language_sentence_review_v2`, and
+`cefr_estimate`; no worker or environment-variable change was required.
