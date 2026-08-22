@@ -64,7 +64,7 @@ and does not produce an examination score.
 _Avoid_: Content score, automatic language upgrade
 
 **CEFR Writing Estimate**:
-An approximate CEFR band and lower/middle/upper position evidenced by one
+An approximate compact CEFR level such as B1-, B1, or B1+ evidenced by one
 Confirmed Manuscript's writing performance, not the student's overall proficiency.
 _Avoid_: Certified CEFR level, examination score
 

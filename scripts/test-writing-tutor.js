@@ -360,8 +360,10 @@ check("language review renders exactly three primary cards in the approved order
   const sentenceReviewIndex = renderSource.indexOf("language-sentence-review-card");
   assert(overallIndex < manuscriptIndex && manuscriptIndex < sentenceReviewIndex,
     "language review primary cards must stay ordered as overall, manuscript, then sentence correction");
-  requireEvery(renderSource, ["cefr_estimate", "CEFR Writing Estimate", "lower: '偏下'", "middle: '中段'", "upper: '偏上'"],
+  requireEvery(renderSource, ["cefr_estimate", "CEFR Writing Estimate", "lower: '-'", "middle: ''", "upper: '+'"],
     "CEFR writing estimate presentation");
+  assert(!/偏下|中段|偏上/.test(renderSource),
+    "the student-facing CEFR level must use compact minus/base/plus notation instead of Chinese position labels");
   assert(renderSource.indexOf("cefrHtml") < renderSource.indexOf("state.review && state.review.overview"),
     "the CEFR writing estimate must appear before the general Language Review overview");
 });
@@ -1233,7 +1235,7 @@ check("server canonicalization overrides contradictory AI summary fields", () =>
   assert.strictEqual(language.sentences[0].original, "I goes home.",
     "server must restore the exact source sentence instead of trusting the model echo");
   const effectiveLanguage = backend._test.canonicalLanguageResult({
-    suggested_title: "Going Home", cefr_estimate: { level: "B1", position: "middle", commentary_zh: "整体处于 B1 中段。" }, overview: "Overview", profile_observations: [],
+    suggested_title: "Going Home", cefr_estimate: { level: "B1", position: "middle", commentary_zh: "整体达到 B1。" }, overview: "Overview", profile_observations: [],
     sentences: [{
       sentence_id: "s001", original: "I go home.", status: "effective",
       rewrite_required: true, issues: [], coaching_summary: "表达准确。", reference_revision: "",
@@ -1288,6 +1290,9 @@ check("prompts are versioned and make the selected Rubric authoritative", () => 
   const languagePrompt = promptModule.languagePrompt();
   requireEvery(languagePrompt, ["A1", "A2", "B1", "B2", "C1", "C2", "lower", "middle", "upper", "cefr_estimate.commentary_zh"],
     "CEFR writing estimate prompt contract");
+  requireEvery(languagePrompt, ["B1-", "B1+", "偏下", "中段", "偏上"], "compact CEFR notation contract");
+  assert(/Do not describe[\s\S]{0,180}偏下[\s\S]{0,80}中段[\s\S]{0,80}偏上/.test(languagePrompt),
+    "the model must not expose Chinese within-band position labels");
   assert(/manuscript-specific|this manuscript/i.test(languagePrompt),
     "CEFR estimate must describe this manuscript rather than the student's overall level");
   assert(/not.{0,80}(?:overall English proficiency|formal CEFR certificate)/i.test(languagePrompt),

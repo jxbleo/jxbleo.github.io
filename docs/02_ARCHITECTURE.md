@@ -821,8 +821,9 @@ delimited as untrusted data in every prompt.
 The language-review boundary requires one structured `cefr_estimate` object
 before the free-text overview. Its closed enums carry the A1–C2 band and
 lower/middle/upper position; only the concise rationale is model-authored
-Simplified Chinese. The browser derives the localized position label instead of
-parsing prose. This estimate is scoped to the current Confirmed Manuscript and is
+Simplified Chinese. The browser deterministically maps those positions to
+minus/no-suffix/plus notation such as B1-/B1/B1+ instead of parsing prose or
+showing Chinese position labels. This estimate is scoped to the current Confirmed Manuscript and is
 not promoted to a certified or student-wide proficiency record.
 
 This allows, for example, Qwen Vision for handwriting OCR with Qwen, DeepSeek,
