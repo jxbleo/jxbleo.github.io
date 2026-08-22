@@ -87,6 +87,9 @@ Intensive Listening checks:
   card;
 - unchanged wrong checks do not advance the reveal gate, correct positions lock,
   and reveal requires three effective checks;
+- Show Answer records assisted completion without changing wrong or blank Word
+  Slots to green; independently correct positions stay green, and legacy
+  assisted all-green progress renders unknown positions neutrally;
 - all Intensive Listening collections remain `ADMINONLY` and authenticated
   bootstrap returns the full redacted sequence once;
 - `dictation` alone counts toward progress; `listen_only` and `skip` both appear

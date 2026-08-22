@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-22 — Intensive Listening answer-reveal correctness
+
+- Kept `Completed with answer` progress semantics while stopping Show Answer
+  from marking every wrong or blank Word Slot green.
+- Preserved independently correct positions across reveal and neutralized the
+  synthetic all-green marks stored by the previous reveal implementation.
+
 ## 2026-08-22 — AI Tutor composition continuity
 
 - Rebuilt OCR Review as a focused paragraph editor with only `OCR Review`,

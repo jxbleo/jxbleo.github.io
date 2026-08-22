@@ -47,13 +47,53 @@ function run() {
   const revealed = service.revealUnit(unit(), threeChecks);
   assert.strictEqual(revealed.allowed, true);
   assert.strictEqual(revealed.state.assisted, true);
+  assert.strictEqual(revealed.state.reveal_position_version, 2);
   assert.strictEqual(revealed.answerText, "It's a good boy.");
+  assert.strictEqual(revealed.state.completed, true, "revealed units still count as assisted completion");
+  assert.deepStrictEqual(
+    revealed.state.correct_positions,
+    [true, false, true, true],
+    "revealing an answer must preserve actual word correctness"
+  );
+  assert.deepStrictEqual(
+    revealed.state.last_marks,
+    [true, false, true, true],
+    "revealing an answer must not turn a wrong word green"
+  );
 
   const material = { material_id: "IL-TEST", set_id: "IL-TEST", title: "Test", audio_src: "audio.mp3", units: [unit()] };
   const publicView = service.publicMaterial(material);
   assert.strictEqual(JSON.stringify(publicView).includes("It's"), false, "bootstrap must not expose answers");
   assert.strictEqual(publicView.units[0].slots[3].suffix, ".");
   assert.strictEqual(publicView.units[0].practice_mode, "dictation");
+  const revealedProgress = service.publicProgress(material, { unit_states: { "unit-01": revealed.state } });
+  assert.strictEqual(revealedProgress.completed_count, 1);
+  assert.strictEqual(revealedProgress.assisted_count, 1);
+  assert.deepStrictEqual(revealedProgress.unit_progress["unit-01"].correct_positions, [true, false, true, true]);
+  assert.strictEqual(revealedProgress.unit_progress["unit-01"].correct_positions_reliable, true);
+
+  const legacyRevealedState = {
+    checks: 3,
+    completed: true,
+    assisted: true,
+    correct_positions: [true, true, true, true],
+    last_marks: [true, true, true, true],
+    last_wrong_hashes: ["", "", "", ""],
+    replays: 2,
+  };
+  const repairedLegacyProgress = service.publicProgress(material, { unit_states: { "unit-01": legacyRevealedState } });
+  assert.strictEqual(repairedLegacyProgress.completed_count, 1, "legacy assisted completion remains complete");
+  assert.strictEqual(repairedLegacyProgress.assisted_count, 1, "legacy assisted count remains intact");
+  assert.deepStrictEqual(
+    repairedLegacyProgress.unit_progress["unit-01"].correct_positions,
+    [false, false, false, false],
+    "legacy synthetic all-green marks are neutralized when exact positions are unknown"
+  );
+  assert.strictEqual(repairedLegacyProgress.unit_progress["unit-01"].correct_positions_reliable, false);
+  const currentAllCorrectAssisted = { ...legacyRevealedState, reveal_position_version: 2 };
+  const currentAllCorrectProgress = service.publicProgress(material, { unit_states: { "unit-01": currentAllCorrectAssisted } });
+  assert.deepStrictEqual(currentAllCorrectProgress.unit_progress["unit-01"].correct_positions, [true, true, true, true]);
+  assert.strictEqual(currentAllCorrectProgress.unit_progress["unit-01"].correct_positions_reliable, true);
 
   const providedUnit = unit();
   providedUnit.slots[1].spelling_requirement = "provided";
@@ -112,6 +152,7 @@ function run() {
   assert.ok(intensiveRuntime.includes("exportMaterial"));
   assert.ok(intensiveRuntime.includes("moveToUnit(-1)"));
   assert.ok(intensiveRuntime.includes("moveToUnit(1)"));
+  assert.ok(intensiveRuntime.includes("correct_positions_reliable === false"));
 
   const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
   assert.ok(intensivePage.includes('id="previous-unit-button"'));

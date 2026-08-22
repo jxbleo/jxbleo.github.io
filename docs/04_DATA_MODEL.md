@@ -1027,7 +1027,11 @@ speaker, start/end seconds, reviewed text, and word slots. Browser bootstrap
 receives timing, speaker, slot IDs, and punctuation only. Progress stores
 redacted correct-position booleans, effective-check counts, assisted/completed
 flags, replay counts, and monotonic best percentage; exact wrong entries are not
-retained. Version `1` preserves the legacy progress identity; later
+retained. New assisted states store `reveal_position_version: 2` to distinguish
+preserved grading marks from legacy reveals that synthesized all positions as
+correct. The redacted progress response reports `correct_positions_reliable:
+false` for those legacy states so clients render unknown positions neutrally.
+Version `1` preserves the legacy progress identity; later
 `content_version` values use a version-scoped progress identity so a revised
 segmentation cannot inherit incompatible unit state. Earlier progress remains
 stored. Temporary replay records are separate, version-scoped, and cannot
