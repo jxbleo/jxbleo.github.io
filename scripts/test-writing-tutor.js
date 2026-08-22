@@ -149,6 +149,9 @@ const publicActions = [
   "discardEmptyComposition",
   "startPhotoUpload",
   "finishPhotoUpload",
+  "startRevisionScanUpload",
+  "finishRevisionScanUpload",
+  "confirmRevisionScanImport",
   "extractOcr",
   "saveDraft",
   "evaluate",
@@ -475,6 +478,7 @@ check("sentence rewrite drafts persist by Composition revision and restore on re
   const keySource = matchingFunctionSource(client, "rewriteDraftStorageKey", "rewrite-draft storage key");
   const saveSource = matchingFunctionSource(client, "saveRewriteDraftSnapshot", "rewrite-draft save function");
   const restoreSource = matchingFunctionSource(client, "restoreRewriteDraftSnapshot", "rewrite-draft restore function");
+  const restoreStateSource = functionSource(client, "restoreLanguageReviewState", "prepareLanguageReview");
   const prepareSource = functionSource(client, "prepareLanguageReview", "sentenceId");
   requireEvery(keySource, ["compositionId", "revision"], "rewrite-draft identity");
   assert(/compositionId\s*\([^)]*\)[\s\S]{0,300}(?:\.revision|revision)|(?:\.revision|revision)[\s\S]{0,300}compositionId\s*\(/.test(keySource),
@@ -487,7 +491,8 @@ check("sentence rewrite drafts persist by Composition revision and restore on re
     "rewrite-draft restoration");
   assert(/data-rewrite-id[\s\S]{0,500}saveRewriteDraftSnapshot\s*\(/.test(client),
     "every sentence textarea input must synchronously update its saved browser draft");
-  assert(/restoreRewriteDraftSnapshot\s*\(/.test(prepareSource),
+  assert(/restoreRewriteDraftSnapshot\s*\(/.test(restoreStateSource)
+      && /restoreLanguageReviewState\s*\(/.test(prepareSource),
     "opening a saved language review must restore its sentence drafts before rendering");
 });
 
@@ -647,7 +652,7 @@ check("Sentence Revision numbers every row and ends with one Check action", () =
 check("accepted revisions default to the corrected sentence and show REVISED status", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const prepareSource = functionSource(client, "prepareLanguageReview", "sentenceId");
+  const prepareSource = functionSource(client, "restoreLanguageReviewState", "prepareLanguageReview");
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   requireEvery(prepareSource, ["stored.accepted === true", "state.rewriteFace[id] = true"],
     "accepted revision default face");
@@ -782,6 +787,153 @@ check("each sentence shares one color across manuscript, capsule, and correction
     "sentence highlights must not draw an underline-like inset shadow");
 });
 
+check("Sentence Revision exposes an accessible photographed-draft import flow", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
+  requireEvery(renderSource, [
+    "Scan Revisions", "revision-scan-photo", "capture=\"environment\"",
+    "image/jpeg,image/png,image/webp", "data-start-revision-scan",
+  ], "Sentence Revision scan trigger");
+  assert(/!state\.readOnly[\s\S]{0,500}Scan Revisions/.test(renderSource),
+    "completed/read-only writing must not expose photographed draft import");
+  requireEvery(styles, [
+    ".revision-scan-surface", ".revision-scan-candidate.is-mapped",
+    ".revision-scan-candidate.is-check", ".revision-scan-candidate.is-unresolved",
+    ".revision-scan-choice", "min-height: 44px",
+  ], "accessible Review Scan styling");
+});
+
+check("Review Scan requires mapping review and protects typed drafts", () => {
+  const client = read(clientPath);
+  const reviewSource = functionSource(client, "revisionScanCandidateHtml", "renderRevisionScanReview");
+  const importSource = functionSource(client, "confirmRevisionScanImport", "renderLanguage");
+  const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
+  const syncSource = functionSource(client, "syncRevisionScanFromComposition", "writingCall");
+  requireEvery(reviewSource, [
+    "Keep typed", "Use scanned", "data-scan-sentence", "data-scan-text",
+    "revisionScanSentenceLabel(sid)",
+  ], "Review Scan mapping and conflict controls");
+  requireEvery(importSource, [
+    "confirmRevisionScanImport", "revision", "operation_id", "sentence_id", "saveRewriteDraftSnapshot",
+  ], "confirmed scan import");
+  assert(!/submitRewrites\s*\(|data-submit-rewrites/.test(importSource),
+    "scan import must populate drafts without automatically running Check");
+  assert(/typed\s*\?\s*['"]['"]\s*:\s*['"]scanned['"]/.test(syncSource)
+      && /choice\s*!==\s*['"]typed['"][\s\S]{0,120}choice\s*!==\s*['"]scanned['"]/.test(importSource),
+    "an existing typed draft must require an explicit Keep typed or Use scanned choice");
+  const restoreIndex = loadSource.indexOf("restoreLanguageReviewState");
+  const syncIndex = loadSource.indexOf("syncRevisionScanFromComposition");
+  const reviewIndex = loadSource.indexOf("renderRevisionScanReview");
+  assert(restoreIndex >= 0 && syncIndex > restoreIndex && reviewIndex > syncIndex,
+    "reopening Review Scan must restore local/cloud typed drafts before choosing conflict defaults");
+});
+
+check("revision photo upload retries one logical start-upload-finish task without a false handoff claim", () => {
+  const client = read(clientPath);
+  const uploadSource = functionSource(client, "beginRevisionScanUpload", "confirmRevisionScanImport");
+  requireEvery(uploadSource, [
+    "logicalOperationId('revision-scan'", "retryNetworkTask", "startRevisionScanUpload",
+    "uploadWithMetadata", "finishRevisionScanUpload", "renderRevisionScanFailure",
+  ], "revision scan upload lifecycle");
+  assert(/retryNetworkTask\s*\(\s*function\s*\(\)\s*\{[\s\S]{0,1800}startRevisionScanUpload[\s\S]{0,2200}uploadWithMetadata[\s\S]{0,1600}finishRevisionScanUpload/.test(uploadSource),
+    "the same operation retry must cover upload bytes and the durable server handoff");
+  assert(/isNetworkDisconnect\s*\(\s*error\s*\)[\s\S]{0,500}renderRevisionScanFailure/.test(uploadSource),
+    "an unconfirmed network disconnect must not claim that cloud OCR is definitely continuing");
+});
+
+check("revision OCR uses a strict durable job and canonical server mapping", () => {
+  const backend = read(functionPath);
+  const prompts = read(promptPath);
+  const enqueueSource = functionSource(backend, "finishRevisionScanUpload", "retryableJobError");
+  const performSource = functionSource(backend, "performRevisionOcrJob", "claimQueuedJob");
+  const processSource = functionSource(backend, "processQueuedJob", "extractOcr");
+  requireEvery(enqueueSource, [
+    "revisionJobId", "job_type: \"revision_ocr\"", "composition_revision",
+    ".doc(jobId).create", "status: \"queued\"", "invokeFunctionAsync",
+  ], "durable revision OCR enqueue");
+  requireEvery(performSource, [
+    "active_job_id", "composition_revision", "writing_revision_scan_v1",
+    "REVISION_SCAN_SCHEMA", "canonicalRevisionScanResult", "runTransaction",
+    "lease_token", "pending_revision_scan", "deleteUploadedPhotos",
+  ], "guarded revision OCR result publication");
+  assert(/claimed\.job_type\s*={2,3}\s*["']revision_ocr["'][\s\S]{0,180}performRevisionOcrJob/.test(processSource),
+    "the durable dispatcher must execute revision_ocr jobs");
+  requireEvery(prompts, ["8, 8., 8、, 8), or (8)", "primary mapping signal", "must never cause you to invent"],
+    "revision number-marker prompt boundary");
+});
+
+check("revision scan canonicalization never silently accepts missing, duplicate, or invalid numbers", () => {
+  const backend = require(path.join(root, functionPath));
+  const composition = {
+    composition_id: "composition-test",
+    revision: 3,
+    language_review: {
+      sentences: [
+        { sentence_id: "s001", original: "Already correct.", rewrite_required: false },
+        { sentence_id: "s002", original: "Needs work two.", rewrite_required: true },
+        { sentence_id: "s003", original: "Needs work three.", rewrite_required: true },
+        { sentence_id: "s004", original: "Needs work four.", rewrite_required: true },
+        { sentence_id: "s005", original: "Needs work five.", rewrite_required: true },
+      ],
+    },
+  };
+  const result = backend._test.canonicalRevisionScanResult({
+    items: [
+      { written_number: 2, recognized_text: "Rewrite two.", confidence: "high", warnings: [] },
+      { written_number: 3, recognized_text: "Rewrite three A.", confidence: "medium", warnings: [] },
+      { written_number: 3, recognized_text: "Rewrite three B.", confidence: "high", warnings: [] },
+      { written_number: 99, recognized_text: "Wrong number.", confidence: "high", warnings: [] },
+      { written_number: null, recognized_text: "No number.", confidence: "low", warnings: [] },
+      { written_number: 4, recognized_text: "", confidence: "high", warnings: [] },
+      { written_number: 5, recognized_text: "Rewrite five.", confidence: "medium", warnings: [] },
+    ],
+    unmapped_items: [],
+  }, composition, "student-test", "operation-test", { provider: "test" });
+  const sentenceTwo = result.items.find((item) => item.written_number === 2);
+  const sentenceThree = result.items.filter((item) => item.written_number === 3);
+  const outOfRange = result.items.find((item) => item.written_number === 99);
+  const missingNumber = result.items.find((item) => item.written_number === null);
+  const mediumConfidence = result.items.find((item) => item.written_number === 5);
+  assert.strictEqual(sentenceTwo.sentence_id, "s002");
+  assert.strictEqual(sentenceTwo.status, "mapped");
+  assert(sentenceThree.every((item) => item.status === "check"
+      && item.warnings.includes("DUPLICATE_SENTENCE_NUMBER")),
+    "every duplicate candidate must remain reviewable instead of auto-importing");
+  assert.strictEqual(outOfRange.sentence_id, null);
+  assert.strictEqual(outOfRange.status, "unresolved");
+  assert.strictEqual(missingNumber.sentence_id, null);
+  assert.strictEqual(missingNumber.status, "unresolved");
+  assert.strictEqual(mediumConfidence.sentence_id, "s005");
+  assert.strictEqual(mediumConfidence.status, "check",
+    "medium-confidence handwriting must remain visible for student review");
+  assert.deepStrictEqual(result.missing_sentence_ids, ["s004"],
+    "a present low-confidence candidate is not missing, while empty handwriting remains missing");
+});
+
+check("confirmed revision scan import is revision-bound, transactional, and draft-only", () => {
+  const backend = read(functionPath);
+  const importSource = functionSource(backend, "confirmRevisionScanImport", "getProfile");
+  requireEvery(importSource, [
+    "pending_revision_scan", "composition_revision", "operationId", "revisionRequiredUnits",
+    "DUPLICATE_SENTENCE_ID", "runTransaction", "scanned_rewrite_drafts",
+    "replaceWholeFields", "idempotent_replay",
+  ], "confirmed revision scan import boundary");
+  assert(!/callStructuredModel|rewrite_results\s*:|pending_rewrite_check\s*:/.test(importSource),
+    "import must persist editable drafts only and must not grade or publish Check results");
+  assert(!/if\s*\(\s*!submitted\.length\s*\)\s*throw/.test(importSource),
+    "confirming Keep typed for every conflict must be able to clear the pending scan without importing text");
+});
+
+check("expired revision uploads retain a revision-specific recoverable failure", () => {
+  const worker = read(workerPath);
+  const cleanupSource = functionSource(worker, "cleanupExpiredPhotos", "exports.main");
+  requireEvery(cleanupSource, [
+    "upload_kind", "revision_scan", "revision_ocr", "revision_ocr_failed",
+    "PHOTO_UPLOAD_EXPIRED", "active_job",
+  ], "revision upload expiry recovery");
+});
+
 check("writingTutor exposes every public action used by the workspace", () => {
   const backend = read(functionPath);
   const client = read(clientPath);
@@ -807,7 +959,7 @@ check("model responses use strict versioned JSON schemas", () => {
 
   const schemas = require(path.join(root, schemaPath));
   assert(/^writing-ai-schemas-\d{4}-\d{2}-\d{2}\./.test(schemas.SCHEMA_VERSION), "SCHEMA_VERSION must be dated and revisioned");
-  ["OCR_SCHEMA", "STANDARDIZED_SCHEMA", "LANGUAGE_SCHEMA", "REWRITE_SCHEMA"].forEach((name) => {
+  ["OCR_SCHEMA", "REVISION_SCAN_SCHEMA", "STANDARDIZED_SCHEMA", "LANGUAGE_SCHEMA", "REWRITE_SCHEMA"].forEach((name) => {
     assert(schemas[name], `missing exported ${name}`);
     assertClosedObjectSchemas(schemas[name], name);
   });
@@ -835,6 +987,23 @@ check("domestic-model adapters validate every returned JSON object locally", () 
   assert(provider._test.validateAgainstSchema(languageWithInvalidCefr, schemas.LANGUAGE_SCHEMA)
     .some((message) => message.includes("position") && message.includes("lower, middle, upper")),
   "CEFR within-band position must use the closed enum");
+  const validRevisionScan = {
+    items: [
+      { written_number: 8, recognized_text: "I agree.", confidence: "high", warnings: [] },
+      { written_number: null, recognized_text: "Another idea.", confidence: "low", warnings: ["number unclear"] },
+    ],
+    unmapped_items: [],
+  };
+  assert.deepStrictEqual(provider._test.validateAgainstSchema(validRevisionScan, schemas.REVISION_SCAN_SCHEMA), []);
+  const invalidRevisionScan = {
+    items: [{ written_number: "8", recognized_text: "I agree.", confidence: "certain", warnings: [] }],
+    unmapped_items: [],
+  };
+  const revisionErrors = provider._test.validateAgainstSchema(invalidRevisionScan, schemas.REVISION_SCAN_SCHEMA);
+  assert(revisionErrors.some((message) => message.includes("written_number")),
+    "revision scan marker must be an integer or null");
+  assert(revisionErrors.some((message) => message.includes("confidence")),
+    "revision scan confidence must use the closed enum");
   const source = read(providerPath);
   requireEvery(source, ["chat_json_schema", "chat_json_object", "responses_json_schema"], "model provider protocols");
   assert(/WRITING_AI_(?:TEXT|VISION)_/.test(source), "text and vision providers must be independently configurable");

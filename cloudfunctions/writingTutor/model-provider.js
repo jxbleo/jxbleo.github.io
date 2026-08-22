@@ -42,6 +42,19 @@ function validateAgainstSchema(value, schema, path = "$") {
   }
   function visit(current, rule, location) {
     if (!rule || errors.length >= MAX_VALIDATION_ERRORS) return;
+    if (Array.isArray(rule.type)) {
+      const actualType = current === null ? "null"
+        : Array.isArray(current) ? "array" : typeof current;
+      const normalizedType = actualType === "number" && Number.isInteger(current) ? "integer" : actualType;
+      if (!rule.type.includes(normalizedType)
+        && !(normalizedType === "integer" && rule.type.includes("number"))) {
+        add(`${location} must be one of ${rule.type.join(", ")}`);
+      }
+      if (Array.isArray(rule.enum) && !rule.enum.includes(current)) {
+        add(`${location} must be one of ${rule.enum.join(", ")}`);
+      }
+      return;
+    }
     if (rule.type === "object") {
       if (!current || typeof current !== "object" || Array.isArray(current)) {
         add(`${location} must be an object`);

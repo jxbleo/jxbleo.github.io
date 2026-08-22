@@ -281,6 +281,50 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .sentence-capsule.is-review::after, .sentence-capsule.has-gap::after { content: "×"; color: var(--ai-danger); }
 .sentence-capsule.is-done::after { content: "✓"; color: var(--ai-success); }
 .sentence-review-heading { padding: 24px 24px 16px; }
+.sentence-review-heading { justify-content: space-between; }
+.sentence-review-heading .section-hint { margin: 5px 0 0; }
+.sentence-review-actions { display: flex; align-items: center; flex: 0 0 auto; gap: 8px; }
+.scan-revision-trigger { min-height: 44px; color: var(--ai-accent); background: rgba(223,244,237,.72); }
+.scan-revision-trigger svg { width: 18px; height: 18px; }
+.revision-scan-surface { overflow: visible; }
+.revision-scan-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+.revision-scan-heading h2 { margin: 0; font-size: clamp(1.55rem,3vw,2.25rem); letter-spacing: -.04em; }
+.revision-scan-heading p:not(.eyebrow) { max-width: 700px; margin: 8px 0 0; color: var(--ai-muted); font-size: .82rem; }
+.revision-scan-count { flex: 0 0 auto; padding: 7px 11px; border-radius: 999px; color: var(--ai-accent); background: var(--ai-accent-soft); font-size: .7rem; font-weight: 850; }
+.revision-scan-instructions { margin-bottom: 18px; padding: 13px 15px; border: 1px solid rgba(189,122,51,.2); border-radius: 16px; color: #72501f; background: var(--ai-warm-soft); font-size: .76rem; }
+.revision-scan-instructions strong { display: block; margin-bottom: 3px; }
+.revision-scan-instructions p { margin: 0; line-height: 1.65; }
+.revision-scan-instructions code { padding: 2px 5px; border-radius: 5px; color: #60451d; background: rgba(255,255,255,.72); font: .75rem ui-monospace, SFMono-Regular, Menlo, monospace; }
+.revision-scan-missing { margin: -4px 0 18px; padding: 11px 13px; border: 1px solid rgba(170,65,65,.2); border-radius: 14px; color: #8b3535; background: var(--ai-danger-soft); font-size: .74rem; }
+.revision-scan-missing strong { font-weight: 850; }
+.revision-scan-candidate-list { display: grid; gap: 12px; }
+.revision-scan-candidate { padding: 17px; border: 1px solid var(--ai-line); border-left: 4px solid var(--ai-muted); border-radius: 18px; background: rgba(255,255,255,.78); }
+.revision-scan-candidate.is-mapped { border-left-color: var(--ai-success); background: rgba(239,250,243,.86); }
+.revision-scan-candidate.is-check { border-left-color: var(--ai-warm); background: rgba(255,249,237,.9); }
+.revision-scan-candidate.is-unresolved, .revision-scan-candidate.has-duplicate { border-left-color: var(--ai-danger); background: rgba(255,244,241,.92); }
+.revision-scan-candidate-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.revision-scan-candidate-heading strong { font-size: .86rem; }
+.revision-scan-written-number { margin-left: 8px; color: var(--ai-muted); font-size: .7rem; font-weight: 650; }
+.revision-scan-status { display: inline-flex; min-height: 28px; align-items: center; padding: 4px 9px; border-radius: 999px; font-size: .66rem; font-weight: 850; }
+.revision-scan-status.is-mapped { color: #1b6846; background: #dff3e6; }
+.revision-scan-status.is-check { color: #865716; background: #ffedc7; }
+.revision-scan-status.is-unresolved { color: #8b3535; background: #ffe1dc; }
+.revision-scan-field { display: grid; gap: 6px; margin-top: 10px; }
+.revision-scan-field > span { font-size: .7rem; font-weight: 820; }
+.revision-scan-field select, .revision-scan-field textarea { width: 100%; border: 1px solid var(--ai-line); border-radius: 12px; color: var(--ai-ink); background: rgba(255,255,255,.94); }
+.revision-scan-field select { min-height: 44px; padding: 8px 10px; }
+.revision-scan-field textarea { min-height: 78px; padding: 10px 11px; resize: vertical; line-height: 1.55; }
+.revision-scan-field select:focus, .revision-scan-field textarea:focus { border-color: var(--ai-accent); box-shadow: 0 0 0 3px rgba(15,118,110,.1); outline: none; }
+.revision-scan-choice { display: flex; flex-wrap: wrap; gap: 8px; margin: 13px 0 0; padding: 0; border: 0; }
+.revision-scan-choice legend { width: 100%; margin-bottom: 2px; color: var(--ai-muted); font-size: .7rem; font-weight: 820; }
+.revision-scan-choice label { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 11px; border: 1px solid var(--ai-line); border-radius: 12px; color: #355c52; background: rgba(255,255,255,.84); font-size: .76rem; font-weight: 780; }
+.revision-scan-choice label:has(input:checked) { border-color: var(--ai-accent); color: var(--ai-accent-dark); background: var(--ai-accent-soft); }
+.revision-scan-choice input { width: 17px; height: 17px; margin: 0 7px 0 0; accent-color: var(--ai-accent); }
+.revision-scan-import-note { margin: 13px 0 0; color: var(--ai-muted); font-size: .72rem; }
+.revision-scan-warning, .revision-scan-warning-list { margin: 10px 0 0; color: #8b3535; font-size: .72rem; line-height: 1.55; }
+.revision-scan-warning-list { padding-left: 1.1rem; }
+.revision-scan-actions { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--ai-line); }
+.revision-scan-failure .quiet-button { margin-top: 12px; }
 .sentence-stage { margin: 0; }
 .sentence-list { display: grid; gap: 0; }
 .sentence-card { scroll-margin-top: 112px; padding: clamp(20px,3vw,30px) clamp(18px,3.5vw,34px); border: 0; border-top: 1px solid var(--ai-line); border-radius: 0; background: var(--sentence-soft); box-shadow: none; transition: background 180ms ease; }
@@ -390,6 +434,14 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .language-toolbar { top: 0; border-radius: 0; }
     .sentence-card { padding: 18px 15px; border-radius: 0; }
     .original-sentence { font-size: 1.07rem; }
+    .sentence-review-heading { align-items: stretch; flex-direction: column; padding: 20px 15px 14px; }
+    .sentence-review-actions { width: 100%; }
+    .scan-revision-trigger { width: 100%; }
+    .revision-scan-heading { flex-direction: column; gap: 10px; }
+    .revision-scan-count { align-self: flex-start; }
+    .revision-scan-candidate { padding: 14px; }
+    .revision-scan-actions { align-items: stretch; flex-direction: column; }
+    .revision-scan-actions > button { width: 100%; }
     .batch-actions { align-items: stretch; flex-direction: column; }
     .batch-actions .primary-button { width: 100%; }
 }

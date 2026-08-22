@@ -126,12 +126,24 @@ async function cleanupExpiredPhotos(now) {
     const composition = (result.data || [])[0];
     if (!composition || !composition.pending_upload
       || composition.pending_upload.operation_id !== row.operation_id) continue;
-    await db.collection(COMPOSITIONS).doc(composition._id).update({
+    const revisionScan = composition.pending_upload.kind === "revision_scan"
+      || row.upload_kind === "revision_scan";
+    const failedJob = {
+      operation_id: row.operation_id,
+      job_type: revisionScan ? "revision_ocr" : "ocr",
+      status: "failed",
+      error_code: "PHOTO_UPLOAD_EXPIRED",
+      updated_at: now,
+    };
+    await db.collection(COMPOSITIONS).doc(composition._id).update(revisionScan ? {
+      pending_upload: null,
+      status: "revision_ocr_failed",
+      active_job: failedJob,
+      updated_at: now,
+    } : {
       pending_upload: null,
       status: "ocr_failed",
-      ocr_job: {
-        status: "failed", error_code: "PHOTO_UPLOAD_EXPIRED", updated_at: now,
-      },
+      ocr_job: failedJob,
       updated_at: now,
     });
   }

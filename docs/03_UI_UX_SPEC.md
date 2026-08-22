@@ -1970,6 +1970,26 @@ Important mobile rules:
   paragraph and CSS supplies its visual gap; the student must not type an extra
   blank line merely to make paragraphs legible. OCR paragraph items are rendered
   with the same spacing and serialize back to plain-text paragraph boundaries.
+- `Scan Revisions` lives inside the editable Sentence Revision card. Its compact
+  Apple-style `Review Scan` surface supports both camera capture and photo-library
+  selection through accessible native controls on phone and iPad; the control has
+  a visible label, keyboard focus, and an equivalent screen-reader name. The
+  surface has explicit `Choose photo`, `Uploading`, `Queued`, `Processing`,
+  `Review Scan`, and `Scan failed` states. Queued/processing copy says the scan
+  can continue after leaving, and refresh/re-login/reopen returns to the same
+  operation rather than asking for another upload. Retry is offered only through
+  the same recoverable operation after a failure.
+- Review Scan presents each recognized answer with its existing global sentence
+  number when mapped, a `Check` visual state when the marker is medium/low-confidence
+  or ambiguous, and an `Unresolved` state when no safe sentence can be chosen.
+  These states use text plus accessible color/shape semantics, not color alone.
+  The student can manually assign an unresolved answer to a sentence from the
+  current list, then review the resulting mapping before importing. Import is an
+  explicit action and places text into editable revision drafts only; it does not
+  press `Check` or show a passed result. If a sentence already has a typed draft,
+  the review surface requires an explicit per-sentence conflict choice before
+  replacing it. Closing, retrying, or abandoning a scan keeps typed drafts and
+  never silently overwrites them.
 - Before confirmation, the browser retries the same stable upload batch and
   never claims that cloud processing can continue. An interrupted or partial
   upload stays in the same Composition and exposes `重新上传照片`; only a fully

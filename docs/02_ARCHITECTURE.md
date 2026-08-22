@@ -776,6 +776,28 @@ photo IDs, state, attempts, leases, and safe error codes only—never manuscript
 OCR text. Multi-page Qwen array roots are normalized into one page-ordered OCR
 object before strict local schema validation.
 
+Photographed Sentence Revision follows the same boundary but remains a revision
+draft operation: an authenticated `Scan Revisions` action uploads pages to private
+storage, then creates/replays one metadata-only `writing_ai_jobs` row with
+`job_type: "revision_ocr"`. The job is bound to the owner, Composition,
+Composition revision, and operation ID; a later revision or replacement cannot
+publish into it. The worker normalizes only documented provider wrappers, validates
+the strict revision-OCR schema, and the server then canonicalizes sentence-number
+markers and answer text against the current server-owned sentence list. Missing,
+duplicate, out-of-range, empty, or otherwise unresolved mappings remain explicit
+unresolved results; a model echo never silently chooses a sentence or overwrites a
+draft. A successful worker publishes a guarded `pending_revision_scan` result,
+not live rewrite text. The student reviews mapped, `check`, and unresolved
+rows, may assign an unresolved answer manually, and explicitly confirms the rows
+to persist them as scanned sentence drafts. Only those confirmed drafts enter the
+existing `Check` handoff; scan import never calls or marks `Check` complete.
+The client can leave, refresh, reconnect, or reopen the same Composition to
+resume queued/processing/reviewable/failed scan state, and retry/replay keeps the
+same operation identity. Private scan photos are deleted once the guarded pending
+scan result is durably stored; incomplete or failed uploads remain covered by the
+existing expiry cleanup lifecycle. Import confirmation does not depend on retaining
+the image.
+
 Rewrite bodies are durable but do not belong in the queue row. The authenticated
 submission stores the operation/revision scope and submitted sentence text only
 inside `writing_compositions.pending_rewrite_check`; the related
