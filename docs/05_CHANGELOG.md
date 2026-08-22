@@ -36,6 +36,10 @@
   confirmed draft persistence. Queued/processing scans resume after leaving,
   refresh, re-login, or disconnect, with safe retry and photo cleanup after the
   durable scan result is stored.
+- Fixed both initial/replacement composition photo uploads and Sentence Revision
+  scans when an existing Composition stores `pending_upload: null`. Upload state
+  now uses an atomic whole-field replacement before any AI call, avoiding
+  CloudBase dotted-path write failures and preserving idempotent retry behavior.
 
 
 ## 2026-08-20
