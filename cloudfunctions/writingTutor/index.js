@@ -1778,6 +1778,39 @@ function canonicalRewriteResults(results, items) {
   });
 }
 
+function rewriteFeedbackHistory(record) {
+  const source = record && typeof record === "object" ? record : {};
+  const existing = Array.isArray(source.feedback_history) ? source.feedback_history : [];
+  if (existing.length) {
+    return existing.map((batch, index) => ({
+      ...batch,
+      round: Number.isFinite(Number(batch && batch.round)) && Number(batch.round) > 0
+        ? Number(batch.round) : index + 1,
+      results: Array.isArray(batch && batch.results) ? batch.results : [],
+    }));
+  }
+  if (!Array.isArray(source.results) || !source.results.length) return [];
+  return [{
+    round: 1,
+    operation_id: text(source.operation_id, 160),
+    overall_feedback: text(source.overall_feedback, 3000),
+    results: source.results,
+    prompt_version: source.prompt_version || null,
+    schema_version: source.schema_version || null,
+    model_metadata: source.model_metadata || null,
+    checked_at: source.checked_at || null,
+  }];
+}
+
+function appendRewriteFeedbackHistory(record, batch) {
+  const history = rewriteFeedbackHistory(record);
+  const operationId = text(batch && batch.operation_id, 160);
+  const replay = operationId && history.find((item) => item.operation_id === operationId);
+  if (replay) return { round: replay.round, history };
+  const round = history.reduce((highest, item) => Math.max(highest, Number(item.round) || 0), 0) + 1;
+  return { round, history: history.concat([{ ...batch, round }]) };
+}
+
 async function replaceObservations(student, composition, observations) {
   await db.collection(OBSERVATIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).remove();
   const now = new Date();
@@ -2136,18 +2169,29 @@ async function performRewriteJob(student, job) {
   });
   const checked = checkedResponse.data;
   const enrichedResults = canonicalRewriteResults(Array.isArray(checked.results) ? checked.results : [], prepared.items);
-  const previous = composition.rewrite_results && Array.isArray(composition.rewrite_results.results)
-    ? composition.rewrite_results.results : [];
+  const previousRecord = composition.rewrite_results || {};
+  const previous = Array.isArray(previousRecord.results) ? previousRecord.results : [];
   const merged = new Map(previous.map((item) => [item.sentence_id, item]));
   enrichedResults.forEach((item) => merged.set(item.sentence_id, item));
   const allRequired = language.sentences.filter((item) => item.rewrite_required).map((item) => item.sentence_id);
   const passed = allRequired.every((id) => merged.get(id) && merged.get(id).accepted === true);
   const now = new Date();
+  const feedbackHistory = appendRewriteFeedbackHistory(previousRecord, {
+    operation_id: job.operation_id,
+    overall_feedback: checked.overall_feedback,
+    results: enrichedResults,
+    prompt_version: PROMPT_VERSION,
+    schema_version: SCHEMA_VERSION,
+    model_metadata: checkedResponse.metadata,
+    checked_at: now,
+  });
   const record = {
     result_id: stableId("rewrite_check", student.auth_uid, job.operation_id),
     operation_id: job.operation_id,
     results: Array.from(merged.values()),
     overall_feedback: checked.overall_feedback,
+    check_round: feedbackHistory.round,
+    feedback_history: feedbackHistory.history,
     passed,
     prompt_version: PROMPT_VERSION,
     schema_version: SCHEMA_VERSION,
@@ -2348,7 +2392,8 @@ exports.main = async (event = {}) => {
 
 exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
-  canonicalStandardizedResult, canonicalRewriteResults, canonicalRevisionScanResult, revisionSourceUnits, roundedToStep,
+  canonicalStandardizedResult, canonicalRewriteResults, rewriteFeedbackHistory, appendRewriteFeedbackHistory,
+  canonicalRevisionScanResult, revisionSourceUnits, roundedToStep,
   usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
   isDiscardableEmptyComposition,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },

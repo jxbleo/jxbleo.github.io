@@ -2071,6 +2071,11 @@ Important mobile rules:
 - An unresolved navigation capsule uses a small red cross beneath its number,
   whether it is still empty or failed the latest Check; never use a dot or question mark.
   A completed capsule keeps its small green checkmark regardless of sentence accent color.
+- The analysis face keeps the initial coaching paragraph first. Every later Submit
+  feedback is shown beneath it in chronological order with a thin sentence-color
+  divider and a muted Simplified Chinese label such as `第 1 次点评` or
+  `第 2 次点评`. New feedback never visually merges into the prior paragraph,
+  and historical rounds remain readable after refresh or re-login.
 - After a student revision is accepted, that sentence card opens on the corrected
   sentence rather than the analysis. The persisted student sentence is highlighted,
   while the top-right state reads `REVISED ✓`. It is display text,

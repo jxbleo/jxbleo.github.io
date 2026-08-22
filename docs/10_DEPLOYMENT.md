@@ -1102,3 +1102,10 @@ both `writingTutor.zip` and `writingAiWorker.zip`, verify both functions are
 `Active` / `Available`, and only then publish the `ai-tutor` static assets. No new
 collection, index, timer, provider account, or environment variable is required.
 This ordering is owner-gated and is not authorization to deploy production.
+
+On 2026-08-23, `writingTutor` was updated from the isolated bundled function
+directory and verified `Active` / `Available` to enable durable numbered rewrite
+feedback rounds. The generic `writingAiWorker` dispatcher, function runtime,
+handler, existing provider environment, collections, indexes, and timers were
+unchanged. The matching static client uses asset version `20260822-11` and must
+be published only after this backend status check.
