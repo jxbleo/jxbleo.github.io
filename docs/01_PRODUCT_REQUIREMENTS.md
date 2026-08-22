@@ -1815,7 +1815,7 @@ cloudfunctions/
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
   Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
 - OCR Review 只保留顶部 `OCR Review`、`Compare with Image`、紧接其后的正文编辑器，以及底部
-  `Upload Again` 和 `Confirm Text & Start Review`。原有中文说明、步骤、存疑数量和编辑器标签全部
+  唯一一个水平居中的 `Confirm`。此步骤删除 `Upload Again`；原有中文说明、步骤、存疑数量和编辑器标签全部
   删除。原图默认隐藏；按钮在电脑/iPad打开左右对照，在手机把图片放到编辑器上方，再次点击隐藏。
   AI 返回的存疑片段必须是 OCR 正文中的精确子串，前端以浅红底和深红字直接标出且不加下划线；
   学生点击确认或修改后取消高亮，保存时只提交纯文本。编辑器按真实段落显示，按一次 Enter 就产生

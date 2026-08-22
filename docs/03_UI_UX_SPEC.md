@@ -1953,8 +1953,8 @@ Important mobile rules:
   scrolling without losing the previous page position.
 - OCR Review is a deliberately sparse editing card. Its top row contains only
   `OCR Review` and the persistent `Compare with Image` toggle; the editable
-  manuscript follows immediately, with `Upload Again` and
-  `Confirm Text & Start Review` as the only footer actions. Remove the former
+  manuscript follows immediately, with one horizontally centered `Confirm`
+  footer action. Remove `Upload Again` from this review step, together with the former
   Chinese heading, explanatory copy, step indicator, uncertainty count, photo
   label, and editor label.
 - Image comparison is closed by default on every viewport. `Compare with Image`

@@ -6,7 +6,8 @@
 ## 2026-08-22 — AI Tutor composition continuity
 
 - Rebuilt OCR Review as a focused paragraph editor with only `OCR Review`,
-  `Compare with Image`, and the two English footer actions. Structured uncertain
+  `Compare with Image`, and one centered `Confirm` footer action. Removed
+  `Upload Again` from this review step. Structured uncertain
   OCR substrings now appear as dismissible pale-red inline marks, while one Enter
   creates a visibly spaced paragraph without storing presentation markup.
 - Changed student-facing CEFR levels from Chinese within-band labels to compact
