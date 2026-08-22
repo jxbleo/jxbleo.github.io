@@ -852,9 +852,9 @@ STAR 不阻止未来重新布置同一个 set。
 - `Scan Revisions` 必须沿用私有上传加持久任务边界：`revision_ocr` job 只保存安全元数据、照片
   ID 和学生/Composition/revision/operation scope，不保存作文、OCR 正文或模型反馈。
 - 排查顺序固定为 upload/job lifecycle、provider/schema、marker canonicalization、pending scan result、
-  draft conflict 和 stale revision；不要把模型返回的句子编号或原文当作最终事实。
-- Review Scan 的 mapped、check、unresolved 结果必须保持可见；导入前不要自动触发 `Check`，
-  也不要在没有学生明确选择时覆盖已有手写草稿。
+  draft import boundary 和 stale revision；不要把模型返回的句子编号或原文当作最终事实。
+- Review Scan 只显示红色原句选择框、OCR 编辑框和极小置信度符号；导入前不要自动触发 `Check`。
+  学生按 Import 是覆盖对应未完成草稿的明确确认边界；返回而不导入不得改动草稿。
 
 可观测字段：
 - 只记录 `job_id`、`operation_id`、Composition ID/revision、job state、attempt/lease timestamps、
@@ -867,7 +867,7 @@ STAR 不阻止未来重新布置同一个 set。
   再检查前端轮询；不要让学生重复创建 Composition。
 - 若结果映射到错误句子，检查服务器是否按当前 sentence list canonicalize，以及是否拒绝 duplicate、
   missing、out-of-range 或空 marker；不要只调整 OCR prompt。
-- 若扫描导入后已有草稿消失，检查是否记录了明确的 keep/replace conflict choice，并检查
+- 若扫描导入后草稿内容异常，检查 Import 是否只提交了当前卡片的 sentence ID 与编辑文字，并检查
   pending scan result 到 confirmed scanned draft 的事务边界。
 
 ### 2026-08-22：`pending_upload: null` 阻断拍照请求

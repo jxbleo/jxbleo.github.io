@@ -799,22 +799,33 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
     "completed/read-only writing must not expose photographed draft import");
   requireEvery(styles, [
     ".revision-scan-surface", ".revision-scan-target", ".revision-scan-target-number",
-    ".revision-scan-recognized", ".revision-scan-choice", "#fca5a5", "#fef2f2",
+    ".revision-scan-recognized", ".revision-scan-confidence", "#fca5a5", "#fef2f2",
   ], "accessible Review Scan styling");
+  requireEvery(styles, [
+    ".revision-scan-confidence.is-high", ".revision-scan-confidence.is-medium",
+    ".revision-scan-confidence.is-low", "width: 13px", "height: 13px",
+  ], "compact Review Scan confidence markers");
 });
 
-check("Review Scan requires mapping review and protects typed drafts", () => {
+check("Review Scan keeps only mapping cards and imports their edited scan text", () => {
   const client = read(clientPath);
   const reviewSource = functionSource(client, "revisionScanCandidateHtml", "renderRevisionScanReview");
+  const pageSource = functionSource(client, "renderRevisionScanReview", "renderRevisionScanWaiting");
   const importSource = functionSource(client, "confirmRevisionScanImport", "renderLanguage");
-  const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
-  const syncSource = functionSource(client, "syncRevisionScanFromComposition", "writingCall");
   const eligibleSource = functionSource(client, "revisionScanSentences", "revisionScanSentenceLabel");
   requireEvery(reviewSource, [
-    "Keep typed", "Use scanned", "data-scan-sentence", "data-scan-text",
-    "revisionScanSentenceLabel(sid)", "NEEDS REVISION", "SCANNED REVISION",
-    "claimedByAnother", "disabled", "revisionScanSentenceDetails",
-  ], "Review Scan mapping and conflict controls");
+    "data-scan-sentence", "data-scan-text", "revision-scan-confidence",
+    "revisionScanSentenceLabel(sid)", "claimedByAnother", "disabled",
+    "revisionScanSentenceDetails", "revisionScanConfidenceMeta",
+  ], "Review Scan mapping cards");
+  [
+    "Keep typed", "Use scanned", "data-scan-choice", "已有手写草稿",
+    "SCANNED REVISION", "NEEDS REVISION", "手写编号",
+  ].forEach((removed) => assert(!reviewSource.includes(removed), `Review Scan card must omit ${removed}`));
+  [
+    "revision-scan-heading", "revision-scan-count", "revision-scan-instructions",
+    "revision-scan-missing", "SENTENCE REVISION", "Review Scan",
+  ].forEach((removed) => assert(!pageSource.includes(removed), `Review Scan page must omit ${removed}`));
   assert(/rewriteRequired\s*\(\s*sentence\s*\)[\s\S]{0,180}accepted\s*={2,3}\s*true/.test(eligibleSource),
     "Review Scan target choices must exclude originally-correct and already-accepted sentences");
   assert(/revisionScanSentences\(\)\.length[\s\S]{0,500}Scan Revisions/.test(functionSource(client, "renderLanguage", "sentenceCapsuleHtml")),
@@ -824,14 +835,10 @@ check("Review Scan requires mapping review and protects typed drafts", () => {
   ], "confirmed scan import");
   assert(!/submitRewrites\s*\(|data-submit-rewrites/.test(importSource),
     "scan import must populate drafts without automatically running Check");
-  assert(/typed\s*\?\s*['"]['"]\s*:\s*['"]scanned['"]/.test(syncSource)
-      && /choice\s*!==\s*['"]typed['"][\s\S]{0,120}choice\s*!==\s*['"]scanned['"]/.test(importSource),
-    "an existing typed draft must require an explicit Keep typed or Use scanned choice");
-  const restoreIndex = loadSource.indexOf("restoreLanguageReviewState");
-  const syncIndex = loadSource.indexOf("syncRevisionScanFromComposition");
-  const reviewIndex = loadSource.indexOf("renderRevisionScanReview");
-  assert(restoreIndex >= 0 && syncIndex > restoreIndex && reviewIndex > syncIndex,
-    "reopening Review Scan must restore local/cloud typed drafts before choosing conflict defaults");
+  assert(!/revisionScanSelection|data-scan-choice|Keep typed|Use scanned/.test(client),
+    "Review Scan must not retain the removed typed-versus-scanned choice state");
+  assert(/selected\.forEach\([\s\S]{0,180}state\.rewrites\[item\.sentence_id\]\s*=\s*item\.text/.test(importSource),
+    "explicit import must place each reviewed scanned sentence into its selected draft");
 });
 
 check("revision photo upload retries one logical start-upload-finish task without a false handoff claim", () => {
@@ -953,7 +960,7 @@ check("confirmed revision scan import is revision-bound, transactional, and draf
   assert(!/callStructuredModel|rewrite_results\s*:|pending_rewrite_check\s*:/.test(importSource),
     "import must persist editable drafts only and must not grade or publish Check results");
   assert(!/if\s*\(\s*!submitted\.length\s*\)\s*throw/.test(importSource),
-    "confirming Keep typed for every conflict must be able to clear the pending scan without importing text");
+    "the server must retain idempotent compatibility with an empty confirmed import");
 });
 
 check("expired revision uploads retain a revision-specific recoverable failure", () => {

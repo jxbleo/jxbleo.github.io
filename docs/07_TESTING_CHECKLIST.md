@@ -1936,8 +1936,8 @@ High priority improvement:
   coverage for both upload entry points and the revision-job handoff.
 - Verify duplicate, missing, out-of-range, and empty markers never auto-map to a
   sentence. Exercise low-confidence markers, line-wrapped handwriting, and a
-  page with both mapped and unresolved answers; confirm mapped, `Check`, and
-  `Unresolved` semantics remain understandable without color alone. Manually assign
+  page with both mapped and unresolved answers; confirm the tiny high `✓`, medium
+  `!`, and low `?` confidence symbols have accessible names. Manually assign
   an unresolved answer and verify the sentence identity is shown before import.
 - On every Review Scan card, confirm the upper box has the same pale-red fill and
   red-border feel as a wrong Vocabulary question, and shows the global number plus
@@ -1948,10 +1948,10 @@ High priority improvement:
   rejects any crafted import that targets completed work or duplicates a sentence.
 - Confirm scan results are reviewed before import and that import only fills the
   selected revision drafts. It must not call `Check`, mark any sentence accepted,
-  or create a rewrite result. With an existing typed draft, verify explicit
-  keep-typed and replace-with-scan choices; returning without import must preserve
-  the typed draft, confirming all rows as keep-typed must close the pending scan
-  without mutation, and no choice may silently overwrite it.
+  or create a rewrite result. Verify the page contains no heading, instruction,
+  missing-sentence summary, mapping badge, handwritten-number label, or typed/scanned
+  choice controls. With an existing draft, confirm Import replaces it with the
+  reviewed scan text, while returning without import preserves it unchanged.
 - Disconnect after upload, during `Queued`/`Processing`, and before import. Refresh,
   re-login, and reopen the same Composition; verify the same operation/revision
   resumes, duplicate delivery is idempotent, and stale-revision results cannot
