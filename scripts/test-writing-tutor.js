@@ -797,8 +797,18 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
     "Scan Revisions", "revision-scan-photo", "capture=\"environment\"",
     "image/jpeg,image/png,image/webp", "data-start-revision-scan",
   ], "Sentence Revision scan trigger");
+  assert(!renderSource.includes("亲自重写后再按 Submit"),
+    "Sentence Revision must omit the removed rewrite-and-scan instruction");
+  assert(/batch-actions[\s\S]{0,500}data-start-revision-scan[\s\S]{0,600}data-submit-rewrites/.test(renderSource),
+    "the camera trigger must sit immediately before Submit in the bottom action row");
+  assert(/data-start-revision-scan[^>]*aria-label="Scan Revisions"[^>]*title="Scan Revisions"[^>]*>[\s\S]{0,120}icon\('camera'\)[\s\S]{0,120}<\/button>/.test(renderSource),
+    "the bottom scan trigger must be an accessible camera-only button");
   assert(/!state\.readOnly[\s\S]{0,500}Scan Revisions/.test(renderSource),
     "completed/read-only writing must not expose photographed draft import");
+  assert(/\.scan-revision-trigger\s*\{[^}]*width\s*:\s*44px[^}]*height\s*:\s*44px/is.test(styles),
+    "the scan trigger must remain a compact square camera button");
+  assert(/@media\s*\(max-width:\s*760px\)[\s\S]*\.batch-actions\s*\{[^}]*flex-direction\s*:\s*row/is.test(styles),
+    "phone actions must keep the camera to the left of Submit");
   requireEvery(styles, [
     ".revision-scan-surface", ".revision-scan-target", ".revision-scan-target-number",
     ".revision-scan-recognized", ".revision-scan-confidence", "#fca5a5", "#fef2f2",

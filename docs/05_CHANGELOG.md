@@ -59,6 +59,8 @@
 - Made successful scan import return with every revision-required card showing its
   attempt face. Renamed the muted rewrite-field label to `Your Attempt` and the lone
   Sentence Revision footer action from `Check` to `Submit`.
+- Removed the Sentence Revision instruction line and moved Scan Revisions beside
+  `Submit` as a compact, accessible camera-only footer button on every viewport.
 
 
 ## 2026-08-20

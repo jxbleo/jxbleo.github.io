@@ -1867,6 +1867,10 @@ High priority improvement:
   supporting-text color, while the textarea content remains visually primary. After
   a successful Review Scan import, confirm every revision-required card opens on that
   attempt face with the original sentence and imported correction visible together.
+- Confirm the Sentence Revision heading has no explanatory line beneath it. The bottom
+  action row must show a 44px camera-only button immediately left of `Submit`; its
+  accessible name remains `Scan Revisions`, and phone width must keep both controls on
+  one row rather than stretching the camera into a full-width text button.
 - Before Check and after a rejected Check, confirm the unresolved capsule shows a
   small red cross rather than a dot or question mark. After acceptance, confirm the capsule
   shows a green check and the card's top-right state reads `REVISED ✓`. The accepted card must open
