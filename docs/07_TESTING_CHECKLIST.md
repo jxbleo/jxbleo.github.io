@@ -1729,6 +1729,16 @@ High priority improvement:
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
+- On OCR Review, confirm the only fixed fields are `OCR Review`,
+  `Compare with Image`, `Upload Again`, and `Confirm Text & Start Review`, with
+  the editable manuscript directly below the heading. The image toggle must
+  open/close split view on desktop/iPad and an image-above-text view on phone.
+- Return an exact uncertain substring from OCR and confirm it is marked with a
+  pale-red fill and dark-red text, without an underline. Clicking it must remove
+  the mark without moving the caret; editing it must also remove the mark, and
+  confirmed text must contain neither HTML nor styling. Press Enter once between
+  two paragraphs and confirm a visible paragraph gap, then reload the confirmed
+  manuscript and verify the same two paragraphs remain.
 - Verify both modes are mutually exclusive; standardized review requires prompt
   and framework, while language review works without a prompt and shows no score.
 - Submit an obvious IELTS response under HKDSE and confirm the selected framework

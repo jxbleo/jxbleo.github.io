@@ -345,6 +345,24 @@ check("the two evaluation modes are mutually exclusive", () => {
   assert(modeGroup, "expected exactly two same-name radio inputs for general language and standardized exam modes");
 });
 
+check("OCR Review is a focused paragraph editor with inline uncertainty marks", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderOcr", "saveAndEvaluate");
+  requireEvery(renderSource, [
+    "OCR Review", "Compare with Image", "contenteditable=\"true\"",
+    "Upload Again", "Confirm Text &amp; Start Review",
+  ], "focused OCR Review controls");
+  assert(!/先确认识别文字|第 2 步|有 ['\"] \+ uncertainCount|可编辑 OCR 文本|请自行修正识别错误/.test(renderSource),
+    "OCR Review must not restore the removed heading, step, count, or editor-label fields");
+  requireEvery(client, ["ocrEditorHtml", "ocrUncertainRanges", "data-ocr-uncertain", "ocrEditorText"],
+    "inline OCR uncertainty handling");
+  requireEvery(styles, [".ocr-uncertain", ".ocr-text-editor > p", "margin: 0 0 1em"],
+    "uncertain highlight and one-Enter paragraph spacing");
+  assert(/\.ocr-uncertain\s*\{[^}]*color\s*:\s*#a52634[^}]*background\s*:\s*rgba\(218,55,69,\.16\)/i.test(styles),
+    "uncertain OCR spans must use the approved red text and pale-red fill");
+});
+
 check("language review renders exactly three primary cards in the approved order", () => {
   const client = read(clientPath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
@@ -1287,6 +1305,9 @@ check("prompts are versioned and make the selected Rubric authoritative", () => 
   assert(/authoritative/i.test(standardized), "selected rubric must be authoritative");
   assert(/do not replace|do not reclassify/i.test(standardized), "standardized prompt must forbid automatic replacement/reclassification");
   assert(/no numerical score/i.test(promptModule.languagePrompt()), "general language prompt must explicitly forbid scoring");
+  const ocrPrompt = promptModule.ocrPrompt();
+  requireEvery(ocrPrompt, ["one paragraphs item", "joined with two newline characters", "exact non-empty substring", "repeated ambiguous occurrences separately"],
+    "OCR paragraph and uncertainty prompt contract");
   const languagePrompt = promptModule.languagePrompt();
   requireEvery(languagePrompt, ["A1", "A2", "B1", "B2", "C1", "C2", "lower", "middle", "upper", "cefr_estimate.commentary_zh"],
     "CEFR writing estimate prompt contract");
