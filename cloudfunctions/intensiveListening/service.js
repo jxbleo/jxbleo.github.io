@@ -52,16 +52,31 @@ function emptyUnitState(slotCount) {
   };
 }
 
+function hasLegacyAssistedAllCorrect(value, slotCount) {
+  if (!value || value.assisted !== true || Number(value.reveal_position_version) >= 2 || slotCount < 1) return false;
+  return Array.from({ length: slotCount }, (_, index) => (
+    value.correct_positions && value.correct_positions[index] === true
+  )).every(Boolean);
+}
+
 function normalizedUnitState(value, slotCount) {
   const empty = emptyUnitState(slotCount);
   if (!value || typeof value !== "object") return empty;
+  const legacyAssistedAllCorrect = hasLegacyAssistedAllCorrect(value, slotCount);
   return {
     checks: Math.max(0, Math.min(99, Number(value.checks) || 0)),
     completed: value.completed === true,
     assisted: value.assisted === true,
-    correct_positions: empty.correct_positions.map((_, index) => value.correct_positions && value.correct_positions[index] === true),
-    last_marks: empty.last_marks.map((_, index) => value.last_marks && value.last_marks[index] === true),
-    last_wrong_hashes: empty.last_wrong_hashes.map((_, index) => String(value.last_wrong_hashes && value.last_wrong_hashes[index] || "")),
+    reveal_position_version: Math.max(0, Number(value.reveal_position_version) || 0),
+    correct_positions: empty.correct_positions.map((_, index) => (
+      !legacyAssistedAllCorrect && value.correct_positions && value.correct_positions[index] === true
+    )),
+    last_marks: empty.last_marks.map((_, index) => (
+      !legacyAssistedAllCorrect && value.last_marks && value.last_marks[index] === true
+    )),
+    last_wrong_hashes: empty.last_wrong_hashes.map((_, index) => (
+      legacyAssistedAllCorrect ? "" : String(value.last_wrong_hashes && value.last_wrong_hashes[index] || "")
+    )),
     replays: Math.max(0, Number(value.replays) || 0),
   };
 }
@@ -120,9 +135,7 @@ function revealUnit(unit, previousValue, replayDelta = 0) {
       ...previous,
       completed: true,
       assisted: true,
-      correct_positions: Array(slots.length).fill(true),
-      last_marks: Array(slots.length).fill(true),
-      last_wrong_hashes: Array(slots.length).fill(""),
+      reveal_position_version: 2,
       replays: previous.replays + Math.max(0, Math.min(1000, Number(replayDelta) || 0)),
     },
     answerText: String(unit.text || ""),
@@ -219,12 +232,14 @@ function publicProgress(material, record) {
   const summary = progressSummary(material, states);
   const unitProgress = {};
   dictationUnits(material).forEach((unit) => {
-    const state = normalizedStateForUnit(states[unit.unit_id], unit);
+    const storedState = states[unit.unit_id];
+    const state = normalizedStateForUnit(storedState, unit);
     unitProgress[unit.unit_id] = {
       checks: state.checks,
       completed: state.completed,
       assisted: state.assisted,
       correct_positions: state.correct_positions,
+      correct_positions_reliable: !hasLegacyAssistedAllCorrect(storedState, (unit.slots || []).length),
       replays: state.replays,
     };
   });

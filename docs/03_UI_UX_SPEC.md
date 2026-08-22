@@ -1505,6 +1505,11 @@ Shared rules:
 - `Tab` replays the current unit. Correct slots lock green; incorrect slots
   remain editable red. The server reveals answers only after three effective
   checks and keeps independent/assisted completion counts separate.
+- Show Answer completes the unit as assisted without changing Word Slot grading
+  marks: independently correct slots stay green, while wrong or blank student
+  entries remain red or neutral and become read-only. Historical assisted states
+  that cannot prove per-slot correctness render unknown positions neutrally,
+  never as synthetic green answers.
 - The top bar defaults to `Practice Mode`, with pause/play, a draggable progress
   bar, elapsed/total time, and `0.75× / 1× / 1.25× / 1.5× / 2×` speed choices.
 - `Test Mode` requires confirmation, clears Practice answers/feedback, restarts

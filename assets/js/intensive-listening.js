@@ -103,6 +103,15 @@
   function firstPlayableIndex() {
     return 0;
   }
+  function applyServerMarks(local, serverUnit) {
+    if (serverUnit.correct_positions_reliable === false) {
+      local.marks = local.marks.map(function(mark) { return mark === 'correct' ? '' : mark; });
+      return;
+    }
+    (serverUnit.correct_positions || []).forEach(function(correct, index) {
+      if (correct) local.marks[index] = 'correct';
+    });
+  }
   function hydrateLocalUnits() {
     var draft = readDraft();
     state.localUnits = {};
@@ -117,7 +126,7 @@
         local.answerText = local.answerVisible ? String(saved.answerText || '') : '';
         local.answers = local.answerVisible && Array.isArray(saved.answers) ? saved.answers.map(String) : [];
       }
-      (serverUnit.correct_positions || []).forEach(function(correct, index) { if (correct) local.marks[index] = 'correct'; });
+      applyServerMarks(local, serverUnit);
       unit.slots.forEach(function(slot, index) { if (isProvided(slot)) local.marks[index] = 'correct'; });
       local.checks = Number(serverUnit.checks) || 0;
       state.localUnits[unit.unit_id] = local;
@@ -190,7 +199,7 @@
       var serverUnit = progress.unit_progress[unit.unit_id] || {};
       var local = state.localUnits[unit.unit_id] || emptyLocalUnit(unit, serverUnit);
       local.checks = Number(serverUnit.checks) || 0;
-      (serverUnit.correct_positions || []).forEach(function(correct, index) { if (correct) local.marks[index] = 'correct'; });
+      applyServerMarks(local, serverUnit);
       state.localUnits[unit.unit_id] = local;
     });
     renderProgress();
@@ -296,7 +305,7 @@
           '<span class="il-provided-word" aria-label="Provided word">' + escapeHtml(slot.provided_text || '') + '</span>' +
           '<span class="il-punctuation">' + escapeHtml(slot.suffix || '') + '</span></span>';
       }
-      var disabled = (server.correct_positions || [])[index] === true || local.answerVisible || state.teacherMode;
+      var disabled = server.completed === true || (server.correct_positions || [])[index] === true || local.answerVisible || state.teacherMode;
       return '<span class="il-word-token"><span class="il-punctuation">' + escapeHtml(slot.prefix || '') + '</span>' +
         '<input class="il-word-slot ' + escapeHtml(local.marks[index] || '') + '" data-slot-index="' + index + '" aria-label="Word ' + (index + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false" value="' + escapeHtml(local.entries[index]) + '" ' + (disabled ? 'disabled' : '') + '>' +
         '<span class="il-punctuation">' + escapeHtml(slot.suffix || '') + '</span></span>';
