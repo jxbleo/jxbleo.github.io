@@ -1106,6 +1106,11 @@ All collections are `ADMINONLY`.
   any draft; returning without confirmation leaves it reviewable. Scan import does not create an attempt, invoke `Check`, or
   publish a rewrite result; the existing `pending_rewrite_check` flow remains the
   only path to model checking.
+  Eligibility is derived from the current language-review sentences minus every
+  sentence whose merged `rewrite_results.results[].accepted` is `true`. Effective/
+  no-change sentences and accepted revisions are not valid `pending_revision_scan`
+  targets. The client prevents duplicate selections for immediate feedback; the
+  server revalidates the unfinished target set and duplicate IDs at import time.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.

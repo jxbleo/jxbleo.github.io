@@ -538,13 +538,22 @@
     }
 
     function revisionScanSentences() {
-        return safeArray(state.review && state.review.sentences).filter(rewriteRequired);
+        return safeArray(state.review && state.review.sentences).filter(function(sentence, index) {
+            var result = state.rewriteResults[sentenceId(sentence, index)];
+            return rewriteRequired(sentence) && !(result && result.accepted === true);
+        });
     }
 
     function revisionScanSentenceLabel(id) {
         var sentences = safeArray(state.review && state.review.sentences);
         var index = sentences.findIndex(function(sentence, sentenceIndex) { return sentenceId(sentence, sentenceIndex) === id; });
         return index >= 0 ? '第 ' + (index + 1) + ' 句' : id;
+    }
+
+    function revisionScanSentenceDetails(id) {
+        var sentences = safeArray(state.review && state.review.sentences);
+        var index = sentences.findIndex(function(sentence, sentenceIndex) { return sentenceId(sentence, sentenceIndex) === id; });
+        return index >= 0 ? { sentence: sentences[index], number: index + 1 } : null;
     }
 
     function syncRevisionScanFromComposition(composition) {
@@ -1566,9 +1575,10 @@
 
     function revisionScanDuplicateIds() {
         var counts = {};
+        var eligible = revisionScanSentences().map(function(sentence, index) { return sentenceId(sentence, index); });
         revisionScanState().candidates.forEach(function(candidate) {
             var id = firstText(candidate.sentence_id);
-            if (id) counts[id] = (counts[id] || 0) + 1;
+            if (id && eligible.indexOf(id) >= 0) counts[id] = (counts[id] || 0) + 1;
         });
         return Object.keys(counts).filter(function(id) { return counts[id] > 1; });
     }
@@ -1577,15 +1587,26 @@
         var scan = revisionScanState();
         var id = revisionScanCandidateId(candidate, index);
         var sentenceIdValue = firstText(candidate.sentence_id);
-        var typed = firstText(state.rewrites[sentenceIdValue]);
+        var typed = '';
         var status = revisionScanStatusClass(candidate.status);
         if (!sentenceIdValue || !revisionScanSentences().some(function(sentence, sentenceIndex) {
             return sentenceId(sentence, sentenceIndex) === sentenceIdValue;
         })) status = 'unresolved';
+        if (status !== 'unresolved') typed = firstText(state.rewrites[sentenceIdValue]);
         var duplicate = revisionScanDuplicateIds().indexOf(sentenceIdValue) >= 0;
+        var selectedDetails = revisionScanSentenceDetails(status === 'unresolved' ? '' : sentenceIdValue);
+        var claimedByAnother = revisionScanState().candidates.reduce(function(ids, item) {
+            var sid = firstText(item.sentence_id);
+            if (item.candidate_id !== id && sid && ids.indexOf(sid) < 0) ids.push(sid);
+            return ids;
+        }, []);
         var options = revisionScanSentences().map(function(sentence, sentenceIndex) {
             var sid = sentenceId(sentence, sentenceIndex);
-            return '<option value="' + escapeHtml(sid) + '"' + (sid === sentenceIdValue ? ' selected' : '') + '>' + escapeHtml(revisionScanSentenceLabel(sid)) + '</option>';
+            var details = revisionScanSentenceDetails(sid);
+            var unavailable = claimedByAnother.indexOf(sid) >= 0 && sid !== sentenceIdValue;
+            var optionLabel = details ? details.number + '  ' + firstText(details.sentence && details.sentence.original) : revisionScanSentenceLabel(sid);
+            return '<option value="' + escapeHtml(sid) + '"' + (sid === sentenceIdValue && status !== 'unresolved' ? ' selected' : '') +
+                (unavailable ? ' disabled' : '') + '>' + escapeHtml(optionLabel) + '</option>';
         }).join('');
         var warnings = safeArray(candidate.warnings).map(function(warning) {
             return '<li>' + escapeHtml(revisionScanWarningLabel(warning)) + '</li>';
@@ -1596,12 +1617,16 @@
             '<label><input type="radio" name="scan-choice-' + escapeHtml(id) + '" value="scanned" data-scan-choice="scanned" data-scan-candidate="' + escapeHtml(id) + '"' + (choice === 'scanned' ? ' checked' : '') + '><span>Use scanned</span></label></fieldset>' :
             '<p class="revision-scan-import-note">将导入扫描文字；你仍可在逐句修改中继续编辑。</p>';
         return '<article class="revision-scan-candidate is-' + status + (duplicate ? ' has-duplicate' : '') + '" data-scan-candidate-row="' + escapeHtml(id) + '">' +
-            '<div class="revision-scan-candidate-heading"><div><strong>识别项 ' + (index + 1) + '</strong>' +
-            (candidate.written_number != null ? '<span class="revision-scan-written-number">手写编号：' + escapeHtml(candidate.written_number) + '</span>' : '') +
-            (candidate.confidence ? '<span class="revision-scan-written-number">置信度：' + escapeHtml(revisionScanConfidenceLabel(candidate.confidence)) + '</span>' : '') + '</div>' +
-            '<span class="revision-scan-status is-' + status + '">' + escapeHtml(revisionScanStatusLabel(status)) + '</span></div>' +
-            '<label class="revision-scan-field"><span>改写句子</span><select data-scan-sentence="' + escapeHtml(id) + '" aria-label="为识别项 ' + (index + 1) + ' 选择改写句子"><option value="">请选择有效句子</option>' + options + '</select></label>' +
-            '<label class="revision-scan-field"><span>识别文字</span><textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="编辑识别项 ' + (index + 1) + ' 的文字">' + escapeHtml(candidate.recognized_text) + '</textarea></label>' +
+            '<label class="revision-scan-target' + (selectedDetails ? '' : ' is-unassigned') + '">' +
+            '<span class="revision-scan-target-topline"><span>NEEDS REVISION</span><span class="revision-scan-status is-' + status + '">' + escapeHtml(revisionScanStatusLabel(status)) + '</span></span>' +
+            '<span class="revision-scan-target-main"><strong class="revision-scan-target-number">' + (selectedDetails ? selectedDetails.number : '?') + '</strong>' +
+            '<span class="revision-scan-target-copy">' + escapeHtml(selectedDetails ? firstText(selectedDetails.sentence && selectedDetails.sentence.original) : 'Select the sentence this rewrite belongs to') + '</span>' +
+            '<span class="revision-scan-target-chevron" aria-hidden="true">⌄</span></span>' +
+            '<select data-scan-sentence="' + escapeHtml(id) + '" aria-label="为识别项 ' + (index + 1) + ' 选择仍需订正的原句"><option value="">Select sentence</option>' + options + '</select></label>' +
+            '<label class="revision-scan-recognized"><span class="revision-scan-recognized-label">SCANNED REVISION' +
+            (candidate.written_number != null ? ' · 手写编号 ' + escapeHtml(candidate.written_number) : '') +
+            (candidate.confidence ? ' · 置信度' + escapeHtml(revisionScanConfidenceLabel(candidate.confidence)) : '') + '</span>' +
+            '<textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="编辑识别项 ' + (index + 1) + ' 的文字">' + escapeHtml(candidate.recognized_text) + '</textarea></label>' +
             (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') +
             (warnings ? '<ul class="revision-scan-warning-list">' + warnings + '</ul>' : '') + choiceHtml + '</article>';
     }
@@ -1832,7 +1857,7 @@
             '<section class="surface language-review-card language-sentence-review-card">' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
             '<div class="language-section-heading sentence-review-heading"><div><h2>Sentence Revision</h2><p class="section-hint">亲自重写后再按 Check；也可以扫描纸上已经写好的句子。</p></div>' +
-            (!state.readOnly && sentences.some(rewriteRequired) ? '<div class="sentence-review-actions"><button class="secondary-button scan-revision-trigger" type="button" data-start-revision-scan>' + icon('camera') + 'Scan Revisions</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden></div>' : '') + '</div>' +
+            (!state.readOnly && revisionScanSentences().length ? '<div class="sentence-review-actions"><button class="secondary-button scan-revision-trigger" type="button" data-start-revision-scan>' + icon('camera') + 'Scan Revisions</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden></div>' : '') + '</div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
             (!state.readOnly ? '<div class="batch-actions"><button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Check</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
@@ -2266,7 +2291,7 @@
             if (sentenceCandidate) {
                 sentenceCandidate.sentence_id = target.value || null;
                 revisionScanState().choices[sentenceCandidate.candidate_id] = firstText(state.rewrites[sentenceCandidate.sentence_id]) ? '' : 'scanned';
-                if (sentenceCandidate.sentence_id && sentenceCandidate.status === 'unresolved') sentenceCandidate.status = 'check';
+                sentenceCandidate.status = sentenceCandidate.sentence_id ? 'check' : 'unresolved';
                 renderRevisionScanReview();
             }
         }

@@ -1939,6 +1939,13 @@ High priority improvement:
   page with both mapped and unresolved answers; confirm mapped, `Check`, and
   `Unresolved` semantics remain understandable without color alone. Manually assign
   an unresolved answer and verify the sentence identity is shown before import.
+- On every Review Scan card, confirm the upper box has the same pale-red fill and
+  red-border feel as a wrong Vocabulary question, and shows the global number plus
+  original sentence. Clicking anywhere in it must open the native sentence selector;
+  the lower inset OCR sentence must remain directly editable. Verify originally
+  correct and already accepted sentences never appear, another card's selected
+  target is disabled, changing that card releases the old target, and the server
+  rejects any crafted import that targets completed work or duplicates a sentence.
 - Confirm scan results are reviewed before import and that import only fills the
   selected revision drafts. It must not call `Check`, mark any sentence accepted,
   or create a rewrite result. With an existing typed draft, verify explicit

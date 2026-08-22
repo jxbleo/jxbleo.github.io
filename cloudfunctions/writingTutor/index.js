@@ -582,7 +582,14 @@ function revisionRequiredUnits(composition) {
   const sentences = composition && composition.language_review
     && Array.isArray(composition.language_review.sentences)
     ? composition.language_review.sentences : [];
-  return sentences.filter((item) => item && item.rewrite_required === true && text(item.sentence_id, 40));
+  const acceptedIds = new Set(composition && composition.rewrite_results
+    && Array.isArray(composition.rewrite_results.results)
+    ? composition.rewrite_results.results
+      .filter((item) => item && item.accepted === true)
+      .map((item) => text(item.sentence_id, 40)).filter(Boolean)
+    : []);
+  return sentences.filter((item) => item && item.rewrite_required === true
+    && text(item.sentence_id, 40) && !acceptedIds.has(text(item.sentence_id, 40)));
 }
 
 function revisionUnitNumber(sentenceId) {
@@ -594,11 +601,12 @@ function revisionSourceUnits(composition) {
   const sentences = composition && composition.language_review
     && Array.isArray(composition.language_review.sentences)
     ? composition.language_review.sentences : [];
+  const requiredIds = new Set(revisionRequiredUnits(composition).map((item) => text(item.sentence_id, 40)));
   return sentences.map((item) => ({
     sentence_id: text(item && item.sentence_id, 40),
     written_number: revisionUnitNumber(item && item.sentence_id),
     source_sentence: text(item && item.original, 3000),
-    rewrite_required: item && item.rewrite_required === true,
+    rewrite_required: requiredIds.has(text(item && item.sentence_id, 40)),
   })).filter((item) => item.sentence_id && Number.isInteger(item.written_number));
 }
 
