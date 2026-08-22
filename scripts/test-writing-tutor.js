@@ -798,9 +798,8 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
   assert(/!state\.readOnly[\s\S]{0,500}Scan Revisions/.test(renderSource),
     "completed/read-only writing must not expose photographed draft import");
   requireEvery(styles, [
-    ".revision-scan-surface", ".revision-scan-candidate.is-mapped",
-    ".revision-scan-candidate.is-check", ".revision-scan-candidate.is-unresolved",
-    ".revision-scan-choice", "min-height: 44px",
+    ".revision-scan-surface", ".revision-scan-target", ".revision-scan-target-number",
+    ".revision-scan-recognized", ".revision-scan-choice", "#fca5a5", "#fef2f2",
   ], "accessible Review Scan styling");
 });
 
@@ -810,10 +809,16 @@ check("Review Scan requires mapping review and protects typed drafts", () => {
   const importSource = functionSource(client, "confirmRevisionScanImport", "renderLanguage");
   const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
   const syncSource = functionSource(client, "syncRevisionScanFromComposition", "writingCall");
+  const eligibleSource = functionSource(client, "revisionScanSentences", "revisionScanSentenceLabel");
   requireEvery(reviewSource, [
     "Keep typed", "Use scanned", "data-scan-sentence", "data-scan-text",
-    "revisionScanSentenceLabel(sid)",
+    "revisionScanSentenceLabel(sid)", "NEEDS REVISION", "SCANNED REVISION",
+    "claimedByAnother", "disabled", "revisionScanSentenceDetails",
   ], "Review Scan mapping and conflict controls");
+  assert(/rewriteRequired\s*\(\s*sentence\s*\)[\s\S]{0,180}accepted\s*={2,3}\s*true/.test(eligibleSource),
+    "Review Scan target choices must exclude originally-correct and already-accepted sentences");
+  assert(/revisionScanSentences\(\)\.length[\s\S]{0,500}Scan Revisions/.test(functionSource(client, "renderLanguage", "sentenceCapsuleHtml")),
+    "Scan Revisions must disappear when no unfinished revision target remains");
   requireEvery(importSource, [
     "confirmRevisionScanImport", "revision", "operation_id", "sentence_id", "saveRewriteDraftSnapshot",
   ], "confirmed scan import");
@@ -891,7 +896,11 @@ check("revision scan canonicalization never silently accepts missing, duplicate,
         { sentence_id: "s003", original: "Needs work three.", rewrite_required: true },
         { sentence_id: "s004", original: "Needs work four.", rewrite_required: true },
         { sentence_id: "s005", original: "Needs work five.", rewrite_required: true },
+        { sentence_id: "s006", original: "Already revised six.", rewrite_required: true },
       ],
+    },
+    rewrite_results: {
+      results: [{ sentence_id: "s006", accepted: true, student_rewrite: "Revised six." }],
     },
   };
   const result = backend._test.canonicalRevisionScanResult({
@@ -903,6 +912,7 @@ check("revision scan canonicalization never silently accepts missing, duplicate,
       { written_number: null, recognized_text: "No number.", confidence: "low", warnings: [] },
       { written_number: 4, recognized_text: "", confidence: "high", warnings: [] },
       { written_number: 5, recognized_text: "Rewrite five.", confidence: "medium", warnings: [] },
+      { written_number: 6, recognized_text: "Should not replace a completed sentence.", confidence: "high", warnings: [] },
     ],
     unmapped_items: [],
   }, composition, "student-test", "operation-test", { provider: "test" });
@@ -911,6 +921,7 @@ check("revision scan canonicalization never silently accepts missing, duplicate,
   const outOfRange = result.items.find((item) => item.written_number === 99);
   const missingNumber = result.items.find((item) => item.written_number === null);
   const mediumConfidence = result.items.find((item) => item.written_number === 5);
+  const completedSentence = result.items.find((item) => item.written_number === 6);
   assert.strictEqual(sentenceTwo.sentence_id, "s002");
   assert.strictEqual(sentenceTwo.status, "mapped");
   assert(sentenceThree.every((item) => item.status === "check"
@@ -923,8 +934,12 @@ check("revision scan canonicalization never silently accepts missing, duplicate,
   assert.strictEqual(mediumConfidence.sentence_id, "s005");
   assert.strictEqual(mediumConfidence.status, "check",
     "medium-confidence handwriting must remain visible for student review");
+  assert.strictEqual(completedSentence.sentence_id, null);
+  assert.strictEqual(completedSentence.status, "unresolved");
+  assert(completedSentence.warnings.includes("SENTENCE_NUMBER_OUT_OF_RANGE_OR_NOT_REQUIRED"),
+    "an already-accepted sentence must not remain an eligible scan target");
   assert.deepStrictEqual(result.missing_sentence_ids, ["s004"],
-    "a present low-confidence candidate is not missing, while empty handwriting remains missing");
+    "a present low-confidence candidate is not missing, while empty handwriting remains missing and accepted work stays excluded");
 });
 
 check("confirmed revision scan import is revision-bound, transactional, and draft-only", () => {

@@ -791,6 +791,11 @@ not live rewrite text. The student reviews mapped, `check`, and unresolved
 rows, may assign an unresolved answer manually, and explicitly confirms the rows
 to persist them as scanned sentence drafts. Only those confirmed drafts enter the
 existing `Check` handoff; scan import never calls or marks `Check` complete.
+The canonical target set is recalculated from the current merged rewrite results:
+originally effective sentences and sentence IDs whose latest stored result is
+`accepted: true` are excluded before model mapping and again during confirmed
+import. The browser mirrors that server set and prevents two scan cards from
+claiming one target, but browser option state is never the authorization boundary.
 The client can leave, refresh, reconnect, or reopen the same Composition to
 resume queued/processing/reviewable/failed scan state, and retry/replay keeps the
 same operation identity. Private scan photos are deleted once the guarded pending

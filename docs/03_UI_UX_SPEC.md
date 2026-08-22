@@ -1984,9 +1984,16 @@ Important mobile rules:
   can continue after leaving, and refresh/re-login/reopen returns to the same
   operation rather than asking for another upload. Retry is offered only through
   the same recoverable operation after a failure.
-- Review Scan presents each recognized answer with its existing global sentence
-  number when mapped, a `Check` visual state when the marker is medium/low-confidence
-  or ambiguous, and an `Unresolved` state when no safe sentence can be chosen.
+- Review Scan presents each recognized answer as one stacked card. The upper
+  native-select-backed target box uses the Vocabulary wrong-answer treatment
+  (`#fca5a5` border and `#fef2f2` fill), showing the global sentence number and
+  full original sentence; selecting anywhere in that box opens the target list.
+  The lower inset box contains the editable OCR rewrite. The target list contains
+  only unfinished `rewrite_required` sentences, excludes originally correct and
+  already accepted sentences, and disables a sentence while another scan card
+  claims it. The existing global sentence number appears when mapped, with a
+  `Check` visual state when the marker is medium/low-confidence or ambiguous,
+  and an `Unresolved` state when no safe sentence can be chosen.
   These states use text plus accessible color/shape semantics, not color alone.
   The student can manually assign an unresolved answer to a sentence from the
   current list, then review the resulting mapping before importing. Import is an

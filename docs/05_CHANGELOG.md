@@ -47,6 +47,11 @@
   scans when an existing Composition stores `pending_upload: null`. Upload state
   now uses an atomic whole-field replacement before any AI call, avoiding
   CloudBase dotted-path write failures and preserving idempotent retry behavior.
+- Rebuilt Review Scan rows as stacked cards with a Vocabulary-style red original-
+  sentence selector above an editable OCR rewrite box. Selection is limited to
+  unfinished revision-required sentences, already-correct/accepted work is excluded
+  by both client and server, and another card's target is disabled to prevent
+  duplicate assignment.
 
 
 ## 2026-08-20
