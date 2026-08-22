@@ -221,7 +221,8 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .ocr-text-editor > p, .ocr-text-editor > div { margin: 0 0 1em; }
 .ocr-text-editor > :last-child { margin-bottom: 0; }
 .ocr-uncertain { padding: .06em .12em; border-radius: .28em; color: #a52634; background: rgba(218,55,69,.16); box-decoration-break: clone; -webkit-box-decoration-break: clone; cursor: text; }
-.ocr-review-actions { margin-top: 12px; }
+.ocr-review-actions { justify-content: center; margin-top: 12px; }
+.ocr-review-actions .primary-button { flex: 0 1 220px; min-width: 180px; }
 .notice { padding: 12px 14px; border-radius: 14px; color: #795622; background: var(--ai-warm-soft); font-size: .76rem; }
 
 .loading-state, .empty-state, .error-state { display: grid; place-items: center; min-height: 460px; padding: 50px 20px; text-align: center; }

@@ -1014,7 +1014,7 @@
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="Uploaded composition images">' + state.photoUrls.map(function(url, index) { return '<img src="' + escapeHtml(url) + '" alt="Uploaded composition page ' + (index + 1) + '">'; }).join('') + '</section>' +
             '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(state.confirmedText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
-            '<div class="form-actions ocr-review-actions"><button class="secondary-button" type="button" data-reupload>Upload Again</button><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm Text &amp; Start Review' + icon('arrow') + '</button></div></section>';
+            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
     }
 
     function saveAndEvaluate() {

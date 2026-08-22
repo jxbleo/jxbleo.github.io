@@ -351,14 +351,18 @@ check("OCR Review is a focused paragraph editor with inline uncertainty marks", 
   const renderSource = functionSource(client, "renderOcr", "saveAndEvaluate");
   requireEvery(renderSource, [
     "OCR Review", "Compare with Image", "contenteditable=\"true\"",
-    "Upload Again", "Confirm Text &amp; Start Review",
+    "data-confirm-ocr", ">Confirm</button>",
   ], "focused OCR Review controls");
+  assert(!/Upload Again|Confirm Text &amp; Start Review/.test(renderSource),
+    "OCR Review must expose only the centered Confirm footer action");
   assert(!/先确认识别文字|第 2 步|有 ['\"] \+ uncertainCount|可编辑 OCR 文本|请自行修正识别错误/.test(renderSource),
     "OCR Review must not restore the removed heading, step, count, or editor-label fields");
   requireEvery(client, ["ocrEditorHtml", "ocrUncertainRanges", "data-ocr-uncertain", "ocrEditorText"],
     "inline OCR uncertainty handling");
   requireEvery(styles, [".ocr-uncertain", ".ocr-text-editor > p", "margin: 0 0 1em"],
     "uncertain highlight and one-Enter paragraph spacing");
+  assert(/\.ocr-review-actions\s*\{[^}]*justify-content\s*:\s*center/i.test(styles),
+    "the sole OCR Review Confirm action must be centered");
   assert(/\.ocr-uncertain\s*\{[^}]*color\s*:\s*#a52634[^}]*background\s*:\s*rgba\(218,55,69,\.16\)/i.test(styles),
     "uncertain OCR spans must use the approved red text and pale-red fill");
 });

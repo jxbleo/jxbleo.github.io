@@ -1730,8 +1730,8 @@ High priority improvement:
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
 - On OCR Review, confirm the only fixed fields are `OCR Review`,
-  `Compare with Image`, `Upload Again`, and `Confirm Text & Start Review`, with
-  the editable manuscript directly below the heading. The image toggle must
+  `Compare with Image`, and one horizontally centered `Confirm`, with
+  the editable manuscript directly below the heading and no `Upload Again` action. The image toggle must
   open/close split view on desktop/iPad and an image-above-text view on phone.
 - Return an exact uncertain substring from OCR and confirm it is marked with a
   pale-red fill and dark-red text, without an underline. Clicking it must remove
