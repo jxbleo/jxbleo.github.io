@@ -1848,6 +1848,10 @@ High priority improvement:
   focus order, accessible names, textarea draft, capsule, and sentence identity
   remain synchronized. Enable reduced motion and confirm there is no 3D rotation;
   an immediate swap or short crossfade still exposes exactly one face.
+- At 320px, 375px, and 430px widths, flip into a rewrite input and confirm the
+  card settles below the number navigator with the original sentence and input
+  visible above the keyboard, approximately 24px lower than the prior phone
+  position. Repeat at iPad width and confirm its existing position is unchanged.
 - Confirm every Sentence Revision source row begins with exactly one matching one-based
   number, including effective rows. In editable mode, the footer contains only one
   `Check` button aligned right on desktop and full-width on phone; the old unfinished

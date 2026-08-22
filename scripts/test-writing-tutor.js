@@ -458,6 +458,18 @@ check("sentence-card flipping honors keyboard, ARIA, and reduced-motion preferen
     "reduced-motion mode must remove the card-turn transition");
 });
 
+check("phone rewrite focus leaves the sentence card lower than tablet layout", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const focusSource = functionSource(client, "focusSentenceRewriteTarget", "renderLanguage");
+  requireEvery(focusSource, ["max-width: 600px", "preventScroll", "scrollIntoView", "block: 'start'"],
+    "phone-only rewrite focus alignment");
+  assert(/@media\s*\(max-width:\s*600px\)\s*\{[\s\S]{0,240}\.sentence-card\s*\{[^}]*scroll-margin-top\s*:\s*136px/i.test(styles),
+    "phone cards must use the lower 136px rewrite-focus offset");
+  assert(/if\s*\(!phoneLayout\)\s*\{[\s\S]{0,120}target\.focus\(\)/.test(focusSource),
+    "iPad and desktop focus behavior must remain unchanged");
+});
+
 check("sentence rewrite drafts persist by Composition revision and restore on reopen", () => {
   const client = read(clientPath);
   const keySource = matchingFunctionSource(client, "rewriteDraftStorageKey", "rewrite-draft storage key");
