@@ -2060,6 +2060,11 @@ Important mobile rules:
   from pointer, keyboard, and screen-reader interaction—not merely rotated out of
   sight. Under `prefers-reduced-motion: reduce`, remove the 3D rotation and use an
   immediate swap or short opacity transition while preserving mutual exclusion.
+- When a phone turns a card to its rewrite face, suppress the browser's default
+  focus scroll and align the whole sentence card below the number navigator with
+  24px more top clearance than the shared card position. This keeps the original
+  sentence and rewrite input visible above the keyboard. iPad and desktop retain
+  their existing focus and card position.
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.

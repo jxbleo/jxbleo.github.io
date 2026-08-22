@@ -1411,6 +1411,23 @@
         });
     }
 
+    function focusSentenceRewriteTarget(card, target, showRewriteFace) {
+        if (!target) return;
+        var phoneLayout = showRewriteFace && window.matchMedia('(max-width: 600px)').matches;
+        if (!phoneLayout) {
+            target.focus();
+            return;
+        }
+        try { target.focus({ preventScroll: true }); }
+        catch (error) { target.focus(); }
+        window.requestAnimationFrame(function() {
+            card.scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                block: 'start'
+            });
+        });
+    }
+
     function renderLanguage() {
         state.screen = 'language';
         updateRevisionProgress();
@@ -1944,7 +1961,7 @@
                 var focusTarget = showRewriteFace
                     ? flipCard.querySelector('[data-rewrite-id]:not([disabled])') || flipCard.querySelector('[data-face="analysis"]')
                     : flipCard.querySelector('[data-face="rewrite"]');
-                if (focusTarget) focusTarget.focus();
+                focusSentenceRewriteTarget(flipCard, focusTarget, showRewriteFace);
             });
         }
         else if (button.matches('[data-sentence-index]')) {

@@ -24,6 +24,8 @@
   bidirectional overflow motion and a Reduced Motion ellipsis fallback.
 - Made indexed Sentence Revision backgrounds visible before interaction and removed
   the former dark left-edge accent.
+- Lowered the phone-only Sentence Revision rewrite-focus resting position by 24px
+  while preserving the existing iPad and desktop behavior.
 
 
 ## 2026-08-20
