@@ -1091,6 +1091,17 @@ All collections are `ADMINONLY`.
   field. They are cleared after successful result publication; when a result asks
   for another revision, its stored `student_rewrite` is the server-side recovery
   source for the next round.
+  `pending_revision_scan` is a temporary, owner-scoped reviewable scan result:
+  it stores the scan operation ID, Composition revision, ordered result rows,
+  mappings, confidence/error codes, and safe timestamps, but is not the live
+  rewrite draft and cannot mark a sentence complete. After an explicit student
+  import, the confirmed mapped rows are persisted as `scanned_rewrite_drafts`
+  under the same Composition revision. A row with an existing typed draft is
+  imported only after an explicit `keep_typed` or `replace_with_scan` choice.
+  Confirming all rows as `keep_typed` clears the pending scan without changing
+  any draft; returning without confirmation leaves it reviewable. Scan import does not create an attempt, invoke `Check`, or
+  publish a rewrite result; the existing `pending_rewrite_check` flow remains the
+  only path to model checking.
   Replacement stages candidate fields under `pending_replacement`; only a
   successful review transaction updates this row in place and clears prior
   current review payloads. A failed model call preserves the committed version.
@@ -1110,12 +1121,16 @@ All collections are `ADMINONLY`.
   removing one; stale placeholders may be pruned after 30 minutes. This is not a general
   Composition deletion path and can never remove a non-empty or submitted work.
 - `writing_photo_uploads`: short-lived private upload audit rows with ownership,
-  upload-operation ID, page order, expected size, CloudBase file ID, expiry,
-  and deletion status.
+  upload-operation ID, `upload_kind` (`revision_scan` for photographed sentence
+  drafts, otherwise original-composition OCR), page order, expected size,
+  CloudBase file ID, expiry, and deletion status.
 - `writing_ai_jobs` (`ADMINONLY`): durable metadata-only AI work queue with stable
   job/operation identity, Composition ownership, job type, photo IDs for OCR,
-  review mode/Rubric/usage-ledger ID for content or language review,
-  and Composition revision scope for rewrite checking. Every job has
+  review mode/Rubric/usage-ledger ID for content or language review, and
+  Composition revision scope for rewrite checking or `revision_ocr`. A
+  `revision_ocr` job also records only ordered private photo IDs and the target
+  Sentence Revision operation/revision scope; its answer text and OCR response
+  never enter the job row. Every job has
   queued/processing/succeeded/failed/superseded state, bounded attempts, lease
   token/expiry, retry time, timestamps, and safe error codes. Rewrite jobs never
   store submitted sentence text; they resolve it from `pending_rewrite_check` on

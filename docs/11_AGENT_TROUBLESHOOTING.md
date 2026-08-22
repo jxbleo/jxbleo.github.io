@@ -845,3 +845,27 @@ STAR 不阻止未来重新布置同一个 set。
 - `writingTutor`、`writingAiWorker` 和一分钟 timer 已部署；`writing_ai_jobs` 为 `ADMINONLY`。
 - 失败任务只保留安全错误代码并已事务化退回额度；未在文档中保存生产 job/Composition/usage ID。
 - 相关生产修复提交为 `b2b5d72` 和 `e1dc73d`。
+
+### 2026-08-22：Sentence Revision 拍照导入边界
+
+技术规则：
+- `Scan Revisions` 必须沿用私有上传加持久任务边界：`revision_ocr` job 只保存安全元数据、照片
+  ID 和学生/Composition/revision/operation scope，不保存作文、OCR 正文或模型反馈。
+- 排查顺序固定为 upload/job lifecycle、provider/schema、marker canonicalization、pending scan result、
+  draft conflict 和 stale revision；不要把模型返回的句子编号或原文当作最终事实。
+- Review Scan 的 mapped、check、unresolved 结果必须保持可见；导入前不要自动触发 `Check`，
+  也不要在没有学生明确选择时覆盖已有手写草稿。
+
+可观测字段：
+- 只记录 `job_id`、`operation_id`、Composition ID/revision、job state、attempt/lease timestamps、
+  safe error code、schema/prompt/model/protocol metadata，以及 photo cleanup state。
+- 日志中禁止出现 marker 原文、OCR 文本、学生答案、私有图片 URL、token、密钥或学生身份。重复
+  operation/revision 请求应能从安全投影确认是 replay，而不是新建 job 或再次调用模型。
+
+重复问题：
+- 若扫描结果卡在 queued/processing，先检查 durable job 是否 active、租约是否过期、timer 是否恢复，
+  再检查前端轮询；不要让学生重复创建 Composition。
+- 若结果映射到错误句子，检查服务器是否按当前 sentence list canonicalize，以及是否拒绝 duplicate、
+  missing、out-of-range 或空 marker；不要只调整 OCR prompt。
+- 若扫描导入后已有草稿消失，检查是否记录了明确的 keep/replace conflict choice，并检查
+  pending scan result 到 confirmed scanned draft 的事务边界。

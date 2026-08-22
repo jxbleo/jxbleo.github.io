@@ -26,6 +26,16 @@
   the former dark left-edge accent.
 - Lowered the phone-only Sentence Revision rewrite-focus resting position by 24px
   while preserving the existing iPad and desktop behavior.
+- Added `Scan Revisions` inside editable Sentence Revision. Students may capture
+  or select answer photos, review durable OCR mappings, manually assign unresolved
+  rows, and explicitly import confirmed rows into revision drafts. Existing typed
+  drafts require an explicit keep/replace choice; scan import never runs
+  `Check` automatically. Number markers accept `8`, `8.`, `8、`, `8)`, and `(8)`.
+- Bound revision OCR to private uploads, a durable `revision_ocr` job, strict
+  schema validation, server canonicalization, and a pending scan result before
+  confirmed draft persistence. Queued/processing scans resume after leaving,
+  refresh, re-login, or disconnect, with safe retry and photo cleanup after the
+  durable scan result is stored.
 
 
 ## 2026-08-20

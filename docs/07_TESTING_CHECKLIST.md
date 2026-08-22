@@ -1921,3 +1921,27 @@ High priority improvement:
 - Confirm Cambridge 9093 Paper 2 exposes three separate Rubrics and enforces
   whole-mark ranges of 0–15, 0–10, and 0–25 for Shorter Writing, Reflective
   Commentary, and Extended Writing respectively.
+- In editable Sentence Revision, open `Scan Revisions` on phone and iPad and
+  verify both accessible camera capture and photo-library selection. Check marker
+  variants `8`, `8.`, `8、`, `8)`, and `(8)`, with omitted punctuation and with
+  recommended whitespace before the answer.
+- Verify duplicate, missing, out-of-range, and empty markers never auto-map to a
+  sentence. Exercise low-confidence markers, line-wrapped handwriting, and a
+  page with both mapped and unresolved answers; confirm mapped, `Check`, and
+  `Unresolved` semantics remain understandable without color alone. Manually assign
+  an unresolved answer and verify the sentence identity is shown before import.
+- Confirm scan results are reviewed before import and that import only fills the
+  selected revision drafts. It must not call `Check`, mark any sentence accepted,
+  or create a rewrite result. With an existing typed draft, verify explicit
+  keep-typed and replace-with-scan choices; returning without import must preserve
+  the typed draft, confirming all rows as keep-typed must close the pending scan
+  without mutation, and no choice may silently overwrite it.
+- Disconnect after upload, during `Queued`/`Processing`, and before import. Refresh,
+  re-login, and reopen the same Composition; verify the same operation/revision
+  resumes, duplicate delivery is idempotent, and stale-revision results cannot
+  publish. Force provider/schema/canonicalization failures and verify a recoverable
+  failure state, safe retry, no silent draft mutation, and no orphan private photos.
+- Verify imported scanned drafts survive reload and can be edited through the
+  existing Sentence Revision flow. Confirm private scan photos are deleted after
+  the durable pending scan result is stored and by expiry cleanup, and that camera/select controls, status
+  text, focus order, keyboard use, and the mobile keyboard remain accessible.

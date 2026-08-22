@@ -5,8 +5,12 @@ const cloudbase = require("@cloudbase/node-sdk");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const { RUBRIC_VERSION, getRubric, publicRubrics } = require("./rubrics");
-const { SCHEMA_VERSION, OCR_SCHEMA, STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA } = require("./schemas");
-const { PROMPT_VERSION, ocrPrompt, standardizedPrompt, languagePrompt, rewritePrompt } = require("./prompts");
+const {
+  SCHEMA_VERSION, OCR_SCHEMA, REVISION_SCAN_SCHEMA, STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA,
+} = require("./schemas");
+const {
+  PROMPT_VERSION, ocrPrompt, revisionScanPrompt, standardizedPrompt, languagePrompt, rewritePrompt,
+} = require("./prompts");
 const { callStructuredModel } = require("./model-provider");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
@@ -77,6 +81,14 @@ function randomId(prefix) {
 function stableId(prefix, ...parts) {
   const digest = crypto.createHash("sha256").update(parts.join("\n")).digest("hex").slice(0, 40);
   return `${prefix}_${digest}`;
+}
+
+function revisionJobId(studentUid, compositionId, operationId) {
+  return stableId("writing_revision_job", studentUid, compositionId, operationId);
+}
+
+function revisionPhotoId(studentUid, compositionId, operationId, index) {
+  return stableId("writing_revision_photo", studentUid, compositionId, operationId, String(index));
 }
 
 function secretMatches(left, right) {
@@ -184,6 +196,8 @@ function isDiscardableEmptyComposition(composition) {
   if (text(composition.library_prompt_id, 120)) return false;
   return !composition.pending_upload
     && !composition.pending_ocr
+    && !composition.pending_revision_scan
+    && !composition.scanned_rewrite_drafts
     && !composition.pending_replacement
     && !composition.pending_rewrite_check
     && !composition.active_job_id
@@ -220,6 +234,20 @@ function publicJobView(job) {
   };
 }
 
+function publicRevisionCandidates(items) {
+  return (Array.isArray(items) ? items : []).map((item) => ({
+    candidate_id: text(item && item.candidate_id, 120),
+    sentence_id: item && item.sentence_id ? text(item.sentence_id, 40) : null,
+    written_number: Number.isInteger(item && item.written_number) ? item.written_number : null,
+    recognized_text: text(item && item.recognized_text, 3000),
+    confidence: ["high", "medium", "low"].includes(item && item.confidence) ? item.confidence : "low",
+    warnings: Array.isArray(item && item.warnings)
+      ? item.warnings.map((warning) => text(warning, 300)).filter(Boolean).slice(0, 12)
+      : [],
+    status: ["mapped", "check", "unresolved"].includes(item && item.status) ? item.status : "unresolved",
+  })).filter((item) => item.candidate_id);
+}
+
 function compositionView(composition) {
   const activeJob = publicJobView(composition.active_job || composition.ocr_job);
   const pendingRewriteItems = composition.pending_rewrite_check
@@ -231,16 +259,38 @@ function compositionView(composition) {
     : [];
   const pendingUpload = composition.pending_upload && typeof composition.pending_upload === "object"
     ? {
+      kind: composition.pending_upload.kind === "revision_scan" ? "revision_scan" : "composition_ocr",
       status: composition.pending_upload.status || "uploading",
       created_at: composition.pending_upload.created_at || null,
       page_count: Array.isArray(composition.pending_upload.photo_ids)
         ? composition.pending_upload.photo_ids.length : 0,
     }
     : null;
+  const pendingRevisionScan = composition.pending_revision_scan && typeof composition.pending_revision_scan === "object"
+    ? {
+      operation_id: text(composition.pending_revision_scan.operation_id, 160) || null,
+      composition_revision: Number(composition.pending_revision_scan.composition_revision || 1),
+      items: publicRevisionCandidates(composition.pending_revision_scan.items),
+      unresolved_items: publicRevisionCandidates(composition.pending_revision_scan.unresolved_items),
+      missing_sentence_ids: Array.isArray(composition.pending_revision_scan.missing_sentence_ids)
+        ? composition.pending_revision_scan.missing_sentence_ids.map((id) => text(id, 40)).filter(Boolean)
+        : [],
+    }
+    : null;
+  const scannedRewriteDrafts = Array.isArray(composition.scanned_rewrite_drafts)
+    ? composition.scanned_rewrite_drafts.map((item) => ({
+      sentence_id: text(item && item.sentence_id, 40),
+      text: text(item && item.text, 3000),
+      operation_id: text(item && item.operation_id, 160),
+      imported_at: item && item.imported_at || null,
+    })).filter((item) => item.sentence_id && item.text)
+    : [];
   return {
     ...summaryView(composition),
     confirmed_text: composition.confirmed_text || "",
     pending_ocr: composition.pending_ocr || null,
+    pending_revision_scan: pendingRevisionScan,
+    scanned_rewrite_drafts: scannedRewriteDrafts,
     standardized_review: composition.standardized_review || null,
     language_review: composition.language_review || null,
     rewrite_results: composition.rewrite_results || null,
@@ -250,6 +300,7 @@ function compositionView(composition) {
     pending_upload: pendingUpload,
     active_job: activeJob,
     ocr_job: activeJob && activeJob.job_type === "ocr" ? activeJob : null,
+    revision_scan_job: activeJob && activeJob.job_type === "revision_ocr" ? activeJob : null,
     prompt_version: composition.prompt_version || null,
     schema_version: composition.schema_version || null,
     rubric_version: composition.rubric_version || null,
@@ -336,7 +387,9 @@ async function ocrPhotoUrls(student, composition) {
       student_uid: student.auth_uid,
       composition_id: composition.composition_id,
     });
-    if (job && Array.isArray(job.photo_ids)) photoIds = job.photo_ids.slice(0, MAX_UPLOAD_PAGES);
+    if (job && job.job_type === "ocr" && Array.isArray(job.photo_ids)) {
+      photoIds = job.photo_ids.slice(0, MAX_UPLOAD_PAGES);
+    }
   }
   if (!photoIds.length) return [];
   const rows = await photoRows(student, composition.composition_id, photoIds);
@@ -368,7 +421,9 @@ async function getComposition(student, event) {
   }
   if (composition.pending_upload && !composition.pending_ocr) {
     try {
-      await finishPhotoUpload(student, {
+      const finishUpload = composition.pending_upload.kind === "revision_scan"
+        ? finishRevisionScanUpload : finishPhotoUpload;
+      await finishUpload(student, {
         composition_id: composition.composition_id,
         operation_id: composition.pending_upload.operation_id,
         photo_ids: composition.pending_upload.photo_ids,
@@ -521,6 +576,256 @@ async function finishPhotoUpload(student, event) {
   // Once this call reaches CloudBase, closing the browser cannot strand an
   // uploaded photo between two client requests.
   return await enqueueOcrJob(student, { ...event, operation_id: operationId, photo_ids: photoIds });
+}
+
+function revisionRequiredUnits(composition) {
+  const sentences = composition && composition.language_review
+    && Array.isArray(composition.language_review.sentences)
+    ? composition.language_review.sentences : [];
+  return sentences.filter((item) => item && item.rewrite_required === true && text(item.sentence_id, 40));
+}
+
+function revisionUnitNumber(sentenceId) {
+  const match = /^s(\d+)$/i.exec(text(sentenceId, 40));
+  return match ? Number(match[1]) : NaN;
+}
+
+function revisionSourceUnits(composition) {
+  const sentences = composition && composition.language_review
+    && Array.isArray(composition.language_review.sentences)
+    ? composition.language_review.sentences : [];
+  return sentences.map((item) => ({
+    sentence_id: text(item && item.sentence_id, 40),
+    written_number: revisionUnitNumber(item && item.sentence_id),
+    source_sentence: text(item && item.original, 3000),
+    rewrite_required: item && item.rewrite_required === true,
+  })).filter((item) => item.sentence_id && Number.isInteger(item.written_number));
+}
+
+function revisionScanCandidate(studentUid, compositionId, operationId, item, index, expectedByNumber, seenNumbers) {
+  const writtenNumber = Number.isInteger(item && item.written_number) ? item.written_number : null;
+  const recognizedText = text(item && item.recognized_text, 3000);
+  const confidence = ["high", "medium", "low"].includes(item && item.confidence) ? item.confidence : "low";
+  const warnings = Array.isArray(item && item.warnings)
+    ? item.warnings.map((warning) => text(warning, 300)).filter(Boolean).slice(0, 12)
+    : [];
+  const candidate = {
+    candidate_id: stableId("revision_candidate", studentUid, compositionId, operationId, String(index)),
+    sentence_id: null, written_number: writtenNumber, recognized_text: recognizedText,
+    confidence, warnings, status: "unresolved",
+  };
+  if (!recognizedText) {
+    candidate.warnings.push("EMPTY_RECOGNIZED_TEXT");
+    candidate.status = "check";
+    return candidate;
+  }
+  if (!Number.isInteger(writtenNumber)) {
+    candidate.warnings.push("MISSING_SENTENCE_NUMBER");
+    return candidate;
+  }
+  const target = expectedByNumber.get(writtenNumber);
+  if (!target) {
+    candidate.warnings.push("SENTENCE_NUMBER_OUT_OF_RANGE_OR_NOT_REQUIRED");
+    return candidate;
+  }
+  candidate.sentence_id = target.sentence_id;
+  if (seenNumbers.has(writtenNumber)) {
+    candidate.warnings.push("DUPLICATE_SENTENCE_NUMBER");
+    candidate.status = "check";
+    return candidate;
+  }
+  seenNumbers.add(writtenNumber);
+  candidate.status = confidence !== "high" || warnings.length ? "check" : "mapped";
+  return candidate;
+}
+
+function canonicalRevisionScanResult(result, composition, studentUid, operationId, metadata) {
+  const requiredUnits = revisionRequiredUnits(composition);
+  if (!requiredUnits.length) throw new Error("REVISION_SCAN_NO_REQUIRED_SENTENCES");
+  const expectedByNumber = new Map(requiredUnits
+    .map((unit) => [revisionUnitNumber(unit.sentence_id), unit])
+    .filter(([number]) => Number.isInteger(number)));
+  const modelItems = [];
+  if (Array.isArray(result && result.items)) modelItems.push(...result.items);
+  if (Array.isArray(result && result.unmapped_items)) modelItems.push(...result.unmapped_items);
+  if (!modelItems.length) throw new Error("WRITING_AI_REVISION_SCAN_EMPTY");
+  if (modelItems.length > 200) throw new Error("WRITING_AI_REVISION_SCAN_TOO_LARGE");
+  const seenNumbers = new Set();
+  const items = modelItems.map((item, index) => revisionScanCandidate(
+    studentUid, composition.composition_id, operationId, item, index, expectedByNumber, seenNumbers,
+  ));
+  const numberCounts = new Map();
+  items.forEach((item) => {
+    if (Number.isInteger(item.written_number) && expectedByNumber.has(item.written_number)) {
+      numberCounts.set(item.written_number, (numberCounts.get(item.written_number) || 0) + 1);
+    }
+  });
+  items.forEach((item) => {
+    if (Number.isInteger(item.written_number) && numberCounts.get(item.written_number) > 1) {
+      item.status = "check";
+      if (!item.warnings.includes("DUPLICATE_SENTENCE_NUMBER")) item.warnings.push("DUPLICATE_SENTENCE_NUMBER");
+    }
+  });
+  const presentIds = new Set(items
+    .filter((item) => item.sentence_id && item.recognized_text)
+    .map((item) => item.sentence_id));
+  const missingSentenceIds = requiredUnits.map((unit) => unit.sentence_id)
+    .filter((sentenceId) => !presentIds.has(sentenceId));
+  const unresolvedItems = items.filter((item) => item.status !== "mapped");
+  return {
+    operation_id: operationId, composition_revision: Number(composition.revision || 1),
+    items, unresolved_items: unresolvedItems, missing_sentence_ids: missingSentenceIds,
+    model_metadata: metadata || null, scanned_at: new Date(),
+  };
+}
+
+function revisionPhotoJobMatches(existing, composition, operationId, photoIds) {
+  return existing && existing.composition_id === composition.composition_id
+    && existing.job_type === "revision_ocr" && existing.operation_id === operationId
+    && JSON.stringify(existing.photo_ids || []) === JSON.stringify(photoIds || []);
+}
+
+async function startRevisionScanUpload(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  if (composition.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
+  if (!revisionRequiredUnits(composition).length) throw new Error("REVISION_SCAN_NO_REQUIRED_SENTENCES");
+  const operationId = text(event.operation_id, 160);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const pages = Array.isArray(event.pages) ? event.pages : [];
+  if (!pages.length || pages.length > MAX_UPLOAD_PAGES) throw new Error("PHOTO_PAGE_COUNT_INVALID");
+  const jobId = revisionJobId(student.auth_uid, composition.composition_id, operationId);
+  const existingJob = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+  if (existingJob) {
+    const existingPhotoIds = Array.isArray(existingJob.photo_ids) ? existingJob.photo_ids : [];
+    if (existingJob.composition_id !== composition.composition_id || existingJob.job_type !== "revision_ocr"
+      || existingJob.operation_id !== operationId || existingPhotoIds.length !== pages.length
+      || existingPhotoIds.some((photoId, index) => photoId !== revisionPhotoId(
+        student.auth_uid, composition.composition_id, operationId, index,
+      ))) throw new Error("IDEMPOTENCY_KEY_REUSED");
+    const existingRows = await photoRows(student, composition.composition_id, existingPhotoIds);
+    if (existingRows.length !== pages.length || existingRows.some((row, index) =>
+      Number(row.page_index) !== index
+      || row.mime_type !== text(pages[index].mime_type, 80).toLowerCase()
+      || Number(row.expected_size_bytes) !== Number(pages[index].size_bytes || 0))) {
+      throw new Error("IDEMPOTENCY_KEY_REUSED");
+    }
+    return { success: true, uploads: [], idempotent_replay: true, job: publicJobView(existingJob), composition: compositionView(composition) };
+  }
+  const now = new Date();
+  const uploads = [];
+  for (let index = 0; index < pages.length; index += 1) {
+    const mimeType = text(pages[index].mime_type, 80).toLowerCase();
+    const extension = imageExtension(mimeType);
+    const sizeBytes = Number(pages[index].size_bytes || 0);
+    if (!extension || !Number.isFinite(sizeBytes) || sizeBytes < 1 || sizeBytes > MAX_IMAGE_BYTES) throw new Error("PHOTO_FILE_INVALID");
+    const photoId = revisionPhotoId(student.auth_uid, composition.composition_id, operationId, index);
+    const cloudPath = `writing-tutor/${student.auth_uid}/${composition.composition_id}/revision-scan/${photoId}.${extension}`;
+    const metadata = await app.getUploadMetadata({ cloudPath });
+    const view = uploadMetadataView(metadata, cloudPath);
+    const record = {
+      photo_id: photoId, composition_id: composition.composition_id, student_uid: student.auth_uid,
+      status: "uploading", upload_kind: "revision_scan", page_index: index,
+      file_id: view.file_id, cloud_path: cloudPath, original_name: text(pages[index].file_name, 160),
+      mime_type: mimeType, expected_size_bytes: sizeBytes, operation_id: operationId,
+      expires_at: new Date(now.getTime() + INCOMPLETE_UPLOAD_TTL_MS), created_at: now, updated_at: now,
+    };
+    let existing = await getOne(UPLOADS, { photo_id: photoId, student_uid: student.auth_uid });
+    if (!existing) {
+      try { await db.collection(UPLOADS).doc(photoId).create(record); existing = record; }
+      catch (_error) { existing = await getOne(UPLOADS, { photo_id: photoId, student_uid: student.auth_uid }); }
+    }
+    if (!existing || existing.composition_id !== composition.composition_id || existing.operation_id !== operationId
+      || existing.upload_kind !== "revision_scan" || Number(existing.page_index) !== index
+      || existing.mime_type !== mimeType || Number(existing.expected_size_bytes) !== sizeBytes) throw new Error("IDEMPOTENCY_KEY_REUSED");
+    if (existing.status !== "uploaded") {
+      await db.collection(UPLOADS).doc(existing._id || photoId).update({
+        status: "uploading", file_id: view.file_id, cloud_path: cloudPath,
+        expires_at: new Date(now.getTime() + INCOMPLETE_UPLOAD_TTL_MS), updated_at: now,
+      });
+    }
+    uploads.push({ photo_id: photoId, ...view });
+  }
+  await db.collection(COMPOSITIONS).doc(composition._id).update({
+    pending_upload: { kind: "revision_scan", operation_id: operationId,
+      photo_ids: uploads.map((upload) => upload.photo_id), status: "uploading",
+      composition_revision: Number(composition.revision || 1), created_at: now },
+    status: "revision_photo_uploading", updated_at: now,
+  });
+  return { success: true, uploads };
+}
+
+async function finishRevisionScanUpload(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  if (composition.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
+  if (!revisionRequiredUnits(composition).length) throw new Error("REVISION_SCAN_NO_REQUIRED_SENTENCES");
+  const operationId = text(event.operation_id, 160);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const photoIds = Array.isArray(event.photo_ids) ? event.photo_ids.slice(0, MAX_UPLOAD_PAGES) : [];
+  if (!photoIds.length || new Set(photoIds).size !== photoIds.length) throw new Error("PHOTO_UPLOAD_REQUIRED");
+  const jobId = revisionJobId(student.auth_uid, composition.composition_id, operationId);
+  const existingJob = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+  if (existingJob) {
+    if (!revisionPhotoJobMatches(existingJob, composition, operationId, photoIds)) throw new Error("IDEMPOTENCY_KEY_REUSED");
+    const latest = await ownedComposition(student, composition.composition_id);
+    if (existingJob.status === "queued") {
+      try { await invokeFunctionAsync("writingTutor", { action: "processQueuedJob", job_id: jobId, dispatch_token: existingJob.dispatch_token }); }
+      catch (error) { console.error("writingTutor revision scan replay dispatch deferred", jobId, error && error.message); }
+    }
+    return { success: true, accepted: ["queued", "processing"].includes(existingJob.status), idempotent_replay: true,
+      job: publicJobView(existingJob), composition: compositionView(latest) };
+  }
+  const rows = await photoRows(student, composition.composition_id, photoIds);
+  if (rows.some((row) => row.operation_id !== operationId || row.upload_kind !== "revision_scan")) throw new Error("UPLOAD_BATCH_SUPERSEDED");
+  if (rows.some((row) => !["uploaded", "uploading"].includes(row.status))) throw new Error("PHOTO_UPLOAD_INCOMPLETE");
+  const info = await app.getFileInfo({ fileList: rows.map((row) => row.file_id) });
+  const fileMap = new Map((info.fileList || []).map((file) => [file.fileID, file]));
+  rows.forEach((row) => {
+    const file = fileMap.get(row.file_id);
+    if (!file || Number(file.size || 0) < 1 || Number(file.size || 0) > MAX_IMAGE_BYTES) throw new Error("PHOTO_UPLOAD_INVALID");
+  });
+  const now = new Date();
+  const job = {
+    job_id: jobId, job_type: "revision_ocr", operation_id: operationId,
+    dispatch_token: crypto.randomBytes(32).toString("hex"), student_uid: student.auth_uid,
+    composition_id: composition.composition_id, composition_revision: Number(composition.revision || 1),
+    photo_ids: photoIds, sentence_ids: revisionRequiredUnits(composition).map((item) => item.sentence_id),
+    prompt_bundle_version: PROMPT_BUNDLE_VERSION, status: "queued", attempt_count: 0, error_code: null,
+    lease_token: null, lease_until: null, next_retry_at: now, created_at: now, updated_at: now,
+    started_at: null, finished_at: null,
+  };
+  const activeJob = publicJobView(job);
+  try {
+    await db.runTransaction(async (transaction) => {
+      const compositionResult = await transaction.collection(COMPOSITIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).limit(1).get();
+      const current = compositionResult.data && compositionResult.data[0];
+      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      if (Number(current.revision || 1) !== Number(job.composition_revision || 1)) throw new Error("COMPOSITION_REVISION_CHANGED");
+      if (current.active_job_id && current.active_job_id !== jobId) {
+        const priorResult = await transaction.collection(JOBS).where({ job_id: current.active_job_id, student_uid: student.auth_uid, composition_id: composition.composition_id }).limit(1).get();
+        const prior = priorResult.data && priorResult.data[0];
+        if (prior && ["queued", "processing", "failed"].includes(prior.status)) {
+          await transaction.collection(JOBS).doc(prior._id).update({ status: "superseded", superseded_by_job_id: jobId, lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now });
+        }
+      }
+      const created = await transaction.collection(JOBS).doc(jobId).create(job);
+      if (created && created.code) throw created;
+      for (const row of rows) {
+        await transaction.collection(UPLOADS).doc(row._id).update({
+          status: "uploaded", uploaded_at: row.uploaded_at || now,
+          expires_at: new Date(now.getTime() + CONFIRMED_UPLOAD_TTL_MS), updated_at: now,
+        });
+      }
+      await transaction.collection(COMPOSITIONS).doc(current._id).update({ pending_upload: null, pending_revision_scan: null, active_job_id: jobId, active_job: activeJob, status: "revision_ocr_queued", updated_at: now });
+    });
+  } catch (error) {
+    const raced = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
+    if (!raced || !revisionPhotoJobMatches(raced, composition, operationId, photoIds)) throw error;
+    const latest = await ownedComposition(student, composition.composition_id);
+    return { success: true, accepted: ["queued", "processing"].includes(raced.status), idempotent_replay: true, job: publicJobView(raced), composition: compositionView(latest) };
+  }
+  try { await invokeFunctionAsync("writingTutor", { action: "processQueuedJob", job_id: jobId, dispatch_token: job.dispatch_token }); }
+  catch (error) { console.error("writingTutor revision scan async dispatch deferred", jobId, error && error.message); }
+  return { success: true, accepted: true, job: activeJob, composition: compositionView({ ...composition, pending_upload: null, pending_revision_scan: null, active_job_id: jobId, active_job: activeJob, status: "revision_ocr_queued", updated_at: now }) };
 }
 
 function retryableJobError(code) {
@@ -751,6 +1056,58 @@ async function performOcrJob(student, job) {
   return { status: outcome, pendingOcr: outcome === "succeeded" ? pendingOcr : null };
 }
 
+async function performRevisionOcrJob(student, job) {
+  const composition = await ownedComposition(student, job.composition_id);
+  if (composition.active_job_id !== job.job_id) return { status: "superseded" };
+  if (Number(composition.revision || 1) !== Number(job.composition_revision || 1)) {
+    throw new Error("COMPOSITION_REVISION_CHANGED");
+  }
+  const requiredUnits = revisionRequiredUnits(composition);
+  if (!requiredUnits.length) throw new Error("REVISION_SCAN_NO_REQUIRED_SENTENCES");
+  const photoIds = Array.isArray(job.photo_ids) ? job.photo_ids.slice(0, MAX_UPLOAD_PAGES) : [];
+  const rows = await photoRows(student, composition.composition_id, photoIds);
+  if (!rows.length || rows.some((row) => row.status !== "uploaded" || row.upload_kind !== "revision_scan")) {
+    throw new Error("PHOTO_UPLOAD_INCOMPLETE");
+  }
+  const urls = await app.getTempFileURL({ fileList: rows.map((row) => ({ fileID: row.file_id, maxAge: 600 })) });
+  const urlMap = new Map((urls.fileList || []).map((item) => [item.fileID, item.tempFileURL]));
+  const imageUrls = rows.map((row) => urlMap.get(row.file_id)).filter(Boolean);
+  if (imageUrls.length !== rows.length) throw new Error("PHOTO_URL_FAILED");
+  const sourceUnits = revisionSourceUnits(composition);
+  const allowedNumbers = requiredUnits.map((unit) => revisionUnitNumber(unit)).filter(Number.isInteger);
+  const modelResponse = await callStructuredModel({
+    system: revisionScanPrompt(), schemaName: "writing_revision_scan_v1", schema: REVISION_SCAN_SCHEMA,
+    images: imageUrls, vision: true,
+    userText: `ALLOWED_GLOBAL_SENTENCE_NUMBERS_JSON:\n${JSON.stringify(allowedNumbers)}\nSOURCE_SENTENCES_JSON:\n${JSON.stringify(sourceUnits)}\nReturn only candidates visible in the attached pages.`,
+  });
+  const pending = canonicalRevisionScanResult(modelResponse.data, composition, student.auth_uid, job.operation_id, modelResponse.metadata);
+  const now = new Date();
+  const succeededJob = publicJobView({ ...job, status: "succeeded", finished_at: now });
+  let outcome = "lease_lost";
+  await db.runTransaction(async (transaction) => {
+    const compositionResult = await transaction.collection(COMPOSITIONS).where({ composition_id: job.composition_id, student_uid: job.student_uid }).limit(1).get();
+    const jobResult = await transaction.collection(JOBS).where({ job_id: job.job_id }).limit(1).get();
+    const current = compositionResult.data && compositionResult.data[0];
+    const currentJob = jobResult.data && jobResult.data[0];
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, job.lease_token)) return;
+    if (!current || current.active_job_id !== job.job_id || Number(current.revision || 1) !== Number(job.composition_revision || 1)) {
+      await transaction.collection(JOBS).doc(currentJob._id).update({ status: "superseded", lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now });
+      outcome = "superseded";
+      return;
+    }
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
+      pending_revision_scan: pending, active_job: succeededJob, status: "revision_scan_review", updated_at: now,
+    }, ["pending_revision_scan", "active_job"]));
+    await transaction.collection(JOBS).doc(currentJob._id).update({ status: "succeeded", error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now });
+    outcome = "succeeded";
+  });
+  if (outcome === "succeeded") {
+    try { await deleteUploadedPhotos(rows); }
+    catch (error) { console.error("writingTutor revision scan photo cleanup failed", error && error.message); }
+  }
+  return { status: outcome, pendingRevisionScan: outcome === "succeeded" ? pending : null };
+}
+
 async function claimQueuedJob(jobId, dispatchToken) {
   let claimed = null;
   await db.runTransaction(async (transaction) => {
@@ -880,6 +1237,8 @@ async function processQueuedJob(event) {
     ? performReviewJob
     : claimed.job_type === "rewrite"
       ? performRewriteJob
+      : claimed.job_type === "revision_ocr"
+        ? performRevisionOcrJob
       : null;
   let student = null;
   if (claimed.job_type === "review") {
@@ -1002,6 +1361,8 @@ async function saveDraft(student, event) {
       title_source: draft.title_source,
       pending_replacement: pendingReplacement,
       pending_ocr: null,
+      pending_revision_scan: null,
+      scanned_rewrite_drafts: null,
       updated_at: now,
     };
     await db.collection(COMPOSITIONS).doc(composition._id).update(stagedUpdate);
@@ -1025,6 +1386,8 @@ async function saveDraft(student, event) {
     status: "ready",
     revision: invalidatesCurrentReview ? Number(composition.revision || 1) + 1 : Number(composition.revision || 1),
     pending_ocr: null,
+    pending_revision_scan: null,
+    scanned_rewrite_drafts: invalidatesCurrentReview ? null : composition.scanned_rewrite_drafts || null,
     pending_replacement: null,
     standardized_review: composition.standardized_review || null,
     language_review: composition.language_review || null,
@@ -1120,6 +1483,7 @@ function jobCompositionStatus(job, status) {
   if (job.job_type === "ocr") return status === "processing" ? "ocr_processing" : status === "queued" ? "ocr_queued" : "ocr_failed";
   if (job.job_type === "review") return status === "processing" ? "review_processing" : status === "queued" ? "review_queued" : "review_failed";
   if (job.job_type === "rewrite") return status === "processing" ? "rewrite_processing" : status === "queued" ? "rewrite_queued" : "rewrite_failed";
+  if (job.job_type === "revision_ocr") return status === "processing" ? "revision_ocr_processing" : status === "queued" ? "revision_ocr_queued" : "revision_ocr_failed";
   return null;
 }
 
@@ -1473,6 +1837,8 @@ async function performReviewJob(student, job) {
       standardized_review: job.review_mode === "standardized_content" ? review : null,
       language_review: job.review_mode === "general_language" ? review : null,
       rewrite_results: null,
+      pending_revision_scan: null,
+      scanned_rewrite_drafts: null,
       completed_at: job.review_mode === "general_language" && !languageNeedsTraining ? now : null,
     });
   }
@@ -1834,6 +2200,71 @@ async function submitRewrites(student, event) {
   return await enqueueRewriteJob(student, composition, event, prepared.items);
 }
 
+function revisionImportError(code, details) {
+  const error = new Error(code);
+  if (details) error.details = details;
+  return error;
+}
+
+async function confirmRevisionScanImport(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  const revision = Number(event.revision);
+  const operationId = text(event.operation_id, 160);
+  if (!Number.isInteger(revision) || revision < 1) throw new Error("COMPOSITION_REVISION_REQUIRED");
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const priorDrafts = Array.isArray(composition.scanned_rewrite_drafts) ? composition.scanned_rewrite_drafts : [];
+  if (!composition.pending_revision_scan && priorDrafts.some((item) => item && item.operation_id === operationId)) {
+    return { success: true, accepted: false, idempotent_replay: true, composition: compositionView(composition) };
+  }
+  const pending = composition.pending_revision_scan;
+  if (!pending || pending.operation_id !== operationId) throw new Error("REVISION_SCAN_NOT_PENDING");
+  if (Number(pending.composition_revision || 1) !== revision || Number(composition.revision || 1) !== revision) {
+    throw new Error("COMPOSITION_REVISION_CHANGED");
+  }
+  const required = new Set(revisionRequiredUnits(composition).map((item) => item.sentence_id));
+  const submitted = Array.isArray(event.items) ? event.items : [];
+  if (submitted.length > Math.min(required.size, 200)) throw new Error("REVISION_SCAN_IMPORT_INVALID");
+  const seen = new Set();
+  const invalid = [];
+  const items = submitted.map((item, index) => {
+    const sentenceId = text(item && item.sentence_id, 40);
+    const rewriteText = text(item && item.text, 3000);
+    let issue = null;
+    if (!item || typeof item !== "object" || Array.isArray(item)) issue = "ITEM_INVALID";
+    else if (typeof item.sentence_id !== "string") issue = "SENTENCE_ID_INVALID";
+    else if (typeof item.text !== "string") issue = "REWRITE_TEXT_INVALID";
+    else if (!sentenceId) issue = "SENTENCE_ID_REQUIRED";
+    else if (!required.has(sentenceId)) issue = "SENTENCE_NOT_REWRITE_REQUIRED";
+    else if (seen.has(sentenceId)) issue = "DUPLICATE_SENTENCE_ID";
+    else if (!rewriteText) issue = "REWRITE_TEXT_REQUIRED";
+    if (issue) invalid.push({ index, sentence_id: sentenceId || null, code: issue });
+    if (sentenceId) seen.add(sentenceId);
+    return { sentence_id: sentenceId, text: rewriteText };
+  });
+  if (invalid.length) throw revisionImportError("REVISION_SCAN_IMPORT_INVALID", { invalid_items: invalid });
+  const now = new Date();
+  const merged = new Map(priorDrafts.filter((item) => item && required.has(item.sentence_id)).map((item) => [item.sentence_id, item]));
+  items.forEach((item) => merged.set(item.sentence_id, { ...item, operation_id: operationId, imported_at: now }));
+  const drafts = Array.from(merged.values());
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(COMPOSITIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).limit(1).get();
+    const current = result.data && result.data[0];
+    if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+    const currentPending = current.pending_revision_scan;
+    if (!currentPending && Array.isArray(current.scanned_rewrite_drafts)
+      && current.scanned_rewrite_drafts.some((item) => item && item.operation_id === operationId)) return;
+    if (!currentPending || currentPending.operation_id !== operationId
+      || Number(currentPending.composition_revision || 1) !== revision
+      || Number(current.revision || 1) !== revision) throw new Error("COMPOSITION_REVISION_CHANGED");
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
+      scanned_rewrite_drafts: drafts, pending_revision_scan: null,
+      status: "sentence_training", updated_at: now,
+    }, ["scanned_rewrite_drafts", "pending_revision_scan"]));
+  });
+  const latest = await ownedComposition(student, composition.composition_id);
+  return { success: true, accepted: true, operation_id: operationId, composition: compositionView(latest) };
+}
+
 async function getProfile(student) {
   const rowsResult = await db.collection(OBSERVATIONS).where({ student_uid: student.auth_uid }).limit(500).get();
   const rows = rowsResult.data || [];
@@ -1865,6 +2296,12 @@ function friendlyMessage(code) {
     WRITING_AI_DAILY_LIMIT_REACHED: "Today's AI writing word limit has been reached. Ask your teacher to adjust it if needed.",
     WRITING_AI_NOT_CONFIGURED: "AI writing review is not configured yet.", AI_OPERATION_IN_PROGRESS: "This review is already being processed.",
     IDEMPOTENCY_KEY_REUSED: "This request identifier has already been used for another writing operation. Please try again.",
+    REVISION_SCAN_NO_REQUIRED_SENTENCES: "There are no sentences currently waiting for a rewrite.",
+    REVISION_SCAN_NOT_PENDING: "This handwriting scan is no longer waiting to be imported. Refresh the writing record and try again.",
+    REVISION_SCAN_IMPORT_INVALID: "One or more scanned rewrites are invalid or no longer match the current review. Please check the highlighted rows.",
+    WRITING_AI_REVISION_SCAN_EMPTY: "No readable rewrite candidates were found in those photos. Please try clearer photos.",
+    WRITING_AI_REVISION_SCAN_TOO_LARGE: "Too many rewrite candidates were found in one scan. Please photograph fewer answers at a time.",
+    COMPOSITION_REVISION_REQUIRED: "This rewrite scan is from an outdated writing revision. Refresh and scan again.",
   };
   return messages[code] || "The AI writing request could not be completed. Please try again.";
 }
@@ -1881,23 +2318,26 @@ exports.main = async (event = {}) => {
     if (action === "getComposition") return await getComposition(student, event);
     if (action === "startPhotoUpload") return await startPhotoUpload(student, event);
     if (action === "finishPhotoUpload") return await finishPhotoUpload(student, event);
+    if (action === "startRevisionScanUpload") return await startRevisionScanUpload(student, event);
+    if (action === "finishRevisionScanUpload") return await finishRevisionScanUpload(student, event);
     if (action === "extractOcr") return await extractOcr(student, event);
     if (action === "saveDraft") return await saveDraft(student, event);
     if (action === "updateCompositionTitle") return await updateCompositionTitle(student, event);
     if (action === "evaluate") return await evaluate(student, event);
     if (action === "submitRewrites") return await submitRewrites(student, event);
+    if (action === "confirmRevisionScanImport") return await confirmRevisionScanImport(student, event);
     if (action === "getProfile") return await getProfile(student);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     const code = error && error.message || "WRITING_TUTOR_ERROR";
     console.error("writingTutor failed", code, error);
-    return { success: false, code, message: friendlyMessage(code) };
+    return { success: false, code, message: friendlyMessage(code), ...(error && error.details ? { details: error.details } : {}) };
   }
 };
 
 exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
-  canonicalStandardizedResult, canonicalRewriteResults, roundedToStep,
+  canonicalStandardizedResult, canonicalRewriteResults, canonicalRevisionScanResult, revisionSourceUnits, roundedToStep,
   usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
   isDiscardableEmptyComposition,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },

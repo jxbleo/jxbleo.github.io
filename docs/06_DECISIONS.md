@@ -991,6 +991,39 @@ moderation workflow.
 Detailed incident evidence and the reusable gate for every future AI feature are
 recorded in `docs/adr/0003-durable-canonical-ai-boundaries.md`.
 
+## 2026-08-22: Keep photographed Sentence Revision as a reviewed draft import
+
+Decision:
+
+- `Scan Revisions` is an affordance inside editable Sentence Revision, not a
+  second submission or a new sentence source. The student supplies the existing
+  global sentence number at the beginning of each photographed answer. The
+  accepted marker forms are `8`, `8.`, `8、`, `8)`, and `(8)`; punctuation is
+  optional and whitespace is recommended.
+- Private photo upload and the durable `revision_ocr` job are one resumable
+  operation. The job is scoped to one student, Composition, Composition revision,
+  and operation ID. Its strict structured response is only a candidate; server
+  canonicalization validates the number against the current sentence list and
+  preserves unresolved or ambiguous rows for human review.
+- OCR output first lands in a guarded pending scan result. The student must review
+  mapped, `check`, and unresolved rows, manually assign a sentence where
+  necessary, and explicitly choose how each scan interacts with an existing typed
+  draft. Only confirmed rows are persisted as scanned revision drafts, and they
+  flow through the existing `Check` action; import never auto-checks.
+
+Why:
+
+Handwritten numbering gives the system a stable mapping without asking a vision
+model to infer sentence order from a photo. Separating candidate OCR from
+confirmed drafts makes uncertainty visible, protects typed work from silent
+replacement, and keeps model output from becoming a grading or completion event.
+
+Review condition:
+
+Revisit if photographed answers need bulk classroom import, a new marker grammar,
+or teacher-side approval; those changes would require a new ownership and audit
+decision.
+
 ## AI Tutor shell and title ownership
 
 Decision:

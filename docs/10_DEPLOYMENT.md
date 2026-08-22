@@ -1093,3 +1093,12 @@ verified `Active` / `Available`. The downloaded online `index.js` and
 `writing-prompts-2026-08-22.2` and renders the estimate as forms such as
 `B1-`, `B1`, and `B1+`; runtime, handler, timeout, memory, worker code, and
 environment variables were unchanged.
+
+The photographed Sentence Revision release adds three authenticated
+`writingTutor` actions plus `revision_ocr` job handling, and changes
+`writingAiWorker` expiry cleanup so an incomplete revision-photo upload is not
+misreported as original-composition OCR. For that release, package and deploy
+both `writingTutor.zip` and `writingAiWorker.zip`, verify both functions are
+`Active` / `Available`, and only then publish the `ai-tutor` static assets. No new
+collection, index, timer, provider account, or environment variable is required.
+This ordering is owner-gated and is not authorization to deploy production.

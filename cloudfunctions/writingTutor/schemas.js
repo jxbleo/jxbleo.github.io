@@ -1,6 +1,6 @@
 "use strict";
 
-const SCHEMA_VERSION = "writing-ai-schemas-2026-08-22.1";
+const SCHEMA_VERSION = "writing-ai-schemas-2026-08-22.2";
 
 const stringArray = { type: "array", items: { type: "string" } };
 
@@ -19,6 +19,42 @@ const OCR_SCHEMA = {
         required: ["text", "reason"],
         properties: { text: { type: "string" }, reason: { type: "string" } },
       },
+    },
+  },
+};
+
+const REVISION_SCAN_ITEM_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["written_number", "recognized_text", "confidence", "warnings"],
+  properties: {
+    written_number: {
+      type: ["integer", "null"],
+      description: "The global sentence number written at the start of this rewrite, or null when no reliable number is visible.",
+    },
+    recognized_text: {
+      type: "string",
+      description: "The student's handwritten rewrite, transcribed exactly without correction.",
+    },
+    confidence: { type: "string", enum: ["high", "medium", "low"] },
+    warnings: stringArray,
+  },
+};
+
+const REVISION_SCAN_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["items", "unmapped_items"],
+  properties: {
+    items: {
+      type: "array",
+      items: REVISION_SCAN_ITEM_SCHEMA,
+      description: "Visible rewrite candidates in page and reading order, including candidates with an uncertain number.",
+    },
+    unmapped_items: {
+      type: "array",
+      items: REVISION_SCAN_ITEM_SCHEMA,
+      description: "Visible handwriting that cannot be safely associated with a numbered rewrite; never infer a sentence number.",
     },
   },
 };
@@ -148,4 +184,7 @@ const REWRITE_SCHEMA = {
   },
 };
 
-module.exports = { SCHEMA_VERSION, OCR_SCHEMA, STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA };
+module.exports = {
+  SCHEMA_VERSION, OCR_SCHEMA, REVISION_SCAN_SCHEMA, REVISION_SCAN_ITEM_SCHEMA,
+  STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA,
+};
