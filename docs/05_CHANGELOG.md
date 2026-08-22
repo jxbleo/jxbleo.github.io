@@ -62,9 +62,12 @@
 - Removed the Sentence Revision instruction line and moved Scan Revisions beside
   `Submit` as a compact, accessible camera-only footer button on every viewport.
 - Preserved per-sentence rewrite feedback across Submit rounds instead of replacing
-  the previous commentary. Analysis cards now separate chronologically numbered
+  the previous commentary. Analysis cards now separate chronological
   feedback rounds with a thin divider, including safe round-1 migration for legacy
   latest-only rewrite results and operation-ID replay protection.
+- Removed visible “第几次点评” labels from Sentence Revision. Durable round data is
+  unchanged; the card now presents only the feedback copy with a thin divider
+  between consecutive submissions.
 
 
 ## 2026-08-20

@@ -400,7 +400,7 @@ check("each revision-required sentence renders only source, consolidated analysi
   requireEvery(cardSource, [
     "original-sentence", "sentence-row-number", "index + 1", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
     "sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion",
-    "sentenceRewriteFeedbackHistory", "rewrite-feedback-round", "次点评",
+    "sentenceRewriteFeedbackHistory", "rewrite-feedback-round",
     "sentence-response", "rewrite-input", "Your Attempt",
   ], "three-part sentence row");
   assert(/\.rewrite-area label\s*\{[^}]*color\s*:\s*var\(--ai-muted\)/is.test(styles),
@@ -409,8 +409,12 @@ check("each revision-required sentence renders only source, consolidated analysi
     "the grammar box must not render headings, categories, split feedback blocks, or English result enums");
   requireEvery(styles, [".grammar-analysis", ".grammar-analysis-copy", ".sentence-response"],
     "single-paragraph grammar analysis styles");
-  assert(/\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
-    "each submitted feedback round must begin with a visible divider");
+  assert(!cardSource.includes("次点评"),
+    "saved feedback rounds must not expose ordinal labels in the student interface");
+  assert(/\.rewrite-feedback-round\s*\+\s*\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
+    "a visible divider must appear only between consecutive submitted feedback rounds");
+  assert(!/\.rewrite-feedback-round\s*>\s*span\s*\{/.test(styles),
+    "the removed feedback-round label must not retain presentation styles");
   assert(!/\.grammar-analysis-(?:label|point|points|summary|result)\s*\{|\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
     "legacy split grammar-feedback styles must be removed");
 });

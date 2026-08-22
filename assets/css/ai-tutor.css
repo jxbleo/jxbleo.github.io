@@ -343,8 +343,8 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .sentence-face-content button, .sentence-face-content input, .sentence-face-content textarea, .sentence-face-content select, .sentence-face-content label { pointer-events: auto; }
 .grammar-analysis { margin-bottom: 12px; padding: 0; border: 0; border-radius: 0; color: #31574e; background: transparent; overflow-wrap: anywhere; word-break: break-word; }
 .grammar-analysis-copy { margin: 0; font-size: .82rem; line-height: 1.65; }
-.rewrite-feedback-round { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--sentence-ring); }
-.rewrite-feedback-round > span { display: block; margin-bottom: 5px; color: var(--ai-muted); font-size: .66rem; font-weight: 780; }
+.rewrite-feedback-round { margin-top: 10px; }
+.rewrite-feedback-round + .rewrite-feedback-round { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--sentence-ring); }
 .rewrite-feedback-round > p { margin: 0; font-size: .82rem; line-height: 1.65; }
 .sentence-response { min-width: 0; }
 .sample-action { display: flex; justify-content: flex-end; margin: 0 0 10px; }

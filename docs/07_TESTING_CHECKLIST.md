@@ -1877,8 +1877,9 @@ High priority improvement:
   on the persisted corrected sentence as display text, with no disabled textarea;
   only an explicit flip may reveal the original sentence and grammar analysis.
 - Submit the same incorrect sentence at least three times. Confirm the analysis
-  face keeps the original coaching first, then shows `第 1 次点评`, `第 2 次点评`,
-  and `第 3 次点评` in chronological order with a thin divider before each round.
+  face keeps the original coaching first, then shows all three feedback paragraphs
+  in chronological order without any “第几次点评” label. Confirm one thin divider
+  appears between each pair of submitted feedback paragraphs, not before every paragraph.
   Refresh and sign in again to confirm every round remains. Replay the same
   operation ID and confirm it does not create a duplicate round. For a legacy
   latest-only record, confirm the existing feedback becomes round 1 and the next
