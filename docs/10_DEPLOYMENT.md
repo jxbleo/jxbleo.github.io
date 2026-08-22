@@ -1086,4 +1086,10 @@ uploaded through the CloudBase console, verified `Active` / `Available`, and
 downloaded again for byte-identical comparison with the approved bundle. The
 deployed code contains `writing-prompts-2026-08-22.1`,
 `writing-ai-schemas-2026-08-22.1`, `language_sentence_review_v2`, and
-`cefr_estimate`; no worker or environment-variable change was required.
+`cefr_estimate`; no worker or environment-variable change was required. The
+compact CEFR notation follow-up was then deployed at 2026-08-22 09:03:35 and
+verified `Active` / `Available`. The downloaded online `index.js` and
+`package.json` were byte-identical to the approved bundle, which contains
+`writing-prompts-2026-08-22.2` and renders the estimate as forms such as
+`B1-`, `B1`, and `B1+`; runtime, handler, timeout, memory, worker code, and
+environment variables were unchanged.
