@@ -56,6 +56,9 @@
   instructions, matching labels, handwritten-number copy, and typed/scanned choice
   controls; confidence is now a tiny accessible high/medium/low symbol, and Import
   is the explicit boundary that adopts the reviewed scan text for unfinished drafts.
+- Made successful scan import return with every revision-required card showing its
+  attempt face. Renamed the muted rewrite-field label to `Your Attempt` and the lone
+  Sentence Revision footer action from `Check` to `Submit`.
 
 
 ## 2026-08-20

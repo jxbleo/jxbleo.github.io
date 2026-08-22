@@ -1845,7 +1845,7 @@ High priority improvement:
   opening the reference answer on the analysis face must not expose or erase the
   back input, and flipping to the input must hide both analysis and reference. For
   an effective sentence, confirm only the top metadata row (`CORRECT ✓`) and original
-  sentence render—without a grammar box, “你的改写”, a textarea, an inline sentence
+  sentence render—without a grammar box, `Your Attempt`, a textarea, an inline sentence
   icon, or a reference-answer action. Its capsule remains complete with a green check.
 - Switch a revision card front/back with click, Enter, and Space. Confirm state,
   focus order, accessible names, textarea draft, capsule, and sentence identity
@@ -1857,12 +1857,16 @@ High priority improvement:
   position. Repeat at iPad width and confirm its existing position is unchanged.
 - Confirm every Sentence Revision source row begins with exactly one matching one-based
   number, including effective rows. In editable mode, the footer contains only one
-  `Check` button aligned right on desktop and full-width on phone; the old unfinished
+  `Submit` button aligned right on desktop and full-width on phone; the old unfinished
   hint, long submit labels, and arrow icon are absent. Empty submission still returns
   the student to the first unfinished sentence. Confirm the row number follows the
   BBC classroom worksheet treatment—small, heavy, baseline-aligned, with no border,
   circular background, or capsule shape. This must remain visually distinct from
   the top navigation capsules.
+- Confirm every editable rewrite face labels its field `Your Attempt` in the muted
+  supporting-text color, while the textarea content remains visually primary. After
+  a successful Review Scan import, confirm every revision-required card opens on that
+  attempt face with the original sentence and imported correction visible together.
 - Before Check and after a rejected Check, confirm the unresolved capsule shows a
   small red cross rather than a dot or question mark. After acceptance, confirm the capsule
   shows a green check and the card's top-right state reads `REVISED ✓`. The accepted card must open

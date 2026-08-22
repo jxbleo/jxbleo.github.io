@@ -2002,7 +2002,9 @@ Important mobile rules:
   instructions, missing-sentence summary, mapping badges, scan labels, handwritten
   marker text, and typed/scanned choice controls. Pressing Import explicitly adopts
   every reviewed card and replaces the corresponding unfinished draft; returning
-  without Import leaves the prior draft unchanged.
+  without Import leaves the prior draft unchanged. After a successful Import, every
+  revision-required flip card opens on its attempt face so the original sentence and
+  imported student revision are immediately visible together.
 - Before confirmation, the browser retries the same stable upload batch and
   never claims that cloud processing can continue. An interrupted or partial
   upload stays in the same Composition and exposes `重新上传照片`; only a fully
@@ -2051,8 +2053,10 @@ Important mobile rules:
   This row number matches the BBC classroom worksheet fill-blank sequence treatment:
   a small heavy baseline-aligned number with no border, circular background, or pill.
   It remains distinct from the horizontal navigation capsule.
-  The card footer contains only one trailing `Check` button in editable mode; it has no
-  explanatory copy, dynamic long label, or arrow icon.
+  The revision input label is exactly `Your Attempt` and uses the muted supporting-text
+  color so the student's sentence remains visually primary. The card footer contains
+  only one trailing `Submit` button in editable mode; it has no explanatory copy,
+  dynamic long label, or arrow icon.
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.
