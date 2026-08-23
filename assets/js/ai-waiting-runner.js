@@ -68,6 +68,8 @@
         var finishElapsed = 0;
         var distance = 0;
         var ink = 0;
+        var lastScoreDistance = -1;
+        var lastScoreInk = -1;
         var obstacleSeed = 0;
         var lastObstacleRight = WORLD_WIDTH + 120;
         var obstacles = [];
@@ -115,7 +117,11 @@
 
         function notifyScore() {
             if (typeof options.onScore !== 'function') return;
-            options.onScore({ distance: Math.floor(distance), ink: ink });
+            var displayDistance = Math.floor(distance);
+            if (displayDistance === lastScoreDistance && ink === lastScoreInk) return;
+            lastScoreDistance = displayDistance;
+            lastScoreInk = ink;
+            options.onScore({ distance: displayDistance, ink: ink });
         }
 
         function addObstacle() {
@@ -177,11 +183,11 @@
             }
             obstacles.forEach(function(obstacle) { obstacle.x -= speed * step; });
             drops.forEach(function(drop) { drop.x -= speed * step; });
-            ensureObstacles();
+            if (!finishing) ensureObstacles();
             obstacles = obstacles.filter(function(obstacle) { return obstacle.x + obstacle.width > -100; });
             drops = drops.filter(function(drop) { return !drop.collected && drop.x > -80; });
             var box = playerBox();
-            if (player.invulnerable <= 0) {
+            if (!finishing && player.invulnerable <= 0) {
                 obstacles.some(function(obstacle) {
                     if (!overlap(box, obstacle)) return false;
                     player.stumble = STUMBLE_MS;
@@ -305,8 +311,16 @@
             context.restore();
         }
 
+        function finishGatePosition() {
+            var startX = WORLD_WIDTH + 40;
+            var targetX = player.x + player.width + 84;
+            var progress = Math.min(1, finishElapsed / 0.3);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            return startX + (targetX - startX) * eased;
+        }
+
         function drawFinishGate() {
-            var gateX = WORLD_WIDTH - 100 - Math.min(1, finishElapsed / 0.3) * 180;
+            var gateX = finishGatePosition();
             context.strokeStyle = '#4e8c82';
             context.lineWidth = 7;
             context.beginPath();
@@ -477,6 +491,7 @@
                 paused: paused,
                 taskState: taskState,
                 finishing: finishing,
+                finishGateX: finishGatePosition(),
                 distance: Math.floor(distance),
                 ink: ink,
                 player: { x: player.x, y: player.y, vy: player.vy, grounded: player.grounded },

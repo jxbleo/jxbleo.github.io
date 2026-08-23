@@ -159,7 +159,10 @@ check('finish timing is independent from time already spent waiting', () => {
   for (let time = 0; time < 2400; time += 16) harness.frame(time);
   let callbacks = 0;
   runner.finish(() => { callbacks += 1; });
+  const gateStart = runner.snapshot().finishGateX;
   assert.strictEqual(callbacks, 0, 'finish ended immediately after a long wait');
+  for (let time = 2400; time < 2560; time += 16) harness.frame(time);
+  assert(runner.snapshot().finishGateX < gateStart, 'finish gate did not move toward the player');
   for (let time = 2400; time < 2800; time += 16) harness.frame(time);
   assert.strictEqual(callbacks, 1, 'finish did not complete within the bounded handoff');
   runner.destroy();
