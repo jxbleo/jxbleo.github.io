@@ -1788,6 +1788,26 @@ cloudfunctions/
 
 ## AI Tutor Writing Workspace
 
+### Durable AI waiting experience
+
+- The four durable student-facing AI tasks (`ocr`, `review`, `rewrite`, and
+  `revision_ocr`) use one waiting surface with server-derived `Saved`, `Queued`,
+  `Analysing`, and `Ready` stages. The browser never invents percentages or
+  remaining-time estimates.
+- Only a confirmed durable handoff shows `Continue in Background`. An upload
+  that is still being confirmed shows `Uploading`, keeps the runner off, and
+  never promises that the task will continue after the page closes.
+- While a durable task waits, the surface may host the temporary, original
+  `Mr. Cat Runner` canvas activity. Distance and Ink are ephemeral visual state;
+  they are not scores, rewards, analytics, or AI progress.
+- The runner has no formal failure screen. A collision causes a brief stumble
+  and the runner continues. Real job success immediately takes priority, with
+  a finish handoff capped at 500ms; reduced-motion users, hidden tabs, missing
+  modules, and errors go directly to the real result.
+- Refresh, browser closure, re-login, and reopening a Composition continue to
+  use the existing server Job and polling lifecycle. Leaving the waiting card
+  never cancels a durable Job.
+
 - Student Dashboard 在 Library 之前提供独立的 `AI Tutor` 入口。作文作品不是 Assignment、
   Attempt、Exercise Progress 或 STAR；老师分享 Library 题目只会预填 Writing Prompt。
 - AI Tutor 页面只保留一个顶部工具栏；工具栏不再显示品牌图标、`AI Tutor`、`Writing Studio`、

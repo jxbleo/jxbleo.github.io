@@ -1865,6 +1865,92 @@ check("reference revision is hidden whenever rewrite input is available", () => 
   assert(!/<(?:input|textarea)[^>]*(?:value|placeholder)=["'][^"']*(?:reference revision|参考修改句|正确答案)/i.test(page), "reference/correct answer must not be embedded in a visible rewrite control");
 });
 
+check("the shared AI waiting assets load before the Tutor client", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  requireEvery(`${page}\n${client}`, [
+    "assets/css/ai-waiting-runner.css",
+    "assets/js/ai-waiting-runner.js",
+    "Continue in Background",
+  ], "AI waiting asset loading");
+  assert(page.indexOf("ai-waiting-runner.js") < page.indexOf("ai-tutor.js"), "Runner must load before ai-tutor.js");
+});
+
+check("all four durable jobs use one waiting renderer and keep their polling", () => {
+  const client = read(clientPath);
+  const waitingFunctions = [
+    ["renderOcrWaiting", "startOcrPolling"],
+    ["renderReviewWaiting", "startReviewPolling"],
+    ["renderRewriteWaiting", "applyRewriteResult"],
+    ["renderRevisionScanWaiting", "renderRevisionScanFailure"],
+  ];
+  waitingFunctions.forEach(([name, next]) => {
+    const waiting = functionSource(client, name, next);
+    assert(waiting.includes("renderAiWaitingExperience"), `${name} must use the shared waiting renderer`);
+    assert(!waiting.includes("loading-orbit"), `${name} must not retain the rotating loader`);
+  });
+  ["startOcrPolling", "startReviewPolling", "startRewritePolling", "startRevisionScanPolling"].forEach((name) => {
+    const source = matchingFunctionSource(client, name, `${name} source`);
+    assert(source.includes("getComposition"), `${name} must keep polling getComposition`);
+  });
+  requireEvery(client, [
+    "function renderAiWaitingExperience",
+    "function updateAiWaitingExperience",
+    "function finishAiWaitingExperience",
+    "function destroyAiWaitingExperience",
+    "waitingRunner: null",
+    "waitingKind: ''",
+    "waitingTaskState: ''",
+  ], "waiting lifecycle API");
+});
+
+check("the waiting stages reflect server state and expose only a durable handoff", () => {
+  const client = read(clientPath);
+  const renderer = `${functionSource(client, "waitingStageLabel", "waitingStageMarkup")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
+  requireEvery(renderer, ["Saved", "Queued", "Analysing", "Ready", "durable", "Continue in Background", "runner-canvas"], "waiting renderer contract");
+  assert(/durable\s*&&\s*config\.allowBackground\s*!==\s*false/.test(renderer), "background action must depend on durable confirmation");
+  const ocrWaiting = functionSource(client, "renderOcrWaiting", "startOcrPolling");
+  assert(/durable:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate the durable handoff");
+  assert(/allowBackground:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate Continue in Background");
+  assert(!/预计|剩余秒|百分比|%/.test(renderer), "waiting renderer must not display fake progress or time estimates");
+  assert(/revision_ocr\s*:\s*["']revision-scan-waiting["']/.test(client), "revision OCR must keep its existing screen identity");
+  const revisionUpload = matchingFunctionSource(client, "beginRevisionScanUpload", "revision upload source");
+  assert(/status:\s*["']photo_uploading["'][\s\S]{0,180}durable:\s*false/.test(revisionUpload), "revision upload must render a non-durable Uploading state before finish");
+  assert(!/renderRevisionScanWaiting\s*\(\s*\{[^}]*status:\s*["']queued["'][^)]*\)\s*;/.test(revisionUpload), "revision upload must not claim a queued durable job before finishRevisionScanUpload");
+});
+
+check("success and failure paths cleanly hand off or destroy the Runner", () => {
+  const client = read(clientPath);
+  [
+    ["showOcrResult", "renderOcr"],
+    ["showReviewResult", "renderStandardized"],
+    ["applyRewriteResult", "renderCompletion"],
+  ].forEach(([name, expected]) => {
+    const source = matchingFunctionSource(client, name, `${name} success source`);
+    assert(source.includes("finishAiWaitingExperience"), `${name} must use the bounded finish handoff`);
+    assert(source.includes(expected), `${name} must retain its existing success exit`);
+  });
+  ["renderOcrFailure", "renderReviewFailure", "renderRewriteFailure", "renderRevisionScanFailure", "renderFatalAction"].forEach((name) => {
+    const source = matchingFunctionSource(client, name, `${name} cleanup source`);
+    assert(source.includes("destroyAiWaitingExperience"), `${name} must destroy the Runner`);
+  });
+  requireEvery(client, [
+    "window.addEventListener('pagehide'",
+    "document.addEventListener('visibilitychange'",
+    "state.waitingRunner.pause()",
+    "state.waitingRunner.resume()",
+  ], "Runner page lifecycle");
+  const finishSource = functionSource(client, "finishAiWaitingExperience", "destroyAiWaitingExperience");
+  requireEvery(finishSource, ["waitingTaskState = 'ready'", "setTaskState('ready')", "setTimeout(complete, 500)"], "bounded Ready handoff");
+});
+
+check("the Runner remains optional and does not own AI state", () => {
+  const runner = read("assets/js/ai-waiting-runner.js");
+  requireEvery(runner, ["window.MrCatWaitingRunner", "mount", "snapshot", "requestAnimationFrame"], "Runner module");
+  assert(!/writingCall|CloudBase|composition|job_id|student_uid|fetch\s*\(|localStorage|indexedDB|document\.cookie/i.test(runner), "Runner must not own AI or persistence state");
+  assert(/window\.MrCatWaitingRunner/.test(read(clientPath)), "Tutor must tolerate a missing optional Runner module");
+});
+
 if (failures.length) {
   process.stderr.write(`\nAI Tutor contract failures (${failures.length}):\n`);
   failures.forEach((failure) => process.stderr.write(`- ${failure}\n`));

@@ -893,3 +893,26 @@ STAR 不阻止未来重新布置同一个 set。
 - 上传确认转为 `revision_ocr` job 时，`pending_upload`、`pending_revision_scan` 和 `active_job`
   也按完整字段原子更新，避免清理状态与新 job 投影部分合并。
 - 回归测试必须同时覆盖普通作文上传和 Sentence Revision 扫描，不能只检查模型调用或 Schema。
+
+### 2026-08-24：AI Tutor 等待 Runner 排查顺序
+
+现象与根因：
+- 等待卡片的阶段文字必须来自 Composition/Job 的真实状态。若上传仍是
+  `photo_uploading` 或存在未确认 `pending_upload`，这是交付未确认，不是可离开状态；不要把
+  `Saved` 或 `Continue in Background` 当作本地上传完成的推断。
+- Runner 只消磨等待时间。距离、Ink、踉跄次数和 Canvas 动画不是 AI 进度，也不应进入网络、日志、
+  localStorage、IndexedDB、Attempt、STAR 或任何数据库字段。
+
+固定规则：
+- 先检查 `ai-tutor.js` 的四套独立 `getComposition` 轮询，再检查统一等待渲染器的状态映射；不要用
+  定时器把 `Queued` 自动改成 `Analysing`，也不要让 Runner 的 RAF 驱动轮询。
+- 结果到达先走最多 500ms 的 `finishAiWaitingExperience`；隐藏标签页、Reduced Motion、Runner 缺失或
+  动画异常应立即走真实结果。失败、返回 Home、切换 Composition 和 `pagehide` 都必须调用幂等销毁。
+- 若页面仍在失败卡片显示 Canvas，先查失败函数是否调用 `destroyAiWaitingExperience()`；若刷新后出现多个
+  RAF，查旧 Canvas 被替换前是否销毁，以及 visibility/pagehide 是否清除了控制器。
+- 新 Runner 测试只允许使用最小 Canvas/RAF mock；不要为游戏引入框架、CloudBase API、声音、振动或新的
+  持久化依赖。
+
+验证：
+- 运行 `npm run test:waiting-runner` 和 `npm run test:writing-tutor`，再运行第 15.3 节列出的语法、release
+  verification 和 `git diff --check` 命令。静态页面发布不需要重新部署 `writingTutor` 或 `writingAiWorker`。

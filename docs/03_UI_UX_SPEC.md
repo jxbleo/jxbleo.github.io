@@ -1925,6 +1925,28 @@ Important mobile rules:
 
 ## AI Tutor Writing
 
+### Durable waiting cards and Mr. Cat Runner
+
+- OCR, General Language Review, Sentence Revision Check, and Revision Scan use
+  the same centered waiting card. Its stage text is limited to `Saved`,
+  `Queued`, `Analysing`, and `Ready`; an unconfirmed photo upload is explicitly
+  `Uploading` and does not show a background-leave action.
+- A durable waiting card uses the exact primary action `Continue in Background`.
+  Retry or re-upload remains a secondary action when that task permits it. The
+  old `留在此页等待` action is not needed because polling is automatic.
+- The optional runner is a 16:7, max-640px Canvas with an accessible `Jump`
+  button, pointer/tap jump, and Space/ArrowUp/W keyboard controls. Its
+  temporary `Distance` and `Ink` labels are `aria-hidden` and never represent
+  AI progress or a learning reward.
+- The original Mr. Cat, books, pencils, erasers, and ink drops use restrained
+  Canvas geometry and the AI Tutor palette. Collisions stumble and slow the cat
+  briefly; there is no Game Over, sound, vibration, leaderboard, or persistence.
+- Reduced motion renders a static scene and skips the finish animation. Hidden
+  tabs pause simulation and reset the frame clock; missing Canvas support leaves
+  the real status, polling, and result paths intact. Success hands off within
+  500ms, while failures destroy the Canvas before showing the existing error
+  card.
+
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
 - Its header toolbar contains only `History` at the far left, the current

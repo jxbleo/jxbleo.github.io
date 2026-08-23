@@ -41,6 +41,10 @@
         rewritePollActive: false,
         revisionScanPollGeneration: 0,
         revisionScanPollActive: false,
+        waitingRunner: null,
+        waitingKind: '',
+        waitingTaskState: '',
+        waitingFinishPending: false,
         sidebarOpen: false,
         editingTitleId: '',
         titleEditError: '',
@@ -489,6 +493,171 @@
         state.revisionScanPollGeneration += 1;
     }
 
+    function waitingTaskState(jobStatus, durable) {
+        var status = firstText(jobStatus).toLowerCase();
+        if (!durable || status === 'photo_uploading' || status === 'uploading') return 'uploading';
+        if (status === 'succeeded' || status === 'ready' || status === 'completed') return 'ready';
+        if (status === 'failed') return 'failed';
+        if (status === 'processing' || /_processing$/.test(status) || status === 'evaluating') return 'analysing';
+        return 'queued';
+    }
+
+    function waitingStageClass(stageName, taskState) {
+        var order = ['saved', 'queued', 'analysing', 'ready'];
+        var currentIndex = order.indexOf(taskState);
+        var stageIndex = order.indexOf(stageName);
+        if (taskState === 'uploading') return stageName === 'saved' ? 'is-active' : 'is-upcoming';
+        if (taskState === 'failed') return stageName === 'analysing' ? 'is-active' : 'is-upcoming';
+        if (taskState === 'ready') return 'is-complete';
+        if (stageIndex < currentIndex) return 'is-complete';
+        if (stageIndex === currentIndex) return 'is-active';
+        return 'is-upcoming';
+    }
+
+    function waitingStageLabel(stageName, taskState) {
+        if (taskState === 'uploading' && stageName === 'saved') return 'Uploading';
+        return { saved: 'Saved', queued: 'Queued', analysing: 'Analysing', ready: 'Ready' }[stageName];
+    }
+
+    function waitingStageMarkup(taskState) {
+        return ['saved', 'queued', 'analysing', 'ready'].map(function(stageName) {
+            var stageClass = waitingStageClass(stageName, taskState);
+            var symbol = stageClass === 'is-complete' ? '✓' : stageClass === 'is-active' ? '•' : '·';
+            return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage="' + stageName + '"><span class="ai-waiting-stage-mark" aria-hidden="true">' + symbol + '</span><span>' + waitingStageLabel(stageName, taskState) + '</span></li>';
+        }).join('');
+    }
+
+    function updateWaitingStageDom(taskState) {
+        if (!stage) return;
+        var stages = stage.querySelectorAll('[data-waiting-stage]');
+        Array.prototype.forEach.call(stages, function(item) {
+            var name = item.getAttribute('data-waiting-stage');
+            var nextClass = 'ai-waiting-stage ' + waitingStageClass(name, taskState);
+            item.className = nextClass;
+            var mark = item.querySelector('.ai-waiting-stage-mark');
+            if (mark) mark.textContent = nextClass.indexOf('is-complete') >= 0 ? '✓' : nextClass.indexOf('is-active') >= 0 ? '•' : '·';
+            var label = item.querySelector('span:last-child');
+            if (label) label.textContent = waitingStageLabel(name, taskState);
+        });
+    }
+
+    function mountWaitingRunner() {
+        if (state.waitingRunner || !stage) return;
+        var canvas = stage.querySelector('.runner-canvas');
+        if (!canvas) return;
+        if (!window.MrCatWaitingRunner || typeof window.MrCatWaitingRunner.mount !== 'function') {
+            var missingShell = canvas.closest('.runner-shell');
+            if (missingShell) missingShell.hidden = true;
+            return;
+        }
+        try {
+            var runner = window.MrCatWaitingRunner.mount(canvas, {
+                onScore: function(score) {
+                    var scoreNode = stage.querySelector('.runner-score');
+                    if (scoreNode) scoreNode.textContent = 'Distance ' + Number(score.distance || 0) + 'm · Ink ' + Number(score.ink || 0);
+                }
+            });
+            if (!runner || typeof runner.destroy !== 'function') return;
+            if (typeof runner.snapshot === 'function' && runner.snapshot().supported === false) {
+                var unsupportedShell = canvas.closest('.runner-shell');
+                if (unsupportedShell) unsupportedShell.hidden = true;
+                return;
+            }
+            state.waitingRunner = runner;
+            runner.setTaskState(state.waitingTaskState || 'queued');
+            var jumpButton = stage.querySelector('.runner-jump-button');
+            if (jumpButton && typeof runner.jump === 'function') jumpButton.addEventListener('click', function() { runner.jump(); });
+        } catch (error) {
+            state.waitingRunner = null;
+        }
+    }
+
+    function renderAiWaitingExperience(config) {
+        config = config || {};
+        destroyAiWaitingExperience();
+        var durable = config.durable !== false;
+        var taskState = waitingTaskState(config.jobStatus, durable);
+        state.waitingKind = firstText(config.kind);
+        state.waitingTaskState = taskState;
+        state.waitingFinishPending = false;
+        state.screen = firstText(config.screen, {
+            ocr: 'ocr-waiting',
+            review: 'review-waiting',
+            rewrite: 'rewrite-waiting',
+            revision_ocr: 'revision-scan-waiting'
+        }[state.waitingKind] || state.waitingKind + '-waiting');
+        var uploadPending = !durable || taskState === 'uploading';
+        var runnerMarkup = durable && taskState !== 'failed'
+            ? '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Mr. Cat Runner. Tap, click, or press Space to jump."></canvas><p class="runner-instruction">Tap or press Space to jump</p><p class="runner-score" aria-hidden="true">Distance 0m · Ink 0</p><button class="runner-jump-button" type="button" aria-label="Jump">Jump</button></div>'
+            : '';
+        var extraActions = firstText(config.extraActions);
+        var backgroundAction = durable && config.allowBackground !== false
+            ? '<button class="primary-button ai-waiting-background-action" type="button" data-return-home>Continue in Background</button>'
+            : '';
+        var statusCopy = uploadPending
+            ? 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.'
+            : firstText(config.statusCopy, 'The page checks the same saved task every 5 seconds.');
+        stage.innerHTML = '<section class="surface ai-waiting-experience' + (uploadPending ? ' ai-waiting-uploading' : '') + '" data-waiting-kind="' + escapeHtml(state.waitingKind) + '">' +
+            '<header class="ai-waiting-copy"><h2>' + escapeHtml(firstText(config.title, 'Working on your writing')) + '</h2><p>' + escapeHtml(firstText(config.description, 'Your work is safely saved.')) + '</p>' +
+            (durable && !/you may leave/i.test(firstText(config.description)) ? '<p>You may leave while AI continues in the background.</p>' : '') + '</header>' +
+            '<ol class="ai-waiting-stages" aria-label="AI task status">' + waitingStageMarkup(taskState === 'uploading' ? 'uploading' : taskState) + '</ol>' +
+            runnerMarkup +
+            '<p class="ai-waiting-status section-hint" id="' + escapeHtml(firstText(config.pollStatusId, 'ai-waiting-status')) + '" role="status" aria-live="polite">' + escapeHtml(statusCopy) + '</p>' +
+            '<div class="form-actions ai-waiting-actions">' + extraActions + backgroundAction + '</div></section>';
+        mountWaitingRunner();
+        updateWaitingStageDom(taskState);
+    }
+
+    function updateAiWaitingExperience(config) {
+        config = config || {};
+        if (!state.waitingKind || (config.kind && config.kind !== state.waitingKind)) return;
+        var durable = config.durable !== false;
+        var nextState = waitingTaskState(config.jobStatus, durable);
+        state.waitingTaskState = nextState;
+        updateWaitingStageDom(nextState === 'uploading' ? 'uploading' : nextState);
+        if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState(nextState === 'uploading' ? 'queued' : nextState);
+        var pollStatusId = firstText(config.pollStatusId);
+        var statusNode = stage && pollStatusId ? stage.querySelector('#' + pollStatusId) : null;
+        if (statusNode && config.statusCopy) statusNode.textContent = config.statusCopy;
+    }
+
+    function finishAiWaitingExperience(next) {
+        if (state.waitingFinishPending) return;
+        state.waitingFinishPending = true;
+        var called = false;
+        var fallbackTimer = null;
+        function complete() {
+            if (called) return;
+            called = true;
+            if (fallbackTimer != null) window.clearTimeout(fallbackTimer);
+            destroyAiWaitingExperience();
+            if (typeof next === 'function') next();
+        }
+        if (!state.waitingRunner || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || document.hidden) {
+            complete();
+            return;
+        }
+        state.waitingTaskState = 'ready';
+        updateWaitingStageDom('ready');
+        if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState('ready');
+        fallbackTimer = window.setTimeout(complete, 500);
+        try {
+            state.waitingRunner.finish(complete);
+        } catch (error) {
+            complete();
+        }
+    }
+
+    function destroyAiWaitingExperience() {
+        if (state.waitingRunner && typeof state.waitingRunner.destroy === 'function') {
+            try { state.waitingRunner.destroy(); } catch (error) {}
+        }
+        state.waitingRunner = null;
+        state.waitingKind = '';
+        state.waitingTaskState = '';
+        state.waitingFinishPending = false;
+    }
+
     function releaseRevisionScanPreviewUrls(scan) {
         safeArray(scan && scan.previewUrls).forEach(function(url) {
             if (firstText(url).indexOf('blob:') === 0) URL.revokeObjectURL(url);
@@ -746,6 +915,7 @@
     }
 
     function renderWelcome() {
+        destroyAiWaitingExperience();
         state.screen = 'welcome';
         var recentCompositions = portfolioCompositions();
         stage.innerHTML = '<section class="surface">' +
@@ -761,6 +931,7 @@
     }
 
     function resetDraft(composition) {
+        destroyAiWaitingExperience();
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
@@ -809,6 +980,7 @@
     }
 
     function returnToTutorHome() {
+        destroyAiWaitingExperience();
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
@@ -844,6 +1016,7 @@
     }
 
     function renderSource() {
+        destroyAiWaitingExperience();
         state.screen = 'source';
         var standardized = state.assessmentMode === 'standardized';
         var hasPhoto = state.photoUrls.length > 0;
@@ -1038,20 +1211,32 @@
             ? state.ocr.paragraphs.join('\n\n')
             : firstText(state.ocr.full_text);
         clearLogicalOperation('ocr');
-        renderOcr();
-        syncCurrentSummary();
+        finishAiWaitingExperience(function() {
+            renderOcr();
+            syncCurrentSummary();
+        });
     }
 
     function renderOcrWaiting(job, autoPoll) {
         var status = firstText(job && job.status, state.current && state.current.status).toLowerCase();
         var uploadPending = status === 'photo_uploading';
-        state.screen = 'ocr-waiting';
-        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
-            '<strong>' + (uploadPending ? '正在确认照片上传状态' : '照片已安全上传，可以离开此页面') + '</strong>' +
-            '<p>' + (uploadPending ? '照片尚未完整确认，暂时不能保证后台继续。如果长时间没有变化，请在同一篇作文里重新上传。' : (status === 'queued' || status === 'ocr_queued' ? 'OCR 已进入队列。' : 'OCR 正在云端识别。') + '离开或刷新不会中断，也不会创建新的作文。') + '</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            (uploadPending ? '<button class="primary-button" type="button" data-reupload>重新上传照片</button>' : '<button class="secondary-button" type="button" data-reupload>重新上传</button><button class="primary-button" type="button" data-stay-ocr>留在此页等待</button>') + '</div>' +
-            '<p class="section-hint" id="ocr-poll-status" role="status" aria-live="polite">每 5 秒自动查询一次同一篇作文。</p></section>';
+        renderAiWaitingExperience({
+            kind: 'ocr',
+            jobStatus: status,
+            durable: !uploadPending,
+            title: 'Reading your handwriting',
+            description: uploadPending
+                ? 'Your photos are still being confirmed by the server.'
+                : 'Your photos are safely uploaded. You may leave while recognition continues.',
+            pollStatusId: 'ocr-poll-status',
+            statusCopy: uploadPending
+                ? 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.'
+                : 'Waiting for the same saved OCR task; the page checks every 5 seconds.',
+            allowBackground: !uploadPending,
+            extraActions: uploadPending
+                ? '<button class="primary-button" type="button" data-reupload>Upload Again</button>'
+                : '<button class="secondary-button" type="button" data-reupload>Upload Again</button>'
+        });
         if (autoPoll) startOcrPolling();
     }
 
@@ -1081,6 +1266,9 @@
                     renderOcrFailure({ code: job.error_code || 'WRITING_AI_OCR_FAILED', message: 'OCR 识别没有完成。' });
                     return;
                 }
+                var durable = firstText(job.status).toLowerCase() !== 'photo_uploading' && !composition.pending_upload;
+                if (durable && !state.waitingRunner) renderOcrWaiting(job, false);
+                updateAiWaitingExperience({ kind: 'ocr', jobStatus: job.status, durable: durable, pollStatusId: 'ocr-poll-status', statusCopy: durable ? 'Waiting for the same saved OCR task; the page checks every 5 seconds.' : 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.' });
                 syncCurrentSummary();
                 window.setTimeout(poll, 5000);
             }).catch(function(error) {
@@ -1107,6 +1295,7 @@
             WRITING_AI_TIMEOUT: '云端 OCR 本次没有完成。原作文记录仍然保留。'
         };
         var message = messages[code] || firstText(error && error.message, 'OCR 本次没有完成。你可以重新检查云端状态，或重新上传照片。');
+        destroyAiWaitingExperience();
         state.screen = 'ocr-failed';
         stage.innerHTML = '<section class="surface error-state"><strong>OCR 识别没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-retry-ocr>重新检查状态</button>' +
@@ -1115,6 +1304,7 @@
     }
 
     function renderOcr() {
+        destroyAiWaitingExperience();
         state.screen = 'ocr';
         stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading"><h2>OCR Review</h2>' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
@@ -1195,22 +1385,27 @@
             : state.current && state.current.language_review) || {};
         state.readOnly = false;
         clearLogicalOperation('evaluate');
-        syncCurrentSummary();
-        if (mode === 'standardized') renderStandardized();
-        else prepareLanguageReview();
-        Promise.all([refreshPortfolio(), refreshWritingProfile()]).catch(function() {});
+        finishAiWaitingExperience(function() {
+            syncCurrentSummary();
+            if (mode === 'standardized') renderStandardized();
+            else prepareLanguageReview();
+            Promise.all([refreshPortfolio(), refreshWritingProfile()]).catch(function() {});
+        });
     }
 
     function renderReviewWaiting(job, autoPoll, allowRetry) {
         var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
-        state.screen = 'review-waiting';
-        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
-            '<strong>作文已经提交，可以离开此页面</strong>' +
-            '<p>' + (jobStatus === 'queued' || jobStatus === 'review_queued' ? '批改已进入队列。' : 'AI 正在云端批改。') + '离开、刷新或重新登录都不会中断，也不会重复扣除字数额度。</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            (allowRetry ? '<button class="secondary-button" type="button" data-retry-review>用同一请求安全重试</button>' : '') +
-            '<button class="primary-button" type="button" data-stay-review>留在此页等待</button></div>' +
-            '<p class="section-hint" id="review-poll-status" role="status" aria-live="polite">每 5 秒查询一次同一篇作文。</p></section>';
+        renderAiWaitingExperience({
+            kind: 'review',
+            jobStatus: jobStatus,
+            durable: true,
+            title: 'Reviewing your writing',
+            description: 'Your writing is safely submitted. You may leave while the review continues.',
+            pollStatusId: 'review-poll-status',
+            statusCopy: 'Waiting for the same saved review task; the page checks every 5 seconds.',
+            allowBackground: true,
+            extraActions: allowRetry ? '<button class="secondary-button" type="button" data-retry-review>Retry the same request</button>' : ''
+        });
         if (autoPoll) startReviewPolling();
     }
 
@@ -1236,6 +1431,7 @@
                     renderReviewFailure({ code: job.error_code || 'WRITING_AI_REVIEW_FAILED', message: 'AI 批改没有完成。' });
                     return;
                 }
+                updateAiWaitingExperience({ kind: 'review', jobStatus: job.status, durable: true, pollStatusId: 'review-poll-status', statusCopy: 'Waiting for the same saved review task; the page checks every 5 seconds.' });
                 syncCurrentSummary();
                 window.setTimeout(poll, 5000);
             }).catch(function() {
@@ -1294,6 +1490,7 @@
         };
         var message = messages[code] || firstText(error && error.message, 'AI 批改本次没有完成。作文仍然安全保存。');
         clearLogicalOperation('evaluate');
+        destroyAiWaitingExperience();
         state.screen = 'review-failed';
         stage.innerHTML = '<section class="surface error-state"><strong>AI 批改没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
@@ -1314,14 +1511,17 @@
 
     function renderRewriteWaiting(job, autoPoll, allowRetry) {
         var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
-        state.screen = 'rewrite-waiting';
-        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span>' +
-            '<strong>改写已经提交，可以离开此页面</strong>' +
-            '<p>' + (jobStatus === 'queued' || jobStatus === 'rewrite_queued' ? '检查已进入队列。' : 'AI 正在云端检查你的句子。') + '关闭浏览器、刷新或重新登录都不会中断，也不会重复调用 AI。</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            (allowRetry ? '<button class="secondary-button" type="button" data-retry-rewrite>用同一请求安全重试</button>' : '') +
-            '<button class="primary-button" type="button" data-stay-rewrite>留在此页等待</button></div>' +
-            '<p class="section-hint" id="rewrite-poll-status" role="status" aria-live="polite">每 5 秒查询一次同一篇作文。</p></section>';
+        renderAiWaitingExperience({
+            kind: 'rewrite',
+            jobStatus: jobStatus,
+            durable: true,
+            title: 'Checking your attempts',
+            description: 'Your attempts are safely saved. You may leave while checking continues.',
+            pollStatusId: 'rewrite-poll-status',
+            statusCopy: 'Waiting for the same saved rewrite check; the page checks every 5 seconds.',
+            allowBackground: true,
+            extraActions: allowRetry ? '<button class="secondary-button" type="button" data-retry-rewrite>Retry the same request</button>' : ''
+        });
         if (autoPoll) startRewritePolling();
     }
 
@@ -1348,20 +1548,22 @@
             record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed');
         state.review = state.current && state.current.language_review || state.review;
         clearLogicalOperation('rewrites');
-        syncCurrentSummary();
-        if (record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed') {
-            renderCompletion();
-        } else {
-            state.correctionRound += 1;
-            prepareLanguageReview();
-            var sentences = safeArray(state.review && state.review.sentences);
-            state.activeSentence = Math.max(0, sentences.findIndex(function(sentence, index) {
-                var answer = state.rewriteResults[sentenceId(sentence, index)];
-                return answer && answer.accepted === false;
-            }));
-            renderLanguage();
-        }
-        refreshPortfolio().catch(function() {});
+        finishAiWaitingExperience(function() {
+            syncCurrentSummary();
+            if (record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed') {
+                renderCompletion();
+            } else {
+                state.correctionRound += 1;
+                prepareLanguageReview();
+                var sentences = safeArray(state.review && state.review.sentences);
+                state.activeSentence = Math.max(0, sentences.findIndex(function(sentence, index) {
+                    var answer = state.rewriteResults[sentenceId(sentence, index)];
+                    return answer && answer.accepted === false;
+                }));
+                renderLanguage();
+            }
+            refreshPortfolio().catch(function() {});
+        });
     }
 
     function renderRewriteFailure(error) {
@@ -1375,6 +1577,7 @@
             WRITING_AI_ATTEMPTS_EXHAUSTED: '多次自动重试仍未完成。你的改写已经保存，请稍后重新检查。'
         };
         var message = messages[code] || firstText(error && error.message, 'AI 本次没有完成检查。你的改写已经保存。');
+        destroyAiWaitingExperience();
         state.screen = 'rewrite-failed';
         stage.innerHTML = '<section class="surface error-state"><strong>改写检查没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
@@ -1402,6 +1605,7 @@
                     renderRewriteFailure({ code: job.error_code || 'WRITING_AI_REWRITE_FAILED', message: 'AI 改写检查没有完成。' });
                     return;
                 }
+                updateAiWaitingExperience({ kind: 'rewrite', jobStatus: job.status, durable: true, pollStatusId: 'rewrite-poll-status', statusCopy: 'Waiting for the same saved rewrite check; the page checks every 5 seconds.' });
                 syncCurrentSummary();
                 window.setTimeout(poll, 5000);
             }).catch(function() {
@@ -1415,11 +1619,13 @@
     }
 
     function renderLoading(title, description) {
+        destroyAiWaitingExperience();
         state.screen = 'loading';
         stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span><strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(description || '') + '</p></section>';
     }
 
     function renderStandardized() {
+        destroyAiWaitingExperience();
         state.screen = 'standardized';
         var review = state.review || {};
         var criteria = safeArray(review.criteria);
@@ -1614,6 +1820,7 @@
     }
 
     function renderRevisionScanPhotoSelection() {
+        destroyAiWaitingExperience();
         stopRevisionScanPolling();
         var scan = revisionScanState();
         scan.status = 'choosing';
@@ -1694,6 +1901,11 @@
     }
 
     function renderRevisionScanReview() {
+        if (state.screen === 'revision-scan-waiting' && state.waitingRunner) {
+            finishAiWaitingExperience(function() { renderRevisionScanReview(); });
+            return;
+        }
+        destroyAiWaitingExperience();
         stopRevisionScanPolling();
         var scan = revisionScanState();
         scan.status = 'ready';
@@ -1706,24 +1918,33 @@
             '<button class="primary-button" type="button" data-confirm-revision-scan' + (canConfirm ? '' : ' disabled') + '>Confirm Scanning</button></div></section>';
     }
 
-    function renderRevisionScanWaiting(job, autoPoll, allowRetry) {
+    function renderRevisionScanWaiting(job, autoPoll, allowRetry, durable) {
         var scan = revisionScanState();
         scan.job = job || scan.job || {};
         var status = firstText(scan.job && scan.job.status, 'processing').toLowerCase();
-        state.screen = 'revision-scan-waiting';
-        stage.innerHTML = '<section class="surface loading-state revision-scan-waiting"><span class="loading-orbit" aria-hidden="true"></span><strong>' +
-            (status === 'queued' ? '照片已收到，正在排队识别' : '照片已收到，正在识别改写') + '</strong>' +
-            '<p>识别会在云端继续。你可以离开或重新打开这篇作文，结果会从已保存的状态恢复，不会丢失当前改写草稿。</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            (allowRetry ? '<button class="secondary-button" type="button" data-retry-revision-scan>重新检查状态</button>' : '') +
-            '<button class="primary-button" type="button" data-stay-revision-scan>留在此页等待</button></div>' +
-            '<p class="section-hint" id="revision-scan-poll-status" role="status" aria-live="polite">每 5 秒自动查询一次同一篇作文。</p></section>';
+        var isDurable = durable !== false && scan.job.durable !== false;
+        renderAiWaitingExperience({
+            kind: 'revision_ocr',
+            jobStatus: isDurable ? status : 'photo_uploading',
+            durable: isDurable,
+            title: 'Matching your revisions',
+            description: isDurable
+                ? 'Your revision photos are safely uploaded. You may leave while recognition continues.'
+                : 'Your revision photos are being uploaded and confirmed by the server.',
+            pollStatusId: 'revision-scan-poll-status',
+            statusCopy: isDurable
+                ? 'Waiting for the same saved revision scan; the page checks every 5 seconds.'
+                : 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.',
+            allowBackground: isDurable,
+            extraActions: isDurable && allowRetry ? '<button class="secondary-button" type="button" data-retry-revision-scan>Retry the same request</button>' : ''
+        });
         if (autoPoll) startRevisionScanPolling();
     }
 
     function renderRevisionScanFailure(error) {
         stopRevisionScanPolling();
         var message = firstText(error && error.message, '照片识别没有完成。你的作文和现有改写草稿仍然安全保存。');
+        destroyAiWaitingExperience();
         state.screen = 'revision-scan-failed';
         stage.innerHTML = '<section class="surface error-state revision-scan-failure"><strong>Revision Scan 没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-retry-revision-scan>重新检查状态</button><button class="primary-button" type="button" data-reupload-revision-scan>重新拍照</button></div>' +
@@ -1751,6 +1972,7 @@
                     renderRevisionScanFailure({ message: '云端没有完成照片识别，请重新检查状态或拍照。' });
                     return;
                 }
+                updateAiWaitingExperience({ kind: 'revision_ocr', jobStatus: job.status, durable: true, pollStatusId: 'revision-scan-poll-status', statusCopy: 'Waiting for the same saved revision scan; the page checks every 5 seconds.' });
                 syncCurrentSummary();
                 var pollStatus = document.getElementById('revision-scan-poll-status');
                 if (pollStatus) pollStatus.textContent = '正在等待识别结果；每 5 秒查询一次。';
@@ -1781,7 +2003,7 @@
         }));
         setStatus('');
         setBusy(true);
-        renderRevisionScanWaiting({ status: 'queued', job_type: 'revision_ocr', operation_id: scan.operationId }, false, false);
+        renderRevisionScanWaiting({ status: 'photo_uploading', job_type: 'revision_ocr', operation_id: scan.operationId, durable: false }, false, false, false);
         Promise.all(selectedFiles.map(function(file) { return window.MrCatCloud.prepareEvidenceImage(file); })).then(function(preparedPages) {
             return retryNetworkTask(function() {
                 return writingCall('startRevisionScanUpload', {
@@ -1890,6 +2112,7 @@
     }
 
     function renderLanguage() {
+        destroyAiWaitingExperience();
         state.screen = 'language';
         updateRevisionProgress();
         var sentences = safeArray(state.review && state.review.sentences);
@@ -2062,6 +2285,7 @@
     }
 
     function renderCompletion() {
+        destroyAiWaitingExperience();
         state.screen = 'completed';
         updateRevisionProgress();
         stage.innerHTML = '<section class="surface completion-card"><span class="completion-icon">' + icon('check') + '</span><p class="eyebrow">WRITING COMPLETE</p><h2>这次训练完成了。</h2>' +
@@ -2225,6 +2449,7 @@
     }
 
     function renderFatalAction(error) {
+        destroyAiWaitingExperience();
         setStatus('');
         var code = error && (error.code || error.result && error.result.code) || '';
         var rawMessage = error && error.message || '';
@@ -2410,21 +2635,6 @@
             if (!state.confirmedText) { setStatus('请先确认或补全 OCR 文本。'); return; }
             setBusy(true); saveAndEvaluate();
         }
-        else if (button.matches('[data-stay-ocr]')) {
-            startOcrPolling();
-            button.disabled = true;
-            button.textContent = '正在等待 OCR…';
-        }
-        else if (button.matches('[data-stay-review]')) {
-            startReviewPolling();
-            button.disabled = true;
-            button.textContent = '正在等待批改…';
-        }
-        else if (button.matches('[data-stay-rewrite]')) {
-            startRewritePolling();
-            button.disabled = true;
-            button.textContent = '正在等待检查…';
-        }
         else if (button.matches('[data-retry-rewrite]')) submitRewrites();
         else if (button.matches('[data-return-rewrites]')) {
             state.review = state.current && state.current.language_review || state.review;
@@ -2532,11 +2742,6 @@
             if (state.screen === 'revision-scan-photos') resetRevisionScanState();
             renderLanguage();
         }
-        else if (button.matches('[data-stay-revision-scan]')) {
-            startRevisionScanPolling();
-            button.disabled = true;
-            button.textContent = '正在等待识别…';
-        }
         else if (button.matches('[data-retry-revision-scan]')) {
             loadComposition(compositionId(state.current), false);
         }
@@ -2596,6 +2801,16 @@
     });
     window.addEventListener('pageshow', function() {
         if (state.leaveDialogOpen) closeLeaveConfirmation();
+    });
+    document.addEventListener('visibilitychange', function() {
+        if (!state.waitingRunner) return;
+        try {
+            if (document.hidden) state.waitingRunner.pause();
+            else state.waitingRunner.resume();
+        } catch (error) {}
+    });
+    window.addEventListener('pagehide', function() {
+        destroyAiWaitingExperience();
     });
 
     if (currentWritingTitleWindow && window.ResizeObserver) {
