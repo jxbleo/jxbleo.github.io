@@ -869,6 +869,9 @@ STAR 不阻止未来重新布置同一个 set。
   missing、out-of-range 或空 marker；不要只调整 OCR prompt。
 - 若扫描导入后草稿内容异常，检查 Import 是否只提交了当前卡片的 sentence ID 与编辑文字，并检查
   pending scan result 到 confirmed scanned draft 的事务边界。
+- 若第一张订正照片仍立即上传或无法继续拍第 2/3 张，先检查文件 change 事件是否只调用
+  `addRevisionScanPhotos`，以及 `Start Scanning` 是否是唯一调用 `beginRevisionScanUpload` 的 UI 边界。
+  本地队列最多 8 张；在确认前不应出现 `pending_upload`、photo row 或 `revision_ocr` job。
 - 若重复 Submit 后只看到一轮点评或出现重复轮次，先检查 Composition 的
   `rewrite_results.feedback_history`、`check_round` 和各批次 `operation_id`。
   `rewrite_results.results` 只是每句当前合并状态，不能当作历史来源；相同 operation ID 的重放必须

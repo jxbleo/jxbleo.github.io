@@ -826,6 +826,23 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
   ], "compact Review Scan confidence markers");
 });
 
+check("Revision Scan stages an ordered multi-photo batch before cloud upload", () => {
+  const client = read(clientPath);
+  const backend = read(functionPath);
+  const selectionSource = functionSource(client, "renderRevisionScanPhotoSelection", "revisionScanCandidateHtml");
+  requireEvery(selectionSource, [
+    "Revision Photos", "Photo ", "Add Photo", "Start Scanning",
+    "data-add-revision-photo", "data-remove-revision-photo", "data-start-revision-upload",
+    "scan.files.push(file)", "scan.previewUrls.push", "8 - scan.files.length",
+  ], "revision photo staging screen");
+  assert(/target\.id[\s\S]{0,60}revision-scan-photo[\s\S]{0,220}addRevisionScanPhotos/.test(client),
+    "choosing the first revision photo must stage it locally rather than upload immediately");
+  assert(/data-start-revision-upload[\s\S]{0,260}beginRevisionScanUpload\(revisionScanState\(\)\.files\.slice\(\)\)/.test(client),
+    "only Start Scanning may hand the accumulated photo batch to cloud upload");
+  assert(/const MAX_UPLOAD_PAGES\s*=\s*8/.test(backend),
+    "the client eight-photo limit must match the server boundary");
+});
+
 check("Review Scan keeps only mapping cards and imports their edited scan text", () => {
   const client = read(clientPath);
   const reviewSource = functionSource(client, "revisionScanCandidateHtml", "renderRevisionScanReview");
@@ -852,6 +869,10 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
   requireEvery(importSource, [
     "confirmRevisionScanImport", "revision", "operation_id", "sentence_id", "saveRewriteDraftSnapshot",
   ], "confirmed scan import");
+  requireEvery(pageSource, ["revisionScanCanConfirm", "Confirm Scanning"],
+    "Review Scan confirmation boundary");
+  assert(!pageSource.includes("导入选中的草稿"),
+    "the former import label must be replaced by Confirm Scanning");
   assert(!/submitRewrites\s*\(|data-submit-rewrites/.test(importSource),
     "scan import must populate drafts without automatically running Check");
   assert(!/revisionScanSelection|data-scan-choice|Keep typed|Use scanned/.test(client),
@@ -905,6 +926,7 @@ check("revision OCR uses a strict durable job and canonical server mapping", () 
     "active_job_id", "composition_revision", "writing_revision_scan_v1",
     "REVISION_SCAN_SCHEMA", "canonicalRevisionScanResult", "runTransaction",
     "lease_token", "pending_revision_scan", "deleteUploadedPhotos",
+    "photoIds", "rows.map", "imageUrls", "images: imageUrls",
   ], "guarded revision OCR result publication");
   assert(/claimed\.job_type\s*={2,3}\s*["']revision_ocr["'][\s\S]{0,180}performRevisionOcrJob/.test(processSource),
     "the durable dispatcher must execute revision_ocr jobs");

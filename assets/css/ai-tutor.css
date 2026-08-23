@@ -283,6 +283,13 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .sentence-review-heading { padding: 24px 24px 16px; }
 .scan-revision-trigger { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 14px; color: var(--ai-accent); background: rgba(223,244,237,.72); }
 .scan-revision-trigger svg { width: 18px; height: 18px; }
+.revision-photo-selection { overflow: visible; }
+.revision-photo-selection-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.revision-photo-selection-heading h2 { margin: 0; font-size: clamp(1.18rem,3vw,1.5rem); letter-spacing: -.025em; }
+.revision-photo-selection-heading > span { padding: 5px 9px; border-radius: 999px; color: var(--ai-muted); background: #edf4f1; font-size: .68rem; font-weight: 850; }
+.revision-photo-card > div { justify-content: flex-end; }
+.revision-photo-actions { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--ai-line); }
+.revision-photo-actions svg { width: 17px; height: 17px; }
 .revision-scan-surface { overflow: visible; }
 .revision-scan-candidate-list { display: grid; gap: 12px; }
 .revision-scan-candidate { padding: 14px; border: 1px solid rgba(30,69,61,.12); border-radius: 20px; background: rgba(255,255,255,.88); box-shadow: 0 10px 28px rgba(34,68,61,.06); }
@@ -422,6 +429,9 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .sentence-card { padding: 18px 15px; border-radius: 0; }
     .original-sentence { font-size: 1.07rem; }
     .sentence-review-heading { padding: 20px 15px 14px; }
+    .revision-photo-actions { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+    .revision-photo-actions > button { width: 100%; }
+    .revision-photo-actions [data-start-revision-upload] { grid-column: 1 / -1; }
     .revision-scan-candidate { padding: 14px; }
     .revision-scan-actions { align-items: stretch; flex-direction: column; }
     .revision-scan-actions > button { width: 100%; }

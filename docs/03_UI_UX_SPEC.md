@@ -1979,7 +1979,11 @@ Important mobile rules:
   Apple-style `Review Scan` surface supports both camera capture and photo-library
   selection through accessible native controls on phone and iPad; the control has
   a visible label, keyboard focus, and an equivalent screen-reader name. The
-  surface has explicit `Choose photo`, `Uploading`, `Queued`, `Processing`,
+  first captured/selected photo opens a local `Revision Photos` staging surface
+  instead of uploading immediately. It shows ordered previews, an `Add Photo`
+  action that may be used repeatedly on single-capture mobile cameras, per-photo
+  `Remove`, an `x / 8` count, and one `Start Scanning` commit action. Only that
+  explicit commit creates the cloud upload operation. The surface has explicit `Choose photo`, `Uploading`, `Queued`, `Processing`,
   `Review Scan`, and `Scan failed` states. Queued/processing copy says the scan
   can continue after leaving, and refresh/re-login/reopen returns to the same
   operation rather than asking for another upload. Retry is offered only through
@@ -2000,9 +2004,11 @@ Important mobile rules:
   explicit action and places text into editable revision drafts only; it does not
   press `Check` or show a passed result. The page omits its former heading,
   instructions, missing-sentence summary, mapping badges, scan labels, handwritten
-  marker text, and typed/scanned choice controls. Pressing Import explicitly adopts
-  every reviewed card and replaces the corresponding unfinished draft; returning
-  without Import leaves the prior draft unchanged. After a successful Import, every
+  marker text, and typed/scanned choice controls. Pressing `Confirm Scanning` explicitly adopts
+  every reviewed card and replaces the corresponding unfinished draft; the visible
+  primary label is `Confirm Scanning` and remains disabled until every card has one
+  unique eligible sentence and non-empty text. Returning
+  without confirmation leaves the prior draft unchanged. After a successful confirmation, every
   revision-required flip card opens on its attempt face so the original sentence and
   imported student revision are immediately visible together.
 - Before confirmation, the browser retries the same stable upload batch and

@@ -489,10 +489,24 @@
         state.revisionScanPollGeneration += 1;
     }
 
+    function releaseRevisionScanPreviewUrls(scan) {
+        safeArray(scan && scan.previewUrls).forEach(function(url) {
+            if (firstText(url).indexOf('blob:') === 0) URL.revokeObjectURL(url);
+        });
+        if (scan) scan.previewUrls = [];
+    }
+
+    function resetRevisionScanState() {
+        stopRevisionScanPolling();
+        releaseRevisionScanPreviewUrls(state.revisionScan);
+        state.revisionScan = null;
+    }
+
     function revisionScanState() {
         if (!state.revisionScan) {
             state.revisionScan = {
                 files: [],
+                previewUrls: [],
                 photoIds: [],
                 operationId: '',
                 status: 'idle',
@@ -750,7 +764,6 @@
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
-        stopRevisionScanPolling();
         state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = composition || null;
         state.review = null;
@@ -771,7 +784,7 @@
         state.skipped = {};
         state.referenceOpen = {};
         state.rewriteFace = {};
-        state.revisionScan = null;
+        resetRevisionScanState();
         state.correctionRound = 0;
         syncCompositionLocator(compositionId(state.current));
         updateCurrentWritingTitle();
@@ -799,7 +812,7 @@
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
-        stopRevisionScanPolling();
+        resetRevisionScanState();
         discardCurrentEmptyComposition();
         setStatus('');
         state.current = null;
@@ -1585,6 +1598,61 @@
         return Object.keys(counts).filter(function(id) { return counts[id] > 1; });
     }
 
+    function revisionScanCanConfirm() {
+        var candidates = revisionScanState().candidates;
+        var validIds = revisionScanSentences().map(function(sentence, index) { return sentenceId(sentence, index); });
+        if (!candidates.length || revisionScanDuplicateIds().length) return false;
+        return candidates.every(function(candidate) {
+            return validIds.indexOf(firstText(candidate.sentence_id)) >= 0
+                && Boolean(normalizedOcrText(candidate.recognized_text).trim());
+        });
+    }
+
+    function updateRevisionScanConfirmState() {
+        var button = document.querySelector('[data-confirm-revision-scan]');
+        if (button) button.disabled = state.busy || !revisionScanCanConfirm();
+    }
+
+    function renderRevisionScanPhotoSelection() {
+        stopRevisionScanPolling();
+        var scan = revisionScanState();
+        scan.status = 'choosing';
+        state.screen = 'revision-scan-photos';
+        var count = scan.files.length;
+        var previews = safeArray(scan.previewUrls).map(function(url, index) {
+            return '<figure class="photo-preview-card revision-photo-card"><span>Photo ' + (index + 1) + '</span>' +
+                '<img src="' + escapeHtml(url) + '" alt="Selected revision photo ' + (index + 1) + '">' +
+                '<div><button class="danger-button compact" type="button" data-remove-revision-photo="' + index + '">Remove</button></div></figure>';
+        }).join('');
+        stage.innerHTML = '<section class="surface surface-pad revision-photo-selection" aria-label="Revision photos">' +
+            '<div class="revision-photo-selection-heading"><h2>Revision Photos</h2><span>' + count + ' / 8</span></div>' +
+            '<div class="photo-preview-grid revision-photo-preview-grid">' + previews + '</div>' +
+            '<input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' +
+            '<div class="form-actions revision-photo-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Cancel</button>' +
+            '<button class="secondary-button" type="button" data-add-revision-photo' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
+            '<button class="primary-button" type="button" data-start-revision-upload data-disable-when-busy' + (count ? '' : ' disabled') + '>Start Scanning</button></div></section>';
+    }
+
+    function addRevisionScanPhotos(files) {
+        if (state.readOnly || state.busy) return;
+        if (state.screen !== 'revision-scan-photos') resetRevisionScanState();
+        var scan = revisionScanState();
+        var additions = safeArray(files);
+        var remaining = Math.max(0, 8 - scan.files.length);
+        if (additions.length > remaining) setStatus('Revision Scan 最多可加入 8 张照片。');
+        additions.slice(0, remaining).forEach(function(file) {
+            scan.files.push(file);
+            scan.previewUrls.push(URL.createObjectURL(file));
+        });
+        scan.operationId = '';
+        scan.photoIds = [];
+        scan.candidates = [];
+        scan.pending = null;
+        scan.job = null;
+        if (scan.files.length) renderRevisionScanPhotoSelection();
+        else renderLanguage();
+    }
+
     function revisionScanCandidateHtml(candidate, index) {
         var scan = revisionScanState();
         var id = revisionScanCandidateId(candidate, index);
@@ -1631,10 +1699,11 @@
         scan.status = 'ready';
         state.screen = 'revision-scan-review';
         var candidates = scan.candidates || [];
+        var canConfirm = revisionScanCanConfirm();
         stage.innerHTML = '<section class="surface surface-pad revision-scan-surface" aria-label="扫描改写确认">' +
             (candidates.length ? '<div class="revision-scan-candidate-list">' + candidates.map(revisionScanCandidateHtml).join('') + '</div>' : '<p class="section-hint">没有可供确认的识别项目。你可以重新拍一张更清晰的照片。</p>') +
             '<div class="form-actions revision-scan-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>返回 Sentence Revision</button>' +
-            '<button class="primary-button" type="button" data-confirm-revision-scan data-disable-when-busy' + (candidates.length ? '' : ' disabled') + '>导入选中的草稿</button></div></section>';
+            '<button class="primary-button" type="button" data-confirm-revision-scan' + (canConfirm ? '' : ' disabled') + '>Confirm Scanning</button></div></section>';
     }
 
     function renderRevisionScanWaiting(job, autoPoll, allowRetry) {
@@ -1702,6 +1771,7 @@
         if (!selectedFiles.length) return;
         var scan = revisionScanState();
         scan.files = selectedFiles;
+        releaseRevisionScanPreviewUrls(scan);
         scan.photoIds = [];
         scan.candidates = [];
         scan.pending = null;
@@ -1788,6 +1858,7 @@
             return;
         }
         setBusy(true);
+        updateRevisionScanConfirmState();
         setStatus('');
         writingCall('confirmRevisionScanImport', {
             composition_id: compositionId(state.current),
@@ -1812,7 +1883,10 @@
                 return;
             }
             setStatus(firstText(error && error.message, '扫描草稿导入没有完成，请重试。'));
-        }).finally(function() { setBusy(false); });
+        }).finally(function() {
+            setBusy(false);
+            updateRevisionScanConfirmState();
+        });
     }
 
     function renderLanguage() {
@@ -2244,6 +2318,7 @@
                 return candidate.candidate_id === target.getAttribute('data-scan-text');
             });
             if (scanCandidate) scanCandidate.recognized_text = normalizedOcrText(target.value);
+            updateRevisionScanConfirmState();
         }
         if (target.id === 'ocr-text' || target.closest && target.closest('#ocr-text')) {
             var editor = target.id === 'ocr-text' ? target : target.closest('#ocr-text');
@@ -2266,7 +2341,7 @@
             renderSource();
         }
         if (target.id === 'revision-scan-photo' && target.files && target.files.length) {
-            beginRevisionScanUpload(Array.prototype.slice.call(target.files));
+            addRevisionScanPhotos(Array.prototype.slice.call(target.files));
             target.value = '';
         }
         if (target.matches('[data-scan-sentence]')) {
@@ -2436,8 +2511,25 @@
             var scanInput = document.getElementById('revision-scan-photo');
             if (scanInput) scanInput.click();
         }
+        else if (button.matches('[data-add-revision-photo]')) {
+            var additionInput = document.getElementById('revision-scan-photo');
+            if (additionInput) additionInput.click();
+        }
+        else if (button.matches('[data-remove-revision-photo]')) {
+            var scan = revisionScanState();
+            var photoIndex = Number(button.getAttribute('data-remove-revision-photo'));
+            if (scan.previewUrls[photoIndex] && scan.previewUrls[photoIndex].indexOf('blob:') === 0) URL.revokeObjectURL(scan.previewUrls[photoIndex]);
+            scan.files.splice(photoIndex, 1);
+            scan.previewUrls.splice(photoIndex, 1);
+            if (scan.files.length) renderRevisionScanPhotoSelection();
+            else { resetRevisionScanState(); renderLanguage(); }
+        }
+        else if (button.matches('[data-start-revision-upload]')) {
+            beginRevisionScanUpload(revisionScanState().files.slice());
+        }
         else if (button.matches('[data-cancel-revision-scan]')) {
             stopRevisionScanPolling();
+            if (state.screen === 'revision-scan-photos') resetRevisionScanState();
             renderLanguage();
         }
         else if (button.matches('[data-stay-revision-scan]')) {
@@ -2450,7 +2542,7 @@
         }
         else if (button.matches('[data-reupload-revision-scan]')) {
             clearLogicalOperation('revision-scan');
-            state.revisionScan = null;
+            resetRevisionScanState();
             renderLanguage();
             window.requestAnimationFrame(function() {
                 var input = document.getElementById('revision-scan-photo');

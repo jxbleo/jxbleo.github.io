@@ -1944,6 +1944,11 @@ High priority improvement:
   verify both accessible camera capture and photo-library selection. Check marker
   variants `8`, `8.`, `8、`, `8)`, and `(8)`, with omitted punctuation and with
   recommended whitespace before the answer.
+- Capture one revision photo and confirm no network upload begins. On the local
+  `Revision Photos` surface, add a second and third photo in separate camera
+  interactions, remove one, and verify the previews/count remain ordered and cap
+  at eight. Press `Start Scanning` and confirm exactly one durable operation carries
+  the final ordered batch; leaving before this button creates no upload/job row.
 - Repeat both ordinary photo upload/re-upload and `Scan Revisions` on a saved
   Composition whose `pending_upload` field is explicitly `null`. Confirm the
   start call replaces the entire upload object, returns upload metadata, and
@@ -1966,8 +1971,11 @@ High priority improvement:
   selected revision drafts. It must not call `Check`, mark any sentence accepted,
   or create a rewrite result. Verify the page contains no heading, instruction,
   missing-sentence summary, mapping badge, handwritten-number label, or typed/scanned
-  choice controls. With an existing draft, confirm Import replaces it with the
-  reviewed scan text, while returning without import preserves it unchanged.
+  choice controls. With an existing draft, confirm `Confirm Scanning` replaces it with the
+  reviewed scan text, while returning without confirmation preserves it unchanged.
+  Confirm the bottom primary action reads exactly `Confirm Scanning`, remains
+  disabled for an unmapped, duplicate, or empty row, and enables as soon as every
+  card has one unique eligible sentence plus non-empty text.
 - Disconnect after upload, during `Queued`/`Processing`, and before import. Refresh,
   re-login, and reopen the same Composition; verify the same operation/revision
   resumes, duplicate delivery is idempotent, and stale-revision results cannot

@@ -68,6 +68,11 @@
 - Removed visible “第几次点评” labels from Sentence Revision. Durable round data is
   unchanged; the card now presents only the feedback copy with a thin divider
   between consecutive submissions.
+- Added a pre-upload `Revision Photos` queue for photographed corrections. The
+  first photo now opens previews instead of uploading, students may add/remove up
+  to eight photos, and `Start Scanning` sends the complete ordered batch. Review
+  confirmation is now labelled `Confirm Scanning` and activates only after every
+  recognized row has a unique valid sentence and non-empty text.
 
 
 ## 2026-08-20
