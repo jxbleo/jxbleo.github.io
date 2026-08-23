@@ -1116,6 +1116,11 @@ All collections are `ADMINONLY`.
   and does not mutate the draft. Scan import does not create an attempt, invoke `Check`, or
   publish a rewrite result; the existing `pending_rewrite_check` flow remains the
   only path to model checking.
+  The pre-upload `Revision Photos` list is browser-only transient state containing
+  one to eight local `File` objects and object-URL previews. It is not written to a
+  collection and may be discarded before `Start Scanning`. After that explicit
+  action, the existing `pending_upload.photo_ids` and `writing_photo_uploads`
+  records preserve the same ordered batch under one operation ID.
   Eligibility is derived from the current language-review sentences minus every
   sentence whose merged `rewrite_results.results[].accepted` is `true`. Effective/
   no-change sentences and accepted revisions are not valid `pending_revision_scan`

@@ -803,6 +803,13 @@ scan result is durably stored; incomplete or failed uploads remain covered by th
 existing expiry cleanup lifecycle. Import confirmation does not depend on retaining
 the image.
 
+Before that durable boundary, one to eight revision photos live only in an
+ephemeral browser staging queue. Native camera/file changes append to the ordered
+queue and never call `startRevisionScanUpload` directly. `Start Scanning` freezes
+the ordered file fingerprint into one operation ID and submits the whole batch;
+from that point onward the existing private upload, queue, retry, recovery, and
+cleanup guarantees apply unchanged.
+
 Rewrite bodies are durable but do not belong in the queue row. The authenticated
 submission stores the operation/revision scope and submitted sentence text only
 inside `writing_compositions.pending_rewrite_check`; the related

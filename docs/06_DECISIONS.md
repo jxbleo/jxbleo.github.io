@@ -1013,10 +1013,15 @@ Decision:
   and operation ID. Its strict structured response is only a candidate; server
   canonicalization validates the number against the current sentence list and
   preserves unresolved or ambiguous rows for human review.
+- Camera capture is staged locally before that operation begins. Repeated native
+  picker changes append to one ordered queue of at most eight photos; only
+  `Start Scanning` freezes the batch fingerprint and crosses into private upload.
+  This gives single-capture mobile cameras an explicit add-more path without
+  weakening the durable boundary after submission.
 - OCR output first lands in a guarded pending scan result. The student must review
   each sentence card, manually assign a sentence where necessary, and explicitly
-  press Import to adopt the reviewed card text. Import replaces the corresponding
-  unfinished draft; returning without Import preserves it. Only confirmed rows are
+  press `Confirm Scanning` to adopt the reviewed card text. Confirmation replaces the corresponding
+  unfinished draft; returning without confirmation preserves it. Only confirmed rows are
   persisted as scanned revision drafts, and they
   flow through the existing `Check` action; import never auto-checks.
 
