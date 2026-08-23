@@ -3,6 +3,31 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-24: Keep waiting interaction Canvas-only and non-authoritative
+
+Decision:
+
+Implement `Mr. Cat Runner` as a small native Canvas IIFE loaded before the AI
+Tutor client. The client owns the waiting DOM, server status projection,
+polling, and lifecycle; the Runner exposes only jump, task-state, finish,
+pause/resume, destroy, and safe in-memory snapshot controls.
+
+Reason:
+
+Waiting is a real durable-job state, not a game session. A Canvas-only module
+keeps the interaction lightweight, avoids a new dependency, and makes it
+impossible for distance, collisions, or Ink to become a hidden source of AI
+progress, rewards, analytics, or persisted student data. A bounded finish
+callback and reduced-motion/hidden-tab fallbacks preserve agency when the real
+result is ready.
+
+Trade-offs:
+
+- The interaction is intentionally an endless visual diversion rather than a
+  scored game or progression system.
+- A missing Canvas or animation API reduces the card to its accessible status
+  and real polling; it must never block the waiting or result experience.
+
 
 ## 2026-08-19: Centralize Login Entry and Validate Return Routing
 

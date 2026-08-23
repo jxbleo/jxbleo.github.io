@@ -29,6 +29,8 @@ boundaries matter more than visual polish right now.
   dictionary fallback
 - Weekly and monthly class learning reports: one authenticated shared link shows
   the class leaderboard while each family sees only its own learner's details
+- AI Tutor durable-job waiting cards with the original, temporary Mr. Cat Runner
+  canvas activity; Runner state is never stored or sent to CloudBase
 
 ## Current Stack
 
@@ -75,6 +77,8 @@ npm run test:content-editions
 npm run test:my-words
 npm run test:learning-reports
 npm run test:attempt-emails
+npm run test:writing-tutor
+npm run test:waiting-runner
 npm run package:functions:all
 npm run release:plan
 node scripts/build-home-catalog.js

@@ -3,6 +3,18 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — AI Tutor waiting experience
+
+- Unified the four durable AI waiting cards around server-derived Saved,
+  Queued, Analysing, and Ready stages, with an explicit Uploading boundary
+  before the server confirms a persistent Job.
+- Added the optional, dependency-free Mr. Cat Runner Canvas interaction. It is
+  temporary and local to the waiting card, has no formal Game Over or rewards,
+  and cannot delay or alter the real AI result.
+- Added bounded success handoff, reduced-motion/hidden-tab fallbacks, and
+  idempotent Runner cleanup for success, failure, navigation, refresh, and
+  pagehide paths.
+
 ## 2026-08-22 — Intensive Listening answer-reveal correctness
 
 - Kept `Completed with answer` progress semantics while stopping Show Answer

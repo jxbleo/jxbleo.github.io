@@ -38,6 +38,33 @@ npm run test:intensive-listening
 npm run test:teacheradmin-package
 ```
 
+## AI Tutor waiting experience and Runner
+
+Run the source contracts and syntax checks:
+
+```bash
+node --check assets/js/ai-waiting-runner.js
+node --check assets/js/ai-tutor.js
+node --check scripts/test-ai-waiting-runner.js
+node --check scripts/test-writing-tutor.js
+npm run test:waiting-runner
+npm run test:writing-tutor
+```
+
+The Runner contract test verifies the public controller API, idempotent
+destruction, one-shot finish callbacks, reduced motion, pause/resume delta
+handling, pointer jumping, stumble-without-failure collisions, temporary
+Distance/Ink state, and the absence of network, CloudBase, persistence, or
+reward integration. The Writing Tutor contracts verify that all four durable
+waiting functions use the shared renderer while retaining independent polling,
+success predicates, failure cards, upload safe-to-leave gating, and lifecycle
+cleanup.
+
+Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
+keyboard Jump, focused form controls, hidden-tab pause, reduced motion, missing
+Runner module fallback, network polling recovery, and a result handoff within
+500ms. Confirm no Canvas, distance, or Ink remains in any failure or result card.
+
 TeacherAdmin deployment-package checks:
 
 - `test:teacheradmin-package` rebuilds the function ZIP from source and fails
