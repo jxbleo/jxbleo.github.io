@@ -1773,21 +1773,22 @@ High priority improvement:
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
-- On Writing Home, verify the old permanent feature explainer is absent and the
-  order is Continue, Start New, Recent Writing, Writing Focus. With unfinished
-  work, Continue must reopen the newest unfinished Composition and display its
-  current status; with only completed/no work, it must offer a new Polishing
-  Composition. Verify quick-starting both modes creates the correct persisted
-  `assessment_mode`, including after immediate refresh. Recent Writing shows at
-  most three cards, `See All` opens History, and Writing Focus reflects no more
-  than three real profile patterns. Check single-column phone order/horizontal
-  recent cards, asymmetric iPad/desktop layout, compact home quota, press states,
-  keyboard focus, larger text, reduced motion, and reduced transparency.
+- On Writing Home, verify the old permanent feature explainer, time greeting,
+  `Ready to keep writing?`, `Recent Writing`, and `Writing Focus` are absent.
+  With multiple unfinished Compositions, confirm every one appears in the first
+  horizontal Library-style pill strip with mode, title, status, and workflow track;
+  completed work must not appear there. Check touch/pointer scrolling, snap behavior,
+  keyboard focus, long-title truncation, and the no-strip state when nothing is open.
+  `Start New` follows the strip. Selecting either mode must expand Title/Your Writing
+  directly below the same two cards without navigating or flashing a full-screen loader,
+  and must persist the correct `assessment_mode`, including after immediate refresh.
+  Test compact home quota, press states, larger text, reduced motion, and reduced transparency.
 - On the first Writing screen, confirm the removed heading, explanation, step,
-  and section labels are absent. Verify the two mode buttons read `Polishing`
-  and `Brainstorming`; `Type` is selected by default, and language text entry shows only
+  section labels, repeated mode switch, and separate `Type` / `Scan` switch are absent.
+  Verify the two home mode buttons read `Polishing` and `Brainstorming`; language text entry shows only
   `Title` with an `Optional` tag and `Your Writing`, while standardized mode adds Prompt and Rubric.
-  Tap the input-mode `Scan` on a real iPhone/iPad and verify the rear-camera picker opens immediately.
+  Confirm a small camera-and-`Scan` button sits inside `Your Writing`. Tap it on a real iPhone/iPad
+  and verify the rear-camera picker opens immediately and the photo staging surface appears.
   Capture one page and confirm the UI returns to the staging screen without starting OCR; add another
   with `Take Another Photo`, then add multiple pages with `Choose from Library`. Confirm every preview
   keeps its added order, shows `Page current/total` at top-left, offers only `Remove` at bottom-right,

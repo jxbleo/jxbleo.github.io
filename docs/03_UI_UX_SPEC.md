@@ -2082,26 +2082,28 @@ Important mobile rules:
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
 - Writing Home is an action-first, adaptive workspace rather than a permanent
-  feature explainer. Its visual order is `Continue`, `Start New`, `Recent Writing`,
-  then `Writing Focus`. The Continue surface shows the newest unfinished title,
-  mode, current workflow status, and a thin non-numeric stage track; when there
-  is no unfinished work it becomes a quiet invitation to begin. `Polishing` and
-  `Brainstorming` are whole-card quick starts that create and persist the chosen
-  mode before opening the source form. Recent Writing contains at most three
-  cards and `See All` opens History. Writing Focus projects at most three real
-  profile patterns and uses a restrained empty state before the first review.
-  On phones the four regions form one column in that order and Recent Writing
-  scrolls horizontally; wide iPad/desktop uses the asymmetric two-column grid.
+  feature explainer. Remove the time-of-day greeting and `Ready to keep writing?`.
+  The first content row is a horizontally scrollable, snap-aligned strip containing
+  every unfinished Composition as one Library-style task pill. Each pill shows mode,
+  title, current status, a restrained workflow track, and one directional action;
+  completed work remains available through History. Omit the strip entirely when it
+  has no items—do not manufacture an empty invitation card. Beneath it, show only the
+  `Start New` surface with the existing `Polishing` and `Brainstorming` cards; remove
+  `Recent Writing` and `Writing Focus` from Home.
+  `Polishing` and `Brainstorming` expand the source form directly below the two cards
+  without navigating to another screen. The selected card receives a restrained state
+  ring, while the form materializes from that anchored region with no bounce and becomes
+  an immediate cross-fade under Reduced Motion.
   The home toolbar reads `Writing` and uses the right edge only for the compact
   remaining-word quota. Cards respond on press, directional arrows move only on
   hover, and reduced-motion/transparency preferences retain stable equivalents.
-- The first Writing screen has no page eyebrow, explanatory heading, step badge,
-  or section labels. It starts with a compact two-option switch labelled
-  `Polishing` and `Brainstorming`, followed by a `Type` / `Scan` input switch whose default is `Type`.
+- The expanded Writing form has no page eyebrow, explanatory heading, step badge,
+  section labels, repeated mode switch, or `Type` / `Scan` switch.
   Language text entry shows only `Title` with a subtle `Optional` tag and `Your Writing`; Writing Prompt and
   Rubric controls appear only for standardized mode. The trailing green action
-  reads `Submit` for text and `Scan` for photos. Selecting the input-mode `Scan`
-  synchronously opens the native rear-camera picker. After capture, the student
+  reads `Submit` for text and `Scan` for photos. A compact camera-and-`Scan` control
+  sits inside the upper-right of the `Your Writing` field. Selecting it opens the
+  existing photo staging surface and synchronously invokes the native rear-camera picker. After capture, the student
   returns to the photo staging surface and may use `Take Another Photo` or
   `Choose from Library` until the eight-page limit; selection never starts OCR.
   Each preview keeps its capture/selection order, labels the top-left corner as
