@@ -745,11 +745,14 @@ Composition, kind, or operation responses are ignored.
 
 Zero-data New Writing rows are placeholders rather than student works. The browser
 filters them from History and its count immediately. Leaving an untouched placeholder
-calls the owner-scoped `discardEmptyComposition` action; the function reloads the row,
-applies the complete empty-draft predicate, and refuses to remove anything containing
-student content, upload/OCR state, AI work, or results. `listCompositions` also omits
-empty placeholders and prunes abandoned rows only after a 30-minute safety window.
-There is no general student Composition deletion endpoint or UI.
+calls the owner-scoped `discardEmptyComposition` action. The explicit input-page
+`Discard` calls the separate `discardDraftComposition` action, which may remove a
+revision-1 student draft containing unsent title, prompt, or manuscript text only.
+Both functions reload ownership and lifecycle state on the server. The broader draft
+guard rejects Library-bound rows and every upload, OCR, active job, review, rewrite,
+replacement, completion, or later-revision field. `listCompositions` still omits empty
+placeholders and prunes abandoned rows only after a 30-minute safety window. There is
+no general student Composition deletion endpoint.
 
 `ai-tutor.html` calls the authenticated `writingTutor` function. Photos use a
 two-phase private CloudBase upload and receive short-lived URLs only inside a
@@ -796,6 +799,15 @@ on the same Composition without another model call. Job rows contain identifiers
 photo IDs, state, attempts, leases, and safe error codes only—never manuscript or
 OCR text. Multi-page Qwen array roots are normalized into one page-ordered OCR
 object before strict local schema validation.
+
+Initial OCR carries a durable `ocr_purpose` of `writing` or `prompt` through the
+upload audit rows, `pending_upload`, the metadata-only job, its public projection,
+and `pending_ocr`. The operation fingerprint includes that purpose, so a prompt
+scan cannot replay as manuscript OCR. Confirming `writing` continues through
+`saveDraft` and evaluation; confirming `prompt` uses `adoptPromptOcr`, copies only
+the reviewed text into `prompt_text`, clears the OCR state, deletes the private
+prompt photos, and returns to the inline Brainstorming form without starting a
+review.
 
 Photographed Sentence Revision follows the same boundary but remains a revision
 draft operation: an authenticated `Scan Revisions` action uploads pages to private

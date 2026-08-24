@@ -1981,8 +1981,11 @@ Important mobile rules:
   Composition is open. Refreshing the page must reopen the same Composition.
 - A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
-  it or selecting New again triggers guarded automatic cleanup; there is no visible Delete
-  action, and any non-empty or submitted Composition remains permanent.
+  it or selecting New again triggers guarded automatic cleanup. Input-page `Discard` is a
+  boxed red action: it may permanently remove a revision-1 draft containing only unsent
+  title, prompt, or manuscript text after an Apple-style confirmation. Once upload/OCR,
+  AI work, replacement, revision, Library binding, or a result exists, the server refuses
+  deletion and the Composition remains permanent.
 - The page exposes only the top toolbar above card-based content. Home inside
   History opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs
@@ -2088,8 +2091,12 @@ Important mobile rules:
   title, current status, a restrained workflow track, and one directional action;
   completed work remains available through History. Omit the strip entirely when it
   has no items—do not manufacture an empty invitation card. Beneath it, show only the
-  `Start New` surface with the existing `Polishing` and `Brainstorming` cards; remove
-  `Recent Writing` and `Writing Focus` from Home.
+  existing `Polishing` and `Brainstorming` cards; remove `Quick Start`, `Start New`,
+  their decorative icons/arrows, `Recent Writing`, and `Writing Focus` from Home.
+  Before opening any progress pill or History row, show the same `practice-entry-*`
+  material and 560ms spring animation used by Dashboard Library task confirmation.
+  It displays only the writing title, status/progress, and progress bar; Enter opens
+  the Composition and Close restores focus.
   `Polishing` and `Brainstorming` expand the source form directly below the two cards
   without navigating to another screen. The selected card receives a restrained state
   ring, while the form materializes from that anchored region with no bounce and becomes
@@ -2099,10 +2106,13 @@ Important mobile rules:
   hover, and reduced-motion/transparency preferences retain stable equivalents.
 - The expanded Writing form has no page eyebrow, explanatory heading, step badge,
   section labels, repeated mode switch, or `Type` / `Scan` switch.
-  Language text entry shows only `Title` with a subtle `Optional` tag and `Your Writing`; Writing Prompt and
-  Rubric controls appear only for standardized mode. The trailing green action
-  reads `Submit` for text and `Scan` for photos. A compact camera-and-`Scan` control
-  sits inside the upper-right of the `Your Writing` field. Selecting it opens the
+  Language text entry shows only `Title` with a subtle `Optional` tag and `Your Writing`.
+  Brainstorming uses the English order `Rubric`, `Writing Prompt`, divider, `Title`,
+  `Your Writing`; the divider separates fixed evaluation context from student input.
+  The trailing green action reads `Submit` for text and `Scan` for photos. A compact,
+  icon-only camera control sits inside the bottom-right of both Writing Prompt and
+  Your Writing. Its accessible label distinguishes prompt scanning from manuscript
+  scanning. Selecting it opens the
   existing photo staging surface and synchronously invokes the native rear-camera picker. After capture, the student
   returns to the photo staging surface and may use `Take Another Photo` or
   `Choose from Library` until the eight-page limit; selection never starts OCR.
@@ -2114,8 +2124,8 @@ Important mobile rules:
   Full-screen transitions use the same positioning rule, while in-place Sentence
   Revision interactions and waiting-state polling must not reset the viewport.
   Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
-  the leading edge; non-empty input receives the compact Apple-style confirmation
-  before returning, while saved draft data remains available in History.
+  the leading edge as a complete bordered button; non-empty input receives the compact
+  Apple-style permanent-delete confirmation before the server removes the eligible draft.
 - Completed language review uses exactly three primary cards in order:
   `Language Review`, `Draft`, and `Sentence Revision`.
 - At the beginning of `Language Review`, show `CEFR Writing Estimate` with

@@ -23,6 +23,8 @@
         photoUrls: [],
         photoIds: [],
         ocr: null,
+        ocrReviewText: '',
+        scanTarget: 'writing',
         activeSentence: 0,
         rewrites: {},
         rewriteResults: {},
@@ -60,6 +62,9 @@
         homeComposerOpen: false,
         homeComposerPreparing: false,
         homeComposerError: '',
+        compositionEntryDialogOpen: false,
+        compositionEntryTargetId: '',
+        compositionEntryReturnFocus: null,
         leaveDialogOpen: false,
         incompleteRewriteAlertOpen: false,
         incompleteRewriteTargetId: '',
@@ -1178,9 +1183,9 @@
         showWelcomeToolbar();
         stage.innerHTML = '<section class="writing-home" aria-label="Writing home"><div class="writing-home-flow">' +
             welcomeUnfinishedHtml(unfinishedCompositions) +
-            '<section class="writing-home-section writing-home-start" aria-labelledby="writing-home-start-title"><div class="writing-home-section-heading"><div><p>QUICK START</p><h2 id="writing-home-start-title">Start New</h2></div></div>' +
-            '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span class="writing-mode-icon">' + icon('text') + '</span><span><strong>Polishing</strong><small>Improve grammar and expression</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button>' +
-            '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span class="writing-mode-icon">' + icon('focus') + '</span><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button></div>' +
+            '<section class="writing-home-section writing-home-start" aria-label="Start new writing">' +
+            '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span><strong>Polishing</strong><small>Improve grammar and expression</small></span></button>' +
+            '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span></button></div>' +
             (state.homeComposerOpen ? homeComposerHtml() : '') + '</section></div></section>';
         scheduleStageViewportReset();
     }
@@ -1240,9 +1245,7 @@
         return '<div class="writing-home-composer" aria-busy="' + state.homeComposerPreparing + '">' +
             (state.homeComposerError ? '<p class="writing-home-composer-error" role="alert">' + escapeHtml(state.homeComposerError) + '</p>' : '') +
             '<form class="form-stack source-entry-form" id="writing-source-form">' +
-            '<section class="section-block source-fields"><label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
-            (standardized ? '<label class="field"><span>作文题目 <em>必填</em></span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' : '') +
-            (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
+            sourceFieldsHtml(standardized, true) +
             '<section class="section-block" id="source-input-area">' + textSourceHtml() + '</section>' +
             '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>Submit</button></div>' +
             '</form></div>';
@@ -1271,6 +1274,8 @@
         state.photoUrls = [];
         state.photoIds = [];
         state.ocr = null;
+        state.ocrReviewText = '';
+        state.scanTarget = 'writing';
         state.activeSentence = 0;
         state.rewrites = {};
         state.rewriteResults = {};
@@ -1301,13 +1306,13 @@
         });
     }
 
-    function returnToTutorHome() {
+    function returnToTutorHome(options) {
         destroyAiWaitingExperience();
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
         resetRevisionScanState();
-        discardCurrentEmptyComposition();
+        if (!options || options.skipEmptyDiscard !== true) discardCurrentEmptyComposition();
         setStatus('');
         state.current = null;
         state.review = null;
@@ -1318,6 +1323,29 @@
         updateCurrentWritingTitle();
         renderPortfolio();
         renderWelcome();
+    }
+
+    function discardDraftAndReturn() {
+        var id = compositionId(state.current);
+        window.clearTimeout(state.autosaveTimer);
+        state.autosaveTimer = null;
+        if (!id) {
+            returnToTutorHome({ skipEmptyDiscard: true });
+            return;
+        }
+        setStatus('');
+        setBusy(true);
+        writingCall('discardDraftComposition', { composition_id: id }).then(function(result) {
+            if (!result.discarded) throw new Error('This writing has already entered processing and can no longer be discarded.');
+            state.compositions = state.compositions.filter(function(item) { return compositionId(item) !== id; });
+            state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
+            state.photoFiles = [];
+            state.photoUrls = [];
+            state.photoIds = [];
+            returnToTutorHome({ skipEmptyDiscard: true });
+        }).catch(function(error) {
+            setStatus(firstText(error && error.message, 'This draft could not be discarded. Please try again.'));
+        }).finally(function() { setBusy(false); });
     }
 
     function focusHomeComposer() {
@@ -1403,13 +1431,26 @@
         var hasPhoto = state.photoUrls.length > 0;
         stage.innerHTML = '<section class="surface surface-pad source-entry-surface">' +
             '<form class="form-stack source-entry-form" id="writing-source-form">' +
-            '<section class="section-block source-fields"><label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
-            (standardized ? '<label class="field"><span>作文题目 <em>必填</em></span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' : '') +
-            (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
+            sourceFieldsHtml(standardized, state.inputMethod !== 'photo' && isInitialSourceDraft()) +
             '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(hasPhoto) : textSourceHtml()) + '</section>' +
             '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? 'Scan' : 'Submit') + '</button></div>' +
             '</form></section>';
         scheduleStageViewportReset();
+    }
+
+    function cameraOnlyButton(target, label) {
+        return '<button class="inline-writing-scan" type="button" data-inline-writing-scan="' + escapeHtml(target) + '" data-disable-when-busy aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '">' + icon('camera') + '</button>';
+    }
+
+    function sourceFieldsHtml(standardized, allowPromptScan) {
+        var rubric = standardized
+            ? '<label class="field"><span>Rubric <em>Required</em></span><select id="writing-rubric"><option value="">Choose a Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>'
+            : '';
+        var prompt = standardized
+            ? '<div class="field inline-writing-field prompt-writing-field"><label for="writing-prompt">Writing Prompt <em>Required</em></label>' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea id="writing-prompt" maxlength="6000" placeholder="Type or paste the full writing prompt…">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
+            : '';
+        var title = '<label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>';
+        return '<section class="section-block source-fields">' + rubric + prompt + title + '</section>';
     }
 
     function rubricOptions(selected) {
@@ -1428,7 +1469,7 @@
     }
 
     function textSourceHtml() {
-        return '<div class="field inline-writing-field"><label for="writing-text">Your Writing</label><button class="inline-writing-scan" type="button" data-inline-writing-scan data-disable-when-busy>' + icon('camera') + '<span>Scan</span></button><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
+        return '<div class="field inline-writing-field"><label for="writing-text">Your Writing</label>' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
     }
 
     function photoSourceHtml(hasPhoto) {
@@ -1455,11 +1496,31 @@
         };
     }
 
+    function isInitialSourceDraft() {
+        var composition = state.current || {};
+        return compositionStatus(composition) === 'draft'
+            && Number(composition.revision || 1) === 1
+            && !composition.library_prompt_id
+            && !composition.pending_upload
+            && !composition.pending_ocr
+            && !composition.active_job_id
+            && !composition.active_job
+            && !composition.ocr_job
+            && !composition.standardized_review
+            && !composition.language_review
+            && !composition.rewrite_results
+            && !composition.completed_at;
+    }
+
+    function persistSourceDraft() {
+        return writingCall(isInitialSourceDraft() ? 'saveSourceDraft' : 'saveDraft', sourcePayload());
+    }
+
     function scheduleAutosave() {
         window.clearTimeout(state.autosaveTimer);
         if (!compositionId(state.current) || state.busy) return;
         state.autosaveTimer = window.setTimeout(function() {
-            writingCall('saveDraft', sourcePayload()).then(function(result) {
+            persistSourceDraft().then(function(result) {
                 if (result.composition) state.current = result.composition;
                 syncCurrentSummary();
             }).catch(function() {});
@@ -1467,6 +1528,9 @@
     }
 
     function validateSource() {
+        if (state.inputMethod === 'photo' && state.scanTarget === 'prompt') {
+            return state.photoFiles.length ? '' : 'Please take or choose at least one prompt photo.';
+        }
         if (state.assessmentMode === 'standardized' && !state.promptText) return '标化考试内容批改需要填写作文题目。';
         if (state.assessmentMode === 'standardized' && !state.rubricId) return '请选择这次使用的考试评分标准。';
         if (state.inputMethod === 'photo' && !state.photoFiles.length) return '请先拍照或选择至少一张作文照片。';
@@ -1486,6 +1550,7 @@
     function uploadAndExtract() {
         var ocrOperation = logicalOperationId('ocr', JSON.stringify({
             composition_id: compositionId(state.current),
+            ocr_purpose: state.scanTarget,
             files: state.photoFiles.map(function(file) {
                 return [file.name || '', file.size || 0, file.lastModified || 0, file.type || ''];
             })
@@ -1497,6 +1562,7 @@
             return retryNetworkTask(function() { return writingCall('startPhotoUpload', {
                 composition_id: compositionId(state.current),
                 operation_id: ocrOperation,
+                ocr_purpose: state.scanTarget,
                 replace_current: Boolean(state.review || state.current && (state.current.standardized_review || state.current.language_review)),
                 pages: preparedPages.map(function(prepared, index) {
                     return {
@@ -1517,6 +1583,7 @@
                         composition_id: compositionId(state.current),
                         photo_ids: state.photoIds,
                         operation_id: ocrOperation,
+                        ocr_purpose: state.scanTarget,
                         replace_current: Boolean(state.review || state.current && (state.current.standardized_review || state.current.language_review))
                     });
                 });
@@ -1527,6 +1594,7 @@
                 composition_id: compositionId(state.current),
                 photo_ids: state.photoIds,
                 operation_id: ocrOperation,
+                ocr_purpose: state.scanTarget,
                 replace_current: Boolean(state.review || state.current && (state.current.standardized_review || state.current.language_review))
             });
         }).then(function(result) {
@@ -1583,9 +1651,11 @@
         if (result && result.composition) state.current = result.composition;
         restoreOcrPhotoUrls(result);
         state.ocr = result && result.ocr || state.current && state.current.pending_ocr || {};
-        state.confirmedText = safeArray(state.ocr.paragraphs).length
+        state.scanTarget = firstText(state.ocr.ocr_purpose).toLowerCase() === 'prompt' ? 'prompt' : 'writing';
+        state.ocrReviewText = safeArray(state.ocr.paragraphs).length
             ? state.ocr.paragraphs.join('\n\n')
             : firstText(state.ocr.full_text);
+        if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
         clearLogicalOperation('ocr');
         showReadyOrOpenResult('ocr', function() {
             renderOcr();
@@ -1600,7 +1670,7 @@
             kind: 'ocr',
             jobStatus: status,
             durable: !uploadPending,
-            title: 'Reading your handwriting',
+            title: state.scanTarget === 'prompt' ? 'Reading the writing prompt' : 'Reading your handwriting',
             pollStatusId: 'ocr-poll-status',
             warningCopy: uploadPending ? 'Uploading is not yet confirmed. Keep this page open.' : '',
             allowBackground: !uploadPending,
@@ -1679,12 +1749,43 @@
     function renderOcr() {
         destroyAiWaitingExperience();
         state.screen = 'ocr';
+        var reviewText = state.scanTarget === 'prompt' ? state.ocrReviewText : state.confirmedText;
+        var imageLabel = state.scanTarget === 'prompt' ? 'Uploaded writing prompt images' : 'Uploaded composition images';
         stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading"><h2>OCR Review</h2>' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
-            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="Uploaded composition images">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded composition page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded composition page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
-            '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(state.confirmedText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
+            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
+            '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
             '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
         scheduleStageViewportReset();
+    }
+
+    function adoptPromptOcr() {
+        var prompt = firstText(ocrEditorText(document.getElementById('ocr-text')));
+        if (!prompt) { setStatus('Please confirm or complete the writing prompt.'); return; }
+        setBusy(true);
+        writingCall('adoptPromptOcr', {
+            composition_id: compositionId(state.current),
+            prompt_text: prompt
+        }).then(function(result) {
+            if (result.composition) state.current = result.composition;
+            state.promptText = prompt;
+            state.ocrReviewText = '';
+            state.ocr = null;
+            state.scanTarget = 'writing';
+            state.photoFiles = [];
+            state.photoIds = [];
+            state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
+            state.photoUrls = [];
+            state.inputMethod = 'text';
+            state.homeComposerOpen = true;
+            clearLogicalOperation('ocr');
+            syncCurrentSummary();
+            renderWelcome();
+            window.requestAnimationFrame(function() {
+                var promptField = document.getElementById('writing-prompt');
+                if (promptField) promptField.focus({ preventScroll: true });
+            });
+        }).catch(renderFatalAction).finally(function() { setBusy(false); });
     }
 
     function saveAndEvaluate() {
@@ -2719,6 +2820,7 @@
         state.title = keptTitle;
         state.promptText = keptPrompt;
         state.inputMethod = method || 'photo';
+        state.scanTarget = 'writing';
         renderSource();
     }
 
@@ -2735,6 +2837,12 @@
             var review = result.review || composition.review || (savedMode === 'standardized' ? composition.standardized_review : composition.language_review) || null;
             resetDraft(composition);
             restoreOcrPhotoUrls(result);
+            var restoredOcrPurpose = firstText(
+                composition.pending_ocr && composition.pending_ocr.ocr_purpose,
+                composition.ocr_job && composition.ocr_job.ocr_purpose,
+                composition.pending_upload && composition.pending_upload.ocr_purpose
+            ).toLowerCase();
+            state.scanTarget = restoredOcrPurpose === 'prompt' ? 'prompt' : 'writing';
             state.review = review;
             state.assessmentMode = compositionMode(composition);
             state.readOnly = forceReadOnly !== false && compositionStatus(composition) === 'completed';
@@ -2858,7 +2966,69 @@
     }
 
     function updateOverlayLock() {
-        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen);
+        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen);
+    }
+
+    function compositionForEntry(id) {
+        return portfolioCompositions().find(function(item) { return compositionId(item) === id; }) || null;
+    }
+
+    function ensureCompositionEntryDialog() {
+        var existing = document.getElementById('writing-entry-overlay');
+        if (existing) return existing;
+        var overlay = document.createElement('div');
+        overlay.className = 'practice-entry-overlay writing-entry-overlay';
+        overlay.id = 'writing-entry-overlay';
+        overlay.hidden = true;
+        overlay.innerHTML = '<div class="practice-entry-shell"><section class="practice-entry-card is-question-confirmation" role="dialog" aria-modal="true" aria-label="Writing entry confirmation">' +
+            '<div class="practice-entry-task"><small id="writing-entry-status">Draft</small><strong id="writing-entry-title">Writing</strong></div>' +
+            '<div class="writing-entry-progress" aria-hidden="true"><span></span></div>' +
+            '<div class="practice-entry-actions"><button class="practice-entry-enter" id="writing-entry-enter" type="button"><span>Enter</span>' + icon('arrow') + '</button></div></section>' +
+            '<button class="practice-entry-close" id="writing-entry-close" type="button">Close</button></div>';
+        document.body.appendChild(overlay);
+        overlay.querySelector('#writing-entry-close').addEventListener('click', function() { closeCompositionEntryDialog(); });
+        overlay.querySelector('#writing-entry-enter').addEventListener('click', function() {
+            var id = state.compositionEntryTargetId;
+            closeCompositionEntryDialog(false);
+            if (id) loadComposition(id);
+        });
+        return overlay;
+    }
+
+    function showCompositionEntryDialog(id, trigger) {
+        var composition = compositionForEntry(id);
+        if (!composition) { loadComposition(id); return; }
+        var overlay = ensureCompositionEntryDialog();
+        var progress = homeWorkflowProgress(composition);
+        state.compositionEntryDialogOpen = true;
+        state.compositionEntryTargetId = id;
+        state.compositionEntryReturnFocus = trigger || document.activeElement;
+        overlay.querySelector('#writing-entry-status').textContent = statusLabel(compositionStatus(composition));
+        overlay.querySelector('#writing-entry-title').textContent = compositionTitle(composition);
+        overlay.querySelector('.writing-entry-progress > span').style.width = progress + '%';
+        overlay.querySelector('.practice-entry-card').setAttribute('aria-label', compositionTitle(composition) + ', ' + statusLabel(compositionStatus(composition)));
+        overlay.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var enter = overlay.querySelector('#writing-entry-enter');
+            if (enter) enter.focus({ preventScroll: true });
+        });
+    }
+
+    function closeCompositionEntryDialog(restoreFocus) {
+        if (!state.compositionEntryDialogOpen) return;
+        var overlay = document.getElementById('writing-entry-overlay');
+        var focusTarget = state.compositionEntryReturnFocus;
+        state.compositionEntryDialogOpen = false;
+        state.compositionEntryTargetId = '';
+        state.compositionEntryReturnFocus = null;
+        if (overlay) overlay.hidden = true;
+        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen;
+        updateOverlayLock();
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+        }
     }
 
     function openIncompleteRewriteAlert(sentenceIdValue) {
@@ -2911,7 +3081,7 @@
 
     function requestSourceDiscard() {
         if (!sourceHasUserInput()) {
-            returnToTutorHome();
+            discardDraftAndReturn();
             return;
         }
         openLeaveConfirmation('discard');
@@ -2927,7 +3097,7 @@
         var confirm = leaveConfirmation.querySelector('button[data-confirm-leave]');
         if (state.leaveDialogAction === 'discard') {
             if (title) title.textContent = 'Discard this writing?';
-            if (copy) copy.textContent = 'Your saved draft will stay in History. Changes that have not been saved will be discarded.';
+            if (copy) copy.textContent = 'This draft will be permanently removed from History.';
             if (confirm) confirm.textContent = 'Discard';
         } else {
             if (title) title.textContent = 'Leave this writing?';
@@ -2957,9 +3127,7 @@
         var action = state.leaveDialogAction;
         closeLeaveConfirmation(false);
         if (action === 'discard') {
-            window.clearTimeout(state.autosaveTimer);
-            state.autosaveTimer = null;
-            returnToTutorHome();
+            discardDraftAndReturn();
             return;
         }
         stopOcrPolling();
@@ -3000,7 +3168,8 @@
         if (target.id === 'ocr-text' || target.closest && target.closest('#ocr-text')) {
             var editor = target.id === 'ocr-text' ? target : target.closest('#ocr-text');
             clearChangedOcrMarks(editor);
-            state.confirmedText = ocrEditorText(editor);
+            state.ocrReviewText = ocrEditorText(editor);
+            if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
         }
     });
 
@@ -3055,7 +3224,8 @@
         if (ocrMark) {
             hideOcrRegion(ocrMark.getAttribute('data-ocr-span-index'));
             unwrapOcrMark(ocrMark, true);
-            state.confirmedText = ocrEditorText(document.getElementById('ocr-text'));
+            state.ocrReviewText = ocrEditorText(document.getElementById('ocr-text'));
+            if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
             return;
         }
         var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-manuscript-sentence]');
@@ -3078,9 +3248,11 @@
             destroyAiWaitingExperience();
             if (typeof waitingAction === 'function') waitingAction();
         }
-        else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
+        else if (button.matches('[data-open-composition]')) showCompositionEntryDialog(button.getAttribute('data-open-composition'), button);
         else if (button.matches('[data-inline-writing-scan]')) {
+            state.scanTarget = button.getAttribute('data-inline-writing-scan') === 'prompt' ? 'prompt' : 'writing';
             state.inputMethod = 'photo';
+            if (compositionId(state.current)) persistSourceDraft().catch(function() {});
             renderSource();
             window.requestAnimationFrame(function() {
                 var cameraInput = document.querySelector('[data-writing-photo-camera]');
@@ -3098,6 +3270,10 @@
             button.setAttribute('aria-pressed', String(visible));
         }
         else if (button.matches('[data-confirm-ocr]')) {
+            if (state.scanTarget === 'prompt') {
+                adoptPromptOcr();
+                return;
+            }
             state.confirmedText = firstText(ocrEditorText(document.getElementById('ocr-text')));
             if (!state.confirmedText) { setStatus('请先确认或补全 OCR 文本。'); return; }
             setBusy(true); saveAndEvaluate();
@@ -3266,6 +3442,16 @@
         renderPortfolio();
     });
     window.addEventListener('keydown', function(event) {
+        if (state.compositionEntryDialogOpen && event.key === 'Tab') {
+            var entryOverlay = document.getElementById('writing-entry-overlay');
+            var entryControls = entryOverlay ? entryOverlay.querySelectorAll('button:not(:disabled)') : [];
+            if (!entryControls.length) return;
+            var entryFirst = entryControls[0];
+            var entryLast = entryControls[entryControls.length - 1];
+            if (event.shiftKey && document.activeElement === entryFirst) { event.preventDefault(); entryLast.focus(); }
+            else if (!event.shiftKey && document.activeElement === entryLast) { event.preventDefault(); entryFirst.focus(); }
+            return;
+        }
         if (state.incompleteRewriteAlertOpen && event.key === 'Tab') {
             var alertControl = incompleteRewriteAlert.querySelector('[data-close-incomplete-rewrite]');
             if (alertControl) { event.preventDefault(); alertControl.focus(); }
@@ -3281,12 +3467,14 @@
             return;
         }
         if (event.key === 'Escape') {
-            if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
+            if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
+            else if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
             else if (state.leaveDialogOpen) closeLeaveConfirmation();
             else if (state.sidebarOpen) closeSidebar();
         }
     });
     window.addEventListener('pageshow', function() {
+        if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
         if (state.leaveDialogOpen) closeLeaveConfirmation();
     });

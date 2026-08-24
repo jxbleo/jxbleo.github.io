@@ -1779,23 +1779,32 @@ High priority improvement:
   horizontal Library-style pill strip with mode, title, status, and workflow track;
   completed work must not appear there. Check touch/pointer scrolling, snap behavior,
   keyboard focus, long-title truncation, and the no-strip state when nothing is open.
-  `Start New` follows the strip. Selecting either mode must expand Title/Your Writing
+  Confirm `Quick Start`, `Start New`, mode icons, and mode arrows are absent. Selecting either mode must expand Title/Your Writing
   directly below the same two cards without navigating or flashing a full-screen loader,
   and must persist the correct `assessment_mode`, including after immediate refresh.
+  Click every unfinished pill and several History rows: each must first show the same
+  Library entry material/animation with only title, progress status, and progress bar.
+  Close/Escape must restore focus; Enter alone may load the Composition.
   Test compact home quota, press states, larger text, reduced motion, and reduced transparency.
 - On the first Writing screen, confirm the removed heading, explanation, step,
   section labels, repeated mode switch, and separate `Type` / `Scan` switch are absent.
   Verify the two home mode buttons read `Polishing` and `Brainstorming`; language text entry shows only
-  `Title` with an `Optional` tag and `Your Writing`, while standardized mode adds Prompt and Rubric.
-  Confirm a small camera-and-`Scan` button sits inside `Your Writing`. Tap it on a real iPhone/iPad
+  `Title` with an `Optional` tag and `Your Writing`. Standardized mode must show English
+  `Rubric`, `Writing Prompt`, divider, `Title`, `Your Writing` in that exact order.
+  Confirm icon-only camera buttons sit at the bottom-right of Prompt and Your Writing,
+  with distinct accessible names. Tap each on a real iPhone/iPad
   and verify the rear-camera picker opens immediately and the photo staging surface appears.
+  Prompt OCR must resume after refresh, enter OCR Review, and on Confirm populate only
+  Writing Prompt, delete its private photos, return to the inline form, and not start review.
   Capture one page and confirm the UI returns to the staging screen without starting OCR; add another
   with `Take Another Photo`, then add multiple pages with `Choose from Library`. Confirm every preview
   keeps its added order, shows `Page current/total` at top-left, offers only `Remove` at bottom-right,
   and has no forward/back controls. Confirm only the bottom green `Scan` starts OCR and the green action reads
-  `Submit` for text and `Scan` for photo input. Empty `Discard` returns directly;
+  `Submit` for text and `Scan` for photo input. The boxed red `Discard` deletes an empty draft directly;
   non-empty `Discard` opens the compact dialog with initial focus on `Cancel`,
-  Escape/cancel restores focus, and confirmation leaves saved History intact.
+  Escape/cancel restores focus, and confirmation permanently removes the initial draft
+  from History. Verify the server refuses the same action after upload/OCR, an active
+  job, a review/rewrite, completion, Library binding, or revision greater than 1.
 - On iPhone and iPad Safari, scroll to the bottom of a tall first-draft photo list,
   remove a photo, then remove the final photo. The rebuilt source surface must return
   below the sticky toolbar with no blank lower viewport. Repeat while adding photos,
