@@ -49,6 +49,7 @@
         editingTitleId: '',
         titleEditError: '',
         leaveDialogOpen: false,
+        leaveDialogAction: 'dashboard',
         returnFocus: null
     };
 
@@ -1020,20 +1021,19 @@
         state.screen = 'source';
         var standardized = state.assessmentMode === 'standardized';
         var hasPhoto = state.photoUrls.length > 0;
-        stage.innerHTML = '<section class="surface surface-pad"><div class="page-heading"><div><p class="eyebrow">NEW WRITING</p><h2>这一次想练什么？</h2>' +
-            '<p>每次选择一种批改。标化考试内容批改会完全按照你选择的评分标准进行，不替你更换考试类型。</p></div><span class="step-indicator">第 1 步 · 输入作文</span></div>' +
-            '<form class="form-stack" id="writing-source-form">' +
-            '<section class="section-block"><p class="section-label">选择批改方式</p><div class="choice-grid">' +
-            '<label class="choice-card"><input type="radio" name="assessment-mode" value="language" ' + (!standardized ? 'checked' : '') + '><span><strong>通用语言批改</strong><small>不评分。分析语法、用词、句式和不自然表达，再由你逐句重写。</small></span></label>' +
-            '<label class="choice-card standardized"><input type="radio" name="assessment-mode" value="standardized" ' + (standardized ? 'checked' : '') + '><span><strong>标化考试内容批改</strong><small>按指定 Rubric 评估内容、结构和逻辑，并给出对应考试分数。</small></span></label></div></section>' +
-            '<section class="section-block"><p class="section-label">输入方式</p><div class="input-switch" role="group" aria-label="输入作文的方式">' +
+        stage.innerHTML = '<section class="surface surface-pad source-entry-surface">' +
+            '<form class="form-stack source-entry-form" id="writing-source-form">' +
+            '<div class="source-mode-switch" role="radiogroup" aria-label="作文训练模式">' +
+            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="language" ' + (!standardized ? 'checked' : '') + '><span>语言语法提升</span></label>' +
+            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="standardized" ' + (standardized ? 'checked' : '') + '><span>标化考试脑暴</span></label></div>' +
+            '<div class="input-switch" role="group" aria-label="输入作文的方式">' +
             '<button type="button" data-input-method="text" aria-pressed="' + (state.inputMethod === 'text') + '">' + icon('text') + '直接输入</button>' +
-            '<button type="button" data-input-method="photo" aria-pressed="' + (state.inputMethod === 'photo') + '">' + icon('camera') + '拍照上传</button></div></section>' +
-            '<section class="section-block"><label class="field"><span>作文名称 <small>（可选，留空由 AI 自动生成）</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="例如：My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
-            '<label class="field"><span>作文题目' + (standardized ? ' <em>必填</em>' : ' <small>（语言批改可不填）</small>') + '</span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' +
+            '<button type="button" data-input-method="photo" aria-pressed="' + (state.inputMethod === 'photo') + '">' + icon('camera') + '拍照上传</button></div>' +
+            '<section class="section-block source-fields"><label class="field"><span>作文名称</span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="例如：My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
+            (standardized ? '<label class="field"><span>作文题目 <em>必填</em></span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' : '') +
             (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
             '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(hasPhoto) : textSourceHtml()) + '</section>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>稍后再写</button><button class="primary-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? '上传并识别文字' : '保存并开始批改') + icon('arrow') + '</button></div>' +
+            '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? 'Scan' : 'Submit') + '</button></div>' +
             '</form></section>';
     }
 
@@ -1053,7 +1053,7 @@
     }
 
     function textSourceHtml() {
-        return '<label class="field"><span>英文作文正文 <em>必填</em></span><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></label>';
+        return '<label class="field"><span>你的作文</span><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></label>';
     }
 
     function photoSourceHtml(hasPhoto) {
@@ -2487,10 +2487,36 @@
         updateOverlayLock();
     }
 
-    function openLeaveConfirmation() {
+    function sourceHasUserInput() {
+        return Boolean(state.title || state.promptText || state.confirmedText.trim()
+            || state.photoFiles.length || state.photoIds.length);
+    }
+
+    function requestSourceDiscard() {
+        if (!sourceHasUserInput()) {
+            returnToTutorHome();
+            return;
+        }
+        openLeaveConfirmation('discard');
+    }
+
+    function openLeaveConfirmation(action) {
         if (state.leaveDialogOpen) return;
+        state.leaveDialogAction = action === 'discard' ? 'discard' : 'dashboard';
         state.returnFocus = document.activeElement;
         state.leaveDialogOpen = true;
+        var title = leaveConfirmation.querySelector('#leave-confirmation-title');
+        var copy = leaveConfirmation.querySelector('#leave-confirmation-copy');
+        var confirm = leaveConfirmation.querySelector('button[data-confirm-leave]');
+        if (state.leaveDialogAction === 'discard') {
+            if (title) title.textContent = 'Discard this writing?';
+            if (copy) copy.textContent = 'Your saved draft will stay in History. Changes that have not been saved will be discarded.';
+            if (confirm) confirm.textContent = 'Discard';
+        } else {
+            if (title) title.textContent = 'Leave this writing?';
+            if (copy) copy.textContent = 'Your saved work is safe. OCR and AI review will continue in the background.';
+            if (confirm) confirm.textContent = 'Leave';
+        }
         leaveConfirmation.hidden = false;
         app.inert = true;
         updateOverlayLock();
@@ -2500,17 +2526,25 @@
         });
     }
 
-    function closeLeaveConfirmation() {
+    function closeLeaveConfirmation(restoreFocus) {
         if (!state.leaveDialogOpen) return;
         state.leaveDialogOpen = false;
         leaveConfirmation.hidden = true;
         app.inert = false;
         updateOverlayLock();
-        if (state.returnFocus && typeof state.returnFocus.focus === 'function') state.returnFocus.focus();
+        if (restoreFocus !== false && state.returnFocus && typeof state.returnFocus.focus === 'function') state.returnFocus.focus();
         state.returnFocus = null;
     }
 
     function confirmLeave() {
+        var action = state.leaveDialogAction;
+        closeLeaveConfirmation(false);
+        if (action === 'discard') {
+            window.clearTimeout(state.autosaveTimer);
+            state.autosaveTimer = null;
+            returnToTutorHome();
+            return;
+        }
         stopOcrPolling();
         stopReviewPolling();
         window.location.assign('dashboard.html');
@@ -2605,6 +2639,7 @@
         if (button.matches('#history-home')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
+        else if (button.matches('[data-discard-source]')) requestSourceDiscard();
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
         else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
         else if (button.matches('[data-start-new]')) createNewWriting();

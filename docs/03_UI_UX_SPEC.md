@@ -2050,6 +2050,14 @@ Important mobile rules:
   refresh or re-login. A final failure preserves the manuscript and offers a fresh submission after quota release.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
+- The first Writing screen has no page eyebrow, explanatory heading, step badge,
+  or section labels. It starts with a compact two-option switch labelled
+  `语言语法提升` and `标化考试脑暴`, followed by the text/photo input switch.
+  Language text entry shows only `作文名称` and `你的作文`; Writing Prompt and
+  Rubric controls appear only for standardized mode. The trailing green action
+  reads `Submit` for text and `Scan` for photos. A small red `Discard` stays at
+  the leading edge; non-empty input receives the compact Apple-style confirmation
+  before returning, while saved draft data remains available in History.
 - Completed language review uses exactly three primary cards in order:
   `Language Review`, `Draft`, and `Sentence Revision`.
 - At the beginning of `Language Review`, show `CEFR Writing Estimate` with

@@ -327,7 +327,39 @@ check("portfolio titles support inline student editing through updateComposition
 
 check("the two evaluation modes use the approved product labels", () => {
   const ui = `${read(pagePath)}\n${read(clientPath)}`;
-  requireEvery(ui, ["通用语言批改", "标化考试内容批改"], "AI Tutor UI");
+  requireEvery(ui, ["语言语法提升", "标化考试脑暴"], "AI Tutor UI");
+});
+
+check("the first writing screen keeps only the compact source controls", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderSource", "rubricOptions");
+  const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
+  requireEvery(renderSource, [
+    "source-mode-switch", "语言语法提升", "标化考试脑暴",
+    "作文名称", "data-discard-source", ">Discard</button>",
+    "state.inputMethod === 'photo' ? 'Scan' : 'Submit'",
+  ], "compact Writing source screen");
+  requireEvery(textSource, ["你的作文", "writing-text"], "language text-entry field");
+  assert(!/NEW WRITING|这一次想练什么|第 1 步|选择批改方式|保存并开始批改|上传并识别文字/.test(renderSource),
+    "the source screen must not restore the removed heading, step, labels, or verbose submit copy");
+  assert(/standardized\s*\?\s*'<label class="field"><span>作文题目/.test(renderSource),
+    "Writing Prompt must render only for standardized mode");
+  requireEvery(styles, [".source-discard-button", "color: #c9403a", ".source-form-actions"],
+    "compact red Discard treatment");
+});
+
+check("Discard confirms only when the source contains student input", () => {
+  const client = read(clientPath);
+  const requestSource = functionSource(client, "requestSourceDiscard", "openLeaveConfirmation");
+  const dialogSource = functionSource(client, "openLeaveConfirmation", "closeLeaveConfirmation");
+  const confirmSource = functionSource(client, "confirmLeave", "updateSourceState");
+  requireEvery(requestSource, ["sourceHasUserInput", "returnToTutorHome", "openLeaveConfirmation('discard')"],
+    "conditional source Discard confirmation");
+  requireEvery(dialogSource, ["Discard this writing?", "Your saved draft will stay in History", "Discard"],
+    "Discard confirmation copy");
+  requireEvery(confirmSource, ["leaveDialogAction", "window.clearTimeout(state.autosaveTimer)", "returnToTutorHome"],
+    "confirmed source Discard action");
 });
 
 check("the two evaluation modes are mutually exclusive", () => {
