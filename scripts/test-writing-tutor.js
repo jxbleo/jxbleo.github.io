@@ -922,14 +922,17 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
   const backend = read(functionPath);
   const selectionSource = functionSource(client, "renderRevisionScanPhotoSelection", "revisionScanCandidateHtml");
   requireEvery(selectionSource, [
-    "revision-photo-position", "revision-photo-carousel", "Add Photo", "Remove", "Start Scanning",
-    "data-add-revision-photo", "data-remove-revision-photo", "data-start-revision-upload",
+    "revision-photo-position", "revision-photo-carousel", "Add Photo", "Library", "Remove", "Back", "Start Scanning",
+    "data-add-revision-photo", "data-add-revision-library", "data-remove-revision-photo", "data-start-revision-upload",
+    "revision-scan-library", "Choose from Photo Library",
     "scan.files.push(file)", "scan.previewUrls.push", "8 - scan.files.length", "activePhotoIndex",
   ], "revision photo staging screen");
   assert(!selectionSource.includes("Revision Photos"),
     "the photographed-revision staging surface must omit its former heading");
-  assert(/revision-photo-card-actions[\s\S]{0,500}data-add-revision-photo[\s\S]{0,500}data-remove-revision-photo/.test(selectionSource),
-    "Add Photo and Remove must share each current photo's action layer");
+  assert(/revision-photo-card-actions[\s\S]{0,700}data-add-revision-photo[\s\S]{0,700}data-add-revision-library[\s\S]{0,700}data-remove-revision-photo/.test(selectionSource),
+    "Add Photo, Library, and Remove must share each current photo's action layer");
+  assert(/id="revision-scan-photo"[^>]*capture="environment"[\s\S]{0,300}id="revision-scan-library"(?![^>]*capture=)/.test(selectionSource),
+    "camera and Photo Library must use separate native inputs");
   assert(/\(closest \+ 1\) \+ '\/' \+ slides\.length/.test(selectionSource)
       && /aria-label['"], 'Photo ' \+ \(closest \+ 1\) \+ ' of ' \+ slides\.length/.test(selectionSource),
     "the centered counter must track the visible photo as current/total rather than x/8");
@@ -939,8 +942,14 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
     ".revision-photo-carousel", "scroll-snap-type: x mandatory", ".revision-photo-position",
     "margin: 0 auto 14px", ".revision-photo-card img", "height: min(56vh,620px)", "scroll-margin-top: 90px",
   ], "iPad and phone revision-photo layout");
+  assert(/\.revision-photo-actions\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*nowrap/.test(styles),
+    "Back and Start Scanning must remain on one phone row");
   assert(/target\.id[\s\S]{0,60}revision-scan-photo[\s\S]{0,220}addRevisionScanPhotos/.test(client),
     "choosing the first revision photo must stage it locally rather than upload immediately");
+  assert(/target\.id === 'revision-scan-photo'\s*\|\|\s*target\.id === 'revision-scan-library'/.test(client),
+    "camera and library additions must share the same ordered local staging path");
+  assert(/data-add-revision-library[\s\S]{0,220}getElementById\('revision-scan-library'\)[\s\S]{0,120}\.click\(\)/.test(client),
+    "the Library control must open the non-camera input");
   assert(/data-start-revision-upload[\s\S]{0,260}beginRevisionScanUpload\(revisionScanState\(\)\.files\.slice\(\)\)/.test(client),
     "only Start Scanning may hand the accumulated photo batch to cloud upload");
   assert(/const MAX_UPLOAD_PAGES\s*=\s*8/.test(backend),

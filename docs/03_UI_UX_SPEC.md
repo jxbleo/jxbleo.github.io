@@ -2025,9 +2025,13 @@ Important mobile rules:
   immediately. The former `Revision Photos` heading is absent. A centered live
   position indicator reads current/total (`1/1`, then `1/2` or `2/2`) as the
   student swipes the mandatory-snap single-photo carousel; it never displays the
-  eight-photo capacity as `x / 8`. Every slide keeps `Add Photo` and `Remove` in
-  the same action row. Add Photo may be used repeatedly on single-capture mobile
-  cameras, while one bottom `Start Scanning` remains the only commit action. On
+  eight-photo capacity as `x / 8`. Every slide keeps `Add Photo`, `Library`, and
+  `Remove` in the same compact action layer. Add Photo uses the native camera;
+  Library uses a separate non-capture, multi-select photo input. The bottom
+  `Back` and `Start Scanning` actions remain on one row even at phone width.
+  Back discards only the local unscanned photo batch and returns to the existing
+  Sentence Revision analysis with saved rewrite drafts intact; `Start Scanning`
+  remains the only commit action. On
   return from camera or library the staging surface explicitly scrolls below the
   sticky toolbar and the newest addition becomes current, rather than inheriting
   the former long Sentence Revision scroll position. iPad preview height is
