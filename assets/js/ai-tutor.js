@@ -1306,43 +1306,13 @@
             '</form></div>';
     }
 
-    function pendingComposerStorageKey() {
-        var profile = state.profile || state.session && state.session.profile || {};
-        var owner = firstText(profile.auth_uid, profile.student_id, state.session && state.session.uid, 'student');
-        return 'mrcat-writing-composer-v1:' + owner;
-    }
-
-    function savePendingHomeComposer() {
-        if (compositionId(state.current)) return;
+    function clearRetiredPendingComposerStorage() {
         try {
-            window.sessionStorage.setItem(pendingComposerStorageKey(), JSON.stringify({
-                open: state.homeComposerOpen === true,
-                assessment_mode: state.assessmentMode,
-                title: state.title,
-                prompt_text: state.promptText,
-                confirmed_text: state.confirmedText,
-                rubric_id: state.rubricId
-            }));
+            for (var index = window.sessionStorage.length - 1; index >= 0; index -= 1) {
+                var key = window.sessionStorage.key(index);
+                if (key && key.indexOf('mrcat-writing-composer-v1:') === 0) window.sessionStorage.removeItem(key);
+            }
         } catch (error) {}
-    }
-
-    function restorePendingHomeComposer() {
-        var saved;
-        try { saved = JSON.parse(window.sessionStorage.getItem(pendingComposerStorageKey()) || 'null'); }
-        catch (error) { saved = null; }
-        if (!saved || typeof saved !== 'object') return;
-        state.current = null;
-        state.homeComposerOpen = saved.open === true;
-        state.assessmentMode = saved.assessment_mode === 'standardized' ? 'standardized' : 'language';
-        state.title = firstText(saved.title);
-        state.promptText = firstText(saved.prompt_text);
-        state.confirmedText = firstText(saved.confirmed_text);
-        state.rubricId = firstText(saved.rubric_id);
-        state.inputMethod = 'text';
-    }
-
-    function clearPendingHomeComposer() {
-        try { window.sessionStorage.removeItem(pendingComposerStorageKey()); } catch (error) {}
     }
 
     function resetDraft(composition) {
@@ -1423,7 +1393,6 @@
         state.homeComposerOpen = false;
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
-        restorePendingHomeComposer();
         syncCompositionLocator('');
         updateCurrentWritingTitle();
         renderPortfolio();
@@ -1443,13 +1412,20 @@
             state.photoFiles = [];
             state.photoUrls = [];
             state.photoIds = [];
-            clearPendingHomeComposer();
             returnToTutorHome({ skipEmptyDiscard: true });
             return;
         }
         setStatus('');
         setBusy(true);
-        writingCall('discardDraftComposition', { composition_id: id }).then(function(result) {
+        var draftSnapshot = Object.assign({}, state.current || {}, {
+            title: state.title,
+            prompt_text: state.promptText,
+            confirmed_text: state.confirmedText
+        });
+        var discardAction = isEmptyCompositionDraft(draftSnapshot) && !state.photoFiles.length && !state.photoIds.length
+            ? 'discardEmptyComposition'
+            : 'discardDraftComposition';
+        writingCall(discardAction, { composition_id: id }).then(function(result) {
             if (!result.discarded) throw new Error('This writing has already entered processing and can no longer be discarded.');
             state.compositions = state.compositions.filter(function(item) { return compositionId(item) !== id; });
             state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
@@ -1474,7 +1450,6 @@
         var selectedMode = mode === 'standardized' ? 'standardized' : 'language';
         if (state.homeComposerOpen && state.assessmentMode === selectedMode) {
             state.homeComposerOpen = false;
-            savePendingHomeComposer();
             renderWelcome();
             window.requestAnimationFrame(function() {
                 var trigger = document.querySelector('[data-start-mode="' + selectedMode + '"]');
@@ -1488,7 +1463,6 @@
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
         renderWelcome();
-        savePendingHomeComposer();
         focusHomeComposer();
     }
 
@@ -1498,7 +1472,6 @@
         stopOcrPolling();
         stopReviewPolling();
         setStatus('');
-        clearPendingHomeComposer();
         returnToTutorHome({ skipEmptyDiscard: false });
         startInlineWriting(selectedMode);
     }
@@ -1609,10 +1582,7 @@
 
     function scheduleAutosave() {
         window.clearTimeout(state.autosaveTimer);
-        if (!compositionId(state.current)) {
-            savePendingHomeComposer();
-            return;
-        }
+        if (!compositionId(state.current)) return;
         if (state.busy) return;
         state.autosaveTimer = window.setTimeout(function() {
             persistSourceDraft().then(function(result) {
@@ -1672,7 +1642,6 @@
             if (!compositionId(composition)) throw new Error('The new writing did not receive a valid ID.');
             state.current = composition;
             state.current.assessment_mode = apiMode(state.assessmentMode);
-            clearPendingHomeComposer();
             syncCompositionLocator(compositionId(state.current));
             syncCurrentSummary();
             updateCurrentWritingTitle();
@@ -3733,14 +3702,12 @@
             state.quota = results[0].quota || null;
             state.rubrics = safeArray(results[0].rubrics).length ? results[0].rubrics : safeArray(results[1].rubrics);
             state.compositions = normalizeCompositions(results[1]);
+            clearRetiredPendingComposerStorage();
             app.setAttribute('aria-busy', 'false');
             renderPortfolio();
             var requestedId = requestedCompositionId();
             if (requestedId) loadComposition(requestedId);
-            else {
-                restorePendingHomeComposer();
-                renderWelcome();
-            }
+            else renderWelcome();
         }).catch(function(error) {
             app.setAttribute('aria-busy', 'false');
             stage.innerHTML = '<section class="surface error-state"><strong>需要学生登录</strong><p>' + escapeHtml(error && error.message || '无法打开 AI Tutor。') + '</p><a class="primary-button" href="index.html">前往登录</a></section>';

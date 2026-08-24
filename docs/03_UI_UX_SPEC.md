@@ -1990,8 +1990,8 @@ Important mobile rules:
   creating a cloud draft. Title, prompt, manuscript, and mode remain local until
   the student presses text `Submit` or photo `Scan`; before that boundary they
   never appear in History and do not add a Composition locator to the URL.
-  Refresh reconstructs the same expanded Writing Home form from owner-scoped
-  session state instead of opening the retired standalone input screen. The
+  Refresh or re-entry returns to a clean Writing Home and discards all unsubmitted
+  fields; it must not restore them from browser storage or open the retired standalone input screen. The
   `Your Writing` placeholder and first typed line sit near the textarea's top
   edge rather than inheriting an oversized top-leading gap.
 - Writing Home labels its vertical regions `New`, `Continue`, and `Review` in a
@@ -1999,6 +1999,8 @@ Important mobile rules:
   Brainstorming card again collapses the composer along the same spatial path;
   `aria-expanded` follows the visible state. Collapse is non-destructive: all
   local fields survive and reappear on the next expansion.
+  This retention lasts only while the same page remains open; refresh or leaving
+  the page intentionally clears it.
 - The page exposes only the top toolbar above card-based content. Home inside
   History opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs

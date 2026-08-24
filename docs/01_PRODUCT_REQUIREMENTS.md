@@ -1879,8 +1879,9 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   `Rubric`、`Writing Prompt`、分隔线、`Title`、`Your Writing` 排列，所有字段使用英文。Rubric 与 Writing Prompt 位于分隔线上方，表示固定评估上下文；学生内容位于下方。
   正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
   选择模式、输入 Title/Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
-  定位符，也不进入 History。刷新后仍在 Writing Home 的原位展开表单，不得进入已废弃的独立初稿输入页；可在
-  `sessionStorage` 恢复文字和所选模式，但这不属于作文记录。只有文本模式点击 `Submit`，或照片模式点击底部
+  定位符，也不进入 History。未提交内容只存在当前页面内存；刷新、关闭、离开后再次进入都必须消失，且不得
+  通过 `sessionStorage`、`localStorage` 或其他浏览器持久层恢复。刷新仍停留 Writing Home，不得进入已废弃的
+  独立初稿输入页。只有文本模式点击 `Submit`，或照片模式点击底部
   `Scan`，才创建服务端 Composition 并持久化模式及输入。`Your Writing` 的占位文字与首行必须贴近输入框顶部，
   不得因正文行高而视觉下沉。
   `Writing Prompt` 与 `Your Writing` 输入框内部右下方各提供一个只显示相机图标的按钮，并以 `aria-label` 保留可访问名称；前者 OCR 确认后只回填 Writing Prompt，后者才进入作文正文 OCR。

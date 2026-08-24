@@ -1125,3 +1125,9 @@ and sends `ocr_purpose`; then publish static assets. `writingAiWorker` needs no
 change because it dispatches the same generic OCR job. No new collection, index,
 timer, secret, provider account, or environment variable is required. This is an
 owner-gated release checklist, not deployment authorization.
+
+Do not publish a client containing `discardDraftComposition` while production
+`writingTutor` still predates that action. The observable failure is a successful
+function invocation whose body contains `code: "UNKNOWN_ACTION"`, rendered by the
+client as the generic AI writing request error. Deploy and verify the bundled
+function first, then publish the matching static asset version.

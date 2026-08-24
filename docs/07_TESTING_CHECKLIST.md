@@ -1796,8 +1796,10 @@ High priority improvement:
   Confirm `Quick Start`, `Start New`, mode icons, and mode arrows are absent. Selecting either mode must expand Title/Your Writing
   directly below the same two cards without navigating or flashing a full-screen loader.
   Enter Title and Writing, then inspect History, the URL, and CloudBase before Submit:
-  no Composition may exist. Refresh must restore the same inline home form and
-  selected mode without entering a standalone input screen. Only explicit text
+  no Composition may exist. Refresh, navigation away, browser close, and later
+  re-entry must clear the unsubmitted mode and all fields, return to clean Writing
+  Home, and never enter a standalone input screen. Confirm no pending composer is
+  written to sessionStorage, localStorage, or IndexedDB. Only explicit text
   `Submit` or photo `Scan` may create the Composition and persist its mode.
   Click every unfinished pill and several History rows: each must first show the same
   Library entry material/animation with only title, progress status, and progress bar.

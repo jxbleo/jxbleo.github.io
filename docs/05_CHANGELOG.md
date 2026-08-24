@@ -3,6 +3,16 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Ephemeral unsubmitted Writing input and Discard compatibility
+
+- Removed pending Writing Home input from session storage. Before Submit/Scan,
+  fields now survive only an in-page collapse and disappear on refresh or re-entry.
+- Added startup cleanup for retired pending-composer keys and routed legacy empty
+  drafts through the older safe discard action.
+- Diagnosed production Discard failures as a static/function release mismatch:
+  the deployed 2026-08-24 `writingTutor` returns `UNKNOWN_ACTION` for the newer
+  `discardDraftComposition` request and must be upgraded with the static client.
+
 ## 2026-08-25 — Writing Home section labels and reversible composer
 
 - Added the shared `New`, `Continue`, and `Review` labels above the three
