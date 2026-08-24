@@ -732,11 +732,13 @@ The browser waiting layer is shared across OCR, review, rewrite-check, and
 revision OCR without merging their polling or result predicates. Each waiting
 renderer projects the server Job state into a task-specific four-stage track;
 the upload-confirmation boundary remains separate and is shown as `Uploading`
-without a Back action. `assets/js/ai-waiting-runner.js` contains an optional,
+while the persistent toolbar action is briefly disabled. Waiting content never
+duplicates toolbar navigation. `assets/js/ai-waiting-runner.js` contains an optional,
 dependency-free Canvas controller only. It has no CloudBase, Composition, Job,
 identity, or persistence knowledge; its score, collectibles, distance, jump,
 and stumble snapshots are discarded with the page. `ai-tutor.js` owns mounting,
-pause/resume, shared serialized polling, Ready animation/sound, the one-shot
+pause/resume, shared serialized polling, Ready animation/sound, causal collect/hit
+sound projection, the one-shot
 result action, and destruction on every success, failure, navigation,
 visibility, and pagehide path. `getComposition` remains the authoritative
 ADMINONLY projection: visible polling is 3 seconds, hidden polling is 10
@@ -773,14 +775,21 @@ lease token, may transactionally publish a result. Thus a stale worker or
 superseded re-upload cannot overwrite the current Composition.
 
 The page shell has one persistent top toolbar and a single overlay controller.
-The back action opens an application-owned confirmation dialog before navigating
-to Dashboard; navigation never cancels a durable AI job. The portfolio control
+On Writing Home the left action opens History. On any concrete Composition it
+becomes Back and opens an application-owned confirmation dialog before returning
+to Writing Home; navigation never cancels a durable AI job. The portfolio control
 occupies the former brand-lockup position and toggles the same initially closed,
 left-side drawer at phone, tablet, and desktop widths. Button reactivation, the
 drawer close control, scrim activation, and `Escape` all converge on one close
 path that restores focus and scroll state. The main workspace has no secondary
 toolbar or permanently allocated sidebar column; its content is composed of
 cards beneath the header.
+
+All writing and revision camera affordances route through one application-owned
+photo-source action sheet. Camera and library remain separate native file inputs;
+the selected input is clicked synchronously in the originating user gesture so
+iOS Safari does not reject it. The source choice changes only local staging and
+never starts OCR by itself.
 
 The browser mirrors the open Composition ID in the `composition` query parameter
 with `history.replaceState`. This value is only a resumable locator, never an

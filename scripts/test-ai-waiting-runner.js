@@ -144,6 +144,19 @@ check('one obstacle collision subtracts once and different obstacles can subtrac
   runner.destroy();
 });
 
+check('the course mixes ground and airborne obstacles and emits causal sound events', () => {
+  assert(/airborne:\s*type\s*===\s*3/.test(source) && /GROUND_Y\s*-\s*150/.test(source),
+    'airborne obstacle geometry is missing');
+  assert(/notifyEvent\(['"]hit['"]\)/.test(source) && /notifyEvent\(['"]collect['"]\)/.test(source),
+    'collision and collectible events must be emitted at their causal source');
+  const harness = makeHarness(false, [0.5]);
+  const events = [];
+  const runner = harness.runnerApi.mount(harness.canvas, { onEvent: (event) => events.push(event.type) });
+  runFrames(harness, 0, 12000);
+  assert(events.includes('hit'), 'obstacle contact did not emit a hit event');
+  runner.destroy();
+});
+
 check('collectibles are green, reachable, and maintained at 3–7', () => {
   const harness = makeHarness(false, [0.2, 0.8, 0.4, 0.6]);
   const runner = harness.runnerApi.mount(harness.canvas);

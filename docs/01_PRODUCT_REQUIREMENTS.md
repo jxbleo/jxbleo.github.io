@@ -1805,13 +1805,18 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   is `Saved / Preparing / Reviewing / Ready`, rewrite is `Saved / Comparing /
   Checking / Ready`, and revision OCR is `Uploaded / Reading / Matching /
   Ready`. The browser never invents percentages or remaining-time estimates.
-- Only a confirmed durable handoff shows `Back`. An upload that is still being
-  confirmed shows `Uploading`, keeps the runner off, hides Back, and never
-  promises that the task will continue after the page closes.
+- Every concrete Composition screen uses the persistent toolbar `Back` action;
+  the waiting card itself contains no duplicate Back or Upload Again row. Back
+  requires confirmation and returns to Writing Home without cancelling a
+  durable Job. During the brief unconfirmed upload handoff the toolbar action is
+  disabled; the card shows `Uploading`, keeps the runner off, and never promises
+  that the task will continue after the page closes.
 - While a durable task waits, the surface hosts the temporary `Mr. Cat Runner`
   canvas activity. Its in-memory Score can be positive or negative: one
   obstacle collision subtracts one, each green collectible adds one, and the
-  runner supports repeat jumps, one air jump, and a 120ms landing buffer.
+  runner supports repeat jumps, one air jump, and a 120ms landing buffer. Ground
+  and airborne obstacles are both present. A local synthesized cue plays exactly
+  when a collectible is taken, and a distinct cue plays on obstacle contact.
   Score, collectibles, distance, and stumble state are discarded on refresh and
   are never rewards, analytics, or AI progress.
 - A successful Job changes the same open page into a visible Ready state with
@@ -1833,9 +1838,10 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - Student Dashboard 在 Library 之前提供独立的 `AI Tutor` 入口。作文作品不是 Assignment、
   Attempt、Exercise Progress 或 STAR；老师分享 Library 题目只会预填 Writing Prompt。
 - AI Tutor 页面只保留一个顶部工具栏；工具栏不再显示品牌图标、`AI Tutor`、`Writing Studio`、
-  学生身份、Home 或 New。最左侧只显示 `History`，中间保留当前作文标题，最右侧只显示语言订正
-  百分比。Home 与 New 集中放进 History 抽屉；Home 仍必须先显示自定义确认弹窗，并明确说明已
-  保存内容不会丢失、正在进行的 OCR 或 AI 批改会继续在后台运行。
+  学生身份、Home 或 New。Writing Home 左侧显示 `History`；进入任何具体 Composition 后同一位置
+  改为 `Back`。中间保留当前作文标题，最右侧只显示语言订正百分比。Home 与 New 集中放进
+  History 抽屉；Composition 的 Back 必须先显示自定义确认弹窗，确认后返回 Writing Home，并明确
+  说明已保存内容不会丢失、正在进行的 OCR 或 AI 批改会继续在后台运行。
 - `History` 占用工具栏最左侧。手机、iPad 与桌面使用同一可收起的左侧抽屉模型，初始均为收起；
   再次点击作品库按钮、点击抽屉关闭按钮、点击遮罩或按 `Escape` 都必须收起。抽屉之外的主要
   内容以卡片呈现，不保留第二层页面工具栏或常驻桌面侧栏。
@@ -1857,10 +1863,11 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
   Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
 - AI Writing Tutor 主页是行动优先的写作工作台，不是长期功能介绍页。删除时段问候和
-  `Ready to keep writing?` 标题。工具栏下第一行只把所有未完成 Composition 显示为可横向滑动的
-  Library 风格任务胶囊，一篇一张，含模式、标题、当前状态和细进度条；已完成作文只留在 History。
-  没有未完成作文时不显示空占位。其下只保留原有 `Polishing` / `Brainstorming`
-  两个纯文字模式按钮；删除 `Quick Start`、`Start New`、模式图标与箭头，也不再显示 `Recent Writing` 或 `Writing Focus`。
+  `Ready to keep writing?` 标题。工具栏下首先显示新作文卡片及原有 `Polishing` / `Brainstorming`
+  两个纯文字模式按钮；其下把所有未完成 Composition 显示为可横向滑动的 Library 风格任务胶囊，
+  最后单独显示已完成订正的 Composition。每篇胶囊含模式、标题、当前状态和细进度条；对应分区
+  没有项目时不显示空占位。
+  主页删除 `Quick Start`、`Start New`、模式图标与箭头，也不再显示 `Recent Writing` 或 `Writing Focus`。
   点击任意未完成稿或 History 项目必须先打开与 Dashboard Library 任务入口相同材质、尺寸与弹入动画的确认层；确认层只投影作文标题、当前进度文字与进度条，学生明确 Enter 后才读取全文。
   主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
   AI 批改词数。创建作文时必须立即持久化主页所选模式，刷新后不可退回默认语言模式。
@@ -1869,13 +1876,15 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   `Rubric`、`Writing Prompt`、分隔线、`Title`、`Your Writing` 排列，所有字段使用英文。Rubric 与 Writing Prompt 位于分隔线上方，表示固定评估上下文；学生内容位于下方。
   正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
   `Writing Prompt` 与 `Your Writing` 输入框内部右下方各提供一个只显示相机图标的按钮，并以 `aria-label` 保留可访问名称；前者 OCR 确认后只回填 Writing Prompt，后者才进入作文正文 OCR。
-  拍摄后返回照片暂存区，可继续拍照或通过 `Choose from Library` 加入多张图片，最多八页。选择照片只暂存，
+  任意相机入口先打开同一个 Apple 风格来源选择层，提供 `Take Photo` 与 `Choose from Library`，取消时
+  回到原触发按钮。选择后必须在同一用户手势内同步打开原生输入，避免 iPhone/iPad Safari 阻止选择器。
+  拍摄后返回照片暂存区，可继续添加图片，最多八页。选择照片只暂存，
   不启动 OCR。每张预览左上角按 `Page 当前页/总页数` 显示页序，右下角只提供 `Remove`；页面保持拍摄或选择时的加入顺序，
   不提供手动前移/后移。添加或删除照片、删掉最后一张照片、切换输入方式或切换评估模式后，手机/iPad 必须重新显示当前页面顶部，
   不得保留内容缩短前的底部滚动位置。底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色
   `Discard` 使用与主操作同等完整的方框按钮外观。空白稿直接删除并返回；存在学生输入时先显示永久删除确认弹窗。服务器仅允许删除 revision 1、尚未进入上传/OCR/评估/订正且没有 Library 题目绑定的 `draft`；不满足条件时必须拒绝，因此任何已开始处理或已提交作品仍不可删除。
-- OCR Review 只保留顶部 `OCR Review`、`Compare with Image`、紧接其后的正文编辑器，以及底部
-  唯一一个水平居中的 `Confirm`。此步骤删除 `Upload Again`；原有中文说明、步骤、存疑数量和编辑器标签全部
+- OCR 确认页删除 `OCR Review` 标题，只保留顶部右侧 `Compare with Image`、紧接其后的正文编辑器，
+  以及底部唯一一个水平居中的 `Confirm`。此步骤删除 `Upload Again`；原有中文说明、步骤、存疑数量和编辑器标签全部
   删除。原图默认隐藏；按钮在电脑/iPad打开左右对照，在手机把图片放到编辑器上方，再次点击隐藏。
   AI 返回的存疑片段必须是 OCR 正文中的精确子串，前端以浅红底和深红字直接标出且不加下划线；
   学生点击确认或修改后取消高亮，保存时只提交纯文本。编辑器按真实段落显示，按一次 Enter 就产生
@@ -1885,8 +1894,8 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   都有效，标点可省略，编号与答案之间建议留空格。系统只把编号用于映射到当前的句子，不会创建新的句子编号。
   选择第一张照片后不得立即上传；先进入本地照片确认页。确认页不显示 `Revision Photos` 标题，顶部只显示
   居中的当前页/总页数，例如一张为 `1/1`，两张照片随横向切换显示 `1/2` 或 `2/2`，不得显示容量式 `1/8`。
-  照片使用单张横向分页预览，每张照片下方同一操作层并列 `Add Photo`、`Library` 与 `Remove`；前者只打开相机，
-  `Library` 使用不带 capture 的独立输入从相册多选追加，最多 8 张。底部 `Back` 与 `Start Scanning` 在手机、iPad 和桌面均保持同一行；
+  照片使用单张横向分页预览，每张照片下方同一操作层只显示 `Add Photo` 与 `Remove`；`Add Photo`
+  打开统一来源选择层，再进入相机或不带 capture 的相册多选输入，最多 8 张。底部 `Back` 与 `Start Scanning` 在手机、iPad 和桌面均保持同一行；
   `Back` 丢弃本次未扫描的本地照片并返回原 Sentence Revision 分析界面，不改动已有订正草稿。拍照或相册返回后页面必须自动定位到照片确认卡片顶部，追加照片后定位到最新照片，
   不得继承订正长页面底部的旧滚动位置；iPad 单图预览必须限制高度，手机使用同一稳定定位逻辑。只有学生明确按下 `Start Scanning` 后，整组照片
   才作为一个有序且幂等的扫描操作上传并进入后台识别。

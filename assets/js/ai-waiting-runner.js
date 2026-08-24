@@ -135,19 +135,24 @@
             options.onScore({ score: score });
         }
 
+        function notifyEvent(type) {
+            if (typeof options.onEvent === 'function') options.onEvent({ type: type });
+        }
+
         function addObstacle() {
             var gap = randomBetween(MIN_OBSTACLE_GAP, MAX_OBSTACLE_GAP);
             var x = Math.max(WORLD_WIDTH + 40, lastObstacleRight + gap);
-            var type = obstacleSeed % 3;
+            var type = obstacleSeed % 4;
             obstacleSeed += 1;
             var obstacle = {
                 x: x,
-                width: type === 0 ? 62 : type === 1 ? 30 : 54,
-                height: type === 0 ? 42 : type === 1 ? 86 : 32,
+                width: type === 0 ? 62 : type === 1 ? 30 : type === 2 ? 54 : 70,
+                height: type === 0 ? 42 : type === 1 ? 86 : type === 2 ? 32 : 30,
                 type: type,
+                airborne: type === 3,
                 hit: false
             };
-            obstacle.y = GROUND_Y - obstacle.height;
+            obstacle.y = obstacle.airborne ? GROUND_Y - 150 : GROUND_Y - obstacle.height;
             obstacles.push(obstacle);
             lastObstacleRight = obstacle.x + obstacle.width;
         }
@@ -280,6 +285,7 @@
                     obstacle.hit = true;
                     collisionCount += 1;
                     score -= 1;
+                    notifyEvent('hit');
                     player.stumble = STUMBLE_MS;
                     player.invulnerable = INVULNERABLE_MS;
                     player.vy = Math.min(player.vy, -95);
@@ -291,6 +297,7 @@
                 item.collected = true;
                 collectedCount += 1;
                 score += 1;
+                notifyEvent('collect');
             });
             ensureCollectibles();
             notifyScore();
@@ -338,8 +345,16 @@
                 context.moveTo(obstacle.x + obstacle.width / 2, obstacle.y);
                 context.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
                 context.lineTo(obstacle.x, obstacle.y + obstacle.height); context.closePath(); context.fill();
-            } else {
+            } else if (obstacle.type === 2) {
                 drawRoundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 11, '#e3c27b', '#a98345');
+            } else {
+                drawRoundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 13, '#8da9c4', '#5f7892');
+                context.strokeStyle = '#5f7892'; context.lineWidth = 3; context.beginPath();
+                context.moveTo(obstacle.x + 12, obstacle.y + obstacle.height);
+                context.lineTo(obstacle.x + 22, obstacle.y + obstacle.height + 12);
+                context.moveTo(obstacle.x + obstacle.width - 12, obstacle.y + obstacle.height);
+                context.lineTo(obstacle.x + obstacle.width - 22, obstacle.y + obstacle.height + 12);
+                context.stroke();
             }
             context.restore();
         }
@@ -488,7 +503,7 @@
                     jumpCount: player.jumpCount, jumpsUsed: player.jumpsUsed, jumpBuffer: player.jumpBuffer
                 },
                 obstacles: obstacles.map(function(obstacle) {
-                    return { x: obstacle.x, width: obstacle.width, height: obstacle.height, type: obstacle.type, hit: obstacle.hit };
+                    return { x: obstacle.x, y: obstacle.y, width: obstacle.width, height: obstacle.height, type: obstacle.type, airborne: obstacle.airborne, hit: obstacle.hit };
                 })
             };
         }

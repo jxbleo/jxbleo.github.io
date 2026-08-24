@@ -333,7 +333,7 @@ check("Writing home is an action-first adaptive workspace", () => {
   const styles = read(stylePath);
   const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
-    "welcomeUnfinishedHtml", "Polishing", "Brainstorming", "homeComposerHtml",
+    "welcomeUnfinishedHtml", "welcomeCompletedHtml", "Polishing", "Brainstorming", "homeComposerHtml",
   ], "Writing home workspace");
   assert(!/QUICK START|Start New/.test(welcome),
     "Writing home must not retain the removed Quick Start or Start New headings");
@@ -341,8 +341,11 @@ check("Writing home is an action-first adaptive workspace", () => {
     "Polishing and Brainstorming cards must not retain decorative icons or arrows");
   assert(!/Good (?:morning|afternoon|evening)|Ready to keep writing\?|Recent Writing|Writing Focus/.test(welcome),
     "Writing home must not restore the greeting, hero question, Recent Writing, or Writing Focus sections");
-  assert(/portfolioCompositions\(\)\.filter[\s\S]{0,180}compositionStatus\(item\)\s*!==\s*['"]completed['"]/.test(welcome),
-    "the first home row must include every unfinished Composition and exclude completed work");
+  assert(/unfinishedCompositions\s*=\s*homeCompositions\.filter[\s\S]{0,180}compositionStatus\(item\)\s*!==\s*['"]completed['"]/.test(welcome),
+    "the unfinished home row must include every unfinished Composition and exclude completed work");
+  assert(welcome.indexOf("writing-home-start") < welcome.indexOf("welcomeUnfinishedHtml")
+      && welcome.indexOf("welcomeUnfinishedHtml") < welcome.indexOf("welcomeCompletedHtml"),
+    "Writing home must order new writing, unfinished work, then completed work");
   requireEvery(styles, [
     ".writing-home-flow", ".writing-pending-strip", ".writing-pending-pill",
     "overflow-x: auto", "scroll-snap-type: x proximity", ".writing-mode-card",
@@ -386,7 +389,7 @@ check("the first writing screen keeps only the compact source controls", () => {
       && sourceFields.indexOf("Writing Prompt") < sourceFields.indexOf("source-fixed-divider")
       && sourceFields.indexOf("source-fixed-divider") < sourceFields.indexOf("Title"),
     "Brainstorming source order must be Rubric, Writing Prompt, divider, then Title");
-  requireEvery(cameraButton, ["data-inline-writing-scan", "icon('camera')", "aria-label", "title"], "icon-only source camera control");
+  requireEvery(cameraButton, ["data-open-photo-choice", "data-photo-target", "icon('camera')", "aria-label", "title"], "icon-only source camera control");
   assert(!/>\s*Scan\s*</.test(cameraButton), "the embedded camera control must not render a Scan text label");
   assert(!/source-mode-switch|input-switch|data-input-method|>Type<|>Scan<\/button>/.test(renderSource),
     "the source surface must not retain the separate mode or Type/Scan switch rows");
@@ -404,15 +407,18 @@ check("the first writing screen keeps only the compact source controls", () => {
     "camera controls must sit at the bottom-right of their text boxes");
 });
 
-check("photo entry opens the native camera, stages multiple pages, and scans only on submit", () => {
+check("photo entry offers camera or library, stages multiple pages, and scans only on submit", () => {
   const client = read(clientPath);
+  const page = read(pagePath);
   const photoSource = functionSource(client, "photoSourceHtml", "sourcePayload");
   const renderSource = functionSource(client, "renderSource", "rubricOptions");
   requireEvery(photoSource, [
     "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
-    "Take a Photo", "Take Another Photo", "Choose from Library", "multiple",
+    "Add Photo", "data-writing-photo-library", "multiple",
     "source-photo-card-actions", "Page ", "state.photoUrls.length", "Remove",
   ], "photo staging controls");
+  requireEvery(page, ["photo-choice-layer", "Take Photo", "Choose from Library"],
+    "Apple-style photo source chooser");
   assert(!/data-move-photo|前移|后移|移除/.test(photoSource),
     "initial photo staging must not expose reorder controls or Chinese remove copy");
   assert(!/button\.matches\(\s*["']\[data-move-photo\]["']\s*\)/.test(client),
@@ -424,8 +430,11 @@ check("photo entry opens the native camera, stages multiple pages, and scans onl
   assert(/inputMethod:\s*["']text["']/.test(client), "direct text entry must be the default");
   assert(/target\.matches\(\s*["']\[data-writing-photo-input\]["']\s*\)/.test(client),
     "both camera and library inputs must stage selected photos");
-  assert(/button\.matches\(\s*["']\[data-inline-writing-scan\]["']\s*\)[\s\S]{0,500}renderSource\(\)[\s\S]{0,500}querySelector\(\s*["']\[data-writing-photo-camera\]["']\s*\)[\s\S]{0,300}cameraInput\.click\(\)/.test(client),
-    "the compact Scan control inside Your Writing must open the rear-camera input");
+  const chooser = functionSource(client, "selectPhotoSource", "compositionForEntry");
+  requireEvery(chooser, ["renderSource()", "data-writing-photo-camera", "data-writing-photo-library", "input.click()"],
+    "photo source selection");
+  assert(chooser.indexOf("renderSource()") < chooser.indexOf("input.click()") && !/\.then\s*\([\s\S]*input\.click\(\)/.test(chooser),
+    "iOS photo input must open synchronously inside the originating user gesture");
   assert(/if\s*\(state\.inputMethod === ["']photo["']\)\s*uploadAndExtract\(\)/.test(client),
     "OCR must start only when the source form is explicitly submitted");
 });
@@ -486,14 +495,15 @@ check("the two evaluation modes are mutually exclusive", () => {
   assert(modeGroup, "expected exactly two same-name radio inputs for general language and standardized exam modes");
 });
 
-check("OCR Review is a focused paragraph editor with inline uncertainty marks", () => {
+check("OCR confirmation is a focused paragraph editor with inline uncertainty marks", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderOcr", "saveAndEvaluate");
   requireEvery(renderSource, [
-    "OCR Review", "Compare with Image", "contenteditable=\"true\"",
+    "Compare with Image", "contenteditable=\"true\"",
     "data-confirm-ocr", ">Confirm</button>",
-  ], "focused OCR Review controls");
+  ], "focused OCR confirmation controls");
+  assert(!renderSource.includes("OCR Review"), "the OCR confirmation surface must omit the OCR Review heading");
   assert(!/Upload Again|Confirm Text &amp; Start Review/.test(renderSource),
     "OCR Review must expose only the centered Confirm footer action");
   assert(!/先确认识别文字|第 2 步|有 ['\"] \+ uncertainCount|可编辑 OCR 文本|请自行修正识别错误/.test(renderSource),
@@ -966,13 +976,13 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
   requireEvery(renderSource, [
     "Scan Revisions", "revision-scan-photo", "capture=\"environment\"",
-    "image/jpeg,image/png,image/webp", "data-start-revision-scan",
+    "image/jpeg,image/png,image/webp", "data-open-photo-choice=\"revision\"", "revision-scan-library",
   ], "Sentence Revision scan trigger");
   assert(!renderSource.includes("亲自重写后再按 Submit"),
     "Sentence Revision must omit the removed rewrite-and-scan instruction");
-  assert(/batch-actions[\s\S]{0,500}data-start-revision-scan[\s\S]{0,600}data-submit-rewrites/.test(renderSource),
+  assert(/batch-actions[\s\S]{0,500}data-open-photo-choice="revision"[\s\S]{0,600}data-submit-rewrites/.test(renderSource),
     "the camera trigger must sit immediately before Submit in the bottom action row");
-  assert(/data-start-revision-scan[^>]*aria-label="Scan Revisions"[^>]*title="Scan Revisions"[^>]*>[\s\S]{0,120}icon\('camera'\)[\s\S]{0,120}<\/button>/.test(renderSource),
+  assert(/data-open-photo-choice="revision"[^>]*aria-label="Scan Revisions"[^>]*title="Scan Revisions"[^>]*>[\s\S]{0,120}icon\('camera'\)[\s\S]{0,120}<\/button>/.test(renderSource),
     "the bottom scan trigger must be an accessible camera-only button");
   assert(/!state\.readOnly[\s\S]{0,500}Scan Revisions/.test(renderSource),
     "completed/read-only writing must not expose photographed draft import");
@@ -996,15 +1006,15 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
   const backend = read(functionPath);
   const selectionSource = functionSource(client, "renderRevisionScanPhotoSelection", "revisionScanCandidateHtml");
   requireEvery(selectionSource, [
-    "revision-photo-position", "revision-photo-carousel", "Add Photo", "Library", "Remove", "Back", "Start Scanning",
-    "data-add-revision-photo", "data-add-revision-library", "data-remove-revision-photo", "data-start-revision-upload",
-    "revision-scan-library", "Choose from Photo Library",
+    "revision-photo-position", "revision-photo-carousel", "Add Photo", "Remove", "Back", "Start Scanning",
+    "data-open-photo-choice=\"revision\"", "data-remove-revision-photo", "data-start-revision-upload",
+    "revision-scan-library",
     "scan.files.push(file)", "scan.previewUrls.push", "8 - scan.files.length", "activePhotoIndex",
   ], "revision photo staging screen");
   assert(!selectionSource.includes("Revision Photos"),
     "the photographed-revision staging surface must omit its former heading");
-  assert(/revision-photo-card-actions[\s\S]{0,700}data-add-revision-photo[\s\S]{0,700}data-add-revision-library[\s\S]{0,700}data-remove-revision-photo/.test(selectionSource),
-    "Add Photo, Library, and Remove must share each current photo's action layer");
+  assert(/revision-photo-card-actions[\s\S]{0,700}data-open-photo-choice="revision"[\s\S]{0,700}data-remove-revision-photo/.test(selectionSource),
+    "Add Photo and Remove must share each current photo's action layer");
   assert(/id="revision-scan-photo"[^>]*capture="environment"[\s\S]{0,300}id="revision-scan-library"(?![^>]*capture=)/.test(selectionSource),
     "camera and Photo Library must use separate native inputs");
   assert(/\(closest \+ 1\) \+ '\/' \+ slides\.length/.test(selectionSource)
@@ -1022,8 +1032,9 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
     "choosing the first revision photo must stage it locally rather than upload immediately");
   assert(/target\.id === 'revision-scan-photo'\s*\|\|\s*target\.id === 'revision-scan-library'/.test(client),
     "camera and library additions must share the same ordered local staging path");
-  assert(/data-add-revision-library[\s\S]{0,220}getElementById\('revision-scan-library'\)[\s\S]{0,120}\.click\(\)/.test(client),
-    "the Library control must open the non-camera input");
+  const chooser = functionSource(client, "selectPhotoSource", "compositionForEntry");
+  assert(/context === 'revision'[\s\S]{0,260}revision-scan-photo[\s\S]{0,120}revision-scan-library[\s\S]{0,140}revisionInput\.click\(\)/.test(chooser),
+    "the shared chooser must open the selected revision camera or library input");
   assert(/data-start-revision-upload[\s\S]{0,260}beginRevisionScanUpload\(revisionScanState\(\)\.files\.slice\(\)\)/.test(client),
     "only Start Scanning may hand the accumulated photo batch to cloud upload");
   assert(/const MAX_UPLOAD_PAGES\s*=\s*8/.test(backend),
@@ -2239,7 +2250,8 @@ check("all four durable jobs use one waiting renderer and keep their polling", (
 check("the waiting stages reflect server state and expose only a durable handoff", () => {
   const client = read(clientPath);
   const renderer = `${functionSource(client, "waitingStageDefinitions", "waitingStageClass")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
-  requireEvery(renderer, ["Uploaded", "Reading", "Organising", "Preparing", "Reviewing", "Comparing", "Checking", "Matching", "Ready", "runner-canvas", "data-return-home"], "waiting renderer contract");
+  requireEvery(renderer, ["Uploaded", "Reading", "Organising", "Preparing", "Reviewing", "Comparing", "Checking", "Matching", "Ready", "runner-canvas", "runner-score"], "waiting renderer contract");
+  assert(!renderer.includes("data-return-home"), "waiting content must not duplicate the toolbar Back action");
   assert(!/Continue in Background|Waiting for the same saved|checks every 5 seconds|Distance|Ink/.test(renderer), "V2 waiting renderer must remove legacy copy and metrics");
   assert(/waitingStageDefinitions\s*\(\s*kind/.test(renderer), "waiting stages must be task-specific");
   const ocrWaiting = functionSource(client, "renderOcrWaiting", "startOcrPolling");
@@ -2294,7 +2306,7 @@ check("an active wait remains Ready until the student clicks one result action",
   const renderer = functionSource(client, "finishAiWaitingExperience", "showReadyOrOpenResult");
   requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "copy.hidden = true", "classList.add('is-ready')"], "Ready handoff");
   assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
-  requireEvery(client, ["Review Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "AudioContext", "ready-announced"], "Ready controls and sound");
+  requireEvery(client, ["Check Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "AudioContext", "ready-announced"], "Ready controls and sound");
   requireEvery(client, ["unlockWaitingReadySound", "pointerdown", "audio.resume"], "user-gesture audio unlock");
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
   requireEvery(styles, ["ai-waiting-ready-dock-bounce", "translateY(-11px)", "5.2s", ".ai-waiting-stage-label", "prefers-reduced-motion"],

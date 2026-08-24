@@ -35,6 +35,8 @@
 | Vocabulary 第 3/4 次提交在铃铛可见但邮箱像是没收到 | 旧 dispatcher 为后续邮件写入 `In-Reply-To` / `References`，邮箱把多次提交折叠进同一会话；主题也可能过于相似 | 部署独立邮件版本的 `sendTeacherAttemptEmails`；确认 Vocabulary 主题带 `Quiz No. n` / `Practice No. n` 且原始邮件无 reply/reference 头。正文仍应累计同一线程此前 attempts |
 | BBC 每次重试各发一封，或超过 7 分钟仍没有邮件 | dispatcher 没按第一条 due event 的固定 `window_ends_at` 合并，Cron 没有每分钟运行，或 SMTP 重试改写了原窗口 | 查同一 `thread_key` 的事件；`window_ends_at` 保持原值，只有失败时 `due_at` 可以后移 |
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |
+| 初稿照片上传成功后仍停在原页面，刷新才出现等待游戏 | 前端只保存了排队状态却没有立即渲染 OCR waiting 或启动同一 Composition 的轮询 | 上传 handoff 成功后同步进入 waiting 并立即启动 serialized polling；确认 toolbar Back 可恢复且不要用假的百分比 |
+| iPhone/iPad 点击相机或相册选择后没有弹出系统选择器 | `input.click()` 被放在 Promise、定时器或 `requestAnimationFrame` 后，Safari 已撤销用户手势授权 | 先同步渲染对应隐藏 input，再在同一个点击处理函数中直接调用 `input.click()`；保存草稿可并行后台执行 |
 | 内页登录后回到错误页面、丢失练习 query/hash，或旧 user/visitor 参数继续传播 | login-navigation.js 未在页面脚本前加载、cache query 不一致，或调用没有传完整当前 URL | 检查页面脚本顺序与 loginHref(window.location.href, fallback)；验证同源根级 HTML、外部目标拒绝和旧身份参数清理；这是静态路由问题，不要先改 CloudBase 数据 |
 | 精听进入后只显示空白输入区域，首句没有词位 | 线上 `intensiveListening` 仍是未返回 `practice_mode` 的旧版或函数更新状态为 `Update failed`；首段实际是零词槽的 Skip，旧前端协议把它当 Dictation | 先查函数状态和线上代码是否返回 `practice_mode` / `sequence_count`，再查材料首段模式与词槽数量；部署同一提交生成的最新函数包和静态文件，不要重做 JSON 或删除数据库词槽 |
 | 登录 Teacher 显示 `The size of HTTP response body exceeds the upper limit (6MB)` | 旧版 `teacherAdmin.listAttempts` / `listProgress` 一次返回全部历史的逐题答案和 explanation，且 progress 重复嵌套 attempts | 部署轻量摘要与 `getAttemptDetail` 版本的 `teacherAdmin.zip`，并发布最新版 `teacher.html` / `teacher.js`；不需要删除 attempts |

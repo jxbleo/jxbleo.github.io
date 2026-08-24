@@ -52,20 +52,22 @@ npm run test:writing-tutor
 ```
 
 The Runner contract test verifies the public controller API, idempotent
-destruction, repeat/air/landing-buffer jumps, one-time obstacle deductions,
+destruction, repeat/air/landing-buffer jumps, ground/airborne obstacles, causal
+collect/hit events, one-time obstacle deductions,
 negative Score, green 3–7 collectible replenishment, Ready continuity,
 reduced-motion and pause/resume behavior, and the absence of network, CloudBase,
 persistence, or reward integration. The Writing Tutor contracts verify
-task-specific tracks, no ordinary waiting explanation, Back/upload gating,
+task-specific tracks, no ordinary waiting explanation or duplicate card actions,
 serialized visible/hidden polling with wake and backoff, stale identity guards,
 one-shot Ready actions, synthesized-audio protection, success continuation,
 failure cleanup, and the durable result predicates.
 
 Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
-keyboard Jump, focused form controls, hidden-tab pause, reduced motion, missing
+keyboard/tap jump, focused form controls, hidden-tab pause, reduced motion, missing
 Runner module fallback, network polling recovery, Ready without refresh, one
 result click, direct re-entry to a completed Job, and continued play after
-Ready. On the active waiting card, confirm the visible `Your … Is Ready` heading
+Ready. Confirm Score is inside the game frame, Jump/instruction controls are absent,
+ground and airborne obstacles appear, and collect/hit sounds differ. On the active waiting card, confirm the visible `Your … Is Ready` heading
 disappears and the Ready node/text periodically Dock-bounces; reduced motion must
 remain static. Open the same ready Composition from History and after refresh:
 it must enter OCR Review, the assessment, feedback, or Revision Scan directly,
@@ -430,22 +432,22 @@ Practice navigation checks:
   surface in two columns; below 900px they stack without page-level horizontal
   overflow or nested glass cards
 - the loading state shows one quiet `THIS WEEK` label and inline skeleton track;
-  after load, `THIS WEEK` and `UPCOMING` always appear in that order. This Week's
-  denominator combines current-week assignments with every overdue unfinished
-  assignment; its numerator is current-week finished work. Upcoming uses next
-  week's completed/total values, and both exclude self-study STAR records
+  after load, the hero keeps only `THIS WEEK`. Its denominator combines
+  current-week assignments with every overdue unfinished assignment; its
+  numerator is current-week finished work, and self-study STAR records remain
+  excluded
 - when at least one overdue task exists, the full This Week progress track uses
   a slow red breathing halo even at `0%`; reduced motion replaces it with a
   static red border. Without overdue work it returns to the standard green track
-- populated Upcoming keeps its blue track, percentage, and focused-list action;
-  empty Upcoming has no track, no `0%`, and no click action, and instead shows a
-  quiet calendar-check `NO TASKS` status
+- the hero renders no `UPCOMING`, `NO TASKS`, or calendar-check row whether or
+  not future assignments exist; those assignments remain available in the To
+  Do List's Upcoming tab
 - while current-week work is unfinished, future assignments remain visible in
   the To Do List's Upcoming section but do not contribute to its red badge
-- completing assignments updates the matching fill and numeric percentage
-  without replacing or hiding either summary row
-- clicking or keyboard-activating `THIS WEEK` or `UPCOMING` opens a
-  focused Assignments modal containing only that due-date group's task rows;
+- completing assignments updates the This Week fill and numeric percentage
+  without adding a second hero summary row
+- clicking or keyboard-activating `THIS WEEK` opens a focused Assignments modal
+  containing only that due-date group's task rows;
   This Week places overdue unfinished work first with a restrained red pulse,
   tasks are not expanded directly in the hero, and task activation still opens
   the standard entry confirmation. Reduced motion replaces the pulse with a
@@ -618,8 +620,8 @@ Check:
   assignment may coexist with the prior self-study completion
 - `vocabulary_practice_timed` activity attempts continue to notify the teacher
   but never appear in FINISHED, Personal Center counts, or the student calendar
-- the hero shows This Week and Upcoming completion summaries without inline task
-  rows; activating one opens its focused task-list modal. This Week includes
+- the hero shows only the This Week completion summary without inline task
+  rows; activating it opens its focused task-list modal. This Week includes
   overdue unfinished work first, followed by current unfinished and finished
   work. Both focused modals use green Personal Center title typography and do
   not render the Teacher Replies icon or unread badge
@@ -655,6 +657,11 @@ Check:
   restores the main Dashboard and bubble focus, and keeps question navigation
   working from each complete reply card. Escape and backdrop clicks leave the
   dialog open and do not mark replies read
+- after reaching the bottom of Teacher Replies, ordinary arrival at the edge
+  does not load or show a button. Continuing to scroll downward reveals a
+  resisted rotating indicator, then appends exactly five older cards with a
+  staggered entrance. Reduced motion removes the spin/entrance animation while
+  preserving the five-card pagination
 - each Teacher Replies card shows its centered task title first on the same
   bounded overflow-scrolling track used by task rows. The saved question has no
   `Qxx.` prefix and wraps cleanly on phone and iPad. `Expected` and `Submitted`
@@ -980,8 +987,8 @@ Check:
   correct answers, explanations, grading keys, credentials, or auth tokens
 - With more than 20 assignments, verify bootstrap returns no more than 10 To Do
   and 10 Finished rows, each list appends exactly 10 at its internal scroll edge,
-  all unread Teacher Replies are ready in memory, and earlier read replies use
-  `Load 5 more`
+  all unread Teacher Replies are ready in memory, and each resisted
+  scroll-past-bottom gesture appends five earlier read replies without a button
 - clicking Account opens an independent dialog containing names, Login ID,
   class, System, reset password, and delete account. The main student detail has
   no bottom Account settings disclosure. The dialog's class editor lists existing active classes
@@ -1756,8 +1763,10 @@ High priority improvement:
   profile or composition request;
 - Run `npm run test:writing-tutor` and all release verification.
 - At phone, iPad, and desktop widths, confirm the page shows only one top toolbar
-  over card content: `History` at far left, current title centered, and revision
-  percentage at far right. Confirm Home and New appear inside History and that
+  over card content: `History` at far left on Writing Home, `Back` there throughout
+  an open Composition, current title centered, and revision percentage at far right.
+  Confirm Composition Back opens a confirmation and returns to Writing Home without
+  cancelling a durable job. Confirm Home and New appear inside History and that
   there is no student chip, brand mark,
   `AI Tutor / Writing Studio` label, secondary toolbar, or persistent sidebar.
 - Confirm Portfolio starts closed at every width. Open it, then separately close
@@ -1775,9 +1784,10 @@ High priority improvement:
   uncertain text, while confirmed photos become unavailable after cleanup.
 - On Writing Home, verify the old permanent feature explainer, time greeting,
   `Ready to keep writing?`, `Recent Writing`, and `Writing Focus` are absent.
-  With multiple unfinished Compositions, confirm every one appears in the first
-  horizontal Library-style pill strip with mode, title, status, and workflow track;
-  completed work must not appear there. Check touch/pointer scrolling, snap behavior,
+  Confirm the new-writing card appears first, unfinished Composition pills next,
+  and completed Composition pills last. With multiple unfinished Compositions,
+  confirm every one appears in its horizontal Library-style pill strip with mode,
+  title, status, and workflow track. Check touch/pointer scrolling, snap behavior,
   keyboard focus, long-title truncation, and the no-strip state when nothing is open.
   Confirm `Quick Start`, `Start New`, mode icons, and mode arrows are absent. Selecting either mode must expand Title/Your Writing
   directly below the same two cards without navigating or flashing a full-screen loader,
@@ -1792,12 +1802,13 @@ High priority improvement:
   `Title` with an `Optional` tag and `Your Writing`. Standardized mode must show English
   `Rubric`, `Writing Prompt`, divider, `Title`, `Your Writing` in that exact order.
   Confirm icon-only camera buttons sit at the bottom-right of Prompt and Your Writing,
-  with distinct accessible names. Tap each on a real iPhone/iPad
-  and verify the rear-camera picker opens immediately and the photo staging surface appears.
+  with distinct accessible names. Tap each on a real iPhone/iPad and verify the
+  Apple-style `Take Photo` / `Choose from Library` sheet appears; each choice must
+  open its native picker immediately and Cancel must restore focus.
   Prompt OCR must resume after refresh, enter OCR Review, and on Confirm populate only
   Writing Prompt, delete its private photos, return to the inline form, and not start review.
-  Capture one page and confirm the UI returns to the staging screen without starting OCR; add another
-  with `Take Another Photo`, then add multiple pages with `Choose from Library`. Confirm every preview
+  Capture one page and confirm the UI returns to the staging screen without starting OCR; use
+  `Add Photo` and the source sheet to add camera and library pages. Confirm every preview
   keeps its added order, shows `Page current/total` at top-left, offers only `Remove` at bottom-right,
   and has no forward/back controls. Confirm only the bottom green `Scan` starts OCR and the green action reads
   `Submit` for text and `Scan` for photo input. The boxed red `Discard` deletes an empty draft directly;
@@ -1812,9 +1823,9 @@ High priority improvement:
   and leaving its final-photo state. Full-screen result/error transitions must also
   begin at the screen top; sentence-card flips, typing, and waiting-game polling must
   retain the student's current position.
-- On OCR Review, confirm the only fixed fields are `OCR Review`,
-  `Compare with Image`, and one horizontally centered `Confirm`, with
-  the editable manuscript directly below the heading and no `Upload Again` action. The image toggle must
+- On OCR confirmation, confirm the `OCR Review` heading is absent and the only
+  fixed controls are `Compare with Image` and one horizontally centered `Confirm`,
+  with the editable manuscript directly below and no `Upload Again` action. The image toggle must
   open/close split view on desktop/iPad and an image-above-text view on phone.
 - Return an exact uncertain substring from OCR and confirm it is marked with a
   pale-red fill and dark-red text, without an underline. Clicking it must remove
