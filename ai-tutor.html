@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260824-9">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260824-10">
     <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260824-3">
 </head>
 <body class="ai-tutor-page">
@@ -81,6 +81,18 @@
         </section>
     </div>
 
+    <div class="confirmation-layer" id="incomplete-rewrite-alert" hidden>
+        <div class="confirmation-scrim"></div>
+        <section class="confirmation-dialog" role="alertdialog" aria-modal="true" aria-labelledby="incomplete-rewrite-title">
+            <div class="confirmation-copy">
+                <strong id="incomplete-rewrite-title">You still have unfinished changes.</strong>
+            </div>
+            <div class="confirmation-actions confirmation-actions-single">
+                <button class="confirmation-ok" type="button" data-close-incomplete-rewrite>OK</button>
+            </div>
+        </section>
+    </div>
+
     <div class="confirmation-layer" id="visitor-access-dialog" hidden>
         <div class="confirmation-scrim"></div>
         <section class="confirmation-dialog visitor-access-dialog" role="dialog" aria-modal="true" aria-labelledby="visitor-access-title" aria-describedby="visitor-access-copy">
@@ -107,6 +119,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/ai-waiting-runner.js?v=20260824-2"></script>
-    <script src="assets/js/ai-tutor.js?v=20260824-13"></script>
+    <script src="assets/js/ai-tutor.js?v=20260824-14"></script>
 </body>
 </html>

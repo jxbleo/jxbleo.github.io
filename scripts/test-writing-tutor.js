@@ -595,6 +595,32 @@ check("sentence rewrite drafts persist by Composition revision and restore on re
     "opening a saved language review must restore its sentence drafts before rendering");
 });
 
+check("incomplete Sentence Revision Submit uses a focused one-action alert", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const submitSource = matchingFunctionSource(client, "submitRewrites", "submitRewrites client action");
+  const alertStart = page.indexOf('id="incomplete-rewrite-alert"');
+  const alertEnd = page.indexOf('</div>', page.indexOf('</section>', alertStart));
+  const alertMarkup = page.slice(alertStart, alertEnd);
+  requireEvery(alertMarkup, [
+    'role="alertdialog"', 'aria-modal="true"',
+    'You still have unfinished changes.', 'data-close-incomplete-rewrite', '>OK<'
+  ], "incomplete-rewrite alert");
+  assert((alertMarkup.match(/<button\b/g) || []).length === 1,
+    "the incomplete-rewrite alert must expose exactly one button");
+  assert(/\.confirmation-actions-single\s*\{[^}]*grid-template-columns\s*:\s*minmax\(0,1fr\)/.test(styles),
+    "the OK action must occupy the alert's full action row");
+  requireEvery(submitSource, [
+    "rewriteRequired(sentence)", "state.rewriteFace", "setStatus('')", "renderLanguage()",
+    "openIncompleteRewriteAlert(missingId)", "sentence-card-", "scrollIntoView", "block: 'center'"
+  ], "incomplete-submit navigation");
+  assert(!/还有句子没有完成|已带你回到第一个未完成的位置/.test(submitSource),
+    "incomplete Submit must not render the former top-page red status message");
+  assert(/placeholder="Rewrite this sentence in your own words\. Do not copy the sample\."/.test(client),
+    "the rewrite instruction must be presented in English");
+});
+
 check("Check snapshots sentence drafts before starting the durable rewrite request", () => {
   const client = read(clientPath);
   const backend = read(functionPath);

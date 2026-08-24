@@ -2146,12 +2146,19 @@ Important mobile rules:
   a small heavy baseline-aligned number with no border, circular background, or pill.
   It remains distinct from the horizontal navigation capsule.
   The revision input label is exactly `Your Attempt` and uses the muted supporting-text
-  color so the student's sentence remains visually primary. Remove the explanatory
+  color so the student's sentence remains visually primary. Its placeholder reads
+  `Rewrite this sentence in your own words. Do not copy the sample.` Remove the explanatory
   sentence under the `Sentence Revision` heading. In editable mode, place one compact
   44px camera-only Scan Revisions button immediately to the left of the trailing
   `Submit` button in the bottom action row. Its visible surface contains only the
   existing camera SVG, while `aria-label` and `title` preserve its accessible name.
   Keep both controls on one row on phone, with Submit taking the remaining width.
+- If Submit finds any required sentence without an accepted result or a draft, turn every
+  revision-required card to its `Your Attempt` face and scroll the first unfinished card
+  into view. Replace the former top red status banner with one compact material alert:
+  `You still have unfinished changes.` Its only visible action is `OK`; dismissing it
+  leaves the first unfinished rewrite field focused. The alert traps keyboard focus,
+  locks background interaction, and uses an immediate transition under Reduced Motion.
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.

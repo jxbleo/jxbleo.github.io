@@ -58,6 +58,8 @@
         editingTitleId: '',
         titleEditError: '',
         leaveDialogOpen: false,
+        incompleteRewriteAlertOpen: false,
+        incompleteRewriteTargetId: '',
         leaveDialogAction: 'dashboard',
         returnFocus: null
     };
@@ -75,6 +77,7 @@
     var currentWritingTitleWindow = document.getElementById('current-writing-title-window');
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var leaveConfirmation = document.getElementById('leave-confirmation');
+    var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
     var stageViewportResetToken = 0;
@@ -2556,7 +2559,7 @@
         var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
         var correctedResponse = '<p class="corrected-sentence"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span></p>';
         var editableResponse = '<p class="original-sentence">' + original + '</p>' +
-            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">Your Attempt</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="不要照抄，按自己的理解重写这句话…" ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
+            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">Your Attempt</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="Rewrite this sentence in your own words. Do not copy the sample." ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="翻到句子分析面"></button>' +
             '<div class="sentence-face-content">' + sentenceMeta + '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
@@ -2576,8 +2579,19 @@
             var missingId = sentenceId(missing, sentences.indexOf(missing));
             state.skipped[missingId] = true;
             state.activeSentence = sentences.indexOf(missing);
-            setStatus('还有句子没有完成。已带你回到第一个未完成的位置。');
+            sentences.forEach(function(sentence, index) {
+                if (rewriteRequired(sentence)) state.rewriteFace[sentenceId(sentence, index)] = true;
+            });
+            setStatus('');
             renderLanguage();
+            openIncompleteRewriteAlert(missingId);
+            window.requestAnimationFrame(function() {
+                var target = document.getElementById('sentence-card-' + missingId);
+                if (target) target.scrollIntoView({
+                    behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                    block: 'center'
+                });
+            });
             return;
         }
         var pending = required.filter(function(sentence, index) {
@@ -2811,7 +2825,32 @@
     }
 
     function updateOverlayLock() {
-        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen);
+        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen);
+    }
+
+    function openIncompleteRewriteAlert(sentenceIdValue) {
+        if (!incompleteRewriteAlert || state.incompleteRewriteAlertOpen) return;
+        state.incompleteRewriteAlertOpen = true;
+        state.incompleteRewriteTargetId = sentenceIdValue || '';
+        incompleteRewriteAlert.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var ok = incompleteRewriteAlert.querySelector('[data-close-incomplete-rewrite]');
+            if (ok) ok.focus({ preventScroll: true });
+        });
+    }
+
+    function closeIncompleteRewriteAlert() {
+        if (!state.incompleteRewriteAlertOpen) return;
+        var targetId = state.incompleteRewriteTargetId;
+        state.incompleteRewriteAlertOpen = false;
+        state.incompleteRewriteTargetId = '';
+        incompleteRewriteAlert.hidden = true;
+        app.inert = state.leaveDialogOpen;
+        updateOverlayLock();
+        var rewriteInput = targetId ? document.getElementById('rewrite-' + targetId) : null;
+        if (rewriteInput && typeof rewriteInput.focus === 'function') rewriteInput.focus({ preventScroll: true });
     }
 
     function openSidebar() {
@@ -2990,6 +3029,7 @@
         if (!button) return;
         if (button.matches('#history-home')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
+        else if (button.matches('[data-close-incomplete-rewrite]')) closeIncompleteRewriteAlert();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
         else if (button.matches('[data-discard-source]')) requestSourceDiscard();
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
@@ -3193,6 +3233,11 @@
         renderPortfolio();
     });
     window.addEventListener('keydown', function(event) {
+        if (state.incompleteRewriteAlertOpen && event.key === 'Tab') {
+            var alertControl = incompleteRewriteAlert.querySelector('[data-close-incomplete-rewrite]');
+            if (alertControl) { event.preventDefault(); alertControl.focus(); }
+            return;
+        }
         if (state.leaveDialogOpen && event.key === 'Tab') {
             var controls = leaveConfirmation.querySelectorAll('button:not(:disabled)');
             if (!controls.length) return;
@@ -3203,11 +3248,13 @@
             return;
         }
         if (event.key === 'Escape') {
-            if (state.leaveDialogOpen) closeLeaveConfirmation();
+            if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
+            else if (state.leaveDialogOpen) closeLeaveConfirmation();
             else if (state.sidebarOpen) closeSidebar();
         }
     });
     window.addEventListener('pageshow', function() {
+        if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
         if (state.leaveDialogOpen) closeLeaveConfirmation();
     });
     document.addEventListener('visibilitychange', function() {
