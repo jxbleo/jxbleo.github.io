@@ -2017,9 +2017,13 @@ High priority improvement:
 - Capture one revision photo from the bottom of a long Sentence Revision page on
   both iPad and phone. Confirm the returned staging card is positioned immediately
   below the sticky toolbar with no blank scroll region, no `Revision Photos` heading,
-  and a centered `1/1`. Confirm the preview is height-capped on iPad. Verify `Add Photo`
-  and `Remove` share the action row below the current image. Add a second and third
-  photo in separate camera interactions: the newest photo becomes current, horizontal
+  and a centered `1/1`. Confirm the preview is height-capped on iPad. Verify `Add Photo`,
+  `Library`, and `Remove` share the compact action layer below the current image;
+  Add Photo opens the camera while Library opens a multi-select photo picker without
+  forcing camera capture. Confirm bottom `Back` and `Start Scanning` remain on one row
+  at 320px and wider; Back returns to the existing Sentence Revision analysis and
+  preserves typed rewrite drafts. Add a second and third
+  photo in separate camera/library interactions: the newest photo becomes current, horizontal
   swipe snaps one photo at a time, and the centered indicator follows `1/2`, `2/2`,
   then the equivalent current/total value after removal; it must never read `1/8`.
   Verify the ordered batch still caps at eight. Press `Start Scanning` and confirm exactly one durable operation carries

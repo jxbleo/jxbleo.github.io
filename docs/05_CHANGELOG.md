@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — Revision photo acquisition controls
+
+- Added a separate Photo Library input beside Add Photo and Remove in revision
+  photo staging, preserving one ordered eight-photo batch.
+- Kept `Back` and `Start Scanning` on one phone row; Back returns to Sentence
+  Revision without committing the staged photos or changing saved rewrite drafts.
+
 ## 2026-08-24 — Direct ready-result re-entry
 
 - Opening an already-ready Writing Composition now renders its saved OCR,

@@ -2143,13 +2143,15 @@
             return '<figure class="photo-preview-card revision-photo-card" data-revision-photo-index="' + index + '">' +
                 '<img src="' + escapeHtml(url) + '" alt="Selected revision photo ' + (index + 1) + '">' +
                 '<div class="revision-photo-card-actions"><button class="secondary-button compact" type="button" data-add-revision-photo' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
+                '<button class="secondary-button compact" type="button" data-add-revision-library aria-label="Choose from Photo Library"' + (count >= 8 ? ' disabled' : '') + '>' + icon('upload') + 'Library</button>' +
                 '<button class="danger-button compact" type="button" data-remove-revision-photo="' + index + '">Remove</button></div></figure>';
         }).join('');
         stage.innerHTML = '<section class="surface surface-pad revision-photo-selection" aria-label="Revision photos">' +
             '<div class="revision-photo-position" id="revision-photo-position" role="status" aria-live="polite" aria-label="Photo ' + (scan.activePhotoIndex + 1) + ' of ' + count + '">' + (scan.activePhotoIndex + 1) + '/' + count + '</div>' +
             '<div class="revision-photo-carousel" data-revision-photo-carousel>' + previews + '</div>' +
             '<input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' +
-            '<div class="form-actions revision-photo-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Cancel</button>' +
+            '<input id="revision-scan-library" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>' +
+            '<div class="form-actions revision-photo-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Back</button>' +
             '<button class="primary-button" type="button" data-start-revision-upload data-disable-when-busy' + (count ? '' : ' disabled') + '>Start Scanning</button></div></section>';
         scheduleStageViewportReset();
         bindRevisionPhotoCarousel();
@@ -2943,7 +2945,7 @@
             state.photoUrls = state.photoUrls.concat(additions.map(function(file) { return URL.createObjectURL(file); }));
             renderSource();
         }
-        if (target.id === 'revision-scan-photo' && target.files && target.files.length) {
+        if ((target.id === 'revision-scan-photo' || target.id === 'revision-scan-library') && target.files && target.files.length) {
             addRevisionScanPhotos(Array.prototype.slice.call(target.files));
             target.value = '';
         }
@@ -3116,6 +3118,10 @@
         else if (button.matches('[data-add-revision-photo]')) {
             var additionInput = document.getElementById('revision-scan-photo');
             if (additionInput) additionInput.click();
+        }
+        else if (button.matches('[data-add-revision-library]')) {
+            var libraryInput = document.getElementById('revision-scan-library');
+            if (libraryInput) libraryInput.click();
         }
         else if (button.matches('[data-remove-revision-photo]')) {
             var scan = revisionScanState();

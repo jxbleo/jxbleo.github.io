@@ -544,10 +544,9 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .sentence-review-heading { padding: 20px 15px 14px; }
     .revision-photo-selection { scroll-margin-top: 74px; }
     .revision-photo-card img { height: min(52vh,520px); }
-    .revision-photo-card-actions button { flex: 1; }
-    .revision-photo-actions { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
-    .revision-photo-actions > button { width: 100%; }
-    .revision-photo-actions [data-start-revision-upload] { grid-column: 1 / -1; }
+    .revision-photo-card-actions button { flex: 1; min-width: 0; padding-right: 8px; padding-left: 8px; }
+    .revision-photo-actions { display: flex; flex-wrap: nowrap; }
+    .revision-photo-actions > button { flex: 1 1 0; min-width: 0; width: auto; padding-right: 10px; padding-left: 10px; }
     .revision-scan-candidate { padding: 14px; }
     .revision-scan-actions { align-items: stretch; flex-direction: column; }
     .revision-scan-actions > button { width: 100%; }
