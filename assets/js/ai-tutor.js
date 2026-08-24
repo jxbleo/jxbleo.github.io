@@ -77,6 +77,22 @@
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
+    var stageViewportResetToken = 0;
+
+    function scheduleStageViewportReset() {
+        var token = ++stageViewportResetToken;
+        window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(function() {
+                if (token !== stageViewportResetToken) return;
+                var main = document.getElementById('ai-tutor-main');
+                var header = document.querySelector('.ai-tutor-header');
+                if (!main) return;
+                var headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+                var targetTop = window.pageYOffset + main.getBoundingClientRect().top - Math.max(12, headerBottom + 12);
+                window.scrollTo(0, Math.max(0, targetTop));
+            });
+        });
+    }
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -692,6 +708,7 @@
 
     function renderAiWaitingExperience(config) {
         config = config || {};
+        var previousScreen = state.screen;
         destroyAiWaitingExperience();
         var durable = config.durable !== false;
         var taskState = waitingTaskState(config.jobStatus, durable);
@@ -725,6 +742,7 @@
             readyAction + '<div class="form-actions ai-waiting-actions">' + extraActions + backgroundAction + '</div></section>';
         mountWaitingRunner();
         updateWaitingStageDom(state.waitingKind, taskState);
+        if (previousScreen !== state.screen) scheduleStageViewportReset();
     }
 
     function updateAiWaitingExperience(config) {
@@ -1151,6 +1169,7 @@
             welcomeRecentHtml(recentCompositions.slice(0, 3)) +
             welcomeWritingFocusHtml() +
             '</div></section>';
+        scheduleStageViewportReset();
     }
 
     function welcomeGreeting() {
@@ -1342,6 +1361,7 @@
             '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(hasPhoto) : textSourceHtml()) + '</section>' +
             '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? 'Scan' : 'Submit') + '</button></div>' +
             '</form></section>';
+        scheduleStageViewportReset();
     }
 
     function rubricOptions(selected) {
@@ -1588,6 +1608,7 @@
             '<div class="form-actions"><button class="secondary-button" type="button" data-retry-ocr>重新检查状态</button>' +
             '<button class="primary-button" type="button" data-reupload>重新上传照片</button></div>' +
             '<button class="quiet-button" type="button" data-return-home>返回 AI Tutor</button></section>';
+        scheduleStageViewportReset();
     }
 
     function ocrRegionsForPage(pageIndex) {
@@ -1616,6 +1637,7 @@
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="Uploaded composition images">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded composition page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded composition page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
             '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(state.confirmedText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
             '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
+        scheduleStageViewportReset();
     }
 
     function saveAndEvaluate() {
@@ -1785,6 +1807,7 @@
         stage.innerHTML = '<section class="surface error-state"><strong>AI 批改没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
             (code === 'WRITING_AI_DAILY_LIMIT_REACHED' ? '' : '<button class="primary-button" type="button" data-retry-review>重新提交批改</button>') + '</div></section>';
+        scheduleStageViewportReset();
     }
 
     function rewriteJobFrom(result) {
@@ -1871,6 +1894,7 @@
         stage.innerHTML = '<section class="surface error-state"><strong>改写检查没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
             '<button class="primary-button" type="button" data-return-rewrites>返回逐句修改</button></div></section>';
+        scheduleStageViewportReset();
     }
 
     function startRewritePolling() {
@@ -1899,6 +1923,7 @@
         destroyAiWaitingExperience();
         state.screen = 'loading';
         stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span><strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(description || '') + '</p></section>';
+        scheduleStageViewportReset();
     }
 
     function renderStandardized() {
@@ -1919,6 +1944,7 @@
             '<article class="feedback-column priorities"><h3>优先改进</h3>' + bulletList(priorities, '这次没有单独列出优先改进项。') + '</article></div>' +
             (!state.readOnly ? '<div class="result-actions"><button class="secondary-button" type="button" data-edit-current>' + icon('edit') + '直接修改内容</button><button class="secondary-button" type="button" data-reupload>' + icon('upload') + '重新上传</button><button class="primary-button" type="button" data-enter-language>内容满意，进入语言批改' + icon('arrow') + '</button></div>' : '') +
             '</section>';
+        scheduleStageViewportReset();
     }
 
     function bulletList(items, empty) {
@@ -2116,6 +2142,7 @@
             '<input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' +
             '<div class="form-actions revision-photo-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Cancel</button>' +
             '<button class="primary-button" type="button" data-start-revision-upload data-disable-when-busy' + (count ? '' : ' disabled') + '>Start Scanning</button></div></section>';
+        scheduleStageViewportReset();
         bindRevisionPhotoCarousel();
     }
 
@@ -2148,7 +2175,6 @@
         }, { passive: true });
         window.requestAnimationFrame(function() {
             window.requestAnimationFrame(function() {
-                selection.scrollIntoView({ block: 'start', behavior: 'auto' });
                 var activeSlide = slides[scan.activePhotoIndex] || slides[0];
                 if (activeSlide) carousel.scrollLeft = activeSlide.offsetLeft;
                 updatePosition();
@@ -2219,6 +2245,7 @@
     }
 
     function renderRevisionScanReview() {
+        var previousScreen = state.screen;
         if (state.screen === 'revision-scan-waiting' && state.waitingKind === 'revision_ocr') {
             finishAiWaitingExperience(function() { renderRevisionScanReview(); });
             return;
@@ -2234,6 +2261,7 @@
             (candidates.length ? '<div class="revision-scan-candidate-list">' + candidates.map(revisionScanCandidateHtml).join('') + '</div>' : '<p class="section-hint">没有可供确认的识别项目。你可以重新拍一张更清晰的照片。</p>') +
             '<div class="form-actions revision-scan-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>返回 Sentence Revision</button>' +
             '<button class="primary-button" type="button" data-confirm-revision-scan' + (canConfirm ? '' : ' disabled') + '>Confirm Scanning</button></div></section>';
+        if (previousScreen !== state.screen) scheduleStageViewportReset();
     }
 
     function renderRevisionScanWaiting(job, autoPoll, allowRetry, durable) {
@@ -2262,6 +2290,7 @@
         stage.innerHTML = '<section class="surface error-state revision-scan-failure"><strong>Revision Scan 没有完成</strong><p>' + escapeHtml(message) + '</p>' +
             '<div class="form-actions"><button class="secondary-button" type="button" data-retry-revision-scan>重新检查状态</button><button class="primary-button" type="button" data-reupload-revision-scan>重新拍照</button></div>' +
             '<button class="quiet-button" type="button" data-cancel-revision-scan>返回 Sentence Revision</button></section>';
+        scheduleStageViewportReset();
     }
 
     function startRevisionScanPolling() {
@@ -2411,12 +2440,14 @@
     }
 
     function renderLanguage() {
+        var previousScreen = state.screen;
         destroyAiWaitingExperience();
         state.screen = 'language';
         updateRevisionProgress();
         var sentences = safeArray(state.review && state.review.sentences);
         if (!sentences.length) {
             stage.innerHTML = '<section class="surface empty-state"><strong>没有需要重写的句子</strong><p>这次批改没有返回逐句训练内容。</p><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button></section>';
+            if (previousScreen !== state.screen) scheduleStageViewportReset();
             return;
         }
         if (state.activeSentence >= sentences.length) state.activeSentence = Math.max(0, sentences.length - 1);
@@ -2443,6 +2474,7 @@
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
             '</section></div>';
         window.requestAnimationFrame(observeSentenceCardHeights);
+        if (previousScreen !== state.screen) scheduleStageViewportReset();
     }
 
     function sentenceCapsuleHtml(sentence, index) {
@@ -2590,6 +2622,7 @@
         stage.innerHTML = '<section class="surface completion-card"><span class="completion-icon">' + icon('check') + '</span><p class="eyebrow">WRITING COMPLETE</p><h2>这次训练完成了。</h2>' +
             '<p>你的原文、语言观察和改写记录已经保存到 Writing Portfolio。查看过参考句同样算完成，它只是帮助方式的一部分。</p>' +
             '<div class="hero-actions" style="justify-content:center"><button class="secondary-button" type="button" data-open-current-readonly>查看本篇记录</button><button class="secondary-button" type="button" data-full-rewrite>整篇重写（可选）</button><button class="primary-button" type="button" data-start-new>' + icon('plus') + '开始新作文</button></div></section>';
+        scheduleStageViewportReset();
     }
 
     function startOptionalFullRewrite() {
@@ -2761,8 +2794,10 @@
         } else if (code === 'WRITING_AI_TIMEOUT' || /network error/i.test(rawMessage)) {
             message = 'OCR 仍在云端处理中。请稍后打开同一篇作文，页面会自动继续查询；不会新建作文记录。';
         }
+        state.screen = 'fatal';
         stage.innerHTML = '<section class="surface error-state"><strong>这一步没有完成</strong><p>' + escapeHtml(message) + '</p><div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
             (state.current ? '<button class="primary-button" type="button" data-resume-current>继续这篇作文</button>' : '') + '</div></section>';
+        scheduleStageViewportReset();
     }
 
     function updateOverlayLock() {

@@ -1790,6 +1790,13 @@ High priority improvement:
   `Submit` for text and `Scan` for photo input. Empty `Discard` returns directly;
   non-empty `Discard` opens the compact dialog with initial focus on `Cancel`,
   Escape/cancel restores focus, and confirmation leaves saved History intact.
+- On iPhone and iPad Safari, scroll to the bottom of a tall first-draft photo list,
+  remove a photo, then remove the final photo. The rebuilt source surface must return
+  below the sticky toolbar with no blank lower viewport. Repeat while adding photos,
+  switching `Scan`/`Type`, switching Brainstorming/Polishing, cancelling Revision Scan,
+  and leaving its final-photo state. Full-screen result/error transitions must also
+  begin at the screen top; sentence-card flips, typing, and waiting-game polling must
+  retain the student's current position.
 - On OCR Review, confirm the only fixed fields are `OCR Review`,
   `Compare with Image`, and one horizontally centered `Confirm`, with
   the editable manuscript directly below the heading and no `Upload Again` action. The image toggle must

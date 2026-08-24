@@ -9,6 +9,9 @@
   preserving capture and selection order.
 - Standardized each preview to a top-left `Page current/total` badge and one
   bottom-right English `Remove` action.
+- Added a shared post-render viewport reset for structural and full-screen Writing
+  transitions, preventing iPhone/iPad Safari from retaining a stale bottom scroll
+  position after tall photo or result content disappears.
 
 ## 2026-08-24 — Visitor access for Intensive Listening and AI Tutor
 

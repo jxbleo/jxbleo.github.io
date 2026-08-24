@@ -384,6 +384,7 @@ check("the first writing screen keeps only the compact source controls", () => {
 check("photo entry opens the native camera, stages multiple pages, and scans only on submit", () => {
   const client = read(clientPath);
   const photoSource = functionSource(client, "photoSourceHtml", "sourcePayload");
+  const renderSource = functionSource(client, "renderSource", "rubricOptions");
   requireEvery(photoSource, [
     "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
     "Take a Photo", "Take Another Photo", "Choose from Library", "multiple",
@@ -395,6 +396,8 @@ check("photo entry opens the native camera, stages multiple pages, and scans onl
     "removed photo reorder controls must not leave a dead click handler");
   assert(/\.source-photo-card-actions\s*\{[^}]*justify-content:\s*flex-end/.test(read(stylePath)),
     "the initial photo Remove action must align to the bottom-right");
+  requireEvery(renderSource, ["stage.innerHTML", "scheduleStageViewportReset"],
+    "source re-render viewport reset");
   assert(/inputMethod:\s*["']text["']/.test(client), "direct text entry must be the default");
   assert(/target\.matches\(\s*["']\[data-writing-photo-input\]["']\s*\)/.test(client),
     "both camera and library inputs must stage selected photos");
@@ -930,7 +933,7 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
   assert(/\(closest \+ 1\) \+ '\/' \+ slides\.length/.test(selectionSource)
       && /aria-label['"], 'Photo ' \+ \(closest \+ 1\) \+ ' of ' \+ slides\.length/.test(selectionSource),
     "the centered counter must track the visible photo as current/total rather than x/8");
-  requireEvery(selectionSource, ["selection.scrollIntoView", "block: 'start'", "window.requestAnimationFrame", "carousel.scrollLeft"],
+  requireEvery(selectionSource, ["scheduleStageViewportReset", "window.requestAnimationFrame", "carousel.scrollLeft"],
     "stable post-camera positioning");
   requireEvery(styles, [
     ".revision-photo-carousel", "scroll-snap-type: x mandatory", ".revision-photo-position",
@@ -942,6 +945,29 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
     "only Start Scanning may hand the accumulated photo batch to cloud upload");
   assert(/const MAX_UPLOAD_PAGES\s*=\s*8/.test(backend),
     "the client eight-photo limit must match the server boundary");
+});
+
+check("full-screen Writing transitions clear stale mobile scroll positions", () => {
+  const client = read(clientPath);
+  const resetSource = functionSource(client, "scheduleStageViewportReset", "escapeHtml");
+  requireEvery(resetSource, [
+    "stageViewportResetToken", "window.requestAnimationFrame", "ai-tutor-main",
+    "ai-tutor-header", "getBoundingClientRect", "window.pageYOffset", "window.scrollTo",
+  ], "shared stage viewport reset");
+  [
+    ["renderWelcome", "welcomeGreeting"],
+    ["renderSource", "rubricOptions"],
+    ["renderOcr", "saveAndEvaluate"],
+    ["renderStandardized", "bulletList"],
+    ["renderRevisionScanPhotoSelection", "revisionScanCandidateHtml"],
+    ["renderCompletion", "startOptionalFullRewrite"],
+  ].forEach(([start, end]) => {
+    assert(functionSource(client, start, end).includes("scheduleStageViewportReset"),
+      `${start} must reset the viewport after replacing the full stage`);
+  });
+  const languageSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
+  requireEvery(languageSource, ["previousScreen", "previousScreen !== state.screen", "scheduleStageViewportReset"],
+    "language screen transition-only viewport reset");
 });
 
 check("Review Scan keeps only mapping cards and imports their edited scan text", () => {

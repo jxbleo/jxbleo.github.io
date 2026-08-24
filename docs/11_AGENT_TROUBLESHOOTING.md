@@ -928,3 +928,19 @@ locator during polling or reopen. `unavailable` is also expected when less than 
 OCR job lease after transcription; do not delay text publication for image decoration. If a candidate coordinate is outside the normalized page bounds, reject
 it rather than clamp it; the transcription must still commit. Never diagnose this by printing image URLs,
 uncertain strings, raw model output, or coordinates.
+
+### 2026-08-24：AI Tutor 重绘后停在底部空白
+
+现象与根因：
+- iPhone/iPad Safari 在学生从较高的照片列表底部删除图片后，可能保留删除前的文档滚动坐标。
+  `stage.innerHTML` 已经换成更短的新界面，但视口仍被限制在新文档底部，因此看起来像跳到一片空白，
+  需要学生手动向上滚动；这不是图片删除或状态保存失败。
+
+固定规则：
+- 会替换完整 Stage 或明显缩短 Source 结构的渲染，必须在两次 `requestAnimationFrame` 后通过共享
+  `scheduleStageViewportReset()` 重新计算主内容相对 sticky toolbar 的位置；不要沿用旧的绝对 scrollY，
+  也不要只依赖 Safari scroll anchoring。
+- 初稿照片添加/删除、最后一张删除、Type/Scan 与评估模式切换都必须归位。订正照片暂存也使用同一规则；
+  移除最后一张或 Cancel 返回 Sentence Revision 时，由跨屏 renderer 归位。
+- 同一 Sentence Revision 内的输入、翻面、Sample 展开和等待 Runner 的状态轮询不是跨屏导航，禁止反复
+  归位。跨屏 renderer 必须比较前后 screen；只有实际进入新屏幕时才重置。
