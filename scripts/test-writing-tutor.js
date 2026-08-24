@@ -362,20 +362,24 @@ check("Writing home keeps unsubmitted input local and creates a Composition only
   const createServer = functionSource(backend, "createComposition", "listCompositions");
   requireEvery(client, ['data-start-mode="language"', 'data-start-mode="standardized"', "startInlineWriting(button.getAttribute('data-start-mode'))"],
     "Writing home mode actions");
-  requireEvery(startClient, ["selectedMode", "homeComposerOpen", "renderWelcome()", "savePendingHomeComposer"],
+  requireEvery(startClient, ["selectedMode", "homeComposerOpen", "renderWelcome()"],
     "local inline composer opening");
   assert(!/writingCall\s*\(\s*['"]createComposition['"]/.test(startClient),
     "selecting Polishing or Brainstorming must not create a server draft");
   assert(!/syncCompositionLocator|syncCurrentSummary|scheduleAutosave/.test(startClient),
     "unsubmitted mode selection must not create History or URL identity");
-  requireEvery(submitClient, ["writingCall('createComposition'", "apiMode(state.assessmentMode)", "clearPendingHomeComposer", "syncCompositionLocator", "syncCurrentSummary"],
+  requireEvery(submitClient, ["writingCall('createComposition'", "apiMode(state.assessmentMode)", "syncCompositionLocator", "syncCurrentSummary"],
     "Submit-time Composition creation");
   assert(/function submitSource\(\)[\s\S]{0,700}ensureCompositionForSubmit\(\)[\s\S]{0,500}(uploadAndExtract|saveAndEvaluate)/.test(client),
     "both text Submit and photo Scan must create the Composition at the commit boundary");
   assert(!/function renderSource\s*\(/.test(client),
     "the retired standalone initial source renderer must be removed");
-  assert(/restorePendingHomeComposer\(\)[\s\S]{0,100}renderWelcome\(\)/.test(client),
-    "refresh without a submitted Composition must restore the inline home composer");
+  assert(!/savePendingHomeComposer|restorePendingHomeComposer/.test(client),
+    "unsubmitted composer state must not survive refresh or re-entry");
+  assert(!/sessionStorage\.setItem\([^\n]{0,180}mrcat-writing-composer-v1:/.test(client),
+    "the retired pending-composer key must never be written");
+  requireEvery(client, ["clearRetiredPendingComposerStorage", "mrcat-writing-composer-v1:"],
+    "retired pending-composer storage cleanup");
   assert(!/renderSource\s*\(/.test(startClient),
     "selecting Polishing or Brainstorming must expand the home composer rather than navigate to the source screen");
   requireEvery(createServer, ["event.assessment_mode", "general_language", "standardized_content", "ASSESSMENT_MODE_INVALID", "assessment_mode: assessmentMode"],
@@ -385,18 +389,14 @@ check("Writing home keeps unsubmitted input local and creates a Composition only
 check("Writing mode cards toggle the inline composer without clearing local input", () => {
   const client = read(clientPath);
   const startClient = functionSource(client, "startInlineWriting", "createNewWriting");
-  const saveLocal = functionSource(client, "savePendingHomeComposer", "restorePendingHomeComposer");
-  const restoreLocal = functionSource(client, "restorePendingHomeComposer", "clearPendingHomeComposer");
   requireEvery(startClient, [
     "state.homeComposerOpen && state.assessmentMode === selectedMode",
-    "state.homeComposerOpen = false", "savePendingHomeComposer()", "renderWelcome()",
+    "state.homeComposerOpen = false", "renderWelcome()",
   ], "same-mode collapse path");
   assert(!/state\.homeComposerOpen\s*=\s*false[\s\S]{0,260}state\.(?:title|promptText|confirmedText|rubricId)\s*=\s*['"]['"]/.test(startClient),
     "collapsing the composer must not clear entered text");
-  requireEvery(saveLocal, ["open: state.homeComposerOpen === true", "title: state.title", "confirmed_text: state.confirmedText"],
-    "collapsed local composer snapshot");
-  requireEvery(restoreLocal, ["state.homeComposerOpen = saved.open === true", "state.title", "state.confirmedText"],
-    "collapsed local composer restoration");
+  assert(!/savePendingHomeComposer|restorePendingHomeComposer/.test(startClient),
+    "collapsing must retain values only in current-page memory, not persistent browser storage");
   assert(/aria-expanded=/.test(functionSource(client, "renderWelcome", "compactQuota")),
     "mode cards must expose their expansion state accessibly");
 });
@@ -2138,8 +2138,10 @@ check("students may discard only a server-verified pre-review draft", () => {
   ], "pre-review draft deletion guard");
   assert(/isDiscardableDraftComposition\s*\(\s*composition\s*\)[\s\S]{0,260}\.remove\s*\(/.test(action),
     "discardDraftComposition may delete only after the server guard passes");
-  requireEvery(client, ["function discardDraftAndReturn", "discardDraftComposition", "permanently removed from History"],
+  requireEvery(client, ["function discardDraftAndReturn", "discardDraftComposition", "discardEmptyComposition", "permanently removed from History"],
     "student draft discard flow");
+  assert(/isEmptyCompositionDraft\(draftSnapshot\)[\s\S]{0,180}\? 'discardEmptyComposition'[\s\S]{0,100}: 'discardDraftComposition'/.test(client),
+    "legacy empty drafts must use the older safe discard action before requiring the new draft action");
   assert(!/deleteComposition|removeComposition/.test(`${backend}\n${client}`), "students must not receive a general composition deletion action");
   assert(!/data-(?:delete|remove)-composition/.test(client), "students must not see a composition deletion control");
 });
