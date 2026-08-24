@@ -5,6 +5,9 @@
 
 ## 2026-08-24 — AI Tutor waiting experience
 
+- Simplified the first Writing screen to two compact training-mode buttons,
+  mode-specific fields, concise `Submit` / `Scan` actions, and a small red
+  `Discard` with an Apple-style confirmation for non-empty input.
 - Unified the four durable AI waiting cards around server-derived Saved,
   Queued, Analysing, and Ready stages, with an explicit Uploading boundary
   before the server confirms a persistent Job.

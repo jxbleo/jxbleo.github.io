@@ -1759,6 +1759,13 @@ High priority improvement:
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
+- On the first Writing screen, confirm the removed heading, explanation, step,
+  and section labels are absent. Verify the two mode buttons read `语言语法提升`
+  and `标化考试脑暴`; language text entry shows only `作文名称` and `你的作文`,
+  while standardized mode adds Prompt and Rubric. Confirm the green action reads
+  `Submit` for text and `Scan` for photo input. Empty `Discard` returns directly;
+  non-empty `Discard` opens the compact dialog with initial focus on `Cancel`,
+  Escape/cancel restores focus, and confirmation leaves saved History intact.
 - On OCR Review, confirm the only fixed fields are `OCR Review`,
   `Compare with Image`, and one horizontally centered `Confirm`, with
   the editable manuscript directly below the heading and no `Upload Again` action. The image toggle must
