@@ -21,7 +21,7 @@
 
 .ai-waiting-progress {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: start;
     width: 100%;
     min-width: 0;
@@ -44,6 +44,7 @@
 }
 
 .ai-waiting-stage-node {
+    position: relative;
     display: grid;
     place-items: center;
     width: 27px;
@@ -56,9 +57,23 @@
     font-weight: 900;
     transition: transform .25s ease, background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
+.ai-waiting-stage-check {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 18;
+    stroke-dashoffset: 18;
+    opacity: 0;
+    transition: stroke-dashoffset .28s ease, opacity .16s ease;
+}
 
 .ai-waiting-stage.is-complete { color: #39765b; }
 .ai-waiting-stage.is-complete .ai-waiting-stage-node { border-color: #4e9a76; background: #4e9a76; }
+.ai-waiting-stage.is-complete .ai-waiting-stage-check { stroke-dashoffset: 0; opacity: 1; }
 .ai-waiting-stage.is-active { color: #244841; }
 .ai-waiting-stage.is-active .ai-waiting-stage-node {
     border-color: #4e9a76;
@@ -68,9 +83,12 @@
 }
 .ai-waiting-stage.is-upcoming .ai-waiting-stage-node { background: #eef3f1; }
 .ai-waiting-connector {
-    align-self: start;
+    position: absolute;
+    z-index: -1;
+    top: 13px;
+    left: calc(50% + 17px);
+    right: calc(-50% + 17px);
     height: 2px;
-    margin: 13px 8px 0;
     background: #dce5e1;
     transition: background-color .4s ease;
 }
@@ -133,16 +151,35 @@
     70% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
-.ai-waiting-experience:has(.ready-announced) .ai-waiting-stage.is-complete:last-of-type .ai-waiting-stage-node {
+.ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node {
     animation: ai-waiting-ready-pop .4s ease both;
-    box-shadow: 0 0 0 9px rgba(78, 154, 118, .13);
+}
+.ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node::after {
+    position: absolute;
+    inset: -2px;
+    border: 2px solid rgba(78, 154, 118, .34);
+    border-radius: inherit;
+    content: '';
+    pointer-events: none;
+    animation: ai-waiting-ready-halo .7s ease-out both;
+}
+.ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-check {
+    animation: ai-waiting-check-draw .4s ease .05s both;
+}
+@keyframes ai-waiting-ready-halo {
+    from { opacity: .9; transform: scale(.9); }
+    to { opacity: 0; transform: scale(1.75); }
+}
+@keyframes ai-waiting-check-draw {
+    from { opacity: 0; stroke-dashoffset: 18; }
+    to { opacity: 1; stroke-dashoffset: 0; }
 }
 
 @media (max-width: 640px) {
     .ai-waiting-experience { gap: 18px; padding: 22px 16px; border-radius: 22px; }
-    .ai-waiting-progress { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); }
-    .ai-waiting-stage-label { max-width: 5.2em; overflow-wrap: anywhere; }
-    .ai-waiting-connector { margin-left: 3px; margin-right: 3px; }
+    .ai-waiting-progress { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .ai-waiting-stage-label { font-size: .68rem; white-space: nowrap; }
+    .ai-waiting-connector { left: calc(50% + 15px); right: calc(-50% + 15px); }
     .ai-waiting-actions { display: grid; grid-template-columns: 1fr; width: 100%; }
     .ai-waiting-actions > * { width: 100%; }
     .ai-waiting-actions [data-return-home] { margin-left: 0; }
@@ -150,7 +187,9 @@
 
 @media (prefers-reduced-motion: reduce) {
     .ai-waiting-stage.is-active .ai-waiting-stage-node,
-    .ai-waiting-experience:has(.ready-announced) .ai-waiting-stage.is-complete:last-of-type .ai-waiting-stage-node { animation: none; }
+    .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node,
+    .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-check,
+    .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node::after { animation: none; }
     .ai-waiting-stage-node, .ai-waiting-connector { transition: none; }
     .runner-jump-button:active { transform: none; }
 }

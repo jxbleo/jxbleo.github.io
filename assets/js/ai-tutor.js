@@ -592,10 +592,13 @@
     function waitingStageMarkup(kind, taskState) {
         return waitingStageDefinitions(kind).map(function(label, stageIndex) {
             var stageClass = waitingStageClass(stageIndex, taskState);
-            var symbol = stageClass === 'is-complete' ? '✓' : '';
             var current = stageClass === 'is-active' ? ' aria-current="step"' : '';
-            var connector = stageIndex < 3 ? '<span class="ai-waiting-connector" aria-hidden="true"></span>' : '';
-            return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage-index="' + stageIndex + '"' + current + '><span class="ai-waiting-stage-node" aria-hidden="true">' + symbol + '</span><span class="ai-waiting-stage-label">' + escapeHtml(waitingStageLabel(kind, stageIndex, taskState)) + '</span></li>' + connector;
+            var connectorState = { uploading: 0, queued: 1, analysing: 2, ready: 3, failed: 2 }[taskState];
+            var connector = stageIndex < 3
+                ? '<span class="ai-waiting-connector ' + (connectorState != null && stageIndex < connectorState ? 'is-complete' : 'is-upcoming') + '" aria-hidden="true"></span>'
+                : '';
+            var check = '<svg class="ai-waiting-stage-check" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.2 8.2 14l7.4-8"></path></svg>';
+            return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage-index="' + stageIndex + '"' + current + '><span class="ai-waiting-stage-node" aria-hidden="true">' + check + '</span><span class="ai-waiting-stage-label">' + escapeHtml(waitingStageLabel(kind, stageIndex, taskState)) + '</span>' + connector + '</li>';
         }).join('');
     }
 
@@ -609,8 +612,6 @@
             item.className = nextClass;
             if (statusClass === 'is-active') item.setAttribute('aria-current', 'step');
             else item.removeAttribute('aria-current');
-            var mark = item.querySelector('.ai-waiting-stage-node');
-            if (mark) mark.textContent = statusClass === 'is-complete' ? '✓' : '';
             var label = item.querySelector('.ai-waiting-stage-label');
             if (label) label.textContent = waitingStageLabel(kind, index, taskState);
         });
@@ -703,6 +704,7 @@
 
     function finishAiWaitingExperience(next) {
         if (state.waitingFinishPending || state.waitingResultAction) return;
+        var shouldAnnounce = !state.waitingReadyAnnounced;
         state.waitingFinishPending = true;
         state.waitingResultAction = typeof next === 'function' ? next : function() {};
         state.waitingTaskState = 'ready';
@@ -717,32 +719,59 @@
         var title = stage && stage.querySelector('[data-waiting-title]');
         if (title) title.textContent = titles[0];
         var action = stage && stage.querySelector('[data-view-waiting-result]');
-        if (action) { action.textContent = titles[1]; action.parentElement.hidden = false; action.parentElement.classList.add('ready-announced'); }
+        if (action) { action.textContent = titles[1]; action.parentElement.hidden = false; }
+        var experience = stage && stage.querySelector('.ai-waiting-experience');
+        if (experience && shouldAnnounce) experience.classList.add('is-ready-announced');
         var live = stage && stage.querySelector('[data-waiting-live]');
-        if (live && !state.waitingReadyAnnounced) live.textContent = titles[0] + '.';
-        if (!state.waitingReadyAnnounced) {
+        if (live && shouldAnnounce) live.textContent = titles[0] + '.';
+        if (shouldAnnounce) {
             state.waitingReadyAnnounced = true;
             playWaitingReadySound();
         }
     }
 
+    function waitingAudioContext() {
+        var AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtor) return null;
+        if (!state.waitingAudioContext) state.waitingAudioContext = new AudioCtor();
+        return state.waitingAudioContext;
+    }
+
+    function unlockWaitingReadySound() {
+        try {
+            var audio = waitingAudioContext();
+            if (audio && audio.state === 'suspended' && typeof audio.resume === 'function') {
+                var resume = audio.resume();
+                if (resume && typeof resume.catch === 'function') resume.catch(function() {});
+            }
+        } catch (error) {}
+    }
+
     function playWaitingReadySound() {
         try {
-            if (document.hidden || !window.AudioContext && !window.webkitAudioContext) return;
-            var AudioCtor = window.AudioContext || window.webkitAudioContext;
-            var audio = state.waitingAudioContext || new AudioCtor();
-            state.waitingAudioContext = audio;
-            var now = audio.currentTime;
-            var gain = audio.createGain();
-            gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.exponentialRampToValueAtTime(0.08, now + 0.025);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.46);
-            gain.connect(audio.destination);
-            [659, 988].forEach(function(frequency, index) {
-                var oscillator = audio.createOscillator();
-                oscillator.type = 'sine'; oscillator.frequency.value = frequency;
-                oscillator.connect(gain); oscillator.start(now + index * 0.17); oscillator.stop(now + index * 0.17 + 0.2);
-            });
+            if (document.hidden) return;
+            var audio = waitingAudioContext();
+            if (!audio) return;
+            function scheduleChime() {
+                if (document.hidden || audio.state === 'suspended') return;
+                var now = audio.currentTime;
+                var gain = audio.createGain();
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(0.08, now + 0.025);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.46);
+                gain.connect(audio.destination);
+                [659, 988].forEach(function(frequency, index) {
+                    var oscillator = audio.createOscillator();
+                    oscillator.type = 'sine'; oscillator.frequency.value = frequency;
+                    oscillator.connect(gain); oscillator.start(now + index * 0.17); oscillator.stop(now + index * 0.17 + 0.2);
+                });
+            }
+            if (audio.state === 'suspended' && typeof audio.resume === 'function') {
+                var resumed = audio.resume();
+                if (resumed && typeof resumed.then === 'function') resumed.then(scheduleChime).catch(function() {});
+                return;
+            }
+            scheduleChime();
         } catch (error) {}
     }
 
@@ -777,12 +806,12 @@
 
         function poll() {
             if (!active()) return;
+            state.waitingPollNow = poll;
             if (state.waitingPollInFlight) {
                 state.waitingPollWakePending = true;
                 return;
             }
             state.waitingPollInFlight = true;
-            state.waitingPollNow = poll;
             var hadError = false;
             writingCall('getComposition', { composition_id: capturedCompositionId }).then(function(result) {
                 if (!active()) return;
@@ -793,7 +822,7 @@
             }).catch(function(error) {
                 if (!active()) return;
                 hadError = true;
-                state.waitingPollFailures = Math.min(3, state.waitingPollFailures + 1);
+                state.waitingPollFailures = Math.min(4, state.waitingPollFailures + 1);
                 if (typeof config.onError === 'function') config.onError(error);
             }).then(function() {
                 state.waitingPollInFlight = false;
@@ -2055,7 +2084,7 @@
             kind: 'revision_ocr', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', generationKey: 'revisionScanPollGeneration',
             isActive: function() { return state.revisionScanPollActive; },
             operationId: function() { return firstText(state.revisionScan && state.revisionScan.job && state.revisionScan.job.operation_id); },
-            returnedOperationId: function(result) { return firstText(revisionScanJobFrom(result).operation_id); },
+            returnedOperationId: function(result) { return firstText(revisionScanJobFrom(result && result.composition || result).operation_id); },
             onSuccess: function(result) {
                 var composition = result.composition || {};
                 state.current = composition;
@@ -2894,6 +2923,7 @@
         event.preventDefault();
         sentence.click();
     });
+    document.addEventListener('pointerdown', unlockWaitingReadySound, { passive: true });
 
     document.getElementById('history-new-writing').addEventListener('click', function() {
         closeSidebar();
@@ -2939,6 +2969,10 @@
     window.addEventListener('pagehide', function() {
         stopOcrPolling(); stopReviewPolling(); stopRewritePolling(); stopRevisionScanPolling();
         destroyAiWaitingExperience();
+        if (state.waitingAudioContext && typeof state.waitingAudioContext.close === 'function') {
+            try { state.waitingAudioContext.close(); } catch (error) {}
+        }
+        state.waitingAudioContext = null;
     });
 
     if (currentWritingTitleWindow && window.ResizeObserver) {
