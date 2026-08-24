@@ -1853,9 +1853,11 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   七天内由定时清理删除。OCR 和任务元数据不能复制作文正文，OCR 不计每日批改字数。
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
   Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
-- 新作文输入页不显示页眉说明、步骤或区块标签，只保留互斥的 `语言语法提升` / `标化考试脑暴`
-  模式按钮和文字/拍照输入切换。语言模式不显示 Writing Prompt；直接输入时内容区只有
-  `作文名称` 与 `你的作文`。底部主按钮按输入方式显示 `Submit` 或 `Scan`。左侧小号红色
+- 新作文输入页不显示页眉说明、步骤或区块标签，只保留互斥的 `Polishing` / `Brainstorming`
+  模式按钮和 `Type` / `Scan` 输入切换，默认选择 `Type`。语言模式不显示 Writing Prompt；直接输入时内容区只有
+  带 `Optional` 标记的 `Title` 与 `Your Writing`，正文占位文案仍为 `Type or paste your writing here…`。学生首次点击输入方式 `Scan`
+  时立即唤起后置相机；拍摄后返回照片暂存区，可继续拍照或通过 `Choose from Library` 加入多张图片，最多八页。选择照片只暂存，
+  不启动 OCR；底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色
   `Discard` 在空白稿上直接返回；存在学生输入时先显示确认弹窗，已自动保存的草稿继续保留在 History。
 - OCR Review 只保留顶部 `OCR Review`、`Compare with Image`、紧接其后的正文编辑器，以及底部
   唯一一个水平居中的 `Confirm`。此步骤删除 `Upload Again`；原有中文说明、步骤、存疑数量和编辑器标签全部

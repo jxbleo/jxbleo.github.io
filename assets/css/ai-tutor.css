@@ -194,6 +194,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .source-submit-button { min-width: 118px; margin-left: auto; }
 .field { display: grid; gap: 7px; }
 .field > span { font-size: .76rem; font-weight: 830; }
+.field-optional { margin-left: 6px; color: var(--ai-muted); font-size: .67rem; font-weight: 650; }
 .field em { color: var(--ai-danger); font-style: normal; }
 .field input, .field textarea, .field select, .rewrite-input {
     width: 100%; border: 1px solid var(--ai-line); border-radius: 15px; color: var(--ai-ink); background: rgba(255,255,255,.88); outline: none;
@@ -218,6 +219,8 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .photo-preview-card > div { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
 .add-photo-button { position: relative; width: fit-content; margin-top: 10px; overflow: hidden; }
 .add-photo-button input { position: absolute; inset: 0; opacity: 0; }
+.photo-source-actions { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; margin-top: 10px; }
+.photo-source-actions .add-photo-button { margin-top: 0; }
 .form-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
 
 .ocr-review-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
