@@ -1868,6 +1868,10 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   最后单独显示已完成订正的 Composition。每篇胶囊含模式、标题、当前状态和细进度条；对应分区
   没有项目时不显示空占位。
   主页删除 `Quick Start`、`Start New`、模式图标与箭头，也不再显示 `Recent Writing` 或 `Writing Focus`。
+  三个自上而下的区域使用统一小标题栏：新作文为 `New`，未完成作品为 `Continue`，已完成作品为
+  `Review`。点击当前已展开的 Polishing 或 Brainstorming 第二次必须收起输入表单，并正确更新
+  `aria-expanded`；收起只改变显示状态，不清空任何尚未提交的 Title、Prompt、Writing 或 Rubric，
+  再次展开必须恢复原值。
   点击任意未完成稿或 History 项目必须先打开与 Dashboard Library 任务入口相同材质、尺寸与弹入动画的确认层；确认层只投影作文标题、当前进度文字与进度条，学生明确 Enter 后才读取全文。
   主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余 AI 批改词数。
 - 点击主页 `Polishing` 或 `Brainstorming` 不进入新的输入页面，而是在两个按钮下方原位展开表单；展开采用克制、可中断且尊重

@@ -1994,6 +1994,11 @@ Important mobile rules:
   session state instead of opening the retired standalone input screen. The
   `Your Writing` placeholder and first typed line sit near the textarea's top
   edge rather than inheriting an oversized top-leading gap.
+- Writing Home labels its vertical regions `New`, `Continue`, and `Review` in a
+  shared small-title treatment. Pressing the already-selected Polishing or
+  Brainstorming card again collapses the composer along the same spatial path;
+  `aria-expanded` follows the visible state. Collapse is non-destructive: all
+  local fields survive and reappear on the next expansion.
 - The page exposes only the top toolbar above card-based content. Home inside
   History opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs

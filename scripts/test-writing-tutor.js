@@ -333,8 +333,10 @@ check("Writing home is an action-first adaptive workspace", () => {
   const styles = read(stylePath);
   const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
-    "welcomeUnfinishedHtml", "welcomeCompletedHtml", "Polishing", "Brainstorming", "homeComposerHtml",
+    "welcomeUnfinishedHtml", "welcomeCompletedHtml", "Polishing", "Brainstorming", "homeComposerHtml", ">New</p>",
   ], "Writing home workspace");
+  requireEvery(client, ["welcomeCompositionStrip(items, 'Continue'", "welcomeCompositionStrip(items, 'Review'"],
+    "Writing home section labels");
   assert(!/QUICK START|Start New/.test(welcome),
     "Writing home must not retain the removed Quick Start or Start New headings");
   assert(!/writing-mode-icon|writing-card-arrow/.test(welcome),
@@ -378,6 +380,25 @@ check("Writing home keeps unsubmitted input local and creates a Composition only
     "selecting Polishing or Brainstorming must expand the home composer rather than navigate to the source screen");
   requireEvery(createServer, ["event.assessment_mode", "general_language", "standardized_content", "ASSESSMENT_MODE_INVALID", "assessment_mode: assessmentMode"],
     "server-persisted initial review mode");
+});
+
+check("Writing mode cards toggle the inline composer without clearing local input", () => {
+  const client = read(clientPath);
+  const startClient = functionSource(client, "startInlineWriting", "createNewWriting");
+  const saveLocal = functionSource(client, "savePendingHomeComposer", "restorePendingHomeComposer");
+  const restoreLocal = functionSource(client, "restorePendingHomeComposer", "clearPendingHomeComposer");
+  requireEvery(startClient, [
+    "state.homeComposerOpen && state.assessmentMode === selectedMode",
+    "state.homeComposerOpen = false", "savePendingHomeComposer()", "renderWelcome()",
+  ], "same-mode collapse path");
+  assert(!/state\.homeComposerOpen\s*=\s*false[\s\S]{0,260}state\.(?:title|promptText|confirmedText|rubricId)\s*=\s*['"]['"]/.test(startClient),
+    "collapsing the composer must not clear entered text");
+  requireEvery(saveLocal, ["open: state.homeComposerOpen === true", "title: state.title", "confirmed_text: state.confirmedText"],
+    "collapsed local composer snapshot");
+  requireEvery(restoreLocal, ["state.homeComposerOpen = saved.open === true", "state.title", "state.confirmedText"],
+    "collapsed local composer restoration");
+  assert(/aria-expanded=/.test(functionSource(client, "renderWelcome", "compactQuota")),
+    "mode cards must expose their expansion state accessibly");
 });
 
 check("the two evaluation modes use the approved product labels", () => {
