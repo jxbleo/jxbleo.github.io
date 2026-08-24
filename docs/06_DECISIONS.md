@@ -9,22 +9,25 @@ Decision:
 
 Implement `Mr. Cat Runner` as a small native Canvas IIFE loaded before the AI
 Tutor client. The client owns the waiting DOM, server status projection,
-polling, and lifecycle; the Runner exposes only jump, task-state, finish,
-pause/resume, destroy, and safe in-memory snapshot controls.
+polling, Ready handoff, synthesized completion cue, and lifecycle; the Runner
+exposes only jump, task-state, pause/resume, destroy, and safe in-memory
+snapshot controls (with a legacy finish method retained for compatibility but
+never used by the V2 success path).
 
 Reason:
 
 Waiting is a real durable-job state, not a game session. A Canvas-only module
 keeps the interaction lightweight, avoids a new dependency, and makes it
-impossible for distance, collisions, or Ink to become a hidden source of AI
-progress, rewards, analytics, or persisted student data. A bounded finish
-callback and reduced-motion/hidden-tab fallbacks preserve agency when the real
-result is ready.
+impossible for score, distance, collectibles, collisions, or jump state to
+become a hidden source of AI progress, rewards, analytics, or persisted student
+data. A student-clicked result action preserves agency when the real result is
+ready. Completion sound is synthesized with Web Audio only, and failure to
+create or play it is ignored.
 
 Trade-offs:
 
-- The interaction is intentionally an endless visual diversion rather than a
-  scored game or progression system.
+- The interaction is intentionally an endless visual diversion with an
+  ephemeral local score rather than a reward or progression system.
 - A missing Canvas or animation API reduces the card to its accessible status
   and real polling; it must never block the waiting or result experience.
 

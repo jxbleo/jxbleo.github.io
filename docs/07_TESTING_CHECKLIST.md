@@ -52,18 +52,20 @@ npm run test:writing-tutor
 ```
 
 The Runner contract test verifies the public controller API, idempotent
-destruction, one-shot finish callbacks, reduced motion, pause/resume delta
-handling, pointer jumping, stumble-without-failure collisions, temporary
-Distance/Ink state, and the absence of network, CloudBase, persistence, or
-reward integration. The Writing Tutor contracts verify that all four durable
-waiting functions use the shared renderer while retaining independent polling,
-success predicates, failure cards, upload safe-to-leave gating, and lifecycle
-cleanup.
+destruction, repeat/air/landing-buffer jumps, one-time obstacle deductions,
+negative Score, green 3–7 collectible replenishment, Ready continuity,
+reduced-motion and pause/resume behavior, and the absence of network, CloudBase,
+persistence, or reward integration. The Writing Tutor contracts verify
+task-specific tracks, no ordinary waiting explanation, Back/upload gating,
+serialized visible/hidden polling with wake and backoff, stale identity guards,
+one-shot Ready actions, synthesized-audio protection, success continuation,
+failure cleanup, and the durable result predicates.
 
 Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
 keyboard Jump, focused form controls, hidden-tab pause, reduced motion, missing
-Runner module fallback, network polling recovery, and a result handoff within
-500ms. Confirm no Canvas, distance, or Ink remains in any failure or result card.
+Runner module fallback, network polling recovery, Ready without refresh, one
+result click, silent re-entry to a completed Job, and continued play after
+Ready. Confirm no Canvas or local Score remains in any failure or result card.
 
 TeacherAdmin deployment-package checks:
 

@@ -1791,19 +1791,29 @@ cloudfunctions/
 ### Durable AI waiting experience
 
 - The four durable student-facing AI tasks (`ocr`, `review`, `rewrite`, and
-  `revision_ocr`) use one waiting surface with server-derived `Saved`, `Queued`,
-  `Analysing`, and `Ready` stages. The browser never invents percentages or
-  remaining-time estimates.
-- Only a confirmed durable handoff shows `Continue in Background`. An upload
-  that is still being confirmed shows `Uploading`, keeps the runner off, and
-  never promises that the task will continue after the page closes.
-- While a durable task waits, the surface may host the temporary, original
-  `Mr. Cat Runner` canvas activity. Distance and Ink are ephemeral visual state;
-  they are not scores, rewards, analytics, or AI progress.
-- The runner has no formal failure screen. A collision causes a brief stumble
-  and the runner continues. Real job success immediately takes priority, with
-  a finish handoff capped at 500ms; reduced-motion users, hidden tabs, missing
-  modules, and errors go directly to the real result.
+  `revision_ocr`) use one waiting surface with server-derived, task-specific
+  four-stage tracks. OCR is `Uploaded / Reading / Organising / Ready`, review
+  is `Saved / Preparing / Reviewing / Ready`, rewrite is `Saved / Comparing /
+  Checking / Ready`, and revision OCR is `Uploaded / Reading / Matching /
+  Ready`. The browser never invents percentages or remaining-time estimates.
+- Only a confirmed durable handoff shows `Back`. An upload that is still being
+  confirmed shows `Uploading`, keeps the runner off, hides Back, and never
+  promises that the task will continue after the page closes.
+- While a durable task waits, the surface hosts the temporary `Mr. Cat Runner`
+  canvas activity. Its in-memory Score can be positive or negative: one
+  obstacle collision subtracts one, each green collectible adds one, and the
+  runner supports repeat jumps, one air jump, and a 120ms landing buffer.
+  Score, collectibles, distance, and stumble state are discarded on refresh and
+  are never rewards, analytics, or AI progress.
+- A successful Job changes the same open page into a visible Ready state with
+  one gentle synthesized two-note prompt and a full-width result button. The
+  runner continues until the student clicks that button; no result renderer is
+  entered automatically. Reduced motion removes choreography without changing
+  the manual handoff. Reopening an already-ready Job is silent.
+- Waiting polling runs immediately, then serially at 3 seconds while visible
+  and 10 seconds while hidden; focus, online, and visibility changes wake it.
+  Temporary failures back off at 3/6/12/20 seconds. A stale Composition,
+  operation, or polling generation cannot update the current page.
 - Refresh, browser closure, re-login, and reopening a Composition continue to
   use the existing server Job and polling lifecycle. Leaving the waiting card
   never cancels a durable Job.

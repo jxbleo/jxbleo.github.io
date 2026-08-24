@@ -29,8 +29,9 @@ boundaries matter more than visual polish right now.
   dictionary fallback
 - Weekly and monthly class learning reports: one authenticated shared link shows
   the class leaderboard while each family sees only its own learner's details
-- AI Tutor durable-job waiting cards with the original, temporary Mr. Cat Runner
-  canvas activity; Runner state is never stored or sent to CloudBase
+- AI Tutor durable-job waiting cards with task-specific progress, a replayable
+  Mr. Cat Runner score/collectibles activity, and a student-controlled Ready
+  handoff; Runner state is never stored or sent to CloudBase
 
 ## Current Stack
 

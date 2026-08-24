@@ -1292,7 +1292,8 @@ check("rewrite Check polls, survives disconnects, and resumes after reopening th
       && (clearOperationIndex < 0 || networkReturnIndex < clearOperationIndex),
     "the network-disconnect branch must return before clearing the rewrite operation_id");
   requireEvery(pollingSource, ["getComposition", "rewriteReady", "setTimeout"], "rewrite result polling");
-  assert(/\.catch\s*\([\s\S]{0,500}setTimeout/.test(pollingSource),
+  const sharedPolling = matchingFunctionSource(client, "startWaitingPolling", "shared waiting polling function");
+  assert(/\.catch\s*\([\s\S]{0,900}scheduleWaitingPoll/.test(sharedPolling),
     "rewrite polling must keep retrying after a transient network failure");
   assert(/job_type\s*={2,3}\s*["']rewrite["']/.test(loadSource)
       && /queued|processing/.test(loadSource)
@@ -1903,7 +1904,7 @@ check("the shared AI waiting assets load before the Tutor client", () => {
   requireEvery(`${page}\n${client}`, [
     "assets/css/ai-waiting-runner.css",
     "assets/js/ai-waiting-runner.js",
-    "Continue in Background",
+    "data-view-waiting-result",
   ], "AI waiting asset loading");
   assert(page.indexOf("ai-waiting-runner.js") < page.indexOf("ai-tutor.js"), "Runner must load before ai-tutor.js");
 });
@@ -1938,17 +1939,64 @@ check("all four durable jobs use one waiting renderer and keep their polling", (
 
 check("the waiting stages reflect server state and expose only a durable handoff", () => {
   const client = read(clientPath);
-  const renderer = `${functionSource(client, "waitingStageLabel", "waitingStageMarkup")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
-  requireEvery(renderer, ["Saved", "Queued", "Analysing", "Ready", "durable", "Continue in Background", "runner-canvas"], "waiting renderer contract");
-  assert(/durable\s*&&\s*config\.allowBackground\s*!==\s*false/.test(renderer), "background action must depend on durable confirmation");
+  const renderer = `${functionSource(client, "waitingStageDefinitions", "waitingStageClass")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
+  requireEvery(renderer, ["Uploaded", "Reading", "Organising", "Preparing", "Reviewing", "Comparing", "Checking", "Matching", "Ready", "runner-canvas", "data-return-home"], "waiting renderer contract");
+  assert(!/Continue in Background|Waiting for the same saved|checks every 5 seconds|Distance|Ink/.test(renderer), "V2 waiting renderer must remove legacy copy and metrics");
+  assert(/waitingStageDefinitions\s*\(\s*kind/.test(renderer), "waiting stages must be task-specific");
   const ocrWaiting = functionSource(client, "renderOcrWaiting", "startOcrPolling");
   assert(/durable:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate the durable handoff");
-  assert(/allowBackground:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate Continue in Background");
+  assert(/allowBackground:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate Back");
   assert(!/预计|剩余秒|百分比|%/.test(renderer), "waiting renderer must not display fake progress or time estimates");
   assert(/revision_ocr\s*:\s*["']revision-scan-waiting["']/.test(client), "revision OCR must keep its existing screen identity");
   const revisionUpload = matchingFunctionSource(client, "beginRevisionScanUpload", "revision upload source");
   assert(/status:\s*["']photo_uploading["'][\s\S]{0,180}durable:\s*false/.test(revisionUpload), "revision upload must render a non-durable Uploading state before finish");
   assert(!/renderRevisionScanWaiting\s*\(\s*\{[^}]*status:\s*["']queued["'][^)]*\)\s*;/.test(revisionUpload), "revision upload must not claim a queued durable job before finishRevisionScanUpload");
+});
+
+check("V2 polling is visible-aware, serialized, wakeable, and bounded", () => {
+  const client = read(clientPath);
+  requireEvery(client, [
+    "waitingPollTimer",
+    "waitingPollInFlight",
+    "waitingPollWakePending",
+    "waitingPollFailures",
+    "scheduleWaitingPoll",
+    "wakeWaitingPoll",
+    "clearWaitingPollSchedule",
+    "waitingPollDelay",
+    "visibilitychange",
+    "online",
+    "focus",
+  ], "shared polling controller");
+  assert(/waitingPollInFlight/.test(client) && /if\s*\(state\.waitingPollInFlight\)/.test(client), "polling needs an in-flight guard");
+  assert(/hidden[\s\S]{0,180}10000|document\.hidden[\s\S]{0,180}10\s*\*\s*1000/.test(client), "hidden tabs must use the 10-second cadence");
+  assert(/!document\.hidden[\s\S]{0,180}3000|document\.hidden\s*\?\s*10000\s*:\s*3000/.test(client), "visible tabs must use the 3-second cadence");
+  assert(/3\s*\*\s*1000[\s\S]{0,180}20\s*\*\s*1000|waitingPollFailures[\s\S]{0,260}20\s*\*\s*1000/.test(client), "poll errors must back off to a 20-second cap");
+  ["startOcrPolling", "startReviewPolling", "startRewritePolling", "startRevisionScanPolling"].forEach((name) => {
+    const source = matchingFunctionSource(client, name, `${name} source`);
+    requireEvery(source, ["getComposition", "scheduleWaitingPoll", "waitingPollInFlight"], `${name} serialized polling`);
+  });
+});
+
+check("waiting stages and task predicates keep durable identity guards", () => {
+  const client = read(clientPath);
+  requireEvery(client, ["composition_id", "operation_id", "generationKey", "isActive", "waitingKind"], "stale polling guard vocabulary");
+  requireEvery(client, ["pending_ocr", "reviewReady", "rewriteReady", "revisionScanReady"], "ready predicates");
+  assert(/waitingResultAction/.test(client), "result action must be held by the waiting surface");
+  assert(/compositionId|composition_id/.test(client), "polling must retain Composition identity");
+});
+
+check("success remains Ready until the student clicks one result action", () => {
+  const client = read(clientPath);
+  const renderer = functionSource(client, "finishAiWaitingExperience", "destroyAiWaitingExperience");
+  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "Your Draft Is Ready", "Your Review Is Ready", "Your Feedback Is Ready", "Your Revision Scan Is Ready"], "Ready handoff");
+  assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
+  requireEvery(client, ["Review Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "AudioContext", "ready-announced"], "Ready controls and sound");
+  assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
+  ["showOcrResult", "showReviewResult", "applyRewriteResult"].forEach((name) => {
+    const source = matchingFunctionSource(client, name, `${name} success source`);
+    assert(source.includes("finishAiWaitingExperience"), `${name} must use the Ready handoff`);
+  });
 });
 
 check("success and failure paths cleanly hand off or destroy the Runner", () => {
@@ -1973,7 +2021,8 @@ check("success and failure paths cleanly hand off or destroy the Runner", () => 
     "state.waitingRunner.resume()",
   ], "Runner page lifecycle");
   const finishSource = functionSource(client, "finishAiWaitingExperience", "destroyAiWaitingExperience");
-  requireEvery(finishSource, ["waitingTaskState = 'ready'", "setTaskState('ready')", "setTimeout(complete, 500)"], "bounded Ready handoff");
+  requireEvery(finishSource, ["waitingTaskState = 'ready'", "setTaskState('ready')", "waitingResultAction"], "Ready handoff");
+  assert(!/\.finish\s*\(/.test(finishSource), "Ready must not stop the Runner through finish()");
 });
 
 check("the Runner remains optional and does not own AI state", () => {
