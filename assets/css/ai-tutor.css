@@ -450,7 +450,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .ocr-photo-toggle { width: 100%; }
     .ocr-layout.show-photo { display: block; }
     .photo-preview-grid { grid-template-columns: minmax(0,1fr); }
-.ocr-photo { display: none; margin-bottom: 12px; }
+    .ocr-photo { display: none; margin-bottom: 12px; }
     .ocr-photo-page { margin-bottom: 12px; }
     .ocr-layout.show-photo .ocr-photo { display: block; }
     .ocr-text-editor { min-height: 440px; padding: 16px; }

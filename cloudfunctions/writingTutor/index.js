@@ -31,6 +31,7 @@ const INCOMPLETE_UPLOAD_TTL_MS = 30 * 60 * 1000;
 const CONFIRMED_UPLOAD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const EMPTY_DRAFT_RETENTION_MS = 30 * 60 * 1000;
 const JOB_LEASE_MS = 6 * 60 * 1000;
+const OCR_LOCATION_MIN_LEASE_REMAINING_MS = 100 * 1000;
 const MAX_JOB_ATTEMPTS = 3;
 const PROMPT_BUNDLE_VERSION = `${PROMPT_VERSION}|${SCHEMA_VERSION}|${RUBRIC_VERSION}`;
 
@@ -1033,6 +1034,10 @@ function canonicalOcrUncertaintyRegions(rawRegions, spanCount, pageCount) {
   return [...chosen.values()].sort((a, b) => a.span_index - b.span_index);
 }
 
+function hasOcrLocationLeaseBudget(job, nowMs = Date.now()) {
+  return dateMs(job && job.lease_until) - nowMs >= OCR_LOCATION_MIN_LEASE_REMAINING_MS;
+}
+
 async function performOcrJob(student, job) {
   const composition = await ownedComposition(student, job.composition_id);
   if (composition.active_job_id !== job.job_id) return { superseded: true };
@@ -1063,7 +1068,7 @@ async function performOcrJob(student, job) {
   let uncertainRegions = [];
   let locationStatus = uncertainSpans.length ? "unavailable" : "not_needed";
   let locationModelMetadata = null;
-  if (uncertainSpans.length && imageUrls.length) {
+  if (uncertainSpans.length && imageUrls.length && hasOcrLocationLeaseBudget(job)) {
     try {
       const locationResponse = await callStructuredModel({
         system: ocrLocationPrompt(),
@@ -2464,7 +2469,7 @@ exports.main = async (event = {}) => {
 exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, rewriteFeedbackHistory, appendRewriteFeedbackHistory,
-  canonicalRevisionScanResult, revisionSourceUnits, canonicalOcrUncertaintyRegions, roundedToStep,
+  canonicalRevisionScanResult, revisionSourceUnits, canonicalOcrUncertaintyRegions, hasOcrLocationLeaseBudget, roundedToStep,
   usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
   isDiscardableEmptyComposition,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },

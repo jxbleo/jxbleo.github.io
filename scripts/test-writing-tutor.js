@@ -1187,6 +1187,18 @@ check("OCR location canonicalization rejects unsafe boxes deterministically", ()
   ], 1, 1), [{ span_index: 0, page_index: 0, x: 0, y: 0, width: 4, height: 4, confidence: "high" }]);
 });
 
+check("optional OCR location preserves enough lease budget to publish transcription", () => {
+  const backend = require(path.join(root, functionPath));
+  const now = Date.now();
+  assert.strictEqual(backend._test.hasOcrLocationLeaseBudget({ lease_until: new Date(now + 100001) }, now), true);
+  assert.strictEqual(backend._test.hasOcrLocationLeaseBudget({ lease_until: new Date(now + 99999) }, now), false);
+  assert.strictEqual(backend._test.hasOcrLocationLeaseBudget({}, now), false);
+  const source = read(functionPath);
+  const perform = functionSource(source, "performOcrJob", "performRevisionOcrJob");
+  assert(/hasOcrLocationLeaseBudget\(job\)[\s\S]{0,240}callStructuredModel/.test(perform),
+    "locator must be skipped when its possible provider repair would endanger OCR publication");
+});
+
 check("OCR locator failure cannot fail the required transcription commit", () => {
   const backend = read(functionPath);
   const perform = functionSource(backend, "performOcrJob", "performRevisionOcrJob");
