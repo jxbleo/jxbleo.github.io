@@ -352,16 +352,29 @@ check("Writing home is an action-first adaptive workspace", () => {
   ], "Writing home responsive layout");
 });
 
-check("Writing home quick-start persists the selected review mode", () => {
+check("Writing home keeps unsubmitted input local and creates a Composition only on Submit", () => {
   const client = read(clientPath);
   const backend = read("cloudfunctions/writingTutor/index.js");
-  const createClient = functionSource(client, "startInlineWriting", "createNewWriting");
+  const startClient = functionSource(client, "startInlineWriting", "createNewWriting");
+  const submitClient = functionSource(client, "ensureCompositionForSubmit", "uploadAndExtract");
   const createServer = functionSource(backend, "createComposition", "listCompositions");
   requireEvery(client, ['data-start-mode="language"', 'data-start-mode="standardized"', "startInlineWriting(button.getAttribute('data-start-mode'))"],
     "Writing home mode actions");
-  requireEvery(createClient, ["selectedMode", "homeComposerOpen", "renderWelcome()", "apiMode(selectedMode)", "composition.assessment_mode"],
-    "inline mode-aware Composition creation");
-  assert(!/renderSource\s*\(/.test(createClient),
+  requireEvery(startClient, ["selectedMode", "homeComposerOpen", "renderWelcome()", "savePendingHomeComposer"],
+    "local inline composer opening");
+  assert(!/writingCall\s*\(\s*['"]createComposition['"]/.test(startClient),
+    "selecting Polishing or Brainstorming must not create a server draft");
+  assert(!/syncCompositionLocator|syncCurrentSummary|scheduleAutosave/.test(startClient),
+    "unsubmitted mode selection must not create History or URL identity");
+  requireEvery(submitClient, ["writingCall('createComposition'", "apiMode(state.assessmentMode)", "clearPendingHomeComposer", "syncCompositionLocator", "syncCurrentSummary"],
+    "Submit-time Composition creation");
+  assert(/function submitSource\(\)[\s\S]{0,700}ensureCompositionForSubmit\(\)[\s\S]{0,500}(uploadAndExtract|saveAndEvaluate)/.test(client),
+    "both text Submit and photo Scan must create the Composition at the commit boundary");
+  assert(!/function renderSource\s*\(/.test(client),
+    "the retired standalone initial source renderer must be removed");
+  assert(/restorePendingHomeComposer\(\)[\s\S]{0,100}renderWelcome\(\)/.test(client),
+    "refresh without a submitted Composition must restore the inline home composer");
+  assert(!/renderSource\s*\(/.test(startClient),
     "selecting Polishing or Brainstorming must expand the home composer rather than navigate to the source screen");
   requireEvery(createServer, ["event.assessment_mode", "general_language", "standardized_content", "ASSESSMENT_MODE_INVALID", "assessment_mode: assessmentMode"],
     "server-persisted initial review mode");
@@ -375,7 +388,7 @@ check("the two evaluation modes use the approved product labels", () => {
 check("the first writing screen keeps only the compact source controls", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const renderSource = functionSource(client, "renderSource", "rubricOptions");
+  const renderSource = `${functionSource(client, "homeComposerHtml", "pendingComposerStorageKey")}\n${functionSource(client, "sourceFieldsHtml", "rubricOptions")}`;
   const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
   requireEvery(renderSource, [
     "Title", "field-optional", "Optional", "data-discard-source", ">Discard</button>",
@@ -405,13 +418,15 @@ check("the first writing screen keeps only the compact source controls", () => {
     "Discard must use a complete boxed button treatment");
   assert(/\.inline-writing-scan\s*\{[^}]*right:\s*10px[^}]*bottom:\s*10px/i.test(styles),
     "camera controls must sit at the bottom-right of their text boxes");
+  assert(/\.field\.inline-writing-field textarea\.manuscript\s*\{[^}]*padding-top:\s*8px[^}]*line-height:\s*1\.55/i.test(styles),
+    "Your Writing placeholder and first line must align near the top edge");
 });
 
 check("photo entry offers camera or library, stages multiple pages, and scans only on submit", () => {
   const client = read(clientPath);
   const page = read(pagePath);
   const photoSource = functionSource(client, "photoSourceHtml", "sourcePayload");
-  const renderSource = functionSource(client, "renderSource", "rubricOptions");
+  const renderSource = `${functionSource(client, "homeComposerHtml", "pendingComposerStorageKey")}\n${functionSource(client, "renderReplacementSource", "cameraOnlyButton")}`;
   requireEvery(photoSource, [
     "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
     "Add Photo", "data-writing-photo-library", "multiple",
@@ -431,11 +446,11 @@ check("photo entry offers camera or library, stages multiple pages, and scans on
   assert(/target\.matches\(\s*["']\[data-writing-photo-input\]["']\s*\)/.test(client),
     "both camera and library inputs must stage selected photos");
   const chooser = functionSource(client, "selectPhotoSource", "compositionForEntry");
-  requireEvery(chooser, ["renderSource()", "data-writing-photo-camera", "data-writing-photo-library", "input.click()"],
+  requireEvery(chooser, ["renderSourceEntry()", "data-writing-photo-camera", "data-writing-photo-library", "input.click()"],
     "photo source selection");
-  assert(chooser.indexOf("renderSource()") < chooser.indexOf("input.click()") && !/\.then\s*\([\s\S]*input\.click\(\)/.test(chooser),
+  assert(chooser.indexOf("renderSourceEntry()") < chooser.indexOf("input.click()") && !/\.then\s*\([\s\S]*input\.click\(\)/.test(chooser),
     "iOS photo input must open synchronously inside the originating user gesture");
-  assert(/if\s*\(state\.inputMethod === ["']photo["']\)\s*uploadAndExtract\(\)/.test(client),
+  assert(/ensureCompositionForSubmit\(\)[\s\S]{0,500}if\s*\(state\.inputMethod === ["']photo["']\)[\s\S]{0,250}uploadAndExtract\(\)/.test(client),
     "OCR must start only when the source form is explicitly submitted");
 });
 
@@ -1050,7 +1065,7 @@ check("full-screen Writing transitions clear stale mobile scroll positions", () 
   ], "shared stage viewport reset");
   [
     ["renderWelcome", "welcomeGreeting"],
-    ["renderSource", "rubricOptions"],
+    ["renderReplacementSource", "cameraOnlyButton"],
     ["renderOcr", "saveAndEvaluate"],
     ["renderStandardized", "bulletList"],
     ["renderRevisionScanPhotoSelection", "revisionScanCandidateHtml"],

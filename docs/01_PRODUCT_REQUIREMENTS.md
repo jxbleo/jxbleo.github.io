@@ -1869,12 +1869,16 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   没有项目时不显示空占位。
   主页删除 `Quick Start`、`Start New`、模式图标与箭头，也不再显示 `Recent Writing` 或 `Writing Focus`。
   点击任意未完成稿或 History 项目必须先打开与 Dashboard Library 任务入口相同材质、尺寸与弹入动画的确认层；确认层只投影作文标题、当前进度文字与进度条，学生明确 Enter 后才读取全文。
-  主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
-  AI 批改词数。创建作文时必须立即持久化主页所选模式，刷新后不可退回默认语言模式。
+  主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余 AI 批改词数。
 - 点击主页 `Polishing` 或 `Brainstorming` 不进入新的输入页面，而是在两个按钮下方原位展开表单；展开采用克制、可中断且尊重
   Reduced Motion 的材质过渡。语言模式显示带 `Optional` 标记的 `Title` 与 `Your Writing`；标化模式严格按
   `Rubric`、`Writing Prompt`、分隔线、`Title`、`Your Writing` 排列，所有字段使用英文。Rubric 与 Writing Prompt 位于分隔线上方，表示固定评估上下文；学生内容位于下方。
   正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
+  选择模式、输入 Title/Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
+  定位符，也不进入 History。刷新后仍在 Writing Home 的原位展开表单，不得进入已废弃的独立初稿输入页；可在
+  `sessionStorage` 恢复文字和所选模式，但这不属于作文记录。只有文本模式点击 `Submit`，或照片模式点击底部
+  `Scan`，才创建服务端 Composition 并持久化模式及输入。`Your Writing` 的占位文字与首行必须贴近输入框顶部，
+  不得因正文行高而视觉下沉。
   `Writing Prompt` 与 `Your Writing` 输入框内部右下方各提供一个只显示相机图标的按钮，并以 `aria-label` 保留可访问名称；前者 OCR 确认后只回填 Writing Prompt，后者才进入作文正文 OCR。
   任意相机入口先打开同一个 Apple 风格来源选择层，提供 `Take Photo` 与 `Choose from Library`，取消时
   回到原触发按钮。选择后必须在同一用户手势内同步打开原生输入，避免 iPhone/iPad Safari 阻止选择器。

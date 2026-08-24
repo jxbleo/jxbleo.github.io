@@ -3,6 +3,16 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Submit-bound Writing creation
+
+- Removed server-side draft creation from the Polishing/Brainstorming selection
+  path. Unsubmitted fields now remain in an owner-scoped session-only composer,
+  stay on Writing Home after refresh, and never enter History or the URL.
+- Moved the first Composition write to explicit text `Submit` or photo `Scan`;
+  previously submitted initial drafts also reopen in the inline home composer
+  instead of the retired standalone initial-entry screen.
+- Corrected the `Your Writing` placeholder and first-line vertical alignment.
+
 ## 2026-08-25 — Writing navigation, photo choice, and waiting-game feedback
 
 - Changed the Writing toolbar's left action from `History` to confirmed `Back`

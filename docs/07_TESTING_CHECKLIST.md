@@ -1790,8 +1790,11 @@ High priority improvement:
   title, status, and workflow track. Check touch/pointer scrolling, snap behavior,
   keyboard focus, long-title truncation, and the no-strip state when nothing is open.
   Confirm `Quick Start`, `Start New`, mode icons, and mode arrows are absent. Selecting either mode must expand Title/Your Writing
-  directly below the same two cards without navigating or flashing a full-screen loader,
-  and must persist the correct `assessment_mode`, including after immediate refresh.
+  directly below the same two cards without navigating or flashing a full-screen loader.
+  Enter Title and Writing, then inspect History, the URL, and CloudBase before Submit:
+  no Composition may exist. Refresh must restore the same inline home form and
+  selected mode without entering a standalone input screen. Only explicit text
+  `Submit` or photo `Scan` may create the Composition and persist its mode.
   Click every unfinished pill and several History rows: each must first show the same
   Library entry material/animation with only title, progress status, and progress bar.
   Close/Escape must restore focus; Enter alone may load the Composition.
@@ -1801,6 +1804,8 @@ High priority improvement:
   Verify the two home mode buttons read `Polishing` and `Brainstorming`; language text entry shows only
   `Title` with an `Optional` tag and `Your Writing`. Standardized mode must show English
   `Rubric`, `Writing Prompt`, divider, `Title`, `Your Writing` in that exact order.
+  Confirm `Type or paste your writing here…` and the first typed line align near
+  the textarea's top edge on phone, iPad, and desktop.
   Confirm icon-only camera buttons sit at the bottom-right of Prompt and Your Writing,
   with distinct accessible names. Tap each on a real iPhone/iPad and verify the
   Apple-style `Take Photo` / `Choose from Library` sheet appears; each choice must
