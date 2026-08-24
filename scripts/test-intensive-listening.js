@@ -145,14 +145,17 @@ function run() {
 
   const intensiveRuntime = fs.readFileSync(path.join(root, "assets/js/intensive-listening.js"), "utf8");
   assert.ok(intensiveRuntime.includes("submitSpellingDispute"));
-  assert.ok(intensiveRuntime.includes("var passiveListening = mode !== 'dictation'"));
-  assert.ok(intensiveRuntime.includes("if (!isDictation(currentUnit()))"));
+  assert.ok(intensiveRuntime.includes("var passiveListening = state.visitorMode || mode !== 'dictation'"));
   assert.strictEqual(intensiveRuntime.includes("while (state.currentIndex < state.material.units.length && unitMode(currentUnit()) === 'skip')"), false);
   assert.ok(intensiveRuntime.includes("This unit still needs your answer."));
   assert.ok(intensiveRuntime.includes("exportMaterial"));
   assert.ok(intensiveRuntime.includes("moveToUnit(-1)"));
   assert.ok(intensiveRuntime.includes("moveToUnit(1)"));
   assert.ok(intensiveRuntime.includes("correct_positions_reliable === false"));
+  assert.ok(intensiveRuntime.includes("loadVisitorMaterial"), "visitor runtime loads only the public BBC audio metadata");
+  assert.ok(intensiveRuntime.includes("visitor-full-audio"), "visitor runtime creates one listen-only full-audio unit");
+  assert.ok(intensiveRuntime.includes("Visitor Mode is listening-only"), "visitor runtime explains the answer lock");
+  assert.ok(intensiveRuntime.includes("state.visitorFullAudio ? Infinity"), "visitor playback is not clipped to a private segment boundary");
 
   const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
   assert.ok(intensivePage.includes('id="previous-unit-button"'));

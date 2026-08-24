@@ -149,6 +149,12 @@ increment a policy revision, and open student pages poll that lightweight revisi
 and refresh the redacted material only when it changes. Teacher export reconstructs
 a current source JSON from the private material.
 
+Visitor Intensive Listening never calls the private `intensiveListening` cloud
+function. The browser derives the linked BBC set ID and reads only that lesson's
+already-public title and audio URL, then creates one local `listen_only` full-
+programme unit. Segment boundaries, transcript text, word slots, answers,
+policy state, disputes, and progress remain behind active-profile authentication.
+
 Current frontend philosophy:
 
 - Reuse shared practice pages.

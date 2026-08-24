@@ -1452,6 +1452,11 @@ Shared rules:
 
 ### Intensive Listening
 
+- Visitor mode uses the same audio workspace in a clearly labelled
+  `VISITOR · LISTEN ONLY` state. It plays and replays the full public BBC audio,
+  without private sentence boundaries, and hides progress statistics, Word
+  Slots, Check, Show Answer, Continue, completion, and Argue. The disabled
+  listening field explains that dictation requires a student account.
 - Intensive Listening targets desktop and keyboard-equipped iPad use; a separate
   phone interaction is not required.
 - One teacher-approved Intensive Listening Unit is active at a time. A unit
@@ -1924,6 +1929,11 @@ Important mobile rules:
   individual practice and authenticated application pages do not repeat it.
 
 ## AI Tutor Writing
+
+- A Visitor, signed-out user, or non-student role sees a modal before any writing
+  data request. It says to contact `@猫先生英语` or email
+  `jxbleo@foxmail.com` to obtain a temporary student account, with Back and
+  mailto actions. The writing workspace remains unavailable behind the modal.
 
 ### Durable waiting cards and Mr. Cat Runner
 
