@@ -45,6 +45,15 @@
         waitingKind: '',
         waitingTaskState: '',
         waitingFinishPending: false,
+        waitingPollTimer: null,
+        waitingPollInFlight: false,
+        waitingPollWakePending: false,
+        waitingPollFailures: 0,
+        waitingPollNow: null,
+        waitingPollKind: '',
+        waitingResultAction: null,
+        waitingReadyAnnounced: false,
+        waitingAudioContext: null,
         sidebarOpen: false,
         editingTitleId: '',
         titleEditError: '',
@@ -474,24 +483,75 @@
         });
     }
 
+    function clearWaitingPollSchedule() {
+        if (state.waitingPollTimer != null) window.clearTimeout(state.waitingPollTimer);
+        state.waitingPollTimer = null;
+        state.waitingPollNow = null;
+        state.waitingPollWakePending = false;
+        state.waitingPollKind = '';
+    }
+
+    function waitingPollDelay(hadError) {
+        if (hadError) return [3 * 1000, 6 * 1000, 12 * 1000, 20 * 1000][Math.min(3, Math.max(0, state.waitingPollFailures - 1))];
+        return document.hidden ? 10000 : 3000;
+    }
+
+    function scheduleWaitingPoll(run, hadError) {
+        if (typeof run !== 'function') return;
+        state.waitingPollNow = run;
+        if (state.waitingPollInFlight) {
+            state.waitingPollWakePending = true;
+            return;
+        }
+        if (state.waitingPollTimer != null) window.clearTimeout(state.waitingPollTimer);
+        state.waitingPollTimer = window.setTimeout(function() {
+            state.waitingPollTimer = null;
+            if (typeof state.waitingPollNow === 'function') state.waitingPollNow();
+        }, waitingPollDelay(Boolean(hadError)));
+    }
+
+    function wakeWaitingPoll() {
+        if (state.waitingPollInFlight) {
+            state.waitingPollWakePending = true;
+            return;
+        }
+        if (state.waitingPollTimer != null) window.clearTimeout(state.waitingPollTimer);
+        state.waitingPollTimer = null;
+        if (typeof state.waitingPollNow === 'function') state.waitingPollNow();
+    }
+
+    function waitingPollComplete(run, hadError) {
+        state.waitingPollInFlight = false;
+        if (state.waitingPollWakePending) {
+            state.waitingPollWakePending = false;
+            scheduleWaitingPoll(run, false);
+        } else {
+            scheduleWaitingPoll(run, hadError);
+        }
+    }
+
     function stopOcrPolling() {
         state.ocrPollActive = false;
         state.ocrPollGeneration += 1;
+        clearWaitingPollSchedule();
     }
 
     function stopReviewPolling() {
         state.reviewPollActive = false;
         state.reviewPollGeneration += 1;
+        clearWaitingPollSchedule();
     }
 
     function stopRewritePolling() {
         state.rewritePollActive = false;
         state.rewritePollGeneration += 1;
+        clearWaitingPollSchedule();
     }
 
     function stopRevisionScanPolling() {
         state.revisionScanPollActive = false;
         state.revisionScanPollGeneration += 1;
+        clearWaitingPollSchedule();
     }
 
     function waitingTaskState(jobStatus, durable) {
@@ -503,42 +563,61 @@
         return 'queued';
     }
 
-    function waitingStageClass(stageName, taskState) {
-        var order = ['saved', 'queued', 'analysing', 'ready'];
-        var currentIndex = order.indexOf(taskState);
-        var stageIndex = order.indexOf(stageName);
-        if (taskState === 'uploading') return stageName === 'saved' ? 'is-active' : 'is-upcoming';
-        if (taskState === 'failed') return stageName === 'analysing' ? 'is-active' : 'is-upcoming';
+    function waitingStageDefinitions(kind) {
+        var definitions = {
+            ocr: ['Uploaded', 'Reading', 'Organising', 'Ready'],
+            review: ['Saved', 'Preparing', 'Reviewing', 'Ready'],
+            rewrite: ['Saved', 'Comparing', 'Checking', 'Ready'],
+            revision_ocr: ['Uploaded', 'Reading', 'Matching', 'Ready']
+        };
+        return definitions[kind] || definitions.review;
+    }
+
+    function waitingStageClass(stageIndex, taskState) {
+        var currentIndex = { uploading: 0, queued: 1, analysing: 2, ready: 3, failed: 2 }[taskState];
+        if (currentIndex == null) currentIndex = 1;
+        if (taskState === 'uploading') return stageIndex === 0 ? 'is-active' : 'is-upcoming';
+        if (taskState === 'failed') return stageIndex === 2 ? 'is-active' : 'is-upcoming';
         if (taskState === 'ready') return 'is-complete';
         if (stageIndex < currentIndex) return 'is-complete';
         if (stageIndex === currentIndex) return 'is-active';
         return 'is-upcoming';
     }
 
-    function waitingStageLabel(stageName, taskState) {
-        if (taskState === 'uploading' && stageName === 'saved') return 'Uploading';
-        return { saved: 'Saved', queued: 'Queued', analysing: 'Analysing', ready: 'Ready' }[stageName];
+    function waitingStageLabel(kind, stageIndex, taskState) {
+        if (taskState === 'uploading' && stageIndex === 0) return 'Uploading';
+        return waitingStageDefinitions(kind)[stageIndex];
     }
 
-    function waitingStageMarkup(taskState) {
-        return ['saved', 'queued', 'analysing', 'ready'].map(function(stageName) {
-            var stageClass = waitingStageClass(stageName, taskState);
-            var symbol = stageClass === 'is-complete' ? '✓' : stageClass === 'is-active' ? '•' : '·';
-            return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage="' + stageName + '"><span class="ai-waiting-stage-mark" aria-hidden="true">' + symbol + '</span><span>' + waitingStageLabel(stageName, taskState) + '</span></li>';
+    function waitingStageMarkup(kind, taskState) {
+        return waitingStageDefinitions(kind).map(function(label, stageIndex) {
+            var stageClass = waitingStageClass(stageIndex, taskState);
+            var current = stageClass === 'is-active' ? ' aria-current="step"' : '';
+            var connectorState = { uploading: 0, queued: 1, analysing: 2, ready: 3, failed: 2 }[taskState];
+            var connector = stageIndex < 3
+                ? '<span class="ai-waiting-connector ' + (connectorState != null && stageIndex < connectorState ? 'is-complete' : 'is-upcoming') + '" aria-hidden="true"></span>'
+                : '';
+            var check = '<svg class="ai-waiting-stage-check" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.2 8.2 14l7.4-8"></path></svg>';
+            return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage-index="' + stageIndex + '"' + current + '><span class="ai-waiting-stage-node" aria-hidden="true">' + check + '</span><span class="ai-waiting-stage-label">' + escapeHtml(waitingStageLabel(kind, stageIndex, taskState)) + '</span>' + connector + '</li>';
         }).join('');
     }
 
-    function updateWaitingStageDom(taskState) {
+    function updateWaitingStageDom(kind, taskState) {
         if (!stage) return;
-        var stages = stage.querySelectorAll('[data-waiting-stage]');
+        var stages = stage.querySelectorAll('[data-waiting-stage-index]');
         Array.prototype.forEach.call(stages, function(item) {
-            var name = item.getAttribute('data-waiting-stage');
-            var nextClass = 'ai-waiting-stage ' + waitingStageClass(name, taskState);
+            var index = Number(item.getAttribute('data-waiting-stage-index'));
+            var statusClass = waitingStageClass(index, taskState);
+            var nextClass = 'ai-waiting-stage ' + statusClass;
             item.className = nextClass;
-            var mark = item.querySelector('.ai-waiting-stage-mark');
-            if (mark) mark.textContent = nextClass.indexOf('is-complete') >= 0 ? '✓' : nextClass.indexOf('is-active') >= 0 ? '•' : '·';
-            var label = item.querySelector('span:last-child');
-            if (label) label.textContent = waitingStageLabel(name, taskState);
+            if (statusClass === 'is-active') item.setAttribute('aria-current', 'step');
+            else item.removeAttribute('aria-current');
+            var label = item.querySelector('.ai-waiting-stage-label');
+            if (label) label.textContent = waitingStageLabel(kind, index, taskState);
+        });
+        Array.prototype.forEach.call(stage.querySelectorAll('.ai-waiting-connector'), function(connector, index) {
+            var connectorState = { uploading: 0, queued: 1, analysing: 2, ready: 3, failed: 2 }[taskState];
+            connector.className = 'ai-waiting-connector ' + (connectorState != null && index < connectorState ? 'is-complete' : 'is-upcoming');
         });
     }
 
@@ -555,7 +634,7 @@
             var runner = window.MrCatWaitingRunner.mount(canvas, {
                 onScore: function(score) {
                     var scoreNode = stage.querySelector('.runner-score');
-                    if (scoreNode) scoreNode.textContent = 'Distance ' + Number(score.distance || 0) + 'm · Ink ' + Number(score.ink || 0);
+                    if (scoreNode) scoreNode.textContent = 'Score ' + (Number(score.score || 0) < 0 ? '−' + Math.abs(Number(score.score || 0)) : Number(score.score || 0));
                 }
             });
             if (!runner || typeof runner.destroy !== 'function') return;
@@ -581,6 +660,8 @@
         state.waitingKind = firstText(config.kind);
         state.waitingTaskState = taskState;
         state.waitingFinishPending = false;
+        state.waitingResultAction = null;
+        state.waitingReadyAnnounced = taskState === 'ready';
         state.screen = firstText(config.screen, {
             ocr: 'ocr-waiting',
             review: 'review-waiting',
@@ -589,24 +670,23 @@
         }[state.waitingKind] || state.waitingKind + '-waiting');
         var uploadPending = !durable || taskState === 'uploading';
         var runnerMarkup = durable && taskState !== 'failed'
-            ? '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Mr. Cat Runner. Tap, click, or press Space to jump."></canvas><p class="runner-instruction">Tap or press Space to jump</p><p class="runner-score" aria-hidden="true">Distance 0m · Ink 0</p><button class="runner-jump-button" type="button" aria-label="Jump">Jump</button></div>'
+            ? '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Mr. Cat Runner. Tap, click, or press Space to jump."></canvas><p class="runner-instruction">Tap or press Space to jump</p><p class="runner-score" aria-hidden="true">Score 0</p><button class="runner-jump-button" type="button" aria-label="Jump">Jump</button></div>'
             : '';
         var extraActions = firstText(config.extraActions);
         var backgroundAction = durable && config.allowBackground !== false
-            ? '<button class="primary-button ai-waiting-background-action" type="button" data-return-home>Continue in Background</button>'
+            ? '<button class="quiet-button ai-waiting-background-action" type="button" data-return-home>Back</button>'
             : '';
-        var statusCopy = uploadPending
-            ? 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.'
-            : firstText(config.statusCopy, 'The page checks the same saved task every 5 seconds.');
+        var warningCopy = firstText(config.warningCopy);
+        var readyAction = '<div class="ai-waiting-ready-action" hidden><button class="primary-button" type="button" data-view-waiting-result></button></div>';
         stage.innerHTML = '<section class="surface ai-waiting-experience' + (uploadPending ? ' ai-waiting-uploading' : '') + '" data-waiting-kind="' + escapeHtml(state.waitingKind) + '">' +
-            '<header class="ai-waiting-copy"><h2>' + escapeHtml(firstText(config.title, 'Working on your writing')) + '</h2><p>' + escapeHtml(firstText(config.description, 'Your work is safely saved.')) + '</p>' +
-            (durable && !/you may leave/i.test(firstText(config.description)) ? '<p>You may leave while AI continues in the background.</p>' : '') + '</header>' +
-            '<ol class="ai-waiting-stages" aria-label="AI task status">' + waitingStageMarkup(taskState === 'uploading' ? 'uploading' : taskState) + '</ol>' +
+            '<header class="ai-waiting-copy"><h2 data-waiting-title>' + escapeHtml(firstText(config.title, 'Working on your writing')) + '</h2></header>' +
+            '<ol class="ai-waiting-progress" aria-label="Writing task progress">' + waitingStageMarkup(state.waitingKind, taskState === 'uploading' ? 'uploading' : taskState) + '</ol>' +
             runnerMarkup +
-            '<p class="ai-waiting-status section-hint" id="' + escapeHtml(firstText(config.pollStatusId, 'ai-waiting-status')) + '" role="status" aria-live="polite">' + escapeHtml(statusCopy) + '</p>' +
-            '<div class="form-actions ai-waiting-actions">' + extraActions + backgroundAction + '</div></section>';
+            '<p class="sr-only" data-waiting-live role="status" aria-live="polite"></p>' +
+            (warningCopy ? '<p class="ai-waiting-status section-hint" id="' + escapeHtml(firstText(config.pollStatusId, 'ai-waiting-status')) + '" role="status">' + escapeHtml(warningCopy) + '</p>' : '') +
+            readyAction + '<div class="form-actions ai-waiting-actions">' + extraActions + backgroundAction + '</div></section>';
         mountWaitingRunner();
-        updateWaitingStageDom(taskState);
+        updateWaitingStageDom(state.waitingKind, taskState);
     }
 
     function updateAiWaitingExperience(config) {
@@ -615,38 +695,84 @@
         var durable = config.durable !== false;
         var nextState = waitingTaskState(config.jobStatus, durable);
         state.waitingTaskState = nextState;
-        updateWaitingStageDom(nextState === 'uploading' ? 'uploading' : nextState);
+        updateWaitingStageDom(state.waitingKind, nextState === 'uploading' ? 'uploading' : nextState);
         if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState(nextState === 'uploading' ? 'queued' : nextState);
         var pollStatusId = firstText(config.pollStatusId);
         var statusNode = stage && pollStatusId ? stage.querySelector('#' + pollStatusId) : null;
-        if (statusNode && config.statusCopy) statusNode.textContent = config.statusCopy;
+        if (statusNode && config.warningCopy) statusNode.textContent = config.warningCopy;
     }
 
     function finishAiWaitingExperience(next) {
-        if (state.waitingFinishPending) return;
+        if (state.waitingFinishPending || state.waitingResultAction) return;
+        var shouldAnnounce = !state.waitingReadyAnnounced;
         state.waitingFinishPending = true;
-        var called = false;
-        var fallbackTimer = null;
-        function complete() {
-            if (called) return;
-            called = true;
-            if (fallbackTimer != null) window.clearTimeout(fallbackTimer);
-            destroyAiWaitingExperience();
-            if (typeof next === 'function') next();
-        }
-        if (!state.waitingRunner || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || document.hidden) {
-            complete();
-            return;
-        }
+        state.waitingResultAction = typeof next === 'function' ? next : function() {};
         state.waitingTaskState = 'ready';
-        updateWaitingStageDom('ready');
+        updateWaitingStageDom(state.waitingKind, 'ready');
         if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState('ready');
-        fallbackTimer = window.setTimeout(complete, 500);
-        try {
-            state.waitingRunner.finish(complete);
-        } catch (error) {
-            complete();
+        var titles = {
+            ocr: ['Your Draft Is Ready', 'Review Text'],
+            review: ['Your Review Is Ready', 'View Review'],
+            rewrite: ['Your Feedback Is Ready', 'View Feedback'],
+            revision_ocr: ['Your Revision Scan Is Ready', 'Review Scan']
+        }[state.waitingKind] || ['Your Work Is Ready', 'View Result'];
+        var title = stage && stage.querySelector('[data-waiting-title]');
+        if (title) title.textContent = titles[0];
+        var action = stage && stage.querySelector('[data-view-waiting-result]');
+        if (action) { action.textContent = titles[1]; action.parentElement.hidden = false; }
+        var experience = stage && stage.querySelector('.ai-waiting-experience');
+        if (experience && shouldAnnounce) experience.classList.add('is-ready-announced');
+        var live = stage && stage.querySelector('[data-waiting-live]');
+        if (live && shouldAnnounce) live.textContent = titles[0] + '.';
+        if (shouldAnnounce) {
+            state.waitingReadyAnnounced = true;
+            playWaitingReadySound();
         }
+    }
+
+    function waitingAudioContext() {
+        var AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtor) return null;
+        if (!state.waitingAudioContext) state.waitingAudioContext = new AudioCtor();
+        return state.waitingAudioContext;
+    }
+
+    function unlockWaitingReadySound() {
+        try {
+            var audio = waitingAudioContext();
+            if (audio && audio.state === 'suspended' && typeof audio.resume === 'function') {
+                var resume = audio.resume();
+                if (resume && typeof resume.catch === 'function') resume.catch(function() {});
+            }
+        } catch (error) {}
+    }
+
+    function playWaitingReadySound() {
+        try {
+            if (document.hidden) return;
+            var audio = waitingAudioContext();
+            if (!audio) return;
+            function scheduleChime() {
+                if (document.hidden || audio.state === 'suspended') return;
+                var now = audio.currentTime;
+                var gain = audio.createGain();
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(0.08, now + 0.025);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.46);
+                gain.connect(audio.destination);
+                [659, 988].forEach(function(frequency, index) {
+                    var oscillator = audio.createOscillator();
+                    oscillator.type = 'sine'; oscillator.frequency.value = frequency;
+                    oscillator.connect(gain); oscillator.start(now + index * 0.17); oscillator.stop(now + index * 0.17 + 0.2);
+                });
+            }
+            if (audio.state === 'suspended' && typeof audio.resume === 'function') {
+                var resumed = audio.resume();
+                if (resumed && typeof resumed.then === 'function') resumed.then(scheduleChime).catch(function() {});
+                return;
+            }
+            scheduleChime();
+        } catch (error) {}
     }
 
     function destroyAiWaitingExperience() {
@@ -657,6 +783,59 @@
         state.waitingKind = '';
         state.waitingTaskState = '';
         state.waitingFinishPending = false;
+        state.waitingResultAction = null;
+        state.waitingReadyAnnounced = false;
+    }
+
+    function startWaitingPolling(config) {
+        if (!config || typeof config.isActive !== 'function') return;
+        var generationKey = config.generationKey;
+        state[generationKey] += 1;
+        var generation = state[generationKey];
+        var capturedCompositionId = compositionId(state.current);
+        var capturedOperationId = firstText(config.operationId && config.operationId());
+        state.waitingPollKind = config.kind;
+        state.waitingPollFailures = 0;
+        state.waitingPollNow = null;
+
+        function active() {
+            return config.isActive() && state[generationKey] === generation
+                && compositionId(state.current) === capturedCompositionId
+                && state.waitingKind === config.kind;
+        }
+
+        function poll() {
+            if (!active()) return;
+            state.waitingPollNow = poll;
+            if (state.waitingPollInFlight) {
+                state.waitingPollWakePending = true;
+                return;
+            }
+            state.waitingPollInFlight = true;
+            var hadError = false;
+            writingCall('getComposition', { composition_id: capturedCompositionId }).then(function(result) {
+                if (!active()) return;
+                var returnedOperationId = firstText(config.returnedOperationId && config.returnedOperationId(result));
+                if (capturedOperationId && returnedOperationId && capturedOperationId !== returnedOperationId) return;
+                state.waitingPollFailures = 0;
+                config.onSuccess(result);
+            }).catch(function(error) {
+                if (!active()) return;
+                hadError = true;
+                state.waitingPollFailures = Math.min(4, state.waitingPollFailures + 1);
+                if (typeof config.onError === 'function') config.onError(error);
+            }).then(function() {
+                state.waitingPollInFlight = false;
+                if (state.waitingPollWakePending && typeof state.waitingPollNow === 'function') {
+                    state.waitingPollWakePending = false;
+                    window.setTimeout(state.waitingPollNow, 0);
+                    return;
+                }
+                if (!active()) return;
+                scheduleWaitingPoll(poll, hadError);
+            });
+        }
+        poll();
     }
 
     function releaseRevisionScanPreviewUrls(scan) {
@@ -936,6 +1115,7 @@
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
+        stopRevisionScanPolling();
         state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = composition || null;
         state.review = null;
@@ -1211,6 +1391,7 @@
             ? state.ocr.paragraphs.join('\n\n')
             : firstText(state.ocr.full_text);
         clearLogicalOperation('ocr');
+        if (state.waitingKind !== 'ocr') renderOcrWaiting({ status: 'succeeded' }, false);
         finishAiWaitingExperience(function() {
             renderOcr();
             syncCurrentSummary();
@@ -1225,17 +1406,12 @@
             jobStatus: status,
             durable: !uploadPending,
             title: 'Reading your handwriting',
-            description: uploadPending
-                ? 'Your photos are still being confirmed by the server.'
-                : 'Your photos are safely uploaded. You may leave while recognition continues.',
             pollStatusId: 'ocr-poll-status',
-            statusCopy: uploadPending
-                ? 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.'
-                : 'Waiting for the same saved OCR task; the page checks every 5 seconds.',
+            warningCopy: uploadPending ? 'Uploading is not yet confirmed. Keep this page open.' : '',
             allowBackground: !uploadPending,
             extraActions: uploadPending
-                ? '<button class="primary-button" type="button" data-reupload>Upload Again</button>'
-                : '<button class="secondary-button" type="button" data-reupload>Upload Again</button>'
+                ? '<button class="primary-button ai-waiting-reupload-action" type="button" data-reupload>Upload Again</button>'
+                : '<button class="primary-button ai-waiting-reupload-action" type="button" data-reupload>Upload Again</button>'
         });
         if (autoPoll) startOcrPolling();
     }
@@ -1243,45 +1419,28 @@
     function startOcrPolling() {
         if (state.ocrPollActive || !compositionId(state.current)) return;
         state.ocrPollActive = true;
-        state.ocrPollGeneration += 1;
-        var generation = state.ocrPollGeneration;
-        var status = document.getElementById('ocr-poll-status');
-        var uploadPending = compositionStatus(state.current) === 'photo_uploading';
-        if (status) status.textContent = uploadPending
-            ? '正在确认照片是否完整上传；看到“照片已安全上传”后即可离开。'
-            : '正在等待云端 OCR；每 5 秒查询一次。你随时可以离开。';
-        function poll() {
-            if (!state.ocrPollActive || generation !== state.ocrPollGeneration) return;
-            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
-                if (!state.ocrPollActive || generation !== state.ocrPollGeneration) return;
+        startWaitingPolling({
+            kind: 'ocr', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', generationKey: 'ocrPollGeneration',
+            isActive: function() { return state.ocrPollActive; },
+            operationId: function() { return firstText(state.current && state.current.ocr_job && state.current.ocr_job.operation_id); },
+            returnedOperationId: function(result) { return firstText(ocrJobFrom(result).operation_id); },
+            onSuccess: function(result) {
                 var composition = result.composition || {};
                 state.current = composition;
                 restoreOcrPhotoUrls(result);
                 var job = ocrJobFrom(result);
-                if (composition.pending_ocr) {
-                    showOcrResult({ composition: composition, ocr: composition.pending_ocr, ocr_photo_urls: result.ocr_photo_urls });
-                    return;
-                }
-                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'ocr_failed') {
-                    renderOcrFailure({ code: job.error_code || 'WRITING_AI_OCR_FAILED', message: 'OCR 识别没有完成。' });
-                    return;
-                }
+                if (composition.pending_ocr) { showOcrResult({ composition: composition, ocr: composition.pending_ocr, ocr_photo_urls: result.ocr_photo_urls }); return; }
+                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'ocr_failed') { renderOcrFailure({ code: job.error_code || 'WRITING_AI_OCR_FAILED', message: 'OCR 识别没有完成。' }); return; }
                 var durable = firstText(job.status).toLowerCase() !== 'photo_uploading' && !composition.pending_upload;
                 if (durable && !state.waitingRunner) renderOcrWaiting(job, false);
-                updateAiWaitingExperience({ kind: 'ocr', jobStatus: job.status, durable: durable, pollStatusId: 'ocr-poll-status', statusCopy: durable ? 'Waiting for the same saved OCR task; the page checks every 5 seconds.' : 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.' });
+                updateAiWaitingExperience({ kind: 'ocr', jobStatus: job.status, durable: durable });
                 syncCurrentSummary();
-                window.setTimeout(poll, 5000);
-            }).catch(function(error) {
-                if (!state.ocrPollActive || generation !== state.ocrPollGeneration) return;
-                var pollStatus = document.getElementById('ocr-poll-status');
-                var stillUploading = compositionStatus(state.current) === 'photo_uploading';
-                if (pollStatus) pollStatus.textContent = stillUploading
-                    ? '暂时无法确认上传，请保持此页面；网络恢复后会继续。'
-                    : '暂时无法查询，网络恢复后会继续。作文和照片都已保存。';
-                window.setTimeout(poll, 5000);
-            });
-        }
-        poll();
+            },
+            onError: function() {
+                var status = document.getElementById('ocr-poll-status');
+                if (status) status.textContent = compositionStatus(state.current) === 'photo_uploading' ? '暂时无法确认上传，请保持此页面。' : '暂时无法查询，网络恢复后会继续。';
+            }
+        });
     }
 
     function renderOcrFailure(error) {
@@ -1385,6 +1544,7 @@
             : state.current && state.current.language_review) || {};
         state.readOnly = false;
         clearLogicalOperation('evaluate');
+        if (state.waitingKind !== 'review') renderReviewWaiting({ status: 'succeeded' }, false, false);
         finishAiWaitingExperience(function() {
             syncCurrentSummary();
             if (mode === 'standardized') renderStandardized();
@@ -1400,9 +1560,7 @@
             jobStatus: jobStatus,
             durable: true,
             title: 'Reviewing your writing',
-            description: 'Your writing is safely submitted. You may leave while the review continues.',
             pollStatusId: 'review-poll-status',
-            statusCopy: 'Waiting for the same saved review task; the page checks every 5 seconds.',
             allowBackground: true,
             extraActions: allowRetry ? '<button class="secondary-button" type="button" data-retry-review>Retry the same request</button>' : ''
         });
@@ -1412,36 +1570,22 @@
     function startReviewPolling() {
         if (state.reviewPollActive || !compositionId(state.current)) return;
         state.reviewPollActive = true;
-        state.reviewPollGeneration += 1;
-        var generation = state.reviewPollGeneration;
-        var status = document.getElementById('review-poll-status');
-        if (status) status.textContent = '正在等待云端批改；每 5 秒查询一次。你随时可以离开。';
-        function poll() {
-            if (!state.reviewPollActive || generation !== state.reviewPollGeneration) return;
-            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
-                if (!state.reviewPollActive || generation !== state.reviewPollGeneration) return;
+        startWaitingPolling({
+            kind: 'review', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', generationKey: 'reviewPollGeneration',
+            isActive: function() { return state.reviewPollActive; },
+            operationId: function() { return firstText(state.current && state.current.active_job && state.current.active_job.operation_id); },
+            returnedOperationId: function(result) { return firstText(reviewJobFrom(result).operation_id); },
+            onSuccess: function(result) {
                 var composition = result.composition || {};
                 state.current = composition;
                 var job = reviewJobFrom(result);
-                if (reviewReady(composition)) {
-                    showReviewResult({ composition: composition });
-                    return;
-                }
-                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'review_failed') {
-                    renderReviewFailure({ code: job.error_code || 'WRITING_AI_REVIEW_FAILED', message: 'AI 批改没有完成。' });
-                    return;
-                }
-                updateAiWaitingExperience({ kind: 'review', jobStatus: job.status, durable: true, pollStatusId: 'review-poll-status', statusCopy: 'Waiting for the same saved review task; the page checks every 5 seconds.' });
+                if (reviewReady(composition)) { showReviewResult({ composition: composition }); return; }
+                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'review_failed') { renderReviewFailure({ code: job.error_code || 'WRITING_AI_REVIEW_FAILED', message: 'AI 批改没有完成。' }); return; }
+                updateAiWaitingExperience({ kind: 'review', jobStatus: job.status, durable: true });
                 syncCurrentSummary();
-                window.setTimeout(poll, 5000);
-            }).catch(function() {
-                if (!state.reviewPollActive || generation !== state.reviewPollGeneration) return;
-                var pollStatus = document.getElementById('review-poll-status');
-                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。作文已经安全保存。';
-                window.setTimeout(poll, 5000);
-            });
-        }
-        poll();
+            },
+            onError: function() { var status = document.getElementById('review-poll-status'); if (status) status.textContent = '暂时无法查询，网络恢复后会继续。作文已经安全保存。'; }
+        });
     }
 
     function retryReviewRequest() {
@@ -1516,9 +1660,7 @@
             jobStatus: jobStatus,
             durable: true,
             title: 'Checking your attempts',
-            description: 'Your attempts are safely saved. You may leave while checking continues.',
             pollStatusId: 'rewrite-poll-status',
-            statusCopy: 'Waiting for the same saved rewrite check; the page checks every 5 seconds.',
             allowBackground: true,
             extraActions: allowRetry ? '<button class="secondary-button" type="button" data-retry-rewrite>Retry the same request</button>' : ''
         });
@@ -1548,6 +1690,7 @@
             record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed');
         state.review = state.current && state.current.language_review || state.review;
         clearLogicalOperation('rewrites');
+        if (state.waitingKind !== 'rewrite') renderRewriteWaiting({ status: 'succeeded' }, false, false);
         finishAiWaitingExperience(function() {
             syncCurrentSummary();
             if (record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed') {
@@ -1587,35 +1730,23 @@
     function startRewritePolling() {
         if (state.rewritePollActive || !compositionId(state.current)) return;
         state.rewritePollActive = true;
-        state.rewritePollGeneration += 1;
-        var generation = state.rewritePollGeneration;
-        function poll() {
-            if (!state.rewritePollActive || generation !== state.rewritePollGeneration) return;
-            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
-                if (!state.rewritePollActive || generation !== state.rewritePollGeneration) return;
+        startWaitingPolling({
+            kind: 'rewrite', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', pollDelay: 'setTimeout', generationKey: 'rewritePollGeneration',
+            isActive: function() { return state.rewritePollActive; },
+            operationId: function() { return firstText(state.current && state.current.active_job && state.current.active_job.operation_id); },
+            returnedOperationId: function(result) { return firstText(rewriteJobFrom(result).operation_id); },
+            onSuccess: function(result) {
                 var composition = result.composition || {};
                 state.current = composition;
                 state.review = composition.language_review || state.review;
                 var job = rewriteJobFrom(result);
-                if (rewriteReady(composition)) {
-                    applyRewriteResult({ composition: composition });
-                    return;
-                }
-                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'rewrite_failed') {
-                    renderRewriteFailure({ code: job.error_code || 'WRITING_AI_REWRITE_FAILED', message: 'AI 改写检查没有完成。' });
-                    return;
-                }
-                updateAiWaitingExperience({ kind: 'rewrite', jobStatus: job.status, durable: true, pollStatusId: 'rewrite-poll-status', statusCopy: 'Waiting for the same saved rewrite check; the page checks every 5 seconds.' });
+                if (rewriteReady(composition)) { applyRewriteResult({ composition: composition }); return; }
+                if (firstText(job.status).toLowerCase() === 'failed' || compositionStatus(composition) === 'rewrite_failed') { renderRewriteFailure({ code: job.error_code || 'WRITING_AI_REWRITE_FAILED', message: 'AI 改写检查没有完成。' }); return; }
+                updateAiWaitingExperience({ kind: 'rewrite', jobStatus: job.status, durable: true });
                 syncCurrentSummary();
-                window.setTimeout(poll, 5000);
-            }).catch(function() {
-                if (!state.rewritePollActive || generation !== state.rewritePollGeneration) return;
-                var pollStatus = document.getElementById('rewrite-poll-status');
-                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。你的改写已经安全保存。';
-                window.setTimeout(poll, 5000);
-            });
-        }
-        poll();
+            },
+            onError: function() { var status = document.getElementById('rewrite-poll-status'); if (status) status.textContent = '暂时无法查询，网络恢复后会继续。你的改写已经安全保存。'; }
+        });
     }
 
     function renderLoading(title, description) {
@@ -1901,7 +2032,7 @@
     }
 
     function renderRevisionScanReview() {
-        if (state.screen === 'revision-scan-waiting' && state.waitingRunner) {
+        if (state.screen === 'revision-scan-waiting' && state.waitingKind === 'revision_ocr') {
             finishAiWaitingExperience(function() { renderRevisionScanReview(); });
             return;
         }
@@ -1928,13 +2059,8 @@
             jobStatus: isDurable ? status : 'photo_uploading',
             durable: isDurable,
             title: 'Matching your revisions',
-            description: isDurable
-                ? 'Your revision photos are safely uploaded. You may leave while recognition continues.'
-                : 'Your revision photos are being uploaded and confirmed by the server.',
             pollStatusId: 'revision-scan-poll-status',
-            statusCopy: isDurable
-                ? 'Waiting for the same saved revision scan; the page checks every 5 seconds.'
-                : 'Uploading is not yet confirmed. Keep this page open until the server confirms the handoff.',
+            warningCopy: isDurable ? '' : 'Uploading is not yet confirmed. Keep this page open.',
             allowBackground: isDurable,
             extraActions: isDurable && allowRetry ? '<button class="secondary-button" type="button" data-retry-revision-scan>Retry the same request</button>' : ''
         });
@@ -1954,37 +2080,23 @@
     function startRevisionScanPolling() {
         if (state.revisionScanPollActive || !compositionId(state.current)) return;
         state.revisionScanPollActive = true;
-        state.revisionScanPollGeneration += 1;
-        var generation = state.revisionScanPollGeneration;
-        function poll() {
-            if (!state.revisionScanPollActive || generation !== state.revisionScanPollGeneration) return;
-            writingCall('getComposition', { composition_id: compositionId(state.current) }).then(function(result) {
-                if (!state.revisionScanPollActive || generation !== state.revisionScanPollGeneration) return;
+        startWaitingPolling({
+            kind: 'revision_ocr', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', generationKey: 'revisionScanPollGeneration',
+            isActive: function() { return state.revisionScanPollActive; },
+            operationId: function() { return firstText(state.revisionScan && state.revisionScan.job && state.revisionScan.job.operation_id); },
+            returnedOperationId: function(result) { return firstText(revisionScanJobFrom(result && result.composition || result).operation_id); },
+            onSuccess: function(result) {
                 var composition = result.composition || {};
                 state.current = composition;
                 syncRevisionScanFromComposition(composition);
-                if (revisionScanReady(composition)) {
-                    renderRevisionScanReview();
-                    return;
-                }
+                if (revisionScanReady(composition)) { renderRevisionScanReview(); return; }
                 var job = revisionScanJobFrom(composition);
-                if (firstText(job.status).toLowerCase() === 'failed') {
-                    renderRevisionScanFailure({ message: '云端没有完成照片识别，请重新检查状态或拍照。' });
-                    return;
-                }
-                updateAiWaitingExperience({ kind: 'revision_ocr', jobStatus: job.status, durable: true, pollStatusId: 'revision-scan-poll-status', statusCopy: 'Waiting for the same saved revision scan; the page checks every 5 seconds.' });
+                if (firstText(job.status).toLowerCase() === 'failed') { renderRevisionScanFailure({ message: '云端没有完成照片识别，请重新检查状态或拍照。' }); return; }
+                updateAiWaitingExperience({ kind: 'revision_ocr', jobStatus: job.status, durable: true });
                 syncCurrentSummary();
-                var pollStatus = document.getElementById('revision-scan-poll-status');
-                if (pollStatus) pollStatus.textContent = '正在等待识别结果；每 5 秒查询一次。';
-                window.setTimeout(poll, 5000);
-            }).catch(function() {
-                if (!state.revisionScanPollActive || generation !== state.revisionScanPollGeneration) return;
-                var pollStatus = document.getElementById('revision-scan-poll-status');
-                if (pollStatus) pollStatus.textContent = '暂时无法查询，网络恢复后会继续。当前改写草稿已经安全保存。';
-                window.setTimeout(poll, 5000);
-            });
-        }
-        poll();
+            },
+            onError: function() { var status = document.getElementById('revision-scan-poll-status'); if (status) status.textContent = '暂时无法查询，网络恢复后会继续。当前改写草稿已经安全保存。'; }
+        });
     }
 
     function beginRevisionScanUpload(files) {
@@ -2359,6 +2471,7 @@
             var revisionScanStatus = firstText(revisionScanJob.status).toLowerCase();
             if (!state.readOnly && revisionScanReady(composition)) {
                 state.review = composition.language_review || review;
+                if (state.waitingKind !== 'revision_ocr') renderRevisionScanWaiting({ status: 'succeeded' }, false, false, true);
                 renderRevisionScanReview();
                 syncCurrentSummary();
                 return;
@@ -2547,6 +2660,7 @@
         }
         stopOcrPolling();
         stopReviewPolling();
+        clearWaitingPollSchedule();
         window.location.assign('dashboard.html');
     }
 
@@ -2644,6 +2758,13 @@
         else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
         else if (button.matches('[data-start-new]')) createNewWriting();
         else if (button.matches('[data-return-home]')) returnToTutorHome();
+        else if (button.matches('[data-view-waiting-result]')) {
+            var waitingAction = state.waitingResultAction;
+            state.waitingResultAction = null;
+            stopOcrPolling(); stopReviewPolling(); stopRewritePolling(); stopRevisionScanPolling();
+            destroyAiWaitingExperience();
+            if (typeof waitingAction === 'function') waitingAction();
+        }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
         else if (button.matches('[data-remove-photo]')) {
@@ -2802,6 +2923,7 @@
         event.preventDefault();
         sentence.click();
     });
+    document.addEventListener('pointerdown', unlockWaitingReadySound, { passive: true });
 
     document.getElementById('history-new-writing').addEventListener('click', function() {
         closeSidebar();
@@ -2838,14 +2960,19 @@
         if (state.leaveDialogOpen) closeLeaveConfirmation();
     });
     document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) wakeWaitingPoll();
         if (!state.waitingRunner) return;
-        try {
-            if (document.hidden) state.waitingRunner.pause();
-            else state.waitingRunner.resume();
-        } catch (error) {}
+        try { if (document.hidden) state.waitingRunner.pause(); else state.waitingRunner.resume(); } catch (error) {}
     });
+    window.addEventListener('focus', wakeWaitingPoll);
+    window.addEventListener('online', wakeWaitingPoll);
     window.addEventListener('pagehide', function() {
+        stopOcrPolling(); stopReviewPolling(); stopRewritePolling(); stopRevisionScanPolling();
         destroyAiWaitingExperience();
+        if (state.waitingAudioContext && typeof state.waitingAudioContext.close === 'function') {
+            try { state.waitingAudioContext.close(); } catch (error) {}
+        }
+        state.waitingAudioContext = null;
     });
 
     if (currentWritingTitleWindow && window.ResizeObserver) {

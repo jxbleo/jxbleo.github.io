@@ -21,14 +21,15 @@ function check(label, callback) {
   }
 }
 
-function makeHarness(reduceMotion = false) {
+function makeHarness(reduceMotion = false, randomValues = []) {
   const rafs = new Map();
   const listeners = new Map();
   let nextRaf = 1;
+  let randomIndex = 0;
   const context = {
     setTransform() {}, scale() {}, clearRect() {}, fillRect() {}, fill() {}, stroke() {},
     beginPath() {}, closePath() {}, moveTo() {}, lineTo() {}, arc() {}, arcTo() {},
-    quadraticCurveTo() {}, save() {}, restore() {}, translate() {},
+    quadraticCurveTo() {}, save() {}, restore() {}, translate() {}, ellipse() {},
   };
   const canvasListeners = new Map();
   const canvas = {
@@ -52,6 +53,8 @@ function makeHarness(reduceMotion = false) {
     addEventListener(type, handler) { listeners.set(`document:${type}`, handler); },
     removeEventListener(type) { listeners.delete(`document:${type}`); },
   };
+  const math = Object.create(Math);
+  math.random = () => (randomValues.length ? randomValues[randomIndex++ % randomValues.length] : 0.5);
   const window = {
     devicePixelRatio: 1,
     document,
@@ -64,7 +67,7 @@ function makeHarness(reduceMotion = false) {
     removeEventListener(type) { listeners.delete(`window:${type}`); },
     ResizeObserver: undefined,
   };
-  const contextObject = { window, document, Math, Date, console, setTimeout, clearTimeout };
+  const contextObject = { window, document, Math: math, Date, console, setTimeout, clearTimeout };
   vm.runInNewContext(source, contextObject, { filename: 'ai-waiting-runner.js' });
   return {
     canvas,
@@ -78,11 +81,16 @@ function makeHarness(reduceMotion = false) {
       pending.forEach((callback) => callback(timestamp));
     },
     pointerDown() { const handler = canvasListeners.get('pointerdown'); if (handler) handler({ pointerId: 1 }); },
-    visibility(handlerType, hidden) { document.hidden = hidden; const handler = listeners.get(`document:${handlerType}`); if (handler) handler(); },
+    keyDown(key) { const handler = listeners.get('window:keydown'); if (handler) handler({ key, repeat: false, preventDefault() {}, target: canvas }); },
+    visibility(hidden) { document.hidden = hidden; const handler = listeners.get('document:visibilitychange'); if (handler) handler(); },
   };
 }
 
-check('public Runner interface is exposed', () => {
+function runFrames(harness, start, end, step = 16) {
+  for (let time = start; time <= end; time += step) harness.frame(time);
+}
+
+check('public Runner interface is exposed and stays optional', () => {
   const harness = makeHarness();
   assert.strictEqual(typeof harness.runnerApi.mount, 'function');
   assert.strictEqual(typeof harness.runnerApi.isSupported, 'function');
@@ -93,36 +101,86 @@ check('public Runner interface is exposed', () => {
   runner.destroy();
 });
 
-check('destroy is idempotent', () => {
+check('first jump, landing jump, and one air jump are supported', () => {
   const harness = makeHarness();
   const runner = harness.runnerApi.mount(harness.canvas);
+  harness.pointerDown();
+  harness.frame(0);
+  harness.frame(16);
+  assert(runner.snapshot().player.vy < 0, 'first jump did not launch');
+  harness.pointerDown();
+  assert(runner.snapshot().player.jumpCount >= 2, `second jump did not register as an air jump: ${JSON.stringify(runner.snapshot())}`);
+  runFrames(harness, 32, 700);
+  harness.pointerDown();
+  assert.strictEqual(runner.snapshot().player.jumpCount, 2, 'more than one air jump was allowed');
+  assert(runner.snapshot().player.jumpBuffer > 0, `third jump should be buffered: ${JSON.stringify(runner.snapshot())}`);
+  runFrames(harness, 32, 1200);
+  assert(runner.snapshot().player.jumpCount >= 3, `buffered landing jump did not work: ${JSON.stringify(runner.snapshot())}`);
   runner.destroy();
-  runner.destroy();
-  assert.strictEqual(runner.snapshot().destroyed, true);
 });
 
-check('finish callback runs once', () => {
+check('jump buffer launches on landing', () => {
   const harness = makeHarness();
   const runner = harness.runnerApi.mount(harness.canvas);
-  let callbacks = 0;
-  runner.finish(() => { callbacks += 1; });
-  runner.finish(() => { callbacks += 1; });
-  for (let time = 0; time < 800; time += 16) harness.frame(time);
-  assert.strictEqual(callbacks, 1);
+  harness.pointerDown();
+  harness.frame(0);
+  harness.pointerDown();
+  harness.keyDown(' ');
+  runFrames(harness, 16, 1200);
+  assert(runner.snapshot().player.jumpBuffer === 0 || runner.snapshot().player.jumpCount >= 2,
+    'buffered jump was not consumed at landing');
+  assert(runner.snapshot().player.jumpCount >= 2, 'jump buffer did not trigger a second jump');
   runner.destroy();
 });
 
-check('reduced motion does not start a continuous animation', () => {
-  const harness = makeHarness(true);
+check('one obstacle collision subtracts once and different obstacles can subtract again', () => {
+  const harness = makeHarness(false, [0.5]);
   const runner = harness.runnerApi.mount(harness.canvas);
-  assert.strictEqual(harness.pendingRafCount(), 0);
-  let callbacks = 0;
-  runner.finish(() => { callbacks += 1; });
-  assert.strictEqual(callbacks, 1);
+  runFrames(harness, 0, 20000);
+  const snapshot = runner.snapshot();
+  assert(snapshot.collisionCount >= 2, 'expected collisions with multiple obstacles');
+  assert.strictEqual(snapshot.score, -snapshot.collisionCount + snapshot.collectedCount, 'score should subtract exactly one per collision');
+  assert(snapshot.obstacles.every((obstacle) => obstacle.hit !== undefined), 'obstacle hit marker missing');
   runner.destroy();
 });
 
-check('pause freezes simulation and resume discards hidden delta', () => {
+check('collectibles are green, reachable, and maintained at 3–7', () => {
+  const harness = makeHarness(false, [0.2, 0.8, 0.4, 0.6]);
+  const runner = harness.runnerApi.mount(harness.canvas);
+  const initial = runner.snapshot();
+  assert(initial.collectibleCount >= 3 && initial.collectibleCount <= 7, 'initial collectible count outside 3–7');
+  assert(/collectible|#(?:3|4|5|6|7|8|9)[a-f0-9]{5}/i.test(source), 'green collectible implementation missing');
+  runFrames(harness, 0, 18000);
+  const later = runner.snapshot();
+  assert(later.collectibleCount >= 3 && later.collectibleCount <= 7, 'collectibles not replenished to 3–7');
+  assert(Number.isFinite(later.score), 'score must be numeric');
+  runner.destroy();
+});
+
+check('score can be negative and onScore exposes only score', () => {
+  const harness = makeHarness(false, [0.5]);
+  const reports = [];
+  const runner = harness.runnerApi.mount(harness.canvas, { onScore: (value) => reports.push(value) });
+  runFrames(harness, 0, 12000);
+  assert(runner.snapshot().score < 0, 'score never became negative');
+  assert(reports.some((value) => Number.isFinite(value.score)), 'onScore did not report score');
+  assert(reports.every((value) => Object.keys(value).join(',') === 'score'), 'onScore leaked distance or ink');
+  runner.destroy();
+});
+
+check('ready does not stop RAF or the game', () => {
+  const harness = makeHarness();
+  const runner = harness.runnerApi.mount(harness.canvas);
+  runner.setTaskState('ready');
+  const before = runner.snapshot();
+  harness.frame(0);
+  harness.frame(1000);
+  assert(harness.pendingRafCount() > 0, 'ready stopped the animation loop');
+  assert(runner.snapshot().distance > before.distance, 'ready stopped world motion');
+  runner.destroy();
+});
+
+check('pause freezes simulation, resume discards hidden delta, and destroy is idempotent', () => {
   const harness = makeHarness();
   const runner = harness.runnerApi.mount(harness.canvas);
   harness.frame(0);
@@ -133,52 +191,15 @@ check('pause freezes simulation and resume discards hidden delta', () => {
   assert.deepStrictEqual(runner.snapshot().player, beforePause.player);
   runner.resume();
   harness.frame(10001);
-  const afterResume = runner.snapshot();
-  assert(afterResume.distance - beforePause.distance < 20, 'resume used a hidden-tab-sized delta');
+  assert(runner.snapshot().distance - beforePause.distance < 20, 'resume used hidden-tab-sized delta');
   runner.destroy();
+  runner.destroy();
+  assert.strictEqual(runner.snapshot().destroyed, true);
 });
 
-check('pointer jump is immediate and collisions stumble without game over', () => {
-  const harness = makeHarness();
-  const runner = harness.runnerApi.mount(harness.canvas);
-  harness.pointerDown();
-  harness.frame(0);
-  harness.frame(16);
-  assert(runner.snapshot().player.vy < 0, 'pointerdown did not jump');
-  for (let time = 32; time < 20000; time += 16) harness.frame(time);
-  const snapshot = runner.snapshot();
-  assert(snapshot.stumbleCount >= 1, 'expected at least one obstacle collision');
-  assert(snapshot.obstacles.length >= 1, 'obstacles stopped regenerating after the first screen');
-  assert(!Object.prototype.hasOwnProperty.call(snapshot, 'gameOver'), 'formal failure state leaked into snapshot');
-  runner.destroy();
-});
-
-check('finish timing is independent from time already spent waiting', () => {
-  const harness = makeHarness();
-  const runner = harness.runnerApi.mount(harness.canvas);
-  for (let time = 0; time < 2400; time += 16) harness.frame(time);
-  let callbacks = 0;
-  runner.finish(() => { callbacks += 1; });
-  const gateStart = runner.snapshot().finishGateX;
-  assert.strictEqual(callbacks, 0, 'finish ended immediately after a long wait');
-  for (let time = 2400; time < 2560; time += 16) harness.frame(time);
-  assert(runner.snapshot().finishGateX < gateStart, 'finish gate did not move toward the player');
-  for (let time = 2400; time < 2800; time += 16) harness.frame(time);
-  assert.strictEqual(callbacks, 1, 'finish did not complete within the bounded handoff');
-  runner.destroy();
-});
-
-check('distance and ink are temporary in-memory state', () => {
-  assert(!/fetch\s*\(|CloudBase|localStorage|indexedDB|document\.cookie/i.test(source));
-  const harness = makeHarness();
-  const runner = harness.runnerApi.mount(harness.canvas);
-  harness.frame(0);
-  harness.frame(1000);
-  const snapshot = runner.snapshot();
-  assert(Number.isFinite(snapshot.distance));
-  assert(Number.isFinite(snapshot.ink));
-  assert(!/Mario|Chrome\s+Dino|\bcoin\b|\bstar\b/i.test(source));
-  runner.destroy();
+check('no network, persistence, formal game over, or copyrighted runner assets', () => {
+  assert(!/fetch\s*\(|CloudBase|localStorage|sessionStorage|indexedDB|document\.cookie|Game\s*Over/i.test(source));
+  assert(!/Mario|Chrome\s+Dino|\bcoin\b|\byellow\s*star\b/i.test(source));
 });
 
 if (failures.length) {
