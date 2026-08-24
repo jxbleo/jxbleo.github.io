@@ -1972,6 +1972,8 @@ check("V2 polling is visible-aware, serialized, wakeable, and bounded", () => {
   assert(/hidden[\s\S]{0,180}10000|document\.hidden[\s\S]{0,180}10\s*\*\s*1000/.test(client), "hidden tabs must use the 10-second cadence");
   assert(/!document\.hidden[\s\S]{0,180}3000|document\.hidden\s*\?\s*10000\s*:\s*3000/.test(client), "visible tabs must use the 3-second cadence");
   assert(/3\s*\*\s*1000[\s\S]{0,180}20\s*\*\s*1000|waitingPollFailures[\s\S]{0,260}20\s*\*\s*1000/.test(client), "poll errors must back off to a 20-second cap");
+  assert(/Math\.min\(4,\s*state\.waitingPollFailures\s*\+\s*1\)/.test(client), "the fourth transient failure must actually reach the 20-second backoff");
+  assert(/function poll\(\)[\s\S]{0,180}waitingPollNow\s*=\s*poll[\s\S]{0,180}if\s*\(state\.waitingPollInFlight\)/.test(client), "a new task must retain its wake callback while an older request is still in flight");
   ["startOcrPolling", "startReviewPolling", "startRewritePolling", "startRevisionScanPolling"].forEach((name) => {
     const source = matchingFunctionSource(client, name, `${name} source`);
     requireEvery(source, ["getComposition", "scheduleWaitingPoll", "waitingPollInFlight"], `${name} serialized polling`);
@@ -1984,6 +1986,7 @@ check("waiting stages and task predicates keep durable identity guards", () => {
   requireEvery(client, ["pending_ocr", "reviewReady", "rewriteReady", "revisionScanReady"], "ready predicates");
   assert(/waitingResultAction/.test(client), "result action must be held by the waiting surface");
   assert(/compositionId|composition_id/.test(client), "polling must retain Composition identity");
+  assert(/revisionScanJobFrom\(result\s*&&\s*result\.composition\s*\|\|\s*result\)/.test(client), "revision scan operation guards must inspect the returned Composition");
 });
 
 check("success remains Ready until the student clicks one result action", () => {
@@ -1992,6 +1995,7 @@ check("success remains Ready until the student clicks one result action", () => 
   requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "Your Draft Is Ready", "Your Review Is Ready", "Your Feedback Is Ready", "Your Revision Scan Is Ready"], "Ready handoff");
   assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
   requireEvery(client, ["Review Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "AudioContext", "ready-announced"], "Ready controls and sound");
+  requireEvery(client, ["unlockWaitingReadySound", "pointerdown", "audio.resume"], "user-gesture audio unlock");
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
   ["showOcrResult", "showReviewResult", "applyRewriteResult"].forEach((name) => {
     const source = matchingFunctionSource(client, name, `${name} success source`);
