@@ -3,6 +3,17 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — Visitor access for Intensive Listening and AI Tutor
+
+- Visitors can play and replay the lesson's existing public BBC audio without
+  invoking the private Intensive Listening function or receiving private
+  sentence boundaries.
+- Visitors cannot type, check, reveal answers, Argue, read progress, or write
+  any learning record.
+- AI Writing Tutor now checks for a student session before private API calls and
+  shows non-students a contact modal for requesting a temporary student account.
+- Kept the existing My Words visitor behavior unchanged.
+
 ## 2026-08-24 — AI Tutor waiting experience
 
 - Simplified the first Writing screen to two compact training-mode buttons,

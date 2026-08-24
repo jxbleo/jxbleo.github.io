@@ -1908,6 +1908,21 @@ check("the shared AI waiting assets load before the Tutor client", () => {
   assert(page.indexOf("ai-waiting-runner.js") < page.indexOf("ai-tutor.js"), "Runner must load before ai-tutor.js");
 });
 
+check("visitor access explains how to request a temporary student account", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  requireEvery(page, [
+    'id="visitor-access-dialog"',
+    "@猫先生英语",
+    "mailto:jxbleo@foxmail.com",
+    "获取临时学生账号",
+  ], "AI Tutor visitor access dialog");
+  assert(client.includes("state.session.mode !== 'student'"), "AI Tutor must gate the workspace by student session");
+  assert(client.indexOf("state.session.mode !== 'student'") < client.indexOf("writingCall('getProfile')", client.indexOf("function init")), "visitor gate must run before private writing calls");
+  assert(client.includes("accessDialog.hidden = false"), "non-students must see the temporary-account dialog");
+  assert(client.includes("app.inert = true"), "the unavailable writing workspace must be inert behind the modal");
+});
+
 check("all four durable jobs use one waiting renderer and keep their polling", () => {
   const client = read(clientPath);
   const waitingFunctions = [

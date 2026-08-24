@@ -107,6 +107,10 @@ Home-screen icon checks:
 
 Intensive Listening checks:
 
+- visitor mode reads only the linked lesson's public title/audio metadata,
+  creates one local full-audio `listen_only` unit, and never calls the private
+  Intensive Listening function;
+- visitor UI hides progress, dictation, answer, completion, and Argue controls;
 - public static output contains no reviewed word answers;
 - `BBC-260813` shows one capsule linking `IL-BBC-260813`, while an unlinked BBC
   lesson shows none;
@@ -1740,6 +1744,9 @@ High priority improvement:
 
 ## AI Tutor Writing
 
+- Visitor/non-student access shows the temporary-account contact modal with
+  `@猫先生英语` and `mailto:jxbleo@foxmail.com` before any `writingTutor`
+  profile or composition request;
 - Run `npm run test:writing-tutor` and all release verification.
 - At phone, iPad, and desktop widths, confirm the page shows only one top toolbar
   over card content: `History` at far left, current title centered, and revision

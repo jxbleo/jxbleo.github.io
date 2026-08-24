@@ -2863,20 +2863,33 @@
 
     function init() {
         if (!window.MrCatAuth) { renderFatalAction(new Error('登录组件没有载入，请刷新页面。')); return; }
-        Promise.all([
-            window.MrCatAuth.getSession(),
-            writingCall('getProfile').catch(function() { return { success: true, profile: null }; }),
-            writingCall('listCompositions')
-        ]).then(function(results) {
-            state.session = results[0];
+        window.MrCatAuth.getSession().then(function(session) {
+            state.session = session;
             if (!state.session || state.session.mode !== 'student') {
-                throw new Error('请先使用学生账号登录，再打开 AI Tutor。');
+                app.setAttribute('aria-busy', 'false');
+                app.setAttribute('aria-hidden', 'true');
+                app.inert = true;
+                var accessDialog = document.getElementById('visitor-access-dialog');
+                if (accessDialog) {
+                    accessDialog.hidden = false;
+                    window.requestAnimationFrame(function() {
+                        var emailAction = accessDialog.querySelector('.visitor-access-email');
+                        if (emailAction) emailAction.focus({ preventScroll: true });
+                    });
+                }
+                return null;
             }
-            state.profile = results[1].student || state.session.profile || {};
-            state.writingProfile = safeArray(results[1].profile);
-            state.quota = results[1].quota || null;
-            state.rubrics = safeArray(results[1].rubrics).length ? results[1].rubrics : safeArray(results[2].rubrics);
-            state.compositions = normalizeCompositions(results[2]);
+            return Promise.all([
+                writingCall('getProfile').catch(function() { return { success: true, profile: null }; }),
+                writingCall('listCompositions')
+            ]);
+        }).then(function(results) {
+            if (!results) return;
+            state.profile = results[0].student || state.session.profile || {};
+            state.writingProfile = safeArray(results[0].profile);
+            state.quota = results[0].quota || null;
+            state.rubrics = safeArray(results[0].rubrics).length ? results[0].rubrics : safeArray(results[1].rubrics);
+            state.compositions = normalizeCompositions(results[1]);
             app.setAttribute('aria-busy', 'false');
             renderPortfolio();
             var requestedId = requestedCompositionId();

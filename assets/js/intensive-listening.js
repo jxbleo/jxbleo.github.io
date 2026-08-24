@@ -6,6 +6,7 @@
     setId: String(params.get('set') || '').trim(),
     assignmentId: String(params.get('assignment') || '').trim(),
     teacherMode: params.get('teacher') === '1',
+    visitorMode: params.get('visitor') === '1' || localStorage.getItem('mrcat_visitor') === 'true',
     material: null,
     progress: null,
     replayId: '',
@@ -14,6 +15,7 @@
     started: false,
     playing: false,
     stopAt: 0,
+    visitorFullAudio: false,
     busy: false,
     autoAdvancing: false,
     localUnits: {},
@@ -59,7 +61,7 @@
     return ['mrcat', 'intensive-listening', studentIdentity(), state.setId, state.replayId ? 'temporary' : 'best', 'v2'].join(':');
   }
   function saveDraft() {
-    if (!state.material || state.teacherMode) return;
+    if (!state.material || state.teacherMode || state.visitorMode) return;
     var units = {};
     Object.keys(state.localUnits).forEach(function(unitId) {
       var local = state.localUnits[unitId];
@@ -82,7 +84,7 @@
     } catch (error) { /* Server progress remains authoritative. */ }
   }
   function readDraft() {
-    if (state.teacherMode) return null;
+    if (state.teacherMode || state.visitorMode) return null;
     try {
       var draft = JSON.parse(localStorage.getItem(draftKey()) || 'null');
       if (!draft || String(draft.contentVersion) !== String(state.material.content_version) || !draft.units) return null;
@@ -168,6 +170,9 @@
   }
 
   function call(action, payload) {
+    if (state.visitorMode) {
+      return Promise.reject(new Error('Visitor Mode is listen-only.'));
+    }
     return window.MrCatCloud.callAuthenticatedFunction('intensiveListening', Object.assign({
       action: action, set_id: state.setId, assignment_id: state.assignmentId || null,
       replay_id: state.replayId || null, teacher_mode: state.teacherMode,
@@ -205,6 +210,7 @@
     renderProgress();
   }
   function renderProgress() {
+    if (state.visitorMode) return;
     var progress = state.progress || {};
     var percentage = Number(progress.percentage) || 0;
     $('#header-progress').value = percentage;
@@ -282,13 +288,17 @@
     var local = currentLocal();
     var server = currentServer();
     var position = dictationPosition(state.currentIndex);
-    $('#unit-label').textContent = mode === 'dictation' ? 'UNIT ' + String(position).padStart(2, '0') : 'JUST LISTEN';
+    $('#unit-label').textContent = state.visitorMode
+      ? 'FULL PROGRAMME'
+      : mode === 'dictation' ? 'UNIT ' + String(position).padStart(2, '0') : 'JUST LISTEN';
     $('#speaker-label').textContent = unit.speaker || '';
-    $('#unit-position').textContent = mode === 'dictation' ? position + ' / ' + state.material.unit_count : 'LISTEN';
+    $('#unit-position').textContent = state.visitorMode
+      ? 'LISTEN ONLY'
+      : mode === 'dictation' ? position + ' / ' + state.material.unit_count : 'LISTEN';
     updateUnitNavigation();
-    $('#time-range').textContent = formatTime(unit.start_seconds) + ' – ' + formatTime(unit.end_seconds);
+    $('#time-range').textContent = state.visitorFullAudio ? 'Full audio' : formatTime(unit.start_seconds) + ' – ' + formatTime(unit.end_seconds);
     $('#practice-card').dataset.mode = mode;
-    var passiveListening = mode !== 'dictation';
+    var passiveListening = state.visitorMode || mode !== 'dictation';
     $('#listen-only-panel').hidden = !passiveListening;
     $('#word-slots').hidden = passiveListening;
     $('#feedback').hidden = passiveListening;
@@ -296,6 +306,10 @@
     $('#answer-panel').hidden = passiveListening || !local.answerVisible;
     if (passiveListening) {
       $('#audio-status').textContent = state.playing ? 'Listening…' : 'Press Replay to hear this part';
+      if (state.visitorMode) {
+        $('#listen-only-panel strong').textContent = 'VISITOR · JUST LISTEN';
+        $('#listen-only-panel input').value = 'Visitor Mode is listening-only. Sign in to practise dictation.';
+      }
       saveDraft();
       return;
     }
@@ -333,7 +347,7 @@
     if (message) { $('#feedback').className = 'il-feedback'; $('#feedback').textContent = message; }
   }
   function checkUnit() {
-    if (state.teacherMode || state.busy || !isDictation(currentUnit()) || currentServer().completed) return;
+    if (state.teacherMode || state.visitorMode || state.busy || !isDictation(currentUnit()) || currentServer().completed) return;
     var unit = currentUnit(); var local = currentLocal();
     setBusy(true, 'Checking this unit…');
     call('check', { unit_id: unit.unit_id, entries: local.entries, replay_delta: local.replayDelta }).then(function(result) {
@@ -362,7 +376,7 @@
     });
   }
   function showAnswer() {
-    if (state.busy || !isDictation(currentUnit()) || currentLocal().answerVisible) return;
+    if (state.visitorMode || state.busy || !isDictation(currentUnit()) || currentLocal().answerVisible) return;
     var unit = currentUnit(); var local = currentLocal();
     setBusy(true, state.teacherMode ? 'Opening the reviewed answer…' : 'Checking whether the answer is available…');
     call('reveal', { unit_id: unit.unit_id, replay_delta: local.replayDelta }).then(function(result) {
@@ -393,6 +407,10 @@
   function finishPlayback() {
     pauseAudio('');
     if (!currentUnit()) return;
+    if (state.visitorMode) {
+      $('#audio-status').textContent = 'Full programme finished';
+      return;
+    }
     if (!isDictation(currentUnit())) {
       $('#audio-status').textContent = 'Listening part finished'; advanceUnit(); return;
     }
@@ -427,7 +445,7 @@
     state.playbackEndIndex = nextPlaybackEndIndex(state.currentIndex);
     var endUnit = state.material.units[state.playbackEndIndex];
     try { audio.currentTime = Number(unit.start_seconds) || 0; } catch (error) { /* metadata settles before play */ }
-    state.stopAt = Number(endUnit.end_seconds) || 0;
+    state.stopAt = state.visitorFullAudio ? Infinity : Number(endUnit.end_seconds) || 0;
     audio.play().then(function() {
       state.playing = true; $('#replay-button').textContent = 'Ⅱ'; $('#audio-status').textContent = 'Listening…';
     }).catch(function() {
@@ -450,6 +468,13 @@
   function finishSession() {
     pauseAudio('');
     if (state.teacherMode) { window.location.href = safeReturnUrl(); return; }
+    if (state.visitorMode) {
+      state.currentIndex = firstPlayableIndex();
+      $('#feedback').className = 'il-feedback';
+      $('#feedback').textContent = 'Listening complete. Replay any sentence, or return when you are ready.';
+      renderUnit();
+      return;
+    }
     var firstIncomplete = state.material.units.findIndex(function(unit) {
       return isDictation(unit) && !(state.progress.unit_progress[unit.unit_id] || {}).completed;
     });
@@ -531,7 +556,7 @@
     });
   }
   function refreshPolicy() {
-    if (!state.material || document.hidden) return;
+    if (!state.material || state.visitorMode || document.hidden) return;
     call('policy').catch(function() { /* The next normal action retries. */ });
   }
   function showLoadError(error) {
@@ -540,15 +565,59 @@
     $('#start-button').hidden = true;
     $('#start-note').textContent = error.code === 'AUTH_REQUIRED' ? 'Return to the login page and sign in first.' : 'Please return and try again.';
   }
+  function loadVisitorMaterial() {
+    var sourceSetId = state.setId.replace(/^IL-/i, '');
+    if (!/^BBC-[A-Za-z0-9-]+$/.test(sourceSetId)) {
+      return Promise.reject(new Error('This listening audio is not available in Visitor Mode.'));
+    }
+    return window.fetch('data/' + encodeURIComponent(sourceSetId) + '.json', { credentials: 'same-origin' }).then(function(response) {
+      if (!response.ok) throw new Error('This listening audio is not available right now.');
+      return response.json();
+    }).then(function(source) {
+      var audioSrc = String(source && source.audioSrc || '').trim();
+      if (!audioSrc) throw new Error('This listening audio is not available right now.');
+      return {
+        visitor_mode: true,
+        material: {
+          material_id: state.setId,
+          set_id: state.setId,
+          title: String(source.title || 'Intensive Listening'),
+          audio_src: audioSrc,
+          content_version: 'visitor-public-audio-v1',
+          sequence_count: 1,
+          units: [{
+            unit_id: 'visitor-full-audio', speaker: '', start_seconds: 0, end_seconds: 0,
+            practice_mode: 'listen_only', slots: []
+          }]
+        }
+      };
+    });
+  }
   function initialize() {
     if (!state.setId) { showLoadError(new Error('No listening material was selected.')); return; }
-    call('bootstrap').then(function(result) {
+    var bootstrap = state.visitorMode ? loadVisitorMaterial() : call('bootstrap');
+    bootstrap.then(function(result) {
+      state.visitorMode = result.visitor_mode === true || state.visitorMode;
+      state.visitorFullAudio = state.visitorMode;
       state.teacherMode = result.teacher_mode === true || state.teacherMode;
-      state.material = result.material; state.progress = result.progress; state.slotDisputes = {};
+      state.material = result.material;
+      state.progress = result.progress || { percentage: 0, completed_count: 0, independent_count: 0, assisted_count: 0, replay_count: 0, best_percentage: 0, unit_progress: {} };
+      state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
       $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
       $('#audio').src = state.material.audio_src; hydrateLocalUnits(); renderProgress();
+      if (state.visitorMode) {
+        document.body.classList.add('il-visitor-mode');
+        $('#header-progress').parentElement.hidden = true;
+        $('.il-stats').hidden = true;
+        $('.il-mode').textContent = 'VISITOR · LISTEN ONLY';
+        $('#start-copy').textContent = 'Listen to the full programme. Dictation, answers, and saved progress require a student account.';
+        $('#start-note').textContent = 'Visitor Mode plays public audio only and never loads answer data.';
+        $('#previous-unit-button').hidden = true; $('#next-unit-button').hidden = true;
+        renderUnit(); $('#start-button').disabled = false; $('#start-button-label').textContent = 'Listen';
+        return;
+      }
       if (state.teacherMode) {
         state.started = true; $('#export-button').hidden = false; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
         renderUnit(); $('#feedback').textContent = 'Teacher preview · replay the unit, then open Show Answer to mark a word.'; return;
@@ -583,7 +652,7 @@
       if (!next || $('#audio').currentTime < Number(next.start_seconds || 0)) break;
       state.currentIndex += 1; renderUnit();
     }
-    if ($('#audio').currentTime >= state.stopAt) finishPlayback();
+    if (Number.isFinite(state.stopAt) && $('#audio').currentTime >= state.stopAt) finishPlayback();
   });
   $('#audio').addEventListener('ended', finishPlayback);
   window.setInterval(refreshPolicy, 30000);

@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260824-1">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260824-2">
     <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260824-1">
 </head>
 <body class="ai-tutor-page">
@@ -81,6 +81,20 @@
         </section>
     </div>
 
+    <div class="confirmation-layer" id="visitor-access-dialog" hidden>
+        <div class="confirmation-scrim"></div>
+        <section class="confirmation-dialog visitor-access-dialog" role="dialog" aria-modal="true" aria-labelledby="visitor-access-title" aria-describedby="visitor-access-copy">
+            <div class="confirmation-copy">
+                <strong id="visitor-access-title">获取 AI Writing Tutor 使用权限</strong>
+                <p id="visitor-access-copy">请联系 <b>@猫先生英语</b>，或发送邮件至 <a href="mailto:jxbleo@foxmail.com">jxbleo@foxmail.com</a>，获取临时学生账号。</p>
+            </div>
+            <div class="confirmation-actions">
+                <a class="visitor-access-back" href="dashboard.html">返回</a>
+                <a class="visitor-access-email" href="mailto:jxbleo@foxmail.com">发送邮件</a>
+            </div>
+        </section>
+    </div>
+
     <noscript><p class="noscript-message">AI Tutor 需要启用 JavaScript 才能使用。</p></noscript>
 
     <template id="ai-tutor-mode-template">
@@ -93,6 +107,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/ai-waiting-runner.js?v=20260824-1"></script>
-    <script src="assets/js/ai-tutor.js?v=20260824-2"></script>
+    <script src="assets/js/ai-tutor.js?v=20260824-3"></script>
 </body>
 </html>
