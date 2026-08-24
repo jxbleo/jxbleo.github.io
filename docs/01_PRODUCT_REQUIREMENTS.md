@@ -1875,9 +1875,12 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   点击任意未完成稿或 History 项目必须先打开与 Dashboard Library 任务入口相同材质、尺寸与弹入动画的确认层；确认层只投影作文标题、当前进度文字与进度条，学生明确 Enter 后才读取全文。
   主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余 AI 批改词数。
 - 点击主页 `Polishing` 或 `Brainstorming` 不进入新的输入页面，而是在两个按钮下方原位展开表单；展开采用克制、可中断且尊重
-  Reduced Motion 的材质过渡。语言模式显示带 `Optional` 标记的 `Title` 与 `Your Writing`；标化模式严格按
-  `Rubric`、`Writing Prompt`、分隔线、`Title`、`Your Writing` 排列，所有字段使用英文。Rubric 与 Writing Prompt 位于分隔线上方，表示固定评估上下文；学生内容位于下方。
-  正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
+  Reduced Motion 的材质过渡。表单不在控件上方显示 `Rubric`、`Writing Prompt`、`Title`、`Optional` 或
+  `Your Writing` 标签，而把这些提示收进对应控件：Title 使用 `Title (Optional)`，Rubric 保留选择提示，
+  Prompt 与正文保留各自输入提示，并用与正文一致的灰色衬线占位字体。标化模式仍严格按
+  Rubric、Writing Prompt、完整实线分隔线、Title、Your Writing 的控件顺序排列；Rubric 与 Prompt 位于
+  分隔线上方，学生内容位于下方。Writing Prompt 初始只显示一行，Your Writing 初始显示三行，两者都随输入
+  自动增高而不出现内部纵向滚动。正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
   选择模式、输入 Title/Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
   定位符，也不进入 History。未提交内容只存在当前页面内存；刷新、关闭、离开后再次进入都必须消失，且不得
   通过 `sessionStorage`、`localStorage` 或其他浏览器持久层恢复。刷新仍停留 Writing Home，不得进入已废弃的

@@ -412,17 +412,19 @@ check("the first writing screen keeps only the compact source controls", () => {
   const renderSource = `${functionSource(client, "homeComposerHtml", "pendingComposerStorageKey")}\n${functionSource(client, "sourceFieldsHtml", "rubricOptions")}`;
   const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
   requireEvery(renderSource, [
-    "Title", "field-optional", "Optional", "data-discard-source", ">Discard</button>",
+    "Title (Optional)", "data-discard-source", ">Discard</button>",
     "state.inputMethod === 'photo' ? 'Scan' : 'Submit'",
   ], "compact Writing source screen");
-  requireEvery(textSource, ["Your Writing", "writing-text", "Type or paste your writing here…", "cameraOnlyButton('writing'"], "language text-entry field");
+  requireEvery(textSource, ['aria-label="Your Writing"', 'rows="3"', "writing-text", "Type or paste your writing here…", "cameraOnlyButton('writing'"], "language text-entry field");
   const sourceFields = functionSource(client, "sourceFieldsHtml", "rubricOptions");
   const cameraButton = functionSource(client, "cameraOnlyButton", "sourceFieldsHtml");
-  requireEvery(sourceFields, ["Rubric", "Writing Prompt", "source-fixed-divider", "Title"], "Brainstorming source fields");
-  assert(sourceFields.indexOf("Rubric") < sourceFields.indexOf("Writing Prompt")
-      && sourceFields.indexOf("Writing Prompt") < sourceFields.indexOf("source-fixed-divider")
-      && sourceFields.indexOf("source-fixed-divider") < sourceFields.indexOf("Title"),
+  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'rows="1"', "source-fixed-divider", "Title (Optional)"], "Brainstorming source fields");
+  assert(sourceFields.indexOf('aria-label="Rubric"') < sourceFields.indexOf('aria-label="Writing Prompt"')
+      && sourceFields.indexOf('aria-label="Writing Prompt"') < sourceFields.indexOf("source-fixed-divider")
+      && sourceFields.indexOf("source-fixed-divider") < sourceFields.indexOf("Title (Optional)"),
     "Brainstorming source order must be Rubric, Writing Prompt, divider, then Title");
+  assert(!/<(?:label|span)[^>]*>\s*(?:Rubric|Writing Prompt|Title|Your Writing)/.test(`${sourceFields}\n${textSource}`),
+    "source controls must not render visible field headings above the inputs");
   requireEvery(cameraButton, ["data-open-photo-choice", "data-photo-target", "icon('camera')", "aria-label", "title"], "icon-only source camera control");
   assert(!/>\s*Scan\s*</.test(cameraButton), "the embedded camera control must not render a Scan text label");
   assert(!/source-mode-switch|input-switch|data-input-method|>Type<|>Scan<\/button>/.test(renderSource),
@@ -439,8 +441,17 @@ check("the first writing screen keeps only the compact source controls", () => {
     "Discard must use a complete boxed button treatment");
   assert(/\.inline-writing-scan\s*\{[^}]*right:\s*10px[^}]*bottom:\s*10px/i.test(styles),
     "camera controls must sit at the bottom-right of their text boxes");
-  assert(/\.field\.inline-writing-field textarea\.manuscript\s*\{[^}]*padding-top:\s*8px[^}]*line-height:\s*1\.55/i.test(styles),
-    "Your Writing placeholder and first line must align near the top edge");
+  requireEvery(client, ["resizeSourceTextarea", "scheduleSourceTextareaResize", "scrollHeight"],
+    "source textarea auto-growth");
+  assert(/\.field\.inline-writing-field textarea\.manuscript\.source-auto-grow\s*\{[^}]*min-height:\s*calc\(4\.65em \+ 26px\)[^}]*line-height:\s*1\.55/i.test(styles),
+    "Your Writing must begin at three lines and grow with its content");
+  assert(/\.field textarea\.source-prompt-input\s*\{[^}]*min-height:\s*52px[^}]*line-height:\s*1\.55/i.test(styles),
+    "Writing Prompt must begin at a compact one-line height");
+  assert(/\.source-entry-form input::placeholder[^}]*font-family:\s*ui-serif/i.test(styles),
+    "source placeholders must share the manuscript placeholder typography");
+  assert(/\.source-fixed-divider\s*\{[^}]*background:\s*var\(--ai-line\)[^}]*\}/i.test(styles)
+      && !/\.source-fixed-divider\s*\{[^}]*linear-gradient/i.test(styles),
+    "the fixed/student divider must use one full-width solid line");
 });
 
 check("photo entry offers camera or library, stages multiple pages, and scans only on submit", () => {
