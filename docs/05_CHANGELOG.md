@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — Incomplete revision alert
+
+- Replaced the Sentence Revision incomplete-submit status banner with a compact,
+  one-action material alert.
+- Incomplete Submit now turns every required card to `Your Attempt`, positions the
+  first unfinished card, and focuses its input after `OK`; rewrite guidance is English.
+
 ## 2026-08-24 — Revision photo acquisition controls
 
 - Added a separate Photo Library input beside Add Photo and Remove in revision

@@ -472,9 +472,11 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .confirmation-copy strong { display: block; font-size: 1.2rem; }
 .confirmation-copy p { max-width: 270px; margin: 8px auto 0; color: var(--ai-muted); font-size: .88rem; line-height: 1.45; }
 .confirmation-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: .5px solid rgba(24,49,43,.16); }
+.confirmation-actions-single { grid-template-columns: minmax(0,1fr); }
 .confirmation-actions button { min-height: 48px; border: 0; border-radius: 0; background: transparent; box-shadow: none; font-size: .93rem; font-weight: 650; }
 .confirmation-actions a { display: grid; place-items: center; min-height: 48px; color: inherit; font-size: .93rem; font-weight: 650; text-decoration: none; }
 .confirmation-cancel { color: var(--ai-accent); }
+.confirmation-ok { color: var(--ai-accent); }
 .confirmation-leave { border-left: .5px solid rgba(24,49,43,.16) !important; color: #c9403a; }
 .visitor-access-dialog { width: min(390px,calc(100% - 32px)); }
 .visitor-access-dialog .confirmation-copy p { max-width: 320px; }

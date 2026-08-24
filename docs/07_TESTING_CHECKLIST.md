@@ -1928,13 +1928,17 @@ High priority improvement:
 - Confirm every Sentence Revision source row begins with exactly one matching one-based
   number, including effective rows. In editable mode, the footer contains only one
   `Submit` button aligned right on desktop and full-width on phone; the old unfinished
-  hint, long submit labels, and arrow icon are absent. Empty submission still returns
-  the student to the first unfinished sentence. Confirm the row number follows the
+  hint, long submit labels, and arrow icon are absent. Empty submission turns every
+  required card to the `Your Attempt` face, returns the student to the first unfinished
+  sentence, and opens a one-button `You still have unfinished changes.` alert. Confirm
+  there is no top red incomplete-status banner; `OK` closes the alert and focuses that
+  sentence's rewrite field. Confirm the row number follows the
   BBC classroom worksheet treatment—small, heavy, baseline-aligned, with no border,
   circular background, or capsule shape. This must remain visually distinct from
   the top navigation capsules.
 - Confirm every editable rewrite face labels its field `Your Attempt` in the muted
-  supporting-text color, while the textarea content remains visually primary. After
+  supporting-text color and uses the English placeholder `Rewrite this sentence in your
+  own words. Do not copy the sample.`, while the textarea content remains visually primary. After
   a successful Review Scan import, confirm every revision-required card opens on that
   attempt face with the original sentence and imported correction visible together.
 - Confirm the Sentence Revision heading has no explanatory line beneath it. The bottom
