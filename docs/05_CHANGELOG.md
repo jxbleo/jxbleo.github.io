@@ -1991,3 +1991,14 @@ required.
   with explicit camera and photo-library additions.
 - Preserved the eight-page preview/reorder/remove workflow and made the bottom
   green `Scan` the only action that uploads the batch and starts OCR.
+
+# 2026-08-24：Action-first AI Writing home
+
+- Replaced the permanent marketing hero and three feature explanations with an
+  adaptive Writing workspace: newest unfinished Continue card, direct mode
+  quick starts, three recent compositions, and real Writing Focus patterns.
+- Added a compact `Writing` home toolbar state with remaining daily word quota,
+  an asymmetric wide-screen grid, ordered phone layout, horizontally scrollable
+  recent cards, restrained materials, press feedback, and accessible motion fallbacks.
+- Made `createComposition` validate and persist the mode selected from the home
+  quick-start cards so an immediate refresh cannot revert Brainstorming to Polishing.

@@ -2066,6 +2066,20 @@ Important mobile rules:
   refresh or re-login. A final failure preserves the manuscript and offers a fresh submission after quota release.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
+- Writing Home is an action-first, adaptive workspace rather than a permanent
+  feature explainer. Its visual order is `Continue`, `Start New`, `Recent Writing`,
+  then `Writing Focus`. The Continue surface shows the newest unfinished title,
+  mode, current workflow status, and a thin non-numeric stage track; when there
+  is no unfinished work it becomes a quiet invitation to begin. `Polishing` and
+  `Brainstorming` are whole-card quick starts that create and persist the chosen
+  mode before opening the source form. Recent Writing contains at most three
+  cards and `See All` opens History. Writing Focus projects at most three real
+  profile patterns and uses a restrained empty state before the first review.
+  On phones the four regions form one column in that order and Recent Writing
+  scrolls horizontally; wide iPad/desktop uses the asymmetric two-column grid.
+  The home toolbar reads `Writing` and uses the right edge only for the compact
+  remaining-word quota. Cards respond on press, directional arrows move only on
+  hover, and reduced-motion/transparency preferences retain stable equivalents.
 - The first Writing screen has no page eyebrow, explanatory heading, step badge,
   or section labels. It starts with a compact two-option switch labelled
   `Polishing` and `Brainstorming`, followed by a `Type` / `Scan` input switch whose default is `Type`.

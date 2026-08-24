@@ -1768,6 +1768,16 @@ High priority improvement:
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
+- On Writing Home, verify the old permanent feature explainer is absent and the
+  order is Continue, Start New, Recent Writing, Writing Focus. With unfinished
+  work, Continue must reopen the newest unfinished Composition and display its
+  current status; with only completed/no work, it must offer a new Polishing
+  Composition. Verify quick-starting both modes creates the correct persisted
+  `assessment_mode`, including after immediate refresh. Recent Writing shows at
+  most three cards, `See All` opens History, and Writing Focus reflects no more
+  than three real profile patterns. Check single-column phone order/horizontal
+  recent cards, asymmetric iPad/desktop layout, compact home quota, press states,
+  keyboard focus, larger text, reduced motion, and reduced transparency.
 - On the first Writing screen, confirm the removed heading, explanation, step,
   and section labels are absent. Verify the two mode buttons read `Polishing`
   and `Brainstorming`; `Type` is selected by default, and language text entry shows only

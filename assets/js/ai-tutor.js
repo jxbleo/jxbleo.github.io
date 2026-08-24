@@ -420,6 +420,7 @@
 
     function updateRevisionProgress() {
         if (!revisionProgress) return;
+        revisionProgress.classList.remove('is-home-quota');
         var progress = revisionProgressSummary();
         revisionProgress.hidden = !progress;
         if (!progress) {
@@ -1135,16 +1136,102 @@
         destroyAiWaitingExperience();
         state.screen = 'welcome';
         var recentCompositions = portfolioCompositions();
-        stage.innerHTML = '<section class="surface">' +
-            '<div class="hero"><p class="eyebrow">YOUR AI WRITING STUDIO</p><h2>把一篇作文，变成一次真正的训练。</h2>' +
-            '<p>拍下手写作文或直接粘贴文字。你可以选择逐句改善英语，或按真实考试标准检查内容与结构。</p>' +
-            (state.quota ? '<p><strong>今日还可批改 ' + escapeHtml(state.quota.words_remaining) + ' 词</strong> · 每日上限 ' + escapeHtml(state.quota.daily_word_limit) + ' 词</p>' : '') +
-            '<div class="hero-actions"><button class="primary-button" type="button" data-start-new>' + icon('plus') + '开始新作文</button>' +
-            (recentCompositions.length ? '<button class="secondary-button" type="button" data-open-composition="' + escapeHtml(compositionId(recentCompositions[0])) + '">继续最近作品</button>' : '') + '</div></div>' +
-            '<div class="feature-grid"><article class="feature-card"><span class="feature-icon">' + icon('camera') + '</span><h3>拍照或输入</h3><p>OCR 后先由你确认文字，潦草笔迹也不会直接进入批改。</p></article>' +
-            '<article class="feature-card"><span class="feature-icon">' + icon('text') + '</span><h3>两种批改</h3><p>通用语言批改不评分；标化考试内容批改忠实使用你选择的 Rubric。</p></article>' +
-            '<article class="feature-card"><span class="feature-icon">' + icon('check') + '</span><h3>亲手重写</h3><p>读完建议后亲自改写，再一次性提交检查，让反馈变成能力。</p></article></div>' +
-        '</section>';
+        var continueComposition = recentCompositions.find(function(item) {
+            return compositionStatus(item) !== 'completed';
+        }) || null;
+        showWelcomeToolbar();
+        stage.innerHTML = '<section class="writing-home" aria-labelledby="writing-home-title">' +
+            '<header class="writing-home-intro"><p>' + escapeHtml(welcomeGreeting()) + '</p><h1 id="writing-home-title">Ready to keep writing?</h1></header>' +
+            '<div class="writing-home-dashboard">' +
+            welcomeContinueHtml(continueComposition, recentCompositions.length > 0) +
+            '<section class="writing-home-section writing-home-start" aria-labelledby="writing-home-start-title"><div class="writing-home-section-heading"><div><p>QUICK START</p><h2 id="writing-home-start-title">Start New</h2></div></div>' +
+            '<div class="writing-mode-grid"><button class="writing-mode-card polishing" type="button" data-start-mode="language"><span class="writing-mode-icon">' + icon('text') + '</span><span><strong>Polishing</strong><small>Improve grammar and expression</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button>' +
+            '<button class="writing-mode-card brainstorming" type="button" data-start-mode="standardized"><span class="writing-mode-icon">' + icon('focus') + '</span><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button></div></section>' +
+            welcomeRecentHtml(recentCompositions.slice(0, 3)) +
+            welcomeWritingFocusHtml() +
+            '</div></section>';
+    }
+
+    function welcomeGreeting() {
+        var hour = new Date().getHours();
+        try {
+            var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Shanghai', hour: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+            var hourPart = parts.find(function(part) { return part.type === 'hour'; });
+            if (hourPart) hour = Number(hourPart.value);
+        } catch (error) {}
+        if (hour < 12) return 'Good morning';
+        if (hour < 18) return 'Good afternoon';
+        return 'Good evening';
+    }
+
+    function compactQuota(value) {
+        var number = Math.max(0, Number(value || 0));
+        if (number >= 1000) return (number / 1000).toFixed(number >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
+        return String(Math.round(number));
+    }
+
+    function showWelcomeToolbar() {
+        if (currentWritingTitleWindow && currentWritingTitleTrack) {
+            currentWritingTitleTrack.textContent = 'Writing';
+            currentWritingTitleWindow.hidden = false;
+            currentWritingTitleWindow.setAttribute('aria-label', 'Writing home');
+            currentWritingTitleWindow.classList.remove('is-overflowing');
+        }
+        if (revisionProgress) {
+            var remaining = state.quota && Number(state.quota.words_remaining);
+            var hasQuota = Number.isFinite(remaining);
+            revisionProgress.hidden = !hasQuota;
+            revisionProgress.classList.toggle('is-home-quota', hasQuota);
+            if (hasQuota) {
+                revisionProgress.innerHTML = '<strong>' + escapeHtml(compactQuota(remaining)) + '</strong><small>words</small>';
+                revisionProgress.setAttribute('aria-label', 'Today: ' + Math.max(0, remaining) + ' AI review words remaining');
+                revisionProgress.setAttribute('title', Math.max(0, remaining) + ' words remaining today');
+            }
+        }
+        document.title = 'Writing | Mr. Cat Academy';
+    }
+
+    function homeWorkflowProgress(composition) {
+        var status = compositionStatus(composition);
+        var progressByStatus = {
+            draft: 12, photo_uploading: 18, ocr_queued: 24, ocr_processing: 32, ocr_failed: 32,
+            ocr_ready: 42, ocr_review: 42, ready: 50, queued: 54, evaluating: 60,
+            review_queued: 54, review_processing: 60, review_failed: 60, standardized_ready: 72,
+            language_ready: 74, review_ready: 74, reviewed: 78, sentence_training: 82,
+            needs_revision: 88, rewrite_queued: 90, rewrite_processing: 94, rewrite_failed: 90,
+            failed: 60
+        };
+        return progressByStatus[status] || 12;
+    }
+
+    function welcomeContinueHtml(composition, hasWriting) {
+        if (!composition) {
+            return '<section class="writing-home-continue writing-home-empty"><div><p class="writing-home-kicker">' + (hasWriting ? 'READY WHEN YOU ARE' : 'YOUR FIRST WRITING') + '</p>' +
+                '<h2>' + (hasWriting ? 'Start something new.' : 'Your writing journey starts here.') + '</h2><p>' + (hasWriting ? 'Choose a focused language review or prepare ideas for an exam task.' : 'Begin with a quick language polish. Your work will stay safely in History.') + '</p></div>' +
+                '<button class="writing-continue-action" type="button" data-start-mode="language">Start with Polishing ' + icon('arrow') + '</button></section>';
+        }
+        var progress = homeWorkflowProgress(composition);
+        return '<section class="writing-home-continue"><div class="writing-continue-top"><span class="writing-home-kicker">CONTINUE</span><span class="mini-badge ' + (compositionMode(composition) === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(compositionMode(composition) === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span></div>' +
+            '<div class="writing-continue-copy"><h2>' + escapeHtml(compositionTitle(composition)) + '</h2><p>' + escapeHtml(statusLabel(compositionStatus(composition))) + '</p></div>' +
+            '<div class="writing-workflow-track" role="progressbar" aria-label="Writing workflow progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '"><span style="width:' + progress + '%"></span></div>' +
+            '<button class="writing-continue-action" type="button" data-open-composition="' + escapeHtml(compositionId(composition)) + '">Continue ' + icon('arrow') + '</button></section>';
+    }
+
+    function welcomeRecentHtml(items) {
+        var cards = items.length ? items.map(function(item) {
+            var mode = compositionMode(item);
+            var score = item.overall_score != null ? '<span class="writing-recent-score">' + escapeHtml(item.overall_score) + '</span>' : '';
+            return '<button class="writing-recent-card" type="button" data-open-composition="' + escapeHtml(compositionId(item)) + '"><span class="writing-recent-card-top"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(mode === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span>' + score + '</span><strong>' + escapeHtml(compositionTitle(item)) + '</strong><small>' + escapeHtml(formatDate(item.updated_at || item.created_at)) + ' · ' + escapeHtml(statusLabel(compositionStatus(item))) + '</small></button>';
+        }).join('') : '<div class="writing-home-inline-empty">Your writing will appear here after you begin.</div>';
+        return '<section class="writing-home-section writing-home-recent" aria-labelledby="writing-home-recent-title"><div class="writing-home-section-heading"><div><p>YOUR WORK</p><h2 id="writing-home-recent-title">Recent Writing</h2></div><button class="writing-home-see-all" type="button" data-open-history>See All</button></div><div class="writing-recent-list">' + cards + '</div></section>';
+    }
+
+    function welcomeWritingFocusHtml() {
+        var patterns = safeArray(state.writingProfile).slice(0, 3);
+        var body = patterns.length ? '<div class="writing-focus-list">' + patterns.map(function(item) {
+            return '<span><span>' + escapeHtml(firstText(item.category, 'Other')) + '</span><b>' + escapeHtml(item.count || 1) + '</b></span>';
+        }).join('') + '</div>' : '<p class="writing-focus-empty">Your writing patterns will appear here after your first review.</p>';
+        return '<section class="writing-home-section writing-home-focus" aria-labelledby="writing-home-focus-title"><div class="writing-home-section-heading"><div><p>INSIGHTS</p><h2 id="writing-home-focus-title">Writing Focus</h2></div></div>' + body + '</section>';
     }
 
     function resetDraft(composition) {
@@ -1213,20 +1300,22 @@
         renderWelcome();
     }
 
-    function createNewWriting() {
+    function createNewWriting(mode) {
         if (state.busy) return;
+        var selectedMode = mode === 'standardized' ? 'standardized' : 'language';
         stopOcrPolling();
         stopReviewPolling();
         setStatus('');
         renderLoading('正在准备一张新的写作纸…', '你的输入会自动关联到这篇新作文。');
         setBusy(true);
         discardCurrentEmptyComposition().then(function() {
-            return writingCall('createComposition', { assessment_mode: apiMode('language') });
+            return writingCall('createComposition', { assessment_mode: apiMode(selectedMode) });
         }).then(function(result) {
             var composition = result.composition || result.item || {};
             if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
             if (!compositionId(composition) && result.composition_id) composition.composition_id = result.composition_id;
             if (!compositionId(composition)) throw new Error('新作文没有返回有效的编号。');
+            if (!composition.assessment_mode) composition.assessment_mode = apiMode(selectedMode);
             resetDraft(composition);
             syncCurrentSummary();
             renderSource();
@@ -2820,6 +2909,8 @@
         else if (button.matches('[data-discard-source]')) requestSourceDiscard();
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
         else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
+        else if (button.matches('[data-open-history]')) openSidebar();
+        else if (button.matches('[data-start-mode]')) createNewWriting(button.getAttribute('data-start-mode'));
         else if (button.matches('[data-start-new]')) createNewWriting();
         else if (button.matches('[data-return-home]')) returnToTutorHome();
         else if (button.matches('[data-view-waiting-result]')) {

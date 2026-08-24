@@ -1853,6 +1853,11 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   七天内由定时清理删除。OCR 和任务元数据不能复制作文正文，OCR 不计每日批改字数。
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
   Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
+- AI Writing Tutor 主页是行动优先的写作工作台，不是长期功能介绍页。顶部问候下依次呈现：最近一篇
+  未完成作文的 `Continue` 卡片、可直接创建对应模式作文的 `Polishing` / `Brainstorming`、最近三篇
+  `Recent Writing`，以及来自学生写作档案的三个 `Writing Focus`。没有未完成作文时，首卡改为开始新作文；
+  `See All` 打开原有 History 抽屉。主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
+  AI 批改词数。创建作文时必须立即持久化主页所选模式，刷新后不可退回默认语言模式。
 - 新作文输入页不显示页眉说明、步骤或区块标签，只保留互斥的 `Polishing` / `Brainstorming`
   模式按钮和 `Type` / `Scan` 输入切换，默认选择 `Type`。语言模式不显示 Writing Prompt；直接输入时内容区只有
   带 `Optional` 标记的 `Title` 与 `Your Writing`，正文占位文案仍为 `Type or paste your writing here…`。学生首次点击输入方式 `Scan`

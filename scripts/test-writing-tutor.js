@@ -325,6 +325,38 @@ check("portfolio titles support inline student editing through updateComposition
     "the inline form submit path must save the edited title");
 });
 
+check("Writing home is an action-first adaptive workspace", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const welcome = functionSource(client, "renderWelcome", "welcomeGreeting");
+  requireEvery(welcome, [
+    "Ready to keep writing?", "welcomeContinueHtml", "Start New", "Polishing", "Brainstorming",
+    "welcomeRecentHtml", "welcomeWritingFocusHtml",
+  ], "Writing home workspace");
+  requireEvery(client, ["Recent Writing", "Writing Focus", "See All"], "Writing home secondary sections");
+  assert(!/YOUR AI WRITING STUDIO|拍照或输入|两种批改|亲手重写/.test(welcome),
+    "the permanent feature-marketing hero must not return to Writing home");
+  requireEvery(styles, [
+    ".writing-home-dashboard", 'grid-template-areas: "continue start" "recent focus"',
+    ".writing-home-continue", ".writing-mode-card", ".writing-recent-list", ".writing-focus-list",
+  ], "Writing home responsive layout");
+  assert(/@media\s*\(max-width:\s*980px\)[\s\S]{0,1600}grid-template-areas:\s*"continue"\s*"start"\s*"recent"\s*"focus"/i.test(styles),
+    "phone and narrow tablet layouts must preserve the approved action order");
+});
+
+check("Writing home quick-start persists the selected review mode", () => {
+  const client = read(clientPath);
+  const backend = read("cloudfunctions/writingTutor/index.js");
+  const createClient = functionSource(client, "createNewWriting", "renderSource");
+  const createServer = functionSource(backend, "createComposition", "listCompositions");
+  requireEvery(client, ['data-start-mode="language"', 'data-start-mode="standardized"', "button.getAttribute('data-start-mode')"],
+    "Writing home mode actions");
+  requireEvery(createClient, ["selectedMode", "apiMode(selectedMode)", "composition.assessment_mode"],
+    "mode-aware Composition creation");
+  requireEvery(createServer, ["event.assessment_mode", "general_language", "standardized_content", "ASSESSMENT_MODE_INVALID", "assessment_mode: assessmentMode"],
+    "server-persisted initial review mode");
+});
+
 check("the two evaluation modes use the approved product labels", () => {
   const ui = `${read(pagePath)}\n${read(clientPath)}`;
   requireEvery(ui, ["Polishing", "Brainstorming"], "AI Tutor UI");
