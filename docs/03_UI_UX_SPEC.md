@@ -2098,7 +2098,12 @@ Important mobile rules:
   `Choose from Library` until the eight-page limit; selection never starts OCR.
   Each preview keeps its capture/selection order, labels the top-left corner as
   `Page current/total`, and provides only a bottom-right `Remove` action; there
-  are no forward/back reorder controls. Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
+  are no forward/back reorder controls. Adding/removing a photo, removing the last
+  photo, or switching source/review modes must place the rebuilt screen below the
+  sticky toolbar instead of preserving Safari's stale bottom scroll coordinate.
+  Full-screen transitions use the same positioning rule, while in-place Sentence
+  Revision interactions and waiting-state polling must not reset the viewport.
+  Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
   the leading edge; non-empty input receives the compact Apple-style confirmation
   before returning, while saved draft data remains available in History.
 - Completed language review uses exactly three primary cards in order:
