@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Compact adaptive Writing source controls
+
+- Removed visible source-field headings and moved concise guidance into the controls
+  while retaining accessible names.
+- Standardized placeholder typography, changed Prompt/Writing to one-/three-row
+  auto-growing fields, and replaced the faded fixed/student divider with a full line.
+
 ## 2026-08-25 — Ephemeral unsubmitted Writing input and Discard compatibility
 
 - Removed pending Writing Home input from session storage. Before Submit/Scan,

@@ -1233,6 +1233,7 @@
             (state.homeComposerOpen ? homeComposerHtml() : '') + '</section>' +
             welcomeUnfinishedHtml(unfinishedCompositions) +
             welcomeCompletedHtml(completedCompositions) + '</div></section>';
+        scheduleSourceTextareaResize();
         scheduleStageViewportReset();
     }
 
@@ -1487,6 +1488,7 @@
             '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(hasPhoto) : textSourceHtml()) + '</section>' +
             '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? 'Scan' : 'Submit') + '</button></div>' +
             '</form></section>';
+        scheduleSourceTextareaResize();
         scheduleStageViewportReset();
     }
 
@@ -1503,14 +1505,26 @@
         return '<button class="inline-writing-scan" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(target) + '" data-disable-when-busy aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '">' + icon('camera') + '</button>';
     }
 
+    function resizeSourceTextarea(textarea) {
+        if (!textarea || !textarea.matches('.source-auto-grow')) return;
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    function scheduleSourceTextareaResize() {
+        window.requestAnimationFrame(function() {
+            document.querySelectorAll('.source-auto-grow').forEach(resizeSourceTextarea);
+        });
+    }
+
     function sourceFieldsHtml(standardized, allowPromptScan) {
         var rubric = standardized
-            ? '<label class="field"><span>Rubric <em>Required</em></span><select id="writing-rubric"><option value="">Choose a Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>'
+            ? '<div class="field source-control-only"><select id="writing-rubric" aria-label="Rubric"><option value="">Choose a Rubric</option>' + rubricOptions(state.rubricId) + '</select></div>'
             : '';
         var prompt = standardized
-            ? '<div class="field inline-writing-field prompt-writing-field"><label for="writing-prompt">Writing Prompt <em>Required</em></label>' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea id="writing-prompt" maxlength="6000" placeholder="Type or paste the full writing prompt…">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
+            ? '<div class="field inline-writing-field prompt-writing-field">' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea class="source-auto-grow source-prompt-input" id="writing-prompt" rows="1" maxlength="6000" aria-label="Writing Prompt" placeholder="Type or paste the full writing prompt…">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
             : '';
-        var title = '<label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>';
+        var title = '<div class="field source-control-only"><input id="writing-title" maxlength="80" autocomplete="off" aria-label="Title, optional" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></div>';
         return '<section class="section-block source-fields">' + rubric + prompt + title + '</section>';
     }
 
@@ -1530,7 +1544,7 @@
     }
 
     function textSourceHtml() {
-        return '<div class="field inline-writing-field"><label for="writing-text">Your Writing</label>' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
+        return '<div class="field inline-writing-field">' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript source-auto-grow" id="writing-text" rows="3" maxlength="30000" aria-label="Your Writing" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
     }
 
     function photoSourceHtml(hasPhoto) {
@@ -3300,6 +3314,7 @@
         if (target.id === 'writing-prompt') state.promptText = target.value;
         if (target.id === 'writing-rubric') state.rubricId = target.value;
         if (target.id === 'writing-text') state.confirmedText = target.value;
+        resizeSourceTextarea(target);
         if (target.name === 'assessment-mode') {
             state.assessmentMode = target.value;
             renderSourceEntry();
@@ -3643,6 +3658,7 @@
         if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
         if (state.leaveDialogOpen) closeLeaveConfirmation();
+        scheduleSourceTextareaResize();
     });
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) wakeWaitingPoll();
@@ -3651,6 +3667,7 @@
     });
     window.addEventListener('focus', wakeWaitingPoll);
     window.addEventListener('online', wakeWaitingPoll);
+    window.addEventListener('resize', scheduleSourceTextareaResize);
     window.addEventListener('pagehide', function() {
         stopOcrPolling(); stopReviewPolling(); stopRewritePolling(); stopRevisionScanPolling();
         destroyAiWaitingExperience();

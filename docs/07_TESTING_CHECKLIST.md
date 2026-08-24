@@ -1807,9 +1807,13 @@ High priority improvement:
   Test compact home quota, press states, larger text, reduced motion, and reduced transparency.
 - On the first Writing screen, confirm the removed heading, explanation, step,
   section labels, repeated mode switch, and separate `Type` / `Scan` switch are absent.
-  Verify the two home mode buttons read `Polishing` and `Brainstorming`; language text entry shows only
-  `Title` with an `Optional` tag and `Your Writing`. Standardized mode must show English
-  `Rubric`, `Writing Prompt`, divider, `Title`, `Your Writing` in that exact order.
+  Verify the two home mode buttons read `Polishing` and `Brainstorming`. Confirm no
+  visible Rubric, Writing Prompt, Title, Optional, or Your Writing heading remains
+  above a control. Title must use the internal hint `Title (Optional)` and every input
+  hint must use the same muted serif typography as the manuscript hint. Standardized
+  mode must retain the control order Rubric, Writing Prompt, full solid divider, Title,
+  Your Writing. Prompt begins at one row and Writing at three; type and delete multiline
+  content and confirm both grow and shrink without an internal vertical scrollbar.
   Confirm `Type or paste your writing here…` and the first typed line align near
   the textarea's top edge on phone, iPad, and desktop.
   Confirm icon-only camera buttons sit at the bottom-right of Prompt and Your Writing,

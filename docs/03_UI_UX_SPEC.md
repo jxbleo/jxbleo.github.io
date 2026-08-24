@@ -2122,10 +2122,14 @@ Important mobile rules:
   remaining-word quota. Cards respond on press, directional arrows move only on
   hover, and reduced-motion/transparency preferences retain stable equivalents.
 - The expanded Writing form has no page eyebrow, explanatory heading, step badge,
-  section labels, repeated mode switch, or `Type` / `Scan` switch.
-  Language text entry shows only `Title` with a subtle `Optional` tag and `Your Writing`.
-  Brainstorming uses the English order `Rubric`, `Writing Prompt`, divider, `Title`,
-  `Your Writing`; the divider separates fixed evaluation context from student input.
+  section labels, repeated mode switch, `Type` / `Scan` switch, or visible field
+  headings. `Title (Optional)`, rubric choice, prompt guidance, and manuscript guidance
+  live inside their controls in one muted serif placeholder style while accessible
+  names remain available to assistive technology. Brainstorming retains the control
+  order Rubric, Writing Prompt, divider, Title, Your Writing; the divider is one full
+  solid line matching the form's top separator. Writing Prompt begins at one row and
+  Your Writing at three rows; both grow vertically with content and avoid an internal
+  vertical scrollbar.
   The trailing green action reads `Submit` for text and `Scan` for photos. A compact,
   icon-only camera control sits inside the bottom-right of both Writing Prompt and
   Your Writing. Its accessible label distinguishes prompt scanning from manuscript
