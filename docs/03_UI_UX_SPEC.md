@@ -2017,10 +2017,17 @@ Important mobile rules:
   Apple-style `Review Scan` surface supports both camera capture and photo-library
   selection through accessible native controls on phone and iPad; the control has
   a visible label, keyboard focus, and an equivalent screen-reader name. The
-  first captured/selected photo opens a local `Revision Photos` staging surface
-  instead of uploading immediately. It shows ordered previews, an `Add Photo`
-  action that may be used repeatedly on single-capture mobile cameras, per-photo
-  `Remove`, an `x / 8` count, and one `Start Scanning` commit action. Only that
+  first captured/selected photo opens a local staging surface instead of uploading
+  immediately. The former `Revision Photos` heading is absent. A centered live
+  position indicator reads current/total (`1/1`, then `1/2` or `2/2`) as the
+  student swipes the mandatory-snap single-photo carousel; it never displays the
+  eight-photo capacity as `x / 8`. Every slide keeps `Add Photo` and `Remove` in
+  the same action row. Add Photo may be used repeatedly on single-capture mobile
+  cameras, while one bottom `Start Scanning` remains the only commit action. On
+  return from camera or library the staging surface explicitly scrolls below the
+  sticky toolbar and the newest addition becomes current, rather than inheriting
+  the former long Sentence Revision scroll position. iPad preview height is
+  capped and phone uses the same positioning rule. Only that
   explicit commit creates the cloud upload operation. The surface has explicit `Choose photo`, `Uploading`, `Queued`, `Processing`,
   `Review Scan`, and `Scan failed` states. Queued/processing copy says the scan
   can continue after leaving, and refresh/re-login/reopen returns to the same
