@@ -4674,9 +4674,69 @@ body:not(.teacher-page) .tab-button.active {
     min-width: 0;
     gap: 10px;
 }
-.teacher-replies-load-more {
-    justify-self: center;
-    margin-top: 12px;
+.teacher-replies-pull-loader {
+    --teacher-replies-pull-height: 0px;
+    --teacher-replies-pull-margin: 0px;
+    --teacher-replies-pull-opacity: 0;
+    --teacher-replies-pull-offset: 7px;
+    --teacher-replies-pull-angle: 0turn;
+    display: grid;
+    grid-template-columns: 22px auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-height: var(--teacher-replies-pull-height);
+    margin-top: var(--teacher-replies-pull-margin);
+    overflow: hidden;
+    color: var(--muted);
+    opacity: var(--teacher-replies-pull-opacity);
+    font-size: 0.76rem;
+    font-weight: 800;
+    transform: translateY(var(--teacher-replies-pull-offset));
+    transition: max-height 160ms ease-out, margin-top 160ms ease-out, opacity 160ms ease-out, transform 160ms ease-out;
+}
+.teacher-replies-pull-loader svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 38 16;
+    transform: rotate(var(--teacher-replies-pull-angle));
+}
+.teacher-replies-pull-loader.is-loading,
+.teacher-replies-pull-loader.is-complete {
+    --teacher-replies-pull-height: 54px;
+    --teacher-replies-pull-margin: 12px;
+    --teacher-replies-pull-opacity: 1;
+    --teacher-replies-pull-offset: 0px;
+    --teacher-replies-pull-angle: 1turn;
+}
+.teacher-replies-pull-loader.is-loading svg {
+    animation: teacherRepliesSpinner 760ms linear infinite;
+}
+@keyframes teacherRepliesSpinner {
+    to { transform: rotate(360deg); }
+}
+.teacher-reply-item.is-revealing {
+    animation: teacherReplyReveal 520ms cubic-bezier(0.2, 0.78, 0.24, 1) both;
+}
+.teacher-reply-item.is-revealing:nth-last-child(4) { animation-delay: 45ms; }
+.teacher-reply-item.is-revealing:nth-last-child(3) { animation-delay: 90ms; }
+.teacher-reply-item.is-revealing:nth-last-child(2) { animation-delay: 135ms; }
+.teacher-reply-item.is-revealing:nth-last-child(1) { animation-delay: 180ms; }
+@keyframes teacherReplyReveal {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .teacher-replies-pull-loader,
+    .teacher-replies-pull-loader svg,
+    .teacher-reply-item.is-revealing {
+        animation: none;
+        transition: none;
+    }
 }
 .teacher-replies-empty {
     padding: 28px 18px;

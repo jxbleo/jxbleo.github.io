@@ -2143,7 +2143,10 @@
                         ? replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('')
                         : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
                     (visibleReplyCount < replies.length
-                        ? '<button class="outline-button teacher-replies-load-more" type="button" data-teacher-replies-load-more>Load 5 more</button>'
+                        ? '<div class="teacher-replies-pull-loader" data-teacher-replies-pull-loader role="status" aria-live="polite">' +
+                            '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle></svg>' +
+                            '<span>Keep scrolling for 5 more</span>' +
+                        '</div>'
                         : '') +
                 '</section>' +
                 '<button class="student-message-close teacher-replies-outside-close" id="teacher-replies-close" type="button" aria-label="Close Teacher Replies">Close</button>' +
@@ -2185,17 +2188,105 @@
         }
         var closeButton = overlay.querySelector('#teacher-replies-close');
         closeButton.addEventListener('click', function() { close(true); });
-        var loadMoreButton = overlay.querySelector('[data-teacher-replies-load-more]');
-        if (loadMoreButton) {
-            loadMoreButton.addEventListener('click', function() {
+        var replyDialog = overlay.querySelector('.teacher-replies-dialog');
+        var replyList = overlay.querySelector('.teacher-replies-list');
+        var pullLoader = overlay.querySelector('[data-teacher-replies-pull-loader]');
+        var pullDistance = 0;
+        var pullThreshold = 72;
+        var loadingMoreReplies = false;
+        var lastTouchY = null;
+
+        function replyDialogAtBottom() {
+            return replyDialog && replyDialog.scrollHeight - replyDialog.scrollTop - replyDialog.clientHeight <= 2;
+        }
+
+        function setReplyPullDistance(distance) {
+            if (!pullLoader || loadingMoreReplies) return;
+            pullDistance = Math.max(0, Math.min(pullThreshold, distance));
+            var pullRatio = pullDistance / pullThreshold;
+            pullLoader.style.setProperty('--teacher-replies-pull-height', (54 * pullRatio) + 'px');
+            pullLoader.style.setProperty('--teacher-replies-pull-margin', (12 * pullRatio) + 'px');
+            pullLoader.style.setProperty('--teacher-replies-pull-opacity', String(pullRatio));
+            pullLoader.style.setProperty('--teacher-replies-pull-offset', (7 * (1 - pullRatio)) + 'px');
+            pullLoader.style.setProperty('--teacher-replies-pull-angle', pullRatio + 'turn');
+            pullLoader.classList.toggle('is-pulling', pullDistance > 0);
+            if (replyDialog) replyDialog.scrollTop = replyDialog.scrollHeight;
+        }
+
+        function resetReplyPull() {
+            setReplyPullDistance(0);
+        }
+
+        function revealNextTeacherReplies() {
+            if (!pullLoader || !replyList || loadingMoreReplies || visibleReplyCount >= replies.length) return;
+            loadingMoreReplies = true;
+            pullLoader.classList.add('is-loading');
+            pullLoader.querySelector('span').textContent = 'Loading 5 more';
+            var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.setTimeout(function() {
+                if (!overlay.isConnected || !replyList) return;
+                var previousCount = visibleReplyCount;
                 visibleReplyCount = Math.min(replies.length, visibleReplyCount + 5);
-                var list = overlay.querySelector('.teacher-replies-list');
-                if (list) list.innerHTML = replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('');
-                if (visibleReplyCount >= replies.length) loadMoreButton.remove();
+                replyList.insertAdjacentHTML('beforeend', replies.slice(previousCount, visibleReplyCount).map(renderTeacherReplyItem).join(''));
+                Array.prototype.slice.call(replyList.children, previousCount).forEach(function(card) {
+                    card.classList.add('is-revealing');
+                });
                 if (replyTitleObserver) replyTitleObserver.disconnect();
                 replyTitleObserver = setupStudentMessageTitleTracks(overlay);
                 bindTeacherReplyCards();
-            });
+                if (replyDialog) replyDialog.scrollBy({ top: 132, behavior: reducedMotion ? 'auto' : 'smooth' });
+                loadingMoreReplies = false;
+                pullDistance = 0;
+                if (visibleReplyCount >= replies.length) {
+                    pullLoader.classList.add('is-complete');
+                    pullLoader.querySelector('span').textContent = 'All replies loaded';
+                    window.setTimeout(function() {
+                        if (pullLoader && pullLoader.isConnected) pullLoader.remove();
+                        pullLoader = null;
+                    }, reducedMotion ? 0 : 280);
+                } else {
+                    pullLoader.classList.remove('is-loading', 'is-pulling');
+                    pullLoader.removeAttribute('style');
+                    pullLoader.querySelector('span').textContent = 'Keep scrolling for 5 more';
+                }
+            }, reducedMotion ? 0 : 520);
+        }
+
+        function extendReplyPull(delta) {
+            if (!pullLoader || loadingMoreReplies || delta <= 0) return;
+            setReplyPullDistance(pullDistance + Math.min(delta, 28) * 0.72);
+            if (pullDistance >= pullThreshold) revealNextTeacherReplies();
+        }
+
+        if (replyDialog && pullLoader) {
+            replyDialog.addEventListener('wheel', function(event) {
+                if (event.deltaY < 0) {
+                    resetReplyPull();
+                    return;
+                }
+                if (!replyDialogAtBottom() || event.deltaY <= 0) return;
+                event.preventDefault();
+                extendReplyPull(event.deltaY);
+            }, { passive: false });
+            replyDialog.addEventListener('scroll', function() {
+                if (!replyDialogAtBottom()) resetReplyPull();
+            }, { passive: true });
+            replyDialog.addEventListener('touchstart', function(event) {
+                lastTouchY = event.touches && event.touches[0] ? event.touches[0].clientY : null;
+            }, { passive: true });
+            replyDialog.addEventListener('touchmove', function(event) {
+                var touch = event.touches && event.touches[0];
+                if (!touch || lastTouchY == null) return;
+                var delta = lastTouchY - touch.clientY;
+                lastTouchY = touch.clientY;
+                if (!replyDialogAtBottom() || delta <= 0) return;
+                event.preventDefault();
+                extendReplyPull(delta);
+            }, { passive: false });
+            replyDialog.addEventListener('touchend', function() {
+                lastTouchY = null;
+                if (!loadingMoreReplies && pullDistance < pullThreshold) resetReplyPull();
+            }, { passive: true });
         }
         window.setTimeout(function() { closeButton.focus(); }, 0);
         function bindTeacherReplyCards() {
@@ -2327,20 +2418,6 @@
                 : 'No assignments are scheduled for this week. Open this week task list.',
             progressLabel: 'This week assignment completion',
             percent: weekPercent
-        });
-        var nextWeekTotal = summary ? Number(summary.next_week_total || 0) : model.nextWeek.length;
-        var nextWeekFinished = summary ? Number(summary.next_week_finished || 0) : model.nextWeekFinished.length;
-        var upcomingPercent = nextWeekTotal ? Math.round((nextWeekFinished / nextWeekTotal) * 100) : 0;
-        html += renderWeeklyProgressRow({
-            kind: 'upcoming' + (nextWeekTotal && nextWeekFinished === nextWeekTotal ? ' is-complete' : '') + (!nextWeekTotal ? ' is-empty has-empty-status' : ''),
-            label: 'UPCOMING',
-            scope: nextWeekTotal ? 'upcoming' : '',
-            ariaLabel: nextWeekTotal
-                ? 'Upcoming assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished. Open the upcoming task list.'
-                : 'No upcoming assignments.',
-            progressLabel: 'Upcoming assignment completion',
-            percent: upcomingPercent,
-            emptyStatus: nextWeekTotal ? '' : 'NO TASKS'
         });
         setWeeklyFocusHtml(html);
     }
