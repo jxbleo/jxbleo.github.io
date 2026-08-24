@@ -2201,3 +2201,11 @@ Important mobile rules:
   no visible extra generation step. Legacy `Untitled writing` remains editable
   and may be replaced by a future review suggestion only while it has never been
   manually edited.
+
+OCR Review image comparison uses an intrinsic-ratio page layer with an SVG overlay stretched over the
+actual image. Only canonical high/medium uncertain locations are drawn as subtle rounded pale-red boxes.
+Boxes are keyboard-focusable and labelled as locations to find in the editor, not as writing errors. Click,
+Enter, or Space centers the matching text mark without changing it; clicking a mark still acknowledges it
+and removes its box, and editing a mark removes the box through the existing changed-mark cleanup. Missing
+or unavailable boxes never disable the text editor. The split layout remains on tablet/desktop and images
+remain above the editor on phones, with scroll/pinch gestures available outside the individual targets.

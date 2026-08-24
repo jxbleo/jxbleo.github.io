@@ -1109,3 +1109,10 @@ feedback rounds. The generic `writingAiWorker` dispatcher, function runtime,
 handler, existing provider environment, collections, indexes, and timers were
 unchanged. The matching static client uses asset version `20260822-11` and must
 be published only after this backend status check.
+
+The OCR uncertainty overlay change requires the static `ai-tutor.html`, `assets/js/ai-tutor.js`, and
+`assets/css/ai-tutor.css` assets plus the bundled `writingTutor` function source. It does not change
+`writingAiWorker`, collections, indexes, timers, secrets, or environment variables. Prepare the normal
+static release and `writingTutor` package, run release verification and the writing-tutor contract tests,
+then have the owner deploy the function and publish the cache-busted static assets. This note is a release
+checklist only; agents must not deploy CloudBase resources without exact owner authorization.

@@ -1,6 +1,6 @@
 "use strict";
 
-const SCHEMA_VERSION = "writing-ai-schemas-2026-08-22.2";
+const SCHEMA_VERSION = "writing-ai-schemas-2026-08-22.3";
 
 const stringArray = { type: "array", items: { type: "string" } };
 
@@ -18,6 +18,32 @@ const OCR_SCHEMA = {
         additionalProperties: false,
         required: ["text", "reason"],
         properties: { text: { type: "string" }, reason: { type: "string" } },
+      },
+    },
+  },
+};
+
+const OCR_LOCATION_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["regions"],
+  properties: {
+    regions: {
+      type: "array",
+      description: "At most one tight rectangle for each supplied span, using the full visible page in a normalized 0..1000 coordinate plane.",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["span_index", "page_index", "x", "y", "width", "height", "confidence"],
+        properties: {
+          span_index: { type: "integer", minimum: 0, description: "Zero-based index into the supplied uncertain span list." },
+          page_index: { type: "integer", minimum: 0, description: "Zero-based index in attached-image order." },
+          x: { type: "integer", minimum: 0, maximum: 999, description: "Top-left x coordinate in the full visible page's normalized 0..1000 plane." },
+          y: { type: "integer", minimum: 0, maximum: 999, description: "Top-left y coordinate in the full visible page's normalized 0..1000 plane." },
+          width: { type: "integer", minimum: 4, maximum: 1000, description: "Rectangle width in the normalized 0..1000 plane." },
+          height: { type: "integer", minimum: 4, maximum: 350, description: "Rectangle height in the normalized 0..1000 plane." },
+          confidence: { type: "string", enum: ["high", "medium", "low"] },
+        },
       },
     },
   },
@@ -185,6 +211,6 @@ const REWRITE_SCHEMA = {
 };
 
 module.exports = {
-  SCHEMA_VERSION, OCR_SCHEMA, REVISION_SCAN_SCHEMA, REVISION_SCAN_ITEM_SCHEMA,
+  SCHEMA_VERSION, OCR_SCHEMA, OCR_LOCATION_SCHEMA, REVISION_SCAN_SCHEMA, REVISION_SCAN_ITEM_SCHEMA,
   STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA,
 };

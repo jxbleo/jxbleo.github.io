@@ -8,6 +8,15 @@ function text(value, limit = 30000) {
   return String(value == null ? "" : value).trim().slice(0, limit);
 }
 
+function normalizeTimeoutMs(explicitTimeoutMs) {
+  const requested = explicitTimeoutMs == null
+    ? Number(process.env.WRITING_AI_TIMEOUT_MS || DEFAULT_TIMEOUT_MS)
+    : Number(explicitTimeoutMs);
+  return Number.isFinite(requested)
+    ? Math.min(MAX_PROVIDER_TIMEOUT_MS, Math.max(1000, requested))
+    : DEFAULT_TIMEOUT_MS;
+}
+
 function providerConfig(vision) {
   const prefix = vision ? "WRITING_AI_VISION" : "WRITING_AI_TEXT";
   const fallbackPrefix = "WRITING_AI";
@@ -253,10 +262,7 @@ async function requestBody(config, options, correction) {
 
 async function callOnce(config, options, correction) {
   const controller = new AbortController();
-  const requestedTimeoutMs = Number(process.env.WRITING_AI_TIMEOUT_MS || DEFAULT_TIMEOUT_MS);
-  const timeoutMs = Number.isFinite(requestedTimeoutMs)
-    ? Math.min(MAX_PROVIDER_TIMEOUT_MS, Math.max(1000, requestedTimeoutMs))
-    : DEFAULT_TIMEOUT_MS;
+  const timeoutMs = Math.min(MAX_PROVIDER_TIMEOUT_MS, Math.max(1000, normalizeTimeoutMs(options.timeoutMs)));
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   let response;
   try {
@@ -318,5 +324,5 @@ async function callStructuredModel(options) {
 
 module.exports = {
   callStructuredModel,
-  _test: { validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig, normalizeOcrPages },
+  _test: { validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig, normalizeOcrPages, normalizeTimeoutMs },
 };

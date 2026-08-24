@@ -2028,3 +2028,17 @@ High priority improvement:
   existing Sentence Revision flow. Confirm private scan photos are deleted after
   the durable pending scan result is stored and by expiry cleanup, and that camera/select controls, status
   text, focus order, keyboard use, and the mobile keyboard remain accessible.
+
+#### OCR uncertainty overlays
+
+- Verify no uncertain spans skips the locator and publishes `location_status: not_needed`; an old
+  text-only `pending_ocr` record still opens normally.
+- Verify timeout, HTTP/provider failure, invalid JSON/schema, all-low-confidence output, and invalid or
+  out-of-range coordinates still publish OCR success with text marks and no rectangles. Verify a mixed
+  response shows only valid high/medium rectangles and reports `partial`.
+- Verify duplicate locations choose high over medium, then the smaller valid area deterministically;
+  coordinates are rejected rather than clamped. Verify locator request text, image URLs, coordinates, and
+  raw responses never appear in jobs or logs.
+- At 320, 375, 390, 768, 834, and 1024 CSS px verify no horizontal overflow, intrinsic page aspect ratio,
+  image-above-editor mobile layout, keyboard focus/Enter/Space activation, centered editor scrolling, and
+  reduced-motion behavior. Acknowledging or editing a text mark must hide only its matching region.

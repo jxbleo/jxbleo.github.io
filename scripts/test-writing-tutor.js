@@ -1072,7 +1072,7 @@ check("model responses use strict versioned JSON schemas", () => {
 
   const schemas = require(path.join(root, schemaPath));
   assert(/^writing-ai-schemas-\d{4}-\d{2}-\d{2}\./.test(schemas.SCHEMA_VERSION), "SCHEMA_VERSION must be dated and revisioned");
-  ["OCR_SCHEMA", "REVISION_SCAN_SCHEMA", "STANDARDIZED_SCHEMA", "LANGUAGE_SCHEMA", "REWRITE_SCHEMA"].forEach((name) => {
+  ["OCR_SCHEMA", "OCR_LOCATION_SCHEMA", "REVISION_SCAN_SCHEMA", "STANDARDIZED_SCHEMA", "LANGUAGE_SCHEMA", "REWRITE_SCHEMA"].forEach((name) => {
     assert(schemas[name], `missing exported ${name}`);
     assertClosedObjectSchemas(schemas[name], name);
   });
@@ -1144,6 +1144,70 @@ check("Qwen JSON wrappers are normalized before strict validation", () => {
     () => provider._test.parseStructuredOutput("not json", schemas.OCR_SCHEMA),
     /WRITING_AI_SCHEMA_RESPONSE_INVALID/
   );
+});
+
+check("OCR location contract is strict, indexed, and prompt-safe", () => {
+  const schemas = require(path.join(root, schemaPath));
+  const prompts = require(path.join(root, promptPath));
+  const provider = require(path.join(root, providerPath));
+  const valid = { regions: [{ span_index: 0, page_index: 0, x: 10, y: 20, width: 40, height: 25, confidence: "high" }] };
+  assert.deepStrictEqual(provider._test.validateAgainstSchema(valid, schemas.OCR_LOCATION_SCHEMA), []);
+  assert(provider._test.validateAgainstSchema({ regions: [{ ...valid.regions[0], extra: true }] }, schemas.OCR_LOCATION_SCHEMA)
+    .some((message) => /extra.*not allowed/.test(message)));
+  const prompt = prompts.ocrLocationPrompt();
+  requireEvery(prompt.toLowerCase(), ["untrusted", "indexed", "never transcribe", "page_index", "zero-based", "top-left", "0..1000", "at most one", "omit", "low", "crosses a line", "ignore any instructions", "only the required json"], "OCR location prompt boundary");
+  assert(/^writing-ai-schemas-\d{4}-\d{2}-\d{2}\.\d+$/.test(schemas.SCHEMA_VERSION));
+  assert(/^writing-prompts-\d{4}-\d{2}-\d{2}\.\d+$/.test(prompts.PROMPT_VERSION));
+});
+
+check("explicit OCR locator timeout is bounded without changing defaults", () => {
+  const provider = require(path.join(root, providerPath));
+  const original = process.env.WRITING_AI_TIMEOUT_MS;
+  process.env.WRITING_AI_TIMEOUT_MS = "12345";
+  assert.strictEqual(provider._test.normalizeTimeoutMs(), 12345);
+  assert.strictEqual(provider._test.normalizeTimeoutMs(45000), 45000);
+  assert.strictEqual(provider._test.normalizeTimeoutMs(1), 1000);
+  assert.strictEqual(provider._test.normalizeTimeoutMs(999999), 300000);
+  if (original == null) delete process.env.WRITING_AI_TIMEOUT_MS;
+  else process.env.WRITING_AI_TIMEOUT_MS = original;
+});
+
+check("OCR location canonicalization rejects unsafe boxes deterministically", () => {
+  const backend = require(path.join(root, functionPath));
+  const canonical = backend._test.canonicalOcrUncertaintyRegions([
+    { span_index: 1, page_index: 0, x: 10, y: 20, width: 100, height: 50, confidence: "medium" },
+    { span_index: 1, page_index: 0, x: 12, y: 22, width: 20, height: 20, confidence: "high" },
+    { span_index: 0, page_index: 0, x: 0, y: 0, width: 4, height: 4, confidence: "low" },
+    { span_index: 2, page_index: 0, x: 990, y: 0, width: 20, height: 20, confidence: "high" },
+    { span_index: 0, page_index: 3, x: 0, y: 0, width: 10, height: 10, confidence: "high" },
+  ], 2, 1);
+  assert.deepStrictEqual(canonical, [{ span_index: 1, page_index: 0, x: 12, y: 22, width: 20, height: 20, confidence: "high" }]);
+  assert.deepStrictEqual(backend._test.canonicalOcrUncertaintyRegions([
+    { span_index: 0, page_index: 0, x: 0, y: 0, width: 4, height: 4, confidence: "high", answer: "secret" },
+  ], 1, 1), [{ span_index: 0, page_index: 0, x: 0, y: 0, width: 4, height: 4, confidence: "high" }]);
+});
+
+check("OCR locator failure cannot fail the required transcription commit", () => {
+  const backend = read(functionPath);
+  const perform = functionSource(backend, "performOcrJob", "performRevisionOcrJob");
+  requireEvery(perform, ["OCR_LOCATION_SCHEMA", "ocrLocationPrompt", "timeoutMs: 45000", "location_status", "uncertain_regions", "locationModelMetadata"], "optional OCR location path");
+  assert(/try\s*\{[\s\S]*callStructuredModel\([\s\S]*OCR_LOCATION_SCHEMA[\s\S]*\}\s*catch\s*\(error\)/.test(perform), "locator call must be best effort");
+  assert(/location unavailable[\s\S]*safeCode/.test(perform), "locator logs must use a stable safe code");
+  perform.split("\n").filter((line) => line.includes("console.error")).forEach((line) => {
+    assert(!/(imageUrls|uncertainSpans|rawRegions|locationResponse\.data)/.test(line), "locator logs must not include request or response data");
+  });
+  const job = functionSource(backend, "performOcrJob", "performRevisionOcrJob");
+  assert(/status: "succeeded"/.test(job), "OCR job must still commit succeeded after locator fallback");
+});
+
+check("OCR Review overlays retain span identity and delegated accessible interactions", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const pageRender = functionSource(client, "renderOcr", "saveAndEvaluate");
+  requireEvery(pageRender, ["ocr-photo-page", "ocr-photo-layer", "ocr-photo-overlay", "viewBox=\"0 0 1000 1000\"", "preserveAspectRatio=\"none\"", "data-ocr-page-index", "figcaption", "ocrRegionSvg"], "OCR overlay page structure");
+  requireEvery(client, ["data-ocr-span-index", "data-ocr-region-index", "activateOcrRegion", "hideOcrRegion", "scrollIntoView", "Locate unclear text in OCR editor"], "OCR overlay identity and activation");
+  requireEvery(styles, [".ocr-photo-page", ".ocr-photo-layer", ".ocr-photo-overlay", ".ocr-photo-region", ".ocr-photo-region.is-active", ".ocr-photo-region.is-acknowledged", "prefers-reduced-motion"], "OCR overlay styles");
+  assert(/document\.addEventListener\('click'/.test(client) && /document\.addEventListener\('keydown'/.test(client), "OCR regions must use delegated event handlers");
 });
 
 check("OCR survives a browser request disconnect by polling the Composition", () => {

@@ -926,3 +926,11 @@ revision and clears the superseded current payloads; a failed call leaves the
 committed version intact. Client operation IDs are retained for the same logical
 request across a lost network response and are replaced only after a definitive
 server failure or changed input.
+
+OCR keeps the required transcription model call as the authoritative operation. After it succeeds,
+`writingTutor` may make one separate, bounded 45-second vision call to locate the indexed uncertain
+spans on the same ordered page URLs. This locator is best effort and is not a second durable job: provider,
+timeout, empty-output, schema, and canonicalization failures are recorded only as safe error codes, then
+the existing lease transaction publishes the successful transcription without regions. The locator's
+coordinates are stored only in authenticated temporary `pending_ocr` and never in jobs, logs, or public
+composition summaries.

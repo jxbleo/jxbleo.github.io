@@ -168,6 +168,8 @@ Supporting docs:
 - [docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md](docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md):
   executable V2 plan for contextual progress, reliable automatic result
   refresh, replayable Runner scoring, Ready controls, animation, and sound
+- [docs/14_OCR_IMAGE_UNCERTAINTY_OVERLAY_IMPLEMENTATION_PLAN.md](docs/14_OCR_IMAGE_UNCERTAINTY_OVERLAY_IMPLEMENTATION_PLAN.md):
+  approved OCR uncertainty-location overlay implementation plan and verification checklist
 
 ## Documentation Rule
 
