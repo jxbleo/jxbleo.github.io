@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — Inline Writing Home composer
+
+- Replaced the greeting-led four-panel Writing Home with a horizontal strip of
+  all unfinished task pills followed by one `Start New` surface.
+- `Polishing` and `Brainstorming` now expand Title/Your Writing in place; removed
+  the Type/Scan switch and embedded a compact Scan action in the writing field.
+
 ## 2026-08-24 — Incomplete revision alert
 
 - Replaced the Sentence Revision incomplete-submit status banner with a compact,

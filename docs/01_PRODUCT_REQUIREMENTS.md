@@ -1856,15 +1856,17 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   七天内由定时清理删除。OCR 和任务元数据不能复制作文正文，OCR 不计每日批改字数。
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing
   Prompt 和一个 Assessment Framework，并严格服从学生选择，不自动改判考试类型。
-- AI Writing Tutor 主页是行动优先的写作工作台，不是长期功能介绍页。顶部问候下依次呈现：最近一篇
-  未完成作文的 `Continue` 卡片、可直接创建对应模式作文的 `Polishing` / `Brainstorming`、最近三篇
-  `Recent Writing`，以及来自学生写作档案的三个 `Writing Focus`。没有未完成作文时，首卡改为开始新作文；
-  `See All` 打开原有 History 抽屉。主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
+- AI Writing Tutor 主页是行动优先的写作工作台，不是长期功能介绍页。删除时段问候和
+  `Ready to keep writing?` 标题。工具栏下第一行只把所有未完成 Composition 显示为可横向滑动的
+  Library 风格任务胶囊，一篇一张，含模式、标题、当前状态和细进度条；已完成作文只留在 History。
+  没有未完成作文时不显示空占位。其下只有 `Start New` 卡片和原有 `Polishing` / `Brainstorming`
+  两个模式按钮，不再显示 `Recent Writing` 或 `Writing Focus`。主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
   AI 批改词数。创建作文时必须立即持久化主页所选模式，刷新后不可退回默认语言模式。
-- 新作文输入页不显示页眉说明、步骤或区块标签，只保留互斥的 `Polishing` / `Brainstorming`
-  模式按钮和 `Type` / `Scan` 输入切换，默认选择 `Type`。语言模式不显示 Writing Prompt；直接输入时内容区只有
-  带 `Optional` 标记的 `Title` 与 `Your Writing`，正文占位文案仍为 `Type or paste your writing here…`。学生首次点击输入方式 `Scan`
-  时立即唤起后置相机；拍摄后返回照片暂存区，可继续拍照或通过 `Choose from Library` 加入多张图片，最多八页。选择照片只暂存，
+- 点击主页 `Polishing` 或 `Brainstorming` 不进入新的输入页面，而是在两个按钮下方原位展开表单；展开采用克制、可中断且尊重
+  Reduced Motion 的材质过渡。语言模式显示带 `Optional` 标记的 `Title` 与 `Your Writing`；标化模式额外显示 Writing Prompt
+  与 Rubric。正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
+  `Your Writing` 输入框内部右上方提供一个小型 `Scan` 相机按钮；只有点击它才切换到照片暂存界面并立即唤起后置相机。
+  拍摄后返回照片暂存区，可继续拍照或通过 `Choose from Library` 加入多张图片，最多八页。选择照片只暂存，
   不启动 OCR。每张预览左上角按 `Page 当前页/总页数` 显示页序，右下角只提供 `Remove`；页面保持拍摄或选择时的加入顺序，
   不提供手动前移/后移。添加或删除照片、删掉最后一张照片、切换输入方式或切换评估模式后，手机/iPad 必须重新显示当前页面顶部，
   不得保留内容缩短前的底部滚动位置。底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色

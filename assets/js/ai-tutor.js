@@ -57,6 +57,9 @@
         sidebarOpen: false,
         editingTitleId: '',
         titleEditError: '',
+        homeComposerOpen: false,
+        homeComposerPreparing: false,
+        homeComposerError: '',
         leaveDialogOpen: false,
         incompleteRewriteAlertOpen: false,
         incompleteRewriteTargetId: '',
@@ -1169,34 +1172,17 @@
     function renderWelcome() {
         destroyAiWaitingExperience();
         state.screen = 'welcome';
-        var recentCompositions = portfolioCompositions();
-        var continueComposition = recentCompositions.find(function(item) {
+        var unfinishedCompositions = portfolioCompositions().filter(function(item) {
             return compositionStatus(item) !== 'completed';
-        }) || null;
+        });
         showWelcomeToolbar();
-        stage.innerHTML = '<section class="writing-home" aria-labelledby="writing-home-title">' +
-            '<header class="writing-home-intro"><p>' + escapeHtml(welcomeGreeting()) + '</p><h1 id="writing-home-title">Ready to keep writing?</h1></header>' +
-            '<div class="writing-home-dashboard">' +
-            welcomeContinueHtml(continueComposition, recentCompositions.length > 0) +
+        stage.innerHTML = '<section class="writing-home" aria-label="Writing home"><div class="writing-home-flow">' +
+            welcomeUnfinishedHtml(unfinishedCompositions) +
             '<section class="writing-home-section writing-home-start" aria-labelledby="writing-home-start-title"><div class="writing-home-section-heading"><div><p>QUICK START</p><h2 id="writing-home-start-title">Start New</h2></div></div>' +
-            '<div class="writing-mode-grid"><button class="writing-mode-card polishing" type="button" data-start-mode="language"><span class="writing-mode-icon">' + icon('text') + '</span><span><strong>Polishing</strong><small>Improve grammar and expression</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button>' +
-            '<button class="writing-mode-card brainstorming" type="button" data-start-mode="standardized"><span class="writing-mode-icon">' + icon('focus') + '</span><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button></div></section>' +
-            welcomeRecentHtml(recentCompositions.slice(0, 3)) +
-            welcomeWritingFocusHtml() +
-            '</div></section>';
+            '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span class="writing-mode-icon">' + icon('text') + '</span><span><strong>Polishing</strong><small>Improve grammar and expression</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button>' +
+            '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span class="writing-mode-icon">' + icon('focus') + '</span><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span><span class="writing-card-arrow">' + icon('arrow') + '</span></button></div>' +
+            (state.homeComposerOpen ? homeComposerHtml() : '') + '</section></div></section>';
         scheduleStageViewportReset();
-    }
-
-    function welcomeGreeting() {
-        var hour = new Date().getHours();
-        try {
-            var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Shanghai', hour: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
-            var hourPart = parts.find(function(part) { return part.type === 'hour'; });
-            if (hourPart) hour = Number(hourPart.value);
-        } catch (error) {}
-        if (hour < 12) return 'Good morning';
-        if (hour < 18) return 'Good afternoon';
-        return 'Good evening';
     }
 
     function compactQuota(value) {
@@ -1239,34 +1225,27 @@
         return progressByStatus[status] || 12;
     }
 
-    function welcomeContinueHtml(composition, hasWriting) {
-        if (!composition) {
-            return '<section class="writing-home-continue writing-home-empty"><div><p class="writing-home-kicker">' + (hasWriting ? 'READY WHEN YOU ARE' : 'YOUR FIRST WRITING') + '</p>' +
-                '<h2>' + (hasWriting ? 'Start something new.' : 'Your writing journey starts here.') + '</h2><p>' + (hasWriting ? 'Choose a focused language review or prepare ideas for an exam task.' : 'Begin with a quick language polish. Your work will stay safely in History.') + '</p></div>' +
-                '<button class="writing-continue-action" type="button" data-start-mode="language">Start with Polishing ' + icon('arrow') + '</button></section>';
-        }
-        var progress = homeWorkflowProgress(composition);
-        return '<section class="writing-home-continue"><div class="writing-continue-top"><span class="writing-home-kicker">CONTINUE</span><span class="mini-badge ' + (compositionMode(composition) === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(compositionMode(composition) === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span></div>' +
-            '<div class="writing-continue-copy"><h2>' + escapeHtml(compositionTitle(composition)) + '</h2><p>' + escapeHtml(statusLabel(compositionStatus(composition))) + '</p></div>' +
-            '<div class="writing-workflow-track" role="progressbar" aria-label="Writing workflow progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '"><span style="width:' + progress + '%"></span></div>' +
-            '<button class="writing-continue-action" type="button" data-open-composition="' + escapeHtml(compositionId(composition)) + '">Continue ' + icon('arrow') + '</button></section>';
-    }
-
-    function welcomeRecentHtml(items) {
-        var cards = items.length ? items.map(function(item) {
+    function welcomeUnfinishedHtml(items) {
+        if (!items.length) return '';
+        var cards = items.map(function(item) {
             var mode = compositionMode(item);
-            var score = item.overall_score != null ? '<span class="writing-recent-score">' + escapeHtml(item.overall_score) + '</span>' : '';
-            return '<button class="writing-recent-card" type="button" data-open-composition="' + escapeHtml(compositionId(item)) + '"><span class="writing-recent-card-top"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(mode === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span>' + score + '</span><strong>' + escapeHtml(compositionTitle(item)) + '</strong><small>' + escapeHtml(formatDate(item.updated_at || item.created_at)) + ' · ' + escapeHtml(statusLabel(compositionStatus(item))) + '</small></button>';
-        }).join('') : '<div class="writing-home-inline-empty">Your writing will appear here after you begin.</div>';
-        return '<section class="writing-home-section writing-home-recent" aria-labelledby="writing-home-recent-title"><div class="writing-home-section-heading"><div><p>YOUR WORK</p><h2 id="writing-home-recent-title">Recent Writing</h2></div><button class="writing-home-see-all" type="button" data-open-history>See All</button></div><div class="writing-recent-list">' + cards + '</div></section>';
+            var progress = homeWorkflowProgress(item);
+            return '<button class="writing-pending-pill" type="button" data-open-composition="' + escapeHtml(compositionId(item)) + '" aria-label="Open ' + escapeHtml(compositionTitle(item)) + ', ' + escapeHtml(statusLabel(compositionStatus(item))) + '"><span class="writing-pending-copy"><span class="writing-pending-meta"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(mode === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span><small>' + escapeHtml(statusLabel(compositionStatus(item))) + '</small></span><strong>' + escapeHtml(compositionTitle(item)) + '</strong></span><span class="writing-pending-progress" aria-hidden="true"><span style="width:' + progress + '%"></span></span><span class="writing-pending-arrow">' + icon('arrow') + '</span></button>';
+        }).join('');
+        return '<section class="writing-pending-strip" aria-label="Unfinished writing">' + cards + '</section>';
     }
 
-    function welcomeWritingFocusHtml() {
-        var patterns = safeArray(state.writingProfile).slice(0, 3);
-        var body = patterns.length ? '<div class="writing-focus-list">' + patterns.map(function(item) {
-            return '<span><span>' + escapeHtml(firstText(item.category, 'Other')) + '</span><b>' + escapeHtml(item.count || 1) + '</b></span>';
-        }).join('') + '</div>' : '<p class="writing-focus-empty">Your writing patterns will appear here after your first review.</p>';
-        return '<section class="writing-home-section writing-home-focus" aria-labelledby="writing-home-focus-title"><div class="writing-home-section-heading"><div><p>INSIGHTS</p><h2 id="writing-home-focus-title">Writing Focus</h2></div></div>' + body + '</section>';
+    function homeComposerHtml() {
+        var standardized = state.assessmentMode === 'standardized';
+        return '<div class="writing-home-composer" aria-busy="' + state.homeComposerPreparing + '">' +
+            (state.homeComposerError ? '<p class="writing-home-composer-error" role="alert">' + escapeHtml(state.homeComposerError) + '</p>' : '') +
+            '<form class="form-stack source-entry-form" id="writing-source-form">' +
+            '<section class="section-block source-fields"><label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
+            (standardized ? '<label class="field"><span>作文题目 <em>必填</em></span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' : '') +
+            (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
+            '<section class="section-block" id="source-input-area">' + textSourceHtml() + '</section>' +
+            '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>Submit</button></div>' +
+            '</form></div>';
     }
 
     function resetDraft(composition) {
@@ -1277,6 +1256,9 @@
         stopRevisionScanPolling();
         state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = composition || null;
+        state.homeComposerOpen = false;
+        state.homeComposerPreparing = false;
+        state.homeComposerError = '';
         state.review = null;
         state.readOnly = false;
         state.inputMethod = 'text';
@@ -1329,10 +1311,67 @@
         setStatus('');
         state.current = null;
         state.review = null;
+        state.homeComposerOpen = false;
+        state.homeComposerPreparing = false;
+        state.homeComposerError = '';
         syncCompositionLocator('');
         updateCurrentWritingTitle();
         renderPortfolio();
         renderWelcome();
+    }
+
+    function focusHomeComposer() {
+        window.requestAnimationFrame(function() {
+            var target = document.getElementById('writing-title') || document.getElementById('writing-text');
+            if (target) target.focus({ preventScroll: true });
+        });
+    }
+
+    function startInlineWriting(mode) {
+        if (state.busy) return;
+        var selectedMode = mode === 'standardized' ? 'standardized' : 'language';
+        state.assessmentMode = selectedMode;
+        state.inputMethod = 'text';
+        state.homeComposerOpen = true;
+        state.homeComposerError = '';
+        if (compositionId(state.current)) {
+            state.current.assessment_mode = apiMode(selectedMode);
+            renderWelcome();
+            scheduleAutosave();
+            focusHomeComposer();
+            return;
+        }
+        state.title = '';
+        state.promptText = '';
+        state.confirmedText = '';
+        state.rubricId = '';
+        state.homeComposerPreparing = true;
+        renderWelcome();
+        focusHomeComposer();
+        setBusy(true);
+        writingCall('createComposition', { assessment_mode: apiMode(selectedMode) }).then(function(result) {
+            var composition = result.composition || result.item || {};
+            var pendingInput = { title: state.title, promptText: state.promptText, confirmedText: state.confirmedText, rubricId: state.rubricId };
+            if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
+            if (!compositionId(composition) && result.composition_id) composition.composition_id = result.composition_id;
+            if (!compositionId(composition)) throw new Error('新作文没有返回有效的编号。');
+            if (!composition.assessment_mode) composition.assessment_mode = apiMode(selectedMode);
+            resetDraft(composition);
+            state.homeComposerOpen = true;
+            state.assessmentMode = selectedMode;
+            state.title = pendingInput.title;
+            state.promptText = pendingInput.promptText;
+            state.confirmedText = pendingInput.confirmedText;
+            state.rubricId = pendingInput.rubricId;
+            syncCurrentSummary();
+            renderWelcome();
+            if (state.title || state.promptText || state.confirmedText || state.rubricId) scheduleAutosave();
+            focusHomeComposer();
+        }).catch(function(error) {
+            state.homeComposerPreparing = false;
+            state.homeComposerError = firstText(error && error.message, '无法开始新的作文，请重试。');
+            renderWelcome();
+        }).finally(function() { setBusy(false); });
     }
 
     function createNewWriting(mode) {
@@ -1364,12 +1403,6 @@
         var hasPhoto = state.photoUrls.length > 0;
         stage.innerHTML = '<section class="surface surface-pad source-entry-surface">' +
             '<form class="form-stack source-entry-form" id="writing-source-form">' +
-            '<div class="source-mode-switch" role="radiogroup" aria-label="作文训练模式">' +
-            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="language" ' + (!standardized ? 'checked' : '') + '><span>Polishing</span></label>' +
-            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="standardized" ' + (standardized ? 'checked' : '') + '><span>Brainstorming</span></label></div>' +
-            '<div class="input-switch" role="group" aria-label="输入作文的方式">' +
-            '<button type="button" data-input-method="text" aria-pressed="' + (state.inputMethod === 'text') + '">' + icon('text') + 'Type</button>' +
-            '<button type="button" data-input-method="photo" aria-pressed="' + (state.inputMethod === 'photo') + '">' + icon('camera') + 'Scan</button></div>' +
             '<section class="section-block source-fields"><label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
             (standardized ? '<label class="field"><span>作文题目 <em>必填</em></span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' : '') +
             (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
@@ -1395,7 +1428,7 @@
     }
 
     function textSourceHtml() {
-        return '<label class="field"><span>Your Writing</span><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></label>';
+        return '<div class="field inline-writing-field"><label for="writing-text">Your Writing</label><button class="inline-writing-scan" type="button" data-inline-writing-scan data-disable-when-busy>' + icon('camera') + '<span>Scan</span></button><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
     }
 
     function photoSourceHtml(hasPhoto) {
@@ -3035,7 +3068,7 @@
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
         else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
         else if (button.matches('[data-open-history]')) openSidebar();
-        else if (button.matches('[data-start-mode]')) createNewWriting(button.getAttribute('data-start-mode'));
+        else if (button.matches('[data-start-mode]')) startInlineWriting(button.getAttribute('data-start-mode'));
         else if (button.matches('[data-start-new]')) createNewWriting();
         else if (button.matches('[data-return-home]')) returnToTutorHome();
         else if (button.matches('[data-view-waiting-result]')) {
@@ -3046,13 +3079,13 @@
             if (typeof waitingAction === 'function') waitingAction();
         }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
-        else if (button.matches('[data-input-method]')) {
-            state.inputMethod = button.getAttribute('data-input-method');
+        else if (button.matches('[data-inline-writing-scan]')) {
+            state.inputMethod = 'photo';
             renderSource();
-            if (state.inputMethod === 'photo') {
+            window.requestAnimationFrame(function() {
                 var cameraInput = document.querySelector('[data-writing-photo-camera]');
                 if (cameraInput && typeof cameraInput.click === 'function') cameraInput.click();
-            }
+            });
         }
         else if (button.matches('[data-remove-photo]')) {
             var removeIndex = Number(button.getAttribute('data-remove-photo'));

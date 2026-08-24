@@ -328,31 +328,31 @@ check("portfolio titles support inline student editing through updateComposition
 check("Writing home is an action-first adaptive workspace", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const welcome = functionSource(client, "renderWelcome", "welcomeGreeting");
+  const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
-    "Ready to keep writing?", "welcomeContinueHtml", "Start New", "Polishing", "Brainstorming",
-    "welcomeRecentHtml", "welcomeWritingFocusHtml",
+    "welcomeUnfinishedHtml", "Start New", "Polishing", "Brainstorming", "homeComposerHtml",
   ], "Writing home workspace");
-  requireEvery(client, ["Recent Writing", "Writing Focus", "See All"], "Writing home secondary sections");
-  assert(!/YOUR AI WRITING STUDIO|拍照或输入|两种批改|亲手重写/.test(welcome),
-    "the permanent feature-marketing hero must not return to Writing home");
+  assert(!/Good (?:morning|afternoon|evening)|Ready to keep writing\?|Recent Writing|Writing Focus/.test(welcome),
+    "Writing home must not restore the greeting, hero question, Recent Writing, or Writing Focus sections");
+  assert(/portfolioCompositions\(\)\.filter[\s\S]{0,180}compositionStatus\(item\)\s*!==\s*['"]completed['"]/.test(welcome),
+    "the first home row must include every unfinished Composition and exclude completed work");
   requireEvery(styles, [
-    ".writing-home-dashboard", 'grid-template-areas: "continue start" "recent focus"',
-    ".writing-home-continue", ".writing-mode-card", ".writing-recent-list", ".writing-focus-list",
+    ".writing-home-flow", ".writing-pending-strip", ".writing-pending-pill",
+    "overflow-x: auto", "scroll-snap-type: x proximity", ".writing-mode-card",
   ], "Writing home responsive layout");
-  assert(/@media\s*\(max-width:\s*980px\)[\s\S]{0,1600}grid-template-areas:\s*"continue"\s*"start"\s*"recent"\s*"focus"/i.test(styles),
-    "phone and narrow tablet layouts must preserve the approved action order");
 });
 
 check("Writing home quick-start persists the selected review mode", () => {
   const client = read(clientPath);
   const backend = read("cloudfunctions/writingTutor/index.js");
-  const createClient = functionSource(client, "createNewWriting", "renderSource");
+  const createClient = functionSource(client, "startInlineWriting", "createNewWriting");
   const createServer = functionSource(backend, "createComposition", "listCompositions");
-  requireEvery(client, ['data-start-mode="language"', 'data-start-mode="standardized"', "button.getAttribute('data-start-mode')"],
+  requireEvery(client, ['data-start-mode="language"', 'data-start-mode="standardized"', "startInlineWriting(button.getAttribute('data-start-mode'))"],
     "Writing home mode actions");
-  requireEvery(createClient, ["selectedMode", "apiMode(selectedMode)", "composition.assessment_mode"],
-    "mode-aware Composition creation");
+  requireEvery(createClient, ["selectedMode", "homeComposerOpen", "renderWelcome()", "apiMode(selectedMode)", "composition.assessment_mode"],
+    "inline mode-aware Composition creation");
+  assert(!/renderSource\s*\(/.test(createClient),
+    "selecting Polishing or Brainstorming must expand the home composer rather than navigate to the source screen");
   requireEvery(createServer, ["event.assessment_mode", "general_language", "standardized_content", "ASSESSMENT_MODE_INVALID", "assessment_mode: assessmentMode"],
     "server-persisted initial review mode");
 });
@@ -368,11 +368,14 @@ check("the first writing screen keeps only the compact source controls", () => {
   const renderSource = functionSource(client, "renderSource", "rubricOptions");
   const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
   requireEvery(renderSource, [
-    "source-mode-switch", "Polishing", "Brainstorming", "Type", "Scan",
     "Title", "field-optional", "Optional", "data-discard-source", ">Discard</button>",
     "state.inputMethod === 'photo' ? 'Scan' : 'Submit'",
   ], "compact Writing source screen");
-  requireEvery(textSource, ["Your Writing", "writing-text", "Type or paste your writing here…"], "language text-entry field");
+  requireEvery(textSource, ["Your Writing", "writing-text", "Type or paste your writing here…", "data-inline-writing-scan", ">Scan</span>"], "language text-entry field");
+  assert(!/source-mode-switch|input-switch|data-input-method|>Type<|>Scan<\/button>/.test(renderSource),
+    "the source surface must not retain the separate mode or Type/Scan switch rows");
+  requireEvery(styles, [".inline-writing-field", ".inline-writing-scan", "position: absolute"],
+    "Scan control embedded in the writing field");
   assert(!/NEW WRITING|这一次想练什么|第 1 步|选择批改方式|保存并开始批改|上传并识别文字/.test(renderSource),
     "the source screen must not restore the removed heading, step, labels, or verbose submit copy");
   assert(/standardized\s*\?\s*'<label class="field"><span>作文题目/.test(renderSource),
@@ -401,8 +404,8 @@ check("photo entry opens the native camera, stages multiple pages, and scans onl
   assert(/inputMethod:\s*["']text["']/.test(client), "direct text entry must be the default");
   assert(/target\.matches\(\s*["']\[data-writing-photo-input\]["']\s*\)/.test(client),
     "both camera and library inputs must stage selected photos");
-  assert(/button\.matches\(\s*["']\[data-input-method\]["']\s*\)[\s\S]{0,500}renderSource\(\)[\s\S]{0,500}querySelector\(\s*["']\[data-writing-photo-camera\]["']\s*\)[\s\S]{0,300}cameraInput\.click\(\)/.test(client),
-    "selecting Scan mode must synchronously open the rear-camera input");
+  assert(/button\.matches\(\s*["']\[data-inline-writing-scan\]["']\s*\)[\s\S]{0,500}renderSource\(\)[\s\S]{0,500}querySelector\(\s*["']\[data-writing-photo-camera\]["']\s*\)[\s\S]{0,300}cameraInput\.click\(\)/.test(client),
+    "the compact Scan control inside Your Writing must open the rear-camera input");
   assert(/if\s*\(state\.inputMethod === ["']photo["']\)\s*uploadAndExtract\(\)/.test(client),
     "OCR must start only when the source form is explicitly submitted");
 });
