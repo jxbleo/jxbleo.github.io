@@ -327,7 +327,7 @@ check("portfolio titles support inline student editing through updateComposition
 
 check("the two evaluation modes use the approved product labels", () => {
   const ui = `${read(pagePath)}\n${read(clientPath)}`;
-  requireEvery(ui, ["语言语法提升", "标化考试脑暴"], "AI Tutor UI");
+  requireEvery(ui, ["Polishing", "Brainstorming"], "AI Tutor UI");
 });
 
 check("the first writing screen keeps only the compact source controls", () => {
@@ -336,17 +336,33 @@ check("the first writing screen keeps only the compact source controls", () => {
   const renderSource = functionSource(client, "renderSource", "rubricOptions");
   const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
   requireEvery(renderSource, [
-    "source-mode-switch", "语言语法提升", "标化考试脑暴",
-    "作文名称", "data-discard-source", ">Discard</button>",
+    "source-mode-switch", "Polishing", "Brainstorming", "Type", "Scan",
+    "Title", "field-optional", "Optional", "data-discard-source", ">Discard</button>",
     "state.inputMethod === 'photo' ? 'Scan' : 'Submit'",
   ], "compact Writing source screen");
-  requireEvery(textSource, ["你的作文", "writing-text"], "language text-entry field");
+  requireEvery(textSource, ["Your Writing", "writing-text", "Type or paste your writing here…"], "language text-entry field");
   assert(!/NEW WRITING|这一次想练什么|第 1 步|选择批改方式|保存并开始批改|上传并识别文字/.test(renderSource),
     "the source screen must not restore the removed heading, step, labels, or verbose submit copy");
   assert(/standardized\s*\?\s*'<label class="field"><span>作文题目/.test(renderSource),
     "Writing Prompt must render only for standardized mode");
   requireEvery(styles, [".source-discard-button", "color: #c9403a", ".source-form-actions"],
     "compact red Discard treatment");
+});
+
+check("photo entry opens the native camera, stages multiple pages, and scans only on submit", () => {
+  const client = read(clientPath);
+  const photoSource = functionSource(client, "photoSourceHtml", "sourcePayload");
+  requireEvery(photoSource, [
+    "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
+    "Take a Photo", "Take Another Photo", "Choose from Library", "multiple",
+  ], "photo staging controls");
+  assert(/inputMethod:\s*["']text["']/.test(client), "direct text entry must be the default");
+  assert(/target\.matches\(\s*["']\[data-writing-photo-input\]["']\s*\)/.test(client),
+    "both camera and library inputs must stage selected photos");
+  assert(/button\.matches\(\s*["']\[data-input-method\]["']\s*\)[\s\S]{0,500}renderSource\(\)[\s\S]{0,500}querySelector\(\s*["']\[data-writing-photo-camera\]["']\s*\)[\s\S]{0,300}cameraInput\.click\(\)/.test(client),
+    "selecting Scan mode must synchronously open the rear-camera input");
+  assert(/if\s*\(state\.inputMethod === ["']photo["']\)\s*uploadAndExtract\(\)/.test(client),
+    "OCR must start only when the source form is explicitly submitted");
 });
 
 check("Discard confirms only when the source contains student input", () => {

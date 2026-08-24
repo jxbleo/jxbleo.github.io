@@ -1981,3 +1981,13 @@ required.
 - Successful jobs now remain on a Ready card with one synthesized two-note cue
   and a student-clicked result action. Reopening a completed job is silent and
   does not stop the Runner before the click.
+
+# 2026-08-24：AI Tutor source copy and staged camera flow
+
+- Renamed the source controls to `Polishing`, `Brainstorming`, `Type`, and `Scan`,
+  and changed the language-entry fields to `Title` (`Optional`) and `Your Writing`.
+- Kept direct text entry as the default. Selecting photo mode now immediately
+  invokes the native rear camera, then returns to a multi-page staging surface
+  with explicit camera and photo-library additions.
+- Preserved the eight-page preview/reorder/remove workflow and made the bottom
+  green `Scan` the only action that uploads the batch and starts OCR.

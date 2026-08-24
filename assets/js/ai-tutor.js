@@ -1241,12 +1241,12 @@
         stage.innerHTML = '<section class="surface surface-pad source-entry-surface">' +
             '<form class="form-stack source-entry-form" id="writing-source-form">' +
             '<div class="source-mode-switch" role="radiogroup" aria-label="作文训练模式">' +
-            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="language" ' + (!standardized ? 'checked' : '') + '><span>语言语法提升</span></label>' +
-            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="standardized" ' + (standardized ? 'checked' : '') + '><span>标化考试脑暴</span></label></div>' +
+            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="language" ' + (!standardized ? 'checked' : '') + '><span>Polishing</span></label>' +
+            '<label class="source-mode-option"><input type="radio" name="assessment-mode" value="standardized" ' + (standardized ? 'checked' : '') + '><span>Brainstorming</span></label></div>' +
             '<div class="input-switch" role="group" aria-label="输入作文的方式">' +
-            '<button type="button" data-input-method="text" aria-pressed="' + (state.inputMethod === 'text') + '">' + icon('text') + '直接输入</button>' +
-            '<button type="button" data-input-method="photo" aria-pressed="' + (state.inputMethod === 'photo') + '">' + icon('camera') + '拍照上传</button></div>' +
-            '<section class="section-block source-fields"><label class="field"><span>作文名称</span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="例如：My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
+            '<button type="button" data-input-method="text" aria-pressed="' + (state.inputMethod === 'text') + '">' + icon('text') + 'Type</button>' +
+            '<button type="button" data-input-method="photo" aria-pressed="' + (state.inputMethod === 'photo') + '">' + icon('camera') + 'Scan</button></div>' +
+            '<section class="section-block source-fields"><label class="field"><span>Title <small class="field-optional">Optional</small></span><input id="writing-title" maxlength="80" autocomplete="off" placeholder="e.g. My Ideal City" value="' + escapeHtml(state.title) + '"></label>' +
             (standardized ? '<label class="field"><span>作文题目 <em>必填</em></span><textarea id="writing-prompt" maxlength="6000" placeholder="粘贴或输入完整题目…">' + escapeHtml(state.promptText) + '</textarea></label>' : '') +
             (standardized ? '<label class="field"><span>考试评分标准 <em>必选</em></span><select id="writing-rubric"><option value="">请选择 Rubric</option>' + rubricOptions(state.rubricId) + '</select></label>' : '') + '</section>' +
             '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(hasPhoto) : textSourceHtml()) + '</section>' +
@@ -1270,7 +1270,7 @@
     }
 
     function textSourceHtml() {
-        return '<label class="field"><span>你的作文</span><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></label>';
+        return '<label class="field"><span>Your Writing</span><textarea class="manuscript" id="writing-text" maxlength="30000" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></label>';
     }
 
     function photoSourceHtml(hasPhoto) {
@@ -1280,9 +1280,12 @@
                     '<button class="quiet-button compact" type="button" data-move-photo="' + index + '" data-direction="up" ' + (index === 0 ? 'disabled' : '') + '>前移</button>' +
                     '<button class="quiet-button compact" type="button" data-move-photo="' + index + '" data-direction="down" ' + (index === state.photoUrls.length - 1 ? 'disabled' : '') + '>后移</button>' +
                     '<button class="danger-button compact" type="button" data-remove-photo="' + index + '">移除</button></div></figure>';
-            }).join('') + '</div><label class="secondary-button compact add-photo-button">' + icon('plus') + '继续添加页面<input id="writing-photo" type="file" multiple accept="image/jpeg,image/png,image/webp"></label>';
+            }).join('') + '</div><div class="photo-source-actions">' +
+                '<label class="secondary-button compact add-photo-button">' + icon('camera') + 'Take Another Photo<input type="file" data-writing-photo-input data-writing-photo-camera accept="image/jpeg,image/png,image/webp" capture="environment"></label>' +
+                '<label class="secondary-button compact add-photo-button">' + icon('plus') + 'Choose from Library<input type="file" data-writing-photo-input multiple accept="image/jpeg,image/png,image/webp"></label></div>';
         }
-        return '<label class="photo-drop"><input id="writing-photo" type="file" multiple accept="image/jpeg,image/png,image/webp" capture="environment"><span><span class="photo-drop-icon">' + icon('camera') + '</span><strong>拍照或选择作文照片</strong><small>最多 8 页，可调整顺序。确认 OCR 后照片将被删除。</small></span></label>';
+        return '<div class="photo-source-empty"><label class="photo-drop"><input type="file" data-writing-photo-input data-writing-photo-camera accept="image/jpeg,image/png,image/webp" capture="environment"><span><span class="photo-drop-icon">' + icon('camera') + '</span><strong>Take a Photo</strong><small>Up to 8 pages. You can add more before scanning.</small></span></label>' +
+            '<div class="photo-source-actions"><label class="secondary-button compact add-photo-button">' + icon('plus') + 'Choose from Library<input type="file" data-writing-photo-input multiple accept="image/jpeg,image/png,image/webp"></label></div></div>';
     }
 
     function sourcePayload() {
@@ -2758,7 +2761,7 @@
     document.addEventListener('change', function(event) {
         var target = event.target;
         if (target.matches('#writing-rubric,[name="assessment-mode"]')) updateSourceState(target);
-        if (target.id === 'writing-photo' && target.files && target.files.length) {
+        if (target.matches('[data-writing-photo-input]') && target.files && target.files.length) {
             var additions = Array.prototype.slice.call(target.files);
             if (state.photoFiles.length + additions.length > 8) {
                 setStatus('一篇作文最多上传 8 页照片。');
@@ -2827,7 +2830,14 @@
             if (typeof waitingAction === 'function') waitingAction();
         }
         else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
-        else if (button.matches('[data-input-method]')) { state.inputMethod = button.getAttribute('data-input-method'); renderSource(); }
+        else if (button.matches('[data-input-method]')) {
+            state.inputMethod = button.getAttribute('data-input-method');
+            renderSource();
+            if (state.inputMethod === 'photo') {
+                var cameraInput = document.querySelector('[data-writing-photo-camera]');
+                if (cameraInput && typeof cameraInput.click === 'function') cameraInput.click();
+            }
+        }
         else if (button.matches('[data-remove-photo]')) {
             var removeIndex = Number(button.getAttribute('data-remove-photo'));
             if (state.photoUrls[removeIndex] && state.photoUrls[removeIndex].indexOf('blob:') === 0) URL.revokeObjectURL(state.photoUrls[removeIndex]);

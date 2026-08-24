@@ -2068,10 +2068,14 @@ Important mobile rules:
   shows framework criteria and score; language review never shows a score.
 - The first Writing screen has no page eyebrow, explanatory heading, step badge,
   or section labels. It starts with a compact two-option switch labelled
-  `语言语法提升` and `标化考试脑暴`, followed by the text/photo input switch.
-  Language text entry shows only `作文名称` and `你的作文`; Writing Prompt and
+  `Polishing` and `Brainstorming`, followed by a `Type` / `Scan` input switch whose default is `Type`.
+  Language text entry shows only `Title` with a subtle `Optional` tag and `Your Writing`; Writing Prompt and
   Rubric controls appear only for standardized mode. The trailing green action
-  reads `Submit` for text and `Scan` for photos. A small red `Discard` stays at
+  reads `Submit` for text and `Scan` for photos. Selecting the input-mode `Scan`
+  synchronously opens the native rear-camera picker. After capture, the student
+  returns to the photo staging surface and may use `Take Another Photo` or
+  `Choose from Library` until the eight-page limit; selection never starts OCR.
+  Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
   the leading edge; non-empty input receives the compact Apple-style confirmation
   before returning, while saved draft data remains available in History.
 - Completed language review uses exactly three primary cards in order:
