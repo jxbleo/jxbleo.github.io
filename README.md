@@ -29,8 +29,9 @@ boundaries matter more than visual polish right now.
   dictionary fallback
 - Weekly and monthly class learning reports: one authenticated shared link shows
   the class leaderboard while each family sees only its own learner's details
-- AI Tutor durable-job waiting cards with the original, temporary Mr. Cat Runner
-  canvas activity; Runner state is never stored or sent to CloudBase
+- AI Tutor durable-job waiting cards with task-specific progress, a replayable
+  Mr. Cat Runner score/collectibles activity, and a student-controlled Ready
+  handoff; Runner state is never stored or sent to CloudBase
 
 ## Current Stack
 
@@ -162,8 +163,11 @@ Supporting docs:
 - [docs/09_CONTENT_WORKFLOW.md](docs/09_CONTENT_WORKFLOW.md)
 - [docs/10_DEPLOYMENT.md](docs/10_DEPLOYMENT.md)
 - [docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md](docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md):
-  executable implementation plan for the shared AI waiting experience and
+  historical V1 implementation plan for the shared AI waiting experience and
   original Mr. Cat Runner interaction
+- [docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md](docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md):
+  executable V2 plan for contextual progress, reliable automatic result
+  refresh, replayable Runner scoring, Ready controls, animation, and sound
 
 ## Documentation Rule
 

@@ -730,15 +730,18 @@ the existing one-click confirmation flow.
 
 The browser waiting layer is shared across OCR, review, rewrite-check, and
 revision OCR without merging their polling or result predicates. Each waiting
-renderer projects the server Job state into `Saved`, `Queued`, `Analysing`, or
-`Ready`; the upload-confirmation boundary remains separate and is shown as
-`Uploading` without a safe-to-leave action. `assets/js/ai-waiting-runner.js`
-contains an optional, dependency-free Canvas controller only. It has no
-CloudBase, Composition, Job, identity, or persistence knowledge, and its
-distance/Ink snapshot is discarded with the page. `ai-tutor.js` owns mounting,
-pause/resume, finish fallback, and destruction on every success, failure,
-navigation, visibility, and pagehide path. The existing `getComposition` five-
-second polling and server active-Job guards remain authoritative.
+renderer projects the server Job state into a task-specific four-stage track;
+the upload-confirmation boundary remains separate and is shown as `Uploading`
+without a Back action. `assets/js/ai-waiting-runner.js` contains an optional,
+dependency-free Canvas controller only. It has no CloudBase, Composition, Job,
+identity, or persistence knowledge; its score, collectibles, distance, jump,
+and stumble snapshots are discarded with the page. `ai-tutor.js` owns mounting,
+pause/resume, shared serialized polling, Ready animation/sound, the one-shot
+result action, and destruction on every success, failure, navigation,
+visibility, and pagehide path. `getComposition` remains the authoritative
+ADMINONLY projection: visible polling is 3 seconds, hidden polling is 10
+seconds, transient failures back off to 20 seconds, and stale generation,
+Composition, kind, or operation responses are ignored.
 
 Zero-data New Writing rows are placeholders rather than student works. The browser
 filters them from History and its count immediately. Leaving an untouched placeholder
