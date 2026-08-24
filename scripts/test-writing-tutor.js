@@ -147,12 +147,15 @@ const publicActions = [
   "listCompositions",
   "createComposition",
   "discardEmptyComposition",
+  "discardDraftComposition",
   "startPhotoUpload",
   "finishPhotoUpload",
   "startRevisionScanUpload",
   "finishRevisionScanUpload",
   "confirmRevisionScanImport",
   "extractOcr",
+  "saveSourceDraft",
+  "adoptPromptOcr",
   "saveDraft",
   "evaluate",
   "submitRewrites",
@@ -276,7 +279,7 @@ check("portfolio is a dismissible fixed drawer at every viewport", () => {
     "drawer close button must hide the portfolio");
   assert(/sidebarScrim\.addEventListener\s*\(\s*["']click["']\s*,\s*closeSidebar/.test(client),
     "clicking the scrim must hide the portfolio");
-  assert(/event\.key\s*={2,3}\s*["']Escape["'][\s\S]{0,240}state\.sidebarOpen[\s\S]{0,120}closeSidebar/.test(client),
+  assert(/event\.key\s*={2,3}\s*["']Escape["'][\s\S]{0,500}state\.sidebarOpen[\s\S]{0,120}closeSidebar/.test(client),
     "Escape must hide an open portfolio drawer");
 });
 
@@ -330,8 +333,12 @@ check("Writing home is an action-first adaptive workspace", () => {
   const styles = read(stylePath);
   const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
-    "welcomeUnfinishedHtml", "Start New", "Polishing", "Brainstorming", "homeComposerHtml",
+    "welcomeUnfinishedHtml", "Polishing", "Brainstorming", "homeComposerHtml",
   ], "Writing home workspace");
+  assert(!/QUICK START|Start New/.test(welcome),
+    "Writing home must not retain the removed Quick Start or Start New headings");
+  assert(!/writing-mode-icon|writing-card-arrow/.test(welcome),
+    "Polishing and Brainstorming cards must not retain decorative icons or arrows");
   assert(!/Good (?:morning|afternoon|evening)|Ready to keep writing\?|Recent Writing|Writing Focus/.test(welcome),
     "Writing home must not restore the greeting, hero question, Recent Writing, or Writing Focus sections");
   assert(/portfolioCompositions\(\)\.filter[\s\S]{0,180}compositionStatus\(item\)\s*!==\s*['"]completed['"]/.test(welcome),
@@ -371,17 +378,30 @@ check("the first writing screen keeps only the compact source controls", () => {
     "Title", "field-optional", "Optional", "data-discard-source", ">Discard</button>",
     "state.inputMethod === 'photo' ? 'Scan' : 'Submit'",
   ], "compact Writing source screen");
-  requireEvery(textSource, ["Your Writing", "writing-text", "Type or paste your writing here…", "data-inline-writing-scan", ">Scan</span>"], "language text-entry field");
+  requireEvery(textSource, ["Your Writing", "writing-text", "Type or paste your writing here…", "cameraOnlyButton('writing'"], "language text-entry field");
+  const sourceFields = functionSource(client, "sourceFieldsHtml", "rubricOptions");
+  const cameraButton = functionSource(client, "cameraOnlyButton", "sourceFieldsHtml");
+  requireEvery(sourceFields, ["Rubric", "Writing Prompt", "source-fixed-divider", "Title"], "Brainstorming source fields");
+  assert(sourceFields.indexOf("Rubric") < sourceFields.indexOf("Writing Prompt")
+      && sourceFields.indexOf("Writing Prompt") < sourceFields.indexOf("source-fixed-divider")
+      && sourceFields.indexOf("source-fixed-divider") < sourceFields.indexOf("Title"),
+    "Brainstorming source order must be Rubric, Writing Prompt, divider, then Title");
+  requireEvery(cameraButton, ["data-inline-writing-scan", "icon('camera')", "aria-label", "title"], "icon-only source camera control");
+  assert(!/>\s*Scan\s*</.test(cameraButton), "the embedded camera control must not render a Scan text label");
   assert(!/source-mode-switch|input-switch|data-input-method|>Type<|>Scan<\/button>/.test(renderSource),
     "the source surface must not retain the separate mode or Type/Scan switch rows");
   requireEvery(styles, [".inline-writing-field", ".inline-writing-scan", "position: absolute"],
     "Scan control embedded in the writing field");
   assert(!/NEW WRITING|这一次想练什么|第 1 步|选择批改方式|保存并开始批改|上传并识别文字/.test(renderSource),
     "the source screen must not restore the removed heading, step, labels, or verbose submit copy");
-  assert(/standardized\s*\?\s*'<label class="field"><span>作文题目/.test(renderSource),
-    "Writing Prompt must render only for standardized mode");
+  assert(/standardized[\s\S]{0,900}Writing Prompt/.test(sourceFields),
+    "Writing Prompt must render only for standardized mode and use English copy");
   requireEvery(styles, [".source-discard-button", "color: #c9403a", ".source-form-actions"],
     "compact red Discard treatment");
+  assert(/\.source-discard-button\s*\{[^}]*border\s*:[^;}]+[^}]*border-radius\s*:[^;}]+[^}]*background\s*:/i.test(styles),
+    "Discard must use a complete boxed button treatment");
+  assert(/\.inline-writing-scan\s*\{[^}]*right:\s*10px[^}]*bottom:\s*10px/i.test(styles),
+    "camera controls must sit at the bottom-right of their text boxes");
 });
 
 check("photo entry opens the native camera, stages multiple pages, and scans only on submit", () => {
@@ -415,12 +435,37 @@ check("Discard confirms only when the source contains student input", () => {
   const requestSource = functionSource(client, "requestSourceDiscard", "openLeaveConfirmation");
   const dialogSource = functionSource(client, "openLeaveConfirmation", "closeLeaveConfirmation");
   const confirmSource = functionSource(client, "confirmLeave", "updateSourceState");
-  requireEvery(requestSource, ["sourceHasUserInput", "returnToTutorHome", "openLeaveConfirmation('discard')"],
+  requireEvery(requestSource, ["sourceHasUserInput", "discardDraftAndReturn", "openLeaveConfirmation('discard')"],
     "conditional source Discard confirmation");
-  requireEvery(dialogSource, ["Discard this writing?", "Your saved draft will stay in History", "Discard"],
+  requireEvery(dialogSource, ["Discard this writing?", "permanently removed from History", "Discard"],
     "Discard confirmation copy");
-  requireEvery(confirmSource, ["leaveDialogAction", "window.clearTimeout(state.autosaveTimer)", "returnToTutorHome"],
+  requireEvery(confirmSource, ["leaveDialogAction", "discardDraftAndReturn"],
     "confirmed source Discard action");
+});
+
+check("initial-draft autosave does not replace the established re-upload path", () => {
+  const client = read(clientPath);
+  const initialGuard = functionSource(client, "isInitialSourceDraft", "persistSourceDraft");
+  const persist = functionSource(client, "persistSourceDraft", "scheduleAutosave");
+  requireEvery(initialGuard, ["compositionStatus", "revision", "library_prompt_id", "pending_upload", "pending_ocr", "active_job_id", "standardized_review", "language_review", "rewrite_results", "completed_at"],
+    "initial source draft client guard");
+  requireEvery(persist, ["isInitialSourceDraft() ? 'saveSourceDraft' : 'saveDraft'", "sourcePayload"],
+    "source persistence routing");
+});
+
+check("opening any saved writing uses the Library-style entry confirmation", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const dialog = functionSource(client, "ensureCompositionEntryDialog", "showCompositionEntryDialog");
+  const openDialog = functionSource(client, "showCompositionEntryDialog", "closeCompositionEntryDialog");
+  requireEvery(dialog, ["practice-entry-overlay", "practice-entry-shell", "practice-entry-card", "practice-entry-task", "writing-entry-progress", "practice-entry-enter", "practice-entry-close"],
+    "Library-style writing entry dialog");
+  requireEvery(openDialog, ["compositionTitle", "statusLabel", "homeWorkflowProgress", "aria-label"],
+    "writing title and progress projection");
+  assert(/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,160}showCompositionEntryDialog/.test(client),
+    "every writing progress card must open the confirmation before loading the Composition");
+  assert(/\.practice-entry-card\s*\{[^}]*animation:\s*practiceEntryPop 560ms cubic-bezier\(\.18,\.95,\.26,1\.16\)/i.test(styles),
+    "writing entry must use the same Library materialization animation");
 });
 
 check("the two evaluation modes are mutually exclusive", () => {
@@ -2034,11 +2079,41 @@ check("same-composition re-upload replaces only after the new result succeeds", 
     "replacement text must be staged separately until review and usage commit atomically");
 });
 
-check("students have no composition-deletion action", () => {
+check("students may discard only a server-verified pre-review draft", () => {
   const backend = read(functionPath);
   const client = read(clientPath);
-  assert(!/deleteComposition|removeComposition/.test(`${backend}\n${client}`), "students must not be offered a composition deletion action");
+  const guard = functionSource(backend, "isDiscardableDraftComposition", "discardEmptyComposition");
+  const action = functionSource(backend, "discardDraftComposition", "publicJobView");
+  requireEvery(guard, [
+    'status || "draft"', "revision", "library_prompt_id", "pending_upload", "pending_ocr",
+    "pending_revision_scan", "active_job_id", "active_job", "ocr_job",
+    "standardized_review", "language_review", "rewrite_results", "completed_at",
+  ], "pre-review draft deletion guard");
+  assert(/isDiscardableDraftComposition\s*\(\s*composition\s*\)[\s\S]{0,260}\.remove\s*\(/.test(action),
+    "discardDraftComposition may delete only after the server guard passes");
+  requireEvery(client, ["function discardDraftAndReturn", "discardDraftComposition", "permanently removed from History"],
+    "student draft discard flow");
+  assert(!/deleteComposition|removeComposition/.test(`${backend}\n${client}`), "students must not receive a general composition deletion action");
   assert(!/data-(?:delete|remove)-composition/.test(client), "students must not see a composition deletion control");
+});
+
+check("Brainstorming prompt photos retain their OCR purpose and return to the prompt field", () => {
+  const backend = read(functionPath);
+  const client = read(clientPath);
+  const uploadSource = functionSource(client, "uploadAndExtract", "isNetworkDisconnect");
+  const ocrJob = functionSource(backend, "enqueueOcrJob", "retryableJobError");
+  const performOcr = functionSource(backend, "performOcrJob", "deleteUploadedPhotos");
+  const adoptServer = functionSource(backend, "adoptPromptOcr", "saveDraft");
+  const adoptClient = functionSource(client, "adoptPromptOcr", "saveAndEvaluate");
+  requireEvery(uploadSource, ["ocr_purpose: state.scanTarget", "startPhotoUpload", "finishPhotoUpload", "extractOcr"],
+    "purpose-aware photo OCR requests");
+  requireEvery(ocrJob, ["ocrPurpose(event.ocr_purpose)", "ocr_purpose: purpose"], "durable prompt OCR job");
+  requireEvery(performOcr, ["ocrPurpose(job.ocr_purpose)", 'purpose === "prompt"', "ocr_purpose: purpose"],
+    "purpose-aware OCR execution and result");
+  requireEvery(adoptServer, ["PROMPT_OCR_NOT_PENDING", "prompt_text", "pending_ocr: null", 'status: "draft"'],
+    "server prompt adoption");
+  requireEvery(adoptClient, ["adoptPromptOcr", "state.promptText", "state.inputMethod = 'text'", "renderWelcome"],
+    "client prompt adoption");
 });
 
 check("empty New Writing placeholders are hidden and safely discarded", () => {

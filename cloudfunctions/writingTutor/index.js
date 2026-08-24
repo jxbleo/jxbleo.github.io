@@ -210,9 +210,36 @@ function isDiscardableEmptyComposition(composition) {
     && !composition.completed_at;
 }
 
+function isDiscardableDraftComposition(composition) {
+  if (!composition || (composition.status || "draft") !== "draft") return false;
+  if (Number(composition.revision || 1) !== 1 || text(composition.library_prompt_id, 120)) return false;
+  return !composition.pending_upload
+    && !composition.pending_ocr
+    && !composition.pending_revision_scan
+    && !composition.scanned_rewrite_drafts
+    && !composition.pending_replacement
+    && !composition.pending_rewrite_check
+    && !composition.active_job_id
+    && !composition.active_job
+    && !composition.ocr_job
+    && !composition.standardized_review
+    && !composition.language_review
+    && !composition.rewrite_results
+    && !composition.completed_at;
+}
+
 async function discardEmptyComposition(student, event) {
   const composition = await ownedComposition(student, event.composition_id);
   if (!isDiscardableEmptyComposition(composition)) {
+    return { success: true, discarded: false, composition: summaryView(composition) };
+  }
+  await db.collection(COMPOSITIONS).doc(composition._id).remove();
+  return { success: true, discarded: true, composition_id: composition.composition_id };
+}
+
+async function discardDraftComposition(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  if (!isDiscardableDraftComposition(composition)) {
     return { success: true, discarded: false, composition: summaryView(composition) };
   }
   await db.collection(COMPOSITIONS).doc(composition._id).remove();
@@ -225,6 +252,7 @@ function publicJobView(job) {
     job_id: job.job_id || null,
     operation_id: job.operation_id || null,
     job_type: job.job_type || null,
+    ocr_purpose: job.job_type === "ocr" ? ocrPurpose(job.ocr_purpose) : null,
     review_mode: job.review_mode || null,
     status: job.status || null,
     error_code: job.error_code || null,
@@ -233,6 +261,10 @@ function publicJobView(job) {
     started_at: job.started_at || null,
     finished_at: job.finished_at || null,
   };
+}
+
+function ocrPurpose(value) {
+  return text(value, 40).toLowerCase() === "prompt" ? "prompt" : "writing";
 }
 
 function publicRevisionCandidates(items) {
@@ -265,6 +297,8 @@ function compositionView(composition) {
       created_at: composition.pending_upload.created_at || null,
       page_count: Array.isArray(composition.pending_upload.photo_ids)
         ? composition.pending_upload.photo_ids.length : 0,
+      ocr_purpose: composition.pending_upload.kind === "revision_scan"
+        ? null : ocrPurpose(composition.pending_upload.ocr_purpose),
     }
     : null;
   const pendingRevisionScan = composition.pending_revision_scan && typeof composition.pending_revision_scan === "object"
@@ -433,6 +467,7 @@ async function getComposition(student, event) {
         operation_id: composition.pending_upload.operation_id,
         photo_ids: composition.pending_upload.photo_ids,
         replace_current: composition.pending_upload.replace_current === true,
+        ocr_purpose: composition.pending_upload.ocr_purpose,
       });
       composition = await ownedComposition(student, event.composition_id);
     } catch (error) {
@@ -459,13 +494,15 @@ async function startPhotoUpload(student, event) {
   const operationId = text(event.operation_id, 160);
   if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
   const pages = Array.isArray(event.pages) ? event.pages : [];
+  const purpose = ocrPurpose(event.ocr_purpose);
   if (!pages.length || pages.length > MAX_UPLOAD_PAGES) throw new Error("PHOTO_PAGE_COUNT_INVALID");
   const existingJob = await getOne(JOBS, {
     job_id: stableId("writing_job", student.auth_uid, operationId),
     student_uid: student.auth_uid,
   });
   if (existingJob) {
-    if (existingJob.composition_id !== composition.composition_id || existingJob.job_type !== "ocr") {
+    if (existingJob.composition_id !== composition.composition_id || existingJob.job_type !== "ocr"
+      || ocrPurpose(existingJob.ocr_purpose) !== purpose) {
       throw new Error("IDEMPOTENCY_KEY_REUSED");
     }
     const existingPhotoIds = Array.isArray(existingJob.photo_ids) ? existingJob.photo_ids : [];
@@ -502,6 +539,7 @@ async function startPhotoUpload(student, event) {
       status: "uploading", page_index: index, file_id: view.file_id, cloud_path: cloudPath,
       original_name: text(pages[index].file_name, 160), mime_type: mimeType,
       expected_size_bytes: sizeBytes, replace_current: event.replace_current === true,
+      ocr_purpose: purpose,
       operation_id: operationId,
       expires_at: new Date(now.getTime() + INCOMPLETE_UPLOAD_TTL_MS), created_at: now, updated_at: now,
     };
@@ -517,6 +555,7 @@ async function startPhotoUpload(student, event) {
     if (!existing
       || existing.composition_id !== composition.composition_id
       || existing.operation_id !== operationId
+      || ocrPurpose(existing.ocr_purpose) !== purpose
       || Number(existing.page_index) !== index
       || existing.mime_type !== mimeType
       || Number(existing.expected_size_bytes) !== sizeBytes) {
@@ -535,6 +574,7 @@ async function startPhotoUpload(student, event) {
       operation_id: operationId,
       photo_ids: uploads.map((upload) => upload.photo_id),
       replace_current: event.replace_current === true,
+      ocr_purpose: purpose,
       status: "uploading",
       created_at: now,
     },
@@ -561,9 +601,11 @@ async function finishPhotoUpload(student, event) {
   const operationId = text(event.operation_id, 160);
   if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
   const photoIds = Array.isArray(event.photo_ids) ? event.photo_ids.slice(0, MAX_UPLOAD_PAGES) : [];
+  const purpose = ocrPurpose(event.ocr_purpose);
   if (!photoIds.length) throw new Error("PHOTO_UPLOAD_REQUIRED");
   const rows = await photoRows(student, composition.composition_id, photoIds);
   if (rows.some((row) => row.operation_id !== operationId)) throw new Error("UPLOAD_BATCH_SUPERSEDED");
+  if (rows.some((row) => ocrPurpose(row.ocr_purpose) !== purpose)) throw new Error("UPLOAD_BATCH_SUPERSEDED");
   const info = await app.getFileInfo({ fileList: rows.map((row) => row.file_id) });
   const fileMap = new Map((info.fileList || []).map((file) => [file.fileID, file]));
   for (const row of rows) {
@@ -580,7 +622,7 @@ async function finishPhotoUpload(student, event) {
   // Upload confirmation and durable OCR enqueue are one server-side handoff.
   // Once this call reaches CloudBase, closing the browser cannot strand an
   // uploaded photo between two client requests.
-  return await enqueueOcrJob(student, { ...event, operation_id: operationId, photo_ids: photoIds });
+  return await enqueueOcrJob(student, { ...event, operation_id: operationId, photo_ids: photoIds, ocr_purpose: purpose });
 }
 
 function revisionRequiredUnits(composition) {
@@ -855,11 +897,13 @@ async function enqueueOcrJob(student, event) {
   const composition = await ownedComposition(student, event.composition_id);
   if (composition.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
   const operationId = text(event.operation_id, 160);
+  const purpose = ocrPurpose(event.ocr_purpose);
   if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
   const jobId = stableId("writing_job", student.auth_uid, operationId);
   const existing = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
   if (existing) {
-    if (existing.composition_id !== composition.composition_id || existing.job_type !== "ocr") {
+    if (existing.composition_id !== composition.composition_id || existing.job_type !== "ocr"
+      || ocrPurpose(existing.ocr_purpose) !== purpose) {
       throw new Error("IDEMPOTENCY_KEY_REUSED");
     }
     let latest = composition;
@@ -913,6 +957,7 @@ async function enqueueOcrJob(student, event) {
   const job = {
     job_id: jobId,
     job_type: "ocr",
+    ocr_purpose: purpose,
     operation_id: operationId,
     dispatch_token: crypto.randomBytes(32).toString("hex"),
     student_uid: student.auth_uid,
@@ -969,7 +1014,8 @@ async function enqueueOcrJob(student, event) {
     });
   } catch (_error) {
     const raced = await getOne(JOBS, { job_id: jobId, student_uid: student.auth_uid });
-    if (!raced || raced.composition_id !== composition.composition_id || raced.job_type !== "ocr") {
+    if (!raced || raced.composition_id !== composition.composition_id || raced.job_type !== "ocr"
+      || ocrPurpose(raced.ocr_purpose) !== purpose) {
       throw _error;
     }
     const latest = await ownedComposition(student, composition.composition_id);
@@ -1052,9 +1098,12 @@ async function performOcrJob(student, job) {
   const urlMap = new Map((urls.fileList || []).map((item) => [item.fileID, item.tempFileURL]));
   const imageUrls = rows.map((row) => urlMap.get(row.file_id)).filter(Boolean);
   if (imageUrls.length !== rows.length) throw new Error("PHOTO_URL_FAILED");
+  const purpose = ocrPurpose(job.ocr_purpose);
   const ocrResponse = await callStructuredModel({
     system: ocrPrompt(),
-    userText: "Transcribe the attached composition pages in page order. Return only the required structured result.",
+    userText: purpose === "prompt"
+      ? "Transcribe the attached writing-task prompt in page order. Return only the required structured result."
+      : "Transcribe the attached composition pages in page order. Return only the required structured result.",
     schemaName: "writing_ocr_v1", schema: OCR_SCHEMA, images: imageUrls, vision: true,
   });
   const ocr = ocrResponse.data;
@@ -1106,6 +1155,7 @@ async function performOcrJob(student, job) {
     location_status: locationStatus,
     location_model_metadata: locationModelMetadata,
     photo_ids: photoIds,
+    ocr_purpose: purpose,
     replace_current: job.replace_current === true,
     model_metadata: ocrResponse.metadata,
     extracted_at: new Date(),
@@ -1406,6 +1456,74 @@ async function retryPrivatePhotoCleanup(student) {
   } catch (error) {
     console.error("writingTutor deferred photo cleanup failed", error);
   }
+}
+
+async function saveSourceDraft(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  if (!isDiscardableDraftComposition(composition)) throw new Error("COMPOSITION_NOT_DRAFT");
+  const mode = text(event.assessment_mode, 80) || composition.assessment_mode || "general_language";
+  if (!["general_language", "standardized_content"].includes(mode)) throw new Error("ASSESSMENT_MODE_INVALID");
+  const rubricId = text(event.rubric_id, 120) || null;
+  if (rubricId) getRubric(rubricId);
+  const submittedTitle = normalizedTitle(event.title);
+  const confirmedText = text(event.confirmed_text, MAX_COMPOSITION_CHARS);
+  const now = new Date();
+  const update = {
+    title: submittedTitle,
+    title_source: submittedTitle ? "student" : "pending_ai",
+    prompt_text: text(event.prompt_text, MAX_PROMPT_CHARS),
+    confirmed_text: confirmedText,
+    assessment_mode: mode,
+    rubric_id: mode === "standardized_content" ? rubricId : null,
+    word_count: wordCount(confirmedText),
+    updated_at: now,
+  };
+  await db.collection(COMPOSITIONS).doc(composition._id).update(update);
+  return { success: true, composition: compositionView({ ...composition, ...update }) };
+}
+
+async function adoptPromptOcr(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  const pendingOcr = composition.pending_ocr && typeof composition.pending_ocr === "object"
+    ? composition.pending_ocr : null;
+  if (!pendingOcr || ocrPurpose(pendingOcr.ocr_purpose) !== "prompt") throw new Error("PROMPT_OCR_NOT_PENDING");
+  const promptText = text(event.prompt_text, MAX_PROMPT_CHARS);
+  if (!promptText) throw new Error("WRITING_PROMPT_REQUIRED");
+  const photoIds = Array.isArray(pendingOcr.photo_ids) ? pendingOcr.photo_ids.slice(0, MAX_UPLOAD_PAGES) : [];
+  const now = new Date();
+  const update = replaceWholeFields({
+    prompt_text: promptText,
+    pending_ocr: null,
+    pending_upload: null,
+    active_job_id: null,
+    active_job: null,
+    ocr_job: null,
+    status: "draft",
+    updated_at: now,
+  }, ["pending_ocr", "pending_upload", "active_job", "ocr_job"]);
+  await db.collection(COMPOSITIONS).doc(composition._id).update(update);
+  if (photoIds.length) {
+    try {
+      const rows = await photoRows(student, composition.composition_id, photoIds);
+      await deleteUploadedPhotos(rows);
+    } catch (error) {
+      console.error("writingTutor prompt photo cleanup deferred", error && error.message);
+    }
+  }
+  return {
+    success: true,
+    composition: compositionView({
+      ...composition,
+      prompt_text: promptText,
+      pending_ocr: null,
+      pending_upload: null,
+      active_job_id: null,
+      active_job: null,
+      ocr_job: null,
+      status: "draft",
+      updated_at: now,
+    }),
+  };
 }
 
 async function saveDraft(student, event) {
@@ -2425,6 +2543,7 @@ function friendlyMessage(code) {
   const messages = {
     AUTH_REQUIRED: "Please sign in first.", STUDENT_NOT_LINKED: "This student account is not linked.",
     COMPOSITION_NOT_FOUND: "This writing record could not be found.", COMPOSITION_READ_ONLY: "Completed writing is read-only. Use it as a new composition to continue.",
+    COMPOSITION_NOT_DRAFT: "This writing has already entered review and can no longer be discarded as a draft.",
     TITLE_REQUIRED: "Please enter a title.",
     MANUSCRIPT_REQUIRED: "Please confirm your writing first.", WRITING_PROMPT_REQUIRED: "A task prompt is required for standardized assessment.",
     RUBRIC_REQUIRED: "Choose an assessment framework.", RUBRIC_NOT_AVAILABLE: "This assessment framework is not available yet.",
@@ -2437,6 +2556,7 @@ function friendlyMessage(code) {
     WRITING_AI_REVISION_SCAN_EMPTY: "No readable rewrite candidates were found in those photos. Please try clearer photos.",
     WRITING_AI_REVISION_SCAN_TOO_LARGE: "Too many rewrite candidates were found in one scan. Please photograph fewer answers at a time.",
     COMPOSITION_REVISION_REQUIRED: "This rewrite scan is from an outdated writing revision. Refresh and scan again.",
+    PROMPT_OCR_NOT_PENDING: "This writing prompt scan is no longer waiting for confirmation.",
   };
   return messages[code] || "The AI writing request could not be completed. Please try again.";
 }
@@ -2450,12 +2570,15 @@ exports.main = async (event = {}) => {
     if (action === "createComposition") return await createComposition(student, event);
     if (action === "listCompositions") return await listCompositions(student);
     if (action === "discardEmptyComposition") return await discardEmptyComposition(student, event);
+    if (action === "discardDraftComposition") return await discardDraftComposition(student, event);
     if (action === "getComposition") return await getComposition(student, event);
     if (action === "startPhotoUpload") return await startPhotoUpload(student, event);
     if (action === "finishPhotoUpload") return await finishPhotoUpload(student, event);
     if (action === "startRevisionScanUpload") return await startRevisionScanUpload(student, event);
     if (action === "finishRevisionScanUpload") return await finishRevisionScanUpload(student, event);
     if (action === "extractOcr") return await extractOcr(student, event);
+    if (action === "saveSourceDraft") return await saveSourceDraft(student, event);
+    if (action === "adoptPromptOcr") return await adoptPromptOcr(student, event);
     if (action === "saveDraft") return await saveDraft(student, event);
     if (action === "updateCompositionTitle") return await updateCompositionTitle(student, event);
     if (action === "evaluate") return await evaluate(student, event);

@@ -1859,18 +1859,21 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - AI Writing Tutor 主页是行动优先的写作工作台，不是长期功能介绍页。删除时段问候和
   `Ready to keep writing?` 标题。工具栏下第一行只把所有未完成 Composition 显示为可横向滑动的
   Library 风格任务胶囊，一篇一张，含模式、标题、当前状态和细进度条；已完成作文只留在 History。
-  没有未完成作文时不显示空占位。其下只有 `Start New` 卡片和原有 `Polishing` / `Brainstorming`
-  两个模式按钮，不再显示 `Recent Writing` 或 `Writing Focus`。主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
+  没有未完成作文时不显示空占位。其下只保留原有 `Polishing` / `Brainstorming`
+  两个纯文字模式按钮；删除 `Quick Start`、`Start New`、模式图标与箭头，也不再显示 `Recent Writing` 或 `Writing Focus`。
+  点击任意未完成稿或 History 项目必须先打开与 Dashboard Library 任务入口相同材质、尺寸与弹入动画的确认层；确认层只投影作文标题、当前进度文字与进度条，学生明确 Enter 后才读取全文。
+  主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余
   AI 批改词数。创建作文时必须立即持久化主页所选模式，刷新后不可退回默认语言模式。
 - 点击主页 `Polishing` 或 `Brainstorming` 不进入新的输入页面，而是在两个按钮下方原位展开表单；展开采用克制、可中断且尊重
-  Reduced Motion 的材质过渡。语言模式显示带 `Optional` 标记的 `Title` 与 `Your Writing`；标化模式额外显示 Writing Prompt
-  与 Rubric。正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
-  `Your Writing` 输入框内部右上方提供一个小型 `Scan` 相机按钮；只有点击它才切换到照片暂存界面并立即唤起后置相机。
+  Reduced Motion 的材质过渡。语言模式显示带 `Optional` 标记的 `Title` 与 `Your Writing`；标化模式严格按
+  `Rubric`、`Writing Prompt`、分隔线、`Title`、`Your Writing` 排列，所有字段使用英文。Rubric 与 Writing Prompt 位于分隔线上方，表示固定评估上下文；学生内容位于下方。
+  正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
+  `Writing Prompt` 与 `Your Writing` 输入框内部右下方各提供一个只显示相机图标的按钮，并以 `aria-label` 保留可访问名称；前者 OCR 确认后只回填 Writing Prompt，后者才进入作文正文 OCR。
   拍摄后返回照片暂存区，可继续拍照或通过 `Choose from Library` 加入多张图片，最多八页。选择照片只暂存，
   不启动 OCR。每张预览左上角按 `Page 当前页/总页数` 显示页序，右下角只提供 `Remove`；页面保持拍摄或选择时的加入顺序，
   不提供手动前移/后移。添加或删除照片、删掉最后一张照片、切换输入方式或切换评估模式后，手机/iPad 必须重新显示当前页面顶部，
   不得保留内容缩短前的底部滚动位置。底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色
-  `Discard` 在空白稿上直接返回；存在学生输入时先显示确认弹窗，已自动保存的草稿继续保留在 History。
+  `Discard` 使用与主操作同等完整的方框按钮外观。空白稿直接删除并返回；存在学生输入时先显示永久删除确认弹窗。服务器仅允许删除 revision 1、尚未进入上传/OCR/评估/订正且没有 Library 题目绑定的 `draft`；不满足条件时必须拒绝，因此任何已开始处理或已提交作品仍不可删除。
 - OCR Review 只保留顶部 `OCR Review`、`Compare with Image`、紧接其后的正文编辑器，以及底部
   唯一一个水平居中的 `Confirm`。此步骤删除 `Upload Again`；原有中文说明、步骤、存疑数量和编辑器标签全部
   删除。原图默认隐藏；按钮在电脑/iPad打开左右对照，在手机把图片放到编辑器上方，再次点击隐藏。
@@ -1961,10 +1964,11 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   本地草稿和云端暂存；断网、模型失败、页面刷新或关闭浏览器都必须保留可恢复内容。
 - 同一活跃 Composition 的 `重新上传` 成功确认后覆盖其旧文本和 AI 结果；失败不覆盖。只有从
   New Writing 开始才创建新作品。已完成作品只读，学生不能删除任何已提交作品。
+- 学生可用输入页 `Discard` 删除一篇尚未进入任何上传、OCR、评估或订正流程的初始草稿，即使其中已有标题、题目或未提交正文。删除必须由服务端重新验证完整生命周期字段后执行；客户端不可直接删除作品记录。
 - 单击 `New` 创建但尚未写入标题、题目、正文、照片/OCR或任何 AI 任务的空白占位稿，不计入作品，
   不得出现在 History 或作品数量中。学生离开该空白稿或再次单击 `New` 时，服务端只在重新核验其
   仍为空白后自动删除；异常关闭遗留的空白稿先从 History 隐藏，并在安全保留期后后台清理。
-  该能力不是通用删除：只要已有任何作品数据、上传/任务状态或评估结果，就必须拒绝删除。
+  空白占位清理由既有严格空白谓词处理；它与显式初始草稿 Discard 都不是通用删除。只要已有上传/任务状态、评估或订正结果、完成时间、Library 题目绑定或 revision 大于 1，就必须拒绝删除。
 - 新作文未提供学生标题时，第一次成功的正式 AI 批改必须在同一次结构化响应中生成一个由
   `2–6` 个英文单词组成的简短标题；不得为标题另发模型请求或另计额度。学生可以在作品库内联
   修改标题，手动标题一经保存，后续重新评估或重新上传都不得由 AI 覆盖。历史

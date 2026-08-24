@@ -1109,3 +1109,19 @@ Why: transcription is the required student-facing result and already has durable
 semantics. A separate strict contract keeps coordinates out of the stable OCR schema, lets the server
 reject hallucinated/out-of-range boxes without clamping, and makes provider failures harmless to the
 successful text result. Only safe provider metadata and canonical temporary regions are stored.
+
+## Purpose-bound initial OCR (2026-08-25)
+
+Decision: use the existing private upload and durable OCR job pipeline for both
+manuscript and Writing Prompt photos, but persist `ocr_purpose: writing|prompt`
+through upload rows, pending state, job identity, public projection, and OCR result.
+Include the purpose in the client operation fingerprint. A prompt confirmation
+may update only `prompt_text`; it clears the OCR state and private photos and must
+not call evaluation.
+
+Why: one durable pipeline preserves close-browser recovery and model hardening,
+while an explicit purpose prevents an idempotent replay or resumed job from putting
+prompt text into the student manuscript or triggering a review unexpectedly.
+
+Review condition: revisit only if prompt extraction later needs a distinct schema
+for images containing diagrams, tables, or multi-part source materials.

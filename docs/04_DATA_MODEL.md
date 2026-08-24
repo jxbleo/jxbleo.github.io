@@ -1076,7 +1076,7 @@ All collections are `ADMINONLY`.
   let the browser recover long-running OCR and review results without exposing dispatch or
   lease tokens, image identifiers, manuscript data, or provider credentials.
   `pending_upload` records only the current upload operation ID, ordered photo
-  IDs, safe state, and timestamps. It lets `getComposition` repair a browser
+  IDs, `ocr_purpose` (`writing|prompt`), safe state, and timestamps. It lets `getComposition` repair a browser
   disconnect between storage upload and durable OCR-job activation without
   exposing file IDs or creating a second logical request.
   `pending_rewrite_check` durably stages one submitted rewrite batch on the
@@ -1144,12 +1144,20 @@ All collections are `ADMINONLY`.
   rows immediately. An authenticated owner-only action rechecks the complete predicate before
   removing one; stale placeholders may be pruned after 30 minutes. This is not a general
   Composition deletion path and can never remove a non-empty or submitted work.
+  Separately, `discardDraftComposition` permits the authenticated owner to discard
+  an initial revision-1 draft containing title, prompt, or unsubmitted manuscript
+  text. Its lifecycle guard rejects Library-bound work plus every upload, pending
+  OCR, active/compatibility job, replacement, review, rewrite, scan, or completion
+  field. This is the only non-empty deletion exception and cannot remove a
+  Composition after server processing has begun.
 - `writing_photo_uploads`: short-lived private upload audit rows with ownership,
   upload-operation ID, `upload_kind` (`revision_scan` for photographed sentence
   drafts, otherwise original-composition OCR), page order, expected size,
-  CloudBase file ID, expiry, and deletion status.
+  CloudBase file ID, expiry, and deletion status. Original-composition OCR rows also
+  store `ocr_purpose: writing|prompt`; legacy missing values normalize to `writing`.
 - `writing_ai_jobs` (`ADMINONLY`): durable metadata-only AI work queue with stable
-  job/operation identity, Composition ownership, job type, photo IDs for OCR,
+  job/operation identity, Composition ownership, job type, photo IDs and
+  `ocr_purpose: writing|prompt` for OCR,
   review mode/Rubric/usage-ledger ID for content or language review, and
   Composition revision scope for rewrite checking or `revision_ocr`. A
   `revision_ocr` job also records only ordered private photo IDs and the target
@@ -1188,8 +1196,8 @@ Required indexes, in addition to CloudBase defaults:
 - `writing_teacher_email_events`: unique `event_id`; `status`;
   `event_id + status`
 
-`writing_compositions.pending_ocr` may temporarily include `uncertain_regions`, `location_status`, and
-`location_model_metadata` in addition to the transcription fields. Each region contains only a server-
+`writing_compositions.pending_ocr` may temporarily include `ocr_purpose: writing|prompt`,
+`uncertain_regions`, `location_status`, and `location_model_metadata` in addition to the transcription fields. Each region contains only a server-
 canonical `span_index`, `page_index`, normalized integer `x`, `y`, `width`, `height`, and `confidence`.
 Accepted regions are capped at the number of stored uncertain spans and 100, exclude low-confidence or
 out-of-range boxes, and are ordered by span index. `location_status` is `not_needed`, `complete`, `partial`,

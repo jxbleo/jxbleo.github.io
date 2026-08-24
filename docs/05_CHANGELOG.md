@@ -3,6 +3,19 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Writing draft entry and prompt scanning
+
+- Added the Dashboard Library-style entry confirmation—with title, status, and
+  progress bar—before any Writing Home or History Composition is opened.
+- Simplified the new-writing surface to icon-free `Polishing` / `Brainstorming`
+  cards and reordered Brainstorming as Rubric, Writing Prompt, divider, Title,
+  and Your Writing with icon-only bottom-right camera controls.
+- Added durable purpose-aware prompt OCR that returns confirmed text to Writing
+  Prompt without starting manuscript evaluation.
+- Changed input-page Discard into a boxed, confirmed permanent deletion for only
+  server-verified revision-1 drafts that have never entered processing; submitted,
+  queued, reviewed, revised, completed, or Library-bound works remain undeletable.
+
 ## 2026-08-24 — Inline Writing Home composer
 
 - Replaced the greeting-led four-panel Writing Home with a horizontal strip of

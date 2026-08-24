@@ -1116,3 +1116,12 @@ The OCR uncertainty overlay change requires the static `ai-tutor.html`, `assets/
 static release and `writingTutor` package, run release verification and the writing-tutor contract tests,
 then have the owner deploy the function and publish the cache-busted static assets. This note is a release
 checklist only; agents must not deploy CloudBase resources without exact owner authorization.
+
+The 2026-08-25 Writing draft-entry release requires cache-busted `ai-tutor.html`,
+`assets/js/ai-tutor.js`, and `assets/css/ai-tutor.css` plus a new bundled
+`writingTutor` package. Deploy and verify the function first because the static
+client calls `saveSourceDraft`, `discardDraftComposition`, and `adoptPromptOcr`
+and sends `ocr_purpose`; then publish static assets. `writingAiWorker` needs no
+change because it dispatches the same generic OCR job. No new collection, index,
+timer, secret, provider account, or environment variable is required. This is an
+owner-gated release checklist, not deployment authorization.
