@@ -1817,8 +1817,11 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - A successful Job changes the same open page into a visible Ready state with
   one gentle synthesized two-note prompt and a full-width result button. The
   runner continues until the student clicks that button; no result renderer is
-  entered automatically. Reduced motion removes choreography without changing
-  the manual handoff. Reopening an already-ready Job is silent.
+  entered automatically. The final Ready node and label use a brief periodic
+  Dock-style bounce, while the redundant visible `Your … Is Ready` heading is
+  removed. Reduced motion removes choreography without changing the manual
+  handoff. Reopening an already-ready Job is silent and opens its actual result
+  directly, without constructing a Ready card or Runner.
 - Waiting polling runs immediately, then serially at 3 seconds while visible
   and 10 seconds while hidden; focus, online, and visibility changes wake it.
   Temporary failures back off at 3/6/12/20 seconds. A stale Composition,

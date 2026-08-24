@@ -64,8 +64,13 @@ failure cleanup, and the durable result predicates.
 Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
 keyboard Jump, focused form controls, hidden-tab pause, reduced motion, missing
 Runner module fallback, network polling recovery, Ready without refresh, one
-result click, silent re-entry to a completed Job, and continued play after
-Ready. Confirm no Canvas or local Score remains in any failure or result card.
+result click, direct re-entry to a completed Job, and continued play after
+Ready. On the active waiting card, confirm the visible `Your … Is Ready` heading
+disappears and the Ready node/text periodically Dock-bounces; reduced motion must
+remain static. Open the same ready Composition from History and after refresh:
+it must enter OCR Review, the assessment, feedback, or Revision Scan directly,
+without briefly showing Canvas, Ready, sound, or Score. Confirm no Canvas or local
+Score remains in any failure or result card.
 
 TeacherAdmin deployment-package checks:
 

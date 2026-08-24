@@ -146,13 +146,16 @@
 .ai-waiting-status { min-height: 1.4em; margin: 0; color: #a35b3e; font-size: .78rem; line-height: 1.6; }
 .ai-waiting-uploading .runner-shell { display: none; }
 
-@keyframes ai-waiting-ready-pop {
-    0% { transform: scale(.82); }
-    70% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+@keyframes ai-waiting-ready-dock-bounce {
+    0%, 9%, 17%, 23%, 100% { transform: translateY(0); }
+    4% { transform: translateY(-11px); }
+    13% { transform: translateY(-6px); }
+    20% { transform: translateY(-3px); }
 }
-.ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node {
-    animation: ai-waiting-ready-pop .4s ease both;
+.ai-waiting-experience.is-ready .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node,
+.ai-waiting-experience.is-ready .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-label {
+    transform-origin: center bottom;
+    animation: ai-waiting-ready-dock-bounce 5.2s cubic-bezier(.2,.75,.35,1) infinite;
 }
 .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node::after {
     position: absolute;
@@ -187,7 +190,8 @@
 
 @media (prefers-reduced-motion: reduce) {
     .ai-waiting-stage.is-active .ai-waiting-stage-node,
-    .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node,
+    .ai-waiting-experience.is-ready .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node,
+    .ai-waiting-experience.is-ready .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-label,
     .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-check,
     .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node::after { animation: none; }
     .ai-waiting-stage-node, .ai-waiting-connector { transition: none; }

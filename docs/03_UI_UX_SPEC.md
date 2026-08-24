@@ -1960,8 +1960,12 @@ Important mobile rules:
 - Reduced motion renders a static scene and skips motion choreography. Hidden
   tabs pause simulation and reset the frame clock; missing Canvas support leaves
   the real status, polling, and result paths intact. Success changes the card to
-  Ready, plays one quiet synthesized two-note sound when permitted, and keeps
-  the runner alive until the student clicks its full-width result button.
+  Ready, hides the former `Your … Is Ready` heading, plays one quiet synthesized
+  two-note sound when permitted, and keeps the runner alive until the student
+  clicks its full-width result button. The final Ready node and text perform a
+  short Dock-style vertical bounce followed by a long pause; reduced motion is
+  static. Opening an already-ready Composition from History bypasses this entire
+  card and Runner and renders the saved result immediately.
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
