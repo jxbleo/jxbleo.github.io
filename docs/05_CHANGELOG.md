@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — Simplified initial Writing photo staging
+
+- Removed manual forward/back ordering from the first-draft photo preview while
+  preserving capture and selection order.
+- Standardized each preview to a top-left `Page current/total` badge and one
+  bottom-right English `Remove` action.
+
 ## 2026-08-24 — Visitor access for Intensive Listening and AI Tutor
 
 - Visitors can play and replay the lesson's existing public BBC audio without

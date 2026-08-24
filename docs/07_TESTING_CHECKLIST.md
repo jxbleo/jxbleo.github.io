@@ -1784,8 +1784,9 @@ High priority improvement:
   `Title` with an `Optional` tag and `Your Writing`, while standardized mode adds Prompt and Rubric.
   Tap the input-mode `Scan` on a real iPhone/iPad and verify the rear-camera picker opens immediately.
   Capture one page and confirm the UI returns to the staging screen without starting OCR; add another
-  with `Take Another Photo`, then add multiple pages with `Choose from Library`. Confirm all previews
-  remain reorderable/removable and only the bottom green `Scan` starts OCR. Confirm the green action reads
+  with `Take Another Photo`, then add multiple pages with `Choose from Library`. Confirm every preview
+  keeps its added order, shows `Page current/total` at top-left, offers only `Remove` at bottom-right,
+  and has no forward/back controls. Confirm only the bottom green `Scan` starts OCR and the green action reads
   `Submit` for text and `Scan` for photo input. Empty `Discard` returns directly;
   non-empty `Discard` opens the compact dialog with initial focus on `Cancel`,
   Escape/cancel restores focus, and confirmation leaves saved History intact.

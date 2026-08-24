@@ -1862,7 +1862,8 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   模式按钮和 `Type` / `Scan` 输入切换，默认选择 `Type`。语言模式不显示 Writing Prompt；直接输入时内容区只有
   带 `Optional` 标记的 `Title` 与 `Your Writing`，正文占位文案仍为 `Type or paste your writing here…`。学生首次点击输入方式 `Scan`
   时立即唤起后置相机；拍摄后返回照片暂存区，可继续拍照或通过 `Choose from Library` 加入多张图片，最多八页。选择照片只暂存，
-  不启动 OCR；底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色
+  不启动 OCR。每张预览左上角按 `Page 当前页/总页数` 显示页序，右下角只提供 `Remove`；页面保持拍摄或选择时的加入顺序，
+  不提供手动前移/后移。底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色
   `Discard` 在空白稿上直接返回；存在学生输入时先显示确认弹窗，已自动保存的草稿继续保留在 History。
 - OCR Review 只保留顶部 `OCR Review`、`Compare with Image`、紧接其后的正文编辑器，以及底部
   唯一一个水平居中的 `Confirm`。此步骤删除 `Upload Again`；原有中文说明、步骤、存疑数量和编辑器标签全部

@@ -2096,7 +2096,9 @@ Important mobile rules:
   synchronously opens the native rear-camera picker. After capture, the student
   returns to the photo staging surface and may use `Take Another Photo` or
   `Choose from Library` until the eight-page limit; selection never starts OCR.
-  Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
+  Each preview keeps its capture/selection order, labels the top-left corner as
+  `Page current/total`, and provides only a bottom-right `Remove` action; there
+  are no forward/back reorder controls. Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
   the leading edge; non-empty input receives the compact Apple-style confirmation
   before returning, while saved draft data remains available in History.
 - Completed language review uses exactly three primary cards in order:
