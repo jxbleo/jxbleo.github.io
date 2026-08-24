@@ -1366,10 +1366,8 @@
     function photoSourceHtml(hasPhoto) {
         if (hasPhoto) {
             return '<div class="photo-preview-grid">' + state.photoUrls.map(function(url, index) {
-                return '<figure class="photo-preview-card"><span>第 ' + (index + 1) + ' 页</span><img src="' + escapeHtml(url) + '" alt="准备上传的作文第 ' + (index + 1) + ' 页"><div>' +
-                    '<button class="quiet-button compact" type="button" data-move-photo="' + index + '" data-direction="up" ' + (index === 0 ? 'disabled' : '') + '>前移</button>' +
-                    '<button class="quiet-button compact" type="button" data-move-photo="' + index + '" data-direction="down" ' + (index === state.photoUrls.length - 1 ? 'disabled' : '') + '>后移</button>' +
-                    '<button class="danger-button compact" type="button" data-remove-photo="' + index + '">移除</button></div></figure>';
+                return '<figure class="photo-preview-card source-photo-preview-card"><span>Page ' + (index + 1) + '/' + state.photoUrls.length + '</span><img src="' + escapeHtml(url) + '" alt="Writing photo page ' + (index + 1) + ' of ' + state.photoUrls.length + '"><div class="source-photo-card-actions">' +
+                    '<button class="danger-button compact" type="button" data-remove-photo="' + index + '">Remove</button></div></figure>';
             }).join('') + '</div><div class="photo-source-actions">' +
                 '<label class="secondary-button compact add-photo-button">' + icon('camera') + 'Take Another Photo<input type="file" data-writing-photo-input data-writing-photo-camera accept="image/jpeg,image/png,image/webp" capture="environment"></label>' +
                 '<label class="secondary-button compact add-photo-button">' + icon('plus') + 'Choose from Library<input type="file" data-writing-photo-input multiple accept="image/jpeg,image/png,image/webp"></label></div>';
@@ -2975,15 +2973,6 @@
             var removeIndex = Number(button.getAttribute('data-remove-photo'));
             if (state.photoUrls[removeIndex] && state.photoUrls[removeIndex].indexOf('blob:') === 0) URL.revokeObjectURL(state.photoUrls[removeIndex]);
             state.photoFiles.splice(removeIndex, 1); state.photoUrls.splice(removeIndex, 1); renderSource();
-        }
-        else if (button.matches('[data-move-photo]')) {
-            var from = Number(button.getAttribute('data-move-photo'));
-            var to = button.getAttribute('data-direction') === 'up' ? from - 1 : from + 1;
-            if (to >= 0 && to < state.photoFiles.length) {
-                [state.photoFiles[from], state.photoFiles[to]] = [state.photoFiles[to], state.photoFiles[from]];
-                [state.photoUrls[from], state.photoUrls[to]] = [state.photoUrls[to], state.photoUrls[from]];
-                renderSource();
-            }
         }
         else if (button.matches('[data-toggle-ocr-photo]')) {
             var layout = document.getElementById('ocr-layout');

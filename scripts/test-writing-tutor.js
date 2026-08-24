@@ -387,7 +387,14 @@ check("photo entry opens the native camera, stages multiple pages, and scans onl
   requireEvery(photoSource, [
     "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
     "Take a Photo", "Take Another Photo", "Choose from Library", "multiple",
+    "source-photo-card-actions", "Page ", "state.photoUrls.length", "Remove",
   ], "photo staging controls");
+  assert(!/data-move-photo|前移|后移|移除/.test(photoSource),
+    "initial photo staging must not expose reorder controls or Chinese remove copy");
+  assert(!/button\.matches\(\s*["']\[data-move-photo\]["']\s*\)/.test(client),
+    "removed photo reorder controls must not leave a dead click handler");
+  assert(/\.source-photo-card-actions\s*\{[^}]*justify-content:\s*flex-end/.test(read(stylePath)),
+    "the initial photo Remove action must align to the bottom-right");
   assert(/inputMethod:\s*["']text["']/.test(client), "direct text entry must be the default");
   assert(/target\.matches\(\s*["']\[data-writing-photo-input\]["']\s*\)/.test(client),
     "both camera and library inputs must stage selected photos");
