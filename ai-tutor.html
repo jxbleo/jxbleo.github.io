@@ -9,14 +9,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260825-1">
-    <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260824-3">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260825-2">
+    <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260825-1">
 </head>
 <body class="ai-tutor-page">
     <a class="skip-link" href="#ai-tutor-main">跳到主要内容</a>
     <div class="ai-tutor-shell" id="ai-tutor-app" aria-busy="true">
         <header class="ai-tutor-header">
-            <button class="secondary-button compact portfolio-toggle" id="portfolio-toggle" type="button" aria-label="打开历史" aria-expanded="false" aria-controls="portfolio-sidebar">History</button>
+            <button class="secondary-button compact portfolio-toggle" id="portfolio-toggle" type="button" aria-label="打开历史" aria-expanded="false" aria-controls="portfolio-sidebar" data-disable-when-busy>History</button>
             <div class="current-writing-title-window" id="current-writing-title-window" hidden>
                 <span class="current-writing-title-track" id="current-writing-title-track"></span>
             </div>
@@ -93,6 +93,24 @@
         </section>
     </div>
 
+    <div class="photo-choice-layer" id="photo-choice-layer" hidden>
+        <div class="photo-choice-scrim" data-close-photo-choice></div>
+        <section class="photo-choice-sheet" role="dialog" aria-modal="true" aria-labelledby="photo-choice-title">
+            <strong id="photo-choice-title">Add a Photo</strong>
+            <div class="photo-choice-actions">
+                <button type="button" data-photo-choice="camera">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="3"></rect><path d="m8 6.5 1.3-2h5.4l1.3 2"></path><circle cx="12" cy="13" r="3.2"></circle></svg>
+                    Take Photo
+                </button>
+                <button type="button" data-photo-choice="library">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4-4 3 3 2-2 5 4"></path></svg>
+                    Choose from Library
+                </button>
+            </div>
+            <button class="photo-choice-cancel" type="button" data-close-photo-choice>Cancel</button>
+        </section>
+    </div>
+
     <div class="confirmation-layer" id="visitor-access-dialog" hidden>
         <div class="confirmation-scrim"></div>
         <section class="confirmation-dialog visitor-access-dialog" role="dialog" aria-modal="true" aria-labelledby="visitor-access-title" aria-describedby="visitor-access-copy">
@@ -118,7 +136,7 @@
     <script src="assets/js/config.public.js?v=20260815-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
-    <script src="assets/js/ai-waiting-runner.js?v=20260824-2"></script>
-    <script src="assets/js/ai-tutor.js?v=20260825-1"></script>
+    <script src="assets/js/ai-waiting-runner.js?v=20260825-1"></script>
+    <script src="assets/js/ai-tutor.js?v=20260825-2"></script>
 </body>
 </html>

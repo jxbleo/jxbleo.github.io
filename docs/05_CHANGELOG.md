@@ -3,6 +3,30 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Writing navigation, photo choice, and waiting-game feedback
+
+- Changed the Writing toolbar's left action from `History` to confirmed `Back`
+  throughout an open Composition, returning to Writing Home while durable jobs
+  continue; removed duplicate waiting-card navigation and re-upload actions.
+- Reordered Writing Home as new writing, unfinished work, then completed work.
+- Added one Apple-style camera/library action sheet for initial, prompt, and
+  revision photos, with synchronous native input activation for iOS Safari.
+- Started OCR waiting and polling immediately after upload handoff; placed Score
+  inside the Runner, removed its Jump/instruction controls, added ground and
+  airborne obstacles plus distinct collect/collision sounds, and renamed the OCR
+  Ready action to `Check Text`.
+- Removed the `OCR Review` heading while retaining `Compare with Image` and the
+  centered `Confirm` action.
+
+## 2026-08-25 — Dashboard progress and reply-history polish
+
+- Simplified the Dashboard hero to its current-week progress only, removing the
+  separate Upcoming / No Tasks row while retaining future work in To Do List.
+- Replaced Teacher Replies' explicit five-item history button with a resisted
+  scroll-past-bottom gesture, rotating progress feedback, and staggered
+  five-card reveals.
+- Removed the divider stroke through the Dashboard header calendar glyph.
+
 ## 2026-08-25 — Writing draft entry and prompt scanning
 
 - Added the Dashboard Library-style entry confirmation—with title, status, and

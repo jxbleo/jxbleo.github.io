@@ -65,6 +65,10 @@
         compositionEntryDialogOpen: false,
         compositionEntryTargetId: '',
         compositionEntryReturnFocus: null,
+        photoChoiceOpen: false,
+        photoChoiceContext: '',
+        photoChoiceTarget: 'writing',
+        photoChoiceReturnFocus: null,
         leaveDialogOpen: false,
         incompleteRewriteAlertOpen: false,
         incompleteRewriteTargetId: '',
@@ -86,11 +90,13 @@
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
+    var photoChoiceLayer = document.getElementById('photo-choice-layer');
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
     var stageViewportResetToken = 0;
 
     function scheduleStageViewportReset() {
+        updateToolbarNavigation();
         var token = ++stageViewportResetToken;
         window.requestAnimationFrame(function() {
             window.requestAnimationFrame(function() {
@@ -103,6 +109,19 @@
                 window.scrollTo(0, Math.max(0, targetTop));
             });
         });
+    }
+
+    function isWritingDetailScreen() {
+        return Boolean(state.current && state.screen !== 'welcome');
+    }
+
+    function updateToolbarNavigation() {
+        if (!portfolioToggle) return;
+        var isBack = isWritingDetailScreen();
+        portfolioToggle.textContent = isBack ? 'Back' : 'History';
+        portfolioToggle.setAttribute('aria-label', isBack ? 'Back to Writing home' : (state.sidebarOpen ? 'Close History' : 'Open History'));
+        portfolioToggle.setAttribute('aria-expanded', String(!isBack && state.sidebarOpen));
+        portfolioToggle.classList.toggle('is-back', isBack);
     }
 
     function escapeHtml(value) {
@@ -700,6 +719,9 @@
                 onScore: function(score) {
                     var scoreNode = stage.querySelector('.runner-score');
                     if (scoreNode) scoreNode.textContent = 'Score ' + (Number(score.score || 0) < 0 ? '−' + Math.abs(Number(score.score || 0)) : Number(score.score || 0));
+                },
+                onEvent: function(event) {
+                    if (event && (event.type === 'collect' || event.type === 'hit')) playWaitingGameSound(event.type);
                 }
             });
             if (!runner || typeof runner.destroy !== 'function') return;
@@ -710,8 +732,6 @@
             }
             state.waitingRunner = runner;
             runner.setTaskState(state.waitingTaskState || 'queued');
-            var jumpButton = stage.querySelector('.runner-jump-button');
-            if (jumpButton && typeof runner.jump === 'function') jumpButton.addEventListener('click', function() { runner.jump(); });
         } catch (error) {
             state.waitingRunner = null;
         }
@@ -736,12 +756,9 @@
         }[state.waitingKind] || state.waitingKind + '-waiting');
         var uploadPending = !durable || taskState === 'uploading';
         var runnerMarkup = durable && taskState !== 'failed'
-            ? '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Mr. Cat Runner. Tap, click, or press Space to jump."></canvas><p class="runner-instruction">Tap or press Space to jump</p><p class="runner-score" aria-hidden="true">Score 0</p><button class="runner-jump-button" type="button" aria-label="Jump">Jump</button></div>'
+            ? '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><div class="runner-canvas-frame"><p class="runner-score" aria-live="polite">Score 0</p><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Interactive Mr. Cat Runner waiting game."></canvas></div></div>'
             : '';
         var extraActions = firstText(config.extraActions);
-        var backgroundAction = durable && config.allowBackground !== false
-            ? '<button class="quiet-button ai-waiting-background-action" type="button" data-return-home>Back</button>'
-            : '';
         var warningCopy = firstText(config.warningCopy);
         var readyAction = '<div class="ai-waiting-ready-action" hidden><button class="primary-button" type="button" data-view-waiting-result></button></div>';
         stage.innerHTML = '<section class="surface ai-waiting-experience' + (uploadPending ? ' ai-waiting-uploading' : '') + '" data-waiting-kind="' + escapeHtml(state.waitingKind) + '">' +
@@ -750,7 +767,7 @@
             runnerMarkup +
             '<p class="sr-only" data-waiting-live role="status" aria-live="polite"></p>' +
             (warningCopy ? '<p class="ai-waiting-status section-hint" id="' + escapeHtml(firstText(config.pollStatusId, 'ai-waiting-status')) + '" role="status">' + escapeHtml(warningCopy) + '</p>' : '') +
-            readyAction + '<div class="form-actions ai-waiting-actions">' + extraActions + backgroundAction + '</div></section>';
+            readyAction + (extraActions ? '<div class="form-actions ai-waiting-actions">' + extraActions + '</div>' : '') + '</section>';
         mountWaitingRunner();
         updateWaitingStageDom(state.waitingKind, taskState);
         if (previousScreen !== state.screen) scheduleStageViewportReset();
@@ -778,7 +795,7 @@
         updateWaitingStageDom(state.waitingKind, 'ready');
         if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState('ready');
         var titles = {
-            ocr: ['Your Draft Is Ready', 'Review Text'],
+            ocr: ['Text is ready', 'Check Text'],
             review: ['Your Review Is Ready', 'View Review'],
             rewrite: ['Your Feedback Is Ready', 'View Feedback'],
             revision_ocr: ['Your Revision Scan Is Ready', 'Review Scan']
@@ -851,6 +868,29 @@
                 return;
             }
             scheduleChime();
+        } catch (error) {}
+    }
+
+    function playWaitingGameSound(kind) {
+        try {
+            if (document.hidden) return;
+            var audio = waitingAudioContext();
+            if (!audio || audio.state === 'suspended') return;
+            var now = audio.currentTime;
+            var gain = audio.createGain();
+            gain.gain.setValueAtTime(0.0001, now);
+            gain.gain.exponentialRampToValueAtTime(kind === 'collect' ? 0.055 : 0.07, now + 0.012);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === 'collect' ? 0.18 : 0.24));
+            gain.connect(audio.destination);
+            var tones = kind === 'collect' ? [784, 1175] : [196, 147];
+            tones.forEach(function(frequency, index) {
+                var oscillator = audio.createOscillator();
+                oscillator.type = kind === 'collect' ? 'sine' : 'triangle';
+                oscillator.frequency.value = frequency;
+                oscillator.connect(gain);
+                oscillator.start(now + index * 0.055);
+                oscillator.stop(now + index * 0.055 + 0.11);
+            });
         } catch (error) {}
     }
 
@@ -1177,16 +1217,21 @@
     function renderWelcome() {
         destroyAiWaitingExperience();
         state.screen = 'welcome';
-        var unfinishedCompositions = portfolioCompositions().filter(function(item) {
+        var homeCompositions = portfolioCompositions();
+        var unfinishedCompositions = homeCompositions.filter(function(item) {
             return compositionStatus(item) !== 'completed';
+        });
+        var completedCompositions = homeCompositions.filter(function(item) {
+            return compositionStatus(item) === 'completed';
         });
         showWelcomeToolbar();
         stage.innerHTML = '<section class="writing-home" aria-label="Writing home"><div class="writing-home-flow">' +
-            welcomeUnfinishedHtml(unfinishedCompositions) +
             '<section class="writing-home-section writing-home-start" aria-label="Start new writing">' +
             '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span><strong>Polishing</strong><small>Improve grammar and expression</small></span></button>' +
             '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span></button></div>' +
-            (state.homeComposerOpen ? homeComposerHtml() : '') + '</section></div></section>';
+            (state.homeComposerOpen ? homeComposerHtml() : '') + '</section>' +
+            welcomeUnfinishedHtml(unfinishedCompositions) +
+            welcomeCompletedHtml(completedCompositions) + '</div></section>';
         scheduleStageViewportReset();
     }
 
@@ -1219,6 +1264,7 @@
 
     function homeWorkflowProgress(composition) {
         var status = compositionStatus(composition);
+        if (status === 'completed') return 100;
         var progressByStatus = {
             draft: 12, photo_uploading: 18, ocr_queued: 24, ocr_processing: 32, ocr_failed: 32,
             ocr_ready: 42, ocr_review: 42, ready: 50, queued: 54, evaluating: 60,
@@ -1231,13 +1277,21 @@
     }
 
     function welcomeUnfinishedHtml(items) {
+        return welcomeCompositionStrip(items, 'In Progress', 'Unfinished writing');
+    }
+
+    function welcomeCompletedHtml(items) {
+        return welcomeCompositionStrip(items, 'Completed', 'Completed writing');
+    }
+
+    function welcomeCompositionStrip(items, label, ariaLabel) {
         if (!items.length) return '';
         var cards = items.map(function(item) {
             var mode = compositionMode(item);
             var progress = homeWorkflowProgress(item);
             return '<button class="writing-pending-pill" type="button" data-open-composition="' + escapeHtml(compositionId(item)) + '" aria-label="Open ' + escapeHtml(compositionTitle(item)) + ', ' + escapeHtml(statusLabel(compositionStatus(item))) + '"><span class="writing-pending-copy"><span class="writing-pending-meta"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(mode === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span><small>' + escapeHtml(statusLabel(compositionStatus(item))) + '</small></span><strong>' + escapeHtml(compositionTitle(item)) + '</strong></span><span class="writing-pending-progress" aria-hidden="true"><span style="width:' + progress + '%"></span></span><span class="writing-pending-arrow">' + icon('arrow') + '</span></button>';
         }).join('');
-        return '<section class="writing-pending-strip" aria-label="Unfinished writing">' + cards + '</section>';
+        return '<section class="writing-home-list-section"><p class="writing-home-list-label">' + escapeHtml(label) + '</p><div class="writing-pending-strip" aria-label="' + escapeHtml(ariaLabel) + '">' + cards + '</div></section>';
     }
 
     function homeComposerHtml() {
@@ -1311,6 +1365,7 @@
         stopOcrPolling();
         stopReviewPolling();
         stopRewritePolling();
+        stopRevisionScanPolling();
         resetRevisionScanState();
         if (!options || options.skipEmptyDiscard !== true) discardCurrentEmptyComposition();
         setStatus('');
@@ -1439,7 +1494,7 @@
     }
 
     function cameraOnlyButton(target, label) {
-        return '<button class="inline-writing-scan" type="button" data-inline-writing-scan="' + escapeHtml(target) + '" data-disable-when-busy aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '">' + icon('camera') + '</button>';
+        return '<button class="inline-writing-scan" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(target) + '" data-disable-when-busy aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '">' + icon('camera') + '</button>';
     }
 
     function sourceFieldsHtml(standardized, allowPromptScan) {
@@ -1478,11 +1533,14 @@
                 return '<figure class="photo-preview-card source-photo-preview-card"><span>Page ' + (index + 1) + '/' + state.photoUrls.length + '</span><img src="' + escapeHtml(url) + '" alt="Writing photo page ' + (index + 1) + ' of ' + state.photoUrls.length + '"><div class="source-photo-card-actions">' +
                     '<button class="danger-button compact" type="button" data-remove-photo="' + index + '">Remove</button></div></figure>';
             }).join('') + '</div><div class="photo-source-actions">' +
-                '<label class="secondary-button compact add-photo-button">' + icon('camera') + 'Take Another Photo<input type="file" data-writing-photo-input data-writing-photo-camera accept="image/jpeg,image/png,image/webp" capture="environment"></label>' +
-                '<label class="secondary-button compact add-photo-button">' + icon('plus') + 'Choose from Library<input type="file" data-writing-photo-input multiple accept="image/jpeg,image/png,image/webp"></label></div>';
+                '<button class="secondary-button compact add-photo-button" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(state.scanTarget) + '">' + icon('camera') + 'Add Photo</button></div>' + writingPhotoInputs();
         }
-        return '<div class="photo-source-empty"><label class="photo-drop"><input type="file" data-writing-photo-input data-writing-photo-camera accept="image/jpeg,image/png,image/webp" capture="environment"><span><span class="photo-drop-icon">' + icon('camera') + '</span><strong>Take a Photo</strong><small>Up to 8 pages. You can add more before scanning.</small></span></label>' +
-            '<div class="photo-source-actions"><label class="secondary-button compact add-photo-button">' + icon('plus') + 'Choose from Library<input type="file" data-writing-photo-input multiple accept="image/jpeg,image/png,image/webp"></label></div></div>';
+        return '<div class="photo-source-empty"><button class="photo-drop" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(state.scanTarget) + '"><span><span class="photo-drop-icon">' + icon('camera') + '</span><strong>Add a Photo</strong><small>Take a new photo or choose one from your library.</small></span></button></div>' + writingPhotoInputs();
+    }
+
+    function writingPhotoInputs() {
+        return '<input type="file" data-writing-photo-input data-writing-photo-camera accept="image/jpeg,image/png,image/webp" capture="environment" hidden>' +
+            '<input type="file" data-writing-photo-input data-writing-photo-library accept="image/jpeg,image/png,image/webp" multiple hidden>';
     }
 
     function sourcePayload() {
@@ -1604,7 +1662,7 @@
                 showOcrResult(result);
                 return;
             }
-            renderOcrWaiting(result.job || state.current && state.current.ocr_job, false);
+            renderOcrWaiting(result.job || state.current && state.current.ocr_job, true);
             syncCurrentSummary();
         }).catch(function(error) {
             if (isNetworkDisconnect(error) && compositionId(state.current)) {
@@ -1674,9 +1732,7 @@
             pollStatusId: 'ocr-poll-status',
             warningCopy: uploadPending ? 'Uploading is not yet confirmed. Keep this page open.' : '',
             allowBackground: !uploadPending,
-            extraActions: uploadPending
-                ? '<button class="primary-button ai-waiting-reupload-action" type="button" data-reupload>Upload Again</button>'
-                : '<button class="primary-button ai-waiting-reupload-action" type="button" data-reupload>Upload Again</button>'
+            extraActions: ''
         });
         if (autoPoll) startOcrPolling();
     }
@@ -1751,7 +1807,7 @@
         state.screen = 'ocr';
         var reviewText = state.scanTarget === 'prompt' ? state.ocrReviewText : state.confirmedText;
         var imageLabel = state.scanTarget === 'prompt' ? 'Uploaded writing prompt images' : 'Uploaded composition images';
-        stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading"><h2>OCR Review</h2>' +
+        stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading">' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
             '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
@@ -2279,8 +2335,7 @@
         var previews = safeArray(scan.previewUrls).map(function(url, index) {
             return '<figure class="photo-preview-card revision-photo-card" data-revision-photo-index="' + index + '">' +
                 '<img src="' + escapeHtml(url) + '" alt="Selected revision photo ' + (index + 1) + '">' +
-                '<div class="revision-photo-card-actions"><button class="secondary-button compact" type="button" data-add-revision-photo' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
-                '<button class="secondary-button compact" type="button" data-add-revision-library aria-label="Choose from Photo Library"' + (count >= 8 ? ' disabled' : '') + '>' + icon('upload') + 'Library</button>' +
+                '<div class="revision-photo-card-actions"><button class="secondary-button compact" type="button" data-open-photo-choice="revision"' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
                 '<button class="danger-button compact" type="button" data-remove-revision-photo="' + index + '">Remove</button></div></figure>';
         }).join('');
         stage.innerHTML = '<section class="surface surface-pad revision-photo-selection" aria-label="Revision photos">' +
@@ -2617,7 +2672,7 @@
             '<div class="language-section-heading sentence-review-heading"><h2>Sentence Revision</h2></div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
             (!state.readOnly ? '<div class="batch-actions">' +
-                (revisionScanSentences().length ? '<button class="secondary-button scan-revision-trigger" type="button" data-start-revision-scan aria-label="Scan Revisions" title="Scan Revisions">' + icon('camera') + '</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' : '') +
+                (revisionScanSentences().length ? '<button class="secondary-button scan-revision-trigger" type="button" data-open-photo-choice="revision" aria-label="Scan Revisions" title="Scan Revisions">' + icon('camera') + '</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden><input id="revision-scan-library" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>' : '') +
                 '<button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Submit</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
             '</section></div>';
@@ -2966,7 +3021,56 @@
     }
 
     function updateOverlayLock() {
-        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen);
+        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen);
+    }
+
+    function openPhotoChoice(context, target, trigger) {
+        if (!photoChoiceLayer || state.photoChoiceOpen || state.busy) return;
+        state.photoChoiceOpen = true;
+        state.photoChoiceContext = context === 'revision' ? 'revision' : 'writing';
+        state.photoChoiceTarget = target === 'prompt' ? 'prompt' : 'writing';
+        state.photoChoiceReturnFocus = trigger || document.activeElement;
+        photoChoiceLayer.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var first = photoChoiceLayer.querySelector('[data-photo-choice="camera"]');
+            if (first) first.focus({ preventScroll: true });
+        });
+    }
+
+    function closePhotoChoice(restoreFocus) {
+        if (!state.photoChoiceOpen) return;
+        var focusTarget = state.photoChoiceReturnFocus;
+        state.photoChoiceOpen = false;
+        state.photoChoiceContext = '';
+        state.photoChoiceReturnFocus = null;
+        photoChoiceLayer.hidden = true;
+        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen;
+        updateOverlayLock();
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+        }
+    }
+
+    function selectPhotoSource(source) {
+        var context = state.photoChoiceContext;
+        var target = state.photoChoiceTarget;
+        closePhotoChoice(false);
+        if (context === 'revision') {
+            var revisionInput = document.getElementById(source === 'camera' ? 'revision-scan-photo' : 'revision-scan-library');
+            if (revisionInput) revisionInput.click();
+            return;
+        }
+        state.scanTarget = target;
+        state.inputMethod = 'photo';
+        if (compositionId(state.current)) persistSourceDraft().catch(function() {});
+        // Keep the file-input click in the original user gesture. Safari on
+        // iPhone/iPad may block it after a Promise or animation-frame boundary.
+        renderSource();
+        var selector = source === 'camera' ? '[data-writing-photo-camera]' : '[data-writing-photo-library]';
+        var input = document.querySelector(selector);
+        if (input && typeof input.click === 'function') input.click();
     }
 
     function compositionForEntry(id) {
@@ -3057,12 +3161,14 @@
     }
 
     function openSidebar() {
+        if (isWritingDetailScreen()) return;
         state.sidebarOpen = true;
         portfolioSidebar.classList.add('is-open');
         sidebarScrim.hidden = false;
         portfolioToggle.setAttribute('aria-expanded', 'true');
-        portfolioToggle.setAttribute('aria-label', '关闭历史');
+        portfolioToggle.setAttribute('aria-label', 'Close History');
         updateOverlayLock();
+        updateToolbarNavigation();
     }
 
     function closeSidebar() {
@@ -3070,8 +3176,9 @@
         portfolioSidebar.classList.remove('is-open');
         sidebarScrim.hidden = true;
         portfolioToggle.setAttribute('aria-expanded', 'false');
-        portfolioToggle.setAttribute('aria-label', '打开历史');
+        portfolioToggle.setAttribute('aria-label', 'Open History');
         updateOverlayLock();
+        updateToolbarNavigation();
     }
 
     function sourceHasUserInput() {
@@ -3089,7 +3196,7 @@
 
     function openLeaveConfirmation(action) {
         if (state.leaveDialogOpen) return;
-        state.leaveDialogAction = action === 'discard' ? 'discard' : 'dashboard';
+        state.leaveDialogAction = action === 'discard' ? 'discard' : action === 'writing-home' ? 'writing-home' : 'dashboard';
         state.returnFocus = document.activeElement;
         state.leaveDialogOpen = true;
         var title = leaveConfirmation.querySelector('#leave-confirmation-title');
@@ -3099,6 +3206,10 @@
             if (title) title.textContent = 'Discard this writing?';
             if (copy) copy.textContent = 'This draft will be permanently removed from History.';
             if (confirm) confirm.textContent = 'Discard';
+        } else if (state.leaveDialogAction === 'writing-home') {
+            if (title) title.textContent = 'Back to Writing?';
+            if (copy) copy.textContent = 'Your saved work is safe. Any cloud processing will continue in the background.';
+            if (confirm) confirm.textContent = 'Back';
         } else {
             if (title) title.textContent = 'Leave this writing?';
             if (copy) copy.textContent = 'Your saved work is safe. OCR and AI review will continue in the background.';
@@ -3128,6 +3239,10 @@
         closeLeaveConfirmation(false);
         if (action === 'discard') {
             discardDraftAndReturn();
+            return;
+        }
+        if (action === 'writing-home') {
+            returnToTutorHome();
             return;
         }
         stopOcrPolling();
@@ -3215,6 +3330,16 @@
     });
 
     document.addEventListener('click', function(event) {
+        var photoChoice = event.target.closest && event.target.closest('[data-photo-choice]');
+        if (photoChoice) {
+            selectPhotoSource(photoChoice.getAttribute('data-photo-choice'));
+            return;
+        }
+        var photoChoiceClose = event.target.closest && event.target.closest('[data-close-photo-choice]');
+        if (photoChoiceClose) {
+            closePhotoChoice();
+            return;
+        }
         var ocrRegion = event.target.closest && event.target.closest('[data-ocr-region-index]');
         if (ocrRegion) {
             activateOcrRegion(ocrRegion);
@@ -3249,16 +3374,11 @@
             if (typeof waitingAction === 'function') waitingAction();
         }
         else if (button.matches('[data-open-composition]')) showCompositionEntryDialog(button.getAttribute('data-open-composition'), button);
-        else if (button.matches('[data-inline-writing-scan]')) {
-            state.scanTarget = button.getAttribute('data-inline-writing-scan') === 'prompt' ? 'prompt' : 'writing';
-            state.inputMethod = 'photo';
-            if (compositionId(state.current)) persistSourceDraft().catch(function() {});
-            renderSource();
-            window.requestAnimationFrame(function() {
-                var cameraInput = document.querySelector('[data-writing-photo-camera]');
-                if (cameraInput && typeof cameraInput.click === 'function') cameraInput.click();
-            });
-        }
+        else if (button.matches('[data-open-photo-choice]')) openPhotoChoice(
+            button.getAttribute('data-open-photo-choice'),
+            button.getAttribute('data-photo-target'),
+            button
+        );
         else if (button.matches('[data-remove-photo]')) {
             var removeIndex = Number(button.getAttribute('data-remove-photo'));
             if (state.photoUrls[removeIndex] && state.photoUrls[removeIndex].indexOf('blob:') === 0) URL.revokeObjectURL(state.photoUrls[removeIndex]);
@@ -3360,18 +3480,6 @@
             state.referenceOpen[referenceId] = !state.referenceOpen[referenceId];
             renderLanguage();
         }
-        else if (button.matches('[data-start-revision-scan]')) {
-            var scanInput = document.getElementById('revision-scan-photo');
-            if (scanInput) scanInput.click();
-        }
-        else if (button.matches('[data-add-revision-photo]')) {
-            var additionInput = document.getElementById('revision-scan-photo');
-            if (additionInput) additionInput.click();
-        }
-        else if (button.matches('[data-add-revision-library]')) {
-            var libraryInput = document.getElementById('revision-scan-library');
-            if (libraryInput) libraryInput.click();
-        }
         else if (button.matches('[data-remove-revision-photo]')) {
             var scan = revisionScanState();
             var photoIndex = Number(button.getAttribute('data-remove-revision-photo'));
@@ -3399,10 +3507,7 @@
             clearLogicalOperation('revision-scan');
             resetRevisionScanState();
             renderLanguage();
-            window.requestAnimationFrame(function() {
-                var input = document.getElementById('revision-scan-photo');
-                if (input) input.click();
-            });
+            window.requestAnimationFrame(function() { openPhotoChoice('revision', 'writing', button); });
         }
         else if (button.matches('[data-confirm-revision-scan]')) confirmRevisionScanImport();
         else if (button.matches('[data-submit-rewrites]')) submitRewrites();
@@ -3429,7 +3534,13 @@
         closeSidebar();
         createNewWriting();
     });
-    portfolioToggle.addEventListener('click', function() { state.sidebarOpen ? closeSidebar() : openSidebar(); });
+    portfolioToggle.addEventListener('click', function() {
+        if (isWritingDetailScreen()) {
+            openLeaveConfirmation('writing-home');
+            return;
+        }
+        state.sidebarOpen ? closeSidebar() : openSidebar();
+    });
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
     sidebarScrim.addEventListener('click', closeSidebar);
     document.querySelector('.portfolio-filters').addEventListener('click', function(event) {
@@ -3442,6 +3553,15 @@
         renderPortfolio();
     });
     window.addEventListener('keydown', function(event) {
+        if (state.photoChoiceOpen && event.key === 'Tab') {
+            var photoControls = photoChoiceLayer.querySelectorAll('button:not(:disabled)');
+            if (!photoControls.length) return;
+            var photoFirst = photoControls[0];
+            var photoLast = photoControls[photoControls.length - 1];
+            if (event.shiftKey && document.activeElement === photoFirst) { event.preventDefault(); photoLast.focus(); }
+            else if (!event.shiftKey && document.activeElement === photoLast) { event.preventDefault(); photoFirst.focus(); }
+            return;
+        }
         if (state.compositionEntryDialogOpen && event.key === 'Tab') {
             var entryOverlay = document.getElementById('writing-entry-overlay');
             var entryControls = entryOverlay ? entryOverlay.querySelectorAll('button:not(:disabled)') : [];
@@ -3467,13 +3587,15 @@
             return;
         }
         if (event.key === 'Escape') {
-            if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
+            if (state.photoChoiceOpen) closePhotoChoice();
+            else if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
             else if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
             else if (state.leaveDialogOpen) closeLeaveConfirmation();
             else if (state.sidebarOpen) closeSidebar();
         }
     });
     window.addEventListener('pageshow', function() {
+        if (state.photoChoiceOpen) closePhotoChoice(false);
         if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
         if (state.leaveDialogOpen) closeLeaveConfirmation();

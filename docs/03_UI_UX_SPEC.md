@@ -267,13 +267,12 @@ Assignment access and progress display:
   normal no-assignments empty state.
 - both `TO DO` and completed assignments are reachable from the far-left
   `To Do List` button; there is no lower Assignments page entry
-- the hero always shows three compact summary rows: `Overdue`, `This Week`, and
-  `Upcoming`. Each uses completed assignments divided by all assignments in
-  that due-date group for both the filled track and an explicit numeric percent
-  label. The complete row is a keyboard/click target that opens a focused
-  Assignments modal containing only that group's task list. Task rows no longer
-  expand directly inside the hero; focused lists place unfinished work before
-  finished work.
+- the hero shows one compact `This Week` summary row. It uses completed
+  assignments divided by current-week assignments plus overdue unfinished work
+  for both the filled track and explicit numeric percent label. The complete
+  row is a keyboard/click target that opens the focused current-week Assignments
+  modal. Upcoming work remains available inside To Do List, but the hero has no
+  separate `Upcoming`, `No tasks`, or calendar-check empty row.
 - the default modal opened from `To Do List` has no separate `ASSIGNMENTS`
   heading. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
@@ -301,9 +300,11 @@ Assignment access and progress display:
   warm cache may paint those rows immediately while CloudBase revalidates in
   the background; refresh never clears usable cached rows or exposes a spinner.
 - Teacher Replies keeps every unread reply represented in its first in-memory
-  view. Earlier read history stays newest-first and advances through an explicit
-  `Load 5 more` action. The header shows only the unread count while the silent
-  queue prepares reply content.
+  view. Earlier read history stays newest-first. After reaching the internal
+  scroll edge, a further downward scroll meets a short resisted pull, reveals a
+  rotating progress indicator, and appends the next five cards with a gentle
+  staggered entrance; no `Load 5 more` button appears. The header shows only the
+  unread count while the silent queue prepares reply content.
 - the student header omits the cat logo so it does not consume horizontal
   space. The far-left To Do List control stands alone opposite the right-side
   utilities. The header glass capsule shares the exact left and right edges of
@@ -314,23 +315,20 @@ Assignment access and progress display:
   One randomized motivational sentence remains below it.
 - the top student workspace is one unified luminous surface rather than two
   nested cards. On desktop the greeting and randomized motivation sit on the
-  left and the fixed `THIS WEEK` and `UPCOMING` progress rows sit on the right;
-  below 900px they stack without changing their reading order. `THIS WEEK`
+  left and the fixed `THIS WEEK` progress row sits on the right; below 900px
+  they stack without changing their reading order. `THIS WEEK`
   combines assignments due in the current China-standard-time Monday-to-Sunday
   week with every earlier unfinished assignment. Those overdue tasks count in
   its denominator, appear first in the focused Assignments list, and receive a
   restrained red pulse. While any overdue task exists, the This Week progress
   track also uses a slow red breathing halo that remains visible at zero
-  percent; reduced motion uses a static red border instead. `UPCOMING`
-  represents next week's assignments and remains separate. With tasks it keeps
-  its blue track and percentage; without tasks it renders no track or `0%`, but
-  becomes a non-interactive calendar-check plus `NO TASKS` state, with the check
-  centered inside the calendar body rather than attached to a corner. Self-study
-  STAR records are not counted. Activating either summary opens its focused task
-  list and tasks do not expand inside the hero. Empty rows retain zero progress
-  without explanatory copy. The progress fill reveals once after loading
-  without bounce, and reduced motion renders the final value immediately. Color
-  is always accompanied by task text and status.
+  percent; reduced motion uses a static red border instead. Next week's work
+  stays in To Do List's `UPCOMING` tab and does not create a second hero row or
+  a `NO TASKS` empty state. Self-study STAR records are not counted. Activating
+  the summary opens its focused task list and tasks do not expand inside the
+  hero. The progress fill reveals once after loading without bounce, and reduced
+  motion renders the final value immediately. Color is always accompanied by
+  task text and status.
 - the Library content starts directly with a large `Library` heading, without
   a separate `EXPLORE` eyebrow above it. Its compact search
   control and `Practice` / `Exam` segmented control sit together at the right
@@ -1944,16 +1942,18 @@ Important mobile rules:
   Revision Scan reads `Uploaded / Reading / Matching / Ready`. An unconfirmed
   photo upload is explicitly `Uploading`, hides Back, and does not start the
   runner.
-- A durable waiting card uses the exact secondary leave action `Back`; it leaves
-  the card without cancelling the cloud Job. Retry or re-upload remains a
-  separate action when that task permits it. The old `Continue in Background`
-  wording and ordinary polling explanation are removed.
-- The optional runner is a 16:7, max-640px Canvas with an accessible `Jump`
-  button, pointer/tap jump, and Space/ArrowUp/W keyboard controls. Its
-  temporary `Score` label is `aria-hidden`; it starts at zero, may be negative,
+- The persistent toolbar uses `Back` throughout a concrete Composition; the
+  waiting card has no duplicate Back or Upload Again actions. Confirming Back
+  returns to Writing Home without cancelling the cloud Job. The old `Continue
+  in Background` wording and ordinary polling explanation are removed.
+- The optional runner is a 16:7, max-640px Canvas with pointer/tap jump and
+  Space/ArrowUp/W keyboard controls but no separate Jump button or instruction
+  row. Its temporary `Score` is centered inside the top of the game frame; it
+  starts at zero, may be negative,
   and never represents AI progress or a learning reward. Obstacles subtract one
   once, green collectibles add one, and repeat jump/air-jump/landing-buffer
-  controls are local only.
+  controls are local only. The course mixes ground and airborne obstacles;
+  collecting and colliding play two distinct, short synthesized cues.
 - The original Mr. Cat, books, pencils, erasers, and ink drops use restrained
   Canvas geometry and the AI Tutor palette. Collisions stumble and slow the cat
   briefly; there is no Game Over, sound, vibration, leaderboard, or persistence.
@@ -1969,11 +1969,11 @@ Important mobile rules:
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
-- Its header toolbar contains only `History` at the far left, the current
-  Composition title in the center, and language-revision percentage at the far
-  right. Home, New, student identity, and all other controls stay out of the bar.
-  `History` opens the writing portfolio without changing the current Composition;
-  Home and New live together inside that drawer.
+- Its header toolbar shows `History` at the far left on Writing Home and `Back`
+  in that same position throughout a concrete Composition. The current title
+  remains centered and language-revision percentage stays at the far right.
+  Back uses a confirmation and returns to Writing Home. Home and New live inside
+  the History drawer.
 - While a Composition is open, the flexible center of the top toolbar displays its
   AI-generated or student-edited title. A long title travels horizontally within
   that space with restrained pauses at both ends, matching task-title behavior;
@@ -2001,8 +2001,8 @@ Important mobile rules:
   Clicking the same icon again, its close button, the page scrim, or `Escape`
   closes it and restores focus to the trigger. Opening the drawer locks background
   scrolling without losing the previous page position.
-- OCR Review is a deliberately sparse editing card. Its top row contains only
-  `OCR Review` and the persistent `Compare with Image` toggle; the editable
+- OCR confirmation is a deliberately sparse editing card. Its top row contains
+  only the right-aligned persistent `Compare with Image` toggle; the editable
   manuscript follows immediately, with one horizontally centered `Confirm`
   footer action. Remove `Upload Again` from this review step, together with the former
   Chinese heading, explanatory copy, step indicator, uncertainty count, photo
@@ -2025,12 +2025,14 @@ Important mobile rules:
   selection through accessible native controls on phone and iPad; the control has
   a visible label, keyboard focus, and an equivalent screen-reader name. The
   first captured/selected photo opens a local staging surface instead of uploading
-  immediately. The former `Revision Photos` heading is absent. A centered live
+  immediately. Every camera affordance first opens the same Apple-style action
+  sheet with `Take Photo`, `Choose from Library`, and `Cancel`; native input
+  activation remains synchronous for iOS. The former `Revision Photos` heading is absent. A centered live
   position indicator reads current/total (`1/1`, then `1/2` or `2/2`) as the
   student swipes the mandatory-snap single-photo carousel; it never displays the
-  eight-photo capacity as `x / 8`. Every slide keeps `Add Photo`, `Library`, and
-  `Remove` in the same compact action layer. Add Photo uses the native camera;
-  Library uses a separate non-capture, multi-select photo input. The bottom
+  eight-photo capacity as `x / 8`. Every slide keeps `Add Photo` and `Remove`
+  in the same compact action layer. Add Photo opens the shared source chooser;
+  the library path uses a separate non-capture, multi-select photo input. The bottom
   `Back` and `Start Scanning` actions remain on one row even at phone width.
   Back discards only the local unscanned photo batch and returns to the existing
   Sentence Revision analysis with saved rewrite drafts intact; `Start Scanning`
