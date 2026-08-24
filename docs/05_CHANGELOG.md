@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-24 — Direct ready-result re-entry
+
+- Opening an already-ready Writing Composition now renders its saved OCR,
+  assessment, rewrite feedback, or Revision Scan result directly instead of
+  synthesizing a completed waiting game.
+- Active waits still pause at Ready, but remove the redundant ready heading and
+  use a periodic reduced-motion-safe Dock-style bounce on the Ready node/label.
+
 ## 2026-08-24 — Simplified initial Writing photo staging
 
 - Removed manual forward/back ordering from the first-draft photo preview while

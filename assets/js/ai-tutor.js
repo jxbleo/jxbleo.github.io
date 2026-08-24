@@ -772,11 +772,12 @@
             rewrite: ['Your Feedback Is Ready', 'View Feedback'],
             revision_ocr: ['Your Revision Scan Is Ready', 'Review Scan']
         }[state.waitingKind] || ['Your Work Is Ready', 'View Result'];
-        var title = stage && stage.querySelector('[data-waiting-title]');
-        if (title) title.textContent = titles[0];
+        var copy = stage && stage.querySelector('.ai-waiting-copy');
+        if (copy) copy.hidden = true;
         var action = stage && stage.querySelector('[data-view-waiting-result]');
         if (action) { action.textContent = titles[1]; action.parentElement.hidden = false; }
         var experience = stage && stage.querySelector('.ai-waiting-experience');
+        if (experience) experience.classList.add('is-ready');
         if (experience && shouldAnnounce) experience.classList.add('is-ready-announced');
         var live = stage && stage.querySelector('[data-waiting-live]');
         if (live && shouldAnnounce) live.textContent = titles[0] + '.';
@@ -784,6 +785,17 @@
             state.waitingReadyAnnounced = true;
             playWaitingReadySound();
         }
+    }
+
+    function showReadyOrOpenResult(kind, next) {
+        var activeWaitingCard = state.waitingKind === kind
+            && stage && Boolean(stage.querySelector('.ai-waiting-experience[data-waiting-kind="' + kind + '"]'));
+        if (activeWaitingCard) {
+            finishAiWaitingExperience(next);
+            return;
+        }
+        destroyAiWaitingExperience();
+        if (typeof next === 'function') next();
     }
 
     function waitingAudioContext() {
@@ -1539,8 +1551,7 @@
             ? state.ocr.paragraphs.join('\n\n')
             : firstText(state.ocr.full_text);
         clearLogicalOperation('ocr');
-        if (state.waitingKind !== 'ocr') renderOcrWaiting({ status: 'succeeded' }, false);
-        finishAiWaitingExperience(function() {
+        showReadyOrOpenResult('ocr', function() {
             renderOcr();
             syncCurrentSummary();
         });
@@ -1712,8 +1723,7 @@
             : state.current && state.current.language_review) || {};
         state.readOnly = false;
         clearLogicalOperation('evaluate');
-        if (state.waitingKind !== 'review') renderReviewWaiting({ status: 'succeeded' }, false, false);
-        finishAiWaitingExperience(function() {
+        showReadyOrOpenResult('review', function() {
             syncCurrentSummary();
             if (mode === 'standardized') renderStandardized();
             else prepareLanguageReview();
@@ -1859,8 +1869,7 @@
             record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed');
         state.review = state.current && state.current.language_review || state.review;
         clearLogicalOperation('rewrites');
-        if (state.waitingKind !== 'rewrite') renderRewriteWaiting({ status: 'succeeded' }, false, false);
-        finishAiWaitingExperience(function() {
+        showReadyOrOpenResult('rewrite', function() {
             syncCurrentSummary();
             if (record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed') {
                 renderCompletion();
@@ -2691,7 +2700,6 @@
             var revisionScanStatus = firstText(revisionScanJob.status).toLowerCase();
             if (!state.readOnly && revisionScanReady(composition)) {
                 state.review = composition.language_review || review;
-                if (state.waitingKind !== 'revision_ocr') renderRevisionScanWaiting({ status: 'succeeded' }, false, false, true);
                 renderRevisionScanReview();
                 syncCurrentSummary();
                 return;

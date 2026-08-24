@@ -2175,18 +2175,37 @@ check("waiting stages and task predicates keep durable identity guards", () => {
   assert(/revisionScanJobFrom\(result\s*&&\s*result\.composition\s*\|\|\s*result\)/.test(client), "revision scan operation guards must inspect the returned Composition");
 });
 
-check("success remains Ready until the student clicks one result action", () => {
+check("an active wait remains Ready until the student clicks one result action", () => {
   const client = read(clientPath);
-  const renderer = functionSource(client, "finishAiWaitingExperience", "destroyAiWaitingExperience");
-  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "Your Draft Is Ready", "Your Review Is Ready", "Your Feedback Is Ready", "Your Revision Scan Is Ready"], "Ready handoff");
+  const styles = read("assets/css/ai-waiting-runner.css");
+  const renderer = functionSource(client, "finishAiWaitingExperience", "showReadyOrOpenResult");
+  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "copy.hidden = true", "classList.add('is-ready')"], "Ready handoff");
   assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
   requireEvery(client, ["Review Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "AudioContext", "ready-announced"], "Ready controls and sound");
   requireEvery(client, ["unlockWaitingReadySound", "pointerdown", "audio.resume"], "user-gesture audio unlock");
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
+  requireEvery(styles, ["ai-waiting-ready-dock-bounce", "translateY(-11px)", "5.2s", ".ai-waiting-stage-label", "prefers-reduced-motion"],
+    "periodic reduced-motion-safe Ready reminder");
+  assert(!/title\.textContent\s*=\s*titles\[0\]/.test(renderer),
+    "Ready must not replace the waiting heading with a visible Your Review Is Ready field");
   ["showOcrResult", "showReviewResult", "applyRewriteResult"].forEach((name) => {
     const source = matchingFunctionSource(client, name, `${name} success source`);
-    assert(source.includes("finishAiWaitingExperience"), `${name} must use the Ready handoff`);
+    assert(source.includes("showReadyOrOpenResult"), `${name} must distinguish an active wait from historical re-entry`);
   });
+});
+
+check("reopening an already-ready Composition skips the waiting game", () => {
+  const client = read(clientPath);
+  const handoff = functionSource(client, "showReadyOrOpenResult", "waitingAudioContext");
+  requireEvery(handoff, ["activeWaitingCard", "state.waitingKind === kind", "finishAiWaitingExperience(next)", "destroyAiWaitingExperience", "next()"],
+    "active-wait versus direct-result boundary");
+  const loadSource = matchingFunctionSource(client, "loadComposition", "Composition reopen source");
+  assert(!/renderRevisionScanWaiting\s*\(\s*\{\s*status:\s*["']succeeded["']/.test(loadSource),
+    "an already-ready Revision Scan must not synthesize a completed waiting card");
+  assert(!/render(?:Ocr|Review|Rewrite)Waiting\s*\(\s*\{\s*status:\s*["']succeeded["']/.test(client),
+    "ready OCR, review, and rewrite results must not synthesize a waiting game on reopen");
+  requireEvery(loadSource, ["revisionScanReady(composition)", "renderRevisionScanReview()", "reviewReady(composition)", "showReviewResult"],
+    "direct ready-result routing");
 });
 
 check("success and failure paths cleanly hand off or destroy the Runner", () => {
@@ -2197,7 +2216,7 @@ check("success and failure paths cleanly hand off or destroy the Runner", () => 
     ["applyRewriteResult", "renderCompletion"],
   ].forEach(([name, expected]) => {
     const source = matchingFunctionSource(client, name, `${name} success source`);
-    assert(source.includes("finishAiWaitingExperience"), `${name} must use the bounded finish handoff`);
+    assert(source.includes("showReadyOrOpenResult"), `${name} must use the bounded active-wait/direct-open handoff`);
     assert(source.includes(expected), `${name} must retain its existing success exit`);
   });
   ["renderOcrFailure", "renderReviewFailure", "renderRewriteFailure", "renderRevisionScanFailure", "renderFatalAction"].forEach((name) => {
@@ -2210,7 +2229,7 @@ check("success and failure paths cleanly hand off or destroy the Runner", () => 
     "state.waitingRunner.pause()",
     "state.waitingRunner.resume()",
   ], "Runner page lifecycle");
-  const finishSource = functionSource(client, "finishAiWaitingExperience", "destroyAiWaitingExperience");
+  const finishSource = functionSource(client, "finishAiWaitingExperience", "showReadyOrOpenResult");
   requireEvery(finishSource, ["waitingTaskState = 'ready'", "setTaskState('ready')", "waitingResultAction"], "Ready handoff");
   assert(!/\.finish\s*\(/.test(finishSource), "Ready must not stop the Runner through finish()");
 });
