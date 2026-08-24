@@ -1,6 +1,7 @@
 # AI Tutor Waiting Experience / Mr. Cat Runner 工程实施计划
 
-状态：已确认产品方向，等待实现
+状态：历史实施计划，V1 已完成。后续改进必须改读
+`docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md`；本文件中“自动进入结果、无声音、Ink/Distance”等规则已被 V2 产品决定取代。
 适用项目：Mr. Cat Academy `ai-tutor.html`
 目标读者：需要直接执行任务的编码模型，包括能力较弱、上下文较短的模型
 最后更新：2026-08-23（Asia/Shanghai）

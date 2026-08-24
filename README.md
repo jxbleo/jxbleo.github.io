@@ -162,8 +162,11 @@ Supporting docs:
 - [docs/09_CONTENT_WORKFLOW.md](docs/09_CONTENT_WORKFLOW.md)
 - [docs/10_DEPLOYMENT.md](docs/10_DEPLOYMENT.md)
 - [docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md](docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md):
-  executable implementation plan for the shared AI waiting experience and
+  historical V1 implementation plan for the shared AI waiting experience and
   original Mr. Cat Runner interaction
+- [docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md](docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md):
+  executable V2 plan for contextual progress, reliable automatic result
+  refresh, replayable Runner scoring, Ready controls, animation, and sound
 
 ## Documentation Rule
 
