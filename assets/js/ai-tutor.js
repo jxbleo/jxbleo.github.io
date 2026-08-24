@@ -104,7 +104,7 @@
         var lowerSource = source.toLowerCase();
         var nextStart = {};
         var ranges = [];
-        safeArray(spans).forEach(function(span) {
+        safeArray(spans).forEach(function(span, spanIndex) {
             var needle = firstText(span && span.text);
             if (!needle) return;
             var key = needle.toLowerCase();
@@ -117,7 +117,12 @@
                 start = lowerSource.indexOf(key, start + Math.max(1, needle.length));
             }
             if (start < 0) return;
-            ranges.push({ start: start, end: start + needle.length, text: source.slice(start, start + needle.length) });
+            ranges.push({
+                start: start,
+                end: start + needle.length,
+                text: source.slice(start, start + needle.length),
+                span_index: Number.isInteger(span && span.span_index) ? span.span_index : spanIndex
+            });
             nextStart[key] = start + needle.length;
         });
         return ranges.sort(function(a, b) { return a.start - b.start; });
@@ -132,7 +137,7 @@
             ranges.forEach(function(range) {
                 if (range.start < start || range.end > end) return;
                 html += escapeHtml(source.slice(cursor, range.start)).replace(/\n/g, '<br>');
-                html += '<mark class="ocr-uncertain" data-ocr-uncertain data-original="' + escapeHtml(range.text) +
+                html += '<mark class="ocr-uncertain" data-ocr-uncertain data-ocr-span-index="' + escapeHtml(range.span_index) + '" data-original="' + escapeHtml(range.text) +
                     '" aria-label="OCR may be unclear: ' + escapeHtml(range.text) + '">' + escapeHtml(range.text) + '</mark>';
                 cursor = range.end;
             });
@@ -186,10 +191,42 @@
         }
     }
 
+    function hideOcrRegion(spanIndex) {
+        if (spanIndex == null) return;
+        var selector = '[data-ocr-region-index="' + String(spanIndex).replace(/[^0-9-]/g, '') + '"]';
+        Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(function(region) {
+            region.classList.add('is-acknowledged');
+            region.setAttribute('aria-hidden', 'true');
+            region.setAttribute('tabindex', '-1');
+        });
+    }
+
+    function activateOcrRegion(region) {
+        if (!region || region.classList.contains('is-acknowledged')) return;
+        var spanIndex = region.getAttribute('data-ocr-region-index');
+        var mark = document.querySelector('[data-ocr-uncertain][data-ocr-span-index="' + spanIndex + '"]');
+        if (!mark) return;
+        var editor = document.getElementById('ocr-text');
+        if (editor && typeof editor.focus === 'function') {
+            try { editor.focus({ preventScroll: true }); } catch (error) { editor.focus(); }
+        }
+        var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (typeof mark.scrollIntoView === 'function') mark.scrollIntoView({ block: 'center', behavior: reducedMotion ? 'auto' : 'smooth' });
+        mark.classList.add('is-active');
+        region.classList.add('is-active');
+        window.setTimeout(function() {
+            mark.classList.remove('is-active');
+            region.classList.remove('is-active');
+        }, 900);
+    }
+
     function clearChangedOcrMarks(editor) {
         if (!editor) return;
         Array.prototype.slice.call(editor.querySelectorAll('[data-ocr-uncertain]')).forEach(function(mark) {
-            if ((mark.textContent || '') !== (mark.getAttribute('data-original') || '')) unwrapOcrMark(mark, false);
+            if ((mark.textContent || '') !== (mark.getAttribute('data-original') || '')) {
+                hideOcrRegion(mark.getAttribute('data-ocr-span-index'));
+                unwrapOcrMark(mark, false);
+            }
         });
     }
 
@@ -1462,12 +1499,30 @@
             '<button class="quiet-button" type="button" data-return-home>返回 AI Tutor</button></section>';
     }
 
+    function ocrRegionsForPage(pageIndex) {
+        return safeArray(state.ocr && state.ocr.uncertain_regions).filter(function(region) {
+            return region && (region.confidence === 'high' || region.confidence === 'medium')
+                && Number(region.page_index) === pageIndex
+                && Number.isInteger(Number(region.span_index));
+        });
+    }
+
+    function ocrRegionSvg(pageIndex) {
+        return ocrRegionsForPage(pageIndex).map(function(region) {
+            var confidence = region.confidence === 'high' ? 'high' : 'medium';
+            return '<rect class="ocr-photo-region ocr-photo-region-' + confidence + '" data-ocr-region-index="' + escapeHtml(region.span_index) +
+                '" role="button" tabindex="0" aria-label="Locate unclear text in OCR editor" x="' + escapeHtml(region.x) +
+                '" y="' + escapeHtml(region.y) + '" width="' + escapeHtml(region.width) + '" height="' + escapeHtml(region.height) +
+                '" rx="18" vector-effect="non-scaling-stroke"></rect>';
+        }).join('');
+    }
+
     function renderOcr() {
         destroyAiWaitingExperience();
         state.screen = 'ocr';
         stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading"><h2>OCR Review</h2>' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
-            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="Uploaded composition images">' + state.photoUrls.map(function(url, index) { return '<img src="' + escapeHtml(url) + '" alt="Uploaded composition page ' + (index + 1) + '">'; }).join('') + '</section>' +
+            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="Uploaded composition images">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded composition page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded composition page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
             '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(state.confirmedText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
             '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
     }
@@ -2742,8 +2797,14 @@
     });
 
     document.addEventListener('click', function(event) {
+        var ocrRegion = event.target.closest && event.target.closest('[data-ocr-region-index]');
+        if (ocrRegion) {
+            activateOcrRegion(ocrRegion);
+            return;
+        }
         var ocrMark = event.target.closest && event.target.closest('[data-ocr-uncertain]');
         if (ocrMark) {
+            hideOcrRegion(ocrMark.getAttribute('data-ocr-span-index'));
             unwrapOcrMark(ocrMark, true);
             state.confirmedText = ocrEditorText(document.getElementById('ocr-text'));
             return;
@@ -2918,6 +2979,12 @@
     });
 
     document.addEventListener('keydown', function(event) {
+        var ocrRegion = event.target.closest && event.target.closest('[data-ocr-region-index]');
+        if (ocrRegion && (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar')) {
+            event.preventDefault();
+            activateOcrRegion(ocrRegion);
+            return;
+        }
         var sentence = event.target.closest && event.target.closest('[data-manuscript-sentence]');
         if (!sentence || (event.key !== 'Enter' && event.key !== ' ')) return;
         event.preventDefault();

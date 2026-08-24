@@ -229,6 +229,18 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .ocr-layout.show-photo .ocr-photo { display: block; }
 .ocr-editor { min-width: 0; }
 .ocr-photo img { display: block; width: 100%; max-height: 650px; margin-bottom: 10px; object-fit: contain; border-radius: 14px; background: #dfe9e5; }
+.ocr-photo-page { position: relative; width: 100%; margin: 0 0 10px; }
+.ocr-photo-layer { position: relative; display: grid; width: 100%; line-height: 0; }
+.ocr-photo-layer > img, .ocr-photo-layer > .ocr-photo-overlay { grid-area: 1 / 1; }
+.ocr-photo-page img { width: 100%; height: auto; max-height: none; margin: 0; object-fit: contain; }
+.ocr-photo-overlay { position: relative; align-self: stretch; justify-self: stretch; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.ocr-photo-region { pointer-events: auto; cursor: pointer; fill: rgba(239, 68, 68, .16); stroke: #8f2f35; stroke-width: 2; vector-effect: non-scaling-stroke; transition: fill 160ms ease, stroke 160ms ease, opacity 160ms ease; }
+.ocr-photo-region-medium { fill: rgba(239, 68, 68, .12); }
+.ocr-photo-region:hover, .ocr-photo-region:focus-visible, .ocr-photo-region.is-active { fill: rgba(239, 68, 68, .28); stroke: #6f2026; }
+.ocr-photo-region:focus-visible { outline: 3px solid rgba(62, 113, 200, .52); outline-offset: 3px; }
+.ocr-photo-region.is-acknowledged { opacity: 0; pointer-events: none; }
+.ocr-uncertain.is-active { color: #7f1d1d; background: rgba(239, 68, 68, .3); box-shadow: 0 0 0 3px rgba(239, 68, 68, .14); }
+.ocr-photo-page .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .ocr-text-editor { width: 100%; min-height: 590px; padding: 18px; border: 1px solid var(--ai-line); border-radius: 16px; color: var(--ai-ink); background: rgba(255,255,255,.92); outline: none; font: 1rem/1.8 ui-serif, Georgia, serif; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ocr-text-editor:focus { border-color: var(--ai-accent); box-shadow: 0 0 0 4px rgba(15,118,110,.09); }
 .ocr-text-editor > p, .ocr-text-editor > div { margin: 0 0 1em; }
@@ -438,7 +450,8 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .ocr-photo-toggle { width: 100%; }
     .ocr-layout.show-photo { display: block; }
     .photo-preview-grid { grid-template-columns: minmax(0,1fr); }
-    .ocr-photo { display: none; margin-bottom: 12px; }
+.ocr-photo { display: none; margin-bottom: 12px; }
+    .ocr-photo-page { margin-bottom: 12px; }
     .ocr-layout.show-photo .ocr-photo { display: block; }
     .ocr-text-editor { min-height: 440px; padding: 16px; }
     .result-grid, .feedback-grid { padding: 10px; }
@@ -483,6 +496,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .sentence-card-face { transform: none; }
     .sentence-card-face[aria-hidden="true"] { display: none; }
     .current-writing-title-window.is-overflowing .current-writing-title-track { width: 100%; max-width: 100%; overflow: hidden; animation: none; text-overflow: ellipsis; transform: none; }
+    .ocr-photo-region, .ocr-uncertain { transition: none !important; }
 }
 @media (prefers-reduced-transparency: reduce) {
     .ai-tutor-header, .portfolio-sidebar, .language-toolbar, .batch-actions, .surface, .confirmation-dialog { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }

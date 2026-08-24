@@ -1098,3 +1098,14 @@ Review condition:
 Revisit if portfolio becomes a full-page information architecture, collaborative
 title editing is introduced, or titles need localization beyond short English
 labels.
+
+## Separate best-effort OCR location call (2026-08-24)
+
+Decision: keep OCR transcription and uncertainty location as two structured model calls inside the same
+claimed OCR job, with the second call optional and bounded. Never create a second durable job or make the
+transcription commit depend on rectangles.
+
+Why: transcription is the required student-facing result and already has durable lease/idempotency
+semantics. A separate strict contract keeps coordinates out of the stable OCR schema, lets the server
+reject hallucinated/out-of-range boxes without clamping, and makes provider failures harmless to the
+successful text result. Only safe provider metadata and canonical temporary regions are stored.

@@ -1957,3 +1957,12 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - 学生端评分标准使用简短名称：`IELTS Task 1`、`IELTS Task 2`、`DSE Paper 2`，以及三个
   `A Level 9093` Paper 2 题型。IELTS Task 1 默认指 Academic；General Training Task 1 不在
   新建选择中展示，但保留后台兼容标识。
+
+### OCR uncertain-image locations
+
+OCR Review may show subtle, rounded red regions over the authenticated student's uploaded pages for
+server-validated high/medium-confidence uncertain spans. A region only links to the corresponding text
+highlight; it never edits or acknowledges the text. Selecting a region scrolls the editor highlight into
+view, while acknowledging or editing the text hides the matching region. If the optional visual locator
+times out, fails validation, or returns no usable region, OCR still succeeds and the existing text-only
+review remains available.

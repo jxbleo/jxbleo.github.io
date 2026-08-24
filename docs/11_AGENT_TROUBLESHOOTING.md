@@ -920,3 +920,10 @@ STAR 不阻止未来重新布置同一个 set。
 验证：
 - 运行 `npm run test:waiting-runner` 和 `npm run test:writing-tutor`，再运行计划第 9.3 节列出的语法、release
   verification 和 `git diff --check` 命令。静态页面发布不需要重新部署 `writingTutor` 或 `writingAiWorker`。
+
+OCR can succeed with text highlights while image boxes are absent. Check `pending_ocr.location_status`
+first: `not_needed` means there were no canonical uncertain spans, while `partial` or `unavailable` means
+the optional locator returned fewer than one accepted region per span or failed safely. Do not retry the
+locator during polling or reopen. If a candidate coordinate is outside the normalized page bounds, reject
+it rather than clamp it; the transcription must still commit. Never diagnose this by printing image URLs,
+uncertain strings, raw model output, or coordinates.

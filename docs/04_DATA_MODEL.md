@@ -1187,3 +1187,11 @@ Required indexes, in addition to CloudBase defaults:
 - `writing_ai_usage_events`: unique `usage_id`; `usage_id + status`
 - `writing_teacher_email_events`: unique `event_id`; `status`;
   `event_id + status`
+
+`writing_compositions.pending_ocr` may temporarily include `uncertain_regions`, `location_status`, and
+`location_model_metadata` in addition to the transcription fields. Each region contains only a server-
+canonical `span_index`, `page_index`, normalized integer `x`, `y`, `width`, `height`, and `confidence`.
+Accepted regions are capped at the number of stored uncertain spans and 100, exclude low-confidence or
+out-of-range boxes, and are ordered by span index. `location_status` is `not_needed`, `complete`, `partial`,
+or `unavailable`; temporary image URLs and raw locator responses are never persisted. These fields are
+optional so older text-only OCR payloads remain readable.

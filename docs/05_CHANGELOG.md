@@ -1958,6 +1958,16 @@ required.
 - Added explicit leave-and-resume OCR UX and seven-day timed deletion for
   unconfirmed private photos. Corrected deployment verification to require the
   cloud function's final `Active` state after uploading a bundled ZIP.
+
+# 2026-08-24：OCR uncertainty image overlay
+
+- Added a separate strict OCR-location schema and prompt for indexed ambiguous spans, with explicit
+  normalized-page coordinates and untrusted-image safety boundaries.
+- Added server canonicalization and a bounded optional locator call. OCR transcription remains successful
+  when locator timeout, provider, schema, or coordinate validation fails; no second durable job is created.
+- Added accessible SVG page overlays linked to editor marks, responsive intrinsic-ratio layout, cache-busted
+  Tutor assets, tests, and operational documentation.
+
 # 2026-08-24：AI Tutor Waiting Experience V2
 
 - Replaced generic waiting capsules with task-specific four-node progress

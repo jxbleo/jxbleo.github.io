@@ -6,10 +6,10 @@ const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const { RUBRIC_VERSION, getRubric, publicRubrics } = require("./rubrics");
 const {
-  SCHEMA_VERSION, OCR_SCHEMA, REVISION_SCAN_SCHEMA, STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA,
+  SCHEMA_VERSION, OCR_SCHEMA, OCR_LOCATION_SCHEMA, REVISION_SCAN_SCHEMA, STANDARDIZED_SCHEMA, LANGUAGE_SCHEMA, REWRITE_SCHEMA,
 } = require("./schemas");
 const {
-  PROMPT_VERSION, ocrPrompt, revisionScanPrompt, standardizedPrompt, languagePrompt, rewritePrompt,
+  PROMPT_VERSION, ocrPrompt, ocrLocationPrompt, revisionScanPrompt, standardizedPrompt, languagePrompt, rewritePrompt,
 } = require("./prompts");
 const { callStructuredModel } = require("./model-provider");
 
@@ -1000,6 +1000,39 @@ async function enqueueOcrJob(student, event) {
   };
 }
 
+function canonicalOcrUncertaintyRegions(rawRegions, spanCount, pageCount) {
+  if (!Array.isArray(rawRegions)) return [];
+  const spanLimit = Number.isInteger(spanCount) && spanCount >= 0 ? spanCount : 0;
+  const pageLimit = Number.isInteger(pageCount) && pageCount >= 0 ? pageCount : 0;
+  const chosen = new Map();
+  const confidenceRank = { medium: 1, high: 2 };
+  rawRegions.slice(0, 200).forEach((raw) => {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return;
+    const fields = ["span_index", "page_index", "x", "y", "width", "height"];
+    if (fields.some((field) => !Number.isInteger(raw[field]))) return;
+    const { span_index: spanIndex, page_index: pageIndex, x, y, width, height } = raw;
+    if (spanIndex < 0 || spanIndex >= spanLimit || pageIndex < 0 || pageIndex >= pageLimit) return;
+    if (!["high", "medium", "low"].includes(raw.confidence) || raw.confidence === "low") return;
+    if (x < 0 || x >= 1000 || y < 0 || y >= 1000
+      || width < 4 || width > 1000 || height < 4 || height > 350
+      || x + width > 1000 || y + height > 1000) return;
+    const candidate = { span_index: spanIndex, page_index: pageIndex, x, y, width, height, confidence: raw.confidence };
+    const previous = chosen.get(spanIndex);
+    if (!previous) {
+      chosen.set(spanIndex, candidate);
+      return;
+    }
+    const candidateRank = confidenceRank[candidate.confidence];
+    const previousRank = confidenceRank[previous.confidence];
+    const candidateArea = candidate.width * candidate.height;
+    const previousArea = previous.width * previous.height;
+    if (candidateRank > previousRank || (candidateRank === previousRank && candidateArea < previousArea)) {
+      chosen.set(spanIndex, candidate);
+    }
+  });
+  return [...chosen.values()].sort((a, b) => a.span_index - b.span_index);
+}
+
 async function performOcrJob(student, job) {
   const composition = await ownedComposition(student, job.composition_id);
   if (composition.active_job_id !== job.job_id) return { superseded: true };
@@ -1021,10 +1054,48 @@ async function performOcrJob(student, job) {
     ? ocr.paragraphs.map((item) => text(item, MAX_COMPOSITION_CHARS)).filter(Boolean)
     : [];
   if (!fullText && !paragraphs.length) throw new Error("WRITING_AI_OCR_EMPTY");
+  const uncertainSpans = Array.isArray(ocr.uncertain_spans)
+    ? ocr.uncertain_spans.map((item) => ({
+      text: text(item && item.text, 1000),
+      reason: text(item && item.reason, 1000),
+    })).filter((item) => item.text).slice(0, 100)
+    : [];
+  let uncertainRegions = [];
+  let locationStatus = uncertainSpans.length ? "unavailable" : "not_needed";
+  let locationModelMetadata = null;
+  if (uncertainSpans.length && imageUrls.length) {
+    try {
+      const locationResponse = await callStructuredModel({
+        system: ocrLocationPrompt(),
+        userText: JSON.stringify(uncertainSpans.map((span, spanIndex) => ({ span_index: spanIndex, text: span.text }))),
+        schemaName: "writing_ocr_locations_v1",
+        schema: OCR_LOCATION_SCHEMA,
+        images: imageUrls,
+        vision: true,
+        timeoutMs: 45000,
+      });
+      uncertainRegions = canonicalOcrUncertaintyRegions(
+        locationResponse.data && locationResponse.data.regions,
+        uncertainSpans.length,
+        imageUrls.length,
+      );
+      locationModelMetadata = locationResponse.metadata || null;
+      locationStatus = uncertainRegions.length === uncertainSpans.length ? "complete" : "partial";
+      if (!uncertainRegions.length) locationStatus = "unavailable";
+    } catch (error) {
+      const safeCode = error && typeof error.message === "string"
+        && /^WRITING_AI_[A-Z0-9_]{2,120}$/.test(error.message)
+        ? error.message : "WRITING_AI_LOCATION_UNAVAILABLE";
+      console.error("writingTutor OCR location unavailable", safeCode);
+    }
+  }
   const pendingOcr = {
     full_text: fullText || paragraphs.join("\n\n"),
     paragraphs,
-    uncertain_spans: Array.isArray(ocr.uncertain_spans) ? ocr.uncertain_spans.slice(0, 100) : [],
+    uncertain_spans: uncertainSpans,
+    uncertain_regions: uncertainRegions,
+    location_status: locationStatus,
+    location_model_metadata: locationModelMetadata,
     photo_ids: photoIds,
     replace_current: job.replace_current === true,
     model_metadata: ocrResponse.metadata,
@@ -2393,7 +2464,7 @@ exports.main = async (event = {}) => {
 exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, rewriteFeedbackHistory, appendRewriteFeedbackHistory,
-  canonicalRevisionScanResult, revisionSourceUnits, roundedToStep,
+  canonicalRevisionScanResult, revisionSourceUnits, canonicalOcrUncertaintyRegions, roundedToStep,
   usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
   isDiscardableEmptyComposition,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },
