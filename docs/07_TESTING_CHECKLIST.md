@@ -1789,6 +1789,10 @@ High priority improvement:
   confirm every one appears in its horizontal Library-style pill strip with mode,
   title, status, and workflow track. Check touch/pointer scrolling, snap behavior,
   keyboard focus, long-title truncation, and the no-strip state when nothing is open.
+  Confirm the section labels read `New`, `Continue`, and `Review` from top to
+  bottom. Open each mode, enter values in every available field, then press the
+  same mode again: the composer must collapse, `aria-expanded` must become false,
+  and the values must return unchanged when the mode is reopened.
   Confirm `Quick Start`, `Start New`, mode icons, and mode arrows are absent. Selecting either mode must expand Title/Your Writing
   directly below the same two cards without navigating or flashing a full-screen loader.
   Enter Title and Writing, then inspect History, the URL, and CloudBase before Submit:

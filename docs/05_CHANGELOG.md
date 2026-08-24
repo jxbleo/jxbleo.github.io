@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Writing Home section labels and reversible composer
+
+- Added the shared `New`, `Continue`, and `Review` labels above the three
+  Writing Home regions.
+- Made the selected Polishing/Brainstorming card a reversible accessible toggle:
+  a second press collapses the composer while retaining every unsubmitted field.
+
 ## 2026-08-25 — Submit-bound Writing creation
 
 - Removed server-side draft creation from the Polishing/Brainstorming selection

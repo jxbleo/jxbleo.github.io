@@ -1227,8 +1227,9 @@
         showWelcomeToolbar();
         stage.innerHTML = '<section class="writing-home" aria-label="Writing home"><div class="writing-home-flow">' +
             '<section class="writing-home-section writing-home-start" aria-label="Start new writing">' +
-            '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span><strong>Polishing</strong><small>Improve grammar and expression</small></span></button>' +
-            '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span></button></div>' +
+            '<p class="writing-home-list-label writing-home-section-label">New</p>' +
+            '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '" aria-expanded="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span><strong>Polishing</strong><small>Improve grammar and expression</small></span></button>' +
+            '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '" aria-expanded="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span></button></div>' +
             (state.homeComposerOpen ? homeComposerHtml() : '') + '</section>' +
             welcomeUnfinishedHtml(unfinishedCompositions) +
             welcomeCompletedHtml(completedCompositions) + '</div></section>';
@@ -1277,11 +1278,11 @@
     }
 
     function welcomeUnfinishedHtml(items) {
-        return welcomeCompositionStrip(items, 'In Progress', 'Unfinished writing');
+        return welcomeCompositionStrip(items, 'Continue', 'Unfinished writing');
     }
 
     function welcomeCompletedHtml(items) {
-        return welcomeCompositionStrip(items, 'Completed', 'Completed writing');
+        return welcomeCompositionStrip(items, 'Review', 'Completed writing');
     }
 
     function welcomeCompositionStrip(items, label, ariaLabel) {
@@ -1312,10 +1313,10 @@
     }
 
     function savePendingHomeComposer() {
-        if (!state.homeComposerOpen || compositionId(state.current)) return;
+        if (compositionId(state.current)) return;
         try {
             window.sessionStorage.setItem(pendingComposerStorageKey(), JSON.stringify({
-                open: true,
+                open: state.homeComposerOpen === true,
                 assessment_mode: state.assessmentMode,
                 title: state.title,
                 prompt_text: state.promptText,
@@ -1329,9 +1330,9 @@
         var saved;
         try { saved = JSON.parse(window.sessionStorage.getItem(pendingComposerStorageKey()) || 'null'); }
         catch (error) { saved = null; }
-        if (!saved || saved.open !== true) return;
+        if (!saved || typeof saved !== 'object') return;
         state.current = null;
-        state.homeComposerOpen = true;
+        state.homeComposerOpen = saved.open === true;
         state.assessmentMode = saved.assessment_mode === 'standardized' ? 'standardized' : 'language';
         state.title = firstText(saved.title);
         state.promptText = firstText(saved.prompt_text);
@@ -1408,11 +1409,21 @@
         resetRevisionScanState();
         if (!options || options.skipEmptyDiscard !== true) discardCurrentEmptyComposition();
         setStatus('');
+        state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
         state.current = null;
         state.review = null;
+        state.title = '';
+        state.promptText = '';
+        state.confirmedText = '';
+        state.rubricId = '';
+        state.inputMethod = 'text';
+        state.photoFiles = [];
+        state.photoUrls = [];
+        state.photoIds = [];
         state.homeComposerOpen = false;
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
+        restorePendingHomeComposer();
         syncCompositionLocator('');
         updateCurrentWritingTitle();
         renderPortfolio();
@@ -1461,18 +1472,21 @@
     function startInlineWriting(mode) {
         if (state.busy) return;
         var selectedMode = mode === 'standardized' ? 'standardized' : 'language';
-        var openingComposer = !state.homeComposerOpen;
+        if (state.homeComposerOpen && state.assessmentMode === selectedMode) {
+            state.homeComposerOpen = false;
+            savePendingHomeComposer();
+            renderWelcome();
+            window.requestAnimationFrame(function() {
+                var trigger = document.querySelector('[data-start-mode="' + selectedMode + '"]');
+                if (trigger) trigger.focus({ preventScroll: true });
+            });
+            return;
+        }
         state.assessmentMode = selectedMode;
         state.inputMethod = 'text';
         state.homeComposerOpen = true;
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
-        if (openingComposer && !compositionId(state.current)) {
-            state.title = '';
-            state.promptText = '';
-            state.confirmedText = '';
-            state.rubricId = '';
-        }
         renderWelcome();
         savePendingHomeComposer();
         focusHomeComposer();
@@ -1484,6 +1498,7 @@
         stopOcrPolling();
         stopReviewPolling();
         setStatus('');
+        clearPendingHomeComposer();
         returnToTutorHome({ skipEmptyDiscard: false });
         startInlineWriting(selectedMode);
     }
