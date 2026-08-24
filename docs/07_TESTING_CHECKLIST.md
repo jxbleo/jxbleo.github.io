@@ -2001,10 +2001,15 @@ High priority improvement:
   verify both accessible camera capture and photo-library selection. Check marker
   variants `8`, `8.`, `8、`, `8)`, and `(8)`, with omitted punctuation and with
   recommended whitespace before the answer.
-- Capture one revision photo and confirm no network upload begins. On the local
-  `Revision Photos` surface, add a second and third photo in separate camera
-  interactions, remove one, and verify the previews/count remain ordered and cap
-  at eight. Press `Start Scanning` and confirm exactly one durable operation carries
+- Capture one revision photo from the bottom of a long Sentence Revision page on
+  both iPad and phone. Confirm the returned staging card is positioned immediately
+  below the sticky toolbar with no blank scroll region, no `Revision Photos` heading,
+  and a centered `1/1`. Confirm the preview is height-capped on iPad. Verify `Add Photo`
+  and `Remove` share the action row below the current image. Add a second and third
+  photo in separate camera interactions: the newest photo becomes current, horizontal
+  swipe snaps one photo at a time, and the centered indicator follows `1/2`, `2/2`,
+  then the equivalent current/total value after removal; it must never read `1/8`.
+  Verify the ordered batch still caps at eight. Press `Start Scanning` and confirm exactly one durable operation carries
   the final ordered batch; leaving before this button creates no upload/job row.
 - Repeat both ordinary photo upload/re-upload and `Scan Revisions` on a saved
   Composition whose `pending_upload` field is explicitly `null`. Confirm the

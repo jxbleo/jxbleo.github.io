@@ -2002,3 +2002,14 @@ required.
   recent cards, restrained materials, press feedback, and accessible motion fallbacks.
 - Made `createComposition` validate and persist the mode selected from the home
   quick-start cards so an immediate refresh cannot revert Brainstorming to Polishing.
+
+# 2026-08-24：Stable Revision Photo staging
+
+- Replaced the multi-column photographed-revision preview with a one-photo snap
+  carousel and a centered live current/total indicator; removed the redundant
+  `Revision Photos` heading and capacity-style `x / 8` display.
+- Moved `Add Photo` beside each current photo's `Remove` control while preserving
+  the eight-photo batch boundary and the single bottom `Start Scanning` commit.
+- Reset the staging surface below the sticky toolbar after camera/library return,
+  selected the newest addition, and capped preview height to prevent the retained
+  bottom scroll and oversized single-image behavior seen on iPad and phone.

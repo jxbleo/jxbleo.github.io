@@ -897,6 +897,7 @@
                 photoIds: [],
                 operationId: '',
                 status: 'idle',
+                activePhotoIndex: 0,
                 job: null,
                 pending: null,
                 candidates: [],
@@ -2104,18 +2105,57 @@
         scan.status = 'choosing';
         state.screen = 'revision-scan-photos';
         var count = scan.files.length;
+        scan.activePhotoIndex = Math.max(0, Math.min(Number(scan.activePhotoIndex) || 0, Math.max(0, count - 1)));
         var previews = safeArray(scan.previewUrls).map(function(url, index) {
-            return '<figure class="photo-preview-card revision-photo-card"><span>Photo ' + (index + 1) + '</span>' +
+            return '<figure class="photo-preview-card revision-photo-card" data-revision-photo-index="' + index + '">' +
                 '<img src="' + escapeHtml(url) + '" alt="Selected revision photo ' + (index + 1) + '">' +
-                '<div><button class="danger-button compact" type="button" data-remove-revision-photo="' + index + '">Remove</button></div></figure>';
+                '<div class="revision-photo-card-actions"><button class="secondary-button compact" type="button" data-add-revision-photo' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
+                '<button class="danger-button compact" type="button" data-remove-revision-photo="' + index + '">Remove</button></div></figure>';
         }).join('');
         stage.innerHTML = '<section class="surface surface-pad revision-photo-selection" aria-label="Revision photos">' +
-            '<div class="revision-photo-selection-heading"><h2>Revision Photos</h2><span>' + count + ' / 8</span></div>' +
-            '<div class="photo-preview-grid revision-photo-preview-grid">' + previews + '</div>' +
+            '<div class="revision-photo-position" id="revision-photo-position" role="status" aria-live="polite" aria-label="Photo ' + (scan.activePhotoIndex + 1) + ' of ' + count + '">' + (scan.activePhotoIndex + 1) + '/' + count + '</div>' +
+            '<div class="revision-photo-carousel" data-revision-photo-carousel>' + previews + '</div>' +
             '<input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' +
             '<div class="form-actions revision-photo-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Cancel</button>' +
-            '<button class="secondary-button" type="button" data-add-revision-photo' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
             '<button class="primary-button" type="button" data-start-revision-upload data-disable-when-busy' + (count ? '' : ' disabled') + '>Start Scanning</button></div></section>';
+        bindRevisionPhotoCarousel();
+    }
+
+    function bindRevisionPhotoCarousel() {
+        var selection = document.querySelector('.revision-photo-selection');
+        var carousel = selection && selection.querySelector('[data-revision-photo-carousel]');
+        var counter = selection && selection.querySelector('#revision-photo-position');
+        if (!selection || !carousel || !counter) return;
+        var scan = revisionScanState();
+        var slides = Array.prototype.slice.call(carousel.querySelectorAll('[data-revision-photo-index]'));
+        var scheduled = false;
+        function updatePosition() {
+            scheduled = false;
+            if (!slides.length) return;
+            var center = carousel.scrollLeft + (carousel.clientWidth / 2);
+            var closest = 0;
+            var closestDistance = Infinity;
+            slides.forEach(function(slide, index) {
+                var distance = Math.abs((slide.offsetLeft + (slide.offsetWidth / 2)) - center);
+                if (distance < closestDistance) { closest = index; closestDistance = distance; }
+            });
+            scan.activePhotoIndex = closest;
+            counter.textContent = (closest + 1) + '/' + slides.length;
+            counter.setAttribute('aria-label', 'Photo ' + (closest + 1) + ' of ' + slides.length);
+        }
+        carousel.addEventListener('scroll', function() {
+            if (scheduled) return;
+            scheduled = true;
+            window.requestAnimationFrame(updatePosition);
+        }, { passive: true });
+        window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(function() {
+                selection.scrollIntoView({ block: 'start', behavior: 'auto' });
+                var activeSlide = slides[scan.activePhotoIndex] || slides[0];
+                if (activeSlide) carousel.scrollLeft = activeSlide.offsetLeft;
+                updatePosition();
+            });
+        });
     }
 
     function addRevisionScanPhotos(files) {
@@ -2125,10 +2165,12 @@
         var additions = safeArray(files);
         var remaining = Math.max(0, 8 - scan.files.length);
         if (additions.length > remaining) setStatus('Revision Scan 最多可加入 8 张照片。');
-        additions.slice(0, remaining).forEach(function(file) {
+        var accepted = additions.slice(0, remaining);
+        accepted.forEach(function(file) {
             scan.files.push(file);
             scan.previewUrls.push(URL.createObjectURL(file));
         });
+        if (accepted.length) scan.activePhotoIndex = scan.files.length - 1;
         scan.operationId = '';
         scan.photoIds = [];
         scan.candidates = [];
@@ -3046,9 +3088,12 @@
         else if (button.matches('[data-remove-revision-photo]')) {
             var scan = revisionScanState();
             var photoIndex = Number(button.getAttribute('data-remove-revision-photo'));
+            var activePhotoIndex = Number(scan.activePhotoIndex) || 0;
             if (scan.previewUrls[photoIndex] && scan.previewUrls[photoIndex].indexOf('blob:') === 0) URL.revokeObjectURL(scan.previewUrls[photoIndex]);
             scan.files.splice(photoIndex, 1);
             scan.previewUrls.splice(photoIndex, 1);
+            if (photoIndex < activePhotoIndex) activePhotoIndex -= 1;
+            scan.activePhotoIndex = Math.max(0, Math.min(activePhotoIndex, Math.max(0, scan.files.length - 1)));
             if (scan.files.length) renderRevisionScanPhotoSelection();
             else { resetRevisionScanState(); renderLanguage(); }
         }

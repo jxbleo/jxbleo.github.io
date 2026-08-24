@@ -908,13 +908,27 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
 
 check("Revision Scan stages an ordered multi-photo batch before cloud upload", () => {
   const client = read(clientPath);
+  const styles = read(stylePath);
   const backend = read(functionPath);
   const selectionSource = functionSource(client, "renderRevisionScanPhotoSelection", "revisionScanCandidateHtml");
   requireEvery(selectionSource, [
-    "Revision Photos", "Photo ", "Add Photo", "Start Scanning",
+    "revision-photo-position", "revision-photo-carousel", "Add Photo", "Remove", "Start Scanning",
     "data-add-revision-photo", "data-remove-revision-photo", "data-start-revision-upload",
-    "scan.files.push(file)", "scan.previewUrls.push", "8 - scan.files.length",
+    "scan.files.push(file)", "scan.previewUrls.push", "8 - scan.files.length", "activePhotoIndex",
   ], "revision photo staging screen");
+  assert(!selectionSource.includes("Revision Photos"),
+    "the photographed-revision staging surface must omit its former heading");
+  assert(/revision-photo-card-actions[\s\S]{0,500}data-add-revision-photo[\s\S]{0,500}data-remove-revision-photo/.test(selectionSource),
+    "Add Photo and Remove must share each current photo's action layer");
+  assert(/\(closest \+ 1\) \+ '\/' \+ slides\.length/.test(selectionSource)
+      && /aria-label['"], 'Photo ' \+ \(closest \+ 1\) \+ ' of ' \+ slides\.length/.test(selectionSource),
+    "the centered counter must track the visible photo as current/total rather than x/8");
+  requireEvery(selectionSource, ["selection.scrollIntoView", "block: 'start'", "window.requestAnimationFrame", "carousel.scrollLeft"],
+    "stable post-camera positioning");
+  requireEvery(styles, [
+    ".revision-photo-carousel", "scroll-snap-type: x mandatory", ".revision-photo-position",
+    "margin: 0 auto 14px", ".revision-photo-card img", "height: min(56vh,620px)", "scroll-margin-top: 90px",
+  ], "iPad and phone revision-photo layout");
   assert(/target\.id[\s\S]{0,60}revision-scan-photo[\s\S]{0,220}addRevisionScanPhotos/.test(client),
     "choosing the first revision photo must stage it locally rather than upload immediately");
   assert(/data-start-revision-upload[\s\S]{0,260}beginRevisionScanUpload\(revisionScanState\(\)\.files\.slice\(\)\)/.test(client),
