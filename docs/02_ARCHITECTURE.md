@@ -791,6 +791,18 @@ the selected input is clicked synchronously in the originating user gesture so
 iOS Safari does not reject it. The source choice changes only local staging and
 never starts OCR by itself.
 
+Writing Home owns an uncommitted composer state that is intentionally separate
+from the Composition domain. Selecting Polishing/Brainstorming and editing its
+fields performs no CloudBase write and creates no Composition query locator.
+Small text state may be mirrored to owner-scoped `sessionStorage` so refresh
+reconstructs the same inline home form; file objects are never serialized. The
+first server boundary is the explicit text `Submit` or photo `Scan`: the browser
+creates one Composition, clears the local pending state, then continues through
+the existing save/evaluate or private upload/OCR path. Previously submitted
+initial drafts also render through the inline home composer; the retired initial
+standalone source renderer is not a navigation destination. Replacement of an
+already reviewed Composition keeps its separate replacement surface.
+
 The browser mirrors the open Composition ID in the `composition` query parameter
 with `history.replaceState`. This value is only a resumable locator, never an
 authorization token: initialization still authenticates the student and calls

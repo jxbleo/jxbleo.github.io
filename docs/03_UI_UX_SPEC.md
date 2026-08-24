@@ -1986,6 +1986,14 @@ Important mobile rules:
   title, prompt, or manuscript text after an Apple-style confirmation. Once upload/OCR,
   AI work, replacement, revision, Library binding, or a result exists, the server refuses
   deletion and the Composition remains permanent.
+- Selecting `Polishing` or `Brainstorming` expands the composer in place without
+  creating a cloud draft. Title, prompt, manuscript, and mode remain local until
+  the student presses text `Submit` or photo `Scan`; before that boundary they
+  never appear in History and do not add a Composition locator to the URL.
+  Refresh reconstructs the same expanded Writing Home form from owner-scoped
+  session state instead of opening the retired standalone input screen. The
+  `Your Writing` placeholder and first typed line sit near the textarea's top
+  edge rather than inheriting an oversized top-leading gap.
 - The page exposes only the top toolbar above card-based content. Home inside
   History opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs

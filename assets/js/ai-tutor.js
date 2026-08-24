@@ -1300,9 +1300,48 @@
             (state.homeComposerError ? '<p class="writing-home-composer-error" role="alert">' + escapeHtml(state.homeComposerError) + '</p>' : '') +
             '<form class="form-stack source-entry-form" id="writing-source-form">' +
             sourceFieldsHtml(standardized, true) +
-            '<section class="section-block" id="source-input-area">' + textSourceHtml() + '</section>' +
-            '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>Submit</button></div>' +
+            '<section class="section-block" id="source-input-area">' + (state.inputMethod === 'photo' ? photoSourceHtml(state.photoUrls.length > 0) : textSourceHtml()) + '</section>' +
+            '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? 'Scan' : 'Submit') + '</button></div>' +
             '</form></div>';
+    }
+
+    function pendingComposerStorageKey() {
+        var profile = state.profile || state.session && state.session.profile || {};
+        var owner = firstText(profile.auth_uid, profile.student_id, state.session && state.session.uid, 'student');
+        return 'mrcat-writing-composer-v1:' + owner;
+    }
+
+    function savePendingHomeComposer() {
+        if (!state.homeComposerOpen || compositionId(state.current)) return;
+        try {
+            window.sessionStorage.setItem(pendingComposerStorageKey(), JSON.stringify({
+                open: true,
+                assessment_mode: state.assessmentMode,
+                title: state.title,
+                prompt_text: state.promptText,
+                confirmed_text: state.confirmedText,
+                rubric_id: state.rubricId
+            }));
+        } catch (error) {}
+    }
+
+    function restorePendingHomeComposer() {
+        var saved;
+        try { saved = JSON.parse(window.sessionStorage.getItem(pendingComposerStorageKey()) || 'null'); }
+        catch (error) { saved = null; }
+        if (!saved || saved.open !== true) return;
+        state.current = null;
+        state.homeComposerOpen = true;
+        state.assessmentMode = saved.assessment_mode === 'standardized' ? 'standardized' : 'language';
+        state.title = firstText(saved.title);
+        state.promptText = firstText(saved.prompt_text);
+        state.confirmedText = firstText(saved.confirmed_text);
+        state.rubricId = firstText(saved.rubric_id);
+        state.inputMethod = 'text';
+    }
+
+    function clearPendingHomeComposer() {
+        try { window.sessionStorage.removeItem(pendingComposerStorageKey()); } catch (error) {}
     }
 
     function resetDraft(composition) {
@@ -1385,6 +1424,15 @@
         window.clearTimeout(state.autosaveTimer);
         state.autosaveTimer = null;
         if (!id) {
+            state.photoUrls.forEach(function(url) { if (url.indexOf('blob:') === 0) URL.revokeObjectURL(url); });
+            state.title = '';
+            state.promptText = '';
+            state.confirmedText = '';
+            state.rubricId = '';
+            state.photoFiles = [];
+            state.photoUrls = [];
+            state.photoIds = [];
+            clearPendingHomeComposer();
             returnToTutorHome({ skipEmptyDiscard: true });
             return;
         }
@@ -1413,48 +1461,21 @@
     function startInlineWriting(mode) {
         if (state.busy) return;
         var selectedMode = mode === 'standardized' ? 'standardized' : 'language';
+        var openingComposer = !state.homeComposerOpen;
         state.assessmentMode = selectedMode;
         state.inputMethod = 'text';
         state.homeComposerOpen = true;
+        state.homeComposerPreparing = false;
         state.homeComposerError = '';
-        if (compositionId(state.current)) {
-            state.current.assessment_mode = apiMode(selectedMode);
-            renderWelcome();
-            scheduleAutosave();
-            focusHomeComposer();
-            return;
+        if (openingComposer && !compositionId(state.current)) {
+            state.title = '';
+            state.promptText = '';
+            state.confirmedText = '';
+            state.rubricId = '';
         }
-        state.title = '';
-        state.promptText = '';
-        state.confirmedText = '';
-        state.rubricId = '';
-        state.homeComposerPreparing = true;
         renderWelcome();
+        savePendingHomeComposer();
         focusHomeComposer();
-        setBusy(true);
-        writingCall('createComposition', { assessment_mode: apiMode(selectedMode) }).then(function(result) {
-            var composition = result.composition || result.item || {};
-            var pendingInput = { title: state.title, promptText: state.promptText, confirmedText: state.confirmedText, rubricId: state.rubricId };
-            if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
-            if (!compositionId(composition) && result.composition_id) composition.composition_id = result.composition_id;
-            if (!compositionId(composition)) throw new Error('新作文没有返回有效的编号。');
-            if (!composition.assessment_mode) composition.assessment_mode = apiMode(selectedMode);
-            resetDraft(composition);
-            state.homeComposerOpen = true;
-            state.assessmentMode = selectedMode;
-            state.title = pendingInput.title;
-            state.promptText = pendingInput.promptText;
-            state.confirmedText = pendingInput.confirmedText;
-            state.rubricId = pendingInput.rubricId;
-            syncCurrentSummary();
-            renderWelcome();
-            if (state.title || state.promptText || state.confirmedText || state.rubricId) scheduleAutosave();
-            focusHomeComposer();
-        }).catch(function(error) {
-            state.homeComposerPreparing = false;
-            state.homeComposerError = firstText(error && error.message, '无法开始新的作文，请重试。');
-            renderWelcome();
-        }).finally(function() { setBusy(false); });
     }
 
     function createNewWriting(mode) {
@@ -1463,23 +1484,11 @@
         stopOcrPolling();
         stopReviewPolling();
         setStatus('');
-        renderLoading('正在准备一张新的写作纸…', '你的输入会自动关联到这篇新作文。');
-        setBusy(true);
-        discardCurrentEmptyComposition().then(function() {
-            return writingCall('createComposition', { assessment_mode: apiMode(selectedMode) });
-        }).then(function(result) {
-            var composition = result.composition || result.item || {};
-            if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
-            if (!compositionId(composition) && result.composition_id) composition.composition_id = result.composition_id;
-            if (!compositionId(composition)) throw new Error('新作文没有返回有效的编号。');
-            if (!composition.assessment_mode) composition.assessment_mode = apiMode(selectedMode);
-            resetDraft(composition);
-            syncCurrentSummary();
-            renderSource();
-        }).catch(renderFatalAction).finally(function() { setBusy(false); });
+        returnToTutorHome({ skipEmptyDiscard: false });
+        startInlineWriting(selectedMode);
     }
 
-    function renderSource() {
+    function renderReplacementSource() {
         destroyAiWaitingExperience();
         state.screen = 'source';
         var standardized = state.assessmentMode === 'standardized';
@@ -1491,6 +1500,15 @@
             '<div class="form-actions source-form-actions"><button class="source-discard-button" type="button" data-discard-source>Discard</button><button class="primary-button source-submit-button" type="submit" data-disable-when-busy>' + (state.inputMethod === 'photo' ? 'Scan' : 'Submit') + '</button></div>' +
             '</form></section>';
         scheduleStageViewportReset();
+    }
+
+    function renderSourceEntry() {
+        if (!state.review && (!compositionId(state.current) || isInitialSourceDraft())) {
+            state.homeComposerOpen = true;
+            renderWelcome();
+            return;
+        }
+        renderReplacementSource();
     }
 
     function cameraOnlyButton(target, label) {
@@ -1576,7 +1594,11 @@
 
     function scheduleAutosave() {
         window.clearTimeout(state.autosaveTimer);
-        if (!compositionId(state.current) || state.busy) return;
+        if (!compositionId(state.current)) {
+            savePendingHomeComposer();
+            return;
+        }
+        if (state.busy) return;
         state.autosaveTimer = window.setTimeout(function() {
             persistSourceDraft().then(function(result) {
                 if (result.composition) state.current = result.composition;
@@ -1601,8 +1623,46 @@
         if (error) { setStatus(error); return; }
         setStatus('');
         setBusy(true);
-        if (state.inputMethod === 'photo') uploadAndExtract();
-        else saveAndEvaluate();
+        ensureCompositionForSubmit().then(function() {
+            if (state.inputMethod === 'photo') {
+                return persistSourceDraft().then(function(result) {
+                    if (result.composition) state.current = result.composition;
+                    return uploadAndExtract();
+                });
+            }
+            return saveAndEvaluate();
+        }).catch(function(error) {
+            state.homeComposerError = firstText(error && error.message, 'This writing could not be submitted. Please try again.');
+            if (!compositionId(state.current)) {
+                setBusy(false);
+                renderWelcome();
+            } else {
+                renderFatalAction(error);
+            }
+        }).finally(function() { setBusy(false); });
+    }
+
+    function ensureCompositionForSubmit() {
+        if (compositionId(state.current)) return Promise.resolve(state.current);
+        return writingCall('createComposition', {
+            title: state.title,
+            prompt_text: state.promptText,
+            confirmed_text: state.inputMethod === 'text' ? state.confirmedText : '',
+            assessment_mode: apiMode(state.assessmentMode),
+            source: 'student'
+        }).then(function(result) {
+            var composition = result.composition || result.item || {};
+            if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
+            if (!compositionId(composition) && result.composition_id) composition.composition_id = result.composition_id;
+            if (!compositionId(composition)) throw new Error('The new writing did not receive a valid ID.');
+            state.current = composition;
+            state.current.assessment_mode = apiMode(state.assessmentMode);
+            clearPendingHomeComposer();
+            syncCompositionLocator(compositionId(state.current));
+            syncCurrentSummary();
+            updateCurrentWritingTitle();
+            return state.current;
+        });
     }
 
     function uploadAndExtract() {
@@ -2855,7 +2915,7 @@
             state.inputMethod = 'text';
             setStatus('整篇重写是可选训练；逐句训练已经算完成。');
             syncCurrentSummary();
-            renderSource();
+            renderReplacementSource();
         }).catch(renderFatalAction).finally(function() { setBusy(false); });
     }
 
@@ -2876,7 +2936,7 @@
         state.promptText = keptPrompt;
         state.inputMethod = method || 'photo';
         state.scanTarget = 'writing';
-        renderSource();
+        renderReplacementSource();
     }
 
     function loadComposition(id, forceReadOnly) {
@@ -2983,7 +3043,7 @@
             }
             if (state.assessmentMode === 'standardized' && review) renderStandardized();
             else if (review) prepareLanguageReview();
-            else renderSource();
+            else renderSourceEntry();
             syncCurrentSummary();
         }).catch(function(error) {
             var code = error && (error.code || error.result && error.result.code) || '';
@@ -3067,7 +3127,7 @@
         if (compositionId(state.current)) persistSourceDraft().catch(function() {});
         // Keep the file-input click in the original user gesture. Safari on
         // iPhone/iPad may block it after a Promise or animation-frame boundary.
-        renderSource();
+        renderSourceEntry();
         var selector = source === 'camera' ? '[data-writing-photo-camera]' : '[data-writing-photo-library]';
         var input = document.querySelector(selector);
         if (input && typeof input.click === 'function') input.click();
@@ -3258,7 +3318,7 @@
         if (target.id === 'writing-text') state.confirmedText = target.value;
         if (target.name === 'assessment-mode') {
             state.assessmentMode = target.value;
-            renderSource();
+            renderSourceEntry();
             return;
         }
         scheduleAutosave();
@@ -3299,7 +3359,7 @@
             }
             state.photoFiles = state.photoFiles.concat(additions);
             state.photoUrls = state.photoUrls.concat(additions.map(function(file) { return URL.createObjectURL(file); }));
-            renderSource();
+            renderSourceEntry();
         }
         if ((target.id === 'revision-scan-photo' || target.id === 'revision-scan-library') && target.files && target.files.length) {
             addRevisionScanPhotos(Array.prototype.slice.call(target.files));
@@ -3382,7 +3442,7 @@
         else if (button.matches('[data-remove-photo]')) {
             var removeIndex = Number(button.getAttribute('data-remove-photo'));
             if (state.photoUrls[removeIndex] && state.photoUrls[removeIndex].indexOf('blob:') === 0) URL.revokeObjectURL(state.photoUrls[removeIndex]);
-            state.photoFiles.splice(removeIndex, 1); state.photoUrls.splice(removeIndex, 1); renderSource();
+            state.photoFiles.splice(removeIndex, 1); state.photoUrls.splice(removeIndex, 1); renderSourceEntry();
         }
         else if (button.matches('[data-toggle-ocr-photo]')) {
             var layout = document.getElementById('ocr-layout');
@@ -3513,7 +3573,7 @@
         else if (button.matches('[data-submit-rewrites]')) submitRewrites();
         else if (button.matches('[data-full-rewrite]')) startOptionalFullRewrite();
         else if (button.matches('[data-open-current-readonly]')) { state.readOnly = true; prepareLanguageReview(); }
-        else if (button.matches('[data-resume-current]')) { if (state.review) state.assessmentMode === 'standardized' ? renderStandardized() : prepareLanguageReview(); else renderSource(); }
+        else if (button.matches('[data-resume-current]')) { if (state.review) state.assessmentMode === 'standardized' ? renderStandardized() : prepareLanguageReview(); else renderSourceEntry(); }
     });
 
     document.addEventListener('keydown', function(event) {
@@ -3662,7 +3722,10 @@
             renderPortfolio();
             var requestedId = requestedCompositionId();
             if (requestedId) loadComposition(requestedId);
-            else renderWelcome();
+            else {
+                restorePendingHomeComposer();
+                renderWelcome();
+            }
         }).catch(function(error) {
             app.setAttribute('aria-busy', 'false');
             stage.innerHTML = '<section class="surface error-state"><strong>需要学生登录</strong><p>' + escapeHtml(error && error.message || '无法打开 AI Tutor。') + '</p><a class="primary-button" href="index.html">前往登录</a></section>';
