@@ -339,6 +339,8 @@ async function createComposition(student, event) {
   const now = new Date();
   const requestedTitle = normalizedTitle(event.title);
   const title = isLegacyUntitled(requestedTitle) ? "" : requestedTitle;
+  const assessmentMode = text(event.assessment_mode, 80) || "general_language";
+  if (!["general_language", "standardized_content"].includes(assessmentMode)) throw new Error("ASSESSMENT_MODE_INVALID");
   const composition = {
     composition_id: randomId("composition"),
     student_uid: student.auth_uid,
@@ -346,6 +348,8 @@ async function createComposition(student, event) {
     title_source: title ? "student" : "pending_ai",
     prompt_text: text(event.prompt_text, MAX_PROMPT_CHARS),
     confirmed_text: text(event.confirmed_text, MAX_COMPOSITION_CHARS),
+    assessment_mode: assessmentMode,
+    rubric_id: null,
     status: "draft",
     revision: 1,
     word_count: wordCount(event.confirmed_text),
