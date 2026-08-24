@@ -899,20 +899,24 @@ STAR 不阻止未来重新布置同一个 set。
 现象与根因：
 - 等待卡片的阶段文字必须来自 Composition/Job 的真实状态。若上传仍是
   `photo_uploading` 或存在未确认 `pending_upload`，这是交付未确认，不是可离开状态；不要把
-  `Saved` 或 `Continue in Background` 当作本地上传完成的推断。
-- Runner 只消磨等待时间。距离、Ink、踉跄次数和 Canvas 动画不是 AI 进度，也不应进入网络、日志、
-  localStorage、IndexedDB、Attempt、STAR 或任何数据库字段。
+  `Uploaded`、`Saved` 或 `Back` 当作本地上传完成的推断。
+- Runner 只消磨等待时间。Score、collectibles、距离、踉跄次数和 Canvas 动画不是 AI 进度，也不应进入
+  网络、日志、localStorage、IndexedDB、Attempt、STAR 或任何数据库字段。
 
 固定规则：
-- 先检查 `ai-tutor.js` 的四套独立 `getComposition` 轮询，再检查统一等待渲染器的状态映射；不要用
-  定时器把 `Queued` 自动改成 `Analysing`，也不要让 Runner 的 RAF 驱动轮询。
-- 结果到达先走最多 500ms 的 `finishAiWaitingExperience`；隐藏标签页、Reduced Motion、Runner 缺失或
-  动画异常应立即走真实结果。失败、返回 Home、切换 Composition 和 `pagehide` 都必须调用幂等销毁。
+- 先检查 `ai-tutor.js` 的共享串行 `getComposition` 控制器，再检查统一等待渲染器的状态映射；不要用
+  定时器把服务器的 Queued 自动改成 Analysing，也不要让 Runner 的 RAF 驱动轮询。
+- 结果到达必须先进入 Ready 并保留一次性结果按钮；不得自动调用结果 renderer 或停止 Runner。隐藏标签页、
+  Reduced Motion、Runner 缺失或音频异常都不能阻断按钮。失败、返回 Home、切换 Composition 和 `pagehide`
+  都必须调用幂等销毁和共享 timer 清理。
+- “后台已经成功但页面必须刷新”的常见根因是旧轮询只在 Promise 内安排固定 5 秒 timer，且成功分支直接
+  把结果交给 renderer；V2 用 Promise 完成后再安排 3/10 秒 timer，visibility/focus/online 唤醒，防止重叠
+  请求，并把成功留在当前等待卡片直到学生点击。
 - 若页面仍在失败卡片显示 Canvas，先查失败函数是否调用 `destroyAiWaitingExperience()`；若刷新后出现多个
   RAF，查旧 Canvas 被替换前是否销毁，以及 visibility/pagehide 是否清除了控制器。
 - 新 Runner 测试只允许使用最小 Canvas/RAF mock；不要为游戏引入框架、CloudBase API、声音、振动或新的
   持久化依赖。
 
 验证：
-- 运行 `npm run test:waiting-runner` 和 `npm run test:writing-tutor`，再运行第 15.3 节列出的语法、release
+- 运行 `npm run test:waiting-runner` 和 `npm run test:writing-tutor`，再运行计划第 9.3 节列出的语法、release
   verification 和 `git diff --check` 命令。静态页面发布不需要重新部署 `writingTutor` 或 `writingAiWorker`。

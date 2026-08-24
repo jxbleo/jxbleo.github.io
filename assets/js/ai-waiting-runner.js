@@ -9,10 +9,14 @@
     var JUMP_VELOCITY = -650;
     var STEP = 1 / 60;
     var MAX_DELTA = 0.05;
+    var BUFFER_MS = 120;
+    var COYOTE_SECONDS = 0.1;
     var MIN_OBSTACLE_GAP = 330;
     var MAX_OBSTACLE_GAP = 560;
     var STUMBLE_MS = 600;
     var INVULNERABLE_MS = 1200;
+    var MIN_COLLECTIBLES = 3;
+    var MAX_COLLECTIBLES = 7;
 
     function reducedMotion() {
         return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -47,7 +51,11 @@
 
         var context = canvas.getContext('2d');
         if (!context) return noopController();
-        ['setTransform', 'scale', 'clearRect', 'fillRect', 'fill', 'stroke', 'beginPath', 'closePath', 'moveTo', 'lineTo', 'arc', 'arcTo', 'quadraticCurveTo', 'save', 'restore', 'translate'].forEach(function(name) {
+        [
+            'setTransform', 'scale', 'clearRect', 'fillRect', 'fill', 'stroke', 'beginPath',
+            'closePath', 'moveTo', 'lineTo', 'arc', 'arcTo', 'quadraticCurveTo', 'save',
+            'restore', 'translate'
+        ].forEach(function(name) {
             if (typeof context[name] !== 'function') context[name] = function() {};
         });
         canvas.style = canvas.style || {};
@@ -65,16 +73,17 @@
         var finishCalled = false;
         var finishing = false;
         var elapsed = 0;
-        var finishElapsed = 0;
         var distance = 0;
-        var ink = 0;
-        var lastScoreDistance = -1;
-        var lastScoreInk = -1;
+        var score = 0;
+        var lastReportedScore = null;
         var obstacleSeed = 0;
-        var lastObstacleRight = WORLD_WIDTH + 120;
+        var lastObstacleRight = WORLD_WIDTH + 190;
         var obstacles = [];
-        var drops = [];
+        var collectibles = [];
+        var collectibleSeed = 0;
+        var collectedCount = 0;
         var taskState = 'queued';
+        var collisionCount = 0;
         var player = {
             x: 160,
             y: GROUND_Y - 62,
@@ -82,10 +91,12 @@
             height: 62,
             vy: 0,
             grounded: true,
-            coyote: 0,
+            coyote: COYOTE_SECONDS,
+            jumpCount: 0,
+            jumpsUsed: 0,
+            jumpBuffer: 0,
             stumble: 0,
             invulnerable: 0,
-            stumbleCount: 0,
             runFrame: 0
         };
 
@@ -97,9 +108,10 @@
             var rect = typeof canvas.getBoundingClientRect === 'function'
                 ? canvas.getBoundingClientRect()
                 : { width: canvas.clientWidth || WORLD_WIDTH, height: canvas.clientHeight || WORLD_HEIGHT };
-            var width = Math.max(280, rect.width || canvas.clientWidth || WORLD_WIDTH);
-            var height = Math.max(120, rect.height || canvas.clientHeight || width * 7 / 16);
-            return { width: width, height: height };
+            return {
+                width: Math.max(280, rect.width || canvas.clientWidth || WORLD_WIDTH),
+                height: Math.max(120, rect.height || canvas.clientHeight || WORLD_WIDTH * 7 / 16)
+            };
         }
 
         function resize() {
@@ -110,18 +122,17 @@
             canvas.height = Math.round(size.height * dpr);
             canvas.style.width = '100%';
             canvas.style.height = 'auto';
-            if (typeof context.setTransform === 'function') context.setTransform(dpr * size.width / WORLD_WIDTH, 0, 0, dpr * size.height / WORLD_HEIGHT, 0, 0);
-            else if (typeof context.scale === 'function') context.scale(dpr * size.width / WORLD_WIDTH, dpr * size.height / WORLD_HEIGHT);
+            if (typeof context.setTransform === 'function') {
+                context.setTransform(dpr * size.width / WORLD_WIDTH, 0, 0, dpr * size.height / WORLD_HEIGHT, 0, 0);
+            }
             draw();
         }
 
-        function notifyScore() {
+        function notifyScore(force) {
             if (typeof options.onScore !== 'function') return;
-            var displayDistance = Math.floor(distance);
-            if (displayDistance === lastScoreDistance && ink === lastScoreInk) return;
-            lastScoreDistance = displayDistance;
-            lastScoreInk = ink;
-            options.onScore({ distance: displayDistance, ink: ink });
+            if (!force && lastReportedScore === score) return;
+            lastReportedScore = score;
+            options.onScore({ score: score });
         }
 
         function addObstacle() {
@@ -133,14 +144,12 @@
                 x: x,
                 width: type === 0 ? 62 : type === 1 ? 30 : 54,
                 height: type === 0 ? 42 : type === 1 ? 86 : 32,
-                type: type
+                type: type,
+                hit: false
             };
             obstacle.y = GROUND_Y - obstacle.height;
             obstacles.push(obstacle);
             lastObstacleRight = obstacle.x + obstacle.width;
-            if (Math.random() > 0.28) {
-                drops.push({ x: obstacle.x - randomBetween(72, 126), y: GROUND_Y - randomBetween(78, 140), radius: 8, collected: false });
-            }
         }
 
         function ensureObstacles() {
@@ -148,8 +157,57 @@
             obstacles.forEach(function(obstacle) {
                 rightmost = Math.max(rightmost, obstacle.x + obstacle.width);
             });
-            lastObstacleRight = rightmost;
-            while (lastObstacleRight < WORLD_WIDTH + 720) addObstacle();
+            lastObstacleRight = Math.max(lastObstacleRight, rightmost);
+            while (lastObstacleRight < WORLD_WIDTH + 780) addObstacle();
+        }
+
+        function obstacleContains(x, y) {
+            return obstacles.some(function(obstacle) {
+                return x + 12 > obstacle.x - 20 && x - 12 < obstacle.x + obstacle.width + 20
+                    && y + 12 > obstacle.y - 20 && y - 12 < obstacle.y + obstacle.height + 20;
+            });
+        }
+
+        function addCollectible(x, y) {
+            var safeX = x;
+            var safeY = y;
+            var attempts = 0;
+            while (obstacleContains(safeX, safeY) && attempts < 10) {
+                safeX += 70;
+                attempts += 1;
+            }
+            collectibles.push({
+                x: safeX,
+                y: Math.max(GROUND_Y - 145, Math.min(GROUND_Y - 32, safeY)),
+                radius: 9,
+                collected: false,
+                seed: collectibleSeed++
+            });
+        }
+
+        function ensureCollectibles() {
+            var activeCount = collectibles.filter(function(item) { return !item.collected; }).length;
+            var target = activeCount < MIN_COLLECTIBLES
+                ? MIN_COLLECTIBLES + Math.floor(Math.random() * (MAX_COLLECTIBLES - MIN_COLLECTIBLES + 1))
+                : Math.min(MAX_COLLECTIBLES, activeCount);
+            var rightmost = WORLD_WIDTH + 120;
+            obstacles.forEach(function(obstacle) { rightmost = Math.max(rightmost, obstacle.x + obstacle.width); });
+            while (activeCount < target) {
+                var x = Math.max(WORLD_WIDTH + 80, rightmost + randomBetween(90, 250));
+                var y = GROUND_Y - randomBetween(38, 124);
+                addCollectible(x, y);
+                rightmost = x;
+                activeCount += 1;
+            }
+        }
+
+        function initializeWorld() {
+            ensureObstacles();
+            var firstX = WORLD_WIDTH + 80;
+            for (var index = 0; index < 5; index += 1) {
+                addCollectible(firstX + index * 170, GROUND_Y - 92);
+            }
+            ensureCollectibles();
         }
 
         function overlap(a, b) {
@@ -161,49 +219,80 @@
             return { x: player.x + 7, y: player.y + 7, width: player.width - 14, height: player.height - 9 };
         }
 
+        function launchJump() {
+            player.vy = JUMP_VELOCITY;
+            player.y -= 1;
+            player.grounded = false;
+            player.coyote = 0;
+            player.jumpsUsed += 1;
+            player.jumpCount += 1;
+            player.jumpBuffer = 0;
+        }
+
+        function requestJump() {
+            if (destroyed || paused || finishing) return;
+            if (player.grounded || (player.coyote > 0 && player.jumpsUsed === 0)) {
+                player.jumpsUsed = 0;
+                launchJump();
+                return;
+            }
+            if (player.jumpsUsed < 2) {
+                launchJump();
+                return;
+            }
+            player.jumpBuffer = BUFFER_MS;
+        }
+
         function update(step) {
             elapsed += step;
-            if (finishing) finishElapsed += step;
             var speed = RUN_SPEED * (player.stumble > 0 ? 0.58 : 1);
             distance += speed * step;
             player.runFrame += step * (player.stumble > 0 ? 2 : 9);
             player.invulnerable = Math.max(0, player.invulnerable - step * 1000);
             player.stumble = Math.max(0, player.stumble - step * 1000);
-            if (player.grounded) player.coyote = Math.min(0.1, player.coyote + step);
+            player.jumpBuffer = Math.max(0, player.jumpBuffer - step * 1000);
+            if (player.grounded) player.coyote = Math.min(COYOTE_SECONDS, player.coyote + step);
             else player.coyote = Math.max(0, player.coyote - step);
             player.vy += GRAVITY * step;
             player.y += player.vy * step;
+            var landed = false;
             if (player.y >= GROUND_Y - player.height) {
+                landed = !player.grounded;
                 player.y = GROUND_Y - player.height;
                 player.vy = 0;
                 player.grounded = true;
-                player.coyote = 0.1;
+                player.coyote = COYOTE_SECONDS;
+                if (landed) player.jumpsUsed = 0;
             } else {
                 player.grounded = false;
             }
+            if (landed && player.jumpBuffer > 0) launchJump();
             obstacles.forEach(function(obstacle) { obstacle.x -= speed * step; });
-            drops.forEach(function(drop) { drop.x -= speed * step; });
-            if (!finishing) ensureObstacles();
+            collectibles.forEach(function(item) { item.x -= speed * step; });
+            ensureObstacles();
+            ensureCollectibles();
             obstacles = obstacles.filter(function(obstacle) { return obstacle.x + obstacle.width > -100; });
-            drops = drops.filter(function(drop) { return !drop.collected && drop.x > -80; });
+            collectibles = collectibles.filter(function(item) { return !item.collected && item.x > -80; });
             var box = playerBox();
-            if (!finishing && player.invulnerable <= 0) {
-                obstacles.some(function(obstacle) {
-                    if (!overlap(box, obstacle)) return false;
+            if (player.invulnerable <= 0) {
+                obstacles.forEach(function(obstacle) {
+                    if (obstacle.hit || !overlap(box, obstacle)) return;
+                    obstacle.hit = true;
+                    collisionCount += 1;
+                    score -= 1;
                     player.stumble = STUMBLE_MS;
                     player.invulnerable = INVULNERABLE_MS;
-                    player.stumbleCount += 1;
                     player.vy = Math.min(player.vy, -95);
-                    return true;
                 });
             }
-            drops.forEach(function(drop) {
-                var dropBox = { x: drop.x - drop.radius, y: drop.y - drop.radius, width: drop.radius * 2, height: drop.radius * 2 };
-                if (overlap(box, dropBox)) {
-                    drop.collected = true;
-                    ink += 1;
-                }
+            collectibles.forEach(function(item) {
+                var itemBox = { x: item.x - item.radius, y: item.y - item.radius, width: item.radius * 2, height: item.radius * 2 };
+                if (item.collected || !overlap(box, itemBox)) return;
+                item.collected = true;
+                collectedCount += 1;
+                score += 1;
             });
+            ensureCollectibles();
             notifyScore();
         }
 
@@ -221,49 +310,22 @@
 
         function drawCat() {
             var lean = player.stumble > 0 ? 8 : 0;
-            var x = player.x + lean;
-            var y = player.y;
             context.save();
-            context.translate(x, y);
+            context.translate(player.x + lean, player.y);
             context.globalAlpha = player.invulnerable > 0 ? 0.72 : 1;
             context.fillStyle = '#315d55';
             context.beginPath();
-            context.moveTo(10, 18);
-            context.lineTo(12, 3);
-            context.lineTo(24, 13);
-            context.lineTo(39, 3);
-            context.lineTo(42, 20);
-            context.closePath();
-            context.fill();
-            drawRoundedRect(4, 14, 42, 40, 15, '#315d55');
-            context.strokeStyle = '#244841';
-            context.lineWidth = 2;
-            context.stroke();
+            context.moveTo(10, 18); context.lineTo(12, 3); context.lineTo(24, 13);
+            context.lineTo(39, 3); context.lineTo(42, 20); context.closePath(); context.fill();
+            drawRoundedRect(4, 14, 42, 40, 15, '#315d55', '#244841');
             context.fillStyle = '#f3f8f6';
-            context.beginPath();
-            context.arc(18, 29, 3, 0, Math.PI * 2);
-            context.arc(34, 29, 3, 0, Math.PI * 2);
-            context.fill();
-            context.strokeStyle = '#f3f8f6';
-            context.beginPath();
-            context.moveTo(24, 40);
-            context.quadraticCurveTo(28, 44, 32, 40);
-            context.stroke();
-            context.strokeStyle = '#315d55';
-            context.lineWidth = 4;
-            context.lineCap = 'round';
-            context.beginPath();
-            context.moveTo(9, 53);
-            context.lineTo(player.stumble > 0 ? 3 : (Math.sin(player.runFrame) * 6 + 6), 62);
-            context.moveTo(40, 53);
-            context.lineTo(player.stumble > 0 ? 45 : (Math.sin(player.runFrame + Math.PI) * 6 + 34), 62);
-            context.stroke();
-            context.strokeStyle = '#244841';
-            context.lineWidth = 3;
-            context.beginPath();
-            context.moveTo(5, 44);
-            context.quadraticCurveTo(-18, 34, -6, 17);
-            context.stroke();
+            context.beginPath(); context.arc(18, 29, 3, 0, Math.PI * 2); context.arc(34, 29, 3, 0, Math.PI * 2); context.fill();
+            context.strokeStyle = '#f3f8f6'; context.beginPath(); context.moveTo(24, 40); context.quadraticCurveTo(28, 44, 32, 40); context.stroke();
+            context.strokeStyle = '#315d55'; context.lineWidth = 4; context.lineCap = 'round'; context.beginPath();
+            context.moveTo(9, 53); context.lineTo(player.stumble > 0 ? 3 : Math.sin(player.runFrame) * 6 + 6, 62);
+            context.moveTo(40, 53); context.lineTo(player.stumble > 0 ? 45 : Math.sin(player.runFrame + Math.PI) * 6 + 34, 62); context.stroke();
+            context.strokeStyle = '#244841'; context.lineWidth = 3; context.beginPath();
+            context.moveTo(5, 44); context.quadraticCurveTo(-18, 34, -6, 17); context.stroke();
             context.restore();
         }
 
@@ -271,93 +333,44 @@
             context.save();
             if (obstacle.type === 0) {
                 drawRoundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 6, '#d4a373', '#926c49');
-                context.strokeStyle = 'rgba(76,53,33,.45)';
-                context.beginPath();
-                context.moveTo(obstacle.x + 12, obstacle.y + 7);
-                context.lineTo(obstacle.x + 12, obstacle.y + obstacle.height - 7);
-                context.moveTo(obstacle.x + obstacle.width - 12, obstacle.y + 7);
-                context.lineTo(obstacle.x + obstacle.width - 12, obstacle.y + obstacle.height - 7);
-                context.stroke();
             } else if (obstacle.type === 1) {
-                context.fillStyle = '#d26a52';
-                context.beginPath();
+                context.fillStyle = '#d26a52'; context.beginPath();
                 context.moveTo(obstacle.x + obstacle.width / 2, obstacle.y);
                 context.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
-                context.lineTo(obstacle.x, obstacle.y + obstacle.height);
-                context.closePath();
-                context.fill();
-                context.fillStyle = '#e6c08a';
-                context.fillRect(obstacle.x + 5, obstacle.y + obstacle.height - 13, obstacle.width - 10, 7);
+                context.lineTo(obstacle.x, obstacle.y + obstacle.height); context.closePath(); context.fill();
             } else {
                 drawRoundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 11, '#e3c27b', '#a98345');
-                context.strokeStyle = 'rgba(96,70,33,.5)';
-                context.beginPath();
-                context.moveTo(obstacle.x + 9, obstacle.y + 8);
-                context.lineTo(obstacle.x + obstacle.width - 9, obstacle.y + obstacle.height - 8);
-                context.stroke();
             }
             context.restore();
         }
 
-        function drawDrop(drop) {
+        function drawCollectible(item) {
             context.save();
             context.globalAlpha = 0.9;
-            context.fillStyle = '#4e8c82';
+            context.fillStyle = '#3f9a72';
             context.beginPath();
-            context.moveTo(drop.x, drop.y - drop.radius);
-            context.quadraticCurveTo(drop.x + drop.radius * 1.4, drop.y, drop.x, drop.y + drop.radius);
-            context.quadraticCurveTo(drop.x - drop.radius * 1.4, drop.y, drop.x, drop.y - drop.radius);
+            context.moveTo(item.x, item.y - item.radius);
+            context.lineTo(item.x + item.radius * 0.35, item.y - item.radius * 0.35);
+            context.lineTo(item.x + item.radius, item.y);
+            context.lineTo(item.x + item.radius * 0.35, item.y + item.radius * 0.35);
+            context.lineTo(item.x, item.y + item.radius);
+            context.lineTo(item.x - item.radius * 0.35, item.y + item.radius * 0.35);
+            context.lineTo(item.x - item.radius, item.y);
+            context.lineTo(item.x - item.radius * 0.35, item.y - item.radius * 0.35);
+            context.closePath();
             context.fill();
             context.restore();
-        }
-
-        function finishGatePosition() {
-            var startX = WORLD_WIDTH + 40;
-            var targetX = player.x + player.width + 84;
-            var progress = Math.min(1, finishElapsed / 0.3);
-            var eased = 1 - Math.pow(1 - progress, 3);
-            return startX + (targetX - startX) * eased;
-        }
-
-        function drawFinishGate() {
-            var gateX = finishGatePosition();
-            context.strokeStyle = '#4e8c82';
-            context.lineWidth = 7;
-            context.beginPath();
-            context.moveTo(gateX, GROUND_Y);
-            context.lineTo(gateX, GROUND_Y - 110);
-            context.moveTo(gateX + 70, GROUND_Y);
-            context.lineTo(gateX + 70, GROUND_Y - 110);
-            context.moveTo(gateX, GROUND_Y - 110);
-            context.lineTo(gateX + 70, GROUND_Y - 110);
-            context.stroke();
-            context.fillStyle = '#e9f1ed';
-            drawRoundedRect(gateX + 14, GROUND_Y - 98, 42, 30, 8, '#e9f1ed', '#4e8c82');
-            context.strokeStyle = '#4e8c82';
-            context.lineWidth = 3;
-            context.beginPath();
-            context.moveTo(gateX + 24, GROUND_Y - 84);
-            context.lineTo(gateX + 32, GROUND_Y - 76);
-            context.lineTo(gateX + 47, GROUND_Y - 92);
-            context.stroke();
         }
 
         function draw() {
             if (destroyed) return;
             context.clearRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-            context.fillStyle = '#f3f8f6';
-            context.fillRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-            context.fillStyle = '#e6efeb';
-            context.fillRect(0, GROUND_Y, WORLD_WIDTH, WORLD_HEIGHT - GROUND_Y);
-            context.strokeStyle = '#a6c5bc';
-            context.lineWidth = 3;
-            context.beginPath();
-            context.moveTo(0, GROUND_Y);
-            context.lineTo(WORLD_WIDTH, GROUND_Y);
-            context.stroke();
+            context.fillStyle = '#f3f8f6'; context.fillRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+            context.fillStyle = '#e6efeb'; context.fillRect(0, GROUND_Y, WORLD_WIDTH, WORLD_HEIGHT - GROUND_Y);
+            context.strokeStyle = '#a6c5bc'; context.lineWidth = 3; context.beginPath();
+            context.moveTo(0, GROUND_Y); context.lineTo(WORLD_WIDTH, GROUND_Y); context.stroke();
             obstacles.forEach(drawObstacle);
-            drops.forEach(function(drop) { if (!drop.collected) drawDrop(drop); });
-            if (finishing) drawFinishGate();
+            collectibles.forEach(function(item) { if (!item.collected) drawCollectible(item); });
             drawCat();
         }
 
@@ -378,27 +391,15 @@
             var delta = Math.min(MAX_DELTA, Math.max(0, (now - lastTime) / 1000));
             lastTime = now;
             accumulator += delta;
-            while (accumulator >= STEP) {
-                update(STEP);
-                accumulator -= STEP;
-            }
+            while (accumulator >= STEP) { update(STEP); accumulator -= STEP; }
             draw();
-            if (finishing && !finishCalled && finishElapsed >= 0.3) finishNow();
-            if (!reduced && !destroyed && !paused && !finishCalled) frameHandle = window.requestAnimationFrame(frame);
+            if (finishing && !finishCalled && elapsed >= 0) finishNow();
+            if (!reduced && !destroyed && !paused) frameHandle = window.requestAnimationFrame(frame);
         }
 
         function schedule() {
             if (destroyed || paused || reduced || frameHandle != null) return;
             frameHandle = window.requestAnimationFrame(frame);
-        }
-
-        function jump() {
-            if (destroyed || paused || finishing) return;
-            if (!player.grounded && player.coyote <= 0) return;
-            player.vy = JUMP_VELOCITY;
-            player.grounded = false;
-            player.coyote = 0;
-            schedule();
         }
 
         function isInteractiveKey(event) {
@@ -413,55 +414,43 @@
             if (event && event.pointerId != null && typeof canvas.setPointerCapture === 'function') {
                 try { canvas.setPointerCapture(event.pointerId); } catch (error) {}
             }
-            jump();
+            requestJump();
         }
 
         function onKeyDown(event) {
             if (!isInteractiveKey(event) || event.repeat) return;
             if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'w' || event.key === 'W') {
-                event.preventDefault();
-                jump();
+                event.preventDefault(); requestJump();
             }
         }
 
         function onVisibilityChange() {
-            if (document.hidden) {
-                if (finishing) finishNow();
-                else pause();
-            } else if (!finishing) {
-                resume();
-            }
+            if (document.hidden) pause();
+            else resume();
         }
 
         function pause() {
             if (destroyed) return;
-            paused = true;
-            lastTime = null;
-            accumulator = 0;
+            paused = true; lastTime = null; accumulator = 0;
             if (frameHandle != null) window.cancelAnimationFrame(frameHandle);
             frameHandle = null;
         }
 
         function resume() {
             if (destroyed) return;
-            paused = false;
-            lastTime = null;
-            accumulator = 0;
-            draw();
-            schedule();
+            paused = false; lastTime = null; accumulator = 0; draw(); schedule();
         }
 
         function finish(callback) {
             if (destroyed || finishCalled) return;
             if (typeof callback === 'function' && !finishCallback) finishCallback = callback;
             finishing = true;
-            finishElapsed = 0;
-            if (reduced || document.hidden) {
-                finishNow();
-                return;
+            if (reduced || document.hidden) finishNow();
+            else {
+                if (finishTimer != null) window.clearTimeout(finishTimer);
+                finishTimer = window.setTimeout(finishNow, 500);
+                schedule();
             }
-            finishTimer = window.setTimeout(finishNow, 500);
-            schedule();
         }
 
         function setTaskState(nextState) {
@@ -473,9 +462,7 @@
             destroyed = true;
             if (frameHandle != null) window.cancelAnimationFrame(frameHandle);
             if (finishTimer != null) window.clearTimeout(finishTimer);
-            frameHandle = null;
-            finishTimer = null;
-            finishCallback = null;
+            frameHandle = null; finishTimer = null; finishCallback = null;
             if (resizeObserver && typeof resizeObserver.disconnect === 'function') resizeObserver.disconnect();
             if (listeningToWindowResize) window.removeEventListener('resize', resize);
             if (canvas.removeEventListener) canvas.removeEventListener('pointerdown', onPointerDown);
@@ -491,12 +478,18 @@
                 paused: paused,
                 taskState: taskState,
                 finishing: finishing,
-                finishGateX: finishGatePosition(),
+                score: score,
                 distance: Math.floor(distance),
-                ink: ink,
-                player: { x: player.x, y: player.y, vy: player.vy, grounded: player.grounded },
-                obstacles: obstacles.map(function(obstacle) { return { x: obstacle.x, width: obstacle.width, height: obstacle.height, type: obstacle.type }; }),
-                stumbleCount: player.stumbleCount
+                collisionCount: collisionCount,
+                collectedCount: collectedCount,
+                collectibleCount: collectibles.filter(function(item) { return !item.collected; }).length,
+                player: {
+                    x: player.x, y: player.y, vy: player.vy, grounded: player.grounded,
+                    jumpCount: player.jumpCount, jumpsUsed: player.jumpsUsed, jumpBuffer: player.jumpBuffer
+                },
+                obstacles: obstacles.map(function(obstacle) {
+                    return { x: obstacle.x, width: obstacle.width, height: obstacle.height, type: obstacle.type, hit: obstacle.hit };
+                })
             };
         }
 
@@ -504,20 +497,17 @@
         window.addEventListener('keydown', onKeyDown, { passive: false });
         if (document.addEventListener) document.addEventListener('visibilitychange', onVisibilityChange);
         if (window.ResizeObserver) {
-            resizeObserver = new window.ResizeObserver(resize);
-            resizeObserver.observe(canvas);
+            resizeObserver = new window.ResizeObserver(resize); resizeObserver.observe(canvas);
         } else {
-            window.addEventListener('resize', resize);
-            listeningToWindowResize = true;
+            window.addEventListener('resize', resize); listeningToWindowResize = true;
         }
-        ensureObstacles();
+        initializeWorld();
         resize();
-        if (document.hidden) pause();
-        else if (!reduced) schedule();
-        notifyScore();
+        if (document.hidden) pause(); else if (!reduced) schedule();
+        notifyScore(true);
 
         return {
-            jump: jump,
+            jump: requestJump,
             setTaskState: setTaskState,
             finish: finish,
             pause: pause,

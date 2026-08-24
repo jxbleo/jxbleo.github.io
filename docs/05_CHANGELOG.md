@@ -1947,3 +1947,16 @@ required.
 - Added explicit leave-and-resume OCR UX and seven-day timed deletion for
   unconfirmed private photos. Corrected deployment verification to require the
   cloud function's final `Active` state after uploading a bundled ZIP.
+# 2026-08-24：AI Tutor Waiting Experience V2
+
+- Replaced generic waiting capsules with task-specific four-node progress
+  tracks for OCR, review, rewrite, and Revision Scan.
+- Added a local-only Runner Score, green collectibles, repeat/air/landing-buffer
+  jumps, and one-time collision deductions; no Runner state crosses the browser
+  page or durable AI boundary.
+- Reworked browser polling to serialize `getComposition`, use visible/hidden
+  cadence and transient-error backoff, wake on visibility/focus/online, and
+  discard stale Composition/operation generations.
+- Successful jobs now remain on a Ready card with one synthesized two-note cue
+  and a student-clicked result action. Reopening a completed job is silent and
+  does not stop the Runner before the click.
