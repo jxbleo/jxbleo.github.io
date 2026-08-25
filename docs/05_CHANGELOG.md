@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Undoable OCR title extraction
+
+- Added an optional title field to manuscript OCR confirmation with a mobile-safe
+  `Use First Line` action that moves the title out of the text before review.
+- Added immediate Undo that restores the previous title, manuscript markup, and
+  image-region acknowledgement state; prompt OCR remains unchanged.
+
 ## 2026-08-25 — Immediate two-state Writing waiting game
 
 - Replaced task-specific four-step waiting copy with one `Thinking / Finished`

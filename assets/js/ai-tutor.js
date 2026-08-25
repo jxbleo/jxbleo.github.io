@@ -25,6 +25,7 @@
         activeSourcePhotoIndex: 0,
         ocr: null,
         ocrReviewText: '',
+        ocrTitleUndo: null,
         scanTarget: 'writing',
         activeSentence: 0,
         rewrites: {},
@@ -222,6 +223,106 @@
         return blocks.map(function(block) {
             return normalizedOcrText(block.innerText || block.textContent || '').replace(/\n+$/g, '');
         }).join('\n\n');
+    }
+
+    function splitOcrFirstLine(text) {
+        var lines = normalizedOcrText(text).split('\n');
+        var firstLineIndex = lines.findIndex(function(line) { return Boolean(line.trim()); });
+        if (firstLineIndex < 0) return null;
+        var title = lines[firstLineIndex].trim();
+        lines.splice(firstLineIndex, 1);
+        while (lines.length && !lines[0].trim()) lines.shift();
+        return {
+            title: title,
+            remaining: lines.join('\n').replace(/\n{3,}/g, '\n\n').replace(/\s+$/g, '')
+        };
+    }
+
+    function ocrRegionAcknowledgements() {
+        return Array.prototype.slice.call(document.querySelectorAll('[data-ocr-region-index].is-acknowledged')).map(function(region) {
+            return region.getAttribute('data-ocr-region-index');
+        });
+    }
+
+    function restoreOcrRegionAcknowledgements(indexes) {
+        var acknowledged = safeArray(indexes);
+        Array.prototype.slice.call(document.querySelectorAll('[data-ocr-region-index]')).forEach(function(region) {
+            var hidden = acknowledged.indexOf(region.getAttribute('data-ocr-region-index')) >= 0;
+            region.classList.toggle('is-acknowledged', hidden);
+            region.setAttribute('aria-hidden', String(hidden));
+            region.setAttribute('tabindex', hidden ? '-1' : '0');
+        });
+    }
+
+    function syncOcrRegionsWithEditor() {
+        var editor = document.getElementById('ocr-text');
+        if (!editor) return;
+        Array.prototype.slice.call(document.querySelectorAll('[data-ocr-region-index]')).forEach(function(region) {
+            var spanIndex = region.getAttribute('data-ocr-region-index');
+            if (editor.querySelector('[data-ocr-uncertain][data-ocr-span-index="' + spanIndex + '"]')) return;
+            region.classList.add('is-acknowledged');
+            region.setAttribute('aria-hidden', 'true');
+            region.setAttribute('tabindex', '-1');
+        });
+    }
+
+    function updateOcrTitleUndoUi(message) {
+        var undo = document.querySelector('[data-undo-ocr-title]');
+        var feedback = document.querySelector('[data-ocr-title-feedback]');
+        if (undo) undo.hidden = !state.ocrTitleUndo;
+        if (feedback) feedback.textContent = firstText(message);
+    }
+
+    function clearOcrTitleUndo() {
+        state.ocrTitleUndo = null;
+        updateOcrTitleUndoUi('');
+    }
+
+    function useOcrFirstLine() {
+        var editor = document.getElementById('ocr-text');
+        var input = document.getElementById('ocr-title');
+        if (!editor || !input) return;
+        var originalText = ocrEditorText(editor);
+        var extracted = splitOcrFirstLine(originalText);
+        if (!extracted || !extracted.title) {
+            updateOcrTitleUndoUi('No first line was found.');
+            return;
+        }
+        if (extracted.title.length > 80) {
+            updateOcrTitleUndoUi('The first line is too long for a title. You can enter it manually.');
+            return;
+        }
+        state.ocrTitleUndo = {
+            title: state.title,
+            text: originalText,
+            editorHtml: editor.innerHTML,
+            acknowledgedRegions: ocrRegionAcknowledgements()
+        };
+        state.title = extracted.title;
+        state.ocrReviewText = extracted.remaining;
+        state.confirmedText = extracted.remaining;
+        input.value = state.title;
+        editor.innerHTML = ocrEditorHtml(extracted.remaining, state.ocr && state.ocr.uncertain_spans);
+        syncOcrRegionsWithEditor();
+        updateOcrTitleUndoUi('Moved from the first line.');
+        input.focus({ preventScroll: true });
+        input.select();
+    }
+
+    function undoOcrFirstLine() {
+        var snapshot = state.ocrTitleUndo;
+        var editor = document.getElementById('ocr-text');
+        var input = document.getElementById('ocr-title');
+        if (!snapshot || !editor || !input) return;
+        state.title = snapshot.title;
+        state.ocrReviewText = snapshot.text;
+        state.confirmedText = snapshot.text;
+        input.value = snapshot.title;
+        editor.innerHTML = snapshot.editorHtml;
+        restoreOcrRegionAcknowledgements(snapshot.acknowledgedRegions);
+        state.ocrTitleUndo = null;
+        updateOcrTitleUndoUi('Restored.');
+        editor.focus({ preventScroll: true });
     }
 
     function unwrapOcrMark(mark, preserveCaret) {
@@ -1346,6 +1447,7 @@
         state.activeSourcePhotoIndex = 0;
         state.ocr = null;
         state.ocrReviewText = '';
+        state.ocrTitleUndo = null;
         state.scanTarget = 'writing';
         state.activeSentence = 0;
         state.rewrites = {};
@@ -1392,6 +1494,7 @@
         state.title = '';
         state.promptText = '';
         state.confirmedText = '';
+        state.ocrTitleUndo = null;
         state.rubricId = '';
         state.inputMethod = 'text';
         state.photoFiles = [];
@@ -1901,13 +2004,19 @@
 
     function renderOcr() {
         destroyAiWaitingExperience();
+        state.ocrTitleUndo = null;
         state.screen = 'ocr';
         var reviewText = state.scanTarget === 'prompt' ? state.ocrReviewText : state.confirmedText;
         var imageLabel = state.scanTarget === 'prompt' ? 'Uploaded writing prompt images' : 'Uploaded composition images';
+        var titleControl = state.scanTarget === 'writing'
+            ? '<div class="ocr-title-control"><label class="ocr-title-field"><span class="sr-only">Optional composition title</span><input id="ocr-title" type="text" maxlength="80" autocomplete="off" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></label>' +
+                '<div class="ocr-title-actions"><button class="secondary-button compact" type="button" data-use-ocr-first-line>Use First Line</button><button class="quiet-button compact" type="button" data-undo-ocr-title hidden>Undo</button></div>' +
+                '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite"></span></div>'
+            : '';
         stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading">' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
-            '<section class="ocr-editor"><div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
+            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
             '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
         scheduleStageViewportReset();
     }
@@ -3478,6 +3587,10 @@
     document.addEventListener('input', function(event) {
         var target = event.target;
         if (target.matches('#writing-prompt,#writing-rubric,#writing-text,[name="assessment-mode"]')) updateSourceState(target);
+        if (target.id === 'ocr-title') {
+            state.title = target.value.slice(0, 80);
+            clearOcrTitleUndo();
+        }
         if (target.matches('[data-rewrite-id]')) {
             var id = target.getAttribute('data-rewrite-id');
             state.rewrites[id] = target.value;
@@ -3496,6 +3609,7 @@
             clearChangedOcrMarks(editor);
             state.ocrReviewText = ocrEditorText(editor);
             if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
+            clearOcrTitleUndo();
         }
     });
 
@@ -3573,6 +3687,7 @@
             unwrapOcrMark(ocrMark, true);
             state.ocrReviewText = ocrEditorText(document.getElementById('ocr-text'));
             if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
+            clearOcrTitleUndo();
             return;
         }
         var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-manuscript-sentence]');
@@ -3618,11 +3733,15 @@
             var visible = layout.classList.toggle('show-photo');
             button.setAttribute('aria-pressed', String(visible));
         }
+        else if (button.matches('[data-use-ocr-first-line]')) useOcrFirstLine();
+        else if (button.matches('[data-undo-ocr-title]')) undoOcrFirstLine();
         else if (button.matches('[data-confirm-ocr]')) {
             if (state.scanTarget === 'prompt') {
                 adoptPromptOcr();
                 return;
             }
+            var titleInput = document.getElementById('ocr-title');
+            state.title = firstText(titleInput && titleInput.value).slice(0, 80);
             state.confirmedText = firstText(ocrEditorText(document.getElementById('ocr-text')));
             if (!state.confirmedText) { setStatus('请先确认或补全 OCR 文本。'); return; }
             setBusy(true); saveAndEvaluate();
