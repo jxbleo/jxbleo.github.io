@@ -9,6 +9,9 @@
   `Use First Line` action that moves the title out of the text before review.
 - Added immediate Undo that restores the previous title, manuscript markup, and
   image-region acknowledgement state; prompt OCR remains unchanged.
+- Removed the redundant visible title label, aligned the title action controls,
+  styled invalid extraction guidance in pale red, and made OCR comparison photos
+  open the existing full-screen viewer without changing uncertainty-box behavior.
 
 ## 2026-08-25 — Immediate two-state Writing waiting game
 
