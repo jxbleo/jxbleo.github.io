@@ -11,8 +11,8 @@
     var MAX_DELTA = 0.05;
     var BUFFER_MS = 120;
     var COYOTE_SECONDS = 0.1;
-    var MIN_OBSTACLE_GAP = 330;
-    var MAX_OBSTACLE_GAP = 560;
+    var MIN_OBSTACLE_GAP = 230;
+    var MAX_OBSTACLE_GAP = 410;
     var STUMBLE_MS = 600;
     var INVULNERABLE_MS = 1200;
     var MIN_COLLECTIBLES = 3;
@@ -77,7 +77,6 @@
         var score = 0;
         var lastReportedScore = null;
         var obstacleSeed = 0;
-        var lastObstacleRight = WORLD_WIDTH + 190;
         var obstacles = [];
         var collectibles = [];
         var collectibleSeed = 0;
@@ -139,9 +138,9 @@
             if (typeof options.onEvent === 'function') options.onEvent({ type: type });
         }
 
-        function addObstacle() {
+        function addObstacle(rightmost) {
             var gap = randomBetween(MIN_OBSTACLE_GAP, MAX_OBSTACLE_GAP);
-            var x = Math.max(WORLD_WIDTH + 40, lastObstacleRight + gap);
+            var x = Math.max(WORLD_WIDTH + 40, rightmost + gap);
             var type = obstacleSeed % 4;
             obstacleSeed += 1;
             var obstacle = {
@@ -154,16 +153,15 @@
             };
             obstacle.y = obstacle.airborne ? GROUND_Y - 150 : GROUND_Y - obstacle.height;
             obstacles.push(obstacle);
-            lastObstacleRight = obstacle.x + obstacle.width;
+            return obstacle.x + obstacle.width;
         }
 
         function ensureObstacles() {
-            var rightmost = WORLD_WIDTH;
+            var rightmost = WORLD_WIDTH + 40;
             obstacles.forEach(function(obstacle) {
                 rightmost = Math.max(rightmost, obstacle.x + obstacle.width);
             });
-            lastObstacleRight = Math.max(lastObstacleRight, rightmost);
-            while (lastObstacleRight < WORLD_WIDTH + 780) addObstacle();
+            while (rightmost < WORLD_WIDTH + 900) rightmost = addObstacle(rightmost);
         }
 
         function obstacleContains(x, y) {
@@ -195,10 +193,12 @@
             var target = activeCount < MIN_COLLECTIBLES
                 ? MIN_COLLECTIBLES + Math.floor(Math.random() * (MAX_COLLECTIBLES - MIN_COLLECTIBLES + 1))
                 : Math.min(MAX_COLLECTIBLES, activeCount);
-            var rightmost = WORLD_WIDTH + 120;
-            obstacles.forEach(function(obstacle) { rightmost = Math.max(rightmost, obstacle.x + obstacle.width); });
-            while (activeCount < target) {
-                var x = Math.max(WORLD_WIDTH + 80, rightmost + randomBetween(90, 250));
+            var rightmost = WORLD_WIDTH + 70;
+            collectibles.forEach(function(item) {
+                if (!item.collected) rightmost = Math.max(rightmost, item.x + item.radius);
+            });
+            while (activeCount < target || (rightmost < WORLD_WIDTH + 320 && activeCount < MAX_COLLECTIBLES)) {
+                var x = Math.max(WORLD_WIDTH + 80, rightmost + randomBetween(130, 260));
                 var y = GROUND_Y - randomBetween(38, 124);
                 addCollectible(x, y);
                 rightmost = x;
@@ -208,10 +208,6 @@
 
         function initializeWorld() {
             ensureObstacles();
-            var firstX = WORLD_WIDTH + 80;
-            for (var index = 0; index < 5; index += 1) {
-                addCollectible(firstX + index * 170, GROUND_Y - 92);
-            }
             ensureCollectibles();
         }
 
@@ -498,6 +494,9 @@
                 collisionCount: collisionCount,
                 collectedCount: collectedCount,
                 collectibleCount: collectibles.filter(function(item) { return !item.collected; }).length,
+                collectibles: collectibles.filter(function(item) { return !item.collected; }).map(function(item) {
+                    return { x: item.x, y: item.y, radius: item.radius };
+                }),
                 player: {
                     x: player.x, y: player.y, vy: player.vy, grounded: player.grounded,
                     jumpCount: player.jumpCount, jumpsUsed: player.jumpsUsed, jumpBuffer: player.jumpBuffer

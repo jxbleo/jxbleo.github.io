@@ -917,6 +917,13 @@ STAR 不阻止未来重新布置同一个 set。
   请求，并把成功留在当前等待卡片直到学生点击。
 - 若页面仍在失败卡片显示 Canvas，先查失败函数是否调用 `destroyAiWaitingExperience()`；若刷新后出现多个
   RAF，查旧 Canvas 被替换前是否销毁，以及 visibility/pagehide 是否清除了控制器。
+- 若 Scan 后仍短暂出现 `Uploading your writing`、`AI is reading` 或没有游戏，先检查共享 renderer 是否把
+  Runner 条件错误绑定到 `durable`，以及 CSS 是否残留 `.ai-waiting-uploading .runner-shell { display:none }`。
+  上传是否可安全离开仍由 durable 状态决定，但游戏从上传交接开始就应显示。
+- 若障碍物或星星只出现在开场，检查补充逻辑是否保存了一个不会随世界坐标回退的 `last…Right` 游标。
+  每帧应从当前活动对象重新计算最右端，再补足前方地形；长期模拟测试必须覆盖至少 60 秒。
+- Finished 的提示音必须由与 5.2 秒 Dock bounce 同周期的单一 timer 驱动，并在销毁等待页时清除；Reduced
+  Motion 不重复动画或声音。不要从 CSS animation event、Runner RAF 或轮询响应各自创建多个音频 timer。
 - 新 Runner 测试只允许使用最小 Canvas/RAF mock；不要为游戏引入框架、CloudBase API、声音、振动或新的
   持久化依赖。
 

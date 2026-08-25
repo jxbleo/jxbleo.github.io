@@ -2301,15 +2301,26 @@ check("all four durable jobs use one waiting renderer and keep their polling", (
     "waitingKind: ''",
     "waitingTaskState: ''",
   ], "waiting lifecycle API");
+  [
+    ["uploadAndExtract", "isNetworkDisconnect"],
+    ["saveAndEvaluate", "reviewJobFrom"],
+    ["submitRewrites", "renderCompletion"],
+  ].forEach(([name, next]) => {
+    const source = functionSource(client, name, next);
+    assert(!source.includes("renderLoading("), `${name} must enter the Runner before starting its request`);
+  });
 });
 
 check("the waiting stages reflect server state and expose only a durable handoff", () => {
   const client = read(clientPath);
-  const renderer = `${functionSource(client, "waitingStageDefinitions", "waitingStageClass")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
-  requireEvery(renderer, ["Uploaded", "Reading", "Organising", "Preparing", "Reviewing", "Comparing", "Checking", "Matching", "Ready", "runner-canvas", "runner-score"], "waiting renderer contract");
+  const renderer = `${functionSource(client, "waitingStageDefinitions", "mountWaitingRunner")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
+  requireEvery(renderer, ["Thinking", "Finished", "is-transmitting", "runner-canvas", "runner-score"], "waiting renderer contract");
+  assert(!/Uploaded|Organising|Preparing|Comparing|Matching/.test(renderer), "waiting progress must remain a two-state Thinking / Finished track");
   assert(!renderer.includes("data-return-home"), "waiting content must not duplicate the toolbar Back action");
-  assert(!/Continue in Background|Waiting for the same saved|checks every 5 seconds|Distance|Ink/.test(renderer), "V2 waiting renderer must remove legacy copy and metrics");
-  assert(/waitingStageDefinitions\s*\(\s*kind/.test(renderer), "waiting stages must be task-specific");
+  assert(!/Continue in Background|Waiting for the same saved|checks every 5 seconds|Distance|Ink|Text is ready/.test(renderer), "waiting renderer must remove legacy copy and metrics");
+  assert(/waitingStageDefinitions\s*\(\s*\)/.test(renderer), "all AI jobs must share the two-state waiting track");
+  assert(/runnerMarkup\s*=\s*taskState\s*!==\s*['"]failed['"]/.test(renderer), "the runner must appear immediately during upload handoff");
+  assert(!/ai-waiting-uploading|data-waiting-title/.test(renderer), "uploading and AI-reading-only waiting surfaces must be removed");
   const ocrWaiting = functionSource(client, "renderOcrWaiting", "startOcrPolling");
   assert(/durable:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate the durable handoff");
   assert(/allowBackground:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate Back");
@@ -2360,13 +2371,19 @@ check("an active wait remains Ready until the student clicks one result action",
   const client = read(clientPath);
   const styles = read("assets/css/ai-waiting-runner.css");
   const renderer = functionSource(client, "finishAiWaitingExperience", "showReadyOrOpenResult");
-  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "copy.hidden = true", "classList.add('is-ready')"], "Ready handoff");
+  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "classList.add('is-ready')"], "Ready handoff");
   assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
-  requireEvery(client, ["Check Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "AudioContext", "ready-announced"], "Ready controls and sound");
+  requireEvery(client, ["Check Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "waitingReadySoundTimer", "startWaitingReadyReminder", "AudioContext", "ready-announced"], "Ready controls and sound");
   requireEvery(client, ["unlockWaitingReadySound", "pointerdown", "audio.resume"], "user-gesture audio unlock");
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
   requireEvery(styles, ["ai-waiting-ready-dock-bounce", "translateY(-11px)", "5.2s", ".ai-waiting-stage-label", "prefers-reduced-motion"],
     "periodic reduced-motion-safe Ready reminder");
+  requireEvery(styles, ["ai-waiting-energy-flow", "is-transmitting", "translateX(-115%)", "translateX(340%)"],
+    "left-to-right energy transmission connector");
+  assert(/setInterval[\s\S]{0,220}5200/.test(client), "each periodic Ready bounce must have a synchronized reminder chime");
+  assert(/prefers-reduced-motion/.test(functionSource(client, "startWaitingReadyReminder", "playWaitingGameSound")), "repeated Ready sound must respect reduced motion");
+  assert(!/Text is ready|Your Review Is Ready|Your Feedback Is Ready|Your Revision Scan Is Ready/.test(renderer),
+    "the result action must not add a separate ready sentence below the game");
   assert(!/title\.textContent\s*=\s*titles\[0\]/.test(renderer),
     "Ready must not replace the waiting heading with a visible Your Review Is Ready field");
   ["showOcrResult", "showReviewResult", "applyRewriteResult"].forEach((name) => {

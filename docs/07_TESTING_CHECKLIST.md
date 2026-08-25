@@ -54,22 +54,28 @@ npm run test:writing-tutor
 The Runner contract test verifies the public controller API, idempotent
 destruction, repeat/air/landing-buffer jumps, ground/airborne obstacles, causal
 collect/hit events, one-time obstacle deductions,
-negative Score, green 3–7 collectible replenishment, Ready continuity,
+negative Score, continuous long-wait obstacle and green 3–7 collectible
+replenishment, Finished continuity,
 reduced-motion and pause/resume behavior, and the absence of network, CloudBase,
 persistence, or reward integration. The Writing Tutor contracts verify
-task-specific tracks, no ordinary waiting explanation or duplicate card actions,
+the shared two-state `Thinking / Finished` track, immediate upload-stage Runner,
+no ordinary waiting explanation or duplicate card actions,
 serialized visible/hidden polling with wake and backoff, stale identity guards,
-one-shot Ready actions, synthesized-audio protection, success continuation,
+one-shot result actions, bounce-synchronized synthesized-audio protection, success continuation,
 failure cleanup, and the durable result predicates.
 
 Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
 keyboard/tap jump, focused form controls, hidden-tab pause, reduced motion, missing
 Runner module fallback, network polling recovery, Ready without refresh, one
 result click, direct re-entry to a completed Job, and continued play after
-Ready. Confirm Score is inside the game frame, Jump/instruction controls are absent,
-ground and airborne obstacles appear, and collect/hit sounds differ. On the active waiting card, confirm the visible `Your … Is Ready` heading
-disappears and the Ready node/text periodically Dock-bounces; reduced motion must
-remain static. Open the same ready Composition from History and after refresh:
+Ready. Confirm the game appears immediately after Scan, with no upload-only or
+AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent,
+ground and airborne obstacles plus green collectibles continue to appear after at
+least one minute, and collect/hit sounds differ. Confirm the only progress labels
+are `Thinking` and `Finished`, the connector energy moves left-to-right, no
+`Text is ready` line appears, and the Finished node/text periodically Dock-bounces
+with one matching sound per cycle; reduced motion must remain static and must not
+repeat the sound. Open the same ready Composition from History and after refresh:
 it must enter OCR Review, the assessment, feedback, or Revision Scan directly,
 without briefly showing Canvas, Ready, sound, or Score. Confirm no Canvas or local
 Score remains in any failure or result card.
