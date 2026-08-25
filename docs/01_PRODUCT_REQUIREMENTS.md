@@ -1870,18 +1870,19 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   主页删除 `Quick Start`、`Start New`、模式图标与箭头，也不再显示 `Recent Writing` 或 `Writing Focus`。
   三个自上而下的区域使用统一小标题栏：新作文为 `New`，未完成作品为 `Continue`，已完成作品为
   `Review`。点击当前已展开的 Polishing 或 Brainstorming 第二次必须收起输入表单，并正确更新
-  `aria-expanded`；收起只改变显示状态，不清空任何尚未提交的 Title、Prompt、Writing 或 Rubric，
-  再次展开必须恢复原值。
+  `aria-expanded`；收起只改变显示状态，不清空任何尚未提交的 Prompt、Writing 或 Rubric，
+  再次展开必须恢复原值。新作文输入不提供 Title 字段；未批改作品使用正文已有标题或临时回退名，
+  批改成功后由既有 AI 建议标题流程补充，学生仍可在作品库中编辑标题。
   点击任意未完成稿或 History 项目必须先打开与 Dashboard Library 任务入口相同材质、尺寸与弹入动画的确认层；确认层只投影作文标题、当前进度文字与进度条，学生明确 Enter 后才读取全文。
   主页顶部工具栏中间显示 `Writing`，右侧仅以小号数字显示当日剩余 AI 批改词数。
 - 点击主页 `Polishing` 或 `Brainstorming` 不进入新的输入页面，而是在两个按钮下方原位展开表单；展开采用克制、可中断且尊重
-  Reduced Motion 的材质过渡。表单不在控件上方显示 `Rubric`、`Writing Prompt`、`Title`、`Optional` 或
-  `Your Writing` 标签，而把这些提示收进对应控件：Title 使用 `Title (Optional)`，Rubric 保留选择提示，
+  Reduced Motion 的材质过渡。表单不在控件上方显示 `Rubric`、`Writing Prompt` 或
+  `Your Writing` 标签，并且新作文不提供 Title 输入。Rubric 保留选择提示，
   Prompt 与正文保留各自输入提示，并用与正文一致的灰色衬线占位字体。标化模式仍严格按
-  Rubric、Writing Prompt、完整实线分隔线、Title、Your Writing 的控件顺序排列；Rubric 与 Prompt 位于
-  分隔线上方，学生内容位于下方。Writing Prompt 初始只显示一行，Your Writing 初始显示三行，两者都随输入
+  Rubric、Writing Prompt、完整实线分隔线、Your Writing 的控件顺序排列；Rubric 与 Prompt 位于
+  分隔线上方，学生正文位于下方。Writing Prompt 初始只显示一行，Your Writing 初始显示三行，两者都随输入
   自动增高而不出现内部纵向滚动。正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
-  选择模式、输入 Title/Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
+  选择模式、输入 Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
   定位符，也不进入 History。未提交内容只存在当前页面内存；刷新、关闭、离开后再次进入都必须消失，且不得
   通过 `sessionStorage`、`localStorage` 或其他浏览器持久层恢复。刷新仍停留 Writing Home，不得进入已废弃的
   独立初稿输入页。只有文本模式点击 `Submit`，或照片模式点击底部
@@ -1891,8 +1892,10 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   任意相机入口先打开同一个 Apple 风格来源选择层，提供 `Take Photo` 与 `Choose from Library`，取消时
   回到原触发按钮。选择后必须在同一用户手势内同步打开原生输入，避免 iPhone/iPad Safari 阻止选择器。
   拍摄后返回照片暂存区，可继续添加图片，最多八页。选择照片只暂存，
-  不启动 OCR。每张预览左上角按 `Page 当前页/总页数` 显示页序，右下角只提供 `Remove`；页面保持拍摄或选择时的加入顺序，
-  不提供手动前移/后移。添加或删除照片、删掉最后一张照片、切换输入方式或切换评估模式后，手机/iPad 必须重新显示当前页面顶部，
+  不启动 OCR。初稿和 Sentence Revision 照片都必须始终只显示当前一页，不得同时平铺或露出相邻页；
+  左右箭头按加入顺序切换，页码显示当前页/总页数，点击图片打开可关闭且可继续翻页的放大预览。
+  图片右上角使用红色叉号作为删除入口，删除前必须显示 Apple 风格确认弹窗；原图片下方的删除操作位置改为
+  `Add Photo`。不提供手动前移/后移。添加或删除照片、删掉最后一张照片、切换输入方式或切换评估模式后，手机/iPad 必须重新显示当前页面顶部，
   不得保留内容缩短前的底部滚动位置。底部主按钮按输入方式显示 `Submit` 或 `Scan`，只有点击底部 `Scan` 才上传并开始识别。左侧小号红色
   `Discard` 使用与主操作同等完整的方框按钮外观。空白稿直接删除并返回；存在学生输入时先显示永久删除确认弹窗。服务器仅允许删除 revision 1、尚未进入上传/OCR/评估/订正且没有 Library 题目绑定的 `draft`；不满足条件时必须拒绝，因此任何已开始处理或已提交作品仍不可删除。
 - OCR 确认页删除 `OCR Review` 标题，只保留顶部右侧 `Compare with Image`、紧接其后的正文编辑器，

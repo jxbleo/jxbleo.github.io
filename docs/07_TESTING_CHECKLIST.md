@@ -1809,9 +1809,9 @@ High priority improvement:
   section labels, repeated mode switch, and separate `Type` / `Scan` switch are absent.
   Verify the two home mode buttons read `Polishing` and `Brainstorming`. Confirm no
   visible Rubric, Writing Prompt, Title, Optional, or Your Writing heading remains
-  above a control. Title must use the internal hint `Title (Optional)` and every input
+  above a control. Confirm the source form contains no Title input. Every remaining input
   hint must use the same muted serif typography as the manuscript hint. Standardized
-  mode must retain the control order Rubric, Writing Prompt, full solid divider, Title,
+  mode must retain the control order Rubric, Writing Prompt, full solid divider,
   Your Writing. Prompt begins at one row and Writing at three; type and delete multiline
   content and confirm both grow and shrink without an internal vertical scrollbar.
   Confirm `Type or paste your writing here…` and the first typed line align near
@@ -1823,9 +1823,12 @@ High priority improvement:
   Prompt OCR must resume after refresh, enter OCR Review, and on Confirm populate only
   Writing Prompt, delete its private photos, return to the inline form, and not start review.
   Capture one page and confirm the UI returns to the staging screen without starting OCR; use
-  `Add Photo` and the source sheet to add camera and library pages. Confirm every preview
-  keeps its added order, shows `Page current/total` at top-left, offers only `Remove` at bottom-right,
-  and has no forward/back controls. Confirm only the bottom green `Scan` starts OCR and the green action reads
+  `Add Photo` and the source sheet to add camera and library pages. Confirm initial and revision
+  staging each show only one current image, preserve added order, show current/total, and use overlay
+  arrows to move one page at a time. Tap the image and verify the enlarged viewer, keyboard arrows,
+  Escape, and focus restoration. Tap the red in-image close control, cancel once, then confirm removal;
+  no photo may be deleted before confirmation, and `Add Photo` must occupy the former bottom action position.
+  Confirm only the bottom green `Scan` starts OCR and the green action reads
   `Submit` for text and `Scan` for photo input. The boxed red `Discard` deletes an empty draft directly;
   non-empty `Discard` opens the compact dialog with initial focus on `Cancel`,
   Escape/cancel restores focus, and confirmation permanently removes the initial draft

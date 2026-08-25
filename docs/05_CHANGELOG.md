@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Single-photo Writing scan staging
+
+- Removed the student-entered Title field from new Writing source forms; existing
+  AI title generation and portfolio title editing remain authoritative.
+- Unified initial-draft and revision-photo staging around one current image, explicit
+  previous/next navigation, a full enlarged viewer, and current/total counters.
+- Replaced bottom Remove actions with `Add Photo`; destructive removal now starts from
+  an in-image red close control and requires the shared Apple-style confirmation.
+
 ## 2026-08-25 — Compact adaptive Writing source controls
 
 - Removed visible source-field headings and moved concise guidance into the controls
