@@ -1937,8 +1937,10 @@ Important mobile rules:
 
 - OCR, General Language Review, Sentence Revision Check, and Revision Scan use
   the same centered waiting card with `Uploaded` and `Finished` as its two node
-  labels. `Thinking` is centered directly over the energy connector rather than
-  occupying an endpoint.
+  labels. Before the upload handoff completes, `Uploaded` remains active; as soon
+  as the durable upload succeeds it immediately becomes a checked node instead
+  of waiting for `Finished`. Normal processing uses only the luminous energy
+  connector and has no visible `Thinking` label.
   During every pending state—including the unconfirmed upload handoff—the Runner
   appears immediately and a luminous connector continuously travels left to
   right. There is no upload-only, “AI is reading”, or other loader-only surface.
@@ -1969,9 +1971,9 @@ Important mobile rules:
   completion cue. Opening an already-ready Composition from History bypasses this entire
   card and Runner and renders the saved result immediately.
 - Retryable provider/network failures are attempted by the durable cloud job up
-  to five times while the card remains in `Thinking`. If the saved job finally
+  to five times while the card remains in its green transmitting state. If the saved job finally
   fails, the same card and Canvas remain mounted: the connector and terminal node
-  become red, the connector label changes from `Thinking` to `Interrupted`, and a compact warning
+  become red, the connector shows `Interrupted`, and a compact warning
   directly below the track says the student can retry now or later. The game
   remains playable and keeps its in-memory Score. Exactly one full-width `Retry`
   action appears below the game; no Back, Upload Again, return-to-revisions, or
@@ -2172,11 +2174,14 @@ Important mobile rules:
   Apple-style permanent-delete confirmation before the server removes the eligible draft.
 - Completed language review uses exactly three primary cards in order:
   `Language Review`, `Draft`, and `Sentence Revision`.
-- On phone layouts, the first `Language Review` card and the OCR confirmation
-  card retain the same 14px breathing room below the sticky primary toolbar as
-  detail cards receive on wider layouts. This inset belongs to the detail
-  content and must not move the sentence-number navigator away from `top: 0`
-  when that navigator takes over the toolbar position.
+- On phone layouts, the shared Writing stage supplies 14px of breathing room
+  below the sticky primary toolbar to every rendered state: source entry,
+  waiting game, OCR confirmation, standardized result, language review,
+  revision-photo selection, Review Scan, completion, empty, loading, and error.
+  Writing Home reduces its own inner top padding by the same amount so its
+  established 20px visual inset does not grow. The shared stage inset scrolls
+  away and must not move the sentence-number navigator away from `top: 0` when
+  that navigator takes over the toolbar position.
 - At the beginning of `Language Review`, show `CEFR Writing Estimate` with
   the manuscript's compact three-way CEFR level (`B1-`, `B1`, or `B1+`)
   and one concise Simplified Chinese rationale. Never render `偏下`, `中段`,

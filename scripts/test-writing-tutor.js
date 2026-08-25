@@ -1017,15 +1017,15 @@ check("writing cards shrink to the phone viewport without horizontal page overfl
     "only the sentence capsule row may scroll horizontally");
 });
 
-check("Writing detail cards preserve toolbar breathing room on phones", () => {
+check("every Writing stage preserves toolbar breathing room on phones", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  requireEvery(client, [
-    'class="writing-detail-card-stack"',
-    'class="language-review-stack writing-detail-card-stack"',
-  ], "shared OCR and Language Review detail spacing hook");
-  assert(/@media\s*\(max-width:\s*760px\)[\s\S]*?\.writing-detail-card-stack\s*\{[^}]*padding-top\s*:\s*14px/is.test(styles),
-    "phone OCR confirmation and Language Review must keep a 14px gap below the sticky toolbar");
+  assert(/@media\s*\(max-width:\s*760px\)[\s\S]*?\.stage\s*\{[^}]*padding\s*:\s*14px\s+10px\s+16px/is.test(styles),
+    "the phone stage must give every rendered state a 14px gap below the sticky toolbar");
+  assert(/@media\s*\(max-width:\s*760px\)[\s\S]*?\.writing-home\s*\{[^}]*padding\s*:\s*6px\s+0\s+36px/is.test(styles),
+    "Writing Home must offset the shared stage gap and preserve its established 20px inset");
+  assert(!client.includes("writing-detail-card-stack") && !styles.includes("writing-detail-card-stack"),
+    "toolbar breathing room must be a stage-wide rule rather than a per-screen patch");
 });
 
 check("Draft preserves paragraph breaks while sentence highlights remain inline", () => {
@@ -2365,13 +2365,14 @@ check("all four durable jobs use one waiting renderer and keep their polling", (
 check("the waiting stages reflect server state and expose only a durable handoff", () => {
   const client = read(clientPath);
   const renderer = `${functionSource(client, "waitingStageDefinitions", "mountWaitingRunner")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
-  requireEvery(renderer, ["Uploaded", "Thinking", "Finished", "ai-waiting-connector-label", "is-transmitting", "runner-canvas", "runner-score"], "waiting renderer contract");
-  assert(!/Organising|Preparing|Comparing|Matching/.test(renderer), "waiting progress must remain an Uploaded / Thinking / Finished path");
+  requireEvery(renderer, ["Uploaded", "Finished", "Interrupted", "ai-waiting-connector-label", "is-transmitting", "runner-canvas", "runner-score"], "waiting renderer contract");
+  assert(!/Thinking|Organising|Preparing|Comparing|Matching/.test(renderer), "normal waiting progress must use an unlabeled energy connector between Uploaded and Finished");
   assert(!renderer.includes("data-return-home"), "waiting content must not duplicate the toolbar Back action");
   assert(!/Continue in Background|Waiting for the same saved|checks every 5 seconds|Distance|Ink|Text is ready/.test(renderer), "waiting renderer must remove legacy copy and metrics");
-  assert(/waitingStageDefinitions\s*\(\s*\)/.test(renderer), "all AI jobs must share the same two endpoints and connector process label");
+  assert(/waitingStageDefinitions\s*\(\s*\)/.test(renderer), "all AI jobs must share the same two endpoints");
   assert(/return\s*\[\s*['"]Uploaded['"]\s*,\s*['"]Finished['"]\s*\]/.test(renderer), "Uploaded and Finished must remain the only endpoint nodes");
-  assert(/waitingConnectorLabel[\s\S]{0,180}Interrupted[\s\S]{0,120}Thinking/.test(renderer), "Thinking must sit on the connector and become Interrupted on failure");
+  assert(/waitingConnectorLabel[\s\S]{0,180}Interrupted[\s\S]{0,80}['"]['"]/.test(renderer), "the connector label must be empty during normal work and show only Interrupted on failure");
+  assert(/taskState\s*===\s*['"]uploading['"][\s\S]{0,180}is-active[\s\S]{0,180}return\s+stageIndex\s*===\s*0\s*\?\s*['"]is-complete['"]/.test(renderer), "Uploaded must gain its check as soon as the durable upload handoff succeeds");
   assert(/runnerMarkup\s*=\s*['"]<div class=\\?['"]runner-shell/.test(renderer), "the runner must remain mounted during upload handoff and interruption");
   assert(!/ai-waiting-uploading|data-waiting-title/.test(renderer), "uploading and AI-reading-only waiting surfaces must be removed");
   const ocrWaiting = functionSource(client, "renderOcrWaiting", "startOcrPolling");
