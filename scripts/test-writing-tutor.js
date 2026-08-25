@@ -580,9 +580,10 @@ check("OCR confirmation can move the first line into an optional undoable title"
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderOcr", "adoptPromptOcr");
   requireEvery(renderSource, [
-    'id="ocr-title"', 'maxlength="80"', 'placeholder="Title (Optional)"',
+    'id="ocr-title"', 'maxlength="80"', 'aria-label="Title, optional"', 'placeholder="Title (Optional)"',
     "Use First Line", "data-undo-ocr-title", ">Undo</button>",
   ], "OCR title extraction controls");
+  assert(!renderSource.includes("Optional composition title"), "the OCR title field must not render a redundant label above the input");
   const interaction = functionSource(client, "splitOcrFirstLine", "unwrapOcrMark");
   requireEvery(interaction, [
     "lines.splice(firstLineIndex, 1)", "ocrTitleUndo", "editorHtml",
@@ -596,7 +597,14 @@ check("OCR confirmation can move the first line into an optional undoable title"
   assert.deepStrictEqual(split("\n\nA Rainy Day\n\nFirst paragraph.\n\nSecond paragraph."), {
     title: "A Rainy Day", remaining: "First paragraph.\n\nSecond paragraph.",
   });
-  requireEvery(styles, [".ocr-title-control", ".ocr-title-field input", ".ocr-title-feedback"], "OCR title control styling");
+  requireEvery(styles, [".ocr-title-control", ".ocr-title-field input", ".ocr-title-feedback", ".ocr-title-feedback.is-error", "#c66b73"], "OCR title control styling");
+  assert(/\.ocr-title-field input\s*\{[^}]*height:\s*44px/i.test(styles)
+      && /\.ocr-title-actions button\s*\{[^}]*height:\s*44px/i.test(styles),
+    "Title and Use First Line must share the same control height");
+  assert(/updateOcrTitleUndoUi\([^)]*['"]error['"]\)/.test(interaction), "invalid first-line guidance must use the pale-red error tone");
+  requireEvery(renderSource, ['data-open-photo-viewer="source"', 'data-photo-index=', 'role="button"', 'tabindex="0"'], "OCR image enlargement controls");
+  assert(/keydown[\s\S]{0,500}data-open-photo-viewer[\s\S]{0,500}openPhotoViewer/.test(client),
+    "OCR comparison images must support keyboard enlargement through the shared viewer");
   const confirmHandler = client.slice(client.indexOf("button.matches('[data-confirm-ocr]')"), client.indexOf("button.matches('[data-retry-rewrite]')"));
   requireEvery(confirmHandler, ["ocr-title", "state.title", "saveAndEvaluate"], "OCR title confirmation persistence");
 });

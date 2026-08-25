@@ -2021,6 +2021,9 @@ Important mobile rules:
   a compact `Title (Optional)` field follows with `Use First Line`; the action
   moves the first non-empty line out of the manuscript and exposes a quiet `Undo`
   that restores the exact prior title, editor HTML, and acknowledged-region state.
+  The input has no visible label above it, keeps its accessible name through
+  `aria-label`, and shares one 44px height and baseline with `Use First Line`.
+  Invalid/overlong first-line guidance uses low-emphasis pale-red text.
   Editing either field commits to the new state and dismisses Undo. Prompt OCR does
   not show title controls. The editable manuscript follows, with one horizontally
   centered `Confirm` footer action. Remove `Upload Again` from this review step, together with the former
@@ -2029,7 +2032,9 @@ Important mobile rules:
 - Image comparison is closed by default on every viewport. `Compare with Image`
   opens a split view on tablet/desktop and places the images above the editor on
   mobile; pressing it again returns to the text-only layout without changing its
-  label or the confirmed text.
+  label or the confirmed text. Clicking or keyboard-activating the ordinary image
+  surface opens the shared full-screen, paged photo viewer. An uncertainty region
+  remains a separate higher-priority target that locates its text instead.
 - Genuinely uncertain OCR substrings appear directly inside the editor with a
   pale-red fill and dark-red text, without an underline. The highlight means
   “check the image,” not a writing error. Clicking an unchanged mark acknowledges

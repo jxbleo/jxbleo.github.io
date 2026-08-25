@@ -266,11 +266,14 @@
         });
     }
 
-    function updateOcrTitleUndoUi(message) {
+    function updateOcrTitleUndoUi(message, tone) {
         var undo = document.querySelector('[data-undo-ocr-title]');
         var feedback = document.querySelector('[data-ocr-title-feedback]');
         if (undo) undo.hidden = !state.ocrTitleUndo;
-        if (feedback) feedback.textContent = firstText(message);
+        if (feedback) {
+            feedback.textContent = firstText(message);
+            feedback.classList.toggle('is-error', tone === 'error');
+        }
     }
 
     function clearOcrTitleUndo() {
@@ -285,11 +288,11 @@
         var originalText = ocrEditorText(editor);
         var extracted = splitOcrFirstLine(originalText);
         if (!extracted || !extracted.title) {
-            updateOcrTitleUndoUi('No first line was found.');
+            updateOcrTitleUndoUi('No first line was found.', 'error');
             return;
         }
         if (extracted.title.length > 80) {
-            updateOcrTitleUndoUi('The first line is too long for a title. You can enter it manually.');
+            updateOcrTitleUndoUi('The first line is too long for a title. You can enter it manually.', 'error');
             return;
         }
         state.ocrTitleUndo = {
@@ -2009,13 +2012,13 @@
         var reviewText = state.scanTarget === 'prompt' ? state.ocrReviewText : state.confirmedText;
         var imageLabel = state.scanTarget === 'prompt' ? 'Uploaded writing prompt images' : 'Uploaded composition images';
         var titleControl = state.scanTarget === 'writing'
-            ? '<div class="ocr-title-control"><label class="ocr-title-field"><span class="sr-only">Optional composition title</span><input id="ocr-title" type="text" maxlength="80" autocomplete="off" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></label>' +
+            ? '<div class="ocr-title-control"><label class="ocr-title-field"><input id="ocr-title" type="text" maxlength="80" autocomplete="off" aria-label="Title, optional" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></label>' +
                 '<div class="ocr-title-actions"><button class="secondary-button compact" type="button" data-use-ocr-first-line>Use First Line</button><button class="quiet-button compact" type="button" data-undo-ocr-title hidden>Undo</button></div>' +
                 '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite"></span></div>'
             : '';
         stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading">' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
-            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
+            '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '" data-open-photo-viewer="source" data-photo-index="' + index + '" role="button" tabindex="0" aria-label="Enlarge uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
             '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
             '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
         scheduleStageViewportReset();
@@ -3853,6 +3856,12 @@
     });
 
     document.addEventListener('keydown', function(event) {
+        var photo = event.target.closest && event.target.closest('[data-open-photo-viewer]');
+        if (photo && (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar')) {
+            event.preventDefault();
+            openPhotoViewer(photo.getAttribute('data-open-photo-viewer'), Number(photo.getAttribute('data-photo-index')), photo);
+            return;
+        }
         var ocrRegion = event.target.closest && event.target.closest('[data-ocr-region-index]');
         if (ocrRegion && (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar')) {
             event.preventDefault();

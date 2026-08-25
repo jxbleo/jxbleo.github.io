@@ -1855,8 +1855,12 @@ High priority improvement:
   Undo must restore the exact prior title, manuscript, and image-region state;
   typing afterward dismisses the stale Undo. A first line longer than 80 characters
   must remain untouched with manual-entry guidance. Prompt OCR must show no title
-  control. The image toggle must
+  control. Confirm no visible `Optional composition title` label remains, the input
+  and `Use First Line` are both 44px high, and invalid guidance is pale red. The image toggle must
   open/close split view on desktop/iPad and an image-above-text view on phone.
+  Click the ordinary comparison image and activate it with Enter/Space to open the
+  shared full-screen viewer; clicking a red uncertainty box must still locate text
+  rather than enlarge the image.
 - Return an exact uncertain substring from OCR and confirm it is marked with a
   pale-red fill and dark-red text, without an underline. Clicking it must remove
   the mark without moving the caret; editing it must also remove the mark, and
