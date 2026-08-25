@@ -2123,10 +2123,10 @@ Important mobile rules:
   hover, and reduced-motion/transparency preferences retain stable equivalents.
 - The expanded Writing form has no page eyebrow, explanatory heading, step badge,
   section labels, repeated mode switch, `Type` / `Scan` switch, or visible field
-  headings. `Title (Optional)`, rubric choice, prompt guidance, and manuscript guidance
-  live inside their controls in one muted serif placeholder style while accessible
-  names remain available to assistive technology. Brainstorming retains the control
-  order Rubric, Writing Prompt, divider, Title, Your Writing; the divider is one full
+  headings. The source form has no student-entered Title control; rubric choice, prompt
+  guidance, and manuscript guidance live inside their controls in one muted serif placeholder
+  style while accessible names remain available to assistive technology. Brainstorming retains
+  the control order Rubric, Writing Prompt, divider, Your Writing; the divider is one full
   solid line matching the form's top separator. Writing Prompt begins at one row and
   Your Writing at three rows; both grow vertically with content and avoid an internal
   vertical scrollbar.
@@ -2137,9 +2137,11 @@ Important mobile rules:
   existing photo staging surface and synchronously invokes the native rear-camera picker. After capture, the student
   returns to the photo staging surface and may use `Take Another Photo` or
   `Choose from Library` until the eight-page limit; selection never starts OCR.
-  Each preview keeps its capture/selection order, labels the top-left corner as
-  `Page current/total`, and provides only a bottom-right `Remove` action; there
-  are no forward/back reorder controls. Adding/removing a photo, removing the last
+  Initial and revision-photo staging render exactly one current photo at a time. Left/right
+  overlay arrows navigate the preserved capture order without reordering it, the counter shows
+  current/total, and tapping the photo opens a full enlarged viewer with the same navigation.
+  A red close control in the image requests deletion through an Apple-style destructive
+  confirmation; `Add Photo` occupies the former bottom action position. Adding/removing a photo, removing the last
   photo, or switching source/review modes must place the rebuilt screen below the
   sticky toolbar instead of preserving Safari's stale bottom scroll coordinate.
   Full-screen transitions use the same positioning rule, while in-place Sentence

@@ -412,17 +412,20 @@ check("the first writing screen keeps only the compact source controls", () => {
   const renderSource = `${functionSource(client, "homeComposerHtml", "pendingComposerStorageKey")}\n${functionSource(client, "sourceFieldsHtml", "rubricOptions")}`;
   const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
   requireEvery(renderSource, [
-    "Title (Optional)", "data-discard-source", ">Discard</button>",
+    "data-discard-source", ">Discard</button>",
     "state.inputMethod === 'photo' ? 'Scan' : 'Submit'",
   ], "compact Writing source screen");
+  assert(!renderSource.includes("Title (Optional)") && !renderSource.includes('id="writing-title"'),
+    "the initial Writing form must not ask students for a Title");
   requireEvery(textSource, ['aria-label="Your Writing"', 'rows="3"', "writing-text", "Type or paste your writing here…", "cameraOnlyButton('writing'"], "language text-entry field");
   const sourceFields = functionSource(client, "sourceFieldsHtml", "rubricOptions");
   const cameraButton = functionSource(client, "cameraOnlyButton", "sourceFieldsHtml");
-  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'rows="1"', "source-fixed-divider", "Title (Optional)"], "Brainstorming source fields");
+  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'rows="1"', "source-fixed-divider"], "Brainstorming source fields");
   assert(sourceFields.indexOf('aria-label="Rubric"') < sourceFields.indexOf('aria-label="Writing Prompt"')
-      && sourceFields.indexOf('aria-label="Writing Prompt"') < sourceFields.indexOf("source-fixed-divider")
-      && sourceFields.indexOf("source-fixed-divider") < sourceFields.indexOf("Title (Optional)"),
-    "Brainstorming source order must be Rubric, Writing Prompt, divider, then Title");
+      && sourceFields.indexOf('aria-label="Writing Prompt"') < sourceFields.indexOf("source-fixed-divider"),
+    "Brainstorming source order must be Rubric, Writing Prompt, then divider before Writing");
+  assert(!sourceFields.includes("writing-title") && !sourceFields.includes("Title (Optional)"),
+    "Brainstorming must not retain a hidden or visible student Title input");
   assert(!/<(?:label|span)[^>]*>\s*(?:Rubric|Writing Prompt|Title|Your Writing)/.test(`${sourceFields}\n${textSource}`),
     "source controls must not render visible field headings above the inputs");
   requireEvery(cameraButton, ["data-open-photo-choice", "data-photo-target", "icon('camera')", "aria-label", "title"], "icon-only source camera control");
@@ -462,16 +465,23 @@ check("photo entry offers camera or library, stages multiple pages, and scans on
   requireEvery(photoSource, [
     "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
     "Add Photo", "data-writing-photo-library", "multiple",
-    "source-photo-card-actions", "Page ", "state.photoUrls.length", "Remove",
+    "photo-preview-single", "stagedPhotoCardHtml", "activeSourcePhotoIndex",
   ], "photo staging controls");
+  const stagedCard = functionSource(client, "stagedPhotoCardHtml", "photoSourceHtml");
+  requireEvery(stagedCard, [
+    "data-staged-photo-step", "data-open-photo-viewer", "data-request-photo-remove",
+    "staged-photo-remove", "Previous photo", "Next photo", "Page ",
+  ], "single-face staged photo card");
   requireEvery(page, ["photo-choice-layer", "Take Photo", "Choose from Library"],
     "Apple-style photo source chooser");
   assert(!/data-move-photo|前移|后移|移除/.test(photoSource),
     "initial photo staging must not expose reorder controls or Chinese remove copy");
   assert(!/button\.matches\(\s*["']\[data-move-photo\]["']\s*\)/.test(client),
     "removed photo reorder controls must not leave a dead click handler");
-  assert(/\.source-photo-card-actions\s*\{[^}]*justify-content:\s*flex-end/.test(read(stylePath)),
-    "the initial photo Remove action must align to the bottom-right");
+  requireEvery(page, ["photo-remove-confirmation", "Remove this photo?", "data-confirm-photo-remove", "photo-viewer-layer", "data-photo-viewer-step"],
+    "photo removal confirmation and enlarged viewer");
+  assert(/\.staged-photo-actions\s*\{[^}]*justify-content:\s*flex-end/.test(read(stylePath)),
+    "the initial Add Photo action must occupy the former bottom-right action position");
   requireEvery(renderSource, ["stage.innerHTML", "scheduleStageViewportReset"],
     "source re-render viewport reset");
   assert(/inputMethod:\s*["']text["']/.test(client), "direct text entry must be the default");
@@ -967,7 +977,7 @@ check("writing cards shrink to the phone viewport without horizontal page overfl
   const styles = read(stylePath);
   requireEvery(styles, [
     ".ai-tutor-main, .stage", ".language-review-stack", ".language-review-card, .sentence-list, .sentence-card",
-    "overflow-wrap: anywhere", ".photo-preview-grid { grid-template-columns: minmax(0,1fr);",
+    "overflow-wrap: anywhere", ".photo-preview-single, .revision-photo-carousel",
   ], "phone-width safeguards");
   assert(/\.capsule-row\s*\{[^}]*min-width\s*:\s*0[^}]*overflow-x\s*:\s*auto/is.test(styles),
     "only the sentence capsule row may scroll horizontally");
@@ -1053,26 +1063,23 @@ check("Revision Scan stages an ordered multi-photo batch before cloud upload", (
   const backend = read(functionPath);
   const selectionSource = functionSource(client, "renderRevisionScanPhotoSelection", "revisionScanCandidateHtml");
   requireEvery(selectionSource, [
-    "revision-photo-position", "revision-photo-carousel", "Add Photo", "Remove", "Back", "Start Scanning",
-    "data-open-photo-choice=\"revision\"", "data-remove-revision-photo", "data-start-revision-upload",
+    "revision-photo-carousel", "Add Photo", "Back", "Start Scanning", "stagedPhotoCardHtml",
+    "data-open-photo-choice=\"revision\"", "data-start-revision-upload",
     "revision-scan-library",
     "scan.files.push(file)", "scan.previewUrls.push", "8 - scan.files.length", "activePhotoIndex",
   ], "revision photo staging screen");
   assert(!selectionSource.includes("Revision Photos"),
     "the photographed-revision staging surface must omit its former heading");
-  assert(/revision-photo-card-actions[\s\S]{0,700}data-open-photo-choice="revision"[\s\S]{0,700}data-remove-revision-photo/.test(selectionSource),
-    "Add Photo and Remove must share each current photo's action layer");
+  assert(!selectionSource.includes("data-remove-revision-photo"),
+    "revision staging must use the shared in-image red remove control");
   assert(/id="revision-scan-photo"[^>]*capture="environment"[\s\S]{0,300}id="revision-scan-library"(?![^>]*capture=)/.test(selectionSource),
     "camera and Photo Library must use separate native inputs");
-  assert(/\(closest \+ 1\) \+ '\/' \+ slides\.length/.test(selectionSource)
-      && /aria-label['"], 'Photo ' \+ \(closest \+ 1\) \+ ' of ' \+ slides\.length/.test(selectionSource),
-    "the centered counter must track the visible photo as current/total rather than x/8");
-  requireEvery(selectionSource, ["scheduleStageViewportReset", "window.requestAnimationFrame", "carousel.scrollLeft"],
-    "stable post-camera positioning");
+  requireEvery(selectionSource, ["scheduleStageViewportReset", "boundedPhotoIndex"],
+    "stable post-camera positioning and active-page bounds");
   requireEvery(styles, [
-    ".revision-photo-carousel", "scroll-snap-type: x mandatory", ".revision-photo-position",
-    "margin: 0 auto 14px", ".revision-photo-card img", "height: min(56vh,620px)", "scroll-margin-top: 90px",
-  ], "iPad and phone revision-photo layout");
+    ".revision-photo-carousel", ".staged-photo-frame", ".staged-photo-arrow",
+    ".staged-photo-open img", "height: min(56vh,620px)", "scroll-margin-top: 90px",
+  ], "iPad and phone single-face revision-photo layout");
   assert(/\.revision-photo-actions\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*nowrap/.test(styles),
     "Back and Start Scanning must remain on one phone row");
   assert(/target\.id[\s\S]{0,60}revision-scan-photo[\s\S]{0,220}addRevisionScanPhotos/.test(client),

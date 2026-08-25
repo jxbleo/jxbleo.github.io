@@ -22,6 +22,7 @@
         photoFiles: [],
         photoUrls: [],
         photoIds: [],
+        activeSourcePhotoIndex: 0,
         ocr: null,
         ocrReviewText: '',
         scanTarget: 'writing',
@@ -69,6 +70,13 @@
         photoChoiceContext: '',
         photoChoiceTarget: 'writing',
         photoChoiceReturnFocus: null,
+        photoViewerOpen: false,
+        photoViewerUrls: [],
+        photoViewerIndex: 0,
+        photoViewerReturnFocus: null,
+        photoRemoveDialogOpen: false,
+        pendingPhotoRemoval: null,
+        photoRemoveReturnFocus: null,
         leaveDialogOpen: false,
         incompleteRewriteAlertOpen: false,
         incompleteRewriteTargetId: '',
@@ -91,6 +99,8 @@
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
     var photoChoiceLayer = document.getElementById('photo-choice-layer');
+    var photoRemoveConfirmation = document.getElementById('photo-remove-confirmation');
+    var photoViewerLayer = document.getElementById('photo-viewer-layer');
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
     var stageViewportResetToken = 0;
@@ -1338,6 +1348,7 @@
         state.photoFiles = [];
         state.photoUrls = [];
         state.photoIds = [];
+        state.activeSourcePhotoIndex = 0;
         state.ocr = null;
         state.ocrReviewText = '';
         state.scanTarget = 'writing';
@@ -1391,6 +1402,7 @@
         state.photoFiles = [];
         state.photoUrls = [];
         state.photoIds = [];
+        state.activeSourcePhotoIndex = 0;
         state.homeComposerOpen = false;
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
@@ -1413,6 +1425,7 @@
             state.photoFiles = [];
             state.photoUrls = [];
             state.photoIds = [];
+            state.activeSourcePhotoIndex = 0;
             returnToTutorHome({ skipEmptyDiscard: true });
             return;
         }
@@ -1433,6 +1446,7 @@
             state.photoFiles = [];
             state.photoUrls = [];
             state.photoIds = [];
+            state.activeSourcePhotoIndex = 0;
             returnToTutorHome({ skipEmptyDiscard: true });
         }).catch(function(error) {
             setStatus(firstText(error && error.message, 'This draft could not be discarded. Please try again.'));
@@ -1441,7 +1455,7 @@
 
     function focusHomeComposer() {
         window.requestAnimationFrame(function() {
-            var target = document.getElementById('writing-title') || document.getElementById('writing-text');
+            var target = document.getElementById('writing-rubric') || document.getElementById('writing-text');
             if (target) target.focus({ preventScroll: true });
         });
     }
@@ -1524,8 +1538,7 @@
         var prompt = standardized
             ? '<div class="field inline-writing-field prompt-writing-field">' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea class="source-auto-grow source-prompt-input" id="writing-prompt" rows="1" maxlength="6000" aria-label="Writing Prompt" placeholder="Type or paste the full writing prompt…">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
             : '';
-        var title = '<div class="field source-control-only"><input id="writing-title" maxlength="80" autocomplete="off" aria-label="Title, optional" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></div>';
-        return '<section class="section-block source-fields">' + rubric + prompt + title + '</section>';
+        return standardized ? '<section class="section-block source-fields">' + rubric + prompt + '</section>' : '';
     }
 
     function rubricOptions(selected) {
@@ -1547,13 +1560,41 @@
         return '<div class="field inline-writing-field">' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript source-auto-grow" id="writing-text" rows="3" maxlength="30000" aria-label="Your Writing" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
     }
 
+    function boundedPhotoIndex(value, count) {
+        return Math.max(0, Math.min(Number(value) || 0, Math.max(0, count - 1)));
+    }
+
+    function stagedPhotoCardHtml(options) {
+        var kind = options.kind === 'revision' ? 'revision' : 'source';
+        var index = boundedPhotoIndex(options.index, options.count);
+        var count = Math.max(1, Number(options.count) || 1);
+        var previousDisabled = index <= 0 ? ' disabled' : '';
+        var nextDisabled = index >= count - 1 ? ' disabled' : '';
+        var counter = kind === 'source' ? 'Page ' + (index + 1) + '/' + count : (index + 1) + '/' + count;
+        var alt = kind === 'source'
+            ? 'Writing photo page ' + (index + 1) + ' of ' + count
+            : 'Selected revision photo ' + (index + 1) + ' of ' + count;
+        return '<figure class="photo-preview-card staged-photo-card ' + (kind === 'revision' ? 'revision-photo-card' : 'source-photo-preview-card') + '" data-staged-photo-kind="' + kind + '">' +
+            '<span data-staged-photo-counter role="status" aria-live="polite">' + counter + '</span>' +
+            '<div class="staged-photo-frame"><button class="staged-photo-open" type="button" data-open-photo-viewer="' + kind + '" data-photo-index="' + index + '" aria-label="Enlarge ' + alt + '">' +
+            '<img data-staged-photo-image src="' + escapeHtml(options.url) + '" alt="' + escapeHtml(alt) + '"></button>' +
+            '<button class="staged-photo-remove" type="button" data-request-photo-remove="' + kind + '" data-photo-index="' + index + '" aria-label="Remove photo ' + (index + 1) + '">' +
+            '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"></path></svg></button>' +
+            (count > 1 ? '<button class="staged-photo-arrow is-previous" type="button" data-staged-photo-step="-1" data-photo-kind="' + kind + '" aria-label="Previous photo"' + previousDisabled + '><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"></path></svg></button>' +
+            '<button class="staged-photo-arrow is-next" type="button" data-staged-photo-step="1" data-photo-kind="' + kind + '" aria-label="Next photo"' + nextDisabled + '><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></button>' : '') + '</div>' +
+            '<div class="staged-photo-actions">' + options.addButton + '</div></figure>';
+    }
+
     function photoSourceHtml(hasPhoto) {
         if (hasPhoto) {
-            return '<div class="photo-preview-grid">' + state.photoUrls.map(function(url, index) {
-                return '<figure class="photo-preview-card source-photo-preview-card"><span>Page ' + (index + 1) + '/' + state.photoUrls.length + '</span><img src="' + escapeHtml(url) + '" alt="Writing photo page ' + (index + 1) + ' of ' + state.photoUrls.length + '"><div class="source-photo-card-actions">' +
-                    '<button class="danger-button compact" type="button" data-remove-photo="' + index + '">Remove</button></div></figure>';
-            }).join('') + '</div><div class="photo-source-actions">' +
-                '<button class="secondary-button compact add-photo-button" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(state.scanTarget) + '">' + icon('camera') + 'Add Photo</button></div>' + writingPhotoInputs();
+            state.activeSourcePhotoIndex = boundedPhotoIndex(state.activeSourcePhotoIndex, state.photoUrls.length);
+            return '<div class="photo-preview-single">' + stagedPhotoCardHtml({
+                kind: 'source',
+                url: state.photoUrls[state.activeSourcePhotoIndex],
+                index: state.activeSourcePhotoIndex,
+                count: state.photoUrls.length,
+                addButton: '<button class="secondary-button compact add-photo-button" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(state.scanTarget) + '"' + (state.photoUrls.length >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>'
+            }) + '</div>' + writingPhotoInputs();
         }
         return '<div class="photo-source-empty"><button class="photo-drop" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(state.scanTarget) + '"><span><span class="photo-drop-icon">' + icon('camera') + '</span><strong>Add a Photo</strong><small>Take a new photo or choose one from your library.</small></span></button></div>' + writingPhotoInputs();
     }
@@ -2389,58 +2430,21 @@
         scan.status = 'choosing';
         state.screen = 'revision-scan-photos';
         var count = scan.files.length;
-        scan.activePhotoIndex = Math.max(0, Math.min(Number(scan.activePhotoIndex) || 0, Math.max(0, count - 1)));
-        var previews = safeArray(scan.previewUrls).map(function(url, index) {
-            return '<figure class="photo-preview-card revision-photo-card" data-revision-photo-index="' + index + '">' +
-                '<img src="' + escapeHtml(url) + '" alt="Selected revision photo ' + (index + 1) + '">' +
-                '<div class="revision-photo-card-actions"><button class="secondary-button compact" type="button" data-open-photo-choice="revision"' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>' +
-                '<button class="danger-button compact" type="button" data-remove-revision-photo="' + index + '">Remove</button></div></figure>';
-        }).join('');
+        scan.activePhotoIndex = boundedPhotoIndex(scan.activePhotoIndex, count);
+        var preview = count ? stagedPhotoCardHtml({
+            kind: 'revision',
+            url: scan.previewUrls[scan.activePhotoIndex],
+            index: scan.activePhotoIndex,
+            count: count,
+            addButton: '<button class="secondary-button compact add-photo-button" type="button" data-open-photo-choice="revision"' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>'
+        }) : '';
         stage.innerHTML = '<section class="surface surface-pad revision-photo-selection" aria-label="Revision photos">' +
-            '<div class="revision-photo-position" id="revision-photo-position" role="status" aria-live="polite" aria-label="Photo ' + (scan.activePhotoIndex + 1) + ' of ' + count + '">' + (scan.activePhotoIndex + 1) + '/' + count + '</div>' +
-            '<div class="revision-photo-carousel" data-revision-photo-carousel>' + previews + '</div>' +
+            '<div class="revision-photo-carousel" data-revision-photo-carousel>' + preview + '</div>' +
             '<input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden>' +
             '<input id="revision-scan-library" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>' +
             '<div class="form-actions revision-photo-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Back</button>' +
             '<button class="primary-button" type="button" data-start-revision-upload data-disable-when-busy' + (count ? '' : ' disabled') + '>Start Scanning</button></div></section>';
         scheduleStageViewportReset();
-        bindRevisionPhotoCarousel();
-    }
-
-    function bindRevisionPhotoCarousel() {
-        var selection = document.querySelector('.revision-photo-selection');
-        var carousel = selection && selection.querySelector('[data-revision-photo-carousel]');
-        var counter = selection && selection.querySelector('#revision-photo-position');
-        if (!selection || !carousel || !counter) return;
-        var scan = revisionScanState();
-        var slides = Array.prototype.slice.call(carousel.querySelectorAll('[data-revision-photo-index]'));
-        var scheduled = false;
-        function updatePosition() {
-            scheduled = false;
-            if (!slides.length) return;
-            var center = carousel.scrollLeft + (carousel.clientWidth / 2);
-            var closest = 0;
-            var closestDistance = Infinity;
-            slides.forEach(function(slide, index) {
-                var distance = Math.abs((slide.offsetLeft + (slide.offsetWidth / 2)) - center);
-                if (distance < closestDistance) { closest = index; closestDistance = distance; }
-            });
-            scan.activePhotoIndex = closest;
-            counter.textContent = (closest + 1) + '/' + slides.length;
-            counter.setAttribute('aria-label', 'Photo ' + (closest + 1) + ' of ' + slides.length);
-        }
-        carousel.addEventListener('scroll', function() {
-            if (scheduled) return;
-            scheduled = true;
-            window.requestAnimationFrame(updatePosition);
-        }, { passive: true });
-        window.requestAnimationFrame(function() {
-            window.requestAnimationFrame(function() {
-                var activeSlide = slides[scan.activePhotoIndex] || slides[0];
-                if (activeSlide) carousel.scrollLeft = activeSlide.offsetLeft;
-                updatePosition();
-            });
-        });
     }
 
     function addRevisionScanPhotos(files) {
@@ -3078,8 +3082,153 @@
         scheduleStageViewportReset();
     }
 
+    function stagedPhotoCollection(kind) {
+        if (kind === 'revision') {
+            var scan = revisionScanState();
+            return { urls: safeArray(scan.previewUrls), index: boundedPhotoIndex(scan.activePhotoIndex, scan.previewUrls.length) };
+        }
+        return { urls: safeArray(state.photoUrls), index: boundedPhotoIndex(state.activeSourcePhotoIndex, state.photoUrls.length) };
+    }
+
+    function refreshStagedPhotoCard(kind) {
+        var collection = stagedPhotoCollection(kind);
+        if (!collection.urls.length) return;
+        var count = collection.urls.length;
+        var addButton = kind === 'revision'
+            ? '<button class="secondary-button compact add-photo-button" type="button" data-open-photo-choice="revision"' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>'
+            : '<button class="secondary-button compact add-photo-button" type="button" data-open-photo-choice="writing" data-photo-target="' + escapeHtml(state.scanTarget) + '"' + (count >= 8 ? ' disabled' : '') + '>' + icon('camera') + 'Add Photo</button>';
+        var host = kind === 'revision'
+            ? document.querySelector('[data-revision-photo-carousel]')
+            : document.querySelector('.photo-preview-single');
+        if (host) host.innerHTML = stagedPhotoCardHtml({
+            kind: kind,
+            url: collection.urls[collection.index],
+            index: collection.index,
+            count: count,
+            addButton: addButton
+        });
+    }
+
+    function stepStagedPhoto(kind, delta) {
+        var collection = stagedPhotoCollection(kind);
+        if (!collection.urls.length) return;
+        var next = boundedPhotoIndex(collection.index + Number(delta || 0), collection.urls.length);
+        if (kind === 'revision') revisionScanState().activePhotoIndex = next;
+        else state.activeSourcePhotoIndex = next;
+        refreshStagedPhotoCard(kind);
+    }
+
+    function renderPhotoViewer() {
+        if (!photoViewerLayer || !state.photoViewerOpen) return;
+        var urls = safeArray(state.photoViewerUrls);
+        state.photoViewerIndex = boundedPhotoIndex(state.photoViewerIndex, urls.length);
+        var image = photoViewerLayer.querySelector('#photo-viewer-image');
+        var counter = photoViewerLayer.querySelector('#photo-viewer-counter');
+        var previous = photoViewerLayer.querySelector('[data-photo-viewer-step="-1"]');
+        var next = photoViewerLayer.querySelector('[data-photo-viewer-step="1"]');
+        if (image) {
+            image.src = urls[state.photoViewerIndex] || '';
+            image.alt = 'Enlarged writing photo ' + (state.photoViewerIndex + 1) + ' of ' + urls.length;
+        }
+        if (counter) counter.textContent = 'Page ' + (state.photoViewerIndex + 1) + '/' + urls.length;
+        if (previous) previous.disabled = state.photoViewerIndex <= 0;
+        if (next) next.disabled = state.photoViewerIndex >= urls.length - 1;
+    }
+
+    function openPhotoViewer(kind, index, trigger) {
+        if (!photoViewerLayer || state.photoViewerOpen || state.busy) return;
+        var collection = stagedPhotoCollection(kind);
+        if (!collection.urls.length) return;
+        state.photoViewerOpen = true;
+        state.photoViewerUrls = collection.urls.slice();
+        state.photoViewerIndex = boundedPhotoIndex(index, collection.urls.length);
+        state.photoViewerReturnFocus = trigger || document.activeElement;
+        photoViewerLayer.hidden = false;
+        app.inert = true;
+        renderPhotoViewer();
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var close = photoViewerLayer.querySelector('[data-close-photo-viewer]');
+            if (close) close.focus({ preventScroll: true });
+        });
+    }
+
+    function stepPhotoViewer(delta) {
+        if (!state.photoViewerOpen) return;
+        state.photoViewerIndex = boundedPhotoIndex(state.photoViewerIndex + Number(delta || 0), state.photoViewerUrls.length);
+        renderPhotoViewer();
+    }
+
+    function closePhotoViewer(restoreFocus) {
+        if (!state.photoViewerOpen) return;
+        var focusTarget = state.photoViewerReturnFocus;
+        state.photoViewerOpen = false;
+        state.photoViewerUrls = [];
+        state.photoViewerIndex = 0;
+        state.photoViewerReturnFocus = null;
+        photoViewerLayer.hidden = true;
+        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoRemoveDialogOpen;
+        updateOverlayLock();
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+        }
+    }
+
+    function requestPhotoRemoval(kind, index, trigger) {
+        if (!photoRemoveConfirmation || state.photoRemoveDialogOpen || state.busy) return;
+        var collection = stagedPhotoCollection(kind);
+        var photoIndex = boundedPhotoIndex(index, collection.urls.length);
+        if (!collection.urls[photoIndex]) return;
+        state.photoRemoveDialogOpen = true;
+        state.pendingPhotoRemoval = { kind: kind === 'revision' ? 'revision' : 'source', index: photoIndex };
+        state.photoRemoveReturnFocus = trigger || document.activeElement;
+        photoRemoveConfirmation.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var cancel = photoRemoveConfirmation.querySelector('[data-cancel-photo-remove]');
+            if (cancel) cancel.focus({ preventScroll: true });
+        });
+    }
+
+    function closePhotoRemoveConfirmation(restoreFocus) {
+        if (!state.photoRemoveDialogOpen) return;
+        var focusTarget = state.photoRemoveReturnFocus;
+        state.photoRemoveDialogOpen = false;
+        state.pendingPhotoRemoval = null;
+        state.photoRemoveReturnFocus = null;
+        photoRemoveConfirmation.hidden = true;
+        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen;
+        updateOverlayLock();
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+        }
+    }
+
+    function confirmPhotoRemoval() {
+        var pending = state.pendingPhotoRemoval;
+        if (!pending) { closePhotoRemoveConfirmation(); return; }
+        closePhotoRemoveConfirmation(false);
+        var index = pending.index;
+        if (pending.kind === 'revision') {
+            var scan = revisionScanState();
+            if (scan.previewUrls[index] && scan.previewUrls[index].indexOf('blob:') === 0) URL.revokeObjectURL(scan.previewUrls[index]);
+            scan.files.splice(index, 1);
+            scan.previewUrls.splice(index, 1);
+            scan.activePhotoIndex = boundedPhotoIndex(index, scan.files.length);
+            if (scan.files.length) renderRevisionScanPhotoSelection();
+            else { resetRevisionScanState(); renderLanguage(); }
+            return;
+        }
+        if (state.photoUrls[index] && state.photoUrls[index].indexOf('blob:') === 0) URL.revokeObjectURL(state.photoUrls[index]);
+        state.photoFiles.splice(index, 1);
+        state.photoUrls.splice(index, 1);
+        state.activeSourcePhotoIndex = boundedPhotoIndex(index, state.photoUrls.length);
+        renderSourceEntry();
+    }
+
     function updateOverlayLock() {
-        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen);
+        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen);
     }
 
     function openPhotoChoice(context, target, trigger) {
@@ -3310,7 +3459,6 @@
     }
 
     function updateSourceState(target) {
-        if (target.id === 'writing-title') state.title = target.value.trim();
         if (target.id === 'writing-prompt') state.promptText = target.value;
         if (target.id === 'writing-rubric') state.rubricId = target.value;
         if (target.id === 'writing-text') state.confirmedText = target.value;
@@ -3325,7 +3473,7 @@
 
     document.addEventListener('input', function(event) {
         var target = event.target;
-        if (target.matches('#writing-title,#writing-prompt,#writing-rubric,#writing-text,[name="assessment-mode"]')) updateSourceState(target);
+        if (target.matches('#writing-prompt,#writing-rubric,#writing-text,[name="assessment-mode"]')) updateSourceState(target);
         if (target.matches('[data-rewrite-id]')) {
             var id = target.getAttribute('data-rewrite-id');
             state.rewrites[id] = target.value;
@@ -3358,6 +3506,7 @@
             }
             state.photoFiles = state.photoFiles.concat(additions);
             state.photoUrls = state.photoUrls.concat(additions.map(function(file) { return URL.createObjectURL(file); }));
+            state.activeSourcePhotoIndex = Math.max(0, state.photoUrls.length - 1);
             renderSourceEntry();
         }
         if ((target.id === 'revision-scan-photo' || target.id === 'revision-scan-library') && target.files && target.files.length) {
@@ -3389,6 +3538,16 @@
     });
 
     document.addEventListener('click', function(event) {
+        var photoViewerClose = event.target.closest && event.target.closest('[data-close-photo-viewer]');
+        if (photoViewerClose) {
+            closePhotoViewer();
+            return;
+        }
+        var photoViewerOpen = event.target.closest && event.target.closest('[data-open-photo-viewer]');
+        if (photoViewerOpen) {
+            openPhotoViewer(photoViewerOpen.getAttribute('data-open-photo-viewer'), Number(photoViewerOpen.getAttribute('data-photo-index')), photoViewerOpen);
+            return;
+        }
         var photoChoice = event.target.closest && event.target.closest('[data-photo-choice]');
         if (photoChoice) {
             selectPhotoSource(photoChoice.getAttribute('data-photo-choice'));
@@ -3412,10 +3571,12 @@
             if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
             return;
         }
-        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-manuscript-sentence]');
+        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-manuscript-sentence]');
         if (!button) return;
         if (button.matches('#history-home')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
+        else if (button.matches('[data-cancel-photo-remove]')) closePhotoRemoveConfirmation();
+        else if (button.matches('[data-confirm-photo-remove]')) confirmPhotoRemoval();
         else if (button.matches('[data-close-incomplete-rewrite]')) closeIncompleteRewriteAlert();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
         else if (button.matches('[data-discard-source]')) requestSourceDiscard();
@@ -3438,11 +3599,16 @@
             button.getAttribute('data-photo-target'),
             button
         );
-        else if (button.matches('[data-remove-photo]')) {
-            var removeIndex = Number(button.getAttribute('data-remove-photo'));
-            if (state.photoUrls[removeIndex] && state.photoUrls[removeIndex].indexOf('blob:') === 0) URL.revokeObjectURL(state.photoUrls[removeIndex]);
-            state.photoFiles.splice(removeIndex, 1); state.photoUrls.splice(removeIndex, 1); renderSourceEntry();
-        }
+        else if (button.matches('[data-request-photo-remove]')) requestPhotoRemoval(
+            button.getAttribute('data-request-photo-remove'),
+            Number(button.getAttribute('data-photo-index')),
+            button
+        );
+        else if (button.matches('[data-staged-photo-step]')) stepStagedPhoto(
+            button.getAttribute('data-photo-kind'),
+            Number(button.getAttribute('data-staged-photo-step'))
+        );
+        else if (button.matches('[data-photo-viewer-step]')) stepPhotoViewer(Number(button.getAttribute('data-photo-viewer-step')));
         else if (button.matches('[data-toggle-ocr-photo]')) {
             var layout = document.getElementById('ocr-layout');
             var visible = layout.classList.toggle('show-photo');
@@ -3539,18 +3705,6 @@
             state.referenceOpen[referenceId] = !state.referenceOpen[referenceId];
             renderLanguage();
         }
-        else if (button.matches('[data-remove-revision-photo]')) {
-            var scan = revisionScanState();
-            var photoIndex = Number(button.getAttribute('data-remove-revision-photo'));
-            var activePhotoIndex = Number(scan.activePhotoIndex) || 0;
-            if (scan.previewUrls[photoIndex] && scan.previewUrls[photoIndex].indexOf('blob:') === 0) URL.revokeObjectURL(scan.previewUrls[photoIndex]);
-            scan.files.splice(photoIndex, 1);
-            scan.previewUrls.splice(photoIndex, 1);
-            if (photoIndex < activePhotoIndex) activePhotoIndex -= 1;
-            scan.activePhotoIndex = Math.max(0, Math.min(activePhotoIndex, Math.max(0, scan.files.length - 1)));
-            if (scan.files.length) renderRevisionScanPhotoSelection();
-            else { resetRevisionScanState(); renderLanguage(); }
-        }
         else if (button.matches('[data-start-revision-upload]')) {
             beginRevisionScanUpload(revisionScanState().files.slice());
         }
@@ -3612,6 +3766,28 @@
         renderPortfolio();
     });
     window.addEventListener('keydown', function(event) {
+        if (state.photoViewerOpen) {
+            if (event.key === 'ArrowLeft') { event.preventDefault(); stepPhotoViewer(-1); return; }
+            if (event.key === 'ArrowRight') { event.preventDefault(); stepPhotoViewer(1); return; }
+            if (event.key === 'Tab') {
+                var viewerControls = photoViewerLayer.querySelectorAll('button:not(:disabled)');
+                if (!viewerControls.length) return;
+                var viewerFirst = viewerControls[0];
+                var viewerLast = viewerControls[viewerControls.length - 1];
+                if (event.shiftKey && document.activeElement === viewerFirst) { event.preventDefault(); viewerLast.focus(); }
+                else if (!event.shiftKey && document.activeElement === viewerLast) { event.preventDefault(); viewerFirst.focus(); }
+                return;
+            }
+        }
+        if (state.photoRemoveDialogOpen && event.key === 'Tab') {
+            var removeControls = photoRemoveConfirmation.querySelectorAll('button:not(:disabled)');
+            if (!removeControls.length) return;
+            var removeFirst = removeControls[0];
+            var removeLast = removeControls[removeControls.length - 1];
+            if (event.shiftKey && document.activeElement === removeFirst) { event.preventDefault(); removeLast.focus(); }
+            else if (!event.shiftKey && document.activeElement === removeLast) { event.preventDefault(); removeFirst.focus(); }
+            return;
+        }
         if (state.photoChoiceOpen && event.key === 'Tab') {
             var photoControls = photoChoiceLayer.querySelectorAll('button:not(:disabled)');
             if (!photoControls.length) return;
@@ -3646,7 +3822,9 @@
             return;
         }
         if (event.key === 'Escape') {
-            if (state.photoChoiceOpen) closePhotoChoice();
+            if (state.photoViewerOpen) closePhotoViewer();
+            else if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation();
+            else if (state.photoChoiceOpen) closePhotoChoice();
             else if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
             else if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
             else if (state.leaveDialogOpen) closeLeaveConfirmation();
@@ -3654,6 +3832,8 @@
         }
     });
     window.addEventListener('pageshow', function() {
+        if (state.photoViewerOpen) closePhotoViewer(false);
+        if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation(false);
         if (state.photoChoiceOpen) closePhotoChoice(false);
         if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
