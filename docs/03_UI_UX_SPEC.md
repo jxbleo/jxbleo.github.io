@@ -2017,9 +2017,13 @@ Important mobile rules:
   closes it and restores focus to the trigger. Opening the drawer locks background
   scrolling without losing the previous page position.
 - OCR confirmation is a deliberately sparse editing card. Its top row contains
-  only the right-aligned persistent `Compare with Image` toggle; the editable
-  manuscript follows immediately, with one horizontally centered `Confirm`
-  footer action. Remove `Upload Again` from this review step, together with the former
+  the right-aligned persistent `Compare with Image` toggle. For manuscript OCR,
+  a compact `Title (Optional)` field follows with `Use First Line`; the action
+  moves the first non-empty line out of the manuscript and exposes a quiet `Undo`
+  that restores the exact prior title, editor HTML, and acknowledged-region state.
+  Editing either field commits to the new state and dismisses Undo. Prompt OCR does
+  not show title controls. The editable manuscript follows, with one horizontally
+  centered `Confirm` footer action. Remove `Upload Again` from this review step, together with the former
   Chinese heading, explanatory copy, step indicator, uncertainty count, photo
   label, and editor label.
 - Image comparison is closed by default on every viewport. `Compare with Image`

@@ -1847,9 +1847,15 @@ High priority improvement:
   and leaving its final-photo state. Full-screen result/error transitions must also
   begin at the screen top; sentence-card flips, typing, and waiting-game polling must
   retain the student's current position.
-- On OCR confirmation, confirm the `OCR Review` heading is absent and the only
-  fixed controls are `Compare with Image` and one horizontally centered `Confirm`,
-  with the editable manuscript directly below and no `Upload Again` action. The image toggle must
+- On manuscript OCR confirmation, confirm the `OCR Review` heading is absent and
+  the fixed controls are `Compare with Image`, compact `Title (Optional)` plus
+  `Use First Line`, and one horizontally centered `Confirm`, with no `Upload Again`.
+  `Use First Line` must move (not copy) the first non-empty line into the title,
+  preserve paragraph spacing and remaining uncertainty marks, and expose `Undo`.
+  Undo must restore the exact prior title, manuscript, and image-region state;
+  typing afterward dismisses the stale Undo. A first line longer than 80 characters
+  must remain untouched with manual-entry guidance. Prompt OCR must show no title
+  control. The image toggle must
   open/close split view on desktop/iPad and an image-above-text view on phone.
 - Return an exact uncertain substring from OCR and confirm it is marked with a
   pale-red fill and dark-red text, without an underline. Clicking it must remove

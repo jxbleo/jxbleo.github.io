@@ -409,7 +409,7 @@ check("the two evaluation modes use the approved product labels", () => {
 check("the first writing screen keeps only the compact source controls", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const renderSource = `${functionSource(client, "homeComposerHtml", "pendingComposerStorageKey")}\n${functionSource(client, "sourceFieldsHtml", "rubricOptions")}`;
+  const renderSource = `${functionSource(client, "homeComposerHtml", "clearRetiredPendingComposerStorage")}\n${functionSource(client, "sourceFieldsHtml", "rubricOptions")}`;
   const textSource = functionSource(client, "textSourceHtml", "photoSourceHtml");
   requireEvery(renderSource, [
     "data-discard-source", ">Discard</button>",
@@ -461,7 +461,7 @@ check("photo entry offers camera or library, stages multiple pages, and scans on
   const client = read(clientPath);
   const page = read(pagePath);
   const photoSource = functionSource(client, "photoSourceHtml", "sourcePayload");
-  const renderSource = `${functionSource(client, "homeComposerHtml", "pendingComposerStorageKey")}\n${functionSource(client, "renderReplacementSource", "cameraOnlyButton")}`;
+  const renderSource = `${functionSource(client, "homeComposerHtml", "clearRetiredPendingComposerStorage")}\n${functionSource(client, "renderReplacementSource", "cameraOnlyButton")}`;
   requireEvery(photoSource, [
     "data-writing-photo-input", "data-writing-photo-camera", 'capture="environment"',
     "Add Photo", "data-writing-photo-library", "multiple",
@@ -573,6 +573,32 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
     "the sole OCR Review Confirm action must be centered");
   assert(/\.ocr-uncertain\s*\{[^}]*color\s*:\s*#a52634[^}]*background\s*:\s*rgba\(218,55,69,\.16\)/i.test(styles),
     "uncertain OCR spans must use the approved red text and pale-red fill");
+});
+
+check("OCR confirmation can move the first line into an optional undoable title", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderOcr", "adoptPromptOcr");
+  requireEvery(renderSource, [
+    'id="ocr-title"', 'maxlength="80"', 'placeholder="Title (Optional)"',
+    "Use First Line", "data-undo-ocr-title", ">Undo</button>",
+  ], "OCR title extraction controls");
+  const interaction = functionSource(client, "splitOcrFirstLine", "unwrapOcrMark");
+  requireEvery(interaction, [
+    "lines.splice(firstLineIndex, 1)", "ocrTitleUndo", "editorHtml",
+    "acknowledgedRegions", "Moved from the first line.", "Restored.",
+  ], "undoable title extraction behavior");
+  assert(/extracted\.title\.length\s*>\s*80/.test(interaction), "an overlong first line must not be silently truncated into a title");
+  const normalizedSource = functionSource(client, "normalizedOcrText", "ocrUncertainRanges");
+  const splitSource = functionSource(client, "splitOcrFirstLine", "ocrRegionAcknowledgements");
+  const split = Function(`${normalizedSource}\n${splitSource}\nreturn splitOcrFirstLine;`)();
+  assert.deepStrictEqual(split("My Trip\n\nI went home."), { title: "My Trip", remaining: "I went home." });
+  assert.deepStrictEqual(split("\n\nA Rainy Day\n\nFirst paragraph.\n\nSecond paragraph."), {
+    title: "A Rainy Day", remaining: "First paragraph.\n\nSecond paragraph.",
+  });
+  requireEvery(styles, [".ocr-title-control", ".ocr-title-field input", ".ocr-title-feedback"], "OCR title control styling");
+  const confirmHandler = client.slice(client.indexOf("button.matches('[data-confirm-ocr]')"), client.indexOf("button.matches('[data-retry-rewrite]')"));
+  requireEvery(confirmHandler, ["ocr-title", "state.title", "saveAndEvaluate"], "OCR title confirmation persistence");
 });
 
 check("language review renders exactly three primary cards in the approved order", () => {
