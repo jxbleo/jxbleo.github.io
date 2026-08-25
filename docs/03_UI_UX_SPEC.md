@@ -1936,12 +1936,10 @@ Important mobile rules:
 ### Durable waiting cards and Mr. Cat Runner
 
 - OCR, General Language Review, Sentence Revision Check, and Revision Scan use
-  the same centered waiting card with a four-node horizontal track. OCR reads
-  `Uploaded / Reading / Organising / Ready`; review reads `Saved / Preparing /
-  Reviewing / Ready`; rewrite reads `Saved / Comparing / Checking / Ready`; and
-  Revision Scan reads `Uploaded / Reading / Matching / Ready`. An unconfirmed
-  photo upload is explicitly `Uploading`, hides Back, and does not start the
-  runner.
+  the same centered waiting card with a two-node `Thinking / Finished` track.
+  During every pending state—including the unconfirmed upload handoff—the Runner
+  appears immediately and a luminous connector continuously travels left to
+  right. There is no upload-only, “AI is reading”, or other loader-only surface.
 - The persistent toolbar uses `Back` throughout a concrete Composition; the
   waiting card has no duplicate Back or Upload Again actions. Confirming Back
   returns to Writing Home without cancelling the cloud Job. The old `Continue
@@ -1952,7 +1950,8 @@ Important mobile rules:
   starts at zero, may be negative,
   and never represents AI progress or a learning reward. Obstacles subtract one
   once, green collectibles add one, and repeat jump/air-jump/landing-buffer
-  controls are local only. The course mixes ground and airborne obstacles;
+  controls are local only. The course continuously replenishes a randomized,
+  playable mix of ground/airborne obstacles and green collectibles;
   collecting and colliding play two distinct, short synthesized cues.
 - The original Mr. Cat, books, pencils, erasers, and ink drops use restrained
   Canvas geometry and the AI Tutor palette. Collisions stumble and slow the cat
@@ -1960,11 +1959,12 @@ Important mobile rules:
 - Reduced motion renders a static scene and skips motion choreography. Hidden
   tabs pause simulation and reset the frame clock; missing Canvas support leaves
   the real status, polling, and result paths intact. Success changes the card to
-  Ready, hides the former `Your … Is Ready` heading, plays one quiet synthesized
-  two-note sound when permitted, and keeps the runner alive until the student
-  clicks its full-width result button. The final Ready node and text perform a
-  short Dock-style vertical bounce followed by a long pause; reduced motion is
-  static. Opening an already-ready Composition from History bypasses this entire
+  `Finished`, shows no separate `Text is ready` line, and keeps the runner alive
+  until the student clicks its full-width result button. The final node and text
+  perform a short Dock-style vertical bounce followed by a long pause, with the
+  quiet synthesized two-note reminder synchronized to every bounce cycle when
+  audio is available. Reduced motion is static and receives only the initial
+  completion cue. Opening an already-ready Composition from History bypasses this entire
   card and Runner and renders the saved result immediately.
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing

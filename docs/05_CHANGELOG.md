@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Immediate two-state Writing waiting game
+
+- Replaced task-specific four-step waiting copy with one `Thinking / Finished`
+  track and a continuous left-to-right energy connector.
+- Started the Runner during the initial upload handoff, removing upload-only and
+  AI-reading loader screens plus the redundant `Text is ready` result copy.
+- Synchronized the periodic Finished Dock bounce with its reminder chime and
+  fixed long waits so obstacles and collectibles replenish continuously.
+
 ## 2026-08-25 — Single-photo Writing scan staging
 
 - Removed the student-entered Title field from new Writing source forms; existing

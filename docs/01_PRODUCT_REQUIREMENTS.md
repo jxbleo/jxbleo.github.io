@@ -1799,32 +1799,34 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 
 ### Durable AI waiting experience
 
-- The four durable student-facing AI tasks (`ocr`, `review`, `rewrite`, and
-  `revision_ocr`) use one waiting surface with server-derived, task-specific
-  four-stage tracks. OCR is `Uploaded / Reading / Organising / Ready`, review
-  is `Saved / Preparing / Reviewing / Ready`, rewrite is `Saved / Comparing /
-  Checking / Ready`, and revision OCR is `Uploaded / Reading / Matching /
-  Ready`. The browser never invents percentages or remaining-time estimates.
+- The four student-facing AI tasks (`ocr`, `review`, `rewrite`, and
+  `revision_ocr`) use one waiting surface with the same two visible states:
+  `Thinking / Finished`. While work is pending, the connector continuously
+  transmits a restrained energy sweep from left to right. The browser never
+  invents percentages or remaining-time estimates.
 - Every concrete Composition screen uses the persistent toolbar `Back` action;
   the waiting card itself contains no duplicate Back or Upload Again row. Back
   requires confirmation and returns to Writing Home without cancelling a
   durable Job. During the brief unconfirmed upload handoff the toolbar action is
-  disabled; the card shows `Uploading`, keeps the runner off, and never promises
-  that the task will continue after the page closes.
+  disabled and the card never promises that the task will continue after the
+  page closes. The runner is nevertheless visible immediately; there is no
+  separate upload-only or “AI is reading” loading screen.
 - While a durable task waits, the surface hosts the temporary `Mr. Cat Runner`
   canvas activity. Its in-memory Score can be positive or negative: one
   obstacle collision subtracts one, each green collectible adds one, and the
   runner supports repeat jumps, one air jump, and a 120ms landing buffer. Ground
-  and airborne obstacles are both present. A local synthesized cue plays exactly
+  and airborne obstacles and green collectibles replenish continuously at
+  randomized playable intervals. A local synthesized cue plays exactly
   when a collectible is taken, and a distinct cue plays on obstacle contact.
   Score, collectibles, distance, and stumble state are discarded on refresh and
   are never rewards, analytics, or AI progress.
-- A successful Job changes the same open page into a visible Ready state with
-  one gentle synthesized two-note prompt and a full-width result button. The
+- A successful Job changes the same open page to `Finished` with a full-width
+  result button and no redundant `Text is ready` copy. The
   runner continues until the student clicks that button; no result renderer is
-  entered automatically. The final Ready node and label use a brief periodic
-  Dock-style bounce, while the redundant visible `Your … Is Ready` heading is
-  removed. Reduced motion removes choreography without changing the manual
+  entered automatically. The final node and label use a brief periodic Dock-style
+  bounce synchronized with a gentle synthesized two-note reminder on each cycle
+  when audio is available. Reduced motion uses one completion cue and removes
+  repeating choreography without changing the manual
   handoff. Reopening an already-ready Job is silent and opens its actual result
   directly, without constructing a Ready card or Runner.
 - Waiting polling runs immediately, then serially at 3 seconds while visible

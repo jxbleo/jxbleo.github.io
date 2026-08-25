@@ -170,6 +170,21 @@ check('collectibles are green, reachable, and maintained at 3–7', () => {
   runner.destroy();
 });
 
+check('obstacles and collectibles keep replenishing throughout a long wait', () => {
+  const harness = makeHarness(false, [0.15, 0.82, 0.38, 0.64, 0.27, 0.73]);
+  const runner = harness.runnerApi.mount(harness.canvas);
+  const initial = runner.snapshot();
+  runFrames(harness, 0, 60000);
+  const later = runner.snapshot();
+  assert(later.distance > initial.distance + 8000, 'long-wait simulation did not advance');
+  assert(later.obstacles.length >= 3, 'obstacles were not replenished after the opening course');
+  assert(later.obstacles.some((obstacle) => obstacle.x > 960), 'no future obstacle remains queued beyond the viewport');
+  assert(later.collectibleCount >= 3 && later.collectibleCount <= 7, 'collectibles were not replenished during a long wait');
+  assert(later.collectibles.some((item) => item.x > 960), 'no future collectible remains queued beyond the viewport');
+  assert(!/lastObstacleRight/.test(source), 'a stale absolute obstacle cursor can stop course replenishment');
+  runner.destroy();
+});
+
 check('score can be negative and onScore exposes only score', () => {
   const harness = makeHarness(false, [0.5]);
   const reports = [];
