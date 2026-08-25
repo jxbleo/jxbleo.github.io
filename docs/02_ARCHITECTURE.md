@@ -730,17 +730,19 @@ the existing one-click confirmation flow.
 
 The browser waiting layer is shared across OCR, review, rewrite-check, and
 revision OCR without merging their polling or result predicates. Each waiting
-renderer projects the server Job state into a task-specific four-stage track;
-the upload-confirmation boundary remains separate and is shown as `Uploading`
-while the persistent toolbar action is briefly disabled. Waiting content never
-duplicates toolbar navigation. `assets/js/ai-waiting-runner.js` contains an optional,
+renderer projects the server Job state into `Uploaded` and `Finished` endpoint
+nodes with `Thinking` centered on the animated connector; the upload-confirmation boundary uses the same card without
+claiming a durable job early. Waiting content never duplicates toolbar
+navigation. `assets/js/ai-waiting-runner.js` contains an optional,
 dependency-free Canvas controller only. It has no CloudBase, Composition, Job,
 identity, or persistence knowledge; its score, collectibles, distance, jump,
 and stumble snapshots are discarded with the page. `ai-tutor.js` owns mounting,
 pause/resume, shared serialized polling, Ready animation/sound, causal collect/hit
 sound projection, the one-shot
-result action, and destruction on every success, failure, navigation,
-visibility, and pagehide path. `getComposition` remains the authoritative
+result action, and destruction on result handoff or navigation. Terminal AI
+failure does not destroy or remount the Canvas: the client projects `failed` as
+the red `Interrupted` track plus one Retry action while Runner state stays local
+and live. `getComposition` remains the authoritative
 ADMINONLY projection: visible polling is 3 seconds, hidden polling is 10
 seconds, transient failures back off to 20 seconds, and stale generation,
 Composition, kind, or operation responses are ignored.
@@ -773,6 +775,13 @@ bounded attempts, leases, and `queued/processing/succeeded/failed/superseded`
 states. Only the job referenced by `Composition.active_job_id`, with its current
 lease token, may transactionally publish a result. Thus a stale worker or
 superseded re-upload cannot overwrite the current Composition.
+Retryable provider/network errors receive at most five automatic claims. After a
+terminal failure, the authenticated `retryFailedJob` boundary may reset the same
+active OCR, rewrite-check, or revision-OCR job to queued with a fresh dispatch
+token and a new five-attempt budget after validating ownership, revision, staged
+payload, and private uploaded photos. Review failures instead release their word
+reservation and Retry creates a fresh idempotent evaluation/usage scope, so a
+manual retry cannot bypass the daily limit. The browser never mutates a job row.
 
 The page shell has one persistent top toolbar and a single overlay controller.
 On Writing Home the left action opens History. On any concrete Composition it

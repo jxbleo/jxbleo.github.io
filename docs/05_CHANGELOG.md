@@ -3,6 +3,20 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Non-disruptive AI interruption and five attempts
+
+- Increased durable OCR, review, rewrite-check, and revision-OCR automatic
+  attempts from three to five.
+- Replaced full-page terminal AI errors with a red `Interrupted` waiting track,
+  inline retry guidance, and one `Retry` action while preserving the live Runner
+  and its in-memory score.
+- Added authenticated durable manual requeue for failed OCR/rewrite/revision jobs;
+  review Retry remains a fresh quota-controlled request. Removed duplicate failure
+  navigation and re-upload actions in favor of the persistent toolbar Back.
+- Renamed the waiting endpoints to `Uploaded` and `Finished`, moving `Thinking`
+  onto the animated connector so its energy sweep reads as the active process;
+  terminal failure changes that connector label to `Interrupted`.
+
 ## 2026-08-25 — Undoable OCR title extraction
 
 - Added an optional title field to manuscript OCR confirmation with a mobile-safe
@@ -15,8 +29,8 @@
 
 ## 2026-08-25 — Immediate two-state Writing waiting game
 
-- Replaced task-specific four-step waiting copy with one `Thinking / Finished`
-  track and a continuous left-to-right energy connector.
+- Replaced task-specific four-step waiting copy with one two-endpoint track and a
+  continuous left-to-right energy connector.
 - Started the Runner during the initial upload handoff, removing upload-only and
   AI-reading loader screens plus the redundant `Text is ready` result copy.
 - Synchronized the periodic Finished Dock bounce with its reminder chime and

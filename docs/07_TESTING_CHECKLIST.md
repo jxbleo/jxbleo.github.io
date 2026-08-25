@@ -58,11 +58,12 @@ negative Score, continuous long-wait obstacle and green 3–7 collectible
 replenishment, Finished continuity,
 reduced-motion and pause/resume behavior, and the absence of network, CloudBase,
 persistence, or reward integration. The Writing Tutor contracts verify
-the shared two-state `Thinking / Finished` track, immediate upload-stage Runner,
+the shared `Uploaded` / connector `Thinking` / `Finished` path, immediate upload-stage Runner,
 no ordinary waiting explanation or duplicate card actions,
 serialized visible/hidden polling with wake and backoff, stale identity guards,
 one-shot result actions, bounce-synchronized synthesized-audio protection, success continuation,
-failure cleanup, and the durable result predicates.
+five-attempt server retry, non-destructive red interruption, single-action manual
+retry, and the durable result predicates.
 
 Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
 keyboard/tap jump, focused form controls, hidden-tab pause, reduced motion, missing
@@ -71,14 +72,22 @@ result click, direct re-entry to a completed Job, and continued play after
 Ready. Confirm the game appears immediately after Scan, with no upload-only or
 AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent,
 ground and airborne obstacles plus green collectibles continue to appear after at
-least one minute, and collect/hit sounds differ. Confirm the only progress labels
-are `Thinking` and `Finished`, the connector energy moves left-to-right, no
+least one minute, and collect/hit sounds differ. During normal work, confirm the
+endpoint labels are `Uploaded` and `Finished`, `Thinking` is centered on the
+connector, the connector energy moves left-to-right, no
 `Text is ready` line appears, and the Finished node/text periodically Dock-bounces
 with one matching sound per cycle; reduced motion must remain static and must not
 repeat the sound. Open the same ready Composition from History and after refresh:
 it must enter OCR Review, the assessment, feedback, or Revision Scan directly,
-without briefly showing Canvas, Ready, sound, or Score. Confirm no Canvas or local
-Score remains in any failure or result card.
+without briefly showing Canvas, Ready, sound, or Score.
+Force a terminal OCR, review, rewrite, and revision-scan failure. In every case,
+confirm the Canvas and current Score remain live, the connector and terminal node
+are red, the connector label is `Interrupted`, the warning sits between progress and
+game, and exactly one `Retry` appears below the game. There must be no duplicate
+Back, Upload Again, or return-to-revisions button. Click Retry and confirm the
+same Canvas/Score remains while the track returns to green `Thinking`. Refresh a
+failed Composition and repeat Retry to confirm recovery is server-backed rather
+than dependent on in-memory files.
 
 TeacherAdmin deployment-package checks:
 
@@ -1907,9 +1916,11 @@ High priority improvement:
   a readable result object without `PathNotViable`, clears
   `pending_rewrite_check`, and changes status only for the current active job and
   lease. Force a stale/superseded worker and confirm it cannot publish.
-- Force one transient provider failure and confirm queued retry, bounded attempt
-  count, lease expiry recovery, and final success/failure for OCR, review, and
-  rewrite-check jobs. Start a replacement
+- Force retryable provider failures and confirm attempts 1 through 5 are queued
+  with bounded backoff, no sixth automatic claim, lease expiry recovery, and final
+  success/failure for OCR, review, rewrite-check, and revision-OCR jobs. After the
+  fifth failure, use the explicit Retry once and confirm a new bounded five-attempt
+  budget begins without changing Composition ownership or revision. Start a replacement
   job while the first is processing and confirm only `active_job_id` can publish.
 - Confirm unconfirmed photos remain privately previewable during OCR but are
   deleted no later than seven days; confirming text deletes them immediately.

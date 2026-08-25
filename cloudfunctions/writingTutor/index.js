@@ -32,7 +32,7 @@ const CONFIRMED_UPLOAD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const EMPTY_DRAFT_RETENTION_MS = 30 * 60 * 1000;
 const JOB_LEASE_MS = 6 * 60 * 1000;
 const OCR_LOCATION_MIN_LEASE_REMAINING_MS = 100 * 1000;
-const MAX_JOB_ATTEMPTS = 3;
+const MAX_JOB_ATTEMPTS = 5;
 const PROMPT_BUNDLE_VERSION = `${PROMPT_VERSION}|${SCHEMA_VERSION}|${RUBRIC_VERSION}`;
 
 function text(value, limit = 30000) {
@@ -1424,6 +1424,83 @@ async function processQueuedJob(event) {
   }
 }
 
+async function retryFailedJob(student, event) {
+  const composition = await ownedComposition(student, event.composition_id);
+  const requestedType = text(event.job_type, 40);
+  if (!["ocr", "rewrite", "revision_ocr"].includes(requestedType)) throw new Error("AI_JOB_RETRY_NOT_AVAILABLE");
+  if (!composition.active_job_id) throw new Error("AI_JOB_NOT_FOUND");
+  const job = await getOne(JOBS, {
+    job_id: composition.active_job_id,
+    student_uid: student.auth_uid,
+    composition_id: composition.composition_id,
+  });
+  if (!job || job.job_type !== requestedType) throw new Error("AI_JOB_NOT_FOUND");
+  if (["queued", "processing"].includes(job.status)) {
+    return { success: true, accepted: true, idempotent_replay: true, job: publicJobView(job), composition: compositionView(composition) };
+  }
+  if (job.status !== "failed") throw new Error("AI_JOB_NOT_FAILED");
+  if (Number(job.composition_revision || 1) !== Number(composition.revision || 1)) throw new Error("COMPOSITION_REVISION_CHANGED");
+  if (requestedType === "rewrite") {
+    const pending = composition.pending_rewrite_check;
+    if (!pending || pending.operation_id !== job.operation_id || pending.payload_hash !== job.payload_hash) {
+      throw new Error("REWRITE_CHECK_SUPERSEDED");
+    }
+  } else {
+    const photoIds = Array.isArray(job.photo_ids) ? job.photo_ids.slice(0, MAX_UPLOAD_PAGES) : [];
+    const rows = photoIds.length ? await photoRows(student, composition.composition_id, photoIds) : [];
+    const expectedKind = requestedType === "revision_ocr" ? "revision_scan" : null;
+    if (!rows.length || rows.some((row) => row.status !== "uploaded"
+      || (expectedKind && row.upload_kind !== expectedKind))) {
+      throw new Error("PHOTO_UPLOAD_INCOMPLETE");
+    }
+  }
+  const now = new Date();
+  const dispatchToken = crypto.randomBytes(32).toString("hex");
+  const reset = {
+    status: "queued", attempt_count: 0, error_code: null,
+    dispatch_token: dispatchToken, lease_token: null, lease_until: null,
+    next_retry_at: now, started_at: null, finished_at: null, updated_at: now,
+  };
+  let queued = false;
+  await db.runTransaction(async (transaction) => {
+    const compositionResult = await transaction.collection(COMPOSITIONS).where({
+      composition_id: composition.composition_id, student_uid: student.auth_uid,
+    }).limit(1).get();
+    const jobResult = await transaction.collection(JOBS).where({
+      job_id: job.job_id, student_uid: student.auth_uid,
+    }).limit(1).get();
+    const current = compositionResult.data && compositionResult.data[0];
+    const currentJob = jobResult.data && jobResult.data[0];
+    if (!current || !currentJob || current.active_job_id !== job.job_id
+      || currentJob.job_type !== requestedType || currentJob.status !== "failed") return;
+    const activeJob = publicJobView({ ...currentJob, ...reset });
+    await transaction.collection(JOBS).doc(currentJob._id).update(reset);
+    await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
+      active_job: activeJob,
+      ocr_job: requestedType === "ocr" ? activeJob : current.ocr_job || null,
+      status: jobCompositionStatus(currentJob, "queued") || current.status,
+      updated_at: now,
+    }, ["active_job", "ocr_job"]));
+    queued = true;
+  });
+  const latest = await ownedComposition(student, composition.composition_id);
+  if (!queued) {
+    const latestJob = latest.active_job || {};
+    if (["queued", "processing"].includes(latestJob.status) && latestJob.job_type === requestedType) {
+      return { success: true, accepted: true, idempotent_replay: true, job: latestJob, composition: compositionView(latest) };
+    }
+    throw new Error("AI_JOB_NOT_FAILED");
+  }
+  try {
+    await invokeFunctionAsync("writingTutor", {
+      action: "processQueuedJob", job_id: job.job_id, dispatch_token: dispatchToken,
+    });
+  } catch (error) {
+    console.error("writingTutor manual retry dispatch deferred", job.job_id, error && error.message);
+  }
+  return { success: true, accepted: true, job: latest.active_job, composition: compositionView(latest) };
+}
+
 async function extractOcr(student, event) {
   return await enqueueOcrJob(student, event);
 }
@@ -2557,6 +2634,9 @@ function friendlyMessage(code) {
     WRITING_AI_REVISION_SCAN_TOO_LARGE: "Too many rewrite candidates were found in one scan. Please photograph fewer answers at a time.",
     COMPOSITION_REVISION_REQUIRED: "This rewrite scan is from an outdated writing revision. Refresh and scan again.",
     PROMPT_OCR_NOT_PENDING: "This writing prompt scan is no longer waiting for confirmation.",
+    AI_JOB_NOT_FOUND: "This AI task could not be found. Open the writing again and retry.",
+    AI_JOB_NOT_FAILED: "This AI task is no longer interrupted. Open the writing again to see its current state.",
+    AI_JOB_RETRY_NOT_AVAILABLE: "This AI task cannot be retried from this state.",
   };
   return messages[code] || "The AI writing request could not be completed. Please try again.";
 }
@@ -2577,6 +2657,7 @@ exports.main = async (event = {}) => {
     if (action === "startRevisionScanUpload") return await startRevisionScanUpload(student, event);
     if (action === "finishRevisionScanUpload") return await finishRevisionScanUpload(student, event);
     if (action === "extractOcr") return await extractOcr(student, event);
+    if (action === "retryFailedJob") return await retryFailedJob(student, event);
     if (action === "saveSourceDraft") return await saveSourceDraft(student, event);
     if (action === "adoptPromptOcr") return await adoptPromptOcr(student, event);
     if (action === "saveDraft") return await saveDraft(student, event);
@@ -2597,7 +2678,7 @@ exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, rewriteFeedbackHistory, appendRewriteFeedbackHistory,
   canonicalRevisionScanResult, revisionSourceUnits, canonicalOcrUncertaintyRegions, hasOcrLocationLeaseBudget, roundedToStep,
-  usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION,
+  usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION, MAX_JOB_ATTEMPTS,
   isDiscardableEmptyComposition,
   collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },
 };

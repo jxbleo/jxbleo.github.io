@@ -3,6 +3,35 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-25: Preserve Runner across terminal AI failure
+
+Decision:
+
+Project terminal OCR, review, rewrite-check, and revision-OCR failures into the
+existing waiting card as a red `Interrupted` state rather than replacing the
+card. The persistent endpoints remain `Uploaded` and `Finished`; the connector's
+`Thinking` process label becomes `Interrupted`. Keep the Canvas and its ephemeral score alive, expose exactly one Retry
+action, and leave navigation to the persistent Back toolbar. Durable jobs receive
+five automatic attempts. Manual Retry requeues the validated active OCR/rewrite/
+revision job; review Retry creates a fresh quota-controlled operation after the
+failed reservation is released.
+
+Reason:
+
+Replacing the page made an infrastructure failure feel like lost work and erased
+the activity students were using during a long wait. A retained physical surface
+preserves spatial continuity, while the red track communicates that real progress
+has stopped. Server-owned retry keeps ownership, revision, private-photo, quota,
+and idempotency checks authoritative.
+
+Trade-offs:
+
+- Runner score remains intentionally local and disappears on refresh.
+- A manual Retry begins a new five-attempt budget and can therefore increase AI
+  cost, but only after an explicit student action.
+- Review Retry cannot reuse a released usage reservation; it must pass the daily
+  quota boundary again.
+
 ## 2026-08-24: Keep waiting interaction Canvas-only and non-authoritative
 
 Decision:
