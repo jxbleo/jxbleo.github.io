@@ -1956,18 +1956,21 @@ Important mobile rules:
   once, green collectibles add one, and repeat jump/air-jump/landing-buffer
   controls are local only. The course continuously replenishes a randomized,
   playable mix of ground/airborne obstacles and green collectibles;
-  collecting and colliding play two distinct, short synthesized cues.
+  collecting plays the short `P3` light-pluck cue and colliding plays the short
+  `H4` low descending cue.
 - The original Mr. Cat, books, pencils, erasers, and ink drops use restrained
   Canvas geometry and the AI Tutor palette. Collisions stumble and slow the cat
-  briefly; there is no Game Over, sound, vibration, leaderboard, or persistence.
+  briefly; there is no Game Over, vibration, leaderboard, or persistence.
 - Reduced motion renders a static scene and skips motion choreography. Hidden
   tabs pause simulation and reset the frame clock; missing Canvas support leaves
   the real status, polling, and result paths intact. Success changes the card to
   `Finished`, shows no separate `Text is ready` line, and keeps the runner alive
   until the student clicks its full-width result button. The final node and text
   perform a short Dock-style vertical bounce followed by a long pause, with the
-  quiet synthesized two-note reminder synchronized to every bounce cycle when
-  audio is available. Reduced motion is static and receives only the initial
+  synthesized `J6` completion jingle synchronized to every bounce cycle when
+  audio is available. This is a spacious low-to-high two-note rise with a longer
+  ringing tail and a clearly stronger level than either gameplay cue. Reduced
+  motion is static and receives only the initial
   completion cue. Opening an already-ready Composition from History bypasses this entire
   card and Runner and renders the saved result immediately.
 - Retryable provider/network failures are attempted by the durable cloud job up

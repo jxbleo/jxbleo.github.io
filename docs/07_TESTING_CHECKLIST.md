@@ -61,7 +61,9 @@ persistence, or reward integration. The Writing Tutor contracts verify
 the shared checked-`Uploaded` / unlabeled energy connector / `Finished` path, immediate upload-stage Runner,
 no ordinary waiting explanation or duplicate card actions,
 serialized visible/hidden polling with wake and backoff, stale identity guards,
-one-shot result actions, bounce-synchronized synthesized-audio protection, success continuation,
+one-shot result actions, bounded Web Audio output, the selected `P3` collect / `H4`
+collision / louder `J6` Finished mapping, bounce-synchronized synthesized-audio
+protection, success continuation,
 five-attempt server retry, non-destructive red interruption, single-action manual
 retry, and the durable result predicates.
 
@@ -72,7 +74,9 @@ result click, direct re-entry to a completed Job, and continued play after
 Ready. Confirm the game appears immediately after Scan, with no upload-only or
 AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent,
 ground and airborne obstacles plus green collectibles continue to appear after at
-least one minute, and collect/hit sounds differ. During normal work, confirm the
+least one minute. Confirm collectibles use the short light pluck, collisions use
+the quiet low descending cue, and Finished uses the more prominent spacious
+low-to-high two-note jingle. During normal work, confirm the
 endpoint labels are `Uploaded` and `Finished`, the connector has no process
 label, the connector energy moves left-to-right, `Uploaded` gains its check as
 soon as upload handoff succeeds, and no

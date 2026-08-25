@@ -61,6 +61,7 @@
         waitingReadyAnnounced: false,
         waitingReadySoundTimer: null,
         waitingAudioContext: null,
+        waitingAudioOutput: null,
         sidebarOpen: false,
         editingTitleId: '',
         titleEditError: '',
@@ -1012,6 +1013,56 @@
         return state.waitingAudioContext;
     }
 
+    function waitingAudioOutput(audio) {
+        if (state.waitingAudioOutput) return state.waitingAudioOutput;
+        var limiter = audio.createDynamicsCompressor();
+        limiter.threshold.value = -7;
+        limiter.knee.value = 8;
+        limiter.ratio.value = 6;
+        limiter.attack.value = 0.002;
+        limiter.release.value = 0.16;
+        limiter.connect(audio.destination);
+        state.waitingAudioOutput = limiter;
+        return limiter;
+    }
+
+    function scheduleWaitingTone(audio, options) {
+        options = options || {};
+        var delay = Number(options.delay || 0);
+        var duration = Math.max(0.03, Number(options.duration || 0.1));
+        var now = audio.currentTime + delay;
+        var oscillator = audio.createOscillator();
+        var gain = audio.createGain();
+        oscillator.type = options.type || 'sine';
+        oscillator.frequency.setValueAtTime(Number(options.frequency || 440), now);
+        if (Number(options.endFrequency) > 0) {
+            oscillator.frequency.exponentialRampToValueAtTime(Number(options.endFrequency), now + duration);
+        }
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, Number(options.gain || 0.04)), now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.connect(gain);
+        gain.connect(waitingAudioOutput(audio));
+        oscillator.start(now);
+        oscillator.stop(now + duration + 0.03);
+    }
+
+    function playWaitingFinishedJingle(audio) {
+        scheduleWaitingTone(audio, { frequency: 784, duration: 0.34, gain: 0.2, type: 'sine' });
+        scheduleWaitingTone(audio, { frequency: 1568, duration: 0.25, gain: 0.055, type: 'triangle', delay: 0.01 });
+        scheduleWaitingTone(audio, { frequency: 1175, duration: 0.88, gain: 0.295, type: 'sine', delay: 0.33 });
+        scheduleWaitingTone(audio, { frequency: 2350, duration: 0.72, gain: 0.085, type: 'triangle', delay: 0.34 });
+    }
+
+    function playWaitingPointSound(audio) {
+        scheduleWaitingTone(audio, { frequency: 1047, endFrequency: 920, duration: 0.15, gain: 0.07, type: 'triangle' });
+    }
+
+    function playWaitingHitSound(audio) {
+        scheduleWaitingTone(audio, { frequency: 330, endFrequency: 150, duration: 0.2, gain: 0.062, type: 'sine' });
+        scheduleWaitingTone(audio, { frequency: 165, duration: 0.13, gain: 0.025, type: 'triangle', delay: 0.08 });
+    }
+
     function unlockWaitingReadySound() {
         try {
             var audio = waitingAudioContext();
@@ -1029,17 +1080,7 @@
             if (!audio) return;
             function scheduleChime() {
                 if (document.hidden || audio.state === 'suspended') return;
-                var now = audio.currentTime;
-                var gain = audio.createGain();
-                gain.gain.setValueAtTime(0.0001, now);
-                gain.gain.exponentialRampToValueAtTime(0.08, now + 0.025);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.46);
-                gain.connect(audio.destination);
-                [659, 988].forEach(function(frequency, index) {
-                    var oscillator = audio.createOscillator();
-                    oscillator.type = 'sine'; oscillator.frequency.value = frequency;
-                    oscillator.connect(gain); oscillator.start(now + index * 0.17); oscillator.stop(now + index * 0.17 + 0.2);
-                });
+                playWaitingFinishedJingle(audio);
             }
             if (audio.state === 'suspended' && typeof audio.resume === 'function') {
                 var resumed = audio.resume();
@@ -1071,21 +1112,8 @@
             if (document.hidden) return;
             var audio = waitingAudioContext();
             if (!audio || audio.state === 'suspended') return;
-            var now = audio.currentTime;
-            var gain = audio.createGain();
-            gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.exponentialRampToValueAtTime(kind === 'collect' ? 0.055 : 0.07, now + 0.012);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === 'collect' ? 0.18 : 0.24));
-            gain.connect(audio.destination);
-            var tones = kind === 'collect' ? [784, 1175] : [196, 147];
-            tones.forEach(function(frequency, index) {
-                var oscillator = audio.createOscillator();
-                oscillator.type = kind === 'collect' ? 'sine' : 'triangle';
-                oscillator.frequency.value = frequency;
-                oscillator.connect(gain);
-                oscillator.start(now + index * 0.055);
-                oscillator.stop(now + index * 0.055 + 0.11);
-            });
+            if (kind === 'collect') playWaitingPointSound(audio);
+            else if (kind === 'hit') playWaitingHitSound(audio);
         } catch (error) {}
     }
 
@@ -4104,6 +4132,7 @@
             try { state.waitingAudioContext.close(); } catch (error) {}
         }
         state.waitingAudioContext = null;
+        state.waitingAudioOutput = null;
     });
 
     if (currentWritingTitleWindow && window.ResizeObserver) {

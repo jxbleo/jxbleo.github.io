@@ -2429,6 +2429,20 @@ check("an active wait remains Ready until the student clicks one result action",
   assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
   requireEvery(client, ["Check Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "waitingReadySoundTimer", "startWaitingReadyReminder", "AudioContext", "ready-announced"], "Ready controls and sound");
   requireEvery(client, ["unlockWaitingReadySound", "pointerdown", "audio.resume"], "user-gesture audio unlock");
+  requireEvery(client, ["waitingAudioOutput", "createDynamicsCompressor", "scheduleWaitingTone", "playWaitingFinishedJingle", "playWaitingPointSound", "playWaitingHitSound"],
+    "bounded waiting sound graph");
+  const finishedSound = functionSource(client, "playWaitingFinishedJingle", "playWaitingPointSound");
+  requireEvery(finishedSound, ["frequency: 784", "frequency: 1175", "duration: 0.88", "gain: 0.295", "delay: 0.33"],
+    "selected J6 rising completion jingle");
+  const pointSound = functionSource(client, "playWaitingPointSound", "playWaitingHitSound");
+  requireEvery(pointSound, ["frequency: 1047", "endFrequency: 920", "duration: 0.15", "gain: 0.07", "triangle"],
+    "selected P3 point cue");
+  const hitSound = functionSource(client, "playWaitingHitSound", "unlockWaitingReadySound");
+  requireEvery(hitSound, ["frequency: 330", "endFrequency: 150", "frequency: 165", "gain: 0.062", "gain: 0.025"],
+    "selected H4 lost-point cue");
+  const gameSound = functionSource(client, "playWaitingGameSound", "destroyAiWaitingExperience");
+  requireEvery(gameSound, ["kind === 'collect'", "playWaitingPointSound(audio)", "kind === 'hit'", "playWaitingHitSound(audio)"],
+    "Runner event-to-sound mapping");
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
   requireEvery(styles, ["ai-waiting-ready-dock-bounce", "translateY(-11px)", "5.2s", ".ai-waiting-stage-label", "prefers-reduced-motion"],
     "periodic reduced-motion-safe Ready reminder");

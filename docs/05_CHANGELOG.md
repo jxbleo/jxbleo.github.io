@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-26 — Final Writing Runner sound hierarchy
+
+- Selected the `P3` light pluck for collectible points and the `H4` low drop for
+  obstacle deductions.
+- Replaced the Finished reminder with the louder `J6` spacious rising jingle,
+  retaining one sound per Dock bounce and a single cue under Reduced Motion.
+- Routed all three synthesized cues through one bounded Web Audio compressor;
+  Runner audio remains local-only, non-authoritative, and non-persistent.
+
 ## 2026-08-25 — Label-free Writing progress and consistent toolbar spacing
 
 - Made `Uploaded` check immediately after the durable upload handoff, kept
