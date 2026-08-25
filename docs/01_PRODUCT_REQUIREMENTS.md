@@ -1801,9 +1801,8 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 
 - The four student-facing AI tasks (`ocr`, `review`, `rewrite`, and
   `revision_ocr`) use one waiting surface with `Uploaded` and `Finished` as the
-  two endpoint nodes. `Thinking` is centered on the connector itself while work
-  is pending, and the connector continuously transmits a restrained energy sweep
-  from left to right. The browser never
+  two endpoint nodes. Normal work has no process label; the connector continuously
+  transmits a restrained energy sweep from left to right. The browser never
   invents percentages or remaining-time estimates.
 - Every concrete Composition screen uses the persistent toolbar `Back` action;
   the waiting card itself contains no duplicate Back or Upload Again row. Back
@@ -1817,16 +1816,18 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   obstacle collision subtracts one, each green collectible adds one, and the
   runner supports repeat jumps, one air jump, and a 120ms landing buffer. Ground
   and airborne obstacles and green collectibles replenish continuously at
-  randomized playable intervals. A local synthesized cue plays exactly
-  when a collectible is taken, and a distinct cue plays on obstacle contact.
+  randomized playable intervals. A short local light-pluck cue plays exactly
+  when a collectible is taken, and a distinct low descending cue plays on
+  obstacle contact.
   Score, collectibles, distance, and stumble state are discarded on refresh and
   are never rewards, analytics, or AI progress.
 - A successful Job changes the same open page to `Finished` with a full-width
   result button and no redundant `Text is ready` copy. The
   runner continues until the student clicks that button; no result renderer is
   entered automatically. The final node and label use a brief periodic Dock-style
-  bounce synchronized with a gentle synthesized two-note reminder on each cycle
-  when audio is available. Reduced motion uses one completion cue and removes
+  bounce synchronized with a clearly louder, spacious low-to-high two-note jingle
+  on each cycle when audio is available. The completion jingle must remain more
+  prominent than both Score cues. Reduced motion uses one completion cue and removes
   repeating choreography without changing the manual
   handoff. Reopening an already-ready Job is silent and opens its actual result
   directly, without constructing a Ready card or Runner.
