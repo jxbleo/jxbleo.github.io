@@ -2343,17 +2343,25 @@ check("all four durable jobs use one waiting renderer and keep their polling", (
     const source = functionSource(client, name, next);
     assert(!source.includes("renderLoading("), `${name} must enter the Runner before starting its request`);
   });
+  requireEvery(client, [
+    "startReviewPolling(expectedOperationId)",
+    "startRewritePolling(expectedOperationId)",
+    "operation_id: evaluateOperation",
+    "operation_id: rewriteOperation",
+  ], "lost-response polling must retain the operation being submitted instead of an older failed job");
 });
 
 check("the waiting stages reflect server state and expose only a durable handoff", () => {
   const client = read(clientPath);
   const renderer = `${functionSource(client, "waitingStageDefinitions", "mountWaitingRunner")}\n${functionSource(client, "renderAiWaitingExperience", "updateAiWaitingExperience")}`;
-  requireEvery(renderer, ["Thinking", "Finished", "is-transmitting", "runner-canvas", "runner-score"], "waiting renderer contract");
-  assert(!/Uploaded|Organising|Preparing|Comparing|Matching/.test(renderer), "waiting progress must remain a two-state Thinking / Finished track");
+  requireEvery(renderer, ["Uploaded", "Thinking", "Finished", "ai-waiting-connector-label", "is-transmitting", "runner-canvas", "runner-score"], "waiting renderer contract");
+  assert(!/Organising|Preparing|Comparing|Matching/.test(renderer), "waiting progress must remain an Uploaded / Thinking / Finished path");
   assert(!renderer.includes("data-return-home"), "waiting content must not duplicate the toolbar Back action");
   assert(!/Continue in Background|Waiting for the same saved|checks every 5 seconds|Distance|Ink|Text is ready/.test(renderer), "waiting renderer must remove legacy copy and metrics");
-  assert(/waitingStageDefinitions\s*\(\s*\)/.test(renderer), "all AI jobs must share the two-state waiting track");
-  assert(/runnerMarkup\s*=\s*taskState\s*!==\s*['"]failed['"]/.test(renderer), "the runner must appear immediately during upload handoff");
+  assert(/waitingStageDefinitions\s*\(\s*\)/.test(renderer), "all AI jobs must share the same two endpoints and connector process label");
+  assert(/return\s*\[\s*['"]Uploaded['"]\s*,\s*['"]Finished['"]\s*\]/.test(renderer), "Uploaded and Finished must remain the only endpoint nodes");
+  assert(/waitingConnectorLabel[\s\S]{0,180}Interrupted[\s\S]{0,120}Thinking/.test(renderer), "Thinking must sit on the connector and become Interrupted on failure");
+  assert(/runnerMarkup\s*=\s*['"]<div class=\\?['"]runner-shell/.test(renderer), "the runner must remain mounted during upload handoff and interruption");
   assert(!/ai-waiting-uploading|data-waiting-title/.test(renderer), "uploading and AI-reading-only waiting surfaces must be removed");
   const ocrWaiting = functionSource(client, "renderOcrWaiting", "startOcrPolling");
   assert(/durable:\s*!uploadPending/.test(ocrWaiting), "OCR upload confirmation must gate the durable handoff");
@@ -2440,7 +2448,7 @@ check("reopening an already-ready Composition skips the waiting game", () => {
     "direct ready-result routing");
 });
 
-check("success and failure paths cleanly hand off or destroy the Runner", () => {
+check("success paths hand off and interrupted AI jobs preserve the Runner", () => {
   const client = read(clientPath);
   [
     ["showOcrResult", "renderOcr"],
@@ -2451,10 +2459,13 @@ check("success and failure paths cleanly hand off or destroy the Runner", () => 
     assert(source.includes("showReadyOrOpenResult"), `${name} must use the bounded active-wait/direct-open handoff`);
     assert(source.includes(expected), `${name} must retain its existing success exit`);
   });
-  ["renderOcrFailure", "renderReviewFailure", "renderRewriteFailure", "renderRevisionScanFailure", "renderFatalAction"].forEach((name) => {
-    const source = matchingFunctionSource(client, name, `${name} cleanup source`);
-    assert(source.includes("destroyAiWaitingExperience"), `${name} must destroy the Runner`);
+  ["renderOcrFailure", "renderReviewFailure", "renderRewriteFailure", "renderRevisionScanFailure"].forEach((name) => {
+    const source = matchingFunctionSource(client, name, `${name} interruption source`);
+    assert(source.includes("showAiWaitingInterruption"), `${name} must preserve the Runner and show the shared interruption state`);
+    assert(!source.includes("destroyAiWaitingExperience"), `${name} must not destroy the Runner`);
   });
+  assert(matchingFunctionSource(client, "renderFatalAction", "fatal cleanup source").includes("destroyAiWaitingExperience"),
+    "non-waiting fatal actions must still clean up the Runner");
   requireEvery(client, [
     "window.addEventListener('pagehide'",
     "document.addEventListener('visibilitychange'",
@@ -2464,6 +2475,44 @@ check("success and failure paths cleanly hand off or destroy the Runner", () => 
   const finishSource = functionSource(client, "finishAiWaitingExperience", "showReadyOrOpenResult");
   requireEvery(finishSource, ["waitingTaskState = 'ready'", "setTaskState('ready')", "waitingResultAction"], "Ready handoff");
   assert(!/\.finish\s*\(/.test(finishSource), "Ready must not stop the Runner through finish()");
+});
+
+check("AI waiting interruption is single-action and manual retry is durable", () => {
+  const client = read(clientPath);
+  const backend = read("cloudfunctions/writingTutor/index.js");
+  const styles = read("assets/css/ai-waiting-runner.css");
+  requireEvery(client, [
+    "Interrupted",
+    "Something interrupted this step.",
+    "Retry now, or try again later.",
+    "data-retry-waiting",
+    "showAiWaitingInterruption",
+    "retryPersistedAiJob",
+    "retryFailedJob",
+  ], "shared interrupted waiting state");
+  assert(/ai-waiting-retry-action[\s\S]{0,220}data-retry-waiting>Retry<\/button>/.test(client),
+    "the interrupted waiting card must expose exactly one visible Retry action");
+  ["renderOcrFailure", "renderReviewFailure", "renderRewriteFailure", "renderRevisionScanFailure"].forEach((name) => {
+    const source = matchingFunctionSource(client, name, `${name} single-action source`);
+    assert(!/secondary-button|data-return-home|data-return-rewrites|data-reupload/.test(source),
+      `${name} must not add a secondary navigation action`);
+  });
+  requireEvery(styles, [
+    ".ai-waiting-stage.is-interrupted",
+    ".ai-waiting-connector.is-interrupted",
+    ".ai-waiting-interruption",
+    "#d85a66",
+  ], "red interrupted progress treatment");
+  assert(/const MAX_JOB_ATTEMPTS\s*=\s*5\s*;/.test(backend), "durable AI jobs must automatically attempt at most five times");
+  const retrySource = functionSource(backend, "retryFailedJob", "extractOcr");
+  requireEvery(retrySource, [
+    'status: "queued"',
+    "attempt_count: 0",
+    "active_job_id",
+    "dispatchToken",
+    "processQueuedJob",
+    "replaceWholeFields",
+  ], "authenticated durable manual retry");
 });
 
 check("the Runner remains optional and does not own AI state", () => {

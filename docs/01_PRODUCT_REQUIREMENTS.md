@@ -1800,9 +1800,10 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 ### Durable AI waiting experience
 
 - The four student-facing AI tasks (`ocr`, `review`, `rewrite`, and
-  `revision_ocr`) use one waiting surface with the same two visible states:
-  `Thinking / Finished`. While work is pending, the connector continuously
-  transmits a restrained energy sweep from left to right. The browser never
+  `revision_ocr`) use one waiting surface with `Uploaded` and `Finished` as the
+  two endpoint nodes. `Thinking` is centered on the connector itself while work
+  is pending, and the connector continuously transmits a restrained energy sweep
+  from left to right. The browser never
   invents percentages or remaining-time estimates.
 - Every concrete Composition screen uses the persistent toolbar `Back` action;
   the waiting card itself contains no duplicate Back or Upload Again row. Back
@@ -1856,10 +1857,15 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   Confirmed Manuscript 后才可评估。确认后删除作文图片，只长期保存文字。
 - OCR 是可恢复的后台长任务：照片上传确认与持久任务创建由同一个服务器步骤完成；任务进入
   云端队列后，学生可以返回其他页面或关闭浏览器。刷新、重新登录或稍后打开同一 Composition
-  必须恢复等待、成功或失败状态，不新建作品且不要求重复上传。任务最多自动尝试三次。
+  必须恢复等待、成功或失败状态，不新建作品且不要求重复上传。每个持久 AI 任务最多自动尝试五次。
 - 标化内容评估和通用语言批改也必须作为可恢复的后台长任务执行。点击开始批改后立即保存排队状态；
   学生可离开、刷新或重新登录，系统继续处理同一 Composition。相同 operation ID 只能预留一次额度；
   短暂失败自动重试，最终失败释放预留字数，只有成功结果计入当日用量。
+- OCR、标化/语言批改、逐句检查或订正扫描在五次自动尝试后仍失败时，不得销毁等待游戏或
+  替换为整页错误卡片。等待轨道改为红色，中间 `Thinking` 改成 `Interrupted`，轨道下提示可立即或稍后重试，游戏与
+  当前临时 Score 继续运行。游戏下方只显示一个 `Retry`；返回统一使用顶部工具栏 `Back`，
+  不增加第二个返回、重新上传或其他次要按钮。Retry 必须重新排队已保存任务或创建一次受额度
+  控制的新批改请求，不能只是刷新同一个失败状态。
 - 作文照片只用于 OCR 和学生确认。确认文本后立即删除；学生未返回确认时也必须在上传确认后
   七天内由定时清理删除。OCR 和任务元数据不能复制作文正文，OCR 不计每日批改字数。
 - 每次评估只能选择 `通用语言批改` 或 `标化考试内容批改`。前者无分数；后者要求 Writing

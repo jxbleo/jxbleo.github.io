@@ -1936,7 +1936,9 @@ Important mobile rules:
 ### Durable waiting cards and Mr. Cat Runner
 
 - OCR, General Language Review, Sentence Revision Check, and Revision Scan use
-  the same centered waiting card with a two-node `Thinking / Finished` track.
+  the same centered waiting card with `Uploaded` and `Finished` as its two node
+  labels. `Thinking` is centered directly over the energy connector rather than
+  occupying an endpoint.
   During every pending state—including the unconfirmed upload handoff—the Runner
   appears immediately and a luminous connector continuously travels left to
   right. There is no upload-only, “AI is reading”, or other loader-only surface.
@@ -1966,6 +1968,17 @@ Important mobile rules:
   audio is available. Reduced motion is static and receives only the initial
   completion cue. Opening an already-ready Composition from History bypasses this entire
   card and Runner and renders the saved result immediately.
+- Retryable provider/network failures are attempted by the durable cloud job up
+  to five times while the card remains in `Thinking`. If the saved job finally
+  fails, the same card and Canvas remain mounted: the connector and terminal node
+  become red, the connector label changes from `Thinking` to `Interrupted`, and a compact warning
+  directly below the track says the student can retry now or later. The game
+  remains playable and keeps its in-memory Score. Exactly one full-width `Retry`
+  action appears below the game; no Back, Upload Again, return-to-revisions, or
+  other secondary action is duplicated because the persistent toolbar owns Back.
+  Retrying removes the interruption treatment, resumes the green transmitting
+  state, and requeues the durable OCR/rewrite/revision scan or submits a fresh
+  quota-controlled review request without rebuilding the Canvas.
 
 - AI Tutor is a self-contained student workspace with New Writing, Writing
   Portfolio, and Writing Profile views.
@@ -2065,11 +2078,11 @@ Important mobile rules:
   sticky toolbar and the newest addition becomes current, rather than inheriting
   the former long Sentence Revision scroll position. iPad preview height is
   capped and phone uses the same positioning rule. Only that
-  explicit commit creates the cloud upload operation. The surface has explicit `Choose photo`, `Uploading`, `Queued`, `Processing`,
-  `Review Scan`, and `Scan failed` states. Queued/processing copy says the scan
-  can continue after leaving, and refresh/re-login/reopen returns to the same
-  operation rather than asking for another upload. Retry is offered only through
-  the same recoverable operation after a failure.
+  explicit commit creates the cloud upload operation. The surface has local
+  choose/upload staging, durable waiting, `Review Scan`, and the shared red
+  `Interrupted` state. Refresh/re-login/reopen returns to the same operation
+  rather than asking for another upload. Retry is offered only through the same
+  recoverable operation after a failure.
 - Review Scan presents each recognized answer as one stacked card. The upper
   native-select-backed target box uses the Vocabulary wrong-answer treatment
   (`#fca5a5` border and `#fef2f2` fill), showing the global sentence number and
@@ -2095,19 +2108,18 @@ Important mobile rules:
   imported student revision are immediately visible together.
 - Before confirmation, the browser retries the same stable upload batch and
   never claims that cloud processing can continue. An interrupted or partial
-  upload stays in the same Composition and exposes `重新上传照片`; only a fully
+  upload stays in the same Composition and the waiting card exposes its sole
+  `Retry` action; only a fully
   confirmed batch crosses the safe-to-leave boundary. Legacy in-flight OCR rows
-  without a durable job ID become a specific recoverable failure and expose
-  same-Composition re-upload instead of polling forever.
-- After the upload is confirmed, the OCR waiting screen explicitly says the
-  photo is safely uploaded and the student may leave. It offers `返回 AI Tutor`
-  and `留在此页等待`; staying polls every five seconds without a client deadline.
-  Returning, refreshing, re-login, or reopening a queued/processing Composition
-  resumes the same job and shows its eventual OCR review or specific failure.
-  Queued/processing screens also retain a same-Composition `重新上传` action.
-- After `开始批改`, standardized and language review use the same leave-and-resume pattern. The waiting screen
-  starts five-second polling immediately, states that the student may leave, and restores the same review job after
-  refresh or re-login. A final failure preserves the manuscript and offers a fresh submission after quota release.
+  without a durable job ID become a specific recoverable interruption instead of
+  polling forever.
+- After the upload is confirmed, OCR continues through the shared Runner card and
+  serialized polling. Returning, refreshing, re-login, or reopening a queued or
+  processing Composition resumes the same job and shows its eventual OCR review
+  or shared `Interrupted` state; the card adds no duplicate navigation or re-upload action.
+- After review begins, standardized and language review use the same leave-and-resume
+  lifecycle. A final failure preserves the manuscript, leaves Runner playable,
+  releases the failed review reservation, and exposes only the shared `Retry` action.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
 - Writing Home is an action-first, adaptive workspace rather than a permanent

@@ -74,12 +74,41 @@
     animation: ai-waiting-breathe 2.4s ease-in-out infinite;
 }
 .ai-waiting-stage.is-upcoming .ai-waiting-stage-node { background: #eef3f1; }
+.ai-waiting-stage.is-interrupted-complete,
+.ai-waiting-stage.is-interrupted { color: #b8414d; }
+.ai-waiting-stage.is-interrupted-complete .ai-waiting-stage-node {
+    border-color: #d85a66;
+    background: #d85a66;
+}
+.ai-waiting-stage.is-interrupted .ai-waiting-stage-node {
+    border-color: #d85a66;
+    color: #fff;
+    background: #d85a66;
+    box-shadow: 0 0 0 6px rgba(216, 90, 102, .12);
+}
+.ai-waiting-stage.is-interrupted-complete .ai-waiting-stage-check,
+.ai-waiting-stage.is-interrupted .ai-waiting-stage-check { display: none; }
+.ai-waiting-stage.is-interrupted .ai-waiting-stage-node::before {
+    content: '!';
+    font-size: .86rem;
+    font-weight: 900;
+    line-height: 1;
+}
 .ai-waiting-connector {
     position: absolute;
     z-index: 1;
-    top: 11px;
+    top: 0;
     left: calc(50% + 17px);
     right: calc(-50% + 17px);
+    height: 27px;
+    overflow: visible;
+    pointer-events: none;
+}
+.ai-waiting-connector-track {
+    position: absolute;
+    top: 11px;
+    right: 0;
+    left: 0;
     height: 6px;
     overflow: hidden;
     border-radius: 999px;
@@ -87,21 +116,46 @@
     box-shadow: inset 0 0 0 1px rgba(49, 93, 85, .04);
     transition: background-color .4s ease, box-shadow .4s ease;
 }
-.ai-waiting-connector::after {
+.ai-waiting-connector-track::after {
     position: absolute;
     inset: 0;
     border-radius: inherit;
     content: '';
 }
-.ai-waiting-connector.is-transmitting::after {
+.ai-waiting-connector.is-transmitting .ai-waiting-connector-track::after {
     width: 42%;
     background: linear-gradient(90deg, transparent 0%, rgba(91, 196, 146, .5) 28%, #4e9a76 62%, rgba(159, 237, 200, .22) 84%, transparent 100%);
     filter: drop-shadow(0 0 5px rgba(78, 154, 118, .52));
     animation: ai-waiting-energy-flow 1.35s linear infinite;
 }
-.ai-waiting-connector.is-complete {
+.ai-waiting-connector.is-complete .ai-waiting-connector-track {
     background: #4e9a76;
     box-shadow: 0 0 10px rgba(78, 154, 118, .22);
+}
+.ai-waiting-connector.is-interrupted .ai-waiting-connector-track {
+    background: #d85a66;
+    box-shadow: 0 0 10px rgba(216, 90, 102, .18);
+}
+.ai-waiting-connector-label {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    padding: 2px 7px;
+    border-radius: 999px;
+    color: #4e6f67;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 1px 4px rgba(34, 69, 61, .08);
+    font-size: .62rem;
+    font-weight: 780;
+    line-height: 1.2;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    transition: color .25s ease, background-color .25s ease;
+}
+.ai-waiting-connector.is-interrupted .ai-waiting-connector-label {
+    color: #b8414d;
+    background: #fff5f5;
 }
 
 @keyframes ai-waiting-energy-flow {
@@ -142,6 +196,22 @@
 .ai-waiting-ready-action { width: 100%; }
 .ai-waiting-ready-action[hidden] { display: none; }
 .ai-waiting-ready-action [data-view-waiting-result] { width: 100%; }
+.ai-waiting-interruption {
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(184, 65, 77, .18);
+    border-radius: 14px;
+    color: #8f303a;
+    background: rgba(255, 241, 242, .9);
+}
+.ai-waiting-interruption[hidden] { display: none; }
+.ai-waiting-interruption strong { font-size: .84rem; line-height: 1.35; }
+.ai-waiting-interruption p { margin: 0; color: #a34a54; font-size: .74rem; line-height: 1.5; }
+.ai-waiting-retry-action { width: 100%; }
+.ai-waiting-retry-action[hidden] { display: none; }
+.ai-waiting-retry-action [data-retry-waiting] { width: 100%; }
 .ai-waiting-actions { justify-content: space-between; align-items: center; margin-top: 0; }
 .ai-waiting-status { min-height: 1.4em; margin: 0; color: #a35b3e; font-size: .78rem; line-height: 1.6; }
 
@@ -188,16 +258,16 @@
 
 @media (prefers-reduced-motion: reduce) {
     .ai-waiting-stage.is-active .ai-waiting-stage-node,
-    .ai-waiting-connector.is-transmitting::after,
+    .ai-waiting-connector.is-transmitting .ai-waiting-connector-track::after,
     .ai-waiting-experience.is-ready .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node,
     .ai-waiting-experience.is-ready .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-label,
     .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-check,
     .ai-waiting-experience.is-ready-announced .ai-waiting-stage.is-complete:last-child .ai-waiting-stage-node::after { animation: none; }
-    .ai-waiting-stage-node, .ai-waiting-connector { transition: none; }
-    .ai-waiting-connector.is-transmitting::after { width: 58%; background: #6cab8c; transform: none; }
+    .ai-waiting-stage-node, .ai-waiting-connector-track, .ai-waiting-connector-label { transition: none; }
+    .ai-waiting-connector.is-transmitting .ai-waiting-connector-track::after { width: 58%; background: #6cab8c; transform: none; }
 }
 @media (prefers-contrast: more) {
-    .ai-waiting-experience, .ai-waiting-stage-node, .runner-canvas, .runner-score { border-color: currentColor; background: #fff; }
+    .ai-waiting-experience, .ai-waiting-stage-node, .runner-canvas, .runner-score, .ai-waiting-interruption { border-color: currentColor; background: #fff; }
     .ai-waiting-stage.is-complete, .ai-waiting-stage.is-active { color: #173b34; }
 }
 @media (prefers-reduced-transparency: reduce) {

@@ -48,6 +48,8 @@
         waitingRunner: null,
         waitingKind: '',
         waitingTaskState: '',
+        waitingIssueCode: '',
+        waitingIssueMode: '',
         waitingFinishPending: false,
         waitingPollTimer: null,
         waitingPollInFlight: false,
@@ -763,11 +765,12 @@
     }
 
     function waitingStageDefinitions() {
-        return ['Thinking', 'Finished'];
+        return ['Uploaded', 'Finished'];
     }
 
     function waitingStageClass(stageIndex, taskState) {
         if (taskState === 'ready') return 'is-complete';
+        if (taskState === 'failed') return stageIndex === 0 ? 'is-interrupted-complete' : 'is-interrupted';
         return stageIndex === 0 ? 'is-active' : 'is-upcoming';
     }
 
@@ -775,12 +778,16 @@
         return waitingStageDefinitions(kind)[stageIndex];
     }
 
+    function waitingConnectorLabel(taskState) {
+        return taskState === 'failed' ? 'Interrupted' : 'Thinking';
+    }
+
     function waitingStageMarkup(kind, taskState) {
         return waitingStageDefinitions(kind).map(function(label, stageIndex) {
             var stageClass = waitingStageClass(stageIndex, taskState);
             var current = stageClass === 'is-active' ? ' aria-current="step"' : '';
             var connector = stageIndex === 0
-                ? '<span class="ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : 'is-transmitting') + '" aria-hidden="true"></span>'
+                ? '<span class="ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : taskState === 'failed' ? 'is-interrupted' : 'is-transmitting') + '" aria-hidden="true"><span class="ai-waiting-connector-track"></span><span class="ai-waiting-connector-label">' + escapeHtml(waitingConnectorLabel(taskState)) + '</span></span>'
                 : '';
             var check = '<svg class="ai-waiting-stage-check" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.2 8.2 14l7.4-8"></path></svg>';
             return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage-index="' + stageIndex + '"' + current + '><span class="ai-waiting-stage-node" aria-hidden="true">' + check + '</span><span class="ai-waiting-stage-label">' + escapeHtml(waitingStageLabel(kind, stageIndex, taskState)) + '</span>' + connector + '</li>';
@@ -789,19 +796,23 @@
 
     function updateWaitingStageDom(kind, taskState) {
         if (!stage) return;
+        var progress = stage.querySelector('.ai-waiting-progress');
+        if (progress) progress.setAttribute('aria-label', 'Writing task progress: Uploaded, ' + waitingConnectorLabel(taskState) + ', Finished');
         var stages = stage.querySelectorAll('[data-waiting-stage-index]');
         Array.prototype.forEach.call(stages, function(item) {
             var index = Number(item.getAttribute('data-waiting-stage-index'));
             var statusClass = waitingStageClass(index, taskState);
             var nextClass = 'ai-waiting-stage ' + statusClass;
             item.className = nextClass;
-            if (statusClass === 'is-active') item.setAttribute('aria-current', 'step');
+            if (statusClass === 'is-active' || statusClass === 'is-interrupted') item.setAttribute('aria-current', 'step');
             else item.removeAttribute('aria-current');
             var label = item.querySelector('.ai-waiting-stage-label');
             if (label) label.textContent = waitingStageLabel(kind, index, taskState);
         });
         Array.prototype.forEach.call(stage.querySelectorAll('.ai-waiting-connector'), function(connector) {
-            connector.className = 'ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : 'is-transmitting');
+            connector.className = 'ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : taskState === 'failed' ? 'is-interrupted' : 'is-transmitting');
+            var connectorLabel = connector.querySelector('.ai-waiting-connector-label');
+            if (connectorLabel) connectorLabel.textContent = waitingConnectorLabel(taskState);
         });
     }
 
@@ -845,6 +856,8 @@
         var taskState = waitingTaskState(config.jobStatus, durable);
         state.waitingKind = firstText(config.kind);
         state.waitingTaskState = taskState;
+        state.waitingIssueCode = '';
+        state.waitingIssueMode = '';
         state.waitingFinishPending = false;
         state.waitingResultAction = null;
         state.waitingReadyAnnounced = taskState === 'ready';
@@ -854,19 +867,79 @@
             rewrite: 'rewrite-waiting',
             revision_ocr: 'revision-scan-waiting'
         }[state.waitingKind] || state.waitingKind + '-waiting');
-        var runnerMarkup = taskState !== 'failed'
-            ? '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><div class="runner-canvas-frame"><p class="runner-score" aria-live="polite">Score 0</p><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Interactive Mr. Cat Runner waiting game."></canvas></div></div>'
-            : '';
+        var runnerMarkup = '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><div class="runner-canvas-frame"><p class="runner-score" aria-live="polite">Score 0</p><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Interactive Mr. Cat Runner waiting game."></canvas></div></div>';
         var extraActions = firstText(config.extraActions);
         var readyAction = '<div class="ai-waiting-ready-action" hidden><button class="primary-button" type="button" data-view-waiting-result></button></div>';
+        var interruptionNotice = '<div class="ai-waiting-interruption" role="alert" hidden><strong>Something interrupted this step.</strong><p data-waiting-interruption-copy></p></div>';
+        var retryAction = '<div class="ai-waiting-retry-action" hidden><button class="primary-button" type="button" data-retry-waiting>Retry</button></div>';
         stage.innerHTML = '<section class="surface ai-waiting-experience" data-waiting-kind="' + escapeHtml(state.waitingKind) + '">' +
-            '<ol class="ai-waiting-progress" aria-label="Writing task progress" role="status" aria-live="polite">' + waitingStageMarkup(state.waitingKind, taskState) + '</ol>' +
+            '<ol class="ai-waiting-progress" aria-label="Writing task progress: Uploaded, ' + escapeHtml(waitingConnectorLabel(taskState)) + ', Finished" role="status" aria-live="polite">' + waitingStageMarkup(state.waitingKind, taskState) + '</ol>' +
+            interruptionNotice +
             runnerMarkup +
             '<p class="sr-only" id="' + escapeHtml(firstText(config.pollStatusId, 'ai-waiting-status')) + '" role="status"></p>' +
+            retryAction +
             readyAction + (extraActions ? '<div class="form-actions ai-waiting-actions">' + extraActions + '</div>' : '') + '</section>';
         mountWaitingRunner();
         updateWaitingStageDom(state.waitingKind, taskState);
+        if (taskState === 'failed') showAiWaitingInterruption(state.waitingKind, config.failureMessage, config.failureCode, config.failureMode);
         if (previousScreen !== state.screen) scheduleStageViewportReset();
+    }
+
+    function clearAiWaitingInterruption() {
+        state.waitingIssueCode = '';
+        state.waitingIssueMode = '';
+        var experience = stage && stage.querySelector('.ai-waiting-experience');
+        if (!experience) return;
+        experience.classList.remove('is-interrupted');
+        var notice = experience.querySelector('.ai-waiting-interruption');
+        var action = experience.querySelector('.ai-waiting-retry-action');
+        if (notice) notice.hidden = true;
+        if (action) action.hidden = true;
+    }
+
+    function showAiWaitingInterruption(kind, message, code, mode) {
+        var active = state.waitingKind === kind && stage && stage.querySelector('.ai-waiting-experience[data-waiting-kind="' + kind + '"]');
+        if (!active) {
+            renderAiWaitingExperience({
+                kind: kind,
+                jobStatus: 'failed',
+                durable: true,
+                failureMessage: message,
+                failureCode: code,
+                failureMode: mode
+            });
+            return;
+        }
+        stopWaitingReadyReminder();
+        state.waitingTaskState = 'failed';
+        state.waitingIssueCode = firstText(code);
+        state.waitingIssueMode = firstText(mode, 'job');
+        state.waitingFinishPending = false;
+        state.waitingResultAction = null;
+        updateWaitingStageDom(kind, 'failed');
+        if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState('failed');
+        active.classList.remove('is-ready', 'is-ready-announced');
+        active.classList.add('is-interrupted');
+        var ready = active.querySelector('.ai-waiting-ready-action');
+        var notice = active.querySelector('.ai-waiting-interruption');
+        var copy = active.querySelector('[data-waiting-interruption-copy]');
+        var action = active.querySelector('.ai-waiting-retry-action');
+        if (ready) ready.hidden = true;
+        if (copy) copy.textContent = firstText(message, 'Please retry now, or try again later.') + ' Retry now, or try again later.';
+        if (notice) notice.hidden = false;
+        if (action) action.hidden = false;
+    }
+
+    function resumeAiWaitingExperience(kind, jobStatus, pollStatusId) {
+        var active = state.waitingKind === kind && stage && stage.querySelector('.ai-waiting-experience[data-waiting-kind="' + kind + '"]');
+        if (!active) return false;
+        clearAiWaitingInterruption();
+        state.waitingTaskState = waitingTaskState(jobStatus, true);
+        updateWaitingStageDom(kind, state.waitingTaskState);
+        if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState(state.waitingTaskState);
+        var statusNode = pollStatusId ? active.querySelector('#' + pollStatusId) : null;
+        if (statusNode) statusNode.textContent = '';
+        return true;
     }
 
     function updateAiWaitingExperience(config) {
@@ -875,6 +948,7 @@
         var durable = config.durable !== false;
         var nextState = waitingTaskState(config.jobStatus, durable);
         state.waitingTaskState = nextState;
+        if (nextState !== 'failed') clearAiWaitingInterruption();
         updateWaitingStageDom(state.waitingKind, nextState);
         if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState(nextState === 'uploading' ? 'queued' : nextState);
         var pollStatusId = firstText(config.pollStatusId);
@@ -1010,6 +1084,8 @@
         state.waitingRunner = null;
         state.waitingKind = '';
         state.waitingTaskState = '';
+        state.waitingIssueCode = '';
+        state.waitingIssueMode = '';
         state.waitingFinishPending = false;
         state.waitingResultAction = null;
         state.waitingReadyAnnounced = false;
@@ -1929,14 +2005,16 @@
     function renderOcrWaiting(job, autoPoll) {
         var status = firstText(job && job.status, state.current && state.current.status).toLowerCase();
         var uploadPending = status === 'photo_uploading';
-        renderAiWaitingExperience({
-            kind: 'ocr',
-            jobStatus: status,
-            durable: !uploadPending,
-            pollStatusId: 'ocr-poll-status',
-            allowBackground: !uploadPending,
-            extraActions: ''
-        });
+        if (!resumeAiWaitingExperience('ocr', uploadPending ? 'queued' : status, 'ocr-poll-status')) {
+            renderAiWaitingExperience({
+                kind: 'ocr',
+                jobStatus: status,
+                durable: !uploadPending,
+                pollStatusId: 'ocr-poll-status',
+                allowBackground: !uploadPending,
+                extraActions: ''
+            });
+        }
         if (autoPoll) startOcrPolling();
     }
 
@@ -1978,13 +2056,8 @@
             WRITING_AI_TIMEOUT: '云端 OCR 本次没有完成。原作文记录仍然保留。'
         };
         var message = messages[code] || firstText(error && error.message, 'OCR 本次没有完成。你可以重新检查云端状态，或重新上传照片。');
-        destroyAiWaitingExperience();
-        state.screen = 'ocr-failed';
-        stage.innerHTML = '<section class="surface error-state"><strong>OCR 识别没有完成</strong><p>' + escapeHtml(message) + '</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-retry-ocr>重新检查状态</button>' +
-            '<button class="primary-button" type="button" data-reupload>重新上传照片</button></div>' +
-            '<button class="quiet-button" type="button" data-return-home>返回 AI Tutor</button></section>';
-        scheduleStageViewportReset();
+        state.screen = 'ocr-waiting';
+        showAiWaitingInterruption('ocr', message, code, code === 'PHOTO_UPLOAD_UNCONFIRMED' ? 'upload' : 'job');
     }
 
     function ocrRegionsForPage(pageIndex) {
@@ -2088,12 +2161,11 @@
             syncCurrentSummary();
         }).catch(function(error) {
             if (isNetworkDisconnect(error) && compositionId(state.current)) {
-                renderReviewWaiting(state.current && state.current.active_job, true, true);
-                setStatus('网络暂时中断。系统会查询同一篇作文；如请求未送达，可用同一个请求编号安全重试。');
+                renderReviewWaiting({ job_type: 'review', status: 'queued', operation_id: evaluateOperation }, true, false);
                 return;
             }
             if (reviewRequestMayBeRunning(error)) {
-                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                renderReviewWaiting({ job_type: 'review', status: 'queued', operation_id: evaluateOperation }, true, false);
                 return;
             }
             if (error && error.result) clearLogicalOperation('evaluate');
@@ -2140,24 +2212,26 @@
 
     function renderReviewWaiting(job, autoPoll, allowRetry) {
         var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
-        renderAiWaitingExperience({
-            kind: 'review',
-            jobStatus: jobStatus,
-            durable: true,
-            pollStatusId: 'review-poll-status',
-            allowBackground: true,
-            extraActions: allowRetry ? '<button class="secondary-button" type="button" data-retry-review>Retry the same request</button>' : ''
-        });
-        if (autoPoll) startReviewPolling();
+        if (!resumeAiWaitingExperience('review', jobStatus, 'review-poll-status')) {
+            renderAiWaitingExperience({
+                kind: 'review',
+                jobStatus: jobStatus,
+                durable: true,
+                pollStatusId: 'review-poll-status',
+                allowBackground: true,
+                extraActions: ''
+            });
+        }
+        if (autoPoll) startReviewPolling(firstText(job && job.operation_id));
     }
 
-    function startReviewPolling() {
+    function startReviewPolling(expectedOperationId) {
         if (state.reviewPollActive || !compositionId(state.current)) return;
         state.reviewPollActive = true;
         startWaitingPolling({
             kind: 'review', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', generationKey: 'reviewPollGeneration',
             isActive: function() { return state.reviewPollActive; },
-            operationId: function() { return firstText(state.current && state.current.active_job && state.current.active_job.operation_id); },
+            operationId: function() { return firstText(expectedOperationId, state.current && state.current.active_job && state.current.active_job.operation_id); },
             returnedOperationId: function(result) { return firstText(reviewJobFrom(result).operation_id); },
             onSuccess: function(result) {
                 var composition = result.composition || {};
@@ -2184,7 +2258,9 @@
         });
         var operation = logicalOperationId('evaluate', fingerprint);
         setBusy(true);
-        renderReviewWaiting(state.current && state.current.active_job, true, false);
+        if (!resumeAiWaitingExperience('review', 'queued', 'review-poll-status')) {
+            renderReviewWaiting({ status: 'queued' }, false, false);
+        }
         writingCall('evaluate', {
             composition_id: compositionId(state.current),
             assessment_mode: apiMode(state.assessmentMode),
@@ -2196,16 +2272,66 @@
             else renderReviewWaiting(reviewJobFrom(result), true, false);
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
-                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                renderReviewWaiting({ job_type: 'review', status: 'queued', operation_id: operation }, true, false);
                 return;
             }
             if (reviewRequestMayBeRunning(error)) {
-                renderReviewWaiting(state.current && state.current.active_job, true, true);
+                renderReviewWaiting({ job_type: 'review', status: 'queued', operation_id: operation }, true, false);
                 return;
             }
             if (error && error.result) clearLogicalOperation('evaluate');
             renderReviewFailure(error);
         }).finally(function() { setBusy(false); });
+    }
+
+    function retryPersistedAiJob(kind, jobType) {
+        if (state.busy || !compositionId(state.current)) return;
+        setBusy(true);
+        resumeAiWaitingExperience(kind, 'queued', kind === 'ocr' ? 'ocr-poll-status' : kind === 'rewrite' ? 'rewrite-poll-status' : 'revision-scan-poll-status');
+        writingCall('retryFailedJob', {
+            composition_id: compositionId(state.current),
+            job_type: jobType
+        }).then(function(result) {
+            if (result.composition) state.current = result.composition;
+            var job = result.job || state.current && state.current.active_job || {};
+            if (kind === 'ocr') {
+                renderOcrWaiting(job, true);
+            } else if (kind === 'rewrite') {
+                renderRewriteWaiting(job, true, false);
+            } else {
+                syncRevisionScanFromComposition(state.current);
+                renderRevisionScanWaiting(job, true, false, true);
+            }
+            syncCurrentSummary();
+        }).catch(function(error) {
+            if (kind === 'ocr') renderOcrFailure(error);
+            else if (kind === 'rewrite') renderRewriteFailure(error);
+            else renderRevisionScanFailure(error);
+        }).finally(function() { setBusy(false); });
+    }
+
+    function retryInterruptedWaiting() {
+        if (state.busy) return;
+        var kind = state.waitingKind;
+        var mode = state.waitingIssueMode;
+        if (kind === 'review') {
+            retryReviewRequest();
+            return;
+        }
+        if (kind === 'ocr' && mode === 'upload' && state.photoFiles.length) {
+            setBusy(true);
+            resumeAiWaitingExperience('ocr', 'queued', 'ocr-poll-status');
+            uploadAndExtract();
+            return;
+        }
+        if (kind === 'revision_ocr' && mode === 'upload' && revisionScanState().files.length) {
+            resumeAiWaitingExperience('revision_ocr', 'queued', 'revision-scan-poll-status');
+            beginRevisionScanUpload(revisionScanState().files.slice());
+            return;
+        }
+        if (kind === 'ocr') retryPersistedAiJob('ocr', 'ocr');
+        else if (kind === 'rewrite') retryPersistedAiJob('rewrite', 'rewrite');
+        else if (kind === 'revision_ocr') retryPersistedAiJob('revision_ocr', 'revision_ocr');
     }
 
     function renderReviewFailure(error) {
@@ -2218,12 +2344,8 @@
         };
         var message = messages[code] || firstText(error && error.message, 'AI 批改本次没有完成。作文仍然安全保存。');
         clearLogicalOperation('evaluate');
-        destroyAiWaitingExperience();
-        state.screen = 'review-failed';
-        stage.innerHTML = '<section class="surface error-state"><strong>AI 批改没有完成</strong><p>' + escapeHtml(message) + '</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            (code === 'WRITING_AI_DAILY_LIMIT_REACHED' ? '' : '<button class="primary-button" type="button" data-retry-review>重新提交批改</button>') + '</div></section>';
-        scheduleStageViewportReset();
+        state.screen = 'review-waiting';
+        showAiWaitingInterruption('review', message, code, 'job');
     }
 
     function rewriteJobFrom(result) {
@@ -2240,15 +2362,17 @@
 
     function renderRewriteWaiting(job, autoPoll, allowRetry) {
         var jobStatus = firstText(job && job.status, state.current && state.current.status).toLowerCase();
-        renderAiWaitingExperience({
-            kind: 'rewrite',
-            jobStatus: jobStatus,
-            durable: true,
-            pollStatusId: 'rewrite-poll-status',
-            allowBackground: true,
-            extraActions: allowRetry ? '<button class="secondary-button" type="button" data-retry-rewrite>Retry the same request</button>' : ''
-        });
-        if (autoPoll) startRewritePolling();
+        if (!resumeAiWaitingExperience('rewrite', jobStatus, 'rewrite-poll-status')) {
+            renderAiWaitingExperience({
+                kind: 'rewrite',
+                jobStatus: jobStatus,
+                durable: true,
+                pollStatusId: 'rewrite-poll-status',
+                allowBackground: true,
+                extraActions: ''
+            });
+        }
+        if (autoPoll) startRewritePolling(firstText(job && job.operation_id));
     }
 
     function applyRewriteResult(result) {
@@ -2303,21 +2427,17 @@
             WRITING_AI_ATTEMPTS_EXHAUSTED: '多次自动重试仍未完成。你的改写已经保存，请稍后重新检查。'
         };
         var message = messages[code] || firstText(error && error.message, 'AI 本次没有完成检查。你的改写已经保存。');
-        destroyAiWaitingExperience();
-        state.screen = 'rewrite-failed';
-        stage.innerHTML = '<section class="surface error-state"><strong>改写检查没有完成</strong><p>' + escapeHtml(message) + '</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-return-home>返回 AI Tutor</button>' +
-            '<button class="primary-button" type="button" data-return-rewrites>返回逐句修改</button></div></section>';
-        scheduleStageViewportReset();
+        state.screen = 'rewrite-waiting';
+        showAiWaitingInterruption('rewrite', message, code, 'job');
     }
 
-    function startRewritePolling() {
+    function startRewritePolling(expectedOperationId) {
         if (state.rewritePollActive || !compositionId(state.current)) return;
         state.rewritePollActive = true;
         startWaitingPolling({
             kind: 'rewrite', requestName: 'getComposition', pollScheduler: 'scheduleWaitingPoll', inFlightGuard: 'waitingPollInFlight', pollDelay: 'setTimeout', generationKey: 'rewritePollGeneration',
             isActive: function() { return state.rewritePollActive; },
-            operationId: function() { return firstText(state.current && state.current.active_job && state.current.active_job.operation_id); },
+            operationId: function() { return firstText(expectedOperationId, state.current && state.current.active_job && state.current.active_job.operation_id); },
             returnedOperationId: function(result) { return firstText(rewriteJobFrom(result).operation_id); },
             onSuccess: function(result) {
                 var composition = result.composition || {};
@@ -2647,26 +2767,25 @@
         scan.job = job || scan.job || {};
         var status = firstText(scan.job && scan.job.status, 'processing').toLowerCase();
         var isDurable = durable !== false && scan.job.durable !== false;
-        renderAiWaitingExperience({
-            kind: 'revision_ocr',
-            jobStatus: isDurable ? status : 'photo_uploading',
-            durable: isDurable,
-            pollStatusId: 'revision-scan-poll-status',
-            allowBackground: isDurable,
-            extraActions: isDurable && allowRetry ? '<button class="secondary-button" type="button" data-retry-revision-scan>Retry the same request</button>' : ''
-        });
+        if (!resumeAiWaitingExperience('revision_ocr', isDurable ? status : 'queued', 'revision-scan-poll-status')) {
+            renderAiWaitingExperience({
+                kind: 'revision_ocr',
+                jobStatus: isDurable ? status : 'photo_uploading',
+                durable: isDurable,
+                pollStatusId: 'revision-scan-poll-status',
+                allowBackground: isDurable,
+                extraActions: ''
+            });
+        }
         if (autoPoll) startRevisionScanPolling();
     }
 
     function renderRevisionScanFailure(error) {
         stopRevisionScanPolling();
+        var code = firstText(error && error.code, error && error.result && error.result.code, state.revisionScan && state.revisionScan.job && state.revisionScan.job.error_code);
         var message = firstText(error && error.message, '照片识别没有完成。你的作文和现有改写草稿仍然安全保存。');
-        destroyAiWaitingExperience();
-        state.screen = 'revision-scan-failed';
-        stage.innerHTML = '<section class="surface error-state revision-scan-failure"><strong>Revision Scan 没有完成</strong><p>' + escapeHtml(message) + '</p>' +
-            '<div class="form-actions"><button class="secondary-button" type="button" data-retry-revision-scan>重新检查状态</button><button class="primary-button" type="button" data-reupload-revision-scan>重新拍照</button></div>' +
-            '<button class="quiet-button" type="button" data-cancel-revision-scan>返回 Sentence Revision</button></section>';
-        scheduleStageViewportReset();
+        state.screen = 'revision-scan-waiting';
+        showAiWaitingInterruption('revision_ocr', message, code, code === 'PHOTO_UPLOAD_UNCONFIRMED' ? 'upload' : 'job');
     }
 
     function startRevisionScanPolling() {
@@ -2745,6 +2864,7 @@
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanFailure({
+                    code: 'PHOTO_UPLOAD_UNCONFIRMED',
                     message: '网络中断，暂时无法确认照片是否已经完整交给云端。请重新检查状态；如果照片没有完成上传，再重新拍照。当前改写草稿不会丢失。'
                 });
                 return;
@@ -2998,8 +3118,7 @@
             syncCurrentSummary();
         }).catch(function(error) {
             if (isNetworkDisconnect(error) && compositionId(state.current)) {
-                renderRewriteWaiting(state.current && state.current.active_job, true, true);
-                setStatus('网络暂时中断。系统会继续查询同一次改写检查，不会重复调用 AI。');
+                renderRewriteWaiting({ job_type: 'rewrite', status: 'queued', operation_id: rewriteOperation }, true, false);
                 return;
             }
             if (error && error.result) clearLogicalOperation('rewrites');
@@ -3749,13 +3868,7 @@
             if (!state.confirmedText) { setStatus('请先确认或补全 OCR 文本。'); return; }
             setBusy(true); saveAndEvaluate();
         }
-        else if (button.matches('[data-retry-rewrite]')) submitRewrites();
-        else if (button.matches('[data-return-rewrites]')) {
-            state.review = state.current && state.current.language_review || state.review;
-            prepareLanguageReview();
-        }
-        else if (button.matches('[data-retry-review]')) retryReviewRequest();
-        else if (button.matches('[data-retry-ocr]')) loadComposition(compositionId(state.current), false);
+        else if (button.matches('[data-retry-waiting]')) retryInterruptedWaiting();
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');
         else if (button.matches('[data-enter-language]')) enterLanguage();
@@ -3838,15 +3951,6 @@
             stopRevisionScanPolling();
             if (state.screen === 'revision-scan-photos') resetRevisionScanState();
             renderLanguage();
-        }
-        else if (button.matches('[data-retry-revision-scan]')) {
-            loadComposition(compositionId(state.current), false);
-        }
-        else if (button.matches('[data-reupload-revision-scan]')) {
-            clearLogicalOperation('revision-scan');
-            resetRevisionScanState();
-            renderLanguage();
-            window.requestAnimationFrame(function() { openPhotoChoice('revision', 'writing', button); });
         }
         else if (button.matches('[data-confirm-revision-scan]')) confirmRevisionScanImport();
         else if (button.matches('[data-submit-rewrites]')) submitRewrites();
