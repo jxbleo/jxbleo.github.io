@@ -3,6 +3,16 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-25 — Label-free Writing progress and consistent toolbar spacing
+
+- Made `Uploaded` check immediately after the durable upload handoff, kept
+  `Finished` pending until the saved result is ready, and removed the visible
+  `Thinking` connector label while retaining the left-to-right energy motion.
+- Replaced screen-specific mobile top-spacing patches with one 14px Writing
+  stage inset covering every content state; compensated Writing Home so its
+  existing visual spacing and the Sentence Revision takeover toolbar remain
+  unchanged.
+
 ## 2026-08-25 — Non-disruptive AI interruption and five attempts
 
 - Increased durable OCR, review, rewrite-check, and revision-OCR automatic

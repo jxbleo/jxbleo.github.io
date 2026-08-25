@@ -58,7 +58,7 @@ negative Score, continuous long-wait obstacle and green 3–7 collectible
 replenishment, Finished continuity,
 reduced-motion and pause/resume behavior, and the absence of network, CloudBase,
 persistence, or reward integration. The Writing Tutor contracts verify
-the shared `Uploaded` / connector `Thinking` / `Finished` path, immediate upload-stage Runner,
+the shared checked-`Uploaded` / unlabeled energy connector / `Finished` path, immediate upload-stage Runner,
 no ordinary waiting explanation or duplicate card actions,
 serialized visible/hidden polling with wake and backoff, stale identity guards,
 one-shot result actions, bounce-synchronized synthesized-audio protection, success continuation,
@@ -73,8 +73,9 @@ Ready. Confirm the game appears immediately after Scan, with no upload-only or
 AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent,
 ground and airborne obstacles plus green collectibles continue to appear after at
 least one minute, and collect/hit sounds differ. During normal work, confirm the
-endpoint labels are `Uploaded` and `Finished`, `Thinking` is centered on the
-connector, the connector energy moves left-to-right, no
+endpoint labels are `Uploaded` and `Finished`, the connector has no process
+label, the connector energy moves left-to-right, `Uploaded` gains its check as
+soon as upload handoff succeeds, and no
 `Text is ready` line appears, and the Finished node/text periodically Dock-bounces
 with one matching sound per cycle; reduced motion must remain static and must not
 repeat the sound. Open the same ready Composition from History and after refresh:
@@ -85,7 +86,7 @@ confirm the Canvas and current Score remain live, the connector and terminal nod
 are red, the connector label is `Interrupted`, the warning sits between progress and
 game, and exactly one `Retry` appears below the game. There must be no duplicate
 Back, Upload Again, or return-to-revisions button. Click Retry and confirm the
-same Canvas/Score remains while the track returns to green `Thinking`. Refresh a
+same Canvas/Score remains while the track returns to its unlabeled green energy state. Refresh a
 failed Composition and repeat Retry to confirm recovery is server-backed rather
 than dependent on in-memory files.
 
@@ -2137,10 +2138,13 @@ High priority improvement:
 
 #### OCR uncertainty overlays
 
-- At phone widths, open both OCR confirmation and a completed language review.
-  Verify the first card in each state begins 14px below the sticky toolbar,
-  while the Sentence Revision number navigator still replaces the toolbar at
-  viewport `top: 0` when scrolled there.
+- At phone widths, open source entry, each waiting game, OCR confirmation,
+  standardized results, language review, revision-photo selection, Review Scan,
+  completion, empty, loading, and error states. Verify the first surface in each
+  state begins 14px below the sticky toolbar. Writing Home must retain its prior
+  20px visual inset rather than gaining another 14px. The Sentence Revision
+  number navigator must still replace the toolbar at viewport `top: 0` when
+  scrolled there.
 
 - Verify no uncertain spans skips the locator and publishes `location_status: not_needed`; an old
   text-only `pending_ocr` record still opens normally.

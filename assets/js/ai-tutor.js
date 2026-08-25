@@ -771,7 +771,8 @@
     function waitingStageClass(stageIndex, taskState) {
         if (taskState === 'ready') return 'is-complete';
         if (taskState === 'failed') return stageIndex === 0 ? 'is-interrupted-complete' : 'is-interrupted';
-        return stageIndex === 0 ? 'is-active' : 'is-upcoming';
+        if (taskState === 'uploading') return stageIndex === 0 ? 'is-active' : 'is-upcoming';
+        return stageIndex === 0 ? 'is-complete' : 'is-upcoming';
     }
 
     function waitingStageLabel(kind, stageIndex, taskState) {
@@ -779,15 +780,23 @@
     }
 
     function waitingConnectorLabel(taskState) {
-        return taskState === 'failed' ? 'Interrupted' : 'Thinking';
+        return taskState === 'failed' ? 'Interrupted' : '';
+    }
+
+    function waitingProgressAriaLabel(taskState) {
+        if (taskState === 'failed') return 'Writing task progress: Uploaded, interrupted before Finished.';
+        if (taskState === 'ready') return 'Writing task progress: Uploaded and Finished.';
+        if (taskState === 'uploading') return 'Writing task progress: Uploading; Finished is pending.';
+        return 'Writing task progress: Uploaded; processing toward Finished.';
     }
 
     function waitingStageMarkup(kind, taskState) {
         return waitingStageDefinitions(kind).map(function(label, stageIndex) {
             var stageClass = waitingStageClass(stageIndex, taskState);
             var current = stageClass === 'is-active' ? ' aria-current="step"' : '';
+            var processLabel = waitingConnectorLabel(taskState);
             var connector = stageIndex === 0
-                ? '<span class="ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : taskState === 'failed' ? 'is-interrupted' : 'is-transmitting') + '" aria-hidden="true"><span class="ai-waiting-connector-track"></span><span class="ai-waiting-connector-label">' + escapeHtml(waitingConnectorLabel(taskState)) + '</span></span>'
+                ? '<span class="ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : taskState === 'failed' ? 'is-interrupted' : 'is-transmitting') + '" aria-hidden="true"><span class="ai-waiting-connector-track"></span><span class="ai-waiting-connector-label"' + (processLabel ? '' : ' hidden') + '>' + escapeHtml(processLabel) + '</span></span>'
                 : '';
             var check = '<svg class="ai-waiting-stage-check" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.2 8.2 14l7.4-8"></path></svg>';
             return '<li class="ai-waiting-stage ' + stageClass + '" data-waiting-stage-index="' + stageIndex + '"' + current + '><span class="ai-waiting-stage-node" aria-hidden="true">' + check + '</span><span class="ai-waiting-stage-label">' + escapeHtml(waitingStageLabel(kind, stageIndex, taskState)) + '</span>' + connector + '</li>';
@@ -797,7 +806,7 @@
     function updateWaitingStageDom(kind, taskState) {
         if (!stage) return;
         var progress = stage.querySelector('.ai-waiting-progress');
-        if (progress) progress.setAttribute('aria-label', 'Writing task progress: Uploaded, ' + waitingConnectorLabel(taskState) + ', Finished');
+        if (progress) progress.setAttribute('aria-label', waitingProgressAriaLabel(taskState));
         var stages = stage.querySelectorAll('[data-waiting-stage-index]');
         Array.prototype.forEach.call(stages, function(item) {
             var index = Number(item.getAttribute('data-waiting-stage-index'));
@@ -812,7 +821,11 @@
         Array.prototype.forEach.call(stage.querySelectorAll('.ai-waiting-connector'), function(connector) {
             connector.className = 'ai-waiting-connector ' + (taskState === 'ready' ? 'is-complete' : taskState === 'failed' ? 'is-interrupted' : 'is-transmitting');
             var connectorLabel = connector.querySelector('.ai-waiting-connector-label');
-            if (connectorLabel) connectorLabel.textContent = waitingConnectorLabel(taskState);
+            if (connectorLabel) {
+                var processLabel = waitingConnectorLabel(taskState);
+                connectorLabel.textContent = processLabel;
+                connectorLabel.hidden = !processLabel;
+            }
         });
     }
 
@@ -873,7 +886,7 @@
         var interruptionNotice = '<div class="ai-waiting-interruption" role="alert" hidden><strong>Something interrupted this step.</strong><p data-waiting-interruption-copy></p></div>';
         var retryAction = '<div class="ai-waiting-retry-action" hidden><button class="primary-button" type="button" data-retry-waiting>Retry</button></div>';
         stage.innerHTML = '<section class="surface ai-waiting-experience" data-waiting-kind="' + escapeHtml(state.waitingKind) + '">' +
-            '<ol class="ai-waiting-progress" aria-label="Writing task progress: Uploaded, ' + escapeHtml(waitingConnectorLabel(taskState)) + ', Finished" role="status" aria-live="polite">' + waitingStageMarkup(state.waitingKind, taskState) + '</ol>' +
+            '<ol class="ai-waiting-progress" aria-label="' + escapeHtml(waitingProgressAriaLabel(taskState)) + '" role="status" aria-live="polite">' + waitingStageMarkup(state.waitingKind, taskState) + '</ol>' +
             interruptionNotice +
             runnerMarkup +
             '<p class="sr-only" id="' + escapeHtml(firstText(config.pollStatusId, 'ai-waiting-status')) + '" role="status"></p>' +
@@ -2089,11 +2102,11 @@
                 '<div class="ocr-title-actions"><button class="secondary-button compact" type="button" data-use-ocr-first-line>Use First Line</button><button class="quiet-button compact" type="button" data-undo-ocr-title hidden>Undo</button></div>' +
                 '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite"></span></div>'
             : '';
-        stage.innerHTML = '<div class="writing-detail-card-stack"><section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading">' +
+        stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading">' +
             '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '" data-open-photo-viewer="source" data-photo-index="' + index + '" role="button" tabindex="0" aria-label="Enlarge uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
             '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
-            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section></div>';
+            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
         scheduleStageViewportReset();
     }
 
@@ -2957,7 +2970,7 @@
             '<div class="cefr-estimate"><span class="cefr-estimate-label">CEFR Writing Estimate</span>' +
             '<strong>' + escapeHtml(cefrEstimate.level + cefrSuffix) + '</strong>' +
             (cefrEstimate.commentary_zh ? '<p>' + escapeHtml(cefrEstimate.commentary_zh) + '</p>' : '') + '</div>' : '';
-        stage.innerHTML = '<div class="language-review-stack writing-detail-card-stack">' +
+        stage.innerHTML = '<div class="language-review-stack">' +
             '<section class="surface language-review-card language-overall-card"><h2>Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
             '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2>Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
             '<section class="surface language-review-card language-sentence-review-card">' +
