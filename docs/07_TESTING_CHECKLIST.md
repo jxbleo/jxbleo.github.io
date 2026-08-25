@@ -2137,6 +2137,11 @@ High priority improvement:
 
 #### OCR uncertainty overlays
 
+- At phone widths, open both OCR confirmation and a completed language review.
+  Verify the first card in each state begins 14px below the sticky toolbar,
+  while the Sentence Revision number navigator still replaces the toolbar at
+  viewport `top: 0` when scrolled there.
+
 - Verify no uncertain spans skips the locator and publishes `location_status: not_needed`; an old
   text-only `pending_ocr` record still opens normally.
 - Verify timeout, HTTP/provider failure, invalid JSON/schema, all-low-confidence output, and invalid or
