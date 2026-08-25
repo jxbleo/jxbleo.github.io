@@ -2172,6 +2172,11 @@ Important mobile rules:
   Apple-style permanent-delete confirmation before the server removes the eligible draft.
 - Completed language review uses exactly three primary cards in order:
   `Language Review`, `Draft`, and `Sentence Revision`.
+- On phone layouts, the first `Language Review` card and the OCR confirmation
+  card retain the same 14px breathing room below the sticky primary toolbar as
+  detail cards receive on wider layouts. This inset belongs to the detail
+  content and must not move the sentence-number navigator away from `top: 0`
+  when that navigator takes over the toolbar position.
 - At the beginning of `Language Review`, show `CEFR Writing Estimate` with
   the manuscript's compact three-way CEFR level (`B1-`, `B1`, or `B1+`)
   and one concise Simplified Chinese rationale. Never render `偏下`, `中段`,

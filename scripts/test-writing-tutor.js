@@ -1017,6 +1017,17 @@ check("writing cards shrink to the phone viewport without horizontal page overfl
     "only the sentence capsule row may scroll horizontally");
 });
 
+check("Writing detail cards preserve toolbar breathing room on phones", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(client, [
+    'class="writing-detail-card-stack"',
+    'class="language-review-stack writing-detail-card-stack"',
+  ], "shared OCR and Language Review detail spacing hook");
+  assert(/@media\s*\(max-width:\s*760px\)[\s\S]*?\.writing-detail-card-stack\s*\{[^}]*padding-top\s*:\s*14px/is.test(styles),
+    "phone OCR confirmation and Language Review must keep a 14px gap below the sticky toolbar");
+});
+
 check("Draft preserves paragraph breaks while sentence highlights remain inline", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
