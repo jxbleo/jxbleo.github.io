@@ -3,6 +3,20 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-26 — Sentence Revision hierarchy and pending review state
+
+- Unified the `Language Review`, `Draft`, and `Sentence Revision` title
+  typography; moved the non-sticky Sentence Revision title/font controls above
+  the independently sticky sentence-number navigator.
+- Replaced English card status fields and legacy capsule marks with one shared
+  red circled-check / black circled-question / black circled-cross system that
+  updates immediately as a student edits a revision.
+- Added bounded, locally remembered analysis-text sizing and remeasurement of
+  the active flip-card face.
+- Added an accessible Submit-or-review dialog after confirmed revision-scan
+  drafts return to Sentence Revision; scan import remains draft-only and does
+  not bypass the existing server rewrite-check boundary.
+
 ## 2026-08-26 — Frozen Finished state for Writing Runner
 
 - Finished now pauses Runner physics and input immediately and prevents tab

@@ -33,6 +33,7 @@
         skipped: {},
         referenceOpen: {},
         rewriteFace: {},
+        revisionTextLevel: 1,
         revisionScan: null,
         correctionRound: 0,
         busy: false,
@@ -85,6 +86,8 @@
         leaveDialogOpen: false,
         incompleteRewriteAlertOpen: false,
         incompleteRewriteTargetId: '',
+        scanSubmitConfirmationOpen: false,
+        scanSubmitReturnFocus: null,
         leaveDialogAction: 'dashboard',
         returnFocus: null
     };
@@ -103,12 +106,15 @@
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
+    var scanSubmitConfirmation = document.getElementById('scan-submit-confirmation');
     var photoChoiceLayer = document.getElementById('photo-choice-layer');
     var photoRemoveConfirmation = document.getElementById('photo-remove-confirmation');
     var photoViewerLayer = document.getElementById('photo-viewer-layer');
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
     var stageViewportResetToken = 0;
+    var revisionTextScales = [0.9, 1, 1.15, 1.3];
+    var revisionTextLevelStorageKey = 'mrcat-writing-revision-text-level-v1';
 
     function scheduleStageViewportReset() {
         updateToolbarNavigation();
@@ -677,6 +683,49 @@
     }
 
     function setStatus(message) { statusBox.textContent = message || ''; }
+
+    function restoreRevisionTextLevel() {
+        try {
+            var stored = Number(window.localStorage.getItem(revisionTextLevelStorageKey));
+            if (Number.isInteger(stored)) {
+                state.revisionTextLevel = Math.max(0, Math.min(revisionTextScales.length - 1, stored));
+            }
+        } catch (error) {}
+    }
+
+    function revisionTextScale() {
+        return revisionTextScales[state.revisionTextLevel] || 1;
+    }
+
+    function revisionFontControlsHtml() {
+        var atMinimum = state.revisionTextLevel <= 0;
+        var atMaximum = state.revisionTextLevel >= revisionTextScales.length - 1;
+        return '<div class="revision-font-controls" role="group" aria-label="Analysis text size">' +
+            '<button type="button" data-revision-font-step="-1" aria-label="Decrease analysis text size" title="Decrease analysis text size"' + (atMinimum ? ' disabled' : '') + '>−</button>' +
+            '<button type="button" data-revision-font-step="1" aria-label="Increase analysis text size" title="Increase analysis text size"' + (atMaximum ? ' disabled' : '') + '>+</button></div>';
+    }
+
+    function applyRevisionTextScale() {
+        var reviewCard = document.querySelector('.language-sentence-review-card');
+        if (reviewCard) reviewCard.style.setProperty('--revision-analysis-scale', revisionTextScale());
+        Array.prototype.forEach.call(document.querySelectorAll('[data-revision-font-step]'), function(button) {
+            var direction = Number(button.getAttribute('data-revision-font-step'));
+            button.disabled = direction < 0 ? state.revisionTextLevel <= 0 : state.revisionTextLevel >= revisionTextScales.length - 1;
+        });
+        window.requestAnimationFrame(function() {
+            observeSentenceCardHeights();
+            Array.prototype.forEach.call(document.querySelectorAll('.sentence-card-inner.has-measured-height'), syncSentenceCardHeight);
+        });
+    }
+
+    function adjustRevisionTextLevel(step) {
+        var next = Math.max(0, Math.min(revisionTextScales.length - 1, state.revisionTextLevel + Number(step || 0)));
+        if (next === state.revisionTextLevel) return;
+        state.revisionTextLevel = next;
+        try { window.localStorage.setItem(revisionTextLevelStorageKey, String(next)); } catch (error) {}
+        applyRevisionTextScale();
+    }
+
     function setBusy(busy) {
         state.busy = Boolean(busy);
         app.setAttribute('aria-busy', busy ? 'true' : 'false');
@@ -2969,7 +3018,8 @@
             syncRevisionScanFromComposition(state.current);
             clearLogicalOperation('revision-scan');
             renderLanguage();
-            setStatus('已导入选中的扫描草稿。请继续检查，完成后再按 Submit。');
+            setStatus('已导入选中的扫描草稿。');
+            openScanSubmitConfirmation();
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanReview();
@@ -3006,11 +3056,11 @@
             '<strong>' + escapeHtml(cefrEstimate.level + cefrSuffix) + '</strong>' +
             (cefrEstimate.commentary_zh ? '<p>' + escapeHtml(cefrEstimate.commentary_zh) + '</p>' : '') + '</div>' : '';
         stage.innerHTML = '<div class="language-review-stack">' +
-            '<section class="surface language-review-card language-overall-card"><h2>Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
-            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2>Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
-            '<section class="surface language-review-card language-sentence-review-card">' +
+            '<section class="surface language-review-card language-overall-card"><h2 class="language-card-title">Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
+            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2 class="language-card-title">Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
+            '<section class="surface language-review-card language-sentence-review-card" style="--revision-analysis-scale:' + revisionTextScale() + '">' +
+            '<div class="language-section-heading sentence-review-heading"><h2 class="language-card-title">Sentence Revision</h2>' + revisionFontControlsHtml() + '</div>' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
-            '<div class="language-section-heading sentence-review-heading"><h2>Sentence Revision</h2></div>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
             (!state.readOnly ? '<div class="batch-actions">' +
                 (revisionScanSentences().length ? '<button class="secondary-button scan-revision-trigger" type="button" data-open-photo-choice="revision" aria-label="Scan Revisions" title="Scan Revisions">' + icon('camera') + '</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden><input id="revision-scan-library" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>' : '') +
@@ -3021,14 +3071,36 @@
         if (previousScreen !== state.screen) scheduleStageViewportReset();
     }
 
-    function sentenceCapsuleHtml(sentence, index) {
+    function sentenceVisualStatus(sentence, index) {
         var id = sentenceId(sentence, index);
         var result = state.rewriteResults[id];
-        var done = !rewriteRequired(sentence) || result && result.accepted === true;
-        var review = result && result.accepted === false;
-        var missing = rewriteRequired(sentence) && !done && (!firstText(state.rewrites[id]) || state.skipped[id]);
-        var capsuleStatus = done ? '，已完成' : review ? '，需要再修改' : missing ? '，尚未完成' : '';
-        return '<button class="sentence-capsule' + (index === state.activeSentence ? ' is-active' : '') + (done ? ' is-done' : '') + (review ? ' is-review' : '') + (missing ? ' has-gap' : '') + '" type="button" data-sentence-index="' + index + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + capsuleStatus + '">' + (index + 1) + '</button>';
+        if (!rewriteRequired(sentence) || result && result.accepted === true) return 'correct';
+        var currentText = firstText(state.rewrites[id]);
+        if (!currentText) return 'incorrect';
+        var judgedText = firstText(result && result.student_rewrite);
+        if (result && result.accepted === false && judgedText && currentText === judgedText) return 'incorrect';
+        return 'pending';
+    }
+
+    function sentenceStatusLabel(status) {
+        return status === 'correct' ? '正确' : status === 'pending' ? '等待检查' : '错误';
+    }
+
+    function sentenceStatusIconHtml(status, id, compact) {
+        var mark = status === 'correct'
+            ? '<path class="sentence-status-mark" d="M7.1 12.3 10.6 15.8 17.2 8.6"></path>'
+            : status === 'pending'
+                ? '<path class="sentence-status-mark" d="M9.5 9.3a2.7 2.7 0 1 1 3.5 2.6c-.8.35-1 .85-1 1.55M12 16.35h.01"></path>'
+                : '<path class="sentence-status-mark" d="m8.6 8.6 6.8 6.8m0-6.8-6.8 6.8"></path>';
+        return '<span class="sentence-status-icon is-' + status + (compact ? ' sentence-capsule-state' : '') + '" data-sentence-status="' + escapeHtml(id) + '"' + (compact ? ' aria-hidden="true"' : ' role="img" aria-label="' + sentenceStatusLabel(status) + '"') + '>' +
+            '<svg aria-hidden="true" viewBox="0 0 24 24"><circle class="sentence-status-ring" cx="12" cy="12" r="9.2"></circle>' + mark + '</svg></span>';
+    }
+
+    function sentenceCapsuleHtml(sentence, index) {
+        var id = sentenceId(sentence, index);
+        var status = sentenceVisualStatus(sentence, index);
+        var capsuleStatus = status === 'correct' ? '，正确' : status === 'pending' ? '，等待检查' : '，错误';
+        return '<button class="sentence-capsule is-' + status + (index === state.activeSentence ? ' is-active' : '') + '" type="button" data-sentence-index="' + index + '" data-sentence-id="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + capsuleStatus + '"><span aria-hidden="true">' + (index + 1) + '</span>' + sentenceStatusIconHtml(status, id, true) + '</button>';
     }
 
     function sentenceCardHtml(sentence, index) {
@@ -3041,12 +3113,9 @@
         var cardStart = '<article class="' + cardClass + '" id="sentence-card-' + escapeHtml(id) + '" data-sentence-card="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '">';
         var original = '<span class="sentence-original-highlight">' + escapeHtml(sentence.original) + '</span>';
         var sentenceNumber = '<span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span>';
-        var revisionState = !required ? 'correct' : accepted ? 'revised' : 'needs-revision';
-        var revisionLabel = revisionState === 'correct' ? 'CORRECT' : revisionState === 'revised' ? 'REVISED' : 'NEEDS REVISION';
-        var revisionMark = revisionState === 'needs-revision' ? '×' : '✓';
+        var revisionState = sentenceVisualStatus(sentence, index);
         var sentenceMeta = '<div class="sentence-card-meta">' + sentenceNumber +
-            '<span class="sentence-state is-' + revisionState + '">' + revisionLabel +
-            ' <span class="sentence-state-mark" aria-hidden="true">' + revisionMark + '</span></span></div>';
+            sentenceStatusIconHtml(revisionState, id, false) + '</div>';
         if (!required) {
             return cardStart +
                 '<div class="sentence-flip-card"><div class="sentence-card-inner sentence-card-inner-static">' +
@@ -3095,6 +3164,24 @@
             '<div class="sentence-face-content">' + sentenceMeta + '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
             '</div></div></section>';
         return cardStart + '<div class="sentence-flip-card"><div class="sentence-card-inner' + (showRewrite ? ' show-rewrite' : '') + '" data-face="' + (showRewrite ? 'rewrite' : 'analysis') + '">' + analysisFace + rewriteFace + '</div></div></article>';
+    }
+
+    function syncSentenceDraftStatus(id) {
+        var sentences = safeArray(state.review && state.review.sentences);
+        var index = sentences.findIndex(function(sentence, sentenceIndex) { return sentenceId(sentence, sentenceIndex) === id; });
+        if (index < 0) return;
+        var status = sentenceVisualStatus(sentences[index], index);
+        var capsule = Array.prototype.find.call(document.querySelectorAll('.sentence-capsule'), function(item) {
+            return item.getAttribute('data-sentence-id') === id;
+        });
+        if (capsule) {
+            ['correct', 'pending', 'incorrect'].forEach(function(value) { capsule.classList.toggle('is-' + value, value === status); });
+            capsule.setAttribute('aria-label', '第 ' + (index + 1) + ' 句，' + sentenceStatusLabel(status));
+        }
+        Array.prototype.forEach.call(document.querySelectorAll('[data-sentence-status]'), function(item) {
+            if (item.getAttribute('data-sentence-status') !== id) return;
+            item.outerHTML = sentenceStatusIconHtml(status, id, item.classList.contains('sentence-capsule-state'));
+        });
     }
 
     function submitRewrites() {
@@ -3450,7 +3537,7 @@
         state.photoViewerIndex = 0;
         state.photoViewerReturnFocus = null;
         photoViewerLayer.hidden = true;
-        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoRemoveDialogOpen;
+        app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
             focusTarget.focus({ preventScroll: true });
@@ -3481,7 +3568,7 @@
         state.pendingPhotoRemoval = null;
         state.photoRemoveReturnFocus = null;
         photoRemoveConfirmation.hidden = true;
-        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen;
+        app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
             focusTarget.focus({ preventScroll: true });
@@ -3510,8 +3597,13 @@
         renderSourceEntry();
     }
 
+    function hasBlockingDialogOpen() {
+        return state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.scanSubmitConfirmationOpen ||
+            state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen;
+    }
+
     function updateOverlayLock() {
-        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen);
+        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || hasBlockingDialogOpen());
     }
 
     function openPhotoChoice(context, target, trigger) {
@@ -3536,7 +3628,7 @@
         state.photoChoiceContext = '';
         state.photoChoiceReturnFocus = null;
         photoChoiceLayer.hidden = true;
-        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.compositionEntryDialogOpen;
+        app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
             focusTarget.focus({ preventScroll: true });
@@ -3618,7 +3710,7 @@
         state.compositionEntryTargetId = '';
         state.compositionEntryReturnFocus = null;
         if (overlay) overlay.hidden = true;
-        app.inert = state.leaveDialogOpen || state.incompleteRewriteAlertOpen;
+        app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
             focusTarget.focus({ preventScroll: true });
@@ -3644,10 +3736,41 @@
         state.incompleteRewriteAlertOpen = false;
         state.incompleteRewriteTargetId = '';
         incompleteRewriteAlert.hidden = true;
-        app.inert = state.leaveDialogOpen;
+        app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         var rewriteInput = targetId ? document.getElementById('rewrite-' + targetId) : null;
         if (rewriteInput && typeof rewriteInput.focus === 'function') rewriteInput.focus({ preventScroll: true });
+    }
+
+    function openScanSubmitConfirmation() {
+        if (!scanSubmitConfirmation || state.scanSubmitConfirmationOpen) return;
+        state.scanSubmitConfirmationOpen = true;
+        state.scanSubmitReturnFocus = document.querySelector('[data-submit-rewrites]') || document.activeElement;
+        scanSubmitConfirmation.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var submit = scanSubmitConfirmation.querySelector('[data-confirm-scan-submit]');
+            if (submit) submit.focus({ preventScroll: true });
+        });
+    }
+
+    function closeScanSubmitConfirmation(restoreFocus) {
+        if (!state.scanSubmitConfirmationOpen) return;
+        var focusTarget = state.scanSubmitReturnFocus;
+        state.scanSubmitConfirmationOpen = false;
+        state.scanSubmitReturnFocus = null;
+        scanSubmitConfirmation.hidden = true;
+        app.inert = hasBlockingDialogOpen();
+        updateOverlayLock();
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+        }
+    }
+
+    function confirmScannedRewritesSubmit() {
+        closeScanSubmitConfirmation(false);
+        submitRewrites();
     }
 
     function openSidebar() {
@@ -3718,7 +3841,7 @@
         if (!state.leaveDialogOpen) return;
         state.leaveDialogOpen = false;
         leaveConfirmation.hidden = true;
-        app.inert = false;
+        app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         if (restoreFocus !== false && state.returnFocus && typeof state.returnFocus.focus === 'function') state.returnFocus.focus();
         state.returnFocus = null;
@@ -3766,6 +3889,7 @@
             state.rewrites[id] = target.value;
             delete state.skipped[id];
             saveRewriteDraftSnapshot();
+            syncSentenceDraftStatus(id);
         }
         if (target.matches('[data-scan-text]')) {
             var scanCandidate = revisionScanState().candidates.find(function(candidate) {
@@ -3860,13 +3984,15 @@
             clearOcrTitleUndo();
             return;
         }
-        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-manuscript-sentence]');
+        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-review-scan-submit],[data-manuscript-sentence]');
         if (!button) return;
         if (button.matches('#history-home')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
         else if (button.matches('[data-cancel-photo-remove]')) closePhotoRemoveConfirmation();
         else if (button.matches('[data-confirm-photo-remove]')) confirmPhotoRemoval();
         else if (button.matches('[data-close-incomplete-rewrite]')) closeIncompleteRewriteAlert();
+        else if (button.matches('[data-review-scan-submit]')) closeScanSubmitConfirmation();
+        else if (button.matches('[data-confirm-scan-submit]')) confirmScannedRewritesSubmit();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
         else if (button.matches('[data-discard-source]')) requestSourceDiscard();
         else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
@@ -3920,6 +4046,7 @@
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');
         else if (button.matches('[data-enter-language]')) enterLanguage();
+        else if (button.matches('[data-revision-font-step]')) adjustRevisionTextLevel(Number(button.getAttribute('data-revision-font-step')));
         else if (button.matches('[data-flip-sentence]')) {
             var flipId = button.getAttribute('data-flip-sentence');
             var showRewriteFace = button.getAttribute('data-face') === 'rewrite';
@@ -4091,6 +4218,15 @@
             else if (!event.shiftKey && document.activeElement === entryLast) { event.preventDefault(); entryFirst.focus(); }
             return;
         }
+        if (state.scanSubmitConfirmationOpen && event.key === 'Tab') {
+            var scanSubmitControls = scanSubmitConfirmation.querySelectorAll('button:not(:disabled)');
+            if (!scanSubmitControls.length) return;
+            var scanSubmitFirst = scanSubmitControls[0];
+            var scanSubmitLast = scanSubmitControls[scanSubmitControls.length - 1];
+            if (event.shiftKey && document.activeElement === scanSubmitFirst) { event.preventDefault(); scanSubmitLast.focus(); }
+            else if (!event.shiftKey && document.activeElement === scanSubmitLast) { event.preventDefault(); scanSubmitFirst.focus(); }
+            return;
+        }
         if (state.incompleteRewriteAlertOpen && event.key === 'Tab') {
             var alertControl = incompleteRewriteAlert.querySelector('[data-close-incomplete-rewrite]');
             if (alertControl) { event.preventDefault(); alertControl.focus(); }
@@ -4110,6 +4246,7 @@
             else if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation();
             else if (state.photoChoiceOpen) closePhotoChoice();
             else if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
+            else if (state.scanSubmitConfirmationOpen) closeScanSubmitConfirmation();
             else if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
             else if (state.leaveDialogOpen) closeLeaveConfirmation();
             else if (state.sidebarOpen) closeSidebar();
@@ -4120,6 +4257,7 @@
         if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation(false);
         if (state.photoChoiceOpen) closePhotoChoice(false);
         if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
+        if (state.scanSubmitConfirmationOpen) closeScanSubmitConfirmation(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
         if (state.leaveDialogOpen) closeLeaveConfirmation();
         scheduleSourceTextareaResize();
@@ -4159,6 +4297,7 @@
     }
 
     function init() {
+        restoreRevisionTextLevel();
         if (!window.MrCatAuth) { renderFatalAction(new Error('登录组件没有载入，请刷新页面。')); return; }
         window.MrCatAuth.getSession().then(function(session) {
             state.session = session;

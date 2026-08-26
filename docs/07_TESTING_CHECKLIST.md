@@ -1948,6 +1948,15 @@ High priority improvement:
 - After language review completes, confirm the page has exactly three primary
   cards in this order: `Language Review`, `Draft`, and `Sentence Revision`.
   Confirm there is no fourth layout container presented as a card.
+- Confirm all three card titles use the same computed font size, weight, line
+  height, tracking, and horizontal alignment. Sentence Revision must place its
+  title and `−` / `+` controls in the first row, followed by the capsule row.
+  Scroll upward and confirm the first row leaves normally while only the capsule
+  row takes over viewport `top: 0`.
+- Exercise every `−` / `+` level. Confirm the controls stop and disable at both
+  bounds, change only analysis/feedback/Sample text, leave source/student/title/
+  capsule text unchanged, remeasure both flip-card faces without blank space,
+  and restore the chosen level after refresh. Each button keeps a 44px hit area.
 - Confirm `Language Review` begins with `CEFR Writing Estimate` before its
   overview. Test A1 and C2 boundaries plus lower/middle/upper positions; verify
   they render as A1-/A1/A1+ and C2-/C2/C2+, the rationale is Simplified Chinese,
@@ -1960,10 +1969,12 @@ High priority improvement:
   matching sentence. Confirm the full sentence list is always present and there
   is no progress copy, instructional hint, sequential mode, layout toggle, or
   pair of layout icons beneath or beside the capsule row.
-- Compare normal, active, completed, and review capsules and confirm every computed
-  border is the same 1px solid width. Completed capsules show a tiny green check below the
-  number; incomplete/review capsules show a tiny red cross, and the status
-  slot is not clipped by the horizontal scroller. Completed aria-labels include “已完成”.
+- Compare normal and active capsules across correct, pending, and incorrect states
+  and confirm every computed border is the same 1px solid width. Correct capsules
+  show a tiny red circled check, newly entered/unsubmitted text shows a black circled
+  question, and empty or unchanged rejected text shows a black circled cross. The
+  status slot is not clipped by the horizontal scroller and each aria-label names
+  the current state.
 - Scroll until the capsule bar reaches the top and confirm it replaces the main
   toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
   after leaving the Sentence Revision card.
@@ -1991,9 +2002,9 @@ High priority improvement:
   `Word Choice`, other category labels, and separate issue/summary/result rows are absent;
   opening the reference answer on the analysis face must not expose or erase the
   back input, and flipping to the input must hide both analysis and reference. For
-  an effective sentence, confirm only the top metadata row (`CORRECT ✓`) and original
+  an effective sentence, confirm only the top metadata row (red circled check) and original
   sentence render—without a grammar box, `Your Attempt`, a textarea, an inline sentence
-  icon, or a reference-answer action. Its capsule remains complete with a green check.
+  icon, or a reference-answer action. Its capsule retains the matching red circled check.
 - Switch a revision card front/back with click, Enter, and Space. Confirm state,
   focus order, accessible names, textarea draft, capsule, and sentence identity
   remain synchronized. Enable reduced motion and confirm there is no 3D rotation;
@@ -2022,9 +2033,11 @@ High priority improvement:
   action row must show a 44px camera-only button immediately left of `Submit`; its
   accessible name remains `Scan Revisions`, and phone width must keep both controls on
   one row rather than stretching the camera into a full-width text button.
-- Before Check and after a rejected Check, confirm the unresolved capsule shows a
-  small red cross rather than a dot or question mark. After acceptance, confirm the capsule
-  shows a green check and the card's top-right state reads `REVISED ✓`. The accepted card must open
+- Before any text and after an unchanged rejected Check, confirm the capsule and
+  card show a black circled cross. Type or change non-empty text and confirm both
+  switch immediately to a black circled question; clear it and confirm both return
+  to a cross. After acceptance, confirm both show a red circled check. No card may
+  display `CORRECT`, `REVISED`, or `NEEDS REVISION`. The accepted card must open
   on the persisted corrected sentence as display text, with no disabled textarea;
   only an explicit flip may reveal the original sentence and grammar analysis.
 - Submit the same incorrect sentence at least three times. Confirm the analysis
@@ -2037,7 +2050,7 @@ High priority improvement:
   successful submission becomes round 2.
 - Confirm an effective/no-change sentence has the same bordered face as every other
   Sentence Revision card, while still exposing no grammar analysis, textarea, Sample,
-  or flip target. Confirm the bare number is top-left and `CORRECT ✓` is top-right.
+  or flip target. Confirm the bare number is top-left and the red circled check is top-right.
   Use long wrapped sentences and verify the sentence takes the full card width and line
   two aligns under the first sentence letter at desktop and phone widths.
 - Compare a long analysis face with a short accepted rewrite face. After every flip,
@@ -2136,6 +2149,13 @@ High priority improvement:
   Confirm the bottom primary action reads exactly `Confirm Scanning`, remains
   disabled for an unmapped, duplicate, or empty row, and enables as soon as every
   card has one unique eligible sentence plus non-empty text.
+- After successful `Confirm Scanning`, confirm Sentence Revision returns with all
+  required cards on their attempt faces and immediately opens `Submit revisions now?`.
+  Submit must enter the existing rewrite-check flow. Repeat with `Review First`,
+  scrim click, and Escape: each must close the dialog, preserve every imported
+  draft, leave the card/capsule status as the black circled question, and restore
+  focus to the Sentence Revision Submit control. Tab and Shift+Tab remain trapped
+  between the two dialog actions while the background is inert and scroll-locked.
 - Disconnect after upload, during `Queued`/`Processing`, and before import. Refresh,
   re-login, and reopen the same Composition; verify the same operation/revision
   resumes, duplicate delivery is idempotent, and stale-revision results cannot
