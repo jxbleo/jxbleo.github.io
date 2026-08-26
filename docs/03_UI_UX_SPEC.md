@@ -2115,7 +2115,13 @@ Important mobile rules:
   unique eligible sentence and non-empty text. Returning
   without confirmation leaves the prior draft unchanged. After a successful confirmation, every
   revision-required flip card opens on its attempt face so the original sentence and
-  imported student revision are immediately visible together.
+  imported student revision are immediately visible together. The returned Sentence
+  Revision surface immediately opens a compact material dialog titled
+  `Submit revisions now?`; `Submit` calls the existing rewrite submission, while
+  `Review First`, the scrim, or Escape dismisses it and leaves every imported draft
+  editable. The dialog locks background interaction, traps Tab between its two actions,
+  starts focus on Submit, and restores focus to the Sentence Revision Submit control
+  when dismissed for review.
 - Before confirmation, the browser retries the same stable upload batch and
   never claims that cloud processing can continue. An interrupted or partial
   upload stays in the same Composition and the waiting card exposes its sole
@@ -2197,13 +2203,22 @@ Important mobile rules:
   the broader overview and must be described as an estimate of this manuscript's
   writing performance, not a certified or global student level. Historical
   reviews without the structured field remain readable and simply omit this row.
-- The Sentence Revision card begins with a horizontally scrollable row of
-  numbered capsules. Selecting a number immediately scrolls to and highlights its
-  corresponding sentence in the list. Every capsule uses the same 1px solid border.
-  A tiny semantic-green checkmark appears below a completed number; incomplete or review states
-  use a semantic-red cross in that same reserved slot, but no progress copy or instructional hint
-  appears beneath the capsule row. The list is the only layout: there is no one-sentence
-  mode, layout toggle, or pair of layout icons.
+- `Language Review`, `Draft`, and `Sentence Revision` use one shared card-title
+  typography token: the same size, weight, leading, tracking, and inset. Text color
+  may adapt to the green Language Review surface.
+- Sentence Revision begins with a non-sticky title row. `Sentence Revision` stays
+  left and a compact `−` / `+` group stays right; each control retains a 44px hit
+  target. The controls change only AI analysis, saved feedback, and Sample reference
+  text through four bounded sizes, remember the local display preference, and
+  remeasure the visible flip-card face. The title row scrolls away normally.
+- A second, independently sticky row contains the horizontally scrollable numbered
+  capsules. Selecting a number immediately scrolls to and highlights its corresponding
+  sentence in the list. Every capsule uses the same 1px solid border. Its reserved
+  below-number slot contains the compact version of the sentence state: red circled
+  check for correct, black circled question for newly entered/unsubmitted text, and
+  black circled cross for empty or last-checked-incorrect text. No progress copy or
+  instructional hint appears beneath the capsule row. The list is the only layout:
+  there is no one-sentence mode, layout toggle, or pair of layout icons.
 - Each revision-required sentence row is one two-sided card. Its front contains
   the original English sentence and one compact, single-paragraph Simplified Chinese
   grammar analysis; its back repeats the original sentence beside the student's revision input. Never
@@ -2212,7 +2227,11 @@ Important mobile rules:
   reference answer may expand on the analysis face, but it disappears with the
   analysis when the student turns to the input face.
   Every card uses one compact metadata row: a bare sequence number at top-left and
-  `CORRECT ✓`, `REVISED ✓`, or `NEEDS REVISION ×` at top-right. An effective sentence
+  one 25px line-art circle icon at top-right. Correct/effective and accepted sentences
+  use a red circled check modeled on the Teacher success-checkmark treatment; empty or
+  last-checked-incorrect sentences use a black circled cross; new text that has not yet
+  received a matching Check result uses a black circled question. No English status
+  field remains. An effective sentence
   shows only that row and its original sentence; it has no grammar box, revision input,
   or inline icon after the sentence.
 - Every Sentence Revision row begins with its corresponding one-based sentence number.
@@ -2241,9 +2260,10 @@ Important mobile rules:
   with no required revisions reads `100%`, and the value stays hidden before a
   language sentence review exists. Its accessible name states completed, total,
   and remaining counts. Do not show the removed post-Check “统一检查完成” status below the toolbar.
-- An unresolved navigation capsule uses a small red cross beneath its number,
-  whether it is still empty or failed the latest Check; never use a dot or question mark.
-  A completed capsule keeps its small green checkmark regardless of sentence accent color.
+- Capsule and card status update immediately as the student types. Empty text and an
+  unchanged rejected answer use the circled cross; any non-empty new text uses the
+  circled question; an effective or accepted sentence uses the circled check. The
+  sentence accent color never recolors these semantic marks.
 - The analysis face keeps the initial coaching paragraph first. Every later Submit
   feedback is shown beneath it in chronological order. Do not display round labels
   such as `第 1 次点评`; place one thin sentence-color divider only between
@@ -2251,11 +2271,11 @@ Important mobile rules:
   after refresh or re-login without exposing its internal round number.
 - After a student revision is accepted, that sentence card opens on the corrected
   sentence rather than the analysis. The persisted student sentence is highlighted,
-  while the top-right state reads `REVISED ✓`. It is display text,
+  while the top-right state is the red circled check. It is display text,
   not a disabled textarea. Flipping the card is the only way to return to the original
   sentence and analysis.
 - Effective/no-change source sentences retain the same bordered card surface as
-  revision-required sentences. They use one static face with `CORRECT ✓` and the original
+  revision-required sentences. They use one static face with the red circled check and the original
   sentence; no analysis, input, inline icon, or false flip target is added.
 - The sequence number sits in the top metadata row rather than a sentence-text column.
   Sentence text therefore uses the card's full width, and wrapped lines begin under

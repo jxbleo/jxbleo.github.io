@@ -279,7 +279,7 @@ check("portfolio is a dismissible fixed drawer at every viewport", () => {
     "drawer close button must hide the portfolio");
   assert(/sidebarScrim\.addEventListener\s*\(\s*["']click["']\s*,\s*closeSidebar/.test(client),
     "clicking the scrim must hide the portfolio");
-  assert(/event\.key\s*={2,3}\s*["']Escape["'][\s\S]{0,500}state\.sidebarOpen[\s\S]{0,120}closeSidebar/.test(client),
+  assert(/event\.key\s*={2,3}\s*["']Escape["'][\s\S]{0,800}state\.sidebarOpen[\s\S]{0,120}closeSidebar/.test(client),
     "Escape must hide an open portfolio drawer");
 });
 
@@ -632,6 +632,45 @@ check("language review renders exactly three primary cards in the approved order
     "the CEFR writing estimate must appear before the general Language Review overview");
 });
 
+check("the three language cards share one title style and Sentence Revision keeps only capsule navigation sticky", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const renderSource = functionSource(client, "renderLanguage", "sentenceVisualStatus");
+  assert.strictEqual((renderSource.match(/language-card-title/g) || []).length, 3,
+    "Language Review, Draft, and Sentence Revision must use the same title class");
+  const headingIndex = renderSource.indexOf("sentence-review-heading");
+  const toolbarIndex = renderSource.indexOf("language-toolbar");
+  assert(headingIndex >= 0 && toolbarIndex > headingIndex,
+    "the non-sticky Sentence Revision title row must precede the capsule toolbar");
+  requireEvery(renderSource, ["revisionFontControlsHtml", "revisionTextScale"],
+    "Sentence Revision font controls");
+  requireEvery(functionSource(client, "revisionFontControlsHtml", "applyRevisionTextScale"), ["data-revision-font-step", "Analysis text size"],
+    "Sentence Revision font-control markup");
+  assert(/\.language-card-title\s*\{[^}]*font-size[^}]*font-weight[^}]*line-height[^}]*letter-spacing/is.test(styles),
+    "all three titles must inherit one complete type specification");
+  assert(/\.language-toolbar\s*\{[^}]*position\s*:\s*sticky[^}]*top\s*:\s*0/is.test(styles),
+    "only the capsule toolbar must remain sticky");
+  assert(!/\.sentence-review-heading\s*\{[^}]*position\s*:\s*sticky/is.test(styles),
+    "the title and font controls must scroll away normally");
+});
+
+check("revision analysis font controls are bounded, persistent, and remeasure card faces", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const restoreSource = functionSource(client, "restoreRevisionTextLevel", "revisionTextScale");
+  const applySource = functionSource(client, "applyRevisionTextScale", "adjustRevisionTextLevel");
+  const adjustSource = functionSource(client, "adjustRevisionTextLevel", "setBusy");
+  requireEvery(client, ["revisionTextScales", "mrcat-writing-revision-text-level-v1", "Decrease analysis text size", "Increase analysis text size"],
+    "bounded accessible text preferences");
+  requireEvery(restoreSource, ["localStorage.getItem", "Math.max", "Math.min"], "persisted font preference restore");
+  requireEvery(adjustSource, ["localStorage.setItem", "applyRevisionTextScale"], "live font scale persistence");
+  requireEvery(applySource, ["observeSentenceCardHeights", "syncSentenceCardHeight"], "card remeasurement after font scaling");
+  requireEvery(styles, ["--revision-analysis-scale", ".grammar-analysis-copy", ".rewrite-feedback-round > p", ".reference-panel p"],
+    "analysis-only text scaling");
+  assert(/\.revision-font-controls button\s*\{[^}]*width\s*:\s*44px[^}]*height\s*:\s*44px/is.test(styles),
+    "font buttons must retain 44px touch targets");
+});
+
 check("each revision-required sentence renders only source, consolidated analysis, and response area", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
@@ -814,7 +853,7 @@ check("rewrite draft cleanup removes only accepted sentences and retains failure
     "network-disconnect recovery must return without clearing any sentence drafts");
 });
 
-check("effective sentences use the static CORRECT status and no coaching controls", () => {
+check("effective sentences use the static correct icon and no coaching controls", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
@@ -834,10 +873,10 @@ check("effective sentences use the static CORRECT status and no coaching control
     "the removed disabled no-rewrite textarea must not remain in source or styles");
   assert(/function rewriteRequired[\s\S]{0,260}["']effective["']/.test(client),
     "legacy effective sentences without rewrite_required must remain exempt from rewriting");
-  requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-state.is-correct"],
+  requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-status-icon.is-correct"],
     "effective sentence styling");
-  requireEvery(cardSource, ["'correct'", "'CORRECT'", "revisionMark", "'✓'", "sentence-state-mark"],
-    "CORRECT status label");
+  requireEvery(cardSource, ["sentenceVisualStatus", "sentenceStatusIconHtml"],
+    "correct status icon");
   assert(!/sentence-effective-icon|sentence-corrected-icon/.test(`${client}\n${styles}`),
     "checks must live after the status label rather than inline after sentence text");
   assert(!/thumbUp/.test(client), "the superseded thumbs-up icon must be removed");
@@ -861,7 +900,7 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
   const capsuleSource = functionSource(client, "sentenceCapsuleHtml", "sentenceCardHtml");
   requireEvery(renderSource, ["句子导航", "capsule-row", "sentenceCapsuleHtml"], "sentence number navigation");
   requireEvery(capsuleSource, ["data-sentence-index", "aria-label", "aria-current"], "sentence number button");
-  requireEvery(capsuleSource, ["is-done", "capsuleStatus", "，已完成"], "sentence completion status");
+  requireEvery(capsuleSource, ["sentenceVisualStatus", "capsuleStatus", "，正确", "，等待检查", "，错误"], "sentence completion status");
   assert(/data-sentence-index[\s\S]{0,1800}scrollIntoView/.test(client),
     "clicking a sentence number must scroll the corresponding list row into view");
   assert(/\.capsule-row\s*\{[^}]*overflow-x\s*:\s*auto/i.test(styles),
@@ -872,17 +911,24 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "the capsule bar must not show progress copy or navigation instructions beneath the numbers");
   assert(/\.sentence-capsule\s*\{[^}]*border\s*:\s*1px\s+solid/is.test(styles),
     "every sentence capsule must use the same one-pixel solid border");
-  assert(!/\.sentence-capsule\.is-done[^}]*\{[^}]*(?:inset|border-width)/is.test(styles)
-      && !/\.sentence-capsule\.is-review[^}]*\{[^}]*border-style\s*:\s*dashed/is.test(styles),
-    "done and review states must not visually thicken or dash the capsule border");
-  assert(/\.sentence-capsule\.is-done::after\s*\{[^}]*content\s*:\s*["']✓["']/is.test(styles),
-    "completed capsules must show a small checkmark beneath the number");
-  assert(/\.sentence-capsule\.is-done::after\s*\{[^}]*color\s*:\s*var\(--ai-success\)/is.test(styles),
-    "completed capsule checks must always use semantic green");
-  assert(/\.sentence-capsule\.is-review::after,\s*\.sentence-capsule\.has-gap::after\s*\{[^}]*content\s*:\s*["']×["'][^}]*color\s*:\s*var\(--ai-danger\)/is.test(styles),
-    "unresolved capsules must show a semantic red cross beneath the number");
+  assert(!/\.sentence-capsule\.is-(?:correct|pending|incorrect)[^}]*\{[^}]*(?:inset|border-width|border-style\s*:\s*dashed)/is.test(styles),
+    "status states must not visually thicken or dash the capsule border");
+  requireEvery(capsuleSource, ["sentenceStatusIconHtml(status, id, true)"], "compact capsule status projection");
+  assert(functionSource(client, "sentenceStatusIconHtml", "sentenceCapsuleHtml").includes("sentence-capsule-state"),
+    "compact capsule icons must use the dedicated below-number slot");
+  requireEvery(styles, [".sentence-status-icon.is-correct", "#c9403a", ".sentence-status-icon.is-pending", ".sentence-status-icon.is-incorrect", "#171c1b"],
+    "red correct and black pending/incorrect icon colors");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
     "the capsule row must reserve space for its status marks");
+});
+
+check("typing a new revision immediately projects the pending question state", () => {
+  const client = read(clientPath);
+  const syncSource = functionSource(client, "syncSentenceDraftStatus", "submitRewrites");
+  requireEvery(syncSource, ["sentenceVisualStatus", "data-sentence-id", "sentenceStatusIconHtml", "sentence-capsule-state", "aria-label"],
+    "live capsule and card status synchronization");
+  assert(/target\.matches\s*\(\s*["']\[data-rewrite-id\]["']\s*\)[\s\S]{0,420}syncSentenceDraftStatus\s*\(\s*id\s*\)/.test(client),
+    "every rewrite input event must immediately refresh its question/check/cross projection");
 });
 
 check("every Sentence Revision row keeps its indexed soft background without a left accent line", () => {
@@ -917,13 +963,13 @@ check("Sentence Revision numbers every row and ends with one Submit action", () 
     "sentence rows must use the BBC worksheet-style plain sequence number rather than a capsule");
   assert(/\.sentence-card-meta\s*\{[^}]*display\s*:\s*flex/is.test(styles)
       && /\.sentence-card-meta\s*\{[^}]*justify-content\s*:\s*space-between/is.test(styles)
-      && /\.sentence-card-meta\s*\{[^}]*align-items\s*:\s*baseline/is.test(styles),
+      && /\.sentence-card-meta\s*\{[^}]*align-items\s*:\s*center/is.test(styles),
     "the bare sequence number and revision status must share a compact top metadata row");
   assert(!/\.original-sentence,\s*\.corrected-sentence\s*\{[^}]*grid-template-columns/is.test(styles),
     "the number must not consume sentence width or alter wrapped line alignment");
 });
 
-check("accepted revisions default to the corrected sentence and show REVISED status", () => {
+check("accepted revisions default to the corrected sentence and show the correct icon", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const prepareSource = functionSource(client, "restoreLanguageReviewState", "prepareLanguageReview");
@@ -932,29 +978,29 @@ check("accepted revisions default to the corrected sentence and show REVISED sta
     "accepted revision default face");
   requireEvery(cardSource, [
     "correctedSentence", "corrected-sentence", "sentence-corrected-highlight",
-    "'revised'", "'REVISED'", "sentence-state-mark",
+    "sentenceVisualStatus", "sentenceStatusIconHtml",
   ], "accepted corrected sentence");
   assert(/accepted\s*\?\s*correctedResponse\s*:\s*editableResponse/.test(cardSource),
     "accepted revisions must replace the input face with the persisted corrected sentence");
-  requireEvery(styles, [".corrected-sentence", ".sentence-corrected-highlight", ".sentence-state.is-revised"],
+  requireEvery(styles, [".corrected-sentence", ".sentence-corrected-highlight", ".sentence-status-icon.is-correct"],
     "accepted corrected sentence styling");
   assert(!/sentence-corrected-icon/.test(`${client}\n${styles}`),
     "accepted checks must not appear inline after the corrected sentence");
 });
 
-check("sentence cards expose three explicit top-right revision states", () => {
+check("sentence cards expose correct, pending, and incorrect circular states", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
-  requireEvery(cardSource, [
-    "revisionState", "!required ? 'correct'", "accepted ? 'revised' : 'needs-revision'",
-    "'CORRECT'", "'REVISED'", "'NEEDS REVISION'", "revisionMark",
-    "revisionState === 'needs-revision' ? '×' : '✓'",
-  ], "three-state revision label");
-  requireEvery(styles, [
-    ".sentence-state.is-correct", ".sentence-state.is-revised",
-    ".sentence-state.is-needs-revision", "var(--ai-success)", "var(--ai-danger)",
-  ], "revision state colors");
+  const stateSource = functionSource(client, "sentenceVisualStatus", "sentenceStatusLabel");
+  const iconSource = functionSource(client, "sentenceStatusIconHtml", "sentenceCapsuleHtml");
+  requireEvery(stateSource, ["'correct'", "'pending'", "'incorrect'", "result.accepted === true", "result.accepted === false", "result.student_rewrite"],
+    "three-state revision projection");
+  requireEvery(iconSource, ["sentence-status-ring", "sentence-status-mark", "is-' + status", "<circle", "M7.1 12.3", "M9.5 9.3", "m8.6 8.6"],
+    "three circular status glyphs");
+  requireEvery(styles, [".sentence-status-icon", ".sentence-status-ring", ".sentence-status-mark", ".sentence-status-icon.is-correct", ".sentence-status-icon.is-pending", ".sentence-status-icon.is-incorrect"],
+    "revision state icon styling");
+  assert(!/CORRECT|REVISED|NEEDS REVISION/.test(functionSource(client, "sentenceCardHtml", "syncSentenceDraftStatus")),
+    "sentence cards must not retain visible English status fields");
 });
 
 check("sentence flip cards resize to the active face without reserved blank space", () => {
@@ -1201,6 +1247,31 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
     "explicit import must place each reviewed scanned sentence into its selected draft");
   assert(/state\.review[\s\S]{0,220}rewriteRequired\(sentence\)[\s\S]{0,120}state\.rewriteFace\[sentenceId\(sentence, index\)\]\s*=\s*true/.test(importSource),
     "successful scan import must return with every revision-required card showing its attempt face");
+  requireEvery(importSource, ["renderLanguage()", "openScanSubmitConfirmation()"],
+    "post-import Submit confirmation handoff");
+});
+
+check("confirmed scan import offers an accessible Submit-or-review dialog", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(page, [
+    'id="scan-submit-confirmation"', 'role="dialog"', 'aria-modal="true"',
+    'Submit revisions now?', 'data-review-scan-submit', '>Review First<',
+    'data-confirm-scan-submit', '>Submit<',
+  ], "scan Submit confirmation");
+  const openSource = functionSource(client, "openScanSubmitConfirmation", "closeScanSubmitConfirmation");
+  const confirmSource = functionSource(client, "confirmScannedRewritesSubmit", "openSidebar");
+  requireEvery(openSource, ["scanSubmitConfirmationOpen", "app.inert = true", "data-confirm-scan-submit", "focus"],
+    "scan Submit modal opening and initial focus");
+  requireEvery(confirmSource, ["closeScanSubmitConfirmation(false)", "submitRewrites()"],
+    "direct Submit path");
+  assert(/state\.scanSubmitConfirmationOpen\s*&&\s*event\.key\s*===\s*["']Tab["'][\s\S]{0,700}scanSubmitFirst[\s\S]{0,300}scanSubmitLast/.test(client),
+    "the two modal actions must trap keyboard focus");
+  assert(/event\.key\s*===\s*["']Escape["'][\s\S]{0,700}state\.scanSubmitConfirmationOpen[\s\S]{0,120}closeScanSubmitConfirmation/.test(client),
+    "Escape must return to sentence review");
+  requireEvery(styles, [".confirmation-review", ".confirmation-submit", "var(--ai-accent)"],
+    "Submit-or-review action styling");
 });
 
 check("revision photo upload retries one logical start-upload-finish task without a false handoff claim", () => {

@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260825-10">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260826-3">
     <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260826-1">
 </head>
 <body class="ai-tutor-page">
@@ -93,6 +93,20 @@
         </section>
     </div>
 
+    <div class="confirmation-layer" id="scan-submit-confirmation" hidden>
+        <div class="confirmation-scrim" data-review-scan-submit></div>
+        <section class="confirmation-dialog scan-submit-dialog" role="dialog" aria-modal="true" aria-labelledby="scan-submit-title" aria-describedby="scan-submit-copy">
+            <div class="confirmation-copy">
+                <strong id="scan-submit-title">Submit revisions now?</strong>
+                <p id="scan-submit-copy">Your scanned revisions are ready. Submit them now, or review each sentence first.</p>
+            </div>
+            <div class="confirmation-actions">
+                <button class="confirmation-review" type="button" data-review-scan-submit>Review First</button>
+                <button class="confirmation-submit" type="button" data-confirm-scan-submit>Submit</button>
+            </div>
+        </section>
+    </div>
+
     <div class="photo-choice-layer" id="photo-choice-layer" hidden>
         <div class="photo-choice-scrim" data-close-photo-choice></div>
         <section class="photo-choice-sheet" role="dialog" aria-modal="true" aria-labelledby="photo-choice-title">
@@ -172,6 +186,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/ai-waiting-runner.js?v=20260826-1"></script>
-    <script src="assets/js/ai-tutor.js?v=20260826-2"></script>
+    <script src="assets/js/ai-tutor.js?v=20260826-3"></script>
 </body>
 </html>
