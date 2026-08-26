@@ -43,6 +43,10 @@
 .account-request-status { padding: 4px 8px; border-radius: 999px; background: #fff3be; color: #765600 !important; }
 .account-cash-request small { display: block; margin: 6px 0 10px; color: var(--muted); }
 .account-proof-upload { cursor: pointer; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; font-weight: 800; }
+.account-proof-upload.is-uploading { cursor: wait; opacity: .58; }
+.account-upload-status { margin: 10px 0 0; color: var(--muted); font-size: 13px; font-weight: 750; }
+.account-upload-status.is-success { color: #147341; }
+.account-upload-status.is-error { color: #b42318; }
 .account-star-filters,
 .teacher-star-tabs { display: flex; gap: 8px; margin: 18px 0 10px; }
 .account-star-filters button,

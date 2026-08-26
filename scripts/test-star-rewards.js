@@ -152,6 +152,10 @@ function testIntegrationContracts() {
   assert(dashboard.includes("starSourceSection('blue', 'BLUE STAR', 'NOT REDEEMABLE')"));
   assert(dashboard.includes("safeAccountStarHistoryRow"), "one malformed legacy STAR must not blank the unified history");
   assert(dashboard.includes("Unable to display STAR history"), "wallet rendering must have a visible error state");
+  assert(dashboard.includes('role="status" aria-live="polite"'), "Cash evidence upload must announce progress and completion");
+  assert(dashboard.includes("setCashUploadStatus(requestId, 'Uploading photo...', 'uploading')"), "Cash evidence upload must show an in-progress state");
+  assert(/\.then\(refreshStarWallet\)\.then\(function\(\)\s*\{[\s\S]{0,240}loadCashEvidence\(requestId\)/.test(dashboard), "successful Cash evidence upload must automatically show the uploaded photo");
+  assert(/\.catch\(function\(error\)\s*\{[\s\S]{0,200}setCashUploadStatus\(requestId,[\s\S]{0,100}'error'\)/.test(dashboard), "failed Cash evidence upload must restore an actionable error state");
   assert(dashboardHtml.includes('id="student-star-overlay"'), "My STARs must use an independent modal");
   assert(dashboardHtml.includes('id="student-star-content"'));
   assert(appCss.includes(".student-star-dialog"), "wallet must use its own opaque dialog surface");
