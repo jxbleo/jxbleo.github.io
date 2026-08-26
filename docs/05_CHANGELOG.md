@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-26 — Frozen Finished state for Writing Runner
+
+- Finished now pauses Runner physics and input immediately and prevents tab
+  visibility/focus restoration from resuming the game.
+- Added a one-time 1.4-second crystalline frost seal over the retained final
+  Canvas frame; Reduced Motion receives the static final frost state.
+- Kept the result action, Finished Dock reminder, and selected J6 sound active
+  outside the frozen game surface.
+
 ## 2026-08-26 — Final Writing Runner sound hierarchy
 
 - Selected the `P3` light pluck for collectible points and the `H4` low drop for

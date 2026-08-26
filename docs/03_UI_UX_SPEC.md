@@ -774,9 +774,12 @@ Student account menu:
   My STARs. Students may cancel before completion and may upload evidence before
   completion, but each student has only one open request.
 - the evidence control accepts camera capture or a private image selection,
-  previews upload progress, and shows all active/superseded evidence in request
-  history. It explains that either the student or teacher may upload the proof;
-  no photo is presented as teacher identity authentication.
+  reports preparation, secure upload, and server verification status while
+  preventing a duplicate selection. Successful upload refreshes the request and
+  automatically expands all active/superseded evidence in request history with
+  a confirmation message; failure restores the control so the same file may be
+  selected again. It explains that either the student or teacher may upload the
+  proof; no photo is presented as teacher identity authentication.
 - Teacher Replies uses a separate plain speech-bubble SVG button immediately to
   the right of the main Dashboard's To Do List button. The default To Do List
   dialog and focused This Week/Upcoming task-list dialogs omit this control.
@@ -1964,13 +1967,15 @@ Important mobile rules:
 - Reduced motion renders a static scene and skips motion choreography. Hidden
   tabs pause simulation and reset the frame clock; missing Canvas support leaves
   the real status, polling, and result paths intact. Success changes the card to
-  `Finished`, shows no separate `Text is ready` line, and keeps the runner alive
-  until the student clicks its full-width result button. The final node and text
+  `Finished`, shows no separate `Text is ready` line, immediately pauses Runner
+  physics and input, and retains the final frame until the student clicks its
+  full-width result button. A restrained frost layer seals inward over that frame
+  in about 1.4 seconds without covering or disabling the result action. The final node and text
   perform a short Dock-style vertical bounce followed by a long pause, with the
   synthesized `J6` completion jingle synchronized to every bounce cycle when
   audio is available. This is a spacious low-to-high two-note rise with a longer
   ringing tail and a clearly stronger level than either gameplay cue. Reduced
-  motion is static and receives only the initial
+  motion shows the final frost state without the sealing animation and receives only the initial
   completion cue. Opening an already-ready Composition from History bypasses this entire
   card and Runner and renders the saved result immediately.
 - Retryable provider/network failures are attempted by the durable cloud job up

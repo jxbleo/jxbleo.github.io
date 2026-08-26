@@ -437,7 +437,7 @@
 
         function onVisibilityChange() {
             if (document.hidden) pause();
-            else resume();
+            else if (taskState !== 'ready') resume();
         }
 
         function pause() {
@@ -448,7 +448,7 @@
         }
 
         function resume() {
-            if (destroyed) return;
+            if (destroyed || taskState === 'ready') return;
             paused = false; lastTime = null; accumulator = 0; draw(); schedule();
         }
 
@@ -465,7 +465,14 @@
         }
 
         function setTaskState(nextState) {
-            if (['queued', 'analysing', 'ready', 'failed'].indexOf(nextState) >= 0) taskState = nextState;
+            if (['queued', 'analysing', 'ready', 'failed'].indexOf(nextState) < 0) return;
+            var wasReady = taskState === 'ready';
+            taskState = nextState;
+            if (nextState === 'ready') {
+                pause();
+                return;
+            }
+            if (wasReady && !document.hidden) resume();
         }
 
         function destroy() {

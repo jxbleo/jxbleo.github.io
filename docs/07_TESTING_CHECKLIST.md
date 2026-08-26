@@ -55,7 +55,7 @@ The Runner contract test verifies the public controller API, idempotent
 destruction, repeat/air/landing-buffer jumps, ground/airborne obstacles, causal
 collect/hit events, one-time obstacle deductions,
 negative Score, continuous long-wait obstacle and green 3–7 collectible
-replenishment, Finished continuity,
+replenishment, Finished-time RAF/input freeze,
 reduced-motion and pause/resume behavior, and the absence of network, CloudBase,
 persistence, or reward integration. The Writing Tutor contracts verify
 the shared checked-`Uploaded` / unlabeled energy connector / `Finished` path, immediate upload-stage Runner,
@@ -70,7 +70,7 @@ retry, and the durable result predicates.
 Manually check 320/375/390/430px phones, 768/834/1024px tablets, and desktop;
 keyboard/tap jump, focused form controls, hidden-tab pause, reduced motion, missing
 Runner module fallback, network polling recovery, Ready without refresh, one
-result click, direct re-entry to a completed Job, and continued play after
+result click, direct re-entry to a completed Job, and a frozen final frame after
 Ready. Confirm the game appears immediately after Scan, with no upload-only or
 AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent,
 ground and airborne obstacles plus green collectibles continue to appear after at
@@ -82,7 +82,10 @@ label, the connector energy moves left-to-right, `Uploaded` gains its check as
 soon as upload handoff succeeds, and no
 `Text is ready` line appears, and the Finished node/text periodically Dock-bounces
 with one matching sound per cycle; reduced motion must remain static and must not
-repeat the sound. Open the same ready Composition from History and after refresh:
+repeat the sound. Confirm Runner distance, Score, collision state, and jump count
+stop changing at Finished; taps, keys, visibility changes, and focus return must
+not resume it. The frost layer should seal inward over roughly 1.4 seconds, while
+Reduced Motion shows the final frosted frame without animation. Open the same ready Composition from History and after refresh:
 it must enter OCR Review, the assessment, feedback, or Revision Scan directly,
 without briefly showing Canvas, Ready, sound, or Score.
 Force a terminal OCR, review, rewrite, and revision-scan failure. In every case,
@@ -247,6 +250,9 @@ Development CloudBase verification after owner deployment:
 - One open Cash Request reserves explicit available achievement IDs.
 - cancellation, rejection, and expiry release exactly the reservation.
 - confirmation requires active evidence and moves reserved to spent once.
+- Student evidence upload announces preparation/upload/verification, prevents a
+  duplicate selection while active, and automatically displays the refreshed
+  evidence list after success; failure restores same-file retry.
 - refund is append-only, returns available credit once, and does not edit the
   completed redeem event.
 - stale/repeated browser actions are idempotent and cannot double-spend.

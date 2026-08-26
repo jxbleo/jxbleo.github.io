@@ -2425,7 +2425,7 @@ check("an active wait remains Ready until the student clicks one result action",
   const client = read(clientPath);
   const styles = read("assets/css/ai-waiting-runner.css");
   const renderer = functionSource(client, "finishAiWaitingExperience", "showReadyOrOpenResult");
-  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "classList.add('is-ready')"], "Ready handoff");
+  requireEvery(renderer, ["waitingResultAction", "data-view-waiting-result", "classList.add('is-ready')", "waitingRunner.pause", "aria-disabled", "Mr. Cat Runner paused", "tabindex"], "Ready handoff and frozen Runner");
   assert(!/next\s*\(\)|typeof\s+next\s*===\s*["']function["']\s*\)\s*next/.test(renderer), "finishAiWaitingExperience must not auto-run the result callback");
   requireEvery(client, ["Check Text", "View Review", "View Feedback", "Review Scan", "waitingReadyAnnounced", "waitingReadySoundTimer", "startWaitingReadyReminder", "AudioContext", "ready-announced"], "Ready controls and sound");
   requireEvery(client, ["unlockWaitingReadySound", "pointerdown", "audio.resume"], "user-gesture audio unlock");
@@ -2446,6 +2446,10 @@ check("an active wait remains Ready until the student clicks one result action",
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
   requireEvery(styles, ["ai-waiting-ready-dock-bounce", "translateY(-11px)", "5.2s", ".ai-waiting-stage-label", "prefers-reduced-motion"],
     "periodic reduced-motion-safe Ready reminder");
+  requireEvery(styles, ["ai-waiting-freeze-seal", "ai-waiting-ice-crystallize", "1.4s", "clip-path: inset", ".is-ready .runner-canvas", "pointer-events: none"],
+    "Finished frost seal");
+  assert(/prefers-reduced-motion[\s\S]{0,1800}runner-canvas-frame::after[\s\S]{0,300}animation:\s*none/.test(styles),
+    "Finished frost must become static under reduced motion");
   requireEvery(styles, ["ai-waiting-energy-flow", "is-transmitting", "translateX(-115%)", "translateX(340%)"],
     "left-to-right energy transmission connector");
   assert(/setInterval[\s\S]{0,220}5200/.test(client), "each periodic Ready bounce must have a synchronized reminder chime");
