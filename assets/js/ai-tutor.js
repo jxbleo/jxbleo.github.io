@@ -890,6 +890,7 @@
         }
         try {
             var runner = window.MrCatWaitingRunner.mount(canvas, {
+                jumpSurface: stage.parentElement || stage,
                 onScore: function(score) {
                     var scoreNode = stage.querySelector('.runner-score');
                     if (scoreNode) scoreNode.textContent = 'Score ' + (Number(score.score || 0) < 0 ? '−' + Math.abs(Number(score.score || 0)) : Number(score.score || 0));
@@ -3093,7 +3094,7 @@
                 ? '<path class="sentence-status-mark" d="M9.5 9.3a2.7 2.7 0 1 1 3.5 2.6c-.8.35-1 .85-1 1.55M12 16.35h.01"></path>'
                 : '<path class="sentence-status-mark" d="m8.6 8.6 6.8 6.8m0-6.8-6.8 6.8"></path>';
         return '<span class="sentence-status-icon is-' + status + (compact ? ' sentence-capsule-state' : '') + '" data-sentence-status="' + escapeHtml(id) + '"' + (compact ? ' aria-hidden="true"' : ' role="img" aria-label="' + sentenceStatusLabel(status) + '"') + '>' +
-            '<svg aria-hidden="true" viewBox="0 0 24 24"><circle class="sentence-status-ring" cx="12" cy="12" r="9.2"></circle>' + mark + '</svg></span>';
+            '<svg aria-hidden="true" viewBox="0 0 24 24">' + (compact ? '' : '<circle class="sentence-status-ring" cx="12" cy="12" r="9.2"></circle>') + mark + '</svg></span>';
     }
 
     function sentenceCapsuleHtml(sentence, index) {

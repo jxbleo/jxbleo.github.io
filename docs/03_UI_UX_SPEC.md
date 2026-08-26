@@ -1953,7 +1953,10 @@ Important mobile rules:
   in Background` wording and ordinary polling explanation are removed.
 - The optional runner is a 16:7, max-640px Canvas with pointer/tap jump and
   Space/ArrowUp/W keyboard controls but no separate Jump button or instruction
-  row. Its temporary `Score` is centered inside the top of the game frame; it
+  row. While it is running, every non-control point in the content surface below
+  the persistent toolbar is the same immediate jump target; toolbar links, buttons,
+  fields, and other interactive controls retain their own action and never also jump.
+  Its temporary `Score` is centered inside the top of the game frame; it
   starts at zero, may be negative,
   and never represents AI progress or a learning reward. Obstacles subtract one
   once, green collectibles add one, and repeat jump/air-jump/landing-buffer
@@ -1970,7 +1973,7 @@ Important mobile rules:
   `Finished`, shows no separate `Text is ready` line, immediately pauses Runner
   physics and input, and retains the final frame until the student clicks its
   full-width result button. A restrained frost layer seals inward over that frame
-  in about 1.4 seconds without covering or disabling the result action. The final node and text
+  in about 1.7 seconds without covering or disabling the result action. The final node and text
   perform a short Dock-style vertical bounce followed by a long pause, with the
   synthesized `J6` completion jingle synchronized to every bounce cycle when
   audio is available. This is a spacious low-to-high two-note rise with a longer
@@ -2214,9 +2217,9 @@ Important mobile rules:
 - A second, independently sticky row contains the horizontally scrollable numbered
   capsules. Selecting a number immediately scrolls to and highlights its corresponding
   sentence in the list. Every capsule uses the same 1px solid border. Its reserved
-  below-number slot contains the compact version of the sentence state: red circled
-  check for correct, black circled question for newly entered/unsubmitted text, and
-  black circled cross for empty or last-checked-incorrect text. No progress copy or
+  below-number slot contains a plain mark with no circle: green check for correct,
+  black question for newly entered/unsubmitted text, and red cross for empty or
+  last-checked-incorrect text. No progress copy or
   instructional hint appears beneath the capsule row. The list is the only layout:
   there is no one-sentence mode, layout toggle, or pair of layout icons.
 - Each revision-required sentence row is one two-sided card. Its front contains
@@ -2228,8 +2231,8 @@ Important mobile rules:
   analysis when the student turns to the input face.
   Every card uses one compact metadata row: a bare sequence number at top-left and
   one 25px line-art circle icon at top-right. Correct/effective and accepted sentences
-  use a red circled check modeled on the Teacher success-checkmark treatment; empty or
-  last-checked-incorrect sentences use a black circled cross; new text that has not yet
+  use a green circled check modeled on the Teacher success-checkmark treatment; empty or
+  last-checked-incorrect sentences use a red circled cross; new text that has not yet
   received a matching Check result uses a black circled question. No English status
   field remains. An effective sentence
   shows only that row and its original sentence; it has no grammar box, revision input,
@@ -2261,8 +2264,9 @@ Important mobile rules:
   language sentence review exists. Its accessible name states completed, total,
   and remaining counts. Do not show the removed post-Check “统一检查完成” status below the toolbar.
 - Capsule and card status update immediately as the student types. Empty text and an
-  unchanged rejected answer use the circled cross; any non-empty new text uses the
-  circled question; an effective or accepted sentence uses the circled check. The
+  unchanged rejected answer use the red cross; any non-empty new text uses the
+  black question; an effective or accepted sentence uses the green check. Only card
+  icons retain their circle; capsule marks are plain. The
   sentence accent color never recolors these semantic marks.
 - The analysis face keeps the initial coaching paragraph first. Every later Submit
   feedback is shown beneath it in chronological order. Do not display round labels

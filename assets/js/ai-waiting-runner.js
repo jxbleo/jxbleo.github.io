@@ -51,6 +51,9 @@
 
         var context = canvas.getContext('2d');
         if (!context) return noopController();
+        var jumpSurface = options.jumpSurface && typeof options.jumpSurface.addEventListener === 'function'
+            ? options.jumpSurface
+            : canvas;
         [
             'setTransform', 'scale', 'clearRect', 'fillRect', 'fill', 'stroke', 'beginPath',
             'closePath', 'moveTo', 'lineTo', 'arc', 'arcTo', 'quadraticCurveTo', 'save',
@@ -419,11 +422,18 @@
             return document.activeElement === canvas;
         }
 
+        function isIgnoredJumpTarget(target) {
+            return Boolean(target && target.closest
+                && target.closest('a,button,input,textarea,select,summary,[role="button"],[contenteditable="true"]'));
+        }
+
         function onPointerDown(event) {
             if (destroyed) return;
+            if (event && event.button != null && event.button !== 0) return;
+            if (event && isIgnoredJumpTarget(event.target)) return;
             if (typeof canvas.focus === 'function') canvas.focus({ preventScroll: true });
-            if (event && event.pointerId != null && typeof canvas.setPointerCapture === 'function') {
-                try { canvas.setPointerCapture(event.pointerId); } catch (error) {}
+            if (event && event.pointerId != null && typeof jumpSurface.setPointerCapture === 'function') {
+                try { jumpSurface.setPointerCapture(event.pointerId); } catch (error) {}
             }
             requestJump();
         }
@@ -483,7 +493,7 @@
             frameHandle = null; finishTimer = null; finishCallback = null;
             if (resizeObserver && typeof resizeObserver.disconnect === 'function') resizeObserver.disconnect();
             if (listeningToWindowResize) window.removeEventListener('resize', resize);
-            if (canvas.removeEventListener) canvas.removeEventListener('pointerdown', onPointerDown);
+            if (jumpSurface.removeEventListener) jumpSurface.removeEventListener('pointerdown', onPointerDown);
             if (window.removeEventListener) window.removeEventListener('keydown', onKeyDown);
             if (document.removeEventListener) document.removeEventListener('visibilitychange', onVisibilityChange);
             if (typeof context.clearRect === 'function') context.clearRect(0, 0, canvas.width || WORLD_WIDTH, canvas.height || WORLD_HEIGHT);
@@ -514,7 +524,7 @@
             };
         }
 
-        canvas.addEventListener('pointerdown', onPointerDown, { passive: true });
+        jumpSurface.addEventListener('pointerdown', onPointerDown, { passive: true });
         window.addEventListener('keydown', onKeyDown, { passive: false });
         if (document.addEventListener) document.addEventListener('visibilitychange', onVisibilityChange);
         if (window.ResizeObserver) {

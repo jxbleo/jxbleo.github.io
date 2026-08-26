@@ -233,10 +233,10 @@
     pointer-events: none;
 }
 .ai-waiting-experience.is-ready .runner-canvas-frame::after {
-    animation: ai-waiting-freeze-seal 1.4s cubic-bezier(.22,.72,.25,1) both;
+    animation: ai-waiting-freeze-seal 1.7s cubic-bezier(.22,.72,.25,1) both;
 }
 .ai-waiting-experience.is-ready .runner-canvas-frame::before {
-    animation: ai-waiting-ice-crystallize 1.15s ease-out .2s both;
+    animation: ai-waiting-ice-crystallize 1.4s ease-out .24s both;
 }
 
 .ai-waiting-ready-action { width: 100%; }
