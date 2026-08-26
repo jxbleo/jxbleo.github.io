@@ -1823,12 +1823,14 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   are never rewards, analytics, or AI progress.
 - A successful Job changes the same open page to `Finished` with a full-width
   result button and no redundant `Text is ready` copy. The
-  runner continues until the student clicks that button; no result renderer is
-  entered automatically. The final node and label use a brief periodic Dock-style
+  runner stops immediately, rejects further jump input, and preserves its last
+  frame under a roughly 1.4-second ice-frost sealing animation until the student
+  clicks that button; no result renderer is entered automatically. The final node
+  and label use a brief periodic Dock-style
   bounce synchronized with a clearly louder, spacious low-to-high two-note jingle
   on each cycle when audio is available. The completion jingle must remain more
-  prominent than both Score cues. Reduced motion uses one completion cue and removes
-  repeating choreography without changing the manual
+  prominent than both Score cues. Reduced motion uses one completion cue, applies
+  a static frost layer, and removes repeating choreography without changing the manual
   handoff. Reopening an already-ready Job is silent and opens its actual result
   directly, without constructing a Ready card or Runner.
 - Waiting polling runs immediately, then serially at 3 seconds while visible

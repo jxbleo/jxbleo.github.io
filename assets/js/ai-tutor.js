@@ -978,6 +978,7 @@
         state.waitingTaskState = 'ready';
         updateWaitingStageDom(state.waitingKind, 'ready');
         if (state.waitingRunner && typeof state.waitingRunner.setTaskState === 'function') state.waitingRunner.setTaskState('ready');
+        if (state.waitingRunner && typeof state.waitingRunner.pause === 'function') state.waitingRunner.pause();
         var actionLabels = {
             ocr: 'Check Text',
             review: 'View Review',
@@ -988,6 +989,12 @@
         if (action) { action.textContent = actionLabels[state.waitingKind] || 'View Result'; action.parentElement.hidden = false; }
         var experience = stage && stage.querySelector('.ai-waiting-experience');
         if (experience) experience.classList.add('is-ready');
+        var runnerCanvas = experience && experience.querySelector('.runner-canvas');
+        if (runnerCanvas) {
+            runnerCanvas.setAttribute('aria-disabled', 'true');
+            runnerCanvas.setAttribute('aria-label', 'Mr. Cat Runner paused. Your result is ready.');
+            runnerCanvas.setAttribute('tabindex', '-1');
+        }
         if (experience && shouldAnnounce) experience.classList.add('is-ready-announced');
         if (shouldAnnounce) {
             state.waitingReadyAnnounced = true;
@@ -4120,7 +4127,10 @@
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) wakeWaitingPoll();
         if (!state.waitingRunner) return;
-        try { if (document.hidden) state.waitingRunner.pause(); else state.waitingRunner.resume(); } catch (error) {}
+        try {
+            if (document.hidden || state.waitingTaskState === 'ready') state.waitingRunner.pause();
+            else state.waitingRunner.resume();
+        } catch (error) {}
     });
     window.addEventListener('focus', wakeWaitingPoll);
     window.addEventListener('online', wakeWaitingPoll);

@@ -196,15 +196,21 @@ check('score can be negative and onScore exposes only score', () => {
   runner.destroy();
 });
 
-check('ready does not stop RAF or the game', () => {
+check('ready freezes the game and cannot be resumed by input or visibility', () => {
   const harness = makeHarness();
   const runner = harness.runnerApi.mount(harness.canvas);
   runner.setTaskState('ready');
   const before = runner.snapshot();
+  harness.pointerDown();
   harness.frame(0);
   harness.frame(1000);
-  assert(harness.pendingRafCount() > 0, 'ready stopped the animation loop');
-  assert(runner.snapshot().distance > before.distance, 'ready stopped world motion');
+  harness.visibility(true);
+  harness.visibility(false);
+  runner.resume();
+  assert.strictEqual(runner.snapshot().paused, true, 'ready should remain paused');
+  assert.strictEqual(harness.pendingRafCount(), 0, 'ready left an animation frame scheduled');
+  assert.strictEqual(runner.snapshot().distance, before.distance, 'ready advanced world motion');
+  assert.strictEqual(runner.snapshot().player.jumpCount, before.player.jumpCount, 'ready accepted a jump');
   runner.destroy();
 });
 
