@@ -4018,7 +4018,8 @@
                 '<button type="button" class="text-button" data-cash-evidence="' + escapeHtml(request.request_id) + '">View proof (' + escapeHtml(request.evidence_count || 0) + ')</button>' +
                 (open && Number(request.evidence_count || 0) < 3 ? '<label class="account-proof-upload">Add photo<input type="file" accept="image/jpeg,image/png,image/webp" data-cash-upload="' + escapeHtml(request.request_id) + '" hidden></label>' : '') +
                 (open ? '<button type="button" class="text-button danger-text-button" data-cash-cancel="' + escapeHtml(request.request_id) + '">Cancel</button>' : '') +
-            '</div><div class="account-evidence-list" id="cash-evidence-' + escapeHtml(request.request_id) + '"></div></article>';
+            '</div><p class="account-upload-status" id="cash-upload-status-' + escapeHtml(request.request_id) + '" role="status" aria-live="polite" hidden></p>' +
+            '<div class="account-evidence-list" id="cash-evidence-' + escapeHtml(request.request_id) + '"></div></article>';
     }
 
     function cashComposerHtml() {
@@ -4172,24 +4173,55 @@
         });
     }
 
+    function setCashUploadStatus(requestId, message, status) {
+        var target = document.getElementById('cash-upload-status-' + requestId);
+        var input = starContent && starContent.querySelector('[data-cash-upload="' + CSS.escape(String(requestId)) + '"]');
+        var label = input && input.closest('.account-proof-upload');
+        var uploading = status === 'uploading';
+        if (target) {
+            target.textContent = message || '';
+            target.hidden = !message;
+            target.classList.toggle('is-success', status === 'success');
+            target.classList.toggle('is-error', status === 'error');
+        }
+        if (input) {
+            input.disabled = uploading;
+            if (!uploading) input.value = '';
+        }
+        if (label) {
+            label.classList.toggle('is-uploading', uploading);
+            label.setAttribute('aria-disabled', uploading ? 'true' : 'false');
+        }
+    }
+
     function uploadCashEvidence(requestId, file) {
+        setCashUploadStatus(requestId, 'Preparing photo...', 'uploading');
         return window.MrCatCloud.prepareEvidenceImage(file).then(function(prepared) {
+            setCashUploadStatus(requestId, 'Preparing secure upload...', 'uploading');
             return dashboardAction('beginCashEvidenceUpload', { request_id: requestId, file_name: file.name, mime_type: file.type, size_bytes: file.size }).then(function(start) {
+                setCashUploadStatus(requestId, 'Uploading photo...', 'uploading');
                 return Promise.all([
                     window.MrCatCloud.uploadWithMetadata(start.original_upload, prepared.original),
                     window.MrCatCloud.uploadWithMetadata(start.display_upload, prepared.display)
                 ]).then(function() {
+                    setCashUploadStatus(requestId, 'Checking photo...', 'uploading');
                     return dashboardAction('finishCashEvidenceUpload', { evidence_id: start.evidence_id });
                 });
             });
-        }).then(refreshStarWallet);
+        }).then(refreshStarWallet).then(function() {
+            setCashUploadStatus(requestId, 'Photo uploaded successfully.', 'success');
+            return loadCashEvidence(requestId);
+        }).catch(function(error) {
+            setCashUploadStatus(requestId, error && error.message || 'Unable to upload photo.', 'error');
+            throw error;
+        });
     }
 
     function loadCashEvidence(requestId) {
         var target = document.getElementById('cash-evidence-' + requestId);
-        if (!target) return;
+        if (!target) return Promise.resolve();
         target.innerHTML = '<p class="muted">Loading photos...</p>';
-        dashboardAction('getCashEvidence', { request_id: requestId }).then(function(result) {
+        return dashboardAction('getCashEvidence', { request_id: requestId }).then(function(result) {
             target.innerHTML = (result.evidence || []).map(function(item) {
                 return '<figure class="account-evidence-item ' + (item.status === 'superseded' ? 'is-superseded' : '') + '"><img src="' + escapeHtml(item.url) + '" alt="Cash exchange proof"><figcaption>' + escapeHtml(item.uploader_role === 'teacher' ? 'Teacher' : 'Student') + (item.status === 'superseded' ? ' · Replaced' : '') + '</figcaption>' + (item.status === 'active' && item.uploader_role === 'student' ? '<button type="button" class="text-button" data-evidence-supersede="' + escapeHtml(item.evidence_id) + '">Replace this photo</button>' : '') + '</figure>';
             }).join('') || '<p class="muted">No proof photo yet.</p>';
