@@ -72,7 +72,9 @@ keyboard/tap jump, focused form controls, hidden-tab pause, reduced motion, miss
 Runner module fallback, network polling recovery, Ready without refresh, one
 result click, direct re-entry to a completed Job, and a frozen final frame after
 Ready. Confirm the game appears immediately after Scan, with no upload-only or
-AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent,
+AI-reading screen. Score stays inside the game frame, Jump/instruction controls are absent.
+Tap the Canvas, progress area, card padding, and lower blank content; each must jump immediately.
+Tap Back or any visible button/control and confirm its action occurs without a jump.
 ground and airborne obstacles plus green collectibles continue to appear after at
 least one minute. Confirm collectibles use the short light pluck, collisions use
 the quiet low descending cue, and Finished uses the more prominent spacious
@@ -84,7 +86,7 @@ soon as upload handoff succeeds, and no
 with one matching sound per cycle; reduced motion must remain static and must not
 repeat the sound. Confirm Runner distance, Score, collision state, and jump count
 stop changing at Finished; taps, keys, visibility changes, and focus return must
-not resume it. The frost layer should seal inward over roughly 1.4 seconds, while
+not resume it. The frost layer should seal inward over roughly 1.7 seconds, while
 Reduced Motion shows the final frosted frame without animation. Open the same ready Composition from History and after refresh:
 it must enter OCR Review, the assessment, feedback, or Revision Scan directly,
 without briefly showing Canvas, Ready, sound, or Score.
@@ -1971,8 +1973,9 @@ High priority improvement:
   pair of layout icons beneath or beside the capsule row.
 - Compare normal and active capsules across correct, pending, and incorrect states
   and confirm every computed border is the same 1px solid width. Correct capsules
-  show a tiny red circled check, newly entered/unsubmitted text shows a black circled
-  question, and empty or unchanged rejected text shows a black circled cross. The
+  show a tiny plain green check, newly entered/unsubmitted text shows a plain black
+  question, and empty or unchanged rejected text shows a plain red cross. None of
+  these below-number marks has a circle. The
   status slot is not clipped by the horizontal scroller and each aria-label names
   the current state.
 - Scroll until the capsule bar reaches the top and confirm it replaces the main
@@ -2002,9 +2005,9 @@ High priority improvement:
   `Word Choice`, other category labels, and separate issue/summary/result rows are absent;
   opening the reference answer on the analysis face must not expose or erase the
   back input, and flipping to the input must hide both analysis and reference. For
-  an effective sentence, confirm only the top metadata row (red circled check) and original
+  an effective sentence, confirm only the top metadata row (green circled check) and original
   sentence render—without a grammar box, `Your Attempt`, a textarea, an inline sentence
-  icon, or a reference-answer action. Its capsule retains the matching red circled check.
+  icon, or a reference-answer action. Its capsule uses the matching plain green check.
 - Switch a revision card front/back with click, Enter, and Space. Confirm state,
   focus order, accessible names, textarea draft, capsule, and sentence identity
   remain synchronized. Enable reduced motion and confirm there is no 3D rotation;
@@ -2033,10 +2036,12 @@ High priority improvement:
   action row must show a 44px camera-only button immediately left of `Submit`; its
   accessible name remains `Scan Revisions`, and phone width must keep both controls on
   one row rather than stretching the camera into a full-width text button.
-- Before any text and after an unchanged rejected Check, confirm the capsule and
-  card show a black circled cross. Type or change non-empty text and confirm both
-  switch immediately to a black circled question; clear it and confirm both return
-  to a cross. After acceptance, confirm both show a red circled check. No card may
+- Before any text and after an unchanged rejected Check, confirm the capsule shows a
+  plain red cross and the card shows a red circled cross. Type or change non-empty
+  text and confirm the capsule switches to a plain black question while the card uses
+  a black circled question; clear it and confirm both return to their cross forms.
+  After acceptance, confirm the capsule shows a plain green check and the card a
+  green circled check. No card may
   display `CORRECT`, `REVISED`, or `NEEDS REVISION`. The accepted card must open
   on the persisted corrected sentence as display text, with no disabled textarea;
   only an explicit flip may reveal the original sentence and grammar analysis.
@@ -2050,7 +2055,7 @@ High priority improvement:
   successful submission becomes round 2.
 - Confirm an effective/no-change sentence has the same bordered face as every other
   Sentence Revision card, while still exposing no grammar analysis, textarea, Sample,
-  or flip target. Confirm the bare number is top-left and the red circled check is top-right.
+  or flip target. Confirm the bare number is top-left and the green circled check is top-right.
   Use long wrapped sentences and verify the sentence takes the full card width and line
   two aligns under the first sentence letter at desktop and phone widths.
 - Compare a long analysis face with a short accepted rewrite face. After every flip,

@@ -914,10 +914,11 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
   assert(!/\.sentence-capsule\.is-(?:correct|pending|incorrect)[^}]*\{[^}]*(?:inset|border-width|border-style\s*:\s*dashed)/is.test(styles),
     "status states must not visually thicken or dash the capsule border");
   requireEvery(capsuleSource, ["sentenceStatusIconHtml(status, id, true)"], "compact capsule status projection");
-  assert(functionSource(client, "sentenceStatusIconHtml", "sentenceCapsuleHtml").includes("sentence-capsule-state"),
-    "compact capsule icons must use the dedicated below-number slot");
-  requireEvery(styles, [".sentence-status-icon.is-correct", "#c9403a", ".sentence-status-icon.is-pending", ".sentence-status-icon.is-incorrect", "#171c1b"],
-    "red correct and black pending/incorrect icon colors");
+  const iconSource = functionSource(client, "sentenceStatusIconHtml", "sentenceCapsuleHtml");
+  requireEvery(iconSource, ["sentence-capsule-state", "compact ? '' : '<circle"],
+    "plain compact marks and circular card icons");
+  requireEvery(styles, [".sentence-status-icon.is-correct", "var(--ai-success)", ".sentence-status-icon.is-pending", "#171c1b", ".sentence-status-icon.is-incorrect", "var(--ai-danger)"],
+    "green correct, black pending, and red incorrect icon colors");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
     "the capsule row must reserve space for its status marks");
 });
@@ -988,7 +989,7 @@ check("accepted revisions default to the corrected sentence and show the correct
     "accepted checks must not appear inline after the corrected sentence");
 });
 
-check("sentence cards expose correct, pending, and incorrect circular states", () => {
+check("sentence cards use circular states while capsules use plain marks", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const stateSource = functionSource(client, "sentenceVisualStatus", "sentenceStatusLabel");
@@ -997,6 +998,8 @@ check("sentence cards expose correct, pending, and incorrect circular states", (
     "three-state revision projection");
   requireEvery(iconSource, ["sentence-status-ring", "sentence-status-mark", "is-' + status", "<circle", "M7.1 12.3", "M9.5 9.3", "m8.6 8.6"],
     "three circular status glyphs");
+  assert(iconSource.includes("compact ? '' : '<circle"),
+    "the circle must be omitted only from the compact capsule projection");
   requireEvery(styles, [".sentence-status-icon", ".sentence-status-ring", ".sentence-status-mark", ".sentence-status-icon.is-correct", ".sentence-status-icon.is-pending", ".sentence-status-icon.is-incorrect"],
     "revision state icon styling");
   assert(!/CORRECT|REVISED|NEEDS REVISION/.test(functionSource(client, "sentenceCardHtml", "syncSentenceDraftStatus")),
@@ -2376,6 +2379,19 @@ check("the shared AI waiting assets load before the Tutor client", () => {
   assert(page.indexOf("ai-waiting-runner.js") < page.indexOf("ai-tutor.js"), "Runner must load before ai-tutor.js");
 });
 
+check("Runner jumps from the whole content surface but not controls", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const runner = read("assets/js/ai-waiting-runner.js");
+  requireEvery(functionSource(client, "mountWaitingRunner", "renderAiWaitingExperience"), ["jumpSurface: stage.parentElement || stage"],
+    "full waiting-content jump surface");
+  requireEvery(runner, ["options.jumpSurface", "isIgnoredJumpTarget", "jumpSurface.addEventListener('pointerdown'", "jumpSurface.removeEventListener('pointerdown'"],
+    "content-surface pointer lifecycle");
+  requireEvery(runner, ["a,button,input,textarea,select,summary", "event.button !== 0"],
+    "toolbar/control and non-primary-pointer exclusions");
+  assert(/ai-waiting-runner\.js\?v=20260826-2/.test(page), "Runner input change must be cache-busted");
+});
+
 check("visitor access explains how to request a temporary student account", () => {
   const page = read(pagePath);
   const client = read(clientPath);
@@ -2517,7 +2533,7 @@ check("an active wait remains Ready until the student clicks one result action",
   assert(/data-view-waiting-result[\s\S]{0,700}(waitingResultAction|action)/.test(client), "result button must atomically consume the pending action");
   requireEvery(styles, ["ai-waiting-ready-dock-bounce", "translateY(-11px)", "5.2s", ".ai-waiting-stage-label", "prefers-reduced-motion"],
     "periodic reduced-motion-safe Ready reminder");
-  requireEvery(styles, ["ai-waiting-freeze-seal", "ai-waiting-ice-crystallize", "1.4s", "clip-path: inset", ".is-ready .runner-canvas", "pointer-events: none"],
+  requireEvery(styles, ["ai-waiting-freeze-seal", "ai-waiting-ice-crystallize", "1.7s", "1.4s", "clip-path: inset", ".is-ready .runner-canvas", "pointer-events: none"],
     "Finished frost seal");
   assert(/prefers-reduced-motion[\s\S]{0,1800}runner-canvas-frame::after[\s\S]{0,300}animation:\s*none/.test(styles),
     "Finished frost must become static under reduced motion");

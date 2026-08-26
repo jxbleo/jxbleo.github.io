@@ -32,6 +32,12 @@ function makeHarness(reduceMotion = false, randomValues = []) {
     quadraticCurveTo() {}, save() {}, restore() {}, translate() {}, ellipse() {},
   };
   const canvasListeners = new Map();
+  const stageListeners = new Map();
+  const stage = {
+    addEventListener(type, handler) { stageListeners.set(type, handler); },
+    removeEventListener(type) { stageListeners.delete(type); },
+    setPointerCapture() {},
+  };
   const canvas = {
     width: 0,
     height: 0,
@@ -71,6 +77,7 @@ function makeHarness(reduceMotion = false, randomValues = []) {
   vm.runInNewContext(source, contextObject, { filename: 'ai-waiting-runner.js' });
   return {
     canvas,
+    stage,
     document,
     window,
     runnerApi: window.MrCatWaitingRunner,
@@ -81,6 +88,10 @@ function makeHarness(reduceMotion = false, randomValues = []) {
       pending.forEach((callback) => callback(timestamp));
     },
     pointerDown() { const handler = canvasListeners.get('pointerdown'); if (handler) handler({ pointerId: 1 }); },
+    stagePointerDown(target = { closest: () => null }) {
+      const handler = stageListeners.get('pointerdown');
+      if (handler) handler({ pointerId: 1, button: 0, target });
+    },
     keyDown(key) { const handler = listeners.get('window:keydown'); if (handler) handler({ key, repeat: false, preventDefault() {}, target: canvas }); },
     visibility(hidden) { document.hidden = hidden; const handler = listeners.get('document:visibilitychange'); if (handler) handler(); },
   };
@@ -117,6 +128,19 @@ check('first jump, landing jump, and one air jump are supported', () => {
   runFrames(harness, 32, 1200);
   assert(runner.snapshot().player.jumpCount >= 3, `buffered landing jump did not work: ${JSON.stringify(runner.snapshot())}`);
   runner.destroy();
+});
+
+check('the whole content surface jumps while controls keep their own action', () => {
+  const harness = makeHarness();
+  const runner = harness.runnerApi.mount(harness.canvas, { jumpSurface: harness.stage });
+  harness.stagePointerDown();
+  assert.strictEqual(runner.snapshot().player.jumpCount, 1, 'blank content did not launch a jump');
+  const beforeControl = runner.snapshot().player.jumpCount;
+  harness.stagePointerDown({ closest: (selector) => selector.includes('button') ? {} : null });
+  assert.strictEqual(runner.snapshot().player.jumpCount, beforeControl, 'a toolbar/control press also launched a jump');
+  runner.destroy();
+  harness.stagePointerDown();
+  assert.strictEqual(runner.snapshot().player.jumpCount, beforeControl, 'destroy left the content jump listener attached');
 });
 
 check('jump buffer launches on landing', () => {

@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-26 — Runner tap surface and sentence-status color correction
+
+- Expanded Runner jump input to every non-control point below the Writing toolbar,
+  while links, buttons, fields, and other controls keep their own action.
+- Slowed the Finished frost seal from roughly 1.4 to 1.7 seconds.
+- Kept circular card status icons but changed correct to green and incorrect to
+  red; capsule status marks now use plain green checks, black questions, and red
+  crosses with no surrounding circle.
+
 ## 2026-08-26 — Sentence Revision hierarchy and pending review state
 
 - Unified the `Language Review`, `Draft`, and `Sentence Revision` title
