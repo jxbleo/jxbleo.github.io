@@ -19,8 +19,10 @@
   so Draft remains the annotated source while Revised remains the corrected manuscript.
 - Removed the entire Sentence Revision card once all required corrections pass and the
   Revised manuscript is available.
-- Made every sentence in a completed Draft open a focus-trapped Apple-style AI Feedback
-  dialog with its initial analysis and saved feedback history; Revised remains read-only.
+- Made every AI-flagged sentence in a completed Draft open a focus-trapped Apple-style
+  feedback dialog with its initial analysis and saved feedback history; originally correct
+  sentences give a restrained inline shake instead. Removed the dialog heading, centered
+  the Draft/Revised segmented control, and kept Revised read-only.
 
 ## 2026-08-27 — Proofreading Draft and reconstructed Revised manuscript
 

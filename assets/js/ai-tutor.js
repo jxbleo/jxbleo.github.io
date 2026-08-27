@@ -682,8 +682,11 @@
             var needsRevision = !revised && rewriteRequired(sentence);
             var completedDraftFeedback = !revised && revisionSummary && revisionSummary.available;
             var interactive = !revisionSummary || !revisionSummary.available || completedDraftFeedback;
+            var interactionLabel = completedDraftFeedback
+                ? (needsRevision ? '查看第 ' + (index + 1) + ' 句的 AI 反馈' : '第 ' + (index + 1) + ' 句无需修改')
+                : '定位到第 ' + (index + 1) + ' 句的批改';
             html += escapeHtml(source.slice(cursor, matchAt) + leadingWhitespace);
-            html += '<span class="manuscript-sentence-highlight ' + (revised ? 'is-revised' : 'is-draft') + (needsRevision ? ' needs-revision' : '') + (index === state.activeSentence ? ' is-active' : '') + '"' + (interactive ? ' role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '"' : '') + ' style="' + sentenceColorStyle(index) + '"' + (interactive && index === state.activeSentence ? ' aria-current="true"' : '') + (interactive ? ' aria-label="' + (completedDraftFeedback ? '查看第 ' : '定位到第 ') + (index + 1) + (completedDraftFeedback ? ' 句的 AI 反馈' : ' 句的批改') + '"' : '') + '>' + escapeHtml(displaySentence) + '</span>';
+            html += '<span class="manuscript-sentence-highlight ' + (revised ? 'is-revised' : 'is-draft') + (needsRevision ? ' needs-revision' : '') + (index === state.activeSentence ? ' is-active' : '') + '"' + (interactive ? ' role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '"' : '') + ' style="' + sentenceColorStyle(index) + '"' + (interactive && index === state.activeSentence ? ' aria-current="true"' : '') + (interactive ? ' aria-label="' + interactionLabel + '"' : '') + '>' + escapeHtml(displaySentence) + '</span>';
             html += escapeHtml(trailingWhitespace);
             cursor = matchAt + original.length;
         });
@@ -3801,6 +3804,16 @@
         return copies;
     }
 
+    function cueNoFeedbackSentence(target) {
+        if (!target) return;
+        target.classList.remove('is-no-feedback-cue');
+        void target.offsetWidth;
+        target.classList.add('is-no-feedback-cue');
+        window.setTimeout(function() {
+            if (target.isConnected) target.classList.remove('is-no-feedback-cue');
+        }, 420);
+    }
+
     function openSentenceFeedback(index, trigger) {
         var sentences = safeArray(state.review && state.review.sentences);
         var revisionSummary = manuscriptRevisionSummary(sentences);
@@ -3810,10 +3823,8 @@
         state.sentenceFeedbackOpen = true;
         state.sentenceFeedbackIndex = index;
         state.sentenceFeedbackReturnFocus = trigger || document.activeElement;
-        var kicker = sentenceFeedbackDialog.querySelector('#sentence-feedback-kicker');
         var original = sentenceFeedbackDialog.querySelector('#sentence-feedback-original');
         var copy = sentenceFeedbackDialog.querySelector('#sentence-feedback-copy');
-        if (kicker) kicker.textContent = 'Sentence ' + (index + 1);
         if (original) original.textContent = firstText(sentence.original, sentence.text);
         if (copy) copy.innerHTML = sentenceFeedbackCopies(sentence, index).map(function(item) {
             return '<p class="sentence-feedback-item">' + escapeHtml(item) + '</p>';
@@ -4197,7 +4208,10 @@
         else if (button.matches('[data-manuscript-sentence]') &&
             manuscriptRevisionSummary(safeArray(state.review && state.review.sentences)).available &&
             state.manuscriptView === 'draft') {
-            openSentenceFeedback(Number(button.getAttribute('data-manuscript-sentence')), button);
+            var manuscriptSentenceIndex = Number(button.getAttribute('data-manuscript-sentence'));
+            var manuscriptSentence = safeArray(state.review && state.review.sentences)[manuscriptSentenceIndex];
+            if (rewriteRequired(manuscriptSentence)) openSentenceFeedback(manuscriptSentenceIndex, button);
+            else cueNoFeedbackSentence(button);
         }
         else if (button.matches('[data-sentence-index]')) {
             state.activeSentence = Number(button.getAttribute('data-sentence-index')) || 0;
