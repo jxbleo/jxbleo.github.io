@@ -3,14 +3,32 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-27 — Editorial Dashboard learning entrances
+
+- Replaced the three pale Dashboard workspace cards with a shared dark
+  editorial surface and blue, teal, and orange full-width course bands.
+- Turned `写`, `听`, and `说` into large translucent trailing watermarks and
+  replaced the arrow affordance with a restrained edge light bar.
+- Added immediate press feedback, keyboard focus treatment, responsive phone
+  sizing, and reduced-motion/high-contrast fallbacks without changing any
+  Writing, Intensive Listening, or Speaking destination.
+
+## 2026-08-27 — Permanent Draft annotations and completed feedback dialog
+
+- Kept every original AI-flagged Draft sentence underlined after revision acceptance,
+  so Draft remains the annotated source while Revised remains the corrected manuscript.
+- Removed the entire Sentence Revision card once all required corrections pass and the
+  Revised manuscript is available.
+- Made every sentence in a completed Draft open a focus-trapped Apple-style AI Feedback
+  dialog with its initial analysis and saved feedback history; Revised remains read-only.
+
 ## 2026-08-27 — Proofreading Draft and reconstructed Revised manuscript
 
 - Restyled the original Draft as neutral paper and marked only revision-required
   source sentences with a restrained red proofreading wave. The approved surface
   now uses warm ivory paper, subtle fibre detail, and a warm natural shadow.
-- Made proofreading waves progress-aware: blank, unsubmitted, and rejected
-  corrections stay marked, while each accepted student correction clears its
-  source-sentence wave immediately.
+- Kept proofreading waves tied to the original AI review rather than revision progress,
+  so acceptance does not rewrite the visual history of the Draft.
 - Added a conditional `Draft / Revised` segmented control after all required
   sentence revisions pass. Completed records default to the reconstructed Revised
   manuscript while preserving original paragraph structure and the eight-color
