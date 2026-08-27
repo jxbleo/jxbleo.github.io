@@ -19,6 +19,9 @@ Dashboard learning-workspace checks:
 
 - desktop and 320/375/390/430px phone widths show exactly three stacked bands
   in Writing, Intensive Listening, Speaking order with no horizontal overflow;
+- the pale hero contains the greeting, motivational sentence, and all three
+  bands; no `THIS WEEK` progress row, progress track, or separate dark workspace
+  container remains in the rendered Dashboard;
 - each complete band remains one keyboard- and pointer-accessible link to its
   existing destination, with no nested button or decorative arrow;
 - `写`, `听`, and `说` remain decorative watermarks, the right edge uses only

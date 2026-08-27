@@ -11,9 +11,9 @@
     <meta name="theme-color" content="#f4f8f5">
     <title>Dashboard | Mr. Cat Academy</title>
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260827-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260827-2">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260726-5">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260827-1">
     <link rel="prefetch" href="my-words.html" as="document">
     <link rel="prefetch" href="assets/css/my-words.css?v=20260808-1" as="style">
     <link rel="prefetch" href="assets/js/my-words.js?v=20260808-1" as="script">
@@ -102,39 +102,29 @@
                     <span class="sr-only" id="student-greeting-accessible" role="status" aria-live="polite" aria-atomic="true">Hello. Your next step starts here.</span>
                 </div>
             </section>
-            <div class="weekly-focus-progress is-loading" id="weekly-focus-progress" aria-label="Weekly assignment progress" aria-busy="true">
-                <div class="weekly-progress-row weekly-progress-skeleton" aria-hidden="true">
-                    <div class="weekly-progress-heading">
-                        <span class="weekly-progress-label">THIS WEEK</span>
-                        <span class="weekly-progress-track"><i></i></span>
-                    </div>
-                </div>
-                <span class="sr-only" role="status">Loading weekly assignment progress.</span>
-            </div>
+            <section class="student-skill-entries" aria-label="Learning workspaces">
+                <a class="student-skill-card writing" href="ai-tutor.html?v=20260827-5">
+                    <span class="student-skill-copy"><strong>WRITING</strong><span>Upload a composition, strengthen your ideas, and improve your language.</span></span>
+                    <span class="student-skill-glyph" aria-hidden="true">写</span>
+                    <span class="student-skill-edge" aria-hidden="true"></span>
+                </a>
+                <a class="student-skill-card intensive-listening" href="intensive-listening-library.html">
+                    <span class="student-skill-copy"><strong>INTENSIVE LISTENING</strong><span>Catch every word, complete the transcript, and sharpen your listening.</span></span>
+                    <span class="student-skill-glyph" aria-hidden="true">听</span>
+                    <span class="student-skill-edge" aria-hidden="true"></span>
+                </a>
+                <a class="student-skill-card speaking" href="speaking-lab.html?v=20260827-1">
+                    <span class="student-skill-copy"><strong>SPEAKING</strong><span>Record a discussion, review your performance, and speak with confidence.</span></span>
+                    <span class="student-skill-glyph" aria-hidden="true">说</span>
+                    <span class="student-skill-edge" aria-hidden="true"></span>
+                </a>
+            </section>
         </section>
 
         <section class="dashboard-view" id="view-assignments" hidden>
             <div id="assignment-content">
                 <div class="empty-card loading-card">Loading assignments...</div>
             </div>
-        </section>
-
-        <section class="student-skill-entries" aria-label="Learning workspaces">
-            <a class="student-skill-card writing" href="ai-tutor.html?v=20260827-5">
-                <span class="student-skill-copy"><strong>WRITING</strong><span>Upload a composition, strengthen your ideas, and improve your language.</span></span>
-                <span class="student-skill-glyph" aria-hidden="true">写</span>
-                <span class="student-skill-edge" aria-hidden="true"></span>
-            </a>
-            <a class="student-skill-card intensive-listening" href="intensive-listening-library.html">
-                <span class="student-skill-copy"><strong>INTENSIVE LISTENING</strong><span>Catch every word, complete the transcript, and sharpen your listening.</span></span>
-                <span class="student-skill-glyph" aria-hidden="true">听</span>
-                <span class="student-skill-edge" aria-hidden="true"></span>
-            </a>
-            <a class="student-skill-card speaking" href="speaking-lab.html?v=20260827-1">
-                <span class="student-skill-copy"><strong>SPEAKING</strong><span>Record a discussion, review your performance, and speak with confidence.</span></span>
-                <span class="student-skill-glyph" aria-hidden="true">说</span>
-                <span class="student-skill-edge" aria-hidden="true"></span>
-            </a>
         </section>
 
         <section class="dashboard-view student-library-workspace" id="view-resources">

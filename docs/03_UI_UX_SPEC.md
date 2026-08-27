@@ -193,12 +193,14 @@ Navigation:
   does not jump. Reduced-motion mode uses a 140ms opacity-only exit
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
-- the Dashboard places exactly three full-width learning-workspace bands above
-  Library in this order: `WRITING`, `INTENSIVE LISTENING`, and `SPEAKING`.
-  They share one dark editorial container while using blue, teal, and orange
-  category gradients. Each band keeps its English title and one-line purpose,
-  renders `写`, `听`, or `说` as a large translucent trailing watermark, and
-  ends with a narrow light bar rather than a chevron or arrow. Hover/focus grows
+- the Dashboard hero contains only the personalized greeting, one motivational
+  sentence, and exactly three full-width learning-workspace bands in this order:
+  `WRITING`, `INTENSIVE LISTENING`, and `SPEAKING`. The former `THIS WEEK`
+  progress surface is not rendered in the hero. The three bands sit together in
+  a shallow white inner surface inside the existing pale hero card; there is no
+  black or dark group background. They retain their blue, teal, and orange
+  category gradients, English title and purpose, large translucent trailing
+  `写`, `听`, or `说` watermark, and narrow edge light bar. Hover/focus grows
   the light bar and shifts the watermark slightly; pointer-down immediately
   compresses the whole band. Reduced-motion mode removes positional motion
 - assignments and finished work open from a standalone far-left `To Do List`
