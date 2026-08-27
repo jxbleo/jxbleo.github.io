@@ -194,15 +194,22 @@ Navigation:
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
 - the Dashboard hero contains only the personalized greeting, one motivational
-  sentence, and exactly three full-width learning-workspace bands in this order:
-  `WRITING`, `INTENSIVE LISTENING`, and `SPEAKING`. The former `THIS WEEK`
-  progress surface is not rendered in the hero. The three bands sit together in
-  a shallow white inner surface inside the existing pale hero card; there is no
-  black or dark group background. They retain their blue, teal, and orange
-  category gradients, English title and purpose, large translucent trailing
-  `写`, `听`, or `说` watermark, and narrow edge light bar. Hover/focus grows
-  the light bar and shifts the watermark slightly; pointer-down immediately
-  compresses the whole band. Reduced-motion mode removes positional motion
+  sentence, and exactly three full-width learning-workspace bands in Writing,
+  Intensive Listening, and Speaking order. The former `THIS WEEK` progress
+  surface is not rendered. Keep about 40px of visible air between the top tool
+  bar and the hero. The bands share a shallow white inner surface and use muted
+  blue-grey, sage, and warm-sand gradients that remain subordinate to the hero.
+  Do not render visible category titles, character watermarks, arrows, or edge
+  bars. Tablet and desktop show each complete purpose sentence; phone layouts
+  keep exactly one line and slowly scroll only when the sentence overflows. The
+  right-side identifiers are the approved inline SVGs: Human pen for Writing,
+  Tools headphones for Intensive Listening, and Tools microphone for Speaking.
+  Pointer-down immediately compresses the whole band. Reduced Motion removes
+  positional motion and leaves overflowing phone copy static. An ordinary click
+  or tap opens a lightweight, focus-trapped confirmation dialog that repeats the
+  chosen icon and names the destination; Cancel, backdrop, and Escape close it
+  and restore card focus, while Enter follows the existing link. Modified clicks
+  keep native browser new-tab behavior
 - assignments and finished work open from a standalone far-left `To Do List`
   checklist button, separated from the right-side utility controls
 - a calendar icon in the right-side utility group opens the signed-in

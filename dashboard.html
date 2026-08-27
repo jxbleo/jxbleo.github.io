@@ -11,9 +11,9 @@
     <meta name="theme-color" content="#f4f8f5">
     <title>Dashboard | Mr. Cat Academy</title>
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260827-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260828-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260827-1">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260828-1">
     <link rel="prefetch" href="my-words.html" as="document">
     <link rel="prefetch" href="assets/css/my-words.css?v=20260808-1" as="style">
     <link rel="prefetch" href="assets/js/my-words.js?v=20260808-1" as="script">
@@ -103,22 +103,39 @@
                 </div>
             </section>
             <section class="student-skill-entries" aria-label="Learning workspaces">
-                <a class="student-skill-card writing" href="ai-tutor.html?v=20260828-2">
-                    <span class="student-skill-copy"><strong>WRITING</strong><span>Upload a composition, strengthen your ideas, and improve your language.</span></span>
-                    <span class="student-skill-glyph" aria-hidden="true">写</span>
-                    <span class="student-skill-edge" aria-hidden="true"></span>
+                <a class="student-skill-card writing" href="ai-tutor.html?v=20260828-2" aria-label="Writing. Upload a composition, strengthen your ideas, and improve your language." data-workspace-name="Writing" data-workspace-confirm-copy="Upload a composition and continue your writing practice.">
+                    <span class="student-skill-copy"><span class="student-skill-sentence">Upload a composition, strengthen your ideas, and improve your language.</span></span>
+                    <span class="student-skill-icon" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false"><path d="M6 25.5l1.5-5.2L20.8 7a2.2 2.2 0 0 1 3.1 0l1.1 1.1a2.2 2.2 0 0 1 0 3.1L11.7 24.5 6 25.5Z"></path><path d="m18.8 9 4.2 4.2M6 28h20"></path></svg>
+                    </span>
                 </a>
-                <a class="student-skill-card intensive-listening" href="intensive-listening-library.html">
-                    <span class="student-skill-copy"><strong>INTENSIVE LISTENING</strong><span>Catch every word, complete the transcript, and sharpen your listening.</span></span>
-                    <span class="student-skill-glyph" aria-hidden="true">听</span>
-                    <span class="student-skill-edge" aria-hidden="true"></span>
+                <a class="student-skill-card intensive-listening" href="intensive-listening-library.html" aria-label="Intensive Listening. Catch every word, complete the transcript, and sharpen your listening." data-workspace-name="Intensive Listening" data-workspace-confirm-copy="Choose a listening material and begin focused practice.">
+                    <span class="student-skill-copy"><span class="student-skill-sentence">Catch every word, complete the transcript, and sharpen your listening.</span></span>
+                    <span class="student-skill-icon" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false"><path d="M6 18v-2a10 10 0 0 1 20 0v2M6 18h4v8H8a2 2 0 0 1-2-2v-6Zm20 0h-4v8h2a2 2 0 0 0 2-2v-6Z"></path></svg>
+                    </span>
                 </a>
-                <a class="student-skill-card speaking" href="speaking-lab.html?v=20260827-1">
-                    <span class="student-skill-copy"><strong>SPEAKING</strong><span>Record a discussion, review your performance, and speak with confidence.</span></span>
-                    <span class="student-skill-glyph" aria-hidden="true">说</span>
-                    <span class="student-skill-edge" aria-hidden="true"></span>
+                <a class="student-skill-card speaking" href="speaking-lab.html?v=20260827-1" aria-label="Speaking. Record a discussion, review your performance, and speak with confidence." data-workspace-name="Speaking" data-workspace-confirm-copy="Open the speaking workspace and prepare to record.">
+                    <span class="student-skill-copy"><span class="student-skill-sentence">Record a discussion, review your performance, and speak with confidence.</span></span>
+                    <span class="student-skill-icon" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false"><rect x="11" y="4" width="10" height="17" rx="5"></rect><path d="M7 16a9 9 0 0 0 18 0M16 25v4M11 29h10"></path></svg>
+                    </span>
                 </a>
             </section>
+        </section>
+
+        <section class="student-workspace-confirm-overlay" id="student-workspace-confirm-overlay" aria-hidden="true" hidden>
+            <div class="student-workspace-confirm-stack">
+                <section class="student-workspace-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="student-workspace-confirm-title" aria-describedby="student-workspace-confirm-copy">
+                    <span class="student-workspace-confirm-icon" id="student-workspace-confirm-icon" aria-hidden="true"></span>
+                    <h2 id="student-workspace-confirm-title">Open workspace?</h2>
+                    <p id="student-workspace-confirm-copy">Continue to this learning workspace.</p>
+                    <div class="student-workspace-confirm-actions">
+                        <button class="student-workspace-confirm-cancel" id="student-workspace-confirm-cancel" type="button">Cancel</button>
+                        <button class="student-workspace-confirm-submit" id="student-workspace-confirm-submit" type="button">Enter</button>
+                    </div>
+                </section>
+            </div>
         </section>
 
         <section class="dashboard-view" id="view-assignments" hidden>
@@ -219,7 +236,7 @@
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-    <script src="assets/js/dashboard.js?v=20260826-1"></script>
+    <script src="assets/js/dashboard.js?v=20260828-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260810-2"></script>
 </body>
 </html>

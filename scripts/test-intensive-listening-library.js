@@ -15,15 +15,20 @@ const teacherJs = fs.readFileSync(path.join(root, "assets/js/teacher.js"), "utf8
 const ielts = fs.readFileSync(path.join(root, "ielts-listening.html"), "utf8");
 
 function testDashboardCapsules() {
-  assert.match(dashboard, /student-skill-card writing[\s\S]*WRITING/);
-  assert.match(dashboard, /student-skill-card intensive-listening[\s\S]*INTENSIVE LISTENING/);
-  assert.match(dashboard, /student-skill-card speaking[\s\S]*SPEAKING/);
+  assert.match(dashboard, /student-skill-card writing[^>]*aria-label="Writing\./);
+  assert.match(dashboard, /student-skill-card intensive-listening[^>]*aria-label="Intensive Listening\./);
+  assert.match(dashboard, /student-skill-card speaking[^>]*aria-label="Speaking\./);
   assert.ok(dashboard.indexOf("student-skill-card writing") < dashboard.indexOf("student-skill-card intensive-listening"));
   assert.ok(dashboard.indexOf("student-skill-card intensive-listening") < dashboard.indexOf("student-skill-card speaking"));
   assert.ok(!dashboard.includes("DSE Speaking Lab"));
   assert.ok(!dashboard.includes(">◎<"));
-  const capsuleMarkup = dashboard.slice(dashboard.indexOf('<section class="student-skill-entries"'), dashboard.indexOf('<section class="dashboard-view student-library-workspace"'));
-  assert.ok(!capsuleMarkup.includes("<svg"));
+  const capsuleMarkup = dashboard.slice(dashboard.indexOf('<section class="student-skill-entries"'), dashboard.indexOf('<section class="student-workspace-confirm-overlay"'));
+  assert.ok(!/<strong>\s*(?:WRITING|INTENSIVE LISTENING|SPEAKING)\s*<\/strong>/.test(capsuleMarkup));
+  assert.strictEqual((capsuleMarkup.match(/class="student-skill-icon"/g) || []).length, 3);
+  assert.strictEqual((capsuleMarkup.match(/<svg/g) || []).length, 3);
+  assert.match(dashboard, /id="student-workspace-confirm-overlay"/);
+  assert.match(dashboardJs, /openWorkspaceConfirm\(workspaceCard\)/);
+  assert.match(dashboardJs, /window\.location\.assign\(workspaceConfirmHref\)/);
   assert.match(libraryHtml, /Continue Listening/);
   assert.match(libraryHtml, /All Materials/);
   assert.match(libraryHtml, /ill-search/);

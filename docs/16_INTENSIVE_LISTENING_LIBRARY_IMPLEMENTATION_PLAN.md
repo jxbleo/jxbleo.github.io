@@ -131,20 +131,19 @@ Do not reopen these decisions during implementation.
    three-column grid.
 2. Mobile also stacks the same three capsules.
 3. Order is Writing, Intensive Listening, Speaking.
-4. No pictographic pen, headphone, or speaking icons appear.
-5. The first visual element is an unboxed Chinese character aligned to the
-   capsule's left padding and top-aligned with the English title:
-   - `写` for Writing;
-   - `听` for Intensive Listening;
-   - `说` for Speaking.
-6. The character is not centered in an icon tile and has no rounded icon
-   background.
-7. Titles and copy are exactly:
-   - `WRITING` — `Upload a composition, strengthen your ideas, and improve your language.`
-   - `INTENSIVE LISTENING` — `Catch every word, complete the transcript, and sharpen your listening.`
-   - `SPEAKING` — `Record a discussion, review your performance, and speak with confidence.`
+4. Visible category titles and the former `写` / `听` / `说` character marks are
+   omitted. Accessible labels still name each destination.
+5. The trailing identifiers are approved inline SVGs: Human pen for Writing,
+   Tools headphones for Intensive Listening, and Tools microphone for Speaking.
+6. Visible copy is exactly:
+   - `Upload a composition, strengthen your ideas, and improve your language.`
+   - `Catch every word, complete the transcript, and sharpen your listening.`
+   - `Record a discussion, review your performance, and speak with confidence.`
+7. Tablet and desktop show complete copy. Phones keep one line and slowly reveal
+   actual overflow; Reduced Motion leaves the line static.
 8. All three capsules keep equal structure, height, spacing, focus behavior,
-   reduced-motion behavior, and right arrow.
+   confirmation behavior, and reduced-motion behavior. An ordinary click or tap
+   asks for confirmation; a modified desktop click remains a native link action.
 
 ### 2.2 Library and content relationships
 
@@ -628,19 +627,18 @@ Recommended markup:
 
 ```html
 <section class="student-skill-entries" aria-label="Learning workspaces">
-  <a class="student-skill-card writing" ...>
-    <span class="student-skill-glyph" aria-hidden="true">写</span>
-    <span class="student-skill-copy"><strong>WRITING</strong><span>...</span></span>
-    <span class="student-skill-arrow" aria-hidden="true">→</span>
+  <a class="student-skill-card writing" aria-label="Writing. ..." ...>
+    <span class="student-skill-copy"><span class="student-skill-sentence">...</span></span>
+    <span class="student-skill-icon" aria-hidden="true"><svg>...</svg></span>
   </a>
-  ... 听 ...
-  ... 说 ...
+  ... headphones ...
+  ... microphone ...
 </section>
 ```
 
-The glyph is an unboxed left column. Align it with the English title, not the
-vertical center of an icon tile. Keep each capsule full width. Do not use a
-desktop grid.
+Keep each capsule full width and the icon in the trailing column. Do not use a
+desktop grid. Do not restore a visible category title, character watermark,
+arrow, or edge bar.
 
 Patch `assets/css/app.css` around the existing `.student-ai-tutor-*` rules. It
 is acceptable to retain compatibility selectors, but the final DOM must not

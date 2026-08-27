@@ -2063,133 +2063,144 @@ html.teacher-modal-scroll-locked {
     position: relative;
     z-index: 1;
     display: grid;
-    gap: 12px;
-    margin: clamp(26px, 4vw, 38px) 0 0;
-    padding: 14px;
+    gap: 10px;
+    margin: clamp(26px, 4vw, 34px) 0 0;
+    padding: 12px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.58);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.96), 0 14px 34px rgba(45, 78, 70, 0.09);
-    backdrop-filter: blur(18px) saturate(130%);
-    -webkit-backdrop-filter: blur(18px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.42);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 12px 28px rgba(44, 72, 66, 0.07);
+    backdrop-filter: blur(18px) saturate(115%);
+    -webkit-backdrop-filter: blur(18px) saturate(115%);
 }
 .student-skill-card {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 54px;
     align-items: center;
-    min-height: 112px;
-    padding: 20px 26px;
+    gap: 18px;
+    min-height: 94px;
+    padding: 18px 22px 18px 24px;
     overflow: hidden;
-    color: #ffffff;
+    color: #263534;
     text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 19px;
-    box-shadow: 0 10px 25px rgba(31, 62, 72, 0.16), inset 0 1px rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.74);
+    border-radius: 18px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76), 0 6px 16px rgba(45, 69, 65, 0.06);
     isolation: isolate;
     transform-origin: center;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 300ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 180ms cubic-bezier(0.2, 0.75, 0.25, 1), box-shadow 180ms ease, filter 180ms ease;
 }
 .student-skill-card::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -2;
-    background: linear-gradient(105deg, rgba(0, 0, 0, 0.12), transparent 55%, rgba(255, 255, 255, 0.1));
+    background: linear-gradient(105deg, rgba(255, 255, 255, 0.16), transparent 58%, rgba(255, 255, 255, 0.08));
 }
 .student-skill-card.writing {
-    background: linear-gradient(105deg, #164b9a, #2d7ae5 66%, #5d98ee);
+    background: linear-gradient(135deg, rgba(232, 240, 243, 0.96), rgba(210, 225, 230, 0.92));
 }
 .student-skill-card.intensive-listening {
-    background: linear-gradient(105deg, #086a76, #1397a6 66%, #50bbc2);
+    background: linear-gradient(135deg, rgba(230, 242, 236, 0.97), rgba(204, 226, 217, 0.93));
 }
 .student-skill-card.speaking {
-    background: linear-gradient(105deg, #9e4615, #df6b23 66%, #f29a5d);
+    background: linear-gradient(135deg, rgba(247, 240, 230, 0.97), rgba(234, 218, 199, 0.92));
 }
 .student-skill-card:hover {
-    transform: translateY(-2px);
-    filter: saturate(1.06) brightness(1.025);
-    box-shadow: 0 16px 34px rgba(31, 62, 72, 0.22), inset 0 1px rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+    filter: saturate(1.04);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 10px 22px rgba(45, 69, 65, 0.09);
 }
 .student-skill-card:active {
-    transform: scale(0.986);
-    transition-duration: 80ms;
+    transform: scale(0.987);
+    transition-duration: 90ms;
 }
 .student-skill-card:focus-visible {
-    outline: 3px solid rgba(114, 174, 255, 0.58);
+    outline: 3px solid rgba(49, 93, 83, 0.3);
     outline-offset: 3px;
 }
-.student-skill-glyph {
-    position: absolute;
-    top: 50%;
-    right: 52px;
-    z-index: -1;
-    color: rgba(255, 255, 255, 0.16);
-    font-size: clamp(5.4rem, 11vw, 7.25rem);
-    font-weight: 760;
-    line-height: 1;
-    letter-spacing: -0.08em;
-    transform: translateY(-52%);
-    transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
-    user-select: none;
-}
-.student-skill-card:hover .student-skill-glyph { transform: translate(-7px, -52%) scale(1.025); }
 .student-skill-copy {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: 6px;
-    width: min(72%, 650px);
-}
-.student-skill-copy strong {
-    font-size: clamp(1.12rem, 2vw, 1.38rem);
-    letter-spacing: -0.015em;
-}
-.student-skill-copy span {
-    color: rgba(255, 255, 255, 0.75);
+    min-width: 0;
+    color: rgba(38, 53, 52, 0.74);
     line-height: 1.5;
 }
-.student-skill-edge {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    z-index: 2;
-    width: 5px;
-    height: 44px;
-    border-radius: 999px 0 0 999px;
-    background: rgba(255, 255, 255, 0.82);
-    box-shadow: -4px 0 18px rgba(255, 255, 255, 0.22);
-    transform: translateY(-50%);
-    transition: width 260ms cubic-bezier(0.2, 0.8, 0.2, 1), height 260ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+.student-skill-sentence {
+    display: inline;
 }
-.student-skill-card:hover .student-skill-edge,
-.student-skill-card:focus-visible .student-skill-edge {
-    width: 9px;
-    height: 58px;
+.student-skill-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 17px;
+    color: rgba(49, 86, 78, 0.7);
+    background: rgba(255, 255, 255, 0.36);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.66);
+    transition: transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1), color 220ms ease, background 220ms ease;
+}
+.student-skill-icon svg,
+.student-workspace-confirm-icon svg {
+    width: 32px;
+    height: 32px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.student-skill-card:hover .student-skill-icon,
+.student-skill-card:focus-visible .student-skill-icon {
+    color: rgba(39, 75, 67, 0.9);
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateX(-2px) scale(1.025);
+}
+@keyframes studentSkillSentenceReveal {
+    0%, 10% { transform: translate3d(0, 0, 0); }
+    90%, 100% { transform: translate3d(var(--student-skill-shift, 0), 0, 0); }
 }
 @media (max-width: 640px) {
-    .student-skill-entries { gap: 10px; margin-top: 22px; padding: 10px; border-radius: 21px; }
-    .student-skill-card { min-height: 116px; padding: 18px; border-radius: 17px; }
-    .student-skill-copy { width: 78%; gap: 5px; }
-    .student-skill-copy strong { font-size: 1.02rem; }
-    .student-skill-copy span { font-size: 0.86rem; line-height: 1.42; }
-    .student-skill-glyph { right: 30px; font-size: 5.5rem; }
-    .student-skill-edge { height: 38px; }
+    .student-skill-entries { margin-top: 28px; padding: 9px; border-radius: 20px; }
+    .student-skill-card {
+        grid-template-columns: minmax(0, 1fr) 46px;
+        gap: 12px;
+        min-height: 76px;
+        padding: 12px 14px 12px 18px;
+        border-radius: 16px;
+    }
+    .student-skill-copy {
+        overflow: hidden;
+        white-space: nowrap;
+        -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
+        mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
+    }
+    .student-skill-sentence {
+        display: inline-block;
+        min-width: max-content;
+        font-size: 0.88rem;
+        will-change: transform;
+    }
+    .student-skill-sentence.is-scrolling {
+        animation: studentSkillSentenceReveal var(--student-skill-duration, 8s) ease-in-out infinite alternate;
+    }
+    .student-skill-icon { width: 44px; height: 44px; border-radius: 14px; }
+    .student-skill-icon svg { width: 27px; height: 27px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .student-skill-card,
-    .student-skill-glyph,
-    .student-skill-edge { transition-duration: 1ms; }
+    .student-skill-icon { transition-duration: 1ms; }
     .student-skill-card:hover,
     .student-skill-card:active { transform: none; }
+    .student-skill-sentence.is-scrolling { animation: none; }
 }
 @media (prefers-contrast: more) {
     .student-skill-entries,
     .student-skill-card { border-color: rgba(27, 37, 43, 0.48); }
     .student-skill-entries { background: rgba(255, 255, 255, 0.96); }
-    .student-skill-copy span { color: rgba(255, 255, 255, 0.94); }
+    .student-skill-copy { color: #1d2b28; }
+    .student-skill-icon { color: #1f4c42; border: 1px solid rgba(31, 76, 66, 0.38); }
 }
 @media (prefers-reduced-transparency: reduce) {
     .student-skill-entries {
@@ -2197,6 +2208,86 @@ html.teacher-modal-scroll-locked {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
     }
+}
+
+.student-workspace-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1800;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(30, 42, 41, 0.22);
+    opacity: 0;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: opacity 220ms ease;
+}
+.student-workspace-confirm-overlay[hidden] { display: none; }
+.student-workspace-confirm-overlay.is-visible { opacity: 1; }
+.student-workspace-confirm-stack { width: min(100%, 420px); }
+.student-workspace-confirm-dialog {
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 26px;
+    background: rgba(251, 253, 250, 0.97);
+    box-shadow: 0 28px 70px rgba(35, 55, 52, 0.24), inset 0 1px 0 #ffffff;
+    transform: scale(0.94) translateY(12px);
+    opacity: 0;
+    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 190ms ease;
+}
+.student-workspace-confirm-overlay.is-visible .student-workspace-confirm-dialog {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+.student-workspace-confirm-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+    color: #36534d;
+    background: #e3efea;
+}
+.student-workspace-confirm-dialog h2 {
+    margin: 0;
+    color: #202d2b;
+    font-size: 1.4rem;
+    letter-spacing: -0.025em;
+}
+.student-workspace-confirm-dialog p { margin: 12px 0 24px; color: rgba(32, 45, 43, 0.62); }
+.student-workspace-confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.student-workspace-confirm-actions button {
+    min-height: 46px;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 14px;
+    font: inherit;
+    font-weight: 760;
+    cursor: pointer;
+    transition: transform 100ms ease, filter 160ms ease;
+}
+.student-workspace-confirm-actions button:hover { filter: brightness(0.985); }
+.student-workspace-confirm-actions button:active { transform: scale(0.97); }
+.student-workspace-confirm-actions button:focus-visible { outline: 3px solid rgba(49, 93, 83, 0.28); outline-offset: 2px; }
+.student-workspace-confirm-cancel { color: #33413f; background: #edf1ef; }
+.student-workspace-confirm-submit { color: #f8fbf9; background: #315d53; }
+@media (max-width: 520px) {
+    .student-workspace-confirm-actions { grid-template-columns: 1fr; }
+    .student-workspace-confirm-cancel { order: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .student-workspace-confirm-overlay,
+    .student-workspace-confirm-dialog { transition-duration: 1ms; transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+    .student-workspace-confirm-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .student-workspace-confirm-dialog { background: #fbfdfa; }
 }
 .student-progress-hero::before {
     background:
