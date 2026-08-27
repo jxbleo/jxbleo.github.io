@@ -29,6 +29,7 @@ function wavBase64(seconds = 10, sampleRate = 16000, channels = 1) {
 }
 
 async function run() {
+  assert.equal(voiceprints.safeProviderCode("AuthFailure.UnauthorizedOperation"), "SPEAKING_VOICEPRINT_NOT_CONFIGURED");
   const valid = voiceprints.validateWavBase64(wavBase64());
   assert.equal(valid.sampleRate, 16000);
   assert.equal(valid.channels, 1);
