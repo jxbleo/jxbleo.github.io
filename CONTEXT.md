@@ -386,9 +386,21 @@ for transcription, speaker separation, and DSE analysis.
 _Avoid_: Voice Reference, confirmation clip, transcript
 
 **Voice Reference**:
-A short, separate recording made for one participant in one Discussion and
-used only to compare that participant with Formal Discussion speech.
-_Avoid_: Permanent voiceprint, formal answer, account identity
+A short, temporary fallback recording made for one participant in one
+Discussion and used only to compare that participant with Formal Discussion speech.
+_Avoid_: Reusable Voiceprint, formal answer, account identity
+
+**Reusable Voiceprint**:
+A Tencent-held voice template created from one explicit enrolment recording and
+reused to propose Speaker matches. A VIP Reusable Voiceprint belongs to the
+student account; a Guest Reusable Voiceprint belongs only to that Discussion's
+Guest Participant.
+_Avoid_: Voice Reference, legal identity, raw voice recording
+
+**Voiceprint Enrolment**:
+The consented act of creating or replacing one Reusable Voiceprint from a short
+fixed-passage recording made by the student or in the teacher's presence.
+_Avoid_: Voice Confirmation, Voice Match, Discussion recording
 
 **Speaker Track**:
 One stable diarized voice cluster from a Formal Discussion Recording. It keeps
@@ -404,7 +416,7 @@ _Avoid_: Failed Candidate, Guest Participant, low-scoring speaker
 
 **Voice Match**:
 The current one-to-one association between a participant and a Speaker Track,
-proposed from the Discussion's Voice References and replaceable by a teacher.
+proposed from a Reusable Voiceprint or Voice Reference and replaceable by a teacher.
 _Avoid_: Account verification, legal identity, permanent voice recognition
 
 **Voice Confirmation**:

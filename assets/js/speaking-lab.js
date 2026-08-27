@@ -38,6 +38,10 @@
     var voiceStartedAt = 0;
     var voiceButton = null;
     var voiceDiscard = false;
+    var voiceprintDialog = document.getElementById('voiceprint-dialog');
+    var voiceprintTarget = null;
+    var voiceprintController = null;
+    var voiceprintSaving = false;
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -67,6 +71,118 @@
         if (!value) return 'Date not set';
         var date = new Date(value + (String(value).length === 10 ? 'T00:00:00+08:00' : ''));
         return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function voiceprintTime(seconds) {
+        var value = Math.max(0, Math.min(20, Math.floor(Number(seconds || 0))));
+        return '00:' + String(value).padStart(2, '0') + ' / 00:20';
+    }
+    function renderMyVoiceprint(result) {
+        voiceprintTarget = result && result.target || null;
+        var active = Boolean(voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active');
+        var summary = document.getElementById('my-voiceprint-summary');
+        var button = document.getElementById('open-my-voiceprint');
+        if (!result || result.provider_configured === false) {
+            summary.textContent = active ? 'Your saved voiceprint is ready. Updating is temporarily unavailable.' : 'Voiceprint registration will be available after Tencent setup is completed.';
+            button.disabled = true;
+        } else {
+            summary.textContent = active ? 'Ready for automatic Speaker matching in future Discussions.' : 'Record once, then reuse it in future Discussions.';
+            button.disabled = false;
+        }
+        button.textContent = active ? 'Update voiceprint' : 'Set up voiceprint';
+    }
+    function loadMyVoiceprint() {
+        return call('getMyVoiceprint').then(function (result) { renderMyVoiceprint(result); return result; }).catch(function (error) {
+            document.getElementById('my-voiceprint-summary').textContent = friendlyError(error);
+            document.getElementById('open-my-voiceprint').disabled = true;
+        });
+    }
+    function resetVoiceprintDialog() {
+        if (voiceprintController) voiceprintController.cancel();
+        voiceprintController = null;
+        document.getElementById('voiceprint-record').disabled = false;
+        document.getElementById('voiceprint-stop').disabled = true;
+        document.getElementById('voiceprint-delete').disabled = false;
+        document.getElementById('voiceprint-time').textContent = voiceprintTime(0);
+        document.getElementById('voiceprint-message').textContent = 'Record in a quiet place and read the full passage naturally.';
+    }
+    function openVoiceprintDialog() {
+        resetVoiceprintDialog();
+        var active = Boolean(voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active');
+        document.getElementById('voiceprint-dialog-title').textContent = active ? 'Update my voiceprint' : 'Set up my voiceprint';
+        document.getElementById('voiceprint-record').textContent = active ? 'Record replacement' : 'Start recording';
+        document.getElementById('voiceprint-delete').hidden = !active;
+        document.getElementById('voiceprint-consent').checked = false;
+        if (voiceprintTarget && voiceprintTarget.passage) document.getElementById('voiceprint-passage').textContent = voiceprintTarget.passage;
+        if (typeof voiceprintDialog.showModal === 'function') voiceprintDialog.showModal(); else voiceprintDialog.setAttribute('open', '');
+    }
+    function saveVoiceprintRecording(result) {
+        if (!result || !result.base64 || voiceprintSaving) return;
+        voiceprintSaving = true;
+        document.getElementById('voiceprint-record').disabled = true;
+        document.getElementById('voiceprint-stop').disabled = true;
+        document.getElementById('voiceprint-delete').disabled = true;
+        document.getElementById('voiceprint-message').textContent = 'Saving your reusable voiceprint with Tencent…';
+        call('saveMyVoiceprint', {
+            operation_id: 'voiceprint-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
+            consent_confirmed: true,
+            audio_base64: result.base64
+        }).then(function (saved) {
+            renderMyVoiceprint({ target: saved.target, provider_configured: true });
+            document.getElementById('voiceprint-dialog-title').textContent = 'Voiceprint ready';
+            document.getElementById('voiceprint-message').textContent = 'Saved. Future Discussions can use this voiceprint for automatic Speaker matching.';
+            document.getElementById('voiceprint-delete').hidden = false;
+        }).catch(function (error) {
+            document.getElementById('voiceprint-message').textContent = friendlyError(error);
+            document.getElementById('voiceprint-record').disabled = false;
+        }).finally(function () {
+            voiceprintSaving = false;
+            voiceprintController = null;
+            document.getElementById('voiceprint-delete').disabled = false;
+        });
+    }
+    function startMyVoiceprintRecording() {
+        if (voiceprintSaving || voiceprintController) return;
+        if (!document.getElementById('voiceprint-consent').checked) {
+            document.getElementById('voiceprint-message').textContent = 'Confirm consent before recording a reusable voiceprint.';
+            return;
+        }
+        var recordButton = document.getElementById('voiceprint-record');
+        var stopButton = document.getElementById('voiceprint-stop');
+        recordButton.disabled = true;
+        document.getElementById('voiceprint-delete').disabled = true;
+        document.getElementById('voiceprint-message').textContent = 'Recording… read the full passage naturally.';
+        window.MrCatVoiceprintRecorder.start({
+            maxSeconds: 20,
+            onProgress: function (seconds) {
+                document.getElementById('voiceprint-time').textContent = voiceprintTime(seconds);
+                stopButton.disabled = seconds < 8;
+            },
+            onReady: saveVoiceprintRecording,
+            onError: function (error) {
+                voiceprintController = null;
+                recordButton.disabled = false;
+                stopButton.disabled = true;
+                document.getElementById('voiceprint-delete').disabled = false;
+                document.getElementById('voiceprint-message').textContent = friendlyError(error);
+            }
+        }).then(function (controller) {
+            voiceprintController = controller;
+            stopButton.disabled = true;
+        }).catch(function () {
+            recordButton.disabled = false;
+            document.getElementById('voiceprint-delete').disabled = false;
+            document.getElementById('voiceprint-message').textContent = 'Microphone access was denied or this browser cannot create a voiceprint recording.';
+        });
+    }
+    function stopMyVoiceprintRecording() {
+        if (!voiceprintController || voiceprintController.elapsedSeconds() < 8) return;
+        var current = voiceprintController;
+        document.getElementById('voiceprint-stop').disabled = true;
+        current.stop().then(saveVoiceprintRecording).catch(function (error) {
+            document.getElementById('voiceprint-message').textContent = friendlyError(error);
+            document.getElementById('voiceprint-record').disabled = false;
+            document.getElementById('voiceprint-delete').disabled = false;
+        });
     }
     function listCard(item) {
         var pending = (item.participants || []).some(function (participant) { return participant.invitation_status === 'pending'; });
@@ -124,7 +240,8 @@
             var rosterName = participant.roster_display_name || participant.display_name;
             var action = mayUpload ? '<div class="speaking-detail-actions"><button class="outline-button" type="button" data-voice-record="' + esc(participant.participant_id) + '" data-voice-name="' + esc(rosterName) + '">Record sample</button><label class="outline-button speaking-file-button">Choose audio<input type="file" accept="audio/*" capture="user" hidden data-voice-file="' + esc(participant.participant_id) + '" data-voice-name="' + esc(rosterName) + '"></label></div>' : '';
             var label = participant.kind === 'guest' ? rosterName + ' · Guest participant · Name not verified' : rosterName;
-            return '<article class="speaking-upload-panel"><strong>' + esc(label) + '</strong><small>Voice Reference · ' + esc(participant.voice_reference_status || 'missing') + '</small><p>Read: “Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.”</p>' + action + '</article>';
+            var reusable = participant.reusable_voiceprint_status === 'active';
+            return '<article class="speaking-upload-panel"><strong>' + esc(label) + '</strong><small>' + (reusable ? 'Reusable voiceprint ready' : 'Reusable voiceprint not set up') + ' · Discussion sample ' + esc(participant.voice_reference_status || 'missing') + '</small><p>' + (reusable ? 'The reusable voiceprint can identify this participant automatically. A Discussion sample remains available as a fallback.' : 'Read: “Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.”') + '</p>' + action + '</article>';
         }).join('');
         var recording = canRecord ? '<section class="speaking-upload-panel"><h3>Formal Discussion recording</h3><p>Choose Record now or upload one audio file. Audio is kept private.</p><label>Target time (seconds)<input id="recording-duration" type="number" min="180" max="1800" step="30" value="' + esc(item.duration_seconds) + '"></label><button class="outline-button" type="button" id="save-recording-duration">Save target time</button><div class="speaking-detail-actions"><button class="primary-button" type="button" id="record-now">Record now</button><label class="outline-button speaking-file-button">Upload audio<input type="file" accept="audio/*" hidden id="audio-file"></label></div><div class="speaking-recording-time" id="recording-time" hidden>00:00</div><div class="speaking-quality-warning" id="quality-warning" role="status"></div><div class="speaking-detail-actions" id="recording-actions" hidden><button class="outline-button" type="button" id="pause-recording">Pause</button><button class="outline-button" type="button" id="stop-recording">Stop</button><button class="outline-button" type="button" id="preview-recording" disabled>Play local preview</button><button class="primary-button" type="button" id="upload-recording" disabled>Upload recording</button></div></section>' : '';
         var stage = item.analysis_status === 'queued' ? 'Preparing transcript' : item.analysis_status === 'processing' ? 'Analysing discussion' : item.analysis_status === 'ready' ? 'Report ready' : '';
@@ -370,6 +487,28 @@
         return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
     document.getElementById('new-discussion').addEventListener('click', function () { if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); });
+    document.getElementById('open-my-voiceprint').addEventListener('click', openVoiceprintDialog);
+    document.getElementById('voiceprint-record').addEventListener('click', startMyVoiceprintRecording);
+    document.getElementById('voiceprint-stop').addEventListener('click', stopMyVoiceprintRecording);
+    document.getElementById('voiceprint-close').addEventListener('click', function () {
+        if (voiceprintSaving) { document.getElementById('voiceprint-message').textContent = 'Wait until Tencent finishes saving this voiceprint.'; return; }
+        resetVoiceprintDialog();
+        if (voiceprintDialog.open && voiceprintDialog.close) voiceprintDialog.close(); else voiceprintDialog.removeAttribute('open');
+    });
+    document.getElementById('voiceprint-delete').addEventListener('click', function () {
+        if (voiceprintSaving || voiceprintController) return;
+        if (!window.confirm('Remove your reusable voiceprint from Tencent? Future Discussions will need a new sample until you record it again.')) return;
+        var button = document.getElementById('voiceprint-delete');
+        button.disabled = true;
+        call('deleteMyVoiceprint', { operation_id: 'voiceprint-delete-' + Date.now().toString(36) }).then(function (result) {
+            renderMyVoiceprint({ target: result.target, provider_configured: true });
+            resetVoiceprintDialog();
+            button.hidden = true;
+            document.getElementById('voiceprint-message').textContent = 'Voiceprint removed.';
+        }).catch(function (error) {
+            document.getElementById('voiceprint-message').textContent = friendlyError(error);
+        }).finally(function () { button.disabled = false; });
+    });
     form.addEventListener('submit', function (event) { if (event.submitter && event.submitter.value === 'cancel') return; event.preventDefault(); var button = document.getElementById('discussion-create'); button.disabled = true; var vipIds = document.getElementById('discussion-vip-ids').value.split(',').map(function (item) { return item.trim(); }).filter(Boolean); var guests = document.getElementById('discussion-guests').value.split(',').map(function (item) { return item.trim(); }).filter(Boolean); var durationValue = document.getElementById('discussion-duration').value; var createPayload = { operation_id: 'create-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9), title: document.getElementById('discussion-title').value, prompt_text: document.getElementById('discussion-prompt').value, discussion_date: document.getElementById('discussion-date').value }; if (durationValue) createPayload.duration_seconds = Number(durationValue); call('createDiscussion', createPayload).then(function (result) { selectedId = result.discussion.discussion_id; return vipIds.reduce(function (promise, studentId) { return promise.then(function () { return call('addVipParticipant', { discussion_id: selectedId, student_id: studentId }); }); }, Promise.resolve()).then(function () { return guests.reduce(function (promise, guestName) { return promise.then(function () { return call('addGuestParticipant', { discussion_id: selectedId, guest_name: guestName }); }); }, Promise.resolve()); }).then(function () { dialog.close(); document.getElementById('discussion-form').reset(); return loadList(); }); }).catch(function (error) { setStatus(friendlyError(error), true); }).finally(function () { button.disabled = false; }); });
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') { detail.hidden = true; list.hidden = false; selectedId = ''; pollGeneration += 1; if (pollTimer) window.clearTimeout(pollTimer); window.history.replaceState(null, '', 'speaking-lab.html'); stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); } });
     document.addEventListener('visibilitychange', function () { if (selectedId && !document.hidden) openDiscussion(selectedId); });
@@ -377,7 +516,7 @@
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }
         identity.textContent = session.profile && (session.profile.english_name || session.profile.name) || 'Speaking Lab';
-        return loadList();
+        return Promise.all([loadMyVoiceprint(), loadList()]);
     }).catch(function () { window.location.replace('index.html?return=speaking-lab.html'); });
-    window.addEventListener('pagehide', function () { stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (qualityRecoveryTimer) window.clearTimeout(qualityRecoveryTimer); if (pollTimer) window.clearTimeout(pollTimer); if (recordingBlob) recordingBlob = null; });
+    window.addEventListener('pagehide', function () { stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (qualityRecoveryTimer) window.clearTimeout(qualityRecoveryTimer); if (pollTimer) window.clearTimeout(pollTimer); if (recordingBlob) recordingBlob = null; });
 })(window);

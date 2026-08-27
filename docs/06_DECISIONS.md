@@ -1164,9 +1164,14 @@ for images containing diagrams, tables, or multi-part source materials.
 
 ## DSE Speaking identity and provider boundary (2026-08-27)
 
-Speaking Lab V1 stores no reusable voiceprint or biometric embedding. Voice
-References are Discussion-scoped and are deleted seven days after a successful
-match; formal recordings remain private for the Discussion lifetime. Reports
+Speaking Lab originally stored no reusable voiceprint or biometric embedding.
+ADR 0005 supersedes the no-reusable-voiceprint part: a consenting VIP may now
+hold one Tencent voiceprint keyed by authenticated UID, while a Guest
+voiceprint remains scoped to one Discussion participant. Mr. Cat Academy stores
+the private provider locator and lifecycle/audit metadata but never enrolment
+audio or an embedding. Voice References remain Discussion-scoped fallbacks and
+are deleted seven days after a successful match; formal recordings remain
+private for the Discussion lifetime. Reports
 retain stable anonymous Speaker keys and server-derived evidence. Student and
 Teacher shares are immutable server-built snapshots with snapshot-local aliases
 and exact-name redaction.

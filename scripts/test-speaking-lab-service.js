@@ -39,6 +39,12 @@ function run() {
   const fixture = { report_version: "dse-speaking-v1", mapping_revision: 1 };
   assert.equal(lab.snapshotInvalidationReason(fixture, { ...fixture }), null);
   assert.equal(lab.shareMustInvalidate({ report_changed: true }), true);
+
+  const worker = require("../cloudfunctions/speakingAiWorker/index.js")._test;
+  assert.equal(worker.isTimerEvent({ Type: "Timer", TriggerName: "speaking-ai-worker-minute", Time: "2026-08-28T00:00:00Z", Message: "" }), true);
+  assert.equal(worker.isTimerEvent({ Type: "Timer", TriggerName: "another-trigger", Time: "2026-08-28T00:00:00Z" }), false);
+  assert.equal(worker.isTimerEvent({ Type: "Timer", TriggerName: "speaking-ai-worker-minute", Time: "not-a-time" }), false);
+  assert.equal(worker.isTimerEvent({ action: "run" }), false);
   console.log("Speaking Lab service contracts passed.");
 }
 
