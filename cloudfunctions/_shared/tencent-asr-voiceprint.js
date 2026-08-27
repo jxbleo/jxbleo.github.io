@@ -110,6 +110,7 @@ function authorization({ method = "POST", url, timestamp, payload, secretId, sec
 
 function safeProviderCode(providerCode) {
   const code = text(providerCode, 200);
+  if (/AuthFailure|UnauthorizedOperation/i.test(code)) return "SPEAKING_VOICEPRINT_NOT_CONFIGURED";
   if (/VoicePrintFull/i.test(code)) return "VOICEPRINT_CAPACITY_REACHED";
   if (/NoHumanVoice/i.test(code)) return "VOICEPRINT_NO_HUMAN_VOICE";
   if (/NotExistentVoicePrintId/i.test(code)) return "VOICEPRINT_NOT_FOUND";
