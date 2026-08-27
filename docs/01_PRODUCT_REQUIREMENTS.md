@@ -155,8 +155,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   关联最佳 attempt 入口。`History` 按最新在前显示每次 Cash request、状态与永久凭证，
   并承载未完成 request 的追加凭证及取消操作
 - `To Do List` 默认弹窗不显示 `ASSIGNMENTS` 标题。顶部固定并排显示
-  `THIS WEEK`、`UPCOMING`、`FINISHED` 三个按钮及各自任务数量，默认选中
-  `THIS WEEK`，一次只显示一个分类的任务；空分类显示简短空状态。
+  `TO-DO`、`FINISHED` 两个按钮及各自任务数量，默认选中 `TO-DO`，一次只显示
+  一个分类的任务；所有尚未完成的教师作业（包括未来截止的作业）统一进入
+  `TO-DO`，空分类显示简短空状态。弹窗高度不随当前分类的任务数量变化；任务
+  较多时只滚动卡片内部列表。
   Finished 同时包含已通过的 assignment，以及无需等待老师布置、已达到该 set
   passing 标准的 countable self-study；同一 set 已有完成 assignment 时不重复显示。
   Finished 任务按完成时间倒序，最新完成的置顶。未尝试任务右侧统一显示

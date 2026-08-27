@@ -651,16 +651,18 @@ Check:
   Assignments or My Words navigation
 - the far-left checklist button is visually separated from the right-side
   utility controls, with the Teacher Replies bubble immediately to its right.
-  It opens a modal whose initially selected button is `THIS WEEK`, with no separate
+  It opens a modal whose initially selected button is `TO-DO`, with no separate
   `ASSIGNMENTS` heading or Teacher Replies control. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card. Escape and backdrop clicks do not dismiss the modal
-- the default Assignments modal has three equal-width, sticky top buttons:
-  `THIS WEEK`, `UPCOMING`, and `FINISHED`, each with an accurate count. Only the
-  selected category is visible, click and keyboard Left/Right/Home/End switch
-  categories, and empty categories show a compact empty state. Finished rows
-  remain ordered by completion time with the newest first
+- the default Assignments modal has two equal-width, sticky top buttons:
+  `TO-DO` and `FINISHED`, each with an accurate count. `TO-DO` combines every
+  unfinished teacher assignment, including future-due work. Only the selected
+  category is visible, click and keyboard Left/Right/Home/End switch categories,
+  and empty categories show a compact empty state. The card keeps the same
+  responsive height for empty, short, and long lists; long lists scroll inside
+  it. Finished rows remain ordered by completion time with the newest first
 - a countable self-study attempt that reaches the set passing standard appears
   once in To Do List FINISHED, the Personal Center Finished count/list, and the
   completion calendar on its first passing date without waiting for assignment

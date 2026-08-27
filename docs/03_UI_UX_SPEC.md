@@ -294,10 +294,13 @@ Assignment access and progress display:
   heading. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
-  sits directly below the card. `THIS WEEK`, `UPCOMING`, and `FINISHED` are
-  three equal-width buttons fixed at the top of the card, each with a numeric
-  count. `THIS WEEK` is selected by default and only the selected category's
-  task list is visible; keyboard Left/Right, Home, and End also switch tabs.
+  sits directly below the card. `TO-DO` and `FINISHED` are two equal-width
+  buttons fixed at the top of the card, each with a numeric count. `TO-DO` is
+  selected by default and combines every unfinished teacher assignment,
+  including future-due work. Only the selected category's task list is visible;
+  keyboard Left/Right, Home, and End also switch tabs. The card keeps one fixed
+  responsive height across tabs and empty/short/long lists; overflow scrolls
+  inside the card rather than resizing it.
   Empty categories show their own compact empty state. Finished tasks are
   sorted newest-completed first. FINISHED includes both passed/mastered
   assignments and distinct countable self-study sets whose recorded best has
@@ -340,7 +343,7 @@ Assignment access and progress display:
   restrained red pulse. While any overdue task exists, the This Week progress
   track also uses a slow red breathing halo that remains visible at zero
   percent; reduced motion uses a static red border instead. Next week's work
-  stays in To Do List's `UPCOMING` tab and does not create a second hero row or
+  stays in To Do List's `TO-DO` tab and does not create a second hero row or
   a `NO TASKS` empty state. Self-study STAR records are not counted. Activating
   the summary opens its focused task list and tasks do not expand inside the
   hero. The progress fill reveals once after loading without bounce, and reduced
@@ -391,9 +394,9 @@ Frontend rule:
 - Message and unread-count reminders use red dots/badges consistently, including
   student replies, assignment notifications, teacher notification counts, and
   unread activity rows. Student assignment reminders are counted only on the
-  far-left To Do List. It keeps future assignments visible in a separate
-  `Upcoming` section even while current-week work remains unfinished, but
-  future work never contributes to the red count. The To Do List badge includes
+  far-left To Do List. It keeps future assignments visible in the combined
+  `TO-DO` section even while current-week work remains unfinished, but future
+  work never contributes to the red count. The To Do List badge includes
   only overdue/current-week unfinished assignments. Unseen teacher replies use
   the To Do List header bubble's own red badge.
   Viewing To Do List must not clear assignment reminders.

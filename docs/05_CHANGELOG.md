@@ -10,6 +10,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-28 — Unified student To-Do list
+
+- Replaced the Student To Do List's separate `This Week` and `Upcoming` tabs
+  with one `TO-DO` tab containing every unfinished teacher assignment, while
+  retaining `FINISHED` for completed work.
+- Gave the task-list card one responsive fixed height so empty and short lists
+  no longer shrink it; longer lists continue scrolling inside the card.
+
 ## 2026-08-28 — Muted Dashboard workspace entrances
 
 - Reworked the three hero entrances into pale blue-grey, sage, and warm-sand

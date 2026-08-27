@@ -1051,10 +1051,16 @@
             });
     }
 
+    function openTodoAssignments() {
+        return todoAssignments().concat(upcomingAssignments().filter(function(item) {
+            return normalizedStatus(item.status) === 'to_do';
+        }));
+    }
+
     function finishedAssignments() {
         return (state.assignments || [])
             .filter(function(item) {
-                return isFinishedStatus(item.status) && !isUpcomingAssignment(item);
+                return isFinishedStatus(item.status);
             })
             .sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
     }
@@ -1932,15 +1938,14 @@
         '</section>';
     }
 
-    function renderDefaultStudentMessageSections(todos, upcoming, finished) {
+    function renderDefaultStudentMessageSections(todos, finished) {
         var counts = state.assignmentCounts || {
             todo: todos.length,
-            upcoming: upcoming.length,
+            upcoming: 0,
             finished: finished.length
         };
         var tabs = [
-            { id: 'week', label: 'This Week', count: Number(counts.todo || 0) },
-            { id: 'upcoming', label: 'Upcoming', count: Number(counts.upcoming || 0) },
+            { id: 'todo', label: 'To-Do', count: Number(counts.todo || 0) + Number(counts.upcoming || 0) },
             { id: 'finished', label: 'Finished', count: Number(counts.finished || 0) }
         ];
         var tabMarkup = tabs.map(function(tab, index) {
@@ -1952,16 +1957,14 @@
             '</button>';
         }).join('');
         var panels = [
-            '<section class="student-message-tab-panel" id="student-message-panel-week" role="tabpanel" aria-labelledby="student-message-tab-week" data-message-panel="week">' +
+            '<section class="student-message-tab-panel" id="student-message-panel-todo" role="tabpanel" aria-labelledby="student-message-tab-todo" data-message-panel="todo">' +
                 renderStudentMessageFlatList(
-                    todos.map(function(item) { return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo'); }).join(''),
+                    todos.map(function(item) {
+                        return renderStudentMessageTask(item, isOverdueAssignment(item)
+                            ? 'overdue'
+                            : isUpcomingAssignment(item) ? 'upcoming' : 'todo');
+                    }).join(''),
                     'No unfinished assignments.'
-                ) +
-            '</section>',
-            '<section class="student-message-tab-panel" id="student-message-panel-upcoming" role="tabpanel" aria-labelledby="student-message-tab-upcoming" data-message-panel="upcoming" hidden>' +
-                renderStudentMessageFlatList(
-                    upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
-                    'No upcoming assignments.'
                 ) +
             '</section>',
             '<section class="student-message-tab-panel" id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished" hidden>' +
@@ -2011,7 +2014,7 @@
             unlockStudentMessageBackground();
         }
 
-        var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
+        var todos = state.session && state.session.mode === 'student' ? openTodoAssignments() : [];
         var upcoming = state.session && state.session.mode === 'student' ? upcomingAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
         var dialogTitle = 'Assignments';
@@ -2061,7 +2064,6 @@
             summaryHtml = '';
             sectionsHtml = renderDefaultStudentMessageSections(
                 todos.slice(0, 10),
-                upcoming.slice(0, 10),
                 finished.slice(0, 10)
             );
         }
@@ -2181,9 +2183,8 @@
         overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(bindStudentMessageCard);
 
         function assignmentItemsForPanel(panelName) {
-            if (panelName === 'upcoming') return upcomingAssignments();
             if (panelName === 'finished') return finishedAssignments();
-            return todoAssignments();
+            return openTodoAssignments();
         }
 
         function appendNextAssignmentBatch() {
@@ -2194,7 +2195,7 @@
             if (!activePanel) return;
             var list = activePanel.querySelector('.student-message-list');
             if (!list) return;
-            var panelName = scope === 'finished' ? 'finished' : activePanel.dataset.messagePanel || 'week';
+            var panelName = scope === 'finished' ? 'finished' : activePanel.dataset.messagePanel || 'todo';
             var items = assignmentItemsForPanel(panelName);
             var rendered = list.querySelectorAll('.student-message-task').length;
             var nextItems = items.slice(rendered, rendered + 10);
@@ -2202,9 +2203,9 @@
             list.insertAdjacentHTML('beforeend', nextItems.map(function(item) {
                 return renderStudentMessageTask(item, panelName === 'finished'
                     ? 'finished'
-                    : panelName === 'upcoming'
-                        ? 'upcoming'
-                        : isOverdueAssignment(item) ? 'overdue' : 'todo');
+                    : isOverdueAssignment(item)
+                        ? 'overdue'
+                        : isUpcomingAssignment(item) ? 'upcoming' : 'todo');
             }).join(''));
             list.querySelectorAll('.student-message-task[data-open-href]').forEach(bindStudentMessageCard);
             if (messageTitleObserver) messageTitleObserver.disconnect();
@@ -4595,7 +4596,7 @@
     }
 
     function prefetchFirstTodoContent() {
-        var urls = todoAssignments().slice(0, 10).map(publicExerciseDataUrl).filter(Boolean);
+        var urls = openTodoAssignments().slice(0, 10).map(publicExerciseDataUrl).filter(Boolean);
         var cursor = 0;
         function worker() {
             var url = urls[cursor++];
