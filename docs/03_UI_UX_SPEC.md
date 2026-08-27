@@ -2319,8 +2319,11 @@ Important mobile rules:
   never becomes sentence-sized blocks. Boundary whitespace stays outside the
   interactive target while click, Enter, and Space still locate the matching
   revision row. The original Draft uses a warm-neutral paper surface and dark-gray
-  text; every revision-required sentence receives a thin, muted-red proofreading
-  wave while correct sentences remain unmarked.
+  text. Every revision-required sentence that has not yet been accepted receives
+  a thin, muted-red proofreading wave. Typing without Submit and a rejected Submit
+  retain the wave; an accepted persisted student rewrite removes it immediately.
+  The material uses warm ivory, restrained fibre detail, a warm border, and a
+  low brown shadow rather than literal rules, folds, or torn edges.
 - Once every required sentence is accepted and at least one persisted student
   rewrite exists, replace the single Draft heading with an Apple-style
   `Draft / Revised` segmented control and select `Revised` by default. Revised
@@ -2330,7 +2333,7 @@ Important mobile rules:
   are preserved. Revised has no proofreading waves and uses blue, orange, purple,
   rose, indigo, coral, gold, and deep pink fills in the same positional order as
   the capsule/card palette. Switching back to Draft restores the unchanged source
-  text and its original waves. Do not show Revised for a manuscript that began
+  text and waves only on corrections that remain unresolved. Do not show Revised for a manuscript that began
   with no required revisions.
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one

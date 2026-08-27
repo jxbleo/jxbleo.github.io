@@ -6,7 +6,11 @@
 ## 2026-08-27 — Proofreading Draft and reconstructed Revised manuscript
 
 - Restyled the original Draft as neutral paper and marked only revision-required
-  source sentences with a restrained red proofreading wave.
+  source sentences with a restrained red proofreading wave. The approved surface
+  now uses warm ivory paper, subtle fibre detail, and a warm natural shadow.
+- Made proofreading waves progress-aware: blank, unsubmitted, and rejected
+  corrections stay marked, while each accepted student correction clears its
+  source-sentence wave immediately.
 - Added a conditional `Draft / Revised` segmented control after all required
   sentence revisions pass. Completed records default to the reconstructed Revised
   manuscript while preserving original paragraph structure and the eight-color
