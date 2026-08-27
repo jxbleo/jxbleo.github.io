@@ -1146,11 +1146,11 @@ check("completed Draft feedback distinguishes flagged and correct sentences", ()
   requireEvery(page, [
     'id="sentence-feedback-dialog"', 'role="dialog"', 'aria-modal="true"',
     'id="sentence-feedback-original"', 'id="sentence-feedback-copy"',
-    'data-close-sentence-feedback', 'aria-label="Sentence feedback"', '>Done<',
+    'data-close-sentence-feedback', 'aria-labelledby="sentence-feedback-title"',
+    'id="sentence-feedback-title">AI Feedback</h2>', '>Done<',
   ], "completed Draft feedback dialog");
-  assert(!page.includes('id="sentence-feedback-kicker"') && !page.includes('id="sentence-feedback-title"')
-      && !page.includes('>AI Feedback<'),
-    "the feedback dialog must begin with content rather than visible Sentence or AI Feedback headings");
+  assert(!page.includes('id="sentence-feedback-kicker"'),
+    "the feedback dialog must not restore the old Sentence N kicker");
   requireEvery(client, [
     "sentenceAnalysisCopy", "sentenceFeedbackCopies", "sentenceRewriteFeedbackHistory",
     "openSentenceFeedback", "closeSentenceFeedback", "sentenceFeedbackOpen",
@@ -1162,8 +1162,15 @@ check("completed Draft feedback distinguishes flagged and correct sentences", ()
     "the feedback dialog must trap keyboard focus on its sole action");
   assert(/event\.key\s*===\s*['"]Escape['"][\s\S]{0,900}sentenceFeedbackOpen[\s\S]{0,120}closeSentenceFeedback/.test(client),
     "Escape must close the feedback dialog");
-  requireEvery(styles, [".sentence-feedback-dialog", ".sentence-feedback-original", ".sentence-feedback-item + .sentence-feedback-item"],
+  requireEvery(styles, [".sentence-feedback-dialog", ".sentence-feedback-title", ".sentence-feedback-original", ".sentence-feedback-item"],
     "sentence feedback material and separators");
+  assert(/\.sentence-feedback-title\s*\{[^}]*border-bottom\s*:\s*\.5px solid[^}]*color\s*:\s*var\(--ai-accent\)[^}]*text-align\s*:\s*center/i.test(styles),
+    "AI Feedback must be a centered green title with a full-width bottom hairline");
+  assert(/\.sentence-feedback-original\s*\{[^}]*text-decoration-style\s*:\s*wavy[^}]*text-decoration-color\s*:\s*rgba\(178,62,59,/i.test(styles)
+      && !/\.sentence-feedback-original\s*\{[^}]*(?:background|border\s*:)/i.test(styles),
+    "the source sentence must retain its red proofreading wave without a nested-card treatment");
+  assert(/\.sentence-feedback-item\s*\{[^}]*border-top\s*:\s*\.5px solid/i.test(styles),
+    "the initial analysis and every later feedback paragraph must use the same hairline divider");
   assert(/\.manuscript-version-control\s*\{[^}]*display\s*:\s*grid[^}]*margin\s*:\s*0\s+auto/is.test(styles),
     "the Draft/Revised segmented control must be centered");
   requireEvery(styles, ["@keyframes manuscriptNoFeedbackCue", ".manuscript-sentence-highlight.is-no-feedback-cue"],

@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-28 — Completed Draft feedback hierarchy
+
+- Promoted `AI Feedback` to a centered green dialog title bar with a full-width
+  bottom hairline.
+- Kept the source sentence directly on the dialog material with its proofreading
+  wave instead of nesting it inside a second card.
+- Standardized one hairline between the source and initial analysis and between
+  every later feedback paragraph, without restoring sentence or round labels.
+
 ## 2026-08-27 — Unified light Dashboard hero
 
 - Removed the weekly-progress surface from the Dashboard hero, leaving the
