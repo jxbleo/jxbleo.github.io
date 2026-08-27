@@ -1982,9 +1982,13 @@ High priority improvement:
 - Scroll until the capsule bar reaches the top and confirm it replaces the main
   toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
   after leaving the Sentence Revision card.
-- Before all required corrections pass, confirm Draft uses a neutral paper surface
-  with no sentence color fills. Required source sentences have a thin muted-red
-  wavy proofreading underline; effective sentences have no error mark. Click both
+- Before all required corrections pass, confirm Draft uses a warm ivory paper
+  surface with subtle fibre detail and no sentence color fills. Required source
+  sentences that remain unresolved have a thin muted-red wavy proofreading
+  underline; effective sentences have no error mark. Type without Submit and
+  confirm the wave remains. Submit a rejected correction and confirm it still
+  remains; submit an accepted correction and confirm only that sentence's wave
+  disappears immediately. Click both
   a Draft sentence and its capsule and confirm they activate the same index and
   scroll to the same correction row.
 - Use one manuscript containing multiple sentences in one paragraph and at least
@@ -2001,8 +2005,8 @@ High priority improvement:
   and preserves the original paragraphs. Revised has no proofreading wave and
   repeats blue, orange, purple, rose, indigo, coral, gold, and deep pink only after
   eight sentences, in the same positional order as capsules and revision rows.
-  Switch back to Draft and confirm the untouched source text and original red waves
-  return. A composition that needed no corrections must not show Revised.
+  Switch back to Draft and confirm the untouched source text returns without waves
+  on already accepted sentences. A composition that needed no corrections must not show Revised.
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must
   remain viewport-width; only the capsule row may scroll horizontally.

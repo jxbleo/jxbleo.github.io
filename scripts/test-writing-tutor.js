@@ -1090,7 +1090,8 @@ check("Draft preserves paragraphs and marks original revision needs like proofre
   const highlightSource = functionSource(client, "highlightedManuscriptHtml", "compositionStatus");
   requireEvery(highlightSource, [
     "source.slice(cursor, matchAt)", "leadingWhitespace", "trailingWhitespace",
-    "visibleSentence", "needsRevision", 'role="button"', 'tabindex="0"', "</span>",
+    "visibleSentence", "acceptedRewrite", "revisionSummary.replacements[id]", "needsRevision",
+    'role="button"', 'tabindex="0"', "</span>",
   ], "paragraph-preserving manuscript highlights");
   assert(!/<button class=["']manuscript-sentence-highlight/.test(highlightSource),
     "Draft sentence highlights must not use atomic button boxes");
@@ -1100,9 +1101,15 @@ check("Draft preserves paragraphs and marks original revision needs like proofre
     "sentence highlights must remain in the paragraph's inline formatting flow");
   assert(/\.manuscript-sentence-highlight\.is-draft\.needs-revision\s*\{[^}]*text-decoration-style\s*:\s*wavy[^}]*text-decoration-color\s*:\s*rgba\(178,62,59,/is.test(styles),
     "the original Draft must use a restrained red proofreading wave for sentences that need revision");
+  assert(/needsRevision\s*=\s*!revised\s*&&\s*rewriteRequired\(sentence\)\s*&&\s*!acceptedRewrite/.test(highlightSource),
+    "accepted corrections must clear only their own Draft proofreading wave");
   assert(/\.manuscript-sentence-highlight\.is-draft\s*\{[^}]*background\s*:\s*transparent/is.test(styles)
       || /\.manuscript-sentence-highlight\s*\{[^}]*background\s*:\s*transparent/is.test(styles),
     "the original Draft must remain neutral instead of looking already corrected");
+  requireEvery(styles, [
+    ".language-manuscript-card.is-draft-view", "#fbf4df", "repeating-linear-gradient",
+    ".language-manuscript-card.is-draft-view::after", "mix-blend-mode: multiply",
+  ], "warm ivory paper material");
   assert(/closest\([^)]*data-manuscript-sentence/.test(client)
       && /data-manuscript-sentence[\s\S]{0,500}(?:Enter|event\.key !== ' ')[\s\S]{0,300}\.click\(\)/.test(client),
     "inline sentence navigation must remain clickable and keyboard accessible");

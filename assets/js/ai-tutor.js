@@ -675,7 +675,8 @@
             var visibleSentence = withoutLeading.slice(0, withoutLeading.length - trailingWhitespace.length);
             var id = sentenceId(sentence, index);
             var displaySentence = revised && revisionSummary.replacements[id] ? revisionSummary.replacements[id] : visibleSentence;
-            var needsRevision = !revised && rewriteRequired(sentence);
+            var acceptedRewrite = revisionSummary && revisionSummary.replacements[id];
+            var needsRevision = !revised && rewriteRequired(sentence) && !acceptedRewrite;
             html += escapeHtml(source.slice(cursor, matchAt) + leadingWhitespace);
             html += '<span class="manuscript-sentence-highlight ' + (revised ? 'is-revised' : 'is-draft') + (needsRevision ? ' needs-revision' : '') + (index === state.activeSentence ? ' is-active' : '') + '" role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(displaySentence) + '</span>';
             html += escapeHtml(trailingWhitespace);
