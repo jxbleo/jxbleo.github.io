@@ -6,6 +6,8 @@
   a strict Tencent timer envelope plus `speakingAiWorker.invoke: false`. This
   matches the current CloudBase trigger editor, keeps browser clients unable to
   invoke the worker, and avoids a secret that function-detail APIs may echo.
+- Mapped Tencent ASR CAM authorization failures to the provider-not-configured
+  state so students are not incorrectly told to repeat a valid recording.
 
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
