@@ -843,6 +843,12 @@ STAR 不阻止未来重新布置同一个 set。
 重复问题：
 - 先按 safe error code 判断层次：网络等待、provider HTTP/timeout、Schema、领域 ID 对齐、active-job/lease、quota。
 - 先读 `writing_ai_jobs` 和 `writing_ai_usage_events` 的安全投影，不要为了排错输出完整数据库行或函数环境变量。
+- Token 成本排查应同时读取 `writing_model_usage_events`：按 `job_id` 核对每个 stage 和 job attempt。
+  `NO_MODEL_USAGE_EVENT` 表示整项记录缺失，`USAGE_EVENT_GAP` 表示同一阶段只写入了部分调用，
+  `PROVIDER_USAGE_MISSING` 表示供应商响应没有完整 usage，
+  `USAGE_EVENT_PERSISTENCE_FAILED` 表示模型调用后账本写入失败。不要用作文字符数反推 Token，也不要
+  为排错输出 prompt、作文、OCR、反馈、图片 URL 或环境变量。确认 collection/index 后，再核对
+  `writingTutor`、`writingAiWorker`、`sendWritingTutorEmails` 是否来自同一提交。
 - 不要用“更换模型”掩盖请求生命周期、幂等、canonicalization 或部署未生效的问题。
 
 部署/数据：

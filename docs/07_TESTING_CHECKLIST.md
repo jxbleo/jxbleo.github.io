@@ -2173,6 +2173,26 @@ High priority improvement:
 
 #### OCR uncertainty overlays
 
+#### Provider Token telemetry
+
+- Run `npm run test:writing-tutor`. Verify Chat Completions and Responses usage
+  shapes normalize identically, structural repair counts as two calls, and
+  absent or partial `usage` is never converted into an estimate.
+- In development, complete one OCR, one General Language/standardized review,
+  one Revision Scan, and one rewrite Check. Verify each physical provider call
+  creates exactly one immutable `writing_model_usage_events` row with the
+  expected stage and stable job attempt; no row may contain writing or feedback.
+- Simulate a successful model payload without `usage`, then run
+  `writingAiWorker`. Verify the terminal job becomes `alert_queued`, exactly one
+  stable `model_usage_alert` is pending, and the student result remains usable.
+  Run the worker again and verify no duplicate alert. With an enabled teacher
+  recipient, run `sendWritingTutorEmails` and verify the message contains only
+  safe job/model/stage/reason metadata. With no recipient, the health alert must
+  remain pending rather than becoming skipped.
+- Verify legacy jobs without `writing-token-usage-v1` do not generate rollout
+  alerts. Verify a fully recorded job becomes `complete` with exact aggregate
+  counts and no email event.
+
 - At phone widths, open source entry, each waiting game, OCR confirmation,
   standardized results, language review, revision-photo selection, Review Scan,
   completion, empty, loading, and error states. Verify the first surface in each

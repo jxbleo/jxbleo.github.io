@@ -12,6 +12,17 @@
   red; capsule status marks now use plain green checks, black questions, and red
   crosses with no surrounding circle.
 
+## 2026-08-26 — Provider Token ledger and completeness alerts
+
+- Added an append-only per-provider-call Token ledger covering OCR, optional
+  image location, both review modes, structural repair, revision OCR, and
+  rewrite checking.
+- Added terminal-job auditing for absent/incomplete provider usage and ledger
+  persistence failures; safe alerts reuse the private teacher email outbox and
+  never block a successful student result.
+- Added normalization and audit contract tests plus owner-gated rollout
+  instructions for the new ADMINONLY collection and three affected functions.
+
 ## 2026-08-26 — Sentence Revision hierarchy and pending review state
 
 - Unified the `Language Review`, `Draft`, and `Sentence Revision` title

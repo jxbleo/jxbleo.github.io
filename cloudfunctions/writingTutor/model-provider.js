@@ -210,6 +210,58 @@ function safeResultShape(value) {
   return { root_type: value === null ? "null" : typeof value };
 }
 
+function tokenCount(value) {
+  const normalized = Number(value);
+  return Number.isInteger(normalized) && normalized >= 0 ? normalized : null;
+}
+
+function normalizeProviderUsage(payload) {
+  const usage = payload && payload.usage && typeof payload.usage === "object"
+    ? payload.usage : null;
+  if (!usage) {
+    return {
+      usage_status: "missing", input_tokens: null, output_tokens: null,
+      total_tokens: null, cached_input_tokens: null, reasoning_output_tokens: null,
+    };
+  }
+  const inputTokens = tokenCount(usage.prompt_tokens != null ? usage.prompt_tokens : usage.input_tokens);
+  const outputTokens = tokenCount(usage.completion_tokens != null ? usage.completion_tokens : usage.output_tokens);
+  const explicitTotal = tokenCount(usage.total_tokens);
+  const inputDetails = usage.prompt_tokens_details || usage.input_tokens_details || {};
+  const outputDetails = usage.completion_tokens_details || usage.output_tokens_details || {};
+  const cachedInputTokens = tokenCount(inputDetails.cached_tokens != null
+    ? inputDetails.cached_tokens : inputDetails.cached_input_tokens);
+  const reasoningOutputTokens = tokenCount(outputDetails.reasoning_tokens != null
+    ? outputDetails.reasoning_tokens : outputDetails.reasoning_output_tokens);
+  const derivedTotal = inputTokens != null && outputTokens != null ? inputTokens + outputTokens : null;
+  const totalTokens = explicitTotal != null ? explicitTotal : derivedTotal;
+  const recorded = inputTokens != null && outputTokens != null && totalTokens != null;
+  return {
+    usage_status: recorded ? "recorded" : "missing",
+    input_tokens: inputTokens,
+    output_tokens: outputTokens,
+    total_tokens: totalTokens,
+    cached_input_tokens: cachedInputTokens,
+    reasoning_output_tokens: reasoningOutputTokens,
+  };
+}
+
+function providerAttempt(config, payload, responseStatus, outcome, requestId) {
+  return {
+    model: config.model,
+    protocol: config.protocol,
+    provider_request_id: text(requestId || payload && payload.id, 200) || null,
+    response_status: Number.isInteger(responseStatus) ? responseStatus : null,
+    outcome: text(outcome, 80) || "unknown",
+    ...normalizeProviderUsage(payload),
+  };
+}
+
+function attachProviderTelemetry(error, attempts) {
+  if (error && typeof error === "object") error.providerTelemetry = { attempts };
+  return error;
+}
+
 async function imageContent(url, transport) {
   if (transport === "url") return { type: "image_url", image_url: { url } };
   const response = await fetch(url);
@@ -273,29 +325,46 @@ async function callOnce(config, options, correction) {
       signal: controller.signal,
     });
   } catch (error) {
-    if (error && error.name === "AbortError") throw new Error("WRITING_AI_TIMEOUT");
-    throw new Error("WRITING_AI_UNAVAILABLE");
+    const code = error && error.name === "AbortError" ? "WRITING_AI_TIMEOUT" : "WRITING_AI_UNAVAILABLE";
+    throw attachProviderTelemetry(new Error(code), [providerAttempt(config, null, null, "transport_error", null)]);
   } finally {
     clearTimeout(timeout);
   }
   if (!response.ok) {
     // Do not log the provider response body: some vendors may echo request data.
     console.error("writingTutor AI HTTP", response.status);
-    throw new Error(`WRITING_AI_HTTP_${response.status}`);
+    throw attachProviderTelemetry(new Error(`WRITING_AI_HTTP_${response.status}`), [
+      providerAttempt(config, null, response.status, "http_error", response.headers.get("x-request-id")),
+    ]);
   }
-  const payload = await response.json();
-  const output = responseOutputText(payload, config.protocol);
-  if (!output) throw new Error("WRITING_AI_EMPTY_RESPONSE");
-  const parsed = parseStructuredOutput(output, options.schema);
-  const schemaErrors = validateAgainstSchema(parsed, options.schema);
-  if (schemaErrors.length) {
-    // Shape-only diagnostics keep student writing out of logs while making provider drift debuggable.
-    console.error("writingTutor AI schema shape", config.model, safeResultShape(parsed));
-    const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
-    error.validationMessage = schemaErrors.join("; ");
-    throw error;
+  let payload;
+  try {
+    payload = await response.json();
+    const attempt = providerAttempt(
+      config, payload, response.status, "response_received", response.headers.get("x-request-id"),
+    );
+    const output = responseOutputText(payload, config.protocol);
+    if (!output) throw attachProviderTelemetry(new Error("WRITING_AI_EMPTY_RESPONSE"), [attempt]);
+    const parsed = parseStructuredOutput(output, options.schema);
+    const schemaErrors = validateAgainstSchema(parsed, options.schema);
+    if (schemaErrors.length) {
+      // Shape-only diagnostics keep student writing out of logs while making provider drift debuggable.
+      console.error("writingTutor AI schema shape", config.model, safeResultShape(parsed));
+      const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
+      error.validationMessage = schemaErrors.join("; ");
+      throw attachProviderTelemetry(error, [attempt]);
+    }
+    attempt.outcome = "structured_success";
+    return { data: parsed, telemetry: { attempts: [attempt] } };
+  } catch (error) {
+    if (error && error.providerTelemetry) throw error;
+    const attempt = providerAttempt(
+      config, payload, response.status, "invalid_response", response.headers.get("x-request-id"),
+    );
+    const safeError = error instanceof SyntaxError
+      ? new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID") : error;
+    throw attachProviderTelemetry(safeError, [attempt]);
   }
-  return parsed;
 }
 
 async function callStructuredModel(options) {
@@ -311,18 +380,35 @@ async function callStructuredModel(options) {
       structural_repair_used: structuralRepairUsed,
     };
   };
+  const attempts = [];
   try {
-    return { data: await callOnce(config, normalized, ""), metadata: providerMetadata(false) };
+    const first = await callOnce(config, normalized, "");
+    attempts.push(...first.telemetry.attempts);
+    return { data: first.data, metadata: providerMetadata(false), telemetry: { attempts } };
   } catch (error) {
-    if (config.protocol !== "chat_json_object" || error.message !== "WRITING_AI_SCHEMA_RESPONSE_INVALID") throw error;
-    return {
-      data: await callOnce(config, normalized, text(error.validationMessage, 1200)),
-      metadata: providerMetadata(true),
-    };
+    attempts.push(...(error && error.providerTelemetry && error.providerTelemetry.attempts || []));
+    if (config.protocol !== "chat_json_object" || error.message !== "WRITING_AI_SCHEMA_RESPONSE_INVALID") {
+      throw attachProviderTelemetry(error, attempts);
+    }
+    try {
+      const repaired = await callOnce(config, normalized, text(error.validationMessage, 1200));
+      attempts.push(...repaired.telemetry.attempts);
+      return {
+        data: repaired.data,
+        metadata: providerMetadata(true),
+        telemetry: { attempts },
+      };
+    } catch (repairError) {
+      attempts.push(...(repairError && repairError.providerTelemetry && repairError.providerTelemetry.attempts || []));
+      throw attachProviderTelemetry(repairError, attempts);
+    }
   }
 }
 
 module.exports = {
   callStructuredModel,
-  _test: { validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig, normalizeOcrPages, normalizeTimeoutMs },
+  _test: {
+    validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig,
+    normalizeOcrPages, normalizeTimeoutMs, normalizeProviderUsage,
+  },
 };

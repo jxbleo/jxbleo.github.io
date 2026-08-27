@@ -826,7 +826,7 @@ check("Check snapshots sentence drafts before starting the durable rewrite reque
   assert(pendingWriteIndex >= 0 && dispatchIndex > pendingWriteIndex,
     "pending_rewrite_check must be durably stored before the rewrite worker is dispatched");
   const pendingReadIndex = performSource.indexOf("pending_rewrite_check");
-  const modelIndex = performSource.indexOf("callStructuredModel");
+  const modelIndex = performSource.indexOf("callModelForJob");
   assert(pendingReadIndex >= 0 && modelIndex > pendingReadIndex,
     "performRewriteJob must load the durable pending snapshot before calling the model");
 });
@@ -1508,6 +1508,80 @@ check("Qwen JSON wrappers are normalized before strict validation", () => {
   );
 });
 
+check("provider Token usage is normalized across Chat Completions and Responses APIs", () => {
+  const provider = require(path.join(root, providerPath));
+  assert.deepStrictEqual(provider._test.normalizeProviderUsage({ usage: {
+    prompt_tokens: 1200,
+    completion_tokens: 345,
+    total_tokens: 1545,
+    prompt_tokens_details: { cached_tokens: 200 },
+    completion_tokens_details: { reasoning_tokens: 45 },
+  } }), {
+    usage_status: "recorded", input_tokens: 1200, output_tokens: 345,
+    total_tokens: 1545, cached_input_tokens: 200, reasoning_output_tokens: 45,
+  });
+  assert.deepStrictEqual(provider._test.normalizeProviderUsage({ usage: {
+    input_tokens: 800, output_tokens: 200,
+  } }), {
+    usage_status: "recorded", input_tokens: 800, output_tokens: 200,
+    total_tokens: 1000, cached_input_tokens: null, reasoning_output_tokens: null,
+  });
+  assert.strictEqual(provider._test.normalizeProviderUsage({}).usage_status, "missing");
+  assert.strictEqual(provider._test.normalizeProviderUsage({ usage: { total_tokens: 50 } }).usage_status, "missing");
+});
+
+check("writing model usage ledger and missing-usage audit cover every AI stage", () => {
+  const backend = read(functionPath);
+  const worker = read(workerPath);
+  const dispatcher = read("cloudfunctions/sendWritingTutorEmails/index.js");
+  requireEvery(backend, [
+    "writing_model_usage_events", "writing-token-usage-v1", "persistModelTelemetry",
+    '"ocr_transcription"', '"ocr_uncertainty_location"', '"revision_ocr"',
+    '"standardized_review"', '"language_review"', '"rewrite_check"',
+    "provider_request_id", "input_tokens", "output_tokens", "total_tokens",
+  ], "writing model Token ledger");
+  requireEvery(worker, [
+    "auditTokenUsage", "NO_MODEL_USAGE_EVENT", "PROVIDER_USAGE_MISSING",
+    "USAGE_EVENT_GAP", "USAGE_EVENT_PERSISTENCE_FAILED", 'event_type: "model_usage_alert"',
+    'token_usage_audit_status: "complete"', 'token_usage_audit_status: "alert_queued"',
+  ], "Token telemetry audit");
+  requireEvery(dispatcher, [
+    "Token telemetry alert", "model_usage_alert", "NO_ENABLED_TEACHER_RECIPIENTS",
+    'status: "pending"',
+  ], "Token telemetry email alert");
+  assert(!/confirmed_text|student_manuscript|standardized_review|language_review/.test(dispatcher),
+    "Token alerts must not load manuscript or review content");
+});
+
+check("Token summaries count repair calls and missing usage without inventing tokens", () => {
+  const backend = require(path.join(root, functionPath));
+  const worker = require(path.join(root, workerPath));
+  const summary = backend._test.summarizeModelUsage([
+    { usage_status: "recorded", input_tokens: 100, output_tokens: 10, total_tokens: 110, cached_input_tokens: 20 },
+    { usage_status: "recorded", input_tokens: 120, output_tokens: 12, total_tokens: 132, reasoning_output_tokens: 5 },
+    { usage_status: "missing", input_tokens: null, output_tokens: null, total_tokens: null },
+  ]);
+  assert.deepStrictEqual(summary, {
+    call_count: 3, recorded_call_count: 2, missing_call_count: 1,
+    input_tokens: 220, output_tokens: 22, total_tokens: 242,
+    cached_input_tokens: 20, reasoning_output_tokens: 5,
+  });
+  assert.deepStrictEqual(worker._test.tokenAuditReasons({}, []).reasons, ["NO_MODEL_USAGE_EVENT"]);
+  assert.deepStrictEqual(worker._test.tokenAuditReasons({}, [
+    { usage_status: "missing", input_tokens: null, output_tokens: null, total_tokens: null },
+  ]).reasons, ["PROVIDER_USAGE_MISSING"]);
+  assert.deepStrictEqual(worker._test.tokenAuditReasons({ token_usage_persistence_error: true }, [
+    { usage_status: "recorded", input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+  ]).reasons, ["USAGE_EVENT_PERSISTENCE_FAILED"]);
+  assert.deepStrictEqual(worker._test.tokenAuditReasons({}, [
+    { usage_status: "recorded", job_attempt: 1, stage: "language_review", stage_call_count: 2,
+      provider_call_index: 0, input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+  ]).reasons, ["USAGE_EVENT_GAP"]);
+  assert.deepStrictEqual(worker._test.tokenAuditReasons({}, [
+    { usage_status: "recorded", input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+  ]).reasons, []);
+});
+
 check("OCR location contract is strict, indexed, and prompt-safe", () => {
   const schemas = require(path.join(root, schemaPath));
   const prompts = require(path.join(root, promptPath));
@@ -1557,7 +1631,7 @@ check("optional OCR location preserves enough lease budget to publish transcript
   assert.strictEqual(backend._test.hasOcrLocationLeaseBudget({}, now), false);
   const source = read(functionPath);
   const perform = functionSource(source, "performOcrJob", "performRevisionOcrJob");
-  assert(/hasOcrLocationLeaseBudget\(job\)[\s\S]{0,240}callStructuredModel/.test(perform),
+  assert(/hasOcrLocationLeaseBudget\(job\)[\s\S]{0,260}callModelForJob/.test(perform),
     "locator must be skipped when its possible provider repair would endanger OCR publication");
 });
 
@@ -1565,7 +1639,7 @@ check("OCR locator failure cannot fail the required transcription commit", () =>
   const backend = read(functionPath);
   const perform = functionSource(backend, "performOcrJob", "performRevisionOcrJob");
   requireEvery(perform, ["OCR_LOCATION_SCHEMA", "ocrLocationPrompt", "timeoutMs: 45000", "location_status", "uncertain_regions", "locationModelMetadata"], "optional OCR location path");
-  assert(/try\s*\{[\s\S]*callStructuredModel\([\s\S]*OCR_LOCATION_SCHEMA[\s\S]*\}\s*catch\s*\(error\)/.test(perform), "locator call must be best effort");
+  assert(/try\s*\{[\s\S]*callModelForJob\([\s\S]*OCR_LOCATION_SCHEMA[\s\S]*\}\s*catch\s*\(error\)/.test(perform), "locator call must be best effort");
   assert(/location unavailable[\s\S]*safeCode/.test(perform), "locator logs must use a stable safe code");
   perform.split("\n").filter((line) => line.includes("console.error")).forEach((line) => {
     assert(!/(imageUrls|uncertainSpans|rawRegions|locationResponse\.data)/.test(line), "locator logs must not include request or response data");
@@ -1674,7 +1748,7 @@ check("rewrite jobs use a stable create-only identity and run the model only in 
     "rewrite job creation must be create-only under its stable job_id");
   assert(/getOne\s*\(\s*JOBS[\s\S]{0,700}(?:existing|idempoten|replay)|(?:existing|idempoten|replay)[\s\S]{0,700}getOne\s*\(\s*JOBS/.test(enqueueSource),
     "same rewrite operation_id must reuse its existing durable job");
-  assert(/await\s+callStructuredModel\s*\(/.test(performSource),
+  assert(/await\s+callModelForJob\s*\(/.test(performSource),
     "performRewriteJob must execute the rewrite-check model");
   requireEvery(performSource, ["student_rewrite_check_v1", "REWRITE_SCHEMA"], "rewrite-job model call");
 });
@@ -2198,7 +2272,7 @@ check("title generation reuses the two review model calls", () => {
   const backend = read(functionPath);
   const performSource = matchingFunctionSource(backend,
     "(?:perform|process|run)[A-Z\\w]*Review[A-Z\\w]*Job", "review-job processor function");
-  const modelCalls = Array.from(performSource.matchAll(/callStructuredModel\s*\(/g));
+  const modelCalls = Array.from(performSource.matchAll(/callModelForJob\s*\(/g));
   assert.strictEqual(modelCalls.length, 2,
     "performReviewJob must keep exactly its standardized and language review calls, with no independent title-generation call");
   assert(!/(?:generate|create|suggest)[A-Z\w]*Title\s*\([^)]*\)[\s\S]{0,500}callStructuredModel/i.test(backend),

@@ -1174,9 +1174,27 @@ All collections are `ADMINONLY`.
   keyed by student plus operation ID. The immutable scope also includes
   Composition revision, mode, and Rubric; cross-scope key reuse is rejected. It
   never contains manuscript text.
+- `writing_model_usage_events` (`ADMINONLY`): append-only provider Token ledger,
+  one row per physical model HTTP attempt. Stable `event_id` is derived from
+  `job_id + job_attempt + stage + provider_call_index`. Rows store the expected
+  call count for that stage so a partially persisted repair pair is detectable,
+  plus telemetry
+  version, student/Composition/job/operation scope, model, protocol, safe
+  provider request ID and HTTP status, `usage_status: recorded|missing`, input,
+  output, total, cached-input, and reasoning-output Token counts. They never
+  contain prompt/manuscript/OCR/feedback text, images, credentials, or endpoint
+  URLs. Missing values remain `null`; the server never estimates them.
 - `writing_teacher_email_events`: metadata-only private delivery outbox. It
-  contains student identity, mode, framework, word count, and Shanghai day, but
-  no prompt, manuscript, sentence, feedback, or image.
+  contains either review-usage metadata or `event_type: model_usage_alert` with
+  safe job type, model/stage list, attempt count, aggregate Token counts, and
+  closed alert reasons. It contains no prompt, manuscript, sentence, feedback,
+  or image. Health alerts stay pending when no teacher recipient is enabled.
+
+New `writing_ai_jobs` rows set `telemetry_version: writing-token-usage-v1`,
+`token_usage_audit_status: pending`, and a sticky
+`token_usage_persistence_error` flag. The worker changes the audit state to
+`complete`, `alert_queued`, or `not_applicable` and stores the aggregate
+`token_usage_summary`; legacy jobs without this version are not audited.
 
 `students.writing_ai_daily_word_limit`, `writing_ai_usage_day`, and
 `writing_ai_words_used_today` store the teacher-controlled limit and current
@@ -1193,8 +1211,11 @@ Required indexes, in addition to CloudBase defaults:
 - `writing_observations`: unique `observation_id`; `student_uid`;
   `composition_id + student_uid`
 - `writing_ai_usage_events`: unique `usage_id`; `usage_id + status`
+- `writing_model_usage_events`: unique `event_id`; `job_id`;
+  `composition_id`; `model + created_at`
 - `writing_teacher_email_events`: unique `event_id`; `status`;
   `event_id + status`
+- `writing_ai_jobs`: additionally `token_usage_audit_status`
 
 `writing_compositions.pending_ocr` may temporarily include `ocr_purpose: writing|prompt`,
 `uncertain_regions`, `location_status`, and `location_model_metadata` in addition to the transcription fields. Each region contains only a server-

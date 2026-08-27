@@ -19,8 +19,10 @@ const COMPOSITIONS = "writing_compositions";
 const UPLOADS = "writing_photo_uploads";
 const OBSERVATIONS = "writing_observations";
 const USAGE = "writing_ai_usage_events";
+const MODEL_USAGE_EVENTS = "writing_model_usage_events";
 const EMAIL_EVENTS = "writing_teacher_email_events";
 const JOBS = "writing_ai_jobs";
+const TOKEN_TELEMETRY_VERSION = "writing-token-usage-v1";
 const DEFAULT_DAILY_WORD_LIMIT = 5000;
 const MAX_COMPOSITION_CHARS = 30000;
 const MAX_PROMPT_CHARS = 10000;
@@ -82,6 +84,93 @@ function randomId(prefix) {
 function stableId(prefix, ...parts) {
   const digest = crypto.createHash("sha256").update(parts.join("\n")).digest("hex").slice(0, 40);
   return `${prefix}_${digest}`;
+}
+
+function summarizeModelUsage(attempts) {
+  const rows = Array.isArray(attempts) ? attempts : [];
+  const sum = (field) => rows.reduce((total, row) => total + (Number.isInteger(row && row[field]) ? row[field] : 0), 0);
+  return {
+    call_count: rows.length,
+    recorded_call_count: rows.filter((row) => row && row.usage_status === "recorded").length,
+    missing_call_count: rows.filter((row) => !row || row.usage_status !== "recorded").length,
+    input_tokens: sum("input_tokens"),
+    output_tokens: sum("output_tokens"),
+    total_tokens: sum("total_tokens"),
+    cached_input_tokens: sum("cached_input_tokens"),
+    reasoning_output_tokens: sum("reasoning_output_tokens"),
+  };
+}
+
+async function persistModelTelemetry(job, stage, telemetry, providerMetadata) {
+  const attempts = telemetry && Array.isArray(telemetry.attempts) ? telemetry.attempts : [];
+  if (!attempts.length) return { ...summarizeModelUsage([]), persistence_failed: true };
+  let persistenceFailed = false;
+  const now = new Date();
+  for (let index = 0; index < attempts.length; index += 1) {
+    const attempt = attempts[index] || {};
+    const eventId = stableId(
+      "writing_model_usage", job.job_id, String(Number(job.attempt_count || 0)), stage, String(index),
+    );
+    const event = {
+      event_id: eventId,
+      telemetry_version: TOKEN_TELEMETRY_VERSION,
+      student_uid: job.student_uid,
+      composition_id: job.composition_id,
+      composition_revision: Number(job.composition_revision || 1),
+      job_id: job.job_id,
+      job_type: job.job_type,
+      operation_id: job.operation_id || null,
+      job_attempt: Number(job.attempt_count || 0),
+      stage,
+      provider_call_index: index,
+      stage_call_count: attempts.length,
+      model: text(attempt.model || providerMetadata && providerMetadata.model, 200),
+      protocol: text(attempt.protocol || providerMetadata && providerMetadata.protocol, 80),
+      provider_host: text(providerMetadata && providerMetadata.provider_host, 300) || null,
+      provider_request_id: text(attempt.provider_request_id, 200) || null,
+      response_status: Number.isInteger(attempt.response_status) ? attempt.response_status : null,
+      outcome: text(attempt.outcome, 80) || "unknown",
+      usage_status: attempt.usage_status === "recorded" ? "recorded" : "missing",
+      input_tokens: Number.isInteger(attempt.input_tokens) ? attempt.input_tokens : null,
+      output_tokens: Number.isInteger(attempt.output_tokens) ? attempt.output_tokens : null,
+      total_tokens: Number.isInteger(attempt.total_tokens) ? attempt.total_tokens : null,
+      cached_input_tokens: Number.isInteger(attempt.cached_input_tokens) ? attempt.cached_input_tokens : null,
+      reasoning_output_tokens: Number.isInteger(attempt.reasoning_output_tokens) ? attempt.reasoning_output_tokens : null,
+      created_at: now,
+    };
+    try {
+      const created = await db.collection(MODEL_USAGE_EVENTS).doc(eventId).create(event);
+      if (created && created.code) throw created;
+    } catch (_error) {
+      try {
+        const existing = await getOne(MODEL_USAGE_EVENTS, { event_id: eventId });
+        if (!existing) persistenceFailed = true;
+      } catch (_readError) {
+        persistenceFailed = true;
+      }
+    }
+  }
+  const summary = summarizeModelUsage(attempts);
+  try {
+    const update = { token_usage_last_recorded_at: now };
+    if (persistenceFailed) update.token_usage_persistence_error = true;
+    await db.collection(JOBS).where({ job_id: job.job_id }).update(update);
+  } catch (_error) {
+    persistenceFailed = true;
+  }
+  return { ...summary, persistence_failed: persistenceFailed };
+}
+
+async function callModelForJob(job, stage, options) {
+  try {
+    const response = await callStructuredModel(options);
+    const summary = await persistModelTelemetry(job, stage, response.telemetry, response.metadata);
+    response.metadata = { ...response.metadata, token_usage: summary };
+    return response;
+  } catch (error) {
+    await persistModelTelemetry(job, stage, error && error.providerTelemetry, null);
+    throw error;
+  }
 }
 
 function revisionJobId(studentUid, compositionId, operationId) {
@@ -844,7 +933,10 @@ async function finishRevisionScanUpload(student, event) {
     dispatch_token: crypto.randomBytes(32).toString("hex"), student_uid: student.auth_uid,
     composition_id: composition.composition_id, composition_revision: Number(composition.revision || 1),
     photo_ids: photoIds, sentence_ids: revisionRequiredUnits(composition).map((item) => item.sentence_id),
-    prompt_bundle_version: PROMPT_BUNDLE_VERSION, status: "queued", attempt_count: 0, error_code: null,
+    prompt_bundle_version: PROMPT_BUNDLE_VERSION,
+    telemetry_version: TOKEN_TELEMETRY_VERSION, token_usage_audit_status: "pending",
+    token_usage_persistence_error: false,
+    status: "queued", attempt_count: 0, error_code: null,
     lease_token: null, lease_until: null, next_retry_at: now, created_at: now, updated_at: now,
     started_at: null, finished_at: null,
   };
@@ -966,6 +1058,9 @@ async function enqueueOcrJob(student, event) {
     photo_ids: photoIds,
     replace_current: event.replace_current === true || rows.some((row) => row.replace_current === true),
     previous_status: composition.status || "draft",
+    telemetry_version: TOKEN_TELEMETRY_VERSION,
+    token_usage_audit_status: "pending",
+    token_usage_persistence_error: false,
     status: "queued",
     attempt_count: 0,
     error_code: null,
@@ -1099,7 +1194,7 @@ async function performOcrJob(student, job) {
   const imageUrls = rows.map((row) => urlMap.get(row.file_id)).filter(Boolean);
   if (imageUrls.length !== rows.length) throw new Error("PHOTO_URL_FAILED");
   const purpose = ocrPurpose(job.ocr_purpose);
-  const ocrResponse = await callStructuredModel({
+  const ocrResponse = await callModelForJob(job, "ocr_transcription", {
     system: ocrPrompt(),
     userText: purpose === "prompt"
       ? "Transcribe the attached writing-task prompt in page order. Return only the required structured result."
@@ -1123,7 +1218,7 @@ async function performOcrJob(student, job) {
   let locationModelMetadata = null;
   if (uncertainSpans.length && imageUrls.length && hasOcrLocationLeaseBudget(job)) {
     try {
-      const locationResponse = await callStructuredModel({
+      const locationResponse = await callModelForJob(job, "ocr_uncertainty_location", {
         system: ocrLocationPrompt(),
         userText: JSON.stringify(uncertainSpans.map((span, spanIndex) => ({ span_index: spanIndex, text: span.text }))),
         schemaName: "writing_ocr_locations_v1",
@@ -1216,7 +1311,7 @@ async function performRevisionOcrJob(student, job) {
   if (imageUrls.length !== rows.length) throw new Error("PHOTO_URL_FAILED");
   const sourceUnits = revisionSourceUnits(composition);
   const allowedNumbers = requiredUnits.map((unit) => revisionUnitNumber(unit)).filter(Number.isInteger);
-  const modelResponse = await callStructuredModel({
+  const modelResponse = await callModelForJob(job, "revision_ocr", {
     system: revisionScanPrompt(), schemaName: "writing_revision_scan_v1", schema: REVISION_SCAN_SCHEMA,
     images: imageUrls, vision: true,
     userText: `ALLOWED_GLOBAL_SENTENCE_NUMBERS_JSON:\n${JSON.stringify(allowedNumbers)}\nSOURCE_SENTENCES_JSON:\n${JSON.stringify(sourceUnits)}\nReturn only candidates visible in the attached pages.`,
@@ -1832,6 +1927,9 @@ async function enqueueReviewJob(student, composition, prepared, event, mode, usa
     rubric_id: prepared.rubric_id || null,
     usage_id: usage.usage_id,
     prompt_bundle_version: PROMPT_BUNDLE_VERSION,
+    telemetry_version: TOKEN_TELEMETRY_VERSION,
+    token_usage_audit_status: "pending",
+    token_usage_persistence_error: false,
     status: "queued",
     attempt_count: 0,
     error_code: null,
@@ -2110,7 +2208,7 @@ async function performReviewJob(student, job) {
   if (rubric && !text(prepared.prompt_text, MAX_PROMPT_CHARS)) throw new Error("WRITING_PROMPT_REQUIRED");
   let review;
   if (job.review_mode === "standardized_content") {
-    const modelResponse = await callStructuredModel({
+    const modelResponse = await callModelForJob(job, "standardized_review", {
       system: standardizedPrompt(rubric), schemaName: "standardized_writing_review_v1", schema: STANDARDIZED_SCHEMA,
       userText: `SELECTED_FRAMEWORK_ID: ${rubric.rubric_id}\nTASK_PROMPT_DATA:\n<task_prompt>${prepared.prompt_text}</task_prompt>\nSTUDENT_MANUSCRIPT_DATA:\n<student_manuscript>${prepared.confirmed_text}</student_manuscript>`,
     });
@@ -2118,7 +2216,7 @@ async function performReviewJob(student, job) {
   } else {
     const units = sentenceUnits(prepared.confirmed_text);
     if (!units.length) throw new Error("MANUSCRIPT_REQUIRED");
-    const modelResponse = await callStructuredModel({
+    const modelResponse = await callModelForJob(job, "language_review", {
       system: languagePrompt(), schemaName: "language_sentence_review_v2", schema: LANGUAGE_SCHEMA,
       userText: `TASK_PROMPT_DATA (may be empty):\n<task_prompt>${prepared.prompt_text || ""}</task_prompt>\nSENTENCE_DATA_JSON:\n${JSON.stringify(units)}`,
     });
@@ -2334,6 +2432,9 @@ async function enqueueRewriteJob(student, composition, event, items) {
     payload_hash: payloadHash,
     sentence_ids: items.map((item) => item.sentence_id),
     prompt_bundle_version: PROMPT_BUNDLE_VERSION,
+    telemetry_version: TOKEN_TELEMETRY_VERSION,
+    token_usage_audit_status: "pending",
+    token_usage_persistence_error: false,
     status: "queued",
     attempt_count: 0,
     error_code: null,
@@ -2438,7 +2539,7 @@ async function performRewriteJob(student, job) {
       student_rewrite: item.text,
     };
   });
-  const checkedResponse = await callStructuredModel({
+  const checkedResponse = await callModelForJob(job, "rewrite_check", {
     system: rewritePrompt(), schemaName: "student_rewrite_check_v1", schema: REWRITE_SCHEMA,
     userText: `COACHING_AND_STUDENT_REWRITE_DATA_JSON:\n${JSON.stringify(coaching)}`,
   });
@@ -2678,7 +2779,8 @@ exports._test = {
   wordCount, sentenceUnits, shanghaiDayKey, dailyLimit, canonicalLanguageResult,
   canonicalStandardizedResult, canonicalRewriteResults, rewriteFeedbackHistory, appendRewriteFeedbackHistory,
   canonicalRevisionScanResult, revisionSourceUnits, canonicalOcrUncertaintyRegions, hasOcrLocationLeaseBudget, roundedToStep,
-  usageMatchesScope, replaceWholeFields, PROMPT_BUNDLE_VERSION, MAX_JOB_ATTEMPTS,
+  usageMatchesScope, replaceWholeFields, summarizeModelUsage, PROMPT_BUNDLE_VERSION, MAX_JOB_ATTEMPTS,
+  TOKEN_TELEMETRY_VERSION,
   isDiscardableEmptyComposition,
-  collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, EMAIL_EVENTS, JOBS },
+  collections: { COMPOSITIONS, UPLOADS, OBSERVATIONS, USAGE, MODEL_USAGE_EVENTS, EMAIL_EVENTS, JOBS },
 };
