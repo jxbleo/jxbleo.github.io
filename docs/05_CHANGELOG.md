@@ -2,6 +2,9 @@
 
 ## 2026-08-28
 
+- Added the current voiceprint enrolment revision and latest Shanghai-time
+  update to the Teacher Speaking target card, making successful replacements
+  visible without a CloudBase console check.
 - Changed the private Speaking AI worker from a timer custom-argument token to
   a strict Tencent timer envelope plus `speakingAiWorker.invoke: false`. This
   matches the current CloudBase trigger editor, keeps browser clients unable to
