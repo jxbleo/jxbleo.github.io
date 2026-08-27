@@ -145,13 +145,22 @@ Parent Mode name-entry request to reach its own server-side session boundary:
 ```json
 {
   "*": { "invoke": "auth != null && auth.loginType != 'ANONYMOUS'" },
-  "parentMode": { "invoke": true }
+  "parentMode": { "invoke": true },
+  "speakingLab": { "invoke": true },
+  "speakingAiWorker": { "invoke": false }
 }
 ```
 
 Do not replace the wildcard rule with a public default. `parentMode` remains
 responsible for generic name-match errors, login throttling, device-bound hashed
 sessions, owned-detail authorization, and peer-data redaction.
+`speakingLab` exposes only `getSharedReport` before its own authenticated-profile
+boundary; that action requires one active, unexpired, server-hashed share token.
+Every Discussion, voiceprint, upload, mapping, report-generation, and share-write
+action still performs its own active student/teacher authorization inside the
+function. `speakingAiWorker` is never client-callable; its timer still runs
+because CloudBase function ACLs do not apply to timer triggers. All Speaking
+collections remain `ADMINONLY`.
 
 CloudBase Anonymous Login must also be enabled for the environment. The current
 Web SDK requires a credential before `callFunction`, even when the function rule
@@ -159,7 +168,9 @@ allows an unauthenticated caller. `parent-mode.js` silently creates that
 temporary SDK identity when no existing login is present; it never asks the
 parent for an account, password, or verification code. The wildcard function
 rule above continues to reject anonymous identities everywhere except
-`parentMode`.
+`parentMode` and `speakingLab`. `speaking-report.js` likewise creates anonymous
+SDK state only when the visitor has no current login; the share token, not the
+anonymous identity, remains the report authority.
 
 Prepare the built-in curated lexicon with the normal content command. To merge
 the 30,000 highest-frequency ECDICT-only records without committing the source
@@ -1146,16 +1157,37 @@ function first, then publish the matching static asset version.
 
 ## Speaking Lab owner-gated rollout
 
-Create the eight `ADMINONLY` Speaking collections and indexes from the
+Create the ten `ADMINONLY` Speaking collections and indexes from the
 implementation plan, configure only the documented `SPEAKING_AI_TEXT_*`,
-`SPEAKING_ASR_*`, `SPEAKING_AI_TIMEOUT_MS`, and
-`SPEAKING_AI_WORKER_CRON_TOKEN` environment names after benchmark approval,
-then deploy `speakingLab` and `speakingAiWorker` together. Configure one
-private one-minute worker timer, run authenticated development smoke tests,
-and only then publish the cache-busted Speaking student/teacher/external
-assets. The local agent may package ZIPs and generate a deploy plan but does
-not create collections, set secrets, configure timers, deploy functions, or
-publish static resources.
+`SPEAKING_ASR_*`, and `SPEAKING_AI_TIMEOUT_MS` environment names after
+benchmark approval, then deploy `speakingLab` and `speakingAiWorker` together.
+Set the environment-level function ACL override for `speakingAiWorker` to
+`{"invoke": false}`. CloudBase documents that timer triggers bypass client
+ACLs, so configure one one-minute timer named `speaking-ai-worker-minute`
+without a custom argument. The worker accepts only that platform timer
+envelope. Run authenticated development smoke tests and only then publish the
+cache-busted Speaking student/teacher/external assets. The local agent may
+package ZIPs and generate a deploy plan but does not create collections, set
+secrets, configure timers, deploy functions, or publish static resources.
+
+Reusable Tencent voiceprints additionally require `speaking_voiceprints` and
+`speaking_voiceprint_events` with the indexes in `docs/04_DATA_MODEL.md`.
+`speakingLab` and `speakingAiWorker` read the CloudBase runtime's existing
+`TENCENTCLOUD_SECRETID`, `TENCENTCLOUD_SECRETKEY`, and optional
+`TENCENTCLOUD_SESSIONTOKEN`; never copy those values into another document,
+browser asset, deploy plan, or Git. Configure non-secret
+`SPEAKING_TENCENT_ASR_REGION` (normally `ap-shanghai`) and
+`SPEAKING_TENCENT_VOICEPRINT_GROUP_ID` (letters/underscore only, for example
+`mrcat_speaking`). `SPEAKING_TENCENT_ASR_ENDPOINT` is optional and defaults to
+the official ASR endpoint. Voiceprint registration can be enabled independently
+of the still-gated speech transcription/text-analysis adapters.
+
+Before static publication, deploy both changed functions together, run one
+owner-authorized VIP test enrol/update/delete, verify the provider locator is
+private, verify no enrolment audio object exists in Storage, then test one
+teacher-created Non-VIP voiceprint and its cleanup. Rollback hides the frontend
+entry first; retain audit rows, delete active Tencent voiceprints through the
+authenticated actions or cleanup worker, and then roll back the functions.
 
 Provider-disabled deployments are expected to return
 `SPEAKING_PROVIDER_NOT_CONFIGURED` without fake reports. Roll back by hiding

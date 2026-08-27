@@ -5,6 +5,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const lab = require("../_shared/speaking-lab");
+const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
 const { createSpeechProvider } = require("./speech-provider");
 const { SPEAKING_REPORT_SCHEMA_VERSION } = require("./schemas");
 const { PROMPT_VERSION } = require("./prompts");
@@ -19,11 +20,15 @@ const REPORTS = "speaking_reports";
 const EVENTS = "speaking_identity_events";
 const SHARES = "speaking_share_links";
 const USAGE = "speaking_model_usage_events";
+const VOICEPRINTS = "speaking_voiceprints";
+const VOICEPRINT_EVENTS = "speaking_voiceprint_events";
 const MAX_TITLE = 120;
 const MAX_PROMPT = 10000;
 const MAX_FILE_BYTES = 120 * 1024 * 1024;
 const MAX_REFERENCE_BYTES = 12 * 1024 * 1024;
 const VOICE_PASSAGE_VERSION = "dse-voice-reference-v1";
+const VOICEPRINT_PASSAGE_VERSION = "dse-reusable-voiceprint-v1";
+const VOICEPRINT_PASSAGE = "Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.";
 
 function now() { return new Date(); }
 function id(prefix) { return `${prefix}_${crypto.randomBytes(16).toString("hex")}`; }
@@ -49,6 +54,31 @@ async function getMany(collection, where, limit = 500) {
 }
 function sortParticipants(rows) {
   return (Array.isArray(rows) ? rows : []).slice().sort((left, right) => new Date(left.created_at || 0) - new Date(right.created_at || 0) || String(left.participant_id || "").localeCompare(String(right.participant_id || "")));
+}
+function voiceprintSubjectKey(participant) {
+  if (!participant) return "";
+  return lab.participantKind(participant) === "guest"
+    ? `guest:${lab.text(participant.participant_id || participant._id, 120)}`
+    : `vip:${lab.text(participant.student_uid, 160)}`;
+}
+function voiceprintStatusView(row) {
+  return {
+    status: row && row.status === "active" ? "active" : "missing",
+    enrollment_revision: row && Number.isInteger(row.enrollment_revision) ? row.enrollment_revision : 0,
+    passage_version: row && row.passage_version || VOICEPRINT_PASSAGE_VERSION,
+    updated_at: row && row.updated_at || null,
+    subject_kind: row && row.subject_kind || null,
+  };
+}
+async function voiceprintForSubject(subjectKey) {
+  if (!subjectKey) return null;
+  return getOne(VOICEPRINTS, { subject_key: subjectKey, status: "active" });
+}
+async function participantsWithVoiceprintStatus(participants) {
+  return Promise.all((Array.isArray(participants) ? participants : []).map(async (participant) => {
+    const profile = await voiceprintForSubject(voiceprintSubjectKey(participant));
+    return { ...participant, reusable_voiceprint_status: profile ? "active" : "missing", reusable_voiceprint_updated_at: profile && profile.updated_at || null };
+  }));
 }
 async function profileForAuth() {
   const user = await app.auth().getUserInfo();
@@ -90,6 +120,8 @@ function participantView(row, actor, discussion, index = 0) {
     mapping_revision: item.mapping_revision,
     voice_reference_status: row.voice_reference_status || "missing",
     voice_reference_passage_version: row.voice_reference_passage_version || VOICE_PASSAGE_VERSION,
+    reusable_voiceprint_status: row.reusable_voiceprint_status || "missing",
+    reusable_voiceprint_updated_at: row.reusable_voiceprint_updated_at || null,
   };
 }
 function discussionView(actor, discussion, participants) {
@@ -166,6 +198,7 @@ async function getDiscussion(actor, event) {
     const inviter = await getOne("students", { auth_uid: candidate.discussion.creator_uid, active: true });
     return { success: true, invitation: { discussion_id: candidate.discussion.discussion_id, title: lab.text(candidate.discussion.title, MAX_TITLE), discussion_date: candidate.discussion.discussion_date || null, inviter_name: lab.normalizeWhitespace(inviter && (inviter.english_name || inviter.name) || "Discussion creator", 160), participants: candidate.participants.map((participant) => ({ participant_id: participant.participant_id, kind: lab.participantKind(participant), display_name: lab.participantKind(participant) === "guest" ? participant.guest_name : participant.display_name_snapshot, invitation_status: participant.invitation_status, is_self: String(participant.student_uid || "") === String(actor.auth_uid || "") })) } };
   }
+  rows.participants = await participantsWithVoiceprintStatus(rows.participants);
   const discussion = discussionView(actor, rows.discussion, rows.participants);
   if (rows.discussion.active_report_version) {
     const report = await getOne(REPORTS, { discussion_id: rows.discussion.discussion_id, report_version: rows.discussion.active_report_version, status: "ready" });
@@ -480,6 +513,10 @@ async function removeParticipant(actor, event) {
     await transaction.collection(PARTICIPANTS).doc(currentParticipant._id || currentParticipant.participant_id).update({ removed_at: changedAt, invitation_status: "removed", updated_at: changedAt });
     await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ participant_count: participantCount, ...(currentDiscussion.duration_source === "default" ? { duration_seconds: lab.durationForParticipantCount(participantCount) } : {}), updated_at: changedAt });
   });
+  if (lab.participantKind(participant) === "guest") {
+    const guestVoiceprint = await voiceprintForSubject(voiceprintSubjectKey(participant));
+    if (guestVoiceprint) await db.collection(VOICEPRINTS).doc(guestVoiceprint._id || guestVoiceprint.voiceprint_profile_id).update({ status: "delete_pending", delete_reason: "PARTICIPANT_REMOVED", delete_requested_at: changedAt, delete_requested_by_uid: actor.auth_uid, updated_at: changedAt });
+  }
   await invalidateShares(rows.discussion.discussion_id);
   return { success: true, removed: true };
 }
@@ -497,8 +534,12 @@ async function startAnalysis(actor, event) {
   const jobId = stable("speaking_analysis_job", rows.discussion.discussion_id, String(discussionRevision), operationId);
   const old = await getOne(JOBS, { job_id: jobId });
   if (old && ["queued", "processing", "succeeded"].includes(old.status)) return { success: true, idempotent_replay: true, job: publicJob(old) };
+  const reusableVoiceprints = (await Promise.all(rows.participants.map(async (participant) => {
+    const profile = await voiceprintForSubject(voiceprintSubjectKey(participant));
+    return profile ? { participant_id: participant.participant_id, voiceprint_profile_id: profile.voiceprint_profile_id, enrollment_revision: Number(profile.enrollment_revision || 0) } : null;
+  }))).filter(Boolean);
   const created = now();
-  const job = { job_id: jobId, operation_id: operationId, job_type: "discussion_analysis", discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision, formal_audio_asset_id: asset.asset_id, reference_asset_ids: rows.participants.map((participant) => participant.voice_reference_asset_id).filter(Boolean), status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION, rubric_version: "dse-group-interaction-v1", provider_config_version: "speaking-provider-v1", created_at: created, updated_at: created, finished_at: null };
+  const job = { job_id: jobId, operation_id: operationId, job_type: "discussion_analysis", discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision, formal_audio_asset_id: asset.asset_id, reference_asset_ids: rows.participants.map((participant) => participant.voice_reference_asset_id).filter(Boolean), reusable_voiceprints: reusableVoiceprints, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION, rubric_version: "dse-group-interaction-v1", provider_config_version: "speaking-provider-v1", created_at: created, updated_at: created, finished_at: null };
   let persistedJob = job;
   let replay = false;
   await db.runTransaction(async (transaction) => {
@@ -642,6 +683,217 @@ async function teacherUpdateVoiceMapping(actor, event) {
   await invalidateShares(rows.discussion.discussion_id, { reason: "VOICE_MAPPING_CHANGED" });
   return { success: true, mapping, mapping_revision: nextRevision };
 }
+
+function publicVoiceprintTarget(subject, profile) {
+  return {
+    target_kind: subject.kind,
+    student_id: subject.kind === "vip" ? subject.student_id || null : null,
+    participant_id: subject.kind === "guest" ? subject.participant_id : null,
+    discussion_id: subject.kind === "guest" ? subject.discussion_id : null,
+    display_name: subject.display_name || (subject.kind === "guest" ? "Non-VIP participant" : "VIP student"),
+    name_not_verified: subject.kind === "guest",
+    voiceprint: voiceprintStatusView(profile),
+    passage: VOICEPRINT_PASSAGE,
+    passage_version: VOICEPRINT_PASSAGE_VERSION,
+  };
+}
+
+function ownVoiceprintSubject(actor) {
+  if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
+  return {
+    kind: "vip",
+    subject_key: `vip:${actor.auth_uid}`,
+    student_uid: actor.auth_uid,
+    student_id: lab.text(actor.student_id, 120),
+    participant_id: null,
+    discussion_id: null,
+    display_name: lab.normalizeWhitespace(actor.english_name || actor.name || "", 160) || "My voiceprint",
+  };
+}
+
+async function teacherVoiceprintSubject(actor, event) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const studentId = lab.normalizeWhitespace(event.student_id, 120);
+  if (studentId) {
+    const profile = await getOne("students", { student_id: studentId, active: true });
+    if (!profile || profile.role !== "student" || !profile.auth_uid) throw new Error("STUDENT_NOT_FOUND");
+    return {
+      kind: "vip",
+      subject_key: `vip:${profile.auth_uid}`,
+      student_uid: profile.auth_uid,
+      student_id: profile.student_id,
+      participant_id: null,
+      discussion_id: null,
+      display_name: lab.normalizeWhitespace(profile.english_name || profile.name || "", 160) || profile.student_id,
+    };
+  }
+  const rows = await authorizedDiscussion(actor, event.discussion_id, false);
+  const participant = rows.participants.find((item) => String(item.participant_id) === String(event.participant_id));
+  if (!participant) throw new Error("PARTICIPANT_NOT_FOUND");
+  if (lab.participantKind(participant) === "vip") {
+    return {
+      kind: "vip",
+      subject_key: `vip:${participant.student_uid}`,
+      student_uid: participant.student_uid,
+      student_id: participant.student_id_snapshot || null,
+      participant_id: null,
+      discussion_id: null,
+      display_name: lab.normalizeWhitespace(participant.display_name_snapshot || "", 160) || "VIP student",
+    };
+  }
+  return {
+    kind: "guest",
+    subject_key: `guest:${participant.participant_id}`,
+    student_uid: null,
+    student_id: null,
+    participant_id: participant.participant_id,
+    discussion_id: rows.discussion.discussion_id,
+    display_name: lab.displayGuestName(participant.guest_name || participant.display_name_snapshot) || "Non-VIP participant",
+  };
+}
+
+async function getMyVoiceprint(actor) {
+  const subject = ownVoiceprintSubject(actor);
+  const profile = await voiceprintForSubject(subject.subject_key);
+  return { success: true, target: publicVoiceprintTarget(subject, profile), provider_configured: voiceprintProvider.configured() };
+}
+
+async function teacherGetVoiceprintTarget(actor, event) {
+  const subject = await teacherVoiceprintSubject(actor, event);
+  const profile = await voiceprintForSubject(subject.subject_key);
+  return { success: true, target: publicVoiceprintTarget(subject, profile), provider_configured: voiceprintProvider.configured() };
+}
+
+async function appendVoiceprintEvent(transaction, values) {
+  const eventId = values.event_id || id("voiceprint_event");
+  await transaction.collection(VOICEPRINT_EVENTS).doc(eventId).create({ event_id: eventId, ...values });
+  return eventId;
+}
+
+async function saveVoiceprint(actor, event, teacherMode) {
+  const subject = teacherMode ? await teacherVoiceprintSubject(actor, event) : ownVoiceprintSubject(actor);
+  if (event.consent_confirmed !== true) throw new Error("VOICEPRINT_CONSENT_REQUIRED");
+  const operationId = lab.stableOperationId(event.operation_id);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const priorEvent = await getOne(VOICEPRINT_EVENTS, { operation_id: operationId, subject_key: subject.subject_key });
+  if (priorEvent) {
+    const replayProfile = await voiceprintForSubject(subject.subject_key);
+    if (replayProfile) return { success: true, idempotent_replay: true, target: publicVoiceprintTarget(subject, replayProfile) };
+  }
+  const audio = voiceprintProvider.validateWavBase64(event.audio_base64);
+  const providerGroupId = voiceprintProvider.groupId();
+  const existing = await getOne(VOICEPRINTS, { subject_key: subject.subject_key });
+  const profileId = existing && existing.voiceprint_profile_id || stable("speaking_voiceprint", subject.subject_key);
+  const updating = Boolean(existing && existing.status === "active" && existing.provider_voiceprint_id);
+  let providerResult;
+  try {
+    providerResult = updating
+      ? await voiceprintProvider.update({ audioBase64: audio.base64, voiceprintId: existing.provider_voiceprint_id, subjectKey: subject.subject_key })
+      : await voiceprintProvider.enroll({ audioBase64: audio.base64, subjectKey: subject.subject_key, group: providerGroupId });
+  } catch (error) {
+    throw new Error(error && error.code || "VOICEPRINT_PROVIDER_FAILED");
+  }
+  const changedAt = now();
+  const nextRevision = Number(existing && existing.enrollment_revision || 0) + 1;
+  const row = {
+    voiceprint_profile_id: profileId,
+    subject_key: subject.subject_key,
+    subject_kind: subject.kind,
+    student_uid: subject.student_uid,
+    participant_id: subject.participant_id,
+    discussion_id: subject.discussion_id,
+    provider: "tencent_asr",
+    provider_voiceprint_id: providerResult.voiceprintId,
+    provider_group_id: providerGroupId,
+    status: "active",
+    passage_version: VOICEPRINT_PASSAGE_VERSION,
+    sample_duration_ms: audio.durationMs,
+    enrollment_revision: nextRevision,
+    consent_source: teacherMode ? "teacher_in_person_confirmation" : "student_self_confirmation",
+    enrolled_by_uid: actor.auth_uid,
+    enrolled_at: existing && existing.enrolled_at || changedAt,
+    updated_at: changedAt,
+    deleted_at: null,
+    deleted_by_uid: null,
+    last_provider_request_id: providerResult.requestId || null,
+    last_operation_id: operationId,
+  };
+  try {
+    await db.runTransaction(async (transaction) => {
+      const currentResult = await transaction.collection(VOICEPRINTS).where({ subject_key: subject.subject_key }).limit(1).get();
+      const current = currentResult.data && currentResult.data[0];
+      if (updating && (!current || current.status !== "active" || String(current.provider_voiceprint_id || "") !== String(existing.provider_voiceprint_id || "") || Number(current.enrollment_revision || 0) !== Number(existing.enrollment_revision || 0))) throw new Error("VOICEPRINT_STALE");
+      if (!updating && current && current.status === "active" && current.provider_voiceprint_id) throw new Error("VOICEPRINT_STALE");
+      if (current) await transaction.collection(VOICEPRINTS).doc(current._id || current.voiceprint_profile_id).update(row);
+      else await transaction.collection(VOICEPRINTS).doc(profileId).create({ ...row, created_at: changedAt });
+      await appendVoiceprintEvent(transaction, {
+        operation_id: operationId,
+        voiceprint_profile_id: profileId,
+        subject_key: subject.subject_key,
+        subject_kind: subject.kind,
+        participant_id: subject.participant_id,
+        discussion_id: subject.discussion_id,
+        event_type: updating ? "updated" : "enrolled",
+        enrollment_revision: nextRevision,
+        actor_uid: actor.auth_uid,
+        actor_role: actor.role,
+        provider: "tencent_asr",
+        provider_request_id: providerResult.requestId || null,
+        created_at: changedAt,
+      });
+    });
+  } catch (error) {
+    if (!updating) {
+      try { await voiceprintProvider.remove({ voiceprintId: providerResult.voiceprintId }); } catch (_cleanupError) { /* provider orphan is owner-auditable through request id */ }
+    }
+    throw error;
+  }
+  return { success: true, target: publicVoiceprintTarget(subject, row) };
+}
+
+async function deleteVoiceprint(actor, event, teacherMode) {
+  const subject = teacherMode ? await teacherVoiceprintSubject(actor, event) : ownVoiceprintSubject(actor);
+  const profile = await voiceprintForSubject(subject.subject_key);
+  if (!profile) return { success: true, idempotent_replay: true, target: publicVoiceprintTarget(subject, null) };
+  const operationId = lab.stableOperationId(event.operation_id);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  let providerRequestId = null;
+  try {
+    const removed = await voiceprintProvider.remove({ voiceprintId: profile.provider_voiceprint_id });
+    providerRequestId = removed.requestId || null;
+  } catch (error) {
+    if (!error || error.code !== "VOICEPRINT_NOT_FOUND") throw new Error(error && error.code || "VOICEPRINT_PROVIDER_FAILED");
+  }
+  const changedAt = now();
+  await db.runTransaction(async (transaction) => {
+    const currentResult = await transaction.collection(VOICEPRINTS).where({ subject_key: subject.subject_key }).limit(1).get();
+    const current = currentResult.data && currentResult.data[0];
+    if (!current || current.status !== "active") return;
+    if (String(current.provider_voiceprint_id || "") !== String(profile.provider_voiceprint_id || "")) throw new Error("VOICEPRINT_STALE");
+    await transaction.collection(VOICEPRINTS).doc(current._id || current.voiceprint_profile_id).update({
+      status: "deleted", provider_voiceprint_id: null, provider_group_id: null,
+      deleted_at: changedAt, deleted_by_uid: actor.auth_uid, updated_at: changedAt,
+      last_provider_request_id: providerRequestId, last_operation_id: operationId,
+    });
+    await appendVoiceprintEvent(transaction, {
+      operation_id: operationId,
+      voiceprint_profile_id: current.voiceprint_profile_id,
+      subject_key: subject.subject_key,
+      subject_kind: subject.kind,
+      participant_id: subject.participant_id,
+      discussion_id: subject.discussion_id,
+      event_type: "deleted",
+      enrollment_revision: Number(current.enrollment_revision || 0),
+      actor_uid: actor.auth_uid,
+      actor_role: actor.role,
+      provider: "tencent_asr",
+      provider_request_id: providerRequestId,
+      created_at: changedAt,
+    });
+  });
+  return { success: true, target: publicVoiceprintTarget(subject, null) };
+}
+
 async function invalidateShares(discussionId, options = {}) {
   const shares = await getMany(SHARES, { discussion_id: discussionId }, 200);
   const active = shares.filter((item) => item.status === "active" && (!options.predicate || options.predicate(item)));
@@ -713,6 +965,8 @@ async function deleteDiscussion(actor, event) {
   await db.collection(DISCUSSIONS).doc(rows.discussion._id || rows.discussion.discussion_id).update({ deleted_at: deletedAt, deleted_by_teacher_uid: actor.auth_uid, analysis_status: "not_ready", updated_at: deletedAt });
   const assets = await getMany(ASSETS, { discussion_id: rows.discussion.discussion_id }, 200);
   for (const asset of assets.filter((item) => !item.deleted_at)) await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ delete_after: deletedAt, updated_at: deletedAt });
+  const guestVoiceprints = await getMany(VOICEPRINTS, { discussion_id: rows.discussion.discussion_id, subject_kind: "guest", status: "active" }, 20);
+  for (const profile of guestVoiceprints) await db.collection(VOICEPRINTS).doc(profile._id || profile.voiceprint_profile_id).update({ status: "delete_pending", delete_reason: "DISCUSSION_DELETED", delete_requested_at: deletedAt, delete_requested_by_uid: actor.auth_uid, updated_at: deletedAt });
   await invalidateShares(rows.discussion.discussion_id, { reason: "DISCUSSION_DELETED" });
   return { success: true, deleted: true };
 }
@@ -725,6 +979,9 @@ function friendlyMessage(code) {
     DURATION_INVALID: "Choose a recording time from 180 to 1800 seconds.", RECORDING_SETUP_LOCKED: "Recording setup is locked after the formal audio is uploaded.",
     AUDIO_REQUIRED: "Upload the formal Discussion recording first.", AUDIO_FILE_INVALID: "Choose a supported audio file.", AUDIO_UPLOAD_INCOMPLETE: "The audio upload is incomplete. Retry the same upload.",
     IDEMPOTENCY_KEY_REUSED: "That upload request was already used for a different file. Start a new upload.", VOICE_REFERENCE_LOCKED: "This Voice Reference is locked. Ask a teacher to reopen it.",
+    SPEAKING_VOICEPRINT_NOT_CONFIGURED: "Tencent voiceprint registration is not configured yet.", VOICEPRINT_CONSENT_REQUIRED: "Confirm consent before registering this reusable voiceprint.",
+    VOICEPRINT_AUDIO_INVALID: "Record the voiceprint with this page for a clear 16 kHz mono WAV sample.", VOICEPRINT_AUDIO_DURATION_INVALID: "The voiceprint sample must be between 8 and 30 seconds.", VOICEPRINT_NO_HUMAN_VOICE: "Tencent could not find enough clear speech. Move closer and record again.",
+    VOICEPRINT_CAPACITY_REACHED: "The Tencent voiceprint library has reached its current capacity.", VOICEPRINT_PROVIDER_UNAVAILABLE: "Tencent voiceprint service is temporarily unavailable. Please try again.", VOICEPRINT_PROVIDER_INVALID_RESPONSE: "Tencent returned an invalid voiceprint response. Please try again.", VOICEPRINT_PROVIDER_FAILED: "Tencent could not save this voiceprint. Please record again.", VOICEPRINT_NOT_FOUND: "This voiceprint no longer exists at Tencent. Record it again.", VOICEPRINT_STALE: "This voiceprint changed in another session. Refresh before trying again.",
     SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
     SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
     VOICE_DISPUTE_LOCKED: "Your voice concern is waiting for a teacher. Only a teacher can change the mapping now.",
@@ -741,6 +998,12 @@ exports.main = async (event = {}) => {
     const actor = await profileForAuth();
     if (action === "listDiscussions") return await listDiscussions(actor, event);
     if (action === "getDiscussion") return await getDiscussion(actor, event);
+    if (action === "getMyVoiceprint") return await getMyVoiceprint(actor);
+    if (action === "saveMyVoiceprint") return await saveVoiceprint(actor, event, false);
+    if (action === "deleteMyVoiceprint") return await deleteVoiceprint(actor, event, false);
+    if (action === "teacherGetVoiceprintTarget") return await teacherGetVoiceprintTarget(actor, event);
+    if (action === "teacherSaveVoiceprint") return await saveVoiceprint(actor, event, true);
+    if (action === "teacherDeleteVoiceprint") return await deleteVoiceprint(actor, event, true);
     if (action === "createDiscussion") return await createDiscussion(actor, event);
     if (action === "addVipParticipant") return await addParticipant(actor, event, "vip");
     if (action === "addGuestParticipant") return await addParticipant(actor, event, "guest");
@@ -770,6 +1033,6 @@ exports.main = async (event = {}) => {
 };
 
 exports._test = {
-  friendlyMessage, publicJob, participantView, discussionView, replaceFields,
-  constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICE_PASSAGE_VERSION },
+  friendlyMessage, publicJob, participantView, discussionView, replaceFields, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget,
+  constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
 };

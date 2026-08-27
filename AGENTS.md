@@ -1882,17 +1882,32 @@ short so future agents can avoid repeating the same first-pass mistakes.
 
 Speaking Lab is limited to DSE Paper 4 Part A Group Interaction. Keep its
 Discussion, participant, private audio, durable-job, report, identity-event,
-share, and usage collections `ADMINONLY`; derive every access decision from
-the authenticated UID and active profile. Student ID is a lookup input only.
-Voice identity is Discussion-scoped with no permanent voiceprint; formal audio
-is private and Voice Reference files are deleted seven days after successful
-matching. Student shares require the caller's current voice confirmation;
+share, usage, reusable-voiceprint, and voiceprint-event collections
+`ADMINONLY`; derive every access decision from the authenticated UID and active
+profile, except the external `getSharedReport` action, whose sole authority is
+one active, unexpired, server-hashed share token. The function gateway may allow
+anonymous `speakingLab` invocation only because every other action enforces its
+own active profile boundary. Student ID is a lookup input only. A reusable Tencent voiceprint for a
+VIP is keyed by authenticated UID; a Guest voiceprint is keyed only by that
+Discussion's participant row and never creates a Guest account or
+cross-Discussion identity. The enrolment WAV is sent directly to Tencent and
+must not be stored as an application audio asset; retain only the private
+provider locator, scope, revision, consent source, and audit metadata. Formal
+audio is private and fallback Voice Reference files are deleted seven days
+after successful matching. Student shares require the caller's current voice confirmation;
 Teacher shares are server-built with explicit name-selection redaction. Public
 links store only a SHA-256 token hash and return `SHARE_NOT_AVAILABLE` for
 missing, expired, or revoked links. Production speech/text providers must fail
-closed with `SPEAKING_PROVIDER_NOT_CONFIGURED`; test fixtures never enter a
-browser or production route. Package/deploy and timer/provider configuration
-remain owner-gated. See
+closed with `SPEAKING_PROVIDER_NOT_CONFIGURED`; Tencent voiceprint actions fail
+closed with `SPEAKING_VOICEPRINT_NOT_CONFIGURED`. Test fixtures never enter a
+browser or production route. Students may enrol/update/delete only their own
+VIP voiceprint; teachers may manage a VIP by Student ID or any participant in a
+Discussion. Package/deploy and timer/provider configuration remain owner-gated. See
+
+`speakingAiWorker` must have the environment-level function ACL override
+`{"invoke": false}`. CloudBase timer triggers bypass client ACLs, so the worker
+accepts only the exact `Timer` event for `speaking-ai-worker-minute`; do not make
+the worker client-callable or replace this boundary with a browser-visible token.
 `docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`.
 
 ### Intensive Listening Library invariants

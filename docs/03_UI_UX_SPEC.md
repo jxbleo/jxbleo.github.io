@@ -2411,8 +2411,20 @@ report, voice confirmation, and Student Share controls. The browser holds a
 recording only in memory until upload and never writes audio to browser
 storage. A microphone denial always leaves the file-upload path available.
 
+Above the Discussion list, `My voiceprint` shows `not set up`, `ready`, or a
+provider-unavailable message. Set up and update use one explicit consent
+checkbox, the fixed English passage, an 8–20 second recorder, live elapsed time,
+and a direct save state; no arbitrary audio-file upload is offered for reusable
+voiceprints. The student may remove their own reusable voiceprint. A ready
+voiceprint is described as automatic matching support, never identity proof.
+
 Teacher Speaking is a separate workspace view with paged Discussions, identity
 mapping review, per-participant name selection, and explicit share generation.
+Its Voiceprint Setup accepts an exact VIP Student ID and records on the current
+teacher device. Every Discussion roster row also provides Record/Update
+Voiceprint, including a Non-VIP row labelled `Name not verified`; teacher
+enrolment requires confirmation that the person is present and agrees. The same
+single recorder is reused so two microphones cannot be active simultaneously.
 The external report page is `noindex,nofollow`, has no audio/download controls,
 and renders only the server-redacted snapshot. Loading, failed, expired, and
 revoked states use the same safe share error; reduced motion removes

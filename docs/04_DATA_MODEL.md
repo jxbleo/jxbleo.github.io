@@ -1239,14 +1239,36 @@ lease/retry metadata, asset IDs, safe errors and schema versions only);
 and DSE payload without participant names); `speaking_identity_events`
 (append-only mapping/confirmation audit); `speaking_share_links` (SHA-256
 token hash, snapshot kind/selection, immutable redacted payload, expiry and
-revocation); and `speaking_model_usage_events` (one safe metadata ledger row
-per physical provider call).
+revocation); `speaking_model_usage_events` (one safe metadata ledger row
+per physical provider call); `speaking_voiceprints` (one private reusable
+provider locator and lifecycle per subject); and `speaking_voiceprint_events`
+(append-only enrol/update/delete consent and actor audit).
+
+`speaking_voiceprints` fields are top-level: unique `voiceprint_profile_id` and
+`subject_key`; `subject_kind` (`vip` or `guest`); VIP `student_uid` or scoped
+Guest `participant_id` plus `discussion_id`; `provider: "tencent_asr"`;
+private `provider_voiceprint_id` and `provider_group_id`; `status` (`active`,
+`delete_pending`, or `deleted`); passage/sample metadata; monotonic
+`enrollment_revision`; consent source; enrolling/deleting actor UIDs; provider
+request ID; stable last operation ID; and timestamps. A deleted row clears the
+provider locator but preserves lifecycle metadata.
+
+`speaking_voiceprint_events` fields are top-level: unique `event_id`;
+`operation_id`; voiceprint profile/subject/scope locators; `event_type`
+(`enrolled`, `updated`, or `deleted`); enrollment revision; actor UID/role;
+provider and request ID; and `created_at`. It never contains a name, WAV,
+base64 data, transcript, embedding, score, or provider response body.
 
 Required uniqueness/index coverage includes Discussion/participant/asset/job/
 report/share/event IDs, Discussion plus participant scope, job status plus
 retry/lease times, asset status plus expiry, and share status plus expiry. Raw
-tokens, credentials, embeddings, audio URLs, names in report evidence, and
-provider responses are not stored. Voice Reference assets receive
+tokens, credentials, embeddings, enrolment audio/base64, audio URLs, names in
+report evidence, and provider responses are not stored. Add a unique
+`speaking_voiceprints.subject_key` index, unique voiceprint profile ID, status
+plus Discussion/subject-kind cleanup index, unique voiceprint-event ID, unique
+subject-key plus operation-ID event index, and subject-key plus created-time
+audit index. Voice Reference assets receive a seven-day `delete_after` after
+successful matching; reusable enrolment audio is never an asset.
 
 ## Intensive Listening Library additions
 

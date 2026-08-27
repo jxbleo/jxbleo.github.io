@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-2">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
@@ -355,6 +355,11 @@
                 <section class="dashboard-view" id="view-speaking" hidden>
                     <section class="speaking-lab-main teacher-speaking-main">
                         <div class="speaking-lab-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1>Speaking</h1><p>Review Discussions, identity mappings, and safe share snapshots.</p></div></div>
+                        <section class="speaking-voiceprint-card" aria-labelledby="teacher-voiceprint-title">
+                            <div><p class="eyebrow accent">VOICEPRINT SETUP</p><h2 id="teacher-voiceprint-title">Record a VIP voiceprint</h2><p>Ask the student to read on this device. Non-VIP voiceprints are recorded from their Discussion participant row.</p></div>
+                            <div class="teacher-voiceprint-search"><label>Student ID<input id="teacher-voiceprint-student-id" autocomplete="off"></label><button class="outline-button" id="teacher-voiceprint-find" type="button">Find student</button></div>
+                        </section>
+                        <section id="teacher-voiceprint-target" class="speaking-upload-panel" hidden></section>
                         <p class="speaking-banner" id="teacher-speaking-message" role="status" aria-live="polite"></p>
                         <section class="speaking-list" id="teacher-speaking-list"><div class="speaking-detail-card">Select Speaking to load Discussions.</div></section>
                         <section class="speaking-detail" id="teacher-speaking-detail" hidden></section>
@@ -434,12 +439,13 @@
     </section>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260815-1"></script>
+    <script src="assets/js/config.public.js?v=20260827-2"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher.js?v=20260817-2"></script>
-    <script src="assets/js/teacher-speaking.js?v=20260827-1"></script>
+    <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
+    <script src="assets/js/teacher-speaking.js?v=20260827-2"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260810-2"></script>
 </body>
 </html>

@@ -72,8 +72,8 @@ do not silently broaden this feature to repair unrelated code.
 Speaking Lab V1 lets an authenticated student create one HKDSE Group
 Interaction Discussion, invite other system students by exact Student ID, add
 session-only Guest Participants, record or upload the Formal Discussion audio,
-record separate Voice References on any authorized participant's device, and
-receive a durable AI report.
+register reusable Tencent voiceprints or record Discussion-scoped Voice
+References on an authorized device, and receive a durable AI report.
 
 The report is generated immediately under anonymous Speaker labels. VIP names
 appear only after the corresponding student confirms `This is my voice` or a
@@ -135,7 +135,8 @@ The executor must not reopen or reinterpret these decisions.
    report access, or share authority. A Guest sees data only if someone sends an
    external snapshot link.
 9. Guest records are Discussion-scoped. Do not create a Guest directory, reuse
-   Voice References, match Guests across Discussions, or create pseudo-accounts.
+   Voice References or Guest voiceprints across Discussions, match Guests
+   across Discussions, or create pseudo-accounts.
 10. Guest entered names are editable after recording without re-running voice
     matching. A Guest name must not duplicate an existing visible participant
     label after case/whitespace normalization; the UI asks for a suffix such as
@@ -145,33 +146,41 @@ The executor must not reopen or reinterpret these decisions.
 
 ### 2.3 Voice identity
 
-1. Every participant uses a new Voice Reference for every Discussion.
-2. A Voice Reference is a separate 15–20 second recording of a fixed English
-   passage supplied by the system. It is never part of DSE scoring.
-3. Any accepted VIP device may record a missing/failed Voice Reference for any
+1. A VIP may explicitly register one reusable Tencent voiceprint from the
+   student page; a teacher may register or replace a VIP voiceprint by Student
+   ID or roster row. The VIP voiceprint follows `auth_uid` across Discussions.
+2. A teacher may register a Guest voiceprint, but it is keyed only to that
+   Discussion's `participant_id`, remains unverified, and is deleted when the
+   participant or Discussion is deleted.
+3. Reusable enrolment uses the fixed passage, explicit consent, and an 8–20
+   second browser-created 16 kHz/16-bit/mono WAV sent directly to Tencent. The
+   application never stores that WAV, its base64 form, or an embedding.
+4. A Voice Reference remains a separate 15–20 second Discussion-scoped fallback
+   recording of the same fixed passage. It is never part of DSE scoring.
+5. Any accepted VIP device may record a missing/failed Voice Reference for any
    listed participant. A Guest uses a VIP's logged-in device.
-4. Successful Voice References cannot be replaced by a student after matching.
+6. Successful Voice References cannot be replaced by a student after matching.
    A failed/unclear sample may be reopened. A teacher may always reopen it.
-5. ASR diarization creates stable internal Speaker Tracks such as `spk_01`; it
+7. ASR diarization creates stable internal Speaker Tracks such as `spk_01`; it
    does not create participant identity.
-6. Voice matching proposes a one-to-one participant/Speaker association. It is
-   not legal identity verification and does not create a permanent voiceprint.
-7. A VIP hears the sample registered to them and a short matched Formal
+8. Voice matching proposes a one-to-one participant/Speaker association from a
+   reusable voiceprint or Voice Reference. It is not legal identity verification.
+9. A VIP hears the relevant sample when available and a short matched Formal
    Discussion excerpt. They choose `This is my voice` or `This isn't my voice`.
-8. `This is my voice` confirms only that VIP's current mapping.
-9. `This isn't my voice` opens an identity dispute; it does not let the student
+10. `This is my voice` confirms only that VIP's current mapping.
+11. `This isn't my voice` opens an identity dispute; it does not let the student
    select another Speaker or edit any mapping.
-10. A teacher has highest authority, may change or re-lock mappings repeatedly,
+12. A teacher has highest authority, may change or re-lock mappings repeatedly,
     and every change creates an audit event and report revision.
-11. Until student confirmation or teacher lock, the VIP is displayed only as a
+13. Until student confirmation or teacher lock, the VIP is displayed only as a
     Speaker label inside report and share projections, including the teacher's
     report preview. The private roster, invitation, Voice Reference target card,
     and teacher mapping editor still show the trusted roster name so users can
     record and correct the intended participant; those roster names never enter
     an anonymous report/share projection automatically.
-12. Guests do not confirm or dispute Voice Matches. Their entered names remain
+14. Guests do not confirm or dispute Voice Matches. Their entered names remain
     explicitly unverified.
-13. A low-confidence or unmatched voice is not forced onto a participant. It is
+15. A low-confidence or unmatched voice is not forced onto a participant. It is
     a `Possible non-candidate voice`, excluded from Candidate evaluation.
 
 ### 2.4 Audio and retention
@@ -186,7 +195,10 @@ The executor must not reopen or reinterpret these decisions.
    whole-Discussion deletion. Students cannot download it.
 5. Voice Reference files are deleted seven days after successful matching.
    Retain only the mapping, confirmation/audit state, and safe quality metadata.
-6. Browser playback is best-effort protected: no download controls, no external
+6. Reusable enrolment audio is never stored by the application. Tencent retains
+   the provider-side voice template until an authorized delete; application
+   rows retain only the private provider locator and lifecycle/audit metadata.
+7. Browser playback is best-effort protected: no download controls, no external
    link exposure, strict authorization, and very short-lived internal URLs.
    Do not claim a browser stream is technically impossible to capture.
 
@@ -231,7 +243,7 @@ Do not add these to V1 unless the owner later changes scope:
 - pronunciation, accent, phoneme, fluency, or prosody scoring;
 - official DSE score prediction;
 - body-language or camera analysis;
-- permanent student voiceprints or cross-Discussion speaker recognition;
+- automatic real-name publication without student confirmation or teacher lock;
 - Guest accounts, Guest invitations, Guest login, Guest history, or Guest share
   links;
 - direct video upload/transcoding;
@@ -519,6 +531,11 @@ Metadata-only durable queue:
   "discussion_revision": 1,
   "formal_audio_asset_id": "asset-id-or-null",
   "reference_asset_ids": [],
+  "reusable_voiceprints": [{
+    "participant_id": "participant-id",
+    "voiceprint_profile_id": "private-profile-id",
+    "enrollment_revision": 1
+  }],
   "status": "queued",
   "stage": "audio_quality",
   "attempt_count": 0,
@@ -733,6 +750,57 @@ Indexes:
 - `discussion_id`;
 - `model + created_at`.
 
+### 6.9 `speaking_voiceprints`
+
+One reusable Tencent provider locator per scoped subject:
+
+```json
+{
+  "voiceprint_profile_id": "speaking_voiceprint_<stable-id>",
+  "subject_key": "vip:<auth_uid>|guest:<participant_id>",
+  "subject_kind": "vip",
+  "student_uid": "auth-uid-or-null",
+  "participant_id": null,
+  "discussion_id": null,
+  "provider": "tencent_asr",
+  "provider_voiceprint_id": "private-provider-locator",
+  "provider_group_id": "mrcat_speaking",
+  "status": "active",
+  "passage_version": "dse-reusable-voiceprint-v1",
+  "sample_duration_ms": 15000,
+  "enrollment_revision": 1,
+  "consent_source": "student_self_confirmation",
+  "enrolled_by_uid": "actor-uid",
+  "enrolled_at": "Date",
+  "updated_at": "Date",
+  "deleted_at": null
+}
+```
+
+VIP subject keys use only authenticated UID. Guest subject keys use only the
+current Discussion participant ID. No enrolment WAV/base64, name, Student ID,
+embedding, or provider response body enters this row. Deletion clears the
+provider locator and retains private lifecycle metadata.
+
+Indexes:
+
+- unique `voiceprint_profile_id`;
+- unique `subject_key`;
+- `status + subject_kind + discussion_id`.
+
+### 6.10 `speaking_voiceprint_events`
+
+Append-only enrol/update/delete audit with unique `event_id`, operation/profile/
+subject locators, subject kind and Guest scope, event type, enrollment revision,
+actor UID/role, provider/request ID, and `created_at`. It contains no audio,
+name, Student ID, template, embedding, score, transcript, or raw response.
+
+Indexes:
+
+- unique `event_id`;
+- unique `subject_key + operation_id`;
+- `subject_key + created_at`.
+
 ## 7. Cloud function boundaries
 
 Create two functions. Keep Discussion business logic in a pure shared module so
@@ -762,6 +830,9 @@ Student actions:
 - `getVoiceConfirmationPlayback`;
 - `createStudentShare`;
 - `revokeOwnStudentShare`.
+- `getMyVoiceprint`;
+- `saveMyVoiceprint` for the authenticated student's own UID only;
+- `deleteMyVoiceprint` for the authenticated student's own UID only.
 
 Teacher actions:
 
@@ -774,6 +845,9 @@ Teacher actions:
 - `createTeacherShare`;
 - `revokeTeacherShare`;
 - `teacherDeleteDiscussion` with a separate confirmation boundary.
+- `teacherGetVoiceprintTarget` by exact Student ID or current participant row;
+- `teacherSaveVoiceprint` for a VIP or current Discussion Guest;
+- `teacherDeleteVoiceprint` for the same authorized target scopes.
 
 Public token action:
 
@@ -791,8 +865,12 @@ Internal worker action:
 
 ### 7.2 `speakingAiWorker`
 
-One-minute timer worker. It requires `SPEAKING_AI_WORKER_CRON_TOKEN` from a
-CloudBase-only environment value and a matching timer CustomArgument.
+One-minute timer worker. The environment-level function ACL must set
+`speakingAiWorker.invoke` to `false`, which blocks every browser SDK call while
+CloudBase timer triggers continue to run. Accept only the standard timer event
+whose `Type` is `Timer`, `TriggerName` is `speaking-ai-worker-minute`, and
+`Time` is parseable. The current CloudBase trigger editor does not expose a
+custom argument, so this worker deliberately has no timer token.
 
 Responsibilities:
 
@@ -801,9 +879,10 @@ Responsibilities:
 3. mark attempt-exhausted jobs failed with safe codes;
 4. delete expired unconfirmed uploads;
 5. delete Voice Reference files after `delete_after`;
-6. expire share-link rows;
-7. audit missing provider usage events without logging private data;
-8. never generate a report itself inside the timer request; dispatch to the
+6. delete provider-side Guest voiceprints after participant/Discussion removal;
+7. expire share-link rows;
+8. audit missing provider usage events without logging private data;
+9. never generate a report itself inside the timer request; dispatch to the
    private processor and return promptly.
 
 ### 7.3 Pure shared module
@@ -1008,13 +1087,15 @@ and validate them with the owner's real recordings in section 15.
 
 ### 9.4 Independent identity matching
 
-Whenever both stable Speaker Tracks and at least one usable Voice Reference
-exist, create/replay an `identity_match` job. It may run after the report is
-ready.
+Whenever stable Speaker Tracks and at least one usable reusable voiceprint or
+Voice Reference exist, create/replay an `identity_match` job. It may run after
+the report is ready.
 
 Rules:
 
-- compare only references and tracks from the same Discussion;
+- compare only identities authorized for the current roster: VIP reusable
+  voiceprints by `auth_uid`, Guest reusable voiceprints by current
+  `participant_id`, and Voice References from the same Discussion;
 - solve a one-to-one assignment; never map two participants to one Speaker;
 - require a tested confidence and separation margin over the next-best match;
 - uncertain rows remain `unmatched` rather than guessed;
@@ -1075,6 +1156,18 @@ provider adapter passes section 15. A deterministic fixture adapter may be
 injected only by unit tests; never expose a browser `demo=1` or environment flag
 that produces fake student reports.
 
+#### 10.1a Reusable Tencent voiceprint adapter
+
+`cloudfunctions/_shared/tencent-asr-voiceprint.js` uses Tencent ASR API version
+`2019-06-14` and TC3-HMAC-SHA256 signing for `VoicePrintEnroll`,
+`VoicePrintUpdate`, `VoicePrintDelete`, `VoicePrintVerify`, and
+`VoicePrintGroupVerify`. It reads the runtime-provided Tencent credential names
+plus optional non-secret `SPEAKING_TENCENT_ASR_REGION`,
+`SPEAKING_TENCENT_VOICEPRINT_GROUP_ID`, and endpoint override. It fails closed
+with `SPEAKING_VOICEPRINT_NOT_CONFIGURED`, validates the WAV before any call,
+uses an opaque hashed nickname, and returns only safe normalized IDs, scores,
+decision, duration, and request ID. Never log the payload or raw response.
+
 ### 10.2 DSE report model interface
 
 Create a separate OpenAI-compatible structured-text adapter using only
@@ -1089,7 +1182,6 @@ Required environment names, documented without values:
 - `SPEAKING_AI_TEXT_PROTOCOL`
 - `SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS`
 - `SPEAKING_AI_TIMEOUT_MS`
-- `SPEAKING_AI_WORKER_CRON_TOKEN`
 - speech-provider-specific `SPEAKING_ASR_*` names chosen only after benchmark
 
 Support the same local structural-validation and bounded repair principles as
@@ -1439,8 +1531,9 @@ snapshot.
 Create `speaking-report.html#share=<raw-token>` so the raw token stays in the
 browser fragment rather than ordinary static-server request logs. The reader
 may accept the old query form only as a compatibility fallback. The page uses
-`assets/js/speaking-report.js`. It may establish CloudBase anonymous state if
-required to call the public function, but anonymous auth grants no report
+`assets/js/speaking-report.js`. It establishes CloudBase anonymous state when
+the visitor has no current login so the Web SDK can invoke the public function,
+but anonymous auth grants no report
 authority. The raw share token is the only external capability and is checked
 server-side.
 
@@ -1746,9 +1839,11 @@ Exit gate:
 - `assets/js/speaking-lab.js`
 - `assets/js/speaking-report.js`
 - `assets/js/teacher-speaking.js`
+- `assets/js/voiceprint-recorder.js`
 - `assets/css/speaking-lab.css`
 - `assets/css/speaking-report.css`
 - `cloudfunctions/_shared/speaking-lab.js`
+- `cloudfunctions/_shared/tencent-asr-voiceprint.js`
 - `cloudfunctions/speakingLab/index.js`
 - `cloudfunctions/speakingLab/package.json`
 - `cloudfunctions/speakingLab/prompts.js`
@@ -1760,6 +1855,7 @@ Exit gate:
 - `scripts/test-speaking-lab-rules.js`
 - `scripts/test-speaking-lab-service.js`
 - `scripts/test-speaking-lab-ui.js`
+- `scripts/test-speaking-voiceprints.js`
 
 ### 18.2 Modify
 
@@ -1793,8 +1889,8 @@ Exit gate:
 - `docs/03_UI_UX_SPEC.md`: student/teacher/external flows and responsive states.
 - `docs/04_DATA_MODEL.md`: every collection/field/state/index.
 - `docs/05_CHANGELOG.md`: dated product/architecture entry.
-- `docs/06_DECISIONS.md`: no permanent voiceprint; provider choice after
-  benchmark; no pronunciation in V1; snapshot sharing.
+- `docs/06_DECISIONS.md`: reusable Tencent voiceprint scope and retention;
+  provider choice after benchmark; no pronunciation in V1; snapshot sharing.
 - `docs/07_TESTING_CHECKLIST.md`: all automated/manual gates.
 - `docs/08_BACKLOG.md`: video extraction, pronunciation, PDF export, provider
   fallback, stronger streaming protection, and later individual speaking mode.
@@ -1910,7 +2006,8 @@ Owner-only deployment order:
 2. Add indexes and verify unique-index creation on empty/development data.
 3. Configure provider environment names/values only after benchmark.
 4. Deploy `speakingLab` and `speakingAiWorker` from the same commit.
-5. Configure the one-minute worker timer and private token.
+5. Set `speakingAiWorker.invoke` to `false`, then configure the one-minute
+   `speaking-ai-worker-minute` timer without a custom argument.
 6. Run authenticated backend smoke tests in development.
 7. Publish cache-busted static pages/assets.
 8. Test one controlled Discussion with non-sensitive development audio.

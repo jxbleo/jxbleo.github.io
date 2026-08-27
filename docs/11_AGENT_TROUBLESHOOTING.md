@@ -27,6 +27,11 @@
 拒绝每一次调用。`CreateTrigger` 的响应可能原样回显 `CustomArgument`；配置时应抑制
 或脱敏响应，一旦回显到终端或 Agent 记录中就立刻轮换 token。
 
+Speaking Lab 不使用上述旧模式。`speakingAiWorker` 的函数级权限必须为
+`{"invoke": false}`，只接受名称为 `speaking-ai-worker-minute` 的标准腾讯
+`Timer` 事件。CloudBase 官方说明客户端安全规则不作用于定时触发器，因此无需
+`CustomArgument`，也不要为这个 Worker 再设置 `SPEAKING_AI_WORKER_CRON_TOKEN`。
+
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 学生提交成功但教师邮箱没有新通知 | outbox 集合/索引未创建、`submitAttempt` 或 dispatcher 未部署、Cron/token/SMTP 未配置、教师个人中心没有启用邮箱，或事件正在 7 分钟 BBC 窗口内 | 先确认个人中心地址为 `Receiving notifications`，再查 `teacher_attempt_email_events` 是否有该 `attempt_id` 及其 `status`/`due_at`/`last_error`/`skip_reason`；用精确 event ID 查函数日志，不输出答案或 SMTP 值 |
