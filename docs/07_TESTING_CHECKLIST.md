@@ -2023,8 +2023,10 @@ High priority improvement:
   Switch back to Draft and confirm the untouched source text returns with waves on
   every originally flagged sentence, including accepted ones. Confirm the Draft/Revised
   control is horizontally centered. Click each flagged Draft sentence and confirm the
-  feedback dialog opens directly with the source, initial analysis, and saved feedback;
-  it must not show `Sentence N`, `AI Feedback`, or round labels. Click an originally correct
+  feedback dialog shows a centered green `AI Feedback` title with a full-width bottom
+  hairline. Confirm the source sentence is not nested inside another card, retains its red
+  proofreading wave, and is separated from the initial analysis by the same hairline used
+  between later feedback paragraphs. It must not show `Sentence N` or round labels. Click an originally correct
   sentence and confirm no dialog opens: the sentence only gives one small shake, while
   Reduced Motion uses a brief static tint. Confirm Tab remains trapped, Escape closes,
   and focus returns to the flagged sentence. Revised sentences are not interactive.

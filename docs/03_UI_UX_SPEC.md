@@ -2355,9 +2355,11 @@ Important mobile rules:
   Sentence Revision card. Center the `Draft / Revised` segmented control horizontally.
   Each completed Draft sentence remains keyboard and pointer actionable, but only an
   originally flagged sentence opens the focus-trapped Apple-style feedback dialog.
-  That dialog begins directly with the source sentence and analysis: it has no visible
-  `Sentence N` or `AI Feedback` heading. Saved feedback paragraphs use hairline separators
-  without round labels. An originally correct sentence opens nothing and gives one small
+  The dialog has a centered green `AI Feedback` title with a full-width bottom hairline.
+  The source sentence sits directly on the dialog material without a nested card and keeps
+  the Draft's muted-red proofreading wave. One matching hairline separates source from the
+  initial analysis and every later saved feedback paragraph; no `Sentence N` or round label
+  is shown. An originally correct sentence opens nothing and gives one small
   inline shake instead; Reduced Motion replaces the shake with a brief static tint.
   Revised sentences are non-interactive.
   Do not show Revised for a manuscript that began with no required revisions.
