@@ -3,6 +3,17 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-27 — Proofreading Draft and reconstructed Revised manuscript
+
+- Restyled the original Draft as neutral paper and marked only revision-required
+  source sentences with a restrained red proofreading wave.
+- Added a conditional `Draft / Revised` segmented control after all required
+  sentence revisions pass. Completed records default to the reconstructed Revised
+  manuscript while preserving original paragraph structure and the eight-color
+  sentence navigation system.
+- Reused persisted accepted student rewrites for reconstruction, so this completed
+  manuscript view adds no model request or Token cost.
+
 ## 2026-08-27 — Original capsule marks and hidden revision samples
 
 - Restored the earliest tiny plain capsule status marks: a green `✓` for accepted
