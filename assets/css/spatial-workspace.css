@@ -50,11 +50,11 @@
 
 .liquid-glass-dashboard .student-progress-hero {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(390px, 1.1fr);
-    gap: clamp(34px, 5vw, 68px);
-    align-items: center;
-    min-height: 288px;
-    padding: clamp(34px, 5vw, 58px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    align-items: stretch;
+    min-height: 0;
+    padding: clamp(30px, 4.5vw, 50px);
     overflow: hidden;
     isolation: isolate;
 }
@@ -74,6 +74,7 @@
 .liquid-glass-dashboard .student-welcome-panel {
     display: grid;
     align-content: center;
+    min-height: 0;
 }
 
 .liquid-glass-dashboard .student-welcome-copy {
@@ -726,7 +727,7 @@
 @media (max-width: 900px) {
     .liquid-glass-dashboard .student-progress-hero {
         grid-template-columns: 1fr;
-        gap: 28px;
+        gap: 0;
         min-height: 0;
     }
 
@@ -740,10 +741,10 @@
 
 @media (max-width: 760px) {
     .liquid-glass-dashboard .student-progress-hero {
-        gap: 22px;
+        gap: 0;
         margin-right: 0;
         margin-left: 0;
-        padding: 26px 22px 24px;
+        padding: 24px 18px 18px;
     }
 
     .liquid-glass-dashboard .student-welcome-panel {

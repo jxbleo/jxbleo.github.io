@@ -3,6 +3,16 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-27 — Unified light Dashboard hero
+
+- Removed the weekly-progress surface from the Dashboard hero, leaving the
+  personalized greeting and motivational sentence as its only header content.
+- Moved the three Writing, Intensive Listening, and Speaking bands inside that
+  same hero card and replaced their black group background with a shallow white
+  glass surface.
+- Kept the selected category gradients, trailing glyph watermarks, edge light
+  bars, destinations, responsive layout, and accessible motion fallbacks.
+
 ## 2026-08-27 — Editorial Dashboard learning entrances
 
 - Replaced the three pale Dashboard workspace cards with a shared dark
