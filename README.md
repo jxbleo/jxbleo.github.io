@@ -158,6 +158,9 @@ Supporting docs:
 - [docs/adr/0003-durable-canonical-ai-boundaries.md](docs/adr/0003-durable-canonical-ai-boundaries.md):
   reusable AI-provider incident log, durable-job rules, canonicalization rules,
   observability limits, and release gate
+- [docs/adr/0005-reusable-tencent-voiceprints.md](docs/adr/0005-reusable-tencent-voiceprints.md):
+  reusable VIP voiceprints, Discussion-scoped Guest voiceprints, consent, and
+  provider-retention boundaries
 - [docs/07_TESTING_CHECKLIST.md](docs/07_TESTING_CHECKLIST.md)
 - [docs/08_BACKLOG.md](docs/08_BACKLOG.md)
 - [docs/09_CONTENT_WORKFLOW.md](docs/09_CONTENT_WORKFLOW.md)
@@ -222,6 +225,11 @@ The local V1 Speaking Lab covers private DSE Paper 4 Part A group recordings,
 Discussion-scoped VIP/Guest rosters, Voice References, Speaker-labelled
 reports, and redacted Student/Teacher share snapshots. Production speech and
 structured-text providers intentionally fail closed until benchmark approval.
+The student and teacher surfaces also include Tencent reusable-voiceprint
+enrolment: VIP voiceprints follow the authenticated account, Guest voiceprints
+remain scoped to one Discussion, and the enrolment WAV is never retained by the
+application. Production enablement still requires owner-gated collections,
+indexes, runtime configuration, function deployment, and real-device testing.
 
 Run its contracts with:
 

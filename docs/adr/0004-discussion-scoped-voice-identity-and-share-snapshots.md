@@ -1,6 +1,7 @@
 # ADR 0004: Discussion-scoped voice identity and server-built share snapshots
 
-Status: Accepted
+Status: Partially superseded by ADR 0005 for reusable voice identity; the
+server-built share-snapshot decision remains accepted.
 Date: 2026-08-27
 
 DSE Speaking Lab deliberately avoids a permanent student voiceprint: every
