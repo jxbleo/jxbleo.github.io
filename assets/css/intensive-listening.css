@@ -29,12 +29,15 @@ button:active, a:active { transform: scale(.975); }
 .il-header-progress progress { width: 100%; height: .72rem; border: 0; accent-color: var(--il-green); }
 .il-mode { justify-self: end; padding: .36rem .58rem; border-radius: 999px; color: var(--il-muted); background: #edf2f0; font-size: .68rem; font-weight: 850; letter-spacing: .08em; }
 .il-header-tools { justify-self: end; display: flex; align-items: center; gap: .55rem; }
+.il-linked-practice { padding: .42rem .68rem; border-radius: 999px; color: var(--il-green); background: var(--il-green-soft); font-size: .72rem; font-weight: 820; text-decoration: none; }
+.il-linked-practice:hover, .il-linked-practice:focus-visible { background: #d4eee4; }
 .il-export { padding: .45rem .7rem; border: 1px solid var(--il-line); border-radius: 999px; color: var(--il-green); background: #fff; font-size: .72rem; font-weight: 800; }
 
 .il-shell { width: min(1120px, calc(100% - 2rem)); margin: 3rem auto 5rem; }
 .il-material-heading { text-align: center; }
 .il-eyebrow { color: var(--il-green); font-size: .7rem; font-weight: 860; letter-spacing: .16em; }
 .il-material-heading h1 { margin: .35rem 0 1rem; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.03; letter-spacing: -.045em; }
+.il-assignment-context { margin: -.45rem 0 1rem; color: var(--il-muted); font-size: .8rem; font-weight: 760; }
 .il-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .il-stats span { padding: .48rem .7rem; border: 1px solid var(--il-line); border-radius: 999px; color: var(--il-muted); background: rgba(255,255,255,.68); font-size: .78rem; }
 .il-stats strong { color: var(--il-ink); }
@@ -50,6 +53,7 @@ button:active, a:active { transform: scale(.975); }
 .il-audio-row { padding: 1.2rem 1.4rem; display: flex; align-items: center; gap: .9rem; background: linear-gradient(90deg, #eff8f4, #f9fcfb); }
 .il-audio-row > div { display: grid; }
 .il-audio-row span { color: var(--il-muted); font-size: .76rem; }
+.il-activity-sync-status { color: #a55b26; font-size: .72rem; margin-top: .25rem; }
 .il-replay { flex: 0 0 auto; width: 3rem; height: 3rem; border: 0; border-radius: 50%; color: #fff; background: var(--il-green); font-weight: 850; box-shadow: 0 8px 20px rgba(23,108,88,.19); }
 .il-time-range { margin-left: auto; font-variant-numeric: tabular-nums; }
 

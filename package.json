@@ -25,6 +25,7 @@
     "test:writing-tutor": "node scripts/test-writing-tutor.js",
     "test:waiting-runner": "node scripts/test-ai-waiting-runner.js",
     "test:teacher-quick-accept": "node scripts/test-teacher-quick-accept.js",
+    "test:speaking-lab": "node scripts/test-speaking-lab-rules.js && node scripts/test-speaking-lab-service.js && node scripts/test-speaking-lab-ui.js",
     "test:protected-resources": "node scripts/test-protected-resource.js",
     "prepare:dse-topic-bank": "node scripts/prepare-protected-resource.js",
     "prepare:jupas-report": "node scripts/prepare-protected-resource.js --resource hk8-dse-jupas-weighting-2026-27",
@@ -34,6 +35,7 @@
     "cloudbase:import:content": "node scripts/cloudbase-import-content.js",
     "import:intensive-listening": "node scripts/import-intensive-listening.js",
     "test:intensive-listening": "node scripts/test-intensive-listening.js",
+    "test:intensive-listening-library": "node scripts/test-intensive-listening-library.js",
     "test:teacheradmin-package": "node scripts/test-teacheradmin-package.js"
   },
   "devDependencies": {

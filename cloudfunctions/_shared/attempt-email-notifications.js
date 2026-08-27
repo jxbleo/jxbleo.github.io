@@ -5,6 +5,7 @@ const BBC_BATCH_WINDOW_MS = 7 * 60 * 1000;
 const EMAIL_POLICIES = Object.freeze({
   BBC_BATCH: "bbc_batch_7m",
   VOCABULARY_IMMEDIATE: "vocabulary_immediate",
+  INTENSIVE_IMMEDIATE: "intensive_listening_immediate",
 });
 
 function text(value) {
@@ -53,6 +54,9 @@ function activityThreadKey(attempt) {
 
 function emailPolicyForAttempt(attempt) {
   const mode = text(attempt && attempt.mode);
+  if (attempt && (attempt.event_kind === "intensive_listening_session" || mode === "intensive_listening")) {
+    return EMAIL_POLICIES.INTENSIVE_IMMEDIATE;
+  }
   if (mode === "bbc") return EMAIL_POLICIES.BBC_BATCH;
   if (mode === "vocabulary_test" || mode === "vocabulary_practice_timed") {
     return EMAIL_POLICIES.VOCABULARY_IMMEDIATE;
@@ -309,6 +313,63 @@ function renderAttemptEmail(context) {
   return { subject: emailSubject({ ...context, attempts }), html, text: plain };
 }
 
+function intensiveContextLabel(event) {
+  if (text(event && event.practice_context) === "assignment") return "Assigned";
+  if (text(event && event.practice_context) === "review") return "Review";
+  return "Self study";
+}
+
+function intensivePhaseLabel(event) {
+  const phase = text(event && event.session_phase);
+  return phase === "completed" ? "Completed" : phase === "paused" ? "Paused" : "Started";
+}
+
+function renderIntensiveListeningEmail(context) {
+  const event = context.event || (context.events || [])[0] || {};
+  const studentName = studentDisplayName(context.student);
+  const loginId = text(context.student && context.student.student_id);
+  const title = text(context.set && context.set.title) || text(event.set_title) || text(event.set_id) || "Intensive Listening";
+  const source = text(context.set && (context.set.source_label || context.set.series_label)) || text(event.source_label);
+  const phase = intensivePhaseLabel(event);
+  const label = intensiveContextLabel(event);
+  const startPercentage = formatPercent(event.start_percentage);
+  const completion = formatPercent(event.completion_percentage);
+  const target = formatPercent(event.target_percentage);
+  const duration = event.session_duration_seconds == null ? "" : formatDuration(event.session_duration_seconds);
+  const newUnits = Number(event.new_completed_unit_count) || 0;
+  const completed = Number(event.completed_unit_count) || 0;
+  const independent = Number(event.independent_unit_count) || 0;
+  const assisted = Number(event.assisted_unit_count) || 0;
+  const targetText = event.practice_context === "assignment" ? " · Target " + target : "";
+  const timingText = phase === "Started"
+    ? " · Started " + formatDateTime(event.session_started_at || event.occurred_at)
+    : " · Started " + formatDateTime(event.session_started_at || event.occurred_at) + " · Ended " + formatDateTime(event.session_ended_at || event.occurred_at);
+  const detailText = (source ? source + " · " : "") + label + " · " + phase + " · Start " + startPercentage + " · Completion " + completion
+    + " · Units " + completed + " · " + independent + " independent · " + assisted + " assisted · " + newUnits + " new"
+    + targetText + timingText + (duration ? " · Session " + duration : "");
+  const teacherUrl = text(context.teacherUrl);
+  const html = "<!doctype html><html><body style=\"margin:0;background:#edf2ef;padding:20px;color:#17362c;\">"
+    + "<div style=\"max-width:680px;margin:0 auto;background:#f9fbfa;border:1px solid #d8e1dc;border-radius:20px;padding:24px;\">"
+    + "<div style=\"font:700 12px Arial,sans-serif;letter-spacing:.12em;color:#39715e;\">MR. CAT ACADEMY · INTENSIVE LISTENING</div>"
+    + "<h1 style=\"font:700 24px/1.25 Arial,sans-serif;margin:8px 0 4px;color:#17362c;\">" + escapeHtml(studentName) + " · " + escapeHtml(title) + "</h1>"
+    + "<div style=\"font:13px Arial,sans-serif;color:#66756f;\">" + (loginId ? "Login ID " + escapeHtml(loginId) + " · " : "") + escapeHtml(label) + " · " + escapeHtml(phase) + "</div>"
+    + "<div style=\"margin-top:18px;padding:16px;background:#edf5f1;border-radius:12px;font:14px/1.55 Arial,sans-serif;\"><strong>"
+    + escapeHtml(phase) + " session</strong><br>" + escapeHtml(detailText) + "</div>"
+    + (teacherUrl ? "<div style=\"text-align:center;margin-top:24px;\"><a href=\"" + escapeHtml(teacherUrl) + "\" style=\"display:inline-block;background:#236c54;color:#fff;text-decoration:none;border-radius:999px;padding:12px 20px;font:700 13px Arial,sans-serif;\">Open Teacher notifications</a></div>" : "")
+    + "<div style=\"margin-top:22px;font:11px/1.5 Arial,sans-serif;color:#7c8984;\">This private email contains only safe Intensive Listening session counts. It never includes the transcript, typed words, or private audio.</div>"
+    + "</div></body></html>";
+  const plain = [
+    studentName + " · " + title,
+    label + " · " + phase,
+    "Start: " + startPercentage + " · Completion: " + completion + targetText,
+    "Units: " + completed + " · " + independent + " independent · " + assisted + " assisted · " + newUnits + " new",
+    timingText.slice(3),
+    duration ? "Session: " + duration : "",
+    teacherUrl ? "Teacher notifications: " + teacherUrl : "",
+  ].filter(Boolean).join("\n");
+  return { subject: studentName + " | " + title + " | Intensive Listening " + phase, html, text: plain };
+}
+
 module.exports = {
   BBC_BATCH_WINDOW_MS,
   EMAIL_POLICIES,
@@ -317,5 +378,8 @@ module.exports = {
   attemptDetail,
   emailPolicyForAttempt,
   eventForAttempt,
+  intensiveContextLabel,
+  intensivePhaseLabel,
+  renderIntensiveListeningEmail,
   renderAttemptEmail,
 };

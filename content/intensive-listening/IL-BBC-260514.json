@@ -10,6 +10,13 @@
     "BBC"
   ],
   "note": "77 dictation units",
+  "sourceFamily": "bbc",
+  "sourceLabel": "BBC",
+  "seriesLabel": "BBC 6 Minute English",
+  "sourceSetId": "BBC-260514",
+  "linkedPracticeSetId": null,
+  "dictationUnitCount": 77,
+  "sequenceUnitCount": 92,
   "catalogVisible": false,
   "visible": true
 }

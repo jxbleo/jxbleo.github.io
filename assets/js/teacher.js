@@ -82,9 +82,10 @@
         assignments: [],
         progressItems: [],
         attempts: [],
+        intensiveEvents: [],
         notificationAttemptIds: {},
         disputes: [],
-        notificationCursor: 0,
+        notificationCursor: { attempt_offset: 0, intensive_offset: 0 },
         notificationHasMore: false,
         notificationPageLoading: false,
         notificationFeedReady: false,
@@ -139,6 +140,8 @@
         activityReadAllPending: false,
         activityReadAllSuccess: false,
         notificationAttemptId: '',
+        notificationIntensiveEvent: null,
+        notificationIntensiveThreadEvents: [],
         notificationAttemptEntering: false,
         notificationAttemptRevealIds: [],
         targetMatrixAttemptId: '',
@@ -323,7 +326,7 @@
             });
         });
     }
-    var teacherViews = ['tasks', 'view', 'library'];
+    var teacherViews = ['tasks', 'view', 'library', 'speaking'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -787,12 +790,46 @@
     }
 
     function activityAttemptCounts() {
-        return groupedAttemptThreads().reduce(function(counts, group) {
+        var groups = groupedAttemptThreads();
+        var intensiveGroups = {};
+        (state.intensiveEvents || []).forEach(function(event) {
+            if (!event || !event.thread_key) return;
+            var group = intensiveGroups[event.thread_key] || (intensiveGroups[event.thread_key] = { unread: false });
+            if (isIntensiveReviewUnread(event)) group.unread = true;
+        });
+        return groups.concat(Object.keys(intensiveGroups).map(function(key) { return intensiveGroups[key]; })).reduce(function(counts, group) {
             counts.total += 1;
             if (group.unread) counts.unread += 1;
             else counts.read += 1;
             return counts;
         }, { total: 0, unread: 0, read: 0 });
+    }
+
+    function intensiveEventId(event) {
+        return String(event && (event.activity_id || event.event_id) || '');
+    }
+
+    function isIntensiveReviewUnread(event) {
+        var id = intensiveEventId(event);
+        if (!id || reviewedAttemptIdMap()[id] === true) return false;
+        var readAllAt = state.activityReadAllAt ? new Date(state.activityReadAllAt) : null;
+        var occurred = event && event.occurred_at ? new Date(event.occurred_at) : null;
+        if (readAllAt && !isNaN(readAllAt.getTime()) && occurred && !isNaN(occurred.getTime())) {
+            return occurred.getTime() > readAllAt.getTime();
+        }
+        return true;
+    }
+
+    function mergeIntensiveEvents(items) {
+        (items || []).forEach(function(event) {
+            if (!event) return;
+            var id = intensiveEventId(event);
+            if (!id) return;
+            var index = (state.intensiveEvents || []).findIndex(function(candidate) { return intensiveEventId(candidate) === id; });
+            if (index === -1) state.intensiveEvents.push(event);
+            else state.intensiveEvents[index] = Object.assign({}, state.intensiveEvents[index], event);
+        });
+        return items || [];
     }
 
     function updateActivityBadges() {
@@ -1596,12 +1633,13 @@
         options = options || {};
         if (state.notificationPageLoading) return Promise.resolve([]);
         state.notificationPageLoading = true;
-        var cursor = options.reset === true ? 0 : Number(state.notificationCursor || 0);
+        var cursor = options.reset === true ? { attempt_offset: 0, intensive_offset: 0 } : (state.notificationCursor || { attempt_offset: 0, intensive_offset: 0 });
         if (options.reset === true) {
-            state.notificationCursor = 0;
+            state.notificationCursor = { attempt_offset: 0, intensive_offset: 0 };
             state.notificationHasMore = false;
             state.notificationFeedReady = false;
             state.notificationAttemptIds = {};
+            state.intensiveEvents = [];
         }
         renderUpdatesPanel();
         return teacherCall('listAttemptNotifications', {
@@ -1610,11 +1648,13 @@
             exclude_thread_keys: options.reset === true ? [] : groupedAttemptThreads().map(function(group) { return group.key; })
         }).then(function(result) {
             var attempts = result.attempts || [];
+            var intensiveEvents = result.intensive_events || [];
             mergeAttemptSummaries(attempts, true);
-            state.notificationCursor = result.next_cursor == null ? cursor : Number(result.next_cursor);
+            mergeIntensiveEvents(intensiveEvents);
+            state.notificationCursor = result.next_cursor == null ? cursor : result.next_cursor;
             state.notificationHasMore = result.has_more === true;
             state.notificationFeedReady = true;
-            return attempts;
+            return attempts.concat(intensiveEvents);
         }).catch(function() {
             return [];
         }).finally(function() {
@@ -2852,7 +2892,13 @@
         var targetSectionId = activeSubTabConfig.sectionId || activeSubTabConfig.id;
 
         var itemsBySection = {};
-        var allItems = teacherLibraryDisplayItems().filter(function(item) { return item.visible !== false; });
+        var allItems = teacherLibraryDisplayItems().filter(function(item) {
+            if (item.visible === false) return false;
+            var id = String(item.set_id || item.id || '').trim();
+            var sectionText = [item.sectionId, item.section_id, item.section, item.type, item.course]
+                .map(function(value) { return String(value || '').trim().toLowerCase().replace(/[\s_]+/g, '-'); });
+            return !/^IL-/i.test(id) && sectionText.indexOf('intensive-listening') === -1;
+        });
         for (var i = 0; i < allItems.length; i++) {
             var item = allItems[i];
             var sid = item.sectionId || item.section_id || '';
@@ -3252,13 +3298,23 @@
         });
     }
 
+    function isIntensiveListeningSet(set) {
+        if (!set) return false;
+        return /^IL-/i.test(String(set.set_id || '')) || [set.section_id, set.section, set.type, set.course, set.category]
+            .some(function(value) {
+                return String(value || '').trim().toLowerCase().replace(/[\s_]+/g, '-') === 'intensive-listening';
+            });
+    }
+
     function familyDefaultPassingForSet(set) {
+        if (isIntensiveListeningSet(set)) return 100;
         if (setMatchesFamily(set, 'vocabulary')) return 90;
         if (setMatchesFamily(set, 'bbc')) return 80;
         return configuredDefaultPassing();
     }
 
     function familyDefaultMasteryForSet(set) {
+        if (isIntensiveListeningSet(set)) return 100;
         if (setMatchesFamily(set, 'vocabulary')) return 100;
         if (setMatchesFamily(set, 'bbc')) return 95;
         return 90;
@@ -3619,6 +3675,9 @@
     }
 
     function renderAssignStarControls(setId, params, set) {
+        if (isIntensiveListeningSet(set)) {
+            return '<span class="assign-star-disabled">Completion only · STAR unavailable</span>';
+        }
         var masteryDefault = formatPercentInput(defaultMasteryForSet(set));
         var checked = params.masteryEnabled === true;
         var html = '<label class="assign-star-toggle compact">' +
@@ -3704,7 +3763,7 @@
             '<div class="assign-params-cell passing" role="cell">' +
                 percentagePickerTriggerHtml(
                     params.passingPercentage,
-                    'Passing percentage',
+                    isIntensiveListeningSet(set) ? 'Completion target' : 'Passing percentage',
                     'data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage"',
                     'Choose',
                     defaultPassingForSet(set)
@@ -3802,7 +3861,8 @@
             var params = assignParamForSet(set);
             var label = set.title || set.set_id || 'Task';
             var passing = validateAssignPercent(params.passingPercentage, label + ' Passing %', true);
-            var masteryEnabled = params.masteryEnabled === true;
+            var intensive = isIntensiveListeningSet(set);
+            var masteryEnabled = intensive ? false : params.masteryEnabled === true;
             var mastery = validateAssignPercent(params.masteryPercentage, label + ' Mastery %', masteryEnabled);
             if (masteryEnabled && Number(mastery) < Number(passing)) {
                 throw new Error(label + ' Mastery % must be at least the Passing %.');
@@ -4519,6 +4579,38 @@
         });
     }
 
+    function renderIntensiveNotificationModal() {
+        var event = state.notificationIntensiveEvent;
+        if (!event) return '';
+        var events = (state.notificationIntensiveThreadEvents || []).filter(Boolean).slice().sort(function(left, right) {
+            return new Date(left.occurred_at || 0) - new Date(right.occurred_at || 0);
+        });
+        if (!events.length) events = [event];
+        var eventCards = events.map(function(item) {
+            var phase = item.session_phase === 'completed' ? 'Completed' : item.session_phase === 'paused' ? 'Paused' : 'Started';
+            var context = item.practice_context === 'assignment' ? 'Assigned' : item.practice_context === 'review' ? 'Review' : 'Self study';
+            return '<article class="intensive-notification-event">' +
+                '<div class="intensive-notification-event-head"><strong>' + escapeHtml(phase) + '</strong><span class="muted">' + escapeHtml(formatDateTime(item.occurred_at)) + '</span></div>' +
+                '<p class="muted">' + escapeHtml(context) + '</p>' +
+                '<div class="activity-session-summary"><strong>' + escapeHtml(formatPercent(item.completion_percentage)) + '</strong><span>Completion</span>' +
+                '<span>' + escapeHtml(Number(item.completed_unit_count) || 0) + ' units · ' + escapeHtml(Number(item.new_completed_unit_count) || 0) + ' new</span>' +
+                '<span>' + escapeHtml(Number(item.independent_unit_count) || 0) + ' independent · ' + escapeHtml(Number(item.assisted_unit_count) || 0) + ' with answers</span></div>' +
+                '</article>';
+        }).join('');
+        return '<div class="progress-matrix-modal-backdrop notification-attempt-modal teacher-utility-modal" data-notification-intensive-close="backdrop">' +
+            '<div class="progress-matrix-modal-shell notification-attempt-shell teacher-utility-shell">' +
+                '<section class="progress-matrix-modal notification-attempt-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Intensive Listening session">' +
+                    '<div class="progress-matrix-modal-scroll intensive-notification-detail">' +
+                        '<p class="eyebrow accent">INTENSIVE LISTENING · ' + escapeHtml(events.length + ' updates') + '</p>' +
+                        '<h2>' + escapeHtml(event.set_title || event.set_id || 'Listening session') + '</h2>' +
+                        '<div class="intensive-notification-events">' + eventCards + '</div>' +
+                        '<p class="muted">This activity summary contains no transcript answers or typed words.</p>' +
+                    '</div>' +
+                '</section>' +
+                '<button class="progress-matrix-modal-close notification-attempt-external-close" type="button" data-notification-intensive-close="button" aria-label="Close Intensive Listening details">Close</button>' +
+            '</div></div>';
+    }
+
     function loadNotificationThreadAttemptDetails(attempt, render) {
         var errors = [];
         return ensureNotificationThread(attempt).then(function(threadAttempts) {
@@ -4754,6 +4846,18 @@
     }
 
     function renderAssignmentDetails(assignment, attempts) {
+        if (assignment && (assignment.intensive_listening === true || /^IL-/i.test(String(assignment.set_id || '')))) {
+            return '<div class="attempt-detail-list intensive-assignment-detail">' +
+                '<section class="attempt-detail-row">' +
+                    '<div class="attempt-detail-head"><div><strong>Completion Progress</strong>' +
+                    '<small>Assigned · ' + escapeHtml(assignmentDueDate(assignment) ? 'Due: ' + formatDateTime(assignmentDueDate(assignment)) : 'No due week') + '</small></div>' +
+                    '<div class="attempt-detail-actions"><span>' + escapeHtml(formatPercent(assignment.completion_percentage == null ? assignment.best_percentage : assignment.completion_percentage)) + '</span></div></div>' +
+                    '<div class="activity-session-summary"><strong>' + escapeHtml(formatPercent(assignment.completion_percentage == null ? assignment.best_percentage : assignment.completion_percentage)) + '</strong><span>Completion</span>' +
+                    '<span>' + escapeHtml(Number(assignment.completed_unit_count) || 0) + ' units completed</span>' +
+                    '<span>' + escapeHtml(Number(assignment.independent_unit_count) || 0) + ' independent · ' + escapeHtml(Number(assignment.assisted_unit_count) || 0) + ' with answers</span></div>' +
+                '</section>' +
+            '</div>';
+        }
         var latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
         var sourceLabel = assignment.source === 'self_study' ? 'Self-study' : 'Assigned';
         return '<div class="attempt-detail-list">' +
@@ -4777,13 +4881,15 @@
         var expanded = state.expandedAssignmentSets[key] === true;
         var attempts = progressAttemptsForAssignment(assignment);
         var score = formatPercent(assignment.best_percentage);
+        var isIntensive = assignment && (assignment.intensive_listening === true || /^IL-/i.test(String(assignment.set_id || '')));
         var attemptCount = Math.max(Number(assignment.attempt_count || 0), attempts.length);
+        var activityCount = isIntensive ? Number(assignment.completed_unit_count) || 0 : attemptCount;
         var sourceLabel = assignment.source === 'self_study' ? 'Self-study' : 'Assigned';
         return '<article class="attempt-set-capsule assignment-capsule' + (expanded ? ' expanded' : '') + '">' +
             '<button class="attempt-set-head" type="button" data-assignment-set="' + escapeHtml(key) + '">' +
                 '<span><strong>' + escapeHtml(assignment.set_title || setTitleFor(assignment.set_id)) + '</strong>' +
                 '<small>' + escapeHtml(assignment.set_id) + ' · ' + escapeHtml(sourceLabel) +
-                ' · ' + escapeHtml(attemptCount) + ' attempt' + (attemptCount === 1 ? '' : 's') +
+                ' · ' + escapeHtml(activityCount) + ' ' + (isIntensive ? 'unit' : 'attempt') + (activityCount === 1 ? '' : 's') +
                 ' · ' + escapeHtml(formatDateTime(assignmentSortDate(assignment))) + '</small></span>' +
                 '<span class="assignment-best-score">' + escapeHtml(score) + '</span>' +
             '</button>' +
@@ -4865,13 +4971,15 @@
         var expanded = state.expandedAssignProgress[key] === true;
         var status = normalizedAssignmentStatus(item.status);
         var attempts = progressAttemptsForAssignment(item);
+        var isIntensive = item && (item.intensive_listening === true || /^IL-/i.test(String(item.set_id || '')));
         var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
+        var activityCount = isIntensive ? Number(item.completed_unit_count) || 0 : attemptCount;
         return '<div class="assignment-table-item">' +
             '<button class="assignment-table-row" type="button" data-assign-progress="' + escapeHtml(key) + '">' +
                 '<span><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong><small>' + escapeHtml(item.student_id || '') + '</small></span>' +
                 '<span><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id)) + '</strong><small>' + escapeHtml(item.set_id || '') + '</small></span>' +
                 '<span class="assignment-status-pill ' + escapeHtml(status) + '">' + escapeHtml(assignmentStatusLabel(status)) + '</span>' +
-                '<span><strong>' + escapeHtml(attemptCount) + '</strong><small>attempts</small></span>' +
+                '<span><strong>' + escapeHtml(activityCount) + '</strong><small>' + (isIntensive ? 'units' : 'attempts') + '</small></span>' +
                 '<span><strong>' + escapeHtml(formatPercent(item.best_percentage)) + '</strong><small>best</small></span>' +
                 '<span><strong>' + escapeHtml(formatPercent(item.passing_percentage)) + '</strong><small>pass</small></span>' +
             '</button>' +
@@ -7142,8 +7250,31 @@
         };
     }
 
+    function intensiveActivityItem(event, events) {
+        var student = studentForUid(event.student_uid);
+        var name = studentDisplayName(student) || event.student_name || event.student_id || 'Student';
+        var phase = event.session_phase === 'completed' ? 'completed' : event.session_phase === 'paused' ? 'paused' : 'started';
+        var title = event.set_title || setTitleFor(event.set_id) || event.set_id || 'Intensive Listening';
+        return {
+            type: 'intensive_listening',
+            date: event.occurred_at || null,
+            unread: events.some(isIntensiveReviewUnread),
+            intensiveEvent: event,
+            label: name + ' ' + phase + ' Intensive Listening · ' + title,
+            score: event.completion_percentage,
+            time: formatDateTime(event.occurred_at),
+            intensive_event_id: intensiveEventId(event),
+            student_uid: event.student_uid || '',
+            assignment_id: event.assignment_id || '',
+            set_id: event.set_id || '',
+            session_phase: phase,
+            practice_context: event.practice_context || 'self_study',
+            attempt_count: events.length
+        };
+    }
+
     function activityItems() {
-        return groupedAttemptThreads().map(function(group) {
+        var attemptItems = groupedAttemptThreads().map(function(group) {
             var latest = group.attempts[0];
             var target = group.attempts.find(isAttemptReviewUnread) || latest;
             var item = attemptActivityItem(latest);
@@ -7151,13 +7282,33 @@
             item.attempt_id = target.attempt_id || latest.attempt_id || '';
             item.attempt_count = group.attempts.length;
             return item;
-        })
+        });
+        var intensiveByThread = {};
+        (state.intensiveEvents || []).forEach(function(event) {
+            if (!event || !event.thread_key) return;
+            (intensiveByThread[event.thread_key] || (intensiveByThread[event.thread_key] = [])).push(event);
+        });
+        var intensiveItems = Object.keys(intensiveByThread).map(function(key) {
+            var events = intensiveByThread[key].slice().sort(function(left, right) {
+                return new Date(right.occurred_at || 0) - new Date(left.occurred_at || 0);
+            });
+            return intensiveActivityItem(events[0], events);
+        });
+        return attemptItems.concat(intensiveItems)
             .sort(function(a, b) {
                 return new Date(activityDateValue(b) || 0) - new Date(activityDateValue(a) || 0);
             });
     }
 
     function renderActivityFeedRow(item) {
+        if (item.type === 'intensive_listening') {
+            return '<button class="activity-row compact-activity-row intensive-activity-row' + (item.unread ? ' unread' : '') +
+                '" type="button" data-open-intensive-event-id="' + escapeHtml(item.intensive_event_id) + '">' +
+                '<span class="activity-unread-dot"></span><span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong></span>' +
+                '<span class="activity-timing"><span class="activity-attempt-count">' + escapeHtml(item.session_phase) + '</span>' +
+                '<span class="activity-date">' + escapeHtml(item.time) + '</span></span>' +
+                '<span class="activity-score">' + escapeHtml(formatPercent(item.score)) + '</span></button>';
+        }
         var attemptCount = Math.max(1, Number(item.attempt_count || 1));
         var attemptClass = attemptCount >= 3 ? ' many' : attemptCount === 2 ? ' repeat' : ' single';
         var scoreClass = item.mastered ? ' mastered' : item.finished ? '' : ' low';
@@ -7374,6 +7525,46 @@
         });
     }
 
+    function openIntensiveFromNotification(row) {
+        var id = row.dataset.openIntensiveEventId || '';
+        var event = (state.intensiveEvents || []).find(function(item) { return intensiveEventId(item) === id; });
+        if (!event) return;
+        var wasUnread = isIntensiveReviewUnread(event);
+        state.notificationIntensiveEvent = event;
+        state.notificationIntensiveThreadEvents = [event];
+        state.notificationAttemptId = '';
+        state.targetMatrixAttemptId = '';
+        setReviewedAttemptIds([id]);
+        if (state.notificationUnreadThreadCount != null && wasUnread) {
+            state.notificationUnreadThreadCount = Math.max(0, Number(state.notificationUnreadThreadCount || 0) - 1);
+        }
+        teacherCall('markActivityAttemptsReviewed', { attempt_ids: [id] }).then(function(result) {
+            state.activityReviewedAttemptIds = result.reviewed_attempt_ids || state.activityReviewedAttemptIds || [];
+        }).catch(function() {});
+        renderUpdatesPanel();
+        teacherCall('listIntensiveThread', {
+            student_uid: event.student_uid,
+            assignment_id: event.assignment_id || '',
+            set_id: event.set_id || '',
+            thread_key: event.thread_key || ''
+        }).then(function(result) {
+            var events = result.intensive_events || [];
+            if (!events.length) return;
+            mergeIntensiveEvents(events);
+            state.notificationIntensiveThreadEvents = events;
+            var ids = events.map(intensiveEventId).filter(Boolean);
+            setReviewedAttemptIds(ids);
+            return teacherCall('markActivityAttemptsReviewed', { attempt_ids: ids }).then(function(reviewResult) {
+                state.activityReviewedAttemptIds = reviewResult.reviewed_attempt_ids || state.activityReviewedAttemptIds || [];
+            });
+        }).catch(function() {
+            // The current notification remains useful if the historical thread
+            // cannot be fetched; no private attempt data is needed for review.
+        }).then(function() {
+            renderUpdatesPanel();
+        });
+    }
+
     function renderUpdatesPanel() {
         updateActivityBadges();
         if (!updatesPanel || !updatesBody) return;
@@ -7394,7 +7585,7 @@
         }
         var updatesDialog = updatesPanel.querySelector('.teacher-updates-dialog');
         if (updatesDialog) {
-            if (state.notificationAttemptId) updatesDialog.setAttribute('aria-hidden', 'true');
+            if (state.notificationAttemptId || state.notificationIntensiveEvent) updatesDialog.setAttribute('aria-hidden', 'true');
             else updatesDialog.removeAttribute('aria-hidden');
         }
         if (!state.updatesOpen) {
@@ -7403,18 +7594,26 @@
         }
         updatesBody.innerHTML = renderActivityFeed();
         var modalRoot = notificationAttemptRoot || updatesBody;
-        if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = renderNotificationAttemptModal();
-        else updatesBody.insertAdjacentHTML('beforeend', renderNotificationAttemptModal());
+        if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = state.notificationIntensiveEvent
+            ? renderIntensiveNotificationModal() : renderNotificationAttemptModal();
+        else updatesBody.insertAdjacentHTML('beforeend', state.notificationIntensiveEvent
+            ? renderIntensiveNotificationModal() : renderNotificationAttemptModal());
         updatesBody.querySelectorAll('[data-open-attempt-id]').forEach(function(row) {
             row.addEventListener('click', function() {
                 openAttemptFromNotification(row);
             });
         });
+        updatesBody.querySelectorAll('[data-open-intensive-event-id]').forEach(function(row) {
+            row.addEventListener('click', function() { openIntensiveFromNotification(row); });
+        });
         bindNotificationInfiniteScroll(updatesDialog);
-        modalRoot.querySelectorAll('[data-notification-attempt-close]').forEach(function(button) {
+        modalRoot.querySelectorAll('[data-notification-attempt-close], [data-notification-intensive-close]').forEach(function(button) {
             button.addEventListener('click', function(event) {
-                if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;
+                var closeMode = button.dataset.notificationAttemptClose || button.dataset.notificationIntensiveClose;
+                if (closeMode === 'backdrop' && event.target !== button) return;
                 state.notificationAttemptId = '';
+                state.notificationIntensiveEvent = null;
+                state.notificationIntensiveThreadEvents = [];
                 state.targetMatrixAttemptId = '';
                 state.selectedMatrixReviewAttemptId = '';
                 renderUpdatesPanel();
@@ -7975,7 +8174,7 @@
     function initialTeacherView() {
         if (restoredTeacherWorkspaceView) return restoredTeacherWorkspaceView;
         var view = new URLSearchParams(window.location.search).get('view') || '';
-        return view === 'library' ? 'library' : 'view';
+        return view === 'library' ? 'library' : (view === 'speaking' ? 'speaking' : 'view');
     }
 
     function rememberTeacherView(viewName) {
@@ -8011,6 +8210,7 @@
         if (viewName === 'tasks') updateAssignView();
         if (viewName === 'view') renderAssignmentOverview();
         if (viewName === 'library') renderTeacherLibrary(teacherLibraryActiveTab);
+        if (viewName === 'speaking' && window.MrCatTeacherSpeaking) window.MrCatTeacherSpeaking.load();
         if (viewName === 'view' && teacherLiveDataLoadedAt
             && Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {
             refreshTeacherLiveProgress();
@@ -8330,7 +8530,11 @@
     });
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
-        if (!state.updatesOpen) state.notificationAttemptId = '';
+        if (!state.updatesOpen) {
+            state.notificationAttemptId = '';
+            state.notificationIntensiveEvent = null;
+            state.notificationIntensiveThreadEvents = [];
+        }
         if (state.updatesOpen) {
             setStarRedemptionPanel(false);
             setReviewPanel(false);
@@ -8340,6 +8544,8 @@
     document.getElementById('teacher-updates-close').addEventListener('click', function() {
         state.updatesOpen = false;
         state.notificationAttemptId = '';
+        state.notificationIntensiveEvent = null;
+        state.notificationIntensiveThreadEvents = [];
         renderUpdatesPanel();
     });
     var teacherUpdatesReadAll = document.getElementById('teacher-updates-read-all');
@@ -8376,6 +8582,8 @@
             if (event.target === updatesPanel) {
                 state.updatesOpen = false;
                 state.notificationAttemptId = '';
+                state.notificationIntensiveEvent = null;
+                state.notificationIntensiveThreadEvents = [];
                 renderUpdatesPanel();
             }
         });

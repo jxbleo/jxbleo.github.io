@@ -1224,3 +1224,37 @@ Accepted regions are capped at the number of stored uncertain spans and 100, exc
 out-of-range boxes, and are ordered by span index. `location_status` is `not_needed`, `complete`, `partial`,
 or `unavailable`; temporary image URLs and raw locator responses are never persisted. These fields are
 optional so older text-only OCR payloads remain readable.
+
+## Speaking Lab collections
+
+The V1 backend adds these `ADMINONLY` collections: `speaking_discussions`
+(creator, prompt/date/title, derived roster/recording/analysis state, formal
+asset and active revision references); `speaking_participants` (Discussion-
+scoped VIP/Guest rows, invitation state, snapshots, Voice Reference status,
+mapping revision and identity status); `speaking_audio_assets` (private
+two-phase upload audit, formal/reference kind, file metadata, quality and
+retention timestamps); `speaking_ai_jobs` (stable operation/job IDs, stage,
+lease/retry metadata, asset IDs, safe errors and schema versions only);
+`speaking_reports` (immutable canonical Speaker transcript, segments, quality
+and DSE payload without participant names); `speaking_identity_events`
+(append-only mapping/confirmation audit); `speaking_share_links` (SHA-256
+token hash, snapshot kind/selection, immutable redacted payload, expiry and
+revocation); and `speaking_model_usage_events` (one safe metadata ledger row
+per physical provider call).
+
+Required uniqueness/index coverage includes Discussion/participant/asset/job/
+report/share/event IDs, Discussion plus participant scope, job status plus
+retry/lease times, asset status plus expiry, and share status plus expiry. Raw
+tokens, credentials, embeddings, audio URLs, names in report evidence, and
+provider responses are not stored. Voice Reference assets receive
+
+## Intensive Listening Library additions
+
+Intensive Listening sets and private materials retain source family/label,
+series, publication date, source set, optional linked practice set, and safe
+dictation/sequence counts; mastery_enabled is always false. The current
+progress document may additionally store server-written notification session
+state, inactivity deadline, context, target, safe counts, and close reason.
+Session summaries are append-only teacher-attempt-email event rows with
+event_kind intensive_listening_session; they never contain typed words,
+answers, slots, or private audio URLs.

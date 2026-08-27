@@ -2053,3 +2053,37 @@ highlight; it never edits or acknowledges the text. Selecting a region scrolls t
 view, while acknowledging or editing the text hides the matching region. If the optional visual locator
 times out, fails validation, or returns no usable region, OCR still succeeds and the existing text-only
 review remains available.
+
+## DSE Speaking Lab V1 (local implementation boundary)
+
+Speaking Lab covers only DSE English Language Paper 4 Part A Group Interaction.
+The creator may invite active students by exact Student ID and add Discussion-
+scoped Guests. Three to six listed participants are eligible for DSE analysis;
+a two-person Discussion does not generate a report. Prompt text is typed or pasted,
+recordings are private, and no pronunciation/delivery score or official total
+is produced. Reports use three integer 0–7 domains plus
+`Pronunciation & Delivery — Not assessed`.
+
+Identity is Discussion-scoped. Speaker Tracks are canonicalized server-side;
+student Voice confirmation is required before a Student Share, while teachers
+may remap and lock mappings. Guests never receive account access or share
+controls. Student snapshots expose the caller's detailed analysis and
+anonymous peer summaries; Teacher snapshots apply explicit per-participant
+name selection and redact hidden names everywhere. Raw share tokens are
+returned once, stored only as SHA-256 hashes, expire after seven days, and
+snapshots are revoked when mapping/report/privacy state changes.
+
+Production speech and text providers fail closed with
+`SPEAKING_PROVIDER_NOT_CONFIGURED` until the owner completes the real-audio
+benchmark and deployment. No deterministic fixture is available through a
+browser or production action.
+
+### Intensive Listening Library
+
+Intensive Listening is a separate authenticated student workspace with
+Continue, source filtering, global search, chronological sorting, and
+Completion-based Start/Continue/Review cards. Dashboard Writing, Intensive
+Listening, and Speaking capsules are full-width and ordered 写/听/说.
+Assignments default to a 100% Completion target and never earn STAR. Student
+library responses contain safe metadata and progress only; private units and
+answers are returned only by the authorized practice flow.

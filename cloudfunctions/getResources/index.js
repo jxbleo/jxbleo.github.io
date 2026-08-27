@@ -36,6 +36,7 @@ function resourceView(item) {
     edition_label: item.edition_label || "",
     is_latest_edition: item.is_latest_edition === true,
     content_version: item.content_version == null ? null : String(item.content_version),
+    intensive_listening_set_id: item.intensive_listening_set_id || item.intensiveListeningSetId || null,
   };
 }
 

@@ -1877,3 +1877,45 @@ short so future agents can avoid repeating the same first-pass mistakes.
   `rg --files` from the repository root before drawing conclusions; the active
   project now includes `assets/`, `content/`, `scripts/`, `cloudfunctions/`,
   and multiple permanent pages.
+
+### DSE Speaking Lab invariants
+
+Speaking Lab is limited to DSE Paper 4 Part A Group Interaction. Keep its
+Discussion, participant, private audio, durable-job, report, identity-event,
+share, and usage collections `ADMINONLY`; derive every access decision from
+the authenticated UID and active profile. Student ID is a lookup input only.
+Voice identity is Discussion-scoped with no permanent voiceprint; formal audio
+is private and Voice Reference files are deleted seven days after successful
+matching. Student shares require the caller's current voice confirmation;
+Teacher shares are server-built with explicit name-selection redaction. Public
+links store only a SHA-256 token hash and return `SHARE_NOT_AVAILABLE` for
+missing, expired, or revoked links. Production speech/text providers must fail
+closed with `SPEAKING_PROVIDER_NOT_CONFIGURED`; test fixtures never enter a
+browser or production route. Package/deploy and timer/provider configuration
+remain owner-gated. See
+`docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`.
+
+### Intensive Listening Library invariants
+
+Intensive Listening is a dedicated authenticated student library, not an
+ordinary Student or Teacher Library section. It lists only visible sets with
+visible live private materials; the browser receives safe source/progress
+metadata, never transcript text, timing, slots, answers, or drafts. Existing
+BBC and IELTS links remain direct entry points, and a material has at most one
+authorized linked comprehension exercise.
+
+Intensive Listening Completion counts only dictation units. Assignments always
+use a server-enforced 100% Completion target by default and
+`mastery_enabled: false`; they never earn STAR. Material replacement uses a
+new internal compatibility generation, starts current progress at zero, and
+never regresses a previously finished assignment or deletes old private audit
+rows.
+
+The first real audio playhead movement starts one server-owned learning
+session. Activity rolls a three-minute deadline; idle and target closure write
+idempotent Started/Paused/Completed rows to the private teacher-attempt-email
+outbox. The existing timer and mixed Teacher bell may consume those summaries,
+but no IL session creates a synthetic attempt or includes typed words, answers,
+private audio URLs, or Argue data. Visitor, Teacher preview, and Parent Mode
+never create sessions. Production indexes, imports, timers, and deployment
+remain owner-gated.

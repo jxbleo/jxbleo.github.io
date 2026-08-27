@@ -85,6 +85,7 @@ const root = path.resolve(__dirname, "..");
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const page = fs.readFileSync(path.join(root, "parent-mode.html"), "utf8");
 const client = fs.readFileSync(path.join(root, "assets/js/parent-mode.js"), "utf8");
+const parentFunction = fs.readFileSync(path.join(root, "cloudfunctions/parentMode/index.js"), "utf8");
 assert(home.includes('id="parent-mode-button"'), "homepage exposes Parent Mode entry");
 assert(page.includes('id="parent-login-form"') && page.includes('id="parent-matrix-shell"'));
 assert(client.includes("data-parent-task") && client.includes("attemptReview"));
@@ -96,5 +97,8 @@ assert(client.includes("合格线：") && !client.includes("PASS ") && !client.i
 assert(page.includes("cloudbase-client.js?v=20260815-2") && page.includes("parent-mode.js?v=20260815-3"),
   "Parent Mode busts cached client scripts after the anonymous-auth fix");
 assert(!page.includes("Student ID"), "Parent Mode login does not reuse student credentials");
+assert(parentFunction.includes('intensive_listening_progress'), "Parent Mode reads IL Completion from the protected progress collection");
+assert(parentFunction.includes('completion_percentage'), "Parent Mode exposes assigned IL Completion only");
+assert(parentFunction.includes('if (isIntensiveListeningSet(set)) throw new Error("PARENT_TASK_NOT_FOUND")'), "Parent Mode does not expose self-study IL detail routes");
 
 console.log("Parent Mode rule tests passed.");

@@ -472,3 +472,13 @@ For a same-edition BBC correction, optionally add/increment `contentVersion` in
 both public runtime metadata and content metadata and match it to the private
 `grading_version`. A prompt replacement does not regrade old attempts; an
 accepted-answer correction may use the existing upward-only regrade path.
+
+### Intensive Listening source intake
+
+Run npm run import-intensive-listening with a timestamped JSON transcript.
+The importer accepts source family/label/series/date, source set, and one
+linked practice set; BBC and IELTS identifiers provide conservative defaults.
+It writes public metadata plus ignored private material/import rows while
+keeping catalogVisible false, and never copies transcript answers into data/.
+Review dictation/listen-only/skip modes and the generated inverse link before
+owner-gated CloudBase import.

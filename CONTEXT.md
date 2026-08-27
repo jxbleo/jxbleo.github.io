@@ -355,3 +355,84 @@ _Avoid_: Redemption, deletion
 An append-only correction that returns previously redeemed Yellow STAR credits
 without editing or deleting the completed Cash Request.
 _Avoid_: Undo, record deletion
+
+## DSE Speaking Lab
+
+**Discussion**:
+One DSE Group Interaction workspace whose participant list, formal recording,
+speaker identities, AI analysis, and share snapshots belong together.
+_Avoid_: Speaking attempt, audio file, chat room
+
+**VIP Participant**:
+An authenticated Mr. Cat Academy student included in a Discussion. A VIP
+Participant may accept or decline access, confirm their own voice, and create a
+Student Share Snapshot after that confirmation.
+_Avoid_: Registered speaker, account holder, member ID
+
+**Guest Participant**:
+A Discussion-scoped participant without a Mr. Cat Academy account. The entered
+name is unverified, creates no login or long-term profile, and grants no report
+or sharing authority.
+_Avoid_: Non-speaker, temporary account, invited student
+
+**Candidate**:
+A listed participant whose reliably identified Formal Discussion speech is
+eligible for DSE analysis in that Discussion.
+_Avoid_: Every detected voice, invitee, Speaker Track
+
+**Formal Discussion Recording**:
+The authoritative group audio captured or uploaded for one Discussion and used
+for transcription, speaker separation, and DSE analysis.
+_Avoid_: Voice Reference, confirmation clip, transcript
+
+**Voice Reference**:
+A short, separate recording made for one participant in one Discussion and
+used only to compare that participant with Formal Discussion speech.
+_Avoid_: Permanent voiceprint, formal answer, account identity
+
+**Speaker Track**:
+One stable diarized voice cluster from a Formal Discussion Recording. It keeps
+an anonymous Speaker label until a permitted voice confirmation makes a name
+eligible for display.
+_Avoid_: Candidate, student, voice sample
+
+**Non-Candidate Voice**:
+A Speaker Track that cannot be reliably matched to a listed participant or is
+judged to be incidental speech. It may remain as marked context but is excluded
+from Candidate scoring.
+_Avoid_: Failed Candidate, Guest Participant, low-scoring speaker
+
+**Voice Match**:
+The current one-to-one association between a participant and a Speaker Track,
+proposed from the Discussion's Voice References and replaceable by a teacher.
+_Avoid_: Account verification, legal identity, permanent voice recognition
+
+**Voice Confirmation**:
+A VIP Participant's acceptance of their own Voice Match, or a teacher's
+authoritative lock of that match. It controls name display but does not change
+the underlying transcript or speaker analysis.
+_Avoid_: Invitation acceptance, Voice Reference, report approval
+
+**Discussion Report**:
+A versioned DSE Group Interaction analysis whose evidence remains attached to
+stable Speaker Tracks even when names or Voice Matches change.
+_Avoid_: Official DSE score, transcript, shared link
+
+**Student Share Snapshot**:
+A fixed, expiring external projection created by a voice-confirmed VIP
+Participant. It identifies only that sharing participant and keeps every other
+participant anonymous.
+_Avoid_: Live report, invitation link, authenticated report
+
+**Intensive Listening Library**:
+An authenticated student catalog backed by visible sets plus live private
+materials. Cards expose source metadata, Completion progress, one optional
+linked practice exercise, and a safe same-origin return; transcript units,
+answers, and timing remain server-only.
+_Avoid_: Public transcript catalog, ordinary Library tab, or local progress as
+the authority.
+
+**Teacher Share Snapshot**:
+A fixed, expiring external projection whose content and per-participant name
+visibility are selected by a teacher at creation time.
+_Avoid_: Live teacher report, public report, Student Share Snapshot

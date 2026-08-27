@@ -994,3 +994,33 @@ complete, or appends a stable `model_usage_alert` to `writing_teacher_email_even
 provider `usage` is incomplete, or persistence reported failure. `sendWritingTutorEmails` sends that safe
 health alert through the existing teacher-recipient/SMTP timer. Legacy jobs without the telemetry version are
 ignored so rollout does not create false historical alerts.
+
+## Speaking Lab backend boundary
+
+`speakingLab` is the authenticated gateway for Discussion, invitation, Guest,
+private two-phase audio upload, identity confirmation/remapping, and snapshot
+creation. `speakingAiWorker` is a private one-minute durable-job worker for
+lease recovery, dispatch, bounded retry cleanup, Voice Reference deletion, and
+share expiry. New Speaking collections remain `ADMINONLY`; browsers receive
+server projections and short-lived upload metadata only.
+
+The gateway stores only metadata in `speaking_ai_jobs`. Audio quality,
+transcription/diarization, Candidate canonicalization, and report
+canonicalization are explicit stages. `speech-provider.js` and
+`model-provider.js` are provider interfaces and currently fail closed with
+`SPEAKING_PROVIDER_NOT_CONFIGURED`; no provider URL, credential, transcript, or
+prompt is copied into queue rows or logs. `speaking-lab.js` owns deterministic
+authorization, identity, evidence, projection, alias, redaction, and
+invalidation rules. Formal audio is retained privately; Voice Reference files
+are scheduled for deletion seven days after successful matching.
+
+### Intensive Listening Library and sessions
+
+intensiveListening(action=listCatalog) intersects visible Intensive Listening
+sets with visible live private materials and returns a redacted catalog view.
+The practice page validates assignment ownership and linked-practice visibility.
+Audio movement calls the same function's server-owned session heartbeat; the
+current progress row stores one active session, while deterministic event IDs
+make Started and final session outbox rows idempotent. The existing
+sendTeacherAttemptEmails timer closes sessions idle for three minutes and
+renders safe IL summaries without grading-key or transcript reads.

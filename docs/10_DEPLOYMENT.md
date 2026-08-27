@@ -1143,3 +1143,52 @@ Do not publish a client containing `discardDraftComposition` while production
 function invocation whose body contains `code: "UNKNOWN_ACTION"`, rendered by the
 client as the generic AI writing request error. Deploy and verify the bundled
 function first, then publish the matching static asset version.
+
+## Speaking Lab owner-gated rollout
+
+Create the eight `ADMINONLY` Speaking collections and indexes from the
+implementation plan, configure only the documented `SPEAKING_AI_TEXT_*`,
+`SPEAKING_ASR_*`, `SPEAKING_AI_TIMEOUT_MS`, and
+`SPEAKING_AI_WORKER_CRON_TOKEN` environment names after benchmark approval,
+then deploy `speakingLab` and `speakingAiWorker` together. Configure one
+private one-minute worker timer, run authenticated development smoke tests,
+and only then publish the cache-busted Speaking student/teacher/external
+assets. The local agent may package ZIPs and generate a deploy plan but does
+not create collections, set secrets, configure timers, deploy functions, or
+publish static resources.
+
+Provider-disabled deployments are expected to return
+`SPEAKING_PROVIDER_NOT_CONFIGURED` without fake reports. Roll back by hiding
+the dashboard entry first, stopping the worker timer if necessary, and rolling
+back both functions together while retaining private Discussion/report/audit
+history and revoking active shares.
+
+`cloudfunctions/_shared/` is bundled into dependent functions and is never a
+standalone CloudBase function. The deploy-plan generator therefore excludes
+underscore-prefixed shared directories; package only `speakingLab` and
+`speakingAiWorker` for this feature.
+
+### Intensive Listening Library rollout
+
+Development rollout status (2026-08-27): the three approved session/event
+indexes were created, all 21 current BBC Intensive Listening `sets` and private
+material rows were overwritten from their iCloud source backups, and
+`sendTeacherAttemptEmails`, `teacherAdmin`, `learningReports`,
+`generateLearningReports`, `parentMode`, `getResources`, and
+`intensiveListening` were deployed successfully to
+`mrcat-dev-d9gwy2v1icdfdf597`. The existing one-minute email timer and SMTP
+configuration were preserved. Static publication is performed separately by
+the matching `main` commit and COS workflow.
+
+Package and verify locally with:
+
+~~~bash
+npm run package:functions -- intensiveListening teacherAdmin getResources sendTeacherAttemptEmails learningReports parentMode
+~~~
+
+Before production rollout, the owner must review bounded catalog/session
+scans, create the notification session and IL event indexes, configure the
+existing timer/SMTP environment, import intended private material/set rows,
+and deploy the affected functions, including `learningReports` and `parentMode`
+when their Completion projections are enabled. No production import, index
+creation, timer change, or deployment is performed by this implementation.

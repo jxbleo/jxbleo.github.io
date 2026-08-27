@@ -1161,3 +1161,25 @@ prompt text into the student manuscript or triggering a review unexpectedly.
 
 Review condition: revisit only if prompt extraction later needs a distinct schema
 for images containing diagrams, tables, or multi-part source materials.
+
+## DSE Speaking identity and provider boundary (2026-08-27)
+
+Speaking Lab V1 stores no reusable voiceprint or biometric embedding. Voice
+References are Discussion-scoped and are deleted seven days after a successful
+match; formal recordings remain private for the Discussion lifetime. Reports
+retain stable anonymous Speaker keys and server-derived evidence. Student and
+Teacher shares are immutable server-built snapshots with snapshot-local aliases
+and exact-name redaction.
+
+The speech/text provider is an explicit interface and fails closed until a
+real-audio benchmark selects and documents an adapter. Pronunciation and
+delivery are not assessed in V1. Fixtures are test-only and cannot be selected
+from browser input, production environment flags, or queue metadata.
+
+### Intensive Listening session summaries
+
+Intensive Listening uses the existing private attempt-email outbox rather
+than synthetic Attempt documents. A server-generated ils session ID and
+deterministic Started/final event IDs make retries and concurrent tabs
+idempotent. The one-minute dispatcher owns idle closure and uses the existing
+teacher recipient policy; safe counts are the only email/bell payload.

@@ -8,7 +8,7 @@ const args = process.argv.slice(2);
 
 function usage() {
   console.log(`Usage:
-  node scripts/import-intensive-listening.js <material.json> [--set-id <IL-ID>] [--title <title>] [--audio-src <public/path.mp3>] [--content-version <version>]
+  node scripts/import-intensive-listening.js <material.json> [--set-id <IL-ID>] [--title <title>] [--audio-src <public/path.mp3>] [--content-version <version>] [--source-family <family>] [--source-label <label>] [--series-label <label>] [--published-on <YYYY-MM-DD>] [--linked-practice-set-id <set-id>]
 
 The JSON may be an array of transcript records or a self-contained object with
 materialId, sourceSetId, title, audioSrc, contentVersion, and segments. Segment
@@ -31,7 +31,10 @@ if (args.includes("--help") || args.includes("-h")) {
 const sourceArg = args[0] && !args[0].startsWith("--") ? args[0] : "";
 if (!sourceArg) throw new Error("A timestamped transcript JSON path is required");
 const sourcePath = path.resolve(sourceArg);
-const publishedOn = option("--published-on", false);
+const cliPublishedOn = option("--published-on", false);
+const setHint = option("--set-id", false);
+const existingMetaPath = path.join(projectRoot, "content", "intensive-listening", (setHint || "unknown") + ".json");
+const existingMeta = setHint && fs.existsSync(existingMetaPath) ? readJson(existingMetaPath) : {};
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8").replace(/^\uFEFF/, ""));
@@ -105,7 +108,7 @@ function slotsForText(text, unitNumber) {
 }
 
 const payload = readJson(sourcePath);
-const setId = option("--set-id", false)
+const setId = setHint
   || String(payload && (payload.materialId || payload.material_id || payload.setId || payload.set_id) || "").trim();
 const title = option("--title", false) || String(payload && payload.title || "").trim();
 const audioSrc = option("--audio-src", false)
@@ -113,6 +116,30 @@ const audioSrc = option("--audio-src", false)
 const contentVersion = option("--content-version", false)
   || String(payload && (payload.contentVersion || payload.content_version) || "1").trim();
 const sourceSetId = String(payload && (payload.sourceSetId || payload.source_set_id) || setId.replace(/^IL-/, "")).trim();
+const sourceFamilyInput = option("--source-family", false)
+  || String(payload && (payload.sourceFamily || payload.source_family) || existingMeta.sourceFamily || "").trim().toLowerCase();
+const sourceLabelInput = option("--source-label", false)
+  || String(payload && (payload.sourceLabel || payload.source_label) || existingMeta.sourceLabel || "").trim();
+const seriesLabelInput = option("--series-label", false)
+  || String(payload && (payload.seriesLabel || payload.series_label) || existingMeta.seriesLabel || "").trim();
+const linkedPracticeSetId = option("--linked-practice-set-id", false)
+  || String(payload && (payload.linkedPracticeSetId || payload.linked_practice_set_id) || existingMeta.linkedPracticeSetId || "").trim();
+let sourceFamily = sourceFamilyInput;
+let sourceLabel = sourceLabelInput;
+let seriesLabel = seriesLabelInput;
+if (!sourceFamily && /^IL-BBC-/i.test(setId)) sourceFamily = "bbc";
+if (!sourceFamily && /^(?:IL-)?C\d+-T\d+-S\d+$/i.test(setId)) sourceFamily = "ielts";
+if (!sourceLabel && sourceFamily === "bbc") sourceLabel = "BBC";
+if (!sourceLabel && sourceFamily === "ielts") sourceLabel = "IELTS";
+if (!seriesLabel && sourceFamily === "bbc") seriesLabel = "BBC 6 Minute English";
+if (!seriesLabel && sourceFamily === "ielts") seriesLabel = "IELTS Listening";
+if (!sourceLabel) throw new Error("A source label is required for new material (use --source-label)");
+const publishedOn = cliPublishedOn
+  || String(payload && (payload.publishedOn || payload.published_on) || "").trim()
+  || (() => {
+    const match = setId.match(/^IL-BBC-(\d{2})(\d{2})(\d{2})$/i);
+    return match ? `20${match[1]}-${match[2]}-${match[3]}` : "";
+  })();
 
 if (!/^IL-[A-Za-z0-9-]+$/.test(setId)) throw new Error("The material ID must start with IL- (use materialId or --set-id)");
 if (!title) throw new Error("A material title is required (use title or --title)");
@@ -166,6 +193,11 @@ const material = {
   material_id: setId,
   set_id: setId,
   source_set_id: sourceSetId,
+  source_family: sourceFamily,
+  source_label: sourceLabel,
+  series_label: seriesLabel,
+  published_on: publishedOn,
+  linked_practice_set_id: linkedPracticeSetId || null,
   title,
   audio_src: audioSrc,
   content_version: contentVersion,
@@ -177,17 +209,22 @@ const material = {
 };
 
 const metaPath = path.join(projectRoot, "content", "intensive-listening", `${setId}.json`);
-const existingMeta = fs.existsSync(metaPath) ? readJson(metaPath) : {};
-
 const meta = {
   id: setId,
   sectionId: "intensive-listening",
   title,
   href: `intensive-listening.html?set=${encodeURIComponent(setId)}`,
   publishedOn: publishedOn || String(payload && payload.publishedOn || existingMeta.publishedOn || "") || new Date().toISOString().slice(0, 10),
-  topic: "BBC 6 Minute English",
-  tags: ["Intensive Listening", "BBC"],
+  topic: seriesLabel,
+  tags: ["Intensive Listening", sourceLabel].filter(Boolean),
   note: `${dictationUnits.length} dictation units`,
+  sourceFamily,
+  sourceLabel,
+  seriesLabel,
+  sourceSetId,
+  linkedPracticeSetId: linkedPracticeSetId || null,
+  dictationUnitCount: dictationUnits.length,
+  sequenceUnitCount: units.length,
   catalogVisible: false,
   visible: true,
 };
@@ -212,16 +249,22 @@ const privatePath = path.join(projectRoot, ".cloudbase-private", "source", "inte
 writeJson(metaPath, meta);
 writeJson(privatePath, material);
 
+const linkedSourceId = linkedPracticeSetId || sourceSetId || setId.replace(/^IL-/, "");
 const linkedBbcId = sourceSetId || setId.replace(/^IL-/, "");
-const linkedBbcPaths = [
+const linkedBbcPaths = sourceFamily === "bbc" ? [
   path.join(projectRoot, "content", "bbc-six-minute-english", `${linkedBbcId}.json`),
   path.join(projectRoot, "data", `${linkedBbcId}.json`),
+] : [
+  path.join(projectRoot, "content", "ielts-listening", `${linkedSourceId}.json`),
+  path.join(projectRoot, "data", `${linkedSourceId}.json`),
 ];
 const linkedBbcFiles = linkedBbcPaths.filter((filePath) => fs.existsSync(filePath));
 linkedBbcFiles.forEach((filePath) => {
   const linkedBbc = readJson(filePath);
-  linkedBbc.intensiveListeningSetId = setId;
-  writeJson(filePath, linkedBbc);
+  if (linkedBbc && typeof linkedBbc === "object" && (sourceFamily === "bbc" || linkedPracticeSetId)) {
+    linkedBbc.intensiveListeningSetId = setId;
+    writeJson(filePath, linkedBbc);
+  }
 });
 
 const setRecord = {
@@ -235,6 +278,15 @@ const setRecord = {
   estimated_minutes: Math.max(1, Math.ceil(units[units.length - 1].end_seconds / 60)),
   passing_percentage: 100,
   mastery_percentage: 100,
+  mastery_enabled: false,
+  source_family: sourceFamily,
+  source_label: sourceLabel,
+  series_label: seriesLabel,
+  published_on: publishedOn,
+  source_set_id: sourceSetId,
+  linked_practice_set_id: linkedPracticeSetId || null,
+  dictation_unit_count: dictationUnits.length,
+  sequence_unit_count: units.length,
   feedback_policy: "always",
   visible: true,
 };

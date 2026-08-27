@@ -1505,6 +1505,12 @@ Shared rules:
   Approve warns that the live rule changes for every student and requires a
   second in-card confirmation. Generic Add/Replace answer actions never appear on this card.
   Teacher preview also exposes Export Latest JSON.
+- In Teacher preview, clicking a required answer token uses the same compact
+  confirmation shell with teacher wording (`Provide this word for every student?`)
+  and an `Approve` action. It calls the teacher-only Provided Word mutation
+  directly; it never creates a pending student Argue row. The material policy
+  revision and immutable audit record are updated atomically and the current
+  preview refreshes in place.
 - After a new Intensive Listening Argue submits successfully, its dialog uses
   the same animated heart, `Sent to teacher.` / `Thanks for your feedback.`
   confirmation, and external Close capsule as the BBC question-level Argue flow.
@@ -2366,3 +2372,30 @@ Enter, or Space centers the matching text mark without changing it; clicking a m
 and removes its box, and editing a mark removes the box through the existing changed-mark cleanup. Missing
 or unavailable boxes never disable the text editor. The split layout remains on tablet/desktop and images
 remain above the editor on phones, with scroll/pinch gestures available outside the individual targets.
+
+## Speaking Lab V1 surfaces
+
+The student Speaking Lab is one responsive page with a Discussion list,
+invitation inbox, creation form, private recording/upload choice, Voice
+Reference cards, factual queued/processing stages, internal Speaker-labelled
+report, voice confirmation, and Student Share controls. The browser holds a
+recording only in memory until upload and never writes audio to browser
+storage. A microphone denial always leaves the file-upload path available.
+
+Teacher Speaking is a separate workspace view with paged Discussions, identity
+mapping review, per-participant name selection, and explicit share generation.
+The external report page is `noindex,nofollow`, has no audio/download controls,
+and renders only the server-redacted snapshot. Loading, failed, expired, and
+revoked states use the same safe share error; reduced motion removes
+transitions without changing state or permissions.
+
+### Intensive Listening surfaces
+
+The dashboard presents three equal full-width capsules in Writing, Intensive
+Listening, Speaking order. The dedicated Intensive Listening Library uses
+responsive two-column cards (one column on narrow screens), dynamic source
+filters, global search, Newest/Oldest sorting, and a Continue section only for
+partially complete materials. Cards use semantic sibling actions for Start,
+Continue, Review, and optional Listening Practice; no interactive control is
+nested in an outer link. Practice returns to the validated originating library,
+BBC, or IELTS Section URL.

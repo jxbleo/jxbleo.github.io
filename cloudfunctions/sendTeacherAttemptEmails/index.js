@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const cloudbase = require("@cloudbase/node-sdk");
 const nodemailer = require("nodemailer");
 const notifications = require("../_shared/attempt-email-notifications");
+const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
@@ -14,6 +15,8 @@ const READ_PAGE_LIMIT = 500;
 const DISPATCH_LIMIT = 20;
 const MAX_RETRIES = 5;
 const CLAIM_TIMEOUT_MS = 10 * 60 * 1000;
+const INTENSIVE_PROGRESS = "intensive_listening_progress";
+const INTENSIVE_MATERIALS = "intensive_listening_materials";
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -178,6 +181,83 @@ async function claimEventBatch(anchor, now) {
   return claimed;
 }
 
+function isIntensiveEvent(event) {
+  return Boolean(event && (event.event_kind === "intensive_listening_session" || event.mode === "intensive_listening"));
+}
+
+async function createIntensiveEvent(event) {
+  const eventId = intensiveNotifications.sessionEventId(event.session_id, event.session_phase);
+  try {
+    await db.collection(EVENT_COLLECTION).doc(eventId).create({ ...event, event_id: eventId });
+  } catch (error) {
+    const message = text(error && (error.message || error.code)).toLowerCase();
+    if (!message.includes("exist") && !message.includes("duplicate") && !message.includes("already")) throw error;
+  }
+}
+
+async function closeIdleIntensiveSessions(now) {
+  let rows;
+  try {
+    rows = await getAll(INTENSIVE_PROGRESS, { notification_session_status: "active" });
+  } catch (_) {
+    rows = await getAll(INTENSIVE_PROGRESS);
+  }
+  const expired = rows.filter((row) => dateValue(row.notification_session_due_at) > 0 && dateValue(row.notification_session_due_at) <= now.getTime());
+  if (!expired.length) return 0;
+  const materials = new Map((await getAll(INTENSIVE_MATERIALS)).map((row) => [text(row.set_id || row.material_id), row]));
+  let closed = 0;
+  for (const row of expired) {
+    const material = materials.get(text(row.set_id));
+    if (!material) continue;
+    let snapshot = null;
+    await db.runTransaction(async (transaction) => {
+      const result = await transaction.collection(INTENSIVE_PROGRESS).where({ progress_id: text(row.progress_id), student_uid: text(row.student_uid) }).limit(1).get();
+      const current = result.data && result.data[0] ? recordData(result.data[0]) : null;
+      if (!current || current.notification_session_status !== "active" ||
+          dateValue(current.notification_session_due_at) > now.getTime()) return;
+      snapshot = current;
+      await transaction.collection(INTENSIVE_PROGRESS).doc(current._id).update({
+        notification_session_status: "paused",
+        notification_session_due_at: null,
+        notification_closed_at: now,
+        notification_close_reason: "idle",
+        notification_latest_percentage: Number(current.notification_latest_percentage) || Number(current.percentage) || 0,
+        notification_latest_completed_count: Number(current.notification_latest_completed_count) || Number(current.completed_unit_count) || 0,
+        notification_latest_independent_count: Number(current.notification_latest_independent_count) || Number(current.independent_unit_count) || 0,
+        notification_latest_assisted_count: Number(current.notification_latest_assisted_count) || Number(current.assisted_unit_count) || 0,
+        updated_at: now,
+      });
+    });
+    if (!snapshot) continue;
+    const student = await getOne("students", { auth_uid: text(snapshot.student_uid) });
+    if (!student) continue;
+    const endSummary = {
+      percentage: Number(snapshot.notification_latest_percentage) || Number(snapshot.percentage) || 0,
+      completed_unit_count: Number(snapshot.notification_latest_completed_count) || Number(snapshot.completed_unit_count) || 0,
+      independent_unit_count: Number(snapshot.notification_latest_independent_count) || Number(snapshot.independent_unit_count) || 0,
+      assisted_unit_count: Number(snapshot.notification_latest_assisted_count) || Number(snapshot.assisted_unit_count) || 0,
+    };
+    await createIntensiveEvent(intensiveNotifications.buildSessionEvent({
+      student,
+      material,
+      record: snapshot,
+      sessionId: snapshot.notification_session_id,
+      phase: "paused",
+      occurredAt: now,
+      startSummary: {
+        percentage: Number(snapshot.notification_start_percentage) || 0,
+        completed_unit_count: Number(snapshot.notification_start_completed_count) || 0,
+      },
+      endSummary,
+      targetPercentage: snapshot.notification_target_percentage,
+      assignmentId: snapshot.notification_assignment_id,
+      practiceContext: snapshot.notification_practice_context,
+    }));
+    closed += 1;
+  }
+  return closed;
+}
+
 async function assignmentForJob(job) {
   if (!job.assignment_id) return null;
   return await getOne("assignments", { assignment_id: job.assignment_id })
@@ -197,6 +277,21 @@ async function attemptThreadForJob(job, cutoffAt) {
 async function emailContext(claimed) {
   const jobs = claimed.jobs;
   const anchor = jobs[0];
+  if (isIntensiveEvent(anchor)) {
+    const [student, set] = await Promise.all([
+      getOne("students", { auth_uid: anchor.student_uid }),
+      getOne("sets", { set_id: anchor.set_id }),
+    ]);
+    if (!student || student.deleted === true || student.deleted_at) throw new Error("ATTEMPT_EMAIL_STUDENT_NOT_AVAILABLE");
+    return {
+      intensive: true,
+      event: jobs.slice().sort((left, right) => dateValue(left.occurred_at || left.submitted_at) - dateValue(right.occurred_at || right.submitted_at)).at(-1) || anchor,
+      events: jobs,
+      student,
+      set: set || { set_id: anchor.set_id, title: anchor.set_title || anchor.set_id },
+      teacherUrl: text(process.env.TEACHER_ATTEMPT_EMAIL_TEACHER_URL),
+    };
+  }
   const cutoffAt = anchor.delivery_policy === notifications.EMAIL_POLICIES.BBC_BATCH
     ? new Date(anchor.window_ends_at || anchor.due_at)
     : new Date(Math.max(...jobs.map((job) => dateValue(job.submitted_at))));
@@ -286,7 +381,9 @@ function deliveryMessageId(claimed, config) {
 async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
   try {
     const context = await emailContext(claimed);
-    const rendered = notifications.renderAttemptEmail(context);
+    const rendered = context.intensive
+      ? notifications.renderIntensiveListeningEmail(context)
+      : notifications.renderAttemptEmail(context);
     const mail = {
       from: config.from,
       // Keep allowlisted inboxes private from one another while retaining one
@@ -324,6 +421,7 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
 
 async function dispatch(now) {
   const recovered = await recoverStaleClaims(now);
+  const intensive_paused_sessions = await closeIdleIntensiveSessions(now);
   const anchors = await dueEvents(now);
   const recipients = await enabledRecipients();
   const summary = {
@@ -335,6 +433,7 @@ async function dispatch(now) {
     skipped_batches: 0,
     skipped_events: 0,
     failed_batches: 0,
+    intensive_paused_sessions,
   };
   if (!recipients.length) {
     for (const anchor of anchors) {
@@ -388,6 +487,8 @@ exports.main = async (event = {}) => {
 
 module.exports._test = {
   authorizedTimerEvent,
+  closeIdleIntensiveSessions,
   deliveryMessageId,
+  isIntensiveEvent,
   smtpConfiguration,
 };

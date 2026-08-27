@@ -2055,8 +2055,63 @@ html.teacher-modal-scroll-locked {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .student-ai-tutor-card,
+.student-ai-tutor-card,
     .student-ai-tutor-arrow { transition-duration: 1ms; }
+}
+
+.student-skill-entries {
+    display: grid;
+    gap: 14px;
+    margin: 18px 0 28px;
+}
+.student-skill-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 18px;
+    min-height: 112px;
+    padding: 22px 24px;
+    overflow: hidden;
+    color: #173f38;
+    text-decoration: none;
+    border: 1px solid rgba(73, 142, 124, 0.22);
+    border-radius: 26px;
+    background:
+        radial-gradient(circle at 82% 8%, rgba(255, 225, 159, 0.48), transparent 36%),
+        linear-gradient(135deg, rgba(231, 248, 241, 0.98), rgba(249, 252, 242, 0.94));
+    box-shadow: 0 18px 42px rgba(38, 87, 75, 0.1);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.student-skill-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(52, 127, 106, 0.4);
+    box-shadow: 0 22px 48px rgba(38, 87, 75, 0.15);
+}
+.student-skill-card:focus-visible {
+    outline: 3px solid rgba(41, 128, 105, 0.32);
+    outline-offset: 3px;
+}
+.student-skill-glyph {
+    align-self: start;
+    color: #216d5d;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.05;
+}
+.student-skill-copy { display: grid; gap: 5px; }
+.student-skill-copy strong { font-size: clamp(1.08rem, 2vw, 1.38rem); letter-spacing: .05em; }
+.student-skill-copy span { color: rgba(23, 63, 56, 0.68); line-height: 1.5; }
+.student-skill-arrow { align-self: center; color: #216d5d; font-size: 1.8rem; transition: transform 180ms ease; }
+.student-skill-card:hover .student-skill-arrow { transform: translateX(4px); }
+@media (max-width: 640px) {
+    .student-skill-card { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; min-height: 106px; padding: 18px; border-radius: 22px; }
+    .student-skill-glyph { font-size: 1.9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .student-skill-card,
+    .student-skill-arrow { transition-duration: 1ms; }
 }
 .student-progress-hero::before {
     background:
@@ -2931,6 +2986,63 @@ body:not(.teacher-page) .tab-button.active {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
+.student-library-card[role="group"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+}
+.library-card-primary {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.library-card-primary:focus-visible {
+    outline: 2px solid rgba(19, 118, 109, 0.45);
+    outline-offset: 4px;
+    border-radius: 10px;
+}
+.library-intensive-action {
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    padding: 0 12px;
+    border: 1px solid rgba(19, 118, 109, 0.2);
+    border-radius: 999px;
+    color: #216d5d;
+    background: rgba(229, 244, 235, 0.72);
+    font-size: .78rem;
+    font-weight: 850;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.library-intensive-action:hover,
+.library-intensive-action:focus-visible {
+    border-color: rgba(19, 118, 109, 0.38);
+    background: rgba(214, 240, 228, 0.96);
+}
+.intensive-notification-detail h2 { margin: 8px 0 5px; color: var(--ink); }
+.intensive-notification-events { display: grid; gap: 12px; margin-top: 18px; }
+.intensive-notification-event { padding: 14px 16px; border: 1px solid rgba(19, 118, 109, .14); border-radius: 14px; background: rgba(249, 252, 251, .82); }
+.intensive-notification-event-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.intensive-notification-event p { margin: 4px 0 0; }
+.intensive-notification-event .activity-session-summary { margin: 12px 0 0; padding: 12px; }
+.intensive-notification-event .activity-session-summary strong { font-size: 1.5rem; }
+.activity-session-summary {
+    display: grid;
+    gap: 8px;
+    margin: 22px 0;
+    padding: 18px;
+    border: 1px solid rgba(19, 118, 109, .16);
+    border-radius: 16px;
+    background: rgba(229, 244, 235, .68);
+}
+.activity-session-summary strong { color: #216d5d; font-size: 2rem; }
+.activity-session-summary span { color: rgba(24, 53, 47, .72); font-size: .88rem; }
 .assignment-task-card .library-task-actions,
 .assignment-task-card .card-button {
     position: relative;
@@ -9030,6 +9142,14 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     min-height: 22px;
     padding: 0;
     accent-color: var(--accent);
+}
+.assign-star-disabled {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 850;
 }
 .assign-mastery-inline {
     display: grid;

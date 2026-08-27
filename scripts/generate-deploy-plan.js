@@ -49,7 +49,8 @@ function categorize(statusItems) {
   const functionNames = unique(statusItems
     .map((item) => item.file.match(/^cloudfunctions\/([^/]+)\//))
     .filter(Boolean)
-    .map((match) => match[1]));
+    .map((match) => match[1])
+    .filter((name) => !name.startsWith("_")));
 
   const staticFiles = statusItems
     .filter((item) => {

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-1">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
@@ -71,6 +72,7 @@
                 <button class="tab-button active" type="button" data-view="view"><span aria-hidden="true">V</span>View</button>
                 <button class="tab-button" type="button" data-view="tasks"><span aria-hidden="true">A</span>Assign</button>
                 <button class="tab-button" type="button" data-view="library"><span aria-hidden="true">L</span>Library</button>
+                <button class="tab-button" type="button" data-view="speaking"><span aria-hidden="true">S</span>Speaking</button>
             </nav>
 
             <div class="teacher-workspace-content">
@@ -349,6 +351,15 @@
                         </div>
                     </section>
                 </section>
+
+                <section class="dashboard-view" id="view-speaking" hidden>
+                    <section class="speaking-lab-main teacher-speaking-main">
+                        <div class="speaking-lab-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1>Speaking</h1><p>Review Discussions, identity mappings, and safe share snapshots.</p></div></div>
+                        <p class="speaking-banner" id="teacher-speaking-message" role="status" aria-live="polite"></p>
+                        <section class="speaking-list" id="teacher-speaking-list"><div class="speaking-detail-card">Select Speaking to load Discussions.</div></section>
+                        <section class="speaking-detail" id="teacher-speaking-detail" hidden></section>
+                    </section>
+                </section>
             </div>
         </div>
 
@@ -428,6 +439,7 @@
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher.js?v=20260817-2"></script>
+    <script src="assets/js/teacher-speaking.js?v=20260827-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260810-2"></script>
 </body>
 </html>
