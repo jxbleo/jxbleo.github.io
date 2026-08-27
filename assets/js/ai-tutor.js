@@ -28,6 +28,7 @@
         ocrTitleUndo: null,
         scanTarget: 'writing',
         activeSentence: 0,
+        manuscriptView: 'draft',
         rewrites: {},
         rewriteResults: {},
         skipped: {},
@@ -620,10 +621,49 @@
         return '--sentence-color:' + palette.color + ';--sentence-soft:' + palette.soft + ';--sentence-active:' + palette.active + ';--sentence-ring:' + palette.ring;
     }
 
-    function highlightedManuscriptHtml(manuscript, sentences) {
+    function manuscriptRevisionSummary(sentences) {
+        var record = state.current && state.current.rewrite_results || {};
+        var storedById = {};
+        safeArray(record.results).forEach(function(item) {
+            var storedId = firstText(item && item.sentence_id, item && item.id);
+            if (storedId) storedById[storedId] = item;
+        });
+        var required = [];
+        var replacements = {};
+        safeArray(sentences).forEach(function(sentence, index) {
+            if (!rewriteRequired(sentence)) return;
+            var id = sentenceId(sentence, index);
+            var result = state.rewriteResults[id] || storedById[id] || sentence && sentence.rewrite_result;
+            var rewrite = firstText(result && result.student_rewrite, sentence && sentence.student_rewrite);
+            required.push({ result: result, rewrite: rewrite });
+            if (result && result.accepted === true && rewrite) replacements[id] = rewrite;
+        });
+        var completed = record.passed === true || compositionStatus(state.current) === 'completed';
+        return {
+            available: completed && required.length > 0 && required.every(function(item) {
+                return item.result && item.result.accepted === true && Boolean(item.rewrite);
+            }),
+            replacements: replacements
+        };
+    }
+
+    function manuscriptVersionControlHtml(revisedAvailable) {
+        if (!revisedAvailable) {
+            return '<div class="language-section-heading"><h2 class="language-card-title">Draft</h2></div>';
+        }
+        return '<div class="manuscript-version-control" role="group" aria-label="Writing version">' +
+            ['draft', 'revised'].map(function(view) {
+                var selected = state.manuscriptView === view;
+                var label = view === 'draft' ? 'Draft' : 'Revised';
+                return '<button type="button" data-manuscript-view="' + view + '" class="manuscript-version-button' + (selected ? ' is-selected' : '') + '" aria-pressed="' + selected + '">' + label + '</button>';
+            }).join('') + '</div>';
+    }
+
+    function highlightedManuscriptHtml(manuscript, sentences, view, revisionSummary) {
         var source = String(manuscript || '');
         var cursor = 0;
         var html = '';
+        var revised = view === 'revised' && revisionSummary && revisionSummary.available;
         sentences.forEach(function(sentence, index) {
             var original = String(sentence && sentence.original || '');
             if (!original) return;
@@ -633,8 +673,11 @@
             var withoutLeading = original.slice(leadingWhitespace.length);
             var trailingWhitespace = (withoutLeading.match(/\s*$/) || [''])[0];
             var visibleSentence = withoutLeading.slice(0, withoutLeading.length - trailingWhitespace.length);
+            var id = sentenceId(sentence, index);
+            var displaySentence = revised && revisionSummary.replacements[id] ? revisionSummary.replacements[id] : visibleSentence;
+            var needsRevision = !revised && rewriteRequired(sentence);
             html += escapeHtml(source.slice(cursor, matchAt) + leadingWhitespace);
-            html += '<span class="manuscript-sentence-highlight' + (index === state.activeSentence ? ' is-active' : '') + '" role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(visibleSentence) + '</span>';
+            html += '<span class="manuscript-sentence-highlight ' + (revised ? 'is-revised' : 'is-draft') + (needsRevision ? ' needs-revision' : '') + (index === state.activeSentence ? ' is-active' : '') + '" role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(displaySentence) + '</span>';
             html += escapeHtml(trailingWhitespace);
             cursor = matchAt + original.length;
         });
@@ -1626,6 +1669,7 @@
         state.ocrTitleUndo = null;
         state.scanTarget = 'writing';
         state.activeSentence = 0;
+        state.manuscriptView = 'draft';
         state.rewrites = {};
         state.rewriteResults = {};
         state.skipped = {};
@@ -2617,6 +2661,7 @@
 
     function prepareLanguageReview() {
         restoreLanguageReviewState();
+        state.manuscriptView = manuscriptRevisionSummary(safeArray(state.review && state.review.sentences)).available ? 'revised' : 'draft';
         renderLanguage();
     }
 
@@ -3037,6 +3082,10 @@
         if (state.activeSentence >= sentences.length) state.activeSentence = Math.max(0, sentences.length - 1);
         var cards = sentences.map(sentenceCardHtml).join('');
         var manuscript = firstText(state.current && state.current.confirmed_text, state.confirmedText, '暂无原文。');
+        var revisionSummary = manuscriptRevisionSummary(sentences);
+        if (!revisionSummary.available || (state.manuscriptView !== 'draft' && state.manuscriptView !== 'revised')) {
+            state.manuscriptView = 'draft';
+        }
         var cefrEstimate = state.review && state.review.cefr_estimate;
         var cefrPositionSuffixes = { lower: '-', middle: '', upper: '+' };
         var cefrSuffix = cefrEstimate && Object.prototype.hasOwnProperty.call(cefrPositionSuffixes, cefrEstimate.position) ?
@@ -3047,7 +3096,7 @@
             (cefrEstimate.commentary_zh ? '<p>' + escapeHtml(cefrEstimate.commentary_zh) + '</p>' : '') + '</div>' : '';
         stage.innerHTML = '<div class="language-review-stack">' +
             '<section class="surface language-review-card language-overall-card"><h2 class="language-card-title">Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
-            '<section class="surface language-review-card language-manuscript-card"><div class="language-section-heading"><h2 class="language-card-title">Draft</h2></div><div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences) + '</div></section>' +
+            '<section class="surface language-review-card language-manuscript-card ' + (state.manuscriptView === 'revised' ? 'is-revised-view' : 'is-draft-view') + '">' + manuscriptVersionControlHtml(revisionSummary.available) + '<div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences, state.manuscriptView, revisionSummary) + '</div></section>' +
             '<section class="surface language-review-card language-sentence-review-card" style="--revision-analysis-scale:' + revisionTextScale() + '">' +
             '<div class="language-section-heading sentence-review-heading"><h2 class="language-card-title">Sentence Revision</h2>' + revisionFontControlsHtml() + '</div>' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
@@ -4033,6 +4082,16 @@
         else if (button.matches('[data-reupload]')) beginReplacement('photo');
         else if (button.matches('[data-edit-current]')) beginReplacement('text');
         else if (button.matches('[data-enter-language]')) enterLanguage();
+        else if (button.matches('[data-manuscript-view]')) {
+            var requestedManuscriptView = button.getAttribute('data-manuscript-view');
+            var revisedAvailable = manuscriptRevisionSummary(safeArray(state.review && state.review.sentences)).available;
+            state.manuscriptView = requestedManuscriptView === 'revised' && revisedAvailable ? 'revised' : 'draft';
+            renderLanguage();
+            window.requestAnimationFrame(function() {
+                var selectedVersion = document.querySelector('[data-manuscript-view="' + state.manuscriptView + '"]');
+                if (selectedVersion) selectedVersion.focus({ preventScroll: true });
+            });
+        }
         else if (button.matches('[data-revision-font-step]')) adjustRevisionTextLevel(Number(button.getAttribute('data-revision-font-step')));
         else if (button.matches('[data-flip-sentence]')) {
             var flipId = button.getAttribute('data-flip-sentence');

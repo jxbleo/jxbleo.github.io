@@ -2309,19 +2309,29 @@ Important mobile rules:
 - When the numbered capsule bar reaches the viewport top, it visually replaces
   the primary toolbar and remains sticky at `top: 0`. The primary toolbar must
   not continue occupying a second row above it.
-- Sentence colors are positional and consistent: the original-manuscript mark,
-  numbered capsule, correction-card accent, and highlighted source sentence all
-  use the same palette entry. Both the original sentence mark and capsule are
+- Sentence colors are positional and consistent across the completed `Revised`
+  manuscript, numbered capsule, correction-card accent, and highlighted source
+  sentence. The neutral original Draft deliberately withholds those fills so it
+  reads as uncorrected work. Both manuscript versions and the capsule remain
   interactive routes to the same correction row.
 - `Draft` preserves the confirmed manuscript's original spaces and paragraph
-  breaks. Sentence highlights remain inline within that text flow, so differently
-  colored sentences in one paragraph continue on the same paragraph instead of
-  becoming sentence-sized blocks. Boundary whitespace stays outside the interactive
-  highlight while click, Enter, and Space still locate the matching revision row.
-- Sentence highlighting uses no text underline or bottom-border treatment. Its
-  repeating palette deliberately excludes the site's primary green so navigation
-  colors cannot be mistaken for a primary action or success state. Use blue,
-  orange, purple, rose, indigo, coral, gold, and deep pink in that order before repeating.
+  breaks. Sentence targets remain inline within that text flow, so one paragraph
+  never becomes sentence-sized blocks. Boundary whitespace stays outside the
+  interactive target while click, Enter, and Space still locate the matching
+  revision row. The original Draft uses a warm-neutral paper surface and dark-gray
+  text; every revision-required sentence receives a thin, muted-red proofreading
+  wave while correct sentences remain unmarked.
+- Once every required sentence is accepted and at least one persisted student
+  rewrite exists, replace the single Draft heading with an Apple-style
+  `Draft / Revised` segmented control and select `Revised` by default. Revised
+  reconstructs the whole manuscript without another model request: accepted
+  `student_rewrite` values replace their source sentences, effective sentences
+  remain unchanged, and original order, paragraph breaks, and boundary whitespace
+  are preserved. Revised has no proofreading waves and uses blue, orange, purple,
+  rose, indigo, coral, gold, and deep pink fills in the same positional order as
+  the capsule/card palette. Switching back to Draft restores the unchanged source
+  text and its original waves. Do not show Revised for a manuscript that began
+  with no required revisions.
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
   column; horizontal overflow is confined to the capsule row.

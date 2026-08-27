@@ -615,7 +615,9 @@ check("language review renders exactly three primary cards in the approved order
   const cardMarkers = Array.from(renderSource.matchAll(/language-(overall|manuscript|sentence-review)-card/g), (match) => match[1]);
   assert.deepStrictEqual(cardMarkers, ["overall", "manuscript", "sentence-review"],
     "language review must render only the overall, original-manuscript, and sentence-review primary cards, in that order");
-  requireEvery(renderSource, ["Language Review", "Draft", "Sentence Revision"], "language review card headings");
+  requireEvery(renderSource, ["Language Review", "manuscriptVersionControlHtml", "Sentence Revision"], "language review card headings");
+  requireEvery(functionSource(client, "manuscriptVersionControlHtml", "highlightedManuscriptHtml"), ["Draft", "Revised"],
+    "manuscript version headings");
   assert(!/整体评价|>原文<|句子批改/.test(renderSource),
     "the three language-review card titles must use only the approved English names");
 
@@ -636,8 +638,11 @@ check("the three language cards share one title style and Sentence Revision keep
   const client = read(clientPath);
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceVisualStatus");
-  assert.strictEqual((renderSource.match(/language-card-title/g) || []).length, 3,
-    "Language Review, Draft, and Sentence Revision must use the same title class");
+  const manuscriptHeadingSource = functionSource(client, "manuscriptVersionControlHtml", "highlightedManuscriptHtml");
+  assert.strictEqual((renderSource.match(/language-card-title/g) || []).length, 2,
+    "Language Review and Sentence Revision must use the shared title class");
+  assert(manuscriptHeadingSource.includes('class="language-card-title">Draft'),
+    "the incomplete manuscript's Draft heading must keep the shared title class");
   const headingIndex = renderSource.indexOf("sentence-review-heading");
   const toolbarIndex = renderSource.indexOf("language-toolbar");
   assert(headingIndex >= 0 && toolbarIndex > headingIndex,
@@ -1079,13 +1084,13 @@ check("every Writing stage preserves toolbar breathing room on phones", () => {
     "toolbar breathing room must be a stage-wide rule rather than a per-screen patch");
 });
 
-check("Draft preserves paragraph breaks while sentence highlights remain inline", () => {
+check("Draft preserves paragraphs and marks original revision needs like proofreading", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const highlightSource = functionSource(client, "highlightedManuscriptHtml", "compositionStatus");
   requireEvery(highlightSource, [
     "source.slice(cursor, matchAt)", "leadingWhitespace", "trailingWhitespace",
-    "visibleSentence", 'role="button"', 'tabindex="0"', "</span>",
+    "visibleSentence", "needsRevision", 'role="button"', 'tabindex="0"', "</span>",
   ], "paragraph-preserving manuscript highlights");
   assert(!/<button class=["']manuscript-sentence-highlight/.test(highlightSource),
     "Draft sentence highlights must not use atomic button boxes");
@@ -1093,12 +1098,37 @@ check("Draft preserves paragraph breaks while sentence highlights remain inline"
     "Draft must preserve the manuscript's original paragraph whitespace");
   assert(/\.manuscript-sentence-highlight\s*\{[^}]*display\s*:\s*inline/i.test(styles),
     "sentence highlights must remain in the paragraph's inline formatting flow");
+  assert(/\.manuscript-sentence-highlight\.is-draft\.needs-revision\s*\{[^}]*text-decoration-style\s*:\s*wavy[^}]*text-decoration-color\s*:\s*rgba\(178,62,59,/is.test(styles),
+    "the original Draft must use a restrained red proofreading wave for sentences that need revision");
+  assert(/\.manuscript-sentence-highlight\.is-draft\s*\{[^}]*background\s*:\s*transparent/is.test(styles)
+      || /\.manuscript-sentence-highlight\s*\{[^}]*background\s*:\s*transparent/is.test(styles),
+    "the original Draft must remain neutral instead of looking already corrected");
   assert(/closest\([^)]*data-manuscript-sentence/.test(client)
       && /data-manuscript-sentence[\s\S]{0,500}(?:Enter|event\.key !== ' ')[\s\S]{0,300}\.click\(\)/.test(client),
     "inline sentence navigation must remain clickable and keyboard accessible");
 });
 
-check("each sentence shares one color across manuscript, capsule, and correction", () => {
+check("completed writing offers a default Revised manuscript without another AI call", () => {
+  const client = read(clientPath);
+  const summarySource = functionSource(client, "manuscriptRevisionSummary", "manuscriptVersionControlHtml");
+  const prepareSource = functionSource(client, "prepareLanguageReview", "sentenceId");
+  const renderSource = functionSource(client, "renderLanguage", "sentenceVisualStatus");
+  requireEvery(summarySource, [
+    "rewrite_results", "student_rewrite", "accepted === true", "record.passed === true",
+    "compositionStatus(state.current) === 'completed'", "required.length > 0", "required.every",
+  ], "durable revised-manuscript eligibility");
+  requireEvery(prepareSource, ["manuscriptRevisionSummary", "'revised'", "'draft'"],
+    "default completed-manuscript view");
+  requireEvery(renderSource, [
+    "manuscriptVersionControlHtml", "is-revised-view", "highlightedManuscriptHtml",
+  ], "Draft/Revised rendering");
+  assert(/data-manuscript-view="[^\"]*"/.test(client) || client.includes('data-manuscript-view="'),
+    "the completed manuscript must expose Draft/Revised version controls");
+  assert(!summarySource.includes("writingCall("),
+    "reconstructing Revised must use saved rewrite results and never invoke the model again");
+});
+
+check("Revised, capsule, and correction share the same eight-color sentence system", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(client, [
@@ -1111,16 +1141,15 @@ check("each sentence shares one color across manuscript, capsule, and correction
     "the capsule and correction card must receive the same indexed color variables");
   assert(/data-manuscript-sentence[\s\S]{0,1200}scrollIntoView/.test(client),
     "clicking a manuscript sentence must use the shared sentence navigation path");
-  requireEvery(styles, ["--sentence-color", "--sentence-soft", ".manuscript-sentence-highlight", ".sentence-original-highlight"],
+  requireEvery(styles, ["--sentence-color", "--sentence-soft", ".manuscript-sentence-highlight.is-revised", ".sentence-original-highlight"],
     "sentence color styles");
   const paletteSource = client.slice(client.indexOf("var sentencePalette"), client.indexOf("function compositionStatus"));
   assert(paletteSource.includes("var sentencePalette") && !/#0f766e|#0b5d57|#287b91|#dff4ed|#c9eee2/i.test(paletteSource),
     "the sentence palette must avoid the interface's established green and teal family");
   assert.strictEqual((paletteSource.match(/\{\s*color:/g) || []).length, 8,
     "the sentence palette must provide eight colors before repeating");
-  assert(!/\.manuscript-sentence-highlight[^}]*\{[^}]*box-shadow\s*:\s*inset\s+0\s+-/i.test(styles)
-      && !/\.sentence-original-highlight\s*\{[^}]*box-shadow\s*:\s*inset\s+0\s+-/i.test(styles),
-    "sentence highlights must not draw an underline-like inset shadow");
+  assert(!/\.manuscript-sentence-highlight\.is-revised[^}]*\{[^}]*text-decoration-style\s*:\s*wavy/i.test(styles),
+    "accepted Revised sentences must not retain Draft proofreading waves");
 });
 
 check("Sentence Revision exposes an accessible photographed-draft import flow", () => {

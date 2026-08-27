@@ -355,13 +355,26 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .cefr-estimate strong { font-size: clamp(1rem,2vw,1.18rem); letter-spacing: -.015em; }
 .cefr-estimate p { grid-column: 1 / -1; margin: 3px 0 0; color: rgba(255,255,255,.9); font-size: .78rem; line-height: 1.65; }
 .language-readonly-note { display: inline-flex; margin: 14px 0 0; padding: 6px 10px; border-radius: 999px; color: #fff; background: rgba(255,255,255,.14); font-size: .7rem; font-weight: 760; }
-.language-manuscript-card { padding: clamp(22px,3.5vw,38px); }
+.language-manuscript-card { padding: clamp(22px,3.5vw,38px); border-color: rgba(43,48,45,.09); background: #f8f8f5; box-shadow: 0 16px 44px rgba(42,48,45,.07); }
 .language-section-heading { display: flex; align-items: center; gap: 11px; }
-.manuscript-text { margin-top: 18px; color: #294d44; font: 1.04rem/1.85 ui-serif, Georgia, serif; white-space: pre-wrap; overflow-wrap: anywhere; }
-.manuscript-sentence-highlight { display: inline; margin: 0 -.04em; padding: .08em .18em; border: 0; border-radius: .34em; color: inherit; background: var(--sentence-soft); box-shadow: none; font: inherit; line-height: inherit; text-align: left; cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-.manuscript-sentence-highlight:hover { background: var(--sentence-active); }
+.manuscript-version-control { display: inline-grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: min(100%,320px); padding: 3px; border: 1px solid rgba(48,53,50,.07); border-radius: 13px; background: rgba(78,83,80,.09); }
+.manuscript-version-button { min-height: 38px; padding: 7px 18px; border: 0; border-radius: 10px; color: rgba(42,47,44,.66); background: transparent; box-shadow: none; font-size: .78rem; font-weight: 760; line-height: 1; }
+.manuscript-version-button:hover { color: #292e2b; background: rgba(255,255,255,.42); }
+.manuscript-version-button:active { transform: none; }
+.manuscript-version-button.is-selected { color: #242a27; background: rgba(255,255,255,.96); box-shadow: 0 1px 2px rgba(35,40,37,.13), 0 5px 14px rgba(35,40,37,.07); }
+.manuscript-version-button:focus-visible { outline: 3px solid rgba(65,105,193,.22); outline-offset: 2px; }
+.manuscript-text { margin-top: 18px; color: #343936; font: 1.04rem/1.85 ui-serif, Georgia, serif; white-space: pre-wrap; overflow-wrap: anywhere; }
+.manuscript-sentence-highlight { display: inline; border: 0; color: inherit; background: transparent; box-shadow: none; font: inherit; line-height: inherit; text-align: left; cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.manuscript-sentence-highlight.is-draft { margin: 0; padding: .03em .02em; border-radius: .22em; }
+.manuscript-sentence-highlight.is-draft.needs-revision { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: rgba(178,62,59,.78); text-decoration-thickness: 1.15px; text-underline-offset: .25em; text-decoration-skip-ink: none; }
+.manuscript-sentence-highlight.is-draft:hover { background: rgba(53,59,56,.065); }
+.manuscript-sentence-highlight.is-draft.needs-revision:hover,
+.manuscript-sentence-highlight.is-draft.needs-revision.is-active { background: rgba(178,62,59,.085); }
+.manuscript-sentence-highlight.is-draft.is-active:not(.needs-revision) { background: rgba(53,59,56,.075); }
+.manuscript-sentence-highlight.is-revised { margin: 0 -.04em; padding: .08em .18em; border-radius: .34em; background: var(--sentence-soft); }
+.manuscript-sentence-highlight.is-revised:hover { background: var(--sentence-active); }
 .manuscript-sentence-highlight:focus-visible { outline: 3px solid var(--sentence-ring); outline-offset: 2px; }
-.manuscript-sentence-highlight.is-active { background: var(--sentence-active); box-shadow: 0 0 0 2px var(--sentence-ring); }
+.manuscript-sentence-highlight.is-revised.is-active { background: var(--sentence-active); box-shadow: 0 0 0 2px var(--sentence-ring); }
 .language-sentence-review-card { position: relative; z-index: 90; min-width: 0; padding: 0; }
 .sentence-review-heading { justify-content: space-between; padding: 24px 24px 18px; }
 .revision-font-controls { display: inline-grid; grid-template-columns: repeat(2,44px); flex: 0 0 auto; overflow: hidden; border: 1px solid rgba(24,49,43,.12); border-radius: 14px; background: rgba(245,249,247,.82); }
