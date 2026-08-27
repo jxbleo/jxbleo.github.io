@@ -994,6 +994,13 @@ Decision:
   schema validation and one automatic structural repair attempt. Every result
   freezes non-secret provider/model/protocol metadata so model changes can be
   evaluated later without exposing credentials.
+- Provider cost accounting is an append-only event ledger, not an estimated
+  field on the latest Composition. One row represents one physical HTTP model
+  response, including an automatic JSON-repair response. Both Chat Completions
+  and Responses usage shapes normalize to input/output/total counts while raw
+  missing values remain missing. A durable-job audit and metadata-only teacher
+  alert make telemetry failure visible without making telemetry a dependency of
+  the student's successful OCR or review result.
 - The student's selected Assessment Framework is authoritative. The system does
   not spend another model call attempting to classify or override it.
 - AI Tutor uses Composition and usage-ledger records outside the existing

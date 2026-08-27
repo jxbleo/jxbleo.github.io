@@ -979,3 +979,18 @@ call, the worker also requires at least 100 seconds remaining on its six-minute 
 therefore publishes immediately with text-only marks. The locator's
 coordinates are stored only in authenticated temporary `pending_ocr` and never in jobs, logs, or public
 composition summaries.
+
+Every provider response also crosses a separate operational telemetry boundary. `writingTutor` normalizes
+OpenAI-compatible `prompt_tokens/completion_tokens` and Responses-style `input_tokens/output_tokens`, then
+creates one immutable `writing_model_usage_events` row per physical provider call. Structural JSON repair is
+therefore two rows rather than one estimated request. Stable IDs include job, durable attempt, stage, and
+provider-call index so lease recovery cannot duplicate cost. The row stores model/protocol/request identifiers
+and Token counts only; prompts, manuscripts, OCR text, feedback, images, credentials, and endpoint URLs are
+excluded. Telemetry persistence is deliberately non-blocking for the learning result.
+
+`writingAiWorker` is also the completeness auditor. New jobs carry `writing-token-usage-v1` and begin with a
+pending Token audit. After a job becomes terminal, the worker aggregates its ledger and marks the audit
+complete, or appends a stable `model_usage_alert` to `writing_teacher_email_events` when the ledger is absent,
+provider `usage` is incomplete, or persistence reported failure. `sendWritingTutorEmails` sends that safe
+health alert through the existing teacher-recipient/SMTP timer. Legacy jobs without the telemetry version are
+ignored so rollout does not create false historical alerts.

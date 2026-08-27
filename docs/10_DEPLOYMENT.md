@@ -1019,7 +1019,7 @@ documentation change.
 
 ## AI Tutor Writing deployment (owner-gated)
 
-Before enabling the feature, the owner must create the six `ADMINONLY`
+Before enabling the feature, the owner must create the seven `ADMINONLY`
 collections documented in `04_DATA_MODEL.md`, deploy `writingTutor`,
 `writingAiWorker`, and `sendWritingTutorEmails`, and configure only CloudBase
 environment variables:
@@ -1057,6 +1057,18 @@ Create timer triggers for the email sender and `writingAiWorker` whose messages
 contain their matching internal tokens. The worker cron is once per minute and
 recovers queued OCR, review, or rewrite-check jobs, expired processing leases,
 and expired private photos.
+
+For the Token telemetry release, create `writing_model_usage_events` as
+`ADMINONLY` before deploying code. Add a unique `event_id` index plus `job_id`,
+`composition_id`, and `model + created_at` query indexes; add
+`writing_ai_jobs.token_usage_audit_status`. Then package and deploy the same
+commit of all three functions in this order: `writingTutor`, `writingAiWorker`,
+and `sendWritingTutorEmails`. The change needs no new secret or timer. Do not
+deploy the writer before the collection exists: a successful student result is
+still allowed, but the worker will intentionally raise a persistence alert.
+After deployment, run one development OCR and review, wait for the minute
+worker, and require a `complete` job audit plus exact ledger rows before enabling
+production traffic.
 Package `writingTutor` and `writingAiWorker` with
 `node scripts/package-cloudfunctions.js writingTutor writingAiWorker`; deploy the
 generated bundled ZIP contents, not the raw multi-file source directory. After

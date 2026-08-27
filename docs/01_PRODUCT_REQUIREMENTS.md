@@ -2027,6 +2027,11 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   补生成标题。
 - 教师可为每名学生设置上海自然日 AI 批改字数上限。仅成功的正式评估计费，OCR、失败调用和
   重试不计；使用记录无作文正文并通过私有邮件摘要通知已启用的教师地址。
+- 每一次真实模型请求都必须记录供应商返回的输入、输出和总 Token；OCR、模糊区域定位、正式
+  批改、结构修复重试、订正照片 OCR 与改写 Check 分开记账。Token 记录只用于成本与运行健康
+  统计，不改变学生字数额度。后台必须独立审计每个已结束任务；若成功/失败任务没有对应记录、
+  供应商未返回 `usage`，或账本写入失败，应生成不含作文内容的教师邮件告警，不能阻断学生取得
+  已成功生成的 OCR 或批改结果。
 - A Level 首发采用 Cambridge International AS & A Level English Language 9093，并把 Paper 2
   Shorter Writing、Reflective Commentary 和 Extended Writing 分成三个明确选项，避免混用
   15、10、25 分的不同量表。

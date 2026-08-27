@@ -34,6 +34,9 @@ future AI feature in Mr. Cat Academy:
 9. CloudBase nested updates are not whole-object replacement. Publishing the
    first `rewrite_results` below an existing `null` requires an explicit atomic
    field set, just like the first review payload.
+10. Provider Token usage is operational evidence, not a value that can be
+   reconstructed from manuscript length. Every physical call—including a
+   structural repair—needs its own immutable record and a missing-data alarm.
 
 No incident record may contain API keys, full endpoint URLs, dispatch or lease
 tokens, student manuscripts, OCR text, model feedback, or student identity.
@@ -65,6 +68,10 @@ Every slow AI capability must use the following boundary:
    idempotently. Successful use is charged exactly once.
 7. The client polls the Composition, supports refresh/re-login/reopen, and keeps
    the same logical operation ID while delivery is uncertain.
+8. Every provider attempt appends a safe Token event under a deterministic
+   job/attempt/stage/call identity. Telemetry failure never rolls back a valid
+   learning result; the timer audits terminal jobs and queues a metadata-only
+   teacher alert for absent, incomplete, or failed persistence.
 
 The model adapter remains vendor-neutral. Qwen, DeepSeek, Kimi, or another
 mainland-accessible provider may be selected through server environment values,
@@ -120,6 +127,9 @@ Persist only safe metadata:
 - status, attempt count, safe error code, retry/lease timestamps;
 - prompt/schema/Rubric versions and non-secret model/protocol metadata;
 - usage ID, word count, Shanghai day, reservation/success/release status;
+- provider usage event ID, job attempt/stage/call index, model/protocol/request
+  ID, input/output/total/cached/reasoning Token counts, usage completeness, and
+  terminal audit status;
 - deployment commit and function modification/status evidence in maintenance logs.
 
 Keep these fields out of logs and job rows:
@@ -137,6 +147,9 @@ Keep these fields out of logs and job rows:
   reordered-ID, and normalized-source-text responses.
 - Verify canonical server rules override contradictory model fields.
 - Verify one logical operation creates one job and one quota charge.
+- Verify every physical provider call creates one immutable Token event; force
+  missing provider `usage`, zero events, and persistence failure, then require
+  one idempotent health alert without blocking a valid result.
 - For rewrite checking, verify one operation creates one provider call, staged
   text stays on the Composition, and the job/logs remain metadata-only.
 - Verify terminal failure refunds quota and preserves committed user data.
