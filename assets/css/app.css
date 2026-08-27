@@ -4453,6 +4453,8 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-message-dialog {
     width: 100%;
+    height: min(510px, calc(75vh - 30px));
+    height: min(510px, calc(75dvh - 30px));
     max-height: min(510px, calc(75vh - 30px));
     max-height: min(510px, calc(75dvh - 30px));
     overscroll-behavior: contain;
@@ -4614,7 +4616,7 @@ body:not(.teacher-page) .tab-button.active {
     top: 0;
     z-index: 4;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
     margin: 0 -24px;
     padding: 12px 24px;
