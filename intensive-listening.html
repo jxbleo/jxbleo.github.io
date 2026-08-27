@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#123f35">
   <title>Intensive Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260817-3">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260827-1">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
@@ -18,13 +18,14 @@
       <strong id="header-progress-label">0%</strong>
       <progress id="header-progress" max="100" value="0"></progress>
     </div>
-    <div class="il-header-tools"><button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button><span class="il-mode">INTENSIVE LISTENING</span></div>
+    <div class="il-header-tools"><a class="il-linked-practice" id="linked-practice-header" href="#" hidden>Listening Practice</a><button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button><span class="il-mode">INTENSIVE LISTENING</span></div>
   </header>
 
   <main class="il-shell" id="practice-shell" hidden>
     <section class="il-material-heading">
-      <span class="il-eyebrow">LISTEN · TYPE · CHECK</span>
+      <span class="il-eyebrow" id="material-source">LISTEN · TYPE · CHECK</span>
       <h1 id="material-title">Loading…</h1>
+      <p class="il-assignment-context" id="assignment-context" hidden></p>
       <div class="il-stats" aria-label="Practice summary">
         <span><strong id="completed-count">0</strong> completed</span>
         <span><strong id="independent-count">0</strong> independently</span>
@@ -45,7 +46,7 @@
 
       <div class="il-audio-row">
         <button class="il-replay" id="replay-button" type="button" aria-label="Replay this unit">▶</button>
-        <div><strong id="audio-status">Ready when you are</strong><span>Tab replays · Space moves forward · Enter checks</span></div>
+        <div><strong id="audio-status">Ready when you are</strong><span>Tab replays · Space moves forward · Enter checks</span><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
         <span class="il-time-range" id="time-range"></span>
       </div>
 
@@ -88,7 +89,7 @@
       <h1>Listening finished.</h1>
       <p id="completion-summary"></p>
       <div class="il-completion-actions">
-        <a class="il-finish" href="dashboard.html">Finish</a>
+        <a class="il-finish" id="completion-finish" href="intensive-listening-library.html">Back to Intensive Listening</a>
         <button class="il-restart" id="restart-button" type="button">Clear &amp; Start Again</button>
       </div>
       <span class="il-restart-note">A new run is temporary. Your 100% best record stays locked.</span>
@@ -110,7 +111,7 @@
           <span class="il-eyebrow">SPELLING EXEMPTION</span>
           <h2 id="argue-title">Should this word be provided?</h2>
           <strong class="il-argue-word" id="argue-word"></strong>
-          <p>This asks the teacher to show the word automatically instead of requiring students to spell it.</p>
+          <p id="argue-copy">This asks the teacher to show the word automatically instead of requiring students to spell it.</p>
           <textarea id="argue-reason" maxlength="1000" placeholder="Reason (optional)"></textarea>
           <div class="il-argue-status" id="argue-status" role="status"></div>
           <div class="il-argue-actions"><button id="argue-cancel" type="button">Cancel</button><button id="argue-submit" type="button">Send Argue</button></div>
@@ -128,6 +129,6 @@
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-  <script src="assets/js/intensive-listening.js?v=20260824-2"></script>
+  <script src="assets/js/intensive-listening.js?v=20260827-1"></script>
 </body>
 </html>

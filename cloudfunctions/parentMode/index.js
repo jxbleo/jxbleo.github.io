@@ -41,6 +41,20 @@ function isVocabularySet(set) {
     .some((value) => parentRules.text(value).toLowerCase() === "vocabulary");
 }
 
+function isIntensiveListeningSet(set) {
+  if (!set) return false;
+  return /^IL-/i.test(parentRules.text(set.set_id)) || [
+    set.section_id, set.section, set.type, set.course, set.category,
+  ].some((value) => parentRules.text(value).toLowerCase().replace(/[\s_]+/g, "-") === "intensive-listening");
+}
+
+function currentIntensiveProgress(progress, set) {
+  if (!progress) return null;
+  const expected = parentRules.text(set && set.content_version);
+  const actual = parentRules.text(progress.content_version);
+  return expected && actual && expected !== actual ? null : progress;
+}
+
 function passingForSet(set) {
   if (set && set.passing_percentage != null) return Number(set.passing_percentage);
   if (isVocabularySet(set)) return 90;
@@ -290,9 +304,42 @@ function storedAssignmentFallback(assignment, summary, passing, mastery) {
   };
 }
 
-function assignmentView(assignment, set, attempts, now) {
+function assignmentView(assignment, set, attempts, now, intensiveProgress) {
   const passing = passingForAssignment(assignment, set);
   const mastery = masteryForAssignment(assignment, set);
+  if (isIntensiveListeningSet(set)) {
+    const progress = currentIntensiveProgress(intensiveProgress, set);
+    const completion = Number(progress && progress.percentage != null
+      ? progress.percentage
+      : assignment.best_percentage || 0);
+    const qualified = completion >= passing || ["passed", "mastered", "done"].includes(parentRules.text(assignment.status));
+    const parentStatus = qualified ? "qualified" : progress ? "not_qualified" : "unsubmitted";
+    return {
+      assignment_id: assignment.assignment_id || assignment._id,
+      set_id: assignment.set_id,
+      source: "assigned",
+      title: parentRules.text(set && set.title) || parentRules.text(assignment.set_id),
+      due_at: assignment.due_at || assignment.assigned_at || assignment.created_at || null,
+      created_at: assignment.created_at || null,
+      completed_at: assignment.completed_at || (qualified && progress && (progress.completed_at || progress.updated_at)) || null,
+      status: parentStatus,
+      categories: parentRules.assignmentCategories({ parent_status: parentStatus, due_at: assignment.due_at || assignment.assigned_at || assignment.created_at }, now),
+      best_percentage: completion,
+      latest_percentage: completion,
+      attempt_count: 0,
+      passing_percentage: passing,
+      mastery_percentage: 100,
+      mastery_enabled: false,
+      mastered: false,
+      answer_revealed: false,
+      score_locked: false,
+      assignment_scope: assignment.assignment_scope || "individual",
+      completion_percentage: completion,
+      completed_unit_count: Number(progress && progress.completed_unit_count) || 0,
+      independent_unit_count: Number(progress && progress.independent_unit_count) || 0,
+      assisted_unit_count: Number(progress && progress.assisted_unit_count) || 0,
+    };
+  }
   let summary = parentRules.attemptSummary(attempts, {
     passing_percentage: passing,
     mastery_percentage: mastery,
@@ -357,19 +404,21 @@ function selfStudyView(set, attempts) {
 }
 
 async function overview(student) {
-  const [assignmentRows, attempts] = await Promise.all([
+  const [assignmentRows, attempts, intensiveProgressRows] = await Promise.all([
     getAll("assignments", { where: { student_uid: student.auth_uid } }),
     getAll("attempts", { where: { student_uid: student.auth_uid } }),
+    getAll("intensive_listening_progress", { where: { student_uid: student.auth_uid } }).catch(() => []),
   ]);
   const assignments = assignmentRows.filter((assignment) => !isCancelled(assignment));
   const setIds = [...new Set(assignments.map((item) => item.set_id)
-    .concat(attempts.map((item) => item.set_id)).filter(Boolean))];
+    .concat(attempts.map((item) => item.set_id), intensiveProgressRows.map((item) => item.set_id)).filter(Boolean))];
   const sets = await getByFieldIn("sets", "set_id", setIds);
   const setById = new Map(sets.filter((set) => set.visible !== false).map((set) => [set.set_id, set]));
   const attemptsBySet = groupAttemptsBySet(attempts);
+  const intensiveProgressBySet = new Map(intensiveProgressRows.map((item) => [parentRules.text(item.set_id), item]));
   const now = new Date();
   const taskViews = assignments.filter((assignment) => setById.has(assignment.set_id)).map((assignment) =>
-    assignmentView(assignment, setById.get(assignment.set_id), attemptsBySet.get(assignment.set_id) || [], now)
+    assignmentView(assignment, setById.get(assignment.set_id), attemptsBySet.get(assignment.set_id) || [], now, intensiveProgressBySet.get(assignment.set_id))
   );
   const assignedSetIds = new Set(assignments.map((assignment) => parentRules.text(assignment.set_id)));
   const selfStudy = [];
@@ -479,6 +528,11 @@ async function classMatrix(student, event) {
   const sets = await getByFieldIn("sets", "set_id", setIds);
   const setById = new Map(sets.map((set) => [set.set_id, set]));
   const attempts = await getByFieldIn("attempts", "student_uid", [...visibleUids]);
+  const intensiveProgress = await getByFieldIn("intensive_listening_progress", "student_uid", [...visibleUids]).catch(() => []);
+  const intensiveProgressByStudentSet = new Map(intensiveProgress.map((item) => [
+    `${parentRules.text(item.student_uid)}::${parentRules.text(item.set_id)}`,
+    item,
+  ]));
   const attemptsByStudentSet = new Map();
   attempts.filter(parentRules.countableAttempt).forEach((attempt) => {
     const key = `${parentRules.text(attempt.student_uid)}::${parentRules.text(attempt.set_id)}`;
@@ -512,6 +566,28 @@ async function classMatrix(student, event) {
       if (!assignment) return { status: "unsubmitted", best_percentage: null, mastered: false, assignment_id: null };
       const set = setById.get(assignment.set_id) || {};
       const key = `${studentUid}::${parentRules.text(assignment.set_id)}`;
+      if (isIntensiveListeningSet(set)) {
+        const progress = currentIntensiveProgress(intensiveProgressByStudentSet.get(key), set);
+        const completion = Number(progress && progress.percentage != null ? progress.percentage : assignment.best_percentage || 0);
+        const progressDate = progress && (progress.completed_at || progress.updated_at);
+        const progressQualified = completion >= passingForAssignment(assignment, set)
+          && parentRules.dateValue(progressDate) > 0
+          && parentRules.dateValue(progressDate) <= parentRules.dateValue(cutoffAt);
+        const assignmentQualified = ["passed", "mastered", "done"].includes(parentRules.text(assignment.status))
+          && parentRules.dateValue(assignment.completed_at) > 0
+          && parentRules.dateValue(assignment.completed_at) <= parentRules.dateValue(cutoffAt);
+        const qualified = progressQualified || assignmentQualified;
+        return {
+          status: qualified ? "qualified" : progress ? "not_qualified" : "unsubmitted",
+          best_percentage: completion,
+          mastered: false,
+          assignment_id: studentUid === student.auth_uid ? assignment.assignment_id || assignment._id : null,
+          completion_percentage: completion,
+          completed_unit_count: Number(progress && progress.completed_unit_count) || 0,
+          independent_unit_count: Number(progress && progress.independent_unit_count) || 0,
+          assisted_unit_count: Number(progress && progress.assisted_unit_count) || 0,
+        };
+      }
       let summary = parentRules.attemptSummary(attemptsByStudentSet.get(key) || [], {
         passing_percentage: passingForAssignment(assignment, set),
         mastery_percentage: masteryForAssignment(assignment, set),
@@ -575,6 +651,7 @@ async function taskContext(student, event) {
   if (!setId) throw new Error("PARENT_TASK_REQUIRED");
   const set = await getOne("sets", { set_id: setId, visible: true });
   if (!set) throw new Error("PARENT_TASK_NOT_FOUND");
+  if (isIntensiveListeningSet(set)) throw new Error("PARENT_TASK_NOT_FOUND");
   const attempts = await getAll("attempts", { where: { student_uid: student.auth_uid, set_id: setId } });
   const summary = parentRules.attemptSummary(attempts.filter((attempt) => !attempt.assignment_id), {
     passing_percentage: passingForSet(set),
@@ -587,6 +664,38 @@ async function taskContext(student, event) {
 
 async function taskDetail(student, event) {
   const context = await taskContext(student, event);
+  if (isIntensiveListeningSet(context.set)) {
+    const progress = currentIntensiveProgress(
+      await getOne("intensive_listening_progress", { student_uid: student.auth_uid, set_id: context.set.set_id }),
+      context.set
+    );
+    const passing = passingForAssignment(context.assignment, context.set);
+    const completion = Number(progress && progress.percentage != null ? progress.percentage : context.assignment.best_percentage || 0);
+    const qualified = completion >= passing
+      || ["passed", "mastered", "done"].includes(parentRules.text(context.assignment.status));
+    return {
+      success: true,
+      task: {
+        assignment_id: context.assignment.assignment_id || context.assignment._id,
+        set_id: context.set.set_id,
+        source: "assigned",
+        title: parentRules.text(context.set.title) || context.set.set_id,
+        due_at: context.assignment.due_at || null,
+        status: qualified ? "qualified" : progress ? "not_qualified" : "unsubmitted",
+        best_percentage: completion,
+        passing_percentage: passing,
+        mastery_percentage: 100,
+        mastery_enabled: false,
+        mastered: false,
+        score_locked: false,
+        completion_percentage: completion,
+        completed_unit_count: Number(progress && progress.completed_unit_count) || 0,
+        independent_unit_count: Number(progress && progress.independent_unit_count) || 0,
+        assisted_unit_count: Number(progress && progress.assisted_unit_count) || 0,
+      },
+      attempts: [],
+    };
+  }
   const attempts = (await getAll("attempts", {
     where: { student_uid: student.auth_uid, set_id: context.set.set_id },
   })).filter(parentRules.countableAttempt).sort((left, right) =>

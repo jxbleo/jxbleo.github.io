@@ -184,6 +184,56 @@ function testMonthlyLateCompletionUsesReportCutoff() {
     "the month report counts a due-month task passed later before month end");
 }
 
+function testIntensiveListeningProgressProjection() {
+  const period = reports.periodForDate("weekly", new Date("2026-08-05T04:00:00.000Z"));
+  const completedAt = new Date("2026-08-04T02:00:00.000Z");
+  const options = {
+    class_id: "class-a",
+    students: [student("alice", "Alice"), student("bob", "Bob")],
+    memberships: [membership("alice", new Date("2026-07-01T00:00:00.000Z")), membership("bob", new Date("2026-07-01T00:00:00.000Z"))],
+    assignments: [assignment("alice", "il-assignment", "il-task", "IL-BBC-260804", period.end_at)],
+    attempts: [],
+    intensive_progress: [
+      {
+        student_uid: "alice",
+        set_id: "IL-BBC-260804",
+        content_version: "1",
+        percentage: 100,
+        completed_unit_count: 4,
+        independent_unit_count: 3,
+        assisted_unit_count: 1,
+        updated_at: completedAt,
+        completed_at: completedAt,
+      },
+      {
+        student_uid: "bob",
+        set_id: "IL-BBC-260803",
+        content_version: "1",
+        percentage: 100,
+        completed_unit_count: 2,
+        independent_unit_count: 2,
+        assisted_unit_count: 0,
+        updated_at: completedAt,
+        completed_at: completedAt,
+      },
+    ],
+    sets: [
+      { set_id: "IL-BBC-260804", title: "Assigned listening", section_id: "intensive-listening", content_version: "1", passing_percentage: 100 },
+      { set_id: "IL-BBC-260803", title: "Self-study listening", section_id: "intensive-listening", content_version: "1", passing_percentage: 100 },
+    ],
+  };
+  const snapshot = reports.buildReportSnapshot({ ...options, period, cutoff_at: period.end_at });
+  const alice = snapshot.student_details.find((detail) => detail.student_uid === "alice");
+  const bob = snapshot.student_details.find((detail) => detail.student_uid === "bob");
+  assert.equal(alice.class_task_summary.completed_class_item_count, 1, "IL completion progress qualifies the assigned Class Task without a synthetic attempt");
+  assert.equal(alice.class_task_summary.items[0].completion_percentage, 100);
+  assert.equal(alice.class_task_summary.items[0].independent_unit_count, 3);
+  assert.equal(alice.self_study.completed_self_study_item_count, 0, "assigned IL progress is not counted as self-study");
+  assert.equal(bob.self_study.completed_self_study_item_count, 1);
+  assert.equal(bob.self_study.intensive_listening_completed_count, 1);
+  assert.equal(bob.self_study.intensive_listening_items[0].assisted_unit_count, 0);
+}
+
 function testReportCloseUiContract() {
   const html = fs.readFileSync(path.join(root, "reports.html"), "utf8");
   const script = fs.readFileSync(path.join(root, "assets/js/reports.js"), "utf8");
@@ -365,6 +415,7 @@ async function main() {
   testShanghaiPeriods();
   testSnapshotRules();
   testMonthlyLateCompletionUsesReportCutoff();
+  testIntensiveListeningProgressProjection();
   testReportCloseUiContract();
   await testVisitorStaysOnBlankReportPage();
   await testCloseIgnoresStaleReportRequest();

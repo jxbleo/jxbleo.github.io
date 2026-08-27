@@ -136,14 +136,18 @@ async function reportInputs(classRecord) {
     where: { class_id: classRecord.class_id },
   })).map(recordData);
   const studentUids = memberships.map((membership) => membership.student_uid);
-  const [students, assignments, attempts] = await Promise.all([
+  const [students, assignments, attempts, intensive_progress] = await Promise.all([
     getByFieldIn("students", "auth_uid", studentUids),
     getByFieldIn("assignments", "student_uid", studentUids),
     getByFieldIn("attempts", "student_uid", studentUids),
+    // Older environments may not have this collection yet. Reports remain
+    // usable for ordinary exercises until the owner completes the rollout.
+    getByFieldIn("intensive_listening_progress", "student_uid", studentUids).catch(() => []),
   ]);
-  const setIds = [...new Set(assignments.concat(attempts).map((item) => text(item.set_id)).filter(Boolean))];
+  const setIds = [...new Set(assignments.concat(attempts, intensive_progress)
+    .map((item) => text(item.set_id)).filter(Boolean))];
   const sets = await getByFieldIn("sets", "set_id", setIds);
-  return { memberships, students, assignments, attempts, sets };
+  return { memberships, students, assignments, attempts, intensive_progress, sets };
 }
 
 async function previousPublishedReport(classId, period) {

@@ -2222,3 +2222,35 @@ High priority improvement:
 - At 320, 375, 390, 768, 834, and 1024 CSS px verify no horizontal overflow, intrinsic page aspect ratio,
   image-above-editor mobile layout, keyboard focus/Enter/Space activation, centered editor scrolling, and
   reduced-motion behavior. Acknowledging or editing a text mark must hide only its matching region.
+
+## Speaking Lab V1 gates
+
+Run `npm run test:speaking-lab` plus the syntax, release, static-build, and
+function-packaging commands in the Speaking implementation plan. Pure tests
+cover participant/duration boundaries, server-UID access, Guest collisions,
+one-to-one mapping and stale confirmation, Candidate/non-Candidate exclusion,
+strict evidence and 0–7 report canonicalization, forced non-assessment of
+pronunciation, Student/Teacher redaction, per-snapshot aliases, token hashing,
+idempotency/lease projections, and forbidden queue content. Static tests cover
+student recording fallback, no browser audio persistence, noindex external
+page, no audio/download controls, teacher name selection, and reduced motion.
+
+Manual release gates still require microphone allowed/denied/ended paths,
+refresh during upload and durable stages, concurrent tabs, pending/accepted/
+declined VIPs, Guests, teacher remap after dispute, and expired/revoked links.
+Do not claim provider-backed speech quality until the owner-authorized
+development deployment and real-audio benchmark pass.
+
+### Intensive Listening Library
+
+Run npm run test:intensive-listening-library, npm run test:intensive-listening,
+and npm run test:attempt-emails. Verify authenticated catalog loading,
+Continue/search/source/sort/empty states, keyboard sibling actions, same-origin
+returns from Library/BBC/IELTS, assignment target context, playback heartbeat,
+review session labels, mixed Teacher bell ordering, and IL email redaction.
+Report Class Tasks and Parent Mode must use assigned Completion and independent/
+assisted counts without creating Attempts, averaging IL with exercise scores, or
+exposing self-study IL to Parent Mode.
+Teacher preview must reveal immediately, open the compact `Provide this word for
+every student?` confirmation, apply one idempotent Provided Word policy change,
+and leave the student Argue queue unchanged.

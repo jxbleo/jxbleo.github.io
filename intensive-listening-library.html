@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/mrcat-favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/mrcat-apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#123f35">
+  <title>Intensive Listening Library · Mr. Cat Academy</title>
+  <link rel="stylesheet" href="assets/css/app.css?v=20260827-1">
+  <link rel="stylesheet" href="assets/css/intensive-listening-library.css?v=20260827-1">
+</head>
+<body class="intensive-listening-library-page">
+  <header class="ill-header">
+    <a class="ill-back" href="dashboard.html?view=resources">‹ Dashboard</a>
+    <div class="ill-header-title">
+      <span class="ill-eyebrow">LISTEN · TYPE · CHECK</span>
+      <strong>INTENSIVE LISTENING</strong>
+    </div>
+  </header>
+
+  <main class="ill-shell" id="intensive-listening-library" hidden>
+    <section class="ill-intro" aria-labelledby="ill-title">
+      <div>
+        <span class="ill-eyebrow">YOUR LISTENING LIBRARY</span>
+        <h1 id="ill-title">Catch every word.</h1>
+        <p>Complete the transcript one sentence at a time. Your independent and assisted progress stays here.</p>
+      </div>
+      <div class="ill-controls" aria-label="Library controls">
+        <label class="ill-search">
+          <span class="sr-only">Search Intensive Listening</span>
+          <span aria-hidden="true">⌕</span>
+          <input id="ill-search" type="search" placeholder="Search materials" autocomplete="off">
+        </label>
+        <label class="ill-sort">
+          <span class="sr-only">Sort materials</span>
+          <select id="ill-sort">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <nav class="ill-source-filters" id="ill-source-filters" aria-label="Listening sources"></nav>
+
+    <section class="ill-section ill-continue-section" id="ill-continue-section" hidden aria-labelledby="ill-continue-title">
+      <div class="ill-section-heading"><div><span class="ill-eyebrow">PICK UP WHERE YOU LEFT OFF</span><h2 id="ill-continue-title">Continue Listening</h2></div></div>
+      <div class="ill-card-grid" id="ill-continue-list"></div>
+    </section>
+
+    <section class="ill-section" aria-labelledby="ill-all-title">
+      <div class="ill-section-heading"><div><span class="ill-eyebrow">THE FULL COLLECTION</span><h2 id="ill-all-title">All Materials</h2></div><span class="ill-count" id="ill-count"></span></div>
+      <div class="ill-state" id="ill-state" role="status" aria-live="polite"><span class="ill-spinner" aria-hidden="true"></span>Loading your listening library…</div>
+      <div class="ill-card-grid" id="ill-material-list"></div>
+    </section>
+  </main>
+
+  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+  <script src="assets/js/config.public.js?v=20260815-1"></script>
+  <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
+  <script src="assets/js/auth.js?v=20260815-2"></script>
+  <script src="assets/js/login-navigation.js?v=20260815-1"></script>
+  <script src="assets/js/intensive-listening-library.js?v=20260827-1"></script>
+</body>
+</html>

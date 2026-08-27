@@ -1,0 +1,134 @@
+(function (window) {
+    'use strict';
+
+    var panel = document.getElementById('view-speaking');
+    if (!panel || !window.MrCatCloud || !window.MrCatAuth) return;
+    var list = document.getElementById('teacher-speaking-list');
+    var detail = document.getElementById('teacher-speaking-detail');
+    var message = document.getElementById('teacher-speaking-message');
+    var selected = '';
+
+    function esc(value) {
+        return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character];
+        });
+    }
+    function call(action, data) {
+        return window.MrCatCloud.callAuthenticatedFunction('speakingLab', Object.assign({ action: action }, data || {})).then(function (result) {
+            if (!result || result.success === false) {
+                var error = new Error(result && result.message || 'Speaking request failed.');
+                error.code = result && result.code;
+                throw error;
+            }
+            return result;
+        });
+    }
+    function setMessage(value, error) {
+        message.textContent = value || '';
+        message.classList.toggle('is-error', Boolean(error));
+    }
+    function load() {
+        return call('listDiscussions', { page_size: 50 }).then(function (result) {
+            list.innerHTML = (result.discussions || []).map(function (item) {
+                return '<button class="speaking-card" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span><strong>' + esc(item.title) + '</strong><small>' + esc(item.analysis_status) + ' · ' + esc(item.participant_count) + ' participants</small></span><span class="speaking-pill">Open</span></button>';
+            }).join('') || '<div class="speaking-detail-card">No Discussions yet.</div>';
+            list.querySelectorAll('[data-speaking-teacher-id]').forEach(function (button) {
+                button.addEventListener('click', function () { open(button.getAttribute('data-speaking-teacher-id')); });
+            });
+        });
+    }
+    function reportMarkup(report) {
+        if (!report) return '<p>No report has been generated.</p>';
+        return '<section class="speaking-upload-panel"><h3>Current report</h3><p>' + esc(report.group_summary_zh || '') + '</p>' + (report.candidates || []).map(function (candidate) {
+            return '<p><strong>' + esc(candidate.speaker_label || 'Speaker') + '</strong> · ' + esc(candidate.summary_zh || '') + '</p>';
+        }).join('') + '</section>';
+    }
+    function shareSectionCheckbox(key, label, checked) {
+        return '<label><input type="checkbox" data-share-content="' + esc(key) + '"' + (checked ? ' checked' : '') + '> ' + esc(label) + '</label>';
+    }
+    function open(id) {
+        selected = id;
+        return call('getDiscussion', { discussion_id: id }).then(function (result) {
+            var item = result.discussion;
+            var speakerKeys = (item.report && item.report.transcript || []).map(function (line) { return line.speaker_key; }).filter(function (key, index, all) { return key && all.indexOf(key) === index; });
+            var roster = (item.participants || []).map(function (participant) {
+                var reopen = participant.kind === 'vip' ? '<button class="outline-button" type="button" data-reopen-reference="' + esc(participant.participant_id) + '">Reopen sample</button>' : '';
+                var playback = participant.voice_reference_status && participant.voice_reference_status !== 'missing' && participant.voice_reference_status !== 'deleted' ? '<button class="outline-button" type="button" data-teacher-playback="reference" data-participant-id="' + esc(participant.participant_id) + '">Play sample</button>' : '';
+                if (participant.matched_speaker_key) playback += '<button class="outline-button" type="button" data-teacher-playback="formal_excerpt" data-participant-id="' + esc(participant.participant_id) + '">Play matched excerpt</button>';
+                return '<li class="speaking-participant"><span><strong>' + esc(participant.roster_display_name || participant.display_name) + '</strong><small>Report label: ' + esc(participant.display_name) + ' · ' + esc(participant.kind) + ' · ' + esc(participant.identity_status) + '</small></span><select data-mapping-participant="' + esc(participant.participant_id) + '"><option value="">Unassigned</option>' + speakerKeys.map(function (key) {
+                    return '<option value="' + esc(key) + '"' + (participant.matched_speaker_key === key ? ' selected' : '') + '>' + esc(key) + '</option>';
+                }).join('') + '</select>' + playback + reopen + '</li>';
+            }).join('');
+            var nameSelection = (item.participants || []).map(function (participant) {
+                return '<label><input type="checkbox" checked data-share-participant="' + esc(participant.participant_id) + '"> ' + esc(participant.roster_display_name || participant.display_name) + '</label>';
+            }).join('');
+            var contentSelection = [
+                shareSectionCheckbox('group_summary', 'Group summary', true),
+                shareSectionCheckbox('group_analysis', 'Group strengths, priorities, and flow', true),
+                shareSectionCheckbox('individual_analysis', 'Individual analysis', true),
+                shareSectionCheckbox('language_suggestions', 'Language suggestions', true),
+                shareSectionCheckbox('evidence', 'Evidence excerpts', true),
+                shareSectionCheckbox('transcript', 'Transcript', true)
+            ].join('');
+            var disputeHistory = (item.identity_disputes || []).length ? '<section class="speaking-upload-panel"><h3>Student voice concerns</h3>' + item.identity_disputes.map(function (dispute) { var participant = (item.participants || []).find(function (row) { return row.participant_id === dispute.participant_id; }); return '<p><strong>' + esc(participant && (participant.roster_display_name || participant.display_name) || 'Participant') + '</strong> disputed ' + esc(dispute.speaker_key || 'the current match') + ' · revision ' + esc(dispute.mapping_revision) + '</p>'; }).join('') + '</section>' : '';
+            detail.hidden = false;
+            detail.innerHTML = '<article class="speaking-detail-card"><button class="outline-button" type="button" id="teacher-speaking-back">← Discussions</button><p class="eyebrow accent">SPEAKING</p><h2>' + esc(item.title) + '</h2><p>' + esc(item.recording_status) + ' · ' + esc(item.analysis_status) + '</p><h3>Roster and identity mapping</h3><p>Only Candidate Speaker tracks from the server report can be assigned.</p><ul class="speaking-participants">' + roster + '</ul>' + disputeHistory + reportMarkup(item.report) + '<div class="speaking-detail-actions"><button class="outline-button" type="button" id="teacher-speaking-save-mapping">Save mapping</button><button class="primary-button" type="button" id="teacher-speaking-share">Create teacher share</button><button class="danger-button" type="button" id="teacher-speaking-delete">Delete Discussion</button></div><section id="teacher-speaking-share-builder" class="speaking-upload-panel" hidden><h3>Teacher share</h3><p>Select content and independently select the names that may appear. An unconfirmed VIP remains a Speaker even when selected.</p><h4>Names</h4><div id="teacher-speaking-name-selection">' + nameSelection + '</div><div class="speaking-detail-actions"><button class="outline-button" type="button" id="teacher-speaking-select-all">Select all</button><button class="outline-button" type="button" id="teacher-speaking-clear-all">Clear all</button></div><h4>Content</h4><div id="teacher-speaking-content-selection">' + contentSelection + '</div><button class="primary-button" type="button" id="teacher-speaking-create-share">Create snapshot</button><p id="teacher-speaking-share-result"></p></section></article>';
+            bindDetail(item);
+        }).catch(function (error) {
+            setMessage(error.message || 'Could not load Discussion.', true);
+        });
+    }
+    function bindDetail(item) {
+        document.getElementById('teacher-speaking-back').addEventListener('click', function () { detail.hidden = true; });
+        document.getElementById('teacher-speaking-save-mapping').addEventListener('click', function () {
+            var pairs = Array.prototype.slice.call(detail.querySelectorAll('[data-mapping-participant]')).map(function (select) {
+                return { participant_id: select.getAttribute('data-mapping-participant'), speaker_key: select.value };
+            }).filter(function (pair) { return pair.speaker_key; });
+            call('teacherUpdateVoiceMapping', { discussion_id: selected, mapping_revision: Number(item.mapping_revision || 0), mapping: pairs }).then(function () {
+                setMessage('Voice mapping saved.');
+                return open(selected);
+            }).catch(function (error) { setMessage(error.message || 'Could not save mapping.', true); });
+        });
+        detail.querySelectorAll('[data-reopen-reference]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                if (!window.confirm('Reopen this Voice Reference and clear its current match?')) return;
+                call('teacherReopenVoiceReference', { discussion_id: selected, participant_id: button.getAttribute('data-reopen-reference') }).then(function () { return open(selected); }).catch(function (error) { setMessage(error.message || 'Could not reopen sample.', true); });
+            });
+        });
+        detail.querySelectorAll('[data-teacher-playback]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                button.disabled = true;
+                call('getVoiceConfirmationPlayback', { discussion_id: selected, participant_id: button.getAttribute('data-participant-id'), playback_kind: button.getAttribute('data-teacher-playback') }).then(function (result) {
+                    var audio = new Audio(result.url);
+                    audio.currentTime = Number(result.start_ms || 0) / 1000;
+                    audio.addEventListener('timeupdate', function () { if (audio.currentTime * 1000 >= Number(result.end_ms || 0)) { audio.pause(); audio.src = ''; } });
+                    return audio.play();
+                }).catch(function (error) { setMessage(error.message || 'Could not play this private excerpt.', true); }).finally(function () { button.disabled = false; });
+            });
+        });
+        document.getElementById('teacher-speaking-share').addEventListener('click', function () { document.getElementById('teacher-speaking-share-builder').hidden = false; });
+        document.getElementById('teacher-speaking-select-all').addEventListener('click', function () { detail.querySelectorAll('[data-share-participant]').forEach(function (box) { box.checked = true; }); });
+        document.getElementById('teacher-speaking-clear-all').addEventListener('click', function () { detail.querySelectorAll('[data-share-participant]').forEach(function (box) { box.checked = false; }); });
+        document.getElementById('teacher-speaking-create-share').addEventListener('click', function () {
+            var button = document.getElementById('teacher-speaking-create-share');
+            button.disabled = true;
+            var ids = Array.prototype.slice.call(detail.querySelectorAll('[data-share-participant]:checked')).map(function (box) { return box.getAttribute('data-share-participant'); });
+            var selection = { visible_participant_ids: ids };
+            detail.querySelectorAll('[data-share-content]').forEach(function (box) { selection[box.getAttribute('data-share-content')] = box.checked; });
+            call('createTeacherShare', { discussion_id: selected, selection: selection }).then(function (share) {
+                var url = new URL(share.share_url, window.location.href).href;
+                document.getElementById('teacher-speaking-share-result').innerHTML = '<a href="' + esc(url) + '" target="_blank" rel="noopener">Open private snapshot</a> · expires ' + esc(share.expires_at || 'in 7 days');
+            }).catch(function (error) { setMessage(error.message || 'Could not create snapshot.', true); }).finally(function () { button.disabled = false; });
+        });
+        document.getElementById('teacher-speaking-delete').addEventListener('click', function () {
+            if (!window.confirm('Delete this Discussion, its private audio, and its share links?')) return;
+            call('deleteDiscussion', { discussion_id: selected }).then(load).then(function () { detail.hidden = true; }).catch(function (error) { setMessage(error.message || 'Could not delete Discussion.', true); });
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        var tab = event.target.closest && event.target.closest('[data-view="speaking"]');
+        if (tab) load().catch(function (error) { setMessage(error.message || 'Speaking Lab is unavailable.', true); });
+    });
+    window.MrCatTeacherSpeaking = { load: load, open: open };
+})(window);

@@ -152,6 +152,52 @@ assert(vocabularySecondEmail.html.includes("70%"));
 assert(vocabularySecondEmail.html.includes("90%"));
 assert(vocabularySecondEmail.html.includes("5 sets"));
 
+const intensiveStarted = {
+  event_kind: "intensive_listening_session",
+  event_id: "ils_1::started",
+  session_id: "ils_1",
+  session_phase: "started",
+  student_uid: "student-1",
+  set_id: "IL-BBC-260813",
+  set_title: "A listening lesson",
+  mode: "intensive_listening",
+  practice_context: "self_study",
+  completion_percentage: 0,
+  target_percentage: 100,
+  completed_unit_count: 0,
+  independent_unit_count: 0,
+  assisted_unit_count: 0,
+  new_completed_unit_count: 0,
+  occurred_at: baseTime,
+};
+assert.strictEqual(notifications.emailPolicyForAttempt(intensiveStarted), notifications.EMAIL_POLICIES.INTENSIVE_IMMEDIATE);
+const intensiveEmail = notifications.renderIntensiveListeningEmail({
+  event: { ...intensiveStarted, session_phase: "completed", completion_percentage: 100, completed_unit_count: 4, independent_unit_count: 3, assisted_unit_count: 1, new_completed_unit_count: 4, session_duration_seconds: 94 },
+  student: { student_id: "leo", chinese_name: "李奥", english_name: "Leo" },
+  set: { set_id: "IL-BBC-260813", title: "A listening lesson" },
+  teacherUrl: "https://example.test/teacher.html",
+});
+assert.strictEqual(intensiveEmail.subject, "李奥Leo | A listening lesson | Intensive Listening Completed");
+assert(intensiveEmail.html.includes("3 independent"));
+assert(intensiveEmail.html.includes("1 assisted"));
+assert(intensiveEmail.html.includes("Started 11-08-2026"));
+assert(intensiveEmail.html.includes("Ended 11-08-2026"));
+assert(intensiveEmail.html.includes("safe Intensive Listening session counts"));
+assert(!intensiveEmail.html.includes("private transcript"));
+assert(!intensiveEmail.text.includes("typed words"));
+const intensiveStartedEmail = notifications.renderIntensiveListeningEmail({
+  event: { ...intensiveStarted, set_title: "<Lesson>", practice_context: "review", session_phase: "started", completion_percentage: 12 },
+  student: { student_id: "leo", name: "<Student>" },
+  set: { set_id: "IL-BBC-260813", title: "<Lesson>" },
+});
+assert.strictEqual(intensiveStartedEmail.subject, "<Student> | <Lesson> | Intensive Listening Started");
+assert(intensiveStartedEmail.html.includes("&lt;Student&gt;"));
+assert(intensiveStartedEmail.html.includes("Review"));
+assert(intensiveStartedEmail.html.includes("12%"));
+assert(intensiveStartedEmail.html.includes("Started 11-08-2026"));
+assert(!intensiveStartedEmail.html.includes("answers"));
+assert(!intensiveStartedEmail.html.includes("audio_src"));
+
 const submitSource = fs.readFileSync(path.join(root, "cloudfunctions/submitAttempt/index.js"), "utf8");
 const dispatcherSource = fs.readFileSync(path.join(root, "cloudfunctions/sendTeacherAttemptEmails/index.js"), "utf8");
 const teacherAdminSource = fs.readFileSync(path.join(root, "cloudfunctions/teacherAdmin/index.js"), "utf8");

@@ -170,6 +170,10 @@ Supporting docs:
   refresh, replayable Runner scoring, Ready controls, animation, and sound
 - [docs/14_OCR_IMAGE_UNCERTAINTY_OVERLAY_IMPLEMENTATION_PLAN.md](docs/14_OCR_IMAGE_UNCERTAINTY_OVERLAY_IMPLEMENTATION_PLAN.md):
   approved OCR uncertainty-location overlay implementation plan and verification checklist
+- [docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md](docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md):
+  detailed implementation plan for the DSE Group Interaction Speaking Lab,
+  per-Discussion voice identity, durable audio analysis, and privacy-preserving
+  report sharing
 
 ## Documentation Rule
 
@@ -194,3 +198,39 @@ most important backend principles are:
 
 Known technical risks are tracked in [docs/08_BACKLOG.md](docs/08_BACKLOG.md)
 and [docs/11_AGENT_TROUBLESHOOTING.md](docs/11_AGENT_TROUBLESHOOTING.md).
+
+### Intensive Listening Library
+
+Intensive Listening is a separate authenticated student workspace at
+intensive-listening-library.html. It lists only safe metadata and server
+progress; private transcript material remains behind the intensiveListening
+function. Dashboard capsules and linked BBC/IELTS entry points preserve
+same-origin returns. Run the focused contracts with:
+
+~~~bash
+npm run test:intensive-listening-library
+~~~
+
+The one-minute sendTeacherAttemptEmails timer also closes idle three-minute
+Intensive Listening sessions and delivers safe Started, Paused, or Completed
+session summaries. Owner-gated production rollout still requires the
+notification-session index and function packaging/deployment review.
+
+### DSE Speaking Lab
+
+The local V1 Speaking Lab covers private DSE Paper 4 Part A group recordings,
+Discussion-scoped VIP/Guest rosters, Voice References, Speaker-labelled
+reports, and redacted Student/Teacher share snapshots. Production speech and
+structured-text providers intentionally fail closed until benchmark approval.
+
+Run its contracts with:
+
+```bash
+npm run test:speaking-lab
+```
+
+Package the owner-gated backend functions locally with:
+
+```bash
+npm run package:functions -- speakingLab speakingAiWorker
+```

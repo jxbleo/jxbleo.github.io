@@ -2250,3 +2250,20 @@ required.
 - Reset the staging surface below the sticky toolbar after camera/library return,
   selected the newest addition, and capped preview height to prevent the retained
   bottom scroll and oversized single-image behavior seen on iPad and phone.
+
+## 2026-08-27 — DSE Speaking Lab V1 foundation
+
+Added local Speaking Lab domain contracts, authenticated gateway and durable
+worker scaffolding, private upload/share boundaries, student and teacher
+surfaces, external redacted report page, static contract tests, and
+owner-gated packaging documentation. Production provider adapters remain
+disabled pending real-audio benchmark and CloudBase deployment.
+
+## 2026-08-27 — Intensive Listening Library
+
+Added the authenticated Intensive Listening catalog, safe server catalog
+contract, dashboard capsules, linked BBC/IELTS entry points, assignment-aware
+practice navigation, three-minute activity sessions, mixed Teacher bell rows,
+and safe IL email summaries. Added importer metadata propagation and focused
+local contract tests. Production indexes, data import, timer configuration,
+and deployment remain owner-gated.

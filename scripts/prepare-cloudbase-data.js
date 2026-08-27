@@ -362,6 +362,23 @@ function buildSet(meta, overrides = {}) {
     feedback_policy: "always",
     visible: meta.visible !== false,
   };
+  if (meta.sourceFamily || overrides.sourceFamily) set.source_family = meta.sourceFamily || overrides.sourceFamily;
+  if (meta.sourceLabel || overrides.sourceLabel) set.source_label = meta.sourceLabel || overrides.sourceLabel;
+  if (meta.seriesLabel || overrides.seriesLabel) set.series_label = meta.seriesLabel || overrides.seriesLabel;
+  if (meta.publishedOn || overrides.publishedOn) set.published_on = meta.publishedOn || overrides.publishedOn;
+  if (meta.sourceSetId || overrides.sourceSetId) set.source_set_id = meta.sourceSetId || overrides.sourceSetId;
+  if (meta.linkedPracticeSetId || overrides.linkedPracticeSetId) {
+    set.linked_practice_set_id = meta.linkedPracticeSetId || overrides.linkedPracticeSetId;
+  } else if (meta.linked_practice_set_id || overrides.linked_practice_set_id) {
+    set.linked_practice_set_id = meta.linked_practice_set_id || overrides.linked_practice_set_id;
+  }
+  if (type === "intensive-listening") {
+    set.dictation_unit_count = Number(meta.dictationUnitCount || overrides.dictationUnitCount || 0);
+    set.sequence_unit_count = Number(meta.sequenceUnitCount || overrides.sequenceUnitCount || 0);
+    set.mastery_enabled = false;
+    set.passing_percentage = overrides.passingPercentage == null ? 100 : overrides.passingPercentage;
+    set.mastery_percentage = 100;
+  }
   if (meta.renderTheme) set.renderTheme = meta.renderTheme;
   if (meta.edition_family) {
     set.edition_family = meta.edition_family;
@@ -462,7 +479,21 @@ function main() {
       estimatedMinutes: Math.max(1, Math.ceil(Number(material.units.at(-1).end_seconds || 0) / 60)),
       passingPercentage: 100,
       masteryPercentage: 100,
+      sourceFamily: material.source_family || meta.sourceFamily,
+      sourceLabel: material.source_label || meta.sourceLabel,
+      seriesLabel: material.series_label || meta.seriesLabel,
+      publishedOn: material.published_on || meta.publishedOn,
+      sourceSetId: material.source_set_id || meta.sourceSetId,
+      linkedPracticeSetId: material.linked_practice_set_id || meta.linkedPracticeSetId,
+      dictationUnitCount: (material.units || []).filter((unit) => String(unit.practice_mode || "dictation") === "dictation").length,
+      sequenceUnitCount: (material.units || []).length,
     }));
+    material.source_family = material.source_family || meta.sourceFamily || "";
+    material.source_label = material.source_label || meta.sourceLabel || "";
+    material.series_label = material.series_label || meta.seriesLabel || "";
+    material.published_on = material.published_on || meta.publishedOn || "";
+    material.source_set_id = material.source_set_id || meta.sourceSetId || meta.id.replace(/^IL-/, "");
+    material.linked_practice_set_id = material.linked_practice_set_id || meta.linkedPracticeSetId || null;
     intensiveListeningMaterials.push(material);
   });
 

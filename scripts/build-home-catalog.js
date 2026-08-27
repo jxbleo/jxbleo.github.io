@@ -83,6 +83,9 @@ function buildCatalogItem(item, section) {
     catalogItem.edition_label = item.edition_label || `V${catalogItem.edition_number}`;
     catalogItem.is_latest_edition = item.is_latest_edition === true;
   }
+  if (item.intensiveListeningSetId || item.intensive_listening_set_id) {
+    catalogItem.intensiveListeningSetId = item.intensiveListeningSetId || item.intensive_listening_set_id;
+  }
   return catalogItem;
 }
 

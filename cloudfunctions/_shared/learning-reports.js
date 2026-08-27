@@ -201,6 +201,9 @@ function familyForSet(set, fallbackSetId = "") {
     source.family,
     fallbackSetId || source.set_id,
   ].map((item) => text(item).toLowerCase()).join(" ");
+  if (values.includes("intensive-listening") || /^il-/i.test(text(fallbackSetId || source.set_id))) {
+    return "intensive-listening";
+  }
   if (values.includes("vocab")) return "vocabulary";
   if (values.includes("bbc")) return "bbc";
   if (values.includes("ielts") && values.includes("listening")) return "ielts-listening";
@@ -209,6 +212,18 @@ function familyForSet(set, fallbackSetId = "") {
   if (values.includes("listening")) return "listening";
   if (values.includes("reading")) return "reading";
   return "other";
+}
+
+function intensiveProgressKey(studentUid, setId) {
+  return `${text(studentUid)}::${text(setId)}`;
+}
+
+function currentIntensiveProgress(progress, set) {
+  if (!progress) return null;
+  const expectedVersion = text(set && set.content_version);
+  const progressVersion = text(progress.content_version);
+  if (expectedVersion && progressVersion && expectedVersion !== progressVersion) return null;
+  return progress;
 }
 
 function studentNames(student, membership) {
@@ -289,8 +304,24 @@ function assignmentDueInPeriod(assignment, period) {
   return dateInRange(assignment && assignment.due_at, period.start_at, period.end_at);
 }
 
-function assignmentPassedAt(assignment, attemptsByStudentSet, set, cutoffAt, scoreLockedAt) {
+function assignmentPassedAt(assignment, attemptsByStudentSet, set, cutoffAt, scoreLockedAt, intensiveProgressByStudentSet) {
   const cutoff = dateValue(cutoffAt);
+  if (familyForSet(set, assignment && assignment.set_id) === "intensive-listening") {
+    const progress = currentIntensiveProgress(
+      intensiveProgressByStudentSet && intensiveProgressByStudentSet.get(intensiveProgressKey(assignment.student_uid, assignment.set_id)),
+      set
+    );
+    const progressDate = progress && (progress.completed_at || progress.updated_at);
+    if (progress && dateValue(progressDate) > 0 && dateValue(progressDate) <= cutoff
+      && Number(progress.percentage) >= passingPercentageForAssignment(assignment, set)) {
+      return progress.completed_at || progress.updated_at;
+    }
+    const status = normalizedAssignmentStatus(assignment && assignment.status);
+    if (status === "passed" && dateValue(assignment && assignment.completed_at) <= cutoff) {
+      return assignment.completed_at;
+    }
+    return null;
+  }
   const key = `${text(assignment && assignment.student_uid)}::${text(assignment && assignment.set_id)}`;
   const eligibleAttempts = (attemptsByStudentSet.get(key) || []).filter((attempt) =>
     dateValue(attempt.submitted_at) <= cutoff
@@ -341,18 +372,41 @@ function activitySummary(attempts, setById) {
   };
 }
 
-function selfStudySummary(attempts, setById) {
+function selfStudySummary(attempts, setById, intensiveProgressByStudentSet, periodStart, cutoffAt, assignedSetIds = new Set()) {
   const countable = (attempts || []).filter((attempt) => countableAttempt(attempt) && !attempt.assignment_id);
   const completedSetIds = new Set(countable.filter(effectivePassed).map((attempt) => text(attempt.set_id)).filter(Boolean));
+  const intensive = [];
+  (intensiveProgressByStudentSet || new Map()).forEach((progress, key) => {
+    const [studentUid, setId] = key.split("::");
+    if (!studentUid || !setId || !setById.has(setId)) return;
+    if (assignedSetIds.has(setId)) return;
+    const set = setById.get(setId);
+    if (familyForSet(set, setId) !== "intensive-listening") return;
+    const current = currentIntensiveProgress(progress, set);
+    const completionDate = current && (current.completed_at || current.updated_at);
+    if (!current || !dateInRange(completionDate, periodStart, cutoffAt)
+      || Number(current.percentage) < passingPercentageForAssignment({}, set)) return;
+    intensive.push({
+      set_id: setId,
+      title: text(set.title) || setId,
+      completion_percentage: Number(current.percentage) || 0,
+      completed_unit_count: Number(current.completed_unit_count) || 0,
+      independent_unit_count: Number(current.independent_unit_count) || 0,
+      assisted_unit_count: Number(current.assisted_unit_count) || 0,
+      completed_at: completionDate,
+    });
+  });
   return {
     self_study_attempt_count: countable.length,
     passed_self_study_attempt_count: countable.filter(effectivePassed).length,
-    completed_self_study_item_count: completedSetIds.size,
+    completed_self_study_item_count: completedSetIds.size + intensive.length,
+    intensive_listening_completed_count: intensive.length,
+    intensive_listening_items: intensive,
     families: summaryFamilies(countable, setById),
   };
 }
 
-function classTaskItemsForStudent(studentUid, classAssignments, attemptsByStudentSet, scoreLockByStudentSet, setById, cutoffAt) {
+function classTaskItemsForStudent(studentUid, classAssignments, attemptsByStudentSet, scoreLockByStudentSet, setById, cutoffAt, intensiveProgressByStudentSet) {
   const tasks = new Map();
   classAssignments.filter((assignment) => text(assignment.student_uid) === studentUid).forEach((assignment) => {
     const taskId = text(assignment.class_task_id || assignment.assignment_batch_id || assignment.assignment_id || assignment._id);
@@ -373,10 +427,16 @@ function classTaskItemsForStudent(studentUid, classAssignments, attemptsByStuden
       attemptsByStudentSet,
       set,
       cutoffAt,
-      scoreLockByStudentSet.get(progressKey) || null
+      scoreLockByStudentSet.get(progressKey) || null,
+      intensiveProgressByStudentSet
     ))
       .filter(Boolean)
       .sort((left, right) => dateValue(left) - dateValue(right));
+    const isIntensive = familyForSet(set, representative.set_id) === "intensive-listening";
+    const intensiveProgress = isIntensive && currentIntensiveProgress(
+      intensiveProgressByStudentSet && intensiveProgressByStudentSet.get(intensiveProgressKey(studentUid, representative.set_id)),
+      set
+    );
     return {
       class_task_id: classTaskId,
       set_id: representative.set_id || "",
@@ -385,6 +445,12 @@ function classTaskItemsForStudent(studentUid, classAssignments, attemptsByStuden
       due_at: representative.due_at || null,
       passed: passedDates.length > 0,
       passed_at: passedDates[0] || null,
+      ...(isIntensive ? {
+        completion_percentage: Number(intensiveProgress && intensiveProgress.percentage) || 0,
+        completed_unit_count: Number(intensiveProgress && intensiveProgress.completed_unit_count) || 0,
+        independent_unit_count: Number(intensiveProgress && intensiveProgress.independent_unit_count) || 0,
+        assisted_unit_count: Number(intensiveProgress && intensiveProgress.assisted_unit_count) || 0,
+      } : {}),
     };
   }).sort((left, right) => dateValue(left.due_at) - dateValue(right.due_at)
     || left.title.localeCompare(right.title));
@@ -440,6 +506,9 @@ function buildReportSnapshot(options = {}) {
   const memberUids = new Set(reportMembers.map((item) => item.student_uid));
   const attempts = (options.attempts || []).map(recordData)
     .filter((attempt) => memberUids.has(text(attempt.student_uid)));
+  const intensiveProgressByStudentSet = new Map((options.intensive_progress || []).map(recordData)
+    .filter((progress) => memberUids.has(text(progress.student_uid)) && text(progress.set_id))
+    .map((progress) => [intensiveProgressKey(progress.student_uid, progress.set_id), progress]));
   const attemptsByStudentUid = new Map();
   const attemptsByStudentSet = new Map();
   attempts.forEach((attempt) => {
@@ -474,6 +543,15 @@ function buildReportSnapshot(options = {}) {
   );
   const priorDetails = previousDetailMap(options.previous_report);
   const notes = preservedTeacherNotes(options.existing_report);
+  const assignedSetIdsByStudent = new Map();
+  (options.assignments || []).map(recordData).forEach((assignment) => {
+    const studentUid = text(assignment.student_uid);
+    const setId = text(assignment.set_id);
+    if (!studentUid || !setId) return;
+    const setIds = assignedSetIdsByStudent.get(studentUid) || new Set();
+    setIds.add(setId);
+    assignedSetIdsByStudent.set(studentUid, setIds);
+  });
   const studentDetails = reportMembers.map(({ student_uid: studentUid, membership, student }) => {
     const personalAttempts = (attemptsByStudentUid.get(studentUid) || []).filter((attempt) =>
       dateInRange(attempt.submitted_at, period.start_at, cutoffAt)
@@ -484,7 +562,8 @@ function buildReportSnapshot(options = {}) {
       attemptsByStudentSet,
       scoreLockByStudentSet,
       setById,
-      cutoffAt
+      cutoffAt,
+      intensiveProgressByStudentSet
     );
     const completedClassItemCount = classTaskItems.filter((item) => item.passed).length;
     const prior = priorDetails.get(studentUid);
@@ -509,7 +588,14 @@ function buildReportSnapshot(options = {}) {
         ? completedClassItemCount - Number(prior.class_task_summary && prior.class_task_summary.completed_class_item_count || 0)
         : null,
       actual_activity: activitySummary(personalAttempts, setById),
-      self_study: selfStudySummary(personalAttempts, setById),
+      self_study: selfStudySummary(
+        personalAttempts,
+        setById,
+        new Map([...intensiveProgressByStudentSet].filter(([key]) => key.startsWith(`${studentUid}::`))),
+        period.start_at,
+        cutoffAt,
+        assignedSetIdsByStudent.get(studentUid) || new Set()
+      ),
       teacher_comment: note.teacher_comment || "",
       teacher_goals: note.teacher_goals || [],
       comment_updated_at: note.comment_updated_at || null,

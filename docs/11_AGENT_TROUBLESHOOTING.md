@@ -961,3 +961,24 @@ uncertain strings, raw model output, or coordinates.
   移除最后一张或 Cancel 返回 Sentence Revision 时，由跨屏 renderer 归位。
 - 同一 Sentence Revision 内的输入、翻面、Sample 展开和等待 Runner 的状态轮询不是跨屏导航，禁止反复
   归位。跨屏 renderer 必须比较前后 screen；只有实际进入新屏幕时才重置。
+
+### 2026-08-27 — Speaking Lab safe diagnosis
+
+If Speaking analysis returns `SPEAKING_PROVIDER_NOT_CONFIGURED`, this is the
+intentional production fail-closed state, not evidence of a browser recording
+failure. Check only safe job ID, Discussion ID, stage, attempt, and error code;
+never print audio paths, upload metadata, transcript, names, prompts, provider
+responses, or tokens. A pending/declined VIP or Guest must receive the same
+server access denial regardless of a guessed Student ID.
+
+If a share is unavailable, treat missing, expired, and revoked tokens as the
+same `SHARE_NOT_AVAILABLE` outcome. Duplicate uploads/jobs should replay their
+stable operation ID; a stale lease or mapping revision must never publish.
+
+For Intensive Listening, a catalog card without a visible live material is
+expected to be omitted. Check the visible set/material intersection and the
+safe response fields before investigating the browser. A missing session
+index must not be fixed by changing the timer; use the bounded fallback,
+record the risk, and ask the owner to gate index creation. If duplicate
+Started/final rows appear, inspect deterministic session event IDs and
+transaction claims; never overwrite an existing outbox row.

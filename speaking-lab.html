@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f4f8f5">
+    <meta name="description" content="DSE Speaking Lab group interaction practice.">
+    <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
+    <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-1">
+    <title>Speaking Lab | Mr. Cat Academy</title>
+</head>
+<body class="app-page liquid-glass-shell speaking-lab-page">
+    <main class="app-shell">
+        <header class="app-header speaking-lab-toolbar">
+            <a class="back-link" href="dashboard.html" aria-label="Back to Dashboard">← Dashboard</a>
+            <div class="identity-cluster"><span class="student-chip" id="speaking-identity">Speaking Lab</span></div>
+        </header>
+        <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
+            <div class="speaking-lab-heading">
+                <div><p class="eyebrow accent">DSE PAPER 4 · PART A</p><h1 id="speaking-lab-title">Speaking Lab</h1><p>Record a group interaction, then review the discussion evidence together.</p></div>
+                <button class="primary-button" id="new-discussion" type="button">New Discussion</button>
+            </div>
+            <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite">Loading your Discussions…</div>
+            <p class="sr-only">Recording choices include Record now and Upload audio.</p>
+            <section class="speaking-list" id="speaking-list" aria-label="Discussions"></section>
+            <section class="speaking-detail" id="speaking-detail" hidden aria-live="polite"></section>
+        </section>
+    </main>
+
+    <dialog class="speaking-dialog" id="discussion-dialog" aria-labelledby="discussion-dialog-title">
+        <form method="dialog" id="discussion-form">
+            <h2 id="discussion-dialog-title">New Discussion</h2>
+            <label>Internal title<input id="discussion-title" name="title" maxlength="120" required></label>
+            <label>Prompt<textarea id="discussion-prompt" name="prompt_text" maxlength="10000" required placeholder="Paste the DSE discussion task here."></textarea></label>
+            <label>Discussion date<input id="discussion-date" name="discussion_date" type="date"></label>
+            <label>Recording time in seconds (optional)<input id="discussion-duration" name="duration_seconds" type="number" min="180" max="1800" step="30" placeholder="Defaults to 2 minutes per participant"></label>
+            <label>Invite VIP Student IDs (optional)<input id="discussion-vip-ids" name="vip_ids" placeholder="One Login ID, or comma-separated IDs"></label>
+            <label>Add Guests (optional)<input id="discussion-guests" name="guest_names" placeholder="One name, or comma-separated names"></label>
+            <div class="speaking-dialog-actions"><button class="outline-button" value="cancel">Cancel</button><button class="primary-button" id="discussion-create" value="default">Create</button></div>
+        </form>
+    </dialog>
+    <dialog class="speaking-dialog" id="invitation-dialog" aria-labelledby="invitation-dialog-title">
+        <div id="invitation-dialog-content"></div>
+    </dialog>
+
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js?v=20260827-1"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
+    <script src="assets/js/auth.js?v=20260810-1"></script>
+    <script src="assets/js/speaking-lab.js?v=20260827-1"></script>
+</body>
+</html>

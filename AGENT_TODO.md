@@ -42,6 +42,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- [ ] Baseline before Intensive Listening Library work: `npm run test:assignment-schedule`
+      fails at `testDashboardScheduleModel` because the current DSE-overlapping
+      dashboard fixture does not include `UPCOMING`; unrelated to this feature.
+
 - [ ] Add a lightweight smoke-test script that checks JSON parsing, catalog
       links, and key static pages.
 - [ ] Add browser smoke coverage for visitor mode, student login, and teacher
@@ -65,6 +69,30 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+### 2026-08-27
+
+- Implemented the authenticated Intensive Listening Library, safe catalog and
+  linked-practice entry points, Completion-only assignments, teacher Provided
+  Word approval, server-owned three-minute learning sessions, mixed Teacher
+  bell/email summaries, and Parent/learning-report Completion projections.
+  Added focused static/service/report/email coverage and locally packaged the
+  affected functions. Required focused checks, Speaking Lab regression,
+  release verification, and diff checks pass; `test:assignment-schedule`
+  retains its pre-existing DSE-overlap `UPCOMING` failure. Owner must create
+  reviewed collections/indexes, import intended safe/private IL rows, deploy
+  affected functions, and publish static assets; no CloudBase mutation or
+  deployment was performed.
+- Independent handoff review tightened the session boundary so Replay clicks
+  cannot create Started before playhead movement, made Review completion close
+  immediately after the effective Check/Show Answer, protected notification
+  fields from concurrent progress writes, and fixed mixed-feed cursor
+  advancement so unconsumed Teacher notifications are not skipped.
+- Owner-authorized development rollout created the three IL session/event
+  indexes, refreshed all 21 BBC IL set/private-material rows from iCloud
+  backups, and deployed the seven affected reader/producer/report/email
+  functions. The matching static snapshot is published through `main` and the
+  COS workflow; existing timer and SMTP configuration were left unchanged.
 
 ### 2026-08-20
 
@@ -885,3 +913,14 @@ cp .qa-secrets.example .qa-secrets.local
 - Added repository rules for updating this file after QA, bug-fix, and
   verification work.
 - CloudBase: no deployment required.
+### 2026-08-27 — DSE Speaking Lab V1 local implementation
+
+- Added shared Speaking Lab domain rules, provider/model fail-closed
+  boundaries, authenticated gateway/worker scaffolding, student/teacher and
+  redacted external report surfaces, and static/pure contract tests.
+- Updated the numbered product, architecture, UI, data, changelog, decisions,
+  testing, backlog, deployment, troubleshooting, README, and AGENTS docs.
+- Verified `npm run test:speaking-lab`, function/page syntax, release checks,
+  static build, and local function packaging. No CloudBase collections,
+  secrets, timers, provider adapters, deployments, or static publication were
+  performed. Owner still needs the provider benchmark and gated rollout.

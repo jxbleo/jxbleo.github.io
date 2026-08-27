@@ -110,3 +110,13 @@ Before commercial use, review:
 - AI Tutor: optional CEFR A2/B1/C1 language-upgrade variants
 - AI Tutor: targeted grammar/content lessons generated from repeated Writing Observations
 - AI Tutor: human moderation and model-quality evaluation dataset before high-stakes use
+
+- Speaking Lab: benchmark and approve a production speech/diarization adapter;
+  video extraction, pronunciation/delivery assessment, PDF export, stronger
+  streaming upload protection, and an individual speaking mode remain out of
+  V1. Add provider fallback only after a measured quality/cost review.
+
+- Intensive Listening: owner-gated notification-session index and production
+  timer rollout; benchmark large catalog scans and mixed bell pagination.
+- Intensive Listening: future source-specific importer validation and
+  authoring tooling remain outside the first release.

@@ -233,6 +233,21 @@
             font-size: 13px;
             color: #475569;
         }
+        .intensive-listening-link {
+            display: inline-flex;
+            margin-top: 10px;
+            min-height: 34px;
+            align-items: center;
+            padding: 0 12px;
+            border-radius: 999px;
+            color: #155e75;
+            background: #e0f2fe;
+            font-size: 12px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+        .intensive-listening-link:hover,
+        .intensive-listening-link:focus-visible { background: #bae6fd; }
         .question-section {
             margin: 0 0 26px;
             padding: 0 0 8px;
@@ -780,6 +795,15 @@
         return window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion || '1';
     }
 
+    function intensiveListeningLinkHtml() {
+        var intensiveId = String(lesson && (lesson.intensiveListeningSetId || lesson.intensive_listening_set_id) || '').trim();
+        if (!intensiveId) return '';
+        var returnUrl = window.location.href;
+        return '<a class="intensive-listening-link" href="intensive-listening.html?set=' +
+            encodeURIComponent(intensiveId) + '&return=' + encodeURIComponent(returnUrl) +
+            '">Intensive Listening</a>';
+    }
+
     function englishName(profile) {
         var fullName = String((profile && (profile.name || profile.student_id)) || '').trim();
         var englishParts = fullName.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
@@ -871,6 +895,7 @@
         var html = '<div class="lesson-header">' +
             '<h1 class="lesson-title">' + escapeHtml(lesson.title || lesson.id) + '</h1>' +
             (lesson.source ? '<div class="lesson-source">' + escapeHtml(lesson.source) + '</div>' : '') +
+            intensiveListeningLinkHtml() +
             '</div>';
         (part.sections || []).forEach(function(section) {
             html += '<section class="question-section">' +

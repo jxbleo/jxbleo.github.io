@@ -3,6 +3,8 @@ const CloudBaseManager = require("../_shared/cloudbase-user-manager");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
+const intensiveNotifications = require("../_shared/intensive-listening-notifications");
+const intensiveSpelling = require("../_shared/intensive-listening-spelling");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -167,8 +169,18 @@ async function getCount(collection, where) {
 }
 
 function feedCursor(value) {
+  if (value && typeof value === "object") {
+    return {
+      attempt_offset: Math.max(0, Number(value.attempt_offset) || 0),
+      intensive_offset: Math.max(0, Number(value.intensive_offset) || 0),
+    };
+  }
+  try {
+    const parsed = typeof value === "string" && value.trim().startsWith("{") ? JSON.parse(value) : null;
+    if (parsed) return feedCursor(parsed);
+  } catch (_) { /* numeric compatibility cursor below */ }
   const cursor = Number(value || 0);
-  return Number.isInteger(cursor) && cursor >= 0 ? cursor : 0;
+  return { attempt_offset: Number.isInteger(cursor) && cursor >= 0 ? cursor : 0, intensive_offset: 0 };
 }
 
 function activityThreadKey(attempt) {
@@ -375,6 +387,17 @@ function isBbcSet(set) {
     const normalized = String(value || "").toLowerCase();
     return normalized === "bbc" || normalized === "bbc-six-minute-english";
   });
+}
+
+function isIntensiveListeningSet(set) {
+  if (!set) return false;
+  return /^IL-/i.test(String(set.set_id || "")) || [
+    set.section_id,
+    set.section,
+    set.type,
+    set.course,
+    set.category,
+  ].some((value) => String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-") === "intensive-listening");
 }
 
 function isIeltsSet(set) {
@@ -1354,6 +1377,12 @@ async function listSets() {
       link: practiceLinkForSet(set),
       passing_percentage: passingPercentageForSet(set),
       mastery_percentage: masteryPercentageForSet(set),
+      mastery_enabled: isIntensiveListeningSet(set) ? false : set.mastery_enabled === true,
+      source_family: set.source_family || "",
+      source_label: set.source_label || "",
+      series_label: set.series_label || "",
+      published_on: set.published_on || "",
+      linked_practice_set_id: set.linked_practice_set_id || null,
       edition_family: set.edition_family || "",
       edition_number: set.edition_number == null ? null : Number(set.edition_number),
       edition_label: set.edition_label || "",
@@ -1724,11 +1753,14 @@ async function createAssignments(event, teacher) {
       || optionOrEventValue(setOptions, event, "assigned_at");
     const dueAt = dueWeekEnd(dueInput);
     if (!dueAt) throw new Error("DUE_WEEK_REQUIRED");
-    const passingPercentage = safePercentage(
-      optionOrEventValue(setOptions, event, "passing_percentage"),
-      passingPercentageForSet(set)
-    );
-    const masteryEnabled = safeBoolean(
+    const isIntensive = isIntensiveListeningSet(set);
+    const passingPercentage = isIntensive
+      ? safePercentage(optionOrEventValue(setOptions, event, "passing_percentage"), 100)
+      : safePercentage(
+        optionOrEventValue(setOptions, event, "passing_percentage"),
+        passingPercentageForSet(set)
+      );
+    const masteryEnabled = isIntensive ? false : safeBoolean(
       optionOrEventValue(setOptions, event, "mastery_enabled"),
       false
     );
@@ -1737,14 +1769,14 @@ async function createAssignments(event, teacher) {
     const defaultMastery = masteryEnabled
       ? masteryPercentageForSet(set)
       : Math.max(passingPercentage, masteryPercentageForSet(set));
-    const masteryPercentage = safePercentage(masteryValue, defaultMastery);
+    const masteryPercentage = isIntensive ? 100 : safePercentage(masteryValue, defaultMastery);
     const assignmentBatchId = [
       "assign",
       setId,
       Date.now(),
       Math.random().toString(36).slice(2, 8),
     ].join("-");
-    if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
+    if (!isIntensive && passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
     const assignmentsByStudent = await getAssignmentsByStudent(setId);
     const recipients = [];
     for (const studentUid of studentUids) {
@@ -1938,18 +1970,20 @@ async function updateAssignments(event, teacher) {
       });
       continue;
     }
-    const currentPassing = Number(assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
+    const set = await getOne("sets", { set_id: assignment.set_id });
+    const isIntensive = isIntensiveListeningSet(set) || /^IL-/i.test(String(assignment.set_id || ""));
+    const currentPassing = Number(assignment.passing_percentage == null ? (isIntensive ? 100 : 50) : assignment.passing_percentage);
     const currentMastery = Number(assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
-    const passing = canUpdatePassing
-      ? safePercentage(event.passing_percentage, currentPassing)
-      : currentPassing;
-    const mastery = canUpdateMastery
+    const passing = isIntensive
+      ? (canUpdatePassing ? safePercentage(event.passing_percentage, currentPassing) : currentPassing)
+      : (canUpdatePassing ? safePercentage(event.passing_percentage, currentPassing) : currentPassing);
+    const mastery = isIntensive ? 100 : (canUpdateMastery
       ? safePercentage(event.mastery_percentage, currentMastery)
-      : currentMastery;
-    const masteryEnabled = canUpdateMasteryEnabled
+      : currentMastery);
+    const masteryEnabled = isIntensive ? false : (canUpdateMasteryEnabled
       ? safeBoolean(event.mastery_enabled, assignmentMasteryEnabled(assignment))
-      : assignmentMasteryEnabled(assignment);
-    if (masteryEnabled && passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
+      : assignmentMasteryEnabled(assignment));
+    if (!isIntensive && masteryEnabled && passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
 
     const update = { updated_at: now };
     if (canUpdateDue) {
@@ -1966,6 +2000,10 @@ async function updateAssignments(event, teacher) {
     if (canUpdatePassing) update.passing_percentage = passing;
     if (canUpdateMastery) update.mastery_percentage = mastery;
     if (canUpdateMasteryEnabled) update.mastery_enabled = masteryEnabled;
+    if (isIntensive) {
+      update.mastery_enabled = false;
+      update.mastery_percentage = 100;
+    }
     if (canUpdateDue || canUpdatePassing || canUpdateMastery || canUpdateMasteryEnabled) {
       update.standards_updated_at = now;
       update.standards_updated_by_teacher_uid = teacher.auth_uid;
@@ -2259,7 +2297,7 @@ function progressStatusFromAssignment(assignment, set, bestPercentage) {
   return monotonicAssignmentStatus(assignment.status, attemptStatus);
 }
 
-function buildProgressItemFromAssignment(assignment, student, set, attempts, scoreLockedAt) {
+function buildProgressItemFromAssignment(assignment, student, set, attempts, scoreLockedAt, intensiveProgress) {
   const orderedAttempts = sortAttemptsAscending(attempts);
   const progress = exerciseProgress.summarizeExerciseProgress(orderedAttempts, {
     passingPercentage: passingPercentageForAssignment(assignment, set),
@@ -2284,7 +2322,7 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts, sco
   const completedAt = assignment.completed_at
     || progress && progress.completed_at
     || (normalizedAssignmentStatus(status) !== "to_do" ? latestDateValue(finishedAttempts, "submitted_at") : null);
-  return {
+  const output = {
     progress_id: `assigned::${assignment.assignment_id || assignment._id}`,
     source: "assigned",
     assignment_id: assignment.assignment_id || assignment._id,
@@ -2325,6 +2363,18 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts, sco
     updated_at: progress && progress.best_improved_at || assignment.updated_at || null,
     latest_submitted_at: progress && progress.latest_submitted_at || latestDateValue(orderedAttempts, "submitted_at"),
   };
+  if (isIntensiveListeningSet(set) || /^IL-/i.test(String(assignment.set_id || ""))) {
+    output.intensive_listening = true;
+    output.completion_percentage = Number(intensiveProgress && intensiveProgress.percentage != null
+      ? intensiveProgress.percentage
+      : output.best_percentage || 0);
+    output.completed_unit_count = Number(intensiveProgress && intensiveProgress.completed_unit_count) || 0;
+    output.independent_unit_count = Number(intensiveProgress && intensiveProgress.independent_unit_count) || 0;
+    output.assisted_unit_count = Number(intensiveProgress && intensiveProgress.assisted_unit_count) || 0;
+    output.replay_count = Number(intensiveProgress && intensiveProgress.replay_count) || 0;
+    output.latest_activity_at = intensiveProgress && intensiveProgress.updated_at || null;
+  }
+  return output;
 }
 
 function buildSelfStudyProgressItem(studentUid, setId, attempts, student, set) {
@@ -2361,11 +2411,12 @@ function buildSelfStudyProgressItem(studentUid, setId, attempts, student, set) {
 }
 
 async function listProgress() {
-  const [assignmentRows, attemptRows, studentRows, setRows] = await Promise.all([
+  const [assignmentRows, attemptRows, studentRows, setRows, intensiveProgressRows] = await Promise.all([
     getAll("assignments"),
     getAll("attempts"),
     getAll("students"),
     getAll("sets"),
+    getAll("intensive_listening_progress").catch(() => []),
   ]);
   const studentMap = new Map(visibleStudentRecords(studentRows).map((student) => [student.auth_uid, student]));
   const assignments = assignmentRows.map(recordData).filter((assignment) =>
@@ -2378,6 +2429,12 @@ async function listProgress() {
     const set = recordData(record);
     return [set.set_id, set];
   }));
+  const intensiveProgressMap = new Map();
+  intensiveProgressRows.map(recordData).forEach((record) => {
+    const key = `${record.student_uid}::${record.set_id || record.material_id}`;
+    if (!record.student_uid || !record.set_id || intensiveProgressMap.has(key)) return;
+    intensiveProgressMap.set(key, record);
+  });
   const attemptsById = new Map();
   const attemptsByStudentSet = new Map();
   const selfStudyGroups = new Map();
@@ -2428,7 +2485,8 @@ async function listProgress() {
       studentMap.get(assignment.student_uid) || {},
       setMap.get(assignment.set_id) || {},
       linkedAttempts,
-      scoreLockByStudentSet.get(progressKey) || null
+      scoreLockByStudentSet.get(progressKey) || null,
+      intensiveProgressMap.get(progressKey) || null
     );
   });
 
@@ -2475,44 +2533,77 @@ async function listAttemptNotifications(event) {
     ? event.exclude_thread_keys.map(text).filter(Boolean).slice(0, 500)
     : []);
   const studentRows = await getAll("students");
-  const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
-  const collected = [];
-  const collectedThreadKeys = new Set();
-  let rawOffset = cursor;
-  let exhausted = false;
-
-  // Deleted profiles are intentionally invisible. Read small raw windows until
-  // we have one extra visible row, so the browser receives a truthful cursor
-  // without turning the ten-row notification page back into an all-history read.
-  while (collected.length <= NOTIFICATION_FEED_PAGE_SIZE && !exhausted) {
-    const rows = await getPage("attempts", {
-      offset: rawOffset,
+  const visibleStudents = visibleStudentRecords(studentRows);
+  const visibleStudentUids = new Set(visibleStudents.map((student) => student.auth_uid));
+  const studentMap = new Map(visibleStudents.map((student) => [String(student.auth_uid), student]));
+  const [attemptRows, intensiveRows] = await Promise.all([
+    getPage("attempts", {
+      offset: cursor.attempt_offset,
       limit: NOTIFICATION_FEED_PAGE_SIZE + 1,
       orderBy: { field: "submitted_at", direction: "desc" },
+    }),
+    getPage("teacher_attempt_email_events", {
+      offset: cursor.intensive_offset,
+      limit: NOTIFICATION_FEED_PAGE_SIZE + 1,
+      orderBy: { field: "occurred_at", direction: "desc" },
+    }),
+  ]);
+  const candidates = [];
+  attemptRows.forEach((record, rawIndex) => {
+    const attempt = recordData(record);
+    const threadKey = activityThreadKey(attempt);
+    candidates.push({
+      source: "attempt",
+      rawIndex,
+      eligible: visibleStudentUids.has(attempt.student_uid),
+      row: visibleStudentUids.has(attempt.student_uid) ? attemptSummaryView(attempt) : null,
+      threadKey,
+      eventTime: new Date(attempt.submitted_at || 0).getTime(),
     });
-    if (!rows.length) {
-      exhausted = true;
-      break;
-    }
-    rows.forEach((record, index) => {
-      const attempt = recordData(record);
-      if (!visibleStudentUids.has(attempt.student_uid)) return;
-      const threadKey = activityThreadKey(attempt);
-      if (excludedThreadKeys.has(threadKey) || collectedThreadKeys.has(threadKey)) return;
-      collectedThreadKeys.add(threadKey);
-      collected.push({ attempt, threadKey, nextCursor: rawOffset + index + 1 });
+  });
+  intensiveRows.forEach((record, rawIndex) => {
+    const item = recordData(record);
+    const eligible = visibleStudentUids.has(item.student_uid) && item.event_kind === "intensive_listening_session";
+    const safe = eligible ? intensiveNotifications.normalizeBellItem(item, studentMap.get(String(item.student_uid)) || {}) : null;
+    candidates.push({
+      source: "intensive",
+      rawIndex,
+      eligible,
+      row: safe,
+      threadKey: safe && (safe.thread_key || intensiveNotifications.activityThreadKey(item.student_uid, item.assignment_id, item.set_id)),
+      eventTime: new Date(item.occurred_at || item.submitted_at || 0).getTime(),
     });
-    rawOffset += rows.length;
-    if (rows.length < NOTIFICATION_FEED_PAGE_SIZE + 1) exhausted = true;
+  });
+  candidates.sort((left, right) => right.eventTime - left.eventTime
+    || (left.source === right.source ? left.rawIndex - right.rawIndex : left.source.localeCompare(right.source)));
+  const page = [];
+  const pageThreadKeys = new Set();
+  let consumedAttempts = 0;
+  let consumedIntensive = 0;
+  for (const candidate of candidates) {
+    if (page.length >= NOTIFICATION_FEED_PAGE_SIZE) break;
+    if (candidate.source === "attempt") consumedAttempts = Math.max(consumedAttempts, candidate.rawIndex + 1);
+    else consumedIntensive = Math.max(consumedIntensive, candidate.rawIndex + 1);
+    if (!candidate.eligible || !candidate.threadKey || excludedThreadKeys.has(candidate.threadKey) || pageThreadKeys.has(candidate.threadKey)) continue;
+    pageThreadKeys.add(candidate.threadKey);
+    page.push(candidate);
   }
-
-  const page = collected.slice(0, NOTIFICATION_FEED_PAGE_SIZE);
+  const nextCursor = {
+    attempt_offset: cursor.attempt_offset + consumedAttempts,
+    intensive_offset: cursor.intensive_offset + consumedIntensive,
+  };
+  const hasMore = consumedAttempts < attemptRows.length || consumedIntensive < intensiveRows.length
+    || attemptRows.length > NOTIFICATION_FEED_PAGE_SIZE || intensiveRows.length > NOTIFICATION_FEED_PAGE_SIZE;
   return {
     success: true,
-    attempts: page.map((item) => attemptSummaryView(item.attempt)),
+    attempts: page.filter((item) => item.source === "attempt").map((item) => item.row),
+    intensive_events: page.filter((item) => item.source === "intensive").map((item) => item.row),
     thread_keys: page.map((item) => item.threadKey),
-    next_cursor: page.length ? page[page.length - 1].nextCursor : null,
-    has_more: collected.length > NOTIFICATION_FEED_PAGE_SIZE || !exhausted,
+    // A page can be empty when all rows in this raw window belong to already
+    // represented threads. Keep the consumed cursor in that case so the
+    // teacher can continue paging until the feed is exhausted.
+    next_cursor: hasMore ? nextCursor : null,
+    has_more: hasMore,
     page_size: NOTIFICATION_FEED_PAGE_SIZE,
   };
 }
@@ -2533,6 +2624,34 @@ async function listAttemptThread(event) {
   return {
     success: true,
     attempts: attempts.map(attemptSummaryView),
+  };
+}
+
+async function listIntensiveThread(event) {
+  const studentUid = text(event.student_uid);
+  const assignmentId = text(event.assignment_id);
+  const setId = text(event.set_id);
+  const requestedThreadKey = text(event.thread_key);
+  if (!studentUid || (!assignmentId && !setId)) throw new Error("INTENSIVE_THREAD_REQUIRED");
+
+  const studentRecord = await getOne("students", { auth_uid: studentUid });
+  const student = recordData(studentRecord);
+  if (!student || !visibleStudentRecords([student]).length) throw new Error("INTENSIVE_THREAD_NOT_FOUND");
+
+  const expectedThreadKey = intensiveNotifications.activityThreadKey(studentUid, assignmentId, setId);
+  if (requestedThreadKey && requestedThreadKey !== expectedThreadKey) throw new Error("INTENSIVE_THREAD_NOT_FOUND");
+
+  const rows = await getAll("teacher_attempt_email_events", {
+    where: { student_uid: studentUid, event_kind: "intensive_listening_session" },
+  });
+  const events = rows
+    .map(recordData)
+    .filter((item) => item && item.thread_key === expectedThreadKey)
+    .sort((left, right) => new Date(left.occurred_at || left.submitted_at || 0) - new Date(right.occurred_at || right.submitted_at || 0))
+    .map((item) => intensiveNotifications.normalizeBellItem(item, student));
+  return {
+    success: true,
+    intensive_events: events,
   };
 }
 
@@ -2560,10 +2679,13 @@ async function getUnreadActivityThreadCount(teacher) {
     ? new Date(teacher.teacher_activity_attempts_read_all_at)
     : null;
   const readAllTime = readAllAt && Number.isFinite(readAllAt.getTime()) ? readAllAt.getTime() : null;
-  const [attemptRows, studentRows] = await Promise.all([
+  const [attemptRows, intensiveRows, studentRows] = await Promise.all([
     getAll("attempts", readAllTime == null ? {} : {
       where: { submitted_at: db.command.gt(readAllAt) },
     }),
+    getAll("teacher_attempt_email_events", readAllTime == null ? {} : {
+      where: { submitted_at: db.command.gt(readAllAt) },
+    }).catch(() => []),
     getAll("students"),
   ]);
   const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
@@ -2578,6 +2700,15 @@ async function getUnreadActivityThreadCount(teacher) {
     const submitted = new Date(attempt.submitted_at || 0).getTime();
     if (readAllTime != null && Number.isFinite(submitted) && submitted <= readAllTime) return;
     unreadThreads.add(activityThreadKey(attempt));
+  });
+  intensiveRows.forEach((record) => {
+    const item = recordData(record);
+    if (item.event_kind !== "intensive_listening_session" || !visibleStudentUids.has(item.student_uid)) return;
+    const eventId = text(item.event_id || item._id);
+    if (reviewed.has(eventId)) return;
+    const occurred = new Date(item.occurred_at || item.submitted_at || 0).getTime();
+    if (readAllTime != null && Number.isFinite(occurred) && occurred <= readAllTime) return;
+    unreadThreads.add(item.thread_key || intensiveNotifications.activityThreadKey(item.student_uid, item.assignment_id, item.set_id));
   });
   return unreadThreads.size;
 }
@@ -2825,47 +2956,25 @@ async function resolveIntensiveSpellingDispute(dispute, decision, teacher, teach
     content_version: String(dispute.content_version || "1"),
   });
   if (!material) throw new Error("MATERIAL_NOT_FOUND");
-  const units = Array.isArray(material.units) ? material.units.map((unit) => ({
-    ...unit,
-    slots: Array.isArray(unit.slots) ? unit.slots.map((slot) => ({ ...slot })) : [],
-  })) : [];
-  const unit = units.find((candidate) => String(candidate.unit_id) === String(dispute.unit_id));
-  const slot = unit && unit.slots.find((candidate) => String(candidate.slot_id) === String(dispute.slot_id));
-  if (!unit || !slot) throw new Error("SLOT_NOT_FOUND");
-  const now = new Date();
-  let policyRevision = Math.max(1, Number(material.policy_revision) || 1);
-  if (decision === "provide" && slot.spelling_requirement !== "provided") {
-    const before = slot.spelling_requirement || "required";
-    slot.spelling_requirement = "provided";
-    if (unit.slots.length && unit.slots.every((candidate) => candidate.spelling_requirement === "provided")) {
-      unit.practice_mode = "listen_only";
-    }
-    policyRevision += 1;
-    const historyRecord = {
-      history_id: [dispute.set_id, dispute.unit_id, dispute.slot_id, Date.now()].join("::"),
-      set_id: dispute.set_id,
-      question_id: dispute.question_id,
-      dispute_id: dispute.dispute_id || dispute._id,
-      change_type: "intensive_spelling_exemption",
-      content_version: String(material.content_version || "1"),
-      policy_revision_before: policyRevision - 1,
-      policy_revision_after: policyRevision,
-      answer_before: before,
-      answer_after: "provided",
-      changed_by_teacher_uid: teacher.auth_uid,
-      changed_at: now,
-      applied: false,
-    };
-    const historyAdd = await db.collection("grading_key_history").add(historyRecord);
-    await db.collection("intensive_listening_materials").doc(material._id).update({
-      units,
-      policy_revision: policyRevision,
-      updated_at: now,
-    });
-    if (historyAdd && historyAdd.id) {
-      await db.collection("grading_key_history").doc(historyAdd.id).update({ applied: true, applied_at: now });
-    }
+  if (decision === "keep") {
+    const unit = (Array.isArray(material.units) ? material.units : [])
+      .find((candidate) => String(candidate.unit_id) === String(dispute.unit_id));
+    const slot = unit && (Array.isArray(unit.slots) ? unit.slots : [])
+      .find((candidate) => String(candidate.slot_id) === String(dispute.slot_id));
+    if (!unit || !slot) throw new Error("SLOT_NOT_FOUND");
   }
+  const now = new Date();
+  const policyRevision = decision === "provide"
+    ? (await intensiveSpelling.provideWord({
+      db,
+      material,
+      unitId: dispute.unit_id,
+      slotId: dispute.slot_id,
+      teacherUid: teacher.auth_uid,
+      disputeId: dispute.dispute_id || dispute._id,
+      now,
+    })).policy_revision
+    : Math.max(1, Number(material.policy_revision) || 1);
   await db.collection("answer_disputes").doc(dispute._id).update({
     status: decision === "keep" ? "rejected" : "approved",
     decision,
@@ -4160,6 +4269,7 @@ exports.main = async (event) => {
     if (action === "listAttempts") return await listAttempts();
     if (action === "listAttemptNotifications") return await listAttemptNotifications(event);
     if (action === "listAttemptThread") return await listAttemptThread(event);
+    if (action === "listIntensiveThread") return await listIntensiveThread(event);
     if (action === "getAttemptDetail") return await getAttemptDetail(event);
     if (action === "getActivityState") return await getActivityState(teacher);
     if (action === "markAttemptsRead") return await markAttemptsRead(teacher);

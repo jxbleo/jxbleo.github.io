@@ -1622,7 +1622,8 @@
 
     function openHrefCard(card, event) {
         if (!card) return;
-        if (event && event.target && event.target.closest('button, a')) return;
+        if (event && event.target && event.target.closest('button, a') &&
+            !event.target.closest('.library-card-primary')) return;
         var href = card.dataset.openHref;
         if (href) showPracticeEntryDialog(card, href, {
             editions: libraryEditionsForCard(card),
@@ -2669,7 +2670,12 @@
         var meta = libraryCardMeta(item, section, itemYear);
         var itemStatus = practiceEntryStatus({ dataset: { entryStatus: item.status || '' } });
         var itemLocked = item.answer_revealed === true || item.mastery_locked === true;
-        return '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
+        var linkedIntensiveId = String(item.intensiveListeningSetId || item.intensive_listening_set_id || '').trim();
+        var linkedIntensiveHref = linkedIntensiveId
+            ? withReturnParam(defaultPracticeLink(linkedIntensiveId), dashboardReturnUrl('resources'))
+            : '';
+        var linkedCard = Boolean(linkedIntensiveHref);
+        var article = '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
             (item.edition_family && item._edition_items && item._edition_items.length > 1
                 ? ' data-edition-family="' + escapeHtml(item.edition_family) + '"'
@@ -2677,15 +2683,23 @@
             ' data-entry-kind="' + escapeHtml(meta.sectionLabel) + '" data-entry-title="' + escapeHtml(item.title || meta.setId || 'Practice') + '"' +
             ' data-entry-status="' + escapeHtml(itemStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-entry-locked="' + (itemLocked ? 'true' : 'false') + '"' +
-            ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">' +
-            '<div class="library-task-copy">' +
+            ' data-open-href="' + escapeHtml(href) + '"' +
+            (linkedCard ? ' role="group"' : ' role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '"') + '>';
+        var copy = '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
                     '<p class="eyebrow accent">' + escapeHtml(meta.sectionLabel) + '</p>' +
                     '<span>' + escapeHtml(meta.setId) + '</span>' +
                 '</div>' +
                 '<h3>' + escapeHtml(item.title || meta.setId) + '</h3>' +
-            '</div>' +
-        '</article>';
+            '</div>';
+        if (linkedCard) {
+            article += '<button class="library-card-primary" type="button" data-open-href="' + escapeHtml(href) +
+                '" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">' + copy + '</button>' +
+                '<a class="library-intensive-action" href="' + escapeHtml(linkedIntensiveHref) + '">Intensive Listening</a>';
+        } else {
+            article += copy;
+        }
+        return article + '</article>';
     }
 
     function libraryDisplayItems(items) {
@@ -4815,7 +4829,7 @@
         if (e.key !== 'Enter' && e.key !== ' ') return;
         var openCard = e.target.closest('[data-open-href]');
         if (!openCard) return;
-        if (e.target.closest('button, a')) return;
+        if (e.target.closest('button, a') && !e.target.closest('.library-card-primary')) return;
         e.preventDefault();
         openHrefCard(openCard, e);
     });

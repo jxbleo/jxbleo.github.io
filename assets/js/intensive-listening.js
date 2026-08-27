@@ -20,7 +20,13 @@
     autoAdvancing: false,
     localUnits: {},
     slotDisputes: {},
-    selectedArgue: null
+    selectedArgue: null,
+    linkedPractice: null,
+    assignmentContext: null,
+    lastAudioTime: null,
+    lastActivitySentAt: 0,
+    activityInFlight: false,
+    activityPending: ''
   };
 
   function $(selector) { return document.querySelector(selector); }
@@ -42,7 +48,7 @@
   function currentServer() { return state.progress.unit_progress[currentUnit().unit_id] || {}; }
 
   function safeReturnUrl() {
-    var fallback = state.teacherMode ? 'teacher.html' : 'dashboard.html';
+    var fallback = state.teacherMode ? 'teacher.html' : 'intensive-listening-library.html';
     var requested = params.get('return');
     if (!requested) return fallback;
     try {
@@ -186,6 +192,79 @@
       if (result.material_update) applyMaterialUpdate(result.material_update);
       return result;
     });
+  }
+  function activity(kind) {
+    if (state.visitorMode || state.teacherMode) return Promise.resolve(null);
+    if (state.activityInFlight) {
+      state.activityPending = kind || 'playback';
+      return Promise.resolve(null);
+    }
+    var now = Date.now();
+    if (now - state.lastActivitySentAt < 5000) return Promise.resolve(null);
+    state.lastActivitySentAt = now;
+    state.activityInFlight = true;
+    var payload = {
+      action: 'recordActivity',
+      set_id: state.setId,
+      activity_type: kind === 'replay' ? 'replay' : kind === 'navigation' ? 'unit_navigation' : kind === 'seek' ? 'seek' : 'audio_progress'
+    };
+    if (state.assignmentId) payload.assignment_id = state.assignmentId;
+    if (state.replayId) payload.replay_id = state.replayId;
+    return window.MrCatCloud.callAuthenticatedFunction('intensiveListening', payload).then(function(result) {
+      if (!result || !result.success) throw new Error(result && result.message || 'Unable to sync listening activity.');
+      // Navigation/seek is allowed to refresh an existing session but must not
+      // consume the five-second coalescing window before the first real audio
+      // movement can establish a new one.
+      if (!result.session_id) state.lastActivitySentAt = 0;
+      if (result.progress) applyProgress(result.progress);
+      var syncStatus = $('#activity-sync-status');
+      if (syncStatus) syncStatus.hidden = true;
+      return result;
+    }).catch(function() {
+      var syncStatus = $('#activity-sync-status');
+      if (syncStatus) syncStatus.hidden = false;
+      return null;
+    }).then(function(result) {
+      state.activityInFlight = false;
+      var pending = state.activityPending;
+      state.activityPending = '';
+      if (pending) window.setTimeout(function() { activity(pending); }, 0);
+      return result;
+    });
+  }
+  function linkedHref(link, returnUrl) {
+    if (!link || !link.href) return '';
+    try {
+      var url = new URL(link.href, window.location.href);
+      if (url.origin !== window.location.origin) return '';
+      url.searchParams.set('return', returnUrl || window.location.href);
+      return url.pathname.split('/').pop() + (url.search ? url.search : '') + (url.hash || '');
+    } catch (error) { return ''; }
+  }
+  function renderMaterialContext() {
+    var source = String(state.material && state.material.source_label || '').trim();
+    var series = String(state.material && state.material.series_label || '').trim();
+    $('#material-source').textContent = source ? source + (series ? ' · ' + series : '') : 'LISTEN · TYPE · CHECK';
+    var assignment = state.assignmentContext;
+    var context = $('#assignment-context');
+    if (assignment && assignment.assignment_id) {
+      var due = assignment.due_at ? new Date(assignment.due_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+      context.textContent = 'Assignment' + (due ? ' · Due ' + due : '') + ' · Completion target ' + (Number(assignment.completion_target) || 100) + '%';
+      context.hidden = false;
+    } else {
+      context.hidden = true;
+    }
+    var linked = linkedHref(state.linkedPractice, window.location.href);
+    var headerLink = $('#linked-practice-header');
+    var finish = $('#completion-finish');
+    if (linked) {
+      headerLink.href = linked;
+      headerLink.hidden = false;
+      if (finish) { finish.href = linked; finish.textContent = 'Continue to Listening Practice'; }
+    } else {
+      headerLink.hidden = true;
+      if (finish) { finish.href = safeReturnUrl(); finish.textContent = 'Back to Intensive Listening'; }
+    }
   }
   function formatTime(value) {
     var seconds = Math.max(0, Number(value) || 0);
@@ -433,6 +512,7 @@
     $('#feedback').className = 'il-feedback';
     $('#feedback').textContent = isDictation(currentUnit()) ? 'Listen once, then type one word in each slot.' : '';
     renderUnit();
+    activity('navigation');
     replayUnit(false);
   }
   function replayUnit(countReplay) {
@@ -442,6 +522,11 @@
       currentLocal().replayDelta += 1; renderProgress(); saveDraft();
     }
     pauseAudio('');
+    // Each unit starts a fresh playhead window. Without resetting this
+    // baseline, moving from a long unit back to an earlier timestamp could
+    // suppress every subsequent 30-second heartbeat until the old timestamp
+    // was reached again.
+    state.lastAudioTime = null;
     state.playbackEndIndex = nextPlaybackEndIndex(state.currentIndex);
     var endUnit = state.material.units[state.playbackEndIndex];
     try { audio.currentTime = Number(unit.start_seconds) || 0; } catch (error) { /* metadata settles before play */ }
@@ -513,10 +598,20 @@
     var existing = state.slotDisputes[disputeKey(unit.unit_id, slot.slot_id)];
     state.selectedArgue = { unit: unit, slot: slot, answer: local.answers[slotIndex] || '' };
     $('#argue-word').textContent = state.selectedArgue.answer; $('#argue-reason').value = '';
+    $('#argue-title').textContent = state.teacherMode ? 'Provide this word for every student?' : 'Should this word be provided?';
+    $('#argue-copy').textContent = state.teacherMode
+      ? 'Confirming makes this word provided in the live material for every student.'
+      : 'This asks the teacher to show the word automatically instead of requiring students to spell it.';
+    $('#argue-reason').hidden = state.teacherMode;
     $('#argue-status').textContent = existing
       ? (existing.status === 'pending' ? 'Waiting for teacher review.' : existing.status === 'approved' ? 'Approved — this word is now provided.' : 'The teacher kept spelling required.') : '';
     $('#argue-reason').disabled = Boolean(existing); $('#argue-submit').hidden = Boolean(existing);
-    $('#argue-submit').disabled = false; $('#argue-submit').textContent = 'Send Argue';
+    $('#argue-submit').textContent = state.teacherMode ? 'Approve' : 'Send Argue';
+    var sentTitle = document.querySelector('#argue-modal .il-argue-sent-message strong');
+    var sentCopy = document.querySelector('#argue-modal .il-argue-sent-message span:not(.il-argue-heart)');
+    if (sentTitle) sentTitle.textContent = state.teacherMode ? 'Provided to every student.' : 'Sent to teacher.';
+    if (sentCopy) sentCopy.textContent = state.teacherMode ? 'This spelling exemption is now live.' : 'Thanks for your feedback.';
+    $('#argue-submit').disabled = false;
     $('#argue-box').classList.remove('sent');
     $('#argue-modal').hidden = false; if (!existing) $('#argue-reason').focus();
   }
@@ -528,7 +623,21 @@
   function submitArgue() {
     if (!state.selectedArgue || state.busy) return;
     var selected = state.selectedArgue; var button = $('#argue-submit');
-    button.disabled = true; button.textContent = 'Sending…';
+    button.disabled = true; button.textContent = state.teacherMode ? 'Approving…' : 'Sending…';
+    if (state.teacherMode) {
+      call('provideWord', {
+        unit_id: selected.unit.unit_id, slot_id: selected.slot.slot_id
+      }).then(function(result) {
+        if (result.material) applyMaterialUpdate(result.material);
+        $('#argue-status').textContent = result.already_applied ? 'This word was already provided.' : 'Provided to every student.';
+        button.hidden = true;
+        $('#argue-box').classList.add('sent');
+        window.setTimeout(function() { if (!$('#argue-modal').hidden) $('#argue-sent-close').focus(); }, 450);
+      }).catch(function(error) {
+        $('#argue-status').textContent = error.message; button.disabled = false; button.textContent = 'Approve';
+      });
+      return;
+    }
     call('submitSpellingDispute', {
       unit_id: selected.unit.unit_id, slot_id: selected.slot.slot_id, reason: $('#argue-reason').value.trim()
     }).then(function(result) {
@@ -601,10 +710,15 @@
       state.visitorFullAudio = state.visitorMode;
       state.teacherMode = result.teacher_mode === true || state.teacherMode;
       state.material = result.material;
+      state.material.source_label = String(result.source_label || state.material.source_label || '');
+      state.material.series_label = String(result.series_label || state.material.series_label || '');
       state.progress = result.progress || { percentage: 0, completed_count: 0, independent_count: 0, assisted_count: 0, replay_count: 0, best_percentage: 0, unit_progress: {} };
+      state.linkedPractice = result.linked_practice || null;
+      state.assignmentContext = result.assignment_context || null;
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
+      renderMaterialContext();
       $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
       $('#audio').src = state.material.audio_src; hydrateLocalUnits(); renderProgress();
       if (state.visitorMode) {
@@ -647,6 +761,15 @@
   $('#export-button').addEventListener('click', exportLatest);
   $('#audio').addEventListener('timeupdate', function() {
     if (!state.playing) return;
+    var currentTime = Number($('#audio').currentTime) || 0;
+    if (!state.visitorMode && !state.teacherMode && state.started && currentTime > 0) {
+      var changed = state.lastAudioTime == null || currentTime > state.lastAudioTime + 0.08;
+      var due = Date.now() - state.lastActivitySentAt >= 30000;
+      if (changed && (state.lastAudioTime == null || due)) {
+        activity('playback');
+      }
+      state.lastAudioTime = currentTime;
+    }
     while (state.currentIndex < state.playbackEndIndex) {
       var next = state.material.units[state.currentIndex + 1];
       if (!next || $('#audio').currentTime < Number(next.start_seconds || 0)) break;
@@ -655,6 +778,10 @@
     if (Number.isFinite(state.stopAt) && $('#audio').currentTime >= state.stopAt) finishPlayback();
   });
   $('#audio').addEventListener('ended', finishPlayback);
+  // The native seek bar is intentionally not exposed. Unit navigation may
+  // refresh an already-active session, but only a moving playhead can create
+  // one. Ignoring the programmatic `currentTime` seek here prevents a
+  // Start/Replay click from notifying the teacher before audio really moves.
   window.setInterval(refreshPolicy, 30000);
   window.addEventListener('focus', refreshPolicy);
   $('#back-button').addEventListener('click', function() { pauseAudio(''); $('#leave-modal').hidden = false; $('#leave-cancel').focus(); });
