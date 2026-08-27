@@ -17,6 +17,16 @@
 
 ## 1. 重复出现的问题速查
 
+### Speaking 声纹录音合格但腾讯仍提示无法保存
+
+先查 `speakingLab` 的安全错误码。如果腾讯返回
+`AuthFailure.UnauthorizedOperation`，原因不是录音，而是函数运行角色
+`TCB_QcsRole` 缺少 ASR 声纹 CAM 权限。为该角色关联只包含
+`VoicePrintEnroll`、`VoicePrintUpdate`、`VoicePrintDelete`、
+`VoicePrintVerify`、`VoicePrintGroupVerify`、`VoicePrintCount` 和
+`VoicePrintGroupList` 的自定义策略，等待权限传播后再测试。不要要求学生
+反复重录，也不要给角色附加整个腾讯云的广泛权限。
+
 ### CloudBase 定时触发器快捷命令无法设置自定义入参
 
 `tcb fn trigger create` 当前只接受触发器名称和 Cron 表达式。Learning Reports

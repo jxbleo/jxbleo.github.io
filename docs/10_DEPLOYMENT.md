@@ -1182,6 +1182,14 @@ browser asset, deploy plan, or Git. Configure non-secret
 the official ASR endpoint. Voiceprint registration can be enabled independently
 of the still-gated speech transcription/text-analysis adapters.
 
+The function runtime role `TCB_QcsRole` must have a least-privilege CAM policy
+allowing `VoicePrintEnroll`, `VoicePrintUpdate`, `VoicePrintDelete`,
+`VoicePrintVerify`, `VoicePrintGroupVerify`, `VoicePrintCount`, and
+`VoicePrintGroupList` under `name/asr:*` action syntax. Do not attach unrelated
+cloud-product permissions. An `AuthFailure.UnauthorizedOperation` response must
+surface as `SPEAKING_VOICEPRINT_NOT_CONFIGURED`, not as an instruction for the
+student to record again.
+
 Before static publication, deploy both changed functions together, run one
 owner-authorized VIP test enrol/update/delete, verify the provider locator is
 private, verify no enrolment audio object exists in Storage, then test one
