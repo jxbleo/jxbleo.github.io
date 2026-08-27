@@ -94,6 +94,9 @@ async function run() {
   assert.match(studentUi, /saveMyVoiceprint/);
   assert.match(teacherUi, /teacherSaveVoiceprint/);
   assert.match(teacherUi, /name_not_verified/);
+  assert.match(teacherUi, /Active · Revision /);
+  assert.match(teacherUi, /enrollment_revision/);
+  assert.match(teacherUi, /voiceprintUpdatedAt/);
   console.log("Speaking Lab Tencent voiceprint contracts passed.");
 }
 
