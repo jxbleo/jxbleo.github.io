@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-28 — Continuous Writing refresh
+
+- Replaced the two-stage Chinese Writing refresh sequence with one stable English
+  loading surface and parallel Composition/Profile/History restoration.
+- Added one restrained, top-anchored downward materialization for resolved Writing
+  content, with an opacity-only Reduced Motion fallback and no artificial delay.
+
 ## 2026-08-28 — Completed Draft feedback hierarchy
 
 - Promoted `AI Feedback` to a centered green dialog title bar with a full-width

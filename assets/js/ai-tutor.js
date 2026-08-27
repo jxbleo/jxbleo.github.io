@@ -117,6 +117,7 @@
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
     var stageViewportResetToken = 0;
+    var stageMaterializeToken = 0;
     var revisionTextScales = [0.9, 1, 1.15, 1.3];
     var revisionTextLevelStorageKey = 'mrcat-writing-revision-text-level-v1';
 
@@ -133,6 +134,21 @@
                 var targetTop = window.pageYOffset + main.getBoundingClientRect().top - Math.max(12, headerBottom + 12);
                 window.scrollTo(0, Math.max(0, targetTop));
             });
+        });
+    }
+
+    function materializeStage() {
+        var token = ++stageMaterializeToken;
+        stage.classList.remove('is-opening');
+        window.requestAnimationFrame(function() {
+            if (token !== stageMaterializeToken || !stage.firstElementChild) return;
+            stage.classList.add('is-opening');
+            var surface = stage.firstElementChild;
+            var cleanup = function() {
+                if (token === stageMaterializeToken) stage.classList.remove('is-opening');
+            };
+            surface.addEventListener('animationend', cleanup, { once: true });
+            window.setTimeout(cleanup, 560);
         });
     }
 
@@ -3325,7 +3341,7 @@
     function startOptionalFullRewrite() {
         var previous = state.current || {};
         setBusy(true);
-        renderLoading('正在准备整篇重写…', '这是可选训练，会作为一篇新的作品保存。');
+        renderLoading('Preparing your full rewrite…', 'This optional exercise will be saved as a new composition.');
         writingCall('createComposition', {
             title: compositionTitle(previous) + ' · Full rewrite',
             prompt_text: firstText(previous.prompt_text, state.promptText),
@@ -3362,13 +3378,15 @@
         renderReplacementSource();
     }
 
-    function loadComposition(id, forceReadOnly) {
-        if (!id || state.busy) return;
+    function loadComposition(id, forceReadOnly, options) {
+        options = options || {};
+        if (!id || state.busy) return Promise.resolve();
         closeSidebar();
         setStatus('');
-        renderLoading('正在打开这篇作文…', '正在读取已保存的批改和改写记录。');
+        if (!options.preserveStage) renderLoading('Opening your writing…', '');
         setBusy(true);
-        writingCall('getComposition', { composition_id: id }).then(function(result) {
+        var request = options.request || writingCall('getComposition', { composition_id: id });
+        return request.then(function(result) {
             var composition = result.composition || result.item || {};
             if (safeArray(result.rubrics).length) state.rubrics = result.rubrics;
             var savedMode = compositionMode(composition);
@@ -3468,6 +3486,8 @@
             else if (review) prepareLanguageReview();
             else renderSourceEntry();
             syncCurrentSummary();
+        }).then(function() {
+            materializeStage();
         }).catch(function(error) {
             var code = error && (error.code || error.result && error.result.code) || '';
             if (code === 'COMPOSITION_NOT_FOUND') {
@@ -3478,9 +3498,11 @@
                 renderPortfolio();
                 renderWelcome();
                 setStatus('这篇空白或过期作文已被清理。');
+                materializeStage();
                 return;
             }
             renderFatalAction(error);
+            materializeStage();
         }).finally(function() { setBusy(false); });
     }
 
@@ -4424,6 +4446,7 @@
     function init() {
         restoreRevisionTextLevel();
         if (!window.MrCatAuth) { renderFatalAction(new Error('登录组件没有载入，请刷新页面。')); return; }
+        var requestedId = requestedCompositionId();
         window.MrCatAuth.getSession().then(function(session) {
             state.session = session;
             if (!state.session || state.session.mode !== 'student') {
@@ -4440,26 +4463,38 @@
                 }
                 return null;
             }
-            return Promise.all([
-                writingCall('getProfile').catch(function() { return { success: true, profile: null }; }),
-                writingCall('listCompositions')
-            ]);
-        }).then(function(results) {
-            if (!results) return;
-            state.profile = results[0].student || state.session.profile || {};
-            state.writingProfile = safeArray(results[0].profile);
-            state.quota = results[0].quota || null;
-            state.rubrics = safeArray(results[0].rubrics).length ? results[0].rubrics : safeArray(results[1].rubrics);
-            state.compositions = normalizeCompositions(results[1]);
-            clearRetiredPendingComposerStorage();
-            app.setAttribute('aria-busy', 'false');
-            renderPortfolio();
-            var requestedId = requestedCompositionId();
-            if (requestedId) loadComposition(requestedId);
-            else renderWelcome();
+            var profileRequest = writingCall('getProfile').catch(function() { return { success: true, profile: null }; });
+            var listRequest = writingCall('listCompositions');
+            var detailRequest = requestedId
+                ? loadComposition(requestedId, undefined, {
+                    preserveStage: true,
+                    request: writingCall('getComposition', { composition_id: requestedId })
+                })
+                : Promise.resolve(null);
+            var catalogRequest = Promise.all([profileRequest, listRequest]).then(function(results) {
+                state.profile = results[0].student || state.session.profile || {};
+                state.writingProfile = safeArray(results[0].profile);
+                state.quota = results[0].quota || null;
+                state.rubrics = safeArray(results[0].rubrics).length ? results[0].rubrics : safeArray(results[1].rubrics);
+                state.compositions = normalizeCompositions(results[1]);
+                clearRetiredPendingComposerStorage();
+                renderPortfolio();
+                if (!requestedId) {
+                    app.setAttribute('aria-busy', 'false');
+                    renderWelcome();
+                    materializeStage();
+                }
+            }).catch(function(error) {
+                if (!requestedId) throw error;
+                state.profile = state.session.profile || {};
+                if (!state.compositions.length && state.current) state.compositions = [state.current];
+                renderPortfolio();
+            });
+            return Promise.all([detailRequest, catalogRequest]);
         }).catch(function(error) {
             app.setAttribute('aria-busy', 'false');
-            stage.innerHTML = '<section class="surface error-state"><strong>需要学生登录</strong><p>' + escapeHtml(error && error.message || '无法打开 AI Tutor。') + '</p><a class="primary-button" href="index.html">前往登录</a></section>';
+            stage.innerHTML = '<section class="surface error-state"><strong>Student sign-in required</strong><p>Your session could not be restored. Please sign in again.</p><a class="primary-button" href="index.html">Go to sign in</a></section>';
+            materializeStage();
         });
     }
 

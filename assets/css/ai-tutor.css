@@ -320,7 +320,11 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .loading-state, .empty-state, .error-state { display: grid; place-items: center; min-height: 460px; padding: 50px 20px; text-align: center; }
 .loading-state p, .empty-state p, .error-state p { max-width: 460px; margin: 8px auto 20px; color: var(--ai-muted); }
 .loading-orbit { width: 42px; height: 42px; margin-bottom: 18px; border: 4px solid rgba(15,118,110,.15); border-top-color: var(--ai-accent); border-radius: 50%; animation: aiSpin .8s linear infinite; }
+.boot-loading-state .loading-orbit { animation: aiSpin .8s linear infinite, aiLoadingIndicatorReveal 140ms ease 180ms both; }
+.stage.is-opening > * { transform-origin: top center; animation: aiWritingStageOpen 420ms cubic-bezier(.22,1,.36,1) both; }
 @keyframes aiSpin { to { transform: rotate(360deg); } }
+@keyframes aiLoadingIndicatorReveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes aiWritingStageOpen { from { opacity: .18; transform: translateY(-10px) scale(.992); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
 .result-banner { padding: clamp(22px,4vw,42px); color: #fff; background: linear-gradient(135deg, #385f9e, #477bcf); }
 .result-banner.language { background: linear-gradient(135deg, #0d665e, #159282); }
@@ -655,6 +659,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .current-writing-title-window.is-overflowing .current-writing-title-track { width: 100%; max-width: 100%; overflow: hidden; animation: none; text-overflow: ellipsis; transform: none; }
     .ocr-photo-region, .ocr-uncertain { transition: none !important; }
     .manuscript-sentence-highlight.is-no-feedback-cue { animation: none !important; background: rgba(53,59,56,.1); }
+    .stage.is-opening > * { transform: none; animation-name: aiLoadingIndicatorReveal !important; }
 }
 @media (prefers-reduced-transparency: reduce) {
     .ai-tutor-header, .portfolio-sidebar, .language-toolbar, .batch-actions, .surface, .confirmation-dialog, .practice-entry-card, .photo-choice-sheet { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
