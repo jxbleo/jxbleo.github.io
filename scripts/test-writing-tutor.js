@@ -213,10 +213,33 @@ check("the open Composition survives refresh through an authenticated URL locato
     "opening or creating a Composition must store its locator in the current URL");
   assert(/syncCompositionLocator\s*\(\s*['\"]['\"]\s*\)/.test(homeSource),
     "returning to the AI Tutor home must clear the Composition locator");
-  requireEvery(initSource, ["requestedCompositionId()", "loadComposition(requestedId)"],
+  requireEvery(initSource, ["requestedCompositionId()", "detailRequest", "catalogRequest", "preserveStage: true", "Promise.all([detailRequest, catalogRequest])"],
     "refresh restoration");
+  assert(/request:\s*writingCall\(['\"]getComposition['\"]/.test(initSource),
+    "saved Composition detail must start in parallel with profile and History restoration");
+  assert(/if\s*\(!options\.preserveStage\)\s*renderLoading\(['\"]Opening your writing…['\"]/.test(loadSource),
+    "refresh restoration must preserve the first loading surface instead of mounting a second one");
   assert(/COMPOSITION_NOT_FOUND[\s\S]{0,500}syncCompositionLocator\s*\(\s*['\"]['\"]\s*\)/.test(loadSource),
     "a stale empty locator must be cleared instead of trapping the student on an error page");
+});
+
+check("Writing refresh has one English loading surface and a restrained opening motion", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(page, [
+    'class="surface loading-state boot-loading-state"',
+    'aria-label="Opening your writing"',
+    '<strong>Opening your writing…</strong>',
+  ], "single English Writing boot surface");
+  assert(!/正在打开你的写作空间|作品和草稿会安全地保存在你的账号中/.test(page),
+    "the visible Writing refresh surface must not expose the retired Chinese loading copy");
+  requireEvery(client, ["function materializeStage()", "stage.classList.add('is-opening')", "animationend", "stageMaterializeToken"],
+    "interrupt-safe stage materialization lifecycle");
+  requireEvery(styles, [".stage.is-opening > *", "@keyframes aiWritingStageOpen", "translateY(-10px)", "420ms", "cubic-bezier(.22,1,.36,1)"],
+    "restrained top-anchored Writing entrance");
+  assert(/prefers-reduced-motion:\s*reduce[\s\S]*\.stage\.is-opening\s*>\s*\*\s*\{[^}]*transform:\s*none[^}]*animation-name:\s*aiLoadingIndicatorReveal/i.test(styles),
+    "Reduced Motion must replace the downward opening with a short fade");
 });
 
 check("the toolbar shows and safely scrolls the current AI-generated title", () => {

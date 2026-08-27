@@ -1854,6 +1854,10 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - 打开任何已有或新建 Composition 后，当前页面地址必须保存该 Composition 的稳定定位符；刷新
   本页应重新打开同一篇作文及其服务端步骤，而不是退回 AI Tutor 首页。返回 AI Tutor 首页时清除
   定位符；若定位到的空白过期占位稿已被安全清理，则清除定位符并正常返回首页。
+- Writing Home 或具体 Composition 刷新时只允许一个连续的英文加载状态 `Opening your writing…`。
+  不得先显示 Writing Home 加载页再替换成第二张作文加载卡。登录确认后，当前 Composition 详情应与
+  Profile、History 并行读取；正文先返回即可显示，History 与额度允许随后补齐。最终内容从工具栏
+  下方以约 10px 的轻微向下展开和透明度渐变进入，不得人为延迟；Reduced Motion 下只做短淡入。
 - 顶部工具栏中间的空白区域在打开作文时显示该篇作文的 AI 或学生标题。标题过长时在可用宽度内
   往返横向滚动并在两端停顿；Reduced Motion 下改为单行省略。未打开作文时该区域不占空间。
 - 学生可直接输入，或上传最多八张作文照片。OCR 必须保留原始错误并标出不确定处；学生确认

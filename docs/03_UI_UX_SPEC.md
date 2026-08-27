@@ -2155,6 +2155,13 @@ Important mobile rules:
 - After review begins, standardized and language review use the same leave-and-resume
   lifecycle. A final failure preserves the manuscript, leaves Runner playable,
   releases the failed review reservation, and exposes only the shared `Retry` action.
+- Refresh uses one stable Writing shell and one English `Opening your writing…`
+  surface. It never swaps from a workspace loader into a second Composition loader.
+  After authentication, the requested Composition detail starts alongside Profile and
+  History requests; the detail may render before the nonessential drawer and quota finish.
+  The resolved stage materializes once from the toolbar edge with a restrained 10px
+  downward settle, slight scale, and opacity change over about 420ms. Do not impose a
+  minimum loading duration. Reduced Motion uses a short opacity-only reveal.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
 - Writing Home is an action-first, adaptive workspace rather than a permanent
