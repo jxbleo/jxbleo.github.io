@@ -31,7 +31,6 @@
         rewrites: {},
         rewriteResults: {},
         skipped: {},
-        referenceOpen: {},
         rewriteFace: {},
         revisionTextLevel: 1,
         revisionScan: null,
@@ -1630,7 +1629,6 @@
         state.rewrites = {};
         state.rewriteResults = {};
         state.skipped = {};
-        state.referenceOpen = {};
         state.rewriteFace = {};
         resetRevisionScanState();
         state.correctionRound = 0;
@@ -2594,7 +2592,6 @@
         state.rewrites = {};
         state.rewriteResults = {};
         state.skipped = {};
-        state.referenceOpen = {};
         state.rewriteFace = {};
         state.activeSentence = 0;
         sentences.forEach(function(sentence) {
@@ -2627,14 +2624,6 @@
     function rewriteRequired(sentence) {
         return Boolean(sentence) && sentence.rewrite_required !== false && ['effective', 'correct', 'no_change'].indexOf(sentence.status) === -1;
     }
-    function coordinateReferenceAndRewrite(showRewrite, referenceOpen) {
-        return {
-            analysisHidden: Boolean(showRewrite),
-            rewriteHidden: !showRewrite,
-            referenceHidden: Boolean(showRewrite) || !referenceOpen
-        };
-    }
-
     function sentenceRewriteFeedbackHistory(id, result) {
         var record = state.current && state.current.rewrite_results || {};
         var rounds = safeArray(record.feedback_history).map(function(batch, index) {
@@ -3087,21 +3076,21 @@
         return status === 'correct' ? '正确' : status === 'pending' ? '等待检查' : '错误';
     }
 
-    function sentenceStatusIconHtml(status, id, compact) {
+    function sentenceStatusIconHtml(status, id) {
         var mark = status === 'correct'
             ? '<path class="sentence-status-mark" d="M7.1 12.3 10.6 15.8 17.2 8.6"></path>'
             : status === 'pending'
                 ? '<path class="sentence-status-mark" d="M9.5 9.3a2.7 2.7 0 1 1 3.5 2.6c-.8.35-1 .85-1 1.55M12 16.35h.01"></path>'
                 : '<path class="sentence-status-mark" d="m8.6 8.6 6.8 6.8m0-6.8-6.8 6.8"></path>';
-        return '<span class="sentence-status-icon is-' + status + (compact ? ' sentence-capsule-state' : '') + '" data-sentence-status="' + escapeHtml(id) + '"' + (compact ? ' aria-hidden="true"' : ' role="img" aria-label="' + sentenceStatusLabel(status) + '"') + '>' +
-            '<svg aria-hidden="true" viewBox="0 0 24 24">' + (compact ? '' : '<circle class="sentence-status-ring" cx="12" cy="12" r="9.2"></circle>') + mark + '</svg></span>';
+        return '<span class="sentence-status-icon is-' + status + '" data-sentence-status="' + escapeHtml(id) + '" role="img" aria-label="' + sentenceStatusLabel(status) + '">' +
+            '<svg aria-hidden="true" viewBox="0 0 24 24"><circle class="sentence-status-ring" cx="12" cy="12" r="9.2"></circle>' + mark + '</svg></span>';
     }
 
     function sentenceCapsuleHtml(sentence, index) {
         var id = sentenceId(sentence, index);
         var status = sentenceVisualStatus(sentence, index);
         var capsuleStatus = status === 'correct' ? '，正确' : status === 'pending' ? '，等待检查' : '，错误';
-        return '<button class="sentence-capsule is-' + status + (index === state.activeSentence ? ' is-active' : '') + '" type="button" data-sentence-index="' + index + '" data-sentence-id="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + capsuleStatus + '"><span aria-hidden="true">' + (index + 1) + '</span>' + sentenceStatusIconHtml(status, id, true) + '</button>';
+        return '<button class="sentence-capsule is-' + status + (index === state.activeSentence ? ' is-active' : '') + '" type="button" data-sentence-index="' + index + '" data-sentence-id="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + capsuleStatus + '"><span aria-hidden="true">' + (index + 1) + '</span></button>';
     }
 
     function sentenceCardHtml(sentence, index) {
@@ -3125,8 +3114,10 @@
                 '</div></div></article>';
         }
         var showRewrite = Boolean(state.rewriteFace[id]);
-        var referenceOpen = Boolean(state.referenceOpen[id]);
-        var visibility = coordinateReferenceAndRewrite(showRewrite, referenceOpen);
+        var visibility = {
+            analysisHidden: Boolean(showRewrite),
+            rewriteHidden: !showRewrite
+        };
         var issues = safeArray(sentence.issues);
         var analysisParts = [];
         function addAnalysisPart(value) {
@@ -3146,20 +3137,15 @@
         }).join('');
         var analysisFaceId = 'sentence-analysis-' + id;
         var rewriteFaceId = 'sentence-rewrite-' + id;
-        var reference = '<div class="reference-panel" aria-hidden="' + visibility.referenceHidden + '"' + (visibility.referenceHidden ? ' hidden' : '') + '><small>AI 参考修改</small><p>' + escapeHtml(sentence.reference_revision) + '</p></div>';
-        var sampleButton = firstText(sentence.reference_revision)
-            ? '<div class="sample-action"><button class="quiet-button compact sample-button" type="button" data-toggle-reference="' + escapeHtml(id) + '" aria-expanded="' + referenceOpen + '">Sample</button></div>'
-            : '';
         var analysisFace = '<section class="sentence-card-face sentence-analysis-face" id="' + escapeHtml(analysisFaceId) + '" aria-hidden="' + visibility.analysisHidden + '"' + (visibility.analysisHidden ? ' inert' : '') + '>' +
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="rewrite" aria-controls="' + escapeHtml(rewriteFaceId) + '" aria-pressed="' + showRewrite + '" aria-label="翻到句子改写面"></button>' +
             '<div class="sentence-face-content">' +
             sentenceMeta + '<p class="original-sentence">' + original + '</p>' +
-            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p>' + feedbackHistoryHtml + '</section>' +
-            sampleButton + reference + '</div></section>';
+            '<section class="grammar-analysis" aria-label="语法建议"><p class="grammar-analysis-copy">' + escapeHtml(analysisCopy) + '</p>' + feedbackHistoryHtml + '</section></div></section>';
         var correctedSentence = firstText(result && result.student_rewrite, state.rewrites[id]);
         var correctedResponse = '<p class="corrected-sentence"><span class="sentence-corrected-highlight">' + escapeHtml(correctedSentence) + '</span></p>';
         var editableResponse = '<p class="original-sentence">' + original + '</p>' +
-            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">Your Attempt</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="Rewrite this sentence in your own words. Do not copy the sample." ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
+            '<div class="rewrite-area"><label for="rewrite-' + escapeHtml(id) + '">Your Attempt</label><textarea class="rewrite-input" id="rewrite-' + escapeHtml(id) + '" data-rewrite-id="' + escapeHtml(id) + '" placeholder="Rewrite this sentence in your own words." ' + (state.readOnly ? 'disabled' : '') + '>' + escapeHtml(state.rewrites[id]) + '</textarea></div>';
         var rewriteFace = '<section class="sentence-card-face sentence-rewrite-face" id="' + escapeHtml(rewriteFaceId) + '" aria-hidden="' + visibility.rewriteHidden + '"' + (visibility.rewriteHidden ? ' inert' : '') + '>' +
             '<button class="sentence-face-flip-hit" type="button" data-flip-sentence="' + escapeHtml(id) + '" data-face="analysis" aria-controls="' + escapeHtml(analysisFaceId) + '" aria-pressed="' + (!showRewrite) + '" aria-label="翻到句子分析面"></button>' +
             '<div class="sentence-face-content">' + sentenceMeta + '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
@@ -3181,7 +3167,7 @@
         }
         Array.prototype.forEach.call(document.querySelectorAll('[data-sentence-status]'), function(item) {
             if (item.getAttribute('data-sentence-status') !== id) return;
-            item.outerHTML = sentenceStatusIconHtml(status, id, item.classList.contains('sentence-capsule-state'));
+            item.outerHTML = sentenceStatusIconHtml(status, id);
         });
     }
 
@@ -4072,12 +4058,6 @@
                 if (showRewriteFace) rewriteSide.removeAttribute('inert');
                 else rewriteSide.setAttribute('inert', '');
             }
-            var referencePanel = flipCard.querySelector('.reference-panel');
-            if (referencePanel) {
-                var hideReference = showRewriteFace || !state.referenceOpen[flipId];
-                referencePanel.hidden = hideReference;
-                referencePanel.setAttribute('aria-hidden', String(hideReference));
-            }
             Array.prototype.forEach.call(flipCard.querySelectorAll('[data-flip-sentence]'), function(control) {
                 var controlsRewrite = control.getAttribute('data-face') === 'rewrite';
                 control.setAttribute('aria-pressed', String(controlsRewrite === showRewriteFace));
@@ -4114,11 +4094,6 @@
                 behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
                 block: 'start'
             });
-        }
-        else if (button.matches('[data-toggle-reference]')) {
-            var referenceId = button.getAttribute('data-toggle-reference');
-            state.referenceOpen[referenceId] = !state.referenceOpen[referenceId];
-            renderLanguage();
         }
         else if (button.matches('[data-start-revision-upload]')) {
             beginRevisionScanUpload(revisionScanState().files.slice());

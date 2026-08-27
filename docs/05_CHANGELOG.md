@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-27 — Original capsule marks and hidden revision samples
+
+- Restored the earliest tiny plain capsule status marks: a green `✓` for accepted
+  sentences and a red `×` for every sentence still requiring completion or checking.
+- Removed the `Sample` action and reference panel from Sentence Revision while
+  retaining `reference_revision` in the model schema and private stored result.
+- Simplified the rewrite placeholder so it no longer refers to a hidden sample.
+
 ## 2026-08-26 — Runner tap surface and sentence-status color correction
 
 - Expanded Runner jump input to every non-control point below the Writing toolbar,
