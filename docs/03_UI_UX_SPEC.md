@@ -2435,6 +2435,9 @@ teacher device. Every Discussion roster row also provides Record/Update
 Voiceprint, including a Non-VIP row labelled `Name not verified`; teacher
 enrolment requires confirmation that the person is present and agrees. The same
 single recorder is reused so two microphones cannot be active simultaneously.
+An active teacher target visibly shows `Active · Revision n` plus its latest
+Shanghai-time update, so a successful replacement can be verified without
+opening CloudBase.
 The external report page is `noindex,nofollow`, has no audio/download controls,
 and renders only the server-redacted snapshot. Loading, failed, expired, and
 revoked states use the same safe share error; reduced motion removes

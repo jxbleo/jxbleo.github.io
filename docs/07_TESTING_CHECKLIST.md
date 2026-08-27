@@ -2293,6 +2293,8 @@ development deployment and real-audio benchmark pass.
 
 Manual voiceprint gates require student first enrolment/update/delete; teacher
 VIP lookup by exact Student ID; teacher VIP and Non-VIP roster enrolment;
+an active teacher target showing the current `Active · Revision n` and latest
+Shanghai-time update immediately after enrolment or replacement;
 consent unchecked; 7.9-second rejection and 20-second automatic stop;
 microphone denial; Tencent no-human-voice, capacity, not-found, timeout, and
 invalid-response errors; concurrent update stale protection; account/Guest
