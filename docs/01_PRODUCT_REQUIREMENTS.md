@@ -2075,10 +2075,20 @@ recordings are private, and no pronunciation/delivery score or official total
 is produced. Reports use three integer 0–7 domains plus
 `Pronunciation & Delivery — Not assessed`.
 
-Identity is Discussion-scoped. Speaker Tracks are canonicalized server-side;
-student Voice confirmation is required before a Student Share, while teachers
-may remap and lock mappings. Guests never receive account access or share
-controls. Student snapshots expose the caller's detailed analysis and
+Speaker Tracks are canonicalized server-side. A VIP may explicitly register a
+reusable Tencent voiceprint from the student Speaking Lab; the teacher may
+register or replace a VIP voiceprint by Student ID or from a Discussion roster.
+A teacher may also register a Non-VIP/Guest voiceprint, but it belongs only to
+that Discussion participant and never creates an account or cross-Discussion
+identity. The browser produces a 16 kHz mono WAV and sends it directly through
+the authenticated function to Tencent; Mr. Cat Academy does not retain the
+enrolment recording. Discussion-scoped Voice References remain an optional
+fallback and keep their seven-day deletion rule.
+
+Student Voice confirmation is still required before a Student Share, while
+teachers may remap and lock mappings. Voiceprint recognition is a proposed
+match rather than legal identity proof. Guests never receive account access or
+share controls. Student snapshots expose the caller's detailed analysis and
 anonymous peer summaries; Teacher snapshots apply explicit per-participant
 name selection and redact hidden names everywhere. Raw share tokens are
 returned once, stored only as SHA-256 hashes, expire after seven days, and
@@ -2087,7 +2097,9 @@ snapshots are revoked when mapping/report/privacy state changes.
 Production speech and text providers fail closed with
 `SPEAKING_PROVIDER_NOT_CONFIGURED` until the owner completes the real-audio
 benchmark and deployment. No deterministic fixture is available through a
-browser or production action.
+browser or production action. Reusable voiceprint registration independently
+fails closed with `SPEAKING_VOICEPRINT_NOT_CONFIGURED` until the Tencent
+credentials, region, group, collections, indexes, and functions are deployed.
 
 ### Intensive Listening Library
 

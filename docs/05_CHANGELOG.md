@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-28
+
+- Changed the private Speaking AI worker from a timer custom-argument token to
+  a strict Tencent timer envelope plus `speakingAiWorker.invoke: false`. This
+  matches the current CloudBase trigger editor, keeps browser clients unable to
+  invoke the worker, and avoids a secret that function-detail APIs may echo.
+
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
@@ -9,6 +16,15 @@
   loading surface and parallel Composition/Profile/History restoration.
 - Added one restrained, top-anchored downward materialization for resolved Writing
   content, with an opacity-only Reduced Motion fallback and no artificial delay.
+
+## 2026-08-28 — Speaking Report anonymous invocation boundary
+
+- Made the external Speaking Report reader establish anonymous CloudBase SDK
+  state only when no current login exists, while retaining the expiring raw
+  share token as the sole report capability.
+- Documented the narrow `speakingLab` gateway exception; all Speaking
+  collections remain `ADMINONLY` and every non-public action still performs
+  server-side student/teacher authorization.
 
 ## 2026-08-28 — Completed Draft feedback hierarchy
 
@@ -2304,6 +2320,16 @@ worker scaffolding, private upload/share boundaries, student and teacher
 surfaces, external redacted report page, static contract tests, and
 owner-gated packaging documentation. Production provider adapters remain
 disabled pending real-audio benchmark and CloudBase deployment.
+
+## 2026-08-27 — Reusable Tencent voiceprints
+
+Added a server-only Tencent ASR voiceprint adapter with TC3 signing, strict
+16 kHz mono-WAV validation, enrol/update/delete/verify/1:N operations, private
+VIP/Discussion-scoped Guest lifecycle records, consent/audit events, and Guest
+cleanup. Added student self-service and teacher VIP/Non-VIP recording surfaces
+using one in-memory browser WAV recorder. The application retains no enrolment
+audio or biometric embedding. Production collection creation, configuration,
+function deployment, and provider smoke tests remain owner-gated.
 
 ## 2026-08-27 — Intensive Listening Library
 

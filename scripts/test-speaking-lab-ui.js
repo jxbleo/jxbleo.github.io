@@ -15,6 +15,7 @@ function run() {
   const teacherPage = read("teacher.html");
   const dashboard = read("dashboard.html");
   const css = read("assets/css/speaking-lab.css");
+  const voiceprintRecorder = read("assets/js/voiceprint-recorder.js");
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record now|Upload audio/);
@@ -23,6 +24,7 @@ function run() {
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
   assert.match(page, /Voice Reference|New Discussion/);
+  assert.match(page, /My voiceprint|voiceprint-recorder\.js\?v=/);
   assert.match(page, /invitation-dialog/);
   assert.match(page, /discussion-duration/);
   assert.match(report, /noindex|nofollow/);
@@ -42,8 +44,16 @@ function run() {
   assert.match(app, /data-voice-record/);
   assert.doesNotMatch(app, /localStorage|sessionStorage/);
   assert.match(reportJs, /SHARE_NOT_AVAILABLE|expired|revoked/i);
+  assert.match(reportJs, /ensureReportAuth/);
+  assert.match(reportJs, /getLoginState/);
+  assert.match(reportJs, /signInAnonymously/);
+  assert.doesNotMatch(reportJs, /localStorage|sessionStorage|indexedDB/i);
   assert.match(teacher, /visible_participant_ids|Select all|Clear all/);
   assert.match(teacher, /data-share-content|Individual analysis|Transcript/);
+  assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
+  assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
+  assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
+  assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
   assert.match(reportJs, /snapshot\.self|participant_summaries/);
   assert.match(css, /prefers-reduced-motion/);

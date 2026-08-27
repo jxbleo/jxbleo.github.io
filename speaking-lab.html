@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-2">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -23,6 +23,10 @@
                 <div><p class="eyebrow accent">DSE PAPER 4 · PART A</p><h1 id="speaking-lab-title">Speaking Lab</h1><p>Record a group interaction, then review the discussion evidence together.</p></div>
                 <button class="primary-button" id="new-discussion" type="button">New Discussion</button>
             </div>
+            <section class="speaking-voiceprint-card" id="my-voiceprint-card" aria-labelledby="my-voiceprint-title">
+                <div><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="my-voiceprint-title">My voiceprint</h2><p id="my-voiceprint-summary">Checking your voiceprint…</p></div>
+                <button class="outline-button" id="open-my-voiceprint" type="button" disabled>Set up voiceprint</button>
+            </section>
             <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite">Loading your Discussions…</div>
             <p class="sr-only">Recording choices include Record now and Upload audio.</p>
             <section class="speaking-list" id="speaking-list" aria-label="Discussions"></section>
@@ -45,11 +49,29 @@
     <dialog class="speaking-dialog" id="invitation-dialog" aria-labelledby="invitation-dialog-title">
         <div id="invitation-dialog-content"></div>
     </dialog>
+    <dialog class="speaking-dialog" id="voiceprint-dialog" aria-labelledby="voiceprint-dialog-title">
+        <div class="speaking-voiceprint-dialog-body">
+            <p class="eyebrow accent">REUSABLE VOICE ID</p>
+            <h2 id="voiceprint-dialog-title">Set up my voiceprint</h2>
+            <p>This voiceprint helps match your voice in future Discussions. The recording is sent directly to Tencent for registration and is not kept as an audio file by Mr. Cat Academy.</p>
+            <blockquote id="voiceprint-passage">Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.</blockquote>
+            <label class="speaking-consent"><input id="voiceprint-consent" type="checkbox"> I agree that this reusable voiceprint may be used to identify my Speaker track in future Speaking Lab Discussions.</label>
+            <div class="speaking-recording-time" id="voiceprint-time">00:00 / 00:20</div>
+            <p class="speaking-quality-warning" id="voiceprint-message" role="status" aria-live="polite">Record in a quiet place and read the full passage naturally.</p>
+            <div class="speaking-detail-actions">
+                <button class="primary-button" id="voiceprint-record" type="button">Start recording</button>
+                <button class="outline-button" id="voiceprint-stop" type="button" disabled>Finish recording</button>
+                <button class="outline-button" id="voiceprint-close" type="button">Close</button>
+                <button class="danger-button" id="voiceprint-delete" type="button" hidden>Remove voiceprint</button>
+            </div>
+        </div>
+    </dialog>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260827-1"></script>
+    <script src="assets/js/config.public.js?v=20260827-2"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
-    <script src="assets/js/speaking-lab.js?v=20260827-1"></script>
+    <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
+    <script src="assets/js/speaking-lab.js?v=20260827-2"></script>
 </body>
 </html>

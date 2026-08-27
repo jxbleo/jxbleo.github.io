@@ -999,10 +999,22 @@ ignored so rollout does not create false historical alerts.
 
 `speakingLab` is the authenticated gateway for Discussion, invitation, Guest,
 private two-phase audio upload, identity confirmation/remapping, and snapshot
-creation. `speakingAiWorker` is a private one-minute durable-job worker for
-lease recovery, dispatch, bounded retry cleanup, Voice Reference deletion, and
-share expiry. New Speaking collections remain `ADMINONLY`; browsers receive
-server projections and short-lived upload metadata only.
+creation. Its only pre-profile action is `getSharedReport`, reached through a
+CloudBase anonymous SDK identity and authorized exclusively by one active,
+unexpired, server-hashed share token. It also owns authenticated
+reusable-voiceprint enrolment, replacement, deletion, and safe status
+projections. `speakingAiWorker` is a private one-minute
+durable-job worker for lease recovery, dispatch, bounded retry cleanup, Voice
+Reference deletion, scoped Guest voiceprint cleanup, and share expiry. New
+Speaking collections remain `ADMINONLY`; browsers receive server projections
+and short-lived upload metadata only.
+
+The environment-level function ACL sets `speakingAiWorker.invoke` to `false`,
+which blocks browser SDK calls while leaving CloudBase timer triggers intact.
+The worker then accepts only the platform timer envelope whose `Type` is
+`Timer`, whose trigger name is `speaking-ai-worker-minute`, and whose `Time` is
+parseable. This avoids a timer custom-argument secret that the current
+CloudBase trigger editor cannot configure and function-detail APIs may expose.
 
 The gateway stores only metadata in `speaking_ai_jobs`. Audio quality,
 transcription/diarization, Candidate canonicalization, and report
@@ -1013,6 +1025,16 @@ prompt is copied into queue rows or logs. `speaking-lab.js` owns deterministic
 authorization, identity, evidence, projection, alias, redaction, and
 invalidation rules. Formal audio is retained privately; Voice Reference files
 are scheduled for deletion seven days after successful matching.
+
+`cloudfunctions/_shared/tencent-asr-voiceprint.js` implements Tencent Cloud API
+3.0 signing with Node's built-in `crypto`/`fetch` and exposes enrol, update,
+delete, 1:1 verify, and 1:N group-identify calls. It accepts only validated
+16 kHz, 16-bit, mono WAV data between 8 and 30 seconds. Credentials come only
+from the CloudBase runtime. The enrolment WAV travels in one authenticated
+request and is never written to CloudBase Storage, a queue row, a database row,
+or a log. VIP subjects use `vip:<auth_uid>`; Guest subjects use
+`guest:<participant_id>`. Jobs snapshot only internal voiceprint profile IDs and
+revisions, never Tencent provider IDs, names, audio, or embeddings.
 
 ### Intensive Listening Library and sessions
 

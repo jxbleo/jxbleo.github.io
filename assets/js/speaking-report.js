@@ -4,6 +4,7 @@
     var root = document.getElementById('speaking-report-state');
     var token = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('share') || new URLSearchParams(window.location.search).get('share') || '';
     var domains = ['communication_strategies', 'vocabulary_language_patterns', 'ideas_organisation'];
+    var reportAuthPromise = null;
     var domainNames = {
         communication_strategies: 'Communication strategies',
         vocabulary_language_patterns: 'Vocabulary & language',
@@ -17,6 +18,17 @@
     }
     function failure() {
         root.innerHTML = '<div class="speaking-report-card"><h1>Report unavailable</h1><p class="speaking-report-error">This private share link is expired, revoked, or unavailable.</p></div>';
+    }
+    function ensureReportAuth() {
+        if (reportAuthPromise) return reportAuthPromise;
+        reportAuthPromise = window.MrCatCloud.getLoginState().then(function (loginState) {
+            if (loginState) return loginState;
+            return window.MrCatCloud.signInAnonymously();
+        }).catch(function (error) {
+            reportAuthPromise = null;
+            throw error;
+        });
+        return reportAuthPromise;
     }
     function list(title, items) {
         if (!Array.isArray(items) || !items.length) return '';
@@ -63,7 +75,9 @@
         failure();
         return;
     }
-    window.MrCatCloud.callFunction('speakingLab', { action: 'getSharedReport', share: token }).then(function (result) {
+    ensureReportAuth().then(function () {
+        return window.MrCatCloud.callFunction('speakingLab', { action: 'getSharedReport', share: token });
+    }).then(function (result) {
         if (!result || result.success === false) throw new Error('SHARE_NOT_AVAILABLE');
         render(result.snapshot, result);
     }).catch(failure);

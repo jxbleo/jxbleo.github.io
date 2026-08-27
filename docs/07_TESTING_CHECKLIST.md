@@ -2264,11 +2264,31 @@ idempotency/lease projections, and forbidden queue content. Static tests cover
 student recording fallback, no browser audio persistence, noindex external
 page, no audio/download controls, teacher name selection, and reduced motion.
 
+The same command runs `scripts/test-speaking-voiceprints.js`. It must validate
+16 kHz/16-bit/mono WAV structure and duration bounds, opaque Tencent nicknames,
+TC3 signing and session-token forwarding, enrol/update/delete/verify/1:N action
+payloads, score normalization, VIP versus Guest subject keys, public projection
+redaction, student-own versus teacher-target action wiring, and absence of
+Tencent credentials/provider IDs from frontend assets.
+
 Manual release gates still require microphone allowed/denied/ended paths,
 refresh during upload and durable stages, concurrent tabs, pending/accepted/
 declined VIPs, Guests, teacher remap after dispute, and expired/revoked links.
+Verify the environment function ACL contains
+`speakingAiWorker: { "invoke": false }`, an authenticated browser SDK call is
+rejected before Worker execution, and the `speaking-ai-worker-minute` timer
+produces a successful run without `CustomArgument` or a Worker token.
 Do not claim provider-backed speech quality until the owner-authorized
 development deployment and real-audio benchmark pass.
+
+Manual voiceprint gates require student first enrolment/update/delete; teacher
+VIP lookup by exact Student ID; teacher VIP and Non-VIP roster enrolment;
+consent unchecked; 7.9-second rejection and 20-second automatic stop;
+microphone denial; Tencent no-human-voice, capacity, not-found, timeout, and
+invalid-response errors; concurrent update stale protection; account/Guest
+scope isolation; Guest cleanup after removal/Discussion deletion; no enrolment
+audio in Storage/database/logs; and automatic matching that still requires
+student confirmation or teacher lock before real-name projection.
 
 ### Intensive Listening Library
 

@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const cloudbase = require("@cloudbase/node-sdk");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
+const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -12,20 +13,16 @@ const DISCUSSIONS = "speaking_discussions";
 const ASSETS = "speaking_audio_assets";
 const PARTICIPANTS = "speaking_participants";
 const SHARES = "speaking_share_links";
+const VOICEPRINTS = "speaking_voiceprints";
+const VOICEPRINT_EVENTS = "speaking_voiceprint_events";
 const MAX_ATTEMPTS = 5;
 const LIMIT = 20;
 
 function text(value, limit = 200) { return String(value == null ? "" : value).trim().slice(0, limit); }
-function secretMatches(left, right) {
-  const a = Buffer.from(String(left || "")); const b = Buffer.from(String(right || ""));
-  return a.length > 0 && a.length === b.length && crypto.timingSafeEqual(a, b);
-}
-function eventToken(event) {
-  if (event && event.token) return event.token;
-  const message = event && event.Message;
-  if (message && typeof message === "object") return message.token || "";
-  if (typeof message === "string") { try { const value = JSON.parse(message); return value && value.token || value || message; } catch (_error) { return message; } }
-  return "";
+function isTimerEvent(event) {
+  if (!event || event.Type !== "Timer" || event.TriggerName !== "speaking-ai-worker-minute") return false;
+  const triggeredAt = Date.parse(String(event.Time || ""));
+  return Number.isFinite(triggeredAt);
 }
 function stable(prefix, ...parts) { return `${prefix}_${crypto.createHash("sha256").update(parts.join("\n")).digest("hex").slice(0, 40)}`; }
 async function invokeFunction(data) {
@@ -101,17 +98,49 @@ async function expireShares(now) {
   await Promise.all((result.data || []).map((share) => db.collection(SHARES).doc(share._id || share.share_id).update({ status: "expired", updated_at: now })));
   return (result.data || []).length;
 }
+async function cleanupVoiceprints(now) {
+  if (!voiceprintProvider.configured()) return 0;
+  const result = await db.collection(VOICEPRINTS).where({ status: "delete_pending" }).limit(LIMIT).get();
+  let count = 0;
+  for (const profile of result.data || []) {
+    if (!profile.provider_voiceprint_id) continue;
+    let requestId = null;
+    try {
+      const removed = await voiceprintProvider.remove({ voiceprintId: profile.provider_voiceprint_id });
+      requestId = removed.requestId || null;
+    } catch (error) {
+      if (!error || error.code !== "VOICEPRINT_NOT_FOUND") {
+        console.error("speakingAiWorker voiceprint cleanup deferred", profile.voiceprint_profile_id, error && error.code || "VOICEPRINT_PROVIDER_FAILED");
+        continue;
+      }
+    }
+    const eventId = stable("voiceprint_cleanup", profile.voiceprint_profile_id, String(profile.enrollment_revision || 0));
+    await db.runTransaction(async (transaction) => {
+      const currentResult = await transaction.collection(VOICEPRINTS).where({ voiceprint_profile_id: profile.voiceprint_profile_id }).limit(1).get();
+      const current = currentResult.data && currentResult.data[0];
+      if (!current || current.status !== "delete_pending" || String(current.provider_voiceprint_id || "") !== String(profile.provider_voiceprint_id || "")) return;
+      await transaction.collection(VOICEPRINTS).doc(current._id || current.voiceprint_profile_id).update({ status: "deleted", provider_voiceprint_id: null, provider_group_id: null, deleted_at: now, deleted_by_uid: current.delete_requested_by_uid || null, last_provider_request_id: requestId, updated_at: now });
+      const existingEvent = await transaction.collection(VOICEPRINT_EVENTS).where({ event_id: eventId }).limit(1).get();
+      if (!(existingEvent.data && existingEvent.data[0])) await transaction.collection(VOICEPRINT_EVENTS).doc(eventId).create({ event_id: eventId, operation_id: eventId, voiceprint_profile_id: current.voiceprint_profile_id, subject_key: current.subject_key, subject_kind: current.subject_kind, participant_id: current.participant_id || null, discussion_id: current.discussion_id || null, event_type: "deleted", enrollment_revision: Number(current.enrollment_revision || 0), actor_uid: current.delete_requested_by_uid || null, actor_role: "system", provider: "tencent_asr", provider_request_id: requestId, created_at: now });
+    });
+    count += 1;
+  }
+  return count;
+}
 
 exports.main = async (event = {}) => {
-  const expected = process.env.SPEAKING_AI_WORKER_CRON_TOKEN;
-  if (!expected || !secretMatches(expected, eventToken(event))) return { success: false, code: "AUTH_REQUIRED" };
+  // CloudBase function ACL must keep this worker at `invoke: false`. CloudBase
+  // documents that client ACLs do not apply to timer triggers, so the platform
+  // timer can still run while browser SDK calls are rejected before execution.
+  if (!isTimerEvent(event)) return { success: false, code: "AUTH_REQUIRED" };
   const current = new Date();
   const recovered = await recoverLeases(current);
   const dispatched = await dispatchQueued(current);
   const exhausted = await failExhausted(current);
   const assets_deleted = await cleanupAssets(current);
+  const voiceprints_deleted = await cleanupVoiceprints(current);
   const shares_expired = await expireShares(current);
-  return { success: true, recovered, dispatched, exhausted, assets_deleted, shares_expired };
+  return { success: true, recovered, dispatched, exhausted, assets_deleted, voiceprints_deleted, shares_expired };
 };
 
-exports._test = { stable, eventToken, secretMatches, MAX_ATTEMPTS };
+exports._test = { stable, isTimerEvent, MAX_ATTEMPTS };

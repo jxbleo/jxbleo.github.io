@@ -114,7 +114,10 @@ Before commercial use, review:
 - Speaking Lab: benchmark and approve a production speech/diarization adapter;
   video extraction, pronunciation/delivery assessment, PDF export, stronger
   streaming upload protection, and an individual speaking mode remain out of
-  V1. Add provider fallback only after a measured quality/cost review.
+  V1. Add provider fallback only after a measured quality/cost review. Benchmark
+  reusable Tencent voiceprints across devices and accents, define the production
+  confidence/separation thresholds, monitor the 1000-voiceprint AppID limit, and
+  add an owner-facing capacity/cleanup audit before enabling automatic matches.
 
 - Intensive Listening: owner-gated notification-session index and production
   timer rollout; benchmark large catalog scans and mixed bell pagination.
