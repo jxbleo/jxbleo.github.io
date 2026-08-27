@@ -15,6 +15,17 @@ Current verification uses:
 - CloudBase development environment tests
 - manual teacher/student flows
 
+Dashboard learning-workspace checks:
+
+- desktop and 320/375/390/430px phone widths show exactly three stacked bands
+  in Writing, Intensive Listening, Speaking order with no horizontal overflow;
+- each complete band remains one keyboard- and pointer-accessible link to its
+  existing destination, with no nested button or decorative arrow;
+- `写`, `听`, and `说` remain decorative watermarks, the right edge uses only
+  the narrow light bar, and hover/focus expands that bar without hiding copy;
+- pointer-down responds immediately, while Reduced Motion removes positional
+  movement and high-contrast mode preserves readable borders and body text.
+
 ## 2. Quick Local Checks
 
 Run after JavaScript changes:
@@ -1948,9 +1959,11 @@ High priority improvement:
 - Confirm `reference_revision` remains in the server schema and stored result while no
   Sample/reference control is rendered in Sentence Revision; skipped capsules remain
   marked, and feedback is batch-only.
-- After language review completes, confirm the page has exactly three primary
+- While revisions remain incomplete, confirm the page has exactly three primary
   cards in this order: `Language Review`, `Draft`, and `Sentence Revision`.
-  Confirm there is no fourth layout container presented as a card.
+  After every required revision passes and Revised becomes available, confirm the
+  entire Sentence Revision card is absent and only Language Review plus the
+  Draft/Revised manuscript card remain.
 - Confirm all three card titles use the same computed font size, weight, line
   height, tracking, and horizontal alignment. Sentence Revision must place its
   title and `−` / `+` controls in the first row, followed by the capsule row.
@@ -1983,12 +1996,11 @@ High priority improvement:
   toolbar at `top: 0` on phone, iPad, and desktop. Confirm it releases naturally
   after leaving the Sentence Revision card.
 - Before all required corrections pass, confirm Draft uses a warm ivory paper
-  surface with subtle fibre detail and no sentence color fills. Required source
-  sentences that remain unresolved have a thin muted-red wavy proofreading
-  underline; effective sentences have no error mark. Type without Submit and
-  confirm the wave remains. Submit a rejected correction and confirm it still
-  remains; submit an accepted correction and confirm only that sentence's wave
-  disappears immediately. Click both
+  surface with subtle fibre detail and no sentence color fills. Every source
+  sentence originally marked revision-required has a thin muted-red wavy proofreading
+  underline; originally correct sentences have no error mark. Type without Submit,
+  submit a rejected correction, and submit an accepted correction; confirm the same
+  original proofreading waves remain in every state. Click both
   a Draft sentence and its capsule and confirm they activate the same index and
   scroll to the same correction row.
 - Use one manuscript containing multiple sentences in one paragraph and at least
@@ -2005,8 +2017,13 @@ High priority improvement:
   and preserves the original paragraphs. Revised has no proofreading wave and
   repeats blue, orange, purple, rose, indigo, coral, gold, and deep pink only after
   eight sentences, in the same positional order as capsules and revision rows.
-  Switch back to Draft and confirm the untouched source text returns without waves
-  on already accepted sentences. A composition that needed no corrections must not show Revised.
+  Switch back to Draft and confirm the untouched source text returns with waves on
+  every originally flagged sentence, including accepted ones. Click each Draft sentence
+  and confirm an Apple-style AI Feedback dialog opens with the source, initial analysis,
+  and saved feedback separated by hairlines without round labels. Originally correct
+  sentences must explicitly say no revision is needed. Confirm Tab remains trapped,
+  Escape closes, and focus returns to the sentence. Revised sentences are not interactive.
+  A composition that needed no corrections must not show Revised.
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must
   remain viewport-width; only the capsule row may scroll horizontally.

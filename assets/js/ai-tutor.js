@@ -86,6 +86,9 @@
         leaveDialogOpen: false,
         incompleteRewriteAlertOpen: false,
         incompleteRewriteTargetId: '',
+        sentenceFeedbackOpen: false,
+        sentenceFeedbackIndex: -1,
+        sentenceFeedbackReturnFocus: null,
         scanSubmitConfirmationOpen: false,
         scanSubmitReturnFocus: null,
         leaveDialogAction: 'dashboard',
@@ -106,6 +109,7 @@
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
+    var sentenceFeedbackDialog = document.getElementById('sentence-feedback-dialog');
     var scanSubmitConfirmation = document.getElementById('scan-submit-confirmation');
     var photoChoiceLayer = document.getElementById('photo-choice-layer');
     var photoRemoveConfirmation = document.getElementById('photo-remove-confirmation');
@@ -675,10 +679,11 @@
             var visibleSentence = withoutLeading.slice(0, withoutLeading.length - trailingWhitespace.length);
             var id = sentenceId(sentence, index);
             var displaySentence = revised && revisionSummary.replacements[id] ? revisionSummary.replacements[id] : visibleSentence;
-            var acceptedRewrite = revisionSummary && revisionSummary.replacements[id];
-            var needsRevision = !revised && rewriteRequired(sentence) && !acceptedRewrite;
+            var needsRevision = !revised && rewriteRequired(sentence);
+            var completedDraftFeedback = !revised && revisionSummary && revisionSummary.available;
+            var interactive = !revisionSummary || !revisionSummary.available || completedDraftFeedback;
             html += escapeHtml(source.slice(cursor, matchAt) + leadingWhitespace);
-            html += '<span class="manuscript-sentence-highlight ' + (revised ? 'is-revised' : 'is-draft') + (needsRevision ? ' needs-revision' : '') + (index === state.activeSentence ? ' is-active' : '') + '" role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '" style="' + sentenceColorStyle(index) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="定位到第 ' + (index + 1) + ' 句的批改">' + escapeHtml(displaySentence) + '</span>';
+            html += '<span class="manuscript-sentence-highlight ' + (revised ? 'is-revised' : 'is-draft') + (needsRevision ? ' needs-revision' : '') + (index === state.activeSentence ? ' is-active' : '') + '"' + (interactive ? ' role="button" tabindex="0" data-sentence-index="' + index + '" data-manuscript-sentence="' + index + '"' : '') + ' style="' + sentenceColorStyle(index) + '"' + (interactive && index === state.activeSentence ? ' aria-current="true"' : '') + (interactive ? ' aria-label="' + (completedDraftFeedback ? '查看第 ' : '定位到第 ') + (index + 1) + (completedDraftFeedback ? ' 句的 AI 反馈' : ' 句的批改') + '"' : '') + '>' + escapeHtml(displaySentence) + '</span>';
             html += escapeHtml(trailingWhitespace);
             cursor = matchAt + original.length;
         });
@@ -1643,6 +1648,7 @@
     }
 
     function resetDraft(composition) {
+        closeSentenceFeedback(false);
         destroyAiWaitingExperience();
         stopOcrPolling();
         stopReviewPolling();
@@ -2687,6 +2693,22 @@
         return legacyFeedback ? [{ round: 1, feedback: legacyFeedback }] : [];
     }
 
+    function sentenceAnalysisCopy(sentence) {
+        var parts = [];
+        function addPart(value) {
+            var copy = firstText(value);
+            if (copy && parts.indexOf(copy) === -1) parts.push(copy);
+        }
+        addPart(sentence && sentence.coaching_summary);
+        safeArray(sentence && sentence.issues).forEach(function(issue) {
+            addPart(issue && issue.explanation);
+            addPart(issue && issue.suggestion);
+        });
+        return parts.map(function(part) {
+            return /[。！？!?；;.]$/.test(part) ? part : part + '。';
+        }).join(' ') || (rewriteRequired(sentence) ? '请根据建议调整这句话。' : '这句话表达准确，无需修改。');
+    }
+
     function activeSentenceCardFace(inner) {
         if (!inner) return null;
         return inner.querySelector(inner.classList.contains('show-rewrite')
@@ -3095,9 +3117,7 @@
             '<div class="cefr-estimate"><span class="cefr-estimate-label">CEFR Writing Estimate</span>' +
             '<strong>' + escapeHtml(cefrEstimate.level + cefrSuffix) + '</strong>' +
             (cefrEstimate.commentary_zh ? '<p>' + escapeHtml(cefrEstimate.commentary_zh) + '</p>' : '') + '</div>' : '';
-        stage.innerHTML = '<div class="language-review-stack">' +
-            '<section class="surface language-review-card language-overall-card"><h2 class="language-card-title">Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
-            '<section class="surface language-review-card language-manuscript-card ' + (state.manuscriptView === 'revised' ? 'is-revised-view' : 'is-draft-view') + '">' + manuscriptVersionControlHtml(revisionSummary.available) + '<div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences, state.manuscriptView, revisionSummary) + '</div></section>' +
+        var sentenceReviewHtml = revisionSummary.available ? '' :
             '<section class="surface language-review-card language-sentence-review-card" style="--revision-analysis-scale:' + revisionTextScale() + '">' +
             '<div class="language-section-heading sentence-review-heading"><h2 class="language-card-title">Sentence Revision</h2>' + revisionFontControlsHtml() + '</div>' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
@@ -3106,8 +3126,12 @@
                 (revisionScanSentences().length ? '<button class="secondary-button scan-revision-trigger" type="button" data-open-photo-choice="revision" aria-label="Scan Revisions" title="Scan Revisions">' + icon('camera') + '</button><input id="revision-scan-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden><input id="revision-scan-library" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>' : '') +
                 '<button class="primary-button" type="button" data-submit-rewrites data-disable-when-busy>Submit</button></div>' : '') +
             (state.readOnly ? '<div class="form-actions language-card-footer"><button class="secondary-button" type="button" data-return-home>返回作品库</button></div>' : '') +
-            '</section></div>';
-        window.requestAnimationFrame(observeSentenceCardHeights);
+            '</section>';
+        stage.innerHTML = '<div class="language-review-stack">' +
+            '<section class="surface language-review-card language-overall-card"><h2 class="language-card-title">Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
+            '<section class="surface language-review-card language-manuscript-card ' + (state.manuscriptView === 'revised' ? 'is-revised-view' : 'is-draft-view') + '">' + manuscriptVersionControlHtml(revisionSummary.available) + '<div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences, state.manuscriptView, revisionSummary) + '</div></section>' +
+            sentenceReviewHtml + '</div>';
+        if (!revisionSummary.available) window.requestAnimationFrame(observeSentenceCardHeights);
         if (previousScreen !== state.screen) scheduleStageViewportReset();
     }
 
@@ -3168,20 +3192,7 @@
             analysisHidden: Boolean(showRewrite),
             rewriteHidden: !showRewrite
         };
-        var issues = safeArray(sentence.issues);
-        var analysisParts = [];
-        function addAnalysisPart(value) {
-            var copy = firstText(value);
-            if (copy && analysisParts.indexOf(copy) === -1) analysisParts.push(copy);
-        }
-        addAnalysisPart(sentence.coaching_summary);
-        issues.forEach(function(issue) {
-            addAnalysisPart(issue && issue.explanation);
-            addAnalysisPart(issue && issue.suggestion);
-        });
-        var analysisCopy = analysisParts.map(function(part) {
-            return /[。！？!?；;.]$/.test(part) ? part : part + '。';
-        }).join(' ') || '请根据建议调整这句话。';
+        var analysisCopy = sentenceAnalysisCopy(sentence);
         var feedbackHistoryHtml = sentenceRewriteFeedbackHistory(id, result).map(function(entry) {
             return '<div class="rewrite-feedback-round"><p>' + escapeHtml(entry.feedback) + '</p></div>';
         }).join('');
@@ -3635,7 +3646,7 @@
     }
 
     function hasBlockingDialogOpen() {
-        return state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.scanSubmitConfirmationOpen ||
+        return state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.sentenceFeedbackOpen || state.scanSubmitConfirmationOpen ||
             state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen;
     }
 
@@ -3777,6 +3788,57 @@
         updateOverlayLock();
         var rewriteInput = targetId ? document.getElementById('rewrite-' + targetId) : null;
         if (rewriteInput && typeof rewriteInput.focus === 'function') rewriteInput.focus({ preventScroll: true });
+    }
+
+    function sentenceFeedbackCopies(sentence, index) {
+        var id = sentenceId(sentence, index);
+        var result = state.rewriteResults[id] || {};
+        var copies = [sentenceAnalysisCopy(sentence)];
+        sentenceRewriteFeedbackHistory(id, result).forEach(function(entry) {
+            var feedback = firstText(entry && entry.feedback);
+            if (feedback && copies.indexOf(feedback) === -1) copies.push(feedback);
+        });
+        return copies;
+    }
+
+    function openSentenceFeedback(index, trigger) {
+        var sentences = safeArray(state.review && state.review.sentences);
+        var revisionSummary = manuscriptRevisionSummary(sentences);
+        var sentence = sentences[index];
+        if (!sentenceFeedbackDialog || state.sentenceFeedbackOpen || !sentence ||
+            !revisionSummary.available || state.manuscriptView !== 'draft') return;
+        state.sentenceFeedbackOpen = true;
+        state.sentenceFeedbackIndex = index;
+        state.sentenceFeedbackReturnFocus = trigger || document.activeElement;
+        var kicker = sentenceFeedbackDialog.querySelector('#sentence-feedback-kicker');
+        var original = sentenceFeedbackDialog.querySelector('#sentence-feedback-original');
+        var copy = sentenceFeedbackDialog.querySelector('#sentence-feedback-copy');
+        if (kicker) kicker.textContent = 'Sentence ' + (index + 1);
+        if (original) original.textContent = firstText(sentence.original, sentence.text);
+        if (copy) copy.innerHTML = sentenceFeedbackCopies(sentence, index).map(function(item) {
+            return '<p class="sentence-feedback-item">' + escapeHtml(item) + '</p>';
+        }).join('');
+        sentenceFeedbackDialog.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
+        window.requestAnimationFrame(function() {
+            var done = sentenceFeedbackDialog.querySelector('[data-close-sentence-feedback]');
+            if (done) done.focus({ preventScroll: true });
+        });
+    }
+
+    function closeSentenceFeedback(restoreFocus) {
+        if (!state.sentenceFeedbackOpen) return;
+        var focusTarget = state.sentenceFeedbackReturnFocus;
+        state.sentenceFeedbackOpen = false;
+        state.sentenceFeedbackIndex = -1;
+        state.sentenceFeedbackReturnFocus = null;
+        sentenceFeedbackDialog.hidden = true;
+        app.inert = hasBlockingDialogOpen();
+        updateOverlayLock();
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+        }
     }
 
     function openScanSubmitConfirmation() {
@@ -4021,13 +4083,14 @@
             clearOcrTitleUndo();
             return;
         }
-        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-review-scan-submit],[data-manuscript-sentence]');
+        var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-review-scan-submit],[data-close-sentence-feedback],[data-manuscript-sentence]');
         if (!button) return;
         if (button.matches('#history-home')) openLeaveConfirmation();
         else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
         else if (button.matches('[data-cancel-photo-remove]')) closePhotoRemoveConfirmation();
         else if (button.matches('[data-confirm-photo-remove]')) confirmPhotoRemoval();
         else if (button.matches('[data-close-incomplete-rewrite]')) closeIncompleteRewriteAlert();
+        else if (button.matches('[data-close-sentence-feedback]')) closeSentenceFeedback();
         else if (button.matches('[data-review-scan-submit]')) closeScanSubmitConfirmation();
         else if (button.matches('[data-confirm-scan-submit]')) confirmScannedRewritesSubmit();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
@@ -4130,6 +4193,11 @@
                     : flipCard.querySelector('[data-face="rewrite"]');
                 focusSentenceRewriteTarget(flipCard, focusTarget, showRewriteFace);
             });
+        }
+        else if (button.matches('[data-manuscript-sentence]') &&
+            manuscriptRevisionSummary(safeArray(state.review && state.review.sentences)).available &&
+            state.manuscriptView === 'draft') {
+            openSentenceFeedback(Number(button.getAttribute('data-manuscript-sentence')), button);
         }
         else if (button.matches('[data-sentence-index]')) {
             state.activeSentence = Number(button.getAttribute('data-sentence-index')) || 0;
@@ -4268,6 +4336,11 @@
             if (alertControl) { event.preventDefault(); alertControl.focus(); }
             return;
         }
+        if (state.sentenceFeedbackOpen && event.key === 'Tab') {
+            var feedbackControl = sentenceFeedbackDialog.querySelector('[data-close-sentence-feedback]');
+            if (feedbackControl) { event.preventDefault(); feedbackControl.focus(); }
+            return;
+        }
         if (state.leaveDialogOpen && event.key === 'Tab') {
             var controls = leaveConfirmation.querySelectorAll('button:not(:disabled)');
             if (!controls.length) return;
@@ -4283,6 +4356,7 @@
             else if (state.photoChoiceOpen) closePhotoChoice();
             else if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
             else if (state.scanSubmitConfirmationOpen) closeScanSubmitConfirmation();
+            else if (state.sentenceFeedbackOpen) closeSentenceFeedback();
             else if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
             else if (state.leaveDialogOpen) closeLeaveConfirmation();
             else if (state.sidebarOpen) closeSidebar();
@@ -4294,6 +4368,7 @@
         if (state.photoChoiceOpen) closePhotoChoice(false);
         if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
         if (state.scanSubmitConfirmationOpen) closeScanSubmitConfirmation(false);
+        if (state.sentenceFeedbackOpen) closeSentenceFeedback(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
         if (state.leaveDialogOpen) closeLeaveConfirmation();
         scheduleSourceTextareaResize();

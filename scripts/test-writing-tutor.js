@@ -181,7 +181,8 @@ check("AI Tutor page loads its dedicated CSS and JavaScript", () => {
 
 check("student dashboard exposes the AI Tutor workspace", () => {
   const dashboard = `${read("dashboard.html")}\n${read("assets/js/dashboard.js")}`;
-  assert(dashboard.includes("AI Tutor"), "missing AI Tutor label");
+  assert(dashboard.includes("student-skill-card writing") && dashboard.includes("<strong>WRITING</strong>"),
+    "missing Writing workspace label");
   assert(dashboard.includes("ai-tutor.html"), "missing ai-tutor.html link");
 });
 
@@ -609,13 +610,12 @@ check("OCR confirmation can move the first line into an optional undoable title"
   requireEvery(confirmHandler, ["ocr-title", "state.title", "saveAndEvaluate"], "OCR title confirmation persistence");
 });
 
-check("language review renders exactly three primary cards in the approved order", () => {
+check("language review removes Sentence Revision after the Revised manuscript is available", () => {
   const client = read(clientPath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
-  const cardMarkers = Array.from(renderSource.matchAll(/language-(overall|manuscript|sentence-review)-card/g), (match) => match[1]);
-  assert.deepStrictEqual(cardMarkers, ["overall", "manuscript", "sentence-review"],
-    "language review must render only the overall, original-manuscript, and sentence-review primary cards, in that order");
   requireEvery(renderSource, ["Language Review", "manuscriptVersionControlHtml", "Sentence Revision"], "language review card headings");
+  assert(/sentenceReviewHtml\s*=\s*revisionSummary\.available\s*\?\s*''\s*:/.test(renderSource),
+    "completed writing must omit the Sentence Revision card once Revised is available");
   requireEvery(functionSource(client, "manuscriptVersionControlHtml", "highlightedManuscriptHtml"), ["Draft", "Revised"],
     "manuscript version headings");
   assert(!/整体评价|>原文<|句子批改/.test(renderSource),
@@ -623,9 +623,8 @@ check("language review renders exactly three primary cards in the approved order
 
   const overallIndex = renderSource.indexOf("language-overall-card");
   const manuscriptIndex = renderSource.indexOf("language-manuscript-card");
-  const sentenceReviewIndex = renderSource.indexOf("language-sentence-review-card");
-  assert(overallIndex < manuscriptIndex && manuscriptIndex < sentenceReviewIndex,
-    "language review primary cards must stay ordered as overall, manuscript, then sentence correction");
+  assert(overallIndex < manuscriptIndex,
+    "Language Review must stay before the manuscript card");
   requireEvery(renderSource, ["cefr_estimate", "CEFR Writing Estimate", "lower: '-'", "middle: ''", "upper: '+'"],
     "CEFR writing estimate presentation");
   assert(!/偏下|中段|偏上/.test(renderSource),
@@ -680,12 +679,14 @@ check("each revision-required sentence renders only source, consolidated analysi
   const client = read(clientPath);
   const styles = read(stylePath);
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
+  const analysisSource = functionSource(client, "sentenceAnalysisCopy", "activeSentenceCardFace");
   requireEvery(cardSource, [
-    "original-sentence", "sentence-row-number", "index + 1", "grammar-analysis", "grammar-analysis-copy", "analysisParts",
-    "sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion",
+    "original-sentence", "sentence-row-number", "index + 1", "grammar-analysis", "grammar-analysis-copy", "sentenceAnalysisCopy",
     "sentenceRewriteFeedbackHistory", "rewrite-feedback-round",
     "sentence-response", "rewrite-input", "Your Attempt",
   ], "three-part sentence row");
+  requireEvery(analysisSource, ["sentence.coaching_summary", "issue && issue.explanation", "issue && issue.suggestion"],
+    "shared consolidated sentence analysis");
   assert(/\.rewrite-area label\s*\{[^}]*color\s*:\s*var\(--ai-muted\)/is.test(styles),
     "Your Attempt must use the muted supporting-text color");
   assert(!/grammar-analysis-label|grammar-analysis-point|grammar-analysis-summary|grammar-analysis-result|issue\.category|result\.next_step/.test(cardSource),
@@ -1090,7 +1091,7 @@ check("Draft preserves paragraphs and marks original revision needs like proofre
   const highlightSource = functionSource(client, "highlightedManuscriptHtml", "compositionStatus");
   requireEvery(highlightSource, [
     "source.slice(cursor, matchAt)", "leadingWhitespace", "trailingWhitespace",
-    "visibleSentence", "acceptedRewrite", "revisionSummary.replacements[id]", "needsRevision",
+    "visibleSentence", "revisionSummary.replacements[id]", "needsRevision", "completedDraftFeedback",
     'role="button"', 'tabindex="0"', "</span>",
   ], "paragraph-preserving manuscript highlights");
   assert(!/<button class=["']manuscript-sentence-highlight/.test(highlightSource),
@@ -1101,8 +1102,9 @@ check("Draft preserves paragraphs and marks original revision needs like proofre
     "sentence highlights must remain in the paragraph's inline formatting flow");
   assert(/\.manuscript-sentence-highlight\.is-draft\.needs-revision\s*\{[^}]*text-decoration-style\s*:\s*wavy[^}]*text-decoration-color\s*:\s*rgba\(178,62,59,/is.test(styles),
     "the original Draft must use a restrained red proofreading wave for sentences that need revision");
-  assert(/needsRevision\s*=\s*!revised\s*&&\s*rewriteRequired\(sentence\)\s*&&\s*!acceptedRewrite/.test(highlightSource),
-    "accepted corrections must clear only their own Draft proofreading wave");
+  assert(/needsRevision\s*=\s*!revised\s*&&\s*rewriteRequired\(sentence\)/.test(highlightSource)
+      && !highlightSource.includes("acceptedRewrite"),
+    "Draft proofreading waves must remain on every originally flagged sentence after acceptance");
   assert(/\.manuscript-sentence-highlight\.is-draft\s*\{[^}]*background\s*:\s*transparent/is.test(styles)
       || /\.manuscript-sentence-highlight\s*\{[^}]*background\s*:\s*transparent/is.test(styles),
     "the original Draft must remain neutral instead of looking already corrected");
@@ -1127,12 +1129,36 @@ check("completed writing offers a default Revised manuscript without another AI 
   requireEvery(prepareSource, ["manuscriptRevisionSummary", "'revised'", "'draft'"],
     "default completed-manuscript view");
   requireEvery(renderSource, [
-    "manuscriptVersionControlHtml", "is-revised-view", "highlightedManuscriptHtml",
+    "manuscriptVersionControlHtml", "is-revised-view", "highlightedManuscriptHtml", "sentenceReviewHtml",
   ], "Draft/Revised rendering");
+  assert(/sentenceReviewHtml\s*=\s*revisionSummary\.available\s*\?\s*''/.test(renderSource),
+    "a completed Revised manuscript must replace the lower Sentence Revision card");
   assert(/data-manuscript-view="[^\"]*"/.test(client) || client.includes('data-manuscript-view="'),
     "the completed manuscript must expose Draft/Revised version controls");
   assert(!summarySource.includes("writingCall("),
     "reconstructing Revised must use saved rewrite results and never invoke the model again");
+});
+
+check("completed Draft sentences open an accessible AI Feedback dialog", () => {
+  const page = read(pagePath);
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  requireEvery(page, [
+    'id="sentence-feedback-dialog"', 'role="dialog"', 'aria-modal="true"',
+    'id="sentence-feedback-original"', 'id="sentence-feedback-copy"',
+    'data-close-sentence-feedback', '>AI Feedback<', '>Done<',
+  ], "completed Draft feedback dialog");
+  requireEvery(client, [
+    "sentenceAnalysisCopy", "sentenceFeedbackCopies", "sentenceRewriteFeedbackHistory",
+    "openSentenceFeedback", "closeSentenceFeedback", "sentenceFeedbackOpen",
+    "completedDraftFeedback", "state.manuscriptView === 'draft'",
+  ], "completed Draft feedback behavior");
+  assert(/sentenceFeedbackOpen\s*&&\s*event\.key\s*===\s*['"]Tab['"][\s\S]{0,450}data-close-sentence-feedback/.test(client),
+    "the feedback dialog must trap keyboard focus on its sole action");
+  assert(/event\.key\s*===\s*['"]Escape['"][\s\S]{0,900}sentenceFeedbackOpen[\s\S]{0,120}closeSentenceFeedback/.test(client),
+    "Escape must close the feedback dialog");
+  requireEvery(styles, [".sentence-feedback-dialog", ".sentence-feedback-original", ".sentence-feedback-item + .sentence-feedback-item"],
+    "sentence feedback material and separators");
 });
 
 check("Revised, capsule, and correction share the same eight-color sentence system", () => {

@@ -193,6 +193,14 @@ Navigation:
   does not jump. Reduced-motion mode uses a 140ms opacity-only exit
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
+- the Dashboard places exactly three full-width learning-workspace bands above
+  Library in this order: `WRITING`, `INTENSIVE LISTENING`, and `SPEAKING`.
+  They share one dark editorial container while using blue, teal, and orange
+  category gradients. Each band keeps its English title and one-line purpose,
+  renders `写`, `听`, or `说` as a large translucent trailing watermark, and
+  ends with a narrow light bar rather than a chevron or arrow. Hover/focus grows
+  the light bar and shifts the watermark slightly; pointer-down immediately
+  compresses the whole band. Reduced-motion mode removes positional motion
 - assignments and finished work open from a standalone far-left `To Do List`
   checklist button, separated from the right-side utility controls
 - a calendar icon in the right-side utility group opens the signed-in
@@ -2195,8 +2203,10 @@ Important mobile rules:
   Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
   the leading edge as a complete bordered button; non-empty input receives the compact
   Apple-style permanent-delete confirmation before the server removes the eligible draft.
-- Completed language review uses exactly three primary cards in order:
-  `Language Review`, `Draft`, and `Sentence Revision`.
+- In-progress language review uses three primary cards in order: `Language Review`,
+  `Draft`, and `Sentence Revision`. Once all required revisions are accepted and the
+  Revised manuscript is available, remove the entire Sentence Revision card; the completed
+  view contains Language Review plus the Draft/Revised manuscript card only.
 - On phone layouts, the shared Writing stage supplies 14px of breathing room
   below the sticky primary toolbar to every rendered state: source entry,
   waiting game, OCR confirmation, standardized result, language review,
@@ -2318,16 +2328,16 @@ Important mobile rules:
 - Sentence colors are positional and consistent across the completed `Revised`
   manuscript, numbered capsule, correction-card accent, and highlighted source
   sentence. The neutral original Draft deliberately withholds those fills so it
-  reads as uncorrected work. Both manuscript versions and the capsule remain
-  interactive routes to the same correction row.
+  reads as uncorrected work. While revision is in progress, Draft sentences and
+  capsules remain interactive routes to the same correction row.
 - `Draft` preserves the confirmed manuscript's original spaces and paragraph
   breaks. Sentence targets remain inline within that text flow, so one paragraph
   never becomes sentence-sized blocks. Boundary whitespace stays outside the
   interactive target while click, Enter, and Space still locate the matching
   revision row. The original Draft uses a warm-neutral paper surface and dark-gray
-  text. Every revision-required sentence that has not yet been accepted receives
-  a thin, muted-red proofreading wave. Typing without Submit and a rejected Submit
-  retain the wave; an accepted persisted student rewrite removes it immediately.
+  text. Every sentence originally marked revision-required receives a thin,
+  muted-red proofreading wave permanently in Draft. Typing, Submit, rejection,
+  and acceptance never remove this original-proofreading annotation.
   The material uses warm ivory, restrained fibre detail, a warm border, and a
   low brown shadow rather than literal rules, folds, or torn edges.
 - Once every required sentence is accepted and at least one persisted student
@@ -2339,8 +2349,13 @@ Important mobile rules:
   are preserved. Revised has no proofreading waves and uses blue, orange, purple,
   rose, indigo, coral, gold, and deep pink fills in the same positional order as
   the capsule/card palette. Switching back to Draft restores the unchanged source
-  text and waves only on corrections that remain unresolved. Do not show Revised for a manuscript that began
-  with no required revisions.
+  text and every original proofreading wave. The completed view removes the entire
+  Sentence Revision card. Each completed Draft sentence is keyboard and pointer
+  actionable and opens one focus-trapped Apple-style AI Feedback dialog containing
+  the source sentence, its consolidated initial analysis, and saved feedback paragraphs
+  separated by hairlines without round labels. Originally correct sentences receive
+  an explicit no-revision-needed message. Revised sentences are non-interactive.
+  Do not show Revised for a manuscript that began with no required revisions.
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
   column; horizontal overflow is confined to the capsule row.
