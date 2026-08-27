@@ -373,9 +373,11 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .language-toolbar { position: sticky; z-index: 100; top: 0; width: 100%; min-width: 0; max-width: 100%; padding: 11px 18px 9px; border: 0; border-top: 1px solid var(--ai-line); border-bottom: 1px solid var(--ai-line); border-radius: 0; background: rgba(250,253,252,.94); box-shadow: 0 8px 20px rgba(20,67,56,.08); backdrop-filter: blur(22px) saturate(155%); -webkit-backdrop-filter: blur(22px) saturate(155%); }
 .capsule-row { display: flex; width: 100%; min-width: 0; max-width: 100%; gap: 8px; overflow-x: auto; padding: 2px 1px 16px; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: thin; touch-action: pan-x; -webkit-overflow-scrolling: touch; }
 .sentence-capsule { position: relative; flex: 0 0 auto; width: 38px; height: 34px; padding: 0; border: 1px solid var(--sentence-color); border-radius: 999px; color: var(--sentence-color); background: var(--sentence-soft); font-size: .72rem; font-weight: 850; scroll-snap-align: center; }
+.sentence-capsule::after { position: absolute; top: calc(100% + 3px); left: 50%; display: grid; place-items: center; width: 12px; height: 10px; color: var(--ai-danger); font-size: 9px; font-weight: 950; line-height: 1; transform: translateX(-50%); }
+.sentence-capsule.is-correct::after { content: "✓"; color: var(--ai-success); }
+.sentence-capsule.is-pending::after, .sentence-capsule.is-incorrect::after { content: "×"; color: var(--ai-danger); }
 .sentence-capsule:active { transform: scale(.96); }
 .sentence-capsule.is-active { color: #fff; border-color: var(--sentence-color); background: var(--sentence-color); }
-.sentence-capsule-state { position: absolute; top: calc(100% + 3px); left: 50%; width: 13px; height: 13px; transform: translateX(-50%); }
 .scan-revision-trigger { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 14px; color: var(--ai-accent); background: rgba(223,244,237,.72); }
 .scan-revision-trigger svg { width: 18px; height: 18px; }
 .revision-photo-selection { overflow: visible; scroll-margin-top: 90px; }
@@ -424,7 +426,6 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .sentence-status-icon.is-correct { color: var(--ai-success); }
 .sentence-status-icon.is-pending { color: #171c1b; }
 .sentence-status-icon.is-incorrect { color: var(--ai-danger); }
-.sentence-capsule-state .sentence-status-mark { stroke-width: 2.7; }
 .sentence-original-highlight { padding: .16em .28em; border-radius: .42em; background: var(--sentence-active); box-shadow: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .corrected-sentence { margin: 0; font: 1.18rem/1.65 ui-serif, Georgia, serif; overflow-wrap: anywhere; }
 .sentence-corrected-highlight { padding: .16em .28em; border-radius: .42em; background: var(--sentence-active); box-shadow: none; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
@@ -451,12 +452,6 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .rewrite-feedback-round + .rewrite-feedback-round { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--sentence-ring); }
 .rewrite-feedback-round > p { margin: 0; font-size: calc(.82rem * var(--revision-analysis-scale,1)); line-height: 1.65; transition: font-size 180ms ease-out; }
 .sentence-response { min-width: 0; }
-.sample-action { display: flex; justify-content: flex-end; margin: 0 0 10px; }
-.sample-button { min-height: 34px; padding: 6px 12px; border: 1px solid var(--sentence-ring); color: var(--sentence-color); background: var(--sentence-soft); }
-.sample-button[aria-expanded="true"] { color: #fff; border-color: var(--sentence-color); background: var(--sentence-color); }
-.reference-panel { margin-top: 2px; padding: 14px; border-radius: 15px; color: #31598f; background: var(--ai-blue-soft); }
-.reference-panel small { display: block; margin-bottom: 6px; font-weight: 850; }
-.reference-panel p { margin: 0; font-family: ui-serif, Georgia, serif; font-size: calc(1rem * var(--revision-analysis-scale,1)); line-height: 1.55; overflow-wrap: anywhere; word-break: break-word; transition: font-size 180ms ease-out; }
 .rewrite-area { display: grid; gap: 8px; }
 .rewrite-area label { color: var(--ai-muted); font-size: .72rem; font-weight: 760; }
 .rewrite-input { min-height: 92px; padding: 12px 13px; resize: vertical; line-height: 1.55; }

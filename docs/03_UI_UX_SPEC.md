@@ -2211,14 +2211,14 @@ Important mobile rules:
   may adapt to the green Language Review surface.
 - Sentence Revision begins with a non-sticky title row. `Sentence Revision` stays
   left and a compact `−` / `+` group stays right; each control retains a 44px hit
-  target. The controls change only AI analysis, saved feedback, and Sample reference
-  text through four bounded sizes, remember the local display preference, and
+  target. The controls change only AI analysis and saved feedback text through four
+  bounded sizes, remember the local display preference, and
   remeasure the visible flip-card face. The title row scrolls away normally.
 - A second, independently sticky row contains the horizontally scrollable numbered
   capsules. Selecting a number immediately scrolls to and highlights its corresponding
   sentence in the list. Every capsule uses the same 1px solid border. Its reserved
-  below-number slot contains a plain mark with no circle: green check for correct,
-  black question for newly entered/unsubmitted text, and red cross for empty or
+  below-number slot uses the original 9px text mark rather than SVG: a green check
+  for correct, and a red cross for empty, newly entered/unsubmitted, or
   last-checked-incorrect text. No progress copy or
   instructional hint appears beneath the capsule row. The list is the only layout:
   there is no one-sentence mode, layout toggle, or pair of layout icons.
@@ -2226,9 +2226,9 @@ Important mobile rules:
   the original English sentence and one compact, single-paragraph Simplified Chinese
   grammar analysis; its back repeats the original sentence beside the student's revision input. Never
   show the two faces together. Do not render a `Grammar Analysis` heading, issue
-  categories such as `Word Choice`, or separate issue/summary/result blocks. The optional
-  reference answer may expand on the analysis face, but it disappears with the
-  analysis when the student turns to the input face.
+  categories such as `Word Choice`, or separate issue/summary/result blocks. Keep the
+  model's reference answer in backend data, but do not expose a `Sample` action or
+  reference panel on either frontend face.
   Every card uses one compact metadata row: a bare sequence number at top-left and
   one 25px line-art circle icon at top-right. Correct/effective and accepted sentences
   use a green circled check modeled on the Teacher success-checkmark treatment; empty or
@@ -2243,7 +2243,7 @@ Important mobile rules:
   It remains distinct from the horizontal navigation capsule.
   The revision input label is exactly `Your Attempt` and uses the muted supporting-text
   color so the student's sentence remains visually primary. Its placeholder reads
-  `Rewrite this sentence in your own words. Do not copy the sample.` Remove the explanatory
+  `Rewrite this sentence in your own words.` Remove the explanatory
   sentence under the `Sentence Revision` heading. In editable mode, place one compact
   44px camera-only Scan Revisions button immediately to the left of the trailing
   `Submit` button in the bottom action row. Its visible surface contains only the
@@ -2264,9 +2264,9 @@ Important mobile rules:
   language sentence review exists. Its accessible name states completed, total,
   and remaining counts. Do not show the removed post-Check “统一检查完成” status below the toolbar.
 - Capsule and card status update immediately as the student types. Empty text and an
-  unchanged rejected answer use the red cross; any non-empty new text uses the
-  black question; an effective or accepted sentence uses the green check. Only card
-  icons retain their circle; capsule marks are plain. The
+  unchanged rejected answer use the red cross. Any non-empty new text keeps the card's
+  black circled question but uses the capsule's tiny red cross; an effective or accepted
+  sentence uses the green check. Only card icons retain their circle; capsule marks are plain. The
   sentence accent color never recolors these semantic marks.
 - The analysis face keeps the initial coaching paragraph first. Every later Submit
   feedback is shown beneath it in chronological order. Do not display round labels
@@ -2290,12 +2290,11 @@ Important mobile rules:
   the transition is restrained and is removed under Reduced Motion.
 - Remove visible “remember/start writing” and “return to analysis” controls. A native
   transparent button covers each available face so a click anywhere on the card turns
-  it; the textarea, its label, and Sample remain independently interactive above that
-  hit surface. The cover button owns the accessible face destination and focus ring.
-- Rename the reference control exactly `Sample`. Place the compact button at the
-  trailing edge immediately after the analysis paragraph, with its controlled
-  reference panel directly below. Keep the label unchanged while `aria-expanded`
-  communicates open state.
+  it; the textarea and its label remain independently interactive above that hit
+  surface. The cover button owns the accessible face destination and focus ring.
+- Do not render `Sample`, a reference panel, or a reference toggle in the current
+  frontend. This is a presentation decision only; `reference_revision` remains in the
+  model schema and stored review data.
 - The face control exposes its state and destination in an accessible name. Click,
   Enter, and Space all switch the same card; focus remains on the corresponding
   control or moves predictably to the revision input. The inactive face is hidden

@@ -665,7 +665,7 @@ check("revision analysis font controls are bounded, persistent, and remeasure ca
   requireEvery(restoreSource, ["localStorage.getItem", "Math.max", "Math.min"], "persisted font preference restore");
   requireEvery(adjustSource, ["localStorage.setItem", "applyRevisionTextScale"], "live font scale persistence");
   requireEvery(applySource, ["observeSentenceCardHeights", "syncSentenceCardHeight"], "card remeasurement after font scaling");
-  requireEvery(styles, ["--revision-analysis-scale", ".grammar-analysis-copy", ".rewrite-feedback-round > p", ".reference-panel p"],
+  requireEvery(styles, ["--revision-analysis-scale", ".grammar-analysis-copy", ".rewrite-feedback-round > p"],
     "analysis-only text scaling");
   assert(/\.revision-font-controls button\s*\{[^}]*width\s*:\s*44px[^}]*height\s*:\s*44px/is.test(styles),
     "font buttons must retain 44px touch targets");
@@ -805,7 +805,7 @@ check("incomplete Sentence Revision Submit uses a focused one-action alert", () 
   ], "incomplete-submit navigation");
   assert(!/还有句子没有完成|已带你回到第一个未完成的位置/.test(submitSource),
     "incomplete Submit must not render the former top-page red status message");
-  assert(/placeholder="Rewrite this sentence in your own words\. Do not copy the sample\."/.test(client),
+  assert(/placeholder="Rewrite this sentence in your own words\."/.test(client),
     "the rewrite instruction must be presented in English");
 });
 
@@ -913,10 +913,13 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "every sentence capsule must use the same one-pixel solid border");
   assert(!/\.sentence-capsule\.is-(?:correct|pending|incorrect)[^}]*\{[^}]*(?:inset|border-width|border-style\s*:\s*dashed)/is.test(styles),
     "status states must not visually thicken or dash the capsule border");
-  requireEvery(capsuleSource, ["sentenceStatusIconHtml(status, id, true)"], "compact capsule status projection");
-  const iconSource = functionSource(client, "sentenceStatusIconHtml", "sentenceCapsuleHtml");
-  requireEvery(iconSource, ["sentence-capsule-state", "compact ? '' : '<circle"],
-    "plain compact marks and circular card icons");
+  assert(!/sentenceStatusIconHtml/.test(capsuleSource),
+    "capsules must not render a reduced SVG status icon");
+  requireEvery(styles, [
+    ".sentence-capsule::after", 'font-size: 9px',
+    '.sentence-capsule.is-correct::after', 'content: "✓"',
+    '.sentence-capsule.is-pending::after, .sentence-capsule.is-incorrect::after', 'content: "×"',
+  ], "original tiny capsule check/cross marks");
   requireEvery(styles, [".sentence-status-icon.is-correct", "var(--ai-success)", ".sentence-status-icon.is-pending", "#171c1b", ".sentence-status-icon.is-incorrect", "var(--ai-danger)"],
     "green correct, black pending, and red incorrect icon colors");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
@@ -926,7 +929,7 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
 check("typing a new revision immediately projects the pending question state", () => {
   const client = read(clientPath);
   const syncSource = functionSource(client, "syncSentenceDraftStatus", "submitRewrites");
-  requireEvery(syncSource, ["sentenceVisualStatus", "data-sentence-id", "sentenceStatusIconHtml", "sentence-capsule-state", "aria-label"],
+  requireEvery(syncSource, ["sentenceVisualStatus", "data-sentence-id", "sentenceStatusIconHtml", "aria-label"],
     "live capsule and card status synchronization");
   assert(/target\.matches\s*\(\s*["']\[data-rewrite-id\]["']\s*\)[\s\S]{0,420}syncSentenceDraftStatus\s*\(\s*id\s*\)/.test(client),
     "every rewrite input event must immediately refresh its question/check/cross projection");
@@ -989,7 +992,7 @@ check("accepted revisions default to the corrected sentence and show the correct
     "accepted checks must not appear inline after the corrected sentence");
 });
 
-check("sentence cards use circular states while capsules use plain marks", () => {
+check("sentence cards keep circular states while capsules use the original tiny marks", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const stateSource = functionSource(client, "sentenceVisualStatus", "sentenceStatusLabel");
@@ -998,8 +1001,8 @@ check("sentence cards use circular states while capsules use plain marks", () =>
     "three-state revision projection");
   requireEvery(iconSource, ["sentence-status-ring", "sentence-status-mark", "is-' + status", "<circle", "M7.1 12.3", "M9.5 9.3", "m8.6 8.6"],
     "three circular status glyphs");
-  assert(iconSource.includes("compact ? '' : '<circle"),
-    "the circle must be omitted only from the compact capsule projection");
+  assert(!/compact|sentence-capsule-state/.test(iconSource),
+    "the card icon helper must not retain the newer compact capsule projection");
   requireEvery(styles, [".sentence-status-icon", ".sentence-status-ring", ".sentence-status-mark", ".sentence-status-icon.is-correct", ".sentence-status-icon.is-pending", ".sentence-status-icon.is-incorrect"],
     "revision state icon styling");
   assert(!/CORRECT|REVISED|NEEDS REVISION/.test(functionSource(client, "sentenceCardHtml", "syncSentenceDraftStatus")),
@@ -1025,25 +1028,24 @@ check("sentence flip cards resize to the active face without reserved blank spac
     "measured faces must stop reserving the hidden face's height");
 });
 
-check("sentence cards flip from the whole surface and keep Sample as the sole secondary action", () => {
+check("sentence cards flip from the whole surface without exposing Sample", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const cardSource = functionSource(client, "sentenceCardHtml", "submitRewrites");
   requireEvery(cardSource, [
     "sentence-face-flip-hit", "翻到句子改写面", "翻到句子分析面",
-    "sample-action", "sample-button", ">Sample</button>",
-  ], "whole-card flip and Sample controls");
+  ], "whole-card flip controls");
   assert(!/我记住了，开始改写|返回查看分析|查看已订正句子|查看参考句|隐藏参考句/.test(cardSource),
     "the removed instructional flip buttons and old reference label must not render");
-  assert(/grammar-analysis[\s\S]{0,1200}sampleButton\s*\+\s*reference/.test(cardSource),
-    "Sample must sit immediately after the analysis and directly control the following reference panel");
+  assert(!/Sample|sample-action|sample-button|reference-panel|data-toggle-reference|reference_revision/.test(cardSource),
+    "the frontend card must not expose the stored reference revision");
   assert(/\.sentence-face-flip-hit\s*\{[^}]*position\s*:\s*absolute[^}]*inset\s*:\s*0[^}]*cursor\s*:\s*pointer/is.test(styles),
     "a native button must cover the available card surface");
-  assert(/\.sample-action\s*\{[^}]*justify-content\s*:\s*flex-end/is.test(styles),
-    "Sample must use the trailing analysis position");
   assert(/\.sentence-face-content[^}]*pointer-events\s*:\s*none/is.test(styles)
       && /\.sentence-face-content button[^}]*pointer-events\s*:\s*auto/is.test(styles),
-    "Sample and form controls must remain independently interactive above the card flip surface");
+    "form controls must remain independently interactive above the card flip surface");
+  assert(!/\.sample-(?:action|button)|\.reference-panel/.test(styles),
+    "removed Sample controls must not leave unused visible styling");
 });
 
 check("sentence navigation replaces the primary toolbar when it reaches the top", () => {
@@ -2430,16 +2432,15 @@ check("AI credentials and direct model endpoints never enter frontend files", ()
   assert(!/Authorization\s*[:=]\s*["'`]Bearer/i.test(publicSource), "frontend must not construct an AI bearer token");
 });
 
-check("reference revision is hidden whenever rewrite input is available", () => {
-  const page = read(pagePath);
+check("reference revision remains backend data but is not exposed by the frontend", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const sources = `${page}\n${client}\n${styles}`;
-  assert(/reference|参考句|参考修改/i.test(sources), "missing reference-revision UI");
-  assert(/rewrite|改写/i.test(sources), "missing student-rewrite UI");
-  assert(/(?:hide|hidden|aria-hidden|display\s*:\s*none)/i.test(sources), "missing a hiding mechanism for the reference revision");
-  assert(/(?:reference|参考).{0,220}(?:rewrite|改写).{0,220}(?:hide|hidden)|(?:rewrite|改写).{0,220}(?:reference|参考).{0,220}(?:hide|hidden)/is.test(client), "client must explicitly coordinate reference visibility with rewrite-input visibility");
-  assert(!/<(?:input|textarea)[^>]*(?:value|placeholder)=["'][^"']*(?:reference revision|参考修改句|正确答案)/i.test(page), "reference/correct answer must not be embedded in a visible rewrite control");
+  const schema = read("cloudfunctions/writingTutor/schemas.js");
+  const prompt = read("cloudfunctions/writingTutor/prompts.js");
+  assert(/reference_revision/.test(schema) && /reference_revision/.test(prompt),
+    "backend language-review data must retain reference_revision");
+  assert(!/data-toggle-reference|>Sample<|sample-button|reference-panel|referenceOpen/.test(`${client}\n${styles}`),
+    "the current frontend must not render or operate a Sample reference control");
 });
 
 check("the shared AI waiting assets load before the Tutor client", () => {

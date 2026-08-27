@@ -1945,8 +1945,9 @@ High priority improvement:
   rather than trusting the model's `overall_score` string.
 - Confirm an operation ID replays only for the same Composition revision, mode,
   and Rubric; cross-scope reuse must fail without another charge or result.
-- Confirm reference revision and rewrite input never display together, skipped
-  capsules remain marked, and feedback is batch-only.
+- Confirm `reference_revision` remains in the server schema and stored result while no
+  Sample/reference control is rendered in Sentence Revision; skipped capsules remain
+  marked, and feedback is batch-only.
 - After language review completes, confirm the page has exactly three primary
   cards in this order: `Language Review`, `Draft`, and `Sentence Revision`.
   Confirm there is no fourth layout container presented as a card.
@@ -1956,7 +1957,7 @@ High priority improvement:
   Scroll upward and confirm the first row leaves normally while only the capsule
   row takes over viewport `top: 0`.
 - Exercise every `−` / `+` level. Confirm the controls stop and disable at both
-  bounds, change only analysis/feedback/Sample text, leave source/student/title/
+  bounds, change only analysis/feedback text, leave source/student/title/
   capsule text unchanged, remeasure both flip-card faces without blank space,
   and restore the chosen level after refresh. Each button keeps a 44px hit area.
 - Confirm `Language Review` begins with `CEFR Writing Estimate` before its
@@ -2029,7 +2030,7 @@ High priority improvement:
   the top navigation capsules.
 - Confirm every editable rewrite face labels its field `Your Attempt` in the muted
   supporting-text color and uses the English placeholder `Rewrite this sentence in your
-  own words. Do not copy the sample.`, while the textarea content remains visually primary. After
+  own words.`, while the textarea content remains visually primary. After
   a successful Review Scan import, confirm every revision-required card opens on that
   attempt face with the original sentence and imported correction visible together.
 - Confirm the Sentence Revision heading has no explanatory line beneath it. The bottom
@@ -2037,9 +2038,9 @@ High priority improvement:
   accessible name remains `Scan Revisions`, and phone width must keep both controls on
   one row rather than stretching the camera into a full-width text button.
 - Before any text and after an unchanged rejected Check, confirm the capsule shows a
-  plain red cross and the card shows a red circled cross. Type or change non-empty
-  text and confirm the capsule switches to a plain black question while the card uses
-  a black circled question; clear it and confirm both return to their cross forms.
+  tiny plain red cross and the card shows a red circled cross. Type or change non-empty
+  text and confirm the capsule remains a tiny plain red cross while the card uses a
+  black circled question; clear it and confirm both return to their cross forms.
   After acceptance, confirm the capsule shows a plain green check and the card a
   green circled check. No card may
   display `CORRECT`, `REVISED`, or `NEEDS REVISION`. The accepted card must open
@@ -2065,10 +2066,8 @@ High priority improvement:
   analysis text, blank card space, and corrected sentence to flip the same physical
   card. Then click and type in the textarea and click its label; none may flip the
   card accidentally. Keyboard-focus the full-face native button and use Enter/Space.
-- Confirm the only reference control is exactly `Sample`, positioned at the
-  analysis paragraph's trailing edge with the revealed reference directly below.
-  Toggling Sample must not flip the card, erase a draft, or change its accessible
-  face state.
+- Confirm no `Sample`, reference panel, or reference toggle appears on any analysis
+  card, while backend `reference_revision` data remains present for future use.
 - Confirm idle `History` and `New` use identical white-background, green-text
   secondary styling inside their respective surfaces. Opening History may invert
   only the toolbar trigger; New remains inside the drawer.
