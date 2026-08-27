@@ -2105,8 +2105,14 @@ credentials, region, group, collections, indexes, and functions are deployed.
 
 Intensive Listening is a separate authenticated student workspace with
 Continue, source filtering, global search, chronological sorting, and
-Completion-based Start/Continue/Review cards. Dashboard Writing, Intensive
-Listening, and Speaking capsules are full-width and ordered 写/听/说.
+Completion-based Start/Continue/Review cards. The Dashboard presents Writing,
+Intensive Listening, and Speaking as three full-width entrances in that order.
+Their visible category titles are omitted: tablet and desktop show the complete
+purpose sentence, while a phone keeps one line and slowly reveals only text that
+actually overflows. Reduced Motion keeps that line static. A pen, headphones,
+and microphone identify the three entrances. An ordinary click or tap asks for
+confirmation before opening the existing destination; modified desktop clicks
+retain the browser's normal new-tab behavior.
 Assignments default to a 100% Completion target and never earn STAR. Student
 library responses contain safe metadata and progress only; private units and
 answers are returned only by the authorized practice flow.

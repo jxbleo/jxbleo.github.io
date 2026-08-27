@@ -21,11 +21,19 @@ Dashboard learning-workspace checks:
   in Writing, Intensive Listening, Speaking order with no horizontal overflow;
 - the pale hero contains the greeting, motivational sentence, and all three
   bands; no `THIS WEEK` progress row, progress track, or separate dark workspace
-  container remains in the rendered Dashboard;
-- each complete band remains one keyboard- and pointer-accessible link to its
-  existing destination, with no nested button or decorative arrow;
-- `写`, `听`, and `说` remain decorative watermarks, the right edge uses only
-  the narrow light bar, and hover/focus expands that bar without hiding copy;
+  container remains, and the visible top-toolbar-to-hero gap is about 40px;
+- no visible `WRITING`, `INTENSIVE LISTENING`, or `SPEAKING` title, character
+  watermark, arrow, or edge bar remains; accessible labels still name the three
+  destinations and each card contains exactly one trailing SVG identifier;
+- the SVG identifiers are the approved pen, headphones, and microphone, and the
+  three card backgrounds remain muted blue-grey, sage, and warm sand;
+- tablet and desktop show the complete purpose sentence. At 320/375/390/430px,
+  each card keeps one text line; only a genuinely overflowing sentence scrolls,
+  and Reduced Motion leaves it static without introducing page overflow;
+- ordinary pointer and keyboard activation opens the matching confirmation
+  dialog. Cancel, backdrop, and Escape close it, restore scroll and focus, and
+  Enter follows the original destination. Cmd/Ctrl/Shift/Alt-click retains
+  native modified-link behavior;
 - pointer-down responds immediately, while Reduced Motion removes positional
   movement and high-contrast mode preserves readable borders and body text.
 

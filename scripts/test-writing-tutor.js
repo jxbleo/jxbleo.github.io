@@ -181,8 +181,10 @@ check("AI Tutor page loads its dedicated CSS and JavaScript", () => {
 
 check("student dashboard exposes the AI Tutor workspace", () => {
   const dashboard = `${read("dashboard.html")}\n${read("assets/js/dashboard.js")}`;
-  assert(dashboard.includes("student-skill-card writing") && dashboard.includes("<strong>WRITING</strong>"),
-    "missing Writing workspace label");
+  assert(dashboard.includes("student-skill-card writing") && dashboard.includes('aria-label="Writing.'),
+    "missing accessible Writing workspace label");
+  assert(!/<strong>\s*WRITING\s*<\/strong>/.test(dashboard),
+    "Writing category title must stay visually omitted");
   assert(dashboard.includes("ai-tutor.html"), "missing ai-tutor.html link");
 });
 

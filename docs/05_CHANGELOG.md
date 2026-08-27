@@ -10,6 +10,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-28 — Muted Dashboard workspace entrances
+
+- Reworked the three hero entrances into pale blue-grey, sage, and warm-sand
+  bands that sit quietly within the existing light Dashboard material.
+- Removed their visible English category titles, character watermarks, arrows,
+  and edge bars; selected a pen, headphones, and microphone as the identifiers.
+- Added one-line overflow reveal on phones, a Reduced Motion fallback, more air
+  below the top toolbar, and a confirmation step before ordinary navigation.
+
 ## 2026-08-28 — Continuous Writing refresh
 
 - Replaced the two-stage Chinese Writing refresh sequence with one stable English

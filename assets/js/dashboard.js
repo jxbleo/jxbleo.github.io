@@ -129,6 +129,17 @@
     var studentGreetingPrimary = document.getElementById('student-greeting-primary');
     var studentGreetingMotivation = document.getElementById('student-greeting-motivation');
     var studentGreetingAccessible = document.getElementById('student-greeting-accessible');
+    var studentSkillEntries = document.querySelector('.student-skill-entries');
+    var studentSkillSentenceResizeObserver = null;
+    var workspaceConfirmOverlay = document.getElementById('student-workspace-confirm-overlay');
+    var workspaceConfirmIcon = document.getElementById('student-workspace-confirm-icon');
+    var workspaceConfirmTitle = document.getElementById('student-workspace-confirm-title');
+    var workspaceConfirmCopy = document.getElementById('student-workspace-confirm-copy');
+    var workspaceConfirmCancel = document.getElementById('student-workspace-confirm-cancel');
+    var workspaceConfirmSubmit = document.getElementById('student-workspace-confirm-submit');
+    var workspaceConfirmTrigger = null;
+    var workspaceConfirmHref = '';
+    var workspaceConfirmCloseTimer = null;
     var weeklyFocusProgress = document.getElementById('weekly-focus-progress');
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
@@ -412,6 +423,55 @@
         root.style.overscrollBehavior = lock.rootOverscrollBehavior;
         window.scrollTo(lock.scrollX, lock.scrollY);
         root.style.scrollBehavior = lock.rootScrollBehavior;
+    }
+
+    function finishWorkspaceConfirmClose(restoreFocus) {
+        if (!workspaceConfirmOverlay) return;
+        workspaceConfirmOverlay.hidden = true;
+        workspaceConfirmOverlay.setAttribute('aria-hidden', 'true');
+        workspaceConfirmHref = '';
+        unlockStudentMessageBackground();
+        if (restoreFocus && workspaceConfirmTrigger && document.contains(workspaceConfirmTrigger)) {
+            workspaceConfirmTrigger.focus();
+        }
+        workspaceConfirmTrigger = null;
+    }
+
+    function closeWorkspaceConfirm(restoreFocus) {
+        if (!workspaceConfirmOverlay || workspaceConfirmOverlay.hidden) return;
+        if (workspaceConfirmCloseTimer) window.clearTimeout(workspaceConfirmCloseTimer);
+        workspaceConfirmOverlay.classList.remove('is-visible');
+        workspaceConfirmCloseTimer = window.setTimeout(function() {
+            workspaceConfirmCloseTimer = null;
+            finishWorkspaceConfirmClose(restoreFocus !== false);
+        }, window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220);
+    }
+
+    function openWorkspaceConfirm(card) {
+        if (!workspaceConfirmOverlay || !card) return;
+        if (workspaceConfirmCloseTimer) {
+            window.clearTimeout(workspaceConfirmCloseTimer);
+            workspaceConfirmCloseTimer = null;
+        }
+        workspaceConfirmTrigger = card;
+        workspaceConfirmHref = card.href || card.getAttribute('href') || '';
+        var name = String(card.getAttribute('data-workspace-name') || 'workspace');
+        var copy = String(card.getAttribute('data-workspace-confirm-copy') || 'Continue to this learning workspace.');
+        var icon = card.querySelector('.student-skill-icon svg');
+        if (workspaceConfirmIcon) {
+            workspaceConfirmIcon.replaceChildren();
+            if (icon) workspaceConfirmIcon.appendChild(icon.cloneNode(true));
+        }
+        if (workspaceConfirmTitle) workspaceConfirmTitle.textContent = 'Open ' + name + '?';
+        if (workspaceConfirmCopy) workspaceConfirmCopy.textContent = copy;
+        if (workspaceConfirmSubmit) workspaceConfirmSubmit.textContent = 'Enter ' + name;
+        workspaceConfirmOverlay.hidden = false;
+        workspaceConfirmOverlay.setAttribute('aria-hidden', 'false');
+        lockStudentMessageBackground();
+        window.requestAnimationFrame(function() {
+            workspaceConfirmOverlay.classList.add('is-visible');
+            if (workspaceConfirmCancel) workspaceConfirmCancel.focus();
+        });
     }
 
     function vocabularySourceKey(item) {
@@ -703,6 +763,45 @@
             studentGreetingMotionPreference.addEventListener('change', scheduleStudentGreetingOverflow);
         }
     }
+
+    function updateStudentSkillSentenceOverflow() {
+        if (!studentSkillEntries) return;
+        var phoneLayout = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var sentences = studentSkillEntries.querySelectorAll('.student-skill-sentence');
+        sentences.forEach(function(sentence) {
+            var viewport = sentence.closest('.student-skill-copy');
+            sentence.classList.remove('is-scrolling');
+            sentence.style.removeProperty('--student-skill-shift');
+            sentence.style.removeProperty('--student-skill-duration');
+            if (!phoneLayout || reduceMotion || !viewport || viewport.clientWidth <= 0) return;
+            var overflow = Math.ceil(sentence.scrollWidth - viewport.clientWidth);
+            if (overflow <= 2) return;
+            sentence.style.setProperty('--student-skill-shift', (-(overflow + 10)) + 'px');
+            sentence.style.setProperty('--student-skill-duration', Math.max(7, Math.min(13, 6.5 + (overflow / 34))) + 's');
+            sentence.classList.add('is-scrolling');
+        });
+    }
+
+    function scheduleStudentSkillSentenceOverflow() {
+        window.requestAnimationFrame(updateStudentSkillSentenceOverflow);
+    }
+
+    if (studentSkillEntries && window.ResizeObserver) {
+        studentSkillSentenceResizeObserver = new ResizeObserver(scheduleStudentSkillSentenceOverflow);
+        studentSkillSentenceResizeObserver.observe(studentSkillEntries);
+    } else {
+        window.addEventListener('resize', scheduleStudentSkillSentenceOverflow);
+    }
+
+    if (window.matchMedia) {
+        var studentSkillMotionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var studentSkillPhoneLayout = window.matchMedia('(max-width: 640px)');
+        if (studentSkillMotionPreference.addEventListener) studentSkillMotionPreference.addEventListener('change', scheduleStudentSkillSentenceOverflow);
+        if (studentSkillPhoneLayout.addEventListener) studentSkillPhoneLayout.addEventListener('change', scheduleStudentSkillSentenceOverflow);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleStudentSkillSentenceOverflow).catch(function() {});
+    scheduleStudentSkillSentenceOverflow();
 
     function normalizedStatus(status) {
         if (status === 'done') return 'mastered';
@@ -4763,6 +4862,13 @@
     });
 
     document.addEventListener('click', function(e) {
+        var workspaceCard = e.target.closest('.student-skill-card');
+        if (workspaceCard) {
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            openWorkspaceConfirm(workspaceCard);
+            return;
+        }
         var categoryTrigger = e.target.closest('#student-library-category-trigger');
         if (categoryTrigger) {
             setLibraryCategoryMenuOpen(!libraryCategoryMenuOpen, false);
@@ -4816,7 +4922,39 @@
         }
     });
 
+    if (workspaceConfirmCancel) {
+        workspaceConfirmCancel.addEventListener('click', function() {
+            closeWorkspaceConfirm(true);
+        });
+    }
+    if (workspaceConfirmSubmit) {
+        workspaceConfirmSubmit.addEventListener('click', function() {
+            if (workspaceConfirmHref) window.location.assign(workspaceConfirmHref);
+        });
+    }
+    if (workspaceConfirmOverlay) {
+        workspaceConfirmOverlay.addEventListener('click', function(e) {
+            if (e.target === workspaceConfirmOverlay) closeWorkspaceConfirm(true);
+        });
+        workspaceConfirmOverlay.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                closeWorkspaceConfirm(true);
+                return;
+            }
+            if (e.key !== 'Tab' || !workspaceConfirmCancel || !workspaceConfirmSubmit) return;
+            if (e.shiftKey && document.activeElement === workspaceConfirmCancel) {
+                e.preventDefault();
+                workspaceConfirmSubmit.focus();
+            } else if (!e.shiftKey && document.activeElement === workspaceConfirmSubmit) {
+                e.preventDefault();
+                workspaceConfirmCancel.focus();
+            }
+        });
+    }
+
     document.addEventListener('keydown', function(e) {
+        if (workspaceConfirmOverlay && !workspaceConfirmOverlay.hidden) return;
         var practiceOverlay = document.getElementById('practice-entry-overlay');
         if (e.key === 'Escape' && practiceOverlay && !practiceOverlay.hidden) return;
         var passwordOverlay = document.querySelector('.password-dialog-overlay');
