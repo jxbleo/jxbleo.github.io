@@ -2063,55 +2063,128 @@ html.teacher-modal-scroll-locked {
     display: grid;
     gap: 14px;
     margin: 18px 0 28px;
+    padding: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 30px;
+    background: #151619;
+    box-shadow: 0 22px 58px rgba(23, 26, 31, 0.16);
 }
 .student-skill-card {
     position: relative;
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 18px;
-    min-height: 112px;
-    padding: 22px 24px;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    min-height: 132px;
+    padding: 24px 30px;
     overflow: hidden;
-    color: #173f38;
+    color: #ffffff;
     text-decoration: none;
-    border: 1px solid rgba(73, 142, 124, 0.22);
-    border-radius: 26px;
-    background:
-        radial-gradient(circle at 82% 8%, rgba(255, 225, 159, 0.48), transparent 36%),
-        linear-gradient(135deg, rgba(231, 248, 241, 0.98), rgba(249, 252, 242, 0.94));
-    box-shadow: 0 18px 42px rgba(38, 87, 75, 0.1);
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 22px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.12);
+    isolation: isolate;
+    transform-origin: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 300ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.student-skill-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(105deg, rgba(0, 0, 0, 0.12), transparent 55%, rgba(255, 255, 255, 0.1));
+}
+.student-skill-card.writing {
+    background: linear-gradient(105deg, #164b9a, #2d7ae5 66%, #5d98ee);
+}
+.student-skill-card.intensive-listening {
+    background: linear-gradient(105deg, #086a76, #1397a6 66%, #50bbc2);
+}
+.student-skill-card.speaking {
+    background: linear-gradient(105deg, #9e4615, #df6b23 66%, #f29a5d);
 }
 .student-skill-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(52, 127, 106, 0.4);
-    box-shadow: 0 22px 48px rgba(38, 87, 75, 0.15);
+    filter: saturate(1.06) brightness(1.025);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.27), inset 0 1px rgba(255, 255, 255, 0.17);
+}
+.student-skill-card:active {
+    transform: scale(0.986);
+    transition-duration: 80ms;
 }
 .student-skill-card:focus-visible {
-    outline: 3px solid rgba(41, 128, 105, 0.32);
+    outline: 3px solid rgba(114, 174, 255, 0.58);
     outline-offset: 3px;
 }
 .student-skill-glyph {
-    align-self: start;
-    color: #216d5d;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 2.2rem;
-    font-weight: 700;
-    line-height: 1.05;
+    position: absolute;
+    top: 50%;
+    right: 52px;
+    z-index: -1;
+    color: rgba(255, 255, 255, 0.16);
+    font-size: clamp(5.4rem, 11vw, 7.25rem);
+    font-weight: 760;
+    line-height: 1;
+    letter-spacing: -0.08em;
+    transform: translateY(-52%);
+    transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    user-select: none;
 }
-.student-skill-copy { display: grid; gap: 5px; }
-.student-skill-copy strong { font-size: clamp(1.08rem, 2vw, 1.38rem); letter-spacing: .05em; }
-.student-skill-copy span { color: rgba(23, 63, 56, 0.68); line-height: 1.5; }
-.student-skill-arrow { align-self: center; color: #216d5d; font-size: 1.8rem; transition: transform 180ms ease; }
-.student-skill-card:hover .student-skill-arrow { transform: translateX(4px); }
+.student-skill-card:hover .student-skill-glyph { transform: translate(-7px, -52%) scale(1.025); }
+.student-skill-copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 6px;
+    width: min(72%, 650px);
+}
+.student-skill-copy strong {
+    font-size: clamp(1.12rem, 2vw, 1.38rem);
+    letter-spacing: -0.015em;
+}
+.student-skill-copy span {
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+}
+.student-skill-edge {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    z-index: 2;
+    width: 5px;
+    height: 44px;
+    border-radius: 999px 0 0 999px;
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: -4px 0 18px rgba(255, 255, 255, 0.22);
+    transform: translateY(-50%);
+    transition: width 260ms cubic-bezier(0.2, 0.8, 0.2, 1), height 260ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.student-skill-card:hover .student-skill-edge,
+.student-skill-card:focus-visible .student-skill-edge {
+    width: 9px;
+    height: 58px;
+}
 @media (max-width: 640px) {
-    .student-skill-card { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; min-height: 106px; padding: 18px; border-radius: 22px; }
-    .student-skill-glyph { font-size: 1.9rem; }
+    .student-skill-entries { gap: 12px; padding: 14px; border-radius: 24px; }
+    .student-skill-card { min-height: 124px; padding: 20px; border-radius: 19px; }
+    .student-skill-copy { width: 78%; gap: 5px; }
+    .student-skill-copy strong { font-size: 1.02rem; }
+    .student-skill-copy span { font-size: 0.86rem; line-height: 1.42; }
+    .student-skill-glyph { right: 30px; font-size: 5.5rem; }
+    .student-skill-edge { height: 38px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .student-skill-card,
-    .student-skill-arrow { transition-duration: 1ms; }
+    .student-skill-glyph,
+    .student-skill-edge { transition-duration: 1ms; }
+    .student-skill-card:hover,
+    .student-skill-card:active { transform: none; }
+}
+@media (prefers-contrast: more) {
+    .student-skill-entries,
+    .student-skill-card { border-color: rgba(255, 255, 255, 0.56); }
+    .student-skill-copy span { color: rgba(255, 255, 255, 0.94); }
 }
 .student-progress-hero::before {
     background:
