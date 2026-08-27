@@ -2018,11 +2018,13 @@ High priority improvement:
   repeats blue, orange, purple, rose, indigo, coral, gold, and deep pink only after
   eight sentences, in the same positional order as capsules and revision rows.
   Switch back to Draft and confirm the untouched source text returns with waves on
-  every originally flagged sentence, including accepted ones. Click each Draft sentence
-  and confirm an Apple-style AI Feedback dialog opens with the source, initial analysis,
-  and saved feedback separated by hairlines without round labels. Originally correct
-  sentences must explicitly say no revision is needed. Confirm Tab remains trapped,
-  Escape closes, and focus returns to the sentence. Revised sentences are not interactive.
+  every originally flagged sentence, including accepted ones. Confirm the Draft/Revised
+  control is horizontally centered. Click each flagged Draft sentence and confirm the
+  feedback dialog opens directly with the source, initial analysis, and saved feedback;
+  it must not show `Sentence N`, `AI Feedback`, or round labels. Click an originally correct
+  sentence and confirm no dialog opens: the sentence only gives one small shake, while
+  Reduced Motion uses a brief static tint. Confirm Tab remains trapped, Escape closes,
+  and focus returns to the flagged sentence. Revised sentences are not interactive.
   A composition that needed no corrections must not show Revised.
 - At 320px, 375px, and 430px widths, test long unbroken English/model text,
   multi-photo preview, reference answers, and correction cards. The page must

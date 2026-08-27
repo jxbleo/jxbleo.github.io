@@ -1139,26 +1139,37 @@ check("completed writing offers a default Revised manuscript without another AI 
     "reconstructing Revised must use saved rewrite results and never invoke the model again");
 });
 
-check("completed Draft sentences open an accessible AI Feedback dialog", () => {
+check("completed Draft feedback distinguishes flagged and correct sentences", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, [
     'id="sentence-feedback-dialog"', 'role="dialog"', 'aria-modal="true"',
     'id="sentence-feedback-original"', 'id="sentence-feedback-copy"',
-    'data-close-sentence-feedback', '>AI Feedback<', '>Done<',
+    'data-close-sentence-feedback', 'aria-label="Sentence feedback"', '>Done<',
   ], "completed Draft feedback dialog");
+  assert(!page.includes('id="sentence-feedback-kicker"') && !page.includes('id="sentence-feedback-title"')
+      && !page.includes('>AI Feedback<'),
+    "the feedback dialog must begin with content rather than visible Sentence or AI Feedback headings");
   requireEvery(client, [
     "sentenceAnalysisCopy", "sentenceFeedbackCopies", "sentenceRewriteFeedbackHistory",
     "openSentenceFeedback", "closeSentenceFeedback", "sentenceFeedbackOpen",
-    "completedDraftFeedback", "state.manuscriptView === 'draft'",
+    "completedDraftFeedback", "state.manuscriptView === 'draft'", "cueNoFeedbackSentence",
   ], "completed Draft feedback behavior");
+  assert(/rewriteRequired\(manuscriptSentence\)[\s\S]{0,120}openSentenceFeedback[\s\S]{0,100}else cueNoFeedbackSentence/.test(client),
+    "only flagged Draft sentences may open feedback; correct sentences must use the motion cue");
   assert(/sentenceFeedbackOpen\s*&&\s*event\.key\s*===\s*['"]Tab['"][\s\S]{0,450}data-close-sentence-feedback/.test(client),
     "the feedback dialog must trap keyboard focus on its sole action");
   assert(/event\.key\s*===\s*['"]Escape['"][\s\S]{0,900}sentenceFeedbackOpen[\s\S]{0,120}closeSentenceFeedback/.test(client),
     "Escape must close the feedback dialog");
   requireEvery(styles, [".sentence-feedback-dialog", ".sentence-feedback-original", ".sentence-feedback-item + .sentence-feedback-item"],
     "sentence feedback material and separators");
+  assert(/\.manuscript-version-control\s*\{[^}]*display\s*:\s*grid[^}]*margin\s*:\s*0\s+auto/is.test(styles),
+    "the Draft/Revised segmented control must be centered");
+  requireEvery(styles, ["@keyframes manuscriptNoFeedbackCue", ".manuscript-sentence-highlight.is-no-feedback-cue"],
+    "correct-sentence no-feedback motion cue");
+  assert(/prefers-reduced-motion:\s*reduce[\s\S]*\.manuscript-sentence-highlight\.is-no-feedback-cue\s*\{[^}]*animation\s*:\s*none/is.test(styles),
+    "Reduced Motion must replace the correct-sentence shake");
 });
 
 check("Revised, capsule, and correction share the same eight-color sentence system", () => {

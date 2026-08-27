@@ -2350,11 +2350,14 @@ Important mobile rules:
   rose, indigo, coral, gold, and deep pink fills in the same positional order as
   the capsule/card palette. Switching back to Draft restores the unchanged source
   text and every original proofreading wave. The completed view removes the entire
-  Sentence Revision card. Each completed Draft sentence is keyboard and pointer
-  actionable and opens one focus-trapped Apple-style AI Feedback dialog containing
-  the source sentence, its consolidated initial analysis, and saved feedback paragraphs
-  separated by hairlines without round labels. Originally correct sentences receive
-  an explicit no-revision-needed message. Revised sentences are non-interactive.
+  Sentence Revision card. Center the `Draft / Revised` segmented control horizontally.
+  Each completed Draft sentence remains keyboard and pointer actionable, but only an
+  originally flagged sentence opens the focus-trapped Apple-style feedback dialog.
+  That dialog begins directly with the source sentence and analysis: it has no visible
+  `Sentence N` or `AI Feedback` heading. Saved feedback paragraphs use hairline separators
+  without round labels. An originally correct sentence opens nothing and gives one small
+  inline shake instead; Reduced Motion replaces the shake with a brief static tint.
+  Revised sentences are non-interactive.
   Do not show Revised for a manuscript that began with no required revisions.
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
