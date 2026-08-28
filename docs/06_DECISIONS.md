@@ -1194,6 +1194,15 @@ is not performed on the mixed Discussion file. It requires a later approved
 private excerpt-extraction boundary; current reports remain under Speaker labels
 until student confirmation or teacher mapping.
 
+The Speaking gateway is the narrow exception to the repository's fully bundled
+function default. Its provider pipeline made the full bundled CloudBase SDK
+exceed the current environment's expanded-code limit, although the compressed
+archive remained small. The package builder therefore externalizes only the
+existing, exactly pinned `@cloudbase/node-sdk@3.18.1` for `speakingLab`; CloudBase
+installs that dependency while project/shared code remains one minified bundle.
+This is preferable to an unreviewed SDK rewrite or a permanently failing COS
+deployment and does not introduce a new dependency.
+
 ### Intensive Listening session summaries
 
 Intensive Listening uses the existing private attempt-email outbox rather

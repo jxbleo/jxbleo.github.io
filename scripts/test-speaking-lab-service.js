@@ -10,6 +10,8 @@ const model = require("../cloudfunctions/speakingLab/model-provider");
 
 async function run() {
   const source = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/index.js"), "utf8");
+  const functionPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/package.json"), "utf8"));
+  const packagerSource = fs.readFileSync(path.join(__dirname, "package-cloudfunctions.js"), "utf8");
   assert.match(source, /action === "processQueuedJob"/);
   assert.match(source, /dispatch_token/);
   assert.match(source, /SPEAKING_PROVIDER_NOT_CONFIGURED/);
@@ -17,6 +19,9 @@ async function run() {
   assert.doesNotMatch(source, /upload_metadata\s*:/, "temporary upload credentials must not be persisted");
   assert.doesNotMatch(source, /event\.speaker_keys|event\.candidate_speaker_keys/, "teacher mapping candidates must come from the server report");
   assert.doesNotMatch(source, /event\.asset_id[\s\S]{0,500}event\.start_ms/, "playback must not trust a browser-selected asset and range");
+  assert.deepEqual(functionPackage.dependencies, { "@cloudbase/node-sdk": "3.18.1" });
+  assert.match(packagerSource, /speakingLab:\s*\{\s*"@cloudbase\/node-sdk":\s*"3\.18\.1"\s*\}/);
+  assert.match(packagerSource, /external:\s*\["@aws-sdk\/client-s3",\s*\.\.\.Object\.keys\(installedDependencies\)\]/);
 
   assert.throws(() => speech.createSpeechProvider({ env: {} }), (error) => error.code === "SPEAKING_PROVIDER_NOT_CONFIGURED");
   assert.equal(model.providerConfigStatus({}).configured, false);

@@ -10,6 +10,9 @@
   server-only credentials, versioned three-domain prompt, strict local evidence
   validation, and atomic ready-report publication. Pronunciation remains
   explicitly unassessed.
+- Kept the expanded Speaking function below CloudBase's code limit by
+  externalizing only the existing pinned Node SDK in its generated package;
+  other functions retain the fully bundled deployment default.
 - Added the current voiceprint enrolment revision and latest Shanghai-time
   update to the Teacher Speaking target card, making successful replacements
   visible without a CloudBase console check.

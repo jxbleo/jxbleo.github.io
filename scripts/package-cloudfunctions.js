@@ -15,6 +15,9 @@ const flags = new Set(args.filter((arg) => arg.startsWith("--")));
 const requested = args.filter((arg) => !arg.startsWith("--"));
 const dryRun = flags.has("--dry-run");
 const packageAll = flags.has("--all");
+const cloudInstalledDependencies = {
+  speakingLab: { "@cloudbase/node-sdk": "3.18.1" }
+};
 
 function run(command, commandArgs, options = {}) {
   return spawnSync(command, commandArgs, {
@@ -88,6 +91,7 @@ function packageFunction(functionName) {
   const stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), `mrcat-${functionName}-`));
   const bundledIndexPath = path.join(stagingDir, "index.js");
   const bundledPackagePath = path.join(stagingDir, "package.json");
+  const installedDependencies = cloudInstalledDependencies[functionName] || {};
 
   try {
     esbuild.buildSync({
@@ -98,7 +102,7 @@ function packageFunction(functionName) {
       target: "node18",
       format: "cjs",
       minify: true,
-      external: ["@aws-sdk/client-s3"],
+      external: ["@aws-sdk/client-s3", ...Object.keys(installedDependencies)],
       logLevel: "silent"
     });
     fs.writeFileSync(bundledPackagePath, `${JSON.stringify({
@@ -106,7 +110,7 @@ function packageFunction(functionName) {
       version: "1.0.0",
       private: true,
       main: "index.js",
-      dependencies: {}
+      dependencies: installedDependencies
     }, null, 2)}\n`);
 
     const bundledCheck = run("node", ["--check", bundledIndexPath]);
