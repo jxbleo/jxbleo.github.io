@@ -30,6 +30,23 @@ async function run() {
   assert.match(packagerSource, /await esbuild\.build\(/);
   assert.doesNotMatch(packagerSource, /installedDependencies|@cloudbase\/node-sdk"\s*:\s*"3\.18\.1"/);
 
+  const speakingTest = require("../cloudfunctions/speakingLab/index.js")._test;
+  assert.deepEqual(speakingTest.uploadMetadataView({ data: {
+    url: "https://upload.example.test",
+    token: "temporary-token",
+    authorization: "temporary-authorization",
+    fileId: "cloud://env/path.mp3",
+    cosFileId: "cos-file-id",
+  } }, "speaking-lab/path.mp3"), {
+    file_id: "cloud://env/path.mp3",
+    cos_file_id: "cos-file-id",
+    url: "https://upload.example.test",
+    upload_url: "https://upload.example.test",
+    authorization: "temporary-authorization",
+    token: "temporary-token",
+    cloud_path: "speaking-lab/path.mp3",
+  });
+
   assert.throws(() => speech.createSpeechProvider({ env: {} }), (error) => error.code === "SPEAKING_PROVIDER_NOT_CONFIGURED");
   assert.equal(model.providerConfigStatus({}).configured, false);
   assert.throws(() => model.createModelProvider({ env: {} }), (error) => error.code === "SPEAKING_PROVIDER_NOT_CONFIGURED");
