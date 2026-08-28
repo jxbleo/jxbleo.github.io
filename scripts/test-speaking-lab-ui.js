@@ -34,6 +34,9 @@ function run() {
   assert.match(app, /api\.callFunction\('speakingLab'/);
   assert.doesNotMatch(app, /callAuthenticatedFunction\('speakingLab'/);
   assert.match(app, /Page startup has already completed getSession/);
+  assert.match(app, /Promise\.race\(\[request, timeout\]\)/);
+  assert.match(app, /loadMyVoiceprint\(\)\.then\(function \(\) \{ return loadList\(\); \}\)/);
+  assert.doesNotMatch(app, /Promise\.all\(\[loadMyVoiceprint\(\), loadList\(\)\]\)/);
   assert.match(app, /getUserMedia/);
   assert.match(app, /AnalyserNode|createAnalyser/);
   assert.match(app, /-45|0\.98|INPUT_LOSS_SECONDS/);

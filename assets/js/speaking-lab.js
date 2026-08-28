@@ -42,6 +42,14 @@
     var voiceprintTarget = null;
     var voiceprintController = null;
     var voiceprintSaving = false;
+    var READ_TIMEOUT_MS = 20000;
+    var MUTATION_TIMEOUT_MS = 90000;
+    var READ_ACTIONS = {
+        getMyVoiceprint: true,
+        listDiscussions: true,
+        getDiscussion: true,
+        getVoiceConfirmationPlayback: true
+    };
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -51,10 +59,22 @@
     function call(action, data) {
         // Page startup has already completed getSession(), and speakingLab
         // derives the caller from server-side context on every action. Avoid a
-        // second browser-SDK login preflight here: concurrent preflights can
-        // leave both initial Speaking reads pending without invoking the
-        // function at all.
-        return api.callFunction('speakingLab', Object.assign({ action: action }, data || {})).then(function (result) {
+        // second browser-SDK login preflight here. Initial reads are also
+        // sequenced below because concurrent SDK credential initialization can
+        // leave both requests pending without invoking the function at all.
+        var timeoutMs = READ_ACTIONS[action] ? READ_TIMEOUT_MS : MUTATION_TIMEOUT_MS;
+        var timeoutId = 0;
+        var request = api.callFunction('speakingLab', Object.assign({ action: action }, data || {}));
+        var timeout = new Promise(function (_, reject) {
+            timeoutId = window.setTimeout(function () {
+                var error = new Error('Speaking Lab is taking too long to respond. Please refresh and try again.');
+                error.code = 'SPEAKING_REQUEST_TIMEOUT';
+                reject(error);
+            }, timeoutMs);
+        });
+        return Promise.race([request, timeout]).finally(function () {
+            if (timeoutId) window.clearTimeout(timeoutId);
+        }).then(function (result) {
             if (!result || result.success === false) {
                 var error = new Error(result && result.message || 'Speaking Lab request failed.');
                 error.code = result && result.code || 'SPEAKING_LAB_ERROR';
@@ -521,7 +541,7 @@
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }
         identity.textContent = session.profile && (session.profile.english_name || session.profile.name) || 'Speaking Lab';
-        return Promise.all([loadMyVoiceprint(), loadList()]);
+        return loadMyVoiceprint().then(function () { return loadList(); });
     }).catch(function () { window.location.replace('index.html?return=speaking-lab.html'); });
     window.addEventListener('pagehide', function () { stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (qualityRecoveryTimer) window.clearTimeout(qualityRecoveryTimer); if (pollTimer) window.clearTimeout(pollTimer); if (recordingBlob) recordingBlob = null; });
 })(window);
