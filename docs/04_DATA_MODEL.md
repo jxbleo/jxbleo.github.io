@@ -1244,6 +1244,13 @@ per physical provider call); `speaking_voiceprints` (one private reusable
 provider locator and lifecycle per subject); and `speaking_voiceprint_events`
 (append-only enrol/update/delete consent and actor audit).
 
+For `speaking_audio_assets`, `file_id` may be `null` only while `status` is
+`uploading`. `startAudioUpload` stores the server-reserved `cloud_path` and
+expected size/type. `finishAudioUpload` writes `file_id` and advances the asset
+only after the returned CloudBase file ID matches that exact path and Storage
+reports the expected byte size. A client file ID is a handoff locator, not
+trusted ownership or upload evidence.
+
 `speaking_voiceprints` fields are top-level: unique `voiceprint_profile_id` and
 `subject_key`; `subject_kind` (`vip` or `guest`); VIP `student_uid` or scoped
 Guest `participant_id` plus `discussion_id`; `provider: "tencent_asr"`;

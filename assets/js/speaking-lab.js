@@ -45,6 +45,7 @@
     var voiceprintSaving = false;
     var READ_TIMEOUT_MS = 20000;
     var MUTATION_TIMEOUT_MS = 90000;
+    var FILE_UPLOAD_TIMEOUT_MS = 10 * 60 * 1000;
     var READ_ACTIONS = {
         getMyVoiceprint: true,
         listDiscussions: true,
@@ -90,8 +91,22 @@
     }
     function friendlyError(error) {
         if (error && error.code === 'SPEAKING_PROVIDER_NOT_CONFIGURED') return 'Speaking analysis is not enabled yet. Your recording is still private.';
+        if (error && error.code === 'SPEAKING_UPLOAD_TIMEOUT') return 'The audio upload took too long. Check the connection and try again; the Discussion was not submitted for analysis.';
         if (error && error.message) return error.message;
         return 'The Speaking Lab request could not be completed. Please try again.';
+    }
+    function uploadWithTimeout(promise) {
+        var timeoutId = 0;
+        var timeout = new Promise(function (_, reject) {
+            timeoutId = window.setTimeout(function () {
+                var error = new Error('The audio upload took too long.');
+                error.code = 'SPEAKING_UPLOAD_TIMEOUT';
+                reject(error);
+            }, FILE_UPLOAD_TIMEOUT_MS);
+        });
+        return Promise.race([promise, timeout]).finally(function () {
+            if (timeoutId) window.clearTimeout(timeoutId);
+        });
     }
     function formatDate(value) {
         if (!value) return 'Date not set';
@@ -438,7 +453,10 @@
         var mime = String(blob.type || 'audio/webm').toLowerCase().split(';')[0];
         var action = kind === 'voice_reference' ? 'startVoiceReferenceUpload' : 'startAudioUpload';
         return call(action, { discussion_id: selectedId, participant_id: participantId || null, operation_id: operationId, mime_type: mime, size_bytes: blob.size }).then(function (result) {
-            return api.uploadWithMetadata(result.upload, blob).then(function () { return call(kind === 'voice_reference' ? 'finishVoiceReferenceUpload' : 'finishAudioUpload', { discussion_id: selectedId, participant_id: participantId || null, operation_id: operationId, asset_id: result.asset_id }); });
+            if (!result.upload || result.upload.upload_mode !== 'cloudbase_js_sdk' || !result.upload.cloud_path) throw new Error('Upload information is incomplete.');
+            return uploadWithTimeout(api.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) {
+                return call(kind === 'voice_reference' ? 'finishVoiceReferenceUpload' : 'finishAudioUpload', { discussion_id: selectedId, participant_id: participantId || null, operation_id: operationId, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id });
+            });
         });
     }
     function stopVoiceReferenceRecording() {
@@ -497,7 +515,7 @@
         var stop = document.getElementById('stop-recording'); if (stop) stop.addEventListener('click', function () { if (!recorder || recorder.state === 'inactive') return; var elapsed = (performance.now() - recordingStartedAt) / 1000; if (elapsed < Math.min(60, recordingTargetSeconds / 2) && !window.confirm('Stop this recording early?')) return; recorder.stop(); });
         var preview = document.getElementById('preview-recording'); if (preview) preview.addEventListener('click', function () { if (!recordingBlob) return; var url = URL.createObjectURL(recordingBlob); var audio = new Audio(url); audio.addEventListener('ended', function () { URL.revokeObjectURL(url); }); audio.play().catch(function () { URL.revokeObjectURL(url); showQualityWarning('Local preview could not play on this browser.'); }); });
         var upload = document.getElementById('upload-recording'); if (upload) upload.addEventListener('click', function () { upload.disabled = true; setStatus('Uploading audio…'); uploadBlob(recordingBlob, 'formal').then(function () { return openDiscussion(selectedId); }).then(function () { setStatus('Audio uploaded.'); }).catch(function (error) { setStatus(friendlyError(error), true); upload.disabled = false; }); });
-        var file = document.getElementById('audio-file'); if (file) file.addEventListener('change', function () { if (file.files[0]) { setStatus('Uploading audio…'); uploadBlob(file.files[0], 'formal').then(function () { return openDiscussion(selectedId); }).then(function () { setStatus('Audio uploaded.'); }).catch(function (error) { setStatus(friendlyError(error), true); }); } });
+        var file = document.getElementById('audio-file'); if (file) file.addEventListener('change', function () { if (file.files[0]) { setStatus('Uploading audio…'); uploadBlob(file.files[0], 'formal').then(function () { return openDiscussion(selectedId); }).then(function () { setStatus('Audio uploaded.'); }).catch(function (error) { setStatus(friendlyError(error), true); }).finally(function () { file.value = ''; }); } });
         detail.querySelectorAll('[data-voice-record]').forEach(function (button) { button.addEventListener('click', function () { startVoiceReferenceRecording(button.getAttribute('data-voice-record'), button.getAttribute('data-voice-name') || 'this participant', button); }); });
         detail.querySelectorAll('[data-voice-file]').forEach(function (input) { input.addEventListener('change', function () { var file = input.files[0]; if (!file) return; var name = input.getAttribute('data-voice-name') || 'this participant'; if (!window.confirm('Use this Voice Reference for ' + name + '?')) { input.value = ''; return; } setStatus('Uploading Voice Reference…'); uploadBlob(file, 'voice_reference', input.getAttribute('data-voice-file')).then(function () { return openDiscussion(selectedId); }).then(function () { setStatus('Voice Reference uploaded.'); }).catch(function (error) { setStatus(friendlyError(error), true); }); }); });
         var analysis = document.getElementById('start-analysis'); if (analysis) analysis.addEventListener('click', function () { analysis.disabled = true; call('startAnalysis', { discussion_id: selectedId, operation_id: 'analysis-' + selectedId }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); analysis.disabled = false; }); });

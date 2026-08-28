@@ -163,6 +163,20 @@
         });
     }
 
+    function uploadCloudFile(cloudPath, file) {
+        if (!cloudPath || !file) {
+            return Promise.reject(new Error('Upload information is incomplete.'));
+        }
+        return getApp().uploadFile({
+            cloudPath: cloudPath,
+            filePath: file
+        }).then(function(result) {
+            var fileId = result && (result.fileID || result.fileId || result.file_id);
+            if (!fileId) throw new Error('Cloud storage did not return a file ID.');
+            return { success: true, file_id: fileId };
+        });
+    }
+
     function imageElementForFile(file) {
         return new Promise(function(resolve, reject) {
             var url = URL.createObjectURL(file);
@@ -228,6 +242,7 @@
         callFunction: callFunction,
         callAuthenticatedFunction: callAuthenticatedFunction,
         uploadWithMetadata: uploadWithMetadata,
+        uploadCloudFile: uploadCloudFile,
         prepareEvidenceImage: prepareEvidenceImage,
         getDeviceId: getDeviceId,
         getClientInstanceId: getClientInstanceId

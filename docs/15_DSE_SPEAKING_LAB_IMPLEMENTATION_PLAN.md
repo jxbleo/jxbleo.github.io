@@ -916,12 +916,14 @@ Use the same two-phase pattern as Writing Tutor:
 authenticated startAudioUpload
   -> validate Discussion access and stable operation ID
   -> create/replay speaking_audio_assets uploading row
-  -> return request-scoped private upload metadata
+  -> return the exact server-reserved private cloud_path
 
-browser uploads bytes directly to private CloudBase Storage
+browser uploads bytes with the authenticated CloudBase browser SDK
+  -> receive the SDK-returned CloudBase file ID
 
 authenticated finishAudioUpload
   -> revalidate ownership/scope
+  -> require the returned file ID to resolve to the reserved cloud_path
   -> inspect actual stored file info and size
   -> mark asset uploaded
   -> attach it to Discussion
@@ -931,7 +933,9 @@ authenticated finishAudioUpload
 If `finishAudioUpload` response is lost, the client reuses the same operation ID
 and asset ID. `getDiscussion` may safely complete a still-verifiable pending
 upload handoff, as Writing Tutor does. Never create a second asset because the
-browser did not receive a response.
+browser did not receive a response. The browser transfer must have a bounded
+ten-minute timeout that restores an actionable retry state; it must not leave
+the upload control permanently busy.
 
 Replacing Formal Discussion audio before analysis creates a new audio asset and
 supersedes the old one. Once analysis has started, students cannot replace it;
