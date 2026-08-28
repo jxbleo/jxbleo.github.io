@@ -19,17 +19,19 @@ Dashboard learning-workspace checks:
 
 - desktop and 320/375/390/430px phone widths show exactly three stacked bands
   in Writing, Intensive Listening, Speaking order with no horizontal overflow;
-- the pale hero contains the greeting, motivational sentence, and all three
-  bands; no `THIS WEEK` progress row, progress track, or separate dark workspace
-  container remains, and the visible top-toolbar-to-hero gap is about 40px;
-- no visible `WRITING`, `INTENSIVE LISTENING`, or `SPEAKING` title, character
-  watermark, arrow, or edge bar remains; accessible labels still name the three
-  destinations and each card contains exactly one trailing SVG identifier;
-- the SVG identifiers are the approved pen, headphones, and microphone, and the
-  three card backgrounds remain muted blue-grey, sage, and warm sand;
+- the pale hero contains only the greeting and motivational sentence; no
+  `THIS WEEK` progress row or progress track returns. The three cards sit below
+  it as independent surfaces, align with its exact left/right edges, and have no
+  shared outer container;
+- visible titles read `WRITING`, `INTENSIVE LISTENING`, and
+  `SPEAKING · HKDSE PAPER 4`; the Speaking purpose names Group Interaction, and
+  its accessible/confirmation copy names HKDSE Paper 4 Speaking;
+- the cards use separate blue, teal, and orange pale-glass washes with circular
+  `写`, `听`, and `说` identifiers. The confirmation still repeats the approved
+  pen, headphones, or microphone SVG;
 - tablet and desktop show the complete purpose sentence. At 320/375/390/430px,
-  each card keeps one text line; only a genuinely overflowing sentence scrolls,
-  and Reduced Motion leaves it static without introducing page overflow;
+  all three cards keep equal heights and each purpose wraps naturally without
+  clipping or page overflow;
 - ordinary pointer and keyboard activation opens the matching confirmation
   dialog. Cancel, backdrop, and Escape close it, restore scroll and focus, and
   Enter follows the original destination. Cmd/Ctrl/Shift/Alt-click retains

@@ -2063,85 +2063,127 @@ html.teacher-modal-scroll-locked {
     position: relative;
     z-index: 1;
     display: grid;
-    gap: 10px;
-    margin: clamp(26px, 4vw, 34px) 0 0;
-    padding: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.82);
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.42);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 12px 28px rgba(44, 72, 66, 0.07);
-    backdrop-filter: blur(18px) saturate(115%);
-    -webkit-backdrop-filter: blur(18px) saturate(115%);
+    gap: 17px;
+    margin: 18px 0 28px;
 }
 .student-skill-card {
+    --skill-tone: #2c72d8;
+    --skill-glow: rgba(44, 114, 216, 0.22);
+    --skill-wash: rgba(224, 235, 252, 0.88);
+    --skill-edge: rgba(44, 114, 216, 0.19);
+    --skill-focus: rgba(44, 114, 216, 0.28);
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 54px;
+    grid-template-columns: minmax(0, 1fr) 104px;
     align-items: center;
-    gap: 18px;
-    min-height: 94px;
-    padding: 18px 22px 18px 24px;
+    gap: 24px;
+    min-height: 154px;
+    padding: 27px 31px;
     overflow: hidden;
-    color: #263534;
+    color: #233039;
     text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.74);
-    border-radius: 18px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76), 0 6px 16px rgba(45, 69, 65, 0.06);
+    border: 1px solid var(--skill-edge);
+    border-radius: 32px;
+    background:
+        radial-gradient(circle at 85% 28%, var(--skill-glow), transparent 19rem),
+        linear-gradient(110deg, rgba(255, 255, 255, 0.88), var(--skill-wash));
+    box-shadow: 0 18px 48px rgba(35, 55, 62, 0.10), inset 0 1px rgba(255, 255, 255, 0.96);
     isolation: isolate;
     transform-origin: center;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 180ms cubic-bezier(0.2, 0.75, 0.25, 1), box-shadow 180ms ease, filter 180ms ease;
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    backdrop-filter: blur(24px) saturate(150%);
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 300ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 300ms ease;
 }
 .student-skill-card::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -2;
-    background: linear-gradient(105deg, rgba(255, 255, 255, 0.16), transparent 58%, rgba(255, 255, 255, 0.08));
+    background: linear-gradient(105deg, rgba(255, 255, 255, 0.2), transparent 58%, rgba(255, 255, 255, 0.1));
 }
 .student-skill-card.writing {
-    background: linear-gradient(135deg, rgba(232, 240, 243, 0.96), rgba(210, 225, 230, 0.92));
+    --skill-tone: #2c72d8;
+    --skill-glow: rgba(44, 114, 216, 0.22);
+    --skill-wash: rgba(224, 235, 252, 0.88);
+    --skill-edge: rgba(44, 114, 216, 0.19);
+    --skill-focus: rgba(44, 114, 216, 0.28);
 }
 .student-skill-card.intensive-listening {
-    background: linear-gradient(135deg, rgba(230, 242, 236, 0.97), rgba(204, 226, 217, 0.93));
+    --skill-tone: #0f9194;
+    --skill-glow: rgba(15, 145, 148, 0.21);
+    --skill-wash: rgba(222, 242, 241, 0.9);
+    --skill-edge: rgba(15, 145, 148, 0.19);
+    --skill-focus: rgba(15, 145, 148, 0.28);
 }
 .student-skill-card.speaking {
-    background: linear-gradient(135deg, rgba(247, 240, 230, 0.97), rgba(234, 218, 199, 0.92));
+    --skill-tone: #dd6928;
+    --skill-glow: rgba(221, 105, 40, 0.21);
+    --skill-wash: rgba(250, 232, 220, 0.9);
+    --skill-edge: rgba(221, 105, 40, 0.19);
+    --skill-focus: rgba(221, 105, 40, 0.28);
 }
 .student-skill-card:hover {
-    transform: translateY(-1px);
-    filter: saturate(1.04);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 10px 22px rgba(45, 69, 65, 0.09);
+    transform: translateY(-2px);
+    filter: saturate(1.04) brightness(1.01);
+    box-shadow: 0 23px 54px rgba(35, 55, 62, 0.14), inset 0 1px rgba(255, 255, 255, 0.98);
 }
 .student-skill-card:active {
     transform: scale(0.987);
     transition-duration: 90ms;
 }
 .student-skill-card:focus-visible {
-    outline: 3px solid rgba(49, 93, 83, 0.3);
+    outline: 3px solid var(--skill-focus);
     outline-offset: 3px;
 }
 .student-skill-copy {
+    display: grid;
+    gap: 7px;
     min-width: 0;
-    color: rgba(38, 53, 52, 0.74);
+    color: #627078;
     line-height: 1.5;
 }
+.student-skill-title {
+    color: var(--skill-tone);
+    font-size: clamp(1.08rem, 1.6vw, 1.28rem);
+    font-weight: 820;
+    letter-spacing: 0.045em;
+    line-height: 1.12;
+}
 .student-skill-sentence {
-    display: inline;
+    display: block;
+    font-size: clamp(0.86rem, 1.2vw, 0.96rem);
+    font-weight: 590;
+    line-height: 1.45;
 }
 .student-skill-icon {
+    position: relative;
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 17px;
-    color: rgba(49, 86, 78, 0.7);
-    background: rgba(255, 255, 255, 0.36);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.66);
-    transition: transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1), color 220ms ease, background 220ms ease;
+    width: 104px;
+    height: 104px;
+    border: 1px solid var(--skill-edge);
+    border-radius: 50%;
+    color: var(--skill-tone);
+    background: rgba(255, 255, 255, 0.48);
+    box-shadow: 0 14px 28px var(--skill-glow), inset 0 1px rgba(255, 255, 255, 0.92);
+    transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1), color 220ms ease, background 220ms ease;
 }
-.student-skill-icon svg,
+.student-skill-icon::before {
+    content: attr(data-glyph);
+    font-size: 3.7rem;
+    font-weight: 760;
+    letter-spacing: -0.08em;
+    line-height: 1;
+}
+.student-skill-card .student-skill-icon svg {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    -webkit-clip-path: inset(50%);
+    clip-path: inset(50%);
+}
 .student-workspace-confirm-icon svg {
     width: 32px;
     height: 32px;
@@ -2153,57 +2195,41 @@ html.teacher-modal-scroll-locked {
 }
 .student-skill-card:hover .student-skill-icon,
 .student-skill-card:focus-visible .student-skill-icon {
-    color: rgba(39, 75, 67, 0.9);
-    background: rgba(255, 255, 255, 0.5);
-    transform: translateX(-2px) scale(1.025);
-}
-@keyframes studentSkillSentenceReveal {
-    0%, 10% { transform: translate3d(0, 0, 0); }
-    90%, 100% { transform: translate3d(var(--student-skill-shift, 0), 0, 0); }
+    color: var(--skill-tone);
+    background: rgba(255, 255, 255, 0.64);
+    transform: translateX(-7px) scale(1.025);
 }
 @media (max-width: 640px) {
-    .student-skill-entries { margin-top: 28px; padding: 9px; border-radius: 20px; }
+    .student-skill-entries { gap: 12px; margin: 12px 0 24px; }
     .student-skill-card {
-        grid-template-columns: minmax(0, 1fr) 46px;
+        grid-template-columns: minmax(0, 1fr) 76px;
         gap: 12px;
-        min-height: 76px;
-        padding: 12px 14px 12px 18px;
-        border-radius: 16px;
+        min-height: 154px;
+        padding: 20px;
+        border-radius: 24px;
     }
-    .student-skill-copy {
-        overflow: hidden;
-        white-space: nowrap;
-        -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
-        mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
-    }
+    .student-skill-copy { gap: 5px; }
+    .student-skill-title { font-size: 1rem; }
     .student-skill-sentence {
-        display: inline-block;
-        min-width: max-content;
-        font-size: 0.88rem;
-        will-change: transform;
+        font-size: 0.8rem;
+        line-height: 1.4;
     }
-    .student-skill-sentence.is-scrolling {
-        animation: studentSkillSentenceReveal var(--student-skill-duration, 8s) ease-in-out infinite alternate;
-    }
-    .student-skill-icon { width: 44px; height: 44px; border-radius: 14px; }
-    .student-skill-icon svg { width: 27px; height: 27px; }
+    .student-skill-icon { width: 76px; height: 76px; }
+    .student-skill-icon::before { font-size: 2.8rem; }
 }
 @media (prefers-reduced-motion: reduce) {
     .student-skill-card,
     .student-skill-icon { transition-duration: 1ms; }
     .student-skill-card:hover,
     .student-skill-card:active { transform: none; }
-    .student-skill-sentence.is-scrolling { animation: none; }
 }
 @media (prefers-contrast: more) {
-    .student-skill-entries,
     .student-skill-card { border-color: rgba(27, 37, 43, 0.48); }
-    .student-skill-entries { background: rgba(255, 255, 255, 0.96); }
     .student-skill-copy { color: #1d2b28; }
     .student-skill-icon { color: #1f4c42; border: 1px solid rgba(31, 76, 66, 0.38); }
 }
 @media (prefers-reduced-transparency: reduce) {
-    .student-skill-entries {
+    .student-skill-card {
         background: #ffffff;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
