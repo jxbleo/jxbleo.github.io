@@ -6,7 +6,10 @@
     var list = document.getElementById('speaking-list');
     var detail = document.getElementById('speaking-detail');
     var status = document.getElementById('speaking-status');
-    var identity = document.getElementById('speaking-identity');
+    var sidebar = document.getElementById('speaking-sidebar');
+    var sidebarToggle = document.getElementById('speaking-sidebar-toggle');
+    var sidebarScrim = document.getElementById('speaking-sidebar-scrim');
+    var sidebarHome = document.getElementById('speaking-sidebar-home');
     var dialog = document.getElementById('discussion-dialog');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
@@ -264,11 +267,40 @@
             '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(candidateLabel) + '</span><span class="speaking-pill" data-tone="' + esc(statusTone(item.analysis_status)) + '">' + esc(readableStatus(item.analysis_status)) + '</span>' + (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + '</span>' +
             '<svg class="speaking-card-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
+    function openSidebar() {
+        sidebar.classList.add('is-open');
+        sidebar.setAttribute('aria-hidden', 'false');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
+        sidebarToggle.setAttribute('aria-label', 'Close Discussion sidebar');
+        sidebarScrim.hidden = false;
+        document.body.classList.add('speaking-sidebar-open');
+    }
+    function closeSidebar(options) {
+        sidebar.classList.remove('is-open');
+        sidebar.setAttribute('aria-hidden', 'true');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+        sidebarToggle.setAttribute('aria-label', 'Open Discussion sidebar');
+        sidebarScrim.hidden = true;
+        document.body.classList.remove('speaking-sidebar-open');
+        if (options && options.restoreFocus) sidebarToggle.focus();
+    }
+    function returnToSpeakingHome() {
+        document.body.classList.remove('speaking-detail-open');
+        detail.hidden = true;
+        selectedId = '';
+        pollGeneration += 1;
+        if (pollTimer) window.clearTimeout(pollTimer);
+        window.history.replaceState(null, '', 'speaking-lab.html');
+        stopLocalRecording();
+        voiceDiscard = true;
+        stopVoiceReferenceRecording();
+        closeSidebar();
+    }
     function renderList(items) {
         if (!items.length) { list.innerHTML = '<div class="speaking-detail-card speaking-empty-state"><div class="speaking-empty-icon" aria-hidden="true">◎</div><h2>Start your first Discussion</h2><p>Add the DSE task and record when the group is ready. Candidates and invitations are created from the audio.</p></div>'; return; }
         list.innerHTML = items.map(listCard).join('');
         list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
-            button.addEventListener('click', function () { openDiscussion(button.getAttribute('data-discussion-id')); });
+            button.addEventListener('click', function () { closeSidebar(); openDiscussion(button.getAttribute('data-discussion-id')); });
         });
     }
     function participantRow(participant, item) {
@@ -571,7 +603,6 @@
                 if (invitationDialog.open) invitationDialog.close();
                 document.body.classList.add('speaking-detail-open');
                 detail.hidden = false;
-                list.hidden = true;
                 detail.innerHTML = detailMarkup(result.discussion);
                 bindInvitationActions();
                 bindRecording();
@@ -595,7 +626,10 @@
         document.body.classList.remove('speaking-detail-open');
         return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
-    document.getElementById('new-discussion').addEventListener('click', function () { document.getElementById('discussion-date').value = shanghaiToday(); if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); });
+    sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
+    sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
+    sidebarHome.addEventListener('click', returnToSpeakingHome);
+    document.getElementById('new-discussion').addEventListener('click', function () { closeSidebar(); document.getElementById('discussion-date').value = shanghaiToday(); if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); });
     document.getElementById('open-my-voiceprint').addEventListener('click', openVoiceprintDialog);
     document.getElementById('voiceprint-record').addEventListener('click', startMyVoiceprintRecording);
     document.getElementById('voiceprint-stop').addEventListener('click', stopMyVoiceprintRecording);
@@ -643,12 +677,12 @@
             button.disabled = false;
         });
     });
-    document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') { document.body.classList.remove('speaking-detail-open'); detail.hidden = true; list.hidden = false; selectedId = ''; pollGeneration += 1; if (pollTimer) window.clearTimeout(pollTimer); window.history.replaceState(null, '', 'speaking-lab.html'); stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); } });
+    document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
+    document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
     document.addEventListener('visibilitychange', function () { if (selectedId && !document.hidden) openDiscussion(selectedId); });
 
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }
-        identity.textContent = session.profile && (session.profile.english_name || session.profile.name) || 'Speaking Lab';
         return loadMyVoiceprint().then(function () { return loadList(); });
     }).catch(function () { window.location.replace('index.html?return=speaking-lab.html'); });
     window.addEventListener('pagehide', function () { stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (qualityRecoveryTimer) window.clearTimeout(qualityRecoveryTimer); if (pollTimer) window.clearTimeout(pollTimer); if (recordingBlob) recordingBlob = null; });
