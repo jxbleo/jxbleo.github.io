@@ -481,6 +481,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .grammar-analysis { margin-bottom: 12px; padding: 0; border: 0; border-radius: 0; color: #31574e; background: transparent; overflow-wrap: anywhere; word-break: break-word; }
 .grammar-analysis-copy { margin: 0; font-size: calc(.82rem * var(--revision-analysis-scale,1)); line-height: 1.65; transition: font-size 180ms ease-out; }
 .rewrite-feedback-round { margin-top: 10px; }
+.grammar-analysis-copy + .rewrite-feedback-round,
 .rewrite-feedback-round + .rewrite-feedback-round { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--sentence-ring); }
 .rewrite-feedback-round > p { margin: 0; font-size: calc(.82rem * var(--revision-analysis-scale,1)); line-height: 1.65; transition: font-size 180ms ease-out; }
 .sentence-response { min-width: 0; }

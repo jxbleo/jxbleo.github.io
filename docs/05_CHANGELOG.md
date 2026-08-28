@@ -2,6 +2,9 @@
 
 ## 2026-08-28
 
+- Extended the Sentence Revision feedback dividers to include the boundary between
+  the original Language Review coaching and the first submitted rewrite feedback,
+  while retaining the same divider between every later feedback round.
 - Removed provider-generated warning bullet lists from student-facing Review Scan
   cards. OCR text, confidence marks, and deterministic sentence-mapping validation
   remain unchanged, while language or spelling observations stay out of this
