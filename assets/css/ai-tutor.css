@@ -477,8 +477,13 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .sentence-face-flip-hit { position: absolute; z-index: 1; inset: 0; width: 100%; min-height: 0; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
 .sentence-face-flip-hit:active { background: var(--sentence-soft); }
 .sentence-face-flip-hit:focus-visible { outline: 3px solid var(--sentence-ring); outline-offset: -4px; }
+.sentence-effective-cue-hit { position: absolute; z-index: 1; inset: 0; width: 100%; min-height: 0; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
+.sentence-effective-cue-hit:active { background: var(--sentence-soft); }
+.sentence-effective-cue-hit:focus-visible { outline: 3px solid var(--sentence-ring); outline-offset: -4px; }
 .sentence-face-content { position: relative; z-index: 2; pointer-events: none; }
 .sentence-face-content button, .sentence-face-content input, .sentence-face-content textarea, .sentence-face-content select, .sentence-face-content label { pointer-events: auto; }
+@keyframes sentenceEffectiveCue { 0%,100% { transform: translateX(0); } 22% { transform: translateX(-4px); } 48% { transform: translateX(3px); } 72% { transform: translateX(-1.5px); } }
+.sentence-effective-face.is-effective-cue { animation: sentenceEffectiveCue 360ms cubic-bezier(.22,.8,.3,1); }
 .grammar-analysis { margin-bottom: 12px; padding: 0; border: 0; border-radius: 0; color: #31574e; background: transparent; overflow-wrap: anywhere; word-break: break-word; }
 .grammar-analysis-copy { margin: 0; font-size: calc(.82rem * var(--revision-analysis-scale,1)); line-height: 1.65; transition: font-size 180ms ease-out; }
 .rewrite-feedback-round { margin-top: 10px; }
@@ -669,6 +674,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .current-writing-title-window.is-overflowing .current-writing-title-track { width: 100%; max-width: 100%; overflow: hidden; animation: none; text-overflow: ellipsis; transform: none; }
     .ocr-photo-region, .ocr-uncertain { transition: none !important; }
     .manuscript-sentence-highlight.is-no-feedback-cue { animation: none !important; background: rgba(53,59,56,.1); }
+    .sentence-effective-face.is-effective-cue { animation: none !important; background: var(--sentence-soft); }
     .sentence-card.is-revision-attention .sentence-card-face { animation: none !important; border-color: rgba(207,54,72,.7); box-shadow: inset 0 0 0 2px rgba(207,54,72,.14); }
     .stage.is-opening > * { transform: none; animation-name: aiLoadingIndicatorReveal !important; }
 }

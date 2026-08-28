@@ -3214,8 +3214,10 @@
         if (!required) {
             return cardStart +
                 '<div class="sentence-flip-card"><div class="sentence-card-inner sentence-card-inner-static">' +
-                '<section class="sentence-card-face sentence-effective-face">' + sentenceMeta +
-                '<p class="original-sentence">' + original + '</p></section>' +
+                '<section class="sentence-card-face sentence-effective-face">' +
+                '<button class="sentence-effective-cue-hit" type="button" data-cue-effective-sentence="' + escapeHtml(id) + '" aria-label="该句无需订正"></button>' +
+                '<div class="sentence-face-content">' + sentenceMeta +
+                '<p class="original-sentence">' + original + '</p></div></section>' +
                 '</div></div></article>';
         }
         var showRewrite = Boolean(state.rewriteFace[id]);
@@ -3868,6 +3870,16 @@
         }, 420);
     }
 
+    function cueEffectiveSentenceCard(target) {
+        if (!target) return;
+        target.classList.remove('is-effective-cue');
+        void target.offsetWidth;
+        target.classList.add('is-effective-cue');
+        window.setTimeout(function() {
+            if (target.isConnected) target.classList.remove('is-effective-cue');
+        }, 420);
+    }
+
     function openSentenceFeedback(index, trigger) {
         var sentences = safeArray(state.review && state.review.sentences);
         var revisionSummary = manuscriptRevisionSummary(sentences);
@@ -4226,6 +4238,9 @@
             });
         }
         else if (button.matches('[data-revision-font-step]')) adjustRevisionTextLevel(Number(button.getAttribute('data-revision-font-step')));
+        else if (button.matches('[data-cue-effective-sentence]')) {
+            cueEffectiveSentenceCard(button.closest('.sentence-effective-face'));
+        }
         else if (button.matches('[data-flip-sentence]')) {
             var flipId = button.getAttribute('data-flip-sentence');
             var showRewriteFace = button.getAttribute('data-face') === 'rewrite';

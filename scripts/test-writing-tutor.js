@@ -941,12 +941,20 @@ check("effective sentences use the static correct icon and no coaching controls"
     "effective sentences must not render analysis or rewrite controls");
   assert(!/data-flip-sentence/.test(effectiveBranch),
     "already-correct source sentences must use the same bordered card without pretending to have another face");
+  requireEvery(effectiveBranch, ["sentence-effective-cue-hit", "data-cue-effective-sentence", "该句无需订正"],
+    "effective sentence interaction cue");
+  requireEvery(client, ["function cueEffectiveSentenceCard", "is-effective-cue", "button.matches('[data-cue-effective-sentence]')"],
+    "effective sentence cue behavior");
   assert(!/no-rewrite-needed/.test(`${client}\n${styles}`),
     "the removed disabled no-rewrite textarea must not remain in source or styles");
   assert(/function rewriteRequired[\s\S]{0,260}["']effective["']/.test(client),
     "legacy effective sentences without rewrite_required must remain exempt from rewriting");
   requireEvery(styles, [".sentence-card.is-effective .original-sentence", ".sentence-status-icon.is-correct"],
     "effective sentence styling");
+  requireEvery(styles, ["@keyframes sentenceEffectiveCue", ".sentence-effective-face.is-effective-cue"],
+    "effective sentence shake styling");
+  assert(/prefers-reduced-motion:\s*reduce[\s\S]*\.sentence-effective-face\.is-effective-cue\s*\{[^}]*animation\s*:\s*none/is.test(styles),
+    "Reduced Motion must replace the effective-card shake");
   requireEvery(cardSource, ["sentenceVisualStatus", "sentenceStatusIconHtml"],
     "correct status icon");
   assert(!/sentence-effective-icon|sentence-corrected-icon/.test(`${client}\n${styles}`),
