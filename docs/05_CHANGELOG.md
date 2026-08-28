@@ -15,9 +15,12 @@
   active Part A Group Discussion and a Part B Individual Response placeholder,
   followed by the reusable Voiceprint card. Replaced the toolbar back/name
   controls with the Writing-style hamburger and centered title, and moved the
-  full Discussion list into an accessible right-side glass drawer with Home,
-  scrim/Escape dismissal, Reduced Motion, Reduced Transparency, and high-
-  contrast fallbacks. No backend contract or Speaking data flow changed.
+  full Discussion list into an accessible left-side glass drawer. Its header
+  now pairs Home with a New Discussion plus button. Fixed the phone closed state
+  so the scrim cannot override its hidden attribute, blur the mode cards, or
+  intercept their controls; page restoration also resets the drawer closed.
+  Escape dismissal, Reduced Motion, Reduced Transparency, and high-contrast
+  fallbacks remain. No backend contract or Speaking data flow changed.
 
 - Renamed the Writing Home mode subtitles to `Grammar & Usage` and `Ideas & Structure`, clarified the source-form action hierarchy with a 30/70 low-emphasis Discard versus primary Submit/Scan row, and restored capsule-toolbar takeover in every revision skin by removing the rounded card's sticky-breaking overflow clip while retaining rounded control-row corners.
 
