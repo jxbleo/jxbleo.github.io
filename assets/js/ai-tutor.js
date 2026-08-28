@@ -2686,7 +2686,9 @@
     function renderLoading(title, description) {
         destroyAiWaitingExperience();
         state.screen = 'loading';
-        stage.innerHTML = '<section class="surface loading-state"><span class="loading-orbit" aria-hidden="true"></span><strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(description || '') + '</p></section>';
+        stage.innerHTML = '<section class="surface loading-state" aria-label="Loading" role="status"><span class="loading-orbit" aria-hidden="true"></span>' +
+            (title ? '<strong>' + escapeHtml(title) + '</strong>' : '') +
+            (description ? '<p>' + escapeHtml(description) + '</p>' : '') + '</section>';
         scheduleStageViewportReset();
     }
 
@@ -3455,7 +3457,7 @@
         state.toolbarTitleEditing = false;
         if (!isSidebarDockedViewport()) closeSidebar();
         setStatus('');
-        if (!options.preserveStage) renderLoading('Opening your writing…', '');
+        if (!options.preserveStage) renderLoading('', '');
         setBusy(true);
         var request = options.request || writingCall('getComposition', { composition_id: id });
         return request.then(function(result) {

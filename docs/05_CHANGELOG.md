@@ -2,6 +2,8 @@
 
 ## 2026-08-29
 
+- Removed visible `Opening your writing…` copy from every Writing refresh path while retaining one accessible activity indicator, the single-shell restoration lifecycle, and the existing resolved-stage materialization.
+
 - Renamed the Writing Home mode subtitles to `Grammar & Usage` and `Ideas & Structure`, clarified the source-form action hierarchy with a 30/70 low-emphasis Discard versus primary Submit/Scan row, and restored capsule-toolbar takeover in every revision skin by removing the rounded card's sticky-breaking overflow clip while retaining rounded control-row corners.
 
 - Expanded the Writing toolbar title into all safe space between the hamburger and

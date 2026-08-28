@@ -331,6 +331,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .loading-state p, .empty-state p, .error-state p { max-width: 460px; margin: 8px auto 20px; color: var(--ai-muted); }
 .loading-orbit { width: 42px; height: 42px; margin-bottom: 18px; border: 4px solid rgba(15,118,110,.15); border-top-color: var(--ai-accent); border-radius: 50%; animation: aiSpin .8s linear infinite; }
 .boot-loading-state .loading-orbit { animation: aiSpin .8s linear infinite, aiLoadingIndicatorReveal 140ms ease 180ms both; }
+.loading-state > .loading-orbit:only-child { margin-bottom: 0; }
 .stage.is-opening > * { transform-origin: top center; animation: aiWritingStageOpen 420ms cubic-bezier(.22,1,.36,1) both; }
 @keyframes aiSpin { to { transform: rotate(360deg); } }
 @keyframes aiLoadingIndicatorReveal { from { opacity: 0; } to { opacity: 1; } }

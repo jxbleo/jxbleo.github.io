@@ -2160,8 +2160,9 @@ High priority improvement:
   area. After a rejected Check, confirm no “统一检查完成” instruction appears below the toolbar.
 - Open a saved Composition at each workflow state, refresh the browser, and confirm
   the same Composition and server-backed step return instead of the AI Tutor home.
-  Confirm there is only one `Opening your writing…` surface, no Chinese loading copy,
-  no second spinner/card replacement, and no intermediate scroll jump. Throttle the
+  Confirm there is only one text-free Writing loading surface with the activity indicator,
+  no `Opening your writing…` or Chinese loading copy, no second spinner/card replacement,
+  and no intermediate scroll jump. Throttle the
   network and confirm Composition, Profile, and History requests overlap. The resolved
   content should settle downward once from the toolbar edge; Reduced Motion should
   replace that movement with a brief fade.

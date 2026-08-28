@@ -2187,8 +2187,9 @@ Important mobile rules:
 - After review begins, standardized and language review use the same leave-and-resume
   lifecycle. A final failure preserves the manuscript, leaves Runner playable,
   releases the failed review reservation, and exposes only the shared `Retry` action.
-- Refresh uses one stable Writing shell and one English `Opening your writing…`
-  surface. It never swaps from a workspace loader into a second Composition loader.
+- Refresh uses one stable Writing shell and one text-free loading surface containing
+  only the existing activity indicator. It never displays `Opening your writing…` and
+  never swaps from a workspace loader into a second Composition loader.
   After authentication, the requested Composition detail starts alongside Profile and
   History requests; the detail may render before the nonessential drawer and quota finish.
   The resolved stage materializes once from the toolbar edge with a restrained 10px
