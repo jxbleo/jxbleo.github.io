@@ -2,6 +2,8 @@
 
 ## 2026-08-28
 
+- Simplified the in-progress Writing revision card by removing its visible `Sentence Revision` heading, adding an accessible locally persisted skin control beside the font controls, and making the Language Review-inspired green treatment the default while preserving the existing eight-color option. Number navigation now uses true circles and spans the full card width with safe-area-aware edge scrolling.
+
 - Corrected the Speaking Lab live-recorder disclosure state: Pause, Stop,
   Preview, and Upload recording remain hidden until `Record now` begins; the
   upload action uses an unavailable cursor while no recording exists and a wait

@@ -660,7 +660,9 @@ check("OCR confirmation can move the first line into an optional undoable title"
 check("language review removes Sentence Revision after the Revised manuscript is available", () => {
   const client = read(clientPath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceCapsuleHtml");
-  requireEvery(renderSource, ["Language Review", "manuscriptVersionControlHtml", "Sentence Revision"], "language review card headings");
+  requireEvery(renderSource, ["Language Review", "manuscriptVersionControlHtml", "language-sentence-review-card"], "language review card structure");
+  assert(!renderSource.includes('>Sentence Revision</h2>'),
+    "the in-progress third card must omit its visible Sentence Revision heading");
   assert(/sentenceReviewHtml\s*=\s*revisionSummary\.available\s*\?\s*''\s*:/.test(renderSource),
     "completed writing must omit the Sentence Revision card once Revised is available");
   requireEvery(functionSource(client, "manuscriptVersionControlHtml", "highlightedManuscriptHtml"), ["Draft", "Revised"],
@@ -680,29 +682,50 @@ check("language review removes Sentence Revision after the Revised manuscript is
     "the CEFR writing estimate must appear before the general Language Review overview");
 });
 
-check("the three language cards share one title style and Sentence Revision keeps only capsule navigation sticky", () => {
+check("the revision card omits its title and keeps only capsule navigation sticky", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderLanguage", "sentenceVisualStatus");
   const manuscriptHeadingSource = functionSource(client, "manuscriptVersionControlHtml", "highlightedManuscriptHtml");
-  assert.strictEqual((renderSource.match(/language-card-title/g) || []).length, 2,
-    "Language Review and Sentence Revision must use the shared title class");
+  assert.strictEqual((renderSource.match(/language-card-title/g) || []).length, 1,
+    "only Language Review should retain a visible title in renderLanguage");
+  assert(!renderSource.includes('>Sentence Revision</h2>'),
+    "the third card must not render the removed Sentence Revision title");
   assert(manuscriptHeadingSource.includes('class="language-card-title">Draft'),
     "the incomplete manuscript's Draft heading must keep the shared title class");
   const headingIndex = renderSource.indexOf("sentence-review-heading");
   const toolbarIndex = renderSource.indexOf("language-toolbar");
   assert(headingIndex >= 0 && toolbarIndex > headingIndex,
-    "the non-sticky Sentence Revision title row must precede the capsule toolbar");
-  requireEvery(renderSource, ["revisionFontControlsHtml", "revisionTextScale"],
-    "Sentence Revision font controls");
+    "the non-sticky revision control row must precede the capsule toolbar");
+  requireEvery(renderSource, ["revisionSkinControlHtml", "revisionFontControlsHtml", "revisionTextScale"],
+    "Sentence Revision skin and font controls");
   requireEvery(functionSource(client, "revisionFontControlsHtml", "applyRevisionTextScale"), ["data-revision-font-step", "Analysis text size"],
     "Sentence Revision font-control markup");
   assert(/\.language-card-title\s*\{[^}]*font-size[^}]*font-weight[^}]*line-height[^}]*letter-spacing/is.test(styles),
-    "all three titles must inherit one complete type specification");
+    "remaining card titles must inherit one complete type specification");
   assert(/\.language-toolbar\s*\{[^}]*position\s*:\s*sticky[^}]*top\s*:\s*0/is.test(styles),
     "only the capsule toolbar must remain sticky");
   assert(!/\.sentence-review-heading\s*\{[^}]*position\s*:\s*sticky/is.test(styles),
-    "the title and font controls must scroll away normally");
+    "the skin and font control row must scroll away normally");
+});
+
+check("revision skins default to green, toggle in place, and persist locally", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const restoreSource = functionSource(client, "restoreRevisionSkin", "revisionTextScale");
+  const controlSource = functionSource(client, "revisionSkinControlHtml", "applyRevisionSkin");
+  const applySource = functionSource(client, "applyRevisionSkin", "toggleRevisionSkin");
+  const toggleSource = functionSource(client, "toggleRevisionSkin", "applyRevisionTextScale");
+  requireEvery(client, ["revisionSkin: 'green'", "mrcat-writing-revision-skin-v1", "restoreRevisionSkin()", "data-revision-skin"],
+    "green default and persisted skin wiring");
+  requireEvery(restoreSource, ["localStorage.getItem", "colorful", "green"], "skin preference restore");
+  requireEvery(controlSource, ["aria-pressed", "Use colorful revision theme", "Use green revision theme"], "accessible skin control");
+  requireEvery(applySource, ["revision-skin-green", "revision-skin-colorful", "classList.toggle", "aria-label"], "in-place skin application");
+  requireEvery(toggleSource, ["localStorage.setItem", "applyRevisionSkin"], "skin toggle persistence");
+  assert(/\.revision-skin-toggle\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/is.test(styles),
+    "skin control must retain a 44px target");
+  requireEvery(styles, [".revision-skin-green .sentence-review-heading", ".revision-skin-green .sentence-capsule", "--sentence-color:#0f766e !important"],
+    "uniform Language Review-inspired green treatment");
 });
 
 check("revision analysis font controls are bounded, persistent, and remeasure card faces", () => {
@@ -1007,6 +1030,13 @@ check("sentence number navigation is horizontal, accessible, and locates its lis
     "green correct, black pending, and red incorrect icon colors");
   assert(/\.capsule-row\s*\{[^}]*padding\s*:[^;}]*16px/is.test(styles),
     "the capsule row must reserve space for its status marks");
+  assert(/\.sentence-capsule\s*\{[^}]*width:\s*38px[^}]*height:\s*38px[^}]*border-radius:\s*50%/is.test(styles),
+    "sentence navigation must use true circles");
+  assert(/\.language-toolbar\s*\{[^}]*padding:\s*11px\s+0\s+9px/is.test(styles),
+    "the capsule toolbar must span the full card width");
+  assert(/\.capsule-row\s*\{[^}]*max-width:\s*none[^}]*safe-area-inset/is.test(styles)
+      && /\.capsule-row::-webkit-scrollbar/.test(styles),
+    "the full-width scroller must keep safe-area insets and hide its scrollbar");
 });
 
 check("typing a new revision immediately projects the pending question state", () => {

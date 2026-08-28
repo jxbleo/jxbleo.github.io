@@ -1987,11 +1987,16 @@ High priority improvement:
   After every required revision passes and Revised becomes available, confirm the
   entire Sentence Revision card is absent and only Language Review plus the
   Draft/Revised manuscript card remain.
-- Confirm all three card titles use the same computed font size, weight, line
-  height, tracking, and horizontal alignment. Sentence Revision must place its
-  title and `−` / `+` controls in the first row, followed by the capsule row.
-  Scroll upward and confirm the first row leaves normally while only the capsule
-  row takes over viewport `top: 0`.
+- Confirm Language Review and the incomplete Draft retain their title treatment, while
+  the third card contains no visible `Sentence Revision` heading. Its first row places
+  one 44px skin control at left and the `−` / `+` group at right. Scroll upward and
+  confirm this control row leaves normally while only the capsule row takes over viewport
+  `top: 0`.
+- Confirm green is the default skin. Toggle once to the existing eight-color treatment
+  and again back to green; refresh after each choice and confirm it persists. The active
+  sentence, visible card face, current textarea focus/value, and scroll position must not
+  change when toggling. Verify the control has an accessible label and 44px target, and
+  Reduced Motion removes nonessential transition time.
 - Exercise every `−` / `+` level. Confirm the controls stop and disable at both
   bounds, change only analysis/feedback text, leave source/student/title/
   capsule text unchanged, remeasure both flip-card faces without blank space,
@@ -2003,9 +2008,11 @@ High priority improvement:
   Confirm the copy scopes the estimate to this manuscript rather than claiming
   a certified or overall student level. Open a historical review without
   `cefr_estimate` and confirm it remains readable without a fabricated value.
-- In Sentence Revision, confirm the number capsules scroll horizontally on
-  touch and pointer devices; selecting a number scrolls to and highlights the
-  matching sentence. Confirm the full sentence list is always present and there
+- In Sentence Revision, confirm every number capsule is a true circle at phone, iPad,
+  and desktop widths. The row must use all available card/viewport width, scroll smoothly
+  to both ends, retain safe-area edge breathing room, and never show a half-clipped capsule
+  before the screen edge. Selecting a number scrolls to and highlights the matching
+  sentence. Confirm the full sentence list is always present and there
   is no progress copy, instructional hint, sequential mode, layout toggle, or
   pair of layout icons beneath or beside the capsule row.
 - Compare normal and active capsules across correct, pending, and incorrect states
@@ -2094,7 +2101,7 @@ High priority improvement:
   own words.`, while the textarea content remains visually primary. After
   a successful Review Scan import, confirm every revision-required card opens on that
   attempt face with the original sentence and imported correction visible together.
-- Confirm the Sentence Revision heading has no explanatory line beneath it. The bottom
+- Confirm the revision card has no Sentence Revision heading or explanatory line. The bottom
   action row must show a 44px camera-only button immediately left of `Submit`; its
   accessible name remains `Scan Revisions`, and phone width must keep both controls on
   one row rather than stretching the camera into a full-width text button.

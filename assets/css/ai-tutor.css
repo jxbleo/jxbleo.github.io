@@ -403,17 +403,34 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .manuscript-sentence-highlight.is-revised.is-active { background: var(--sentence-active); box-shadow: 0 0 0 2px var(--sentence-ring); }
 @keyframes manuscriptNoFeedbackCue { 0%,100% { left: 0; } 22% { left: -.12em; } 48% { left: .11em; } 72% { left: -.055em; } }
 .manuscript-sentence-highlight.is-no-feedback-cue { position: relative; animation: manuscriptNoFeedbackCue 360ms cubic-bezier(.22,.8,.3,1); }
-.language-sentence-review-card { position: relative; z-index: 90; min-width: 0; padding: 0; }
-.sentence-review-heading { justify-content: space-between; padding: 24px 24px 18px; }
+.language-sentence-review-card { position: relative; z-index: 90; min-width: 0; padding: 0; transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease; }
+.sentence-review-heading { justify-content: space-between; padding: 18px 24px; transition: background-color 200ms ease; }
+.revision-skin-toggle { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; min-height: 44px; padding: 0; border: 1px solid rgba(24,49,43,.12); border-radius: 14px; color: #0d665e; background: rgba(245,249,247,.9); box-shadow: none; }
+.revision-skin-toggle svg { width: 19px; height: 19px; }
+.revision-skin-toggle:hover { background: #fff; }
+.revision-skin-toggle:active { transform: scale(.96); }
 .revision-font-controls { display: inline-grid; grid-template-columns: repeat(2,44px); flex: 0 0 auto; overflow: hidden; border: 1px solid rgba(24,49,43,.12); border-radius: 14px; background: rgba(245,249,247,.82); }
 .revision-font-controls button { display: grid; place-items: center; width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 0; color: #263b35; background: transparent; box-shadow: none; font-size: 1.2rem; font-weight: 560; line-height: 1; }
 .revision-font-controls button + button { border-left: 1px solid rgba(24,49,43,.1); }
 .revision-font-controls button:hover { background: rgba(24,49,43,.055); }
 .revision-font-controls button:active { transform: none; background: rgba(24,49,43,.1); }
 .revision-font-controls button:disabled { color: rgba(38,59,53,.28); background: transparent; }
-.language-toolbar { position: sticky; z-index: 100; top: 0; width: 100%; min-width: 0; max-width: 100%; padding: 11px 18px 9px; border: 0; border-top: 1px solid var(--ai-line); border-bottom: 1px solid var(--ai-line); border-radius: 0; background: rgba(250,253,252,.94); box-shadow: 0 8px 20px rgba(20,67,56,.08); backdrop-filter: blur(22px) saturate(155%); -webkit-backdrop-filter: blur(22px) saturate(155%); }
-.capsule-row { display: flex; width: 100%; min-width: 0; max-width: 100%; gap: 8px; overflow-x: auto; padding: 2px 1px 16px; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: thin; touch-action: pan-x; -webkit-overflow-scrolling: touch; }
-.sentence-capsule { position: relative; flex: 0 0 auto; width: 38px; height: 34px; padding: 0; border: 1px solid var(--sentence-color); border-radius: 999px; color: var(--sentence-color); background: var(--sentence-soft); font-size: .72rem; font-weight: 850; scroll-snap-align: center; }
+.language-sentence-review-card.revision-skin-green { border-color: rgba(13,102,94,.18); background: linear-gradient(180deg,#eaf7f2 0%,#f8fcfa 48%,#eef8f4 100%); box-shadow: 0 18px 44px rgba(13,102,94,.12); }
+.revision-skin-green .sentence-review-heading { background: linear-gradient(135deg,#0d665e,#168b7c); }
+.revision-skin-green .revision-skin-toggle { border-color: rgba(255,255,255,.62); color: #0d665e; background: #fff; }
+.revision-skin-green .revision-font-controls { border-color: rgba(255,255,255,.42); background: rgba(255,255,255,.14); }
+.revision-skin-green .revision-font-controls button { color: #fff; }
+.revision-skin-green .revision-font-controls button + button { border-left-color: rgba(255,255,255,.28); }
+.revision-skin-green .revision-font-controls button:hover { background: rgba(255,255,255,.12); }
+.revision-skin-green .revision-font-controls button:disabled { color: rgba(255,255,255,.38); }
+.revision-skin-green .language-toolbar { border-color: rgba(13,102,94,.16); background: rgba(237,248,244,.95); }
+.revision-skin-green .sentence-capsule,
+.revision-skin-green .sentence-card { --sentence-color:#0f766e !important; --sentence-soft:#e4f3ee !important; --sentence-active:#cce8de !important; --sentence-ring:rgba(15,118,110,.23) !important; }
+.revision-skin-green .sentence-card-face { background: rgba(255,255,255,.94); }
+.language-toolbar { position: sticky; z-index: 100; top: 0; width: 100%; min-width: 0; max-width: 100%; padding: 11px 0 9px; overflow: hidden; border: 0; border-top: 1px solid var(--ai-line); border-bottom: 1px solid var(--ai-line); border-radius: 0; background: rgba(250,253,252,.94); box-shadow: 0 8px 20px rgba(20,67,56,.08); backdrop-filter: blur(22px) saturate(155%); -webkit-backdrop-filter: blur(22px) saturate(155%); }
+.capsule-row { display: flex; width: 100%; min-width: 0; max-width: none; gap: 8px; overflow-x: auto; padding: 2px max(12px,env(safe-area-inset-right)) 16px max(12px,env(safe-area-inset-left)); overscroll-behavior-x: contain; scroll-padding-inline: max(12px,env(safe-area-inset-left)); scroll-snap-type: x proximity; scrollbar-width: none; touch-action: pan-x; -webkit-overflow-scrolling: touch; }
+.capsule-row::-webkit-scrollbar { display: none; }
+.sentence-capsule { position: relative; flex: 0 0 38px; width: 38px; height: 38px; aspect-ratio: 1; padding: 0; border: 1px solid var(--sentence-color); border-radius: 50%; color: var(--sentence-color); background: var(--sentence-soft); font-size: .72rem; font-weight: 850; scroll-snap-align: center; }
 .sentence-capsule::after { position: absolute; top: calc(100% + 3px); left: 50%; display: grid; place-items: center; width: 12px; height: 10px; color: var(--ai-danger); font-size: 9px; font-weight: 950; line-height: 1; transform: translateX(-50%); }
 .sentence-capsule.is-correct::after { content: "✓"; color: var(--ai-success); }
 .sentence-capsule.is-pending::after, .sentence-capsule.is-incorrect::after { content: "×"; color: var(--ai-danger); }

@@ -2247,17 +2247,21 @@ Important mobile rules:
   the broader overview and must be described as an estimate of this manuscript's
   writing performance, not a certified or global student level. Historical
   reviews without the structured field remain readable and simply omit this row.
-- `Language Review`, `Draft`, and `Sentence Revision` use one shared card-title
-  typography token: the same size, weight, leading, tracking, and inset. Text color
-  may adapt to the green Language Review surface.
-- Sentence Revision begins with a non-sticky title row. `Sentence Revision` stays
-  left and a compact `−` / `+` group stays right; each control retains a 44px hit
-  target. The controls change only AI analysis and saved feedback text through four
-  bounded sizes, remember the local display preference, and
-  remeasure the visible flip-card face. The title row scrolls away normally.
-- A second, independently sticky row contains the horizontally scrollable numbered
-  capsules. Selecting a number immediately scrolls to and highlights its corresponding
-  sentence in the list. Every capsule uses the same 1px solid border. Its reserved
+- `Language Review` and an incomplete `Draft` retain the shared card-title typography.
+  The third card deliberately omits the visible `Sentence Revision` title and starts
+  with a non-sticky control row: a 44px skin button at left and the compact 44px-per-item
+  `−` / `+` group at right. The font controls change only AI analysis and saved
+  feedback text through four bounded sizes and remeasure the visible flip-card face.
+  The skin control cycles between the default uniform green treatment—visually related
+  to Language Review and the early BBC green surface—and the existing eight-color
+  sentence treatment. Both preferences persist locally. Theme changes occur in place,
+  preserving the active sentence, scroll position, card face, and current input focus.
+- A second, independently sticky row contains the full-width horizontally scrollable
+  numbered navigation. Each number is a true equal-width/equal-height circle with the
+  same 1px solid border. The scroller extends across the card width, keeps only safe-area
+  edge insets, hides its scrollbar, and must not clip a circle before the viewport edge.
+  Selecting a number immediately scrolls to and highlights its corresponding sentence.
+  Its reserved
   below-number slot uses the original 9px text mark rather than SVG: a green check
   for correct, and a red cross for empty, newly entered/unsubmitted, or
   last-checked-incorrect text. No progress copy or
