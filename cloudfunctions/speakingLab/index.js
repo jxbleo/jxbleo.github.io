@@ -145,17 +145,17 @@ function discussionView(actor, discussion, participants) {
     participants: participants.map((row, index) => participantView(row, actor, discussion, index)),
   };
 }
-function uploadMetadataView(metadata, cloudPath) {
-  const data = metadata && metadata.data || metadata || {};
-  return {
-    file_id: data.fileID || data.fileId || data.file_id || null,
-    cos_file_id: data.cosFileId || data.cos_file_id || null,
-    url: data.url || data.uploadUrl || data.upload_url || null,
-    upload_url: data.uploadUrl || data.upload_url || data.url || null,
-    authorization: data.authorization || null,
-    token: data.token || null,
-    cloud_path: cloudPath,
-  };
+function uploadTargetView(cloudPath) {
+  return { upload_mode: "cloudbase_js_sdk", cloud_path: cloudPath };
+}
+function verifiedUploadedFileId(value, cloudPath) {
+  const fileId = lab.text(value, 2048);
+  const expectedPath = lab.text(cloudPath, 1024);
+  if (!fileId.startsWith("cloud://") || !expectedPath) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
+  const locator = fileId.slice("cloud://".length);
+  const slash = locator.indexOf("/");
+  if (slash < 1 || locator.slice(slash + 1) !== expectedPath) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
+  return fileId;
 }
 function reportAnalysis(report) {
   return report && report.dse_analysis && typeof report.dse_analysis === "object" ? report.dse_analysis : {};
@@ -401,22 +401,18 @@ async function startAudioUpload(actor, event, kind = "formal") {
     if (kind === "voice_reference" && !["missing", "uploading", "uploaded", "quality_failed"].includes(String(targetParticipant.voice_reference_status || "missing"))) throw new Error("VOICE_REFERENCE_LOCKED");
     if (kind === "formal" && rows.discussion.roster_status !== "draft" && !lab.isTeacher(actor)) throw new Error("ROSTER_FROZEN");
     if (kind === "formal" && rows.discussion.analysis_status !== "not_ready" && !lab.isTeacher(actor)) throw new Error("ANALYSIS_ALREADY_STARTED");
-    const replayMetadata = await app.getUploadMetadata({ cloudPath: existing.cloud_path });
-    const replayUpload = uploadMetadataView(replayMetadata, existing.cloud_path);
-    await db.collection(ASSETS).doc(existing._id || existing.asset_id).update({ file_id: replayUpload.file_id, expires_at: new Date(Date.now() + 30 * 60 * 1000), updated_at: now() });
-    return { success: true, idempotent_replay: true, asset_id: existing.asset_id, upload: replayUpload };
+    await db.collection(ASSETS).doc(existing._id || existing.asset_id).update({ expires_at: new Date(Date.now() + 30 * 60 * 1000), updated_at: now() });
+    return { success: true, idempotent_replay: true, asset_id: existing.asset_id, upload: uploadTargetView(existing.cloud_path) };
   }
   if (kind === "voice_reference" && !["missing", "uploading", "uploaded", "quality_failed"].includes(String(targetParticipant.voice_reference_status || "missing"))) throw new Error("VOICE_REFERENCE_LOCKED");
   if (kind === "formal" && rows.discussion.roster_status !== "draft" && !lab.isTeacher(actor)) throw new Error("ROSTER_FROZEN");
   if (kind === "formal" && rows.discussion.analysis_status !== "not_ready" && !lab.isTeacher(actor)) throw new Error("ANALYSIS_ALREADY_STARTED");
   const extension = mime.split("/")[1].replace("x-", "");
   const cloudPath = `speaking-lab/${rows.discussion.discussion_id}/${assetId}.${extension}`;
-  const metadata = await app.getUploadMetadata({ cloudPath });
-  const upload = uploadMetadataView(metadata, cloudPath);
   const created = now();
-  const asset = { asset_id: assetId, discussion_id: rows.discussion.discussion_id, participant_id: kind === "voice_reference" ? targetParticipant.participant_id : null, asset_kind: assetKind, upload_operation_id: operationId, status: "uploading", file_id: upload.file_id, cloud_path: cloudPath, mime_type: mime, expected_size_bytes: Math.round(size), actual_size_bytes: null, duration_ms: null, quality_status: "pending", quality_codes: [], created_at: created, updated_at: created, expires_at: new Date(created.getTime() + 30 * 60 * 1000), delete_after: null };
+  const asset = { asset_id: assetId, discussion_id: rows.discussion.discussion_id, participant_id: kind === "voice_reference" ? targetParticipant.participant_id : null, asset_kind: assetKind, upload_operation_id: operationId, status: "uploading", file_id: null, cloud_path: cloudPath, mime_type: mime, expected_size_bytes: Math.round(size), actual_size_bytes: null, duration_ms: null, quality_status: "pending", quality_codes: [], created_at: created, updated_at: created, expires_at: new Date(created.getTime() + 30 * 60 * 1000), delete_after: null };
   await db.collection(ASSETS).doc(assetId).create(asset);
-  return { success: true, asset_id: assetId, upload };
+  return { success: true, asset_id: assetId, upload: uploadTargetView(cloudPath) };
 }
 async function finishAudioUpload(actor, event, kind = "formal") {
   const rows = await authorizedDiscussion(actor, event.discussion_id, false);
@@ -428,11 +424,14 @@ async function finishAudioUpload(actor, event, kind = "formal") {
   if (!asset) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
   if (asset.asset_kind !== assetKind) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
   if (asset.status === "uploaded") return { success: true, idempotent_replay: true, asset_id: asset.asset_id };
-  const info = await app.getFileInfo({ fileList: [asset.file_id] });
+  const uploadedFileId = asset.file_id
+    ? verifiedUploadedFileId(asset.file_id, asset.cloud_path)
+    : verifiedUploadedFileId(event.uploaded_file_id, asset.cloud_path);
+  const info = await app.getFileInfo({ fileList: [uploadedFileId] });
   const file = info && info.fileList && info.fileList[0];
   if (!file || Number(file.size || 0) < 1 || Number(file.size || 0) > (kind === "voice_reference" ? MAX_REFERENCE_BYTES : MAX_FILE_BYTES) || Number(file.size || 0) !== Number(asset.expected_size_bytes || 0)) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
   const uploadedAt = now();
-  await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ status: "uploaded", actual_size_bytes: Number(file.size), uploaded_at: uploadedAt, updated_at: uploadedAt, expires_at: null });
+  await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ status: "uploaded", file_id: uploadedFileId, actual_size_bytes: Number(file.size), uploaded_at: uploadedAt, updated_at: uploadedAt, expires_at: null });
   if (kind === "formal") {
     const replacing = Boolean(rows.discussion.formal_audio_asset_id && rows.discussion.formal_audio_asset_id !== asset.asset_id);
     if (rows.discussion.formal_audio_asset_id && rows.discussion.formal_audio_asset_id !== asset.asset_id) {
@@ -1244,6 +1243,6 @@ exports.main = async (event = {}) => {
 };
 
 exports._test = {
-  friendlyMessage, publicJob, participantView, discussionView, replaceFields, uploadMetadataView, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript,
+  friendlyMessage, publicJob, participantView, discussionView, replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
 };
