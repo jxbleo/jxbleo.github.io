@@ -8,6 +8,7 @@ class SpeakingModelError extends Error {
     this.httpStatus = options.httpStatus || null;
     this.providerCode = options.providerCode || null;
     this.requestId = options.requestId || null;
+    this.responseDiagnostics = options.responseDiagnostics || null;
   }
 }
 
@@ -29,6 +30,8 @@ function configuration(env = process.env) {
   if (url.protocol !== "https:" && !/\.example\.test$/i.test(url.hostname)) throw new SpeakingModelError();
   const protocol = text(env.SPEAKING_AI_TEXT_PROTOCOL, 80);
   if (protocol !== "chat_json_object") throw new SpeakingModelError();
+  const qwenCompatible = /(?:dashscope|\.maas\.)[^/]*aliyuncs\.com/i.test(url.toString())
+    || /dashscope/i.test(url.toString());
   const maxOutputTokens = Math.min(16000, Math.max(1000, Number(env.SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS) || 8000));
   const timeoutMs = Math.min(300000, Math.max(5000, Number(env.SPEAKING_AI_TIMEOUT_MS) || 180000));
   return {
@@ -37,6 +40,7 @@ function configuration(env = process.env) {
     hostname: url.hostname,
     model: text(env.SPEAKING_AI_TEXT_MODEL, 200),
     protocol,
+    qwenCompatible,
     maxOutputTokens,
     timeoutMs,
   };
@@ -95,6 +99,13 @@ async function callStructuredModel(input = {}, options = {}) {
     max_completion_tokens: config.maxOutputTokens,
     temperature: 0.1,
   };
+  // Qwen structured output is most deterministic in non-thinking mode. A
+  // thinking response may leave the DSE JSON outside message.content.
+  if (config.qwenCompatible) {
+    payload.enable_thinking = false;
+    payload.max_tokens = config.maxOutputTokens;
+    delete payload.max_completion_tokens;
+  }
   let response;
   let raw;
   try {
@@ -117,8 +128,23 @@ async function callStructuredModel(input = {}, options = {}) {
     throw new SpeakingModelError(code, { httpStatus: response.status, providerCode, requestId });
   }
   const choice = body && Array.isArray(body.choices) && body.choices[0];
+  const rawContent = contentText(choice && choice.message && choice.message.content);
+  const trimmedContent = String(rawContent || "").trim();
+  const responseDiagnostics = {
+    finish_reason: text(choice && choice.finish_reason, 80) || null,
+    content_length: trimmedContent.length,
+    content_shape: !trimmedContent ? "empty"
+      : /^```(?:json)?\s*\{/i.test(trimmedContent) ? "fenced_json"
+        : trimmedContent.startsWith("{") ? "json_object" : "other",
+    content_closed: /}\s*(?:```)?$/.test(trimmedContent),
+    has_reasoning_content: Boolean(text(choice && choice.message && choice.message.reasoning_content, 10)),
+  };
+  let output;
+  try { output = parseJsonContent(rawContent); } catch (_error) {
+    throw new SpeakingModelError("SPEAKING_AI_SCHEMA_INVALID", { httpStatus: response.status, requestId, responseDiagnostics });
+  }
   return {
-    output: parseJsonContent(contentText(choice && choice.message && choice.message.content)),
+    output,
     usage: normalizedUsage(body && body.usage),
     request_id: requestId,
   };
