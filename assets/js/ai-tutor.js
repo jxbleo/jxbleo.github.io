@@ -8,7 +8,6 @@
         quota: null,
         rubrics: [],
         compositions: [],
-        filter: 'all',
         current: null,
         review: null,
         readOnly: false,
@@ -64,7 +63,7 @@
         waitingAudioContext: null,
         waitingAudioOutput: null,
         sidebarOpen: false,
-        editingTitleId: '',
+        toolbarTitleEditing: false,
         titleEditError: '',
         homeComposerOpen: false,
         homeComposerPreparing: false,
@@ -99,7 +98,6 @@
     var stage = document.getElementById('ai-tutor-stage');
     var statusBox = document.getElementById('global-status');
     var portfolioList = document.getElementById('portfolio-list');
-    var portfolioSummary = document.getElementById('portfolio-summary');
     var writingProfileSummary = document.getElementById('writing-profile-summary');
     var portfolioSidebar = document.getElementById('portfolio-sidebar');
     var sidebarScrim = document.getElementById('sidebar-scrim');
@@ -107,6 +105,13 @@
     var revisionProgress = document.getElementById('revision-progress');
     var currentWritingTitleWindow = document.getElementById('current-writing-title-window');
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
+    var currentWritingTitleShell = document.getElementById('current-writing-title-shell');
+    var currentWritingTitleDisplay = document.getElementById('current-writing-title-display');
+    var currentWritingTitleEdit = document.getElementById('current-writing-title-edit');
+    var currentWritingTitleForm = document.getElementById('current-writing-title-form');
+    var currentWritingTitleInput = document.getElementById('current-writing-title-input');
+    var currentWritingTitleCancel = document.getElementById('current-writing-title-cancel');
+    var sidebarDockedQuery = window.matchMedia ? window.matchMedia('(min-width: 820px)') : null;
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
     var sentenceFeedbackDialog = document.getElementById('sentence-feedback-dialog');
@@ -158,11 +163,12 @@
 
     function updateToolbarNavigation() {
         if (!portfolioToggle) return;
-        var isBack = isWritingDetailScreen();
-        portfolioToggle.textContent = isBack ? 'Back' : 'History';
-        portfolioToggle.setAttribute('aria-label', isBack ? 'Back to Writing home' : (state.sidebarOpen ? 'Close History' : 'Open History'));
-        portfolioToggle.setAttribute('aria-expanded', String(!isBack && state.sidebarOpen));
-        portfolioToggle.classList.toggle('is-back', isBack);
+        portfolioToggle.setAttribute('aria-label', state.sidebarOpen ? 'Close writing sidebar' : 'Open writing sidebar');
+        portfolioToggle.setAttribute('aria-expanded', String(state.sidebarOpen));
+    }
+
+    function isSidebarDockedViewport() {
+        return Boolean(sidebarDockedQuery && sidebarDockedQuery.matches);
     }
 
     function escapeHtml(value) {
@@ -585,12 +591,67 @@
     function updateCurrentWritingTitle() {
         updateRevisionProgress();
         if (!currentWritingTitleWindow || !currentWritingTitleTrack) return;
-        var title = editableCompositionTitle(state.current);
+        var editableTitle = editableCompositionTitle(state.current);
+        var title = state.current ? compositionTitle(state.current) : 'Start new Writing';
         currentWritingTitleTrack.textContent = title;
-        currentWritingTitleWindow.hidden = !title;
-        currentWritingTitleWindow.setAttribute('aria-label', title ? '当前作文：' + title : '当前没有打开作文');
-        document.title = title ? title + ' | AI Tutor' : 'AI Tutor | Mr. Cat Academy';
+        currentWritingTitleWindow.hidden = false;
+        currentWritingTitleWindow.setAttribute('aria-label', state.current ? 'Current writing: ' + title : 'Start new Writing');
+        if (currentWritingTitleShell) currentWritingTitleShell.classList.toggle('is-new-writing', !state.current);
+        if (currentWritingTitleEdit) currentWritingTitleEdit.hidden = !state.current || !editableTitle || state.toolbarTitleEditing;
+        if (currentWritingTitleDisplay) currentWritingTitleDisplay.hidden = state.toolbarTitleEditing;
+        if (currentWritingTitleForm) currentWritingTitleForm.hidden = !state.toolbarTitleEditing;
+        document.title = state.current ? title + ' | AI Tutor' : 'Writing | Mr. Cat Academy';
         scheduleCurrentWritingTitleOverflow();
+    }
+
+    function beginToolbarTitleEdit() {
+        var title = editableCompositionTitle(state.current);
+        if (!state.current || !title || state.busy) return;
+        state.toolbarTitleEditing = true;
+        state.titleEditError = '';
+        updateCurrentWritingTitle();
+        window.requestAnimationFrame(function() {
+            if (!currentWritingTitleInput) return;
+            currentWritingTitleInput.value = title;
+            currentWritingTitleInput.focus();
+            currentWritingTitleInput.select();
+        });
+    }
+
+    function cancelToolbarTitleEdit() {
+        state.toolbarTitleEditing = false;
+        state.titleEditError = '';
+        updateCurrentWritingTitle();
+        if (currentWritingTitleEdit && !currentWritingTitleEdit.hidden) currentWritingTitleEdit.focus({ preventScroll: true });
+    }
+
+    function saveToolbarTitle() {
+        var id = compositionId(state.current);
+        var title = firstText(currentWritingTitleInput && currentWritingTitleInput.value);
+        if (!id || !title) {
+            if (currentWritingTitleInput) currentWritingTitleInput.setCustomValidity('Enter a writing title.');
+            if (currentWritingTitleInput) currentWritingTitleInput.reportValidity();
+            return;
+        }
+        if (currentWritingTitleInput) currentWritingTitleInput.setCustomValidity('');
+        var submit = currentWritingTitleForm && currentWritingTitleForm.querySelector('button[type="submit"]');
+        if (submit) submit.disabled = true;
+        writingCall('updateCompositionTitle', { composition_id: id, title: title }).then(function(result) {
+            var updated = result.composition || { title: title, title_source: 'student' };
+            state.current = Object.assign({}, state.current, updated);
+            state.title = editableCompositionTitle(state.current);
+            state.compositions = state.compositions.map(function(item) {
+                return compositionId(item) === id ? Object.assign({}, item, updated) : item;
+            });
+            state.toolbarTitleEditing = false;
+            renderPortfolio();
+            updateCurrentWritingTitle();
+        }).catch(function(error) {
+            state.titleEditError = firstText(error && error.message, 'The title could not be saved.');
+            setStatus(state.titleEditError);
+        }).finally(function() {
+            if (submit) submit.disabled = false;
+        });
     }
 
     function revisionProgressSummary() {
@@ -1466,88 +1527,49 @@
         return state.compositions.filter(function(item) { return !isEmptyCompositionDraft(item); });
     }
 
+    function compositionSortTime(item, completed) {
+        item = item || {};
+        var value = completed
+            ? (item.completed_at || item.updated_at || item.created_at)
+            : (item.updated_at || item.created_at);
+        if (value && typeof value === 'object') value = value.$date || value.date || value.value || '';
+        if (typeof value === 'number') return value < 100000000000 ? value * 1000 : value;
+        var parsed = Date.parse(value);
+        return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function portfolioGroupHtml(label, items) {
+        if (!items.length) return '';
+        return '<section class="portfolio-group" aria-label="' + escapeHtml(label) + '">' +
+            '<p class="portfolio-group-label">' + escapeHtml(label) + '</p>' +
+            items.map(function(item) {
+                var id = compositionId(item);
+                var active = state.current && compositionId(state.current) === id;
+                return '<article class="portfolio-item' + (active ? ' is-active' : '') + '">' +
+                    '<button class="portfolio-open" type="button" data-open-composition="' + escapeHtml(id) + '"' +
+                    ' aria-label="Open ' + escapeHtml(compositionTitle(item)) + '"><strong>' +
+                    escapeHtml(compositionTitle(item)) + '</strong></button></article>';
+            }).join('') + '</section>';
+    }
+
     function renderPortfolio() {
         var portfolioItems = portfolioCompositions();
-        var items = portfolioItems.filter(function(item) {
-            return state.filter === 'all' || compositionMode(item) === state.filter;
-        });
-        var completed = portfolioItems.filter(function(item) { return compositionStatus(item) === 'completed'; }).length;
-        portfolioSummary.innerHTML = '<span class="summary-stat"><strong>' + portfolioItems.length + '</strong>全部作品</span>' +
-            '<span class="summary-stat"><strong>' + completed + '</strong>已经完成</span>';
-        renderWritingProfile();
-        if (!items.length) {
-            portfolioList.innerHTML = '<div class="empty-sidebar">' + (portfolioItems.length ? '这个筛选中还没有作文。' : '第一篇作文会出现在这里。') + '</div>';
+        var unfinished = portfolioItems.filter(function(item) {
+            return compositionStatus(item) !== 'completed';
+        }).sort(function(a, b) { return compositionSortTime(b, false) - compositionSortTime(a, false); });
+        var completed = portfolioItems.filter(function(item) {
+            return compositionStatus(item) === 'completed';
+        }).sort(function(a, b) { return compositionSortTime(b, true) - compositionSortTime(a, true); });
+        if (!portfolioItems.length) {
+            portfolioList.innerHTML = '<div class="empty-sidebar">Your writing will appear here.</div>';
             return;
         }
-        portfolioList.innerHTML = items.map(function(item) {
-            var id = compositionId(item);
-            var mode = compositionMode(item);
-            var active = state.current && compositionId(state.current) === id;
-            var score = item.overall_score != null ? ' · ' + escapeHtml(item.overall_score) : '';
-            if (state.editingTitleId === id) {
-                return '<article class="portfolio-item is-editing' + (active ? ' is-active' : '') + '"><form class="portfolio-title-form" data-title-form="' + escapeHtml(id) + '">' +
-                    '<label for="portfolio-title-' + escapeHtml(id) + '">修改作文标题<input id="portfolio-title-' + escapeHtml(id) + '" name="title" maxlength="80" autocomplete="off" value="' + escapeHtml(editableCompositionTitle(item)) + '" placeholder="输入一个短标题"></label>' +
-                    (state.titleEditError ? '<p class="portfolio-title-error" role="alert">' + escapeHtml(state.titleEditError) + '</p>' : '') +
-                    '<div class="portfolio-title-actions"><button class="quiet-button compact" type="button" data-cancel-title>取消</button><button class="primary-button compact" type="submit">保存</button></div></form></article>';
-            }
-            return '<article class="portfolio-item' + (active ? ' is-active' : '') + '"><button class="portfolio-open" type="button" data-open-composition="' + escapeHtml(id) + '">' +
-                '<strong>' + escapeHtml(compositionTitle(item)) + '</strong>' +
-                '<small>' + escapeHtml(formatDate(item.updated_at || item.created_at)) + score + '</small>' +
-                '<span class="portfolio-item-meta"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + modeLabel(mode) + '</span>' +
-                '<span class="mini-badge">' + escapeHtml(statusLabel(compositionStatus(item))) + '</span></span></button>' +
-                '<button class="icon-button portfolio-title-edit" type="button" data-edit-title="' + escapeHtml(id) + '" aria-label="修改《' + escapeHtml(compositionTitle(item)) + '》的标题">' + icon('edit') + '</button></article>';
-        }).join('');
-    }
-
-    function beginTitleEdit(id) {
-        if (!id) return;
-        state.editingTitleId = id;
-        state.titleEditError = '';
-        renderPortfolio();
-        window.requestAnimationFrame(function() {
-            var input = document.getElementById('portfolio-title-' + id);
-            if (input) { input.focus(); input.select(); }
-        });
-    }
-
-    function cancelTitleEdit() {
-        state.editingTitleId = '';
-        state.titleEditError = '';
-        renderPortfolio();
-    }
-
-    function savePortfolioTitle(form) {
-        var id = form.getAttribute('data-title-form');
-        var input = form.querySelector('input[name="title"]');
-        var title = firstText(input && input.value);
-        if (!title) {
-            state.titleEditError = '请输入作文标题。';
-            renderPortfolio();
-            return;
-        }
-        var submit = form.querySelector('button[type="submit"]');
-        if (submit) submit.disabled = true;
-        state.titleEditError = '';
-        writingCall('updateCompositionTitle', { composition_id: id, title: title }).then(function(result) {
-            var updated = result.composition || {};
-            state.compositions = state.compositions.map(function(item) {
-                return compositionId(item) === id ? Object.assign({}, item, updated) : item;
-            });
-            if (state.current && compositionId(state.current) === id) {
-                state.current = Object.assign({}, state.current, updated);
-                state.title = editableCompositionTitle(state.current);
-                updateCurrentWritingTitle();
-            }
-            state.editingTitleId = '';
-            renderPortfolio();
-        }).catch(function(error) {
-            state.titleEditError = firstText(error && error.message, '标题没有保存，请重试。');
-            renderPortfolio();
-        });
+        portfolioList.innerHTML = portfolioGroupHtml('Continue', unfinished) + portfolioGroupHtml('Completed', completed);
     }
 
     function renderWritingProfile() {
         var patterns = safeArray(state.writingProfile).slice(0, 3);
+        if (!writingProfileSummary) return;
         writingProfileSummary.innerHTML = patterns.length
             ? '<div class="writing-profile-list">' + patterns.map(function(item) {
                 return '<span class="writing-profile-item"><span>' + escapeHtml(firstText(item.category, 'Other')) + '</span><b>' + escapeHtml(item.count || 1) + '</b></span>';
@@ -1589,22 +1611,12 @@
     function renderWelcome() {
         destroyAiWaitingExperience();
         state.screen = 'welcome';
-        var homeCompositions = portfolioCompositions();
-        var unfinishedCompositions = homeCompositions.filter(function(item) {
-            return compositionStatus(item) !== 'completed';
-        });
-        var completedCompositions = homeCompositions.filter(function(item) {
-            return compositionStatus(item) === 'completed';
-        });
         showWelcomeToolbar();
         stage.innerHTML = '<section class="writing-home" aria-label="Writing home"><div class="writing-home-flow">' +
             '<section class="writing-home-section writing-home-start" aria-label="Start new writing">' +
-            '<p class="writing-home-list-label writing-home-section-label">New</p>' +
             '<div class="writing-mode-grid"><button class="writing-mode-card polishing' + (state.homeComposerOpen && state.assessmentMode === 'language' ? ' is-selected' : '') + '" type="button" data-start-mode="language" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '" aria-expanded="' + (state.homeComposerOpen && state.assessmentMode === 'language') + '"><span><strong>Polishing</strong><small>Improve grammar and expression</small></span></button>' +
             '<button class="writing-mode-card brainstorming' + (state.homeComposerOpen && state.assessmentMode === 'standardized' ? ' is-selected' : '') + '" type="button" data-start-mode="standardized" aria-pressed="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '" aria-expanded="' + (state.homeComposerOpen && state.assessmentMode === 'standardized') + '"><span><strong>Brainstorming</strong><small>Develop ideas and structure</small></span></button></div>' +
-            (state.homeComposerOpen ? homeComposerHtml() : '') + '</section>' +
-            welcomeUnfinishedHtml(unfinishedCompositions) +
-            welcomeCompletedHtml(completedCompositions) + '</div></section>';
+            (state.homeComposerOpen ? homeComposerHtml() : '') + '</section></div></section>';
         scheduleSourceTextareaResize();
         scheduleStageViewportReset();
     }
@@ -1616,22 +1628,14 @@
     }
 
     function showWelcomeToolbar() {
-        if (currentWritingTitleWindow && currentWritingTitleTrack) {
-            currentWritingTitleTrack.textContent = 'Writing';
-            currentWritingTitleWindow.hidden = false;
-            currentWritingTitleWindow.setAttribute('aria-label', 'Writing home');
-            currentWritingTitleWindow.classList.remove('is-overflowing');
-        }
+        state.toolbarTitleEditing = false;
+        updateCurrentWritingTitle();
         if (revisionProgress) {
-            var remaining = state.quota && Number(state.quota.words_remaining);
-            var hasQuota = Number.isFinite(remaining);
-            revisionProgress.hidden = !hasQuota;
-            revisionProgress.classList.toggle('is-home-quota', hasQuota);
-            if (hasQuota) {
-                revisionProgress.innerHTML = '<strong>' + escapeHtml(compactQuota(remaining)) + '</strong><small>words</small>';
-                revisionProgress.setAttribute('aria-label', 'Today: ' + Math.max(0, remaining) + ' AI review words remaining');
-                revisionProgress.setAttribute('title', Math.max(0, remaining) + ' words remaining today');
-            }
+            revisionProgress.hidden = true;
+            revisionProgress.innerHTML = '';
+            revisionProgress.classList.remove('is-home-quota');
+            revisionProgress.removeAttribute('aria-label');
+            revisionProgress.removeAttribute('title');
         }
         document.title = 'Writing | Mr. Cat Academy';
     }
@@ -1700,6 +1704,7 @@
         state.homeComposerOpen = false;
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
+        state.toolbarTitleEditing = false;
         state.review = null;
         state.readOnly = false;
         state.inputMethod = 'text';
@@ -3415,7 +3420,8 @@
     function loadComposition(id, forceReadOnly, options) {
         options = options || {};
         if (!id || state.busy) return Promise.resolve();
-        closeSidebar();
+        state.toolbarTitleEditing = false;
+        if (!isSidebarDockedViewport()) closeSidebar();
         setStatus('');
         if (!options.preserveStage) renderLoading('Opening your writing…', '');
         setBusy(true);
@@ -3710,7 +3716,7 @@
     }
 
     function updateOverlayLock() {
-        document.documentElement.classList.toggle('ai-overlay-open', state.sidebarOpen || hasBlockingDialogOpen());
+        document.documentElement.classList.toggle('ai-overlay-open', (state.sidebarOpen && !isSidebarDockedViewport()) || hasBlockingDialogOpen());
     }
 
     function openPhotoChoice(context, target, trigger) {
@@ -3950,12 +3956,11 @@
     }
 
     function openSidebar() {
-        if (isWritingDetailScreen()) return;
         state.sidebarOpen = true;
         portfolioSidebar.classList.add('is-open');
-        sidebarScrim.hidden = false;
+        app.classList.add('has-sidebar-open');
+        sidebarScrim.hidden = isSidebarDockedViewport();
         portfolioToggle.setAttribute('aria-expanded', 'true');
-        portfolioToggle.setAttribute('aria-label', 'Close History');
         updateOverlayLock();
         updateToolbarNavigation();
     }
@@ -3963,9 +3968,9 @@
     function closeSidebar() {
         state.sidebarOpen = false;
         portfolioSidebar.classList.remove('is-open');
+        app.classList.remove('has-sidebar-open');
         sidebarScrim.hidden = true;
         portfolioToggle.setAttribute('aria-expanded', 'false');
-        portfolioToggle.setAttribute('aria-label', 'Open History');
         updateOverlayLock();
         updateToolbarNavigation();
     }
@@ -4116,9 +4121,9 @@
     });
 
     document.addEventListener('submit', function(event) {
-        if (event.target.matches('[data-title-form]')) {
+        if (event.target.id === 'current-writing-title-form') {
             event.preventDefault();
-            savePortfolioTitle(event.target);
+            saveToolbarTitle();
             return;
         }
         if (event.target.id === 'writing-source-form') {
@@ -4174,8 +4179,6 @@
         else if (button.matches('[data-confirm-scan-submit]')) confirmScannedRewritesSubmit();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
         else if (button.matches('[data-discard-source]')) requestSourceDiscard();
-        else if (button.matches('[data-edit-title]')) beginTitleEdit(button.getAttribute('data-edit-title'));
-        else if (button.matches('[data-cancel-title]')) cancelTitleEdit();
         else if (button.matches('[data-open-history]')) openSidebar();
         else if (button.matches('[data-start-mode]')) startInlineWriting(button.getAttribute('data-start-mode'));
         else if (button.matches('[data-start-new]')) createNewWriting();
@@ -4187,7 +4190,7 @@
             destroyAiWaitingExperience();
             if (typeof waitingAction === 'function') waitingAction();
         }
-        else if (button.matches('[data-open-composition]')) showCompositionEntryDialog(button.getAttribute('data-open-composition'), button);
+        else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
         else if (button.matches('[data-open-photo-choice]')) openPhotoChoice(
             button.getAttribute('data-open-photo-choice'),
             button.getAttribute('data-photo-target'),
@@ -4346,27 +4349,15 @@
     document.addEventListener('pointerdown', unlockWaitingReadySound, { passive: true });
 
     document.getElementById('history-new-writing').addEventListener('click', function() {
-        closeSidebar();
-        createNewWriting();
+        if (!isSidebarDockedViewport()) closeSidebar();
+        returnToTutorHome();
     });
     portfolioToggle.addEventListener('click', function() {
-        if (isWritingDetailScreen()) {
-            openLeaveConfirmation('writing-home');
-            return;
-        }
         state.sidebarOpen ? closeSidebar() : openSidebar();
     });
-    document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
+    if (currentWritingTitleEdit) currentWritingTitleEdit.addEventListener('click', beginToolbarTitleEdit);
+    if (currentWritingTitleCancel) currentWritingTitleCancel.addEventListener('click', cancelToolbarTitleEdit);
     sidebarScrim.addEventListener('click', closeSidebar);
-    document.querySelector('.portfolio-filters').addEventListener('click', function(event) {
-        var button = event.target.closest('[data-portfolio-filter]');
-        if (!button) return;
-        state.filter = button.getAttribute('data-portfolio-filter');
-        Array.prototype.forEach.call(document.querySelectorAll('[data-portfolio-filter]'), function(item) {
-            item.setAttribute('aria-pressed', String(item === button));
-        });
-        renderPortfolio();
-    });
     window.addEventListener('keydown', function(event) {
         if (state.photoViewerOpen) {
             if (event.key === 'ArrowLeft') { event.preventDefault(); stepPhotoViewer(-1); return; }
@@ -4438,7 +4429,8 @@
             return;
         }
         if (event.key === 'Escape') {
-            if (state.photoViewerOpen) closePhotoViewer();
+            if (state.toolbarTitleEditing) cancelToolbarTitleEdit();
+            else if (state.photoViewerOpen) closePhotoViewer();
             else if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation();
             else if (state.photoChoiceOpen) closePhotoChoice();
             else if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
@@ -4493,6 +4485,12 @@
             currentWritingTitleMotionPreference.addEventListener('change', scheduleCurrentWritingTitleOverflow);
         }
     }
+    if (sidebarDockedQuery && sidebarDockedQuery.addEventListener) {
+        sidebarDockedQuery.addEventListener('change', function(event) {
+            if (event.matches) openSidebar();
+            else closeSidebar();
+        });
+    }
 
     function init() {
         restoreRevisionTextLevel();
@@ -4530,6 +4528,7 @@
                 state.compositions = normalizeCompositions(results[1]);
                 clearRetiredPendingComposerStorage();
                 renderPortfolio();
+                if (isSidebarDockedViewport()) openSidebar();
                 if (!requestedId) {
                     app.setAttribute('aria-busy', 'false');
                     renderWelcome();

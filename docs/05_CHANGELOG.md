@@ -7,6 +7,17 @@
   upload action uses an unavailable cursor while no recording exists and a wait
   cursor only during an actual transfer.
 
+- Rebuilt AI Tutor Writing navigation around one responsive title-only sidebar.
+  The toolbar now keeps a permanent hamburger, wide screens auto-dock the sidebar
+  while retaining manual collapse, phone selection closes the overlay, unfinished
+  work precedes newest completed work, and saved rows enter their current stage
+  directly. The main area now contains only the existing Polishing/Brainstorming
+  composer, with green `Start new Writing` and no home quota display.
+- Moved student Composition title editing from individual portfolio rows to a
+  compact pencil beside the centered toolbar title. Saving continues through the
+  authenticated title action and updates both current and sidebar projections
+  without changing activity order.
+
 - Added a restrained interaction cue to already-correct Sentence Revision cards:
   pointer and keyboard activation now give the static card one short shake without
   flipping it, with a tint-only Reduced Motion fallback.

@@ -1806,10 +1806,10 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   two endpoint nodes. Normal work has no process label; the connector continuously
   transmits a restrained energy sweep from left to right. The browser never
   invents percentages or remaining-time estimates.
-- Every concrete Composition screen uses the persistent toolbar `Back` action;
-  the waiting card itself contains no duplicate Back or Upload Again row. Back
-  requires confirmation and returns to Writing Home without cancelling a
-  durable Job. During the brief unconfirmed upload handoff the toolbar action is
+- Every screen uses the persistent toolbar hamburger to reveal the Writing
+  sidebar; the waiting card itself contains no duplicate navigation or Upload
+  Again row. Home inside the sidebar requires confirmation and leaves the
+  workspace without cancelling a durable Job. During the brief unconfirmed upload handoff the toolbar action is
   disabled and the card never promises that the task will continue after the
   page closes. The runner is nevertheless visible immediately; there is no
   separate upload-only or “AI is reading” loading screen.
@@ -1846,13 +1846,17 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - Student Dashboard 在 Library 之前提供独立的 `AI Tutor` 入口。作文作品不是 Assignment、
   Attempt、Exercise Progress 或 STAR；老师分享 Library 题目只会预填 Writing Prompt。
 - AI Tutor 页面只保留一个顶部工具栏；工具栏不再显示品牌图标、`AI Tutor`、`Writing Studio`、
-  学生身份、Home 或 New。Writing Home 左侧显示 `History`；进入任何具体 Composition 后同一位置
-  改为 `Back`。中间保留当前作文标题，最右侧只显示语言订正百分比。Home 与 New 集中放进
-  History 抽屉；Composition 的 Back 必须先显示自定义确认弹窗，确认后返回 Writing Home，并明确
-  说明已保存内容不会丢失、正在进行的 OCR 或 AI 批改会继续在后台运行。
-- `History` 占用工具栏最左侧。手机、iPad 与桌面使用同一可收起的左侧抽屉模型，初始均为收起；
-  再次点击作品库按钮、点击抽屉关闭按钮、点击遮罩或按 `Escape` 都必须收起。抽屉之外的主要
-  内容以卡片呈现，不保留第二层页面工具栏或常驻桌面侧栏。
+  学生身份、Home、New、History 或 Back 文本。最左侧始终是三横线按钮；中间在未选作文时显示
+  绿色 `Start new Writing`，选中作文后显示其标题；最右侧只在逐句订正时显示百分比，主页不显示
+  字数额度。已有有效标题时，中间紧邻铅笔按钮，学生可直接修改并保存标题。
+- 三横线控制同一个简洁 Writing sidebar。手机初始收起并以遮罩抽屉显示；iPad/桌面等宽度达到
+  `820px` 时初始自动展开为停靠侧栏，但再次点击仍可隐藏。侧栏只保留红色 Home、加号和作文标题；
+  不显示统计、写作画像、筛选器、分数、日期、模式或状态徽章。未完成作文按最近活动优先组成
+  `Continue`，已完成作文随后按最近完成优先组成 `Completed`。点击作文直接进入其当前服务端阶段，
+  不再增加进入确认弹窗；手机选中后收起侧栏，宽屏保持停靠。Home 仍使用自定义离开确认。
+- 点击侧栏加号会让主区域回到原有 Polishing/Brainstorming 新作文界面，不预选模式，也不创建云端
+  草稿；仅在学生明确 Submit 或 Scan 后创建 Composition。新作文主页不再重复展示 Continue/Review
+  作文卡片，所有历史作文统一由侧栏承担。
 - 打开任何已有或新建 Composition 后，当前页面地址必须保存该 Composition 的稳定定位符；刷新
   本页应重新打开同一篇作文及其服务端步骤，而不是退回 AI Tutor 首页。返回 AI Tutor 首页时清除
   定位符；若定位到的空白过期占位稿已被安全清理，则清除定位符并正常返回首页。
@@ -1860,8 +1864,9 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   不得先显示 Writing Home 加载页再替换成第二张作文加载卡。登录确认后，当前 Composition 详情应与
   Profile、History 并行读取；正文先返回即可显示，History 与额度允许随后补齐。最终内容从工具栏
   下方以约 10px 的轻微向下展开和透明度渐变进入，不得人为延迟；Reduced Motion 下只做短淡入。
-- 顶部工具栏中间的空白区域在打开作文时显示该篇作文的 AI 或学生标题。标题过长时在可用宽度内
-  往返横向滚动并在两端停顿；Reduced Motion 下改为单行省略。未打开作文时该区域不占空间。
+- 顶部工具栏中间在打开作文时显示该篇作文的 AI 或学生标题。标题过长时在可用宽度内往返横向
+  滚动并在两端停顿；Reduced Motion 下改为单行省略。已有标题显示铅笔入口，保存继续调用受所有权
+  保护的 `updateCompositionTitle`，且不改变作文活动排序。未打开作文时显示绿色 `Start new Writing`。
 - 学生可直接输入，或上传最多八张作文照片。OCR 必须保留原始错误并标出不确定处；学生确认
   Confirmed Manuscript 后才可评估。确认后删除作文图片，只长期保存文字。
 - OCR 是可恢复的后台长任务：照片上传确认与持久任务创建由同一个服务器步骤完成；任务进入

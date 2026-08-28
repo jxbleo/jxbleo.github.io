@@ -9,45 +9,45 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260828-8">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260828-9">
     <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260826-2">
 </head>
 <body class="ai-tutor-page">
     <a class="skip-link" href="#ai-tutor-main">跳到主要内容</a>
     <div class="ai-tutor-shell" id="ai-tutor-app" aria-busy="true">
         <header class="ai-tutor-header">
-            <button class="secondary-button compact portfolio-toggle" id="portfolio-toggle" type="button" aria-label="打开历史" aria-expanded="false" aria-controls="portfolio-sidebar" data-disable-when-busy>History</button>
-            <div class="current-writing-title-window" id="current-writing-title-window" hidden>
-                <span class="current-writing-title-track" id="current-writing-title-track"></span>
+            <button class="secondary-button compact portfolio-toggle" id="portfolio-toggle" type="button" aria-label="Open writing sidebar" aria-expanded="false" aria-controls="portfolio-sidebar" data-disable-when-busy>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+            </button>
+            <div class="current-writing-title-shell" id="current-writing-title-shell">
+                <div class="current-writing-title-display" id="current-writing-title-display">
+                    <div class="current-writing-title-window" id="current-writing-title-window">
+                        <span class="current-writing-title-track" id="current-writing-title-track">Start new Writing</span>
+                    </div>
+                    <button class="current-writing-title-edit" id="current-writing-title-edit" type="button" aria-label="Edit writing title" hidden>
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.3-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.3 16 4 20Z"></path><path d="m14.8 6.5 2.7 2.7"></path></svg>
+                    </button>
+                </div>
+                <form class="current-writing-title-form" id="current-writing-title-form" hidden>
+                    <input id="current-writing-title-input" name="title" maxlength="80" autocomplete="off" aria-label="Writing title">
+                    <button type="button" id="current-writing-title-cancel" aria-label="Cancel title edit">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+                    </button>
+                    <button type="submit" aria-label="Save writing title">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg>
+                    </button>
+                </form>
             </div>
             <span class="revision-progress" id="revision-progress" hidden></span>
         </header>
 
         <div class="ai-tutor-workspace">
-            <aside class="portfolio-sidebar" id="portfolio-sidebar" aria-label="写作作品库">
-                <div class="sidebar-heading">
-                    <div><p class="eyebrow">WRITING PORTFOLIO</p><h1>我的作文</h1></div>
-                    <button class="icon-button sidebar-close" id="sidebar-close" type="button" aria-label="关闭作品库">
-                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"></path></svg>
-                    </button>
-                </div>
+            <aside class="portfolio-sidebar" id="portfolio-sidebar" aria-label="Writing sidebar">
                 <div class="sidebar-actions" role="group" aria-label="写作导航">
                     <button class="sidebar-home-action" id="history-home" type="button">Home</button>
-                    <button class="sidebar-new-action" id="history-new-writing" type="button">
+                    <button class="sidebar-new-action" id="history-new-writing" type="button" aria-label="Start new writing">
                         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
-                        New
                     </button>
-                </div>
-                <div class="portfolio-summary" id="portfolio-summary" aria-live="polite"></div>
-                <section class="writing-profile-card" aria-labelledby="writing-profile-title">
-                    <p class="eyebrow">LANGUAGE &amp; WRITING PROFILE</p>
-                    <h2 id="writing-profile-title">最近的语言重点</h2>
-                    <div id="writing-profile-summary"></div>
-                </section>
-                <div class="portfolio-filters" role="group" aria-label="筛选作文">
-                    <button type="button" data-portfolio-filter="all" aria-pressed="true">全部</button>
-                    <button type="button" data-portfolio-filter="language" aria-pressed="false">语言</button>
-                    <button type="button" data-portfolio-filter="standardized" aria-pressed="false">标化</button>
                 </div>
                 <div class="portfolio-list" id="portfolio-list" aria-live="polite"></div>
             </aside>
@@ -199,6 +199,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/ai-waiting-runner.js?v=20260826-2"></script>
-    <script src="assets/js/ai-tutor.js?v=20260828-8"></script>
+    <script src="assets/js/ai-tutor.js?v=20260828-9"></script>
 </body>
 </html>
