@@ -583,10 +583,13 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderOcr", "saveAndEvaluate");
   requireEvery(renderSource, [
-    "Compare with Image", "contenteditable=\"true\"",
+    "contenteditable=\"true\"",
     "data-confirm-ocr", ">Confirm</button>",
   ], "focused OCR confirmation controls");
+  requireEvery(client, ["showOcrPhotoToolbarToggle", "Show image", "Hide image", "data-toggle-ocr-photo"],
+    "toolbar-owned OCR image comparison control");
   assert(!renderSource.includes("OCR Review"), "the OCR confirmation surface must omit the OCR Review heading");
+  assert(!renderSource.includes("Compare with Image"), "the removed in-card image comparison label must not return");
   assert(!/Upload Again|Confirm Text &amp; Start Review/.test(renderSource),
     "OCR Review must expose only the centered Confirm footer action");
   assert(!/先确认识别文字|第 2 步|有 ['\"] \+ uncertainCount|可编辑 OCR 文本|请自行修正识别错误/.test(renderSource),
@@ -595,6 +598,10 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
     "inline OCR uncertainty handling");
   requireEvery(styles, [".ocr-uncertain", ".ocr-text-editor > p", "margin: 0 0 1em"],
     "uncertain highlight and one-Enter paragraph spacing");
+  assert(/\.ocr-review-surface\s*\{[^}]*background-color:\s*#fbf4df/i.test(styles),
+    "OCR confirmation must reuse the warm Draft paper material");
+  assert(/\.ocr-toolbar-photo-toggle\[aria-pressed="true"\]/.test(styles),
+    "the toolbar image toggle must expose a clear selected state");
   assert(/\.ocr-review-actions\s*\{[^}]*justify-content\s*:\s*center/i.test(styles),
     "the sole OCR Review Confirm action must be centered");
   assert(/\.ocr-uncertain\s*\{[^}]*color\s*:\s*#a52634[^}]*background\s*:\s*rgba\(218,55,69,\.16\)/i.test(styles),
@@ -607,13 +614,16 @@ check("OCR confirmation can move the first line into an optional undoable title"
   const renderSource = functionSource(client, "renderOcr", "adoptPromptOcr");
   requireEvery(renderSource, [
     'id="ocr-title"', 'maxlength="80"', 'aria-label="Title, optional"', 'placeholder="Title (Optional)"',
-    "Use First Line", "data-undo-ocr-title", ">Undo</button>",
+    "Use first line", "data-use-ocr-first-line",
   ], "OCR title extraction controls");
+  assert((renderSource.match(/data-use-ocr-first-line/g) || []).length === 1,
+    "Use first line and Undo must occupy one reversible control");
+  assert(!renderSource.includes("data-undo-ocr-title"), "OCR title extraction must not render a second Undo button");
   assert(!renderSource.includes("Optional composition title"), "the OCR title field must not render a redundant label above the input");
   const interaction = functionSource(client, "splitOcrFirstLine", "unwrapOcrMark");
   requireEvery(interaction, [
     "lines.splice(firstLineIndex, 1)", "ocrTitleUndo", "editorHtml",
-    "acknowledgedRegions", "Moved from the first line.", "Restored.",
+    "acknowledgedRegions", "Moved from the first line.", "Restored.", "Use first line", "Undo",
   ], "undoable title extraction behavior");
   assert(/extracted\.title\.length\s*>\s*80/.test(interaction), "an overlong first line must not be silently truncated into a title");
   const normalizedSource = functionSource(client, "normalizedOcrText", "ocrUncertainRanges");
@@ -882,6 +892,28 @@ check("rewrite draft cleanup removes only accepted sentences and retains failure
   assert(networkIndex >= 0 && networkReturnIndex > networkIndex
       && (cleanupIndex < 0 || networkReturnIndex < cleanupIndex),
     "network-disconnect recovery must return without clearing any sentence drafts");
+});
+
+check("rejected Submit results land on and pulse the first failed sentence", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const resultSource = matchingFunctionSource(client, "applyRewriteResult", "rewrite success application");
+  const focusSource = matchingFunctionSource(client, "focusRejectedRewriteSentence", "rejected rewrite focus helper");
+  requireEvery(resultSource, [
+    "restoreLanguageReviewState", "answer.accepted === false", "rejectedIndex",
+    "state.activeSentence", "renderLanguage()", "focusRejectedRewriteSentence",
+  ], "first rejected rewrite result handoff");
+  assert(resultSource.indexOf("state.activeSentence") < resultSource.indexOf("renderLanguage()")
+      && resultSource.indexOf("renderLanguage()") < resultSource.indexOf("focusRejectedRewriteSentence"),
+    "the first rejected sentence must be selected before one render, then focused after materialization");
+  requireEvery(focusSource, [
+    "++stageViewportResetToken", "requestAnimationFrame", "sentence-card-",
+    "is-revision-attention", "scrollIntoView", "block: 'start'", "prefers-reduced-motion: reduce",
+  ], "rejected sentence positioning and attention cue");
+  assert(/\.sentence-card\.is-revision-attention\s+\.sentence-card-face\s*\{[^}]*animation:\s*sentenceRevisionAttentionPulse\s+1\.7s\s+ease-in-out\s+infinite/is.test(styles),
+    "the rejected card must reuse the Overdue-style 1.7-second red pulse");
+  assert(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.sentence-card\.is-revision-attention\s+\.sentence-card-face\s*\{[^}]*animation:\s*none\s*!important/is.test(styles),
+    "Reduced Motion must replace the rejected-card pulse with a static red emphasis");
 });
 
 check("effective sentences use the static correct icon and no coaching controls", () => {

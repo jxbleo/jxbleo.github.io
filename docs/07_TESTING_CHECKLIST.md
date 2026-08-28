@@ -1893,12 +1893,13 @@ High priority improvement:
   and leaving its final-photo state. Full-screen result/error transitions must also
   begin at the screen top; sentence-card flips, typing, and waiting-game polling must
   retain the student's current position.
-- On manuscript OCR confirmation, confirm the `OCR Review` heading is absent and
-  the fixed controls are `Compare with Image`, compact `Title (Optional)` plus
-  `Use First Line`, and one horizontally centered `Confirm`, with no `Upload Again`.
+- On manuscript OCR confirmation, confirm the `OCR Review` heading is absent, the card uses the same warm-yellow
+  paper material as Draft, and the trailing toolbar control reads `Show image`. Opening it must change that same
+  control to `Hide image`; closing it restores `Show image`. The remaining fixed controls are compact
+  `Title (Optional)` plus one `Use first line` action and one horizontally centered `Confirm`, with no `Upload Again`.
   `Use First Line` must move (not copy) the first non-empty line into the title,
-  preserve paragraph spacing and remaining uncertainty marks, and expose `Undo`.
-  Undo must restore the exact prior title, manuscript, and image-region state;
+  preserve paragraph spacing and remaining uncertainty marks, and change that same button to `Undo`.
+  No second Undo button may appear. Undo must restore the exact prior title, manuscript, and image-region state;
   typing afterward dismisses the stale Undo. A first line longer than 80 characters
   must remain untouched with manual-entry guidance. Prompt OCR must show no title
   control. Confirm no visible `Optional composition title` label remains, the input
@@ -2073,6 +2074,12 @@ High priority improvement:
   BBC classroom worksheet treatment—small, heavy, baseline-aligned, with no border,
   circular background, or capsule shape. This must remain visually distinct from
   the top navigation capsules.
+- Submit a complete batch containing at least two rejected sentences. When the saved
+  result returns, confirm the page lands on the first rejected sentence—not Language
+  Review or the top of Sentence Revision—and that its capsule is selected and centered.
+  The sentence card must show the same red 1.7-second border/ring pulse as an Overdue
+  task. Typing in that sentence stops the pulse. With Reduced Motion enabled, confirm
+  immediate positioning and a static red border/ring with no animation.
 - Confirm every editable rewrite face labels its field `Your Attempt` in the muted
   supporting-text color and uses the English placeholder `Rewrite this sentence in your
   own words.`, while the textarea content remains visually primary. After

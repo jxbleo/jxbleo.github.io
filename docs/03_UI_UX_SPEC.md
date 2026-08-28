@@ -2290,6 +2290,12 @@ Important mobile rules:
   `You still have unfinished changes.` Its only visible action is `OK`; dismissing it
   leaves the first unfinished rewrite field focused. The alert traps keyboard focus,
   locks background interaction, and uses an immediate transition under Reduced Motion.
+- If a completed rewrite check still contains rejected sentences, select the first
+  `accepted: false` sentence before rendering the returned review, cancel any stale
+  stage-top reset, and scroll that card to the sticky-navigation inset. Its visible face
+  uses the same restrained 1.7-second red border/ring pulse as an Overdue task. The cue
+  ends as soon as the student edits that sentence; Reduced Motion receives the same
+  static red border and inset ring with no pulse.
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.
@@ -2411,6 +2417,10 @@ Enter, or Space centers the matching text mark without changing it; clicking a m
 and removes its box, and editing a mark removes the box through the existing changed-mark cleanup. Missing
 or unavailable boxes never disable the text editor. The split layout remains on tablet/desktop and images
 remain above the editor on phones, with scroll/pinch gestures available outside the individual targets.
+The confirmation card uses the same restrained warm-yellow paper material as the Draft manuscript. Its image
+control lives in the trailing toolbar slot and changes in place between `Show image` and `Hide image`; it is
+not duplicated inside the paper. Title extraction also uses one reversible control: `Use first line` becomes
+`Undo` after a successful move, and Undo restores the prior title, manuscript markup, and uncertainty state.
 
 ## Speaking Lab V1 surfaces
 
