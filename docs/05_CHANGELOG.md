@@ -61,6 +61,21 @@
 - Added one restrained, top-anchored downward materialization for resolved Writing
   content, with an opacity-only Reduced Motion fallback and no artificial delay.
 
+## 2026-08-28 — Draft-style OCR confirmation
+
+- Reused the warm-yellow Draft paper material for OCR text confirmation.
+- Moved image comparison into the trailing toolbar slot with reversible
+  `Show image` / `Hide image` wording.
+- Collapsed first-line title extraction into one reversible control that changes
+  from `Use first line` to `Undo` and restores the original manuscript in place.
+
+## 2026-08-28 — Rejected revision return focus
+
+- Changed unsuccessful Sentence Revision checks to return directly to the first
+  rejected sentence instead of resetting the review to the top.
+- Added the existing Overdue-style red pulse to that card until the student edits
+  it, with a static red Reduced Motion fallback.
+
 ## 2026-08-28 — Speaking Report anonymous invocation boundary
 
 - Made the external Speaking Report reader establish anonymous CloudBase SDK
