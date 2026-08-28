@@ -2454,6 +2454,11 @@ authenticated CloudBase SDK is transferring and the server is verifying the
 asset. It has a ten-minute transfer ceiling; timeout or SDK failure restores the
 action and presents a retryable message. `Upload complete` is never rendered as
 an error label and is never shown before `finishAudioUpload` succeeds.
+Before a live browser recording begins, the secondary recording controls stay
+fully hidden. Starting the recorder reveals Pause/Stop and a disabled Upload
+recording action; stopping with captured audio enables Preview and Upload.
+A disabled not-yet-ready Upload uses a normal unavailable cursor, while the wait
+cursor appears only during the real transfer.
 
 Above the Discussion list, `My voiceprint` shows `not set up`, `ready`, or a
 provider-unavailable message. Set up and update use one explicit consent
