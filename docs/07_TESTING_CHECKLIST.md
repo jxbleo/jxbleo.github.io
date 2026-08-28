@@ -2275,9 +2275,12 @@ student recording fallback, no browser audio persistence, noindex external
 page, no audio/download controls, teacher name selection, and reduced motion.
 The authenticated page must complete `getSession()` once and then call
 `speakingLab` directly through the SDK; do not add concurrent redundant
-`callAuthenticatedFunction` preflights to the initial Voiceprint and Discussion
-reads. Reload a valid student session and confirm `Loading your Discussions…`
-settles and at least one `speakingLab` invocation reaches the cloud logs.
+`callAuthenticatedFunction` preflights. The initial Voiceprint and Discussion
+reads must remain sequential so the browser SDK does not concurrently initialize
+temporary credentials. Read calls must surface a bounded timeout instead of
+leaving `Loading your Discussions…` indefinitely. Reload a valid student session
+and confirm the loading state settles and at least one `speakingLab` invocation
+reaches the cloud logs.
 
 The same command runs `scripts/test-speaking-voiceprints.js`. It must validate
 16 kHz/16-bit/mono WAV structure and duration bounds, opaque Tencent nicknames,
