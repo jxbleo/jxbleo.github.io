@@ -14,6 +14,10 @@ const MAX_DURATION_SECONDS = 1800;
 const MIN_SCORING_PARTICIPANTS = 3;
 const MAX_SCORING_PARTICIPANTS = 6;
 const SPEAKER_CONFIDENCE_MIN = 0.5;
+const AUTOMATIC_VOICE_MATCH_MIN_SCORE = 70;
+const AUTOMATIC_VOICE_MATCH_MIN_MARGIN = 10;
+const VOICEPRINT_EXCERPT_MIN_MS = 8000;
+const VOICEPRINT_EXCERPT_MAX_MS = 20000;
 const MAX_REPORT_LIST_ITEMS = 12;
 const MAX_COMMENTARY_LENGTH = 1200;
 const MAX_TURN_REVIEWS_PER_CANDIDATE = 80;
@@ -72,7 +76,7 @@ function durationForParticipantCount(count) {
   return Math.min(MAX_DURATION_SECONDS, Math.max(MIN_DURATION_SECONDS, participantCount * DEFAULT_DURATION_SECONDS));
 }
 
-function normalizeDurationSeconds(value, participantCount = 3) {
+function normalizeDurationSeconds(value, participantCount = 4) {
   const fallback = durationForParticipantCount(participantCount);
   const duration = Number(value);
   if (!Number.isFinite(duration)) return fallback;
@@ -276,6 +280,9 @@ function candidateSpeakerKeys(tracks, participants, options = {}) {
   const allTracks = Array.isArray(tracks) ? tracks : [];
   const listedCount = (Array.isArray(participants) ? participants : []).filter((participant) =>
     participant && ["guest", "vip"].includes(participantKind(participant))).length;
+  const candidateLimit = options.independent === true
+    ? MAX_SCORING_PARTICIPANTS
+    : Math.min(MAX_SCORING_PARTICIPANTS, Math.max(0, listedCount));
   const minimumConfidence = options.minimumConfidence == null ? SPEAKER_CONFIDENCE_MIN : Number(options.minimumConfidence);
   const reliable = allTracks.filter((track) => track && track.candidate_eligible !== false && track.reliable !== false && (track.confidence == null || Number(track.confidence) >= minimumConfidence));
   // A brief outside voice can appear before every Candidate. Select the most
@@ -286,15 +293,86 @@ function candidateSpeakerKeys(tracks, participants, options = {}) {
     Number(right.speech_duration_ms || 0) - Number(left.speech_duration_ms || 0)
     || Number(right.turn_count || 0) - Number(left.turn_count || 0)
     || Number(originalOrder.get(left.speaker_key)) - Number(originalOrder.get(right.speaker_key)))
-    .slice(0, listedCount)
+    .slice(0, candidateLimit)
     .sort((left, right) => Number(originalOrder.get(left.speaker_key)) - Number(originalOrder.get(right.speaker_key)))
     .map((track) => track.speaker_key);
   const candidateSet = new Set(candidate);
   return {
     candidate_keys: candidate,
     non_candidate_keys: allTracks.map((track) => track.speaker_key).filter((key) => !candidateSet.has(key)),
-    reason_by_key: Object.fromEntries(allTracks.map((track, index) => [track.speaker_key, candidateSet.has(track.speaker_key) ? null : (track.candidate_eligible === false ? "POSSIBLE_NON_CANDIDATE" : (index >= listedCount ? "EXTRA_SPEAKER" : "LOW_CONFIDENCE"))]).filter((entry) => entry[1])),
+    reason_by_key: Object.fromEntries(allTracks.map((track, index) => [track.speaker_key, candidateSet.has(track.speaker_key) ? null : (track.candidate_eligible === false ? "POSSIBLE_NON_CANDIDATE" : (index >= candidateLimit ? "EXTRA_SPEAKER" : "LOW_CONFIDENCE"))]).filter((entry) => entry[1])),
   };
+}
+
+function voiceprintExcerptPlans(segments, candidateSpeakerKeys, options = {}) {
+  const minimumMs = Math.max(VOICEPRINT_EXCERPT_MIN_MS, Number(options.minimumMs || VOICEPRINT_EXCERPT_MIN_MS));
+  const maximumMs = Math.min(30000, Math.max(minimumMs, Number(options.maximumMs || VOICEPRINT_EXCERPT_MAX_MS)));
+  const turns = canonicalSpeakingTurns(segments, candidateSpeakerKeys);
+  const bestBySpeaker = new Map();
+  turns.forEach((turn) => {
+    const durationMs = Math.max(0, Number(turn.end_ms || 0) - Number(turn.start_ms || 0));
+    if (durationMs < minimumMs) return;
+    const plan = {
+      speaker_key: turn.speaker_key,
+      start_ms: Math.max(0, Math.round(Number(turn.start_ms || 0))),
+      duration_ms: Math.min(maximumMs, Math.round(durationMs)),
+      source_turn_id: turn.turn_id,
+    };
+    const current = bestBySpeaker.get(turn.speaker_key);
+    if (!current || plan.duration_ms > current.duration_ms || (plan.duration_ms === current.duration_ms && plan.start_ms < current.start_ms)) {
+      bestBySpeaker.set(turn.speaker_key, plan);
+    }
+  });
+  return (Array.isArray(candidateSpeakerKeys) ? candidateSpeakerKeys : []).map(String).map((key) => bestBySpeaker.get(key)).filter(Boolean);
+}
+
+function automaticVoiceMatches(results, options = {}) {
+  const minimumScore = Number.isFinite(Number(options.minimumScore)) ? Number(options.minimumScore) : AUTOMATIC_VOICE_MATCH_MIN_SCORE;
+  const minimumMargin = Number.isFinite(Number(options.minimumMargin)) ? Number(options.minimumMargin) : AUTOMATIC_VOICE_MATCH_MIN_MARGIN;
+  const proposals = (Array.isArray(results) ? results : []).map((result) => {
+    const ranked = (Array.isArray(result && result.matches) ? result.matches : []).map((match) => ({
+      student_uid: text(match && match.student_uid, 160),
+      voiceprint_profile_id: text(match && match.voiceprint_profile_id, 160) || null,
+      score: Number(match && match.score),
+    })).filter((match) => match.student_uid && Number.isFinite(match.score)).sort((left, right) => right.score - left.score || left.student_uid.localeCompare(right.student_uid));
+    const top = ranked[0] || null;
+    const runnerUp = ranked[1] || null;
+    const margin = top ? top.score - Number(runnerUp ? runnerUp.score : 0) : null;
+    let reason = null;
+    if (!top) reason = "NO_REGISTERED_MATCH";
+    else if (top.score < minimumScore) reason = "BELOW_SCORE_THRESHOLD";
+    else if (runnerUp && margin < minimumMargin) reason = "AMBIGUOUS_MATCH";
+    return {
+      speaker_key: text(result && result.speaker_key, 60),
+      top,
+      next_best_score: runnerUp ? runnerUp.score : null,
+      margin,
+      reason,
+    };
+  }).filter((item) => item.speaker_key);
+  const usedStudents = new Set();
+  const acceptedBySpeaker = new Map();
+  proposals.filter((item) => !item.reason).sort((left, right) => right.top.score - left.top.score || right.margin - left.margin || left.speaker_key.localeCompare(right.speaker_key)).forEach((item) => {
+    if (usedStudents.has(item.top.student_uid)) {
+      acceptedBySpeaker.set(item.speaker_key, { ...item, reason: "ONE_TO_ONE_CONFLICT" });
+      return;
+    }
+    usedStudents.add(item.top.student_uid);
+    acceptedBySpeaker.set(item.speaker_key, item);
+  });
+  return proposals.map((item) => {
+    const resolved = acceptedBySpeaker.get(item.speaker_key) || item;
+    return {
+      speaker_key: resolved.speaker_key,
+      status: resolved.reason ? "unmatched" : "matched",
+      student_uid: resolved.reason ? null : resolved.top.student_uid,
+      voiceprint_profile_id: resolved.reason ? null : resolved.top.voiceprint_profile_id,
+      score: resolved.top ? resolved.top.score : null,
+      next_best_score: resolved.next_best_score,
+      margin: resolved.margin,
+      reason: resolved.reason,
+    };
+  });
 }
 
 function canonicalizeMapping(mapping, speakerKeys, participants, options = {}) {
@@ -732,6 +810,8 @@ module.exports = {
   canonicalizeSegments,
   isLikelyFacilitatorCue,
   candidateSpeakerKeys,
+  voiceprintExcerptPlans,
+  automaticVoiceMatches,
   canonicalizeMapping,
   canonicalSpeakingTurns,
   canonicalizeReport,
@@ -747,4 +827,6 @@ module.exports = {
   stableOperationId,
   shareTokenHash,
   publicShareFailure,
+  AUTOMATIC_VOICE_MATCH_MIN_SCORE,
+  AUTOMATIC_VOICE_MATCH_MIN_MARGIN,
 };

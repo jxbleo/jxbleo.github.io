@@ -1056,14 +1056,24 @@ the current immutable transcript text and timing back onto the review. The
 model never supplies or rewrites the quoted `What you said` text.
 
 Tencent's recording result supplies `SpeakerId` and sentence timing but no
-per-track confidence or speaker audio. The server therefore treats missing
+per-track confidence or speaker audio. Candidate selection is therefore
+independent of the participant/access list: the server treats missing
 confidence as unknown, ranks sustained tracks before a brief incidental voice,
-preserves extra tracks as `non_candidate_context`, and excludes a narrowly
-matched opening facilitator cue such as “You may start the discussion now” even
-when diarization attaches it to a Candidate track. It never infers a
-participant identity from speaking order. Reusable voiceprint auto-matching
-remains a separate gated excerpt-extraction stage; until that stage is approved,
-students/teachers use the existing confirmation/remap flow under Speaker labels.
+caps scoring at six Candidates, preserves extra tracks as
+`non_candidate_context`, and excludes a narrowly matched opening facilitator
+cue such as “You may start the discussion now”. It never infers identity from
+speaking order.
+
+The durable stage after canonicalization is `voice_matching`.
+`cloudfunctions/_shared/tencent-ci-audio.js` submits a private Tencent
+COS/CI transcode job for the best uninterrupted 8–20 second Candidate turn,
+producing a temporary WAV/PCM 16 kHz mono object. The next worker lease polls
+that job, downloads the private result in the function, sends it to Tencent
+VoicePrintGroupVerify, applies score 70 / runner-up margin 10 / one-to-one
+rules, creates pending VIP invitations for accepted proposals, and deletes the
+derived clip. No ffmpeg or new runtime dependency is used. Any missing clip,
+voiceprint, permission, or provider response becomes an unmatched Speaker and
+the worker continues to `dse_analysis`.
 
 `cloudfunctions/_shared/tencent-asr-voiceprint.js` implements Tencent Cloud API
 3.0 signing with Node's built-in `crypto`/`fetch` and exposes enrol, update,

@@ -10,6 +10,36 @@
 > adding indexes, configuring provider credentials/timers, uploading functions,
 > or publishing the static site remains owner-gated.
 
+> 2026-08-28 Candidate-first amendment: this amendment supersedes every older
+> roster-first, roster-freeze, mandatory Voice Reference, listed-participant
+> count, and pre-analysis identity instruction below. Preserve older text only
+> as implementation history:
+>
+> 1. New Session accepts title, prompt, Shanghai-today date, and optional target
+>    time only. Default time is 480 seconds for four expected Candidates.
+> 2. The creator receives a technical accepted access row, but no Candidate
+>    roster is created. VIP and Guest rows are access/identity projections, not
+>    the source of the DSE Candidate set.
+> 3. Formal ASR/diarization independently selects the three-to-six strongest
+>    reliable Speaker Tracks. Fewer than three prevents a DSE report. Brief,
+>    incidental, unreliable, or excess tracks are non-Candidate context.
+> 4. The detail UI uses one `Candidates` card after the prompt. It contains
+>    detected Speaker tiles, identity/access rows, and optional manual VIP or
+>    Non-VIP additions. There is no normal per-Session Voice Reference card.
+> 5. After canonicalization, one uninterrupted 8–20 second turn per Candidate
+>    is privately transcoded by Tencent COS/CI to WAV/PCM 16 kHz mono and sent
+>    to Tencent 1:N voiceprint identification.
+> 6. Automatic matching requires score >=70, runner-up margin >=10, and a
+>    one-to-one Speaker/VIP result. A new VIP proposal creates a pending
+>    invitation; the creator's own proposal is accepted for access.
+> 7. No voiceprint, no eligible turn, ambiguous score, CI failure, or voiceprint
+>    failure leaves the track anonymous and continues to DSE analysis.
+> 8. Student confirmation and teacher authority remain unchanged. Automatic
+>    matching never makes an unconfirmed VIP name report-visible and never
+>    grants Student Share permission by itself.
+> 9. The derived CI clip is temporary and deleted after verification. The
+>    implementation adds no ffmpeg or third-party runtime dependency.
+
 ## 0. Executor protocol
 
 ### 0.1 Read before editing
