@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-08-29
+
+- Preserved the Sentence Revision card's rounded upper corners in the green skin by clipping the card and rounding its control row, and replaced the skin brush with a recognizable palette SVG while retaining the existing 44px target and accessible labels.
+
 ## 2026-08-28
 
 - Aligned the AI Tutor Writing toolbar with Speaking Lab geometry and material: a centered 1080px rounded glass bar now overhangs the centered 980px card column, while phones retain 14px outer gutters and the same translucent perimeter instead of reverting to a full-bleed strip.

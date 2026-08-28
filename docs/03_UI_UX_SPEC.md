@@ -2257,8 +2257,10 @@ Important mobile rules:
   reviews without the structured field remain readable and simply omit this row.
 - `Language Review` and an incomplete `Draft` retain the shared card-title typography.
   The third card deliberately omits the visible `Sentence Revision` title and starts
-  with a non-sticky control row: a 44px skin button at left and the compact 44px-per-item
-  `−` / `+` group at right. The font controls change only AI analysis and saved
+  with a non-sticky control row: a 44px palette-SVG skin button at left and the compact
+  44px-per-item `−` / `+` group at right. The card clips every skin to its outer
+  radius, and the control row carries matching top radii so the green gradient can
+  never square off either upper corner. The font controls change only AI analysis and saved
   feedback text through four bounded sizes and remeasure the visible flip-card face.
   The skin control cycles between the default uniform green treatment—visually related
   to Language Review and the early BBC green surface—and the existing eight-color
