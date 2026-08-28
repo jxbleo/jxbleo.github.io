@@ -2,6 +2,15 @@
 
 ## 2026-08-28
 
+- Added evidence-linked turn-by-turn DSE Speaking review. The server now groups
+  canonical transcript segments into real speaking turns and requires one
+  validated CS and IO coaching item per Candidate turn. Student reports show
+  the signed-in Candidate first, quote only server-derived ASR text, and place
+  natural English `Try saying` samples beneath CS and IO as VL support. Student
+  shares receive only the sharer's turn details; teacher shares have a separate
+  turn-review content switch. Legacy reports remain readable without the new
+  section.
+
 - Redesigned the student Speaking Lab around the Academy's Apple-inspired
   Liquid Glass language: a calmer home hierarchy, responsive Discussion cards,
   a single-focus detail workspace, explicit three-step progress, grouped roster

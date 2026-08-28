@@ -42,11 +42,25 @@
             return '<div class="speaking-report-domain"><strong>' + domainNames[name] + '</strong><span class="speaking-report-score">' + esc(domain.score) + '/7</span><p>' + esc(domain.commentary_zh || '') + '</p></div>';
         }).join('') + '<div class="speaking-report-domain"><strong>Pronunciation &amp; Delivery</strong><span>Not assessed</span></div>';
     }
-    function candidateMarkup(candidate) {
+    function timeLabel(value) {
+        var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
+        return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+    }
+    function turnReviewsMarkup(candidate, ownReport) {
+        var reviews = Array.isArray(candidate && candidate.turn_reviews) ? candidate.turn_reviews : [];
+        if (!reviews.length) return '';
+        return '<section class="speaking-shared-turn-review"><h3>' + (ownReport ? 'My turn-by-turn review' : 'Turn-by-turn review') + '</h3><p class="speaking-shared-turn-note">Each speaking turn is reviewed for CS and IO. VL support is included in the English samples below.</p>' + reviews.map(function (review, index) {
+            var cs = review.communication_strategies || {};
+            var io = review.ideas_organisation || {};
+            var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-shared-turn-caution">AI transcript may contain recognition errors</span>';
+            return '<article class="speaking-shared-turn"><header><strong>Turn ' + esc(index + 1) + '</strong><span>' + esc(timeLabel(review.start_ms)) + '–' + esc(timeLabel(review.end_ms)) + '</span>' + caution + '</header><blockquote><span>What you said · AI transcript</span>' + esc(review.transcript_text || '') + '</blockquote><div class="speaking-shared-turn-grid"><section><h4>CS · Communication Strategies</h4><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-shared-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section><h4>IO · Ideas &amp; Organisation</h4><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-shared-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div></article>';
+        }).join('') + '</section>';
+    }
+    function candidateMarkup(candidate, ownReport) {
         if (!candidate) return '';
         var evidence = Array.isArray(candidate.evidence) && candidate.evidence.length ? '<h3>Evidence</h3><ul>' + candidate.evidence.map(function (item) { return '<li>' + esc(Math.floor(Number(item.start_ms || 0) / 1000)) + 's — ' + esc(item.text || '') + '</li>'; }).join('') + '</ul>' : '';
         return '<section class="speaking-report-candidate"><h2>' + esc(candidate.speaker_label || 'Speaker') + '</h2><p>' + esc(candidate.summary_zh || '') + '</p>' +
-            domainMarkup(candidate) + list('Strengths', candidate.strengths) + list('Priority actions', candidate.priority_actions) + list('Language suggestions', candidate.language_suggestions) + evidence + '</section>';
+            domainMarkup(candidate) + list('Strengths', candidate.strengths) + list('Priority actions', candidate.priority_actions) + list('Language suggestions', candidate.language_suggestions) + turnReviewsMarkup(candidate, ownReport) + evidence + '</section>';
     }
     function studentPeerMarkup(snapshot) {
         var peers = (snapshot.participant_summaries || []).filter(function (item) { return !item.is_self; });
@@ -59,8 +73,8 @@
     function render(snapshot, result) {
         if (!snapshot) return failure();
         var candidateSection = snapshot.share_kind === 'student'
-            ? candidateMarkup(snapshot.self) + studentPeerMarkup(snapshot)
-            : (Array.isArray(snapshot.candidates) ? snapshot.candidates : []).map(candidateMarkup).join('');
+            ? candidateMarkup(snapshot.self, true) + studentPeerMarkup(snapshot)
+            : (Array.isArray(snapshot.candidates) ? snapshot.candidates : []).map(function (candidate) { return candidateMarkup(candidate, false); }).join('');
         var transcript = Array.isArray(snapshot.transcript) && snapshot.transcript.length
             ? '<h2>Transcript</h2><div class="speaking-report-transcript">' + snapshot.transcript.map(function (line) { return '<div class="speaking-report-line"><strong>' + esc(line.speaker_label || 'Speaker') + '</strong> ' + esc(line.text) + '</div>'; }).join('') + '</div>'
             : '';

@@ -16,6 +16,8 @@ const MAX_SCORING_PARTICIPANTS = 6;
 const SPEAKER_CONFIDENCE_MIN = 0.5;
 const MAX_REPORT_LIST_ITEMS = 12;
 const MAX_COMMENTARY_LENGTH = 1200;
+const MAX_TURN_REVIEWS_PER_CANDIDATE = 80;
+const SPEAKING_TURN_GAP_MS = 2500;
 const ASSESSED_DOMAINS = [
   "communication_strategies",
   "vocabulary_language_patterns",
@@ -332,6 +334,84 @@ function safeCommentary(value) {
   return text(value, MAX_COMMENTARY_LENGTH).replace(/[<>]/g, "");
 }
 
+function turnTextStatus(segments) {
+  const rows = Array.isArray(segments) ? segments : [];
+  const confidences = rows.filter((segment) => segment && segment.confidence != null && segment.confidence !== "")
+    .map((segment) => Number(segment.confidence)).filter(Number.isFinite);
+  if (confidences.some((confidence) => confidence < 0.75)) return "low_confidence";
+  if (confidences.length === rows.length && rows.length) return "higher_confidence";
+  return "confidence_unknown";
+}
+
+function canonicalSpeakingTurns(segments, candidateSpeakerKeys, options = {}) {
+  const candidates = new Set((Array.isArray(candidateSpeakerKeys) ? candidateSpeakerKeys : []).map(String));
+  const gapMs = Math.max(0, Number(options.gap_ms == null ? SPEAKING_TURN_GAP_MS : options.gap_ms) || 0);
+  const turns = [];
+  let current = null;
+  (Array.isArray(segments) ? segments : []).forEach((segment) => {
+    const speakerKey = String(segment && segment.speaker_key || "");
+    const candidate = candidates.has(speakerKey) && segment && segment.evaluation_role !== "non_candidate_context";
+    const startMs = Math.max(0, Number(segment && segment.start_ms) || 0);
+    const endMs = Math.max(startMs, Number(segment && segment.end_ms) || startMs);
+    const segmentId = String(segment && segment.segment_id || "");
+    if (!candidate || !segmentId) {
+      current = null;
+      return;
+    }
+    const sameContinuousTurn = current && current.speaker_key === speakerKey && startMs - current.end_ms <= gapMs;
+    if (!sameContinuousTurn) {
+      current = { speaker_key: speakerKey, segment_ids: [], start_ms: startMs, end_ms: endMs, _segments: [] };
+      turns.push(current);
+    }
+    current.segment_ids.push(segmentId);
+    current.end_ms = Math.max(current.end_ms, endMs);
+    current._segments.push(segment);
+  });
+  const counters = new Map();
+  return turns.map((turn) => {
+    const count = (counters.get(turn.speaker_key) || 0) + 1;
+    counters.set(turn.speaker_key, count);
+    return {
+      turn_id: `${turn.speaker_key}_turn_${String(count).padStart(2, "0")}`,
+      speaker_key: turn.speaker_key,
+      segment_ids: turn.segment_ids,
+      start_ms: turn.start_ms,
+      end_ms: turn.end_ms,
+      text: normalizeWhitespace(turn._segments.map((segment) => segment.text).filter(Boolean).join(" "), 4000),
+      asr_text_status: turnTextStatus(turn._segments),
+    };
+  });
+}
+
+function canonicalTurnCoaching(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("SPEAKING_AI_TURN_COACHING_INVALID");
+  const commentary = text(value.commentary_zh, 480).replace(/[<>]/g, "");
+  const sample = text(value.sample_en, 800).replace(/[<>]/g, "");
+  if (!commentary || !sample) throw new Error("SPEAKING_AI_TURN_COACHING_INCOMPLETE");
+  return { commentary_zh: commentary, sample_en: sample };
+}
+
+function canonicalTurnReviews(candidate, expectedTurns) {
+  const reviews = candidate && Array.isArray(candidate.turn_reviews) ? candidate.turn_reviews : null;
+  if (!reviews) throw new Error("SPEAKING_AI_TURN_REVIEWS_INVALID");
+  if (expectedTurns.length > MAX_TURN_REVIEWS_PER_CANDIDATE || reviews.length !== expectedTurns.length) throw new Error("SPEAKING_AI_TURN_REVIEW_COUNT_INVALID");
+  const expectedById = new Map(expectedTurns.map((turn) => [turn.turn_id, turn]));
+  const seen = new Set();
+  const canonical = reviews.map((review) => {
+    if (!review || typeof review !== "object" || Array.isArray(review)) throw new Error("SPEAKING_AI_TURN_REVIEW_INVALID");
+    const turnId = text(review.turn_id, 100);
+    if (!expectedById.has(turnId) || seen.has(turnId)) throw new Error("SPEAKING_AI_TURN_REVIEW_REFERENCE_INVALID");
+    seen.add(turnId);
+    return {
+      turn_id: turnId,
+      communication_strategies: canonicalTurnCoaching(review.communication_strategies),
+      ideas_organisation: canonicalTurnCoaching(review.ideas_organisation),
+    };
+  });
+  canonical.sort((left, right) => expectedTurns.findIndex((turn) => turn.turn_id === left.turn_id) - expectedTurns.findIndex((turn) => turn.turn_id === right.turn_id));
+  return canonical;
+}
+
 function canonicalDomain(domain, evidenceIds, validSegmentIds, candidateSpeakerKey) {
   if (!domain || typeof domain !== "object" || Array.isArray(domain)) throw new Error("SPEAKING_AI_DOMAIN_OBJECT_INVALID");
   const score = Number(domain.score);
@@ -362,6 +442,7 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
   if (!candidates) throw new Error("SPEAKING_AI_CANDIDATES_INVALID");
   const seen = new Set();
   const expected = (Array.isArray(options.candidateSpeakerKeys) ? options.candidateSpeakerKeys : [...knownSpeakers]).filter((key) => !nonCandidates.has(String(key))).map(String);
+  const speakingTurns = canonicalSpeakingTurns(segments, expected);
   if (candidates.length !== expected.length) throw new Error("SPEAKING_AI_CANDIDATE_COUNT_INVALID");
   const canonical = candidates.map((candidate) => {
     if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("SPEAKING_AI_CANDIDATE_OBJECT_INVALID");
@@ -390,9 +471,8 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
       strengths: safeList(candidate.strengths),
       priority_actions: safeList(candidate.priority_actions),
       language_suggestions: safeList(candidate.language_suggestions),
-      interaction_summary: candidate.interaction_summary && typeof candidate.interaction_summary === "object"
-        ? { turn_count: Number.isInteger(candidate.interaction_summary.turn_count) ? Math.max(0, candidate.interaction_summary.turn_count) : 0 }
-        : { turn_count: 0 },
+      interaction_summary: { turn_count: speakingTurns.filter((turn) => turn.speaker_key === key).length },
+      turn_reviews: canonicalTurnReviews(candidate, speakingTurns.filter((turn) => turn.speaker_key === key)),
     };
   });
   canonical.sort((left, right) => expected.indexOf(left.speaker_key) - expected.indexOf(right.speaker_key));
@@ -427,6 +507,24 @@ function shareDomainProjection(domains) {
   });
   output.pronunciation_delivery = { status: "not_assessed" };
   return output;
+}
+
+function turnReviewProjection(candidate, segments) {
+  const key = candidate && candidate.speaker_key;
+  const turns = canonicalSpeakingTurns(segments, key ? [key] : []);
+  const turnById = new Map(turns.map((turn) => [turn.turn_id, turn]));
+  return (candidate && Array.isArray(candidate.turn_reviews) ? candidate.turn_reviews : []).map((review) => {
+    const turn = turnById.get(String(review && review.turn_id || ""));
+    if (!turn) return null;
+    return {
+      start_ms: turn.start_ms,
+      end_ms: turn.end_ms,
+      transcript_text: text(turn.text, 4000),
+      asr_text_status: turn.asr_text_status,
+      communication_strategies: canonicalTurnCoaching(review.communication_strategies),
+      ideas_organisation: canonicalTurnCoaching(review.ideas_organisation),
+    };
+  }).filter(Boolean);
 }
 
 function projectStudentShare({ report, segments, participants, sharerParticipant, aliases = {}, discussion = {} } = {}) {
@@ -468,6 +566,7 @@ function projectStudentShare({ report, segments, participants, sharerParticipant
       priority_actions: safeList(own.priority_actions),
       language_suggestions: safeList(own.language_suggestions),
       evidence: evidenceProjection(segments, sharerKey),
+      turn_reviews: turnReviewProjection(own, segments),
     },
   };
   const hiddenNames = rows.filter((participant) => String(participant.participant_id || participant._id || "") !== String(sharerParticipant.participant_id || sharerParticipant._id || ""))
@@ -514,6 +613,7 @@ function projectTeacherShare({ report, segments, participants, discussion = {}, 
     group_analysis: selection.group_analysis !== false,
     individual_analysis: selection.individual_analysis !== false,
     language_suggestions: selection.language_suggestions !== false,
+    turn_reviews: selection.turn_reviews !== false,
     evidence: selection.evidence !== false,
     transcript: selection.transcript === true,
     teacher_comments: selection.teacher_comments === true,
@@ -542,6 +642,7 @@ function projectTeacherShare({ report, segments, participants, discussion = {}, 
       output.priority_actions = safeList(candidate.priority_actions);
       if (content.language_suggestions) output.language_suggestions = safeList(candidate.language_suggestions);
       if (content.evidence) output.evidence = evidenceProjection(segments, key);
+      if (content.turn_reviews) output.turn_reviews = turnReviewProjection(candidate, segments);
     } else {
       output.summary_zh = content.individual_analysis ? safeCommentary(candidate.interaction_summary && candidate.interaction_summary.summary_zh) : "";
       output.interaction_summary = candidate.interaction_summary || { turn_count: 0 };
@@ -632,9 +733,11 @@ module.exports = {
   isLikelyFacilitatorCue,
   candidateSpeakerKeys,
   canonicalizeMapping,
+  canonicalSpeakingTurns,
   canonicalizeReport,
   evidenceProjection,
   reportCandidate,
+  turnReviewProjection,
   projectStudentShare,
   projectTeacherShare,
   redactExactNames,

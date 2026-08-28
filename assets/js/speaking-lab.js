@@ -272,19 +272,34 @@
         if (!Array.isArray(items) || !items.length) return '';
         return '<div class="speaking-report-list"><h4>' + esc(title) + '</h4><ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul></div>';
     }
+    function turnTime(value) {
+        var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
+        return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+    }
+    function turnReviewsMarkup(candidate) {
+        var reviews = Array.isArray(candidate && candidate.turn_reviews) ? candidate.turn_reviews : [];
+        if (!reviews.length) return '';
+        var cards = reviews.map(function (review, index) {
+            var cs = review.communication_strategies || {};
+            var io = review.ideas_organisation || {};
+            var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-turn-caution">AI transcript may contain recognition errors</span>';
+            return '<article class="speaking-turn-card"><header><div><span class="speaking-turn-number">Turn ' + esc(index + 1) + '</span><span class="speaking-turn-time">' + esc(turnTime(review.start_ms)) + '–' + esc(turnTime(review.end_ms)) + '</span></div>' + caution + '</header><blockquote><span>What you said · AI transcript</span>' + esc(review.transcript_text || '') + '</blockquote><div class="speaking-turn-coaching"><section data-domain="cs"><p class="speaking-turn-domain">CS · Communication Strategies</p><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section data-domain="io"><p class="speaking-turn-domain">IO · Ideas &amp; Organisation</p><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div></article>';
+        }).join('');
+        return '<details class="speaking-turn-review"' + (candidate.is_self ? ' open' : '') + '><summary><span><strong>' + (candidate.is_self ? 'My turn-by-turn review' : 'Turn-by-turn review') + '</strong><small>CS and IO coaching for ' + esc(reviews.length) + ' speaking turn' + (reviews.length === 1 ? '' : 's') + '</small></span></summary><p class="speaking-turn-review-note">VL support appears inside each CS and IO sample. It is not a separate score.</p><div class="speaking-turn-list">' + cards + '</div></details>';
+    }
     function internalReportMarkup(item) {
         var report = item.report;
         if (!report) return '';
         var canShare = (item.participants || []).some(function (participant) { return participant.is_self && ['student_confirmed', 'teacher_confirmed'].indexOf(participant.identity_status) >= 0; });
         var domainLabels = { communication_strategies: 'Communication strategies', vocabulary_language_patterns: 'Vocabulary & language', ideas_organisation: 'Ideas & organisation' };
-        var candidates = (report.candidates || []).map(function (candidate) {
+        var candidates = (report.candidates || []).slice().sort(function (left, right) { return Number(Boolean(right.is_self)) - Number(Boolean(left.is_self)); }).map(function (candidate) {
             var domains = Object.keys(domainLabels).map(function (key) {
                 var domain = candidate.domains && candidate.domains[key];
                 var score = domain && Number.isFinite(Number(domain.score)) ? Math.max(0, Math.min(7, Number(domain.score))) : 0;
                 return domain ? '<article class="speaking-score-card" style="--score:' + score + '"><div class="speaking-score-head"><span>' + esc(domainLabels[key]) + '</span><strong>' + esc(score) + '<small>/7</small></strong></div><p>' + esc(domain.commentary_zh || '') + '</p></article>' : '';
             }).join('');
             var speakerLabel = candidate.speaker_label || 'Speaker';
-            return '<article class="speaking-upload-panel speaking-report-person"><header class="speaking-report-person-head"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(speakerLabel)) + '</span><div><h4>' + esc(speakerLabel) + '</h4><p>' + esc(candidate.summary_zh || '') + '</p></div></header><div class="speaking-score-grid">' + domains + '</div><p class="speaking-pronunciation-note"><strong>Pronunciation &amp; Delivery</strong> · Not assessed in this version</p><div class="speaking-coaching-grid">' + reportList('Strengths', candidate.strengths) + reportList('Priority actions', candidate.priority_actions) + reportList('Language suggestions', candidate.language_suggestions) + '</div></article>';
+            return '<article class="speaking-upload-panel speaking-report-person' + (candidate.is_self ? ' is-self' : '') + '"><header class="speaking-report-person-head"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(speakerLabel)) + '</span><div><p class="eyebrow">' + (candidate.is_self ? 'YOUR REVIEW' : 'CANDIDATE REVIEW') + '</p><h4>' + esc(speakerLabel) + '</h4><p>' + esc(candidate.summary_zh || '') + '</p></div></header><div class="speaking-score-grid">' + domains + '</div><p class="speaking-pronunciation-note"><strong>Pronunciation &amp; Delivery</strong> · Not assessed in this version</p><div class="speaking-coaching-grid">' + reportList('Strengths', candidate.strengths) + reportList('Priority actions', candidate.priority_actions) + reportList('Language suggestions', candidate.language_suggestions) + '</div>' + turnReviewsMarkup(candidate) + '</article>';
         }).join('');
         var transcript = (report.transcript || []).length ? '<details class="speaking-upload-panel speaking-transcript"><summary>Complete transcript</summary><div class="speaking-transcript-lines">' + report.transcript.map(function (line) { return '<p class="speaking-transcript-line"><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(Math.floor(Number(line.start_ms || 0) / 1000)) + 's</small><br>' + esc(line.text) + '</p>'; }).join('') + '</div></details>' : '';
         return '<section class="speaking-report-shell"><article class="speaking-report-overview"><p class="eyebrow">DSE GROUP INTERACTION</p><h3>Discussion report</h3><p>' + esc(report.group_summary_zh || '') + '</p><div class="speaking-report-columns">' + reportList('Group strengths', report.group_strengths) + reportList('Group priorities', report.group_priorities) + reportList('Discussion flow', report.discussion_flow) + '</div><div class="speaking-detail-actions">' + (canShare ? '<button class="primary-button" type="button" id="create-student-share">Create Student Share</button>' : '<span class="speaking-pill">Confirm your voice before sharing</span>') + '</div><div id="student-share-result"></div></article><div class="speaking-report-candidates">' + candidates + '</div>' + transcript + '</section>';

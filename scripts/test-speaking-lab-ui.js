@@ -58,12 +58,15 @@ function run() {
   assert.doesNotMatch(reportJs, /localStorage|sessionStorage|indexedDB/i);
   assert.match(teacher, /visible_participant_ids|Select all|Clear all/);
   assert.match(teacher, /data-share-content|Individual analysis|Transcript/);
+  assert.match(teacher, /turn_reviews.*Turn-by-turn CS and IO coaching/);
   assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
   assert.match(reportJs, /snapshot\.self|participant_summaries/);
+  assert.match(app, /My turn-by-turn review|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
+  assert.match(reportJs, /My turn-by-turn review|What you said · AI transcript/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /prefers-reduced-transparency/);
   assert.match(css, /prefers-contrast:\s*more/);
@@ -71,6 +74,7 @@ function run() {
   assert.match(css, /speaking-detail-open \.speaking-lab-heading/);
   assert.match(css, /speaking-report-overview/);
   assert.match(css, /speaking-score-grid/);
+  assert.match(css, /speaking-turn-review/);
   assert.match(css, /border-radius:\s*28px 28px 0 0/);
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);

@@ -32,7 +32,7 @@ function configuration(env = process.env) {
   if (protocol !== "chat_json_object") throw new SpeakingModelError();
   const qwenCompatible = /(?:dashscope|\.maas\.)[^/]*aliyuncs\.com/i.test(url.toString())
     || /dashscope/i.test(url.toString());
-  const maxOutputTokens = Math.min(16000, Math.max(1000, Number(env.SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS) || 8000));
+  const maxOutputTokens = Math.min(16000, Math.max(1000, Number(env.SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS) || 12000));
   const timeoutMs = Math.min(300000, Math.max(5000, Number(env.SPEAKING_AI_TIMEOUT_MS) || 180000));
   return {
     apiKey: text(env.SPEAKING_AI_TEXT_API_KEY, 4000),
