@@ -1867,7 +1867,8 @@ High priority improvement:
   Test press states, larger text, reduced motion, and reduced transparency.
 - On the first Writing screen, confirm the removed heading, explanation, step,
   section labels, repeated mode switch, and separate `Type` / `Scan` switch are absent.
-  Verify the two home mode buttons read `Polishing` and `Brainstorming`. Confirm no
+  Verify the two home mode buttons read `Polishing` and `Brainstorming`, with `Grammar & Usage`
+  and `Ideas & Structure` as their respective secondary labels. Confirm no
   visible Rubric, Writing Prompt, Title, Optional, or Your Writing heading remains
   above a control. Confirm the source form contains no Title input. Every remaining input
   hint must use the same muted serif typography as the manuscript hint. Standardized
@@ -1889,7 +1890,9 @@ High priority improvement:
   Escape, and focus restoration. Tap the red in-image close control, cancel once, then confirm removal;
   no photo may be deleted before confirmation, and `Add Photo` must occupy the former bottom action position.
   Confirm only the bottom green `Scan` starts OCR and the green action reads
-  `Submit` for text and `Scan` for photo input. The boxed red `Discard` deletes an empty draft directly;
+  `Submit` for text and `Scan` for photo input. Confirm it occupies roughly 70% of the row,
+  while the roughly 30% red `Discard` retains a faint outline and 44px-plus target but no fill
+  or shadow. `Discard` deletes an empty draft directly;
   non-empty `Discard` opens the compact dialog with initial focus on `Cancel`,
   Escape/cancel restores focus, and confirmation permanently removes the initial draft
   from History. Verify the server refuses the same action after upload/OCR, an active
