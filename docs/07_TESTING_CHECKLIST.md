@@ -2373,7 +2373,7 @@ Do not claim provider-backed speech quality until the owner-authorized
 development deployment and real-audio benchmark pass.
 
 For every Speaking Lab visual release, inspect the two-card home, Voiceprint
-card, one populated right-side Discussion drawer, New
+card, one populated left-side Discussion drawer, New
 Discussion dialog, ready four-Candidate report, and incomplete recording state
 at desktop and 390-pixel phone widths. Confirm no horizontal overflow; opening
 a Discussion hides the Part A/Part B and Voiceprint cards but leaves the list
@@ -2382,9 +2382,13 @@ participant actions remain reachable; the transcript is collapsed; the phone
 dialog rests as a bottom sheet with sticky Cancel/Create actions; and returning
 Home from either the drawer or detail restores the mode cards. Confirm the
 toolbar uses the Writing hamburger, has no student-name chip, and opens the
-drawer from the right. The drawer must contain the list directly, close by the
-same rightward path, close with Escape and the mobile scrim, and avoid a desktop
-scrim. Part A must read `DSE Paper 4`, `Part A`, and `Group Discussion` and open
+drawer from the left. The drawer must contain the list directly, pair Home with
+a plus button that opens New Discussion, close by the same leftward path, close
+with Escape and the mobile scrim, and avoid a desktop scrim. At 390 pixels,
+confirm the initial closed state leaves the scrim hidden, the mode cards sharp,
+and every home control clickable; restoring the page from the back-forward
+cache must also start with the drawer closed. Part A must read `DSE Paper 4`,
+`Part A`, and `Group Discussion` and open
 New Discussion; Part B must read `DSE Paper 4`, `Part B`, `Individual Response`,
 and `Coming soon` without starting a backend action.
 Confirm New Discussion contains no Student ID or Guest inputs, defaults its date

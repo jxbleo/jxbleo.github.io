@@ -2457,15 +2457,17 @@ not duplicated inside the paper. Title extraction also uses one reversible contr
 
 ## Speaking Lab V1 surfaces
 
-The student Speaking Lab is one responsive page with a right-side Discussion drawer,
+The student Speaking Lab is one responsive page with a left-side Discussion drawer,
 invitation inbox, roster-free creation form, private recording/upload choice,
 one Candidates card, factual queued/processing stages, internal
 Speaker-labelled report, voice confirmation, and Student Share controls. The
 toolbar uses the Writing hamburger symbol at left, a centered `Speaking Lab`
 label, and no trailing student-name chip. The drawer opens and closes from the
-right on the same path, uses a mobile scrim without blocking the desktop
-workspace, contains one Home action, and renders the Discussion list directly.
-Escape and the mobile scrim close it. Home contains two equal mode cards:
+left on the same path, uses a mobile scrim only while open without blocking the
+closed home or the desktop workspace, and renders the Discussion list directly.
+Its top row pairs Home with a plus button: Home restores the mode-card surface,
+while plus opens the existing New Discussion dialog. Escape and the active
+mobile scrim close it. Home contains two equal mode cards:
 `DSE Paper 4 · Part A · Group Discussion` with New Discussion, and the
 non-interactive `DSE Paper 4 · Part B · Individual Response` placeholder with
 `Coming soon`. The reusable Voiceprint card is the third surface below them;
