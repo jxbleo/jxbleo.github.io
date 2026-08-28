@@ -2420,6 +2420,11 @@ Reference cards, factual queued/processing stages, internal Speaker-labelled
 report, voice confirmation, and Student Share controls. The browser holds a
 recording only in memory until upload and never writes audio to browser
 storage. A microphone denial always leaves the file-upload path available.
+After the one student-session check, initial data loads in the fixed order
+Voiceprint then Discussions so the CloudBase browser SDK does not initialize
+two temporary-credential requests concurrently. Read requests leave the
+loading state with a refresh-and-retry message after 20 seconds; recording and
+other mutating actions retain a longer 90-second response window.
 
 Above the Discussion list, `My voiceprint` shows `not set up`, `ready`, or a
 provider-unavailable message. Set up and update use one explicit consent

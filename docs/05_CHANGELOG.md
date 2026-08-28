@@ -24,9 +24,11 @@
 - Mapped Tencent ASR CAM authorization failures to the provider-not-configured
   state so students are not incorrectly told to repeat a valid recording.
 - Removed redundant concurrent CloudBase login preflights from the authenticated
-  Speaking page. Page startup still verifies the student and every Speaking
-  action remains server-authorized, while the initial Voiceprint and Discussion
-  reads can no longer remain indefinitely in `Loading` before function entry.
+  Speaking page, then sequenced its initial Voiceprint and Discussion reads to
+  avoid concurrent temporary-credential initialization inside the browser SDK.
+  Page startup still verifies the student and every Speaking action remains
+  server-authorized; bounded read/mutation timeouts prevent an indefinite
+  `Loading` state and provide a refresh-and-retry message.
 
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
