@@ -9,25 +9,41 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260827-2">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260828-3">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
     <main class="app-shell">
         <header class="app-header speaking-lab-toolbar">
-            <a class="back-link" href="dashboard.html" aria-label="Back to Dashboard">← Dashboard</a>
+            <a class="back-link speaking-back-link" href="dashboard.html" aria-label="Back to Dashboard">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"/></svg>
+                <span>Dashboard</span>
+            </a>
             <div class="identity-cluster"><span class="student-chip" id="speaking-identity">Speaking Lab</span></div>
         </header>
         <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
-            <div class="speaking-lab-heading">
-                <div><p class="eyebrow accent">DSE PAPER 4 · PART A</p><h1 id="speaking-lab-title">Speaking Lab</h1><p>Record a group interaction, then review the discussion evidence together.</p></div>
-                <button class="primary-button" id="new-discussion" type="button">New Discussion</button>
-            </div>
+            <section class="speaking-lab-heading speaking-glass-panel">
+                <div class="speaking-hero-copy">
+                    <p class="eyebrow accent">DSE PAPER 4 · PART A</p>
+                    <h1 id="speaking-lab-title">Speaking Lab</h1>
+                    <p>Turn one group discussion into clear, evidence-based coaching.</p>
+                    <p class="speaking-privacy-note"><span aria-hidden="true">●</span> Private recording · DSE-aligned analysis</p>
+                </div>
+                <button class="primary-button speaking-new-discussion" id="new-discussion" type="button">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>New Discussion</span>
+                </button>
+            </section>
             <section class="speaking-voiceprint-card" id="my-voiceprint-card" aria-labelledby="my-voiceprint-title">
-                <div><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="my-voiceprint-title">My voiceprint</h2><p id="my-voiceprint-summary">Checking your voiceprint…</p></div>
+                <div class="speaking-voiceprint-icon" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="speaking-voiceprint-copy"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="my-voiceprint-title">My voiceprint</h2><p id="my-voiceprint-summary">Checking your voiceprint…</p></div>
                 <button class="outline-button" id="open-my-voiceprint" type="button" disabled>Set up voiceprint</button>
             </section>
-            <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite">Loading your Discussions…</div>
+            <div class="speaking-section-heading">
+                <div><p class="eyebrow">YOUR WORKSPACE</p><h2>Discussions</h2></div>
+                <p>Open a discussion to continue recording, confirm voices, or view its report.</p>
+            </div>
+            <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite"><span class="speaking-status-dot" aria-hidden="true"></span><span>Loading your Discussions…</span></div>
             <p class="sr-only">Recording choices include Record now and Upload audio.</p>
             <section class="speaking-list" id="speaking-list" aria-label="Discussions"></section>
             <section class="speaking-detail" id="speaking-detail" hidden aria-live="polite"></section>
@@ -36,14 +52,16 @@
 
     <dialog class="speaking-dialog" id="discussion-dialog" aria-labelledby="discussion-dialog-title">
         <form method="dialog" id="discussion-form">
-            <h2 id="discussion-dialog-title">New Discussion</h2>
-            <label>Internal title<input id="discussion-title" name="title" maxlength="120" required></label>
-            <label>Prompt<textarea id="discussion-prompt" name="prompt_text" maxlength="10000" required placeholder="Paste the DSE discussion task here."></textarea></label>
-            <label>Discussion date<input id="discussion-date" name="discussion_date" type="date"></label>
-            <label>Recording time in seconds (optional)<input id="discussion-duration" name="duration_seconds" type="number" min="180" max="1800" step="30" placeholder="Defaults to 2 minutes per participant"></label>
-            <label>Invite VIP Student IDs (optional)<input id="discussion-vip-ids" name="vip_ids" placeholder="One Login ID, or comma-separated IDs"></label>
-            <label>Add Guests (optional)<input id="discussion-guests" name="guest_names" placeholder="One name, or comma-separated names"></label>
-            <div class="speaking-dialog-actions"><button class="outline-button" value="cancel">Cancel</button><button class="primary-button" id="discussion-create" value="default">Create</button></div>
+            <div class="speaking-dialog-head"><p class="eyebrow accent">NEW SESSION</p><h2 id="discussion-dialog-title">Create a Discussion</h2><p>Set up the task and invite the group. You can adjust participants before recording.</p></div>
+            <div class="speaking-form-grid">
+                <label class="speaking-field speaking-field-wide"><span>Discussion title</span><input id="discussion-title" name="title" maxlength="120" required placeholder="e.g. Social media and teenagers"></label>
+                <label class="speaking-field speaking-field-wide"><span>DSE discussion prompt</span><textarea id="discussion-prompt" name="prompt_text" maxlength="10000" required placeholder="Paste the DSE discussion task here."></textarea></label>
+                <label class="speaking-field"><span>Discussion date</span><input id="discussion-date" name="discussion_date" type="date"></label>
+                <label class="speaking-field"><span>Recording time</span><input id="discussion-duration" name="duration_seconds" type="number" min="180" max="1800" step="30" placeholder="Automatic"></label>
+                <label class="speaking-field"><span>VIP Student IDs</span><input id="discussion-vip-ids" name="vip_ids" placeholder="Comma-separated IDs"></label>
+                <label class="speaking-field"><span>Guest names</span><input id="discussion-guests" name="guest_names" placeholder="Comma-separated names"></label>
+            </div>
+            <div class="speaking-dialog-actions"><button class="outline-button" value="cancel" formnovalidate>Cancel</button><button class="primary-button" id="discussion-create" value="default">Create</button></div>
         </form>
     </dialog>
     <dialog class="speaking-dialog" id="invitation-dialog" aria-labelledby="invitation-dialog-title">
@@ -51,9 +69,8 @@
     </dialog>
     <dialog class="speaking-dialog" id="voiceprint-dialog" aria-labelledby="voiceprint-dialog-title">
         <div class="speaking-voiceprint-dialog-body">
-            <p class="eyebrow accent">REUSABLE VOICE ID</p>
-            <h2 id="voiceprint-dialog-title">Set up my voiceprint</h2>
-            <p>This voiceprint helps match your voice in future Discussions. The recording is sent directly to Tencent for registration and is not kept as an audio file by Mr. Cat Academy.</p>
+            <div class="speaking-dialog-head"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="voiceprint-dialog-title">Set up my voiceprint</h2><p>Record once to help Speaking Lab recognise your Speaker track in future discussions.</p></div>
+            <div class="speaking-privacy-callout"><span aria-hidden="true">✓</span><p>The sample goes directly to Tencent for registration. Mr. Cat Academy does not keep the recording as an audio file.</p></div>
             <blockquote id="voiceprint-passage">Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.</blockquote>
             <label class="speaking-consent"><input id="voiceprint-consent" type="checkbox"> I agree that this reusable voiceprint may be used to identify my Speaker track in future Speaking Lab Discussions.</label>
             <div class="speaking-recording-time" id="voiceprint-time">00:00 / 00:20</div>
@@ -72,6 +89,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260828-5"></script>
+    <script src="assets/js/speaking-lab.js?v=20260828-6"></script>
 </body>
 </html>
