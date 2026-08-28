@@ -318,7 +318,11 @@ Function runtime expectation:
 - bundled code is minified so direct ZIP uploads remain below CloudBase's
   expanded-file limit and do not depend on slower COS uploads;
 - CloudBase automatic dependency installation is not required and should stay
-  disabled for bundled functions;
+  disabled for fully bundled functions. `speakingLab` is the documented
+  exception: its business/shared code remains bundled, while the already pinned
+  `@cloudbase/node-sdk@3.18.1` is external and CloudBase automatic dependency
+  installation must be enabled because the complete SDK pushed this function
+  above the Shanghai environment's expanded-code ceiling;
 - root and function-level lockfiles pin the SDK and bundler versions, so a
   package rebuild cannot silently pick a newer dependency tree.
 - development environment unless owner approves otherwise
@@ -1224,6 +1228,13 @@ Provider-disabled deployments are expected to return
 the dashboard entry first, stopping the worker timer if necessary, and rolling
 back both functions together while retaining private Discussion/report/audit
 history and revoking active shares.
+
+`deploy-packages/speakingLab.zip` must contain a small bundled `index.js` plus a
+generated `package.json` whose only dependency is exact
+`@cloudbase/node-sdk: 3.18.1`. Deploy it with automatic dependency installation
+enabled and wait for `Active` / `Available`; an upload success followed by
+`LimitExceeded.CodeUnzip` is a failed release. Do not fall back to bundling the
+full SDK merely to keep dependency installation disabled.
 
 `cloudfunctions/_shared/` is bundled into dependent functions and is never a
 standalone CloudBase function. The deploy-plan generator therefore excludes
