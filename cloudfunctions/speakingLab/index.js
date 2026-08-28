@@ -652,6 +652,11 @@ function providerUsageEvent(job, stage, callIndex, provider, metadata = {}) {
     outcome: metadata.outcome === "failed" ? "failed" : "completed",
     safe_error_code: lab.text(metadata.safe_error_code, 120) || null,
     http_status: metadata.http_status != null && Number.isInteger(Number(metadata.http_status)) ? Number(metadata.http_status) : null,
+    response_finish_reason: lab.text(metadata.response_diagnostics && metadata.response_diagnostics.finish_reason, 80) || null,
+    response_content_length: numeric(metadata.response_diagnostics && metadata.response_diagnostics.content_length),
+    response_content_shape: lab.text(metadata.response_diagnostics && metadata.response_diagnostics.content_shape, 40) || null,
+    response_content_closed: metadata.response_diagnostics && typeof metadata.response_diagnostics.content_closed === "boolean" ? metadata.response_diagnostics.content_closed : null,
+    response_has_reasoning_content: metadata.response_diagnostics && typeof metadata.response_diagnostics.has_reasoning_content === "boolean" ? metadata.response_diagnostics.has_reasoning_content : null,
     input_tokens: numeric(usage.input_tokens), output_tokens: numeric(usage.output_tokens), total_tokens: numeric(usage.total_tokens),
     cached_tokens: numeric(usage.cached_tokens), reasoning_tokens: numeric(usage.reasoning_tokens), audio_seconds: numeric(usage.audio_seconds),
     usage_status: Object.values(usage).some((value) => value != null) ? "recorded" : "missing", created_at: now(),
@@ -770,7 +775,7 @@ async function processQueuedJob(event) {
           user_prompt: dseAnalysisUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
         });
       } catch (error) {
-        await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, http_status: error && error.httpStatus, request_id: error && error.requestId, usage: {} });
+        await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, http_status: error && error.httpStatus, request_id: error && error.requestId, response_diagnostics: error && error.responseDiagnostics, usage: {} });
         throw error;
       }
       await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, request_id: result.request_id, usage: result.usage });

@@ -333,7 +333,7 @@ function safeCommentary(value) {
 }
 
 function canonicalDomain(domain, evidenceIds, validSegmentIds, candidateSpeakerKey) {
-  if (!domain || typeof domain !== "object") throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+  if (!domain || typeof domain !== "object" || Array.isArray(domain)) throw new Error("SPEAKING_AI_DOMAIN_OBJECT_INVALID");
   const score = Number(domain.score);
   if (!Number.isInteger(score) || score < 0 || score > 7) throw new Error("SPEAKING_AI_SCORE_INVALID");
   const ids = Array.isArray(evidenceIds) ? evidenceIds.map((id) => String(id)) : [];
@@ -343,27 +343,34 @@ function canonicalDomain(domain, evidenceIds, validSegmentIds, candidateSpeakerK
 }
 
 function canonicalizeReport(report, speakerKeys, segments, options = {}) {
-  if (!report || typeof report !== "object" || Array.isArray(report)) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
-  const allowedRoot = new Set(["group_summary_zh", "group_strengths", "group_priorities", "discussion_flow", "candidates"]);
-  if (Object.keys(report).some((key) => !allowedRoot.has(key))) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+  if (!report || typeof report !== "object" || Array.isArray(report)) throw new Error("SPEAKING_AI_REPORT_OBJECT_INVALID");
+  let sourceReport = report;
+  if (!Array.isArray(sourceReport.candidates) && (!sourceReport.candidates || typeof sourceReport.candidates !== "object")) {
+    const wrappers = Object.values(sourceReport).filter((value) => value && typeof value === "object" && !Array.isArray(value)
+      && (Array.isArray(value.candidates) || (value.candidates && typeof value.candidates === "object" && !Array.isArray(value.candidates))));
+    if (wrappers.length === 1) sourceReport = wrappers[0];
+  }
   const knownSpeakers = new Set((Array.isArray(speakerKeys) ? speakerKeys : []).map(String));
   const validSegments = new Map((Array.isArray(segments) ? segments : []).map((segment) => [String(segment.segment_id), segment]));
   const nonCandidates = new Set((options.nonCandidateKeys || []).map(String));
-  const candidates = Array.isArray(report.candidates) ? report.candidates : null;
-  if (!candidates) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+  const candidates = Array.isArray(sourceReport.candidates) ? sourceReport.candidates
+    : sourceReport.candidates && typeof sourceReport.candidates === "object"
+      ? Object.entries(sourceReport.candidates).map(([speakerKey, value]) => value && typeof value === "object" && !Array.isArray(value)
+        ? { speaker_key: value.speaker_key || speakerKey, ...value }
+        : value)
+      : null;
+  if (!candidates) throw new Error("SPEAKING_AI_CANDIDATES_INVALID");
   const seen = new Set();
   const expected = (Array.isArray(options.candidateSpeakerKeys) ? options.candidateSpeakerKeys : [...knownSpeakers]).filter((key) => !nonCandidates.has(String(key))).map(String);
   if (candidates.length !== expected.length) throw new Error("SPEAKING_AI_CANDIDATE_COUNT_INVALID");
   const canonical = candidates.map((candidate) => {
-    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
-    const allowedCandidate = new Set(["speaker_key", "summary_zh", "domains", "strengths", "priority_actions", "language_suggestions", "interaction_summary"]);
-    if (Object.keys(candidate).some((key) => !allowedCandidate.has(key))) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("SPEAKING_AI_CANDIDATE_OBJECT_INVALID");
     const key = text(candidate && candidate.speaker_key, 60);
     if (!knownSpeakers.has(key) || nonCandidates.has(key)) throw new Error("SPEAKING_AI_SPEAKER_INVALID");
     if (seen.has(key)) throw new Error("SPEAKING_AI_SPEAKER_DUPLICATE");
     seen.add(key);
     const domains = candidate.domains || {};
-    if (!domains || typeof domains !== "object" || Array.isArray(domains) || Object.keys(domains).some((name) => !ASSESSED_DOMAINS.concat("pronunciation_delivery").includes(name))) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+    if (!domains || typeof domains !== "object" || Array.isArray(domains)) throw new Error("SPEAKING_AI_DOMAINS_INVALID");
     const canonicalDomains = {};
     ASSESSED_DOMAINS.forEach((name) => {
       const domain = domains[name];
@@ -391,10 +398,10 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
   canonical.sort((left, right) => expected.indexOf(left.speaker_key) - expected.indexOf(right.speaker_key));
   return {
     report_version: text(options.reportVersion || "dse-speaking-v1", 80),
-    group_summary_zh: safeCommentary(report.group_summary_zh),
-    group_strengths: safeList(report.group_strengths),
-    group_priorities: safeList(report.group_priorities),
-    discussion_flow: safeList(report.discussion_flow),
+    group_summary_zh: safeCommentary(sourceReport.group_summary_zh),
+    group_strengths: safeList(sourceReport.group_strengths),
+    group_priorities: safeList(sourceReport.group_priorities),
+    discussion_flow: safeList(sourceReport.discussion_flow),
     candidates: canonical,
   };
 }
