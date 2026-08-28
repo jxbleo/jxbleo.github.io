@@ -784,15 +784,18 @@ reservation and Retry creates a fresh idempotent evaluation/usage scope, so a
 manual retry cannot bypass the daily limit. The browser never mutates a job row.
 
 The page shell has one persistent top toolbar and a single overlay controller.
-On Writing Home the left action opens History. On any concrete Composition it
-becomes Back and opens an application-owned confirmation dialog before returning
-to Writing Home; navigation never cancels a durable AI job. The portfolio control
-occupies the former brand-lockup position and toggles the same initially closed,
-left-side drawer at phone, tablet, and desktop widths. Button reactivation, the
-drawer close control, scrim activation, and `Escape` all converge on one close
-path that restores focus and scroll state. The main workspace has no secondary
-toolbar or permanently allocated sidebar column; its content is composed of
-cards beneath the header.
+Its far-left control is always one hamburger; it never mutates between History
+and Back. The same control toggles one Writing sidebar. Below `820px` the sidebar
+is a closed-by-default overlay and selecting a Composition closes it. At `820px`
+and above it auto-opens as a docked 280px column, shifts the main workspace, does
+not lock background scrolling, and can still be explicitly hidden. Crossing the
+breakpoint resets to the appropriate default. Scrim activation and `Escape`
+converge on the close path. Home remains a confirmed navigation action; the plus
+action returns the main region to the existing uncommitted Polishing/Brainstorming
+surface. The sidebar is a projection of server Compositions only: unfinished
+records sort by recent activity before completed records, which sort by
+`completed_at` with update/create fallbacks. Each row contains only the title and
+loads its current server stage directly without an entry-confirmation layer.
 
 All writing and revision camera affordances route through one application-owned
 photo-source action sheet. Camera and library remain separate native file inputs;
@@ -820,7 +823,12 @@ authorization token: initialization still authenticates the student and calls
 Composition replaces the locator, returning to the workspace home clears it, and
 a stale locator for a safely pruned empty placeholder falls back to the home state.
 The centered toolbar title is derived only from the currently loaded Composition;
-its overflow measurement is presentation state and is never persisted.
+when none is selected it reads `Start new Writing` and the right-side quota is
+absent. Its overflow measurement is presentation state and is never persisted.
+For a concrete non-placeholder title, a pencil reveals a compact toolbar editor.
+Saving uses the existing authenticated `updateCompositionTitle` boundary, updates
+the current and sidebar projections in memory, and leaves activity timestamps and
+ordering unchanged.
 
 The browser edits the OCR result; `saveDraft` confirms text and deletes the
 private photos. `writingAiWorker` also deletes unconfirmed uploaded photos at

@@ -1815,34 +1815,38 @@ High priority improvement:
   profile or composition request;
 - Run `npm run test:writing-tutor` and all release verification.
 - At phone, iPad, and desktop widths, confirm the page shows only one top toolbar
-  over card content: `History` at far left on Writing Home, `Back` there throughout
-  an open Composition, current title centered, and revision percentage at far right.
-  Confirm Composition Back opens a confirmation and returns to Writing Home without
-  cancelling a durable job. Confirm Home and New appear inside History and that
+  over card content: the same three-line sidebar button at far left everywhere,
+  current title centered, and revision percentage at far right only when applicable.
+  With no Composition selected, confirm green `Start new Writing` and no word quota.
+  Confirm Home and the icon-only plus action appear inside the sidebar and that
   there is no student chip, brand mark,
-  `AI Tutor / Writing Studio` label, secondary toolbar, or persistent sidebar.
-- Confirm Portfolio starts closed at every width. Open it, then separately close
-  it by re-clicking the trigger, its close button, the scrim, and `Escape`.
-  Confirm `aria-expanded`, focus restoration, background scroll lock, and prior
-  page scroll position are correct for every path.
-- Click Home inside History and confirm the custom dialog appears before navigation.
+  `AI Tutor / Writing Studio` label, secondary toolbar, or duplicate portfolio panel.
+- Confirm the sidebar starts closed below `820px` and auto-opens as a docked 280px
+  column at `820px` and above. Re-clicking the trigger must hide it at every width.
+  On phone, also close it by scrim and `Escape`; confirm background scroll lock.
+  On wide screens, confirm the main area shifts without a scrim or scroll lock.
+- Confirm the sidebar contains only Home, plus, `Continue`, `Completed`, and writing
+  titles. Unfinished work must precede completed work; newest completed work comes
+  first. There must be no counts, profile, filters, dates, scores, modes, or badges.
+  Selecting a row must directly open its current stage, close the phone overlay,
+  and keep the wide sidebar docked.
+- Open a titled Composition, use the toolbar pencil, then cancel and save separate
+  edits. Confirm the centered title and sidebar row update together, activity order
+  does not change, long-title motion still works, and placeholder titles expose no pencil.
+- Click Home inside the Writing sidebar and confirm the custom dialog appears before navigation.
   Cancel by button and `Escape`, then confirm leaving during queued OCR and queued
   review returns to Dashboard without cancelling either cloud job; reopening the
   Composition resumes the same job.
-- Confirm History Home is red and the alert matches the Dashboard/BBC compact
+- Confirm sidebar Home is red and the alert matches the Dashboard/BBC compact
   glass style: `Cancel` is the green left split action, `Leave` is the red right
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
   uncertain text, while confirmed photos become unavailable after cleanup.
 - On Writing Home, verify the old permanent feature explainer, time greeting,
   `Ready to keep writing?`, `Recent Writing`, and `Writing Focus` are absent.
-  Confirm the new-writing card appears first, unfinished Composition pills next,
-  and completed Composition pills last. With multiple unfinished Compositions,
-  confirm every one appears in its horizontal Library-style pill strip with mode,
-  title, status, and workflow track. Check touch/pointer scrolling, snap behavior,
-  keyboard focus, long-title truncation, and the no-strip state when nothing is open.
-  Confirm the section labels read `New`, `Continue`, and `Review` from top to
-  bottom. Open each mode, enter values in every available field, then press the
+  Confirm no saved Composition pill or Continue/Review strip remains in the main
+  area; those items exist only in the sidebar. Open each mode, enter values in every
+  available field, then press the
   same mode again: the composer must collapse, `aria-expanded` must become false,
   and the values must return unchanged when the mode is reopened.
   Confirm `Quick Start`, `Start New`, mode icons, and mode arrows are absent. Selecting either mode must expand Title/Your Writing
@@ -1853,10 +1857,8 @@ High priority improvement:
   Home, and never enter a standalone input screen. Confirm no pending composer is
   written to sessionStorage, localStorage, or IndexedDB. Only explicit text
   `Submit` or photo `Scan` may create the Composition and persist its mode.
-  Click every unfinished pill and several History rows: each must first show the same
-  Library entry material/animation with only title, progress status, and progress bar.
-  Close/Escape must restore focus; Enter alone may load the Composition.
-  Test compact home quota, press states, larger text, reduced motion, and reduced transparency.
+  Select several sidebar rows and confirm each enters its actual current stage directly.
+  Test press states, larger text, reduced motion, and reduced transparency.
 - On the first Writing screen, confirm the removed heading, explanation, step,
   section labels, repeated mode switch, and separate `Type` / `Scan` switch are absent.
   Verify the two home mode buttons read `Polishing` and `Brainstorming`. Confirm no

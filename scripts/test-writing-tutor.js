@@ -120,27 +120,38 @@ const promptPath = "cloudfunctions/writingTutor/prompts.js";
 const rubricPath = "cloudfunctions/writingTutor/rubrics.js";
 const schemaPath = "cloudfunctions/writingTutor/schemas.js";
 
-check("AI Tutor header keeps only History, the current title, and revision percentage", () => {
+check("AI Tutor header keeps only the sidebar toggle, editable current title, and revision percentage", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
   assert(header, "missing AI Tutor top toolbar");
-  requireEvery(header[1], [">History</button>", "current-writing-title-window", "revision-progress"], "AI Tutor toolbar");
-  assert(!/>Home<|>New<|header-back|header-new-writing|student-chip|header-actions/.test(header[1]),
-    "Home, New, and student identity must not remain in the top toolbar");
+  requireEvery(header[1], ["portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "current-writing-title-edit", "current-writing-title-form", "revision-progress"], "AI Tutor toolbar");
+  assert(!/>Home<|>New<|>History<|>Back<|header-back|header-new-writing|student-chip|header-actions/.test(header[1]),
+    "Home, New, History, Back, and student identity must not remain as toolbar text");
   assert(/\.ai-tutor-header\s*\{[^}]*grid-template-columns/is.test(styles),
     "the sparse toolbar must keep a centered title between balanced edge columns");
 });
 
-check("History owns both Home and New actions", () => {
+check("the writing sidebar owns the Home and plus actions", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const sidebar = /<aside\b[^>]*id=["']portfolio-sidebar["'][^>]*>([\s\S]*?)<\/aside>/.exec(page);
   assert(sidebar, "missing History drawer");
-  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-home"', ">Home</button>", 'id="history-new-writing"', "New"],
-    "History navigation actions");
-  assert(/history-new-writing[\s\S]{0,500}closeSidebar\(\)[\s\S]{0,120}createNewWriting\(\)/.test(client),
-    "New from History must close the drawer before creating the Composition");
+  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-home"', ">Home</button>", 'id="history-new-writing"', "M12 5v14M5 12h14"],
+    "writing sidebar navigation actions");
+  assert(/history-new-writing[\s\S]{0,500}isSidebarDockedViewport\(\)[\s\S]{0,180}returnToTutorHome\(\)/.test(client),
+    "the plus action must reveal the existing new-writing surface and close only the narrow overlay");
+});
+
+check("the writing sidebar groups unfinished work before newest completed work", () => {
+  const client = read(clientPath);
+  const renderSource = functionSource(client, "compositionSortTime", "renderWritingProfile");
+  requireEvery(renderSource, ["portfolioGroupHtml('Continue', unfinished)", "portfolioGroupHtml('Completed', completed)", "completed_at", "updated_at", ".sort"],
+    "writing sidebar grouping and ordering");
+  assert(renderSource.indexOf("portfolioGroupHtml('Continue'") < renderSource.indexOf("portfolioGroupHtml('Completed'"),
+    "Continue must appear before Completed");
+  assert(!/overall_score|statusLabel|modeLabel|mini-badge|portfolio-title-edit/.test(renderSource),
+    "sidebar rows must contain only writing titles");
 });
 
 const publicActions = [
@@ -283,28 +294,28 @@ check("toolbar percentage measures accepted required revisions only", () => {
     "the removed post-Check instruction must not appear below the toolbar");
 });
 
-check("portfolio is a dismissible fixed drawer at every viewport", () => {
+check("portfolio is a responsive sidebar that auto-docks on wide screens and remains dismissible", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, [
     'id="portfolio-toggle"', 'aria-expanded="false"', 'aria-controls="portfolio-sidebar"',
-    'id="portfolio-sidebar"', 'id="sidebar-close"', 'id="sidebar-scrim"', "hidden",
+    'id="portfolio-sidebar"', 'id="sidebar-scrim"', "hidden",
   ], "portfolio drawer markup");
   assert(/\.portfolio-sidebar\s*\{[^}]*position\s*:\s*fixed[^}]*(?:transform\s*:\s*translateX|visibility\s*:\s*hidden)/is.test(styles),
-    "portfolio must default to a hidden fixed drawer, including on iPad and desktop");
+    "portfolio must use one transformable fixed sidebar");
   assert(/\.portfolio-sidebar\.is-open\s*\{[^}]*(?:translateX\s*\(\s*0\s*\)|visibility\s*:\s*visible)/is.test(styles),
     "the drawer needs one explicit open state");
-  assert(!/@media[^{}]*\([^)]*min-width[^)]*\)[\s\S]{0,1400}\.portfolio-sidebar\s*\{[^}]*(?:position\s*:\s*(?:sticky|relative|static)|transform\s*:\s*none|visibility\s*:\s*visible)/i.test(styles),
-    "wide-screen media rules must not pin the portfolio open");
-  requireEvery(client, ["openSidebar", "closeSidebar", "portfolioToggle", "sidebar-close", "sidebarScrim", "Escape"],
+  requireEvery(styles, ["@media (min-width: 820px)", ".ai-tutor-shell.has-sidebar-open .ai-tutor-main", "width: calc(100% - 294px)", "margin-left: 294px"],
+    "wide docked sidebar layout");
+  requireEvery(client, ["sidebarDockedQuery", "isSidebarDockedViewport", "openSidebar", "closeSidebar", "portfolioToggle", "sidebarScrim", "Escape"],
     "portfolio drawer interactions");
   assert(/portfolioToggle\.addEventListener\s*\(\s*["']click["'][\s\S]{0,240}(?:openSidebar|closeSidebar)/.test(client),
     "portfolio toolbar button must toggle the drawer");
-  assert(/sidebar-close[^\n]{0,160}addEventListener\s*\(\s*["']click["'][^\n]{0,120}closeSidebar/.test(client),
-    "drawer close button must hide the portfolio");
   assert(/sidebarScrim\.addEventListener\s*\(\s*["']click["']\s*,\s*closeSidebar/.test(client),
     "clicking the scrim must hide the portfolio");
+  assert(/sidebarDockedQuery\.addEventListener\s*\(\s*["']change["'][\s\S]{0,220}event\.matches\)\s*openSidebar\(\)[\s\S]{0,100}else\s*closeSidebar\(\)/.test(client),
+    "crossing the iPad breakpoint must auto-open wide and close narrow");
   assert(/event\.key\s*={2,3}\s*["']Escape["'][\s\S]{0,800}state\.sidebarOpen[\s\S]{0,120}closeSidebar/.test(client),
     "Escape must hide an open portfolio drawer");
 });
@@ -342,41 +353,37 @@ check("History Home and Leave dialog use the approved red and Apple-style treatm
     "Cancel must be green and Leave must be red");
 });
 
-check("portfolio titles support inline student editing through updateCompositionTitle", () => {
+check("the toolbar title pencil saves student edits through updateCompositionTitle", () => {
+  const page = read(pagePath);
   const client = read(clientPath);
-  const renderSource = functionSource(client, "renderPortfolio", "renderWritingProfile");
-  requireEvery(renderSource, ["portfolio-title-form", "data-edit-title", "data-cancel-title"],
-    "inline portfolio title editor");
+  requireEvery(page, ["current-writing-title-edit", "current-writing-title-form", "current-writing-title-input", "Save writing title"],
+    "toolbar title editor");
+  const titleSource = functionSource(client, "updateCurrentWritingTitle", "revisionProgressSummary");
+  requireEvery(titleSource, ["beginToolbarTitleEdit", "cancelToolbarTitleEdit", "saveToolbarTitle", "editableCompositionTitle", "currentWritingTitleEdit.hidden"],
+    "toolbar title editing lifecycle");
   assert(/writingCall\s*\(\s*["']updateCompositionTitle["']/.test(client),
-    "saving the inline title editor must call updateCompositionTitle");
-  assert(/addEventListener\s*\(\s*["']submit["'][\s\S]{0,1800}(?:data-title-form|portfolio-title-form)/.test(client)
-      || /(?:data-title-form|portfolio-title-form)[\s\S]{0,1800}writingCall\s*\(\s*["']updateCompositionTitle["']/.test(client),
-    "the inline form submit path must save the edited title");
+    "saving the toolbar title editor must call updateCompositionTitle");
+  assert(/event\.target\.id\s*===\s*["']current-writing-title-form["'][\s\S]{0,160}saveToolbarTitle\(\)/.test(client),
+    "the toolbar title form submit path must save the edited title");
 });
 
-check("Writing home is an action-first adaptive workspace", () => {
+check("Writing main area is a focused new-writing surface while saved work stays in the sidebar", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
   const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
-    "welcomeUnfinishedHtml", "welcomeCompletedHtml", "Polishing", "Brainstorming", "homeComposerHtml", ">New</p>",
+    "Polishing", "Brainstorming", "homeComposerHtml", "writing-home-start",
   ], "Writing home workspace");
-  requireEvery(client, ["welcomeCompositionStrip(items, 'Continue'", "welcomeCompositionStrip(items, 'Review'"],
-    "Writing home section labels");
+  assert(!/welcomeUnfinishedHtml|welcomeCompletedHtml|writing-pending-strip/.test(welcome),
+    "saved Composition rows must not be duplicated in the main area");
   assert(!/QUICK START|Start New/.test(welcome),
     "Writing home must not retain the removed Quick Start or Start New headings");
   assert(!/writing-mode-icon|writing-card-arrow/.test(welcome),
     "Polishing and Brainstorming cards must not retain decorative icons or arrows");
   assert(!/Good (?:morning|afternoon|evening)|Ready to keep writing\?|Recent Writing|Writing Focus/.test(welcome),
     "Writing home must not restore the greeting, hero question, Recent Writing, or Writing Focus sections");
-  assert(/unfinishedCompositions\s*=\s*homeCompositions\.filter[\s\S]{0,180}compositionStatus\(item\)\s*!==\s*['"]completed['"]/.test(welcome),
-    "the unfinished home row must include every unfinished Composition and exclude completed work");
-  assert(welcome.indexOf("writing-home-start") < welcome.indexOf("welcomeUnfinishedHtml")
-      && welcome.indexOf("welcomeUnfinishedHtml") < welcome.indexOf("welcomeCompletedHtml"),
-    "Writing home must order new writing, unfinished work, then completed work");
   requireEvery(styles, [
-    ".writing-home-flow", ".writing-pending-strip", ".writing-pending-pill",
-    "overflow-x: auto", "scroll-snap-type: x proximity", ".writing-mode-card",
+    ".writing-home-flow", ".writing-home-section", ".writing-mode-card",
   ], "Writing home responsive layout");
 });
 
@@ -545,19 +552,15 @@ check("initial-draft autosave does not replace the established re-upload path", 
     "source persistence routing");
 });
 
-check("opening any saved writing uses the Library-style entry confirmation", () => {
+check("selecting a saved writing enters its current stage directly", () => {
   const client = read(clientPath);
-  const styles = read(stylePath);
-  const dialog = functionSource(client, "ensureCompositionEntryDialog", "showCompositionEntryDialog");
-  const openDialog = functionSource(client, "showCompositionEntryDialog", "closeCompositionEntryDialog");
-  requireEvery(dialog, ["practice-entry-overlay", "practice-entry-shell", "practice-entry-card", "practice-entry-task", "writing-entry-progress", "practice-entry-enter", "practice-entry-close"],
-    "Library-style writing entry dialog");
-  requireEvery(openDialog, ["compositionTitle", "statusLabel", "homeWorkflowProgress", "aria-label"],
-    "writing title and progress projection");
-  assert(/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,160}showCompositionEntryDialog/.test(client),
-    "every writing progress card must open the confirmation before loading the Composition");
-  assert(/\.practice-entry-card\s*\{[^}]*animation:\s*practiceEntryPop 560ms cubic-bezier\(\.18,\.95,\.26,1\.16\)/i.test(styles),
-    "writing entry must use the same Library materialization animation");
+  assert(/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,160}loadComposition\(button\.getAttribute\(["']data-open-composition["']\)\)/.test(client),
+    "saved writing rows must load the Composition directly");
+  assert(!/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,160}showCompositionEntryDialog/.test(client),
+    "saved writing rows must not add a second confirmation step");
+  const loadSource = functionSource(client, "loadComposition", "renderFatalAction");
+  requireEvery(loadSource, ["compositionStatus", "renderRevisionScanReview", "showOcrResult", "renderOcrWaiting", "showReviewResult", "prepareLanguageReview"],
+    "current-stage restoration");
 });
 
 check("the two evaluation modes are mutually exclusive", () => {

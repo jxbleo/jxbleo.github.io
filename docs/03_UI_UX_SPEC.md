@@ -1973,9 +1973,9 @@ Important mobile rules:
   During every pending state—including the unconfirmed upload handoff—the Runner
   appears immediately and a luminous connector continuously travels left to
   right. There is no upload-only, “AI is reading”, or other loader-only surface.
-- The persistent toolbar uses `Back` throughout a concrete Composition; the
-  waiting card has no duplicate Back or Upload Again actions. Confirming Back
-  returns to Writing Home without cancelling the cloud Job. The old `Continue
+- The persistent toolbar keeps the three-line Writing sidebar control throughout
+  a concrete Composition; the waiting card has no duplicate navigation or Upload
+  Again actions. Confirmed Home navigation does not cancel the cloud Job. The old `Continue
   in Background` wording and ordinary polling explanation are removed.
 - The optional runner is a 16:7, max-640px Canvas with pointer/tap jump and
   Space/ArrowUp/W keyboard controls but no separate Jump button or instruction
@@ -2019,18 +2019,19 @@ Important mobile rules:
   state, and requeues the durable OCR/rewrite/revision scan or submits a fresh
   quota-controlled review request without rebuilding the Canvas.
 
-- AI Tutor is a self-contained student workspace with New Writing, Writing
-  Portfolio, and Writing Profile views.
-- Its header toolbar shows `History` at the far left on Writing Home and `Back`
-  in that same position throughout a concrete Composition. The current title
-  remains centered and language-revision percentage stays at the far right.
-  Back uses a confirmation and returns to Writing Home. Home and New live inside
-  the History drawer.
+- AI Tutor is a self-contained student workspace with a new-writing main surface
+  and one responsive Writing sidebar.
+- Its header toolbar always shows the same three-line sidebar button at far left.
+  It never changes into History or Back text. The current title remains centered
+  and language-revision percentage stays at far right only when applicable.
+  With no Composition selected, the center reads green `Start new Writing` and
+  the right edge stays empty. Home and the icon-only plus action live in the sidebar.
 - While a Composition is open, the flexible center of the top toolbar displays its
   AI-generated or student-edited title. A long title travels horizontally within
   that space with restrained pauses at both ends, matching task-title behavior;
-  Reduced Motion uses a stable single-line ellipsis. The center collapses when no
-  Composition is open. Refreshing the page must reopen the same Composition.
+  Reduced Motion uses a stable single-line ellipsis. A valid current title exposes
+  a small green pencil beside it; activation replaces the center with a compact
+  text field plus cancel/save controls. Refreshing the page must reopen the same Composition.
 - A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
   it or selecting New again triggers guarded automatic cleanup. Input-page `Discard` is a
@@ -2046,8 +2047,9 @@ Important mobile rules:
   fields; it must not restore them from browser storage or open the retired standalone input screen. The
   `Your Writing` placeholder and first typed line sit near the textarea's top
   edge rather than inheriting an oversized top-leading gap.
-- Writing Home labels its vertical regions `New`, `Continue`, and `Review` in a
-  shared small-title treatment. Pressing the already-selected Polishing or
+- Writing Home contains only the existing Polishing and Brainstorming new-writing
+  surface; Continue and Completed compositions belong exclusively to the sidebar.
+  Pressing the already-selected Polishing or
   Brainstorming card again collapses the composer along the same spatial path;
   `aria-expanded` follows the visible state. Collapse is non-destructive: all
   local fields survive and reappear on the next expansion.
@@ -2061,11 +2063,11 @@ Important mobile rules:
 - Home inside History uses red leave-navigation treatment. Its confirmation matches the compact Dashboard/BBC
   Apple-style alert: a 320px glass surface with centered copy and a divided
   two-button footer, green `Cancel` on the left and red `Leave` on the right.
-- Remove the brand mark and the `AI Tutor / Writing Studio` lockup. The Writing
-  Portfolio icon takes that position and reflects open/closed state with
-  `aria-expanded`. The portfolio is an initially closed left drawer on phone,
-  iPad, and desktop alike—not a permanently visible tablet/desktop column.
-  Clicking the same icon again, its close button, the page scrim, or `Escape`
+- Remove the brand mark and the `AI Tutor / Writing Studio` lockup. The three-line
+  sidebar control takes that position and reflects open/closed state with
+  `aria-expanded`. The sidebar is initially closed as a phone overlay; at `820px`
+  and above it auto-opens as a 280px docked column but remains dismissible.
+  Clicking the same icon again, the phone scrim, or `Escape`
   closes it and restores focus to the trigger. Opening the drawer locks background
   scrolling without losing the previous page position.
 - OCR confirmation is a deliberately sparse editing card. Its top row contains
@@ -2184,26 +2186,20 @@ Important mobile rules:
   minimum loading duration. Reduced Motion uses a short opacity-only reveal.
 - The two review modes are visually mutually exclusive. Standardized review
   shows framework criteria and score; language review never shows a score.
-- Writing Home is an action-first, adaptive workspace rather than a permanent
-  feature explainer. Remove the time-of-day greeting and `Ready to keep writing?`.
-  The first content row is a horizontally scrollable, snap-aligned strip containing
-  every unfinished Composition as one Library-style task pill. Each pill shows mode,
-  title, current status, a restrained workflow track, and one directional action;
-  completed work remains available through History. Omit the strip entirely when it
-  has no items—do not manufacture an empty invitation card. Beneath it, show only the
-  existing `Polishing` and `Brainstorming` cards; remove `Quick Start`, `Start New`,
-  their decorative icons/arrows, `Recent Writing`, and `Writing Focus` from Home.
-  Before opening any progress pill or History row, show the same `practice-entry-*`
-  material and 560ms spring animation used by Dashboard Library task confirmation.
-  It displays only the writing title, status/progress, and progress bar; Enter opens
-  the Composition and Close restores focus.
+- Writing Home is an action-first new-writing workspace rather than a permanent
+  feature explainer or a second portfolio. Remove the time-of-day greeting,
+  `Ready to keep writing?`, Continue/Review strips, `Quick Start`, `Start New`,
+  decorative icons/arrows, `Recent Writing`, and `Writing Focus`. Show only the
+  existing `Polishing` and `Brainstorming` cards and their inline composer.
+  Saved work is listed once in the sidebar: `Continue` first, then `Completed`;
+  each row shows only its title. Selecting a row directly restores the Composition's
+  current stage without a Library-style confirmation dialog.
   `Polishing` and `Brainstorming` expand the source form directly below the two cards
   without navigating to another screen. The selected card receives a restrained state
   ring, while the form materializes from that anchored region with no bounce and becomes
   an immediate cross-fade under Reduced Motion.
-  The home toolbar reads `Writing` and uses the right edge only for the compact
-  remaining-word quota. Cards respond on press, directional arrows move only on
-  hover, and reduced-motion/transparency preferences retain stable equivalents.
+  The home toolbar reads green `Start new Writing` and leaves the right edge empty.
+  Cards respond on press and reduced-motion/transparency preferences retain stable equivalents.
 - The expanded Writing form has no page eyebrow, explanatory heading, step badge,
   section labels, repeated mode switch, `Type` / `Scan` switch, or visible field
   headings. The source form has no student-entered Title control; rubric choice, prompt
@@ -2415,8 +2411,9 @@ Important mobile rules:
 - Completed portfolio items are read-only. `Use as new` creates another
   Composition; `重新上传` exists only inside an active Composition and clearly
   states that successful confirmation replaces its current review.
-- Portfolio rows expose an inline title-edit control. Saving updates the row
-  without opening the Composition; cancel leaves the stored title unchanged.
+- A selected Composition with a valid title exposes a pencil in the centered
+  toolbar title. Saving updates the selected title and sidebar row in place;
+  cancel leaves the stored title unchanged. Sidebar rows themselves remain title-only.
   A student title is authoritative and is never replaced by later AI work.
 - When a new Composition has no student title, its first successful review uses
   the same model response to supply a concise `2–6` English-word title. There is
