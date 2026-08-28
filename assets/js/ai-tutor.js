@@ -33,6 +33,7 @@
         skipped: {},
         rewriteFace: {},
         revisionTextLevel: 1,
+        revisionSkin: 'green',
         revisionScan: null,
         correctionRound: 0,
         busy: false,
@@ -125,6 +126,7 @@
     var stageMaterializeToken = 0;
     var revisionTextScales = [0.9, 1, 1.15, 1.3];
     var revisionTextLevelStorageKey = 'mrcat-writing-revision-text-level-v1';
+    var revisionSkinStorageKey = 'mrcat-writing-revision-skin-v1';
 
     function scheduleStageViewportReset() {
         updateToolbarNavigation();
@@ -843,6 +845,14 @@
         } catch (error) {}
     }
 
+    function restoreRevisionSkin() {
+        try {
+            state.revisionSkin = window.localStorage.getItem(revisionSkinStorageKey) === 'colorful' ? 'colorful' : 'green';
+        } catch (error) {
+            state.revisionSkin = 'green';
+        }
+    }
+
     function revisionTextScale() {
         return revisionTextScales[state.revisionTextLevel] || 1;
     }
@@ -853,6 +863,36 @@
         return '<div class="revision-font-controls" role="group" aria-label="Analysis text size">' +
             '<button type="button" data-revision-font-step="-1" aria-label="Decrease analysis text size" title="Decrease analysis text size"' + (atMinimum ? ' disabled' : '') + '>−</button>' +
             '<button type="button" data-revision-font-step="1" aria-label="Increase analysis text size" title="Increase analysis text size"' + (atMaximum ? ' disabled' : '') + '>+</button></div>';
+    }
+
+    function revisionSkinControlHtml() {
+        var colorful = state.revisionSkin === 'colorful';
+        var label = colorful ? 'Use green revision theme' : 'Use colorful revision theme';
+        return '<button class="revision-skin-toggle is-' + state.revisionSkin + '" type="button" data-revision-skin aria-pressed="' + colorful + '" aria-label="' + label + '" title="' + label + '">' +
+            '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 4.5 5 5L10 19H5v-5l9.5-9.5Z"></path><path d="m12.5 6.5 5 5"></path></svg></button>';
+    }
+
+    function applyRevisionSkin() {
+        var colorful = state.revisionSkin === 'colorful';
+        var reviewCard = document.querySelector('.language-sentence-review-card');
+        if (reviewCard) {
+            reviewCard.classList.toggle('revision-skin-green', !colorful);
+            reviewCard.classList.toggle('revision-skin-colorful', colorful);
+        }
+        var button = document.querySelector('[data-revision-skin]');
+        if (!button) return;
+        var label = colorful ? 'Use green revision theme' : 'Use colorful revision theme';
+        button.classList.toggle('is-green', !colorful);
+        button.classList.toggle('is-colorful', colorful);
+        button.setAttribute('aria-pressed', String(colorful));
+        button.setAttribute('aria-label', label);
+        button.setAttribute('title', label);
+    }
+
+    function toggleRevisionSkin() {
+        state.revisionSkin = state.revisionSkin === 'green' ? 'colorful' : 'green';
+        try { window.localStorage.setItem(revisionSkinStorageKey, state.revisionSkin); } catch (error) {}
+        applyRevisionSkin();
     }
 
     function applyRevisionTextScale() {
@@ -3154,8 +3194,8 @@
             '<strong>' + escapeHtml(cefrEstimate.level + cefrSuffix) + '</strong>' +
             (cefrEstimate.commentary_zh ? '<p>' + escapeHtml(cefrEstimate.commentary_zh) + '</p>' : '') + '</div>' : '';
         var sentenceReviewHtml = revisionSummary.available ? '' :
-            '<section class="surface language-review-card language-sentence-review-card" style="--revision-analysis-scale:' + revisionTextScale() + '">' +
-            '<div class="language-section-heading sentence-review-heading"><h2 class="language-card-title">Sentence Revision</h2>' + revisionFontControlsHtml() + '</div>' +
+            '<section class="surface language-review-card language-sentence-review-card revision-skin-' + state.revisionSkin + '" style="--revision-analysis-scale:' + revisionTextScale() + '">' +
+            '<div class="language-section-heading sentence-review-heading">' + revisionSkinControlHtml() + revisionFontControlsHtml() + '</div>' +
             '<nav class="language-toolbar" aria-label="句子导航"><div class="capsule-row">' + sentences.map(sentenceCapsuleHtml).join('') + '</div></nav>' +
             '<div class="sentence-stage"><div class="sentence-list">' + cards + '</div></div>' +
             (!state.readOnly ? '<div class="batch-actions">' +
@@ -4240,6 +4280,7 @@
                 if (selectedVersion) selectedVersion.focus({ preventScroll: true });
             });
         }
+        else if (button.matches('[data-revision-skin]')) toggleRevisionSkin();
         else if (button.matches('[data-revision-font-step]')) adjustRevisionTextLevel(Number(button.getAttribute('data-revision-font-step')));
         else if (button.matches('[data-cue-effective-sentence]')) {
             cueEffectiveSentenceCard(button.closest('.sentence-effective-face'));
@@ -4494,6 +4535,7 @@
 
     function init() {
         restoreRevisionTextLevel();
+        restoreRevisionSkin();
         if (!window.MrCatAuth) { renderFatalAction(new Error('登录组件没有载入，请刷新页面。')); return; }
         var requestedId = requestedCompositionId();
         window.MrCatAuth.getSession().then(function(session) {
