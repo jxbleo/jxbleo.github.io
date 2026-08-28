@@ -120,16 +120,17 @@ const promptPath = "cloudfunctions/writingTutor/prompts.js";
 const rubricPath = "cloudfunctions/writingTutor/rubrics.js";
 const schemaPath = "cloudfunctions/writingTutor/schemas.js";
 
-check("AI Tutor header keeps only the sidebar toggle, editable current title, and revision percentage", () => {
+check("AI Tutor header keeps only the sidebar toggle, wide current title, and far-right pencil", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
   assert(header, "missing AI Tutor top toolbar");
-  requireEvery(header[1], ["portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "current-writing-title-edit", "current-writing-title-form", "revision-progress"], "AI Tutor toolbar");
-  assert(!/>Home<|>New<|>History<|>Back<|header-back|header-new-writing|student-chip|header-actions/.test(header[1]),
+  requireEvery(header[1], ["portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "ai-tutor-header-actions", "current-writing-title-edit", "revision-progress"], "AI Tutor toolbar");
+  assert(!/current-writing-title-form/.test(header[1]), "the title form must live in a separate dialog rather than the toolbar");
+  assert(!/>Home<|>New<|>History<|>Back<|header-back|header-new-writing|student-chip/.test(header[1]),
     "Home, New, History, Back, and student identity must not remain as toolbar text");
-  assert(/\.ai-tutor-header\s*\{[^}]*grid-template-columns/is.test(styles),
-    "the sparse toolbar must keep a centered title between balanced edge columns");
+  assert(/\.ai-tutor-header\s*\{[^}]*grid-template-columns:\s*42px\s+minmax\(0,1fr\)\s+auto/is.test(styles),
+    "the sparse toolbar must give the title all space between the fixed menu and right actions");
 });
 
 check("Writing toolbar mirrors the wider Speaking Lab glass frame", () => {
@@ -278,15 +279,15 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, ["current-writing-title-window", "current-writing-title-track"], "current writing title markup");
-  assert(/portfolio-toggle[\s\S]*current-writing-title-window[\s\S]*revision-progress/.test(page),
-    "the current title must remain between History and the right-edge percentage");
+  assert(/portfolio-toggle[\s\S]*current-writing-title-window[\s\S]*ai-tutor-header-actions[\s\S]*current-writing-title-edit/.test(page),
+    "the current title must remain between the menu and the far-right pencil");
   const titleSource = functionSource(client, "updateCurrentWritingTitle", "sentencePalette");
   requireEvery(titleSource, ["editableCompositionTitle(state.current)", "document.title", "aria-label"],
     "current writing title projection");
   requireEvery(client, ["scrollWidth", "clientWidth", "ResizeObserver", "prefers-reduced-motion"],
     "responsive title overflow behavior");
   assert(/\.current-writing-title-window\s*\{[^}]*min-width\s*:\s*0[^}]*overflow\s*:\s*hidden/is.test(styles)
-      && /\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:[^;}]*minmax\(0,3fr\)/is.test(styles),
+      && /\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:\s*42px\s+minmax\(0,1fr\)\s+auto/is.test(styles),
     "the toolbar title must shrink within the available mobile width");
   assert(/\.current-writing-title-window\.is-overflowing\s+\.current-writing-title-track\s*\{[^}]*animation[^}]*infinite\s+alternate/is.test(styles),
     "long titles must move horizontally with pauses in both directions");
@@ -295,19 +296,21 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
     "reduced-motion users must receive a stable ellipsis instead of title animation");
 });
 
-check("toolbar percentage measures accepted required revisions only", () => {
+check("toolbar omits the revision percentage while preserving the contextual OCR image action", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const styles = read(stylePath);
-  const summarySource = functionSource(client, "revisionProgressSummary", "updateRevisionProgress");
-  const updateSource = functionSource(client, "updateRevisionProgress", "sentencePalette");
-  requireEvery(page, ['id="revision-progress"', "hidden"], "revision percentage output");
-  requireEvery(summarySource, ["rewriteRequired(sentence)", "accepted === true", "completed / total", "Math.round"],
-    "required-sentence progress calculation");
-  requireEvery(updateSource, ["progress.percentage + '%'", "progress.completed", "progress.total", "progress.remaining", "aria-label"],
-    "revision progress display and accessible detail");
-  assert(/\.revision-progress\s*\{[^}]*justify-self\s*:\s*end[^}]*font-variant-numeric\s*:\s*tabular-nums/is.test(styles),
-    "the percentage must remain stable at the far-right edge of the toolbar");
+  const updateSource = functionSource(client, "updateRevisionProgress", "updateOcrPhotoToolbarToggle");
+  const ocrSource = functionSource(client, "showOcrPhotoToolbarToggle", "hideOcrPhotoToolbarToggle");
+  requireEvery(page, ['id="revision-progress"', "hidden"], "contextual toolbar action host");
+  requireEvery(updateSource, ["revisionProgress.hidden = true", "revisionProgress.textContent = ''", "removeAttribute('aria-label')"],
+    "removed revision percentage reset");
+  requireEvery(ocrSource, ["is-ocr-photo-control", "ocr-toolbar-photo-toggle", "Show image"],
+    "contextual OCR image action");
+  assert(!/function\s+revisionProgressSummary|progress\.percentage\s*\+\s*['"]%['"]/.test(client),
+    "the revision percentage calculation and visible output must be removed");
+  assert(!/\.revision-progress\s*\{[^}]*font-variant-numeric\s*:\s*tabular-nums/is.test(styles),
+    "the retired toolbar percentage styling must not remain");
   assert(!/统一检查完成：只需要再处理标记为/.test(client),
     "the removed post-Check instruction must not appear below the toolbar");
 });
@@ -374,11 +377,16 @@ check("History Home and Leave dialog use the approved red and Apple-style treatm
 check("the toolbar title pencil saves student edits through updateCompositionTitle", () => {
   const page = read(pagePath);
   const client = read(clientPath);
-  requireEvery(page, ["current-writing-title-edit", "current-writing-title-form", "current-writing-title-input", "Save writing title"],
-    "toolbar title editor");
-  const titleSource = functionSource(client, "updateCurrentWritingTitle", "revisionProgressSummary");
+  const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
+  assert(header && /current-writing-title-edit/.test(header[1]), "the pencil must stay at the far right of the toolbar");
+  assert(!/current-writing-title-form|current-writing-title-input/.test(header[1]), "the title input must not be squeezed into the toolbar");
+  requireEvery(page, ['id="title-edit-dialog"', 'role="dialog"', 'aria-modal="true"', "current-writing-title-form", "current-writing-title-input", ">Cancel<", ">Save<"],
+    "standalone title editor dialog");
+  const titleSource = functionSource(client, "updateCurrentWritingTitle", "updateRevisionProgress");
   requireEvery(titleSource, ["beginToolbarTitleEdit", "cancelToolbarTitleEdit", "saveToolbarTitle", "editableCompositionTitle", "currentWritingTitleEdit.hidden"],
     "toolbar title editing lifecycle");
+  requireEvery(client, ["titleEditDialog.hidden = false", "app.inert = true", "titleEditDialog.querySelectorAll('input, button:not(:disabled)')", "cancelToolbarTitleEdit(false)"],
+    "modal title editing focus and lifecycle");
   assert(/writingCall\s*\(\s*["']updateCompositionTitle["']/.test(client),
     "saving the toolbar title editor must call updateCompositionTitle");
   assert(/event\.target\.id\s*===\s*["']current-writing-title-form["'][\s\S]{0,160}saveToolbarTitle\(\)/.test(client),

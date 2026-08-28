@@ -1821,7 +1821,8 @@ High priority improvement:
   inset; the toolbar must never become a full-bleed flat strip. Verify the bright
   translucent edge, layered glass, and depth remain legible over content, while
   Reduced Transparency produces a solid surface. The same three-line sidebar button stays at far left everywhere,
-  current title centered, and revision percentage at far right only when applicable.
+  current title uses all available middle space, and no revision percentage appears.
+  For an existing title, confirm the pencil is fixed at the far-right edge.
   With no Composition selected, confirm green `Start new Writing` and no word quota.
   Confirm Home and the icon-only plus action appear inside the sidebar and that
   there is no student chip, brand mark,
@@ -2150,11 +2151,10 @@ High priority improvement:
 - Confirm idle `History` and `New` use identical white-background, green-text
   secondary styling inside their respective surfaces. Opening History may invert
   only the toolbar trigger; New remains inside the drawer.
-- With six required sentences, accept three and confirm the far-right toolbar value
-  reads `50%`; originally correct sentences must not change the denominator. Confirm
-  the accessible name reports completed, total, and remaining counts, a review with
-  no required sentences reads `100%`, and the value is hidden before sentence review.
-  After a rejected Check, confirm no “统一检查完成” instruction appears below the toolbar.
+- With required sentences in every completion state, confirm no percentage is shown
+  in the toolbar. Confirm the capsule and card statuses still communicate progress,
+  and OCR Review can temporarily show `Show image` / `Hide image` in the right action
+  area. After a rejected Check, confirm no “统一检查完成” instruction appears below the toolbar.
 - Open a saved Composition at each workflow state, refresh the browser, and confirm
   the same Composition and server-backed step return instead of the AI Tutor home.
   Confirm there is only one `Opening your writing…` surface, no Chinese loading copy,
@@ -2164,10 +2164,15 @@ High priority improvement:
   replace that movement with a brief fade.
   Confirm returning home clears the locator, while an already-pruned empty locator
   falls back cleanly without an error loop.
-- Confirm the current AI/student title appears between Home and History/New. Test a
+- Confirm the current AI/student title appears between the menu and far-right pencil. Test a
   long title at phone, iPad, and desktop widths: it must stay inside the toolbar and
   travel horizontally with end pauses. With Reduced Motion enabled it must remain
   still and truncate with an ellipsis.
+- Click the far-right pencil and confirm a separate centered title dialog opens with
+  a readable normal-size input, Cancel, and Save. The toolbar must not turn into an
+  inline input. Verify keyboard focus stays in the dialog, Escape/Cancel preserves the
+  stored title, Save updates both toolbar and sidebar, and a server error remains visible
+  inside the dialog without closing it.
 - Before clicking any capsule, confirm every Sentence Revision row already shows its
   indexed pale background. Navigate among rows and confirm the background remains
   stable and no dark vertical line appears on the left edge.

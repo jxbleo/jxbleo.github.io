@@ -2031,15 +2031,17 @@ Important mobile rules:
   replaces the material with an opaque surface.
 - Its header toolbar always shows the same three-line sidebar button at far left.
   It never changes into History or Back text. The current title remains centered
-  and language-revision percentage stays at far right only when applicable.
-  With no Composition selected, the center reads green `Start new Writing` and
-  the right edge stays empty. Home and the icon-only plus action live in the sidebar.
+  and uses all safe horizontal space after that button. Language-revision percentage
+  is not shown. With no Composition selected, the center reads green
+  `Start new Writing` and the right edge stays empty. Home and the icon-only plus
+  action live in the sidebar.
 - While a Composition is open, the flexible center of the top toolbar displays its
   AI-generated or student-edited title. A long title travels horizontally within
   that space with restrained pauses at both ends, matching task-title behavior;
   Reduced Motion uses a stable single-line ellipsis. A valid current title exposes
-  a small green pencil beside it; activation replaces the center with a compact
-  text field plus cancel/save controls. Refreshing the page must reopen the same Composition.
+  a green pencil fixed at the far-right edge. Activation opens a standalone Apple-style
+  dialog with a readable input and Cancel/Save controls; the toolbar title remains
+  visible behind the modal. Refreshing the page must reopen the same Composition.
 - A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
   it or selecting New again triggers guarded automatic cleanup. Input-page `Discard` is a
@@ -2319,11 +2321,10 @@ Important mobile rules:
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.
-- The far-right toolbar percentage is accepted required revisions divided by all
-  required revisions. Originally correct sentences do not inflate it; a review
-  with no required revisions reads `100%`, and the value stays hidden before a
-  language sentence review exists. Its accessible name states completed, total,
-  and remaining counts. Do not show the removed post-Check “统一检查完成” status below the toolbar.
+- The toolbar does not show a language-revision percentage. Completion remains visible
+  through sentence capsules, card status, and the Draft/Revised result. The OCR review
+  may temporarily use the right action area for `Show image` / `Hide image`. Do not
+  show the removed post-Check “统一检查完成” status below the toolbar.
 - Capsule and card status update immediately as the student types. Empty text and an
   unchanged rejected answer use the red cross. Any non-empty new text keeps the card's
   black circled question but uses the capsule's tiny red cross; an effective or accepted
@@ -2425,9 +2426,10 @@ Important mobile rules:
 - Completed portfolio items are read-only. `Use as new` creates another
   Composition; `重新上传` exists only inside an active Composition and clearly
   states that successful confirmation replaces its current review.
-- A selected Composition with a valid title exposes a pencil in the centered
-  toolbar title. Saving updates the selected title and sidebar row in place;
-  cancel leaves the stored title unchanged. Sidebar rows themselves remain title-only.
+- A selected Composition with a valid title exposes a pencil at the far-right edge
+  of the toolbar. It opens a separate readable title dialog rather than an inline
+  toolbar input. Saving updates the selected title and sidebar row in place; cancel
+  leaves the stored title unchanged. Sidebar rows themselves remain title-only.
   A student title is authoritative and is never replaced by later AI work.
 - When a new Composition has no student title, its first successful review uses
   the same model response to supply a concise `2–6` English-word title. There is
