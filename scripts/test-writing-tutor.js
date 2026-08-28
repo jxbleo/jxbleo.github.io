@@ -249,23 +249,25 @@ check("the open Composition survives refresh through an authenticated URL locato
     "refresh restoration");
   assert(/request:\s*writingCall\(['\"]getComposition['\"]/.test(initSource),
     "saved Composition detail must start in parallel with profile and History restoration");
-  assert(/if\s*\(!options\.preserveStage\)\s*renderLoading\(['\"]Opening your writing…['\"]/.test(loadSource),
+  assert(/if\s*\(!options\.preserveStage\)\s*renderLoading\(['\"]['\"]\s*,\s*['\"]['\"]\)/.test(loadSource),
     "refresh restoration must preserve the first loading surface instead of mounting a second one");
   assert(/COMPOSITION_NOT_FOUND[\s\S]{0,500}syncCompositionLocator\s*\(\s*['\"]['\"]\s*\)/.test(loadSource),
     "a stale empty locator must be cleared instead of trapping the student on an error page");
 });
 
-check("Writing refresh has one English loading surface and a restrained opening motion", () => {
+check("Writing refresh has one text-free loading surface and a restrained opening motion", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, [
     'class="surface loading-state boot-loading-state"',
-    'aria-label="Opening your writing"',
-    '<strong>Opening your writing…</strong>',
-  ], "single English Writing boot surface");
-  assert(!/正在打开你的写作空间|作品和草稿会安全地保存在你的账号中/.test(page),
-    "the visible Writing refresh surface must not expose the retired Chinese loading copy");
+    'aria-label="Loading"', 'role="status"', '<span class="loading-orbit" aria-hidden="true"></span>',
+  ], "single text-free Writing boot surface");
+  assert(!/Opening your writing|正在打开你的写作空间|作品和草稿会安全地保存在你的账号中/.test(page),
+    "the visible Writing refresh surface must not expose loading copy");
+  const loadingSource = functionSource(client, "renderLoading", "renderStandardized");
+  requireEvery(loadingSource, ["aria-label=\"Loading\"", "title ?", "description ?"],
+    "generic loading surfaces must omit empty title and description elements");
   requireEvery(client, ["function materializeStage()", "stage.classList.add('is-opening')", "animationend", "stageMaterializeToken"],
     "interrupt-safe stage materialization lifecycle");
   requireEvery(styles, [".stage.is-opening > *", "@keyframes aiWritingStageOpen", "translateY(-10px)", "420ms", "cubic-bezier(.22,1,.36,1)"],
