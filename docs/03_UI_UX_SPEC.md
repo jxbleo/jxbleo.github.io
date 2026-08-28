@@ -2128,7 +2128,11 @@ Important mobile rules:
   full original sentence; selecting anywhere in that box opens the target list.
   The lower inset box contains only the editable OCR rewrite plus one tiny
   confidence mark: green `✓` for high, amber `!` for medium, and red `?` for low,
-  each with an accessible label. The target list contains
+  each with an accessible label. Provider `warnings` remain available to the
+  trusted scan pipeline but are not rendered as student-facing text or bullet
+  lists; this confirmation step must not resemble language feedback. Deterministic
+  empty, duplicate, missing-number, and out-of-range validation still controls
+  whether the reviewed mapping can be confirmed. The target list contains
   only unfinished `rewrite_required` sentences, excludes originally correct and
   already accepted sentences, and disables a sentence while another scan card
   claims it. The existing global sentence number appears when mapped, with a

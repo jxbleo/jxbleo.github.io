@@ -2194,6 +2194,9 @@ High priority improvement:
   page with both mapped and unresolved answers; confirm the tiny high `✓`, medium
   `!`, and low `?` confidence symbols have accessible names. Manually assign
   an unresolved answer and verify the sentence identity is shown before import.
+  Populate every candidate with provider `warnings` and confirm Review Scan shows
+  no warning copy, red bullet list, spelling suggestion, or grammar feedback;
+  confidence marks and deterministic mapping validation must continue to work.
 - On every Review Scan card, confirm the upper box has the same pale-red fill and
   red-border feel as a wrong Vocabulary question, and shows the global number plus
   original sentence. Clicking anywhere in it must open the native sentence selector;
