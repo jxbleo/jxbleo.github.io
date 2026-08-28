@@ -1815,7 +1815,12 @@ High priority improvement:
   profile or composition request;
 - Run `npm run test:writing-tutor` and all release verification.
 - At phone, iPad, and desktop widths, confirm the page shows only one top toolbar
-  over card content: the same three-line sidebar button at far left everywhere,
+  over card content. At desktop width, measure a centered 1080px toolbar against a
+  centered 980px main card column, leaving about 50px of toolbar overhang per side.
+  On phone, confirm 14px outer gutters, rounded corners, and an additional 10px card
+  inset; the toolbar must never become a full-bleed flat strip. Verify the bright
+  translucent edge, layered glass, and depth remain legible over content, while
+  Reduced Transparency produces a solid surface. The same three-line sidebar button stays at far left everywhere,
   current title centered, and revision percentage at far right only when applicable.
   With no Composition selected, confirm green `Start new Writing` and no word quota.
   Confirm Home and the icon-only plus action appear inside the sidebar and that
