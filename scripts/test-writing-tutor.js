@@ -398,7 +398,7 @@ check("Writing main area is a focused new-writing surface while saved work stays
   const styles = read(stylePath);
   const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
-    "Polishing", "Brainstorming", "homeComposerHtml", "writing-home-start",
+    "Polishing", "Grammar &amp; Usage", "Brainstorming", "Ideas &amp; Structure", "homeComposerHtml", "writing-home-start",
   ], "Writing home workspace");
   assert(!/welcomeUnfinishedHtml|welcomeCompletedHtml|writing-pending-strip/.test(welcome),
     "saved Composition rows must not be duplicated in the main area");
@@ -497,10 +497,14 @@ check("the first writing screen keeps only the compact source controls", () => {
     "the source screen must not restore the removed heading, step, labels, or verbose submit copy");
   assert(/standardized[\s\S]{0,900}Writing Prompt/.test(sourceFields),
     "Writing Prompt must render only for standardized mode and use English copy");
-  requireEvery(styles, [".source-discard-button", "color: #c9403a", ".source-form-actions"],
-    "compact red Discard treatment");
-  assert(/\.source-discard-button\s*\{[^}]*border\s*:[^;}]+[^}]*border-radius\s*:[^;}]+[^}]*background\s*:/i.test(styles),
-    "Discard must use a complete boxed button treatment");
+  requireEvery(styles, [".source-discard-button", "color: #c9403a", ".form-actions.source-form-actions"],
+    "low-emphasis red Discard treatment");
+  assert(/\.form-actions\.source-form-actions\s*\{[^}]*grid-template-columns:\s*minmax\(96px,3fr\)\s+minmax\(150px,7fr\)/i.test(styles),
+    "the action row must reserve roughly 30 percent for Discard and 70 percent for Submit or Scan");
+  assert(/\.source-discard-button\s*\{[^}]*min-height:\s*46px[^}]*border\s*:[^;}]+[^}]*background:\s*transparent[^}]*box-shadow:\s*none/i.test(styles),
+    "Discard must retain a full target and faint outline without fill or shadow");
+  assert(/\.source-submit-button\s*\{[^}]*width:\s*100%[^}]*min-height:\s*46px/i.test(styles),
+    "Submit and Scan must own the wider full-height primary area");
   assert(/\.inline-writing-scan\s*\{[^}]*right:\s*10px[^}]*bottom:\s*10px/i.test(styles),
     "camera controls must sit at the bottom-right of their text boxes");
   requireEvery(client, ["resizeSourceTextarea", "scheduleSourceTextareaResize", "scrollHeight"],
@@ -750,8 +754,8 @@ check("revision skins default to green, toggle in place, and persist locally", (
   requireEvery(toggleSource, ["localStorage.setItem", "applyRevisionSkin"], "skin toggle persistence");
   assert(/\.revision-skin-toggle\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/is.test(styles),
     "skin control must retain a 44px target");
-  assert(/\.language-sentence-review-card\s*\{[^}]*overflow:\s*hidden/is.test(styles),
-    "the revision card must clip every skin to its rounded boundary");
+  assert(/\.language-sentence-review-card\s*\{[^}]*overflow:\s*visible/is.test(styles),
+    "the revision card must not become a clipping ancestor that disables sticky navigation");
   assert(/\.sentence-review-heading\s*\{[^}]*border-radius:\s*29px\s+29px\s+0\s+0/is.test(styles)
       && /@media\s*\(max-width:\s*760px\)[\s\S]*?\.sentence-review-heading\s*\{[^}]*border-radius:\s*23px\s+23px\s+0\s+0/is.test(styles),
     "the green control row must preserve matching desktop and phone top corners");
@@ -1196,8 +1200,8 @@ check("sentence navigation replaces the primary toolbar when it reaches the top"
   const styles = read(stylePath);
   assert(/\.language-toolbar\s*\{[^}]*position\s*:\s*sticky[^}]*z-index\s*:\s*100[^}]*top\s*:\s*0/is.test(styles),
     "the sentence-number toolbar must stick to the viewport top above the primary toolbar");
-  assert(/\.language-sentence-review-card\s*\{[^}]*position\s*:\s*relative[^}]*z-index\s*:\s*90/is.test(styles),
-    "the sticky sentence toolbar's card must sit above the primary toolbar stacking context");
+  assert(/\.language-sentence-review-card\s*\{[^}]*position\s*:\s*relative[^}]*z-index\s*:\s*90[^}]*overflow\s*:\s*visible/is.test(styles),
+    "the sticky sentence toolbar's card must sit above the primary toolbar without clipping it in either skin");
   assert(!/@media\s*\(max-width:\s*760px\)[\s\S]{0,2400}\.language-toolbar\s*\{[^}]*top\s*:\s*(?:9|1[01])\dpx/i.test(styles),
     "mobile rules must not pin sentence navigation below the primary toolbar");
 });

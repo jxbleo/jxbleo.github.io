@@ -2045,7 +2045,7 @@ Important mobile rules:
 - A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
   it or selecting New again triggers guarded automatic cleanup. Input-page `Discard` is a
-  boxed red action: it may permanently remove a revision-1 draft containing only unsent
+  low-emphasis red outlined action without fill or shadow: it may permanently remove a revision-1 draft containing only unsent
   title, prompt, or manuscript text after an Apple-style confirmation. Once upload/OCR,
   AI work, replacement, revision, Library binding, or a result exists, the server refuses
   deletion and the Composition remains permanent.
@@ -2200,7 +2200,8 @@ Important mobile rules:
   feature explainer or a second portfolio. Remove the time-of-day greeting,
   `Ready to keep writing?`, Continue/Review strips, `Quick Start`, `Start New`,
   decorative icons/arrows, `Recent Writing`, and `Writing Focus`. Show only the
-  existing `Polishing` and `Brainstorming` cards and their inline composer.
+  existing `Polishing` and `Brainstorming` cards and their inline composer. Their concise
+  secondary labels are `Grammar & Usage` and `Ideas & Structure` respectively.
   Saved work is listed once in the sidebar: `Continue` first, then `Completed`;
   each row shows only its title. Selecting a row directly restores the Composition's
   current stage without a Library-style confirmation dialog.
@@ -2235,8 +2236,9 @@ Important mobile rules:
   sticky toolbar instead of preserving Safari's stale bottom scroll coordinate.
   Full-screen transitions use the same positioning rule, while in-place Sentence
   Revision interactions and waiting-state polling must not reset the viewport.
-  Only the trailing green `Scan` uploads the staged batch. A small red `Discard` stays at
-  the leading edge as a complete bordered button; non-empty input receives the compact
+  Only the trailing green `Scan` uploads the staged batch. The action row uses an asymmetric
+  30/70 hierarchy: a small red `Discard` stays at the leading edge with a faint border,
+  transparent background, and no shadow, while the green `Submit` / `Scan` owns the wider trailing area; non-empty input receives the compact
   Apple-style permanent-delete confirmation before the server removes the eligible draft.
 - In-progress language review uses three primary cards in order: `Language Review`,
   `Draft`, and `Sentence Revision`. Once all required revisions are accepted and the
@@ -2260,9 +2262,10 @@ Important mobile rules:
 - `Language Review` and an incomplete `Draft` retain the shared card-title typography.
   The third card deliberately omits the visible `Sentence Revision` title and starts
   with a non-sticky control row: a 44px palette-SVG skin button at left and the compact
-  44px-per-item `−` / `+` group at right. The card clips every skin to its outer
-  radius, and the control row carries matching top radii so the green gradient can
-  never square off either upper corner. The font controls change only AI analysis and saved
+  44px-per-item `−` / `+` group at right. The card must not use overflow clipping because
+  that creates a non-scrolling sticky container and disables the capsule takeover. Instead,
+  the control row carries matching top radii so every skin preserves both rounded upper
+  corners while the parent remains `overflow: visible`. The font controls change only AI analysis and saved
   feedback text through four bounded sizes and remeasure the visible flip-card face.
   The skin control cycles between the default uniform green treatment—visually related
   to Language Review and the early BBC green surface—and the existing eight-color
