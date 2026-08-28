@@ -2118,7 +2118,10 @@ High priority improvement:
   Sentence Revision card, while still exposing no grammar analysis, textarea, Sample,
   or flip target. Confirm the bare number is top-left and the green circled check is top-right.
   Use long wrapped sentences and verify the sentence takes the full card width and line
-  two aligns under the first sentence letter at desktop and phone widths.
+  two aligns under the first sentence letter at desktop and phone widths. Click the
+  correct card and activate it with Enter/Space: it must give one short horizontal shake
+  without flipping or showing an input. With Reduced Motion enabled, confirm the same
+  interaction uses a brief static tint instead.
 - Compare a long analysis face with a short accepted rewrite face. After every flip,
   confirm the card smoothly follows the visible content height and leaves no blank block
   for the hidden face. Repeat after resizing phone-to-tablet and with Reduced Motion on.

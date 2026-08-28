@@ -2,6 +2,10 @@
 
 ## 2026-08-28
 
+- Added a restrained interaction cue to already-correct Sentence Revision cards:
+  pointer and keyboard activation now give the static card one short shake without
+  flipping it, with a tint-only Reduced Motion fallback.
+
 - Added evidence-linked turn-by-turn DSE Speaking review. The server now groups
   canonical transcript segments into real speaking turns and requires one
   validated CS and IO coaching item per Candidate turn. Student reports show

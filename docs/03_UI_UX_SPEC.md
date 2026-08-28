@@ -2332,7 +2332,10 @@ Important mobile rules:
   sentence and analysis.
 - Effective/no-change source sentences retain the same bordered card surface as
   revision-required sentences. They use one static face with the red circled check and the original
-  sentence; no analysis, input, inline icon, or false flip target is added.
+  sentence; no analysis, input, inline icon, or false flip target is added. Pointer,
+  Enter, or Space activation gives the whole card one restrained horizontal shake
+  without turning or changing its content. Reduced Motion replaces the shake with a
+  brief static tint.
 - The sequence number sits in the top metadata row rather than a sentence-text column.
   Sentence text therefore uses the card's full width, and wrapped lines begin under
   the first letter of the sentence content.
