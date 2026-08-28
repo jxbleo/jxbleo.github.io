@@ -1192,6 +1192,25 @@ prompt text into the student manuscript or triggering a review unexpectedly.
 Review condition: revisit only if prompt extraction later needs a distinct schema
 for images containing diagrams, tables, or multi-part source materials.
 
+## Speaking formal-audio upload transport (2026-08-28)
+
+Decision: reserve the exact private Storage path in `speakingLab`, upload the
+file with the authenticated CloudBase browser SDK, then send the SDK-returned
+CloudBase file ID to `finishAudioUpload`. The gateway accepts only a file ID
+whose object key equals the reserved path and whose actual Storage size equals
+the expected size. The browser abandons the waiting state after ten minutes.
+
+Why: manually returning COS URL/token/authorization fields coupled Speaking Lab
+to an unstable metadata shape and left failed transfers in an indefinite busy
+state. The official browser SDK owns credential refresh and authenticated
+transfer behavior, while exact-path and size verification preserves the server
+trust boundary. Existing evidence-photo and Writing upload transports are not
+changed by this decision.
+
+Review condition: revisit only if CloudBase documents that authenticated SDK
+uploads cannot support the required recording sizes or resumability, and retain
+the same server-reserved path plus post-upload verification boundary.
+
 ## DSE Speaking identity and provider boundary (2026-08-27)
 
 Speaking Lab originally stored no reusable voiceprint or biometric embedding.

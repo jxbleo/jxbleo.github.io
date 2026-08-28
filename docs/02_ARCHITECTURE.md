@@ -1007,7 +1007,13 @@ projections. `speakingAiWorker` is a private one-minute
 durable-job worker for lease recovery, dispatch, bounded retry cleanup, Voice
 Reference deletion, scoped Guest voiceprint cleanup, and share expiry. New
 Speaking collections remain `ADMINONLY`; browsers receive server projections
-and short-lived upload metadata only.
+only. Formal audio uses a two-phase authenticated SDK upload: the gateway
+reserves an exact private `cloud_path`, the CloudBase browser SDK uploads under
+the current student session, and `finishAudioUpload` accepts the returned
+CloudBase file ID only when it resolves to that exact path. The gateway then
+checks actual Storage metadata and byte size before publishing the uploaded
+asset. Arbitrary browser-supplied file IDs, paths, or claimed sizes never become
+authoritative.
 
 The environment-level function ACL sets `speakingAiWorker.invoke` to `false`,
 which blocks browser SDK calls while leaving CloudBase timer triggers intact.

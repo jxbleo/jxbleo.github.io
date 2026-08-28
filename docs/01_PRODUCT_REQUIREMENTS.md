@@ -2140,6 +2140,15 @@ action. Reusable voiceprint registration independently
 fails closed with `SPEAKING_VOICEPRINT_NOT_CONFIGURED` until the Tencent
 credentials, region, group, collections, indexes, and functions are deployed.
 
+Formal recording upload uses the authenticated CloudBase browser SDK. The
+server first reserves one exact private Storage path; the browser uploads the
+selected file to that path and returns the resulting CloudBase file ID; the
+server then verifies that the ID resolves to the reserved path and that the
+stored byte size matches before marking the asset uploaded. Analysis never
+starts from an unverified or still-uploading asset. An upload that does not
+finish within ten minutes must leave the waiting state, show a retryable error,
+and preserve the Discussion instead of spinning indefinitely.
+
 ### Intensive Listening Library
 
 Intensive Listening is a separate authenticated student workspace with

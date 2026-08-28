@@ -10,6 +10,7 @@ function run() {
   const page = read("speaking-lab.html");
   const report = read("speaking-report.html");
   const app = read("assets/js/speaking-lab.js");
+  const cloudbaseClient = read("assets/js/cloudbase-client.js");
   const reportJs = read("assets/js/speaking-report.js");
   const teacher = read("assets/js/teacher-speaking.js");
   const teacherPage = read("teacher.html");
@@ -36,6 +37,13 @@ function run() {
   assert.doesNotMatch(app, /callAuthenticatedFunction\('speakingLab'/);
   assert.match(app, /Page startup has already completed getSession/);
   assert.match(app, /Promise\.race\(\[request, timeout\]\)/);
+  assert.match(app, /FILE_UPLOAD_TIMEOUT_MS = 10 \* 60 \* 1000/);
+  assert.match(app, /api\.uploadCloudFile\(result\.upload\.cloud_path, blob\)/);
+  assert.match(app, /uploaded_file_id: uploaded\.file_id/);
+  assert.doesNotMatch(app, /api\.uploadWithMetadata\(result\.upload, blob\)/);
+  assert.match(app, /finally\(function \(\) \{ file\.value = ''; \}\)/);
+  assert.match(cloudbaseClient, /function uploadCloudFile\(cloudPath, file\)/);
+  assert.match(cloudbaseClient, /getApp\(\)\.uploadFile/);
   assert.match(app, /loadMyVoiceprint\(\)\.then\(function \(\) \{ return loadList\(\); \}\)/);
   assert.doesNotMatch(app, /Promise\.all\(\[loadMyVoiceprint\(\), loadList\(\)\]\)/);
   assert.match(app, /renderList\(result\.discussions \|\| \[\]\); setStatus\(''\)/);
@@ -79,6 +87,8 @@ function run() {
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
   assert.match(app, /speaking-report-candidates/);
+  assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260828-8/);
   console.log("Speaking Lab UI contracts passed.");
 }
 
