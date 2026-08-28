@@ -1,5 +1,21 @@
 # 06 Decisions
 
+## 2026-08-28: Speaking turn review is server-keyed, complete, and concise
+
+Per-utterance feedback uses server-derived canonical speaking turns rather than
+provider sentence boundaries or model-generated quotations. A same-Candidate
+run stays one turn until another voice/non-Candidate context or a 2.5-second gap
+ends it. The structured model must return exactly one CS and IO review for every
+turn ID. The server reconstructs quoted transcript/timing data and rejects
+missing, duplicated, foreign, or invented IDs. This makes completeness and
+evidence mechanical while preserving the existing ASR uncertainty safeguard.
+
+Each domain has one short Traditional-Chinese observation and one achievable
+English sample. Separate samples keep Vocabulary/Language support subordinate
+to the requested CS and IO goal. Because a four-to-six Candidate report is now
+longer, the code default structured-output budget increases from 8,000 to
+12,000 tokens while retaining the 16,000 hard cap and environment override.
+
 ## 2026-08-28: Speaking reports discard untrusted extra model fields
 
 The Speaking report boundary validates every required Candidate, assessed

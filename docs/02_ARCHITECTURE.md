@@ -1031,6 +1031,16 @@ authorization, identity, evidence, projection, alias, redaction, and
 invalidation rules. Formal audio is retained privately; Voice Reference files
 are scheduled for deletion seven days after successful matching.
 
+Before DSE analysis, the policy layer converts chronological Candidate
+segments into canonical speaking turns. Consecutive same-Speaker sentences are
+joined unless another voice/non-Candidate segment intervenes or the gap exceeds
+2.5 seconds. Stable turn IDs and transcript text enter the untrusted model
+input; the model returns CS/IO coaching keyed only by those IDs. Publication
+fails closed unless every Candidate turn appears exactly once. Canonical report
+rows store the turn ID and coaching, while authenticated/share projections join
+the current immutable transcript text and timing back onto the review. The
+model never supplies or rewrites the quoted `What you said` text.
+
 Tencent's recording result supplies `SpeakerId` and sentence timing but no
 per-track confidence or speaker audio. The server therefore treats missing
 confidence as unknown, ranks sustained tracks before a brief incidental voice,

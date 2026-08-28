@@ -1174,7 +1174,10 @@ The first production-candidate adapter uses these non-secret ASR values:
 The DSE report adapter requires `SPEAKING_AI_TEXT_API_KEY`,
 `SPEAKING_AI_TEXT_API_URL`, `SPEAKING_AI_TEXT_MODEL`, and
 `SPEAKING_AI_TEXT_PROTOCOL=chat_json_object`. Optional bounds are
-`SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS` and `SPEAKING_AI_TIMEOUT_MS`. Enter each
+`SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS` and `SPEAKING_AI_TIMEOUT_MS`. V2
+turn-by-turn reports default to 12,000 output tokens (hard-capped at 16,000);
+if the environment already pins the older 8,000 value, raise it to `12000`
+before benchmarking four-to-six Candidate reports. Enter each
 environment key/value as its own console row; never paste several assignments
 into the environment-key field and never copy a key value into chat, Git, a
 deploy plan, or a database row.
@@ -1186,6 +1189,10 @@ envelope. Run authenticated development smoke tests and only then publish the
 cache-busted Speaking student/teacher/external assets. The local agent may
 package ZIPs and generate a deploy plan but does not create collections, set
 secrets, configure timers, deploy functions, or publish static resources.
+
+Deploy the V2 `speakingLab` package before its cache-busted static assets. New
+analyses created by a V1 function do not contain `turn_reviews`; existing ready
+V1 reports remain readable but are not retroactively regenerated.
 
 Reusable Tencent voiceprints additionally require `speaking_voiceprints` and
 `speaking_voiceprint_events` with the indexes in `docs/04_DATA_MODEL.md`.

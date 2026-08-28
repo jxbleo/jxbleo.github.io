@@ -71,6 +71,7 @@ async function run() {
     candidateSpeakerKeys: ["spk_01"],
     nonCandidateSpeakerKeys: [],
     schemaVersion: "test-schema",
+    speakingTurns: [{ turn_id: "spk_01_turn_01", speaker_key: "spk_01", segment_ids: ["seg_0001", "seg_0002"], start_ms: 0, end_ms: 2000, text: "up killing trend a clear point", asr_text_status: "confidence_unknown" }],
     segments: [
       { segment_id: "seg_0001", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "up killing trend", confidence: null },
       { segment_id: "seg_0002", speaker_key: "spk_01", start_ms: 1000, end_ms: 2000, text: "a clear point", confidence: 0.5 },
@@ -78,12 +79,16 @@ async function run() {
     ],
   });
   assert.match(guardedUserPrompt, /Do not turn one suspicious transcription token into a student error/);
+  assert.match(guardedUserPrompt, /exactly one item for every speaking_turns item/);
   const guardedInput = JSON.parse(guardedUserPrompt.split("INPUT_JSON_BEGIN\n")[1].split("\nINPUT_JSON_END")[0]);
   assert.deepEqual(guardedInput.segments.map((segment) => [segment.asr_confidence, segment.asr_text_status]), [
     [null, "confidence_unknown"],
     [0.5, "low_confidence"],
     [0.9, "higher_confidence"],
   ]);
+  assert.equal(guardedInput.speaking_turns[0].turn_id, "spk_01_turn_01");
+  assert.match(systemPrompt, /Communication Strategies \(CS\)/);
+  assert.match(systemPrompt, /Ideas & Organisation \(IO\)/);
 
   const speechCalls = [];
   const speechEnv = {
@@ -152,7 +157,7 @@ async function run() {
   assert.equal(modelResult.output.group_summary_zh, "測試");
   assert.equal(modelResult.usage.total_tokens, 15);
   assert.equal(modelCalls[0].body.response_format.type, "json_object");
-  assert.equal(modelCalls[0].body.max_tokens, 8000);
+  assert.equal(modelCalls[0].body.max_tokens, 12000);
   assert.equal(Object.prototype.hasOwnProperty.call(modelCalls[0].body, "max_completion_tokens"), false);
   assert.equal(modelCalls[0].body.enable_thinking, false);
   assert.equal(modelCalls[0].headers.Authorization, "Bearer private-test-key");

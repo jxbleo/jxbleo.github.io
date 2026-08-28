@@ -1275,6 +1275,16 @@ Candidate/non-Candidate role flags, rejected-segment count, and audio-quality
 warning codes before its immutable `ready` transition. Only a `ready` report
 may become `active_report_version`.
 
+V2 `speaking_reports.dse_analysis.candidates[].turn_reviews` contains one
+canonical row per Candidate speaking turn: `turn_id`, plus
+`communication_strategies` and `ideas_organisation`, each containing bounded
+`commentary_zh` and `sample_en`. It does not duplicate transcript text, names,
+Student IDs, provider Speaker IDs, or audio locations. The immutable
+`transcript.segments` remains the source of quoted speech and timing; server
+projections derive the turn again and join those fields by validated `turn_id`.
+Ready V1 reports without `turn_reviews` remain readable and render no turn
+section.
+
 Required uniqueness/index coverage includes Discussion/participant/asset/job/
 report/share/event IDs, Discussion plus participant scope, job status plus
 retry/lease times, asset status plus expiry, and share status plus expiry. Raw

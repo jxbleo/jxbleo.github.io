@@ -229,7 +229,15 @@ function internalReportView(actor, report, participants) {
     group_strengths: Array.isArray(payload.group_strengths) ? payload.group_strengths.slice(0, 12) : [],
     group_priorities: Array.isArray(payload.group_priorities) ? payload.group_priorities.slice(0, 12) : [],
     discussion_flow: Array.isArray(payload.discussion_flow) ? payload.discussion_flow.slice(0, 12) : [],
-    candidates: (Array.isArray(payload.candidates) ? payload.candidates : []).map((candidate) => ({ ...candidate, speaker_label: labelFor(candidate.speaker_key) })),
+    candidates: (Array.isArray(payload.candidates) ? payload.candidates : []).map((candidate) => {
+      const participant = rows.find((item) => String(item.matched_speaker_key || "") === String(candidate.speaker_key));
+      return {
+        ...candidate,
+        speaker_label: labelFor(candidate.speaker_key),
+        is_self: Boolean(participant && String(participant.student_uid || "") === String(actor.auth_uid || "")),
+        turn_reviews: lab.turnReviewProjection(candidate, transcript.segments),
+      };
+    }),
     transcript: (Array.isArray(transcript.segments) ? transcript.segments : []).map((segment) => ({ segment_id: segment.segment_id, speaker_key: segment.speaker_key, speaker_label: labelFor(segment.speaker_key), start_ms: segment.start_ms, end_ms: segment.end_ms, text: lab.text(segment.text, 500) })),
   };
 }
@@ -766,13 +774,14 @@ async function processQueuedJob(event) {
       if (!pipelineReport || !transcript || !Array.isArray(transcript.segments) || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
       const candidateKeys = Array.isArray(transcript.candidate_speaker_keys) ? transcript.candidate_speaker_keys : [];
       const nonCandidateKeys = Array.isArray(transcript.non_candidate_speaker_keys) ? transcript.non_candidate_speaker_keys : [];
+      const speakingTurns = lab.canonicalSpeakingTurns(transcript.segments, candidateKeys);
       const model = createModelProvider();
       const modelCallIndex = await reserveProviderCall(claimed, "model_call_count");
       let result;
       try {
         result = await model.callStructuredModel({
           system_prompt: dseAnalysisPrompt(),
-          user_prompt: dseAnalysisUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
+          user_prompt: dseAnalysisUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, speakingTurns, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
         });
       } catch (error) {
         await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, http_status: error && error.httpStatus, request_id: error && error.requestId, response_diagnostics: error && error.responseDiagnostics, usage: {} });

@@ -187,6 +187,7 @@
                 shareSectionCheckbox('group_analysis', 'Group strengths, priorities, and flow', true),
                 shareSectionCheckbox('individual_analysis', 'Individual analysis', true),
                 shareSectionCheckbox('language_suggestions', 'Language suggestions', true),
+                shareSectionCheckbox('turn_reviews', 'Turn-by-turn CS and IO coaching', true),
                 shareSectionCheckbox('evidence', 'Evidence excerpts', true),
                 shareSectionCheckbox('transcript', 'Transcript', true)
             ].join('');
