@@ -17,6 +17,16 @@
 
 ## 1. 重复出现的问题速查
 
+### Speaking 百炼请求成功但报告提示 Schema Invalid
+
+对于 DashScope、百炼 MaaS 等 Qwen 兼容接口，chat-completions 请求必须加入
+`enable_thinking: false`。否则请求可能成功，但结构化 DSE JSON 不在纯粹的
+`message.content` 中，最终得到 `SPEAKING_AI_SCHEMA_INVALID`。
+
+同时使用百炼 OpenAI 兼容接口接受的 `max_tokens` 输出限制；若发送
+`max_completion_tokens`，接口可能忽略它并使用较短默认值，造成四人报告 JSON
+在结尾被截断，同样表现为 `SPEAKING_AI_SCHEMA_INVALID`。
+
 ### Speaking 声纹录音合格但腾讯仍提示无法保存
 
 先查 `speakingLab` 的安全错误码。如果腾讯返回

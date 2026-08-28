@@ -1,5 +1,19 @@
 # 06 Decisions
 
+## 2026-08-28: Speaking reports discard untrusted extra model fields
+
+The Speaking report boundary validates every required Candidate, assessed
+domain score, and evidence segment, then constructs a fresh canonical object.
+Unknown root, Candidate, or domain fields are discarded instead of causing the
+entire report to fail. This is safe because no provider object is stored
+directly, and it makes the boundary resilient to harmless metadata such as a
+provider-echoed schema version.
+
+The same boundary unwraps one unambiguous report object and converts a
+Speaker-keyed Candidate map into an array. It then applies the unchanged known
+Speaker, Candidate-count, score, and evidence ownership rules before storing a
+fresh canonical report.
+
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
