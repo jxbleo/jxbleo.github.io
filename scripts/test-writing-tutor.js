@@ -583,7 +583,7 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderOcr", "saveAndEvaluate");
   requireEvery(renderSource, [
-    "contenteditable=\"true\"",
+    "contenteditable=\"true\"", "ocr-review-shell",
     "data-confirm-ocr", ">Confirm</button>",
   ], "focused OCR confirmation controls");
   requireEvery(client, ["showOcrPhotoToolbarToggle", "Show image", "Hide image", "data-toggle-ocr-photo"],
@@ -604,6 +604,10 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
     "the toolbar image toggle must expose a clear selected state");
   assert(/\.ocr-review-actions\s*\{[^}]*justify-content\s*:\s*center/i.test(styles),
     "the sole OCR Review Confirm action must be centered");
+  assert(/<\/section>'\s*\+\s*\n\s*'<div class="form-actions ocr-review-actions"/.test(renderSource),
+    "Confirm must sit outside the yellow OCR paper surface");
+  assert(/\.ocr-text-editor\s*\{[^}]*border\s*:\s*0[^}]*background\s*:\s*transparent/i.test(styles),
+    "OCR text must sit directly on the paper without a nested card");
   assert(/\.ocr-uncertain\s*\{[^}]*color\s*:\s*#a52634[^}]*background\s*:\s*rgba\(218,55,69,\.16\)/i.test(styles),
     "uncertain OCR spans must use the approved red text and pale-red fill");
 });
@@ -623,8 +627,12 @@ check("OCR confirmation can move the first line into an optional undoable title"
   const interaction = functionSource(client, "splitOcrFirstLine", "unwrapOcrMark");
   requireEvery(interaction, [
     "lines.splice(firstLineIndex, 1)", "ocrTitleUndo", "editorHtml",
-    "acknowledgedRegions", "Moved from the first line.", "Restored.", "Use first line", "Undo",
+    "acknowledgedRegions", "Use first line", "Undo",
   ], "undoable title extraction behavior");
+  assert(!interaction.includes("Moved from the first line."),
+    "successful first-line extraction must not add redundant feedback copy");
+  assert(!/input\.(?:focus|select)\s*\(/.test(interaction) && !/editor\.focus\s*\(/.test(interaction),
+    "Use First Line and Undo must not force either text field into editing mode");
   assert(/extracted\.title\.length\s*>\s*80/.test(interaction), "an overlong first line must not be silently truncated into a title");
   const normalizedSource = functionSource(client, "normalizedOcrText", "ocrUncertainRanges");
   const splitSource = functionSource(client, "splitOcrFirstLine", "ocrRegionAcknowledgements");
@@ -633,6 +641,7 @@ check("OCR confirmation can move the first line into an optional undoable title"
   assert.deepStrictEqual(split("\n\nA Rainy Day\n\nFirst paragraph.\n\nSecond paragraph."), {
     title: "A Rainy Day", remaining: "First paragraph.\n\nSecond paragraph.",
   });
+  requireEvery(renderSource, ["data-ocr-title-feedback", "aria-live=\"polite\" hidden"], "error-only OCR title feedback");
   requireEvery(styles, [".ocr-title-control", ".ocr-title-field input", ".ocr-title-feedback", ".ocr-title-feedback.is-error", "#c66b73"], "OCR title control styling");
   assert(/\.ocr-title-field input\s*\{[^}]*height:\s*44px/i.test(styles)
       && /\.ocr-title-actions button\s*\{[^}]*height:\s*44px/i.test(styles),

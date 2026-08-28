@@ -305,7 +305,9 @@
             action.classList.toggle('is-undo', canUndo);
         }
         if (feedback) {
-            feedback.textContent = firstText(message);
+            var copy = firstText(message);
+            feedback.textContent = copy;
+            feedback.hidden = !copy;
             feedback.classList.toggle('is-error', tone === 'error');
         }
     }
@@ -341,9 +343,7 @@
         input.value = state.title;
         editor.innerHTML = ocrEditorHtml(extracted.remaining, state.ocr && state.ocr.uncertain_spans);
         syncOcrRegionsWithEditor();
-        updateOcrTitleUndoUi('Moved from the first line.');
-        input.focus({ preventScroll: true });
-        input.select();
+        updateOcrTitleUndoUi('');
     }
 
     function undoOcrFirstLine() {
@@ -358,8 +358,7 @@
         editor.innerHTML = snapshot.editorHtml;
         restoreOcrRegionAcknowledgements(snapshot.acknowledgedRegions);
         state.ocrTitleUndo = null;
-        updateOcrTitleUndoUi('Restored.');
-        editor.focus({ preventScroll: true });
+        updateOcrTitleUndoUi('');
     }
 
     function unwrapOcrMark(mark, preserveCaret) {
@@ -2279,12 +2278,12 @@
         var titleControl = state.scanTarget === 'writing'
             ? '<div class="ocr-title-control"><label class="ocr-title-field"><input id="ocr-title" type="text" maxlength="80" autocomplete="off" aria-label="Title, optional" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></label>' +
                 '<div class="ocr-title-actions"><button class="secondary-button compact" type="button" data-use-ocr-first-line aria-label="Use first line as title">Use first line</button></div>' +
-                '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite"></span></div>'
+                '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite" hidden></span></div>'
             : '';
-        stage.innerHTML = '<section class="surface surface-pad ocr-review-surface">' +
+        stage.innerHTML = '<div class="ocr-review-shell"><section class="surface surface-pad ocr-review-surface">' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '" data-open-photo-viewer="source" data-photo-index="' + index + '" role="button" tabindex="0" aria-label="Enlarge uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
-            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
-            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
+            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div></section>' +
+            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></div>';
         scheduleStageViewportReset();
     }
 

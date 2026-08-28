@@ -1899,6 +1899,10 @@ High priority improvement:
   `Title (Optional)` plus one `Use first line` action and one horizontally centered `Confirm`, with no `Upload Again`.
   `Use First Line` must move (not copy) the first non-empty line into the title,
   preserve paragraph spacing and remaining uncertainty marks, and change that same button to `Undo`.
+  It must show no `Moved from the first line` message and must leave focus on the
+  action instead of selecting or focusing the Title/manuscript field; only a direct
+  student click should enter text editing. The feedback row remains absent unless
+  extraction fails.
   No second Undo button may appear. Undo must restore the exact prior title, manuscript, and image-region state;
   typing afterward dismisses the stale Undo. A first line longer than 80 characters
   must remain untouched with manual-entry guidance. Prompt OCR must show no title
@@ -1908,6 +1912,9 @@ High priority improvement:
   Click the ordinary comparison image and activate it with Enter/Space to open the
   shared full-screen viewer; clicking a red uncertainty box must still locate text
   rather than enlarge the image.
+  Confirm the manuscript is printed directly on the yellow paper with no inset
+  bordered/background card, while the centered `Confirm` button sits outside the
+  paper below it on phone, iPad, and desktop.
 - Return an exact uncertain substring from OCR and confirm it is marked with a
   pale-red fill and dark-red text, without an underline. Clicking it must remove
   the mark without moving the caret; editing it must also remove the mark, and

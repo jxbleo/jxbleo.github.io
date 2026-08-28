@@ -2,6 +2,9 @@
 
 ## 2026-08-28
 
+- Simplified manuscript OCR confirmation: successful `Use first line` now stays
+  silent and preserves button focus, the editable manuscript sits directly on the
+  yellow paper, and the centered `Confirm` action lives outside the paper below it.
 - Extended the Sentence Revision feedback dividers to include the boundary between
   the original Language Review coaching and the first submitted rewrite feedback,
   while retaining the same divider between every later feedback round.
