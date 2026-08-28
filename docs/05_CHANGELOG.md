@@ -23,6 +23,9 @@
   invoke the worker, and avoids a secret that function-detail APIs may echo.
 - Mapped Tencent ASR CAM authorization failures to the provider-not-configured
   state so students are not incorrectly told to repeat a valid recording.
+- Unwrapped CloudBase's nested `getUploadMetadata().data` response in Speaking
+  Lab so private MP3 uploads receive the URL, temporary token, authorization,
+  CloudBase file ID, and COS file ID expected by the browser uploader.
 - Removed redundant concurrent CloudBase login preflights from the authenticated
   Speaking page, then sequenced its initial Voiceprint and Discussion reads to
   avoid concurrent temporary-credential initialization inside the browser SDK.
