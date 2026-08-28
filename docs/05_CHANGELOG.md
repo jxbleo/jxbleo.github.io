@@ -2,6 +2,10 @@
 
 ## 2026-08-28
 
+- Removed provider-generated warning bullet lists from student-facing Review Scan
+  cards. OCR text, confidence marks, and deterministic sentence-mapping validation
+  remain unchanged, while language or spelling observations stay out of this
+  transcription-confirmation step.
 - Added the environment-gated Tencent recording-file ASR adapter and durable
   submit/poll pipeline for Speaking Lab, including canonical Speaker tracks,
   incidental-voice exclusion, partial transcript preservation, and safe usage

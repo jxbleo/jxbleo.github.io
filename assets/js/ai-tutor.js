@@ -2816,17 +2816,6 @@
         })[confidence] || { symbol: '?', label: '识别置信度：低，请仔细检查' };
     }
 
-    function revisionScanWarningLabel(warning) {
-        var code = typeof warning === 'string' ? warning : firstText(warning && warning.code);
-        var labels = {
-            EMPTY_RECOGNIZED_TEXT: '没有识别到可导入的句子文字。',
-            MISSING_SENTENCE_NUMBER: '没有可靠识别到句子编号，请手动选择。',
-            SENTENCE_NUMBER_OUT_OF_RANGE_OR_NOT_REQUIRED: '这个编号不属于当前需要订正的句子，请手动检查。',
-            DUPLICATE_SENTENCE_NUMBER: '同一个句子编号出现了多次，请重新分配。'
-        };
-        return labels[code] || firstText(warning && warning.message, code, '这项内容需要检查。');
-    }
-
     function revisionScanCandidate(candidate, index) {
         var scan = revisionScanState();
         var id = revisionScanCandidateId(candidate, index);
@@ -2929,9 +2918,6 @@
             return '<option value="' + escapeHtml(sid) + '"' + (sid === sentenceIdValue && status !== 'unresolved' ? ' selected' : '') +
                 (unavailable ? ' disabled' : '') + '>' + escapeHtml(optionLabel) + '</option>';
         }).join('');
-        var warnings = safeArray(candidate.warnings).map(function(warning) {
-            return '<li>' + escapeHtml(revisionScanWarningLabel(warning)) + '</li>';
-        }).join('');
         return '<article class="revision-scan-candidate is-' + status + (duplicate ? ' has-duplicate' : '') + '" data-scan-candidate-row="' + escapeHtml(id) + '">' +
             '<label class="revision-scan-target' + (selectedDetails ? '' : ' is-unassigned') + '">' +
             '<span class="revision-scan-target-main"><strong class="revision-scan-target-number">' + (selectedDetails ? selectedDetails.number : '?') + '</strong>' +
@@ -2940,8 +2926,7 @@
             '<select data-scan-sentence="' + escapeHtml(id) + '" aria-label="为识别项 ' + (index + 1) + ' 选择仍需订正的原句"><option value="">Select sentence</option>' + options + '</select></label>' +
             '<label class="revision-scan-recognized"><span class="revision-scan-confidence is-' + confidence + '" role="img" aria-label="' + escapeHtml(confidenceMeta.label) + '" title="' + escapeHtml(confidenceMeta.label) + '">' + confidenceMeta.symbol + '</span>' +
             '<textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="编辑识别项 ' + (index + 1) + ' 的文字">' + escapeHtml(candidate.recognized_text) + '</textarea></label>' +
-            (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') +
-            (warnings ? '<ul class="revision-scan-warning-list">' + warnings + '</ul>' : '') + '</article>';
+            (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') + '</article>';
     }
 
     function renderRevisionScanReview() {

@@ -1364,8 +1364,10 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
   ], "Review Scan mapping cards");
   [
     "Keep typed", "Use scanned", "data-scan-choice", "已有手写草稿",
-    "SCANNED REVISION", "NEEDS REVISION", "手写编号",
+    "SCANNED REVISION", "NEEDS REVISION", "手写编号", "revision-scan-warning-list",
   ].forEach((removed) => assert(!reviewSource.includes(removed), `Review Scan card must omit ${removed}`));
+  assert(!client.includes("revisionScanWarningLabel"),
+    "provider warning copy must remain hidden from the OCR confirmation UI");
   [
     "revision-scan-heading", "revision-scan-count", "revision-scan-instructions",
     "revision-scan-missing", "SENTENCE REVISION", "Review Scan",

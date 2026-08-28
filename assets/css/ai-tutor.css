@@ -435,8 +435,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .revision-scan-confidence.is-high { color: var(--ai-success); background: rgba(33,143,87,.1); }
 .revision-scan-confidence.is-medium { color: #a46008; background: rgba(217,137,25,.12); }
 .revision-scan-confidence.is-low { color: var(--ai-danger); background: rgba(197,61,58,.1); }
-.revision-scan-warning, .revision-scan-warning-list { margin: 10px 0 0; color: #8b3535; font-size: .72rem; line-height: 1.55; }
-.revision-scan-warning-list { padding-left: 1.1rem; }
+.revision-scan-warning { margin: 10px 0 0; color: #8b3535; font-size: .72rem; line-height: 1.55; }
 .revision-scan-actions { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--ai-line); }
 .revision-scan-failure .quiet-button { margin-top: 12px; }
 .sentence-stage { margin: 0; }
