@@ -1018,13 +1018,28 @@ CloudBase trigger editor cannot configure and function-detail APIs may expose.
 
 The gateway stores only metadata in `speaking_ai_jobs`. Audio quality,
 transcription/diarization, Candidate canonicalization, and report
-canonicalization are explicit stages. `speech-provider.js` and
-`model-provider.js` are provider interfaces and currently fail closed with
-`SPEAKING_PROVIDER_NOT_CONFIGURED`; no provider URL, credential, transcript, or
-prompt is copied into queue rows or logs. `speaking-lab.js` owns deterministic
+canonicalization are explicit stages. `speech-provider.js` implements Tencent
+recording-file recognition as one `CreateRecTask` followed by durable
+`DescribeTaskStatus` polling of the same private task ID. `model-provider.js`
+implements the independently configured OpenAI-compatible JSON-object boundary
+used for the DSE report. Both still fail closed with
+`SPEAKING_PROVIDER_NOT_CONFIGURED` when their server-only configuration is
+absent; no provider URL, credential, transcript, or prompt is copied into queue
+rows or logs. Provider URLs are request-scoped and never persisted.
+`speaking-lab.js` owns deterministic
 authorization, identity, evidence, projection, alias, redaction, and
 invalidation rules. Formal audio is retained privately; Voice Reference files
 are scheduled for deletion seven days after successful matching.
+
+Tencent's recording result supplies `SpeakerId` and sentence timing but no
+per-track confidence or speaker audio. The server therefore treats missing
+confidence as unknown, ranks sustained tracks before a brief incidental voice,
+preserves extra tracks as `non_candidate_context`, and excludes a narrowly
+matched opening facilitator cue such as “You may start the discussion now” even
+when diarization attaches it to a Candidate track. It never infers a
+participant identity from speaking order. Reusable voiceprint auto-matching
+remains a separate gated excerpt-extraction stage; until that stage is approved,
+students/teachers use the existing confirmation/remap flow under Speaker labels.
 
 `cloudfunctions/_shared/tencent-asr-voiceprint.js` implements Tencent Cloud API
 3.0 signing with Node's built-in `crypto`/`fetch` and exposes enrol, update,

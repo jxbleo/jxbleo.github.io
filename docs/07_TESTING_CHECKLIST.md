@@ -2302,6 +2302,22 @@ scope isolation; Guest cleanup after removal/Discussion deletion; no enrolment
 audio in Storage/database/logs; and automatic matching that still requires
 student confirmation or teacher lock before real-name projection.
 
+The service contract test also mocks Tencent `CreateRecTask` plus
+`DescribeTaskStatus` and the OpenAI-compatible JSON-object request. It must
+assert single-channel English diarization parameters, reuse of one Task ID,
+sentence/SpeakerId normalization, bearer-key server isolation, JSON fence/string
+normalization, and Token usage normalization. A brief first outside voice with
+unknown provider confidence must not displace longer Candidate tracks. The
+known opening facilitator cue must be marked non-Candidate even if the provider
+assigns it to the first Candidate track, and its segment ID must be rejected as
+scoring evidence.
+
+Real-audio acceptance is still manual and owner-gated: upload the supplied
+8-minute four-person MP3, record task ID/latency/cost, compare Speaker track
+count and turn boundaries with a human listen, verify any incidental voice is
+non-Candidate, and inspect every evidence segment used by the DSE report. This
+gate is not satisfied by mocked tests.
+
 ### Intensive Listening Library
 
 Run npm run test:intensive-listening-library, npm run test:intensive-listening,

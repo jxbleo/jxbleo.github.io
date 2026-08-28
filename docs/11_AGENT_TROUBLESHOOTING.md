@@ -986,6 +986,14 @@ never print audio paths, upload metadata, transcript, names, prompts, provider
 responses, or tokens. A pending/declined VIP or Guest must receive the same
 server access denial regardless of a guessed Student ID.
 
+After the Tencent adapter is enabled, one job should show one
+`provider_task_id` and an increasing `provider_poll_count`. Repeated
+`CreateRecTask` calls for the same job are a billing/idempotency fault; ordinary
+`waiting`/`doing` results must requeue the same task without spending the five-
+failure recovery budget. `SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE` may still leave
+a private processing report containing the usable canonical transcript. Never
+copy the temporary audio URL or Tencent response into diagnosis notes.
+
 If a share is unavailable, treat missing, expired, and revoked tokens as the
 same `SHARE_NOT_AVAILABLE` outcome. Duplicate uploads/jobs should replay their
 stable operation ID; a stale lease or mapping revision must never publish.
