@@ -2,6 +2,11 @@
 
 ## 2026-08-28
 
+- Corrected the Speaking Lab live-recorder disclosure state: Pause, Stop,
+  Preview, and Upload recording remain hidden until `Record now` begins; the
+  upload action uses an unavailable cursor while no recording exists and a wait
+  cursor only during an actual transfer.
+
 - Added a restrained interaction cue to already-correct Sentence Revision cards:
   pointer and keyboard activation now give the static card one short shake without
   flipping it, with a tint-only Reduced Motion fallback.

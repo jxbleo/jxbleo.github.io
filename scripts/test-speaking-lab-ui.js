@@ -79,6 +79,11 @@ function run() {
   assert.match(css, /prefers-reduced-transparency/);
   assert.match(css, /prefers-contrast:\s*more/);
   assert.match(css, /speaking-list\[hidden\].*speaking-detail\[hidden\]/);
+  assert.match(css, /speaking-recording-card > \.speaking-detail-actions\[hidden\].*display:\s*none !important/);
+  assert.match(css, /#upload-recording:disabled.*cursor:\s*not-allowed/);
+  assert.match(css, /#upload-recording\.is-uploading:disabled.*cursor:\s*wait/);
+  assert.match(app, /upload\.classList\.add\('is-uploading'\)/);
+  assert.match(app, /upload\.classList\.remove\('is-uploading'\)/);
   assert.match(css, /speaking-detail-open \.speaking-lab-heading/);
   assert.match(css, /speaking-report-overview/);
   assert.match(css, /speaking-score-grid/);
@@ -88,7 +93,8 @@ function run() {
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
   assert.match(app, /speaking-report-candidates/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260828-8/);
+  assert.match(page, /speaking-lab\.css\?v=20260828-5/);
+  assert.match(page, /speaking-lab\.js\?v=20260828-9/);
   console.log("Speaking Lab UI contracts passed.");
 }
 
