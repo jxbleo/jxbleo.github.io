@@ -2291,6 +2291,9 @@ pronunciation, Student/Teacher redaction, per-snapshot aliases, token hashing,
 idempotency/lease projections, and forbidden queue content. Static tests cover
 student recording fallback, no browser audio persistence, noindex external
 page, no audio/download controls, teacher name selection, and reduced motion.
+They also lock the student hierarchy classes, native hidden-state override,
+single-focus detail mode, structured report score grid, mobile bottom-sheet
+breakpoint, reduced-transparency fallback, and increased-contrast fallback.
 The authenticated page must complete `getSession()` once and then call
 `speakingLab` directly through the SDK; do not add concurrent redundant
 `callAuthenticatedFunction` preflights. The initial Voiceprint and Discussion
@@ -2316,6 +2319,14 @@ rejected before Worker execution, and the `speaking-ai-worker-minute` timer
 produces a successful run without `CustomArgument` or a Worker token.
 Do not claim provider-backed speech quality until the owner-authorized
 development deployment and real-audio benchmark pass.
+
+For every Speaking Lab visual release, inspect at least one populated list, New
+Discussion dialog, ready four-Candidate report, and incomplete recording state
+at desktop and 390-pixel phone widths. Confirm no horizontal overflow; opening
+a Discussion hides the home hero, Voice ID card, section heading, and list;
+participant actions remain reachable; the transcript is collapsed; the phone
+dialog rests as a bottom sheet with sticky Cancel/Create actions; and returning
+to Discussions restores the home surface.
 
 Manual voiceprint gates require student first enrolment/update/delete; teacher
 VIP lookup by exact Student ID; teacher VIP and Non-VIP roster enrolment;

@@ -2469,6 +2469,26 @@ and renders only the server-redacted snapshot. Loading, failed, expired, and
 revoked states use the same safe share error; reduced motion removes
 transitions without changing state or permissions.
 
+The student Speaking Lab uses the same restrained Liquid Glass language as the
+student Dashboard: a calm blue-green-warm background, one translucent toolbar,
+one high-emphasis hero, and compact material cards. The list surface shows only
+New Discussion, reusable Voice ID status, and responsive Discussion cards. When
+a Discussion opens, those home surfaces withdraw and the detail becomes the
+only content layer. The detail order is fixed as task progress, prompt,
+participants, formal recording, voice matching, analysis action, and report.
+This prevents the roster, recorder, voice samples, and report from competing at
+one visual level.
+
+Discussion reports use one dark group-summary surface followed by one light
+Candidate surface per Speaker. Each Candidate keeps the three 0–7 domains in a
+single score grid, then separates Pronunciation Not assessed and the three
+coaching lists. Transcript content stays collapsed by default. On phones,
+lists and score grids become one column, participant actions wrap below the
+identity, and dialogs become bottom sheets with a visible grabber and sticky
+actions. The page must honor reduced motion, reduced transparency, increased
+contrast, minimum touch targets, and the native `hidden` attribute even when a
+container normally declares grid or flex display.
+
 ### Intensive Listening surfaces
 
 The dashboard presents three equal full-width capsules in Writing, Intensive
