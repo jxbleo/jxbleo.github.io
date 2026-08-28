@@ -10,9 +10,10 @@
   server-only credentials, versioned three-domain prompt, strict local evidence
   validation, and atomic ready-report publication. Pronunciation remains
   explicitly unassessed.
-- Kept the expanded Speaking function below CloudBase's code limit by
-  externalizing only the existing pinned Node SDK in its generated package;
-  other functions retain the fully bundled deployment default.
+- Kept both expanded Speaking runtime functions below CloudBase's code limit by
+  removing only unused CloudBase AI/model and WeChat-client branches at bundle
+  time; required SDK paths remain bundled, a 900,000-byte package guard prevents
+  regressions, and automatic dependency installation stays disabled.
 - Added the current voiceprint enrolment revision and latest Shanghai-time
   update to the Teacher Speaking target card, making successful replacements
   visible without a CloudBase console check.

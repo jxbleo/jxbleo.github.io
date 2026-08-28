@@ -318,11 +318,11 @@ Function runtime expectation:
 - bundled code is minified so direct ZIP uploads remain below CloudBase's
   expanded-file limit and do not depend on slower COS uploads;
 - CloudBase automatic dependency installation is not required and should stay
-  disabled for fully bundled functions. `speakingLab` is the documented
-  exception: its business/shared code remains bundled, while the already pinned
-  `@cloudbase/node-sdk@3.18.1` is external and CloudBase automatic dependency
-  installation must be enabled because the complete SDK pushed this function
-  above the Shanghai environment's expanded-code ceiling;
+  disabled for bundled functions. `speakingLab` and `speakingAiWorker` remain
+  fully bundled, but their package builds replace only the SDK's unused
+  AI/model and WeChat-client entry modules with empty build-time stubs and fail
+  above 900,000 uncompressed bytes. Authentication, database, storage, function
+  invocation, and CloudBase request/signing code remain bundled;
 - root and function-level lockfiles pin the SDK and bundler versions, so a
   package rebuild cannot silently pick a newer dependency tree.
 - development environment unless owner approves otherwise
@@ -1229,12 +1229,14 @@ the dashboard entry first, stopping the worker timer if necessary, and rolling
 back both functions together while retaining private Discussion/report/audit
 history and revoking active shares.
 
-`deploy-packages/speakingLab.zip` must contain a small bundled `index.js` plus a
-generated `package.json` whose only dependency is exact
-`@cloudbase/node-sdk: 3.18.1`. Deploy it with automatic dependency installation
-enabled and wait for `Active` / `Available`; an upload success followed by
-`LimitExceeded.CodeUnzip` is a failed release. Do not fall back to bundling the
-full SDK merely to keep dependency installation disabled.
+`deploy-packages/speakingLab.zip` and
+`deploy-packages/speakingAiWorker.zip` must each contain one bundled `index.js`
+below the 900,000-byte project gate plus a generated dependency-free
+`package.json`. Automatic dependency installation stays disabled. The
+build-time stubs may remove only the CloudBase AI/model and WeChat-client
+branches that Speaking Lab does not call; do not stub auth, database, storage,
+function invocation, or request signing. Wait for `Active` / `Available`; an
+upload success followed by `LimitExceeded.CodeUnzip` is a failed release.
 
 `cloudfunctions/_shared/` is bundled into dependent functions and is never a
 standalone CloudBase function. The deploy-plan generator therefore excludes

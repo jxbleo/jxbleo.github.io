@@ -19,9 +19,16 @@ async function run() {
   assert.doesNotMatch(source, /upload_metadata\s*:/, "temporary upload credentials must not be persisted");
   assert.doesNotMatch(source, /event\.speaker_keys|event\.candidate_speaker_keys/, "teacher mapping candidates must come from the server report");
   assert.doesNotMatch(source, /event\.asset_id[\s\S]{0,500}event\.start_ms/, "playback must not trust a browser-selected asset and range");
-  assert.deepEqual(functionPackage.dependencies, { "@cloudbase/node-sdk": "3.18.1" });
-  assert.match(packagerSource, /speakingLab:\s*\{\s*"@cloudbase\/node-sdk":\s*"3\.18\.1"\s*\}/);
-  assert.match(packagerSource, /external:\s*\["@aws-sdk\/client-s3",\s*\.\.\.Object\.keys\(installedDependencies\)\]/);
+  assert.deepEqual(functionPackage.dependencies, {});
+  assert.match(packagerSource, /new Set\(\["speakingLab", "speakingAiWorker"\]\)/);
+  assert.match(packagerSource, /speakingRuntimeMaxBundleBytes = 900000/);
+  assert.match(packagerSource, /function speakingRuntimeBundlePlugins\(functionName\)/);
+  assert.match(packagerSource, /@cloudbase\\\/wx-cloud-client-sdk/);
+  assert.match(packagerSource, /args\.importer\.includes\("\/@cloudbase\/node-sdk\/dist\/cloudbase\.js"\)/);
+  assert.match(packagerSource, /plugins:\s*speakingRuntimeBundlePlugins\(functionName\)/);
+  assert.match(packagerSource, /bundledBytes > speakingRuntimeMaxBundleBytes/);
+  assert.match(packagerSource, /await esbuild\.build\(/);
+  assert.doesNotMatch(packagerSource, /installedDependencies|@cloudbase\/node-sdk"\s*:\s*"3\.18\.1"/);
 
   assert.throws(() => speech.createSpeechProvider({ env: {} }), (error) => error.code === "SPEAKING_PROVIDER_NOT_CONFIGURED");
   assert.equal(model.providerConfigStatus({}).configured, false);
