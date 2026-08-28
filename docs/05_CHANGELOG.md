@@ -22,6 +22,16 @@
   Candidate map into the same strict Candidate array before validating counts,
   scores, and same-Speaker evidence.
 
+- Simplified manuscript OCR confirmation: successful `Use first line` now stays
+  silent and preserves button focus, the editable manuscript sits directly on the
+  yellow paper, and the centered `Confirm` action lives outside the paper below it.
+- Extended the Sentence Revision feedback dividers to include the boundary between
+  the original Language Review coaching and the first submitted rewrite feedback,
+  while retaining the same divider between every later feedback round.
+- Removed provider-generated warning bullet lists from student-facing Review Scan
+  cards. OCR text, confidence marks, and deterministic sentence-mapping validation
+  remain unchanged, while language or spelling observations stay out of this
+  transcription-confirmation step.
 - Added the environment-gated Tencent recording-file ASR adapter and durable
   submit/poll pipeline for Speaking Lab, including canonical Speaker tracks,
   incidental-voice exclusion, partial transcript preservation, and safe usage
@@ -80,6 +90,21 @@
   loading surface and parallel Composition/Profile/History restoration.
 - Added one restrained, top-anchored downward materialization for resolved Writing
   content, with an opacity-only Reduced Motion fallback and no artificial delay.
+
+## 2026-08-28 — Draft-style OCR confirmation
+
+- Reused the warm-yellow Draft paper material for OCR text confirmation.
+- Moved image comparison into the trailing toolbar slot with reversible
+  `Show image` / `Hide image` wording.
+- Collapsed first-line title extraction into one reversible control that changes
+  from `Use first line` to `Undo` and restores the original manuscript in place.
+
+## 2026-08-28 — Rejected revision return focus
+
+- Changed unsuccessful Sentence Revision checks to return directly to the first
+  rejected sentence instead of resetting the review to the top.
+- Added the existing Overdue-style red pulse to that card until the student edits
+  it, with a static red Reduced Motion fallback.
 
 ## 2026-08-28 — Speaking Report anonymous invocation boundary
 

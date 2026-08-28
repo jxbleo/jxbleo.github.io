@@ -296,11 +296,18 @@
     }
 
     function updateOcrTitleUndoUi(message, tone) {
-        var undo = document.querySelector('[data-undo-ocr-title]');
+        var action = document.querySelector('[data-use-ocr-first-line]');
         var feedback = document.querySelector('[data-ocr-title-feedback]');
-        if (undo) undo.hidden = !state.ocrTitleUndo;
+        if (action) {
+            var canUndo = Boolean(state.ocrTitleUndo);
+            action.textContent = canUndo ? 'Undo' : 'Use first line';
+            action.setAttribute('aria-label', canUndo ? 'Undo use of first line as title' : 'Use first line as title');
+            action.classList.toggle('is-undo', canUndo);
+        }
         if (feedback) {
-            feedback.textContent = firstText(message);
+            var copy = firstText(message);
+            feedback.textContent = copy;
+            feedback.hidden = !copy;
             feedback.classList.toggle('is-error', tone === 'error');
         }
     }
@@ -336,9 +343,7 @@
         input.value = state.title;
         editor.innerHTML = ocrEditorHtml(extracted.remaining, state.ocr && state.ocr.uncertain_spans);
         syncOcrRegionsWithEditor();
-        updateOcrTitleUndoUi('Moved from the first line.');
-        input.focus({ preventScroll: true });
-        input.select();
+        updateOcrTitleUndoUi('');
     }
 
     function undoOcrFirstLine() {
@@ -353,8 +358,7 @@
         editor.innerHTML = snapshot.editorHtml;
         restoreOcrRegionAcknowledgements(snapshot.acknowledgedRegions);
         state.ocrTitleUndo = null;
-        updateOcrTitleUndoUi('Restored.');
-        editor.focus({ preventScroll: true });
+        updateOcrTitleUndoUi('');
     }
 
     function unwrapOcrMark(mark, preserveCaret) {
@@ -610,7 +614,7 @@
 
     function updateRevisionProgress() {
         if (!revisionProgress) return;
-        revisionProgress.classList.remove('is-home-quota');
+        revisionProgress.classList.remove('is-home-quota', 'is-ocr-photo-control');
         var progress = revisionProgressSummary();
         revisionProgress.hidden = !progress;
         if (!progress) {
@@ -623,6 +627,24 @@
         revisionProgress.textContent = progress.percentage + '%';
         revisionProgress.setAttribute('aria-label', label);
         revisionProgress.setAttribute('title', label);
+    }
+
+    function updateOcrPhotoToolbarToggle(visible) {
+        var button = document.querySelector('[data-toggle-ocr-photo]');
+        if (!button) return;
+        button.textContent = visible ? 'Hide image' : 'Show image';
+        button.setAttribute('aria-pressed', String(Boolean(visible)));
+        button.setAttribute('aria-label', visible ? 'Hide uploaded image' : 'Show uploaded image');
+    }
+
+    function showOcrPhotoToolbarToggle() {
+        if (!revisionProgress) return;
+        revisionProgress.classList.remove('is-home-quota');
+        revisionProgress.classList.add('is-ocr-photo-control');
+        revisionProgress.hidden = false;
+        revisionProgress.removeAttribute('title');
+        revisionProgress.removeAttribute('aria-label');
+        revisionProgress.innerHTML = '<button class="secondary-button compact ocr-toolbar-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false" aria-label="Show uploaded image">Show image</button>';
     }
 
     var sentencePalette = [
@@ -2248,18 +2270,20 @@
         destroyAiWaitingExperience();
         state.ocrTitleUndo = null;
         state.screen = 'ocr';
+        updateCurrentWritingTitle();
+        updateToolbarNavigation();
+        showOcrPhotoToolbarToggle();
         var reviewText = state.scanTarget === 'prompt' ? state.ocrReviewText : state.confirmedText;
         var imageLabel = state.scanTarget === 'prompt' ? 'Uploaded writing prompt images' : 'Uploaded composition images';
         var titleControl = state.scanTarget === 'writing'
             ? '<div class="ocr-title-control"><label class="ocr-title-field"><input id="ocr-title" type="text" maxlength="80" autocomplete="off" aria-label="Title, optional" placeholder="Title (Optional)" value="' + escapeHtml(state.title) + '"></label>' +
-                '<div class="ocr-title-actions"><button class="secondary-button compact" type="button" data-use-ocr-first-line>Use First Line</button><button class="quiet-button compact" type="button" data-undo-ocr-title hidden>Undo</button></div>' +
-                '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite"></span></div>'
+                '<div class="ocr-title-actions"><button class="secondary-button compact" type="button" data-use-ocr-first-line aria-label="Use first line as title">Use first line</button></div>' +
+                '<span class="ocr-title-feedback" data-ocr-title-feedback role="status" aria-live="polite" hidden></span></div>'
             : '';
-        stage.innerHTML = '<section class="surface surface-pad ocr-review-surface"><div class="ocr-review-heading">' +
-            '<button class="secondary-button compact ocr-photo-toggle" type="button" data-toggle-ocr-photo aria-pressed="false">' + icon('camera') + 'Compare with Image</button></div>' +
+        stage.innerHTML = '<div class="ocr-review-shell"><section class="surface surface-pad ocr-review-surface">' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '" data-open-photo-viewer="source" data-photo-index="' + index + '" role="button" tabindex="0" aria-label="Enlarge uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
-            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div>' +
-            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></section>';
+            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div></section>' +
+            '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></div>';
         scheduleStageViewportReset();
     }
 
@@ -2570,13 +2594,16 @@
                 renderCompletion();
             } else {
                 state.correctionRound += 1;
-                prepareLanguageReview();
+                restoreLanguageReviewState();
+                state.manuscriptView = manuscriptRevisionSummary(safeArray(state.review && state.review.sentences)).available ? 'revised' : 'draft';
                 var sentences = safeArray(state.review && state.review.sentences);
-                state.activeSentence = Math.max(0, sentences.findIndex(function(sentence, index) {
+                var rejectedIndex = sentences.findIndex(function(sentence, index) {
                     var answer = state.rewriteResults[sentenceId(sentence, index)];
                     return answer && answer.accepted === false;
-                }));
+                });
+                state.activeSentence = Math.max(0, rejectedIndex);
                 renderLanguage();
+                if (rejectedIndex >= 0) focusRejectedRewriteSentence(sentenceId(sentences[rejectedIndex], rejectedIndex));
             }
             refreshPortfolio().catch(function() {});
         });
@@ -2788,17 +2815,6 @@
         })[confidence] || { symbol: '?', label: '识别置信度：低，请仔细检查' };
     }
 
-    function revisionScanWarningLabel(warning) {
-        var code = typeof warning === 'string' ? warning : firstText(warning && warning.code);
-        var labels = {
-            EMPTY_RECOGNIZED_TEXT: '没有识别到可导入的句子文字。',
-            MISSING_SENTENCE_NUMBER: '没有可靠识别到句子编号，请手动选择。',
-            SENTENCE_NUMBER_OUT_OF_RANGE_OR_NOT_REQUIRED: '这个编号不属于当前需要订正的句子，请手动检查。',
-            DUPLICATE_SENTENCE_NUMBER: '同一个句子编号出现了多次，请重新分配。'
-        };
-        return labels[code] || firstText(warning && warning.message, code, '这项内容需要检查。');
-    }
-
     function revisionScanCandidate(candidate, index) {
         var scan = revisionScanState();
         var id = revisionScanCandidateId(candidate, index);
@@ -2901,9 +2917,6 @@
             return '<option value="' + escapeHtml(sid) + '"' + (sid === sentenceIdValue && status !== 'unresolved' ? ' selected' : '') +
                 (unavailable ? ' disabled' : '') + '>' + escapeHtml(optionLabel) + '</option>';
         }).join('');
-        var warnings = safeArray(candidate.warnings).map(function(warning) {
-            return '<li>' + escapeHtml(revisionScanWarningLabel(warning)) + '</li>';
-        }).join('');
         return '<article class="revision-scan-candidate is-' + status + (duplicate ? ' has-duplicate' : '') + '" data-scan-candidate-row="' + escapeHtml(id) + '">' +
             '<label class="revision-scan-target' + (selectedDetails ? '' : ' is-unassigned') + '">' +
             '<span class="revision-scan-target-main"><strong class="revision-scan-target-number">' + (selectedDetails ? selectedDetails.number : '?') + '</strong>' +
@@ -2912,8 +2925,7 @@
             '<select data-scan-sentence="' + escapeHtml(id) + '" aria-label="为识别项 ' + (index + 1) + ' 选择仍需订正的原句"><option value="">Select sentence</option>' + options + '</select></label>' +
             '<label class="revision-scan-recognized"><span class="revision-scan-confidence is-' + confidence + '" role="img" aria-label="' + escapeHtml(confidenceMeta.label) + '" title="' + escapeHtml(confidenceMeta.label) + '">' + confidenceMeta.symbol + '</span>' +
             '<textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="编辑识别项 ' + (index + 1) + ' 的文字">' + escapeHtml(candidate.recognized_text) + '</textarea></label>' +
-            (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') +
-            (warnings ? '<ul class="revision-scan-warning-list">' + warnings + '</ul>' : '') + '</article>';
+            (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') + '</article>';
     }
 
     function renderRevisionScanReview() {
@@ -3231,6 +3243,26 @@
             '<div class="sentence-face-content">' + sentenceMeta + '<div class="sentence-response">' + (accepted ? correctedResponse : editableResponse) +
             '</div></div></section>';
         return cardStart + '<div class="sentence-flip-card"><div class="sentence-card-inner' + (showRewrite ? ' show-rewrite' : '') + '" data-face="' + (showRewrite ? 'rewrite' : 'analysis') + '">' + analysisFace + rewriteFace + '</div></div></article>';
+    }
+
+    function focusRejectedRewriteSentence(id) {
+        var token = ++stageViewportResetToken;
+        window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(function() {
+                if (token !== stageViewportResetToken) return;
+                var target = document.getElementById('sentence-card-' + id);
+                if (!target) return;
+                target.classList.add('is-revision-attention');
+                target.scrollIntoView({
+                    behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                    block: 'start'
+                });
+                var capsule = Array.prototype.find.call(document.querySelectorAll('[data-sentence-id]'), function(item) {
+                    return item.getAttribute('data-sentence-id') === id;
+                });
+                if (capsule) capsule.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+            });
+        });
     }
 
     function syncSentenceDraftStatus(id) {
@@ -4020,6 +4052,8 @@
             var id = target.getAttribute('data-rewrite-id');
             state.rewrites[id] = target.value;
             delete state.skipped[id];
+            var attentionCard = target.closest('[data-sentence-card]');
+            if (attentionCard) attentionCard.classList.remove('is-revision-attention');
             saveRewriteDraftSnapshot();
             syncSentenceDraftStatus(id);
         }
@@ -4160,10 +4194,12 @@
         else if (button.matches('[data-toggle-ocr-photo]')) {
             var layout = document.getElementById('ocr-layout');
             var visible = layout.classList.toggle('show-photo');
-            button.setAttribute('aria-pressed', String(visible));
+            updateOcrPhotoToolbarToggle(visible);
         }
-        else if (button.matches('[data-use-ocr-first-line]')) useOcrFirstLine();
-        else if (button.matches('[data-undo-ocr-title]')) undoOcrFirstLine();
+        else if (button.matches('[data-use-ocr-first-line]')) {
+            if (state.ocrTitleUndo) undoOcrFirstLine();
+            else useOcrFirstLine();
+        }
         else if (button.matches('[data-confirm-ocr]')) {
             if (state.scanTarget === 'prompt') {
                 adoptPromptOcr();

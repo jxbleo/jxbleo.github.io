@@ -583,10 +583,13 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
   const styles = read(stylePath);
   const renderSource = functionSource(client, "renderOcr", "saveAndEvaluate");
   requireEvery(renderSource, [
-    "Compare with Image", "contenteditable=\"true\"",
+    "contenteditable=\"true\"", "ocr-review-shell",
     "data-confirm-ocr", ">Confirm</button>",
   ], "focused OCR confirmation controls");
+  requireEvery(client, ["showOcrPhotoToolbarToggle", "Show image", "Hide image", "data-toggle-ocr-photo"],
+    "toolbar-owned OCR image comparison control");
   assert(!renderSource.includes("OCR Review"), "the OCR confirmation surface must omit the OCR Review heading");
+  assert(!renderSource.includes("Compare with Image"), "the removed in-card image comparison label must not return");
   assert(!/Upload Again|Confirm Text &amp; Start Review/.test(renderSource),
     "OCR Review must expose only the centered Confirm footer action");
   assert(!/先确认识别文字|第 2 步|有 ['\"] \+ uncertainCount|可编辑 OCR 文本|请自行修正识别错误/.test(renderSource),
@@ -595,8 +598,16 @@ check("OCR confirmation is a focused paragraph editor with inline uncertainty ma
     "inline OCR uncertainty handling");
   requireEvery(styles, [".ocr-uncertain", ".ocr-text-editor > p", "margin: 0 0 1em"],
     "uncertain highlight and one-Enter paragraph spacing");
+  assert(/\.ocr-review-surface\s*\{[^}]*background-color:\s*#fbf4df/i.test(styles),
+    "OCR confirmation must reuse the warm Draft paper material");
+  assert(/\.ocr-toolbar-photo-toggle\[aria-pressed="true"\]/.test(styles),
+    "the toolbar image toggle must expose a clear selected state");
   assert(/\.ocr-review-actions\s*\{[^}]*justify-content\s*:\s*center/i.test(styles),
     "the sole OCR Review Confirm action must be centered");
+  assert(/<\/section>'\s*\+\s*\n\s*'<div class="form-actions ocr-review-actions"/.test(renderSource),
+    "Confirm must sit outside the yellow OCR paper surface");
+  assert(/\.ocr-text-editor\s*\{[^}]*border\s*:\s*0[^}]*background\s*:\s*transparent/i.test(styles),
+    "OCR text must sit directly on the paper without a nested card");
   assert(/\.ocr-uncertain\s*\{[^}]*color\s*:\s*#a52634[^}]*background\s*:\s*rgba\(218,55,69,\.16\)/i.test(styles),
     "uncertain OCR spans must use the approved red text and pale-red fill");
 });
@@ -607,14 +618,21 @@ check("OCR confirmation can move the first line into an optional undoable title"
   const renderSource = functionSource(client, "renderOcr", "adoptPromptOcr");
   requireEvery(renderSource, [
     'id="ocr-title"', 'maxlength="80"', 'aria-label="Title, optional"', 'placeholder="Title (Optional)"',
-    "Use First Line", "data-undo-ocr-title", ">Undo</button>",
+    "Use first line", "data-use-ocr-first-line",
   ], "OCR title extraction controls");
+  assert((renderSource.match(/data-use-ocr-first-line/g) || []).length === 1,
+    "Use first line and Undo must occupy one reversible control");
+  assert(!renderSource.includes("data-undo-ocr-title"), "OCR title extraction must not render a second Undo button");
   assert(!renderSource.includes("Optional composition title"), "the OCR title field must not render a redundant label above the input");
   const interaction = functionSource(client, "splitOcrFirstLine", "unwrapOcrMark");
   requireEvery(interaction, [
     "lines.splice(firstLineIndex, 1)", "ocrTitleUndo", "editorHtml",
-    "acknowledgedRegions", "Moved from the first line.", "Restored.",
+    "acknowledgedRegions", "Use first line", "Undo",
   ], "undoable title extraction behavior");
+  assert(!interaction.includes("Moved from the first line."),
+    "successful first-line extraction must not add redundant feedback copy");
+  assert(!/input\.(?:focus|select)\s*\(/.test(interaction) && !/editor\.focus\s*\(/.test(interaction),
+    "Use First Line and Undo must not force either text field into editing mode");
   assert(/extracted\.title\.length\s*>\s*80/.test(interaction), "an overlong first line must not be silently truncated into a title");
   const normalizedSource = functionSource(client, "normalizedOcrText", "ocrUncertainRanges");
   const splitSource = functionSource(client, "splitOcrFirstLine", "ocrRegionAcknowledgements");
@@ -623,6 +641,7 @@ check("OCR confirmation can move the first line into an optional undoable title"
   assert.deepStrictEqual(split("\n\nA Rainy Day\n\nFirst paragraph.\n\nSecond paragraph."), {
     title: "A Rainy Day", remaining: "First paragraph.\n\nSecond paragraph.",
   });
+  requireEvery(renderSource, ["data-ocr-title-feedback", "aria-live=\"polite\" hidden"], "error-only OCR title feedback");
   requireEvery(styles, [".ocr-title-control", ".ocr-title-field input", ".ocr-title-feedback", ".ocr-title-feedback.is-error", "#c66b73"], "OCR title control styling");
   assert(/\.ocr-title-field input\s*\{[^}]*height:\s*44px/i.test(styles)
       && /\.ocr-title-actions button\s*\{[^}]*height:\s*44px/i.test(styles),
@@ -720,8 +739,8 @@ check("each revision-required sentence renders only source, consolidated analysi
     "single-paragraph grammar analysis styles");
   assert(!cardSource.includes("次点评"),
     "saved feedback rounds must not expose ordinal labels in the student interface");
-  assert(/\.rewrite-feedback-round\s*\+\s*\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
-    "a visible divider must appear only between consecutive submitted feedback rounds");
+  assert(/\.grammar-analysis-copy\s*\+\s*\.rewrite-feedback-round\s*,\s*\.rewrite-feedback-round\s*\+\s*\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
+    "a visible divider must separate the initial analysis and every submitted feedback round");
   assert(!/\.rewrite-feedback-round\s*>\s*span\s*\{/.test(styles),
     "the removed feedback-round label must not retain presentation styles");
   assert(!/\.grammar-analysis-(?:label|point|points|summary|result)\s*\{|\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),
@@ -882,6 +901,28 @@ check("rewrite draft cleanup removes only accepted sentences and retains failure
   assert(networkIndex >= 0 && networkReturnIndex > networkIndex
       && (cleanupIndex < 0 || networkReturnIndex < cleanupIndex),
     "network-disconnect recovery must return without clearing any sentence drafts");
+});
+
+check("rejected Submit results land on and pulse the first failed sentence", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const resultSource = matchingFunctionSource(client, "applyRewriteResult", "rewrite success application");
+  const focusSource = matchingFunctionSource(client, "focusRejectedRewriteSentence", "rejected rewrite focus helper");
+  requireEvery(resultSource, [
+    "restoreLanguageReviewState", "answer.accepted === false", "rejectedIndex",
+    "state.activeSentence", "renderLanguage()", "focusRejectedRewriteSentence",
+  ], "first rejected rewrite result handoff");
+  assert(resultSource.indexOf("state.activeSentence") < resultSource.indexOf("renderLanguage()")
+      && resultSource.indexOf("renderLanguage()") < resultSource.indexOf("focusRejectedRewriteSentence"),
+    "the first rejected sentence must be selected before one render, then focused after materialization");
+  requireEvery(focusSource, [
+    "++stageViewportResetToken", "requestAnimationFrame", "sentence-card-",
+    "is-revision-attention", "scrollIntoView", "block: 'start'", "prefers-reduced-motion: reduce",
+  ], "rejected sentence positioning and attention cue");
+  assert(/\.sentence-card\.is-revision-attention\s+\.sentence-card-face\s*\{[^}]*animation:\s*sentenceRevisionAttentionPulse\s+1\.7s\s+ease-in-out\s+infinite/is.test(styles),
+    "the rejected card must reuse the Overdue-style 1.7-second red pulse");
+  assert(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.sentence-card\.is-revision-attention\s+\.sentence-card-face\s*\{[^}]*animation:\s*none\s*!important/is.test(styles),
+    "Reduced Motion must replace the rejected-card pulse with a static red emphasis");
 });
 
 check("effective sentences use the static correct icon and no coaching controls", () => {
@@ -1332,8 +1373,10 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
   ], "Review Scan mapping cards");
   [
     "Keep typed", "Use scanned", "data-scan-choice", "已有手写草稿",
-    "SCANNED REVISION", "NEEDS REVISION", "手写编号",
+    "SCANNED REVISION", "NEEDS REVISION", "手写编号", "revision-scan-warning-list",
   ].forEach((removed) => assert(!reviewSource.includes(removed), `Review Scan card must omit ${removed}`));
+  assert(!client.includes("revisionScanWarningLabel"),
+    "provider warning copy must remain hidden from the OCR confirmation UI");
   [
     "revision-scan-heading", "revision-scan-count", "revision-scan-instructions",
     "revision-scan-missing", "SENTENCE REVISION", "Review Scan",
