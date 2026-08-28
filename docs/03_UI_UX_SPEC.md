@@ -2073,12 +2073,18 @@ Important mobile rules:
   a compact `Title (Optional)` field follows with `Use First Line`; the action
   moves the first non-empty line out of the manuscript and exposes a quiet `Undo`
   that restores the exact prior title, editor HTML, and acknowledged-region state.
+  A successful move shows no `Moved from the first line` status and does not focus
+  or select either editable field; the student enters editing mode only by choosing
+  a text surface. The feedback row is absent unless extraction fails, in which case
+  the existing concise pale-red guidance appears.
   The input has no visible label above it, keeps its accessible name through
   `aria-label`, and shares one 44px height and baseline with `Use First Line`.
   Invalid/overlong first-line guidance uses low-emphasis pale-red text.
   Editing either field commits to the new state and dismisses Undo. Prompt OCR does
-  not show title controls. The editable manuscript follows, with one horizontally
-  centered `Confirm` footer action. Remove `Upload Again` from this review step, together with the former
+  not show title controls. The editable manuscript follows directly on the yellow
+  paper without another bordered/background card. One horizontally centered
+  `Confirm` action sits outside and below the paper rather than inside its footer.
+  Remove `Upload Again` from this review step, together with the former
   Chinese heading, explanatory copy, step indicator, uncertainty count, photo
   label, and editor label.
 - Image comparison is closed by default on every viewport. `Compare with Image`
