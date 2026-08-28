@@ -200,9 +200,11 @@
 #student-share-result a { color: #9bd5ff; }
 .speaking-report-candidates { display: grid; gap: 13px; }
 .speaking-report-person { padding: clamp(18px,3vw,25px); border-radius: 22px; background: rgba(253,254,254,.79); }
+.speaking-report-person.is-self { border: 1px solid rgba(8,124,240,.20); background: radial-gradient(circle at 96% 0,rgba(78,183,245,.10),transparent 31%),rgba(253,254,254,.84); box-shadow: 0 15px 38px rgba(32,104,157,.09), inset 0 1px 0 rgba(255,255,255,.86); }
 .speaking-report-person-head { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: start; gap: 13px; margin-bottom: 17px; }
 .speaking-report-person-head .speaking-avatar { width: 44px; height: 44px; color: #76531a; background: linear-gradient(145deg,#fff0cf,#fff8e9); }
 .speaking-report-person h4 { margin: 1px 0 5px; font-size: 1rem; }
+.speaking-report-person-head .eyebrow { margin: 0 0 4px; color: var(--sl-blue-deep); font-size: .58rem; }
 .speaking-report-person-head p { margin: 0; color: var(--sl-muted); font-size: .8rem; line-height: 1.5; }
 .speaking-score-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; }
 .speaking-score-card { position: relative; overflow: hidden; padding: 14px; border: 1px solid rgba(78,100,111,.10); border-radius: 16px; background: rgba(244,248,249,.72); }
@@ -216,6 +218,33 @@
 .speaking-coaching-grid .speaking-report-list { border-color: rgba(78,100,111,.09); color: var(--sl-ink); background: rgba(250,252,252,.70); }
 .speaking-coaching-grid .speaking-report-list h4 { color: #5f7078; }
 .speaking-coaching-grid .speaking-report-list ul { color: #4e6068; }
+.speaking-turn-review { overflow: hidden; margin-top: 16px; border: 1px solid rgba(47,90,119,.13); border-radius: 18px; background: rgba(244,249,252,.72); }
+.speaking-turn-review > summary { display: flex; align-items: center; justify-content: space-between; min-height: 66px; padding: 13px 16px; cursor: pointer; list-style: none; }
+.speaking-turn-review > summary::-webkit-details-marker { display: none; }
+.speaking-turn-review > summary::after { content: "+"; color: var(--sl-blue); font-size: 1.35rem; font-weight: 420; }
+.speaking-turn-review[open] > summary::after { content: "−"; }
+.speaking-turn-review > summary strong, .speaking-turn-review > summary small { display: block; }
+.speaking-turn-review > summary strong { color: #21445b; font-size: .82rem; }
+.speaking-turn-review > summary small { margin-top: 3px; color: #71828b; font-size: .66rem; }
+.speaking-turn-review-note { margin: 0; padding: 0 16px 14px; color: #647983; font-size: .7rem; line-height: 1.45; }
+.speaking-turn-list { display: grid; gap: 10px; padding: 0 11px 11px; }
+.speaking-turn-card { overflow: hidden; border: 1px solid rgba(57,85,100,.10); border-radius: 15px; background: rgba(255,255,255,.84); box-shadow: 0 5px 16px rgba(38,72,92,.05); }
+.speaking-turn-card > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 13px; border-bottom: 1px solid rgba(57,85,100,.08); }
+.speaking-turn-number { color: #176da8; font-size: .69rem; font-weight: 790; text-transform: uppercase; }
+.speaking-turn-time { margin-left: 7px; color: #7c8a91; font-size: .65rem; font-variant-numeric: tabular-nums; }
+.speaking-turn-caution { padding: 4px 7px; border-radius: 999px; color: #94611e; background: rgba(226,153,57,.11); font-size: .58rem; line-height: 1.25; text-align: right; }
+.speaking-turn-card blockquote { margin: 0; padding: 14px 15px; color: #334851; background: rgba(42,123,175,.045); font-size: .78rem; line-height: 1.58; }
+.speaking-turn-card blockquote span { display: block; margin-bottom: 5px; color: #768890; font-size: .59rem; font-weight: 750; letter-spacing: .045em; text-transform: uppercase; }
+.speaking-turn-coaching { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; background: rgba(57,85,100,.09); }
+.speaking-turn-coaching > section { padding: 14px; background: rgba(255,255,255,.91); }
+.speaking-turn-coaching > section > p:not(.speaking-turn-domain) { margin: 7px 0 0; color: #4d6069; font-size: .73rem; line-height: 1.5; }
+.speaking-turn-domain { margin: 0; color: #146eaa; font-size: .66rem; font-weight: 790; }
+.speaking-turn-coaching [data-domain="io"] .speaking-turn-domain { color: #337b5e; }
+.speaking-turn-sample { margin-top: 11px; padding: 10px 11px; border-radius: 12px; color: #274353; background: #f0f7fb; }
+.speaking-turn-coaching [data-domain="io"] .speaking-turn-sample { color: #2f5042; background: #f0f8f4; }
+.speaking-turn-sample span, .speaking-turn-sample q { display: block; }
+.speaking-turn-sample span { margin-bottom: 4px; color: #71838c; font-size: .57rem; font-weight: 760; letter-spacing: .04em; text-transform: uppercase; }
+.speaking-turn-sample q { font-size: .75rem; font-weight: 630; line-height: 1.5; quotes: "“" "”"; }
 .speaking-transcript { padding: 0; overflow: hidden; }
 .speaking-transcript summary { padding: 16px 18px; cursor: pointer; color: #2c3b42; font-size: .83rem; font-weight: 740; list-style: none; }
 .speaking-transcript summary::-webkit-details-marker { display: none; }
@@ -275,6 +304,9 @@
     .speaking-participant-actions { max-width: none; justify-content: flex-start; }
     .speaking-roster-editor { grid-template-columns: 1fr auto; }
     .speaking-voice-grid, .speaking-score-grid, .speaking-coaching-grid, .speaking-report-columns { grid-template-columns: 1fr; }
+    .speaking-turn-coaching { grid-template-columns: 1fr; }
+    .speaking-turn-card > header { align-items: flex-start; flex-direction: column; }
+    .speaking-turn-caution { text-align: left; }
     .speaking-recording-choice { grid-template-columns: 1fr; }
     .speaking-dialog { width: 100%; max-height: calc(94vh - env(safe-area-inset-top)); margin: auto 0 0; border-radius: 28px 28px 0 0; }
     .speaking-dialog::before { content: ""; display: block; width: 38px; height: 5px; margin: 9px auto -4px; border-radius: 10px; background: rgba(69,87,96,.18); }

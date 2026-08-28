@@ -2482,7 +2482,13 @@ one visual level.
 Discussion reports use one dark group-summary surface followed by one light
 Candidate surface per Speaker. Each Candidate keeps the three 0–7 domains in a
 single score grid, then separates Pronunciation Not assessed and the three
-coaching lists. Transcript content stays collapsed by default. On phones,
+coaching lists. Below those summaries, `My turn-by-turn review` is expanded for
+the signed-in Candidate and peer reviews remain collapsible. Each turn card
+shows time, `What you said · AI transcript`, a visible ASR uncertainty note
+when confidence is low or unavailable, and side-by-side CS and IO coaching.
+Each domain ends with its own English `Try saying` sample; a fixed note explains
+that VL supports these two goals and is not a separate turn score. Transcript
+content stays collapsed by default. On phones,
 lists and score grids become one column, participant actions wrap below the
 identity, and dialogs become bottom sheets with a visible grabber and sticky
 actions. The page must honor reduced motion, reduced transparency, increased

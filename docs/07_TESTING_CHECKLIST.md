@@ -2294,6 +2294,11 @@ page, no audio/download controls, teacher name selection, and reduced motion.
 They also lock the student hierarchy classes, native hidden-state override,
 single-focus detail mode, structured report score grid, mobile bottom-sheet
 breakpoint, reduced-transparency fallback, and increased-contrast fallback.
+Turn-review contracts additionally group consecutive same-Speaker segments,
+split turns at speaker/context boundaries, preserve unknown ASR confidence,
+derive rather than trust turn counts, reject incomplete/duplicate/foreign turn
+reviews, and verify that Student Share contains the sharer's transcript-backed
+CS/IO samples without internal segment or Speaker keys.
 The authenticated page must complete `getSession()` once and then call
 `speakingLab` directly through the SDK; do not add concurrent redundant
 `callAuthenticatedFunction` preflights. The initial Voiceprint and Discussion
@@ -2327,6 +2332,11 @@ a Discussion hides the home hero, Voice ID card, section heading, and list;
 participant actions remain reachable; the transcript is collapsed; the phone
 dialog rests as a bottom sheet with sticky Cancel/Create actions; and returning
 to Discussions restores the home surface.
+For a new V2 ready report, confirm the signed-in Candidate appears first and
+their turn review is expanded; every turn quotes the correct server transcript
+and time range; CS and IO each show commentary plus `Try saying`; low/unknown
+confidence shows an ASR caution; peer reviews collapse; and the two-column
+coaching grid becomes one column without horizontal overflow at 390 pixels.
 
 Manual voiceprint gates require student first enrolment/update/delete; teacher
 VIP lookup by exact Student ID; teacher VIP and Non-VIP roster enrolment;
