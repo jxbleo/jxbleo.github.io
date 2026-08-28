@@ -1228,9 +1228,10 @@ optional so older text-only OCR payloads remain readable.
 ## Speaking Lab collections
 
 The V1 backend adds these `ADMINONLY` collections: `speaking_discussions`
-(creator, prompt/date/title, derived roster/recording/analysis state, formal
-asset and active revision references); `speaking_participants` (Discussion-
-scoped VIP/Guest rows, invitation state, snapshots, Voice Reference status,
+(creator, prompt/date/title, derived Candidate count, access/recording/analysis
+state, formal asset and active revision references); `speaking_participants`
+(Discussion-scoped VIP/Guest access rows, manual or automatic invitation
+source, snapshots, Voice Reference status, automatic-match score/source,
 mapping revision and identity status); `speaking_audio_assets` (private
 two-phase upload audit, formal/reference kind, file metadata, quality and
 retention timestamps); `speaking_ai_jobs` (stable operation/job IDs, stage,
@@ -1243,6 +1244,16 @@ revocation); `speaking_model_usage_events` (one safe metadata ledger row
 per physical provider call); `speaking_voiceprints` (one private reusable
 provider locator and lifecycle per subject); and `speaking_voiceprint_events`
 (append-only enrol/update/delete consent and actor audit).
+
+New `speaking_discussions.candidate_count` is nullable until transcription.
+Automatic VIP rows use `invitation_source: "automatic_voice_match"`,
+`identity_status: "ai_matched"`,
+`voice_match_source: "reusable_voiceprint_1_to_n"`, bounded numeric
+`voice_match_score` and
+`voice_match_margin`, plus the private internal `voiceprint_profile_id`.
+Existing student/teacher-confirmed identity status is never downgraded by a
+later automatic pass. `speaking_identity_events.event_type` additionally
+accepts `automatic_voice_match_proposed`.
 
 For `speaking_audio_assets`, `file_id` may be `null` only while `status` is
 `uploading`. `startAudioUpload` stores the server-reserved `cloud_path` and
@@ -1279,8 +1290,13 @@ each physical provider request a stable usage-ledger identity across manual
 retries. It never contains the temporary audio URL or provider response.
 The matching processing report may contain a server-canonical transcript,
 Candidate/non-Candidate role flags, rejected-segment count, and audio-quality
-warning codes before its immutable `ready` transition. Only a `ready` report
-may become `active_report_version`.
+warning codes before its immutable `ready` transition. Its
+`voice_matching` object may contain bounded private CI job IDs, derived
+private file IDs while processing, source turn IDs, safe status/reason codes,
+scores, runner-up scores, and internal voiceprint/profile locators. After
+matching, derived audio is deleted and ready report projections expose only
+safe Candidate match status/score. Only a `ready` report may become
+`active_report_version`.
 
 V2 `speaking_reports.dse_analysis.candidates[].turn_reviews` contains one
 canonical row per Candidate speaking turn: `turn_id`, plus

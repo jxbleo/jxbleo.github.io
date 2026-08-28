@@ -1206,6 +1206,18 @@ browser asset, deploy plan, or Git. Configure non-secret
 the official ASR endpoint. Voiceprint registration can be enabled independently
 of the still-gated speech transcription/text-analysis adapters.
 
+Automatic Candidate matching additionally uses Tencent COS/CI media processing.
+The owner must bind the same private Storage bucket to Data Processing, enable
+media processing, and approve its asynchronous-processing service role before
+deployment. Optional `SPEAKING_TENCENT_CI_REGION` defaults to
+`SPEAKING_TENCENT_ASR_REGION` and should normally be `ap-shanghai`. The
+function runtime policy needs `ci:CreateMediaJobs` and
+`ci:DescribeMediaJob`; Tencent also requires narrowly scoped
+`cam:PassRole` for the approved CI service role. Preserve the existing
+CloudBase Storage permission to download and delete derived objects only under
+`speaking-lab/<discussion>/voice-match/<job>/`. Do not use `ci:*`,
+`cam:*`, or a public bucket.
+
 The function runtime role `TCB_QcsRole` must have a least-privilege CAM policy
 allowing `VoicePrintEnroll`, `VoicePrintUpdate`, `VoicePrintDelete`,
 `VoicePrintVerify`, `VoicePrintGroupVerify`, `VoicePrintCount`, and
@@ -1222,6 +1234,12 @@ polled rather than recreated, inspect the canonical Candidate/non-Candidate
 tracks, validate the local report schema, and record actual cost/latency. The
 provider task ID is valid only for Tencent polling and is never a Discussion or
 report identity.
+
+For the same benchmark, confirm each eligible Candidate creates at most one CI
+job, the job is polled by its original ID, the output is WAV/PCM 16 kHz mono,
+score/margin/one-to-one rules create only expected invitations, and every
+derived output object is deleted after verification. Disable or misconfigure CI
+once and confirm the report still completes with anonymous Speaker labels.
 
 Before static publication, deploy both changed functions together, run one
 owner-authorized VIP test enrol/update/delete, verify the provider locator is

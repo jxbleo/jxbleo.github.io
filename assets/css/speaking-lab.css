@@ -157,6 +157,22 @@
 .speaking-section-card header p { margin: 4px 0 0; color: var(--sl-muted); font-size: .78rem; line-height: 1.45; }
 .speaking-prompt-text { margin: 0; padding: 15px 17px; border-left: 3px solid rgba(8,124,240,.52); border-radius: 5px 15px 15px 5px; color: #34454d; background: rgba(8,124,240,.055); font-size: .91rem; line-height: 1.65; white-space: pre-wrap; }
 
+.speaking-candidates-card { background: radial-gradient(circle at 100% 0, rgba(68,177,243,.10), transparent 34%), rgba(255,255,255,.60); }
+.speaking-candidate-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+.speaking-candidate-tile { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 11px; min-height: 72px; padding: 12px; border: 1px solid rgba(78,100,111,.10); border-radius: 17px; background: rgba(251,253,253,.72); }
+.speaking-candidate-tile[data-match="matched"] { border-color: rgba(35,148,99,.18); background: rgba(239,250,245,.76); }
+.speaking-candidate-orb { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px; color: #176da8; background: linear-gradient(145deg,#dff2ff,#f0f9ff); font-size: .72rem; font-weight: 810; }
+.speaking-candidate-tile[data-match="matched"] .speaking-candidate-orb { color: #247254; background: linear-gradient(145deg,#dff5ea,#f1fbf6); }
+.speaking-candidate-tile strong, .speaking-candidate-tile small { display: block; }
+.speaking-candidate-tile strong { color: #26343b; font-size: .83rem; }
+.speaking-candidate-tile small { margin-top: 4px; color: var(--sl-muted); font-size: .68rem; line-height: 1.4; }
+.speaking-candidate-empty { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 13px; padding: 16px; border: 1px dashed rgba(74,95,106,.17); border-radius: 17px; color: var(--sl-muted); background: rgba(248,251,252,.52); }
+.speaking-candidate-empty > span { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px; color: var(--sl-blue); background: var(--sl-blue-soft); font-size: 1.1rem; }
+.speaking-candidate-empty p { margin: 0; font-size: .75rem; line-height: 1.5; }
+.speaking-candidate-empty strong { color: #35474f; }
+.speaking-identity-access { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--sl-hairline); }
+.speaking-identity-access h4 { margin: 0 0 9px; color: #53656e; font-size: .69rem; letter-spacing: .045em; text-transform: uppercase; }
+
 .speaking-participants { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .speaking-participant { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 64px; padding: 10px 12px; border: 1px solid rgba(78,100,111,.10); border-radius: 16px; background: rgba(251,253,253,.67); }
 .speaking-participant-identity { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 11px; min-width: 0; }
@@ -306,7 +322,7 @@
     .speaking-participant { grid-template-columns: 1fr; align-items: start; }
     .speaking-participant-actions { max-width: none; justify-content: flex-start; }
     .speaking-roster-editor { grid-template-columns: 1fr auto; }
-    .speaking-voice-grid, .speaking-score-grid, .speaking-coaching-grid, .speaking-report-columns { grid-template-columns: 1fr; }
+    .speaking-candidate-grid, .speaking-voice-grid, .speaking-score-grid, .speaking-coaching-grid, .speaking-report-columns { grid-template-columns: 1fr; }
     .speaking-turn-coaching { grid-template-columns: 1fr; }
     .speaking-turn-card > header { align-items: flex-start; flex-direction: column; }
     .speaking-turn-caution { text-align: left; }
