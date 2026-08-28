@@ -176,6 +176,9 @@
 .speaking-quality-warning { min-height: 20px; margin: 8px 0 0; color: #a3463f; font-size: .78rem; line-height: 1.45; text-align: center; }
 .speaking-detail-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 14px; }
 .speaking-recording-card > .speaking-detail-actions { justify-content: center; }
+.speaking-recording-card > .speaking-detail-actions[hidden] { display: none !important; }
+#upload-recording:disabled { cursor: not-allowed; }
+#upload-recording.is-uploading:disabled { cursor: wait; }
 .speaking-voice-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
 .speaking-upload-panel { padding: 15px; border-radius: 17px; }
 .speaking-voice-card { background: rgba(249,252,252,.72); }
