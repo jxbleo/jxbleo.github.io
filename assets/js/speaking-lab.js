@@ -509,7 +509,7 @@
         }, delay);
     }
     function loadList() {
-        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
+        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
     document.getElementById('new-discussion').addEventListener('click', function () { if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); });
     document.getElementById('open-my-voiceprint').addEventListener('click', openVoiceprintDialog);
