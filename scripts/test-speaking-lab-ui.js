@@ -31,6 +31,9 @@ function run() {
   assert.match(report, /speaking-report\.js\?v=/);
   assert.doesNotMatch(report, /<audio\b|download\s*=/i);
   assert.match(app, /MediaRecorder/);
+  assert.match(app, /api\.callFunction\('speakingLab'/);
+  assert.doesNotMatch(app, /callAuthenticatedFunction\('speakingLab'/);
+  assert.match(app, /Page startup has already completed getSession/);
   assert.match(app, /getUserMedia/);
   assert.match(app, /AnalyserNode|createAnalyser/);
   assert.match(app, /-45|0\.98|INPUT_LOSS_SECONDS/);

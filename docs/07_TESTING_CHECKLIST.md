@@ -2273,6 +2273,11 @@ pronunciation, Student/Teacher redaction, per-snapshot aliases, token hashing,
 idempotency/lease projections, and forbidden queue content. Static tests cover
 student recording fallback, no browser audio persistence, noindex external
 page, no audio/download controls, teacher name selection, and reduced motion.
+The authenticated page must complete `getSession()` once and then call
+`speakingLab` directly through the SDK; do not add concurrent redundant
+`callAuthenticatedFunction` preflights to the initial Voiceprint and Discussion
+reads. Reload a valid student session and confirm `Loading your Discussions…`
+settles and at least one `speakingLab` invocation reaches the cloud logs.
 
 The same command runs `scripts/test-speaking-voiceprints.js`. It must validate
 16 kHz/16-bit/mono WAV structure and duration bounds, opaque Tencent nicknames,
