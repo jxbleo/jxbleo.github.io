@@ -2315,7 +2315,8 @@ Important mobile rules:
   sentence accent color never recolors these semantic marks.
 - The analysis face keeps the initial coaching paragraph first. Every later Submit
   feedback is shown beneath it in chronological order. Do not display round labels
-  such as `第 1 次点评`; place one thin sentence-color divider only between
+  such as `第 1 次点评`; place one thin sentence-color divider between the initial
+  coaching paragraph and the first submitted feedback, then between every pair of
   consecutive submitted feedback paragraphs. Historical feedback remains readable
   after refresh or re-login without exposing its internal round number.
 - After a student revision is accepted, that sentence card opens on the corrected

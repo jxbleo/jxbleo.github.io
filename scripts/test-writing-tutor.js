@@ -730,8 +730,8 @@ check("each revision-required sentence renders only source, consolidated analysi
     "single-paragraph grammar analysis styles");
   assert(!cardSource.includes("次点评"),
     "saved feedback rounds must not expose ordinal labels in the student interface");
-  assert(/\.rewrite-feedback-round\s*\+\s*\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
-    "a visible divider must appear only between consecutive submitted feedback rounds");
+  assert(/\.grammar-analysis-copy\s*\+\s*\.rewrite-feedback-round\s*,\s*\.rewrite-feedback-round\s*\+\s*\.rewrite-feedback-round\s*\{[^}]*border-top\s*:\s*1px\s+solid/is.test(styles),
+    "a visible divider must separate the initial analysis and every submitted feedback round");
   assert(!/\.rewrite-feedback-round\s*>\s*span\s*\{/.test(styles),
     "the removed feedback-round label must not retain presentation styles");
   assert(!/\.grammar-analysis-(?:label|point|points|summary|result)\s*\{|\.issue-list\s*\{|\.coaching-summary\s*\{|\.sentence-feedback\s*\{/.test(styles),

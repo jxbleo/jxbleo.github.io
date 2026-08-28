@@ -2101,7 +2101,8 @@ High priority improvement:
 - Submit the same incorrect sentence at least three times. Confirm the analysis
   face keeps the original coaching first, then shows all three feedback paragraphs
   in chronological order without any “第几次点评” label. Confirm one thin divider
-  appears between each pair of submitted feedback paragraphs, not before every paragraph.
+  separates the original coaching from the first submitted feedback, then appears
+  between each pair of submitted feedback paragraphs.
   Refresh and sign in again to confirm every round remains. Replay the same
   operation ID and confirm it does not create a duplicate round. For a legacy
   latest-only record, confirm the existing feedback becomes round 1 and the next
