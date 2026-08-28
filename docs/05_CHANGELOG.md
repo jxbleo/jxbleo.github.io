@@ -23,6 +23,10 @@
   invoke the worker, and avoids a secret that function-detail APIs may echo.
 - Mapped Tencent ASR CAM authorization failures to the provider-not-configured
   state so students are not incorrectly told to repeat a valid recording.
+- Removed redundant concurrent CloudBase login preflights from the authenticated
+  Speaking page. Page startup still verifies the student and every Speaking
+  action remains server-authorized, while the initial Voiceprint and Discussion
+  reads can no longer remain indefinitely in `Loading` before function entry.
 
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.

@@ -49,7 +49,12 @@
         });
     }
     function call(action, data) {
-        return api.callAuthenticatedFunction('speakingLab', Object.assign({ action: action }, data || {})).then(function (result) {
+        // Page startup has already completed getSession(), and speakingLab
+        // derives the caller from server-side context on every action. Avoid a
+        // second browser-SDK login preflight here: concurrent preflights can
+        // leave both initial Speaking reads pending without invoking the
+        // function at all.
+        return api.callFunction('speakingLab', Object.assign({ action: action }, data || {})).then(function (result) {
             if (!result || result.success === false) {
                 var error = new Error(result && result.message || 'Speaking Lab request failed.');
                 error.code = result && result.code || 'SPEAKING_LAB_ERROR';
