@@ -2,6 +2,13 @@
 
 ## 2026-08-29
 
+- Separated the Student Dashboard's Writing, Intensive Listening, and Speaking
+  entrances from the welcome hero into three aligned full-width pale-glass
+  cards with blue, teal, and orange category washes. Restored visible workspace
+  titles and circular `写` / `听` / `说` identifiers, and clarified the Speaking
+  destination as HKDSE Paper 4 Group Interaction in both card and confirmation
+  copy.
+
 - Removed visible `Opening your writing…` copy from every Writing refresh path while retaining one accessible activity indicator, the single-shell restoration lifecycle, and the existing resolved-stage materialization.
 
 - Rebuilt the Speaking Lab student home around two DSE Paper 4 mode cards:

@@ -193,23 +193,25 @@ Navigation:
   does not jump. Reduced-motion mode uses a 140ms opacity-only exit
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
-- the Dashboard hero contains only the personalized greeting, one motivational
-  sentence, and exactly three full-width learning-workspace bands in Writing,
-  Intensive Listening, and Speaking order. The former `THIS WEEK` progress
-  surface is not rendered. Keep about 40px of visible air between the top tool
-  bar and the hero. The bands share a shallow white inner surface and use muted
-  blue-grey, sage, and warm-sand gradients that remain subordinate to the hero.
-  Do not render visible category titles, character watermarks, arrows, or edge
-  bars. Tablet and desktop show each complete purpose sentence; phone layouts
-  keep exactly one line and slowly scroll only when the sentence overflows. The
-  right-side identifiers are the approved inline SVGs: Human pen for Writing,
-  Tools headphones for Intensive Listening, and Tools microphone for Speaking.
+- the Dashboard hero contains only the personalized greeting and one
+  motivational sentence; the former `THIS WEEK` progress surface is not
+  rendered. Keep about 40px of visible air between the top tool bar and the
+  hero. Directly below it, render exactly three independent full-width
+  learning-workspace cards in Writing, Intensive Listening, and Speaking order.
+  Their outer edges align exactly with the welcome hero, with no shared dark or
+  glass container around the group. Each card uses its own pale glass surface,
+  a restrained blue, teal, or orange wash, a visible English title and purpose
+  sentence, plus a circular `写`, `听`, or `说` identifier. Phone layouts wrap
+  purpose copy naturally inside three equal-height cards instead of horizontally
+  scrolling it. The Speaking
+  title reads `SPEAKING · HKDSE PAPER 4`; its purpose and confirmation explicitly
+  identify HKDSE Paper 4 Group Interaction rather than generic speaking work.
   Pointer-down immediately compresses the whole band. Reduced Motion removes
-  positional motion and leaves overflowing phone copy static. An ordinary click
-  or tap opens a lightweight, focus-trapped confirmation dialog that repeats the
-  chosen icon and names the destination; Cancel, backdrop, and Escape close it
-  and restore card focus, while Enter follows the existing link. Modified clicks
-  keep native browser new-tab behavior
+  positional motion. An ordinary click or tap opens a lightweight,
+  focus-trapped confirmation dialog that repeats the chosen pen, headphones, or
+  microphone icon and names the destination; Cancel, backdrop, and Escape close
+  it and restore card focus, while Enter follows the existing link. Modified
+  clicks keep native browser new-tab behavior
 - assignments and finished work open from a standalone far-left `To Do List`
   checklist button, separated from the right-side utility controls
 - a calendar icon in the right-side utility group opens the signed-in
@@ -2543,8 +2545,9 @@ container normally declares grid or flex display.
 
 ### Intensive Listening surfaces
 
-The dashboard presents three equal full-width capsules in Writing, Intensive
-Listening, Speaking order. The dedicated Intensive Listening Library uses
+The dashboard presents three independent equal full-width cards in Writing,
+Intensive Listening, Speaking order below the welcome hero. The dedicated
+Intensive Listening Library uses
 responsive two-column cards (one column on narrow screens), dynamic source
 filters, global search, Newest/Oldest sorting, and a Continue section only for
 partially complete materials. Cards use semantic sibling actions for Start,
