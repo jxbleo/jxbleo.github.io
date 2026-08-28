@@ -2,6 +2,14 @@
 
 ## 2026-08-28
 
+- Added a mandatory Speaking Lab ASR scoring safeguard: one suspicious,
+  low-confidence, or confidence-unknown transcription token can no longer
+  directly reduce a Candidate score, become a student criticism/exact
+  correction, or support a pronunciation inference. Exact language criticism
+  now requires repeated evidence across distinct segments or independently
+  unambiguous surrounding syntax; model input carries normalized per-segment
+  ASR confidence and an explicit uncertainty status.
+
 - Made the Speaking Lab Bailian/Qwen structured-report adapter explicitly use
   non-thinking mode so the DSE result remains one JSON object in
   `message.content` instead of failing local schema parsing.
