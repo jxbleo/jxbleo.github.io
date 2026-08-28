@@ -2338,6 +2338,16 @@ known opening facilitator cue must be marked non-Candidate even if the provider
 assigns it to the first Candidate track, and its segment ID must be rejected as
 scoring evidence.
 
+The service contract must also lock the ASR scoring safeguard: every model
+segment includes normalized confidence and one of `confidence_unknown`,
+`low_confidence`, or `higher_confidence`; the system prompt forbids a score
+deduction, direct criticism, exact correction, or pronunciation inference from
+one suspicious ASR token. In a real-audio review, seed or locate at least one
+obvious homophone/nonsense transcription (for example `up killing trend`) and
+confirm the new report does not present it as a Candidate error unless the same
+pattern repeats across distinct segments or independent surrounding syntax
+makes the error unambiguous.
+
 Rebuild `deploy-packages/speakingLab.zip` and
 `deploy-packages/speakingAiWorker.zip` and inspect both archives before every
 deployment. Each must contain only `index.js` and `package.json`, keep

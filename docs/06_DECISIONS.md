@@ -1201,6 +1201,19 @@ evidence locally. Pronunciation and delivery are not assessed in V1. Fixtures
 are test-only and cannot be selected from browser input, production environment
 flags, or queue metadata.
 
+ASR output is treated as fallible evidence rather than Candidate ground truth.
+The versioned DSE prompt receives each segment's normalized ASR confidence plus
+an explicit `confidence_unknown`, `low_confidence`, or `higher_confidence`
+status. Unknown confidence is neither accepted as accurate nor rejected as
+wrong. One suspicious token cannot cause a deduction, direct criticism, or
+exact correction; such criticism requires repetition across distinct segments
+or syntax that remains unambiguous without the suspicious token. This boundary
+stays in the rubric prompt instead of deterministic report post-processing,
+because the canonical report schema cannot reliably distinguish an exact
+language correction from broader evidence-based coaching. Local tests lock the
+instruction and input metadata, and every generated report records the prompt
+version used.
+
 Tencent's normal diarization output does not supply per-Speaker audio that can
 be sent safely to the existing single-speaker voiceprint verification API.
 Therefore reusable voiceprint auto-matching is not guessed from turn order and

@@ -7,6 +7,7 @@ const path = require("path");
 const lab = require("../cloudfunctions/_shared/speaking-lab");
 const speech = require("../cloudfunctions/speakingLab/speech-provider");
 const model = require("../cloudfunctions/speakingLab/model-provider");
+const prompts = require("../cloudfunctions/speakingLab/prompts");
 
 async function run() {
   const source = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/index.js"), "utf8");
@@ -58,6 +59,31 @@ async function run() {
   assert.equal(unknownConfidenceOutput.speaker_tracks[0].confidence, null);
   assert.equal(unknownConfidenceOutput.segments[0].confidence, null);
   assert.equal(model._test.normalizedUsage({}).total_tokens, null);
+
+  assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-08-28\./);
+  const systemPrompt = prompts.dseAnalysisPrompt();
+  assert.match(systemPrompt, /MANDATORY ASR SAFEGUARD/);
+  assert.match(systemPrompt, /Never deduct a score, criticize the Candidate, or propose an exact correction solely because of one odd word/);
+  assert.match(systemPrompt, /repeated in at least two distinct segments/);
+  assert.match(systemPrompt, /Never infer or criticize pronunciation from transcript spelling/);
+  const guardedUserPrompt = prompts.dseAnalysisUserPrompt({
+    taskText: "Discuss a trend.",
+    candidateSpeakerKeys: ["spk_01"],
+    nonCandidateSpeakerKeys: [],
+    schemaVersion: "test-schema",
+    segments: [
+      { segment_id: "seg_0001", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "up killing trend", confidence: null },
+      { segment_id: "seg_0002", speaker_key: "spk_01", start_ms: 1000, end_ms: 2000, text: "a clear point", confidence: 0.5 },
+      { segment_id: "seg_0003", speaker_key: "spk_01", start_ms: 2000, end_ms: 3000, text: "another point", confidence: 0.9 },
+    ],
+  });
+  assert.match(guardedUserPrompt, /Do not turn one suspicious transcription token into a student error/);
+  const guardedInput = JSON.parse(guardedUserPrompt.split("INPUT_JSON_BEGIN\n")[1].split("\nINPUT_JSON_END")[0]);
+  assert.deepEqual(guardedInput.segments.map((segment) => [segment.asr_confidence, segment.asr_text_status]), [
+    [null, "confidence_unknown"],
+    [0.5, "low_confidence"],
+    [0.9, "higher_confidence"],
+  ]);
 
   const speechCalls = [];
   const speechEnv = {

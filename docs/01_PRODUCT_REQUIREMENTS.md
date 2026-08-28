@@ -2082,6 +2082,17 @@ recordings are private, and no pronunciation/delivery score or official total
 is produced. Reports use three integer 0–7 domains plus
 `Pronunciation & Delivery — Not assessed`.
 
+ASR text is supporting evidence rather than a guaranteed verbatim record. A
+single odd word, phonetic approximation, semantically impossible token, proper
+noun, or low/unknown-confidence phrase must not directly reduce a Candidate's
+score, be presented as the Candidate's language error, or generate an exact
+correction. Exact language criticism requires either the same pattern in at
+least two distinct segments or surrounding syntax that proves the error without
+depending on the suspicious token. Uncertain wording is omitted from exact
+correction while broader communication, interaction, and organisation may still
+be assessed from reliable context. Transcript spelling never supports a
+pronunciation criticism.
+
 Speaker Tracks are canonicalized server-side. A VIP may explicitly register a
 reusable Tencent voiceprint from the student Speaking Lab; the teacher may
 register or replace a VIP voiceprint by Student ID or from a Discussion roster.
