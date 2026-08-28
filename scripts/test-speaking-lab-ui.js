@@ -28,6 +28,7 @@ function run() {
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /aria-controls="speaking-sidebar"/);
   assert.match(page, /speaking-sidebar-home[^>]*>[\s\S]*Home/);
+  assert.match(page, /speaking-sidebar-new[^>]*aria-label="Create a new Discussion"/);
   assert.match(page, /id="speaking-list"[\s\S]*aria-label="Discussions"/);
   assert.match(page, /DSE PAPER 4[\s\S]*PART A[\s\S]*Group Discussion/);
   assert.match(page, /DSE PAPER 4[\s\S]*PART B[\s\S]*Individual Response/);
@@ -98,8 +99,11 @@ function run() {
   assert.match(app, /upload\.classList\.add\('is-uploading'\)/);
   assert.match(app, /upload\.classList\.remove\('is-uploading'\)/);
   assert.match(css, /speaking-detail-open \.speaking-mode-grid/);
-  assert.match(css, /\.speaking-sidebar[^}]*translateX\(calc\(100% \+ 32px\)\)/);
+  assert.match(css, /\.speaking-sidebar[^}]*translateX\(calc\(-100% - 32px\)\)/);
   assert.match(css, /\.speaking-sidebar\.is-open[^}]*translateX\(0\)/);
+  assert.match(css, /\.speaking-sidebar-scrim\[hidden\][^}]*display:\s*none !important/);
+  assert.match(css, /\.speaking-sidebar-scrim:not\(\[hidden\]\)[^}]*display:\s*block/);
+  assert.doesNotMatch(css, /\.speaking-sidebar[^}]*translateX\(calc\(100% \+ 32px\)\)/);
   assert.match(css, /\.speaking-mode-grid[^}]*repeat\(2/);
   assert.match(css, /speaking-report-overview/);
   assert.match(css, /speaking-score-grid/);
@@ -112,11 +116,14 @@ function run() {
   assert.match(app, /function closeSidebar\(options\)/);
   assert.match(app, /function returnToSpeakingHome\(\)/);
   assert.match(app, /sidebarHome\.addEventListener\('click', returnToSpeakingHome\)/);
+  assert.match(app, /sidebarNew\.addEventListener\('click', openNewDiscussionDialog\)/);
+  assert.match(app, /function openNewDiscussionDialog\(\)/);
+  assert.match(app, /closeSidebar\(\);\s*\n\s*auth\.getSession\(\)/);
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-candidates/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260829-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-2/);
+  assert.match(page, /speaking-lab\.js\?v=20260829-2/);
   console.log("Speaking Lab UI contracts passed.");
 }
 
