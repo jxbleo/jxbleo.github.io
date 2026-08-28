@@ -27,6 +27,7 @@ function run() {
   assert.match(page, /My voiceprint|voiceprint-recorder\.js\?v=/);
   assert.match(page, /invitation-dialog/);
   assert.match(page, /discussion-duration/);
+  assert.match(page, /value="cancel" formnovalidate/);
   assert.match(report, /noindex|nofollow/);
   assert.match(report, /speaking-report\.js\?v=/);
   assert.doesNotMatch(report, /<audio\b|download\s*=/i);
@@ -64,6 +65,16 @@ function run() {
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
   assert.match(reportJs, /snapshot\.self|participant_summaries/);
   assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /prefers-reduced-transparency/);
+  assert.match(css, /prefers-contrast:\s*more/);
+  assert.match(css, /speaking-list\[hidden\].*speaking-detail\[hidden\]/);
+  assert.match(css, /speaking-detail-open \.speaking-lab-heading/);
+  assert.match(css, /speaking-report-overview/);
+  assert.match(css, /speaking-score-grid/);
+  assert.match(css, /border-radius:\s*28px 28px 0 0/);
+  assert.match(app, /classList\.add\('speaking-detail-open'\)/);
+  assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
+  assert.match(app, /speaking-report-candidates/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

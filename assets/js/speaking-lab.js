@@ -30,6 +30,7 @@
     var LOW_VOLUME_DBFS = -45;
     var CLIPPING_AMPLITUDE = 0.98;
     var INPUT_LOSS_SECONDS = 3;
+    var VOICE_REFERENCE_PASSAGE = 'Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.';
     var pollTimer = 0;
     var pollGeneration = 0;
     var voiceRecorder = null;
@@ -84,7 +85,7 @@
         });
     }
     function setStatus(message, isError) {
-        status.textContent = message || '';
+        status.innerHTML = message ? '<span class="speaking-status-dot" aria-hidden="true"></span><span>' + esc(message) + '</span>' : '';
         status.classList.toggle('is-error', Boolean(isError));
     }
     function friendlyError(error) {
@@ -100,6 +101,32 @@
     function voiceprintTime(seconds) {
         var value = Math.max(0, Math.min(20, Math.floor(Number(seconds || 0))));
         return '00:' + String(value).padStart(2, '0') + ' / 00:20';
+    }
+    function readableStatus(value) {
+        var text = String(value || 'not ready').replace(/_/g, ' ').trim();
+        return text ? text.charAt(0).toUpperCase() + text.slice(1) : 'Not ready';
+    }
+    function statusTone(value) {
+        var state = String(value || '').toLowerCase();
+        if (['ready', 'uploaded', 'accepted', 'student_confirmed', 'teacher_confirmed'].indexOf(state) >= 0) return 'ready';
+        if (['queued', 'processing', 'uploading', 'ai_matched'].indexOf(state) >= 0) return 'working';
+        if (['pending', 'failed', 'quality_failed', 'disputed'].indexOf(state) >= 0) return 'attention';
+        return 'neutral';
+    }
+    function initials(value) {
+        var parts = String(value || 'Speaker').trim().split(/\s+/).filter(Boolean);
+        return (parts.length > 1 ? parts[0].charAt(0) + parts[parts.length - 1].charAt(0) : parts[0].slice(0, 2)).toUpperCase();
+    }
+    function workflowMarkup(item) {
+        var recordingDone = item.recording_status === 'uploaded';
+        var reportDone = item.analysis_status === 'ready';
+        var analysisWorking = ['queued', 'processing'].indexOf(item.analysis_status) >= 0;
+        var steps = [
+            { label: 'Prepare group', state: recordingDone ? 'is-done' : 'is-current' },
+            { label: 'Record & analyse', state: reportDone ? 'is-done' : (recordingDone || analysisWorking ? 'is-current' : '') },
+            { label: 'Review report', state: reportDone ? 'is-current' : '' }
+        ];
+        return '<div class="speaking-workflow" aria-label="Discussion progress">' + steps.map(function (step) { return '<span class="speaking-workflow-step ' + step.state + '">' + esc(step.label) + '</span>'; }).join('') + '</div>';
     }
     function renderMyVoiceprint(result) {
         voiceprintTarget = result && result.target || null;
@@ -212,11 +239,13 @@
     function listCard(item) {
         var pending = (item.participants || []).some(function (participant) { return participant.invitation_status === 'pending'; });
         return '<button class="speaking-card" type="button" data-discussion-id="' + esc(item.discussion_id) + '">' +
-            '<span><strong>' + esc(item.title || 'Untitled Discussion') + '</strong><small>' + esc(formatDate(item.discussion_date)) + '</small></span>' +
-            '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(item.participant_count || 0) + ' participants</span><span class="speaking-pill">' + esc(item.analysis_status || 'not ready') + '</span>' + (pending ? '<span class="speaking-pill">Invitation</span>' : '') + '</span></button>';
+            '<span class="speaking-card-icon" aria-hidden="true"></span>' +
+            '<span class="speaking-card-copy"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3><span class="speaking-card-date">' + esc(formatDate(item.discussion_date)) + '</span></span>' +
+            '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(item.participant_count || 0) + ' people</span><span class="speaking-pill" data-tone="' + esc(statusTone(item.analysis_status)) + '">' + esc(readableStatus(item.analysis_status)) + '</span>' + (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + '</span>' +
+            '<svg class="speaking-card-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
     function renderList(items) {
-        if (!items.length) { list.innerHTML = '<div class="speaking-detail-card"><h2>Start your first Discussion</h2><p>Invite your group, add the DSE task prompt, and record when everyone is ready.</p></div>'; return; }
+        if (!items.length) { list.innerHTML = '<div class="speaking-detail-card speaking-empty-state"><div class="speaking-empty-icon" aria-hidden="true">◎</div><h2>Start your first Discussion</h2><p>Invite your group, add the DSE task, and record when everyone is ready.</p></div>'; return; }
         list.innerHTML = items.map(listCard).join('');
         list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
             button.addEventListener('click', function () { openDiscussion(button.getAttribute('data-discussion-id')); });
@@ -237,11 +266,11 @@
         if (participant.is_self && participant.identity_status === 'disputed') actions += '<span class="speaking-pill">Identity under teacher review</span>';
         if (item.can_edit_roster && participant.kind === 'guest') actions += '<button class="outline-button" type="button" data-rename-guest="' + esc(participant.participant_id) + '" data-current-name="' + esc(rosterName) + '">Rename</button>';
         if (item.can_edit_roster && item.roster_status === 'draft' && !participant.is_self) actions += '<button class="outline-button" type="button" data-remove-participant="' + esc(participant.participant_id) + '">Remove</button>';
-        return '<li class="speaking-participant"><span><strong>' + esc(label) + '</strong><small>' + esc(participant.invitation_status || 'accepted') + ' · ' + esc(participant.voice_reference_status || 'missing') + '</small></span><span>' + actions + '</span></li>';
+        return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(rosterName)) + '</span><span><strong>' + esc(label) + '</strong><small>' + esc(readableStatus(participant.invitation_status || 'accepted')) + ' · Voice sample ' + esc(readableStatus(participant.voice_reference_status || 'missing').toLowerCase()) + '</small></span></span><span class="speaking-participant-actions">' + actions + '</span></li>';
     }
     function reportList(title, items) {
         if (!Array.isArray(items) || !items.length) return '';
-        return '<h4>' + esc(title) + '</h4><ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul>';
+        return '<div class="speaking-report-list"><h4>' + esc(title) + '</h4><ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul></div>';
     }
     function internalReportMarkup(item) {
         var report = item.report;
@@ -251,12 +280,14 @@
         var candidates = (report.candidates || []).map(function (candidate) {
             var domains = Object.keys(domainLabels).map(function (key) {
                 var domain = candidate.domains && candidate.domains[key];
-                return domain ? '<div class="speaking-detail-grid"><dl><dt>' + esc(domainLabels[key]) + '</dt><dd>' + esc(domain.score) + '/7</dd></dl></div><p>' + esc(domain.commentary_zh || '') + '</p>' : '';
+                var score = domain && Number.isFinite(Number(domain.score)) ? Math.max(0, Math.min(7, Number(domain.score))) : 0;
+                return domain ? '<article class="speaking-score-card" style="--score:' + score + '"><div class="speaking-score-head"><span>' + esc(domainLabels[key]) + '</span><strong>' + esc(score) + '<small>/7</small></strong></div><p>' + esc(domain.commentary_zh || '') + '</p></article>' : '';
             }).join('');
-            return '<article class="speaking-upload-panel"><h4>' + esc(candidate.speaker_label || 'Speaker') + '</h4><p>' + esc(candidate.summary_zh || '') + '</p>' + domains + '<p><strong>Pronunciation &amp; Delivery:</strong> Not assessed</p>' + reportList('Strengths', candidate.strengths) + reportList('Priority actions', candidate.priority_actions) + reportList('Language suggestions', candidate.language_suggestions) + '</article>';
+            var speakerLabel = candidate.speaker_label || 'Speaker';
+            return '<article class="speaking-upload-panel speaking-report-person"><header class="speaking-report-person-head"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(speakerLabel)) + '</span><div><h4>' + esc(speakerLabel) + '</h4><p>' + esc(candidate.summary_zh || '') + '</p></div></header><div class="speaking-score-grid">' + domains + '</div><p class="speaking-pronunciation-note"><strong>Pronunciation &amp; Delivery</strong> · Not assessed in this version</p><div class="speaking-coaching-grid">' + reportList('Strengths', candidate.strengths) + reportList('Priority actions', candidate.priority_actions) + reportList('Language suggestions', candidate.language_suggestions) + '</div></article>';
         }).join('');
-        var transcript = (report.transcript || []).length ? '<details class="speaking-upload-panel"><summary>Complete transcript</summary>' + report.transcript.map(function (line) { return '<p><strong>' + esc(line.speaker_label || 'Speaker') + '</strong> <small>' + esc(Math.floor(Number(line.start_ms || 0) / 1000)) + 's</small><br>' + esc(line.text) + '</p>'; }).join('') + '</details>' : '';
-        return '<section class="speaking-upload-panel"><h3>Internal report</h3><p>' + esc(report.group_summary_zh || '') + '</p>' + reportList('Group strengths', report.group_strengths) + reportList('Group priorities', report.group_priorities) + reportList('Discussion flow', report.discussion_flow) + '<div class="speaking-detail-actions">' + (canShare ? '<button class="primary-button" type="button" id="create-student-share">Create Student Share</button>' : '<span class="speaking-pill">Confirm your voice before sharing</span>') + '</div><div id="student-share-result"></div>' + candidates + transcript + '</section>';
+        var transcript = (report.transcript || []).length ? '<details class="speaking-upload-panel speaking-transcript"><summary>Complete transcript</summary><div class="speaking-transcript-lines">' + report.transcript.map(function (line) { return '<p class="speaking-transcript-line"><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(Math.floor(Number(line.start_ms || 0) / 1000)) + 's</small><br>' + esc(line.text) + '</p>'; }).join('') + '</div></details>' : '';
+        return '<section class="speaking-report-shell"><article class="speaking-report-overview"><p class="eyebrow">DSE GROUP INTERACTION</p><h3>Discussion report</h3><p>' + esc(report.group_summary_zh || '') + '</p><div class="speaking-report-columns">' + reportList('Group strengths', report.group_strengths) + reportList('Group priorities', report.group_priorities) + reportList('Discussion flow', report.discussion_flow) + '</div><div class="speaking-detail-actions">' + (canShare ? '<button class="primary-button" type="button" id="create-student-share">Create Student Share</button>' : '<span class="speaking-pill">Confirm your voice before sharing</span>') + '</div><div id="student-share-result"></div></article><div class="speaking-report-candidates">' + candidates + '</div>' + transcript + '</section>';
     }
     function detailMarkup(item) {
         var canRecord = item.recording_status !== 'uploaded' && item.roster_status === 'draft';
@@ -266,15 +297,15 @@
             var action = mayUpload ? '<div class="speaking-detail-actions"><button class="outline-button" type="button" data-voice-record="' + esc(participant.participant_id) + '" data-voice-name="' + esc(rosterName) + '">Record sample</button><label class="outline-button speaking-file-button">Choose audio<input type="file" accept="audio/*" capture="user" hidden data-voice-file="' + esc(participant.participant_id) + '" data-voice-name="' + esc(rosterName) + '"></label></div>' : '';
             var label = participant.kind === 'guest' ? rosterName + ' · Guest participant · Name not verified' : rosterName;
             var reusable = participant.reusable_voiceprint_status === 'active';
-            return '<article class="speaking-upload-panel"><strong>' + esc(label) + '</strong><small>' + (reusable ? 'Reusable voiceprint ready' : 'Reusable voiceprint not set up') + ' · Discussion sample ' + esc(participant.voice_reference_status || 'missing') + '</small><p>' + (reusable ? 'The reusable voiceprint can identify this participant automatically. A Discussion sample remains available as a fallback.' : 'Read: “Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.”') + '</p>' + action + '</article>';
+            return '<article class="speaking-upload-panel speaking-voice-card"><strong>' + esc(label) + '</strong><small>' + (reusable ? 'Reusable voiceprint ready' : 'Reusable voiceprint not set up') + ' · Discussion sample ' + esc(readableStatus(participant.voice_reference_status || 'missing').toLowerCase()) + '</small><p>' + (reusable ? 'Reusable voice ID can support automatic matching. A Discussion sample remains available as a fallback.' : 'Read: “' + esc(VOICE_REFERENCE_PASSAGE) + '”') + '</p>' + action + '</article>';
         }).join('');
-        var recording = canRecord ? '<section class="speaking-upload-panel"><h3>Formal Discussion recording</h3><p>Choose Record now or upload one audio file. Audio is kept private.</p><label>Target time (seconds)<input id="recording-duration" type="number" min="180" max="1800" step="30" value="' + esc(item.duration_seconds) + '"></label><button class="outline-button" type="button" id="save-recording-duration">Save target time</button><div class="speaking-detail-actions"><button class="primary-button" type="button" id="record-now">Record now</button><label class="outline-button speaking-file-button">Upload audio<input type="file" accept="audio/*" hidden id="audio-file"></label></div><div class="speaking-recording-time" id="recording-time" hidden>00:00</div><div class="speaking-quality-warning" id="quality-warning" role="status"></div><div class="speaking-detail-actions" id="recording-actions" hidden><button class="outline-button" type="button" id="pause-recording">Pause</button><button class="outline-button" type="button" id="stop-recording">Stop</button><button class="outline-button" type="button" id="preview-recording" disabled>Play local preview</button><button class="primary-button" type="button" id="upload-recording" disabled>Upload recording</button></div></section>' : '';
-        var stage = item.analysis_status === 'queued' ? 'Preparing transcript' : item.analysis_status === 'processing' ? 'Analysing discussion' : item.analysis_status === 'ready' ? 'Report ready' : '';
+        var recording = canRecord ? '<section class="speaking-section-card speaking-recording-card"><header><div><h3>Record the Discussion</h3><p>Record on this device or upload one audio file. The recording stays private.</p></div><span class="speaking-pill">Target ' + esc(Math.round(Number(item.duration_seconds || 0) / 60)) + ' min</span></header><div class="speaking-recording-settings"><label>Target time in seconds<input id="recording-duration" type="number" min="180" max="1800" step="30" value="' + esc(item.duration_seconds) + '"></label><button class="outline-button" type="button" id="save-recording-duration">Save time</button></div><div class="speaking-recording-choice"><button class="primary-button" type="button" id="record-now">Record now</button><label class="outline-button speaking-file-button">Upload audio<input type="file" accept="audio/*" hidden id="audio-file"></label></div><div class="speaking-recording-time" id="recording-time" hidden>00:00</div><div class="speaking-quality-warning" id="quality-warning" role="status"></div><div class="speaking-detail-actions" id="recording-actions" hidden><button class="outline-button" type="button" id="pause-recording">Pause</button><button class="outline-button" type="button" id="stop-recording">Stop</button><button class="outline-button" type="button" id="preview-recording" disabled>Play local preview</button><button class="primary-button" type="button" id="upload-recording" disabled>Upload recording</button></div></section>' : '';
+        var stage = item.analysis_status === 'queued' ? 'Preparing transcript' : item.analysis_status === 'processing' ? 'Analysing discussion' : '';
         var reportEligible = Number(item.participant_count) >= 3 && Number(item.participant_count) <= 6;
-        var analysis = item.recording_status === 'uploaded' ? '<div class="speaking-detail-actions">' + (stage ? '<span class="speaking-pill speaking-stage">' + esc(stage) + '</span>' : (reportEligible ? '<button class="primary-button" type="button" id="start-analysis">' + (item.analysis_status === 'failed' ? 'Retry analysis' : 'Analyse Discussion') + '</button>' : '<span class="speaking-pill">Two participants do not generate a DSE report</span>')) + '</div>' : '';
+        var analysis = item.recording_status === 'uploaded' && item.analysis_status !== 'ready' ? '<div class="speaking-analysis-action">' + (stage ? '<span class="speaking-pill speaking-stage">' + esc(stage) + '</span>' : (reportEligible ? '<button class="primary-button" type="button" id="start-analysis">' + (item.analysis_status === 'failed' ? 'Retry analysis' : 'Analyse Discussion') + '</button>' : '<span class="speaking-pill">Two participants do not generate a DSE report</span>')) + '</div>' : '';
         var reportMarkup = internalReportMarkup(item);
-        var rosterEditor = item.can_edit_roster && item.roster_status === 'draft' ? '<div class="speaking-upload-panel"><label>VIP Student ID<input id="add-vip-id"></label><button class="outline-button" type="button" id="add-vip-participant">Invite VIP</button><label>Guest name<input id="add-guest-name"></label><button class="outline-button" type="button" id="add-guest-participant">Add Guest</button><p>Three to six participants are required for a DSE report.</p></div>' : '';
-        return '<article class="speaking-detail-card"><div class="speaking-detail-top"><button class="back-link" type="button" id="close-discussion">← Discussions</button><p class="eyebrow accent">DISCUSSION</p><h2>' + esc(item.title) + '</h2><p>' + esc(formatDate(item.discussion_date)) + '</p></div><div class="speaking-detail-grid"><dl><dt>Roster</dt><dd>' + esc(item.roster_status) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(item.recording_status) + '</dd></dl><dl><dt>Analysis</dt><dd>' + esc(item.analysis_status) + '</dd></dl></div><section><h3>Prompt</h3><p>' + esc(item.prompt_text) + '</p></section><section><h3>Participants</h3><ul class="speaking-participants">' + (item.participants || []).map(function (participant) { return participantRow(participant, item); }).join('') + '</ul>' + rosterEditor + '</section>' + recording + (voiceCards ? '<section><h3>Voice References</h3>' + voiceCards + '</section>' : '') + analysis + reportMarkup + '</article>';
+        var rosterEditor = item.can_edit_roster && item.roster_status === 'draft' ? '<div class="speaking-roster-editor"><label>VIP Student ID<input id="add-vip-id" placeholder="Login ID"></label><button class="outline-button" type="button" id="add-vip-participant">Invite VIP</button><label>Guest name<input id="add-guest-name" placeholder="Display name"></label><button class="outline-button" type="button" id="add-guest-participant">Add Guest</button><p>Three to six participants are required for a DSE report.</p></div>' : '';
+        return '<article class="speaking-detail-card"><div class="speaking-detail-hero"><div class="speaking-detail-top"><button class="back-link" type="button" id="close-discussion">‹ Discussions</button><div class="speaking-detail-title-row"><div><p class="eyebrow accent">DISCUSSION</p><h2>' + esc(item.title) + '</h2></div><p class="speaking-detail-date">' + esc(formatDate(item.discussion_date)) + '</p></div></div>' + workflowMarkup(item) + '<div class="speaking-detail-grid"><dl><dt>Roster</dt><dd>' + esc(readableStatus(item.roster_status)) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(readableStatus(item.recording_status)) + '</dd></dl><dl><dt>Analysis</dt><dd>' + esc(readableStatus(item.analysis_status)) + '</dd></dl></div></div><div class="speaking-detail-body"><section class="speaking-section-card speaking-prompt-card"><header><div><h3>Discussion prompt</h3><p>The DSE task your group should address.</p></div></header><p class="speaking-prompt-text">' + esc(item.prompt_text) + '</p></section><section class="speaking-section-card"><header><div><h3>Participants</h3><p>Invite VIP students or add guests before recording.</p></div><span class="speaking-pill">' + esc(item.participant_count || 0) + ' people</span></header><ul class="speaking-participants">' + (item.participants || []).map(function (participant) { return participantRow(participant, item); }).join('') + '</ul>' + rosterEditor + '</section>' + recording + (voiceCards ? '<section class="speaking-section-card"><header><div><h3>Voice matching</h3><p>Reusable voiceprints are preferred; Discussion samples are a fallback.</p></div></header><div class="speaking-voice-grid">' + voiceCards + '</div></section>' : '') + analysis + reportMarkup + '</div></article>';
     }
     function bindInvitationActions() {
         var addVip = document.getElementById('add-vip-participant'); if (addVip) addVip.addEventListener('click', function () { var input = document.getElementById('add-vip-id'); addVip.disabled = true; call('addVipParticipant', { discussion_id: selectedId, student_id: input.value }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); addVip.disabled = false; }); });
@@ -308,7 +339,7 @@
         if (share) share.addEventListener('click', function () { share.disabled = true; call('createStudentShare', { discussion_id: selectedId }).then(function (result) { var container = document.getElementById('student-share-result'); var url = new URL(result.share_url, window.location.href).href; container.innerHTML = '<p><a href="' + esc(url) + '" target="_blank" rel="noopener">Open private snapshot</a> · expires ' + esc(result.expires_at || 'in 7 days') + '</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="copy-student-share">Copy link</button><button class="outline-button" type="button" id="revoke-student-share">Revoke link</button></div>'; document.getElementById('copy-student-share').addEventListener('click', function () { if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { setStatus('Private link copied.'); }); }); document.getElementById('revoke-student-share').addEventListener('click', function () { call('revokeShare', { share_id: result.share_id }).then(function () { container.innerHTML = '<p>Link revoked.</p>'; }); }); }).catch(function (error) { setStatus(friendlyError(error), true); share.disabled = false; }); });
     }
     function invitationMarkup(invitation) {
-        return '<form method="dialog"><p class="eyebrow accent">INVITATION</p><h2 id="invitation-dialog-title">' + esc(invitation.title) + '</h2><p>' + esc(formatDate(invitation.discussion_date)) + '</p><p>Invited by ' + esc(invitation.inviter_name || 'your teacher or group') + '.</p><ul class="speaking-participants">' + (invitation.participants || []).map(function (participant) { return '<li class="speaking-participant"><span>' + esc(participant.display_name) + '</span><small>' + esc(participant.kind === 'guest' ? 'Guest participant · Name not verified' : participant.invitation_status) + '</small></li>'; }).join('') + '</ul><div class="speaking-detail-actions"><button class="primary-button" type="button" id="accept-invitation">Accept</button><button class="outline-button" type="button" id="decline-invitation">Decline</button><button class="outline-button" value="cancel">Close</button></div></form>';
+        return '<form method="dialog"><div class="speaking-dialog-head"><p class="eyebrow accent">DISCUSSION INVITATION</p><h2 id="invitation-dialog-title">' + esc(invitation.title) + '</h2><p>' + esc(formatDate(invitation.discussion_date)) + ' · Invited by ' + esc(invitation.inviter_name || 'your teacher or group') + '</p></div><ul class="speaking-participants">' + (invitation.participants || []).map(function (participant) { var name = participant.display_name || 'Participant'; return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(name)) + '</span><span><strong>' + esc(name) + '</strong><small>' + esc(participant.kind === 'guest' ? 'Guest participant · Name not verified' : readableStatus(participant.invitation_status)) + '</small></span></span></li>'; }).join('') + '</ul><div class="speaking-dialog-actions"><button class="primary-button" type="button" id="accept-invitation">Accept</button><button class="outline-button" type="button" id="decline-invitation">Decline</button><button class="outline-button" value="cancel">Close</button></div></form>';
     }
     function elapsedText() {
         var pausedNow = recordingPausedAt ? performance.now() - recordingPausedAt : 0;
@@ -464,6 +495,7 @@
         var generation = pollGeneration;
         return call('getDiscussion', { discussion_id: idValue }).then(function (result) {
             if (result.invitation) {
+                document.body.classList.remove('speaking-detail-open');
                 detail.hidden = true;
                 list.hidden = false;
                 invitationDialogContent.innerHTML = invitationMarkup(result.invitation);
@@ -487,6 +519,7 @@
                 });
             } else {
                 if (invitationDialog.open) invitationDialog.close();
+                document.body.classList.add('speaking-detail-open');
                 detail.hidden = false;
                 list.hidden = true;
                 detail.innerHTML = detailMarkup(result.discussion);
@@ -509,6 +542,7 @@
         }, delay);
     }
     function loadList() {
+        document.body.classList.remove('speaking-detail-open');
         return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
     document.getElementById('new-discussion').addEventListener('click', function () { if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); });
@@ -535,7 +569,7 @@
         }).finally(function () { button.disabled = false; });
     });
     form.addEventListener('submit', function (event) { if (event.submitter && event.submitter.value === 'cancel') return; event.preventDefault(); var button = document.getElementById('discussion-create'); button.disabled = true; var vipIds = document.getElementById('discussion-vip-ids').value.split(',').map(function (item) { return item.trim(); }).filter(Boolean); var guests = document.getElementById('discussion-guests').value.split(',').map(function (item) { return item.trim(); }).filter(Boolean); var durationValue = document.getElementById('discussion-duration').value; var createPayload = { operation_id: 'create-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9), title: document.getElementById('discussion-title').value, prompt_text: document.getElementById('discussion-prompt').value, discussion_date: document.getElementById('discussion-date').value }; if (durationValue) createPayload.duration_seconds = Number(durationValue); call('createDiscussion', createPayload).then(function (result) { selectedId = result.discussion.discussion_id; return vipIds.reduce(function (promise, studentId) { return promise.then(function () { return call('addVipParticipant', { discussion_id: selectedId, student_id: studentId }); }); }, Promise.resolve()).then(function () { return guests.reduce(function (promise, guestName) { return promise.then(function () { return call('addGuestParticipant', { discussion_id: selectedId, guest_name: guestName }); }); }, Promise.resolve()); }).then(function () { dialog.close(); document.getElementById('discussion-form').reset(); return loadList(); }); }).catch(function (error) { setStatus(friendlyError(error), true); }).finally(function () { button.disabled = false; }); });
-    document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') { detail.hidden = true; list.hidden = false; selectedId = ''; pollGeneration += 1; if (pollTimer) window.clearTimeout(pollTimer); window.history.replaceState(null, '', 'speaking-lab.html'); stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); } });
+    document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') { document.body.classList.remove('speaking-detail-open'); detail.hidden = true; list.hidden = false; selectedId = ''; pollGeneration += 1; if (pollTimer) window.clearTimeout(pollTimer); window.history.replaceState(null, '', 'speaking-lab.html'); stopLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); } });
     document.addEventListener('visibilitychange', function () { if (selectedId && !document.hidden) openDiscussion(selectedId); });
 
     auth.getSession().then(function (session) {

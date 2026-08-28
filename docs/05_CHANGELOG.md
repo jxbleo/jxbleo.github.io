@@ -2,6 +2,13 @@
 
 ## 2026-08-28
 
+- Redesigned the student Speaking Lab around the Academy's Apple-inspired
+  Liquid Glass language: a calmer home hierarchy, responsive Discussion cards,
+  a single-focus detail workspace, explicit three-step progress, grouped roster
+  and voice-matching tools, a structured DSE report surface, and mobile bottom
+  sheets. Entering a Discussion now withdraws the home surfaces, and explicit
+  `[hidden]` handling prevents the list and detail from appearing together.
+
 - Added a mandatory Speaking Lab ASR scoring safeguard: one suspicious,
   low-confidence, or confidence-unknown transcription token can no longer
   directly reduce a Candidate score, become a student criticism/exact
