@@ -2073,12 +2073,18 @@ Important mobile rules:
   a compact `Title (Optional)` field follows with `Use First Line`; the action
   moves the first non-empty line out of the manuscript and exposes a quiet `Undo`
   that restores the exact prior title, editor HTML, and acknowledged-region state.
+  A successful move shows no `Moved from the first line` status and does not focus
+  or select either editable field; the student enters editing mode only by choosing
+  a text surface. The feedback row is absent unless extraction fails, in which case
+  the existing concise pale-red guidance appears.
   The input has no visible label above it, keeps its accessible name through
   `aria-label`, and shares one 44px height and baseline with `Use First Line`.
   Invalid/overlong first-line guidance uses low-emphasis pale-red text.
   Editing either field commits to the new state and dismisses Undo. Prompt OCR does
-  not show title controls. The editable manuscript follows, with one horizontally
-  centered `Confirm` footer action. Remove `Upload Again` from this review step, together with the former
+  not show title controls. The editable manuscript follows directly on the yellow
+  paper without another bordered/background card. One horizontally centered
+  `Confirm` action sits outside and below the paper rather than inside its footer.
+  Remove `Upload Again` from this review step, together with the former
   Chinese heading, explanatory copy, step indicator, uncertainty count, photo
   label, and editor label.
 - Image comparison is closed by default on every viewport. `Compare with Image`
@@ -2128,7 +2134,11 @@ Important mobile rules:
   full original sentence; selecting anywhere in that box opens the target list.
   The lower inset box contains only the editable OCR rewrite plus one tiny
   confidence mark: green `✓` for high, amber `!` for medium, and red `?` for low,
-  each with an accessible label. The target list contains
+  each with an accessible label. Provider `warnings` remain available to the
+  trusted scan pipeline but are not rendered as student-facing text or bullet
+  lists; this confirmation step must not resemble language feedback. Deterministic
+  empty, duplicate, missing-number, and out-of-range validation still controls
+  whether the reviewed mapping can be confirmed. The target list contains
   only unfinished `rewrite_required` sentences, excludes originally correct and
   already accepted sentences, and disables a sentence while another scan card
   claims it. The existing global sentence number appears when mapped, with a
@@ -2290,6 +2300,12 @@ Important mobile rules:
   `You still have unfinished changes.` Its only visible action is `OK`; dismissing it
   leaves the first unfinished rewrite field focused. The alert traps keyboard focus,
   locks background interaction, and uses an immediate transition under Reduced Motion.
+- If a completed rewrite check still contains rejected sentences, select the first
+  `accepted: false` sentence before rendering the returned review, cancel any stale
+  stage-top reset, and scroll that card to the sticky-navigation inset. Its visible face
+  uses the same restrained 1.7-second red border/ring pulse as an Overdue task. The cue
+  ends as soon as the student edits that sentence; Reduced Motion receives the same
+  static red border and inset ring with no pulse.
 - Every Sentence Revision row permanently shows its indexed pale sentence color,
   including before capsule navigation. Activating a row does not introduce a new
   background. Do not draw a dark vertical accent or inset shadow along its left edge.
@@ -2305,7 +2321,8 @@ Important mobile rules:
   sentence accent color never recolors these semantic marks.
 - The analysis face keeps the initial coaching paragraph first. Every later Submit
   feedback is shown beneath it in chronological order. Do not display round labels
-  such as `第 1 次点评`; place one thin sentence-color divider only between
+  such as `第 1 次点评`; place one thin sentence-color divider between the initial
+  coaching paragraph and the first submitted feedback, then between every pair of
   consecutive submitted feedback paragraphs. Historical feedback remains readable
   after refresh or re-login without exposing its internal round number.
 - After a student revision is accepted, that sentence card opens on the corrected
@@ -2411,6 +2428,10 @@ Enter, or Space centers the matching text mark without changing it; clicking a m
 and removes its box, and editing a mark removes the box through the existing changed-mark cleanup. Missing
 or unavailable boxes never disable the text editor. The split layout remains on tablet/desktop and images
 remain above the editor on phones, with scroll/pinch gestures available outside the individual targets.
+The confirmation card uses the same restrained warm-yellow paper material as the Draft manuscript. Its image
+control lives in the trailing toolbar slot and changes in place between `Show image` and `Hide image`; it is
+not duplicated inside the paper. Title extraction also uses one reversible control: `Use first line` becomes
+`Undo` after a successful move, and Undo restores the prior title, manuscript markup, and uncertainty state.
 
 ## Speaking Lab V1 surfaces
 
