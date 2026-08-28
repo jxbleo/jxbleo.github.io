@@ -146,12 +146,14 @@ function discussionView(actor, discussion, participants) {
   };
 }
 function uploadMetadataView(metadata, cloudPath) {
+  const data = metadata && metadata.data || metadata || {};
   return {
-    file_id: metadata && (metadata.fileID || metadata.fileId || metadata.file_id) || null,
-    url: metadata && (metadata.url || metadata.uploadUrl || metadata.upload_url) || null,
-    upload_url: metadata && (metadata.uploadUrl || metadata.upload_url || metadata.url) || null,
-    authorization: metadata && metadata.authorization || null,
-    token: metadata && metadata.token || null,
+    file_id: data.fileID || data.fileId || data.file_id || null,
+    cos_file_id: data.cosFileId || data.cos_file_id || null,
+    url: data.url || data.uploadUrl || data.upload_url || null,
+    upload_url: data.uploadUrl || data.upload_url || data.url || null,
+    authorization: data.authorization || null,
+    token: data.token || null,
     cloud_path: cloudPath,
   };
 }
@@ -1228,6 +1230,6 @@ exports.main = async (event = {}) => {
 };
 
 exports._test = {
-  friendlyMessage, publicJob, participantView, discussionView, replaceFields, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript,
+  friendlyMessage, publicJob, participantView, discussionView, replaceFields, uploadMetadataView, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
 };
