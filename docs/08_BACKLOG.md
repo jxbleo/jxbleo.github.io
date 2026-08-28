@@ -111,13 +111,17 @@ Before commercial use, review:
 - AI Tutor: targeted grammar/content lessons generated from repeated Writing Observations
 - AI Tutor: human moderation and model-quality evaluation dataset before high-stakes use
 
-- Speaking Lab: benchmark and approve a production speech/diarization adapter;
+- Speaking Lab: benchmark and approve the implemented Tencent recording-file
+  recognition and OpenAI-compatible DSE report adapters on real student audio;
   video extraction, pronunciation/delivery assessment, PDF export, stronger
   streaming upload protection, and an individual speaking mode remain out of
   V1. Add provider fallback only after a measured quality/cost review. Benchmark
   reusable Tencent voiceprints across devices and accents, define the production
   confidence/separation thresholds, monitor the 1000-voiceprint AppID limit, and
   add an owner-facing capacity/cleanup audit before enabling automatic matches.
+  Automatic reusable-voiceprint matching also needs a private, provider-approved
+  way to extract one clean sample per diarized track; do not feed the mixed group
+  recording to a single-speaker verify endpoint or infer identity from turn order.
 
 - Intensive Listening: owner-gated notification-session index and production
   timer rollout; benchmark large catalog scans and mixed bell pagination.

@@ -2,6 +2,14 @@
 
 ## 2026-08-28
 
+- Added the environment-gated Tencent recording-file ASR adapter and durable
+  submit/poll pipeline for Speaking Lab, including canonical Speaker tracks,
+  incidental-voice exclusion, partial transcript preservation, and safe usage
+  metadata.
+- Added the independent OpenAI-compatible JSON-object DSE report adapter with
+  server-only credentials, versioned three-domain prompt, strict local evidence
+  validation, and atomic ready-report publication. Pronunciation remains
+  explicitly unassessed.
 - Added the current voiceprint enrolment revision and latest Shanghai-time
   update to the Teacher Speaking target card, making successful replacements
   visible without a CloudBase console check.

@@ -1176,10 +1176,23 @@ retain stable anonymous Speaker keys and server-derived evidence. Student and
 Teacher shares are immutable server-built snapshots with snapshot-local aliases
 and exact-name redaction.
 
-The speech/text provider is an explicit interface and fails closed until a
-real-audio benchmark selects and documents an adapter. Pronunciation and
-delivery are not assessed in V1. Fixtures are test-only and cannot be selected
-from browser input, production environment flags, or queue metadata.
+The speech/text provider is an explicit interface. The first implementation
+candidate is Tencent recording-file recognition (`16k_en`, ordinary Speaker
+diarization) plus an independently configured OpenAI-compatible JSON-object
+model for the DSE report. It remains environment-disabled until the owner's
+real-audio benchmark and rollout gate are complete. ASR submits once and polls
+one Task ID; the server converts provider Speaker IDs into stable Speaker keys,
+marks incidental tracks as non-Candidate context, and validates all model
+evidence locally. Pronunciation and delivery are not assessed in V1. Fixtures
+are test-only and cannot be selected from browser input, production environment
+flags, or queue metadata.
+
+Tencent's normal diarization output does not supply per-Speaker audio that can
+be sent safely to the existing single-speaker voiceprint verification API.
+Therefore reusable voiceprint auto-matching is not guessed from turn order and
+is not performed on the mixed Discussion file. It requires a later approved
+private excerpt-extraction boundary; current reports remain under Speaker labels
+until student confirmation or teacher mapping.
 
 ### Intensive Listening session summaries
 

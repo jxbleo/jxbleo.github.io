@@ -1161,6 +1161,19 @@ Create the ten `ADMINONLY` Speaking collections and indexes from the
 implementation plan, configure only the documented `SPEAKING_AI_TEXT_*`,
 `SPEAKING_ASR_*`, and `SPEAKING_AI_TIMEOUT_MS` environment names after
 benchmark approval, then deploy `speakingLab` and `speakingAiWorker` together.
+The first production-candidate adapter uses these non-secret ASR values:
+
+- `SPEAKING_ASR_PROVIDER=tencent`
+- `SPEAKING_ASR_ENGINE_MODEL_TYPE=16k_en`
+- optional `SPEAKING_ASR_ENDPOINT` (normally omitted so the official endpoint is used)
+
+The DSE report adapter requires `SPEAKING_AI_TEXT_API_KEY`,
+`SPEAKING_AI_TEXT_API_URL`, `SPEAKING_AI_TEXT_MODEL`, and
+`SPEAKING_AI_TEXT_PROTOCOL=chat_json_object`. Optional bounds are
+`SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS` and `SPEAKING_AI_TIMEOUT_MS`. Enter each
+environment key/value as its own console row; never paste several assignments
+into the environment-key field and never copy a key value into chat, Git, a
+deploy plan, or a database row.
 Set the environment-level function ACL override for `speakingAiWorker` to
 `{"invoke": false}`. CloudBase documents that timer triggers bypass client
 ACLs, so configure one one-minute timer named `speaking-ai-worker-minute`
@@ -1185,10 +1198,19 @@ of the still-gated speech transcription/text-analysis adapters.
 The function runtime role `TCB_QcsRole` must have a least-privilege CAM policy
 allowing `VoicePrintEnroll`, `VoicePrintUpdate`, `VoicePrintDelete`,
 `VoicePrintVerify`, `VoicePrintGroupVerify`, `VoicePrintCount`, and
-`VoicePrintGroupList` under `name/asr:*` action syntax. Do not attach unrelated
-cloud-product permissions. An `AuthFailure.UnauthorizedOperation` response must
+`VoicePrintGroupList` under `name/asr:*` action syntax. Enabling Discussion
+transcription additionally requires `name/asr:CreateRecTask` and
+`name/asr:DescribeTaskStatus` in that policy. Do not attach unrelated cloud-
+product permissions. An `AuthFailure.UnauthorizedOperation` response must
 surface as `SPEAKING_VOICEPRINT_NOT_CONFIGURED`, not as an instruction for the
 student to record again.
+
+Do not enable the report button merely because the two adapters compile. First
+run the owner-authorized MP3 benchmark, confirm the same Tencent Task ID is
+polled rather than recreated, inspect the canonical Candidate/non-Candidate
+tracks, validate the local report schema, and record actual cost/latency. The
+provider task ID is valid only for Tencent polling and is never a Discussion or
+report identity.
 
 Before static publication, deploy both changed functions together, run one
 owner-authorized VIP test enrol/update/delete, verify the provider locator is

@@ -218,14 +218,17 @@ function canonicalizeSpeakerTracks(tracks, segments, options = {}) {
   const keyByProvider = new Map(ids.map((provider, index) => [provider, `spk_${String(index + 1).padStart(2, "0")}`]));
   const canonicalTracks = ids.map((provider) => {
     const source = sourceTracks.find((track) => text(track && track.provider_speaker_id, 100) === provider) || {};
-    const confidence = Number(source.confidence);
-    const speechDuration = Number(source.speech_duration_ms);
+    const confidence = source.confidence == null ? null : Number(source.confidence);
+    const speechDuration = source.speech_duration_ms == null ? null : Number(source.speech_duration_ms);
     const turnCount = Number(source.turn_count);
     return {
       speaker_key: keyByProvider.get(provider),
-      confidence: Number.isFinite(confidence) ? Math.max(0, Math.min(1, confidence)) : null,
-      reliable: Number.isFinite(confidence) ? confidence >= minimumConfidence : false,
-      speech_duration_ms: Number.isFinite(speechDuration) ? Math.max(0, Math.round(speechDuration)) : null,
+      confidence: confidence != null && Number.isFinite(confidence) ? Math.max(0, Math.min(1, confidence)) : null,
+      // Tencent recording-file diarization currently supplies SpeakerId but no
+      // per-track confidence. Missing confidence is therefore unknown, not an
+      // automatic rejection; explicit provider/server rejection still wins.
+      reliable: confidence != null && Number.isFinite(confidence) ? confidence >= minimumConfidence : source.candidate_eligible !== false,
+      speech_duration_ms: speechDuration != null && Number.isFinite(speechDuration) ? Math.max(0, Math.round(speechDuration)) : null,
       turn_count: Number.isInteger(turnCount) ? Math.max(0, turnCount) : null,
       candidate_eligible: typeof source.candidate_eligible === "boolean" ? source.candidate_eligible : null,
     };
@@ -254,10 +257,17 @@ function canonicalizeSegments(segments, speakerInfo, durationMs, options = {}) {
       start_ms: Math.round(start),
       end_ms: Math.round(end),
       text: line,
-      confidence: Number.isFinite(Number(source.confidence)) ? Math.max(0, Math.min(1, Number(source.confidence))) : null,
+      confidence: source.confidence != null && Number.isFinite(Number(source.confidence)) ? Math.max(0, Math.min(1, Number(source.confidence))) : null,
     });
   });
   return { segments: output, rejected };
+}
+
+function isLikelyFacilitatorCue(segment) {
+  const start = Number(segment && segment.start_ms);
+  const line = normalizeWhitespace(segment && segment.text, 500).toLowerCase().replace(/[.!?]+$/g, "");
+  if (!Number.isFinite(start) || start < 0 || start > 15000 || !line) return false;
+  return /^(?:okay[, ]+)?(?:you (?:may|can)|please) (?:now )?start (?:(?:the|your|a) )?(?:group )?discussion(?: now)?$/.test(line);
 }
 
 function candidateSpeakerKeys(tracks, participants, options = {}) {
@@ -266,7 +276,17 @@ function candidateSpeakerKeys(tracks, participants, options = {}) {
     participant && ["guest", "vip"].includes(participantKind(participant))).length;
   const minimumConfidence = options.minimumConfidence == null ? SPEAKER_CONFIDENCE_MIN : Number(options.minimumConfidence);
   const reliable = allTracks.filter((track) => track && track.candidate_eligible !== false && track.reliable !== false && (track.confidence == null || Number(track.confidence) >= minimumConfidence));
-  const candidate = reliable.slice(0, listedCount).map((track) => track.speaker_key);
+  // A brief outside voice can appear before every Candidate. Select the most
+  // sustained reliable tracks first, then restore canonical first-speech order
+  // for stable report presentation.
+  const originalOrder = new Map(allTracks.map((track, index) => [track.speaker_key, index]));
+  const candidate = reliable.slice().sort((left, right) =>
+    Number(right.speech_duration_ms || 0) - Number(left.speech_duration_ms || 0)
+    || Number(right.turn_count || 0) - Number(left.turn_count || 0)
+    || Number(originalOrder.get(left.speaker_key)) - Number(originalOrder.get(right.speaker_key)))
+    .slice(0, listedCount)
+    .sort((left, right) => Number(originalOrder.get(left.speaker_key)) - Number(originalOrder.get(right.speaker_key)))
+    .map((track) => track.speaker_key);
   const candidateSet = new Set(candidate);
   return {
     candidate_keys: candidate,
@@ -350,7 +370,7 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
       canonicalDomains[name] = canonicalDomain(domain, domain && domain.evidence_segment_ids, validSegments, key);
       canonicalDomains[name].evidence_segment_ids.forEach((id) => {
         const segment = validSegments.get(id);
-        if (!segment || String(segment.speaker_key) !== key) throw new Error("SPEAKING_AI_EVIDENCE_FOREIGN");
+        if (!segment || String(segment.speaker_key) !== key || segment.evaluation_role === "non_candidate_context") throw new Error("SPEAKING_AI_EVIDENCE_FOREIGN");
       });
     });
     return {
@@ -602,6 +622,7 @@ module.exports = {
   identityProjection,
   canonicalizeSpeakerTracks,
   canonicalizeSegments,
+  isLikelyFacilitatorCue,
   candidateSpeakerKeys,
   canonicalizeMapping,
   canonicalizeReport,

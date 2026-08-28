@@ -73,7 +73,16 @@ function run() {
   const outsiderFirst = lab.canonicalizeSpeakerTracks([{ provider_speaker_id: "X", confidence: 0.95, candidate_eligible: false }, { provider_speaker_id: "A", confidence: 0.9 }, { provider_speaker_id: "B", confidence: 0.9 }], [{ provider_speaker_id: "X", start_ms: 0 }, { provider_speaker_id: "A", start_ms: 10 }, { provider_speaker_id: "B", start_ms: 20 }]);
   const outsiderCandidate = lab.candidateSpeakerKeys(outsiderFirst.tracks, people);
   assert.deepEqual(outsiderCandidate.candidate_keys, ["spk_02", "spk_03"]);
+  const unknownConfidence = lab.canonicalizeSpeakerTracks([
+    { provider_speaker_id: "X", speech_duration_ms: 1500, turn_count: 1 },
+    { provider_speaker_id: "A", speech_duration_ms: 40000, turn_count: 8 },
+    { provider_speaker_id: "B", speech_duration_ms: 35000, turn_count: 7 },
+  ], [{ provider_speaker_id: "X", start_ms: 0 }, { provider_speaker_id: "A", start_ms: 10 }, { provider_speaker_id: "B", start_ms: 20 }]);
+  const sustainedCandidate = lab.candidateSpeakerKeys(unknownConfidence.tracks, people);
+  assert.deepEqual(sustainedCandidate.candidate_keys, ["spk_02", "spk_03"], "brief first outside voice must not displace sustained candidates when confidence is unavailable");
   assert.equal(outsiderCandidate.reason_by_key.spk_01, "POSSIBLE_NON_CANDIDATE");
+  assert.equal(lab.isLikelyFacilitatorCue({ start_ms: 560, text: "You may start a discussion now." }), true);
+  assert.equal(lab.isLikelyFacilitatorCue({ start_ms: 20000, text: "You may start a discussion now." }), false);
 
   // 13-15 report speaker/evidence/score contracts.
   const segments = [{ segment_id: "seg_0001", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "hello" }, { segment_id: "seg_0002", speaker_key: "spk_02", start_ms: 1000, end_ms: 2000, text: "world" }];
@@ -86,6 +95,8 @@ function run() {
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: [valid.candidates[0], { ...valid.candidates[1], speaker_key: "spk_99" }] }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /SPEAKER_INVALID/);
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: [valid.candidates[0], { ...valid.candidates[1], domains: { ...valid.candidates[1].domains, communication_strategies: { score: 8, commentary_zh: "", evidence_segment_ids: [] } } }] }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /SCORE_INVALID/);
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: [valid.candidates[0], { ...valid.candidates[1], domains: { ...valid.candidates[1].domains, communication_strategies: { score: 5, commentary_zh: "", evidence_segment_ids: ["seg_0001"] } } }] }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /EVIDENCE_FOREIGN/);
+  const facilitatorSegment = [{ ...segments[0], evaluation_role: "non_candidate_context" }, segments[1]];
+  assert.throws(() => lab.canonicalizeReport(valid, ["spk_01", "spk_02"], facilitatorSegment, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /EVIDENCE_FOREIGN/);
 
   // 16-18 student projection: pronunciation is forced, only the sharer is detailed,
   // and the internal title/transcript/roster/audio are absent.

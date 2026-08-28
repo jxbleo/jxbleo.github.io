@@ -7,8 +7,9 @@ const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const lab = require("../_shared/speaking-lab");
 const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
 const { createSpeechProvider } = require("./speech-provider");
+const { createModelProvider } = require("./model-provider");
 const { SPEAKING_REPORT_SCHEMA_VERSION } = require("./schemas");
-const { PROMPT_VERSION } = require("./prompts");
+const { PROMPT_VERSION, dseAnalysisPrompt, dseAnalysisUserPrompt } = require("./prompts");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -585,16 +586,209 @@ async function claimJob(job, token) {
   });
   return claimed;
 }
+function reportIdentity(job) {
+  return {
+    report_id: stable("speaking_report", job.discussion_id, String(job.discussion_revision)),
+    report_version: `discussion-r${Math.max(1, Number(job.discussion_revision || 1))}`,
+  };
+}
+async function requeueClaimedJob(claimed, values = {}) {
+  const changedAt = now();
+  let accepted = false;
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const current = result.data && result.data[0];
+    if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)) return;
+    await transaction.collection(JOBS).doc(current._id || current.job_id).update({
+      ...values,
+      status: "queued",
+      attempt_count: Math.max(0, Number(current.attempt_count || 1) - 1),
+      lease_token: null,
+      lease_until: null,
+      next_retry_at: values.next_retry_at || new Date(Date.now() + 15000),
+      updated_at: changedAt,
+    });
+    accepted = true;
+  });
+  return accepted;
+}
+async function temporaryAudioUrl(asset) {
+  const result = await app.getTempFileURL({ fileList: [{ fileID: asset.file_id, maxAge: 7200 }] });
+  const row = result && result.fileList && result.fileList[0];
+  const url = row && (row.tempFileURL || row.tempFileUrl || row.url);
+  if (!url) throw new Error("AUDIO_NOT_FOUND");
+  return url;
+}
+async function upsertPipelineReport(job, values) {
+  const identity = reportIdentity(job);
+  const existing = await getOne(REPORTS, { report_id: identity.report_id });
+  const changedAt = now();
+  const row = {
+    ...identity,
+    discussion_id: job.discussion_id,
+    discussion_revision: Number(job.discussion_revision || 1),
+    job_id: job.job_id,
+    schema_version: SPEAKING_REPORT_SCHEMA_VERSION,
+    prompt_version: PROMPT_VERSION,
+    rubric_version: job.rubric_version || "dse-group-interaction-v1",
+    status: "processing",
+    ...values,
+    updated_at: changedAt,
+  };
+  if (existing) await db.collection(REPORTS).doc(existing._id || existing.report_id).update(row);
+  else await db.collection(REPORTS).doc(identity.report_id).create({ ...row, created_at: changedAt });
+  return { ...(existing || {}), ...row };
+}
+function providerUsageEvent(job, stage, callIndex, provider, metadata = {}) {
+  const eventId = stable("speaking_usage", job.job_id, stage, String(callIndex));
+  const usage = metadata.usage && typeof metadata.usage === "object" ? metadata.usage : {};
+  const numeric = (value) => value != null && value !== "" && Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : null;
+  return {
+    event_id: eventId, job_id: job.job_id, discussion_id: job.discussion_id, operation_id: job.operation_id,
+    stage, call_index: callIndex, provider, model: lab.text(metadata.model, 200) || null,
+    protocol: lab.text(metadata.protocol, 100) || null, provider_request_id: lab.text(metadata.request_id, 200) || null,
+    outcome: metadata.outcome === "failed" ? "failed" : "completed",
+    safe_error_code: lab.text(metadata.safe_error_code, 120) || null,
+    http_status: metadata.http_status != null && Number.isInteger(Number(metadata.http_status)) ? Number(metadata.http_status) : null,
+    input_tokens: numeric(usage.input_tokens), output_tokens: numeric(usage.output_tokens), total_tokens: numeric(usage.total_tokens),
+    cached_tokens: numeric(usage.cached_tokens), reasoning_tokens: numeric(usage.reasoning_tokens), audio_seconds: numeric(usage.audio_seconds),
+    usage_status: Object.values(usage).some((value) => value != null) ? "recorded" : "missing", created_at: now(),
+  };
+}
+async function reserveProviderCall(claimed, field) {
+  if (!["provider_call_count", "model_call_count"].includes(field)) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+  let callIndex = null;
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const current = result.data && result.data[0];
+    if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    callIndex = Math.max(0, Number(current[field] || 0)) + 1;
+    await transaction.collection(JOBS).doc(current._id || current.job_id).update({ [field]: callIndex, updated_at: now() });
+  });
+  return callIndex;
+}
+async function saveProviderUsage(job, stage, callIndex, provider, metadata) {
+  try {
+    const row = providerUsageEvent(job, stage, callIndex, provider, metadata);
+    const existing = await getOne(USAGE, { event_id: row.event_id });
+    if (!existing) await db.collection(USAGE).doc(row.event_id).create(row);
+    return true;
+  } catch (error) {
+    console.error("speakingLab usage ledger failed", job.job_id, stage, error && error.message);
+    return false;
+  }
+}
+function canonicalTranscript(output, participants) {
+  const tracksWithEligibility = output.speaker_tracks.map((track) => ({
+    ...track,
+    candidate_eligible: track.candidate_eligible === false ? false : !(Number(track.speech_duration_ms || 0) < 4000 && Number(track.turn_count || 0) <= 1),
+  }));
+  const speakerInfo = lab.canonicalizeSpeakerTracks(tracksWithEligibility, output.segments);
+  const segmentInfo = lab.canonicalizeSegments(output.segments, speakerInfo, output.duration_ms);
+  if (!segmentInfo.segments.length) throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
+  const selection = lab.candidateSpeakerKeys(speakerInfo.tracks, participants);
+  const candidateSet = new Set(selection.candidate_keys);
+  const canonicalSegments = segmentInfo.segments.map((segment) => ({ ...segment, evaluation_role: candidateSet.has(segment.speaker_key) && !lab.isLikelyFacilitatorCue(segment) ? "candidate" : "non_candidate_context" }));
+  return {
+    language: output.language, duration_ms: output.duration_ms,
+    speaker_tracks: speakerInfo.tracks.map((track) => ({ ...track, evaluation_role: candidateSet.has(track.speaker_key) ? "candidate" : "non_candidate_context", safe_reason_code: selection.reason_by_key[track.speaker_key] || null })),
+    segments: canonicalSegments,
+    rejected_segment_count: segmentInfo.rejected.length,
+    external_cue_count: canonicalSegments.filter((segment) => lab.isLikelyFacilitatorCue(segment)).length,
+    candidate_speaker_keys: selection.candidate_keys,
+    non_candidate_speaker_keys: selection.non_candidate_keys,
+  };
+}
 async function processQueuedJob(event) {
   const job = await getOne(JOBS, { job_id: lab.text(event.job_id, 120) });
   if (!job || !secretMatches(job.dispatch_token, event.dispatch_token)) throw new Error("SPEAKING_JOB_NOT_AVAILABLE");
   let claimed;
   try { claimed = await claimJob(job, event.dispatch_token); } catch (error) { return { success: true, status: "stale_or_already_claimed" }; }
   try {
-    // This call is intentionally the production fail-closed boundary.  No
-    // browser flag or job field can select a deterministic fixture provider.
-    createSpeechProvider();
-    throw new Error("SPEAKING_PROVIDER_NOT_CONFIGURED");
+    const rows = await discussionRows(claimed.discussion_id);
+    const discussion = rows.discussion;
+    if (discussion.deleted_at || String(discussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(discussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    const asset = await getOne(ASSETS, { asset_id: claimed.formal_audio_asset_id, discussion_id: claimed.discussion_id, asset_kind: "formal_discussion", status: "uploaded" });
+    if (!asset) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
+    const speech = createSpeechProvider();
+    if (claimed.stage === "audio_quality") {
+      const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes });
+      await requeueClaimedJob(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
+      return { success: true, status: "queued", stage: "transcription", job_id: claimed.job_id };
+    }
+    if (claimed.stage === "transcription") {
+      const transcriptionInput = claimed.provider_task_id ? { task_id: claimed.provider_task_id } : { audio_url: await temporaryAudioUrl(asset) };
+      const callIndex = await reserveProviderCall(claimed, "provider_call_count");
+      let transcription;
+      try {
+        transcription = await speech.transcribeAndDiarize(transcriptionInput);
+      } catch (error) {
+        await saveProviderUsage(claimed, "transcription", callIndex, speech.name, { outcome: "failed", safe_error_code: error && error.code, request_id: error && error.requestId, usage: {} });
+        throw error;
+      }
+      await saveProviderUsage(claimed, "transcription", callIndex, speech.name, { request_id: transcription.request_id, usage: transcription.output && transcription.output.usage || {} });
+      if (transcription.status === "pending") {
+        await requeueClaimedJob(claimed, {
+          stage: "transcription", provider_task_id: transcription.task_id,
+          provider_submitted_at: claimed.provider_submitted_at || now(),
+          provider_poll_count: Number(claimed.provider_poll_count || 0) + (claimed.provider_task_id ? 1 : 0),
+          next_retry_at: new Date(Date.now() + 15000),
+        });
+        return { success: true, status: "pending", stage: "transcription", job_id: claimed.job_id };
+      }
+      const transcript = canonicalTranscript(transcription.output, rows.participants);
+      const expectedCandidates = rows.participants.length;
+      const quality = {
+        status: transcript.candidate_speaker_keys.length >= 3 ? (transcript.candidate_speaker_keys.length === expectedCandidates && !transcript.rejected_segment_count ? "scorable" : "scorable_with_warning") : "not_reliably_scorable",
+        warning_codes: [
+          ...(transcript.candidate_speaker_keys.length !== expectedCandidates ? ["SPEAKER_COUNT_MISMATCH"] : []),
+          ...(transcript.rejected_segment_count ? ["INVALID_SEGMENTS_REMOVED"] : []),
+          ...(transcript.non_candidate_speaker_keys.length ? ["NON_CANDIDATE_CONTEXT_PRESENT"] : []),
+          ...(transcript.external_cue_count ? ["FACILITATOR_CUE_EXCLUDED"] : []),
+        ],
+      };
+      await upsertPipelineReport(claimed, { stage: "speaker_canonicalization", audio_quality: quality, transcript });
+      if (quality.status === "not_reliably_scorable") throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
+      await requeueClaimedJob(claimed, { stage: "dse_analysis", provider_task_id: transcription.task_id, next_retry_at: now() });
+      return { success: true, status: "queued", stage: "dse_analysis", job_id: claimed.job_id };
+    }
+    if (claimed.stage === "dse_analysis") {
+      const identity = reportIdentity(claimed);
+      const pipelineReport = await getOne(REPORTS, { report_id: identity.report_id, status: "processing" });
+      const transcript = pipelineReport && reportTranscript(pipelineReport);
+      if (!pipelineReport || !transcript || !Array.isArray(transcript.segments) || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+      const candidateKeys = Array.isArray(transcript.candidate_speaker_keys) ? transcript.candidate_speaker_keys : [];
+      const nonCandidateKeys = Array.isArray(transcript.non_candidate_speaker_keys) ? transcript.non_candidate_speaker_keys : [];
+      const model = createModelProvider();
+      const modelCallIndex = await reserveProviderCall(claimed, "model_call_count");
+      let result;
+      try {
+        result = await model.callStructuredModel({
+          system_prompt: dseAnalysisPrompt(),
+          user_prompt: dseAnalysisUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
+        });
+      } catch (error) {
+        await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, http_status: error && error.httpStatus, request_id: error && error.requestId, usage: {} });
+        throw error;
+      }
+      await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, request_id: result.request_id, usage: result.usage });
+      const analysis = lab.canonicalizeReport(result.output, transcript.speaker_tracks.map((track) => track.speaker_key), transcript.segments, { reportVersion: identity.report_version, candidateSpeakerKeys: candidateKeys, nonCandidateKeys });
+      const finishedAt = now();
+      await db.runTransaction(async (transaction) => {
+        const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+        const currentJob = jobResult.data && jobResult.data[0];
+        const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: claimed.discussion_id }).limit(1).get();
+        const currentDiscussion = discussionResult.data && discussionResult.data[0];
+        const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
+        const currentReport = reportResult.data && reportResult.data[0];
+        if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1) || !currentReport || currentReport.status !== "processing") throw new Error("SPEAKING_JOB_SUPERSEDED");
+        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", stage: "published", ...replaceFields({ dse_analysis: analysis, model_metadata: { provider: model.name, model: model.model, protocol: model.protocol, hostname: model.hostname, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ analysis_status: "ready", active_report_version: identity.report_version, updated_at: finishedAt });
+      });
+      return { success: true, status: "succeeded", stage: "publishing", job_id: claimed.job_id, report_version: identity.report_version };
+    }
+    throw new Error("SPEAKING_AI_SCHEMA_INVALID");
   } catch (error) {
     const code = error && error.code || error && error.message || "SPEAKING_PROVIDER_NOT_CONFIGURED";
     const failedAt = now();
@@ -982,8 +1176,9 @@ function friendlyMessage(code) {
     SPEAKING_VOICEPRINT_NOT_CONFIGURED: "Tencent voiceprint registration is not configured yet.", VOICEPRINT_CONSENT_REQUIRED: "Confirm consent before registering this reusable voiceprint.",
     VOICEPRINT_AUDIO_INVALID: "Record the voiceprint with this page for a clear 16 kHz mono WAV sample.", VOICEPRINT_AUDIO_DURATION_INVALID: "The voiceprint sample must be between 8 and 30 seconds.", VOICEPRINT_NO_HUMAN_VOICE: "Tencent could not find enough clear speech. Move closer and record again.",
     VOICEPRINT_CAPACITY_REACHED: "The Tencent voiceprint library has reached its current capacity.", VOICEPRINT_PROVIDER_UNAVAILABLE: "Tencent voiceprint service is temporarily unavailable. Please try again.", VOICEPRINT_PROVIDER_INVALID_RESPONSE: "Tencent returned an invalid voiceprint response. Please try again.", VOICEPRINT_PROVIDER_FAILED: "Tencent could not save this voiceprint. Please record again.", VOICEPRINT_NOT_FOUND: "This voiceprint no longer exists at Tencent. Record it again.", VOICEPRINT_STALE: "This voiceprint changed in another session. Refresh before trying again.",
-    SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
-    SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
+    SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_ASR_UNAVAILABLE: "Speech transcription is temporarily unavailable. Please retry.", SPEAKING_ASR_FAILED: "Tencent could not transcribe this recording. Please check the audio and retry.",
+    SPEAKING_ASR_INVALID_RESPONSE: "Tencent returned an incomplete transcript. Please retry.", SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE: "The recording could not be scored reliably. Its available transcript was preserved.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
+    SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
     VOICE_DISPUTE_LOCKED: "Your voice concern is waiting for a teacher. Only a teacher can change the mapping now.",
     VOICE_CONFIRMATION_REQUIRED_FOR_SHARE: "Confirm your voice before creating a student share.", SHARE_PROJECTION_STALE: "The report or identity labels changed. Refresh before sharing.", SHARE_NOT_AVAILABLE: "This share link is no longer available.",
   };
@@ -1033,6 +1228,6 @@ exports.main = async (event = {}) => {
 };
 
 exports._test = {
-  friendlyMessage, publicJob, participantView, discussionView, replaceFields, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget,
+  friendlyMessage, publicJob, participantView, discussionView, replaceFields, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
 };

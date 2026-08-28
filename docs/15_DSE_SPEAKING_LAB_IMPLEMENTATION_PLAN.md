@@ -1121,8 +1121,7 @@ Rules:
 
 ### 10.1 Speech provider interface
 
-Create `cloudfunctions/speakingLab/speech-provider.js` with an interface, not an
-invented production integration:
+`cloudfunctions/speakingLab/speech-provider.js` keeps this interface:
 
 ```js
 async function inspectAudio(options)
@@ -1151,10 +1150,13 @@ Normalized `transcribeAndDiarize` output contains only:
 Normalized voice-match output contains participant asset ID, provider speaker
 ID, score, and optional next-best score only. It contains no names.
 
-Production must fail closed with `SPEAKING_PROVIDER_NOT_CONFIGURED` until one
-provider adapter passes section 15. A deterministic fixture adapter may be
-injected only by unit tests; never expose a browser `demo=1` or environment flag
-that produces fake student reports.
+The first environment-gated implementation candidate uses Tencent
+`CreateRecTask` once and durable `DescribeTaskStatus` polling with
+`EngineModelType=16k_en`, `ChannelNum=1`, `ResTextFormat=1`, ordinary
+`SpeakerDiarization=1`, and automatic speaker count. It remains disabled until
+the real-audio benchmark in section 15 passes. A deterministic fixture adapter
+may be injected only by unit tests; never expose a browser `demo=1` or
+environment flag that produces fake student reports.
 
 #### 10.1a Reusable Tencent voiceprint adapter
 
@@ -1182,7 +1184,13 @@ Required environment names, documented without values:
 - `SPEAKING_AI_TEXT_PROTOCOL`
 - `SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS`
 - `SPEAKING_AI_TIMEOUT_MS`
-- speech-provider-specific `SPEAKING_ASR_*` names chosen only after benchmark
+- `SPEAKING_ASR_PROVIDER`
+- `SPEAKING_ASR_ENGINE_MODEL_TYPE`
+- optional `SPEAKING_ASR_ENDPOINT`
+
+The first supported text protocol is `chat_json_object`. Provider JSON validity
+does not replace `canonicalizeReport`: Candidate completeness, evidence ownership,
+score bounds, and forced pronunciation non-assessment remain local server rules.
 
 Support the same local structural-validation and bounded repair principles as
 Writing Tutor. Do not share secret values, provider URLs, or prompts in logs.
