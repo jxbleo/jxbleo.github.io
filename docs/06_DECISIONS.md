@@ -1194,14 +1194,16 @@ is not performed on the mixed Discussion file. It requires a later approved
 private excerpt-extraction boundary; current reports remain under Speaker labels
 until student confirmation or teacher mapping.
 
-The Speaking gateway is the narrow exception to the repository's fully bundled
-function default. Its provider pipeline made the full bundled CloudBase SDK
-exceed the current environment's expanded-code limit, although the compressed
-archive remained small. The package builder therefore externalizes only the
-existing, exactly pinned `@cloudbase/node-sdk@3.18.1` for `speakingLab`; CloudBase
-installs that dependency while project/shared code remains one minified bundle.
-This is preferable to an unreviewed SDK rewrite or a permanently failing COS
-deployment and does not introduce a new dependency.
+The Speaking gateway and its private timer Worker remain fully bundled. The
+provider pipeline made the generic SDK bundle exceed the current environment's
+expanded-code limit, although the compressed archive remained small. For
+`speakingLab` and `speakingAiWorker` only, the package builder replaces the
+SDK's unused AI/model and WeChat-client import branches with empty build-time
+modules and fails if either generated `index.js` exceeds 900,000 bytes. The
+required auth, database, storage, function-invocation, configuration, and
+signing paths remain in the bundle, and automatic dependency installation
+remains disabled. This is narrower than an SDK rewrite, introduces no
+dependency, and is guarded by the normal service and package contract tests.
 
 ### Intensive Listening session summaries
 
