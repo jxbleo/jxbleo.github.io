@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260828-5">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260828-6">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -52,14 +52,12 @@
 
     <dialog class="speaking-dialog" id="discussion-dialog" aria-labelledby="discussion-dialog-title">
         <form method="dialog" id="discussion-form">
-            <div class="speaking-dialog-head"><p class="eyebrow accent">NEW SESSION</p><h2 id="discussion-dialog-title">Create a Discussion</h2><p>Set up the task and invite the group. You can adjust participants before recording.</p></div>
+            <div class="speaking-dialog-head"><p class="eyebrow accent">NEW SESSION</p><h2 id="discussion-dialog-title">Create a Discussion</h2><p>Add the DSE task and recording plan. Speaking Lab will detect Candidates from the recording; names can be added inside the Session.</p></div>
             <div class="speaking-form-grid">
                 <label class="speaking-field speaking-field-wide"><span>Discussion title</span><input id="discussion-title" name="title" maxlength="120" required placeholder="e.g. Social media and teenagers"></label>
                 <label class="speaking-field speaking-field-wide"><span>DSE discussion prompt</span><textarea id="discussion-prompt" name="prompt_text" maxlength="10000" required placeholder="Paste the DSE discussion task here."></textarea></label>
                 <label class="speaking-field"><span>Discussion date</span><input id="discussion-date" name="discussion_date" type="date"></label>
-                <label class="speaking-field"><span>Recording time</span><input id="discussion-duration" name="duration_seconds" type="number" min="180" max="1800" step="30" placeholder="Automatic"></label>
-                <label class="speaking-field"><span>VIP Student IDs</span><input id="discussion-vip-ids" name="vip_ids" placeholder="Comma-separated IDs"></label>
-                <label class="speaking-field"><span>Guest names</span><input id="discussion-guests" name="guest_names" placeholder="Comma-separated names"></label>
+                <label class="speaking-field"><span>Recording time</span><input id="discussion-duration" name="duration_seconds" type="number" min="180" max="1800" step="30" placeholder="480 seconds · 4 Candidates"></label>
             </div>
             <div class="speaking-dialog-actions"><button class="outline-button" value="cancel" formnovalidate>Cancel</button><button class="primary-button" id="discussion-create" value="default">Create</button></div>
         </form>
@@ -89,6 +87,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260828-9"></script>
+    <script src="assets/js/speaking-lab.js?v=20260828-10"></script>
 </body>
 </html>

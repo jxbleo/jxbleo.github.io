@@ -2448,9 +2448,12 @@ not duplicated inside the paper. Title extraction also uses one reversible contr
 ## Speaking Lab V1 surfaces
 
 The student Speaking Lab is one responsive page with a Discussion list,
-invitation inbox, creation form, private recording/upload choice, Voice
-Reference cards, factual queued/processing stages, internal Speaker-labelled
-report, voice confirmation, and Student Share controls. The browser holds a
+invitation inbox, roster-free creation form, private recording/upload choice,
+one Candidates card, factual queued/processing stages, internal
+Speaker-labelled report, voice confirmation, and Student Share controls. The
+creation form asks for title, prompt, date, and optional time only; date opens
+on today's Shanghai date. Voice References are not part of the normal Session
+flow. The browser holds a
 recording only in memory until upload and never writes audio to browser
 storage. A microphone denial always leaves the file-upload path available.
 After the one student-session check, initial data loads in the fixed order
@@ -2497,9 +2500,13 @@ one high-emphasis hero, and compact material cards. The list surface shows only
 New Discussion, reusable Voice ID status, and responsive Discussion cards. When
 a Discussion opens, those home surfaces withdraw and the detail becomes the
 only content layer. The detail order is fixed as task progress, prompt,
-participants, formal recording, voice matching, analysis action, and report.
-This prevents the roster, recorder, voice samples, and report from competing at
-one visual level.
+Candidates, formal recording, analysis action, and report. The Candidates card
+first shows an empty explanation, then one tile per detected Candidate. It
+keeps uncertain tracks as Speaker labels and groups confirmed identity/access
+rows plus optional manual VIP/Non-VIP controls underneath. Automatic matches
+show a percentage and create the existing invitation flow; they never present
+an unconfirmed VIP name as a confirmed Candidate label. This prevents identity
+setup, recording, and report content from competing at one visual level.
 
 Discussion reports use one dark group-summary surface followed by one light
 Candidate surface per Speaker. Each Candidate keeps the three 0–7 domains in a

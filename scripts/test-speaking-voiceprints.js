@@ -5,6 +5,7 @@ const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 const voiceprints = require("../cloudfunctions/_shared/tencent-asr-voiceprint");
+const clips = require("../cloudfunctions/_shared/tencent-ci-audio");
 const service = require("../cloudfunctions/speakingLab/index.js")._test;
 
 function wavBase64(seconds = 10, sampleRate = 16000, channels = 1) {
@@ -37,6 +38,61 @@ async function run() {
   assert.equal(valid.durationMs, 10000);
   assert.throws(() => voiceprints.validateWavBase64(wavBase64(10, 48000)), (error) => error.code === "VOICEPRINT_AUDIO_INVALID");
   assert.throws(() => voiceprints.validateWavBase64(wavBase64(4)), (error) => error.code === "VOICEPRINT_AUDIO_DURATION_INVALID");
+
+  const cloudFileId = "cloud://mrcat-test.bucket-name-1234567890/speaking/input.mp3";
+  assert.deepEqual(clips.parseCloudFileId(cloudFileId), {
+    fileId: cloudFileId,
+    environment: "mrcat-test",
+    bucket: "bucket-name-1234567890",
+    object: "speaking/input.mp3",
+  });
+  const clipEnv = {
+    TENCENTCLOUD_SECRETID: "test-secret-id",
+    TENCENTCLOUD_SECRETKEY: "test-secret-key",
+    TENCENTCLOUD_SESSIONTOKEN: "test-session-token",
+    SPEAKING_TENCENT_CI_REGION: "ap-shanghai",
+  };
+  const jobXml = clips.createJobXml({
+    source: cloudFileId,
+    outputObject: "speaking/output.wav",
+    startMs: 1250,
+    durationMs: 12000,
+    env: clipEnv,
+  });
+  assert.match(jobXml, /<Format>wav<\/Format>/);
+  assert.match(jobXml, /<Codec>pcm_s16le<\/Codec>/);
+  assert.match(jobXml, /<Samplerate>16000<\/Samplerate>/);
+  assert.match(jobXml, /<Channels>1<\/Channels>/);
+  assert.match(jobXml, /<Start>1\.250<\/Start><Duration>12\.000<\/Duration>/);
+  const clipCalls = [];
+  const clipFetch = async (url, options) => {
+    clipCalls.push({ url, options });
+    const body = options.method === "POST"
+      ? "<Response><JobsDetail><JobId>job-1234</JobId><State>Submitted</State></JobsDetail></Response>"
+      : "<Response><JobsDetail><JobId>job-1234</JobId><State>Success</State></JobsDetail></Response>";
+    return {
+      ok: true,
+      status: 200,
+      headers: { get: (name) => name === "x-cos-request-id" ? "clip-request" : null },
+      text: async () => body,
+    };
+  };
+  const clipJob = await clips.createExcerptJob({
+    sourceCloudFileId: cloudFileId,
+    outputObject: "speaking/output.wav",
+    startMs: 1250,
+    durationMs: 12000,
+  }, { env: clipEnv, fetch: clipFetch, timestamp: 1700000000 });
+  assert.equal(clipJob.jobId, "job-1234");
+  assert.equal(clipJob.outputFileId, "cloud://mrcat-test.bucket-name-1234567890/speaking/output.wav");
+  const clipStatus = await clips.describeExcerptJob({
+    sourceCloudFileId: cloudFileId,
+    jobId: clipJob.jobId,
+  }, { env: clipEnv, fetch: clipFetch, timestamp: 1700000000 });
+  assert.equal(clipStatus.status, "Success");
+  assert.match(clipCalls[0].options.headers.Authorization, /^q-sign-algorithm=sha1/);
+  assert.equal(clipCalls[0].options.headers.Date, "Tue, 14 Nov 2023 22:13:20 GMT");
+  assert.equal(clipCalls[0].options.headers["x-cos-security-token"], "test-session-token");
 
   const env = {
     TENCENTCLOUD_SECRETID: "test-secret-id",

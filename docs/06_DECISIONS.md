@@ -1,5 +1,23 @@
 # 06 Decisions
 
+## 2026-08-28: Candidate detection precedes optional identity matching
+
+A Discussion is created without a roster. Tencent diarization first selects the
+three-to-six strongest eligible Speaker Tracks as Candidates, independently of
+who has been invited or named. Identity is then an optional projection: for
+each Candidate with an uninterrupted 8–20 second turn, Tencent COS/CI produces
+a private 16 kHz mono WAV and Tencent voiceprint group verification proposes
+one VIP only at score 70 or above and a 10-point lead over the runner-up.
+One-to-one resolution prevents one VIP from owning two tracks.
+
+The CI adapter uses built-in `crypto` and `fetch`, so this architecture adds
+no runtime dependency or ffmpeg binary. Derived clips are deleted immediately
+after verification. The stage is fail-soft because identity does not determine
+DSE evidence: no clip, no enrolled voiceprint, ambiguity, or provider failure
+leaves a Speaker anonymous and continues analysis. Accepted proposals create
+the existing invitation/confirmation flow; they do not bypass student consent
+or teacher authority.
+
 ## 2026-08-28: Speaking turn review is server-keyed, complete, and concise
 
 Per-utterance feedback uses server-derived canonical speaking turns rather than
@@ -1251,10 +1269,10 @@ version used.
 
 Tencent's normal diarization output does not supply per-Speaker audio that can
 be sent safely to the existing single-speaker voiceprint verification API.
-Therefore reusable voiceprint auto-matching is not guessed from turn order and
-is not performed on the mixed Discussion file. It requires a later approved
-private excerpt-extraction boundary; current reports remain under Speaker labels
-until student confirmation or teacher mapping.
+Therefore reusable voiceprint auto-matching is never guessed from turn order or
+performed on the mixed Discussion file. The 2026-08-28 Candidate-first decision
+implements the required private CI excerpt boundary; results still remain under
+Speaker labels until student confirmation or teacher mapping.
 
 The Speaking gateway and its private timer Worker remain fully bundled. The
 provider pipeline made the generic SDK bundle exceed the current environment's

@@ -2316,6 +2316,13 @@ split turns at speaker/context boundaries, preserve unknown ASR confidence,
 derive rather than trust turn counts, reject incomplete/duplicate/foreign turn
 reviews, and verify that Student Share contains the sharer's transcript-backed
 CS/IO samples without internal segment or Speaker keys.
+Roster-free contracts must select up to six sustained Candidates without any
+participant rows, exclude a brief incidental voice, choose only an
+uninterrupted 8–20 second voiceprint excerpt, reject scores below 70 and
+runner-up margins below 10, and enforce one VIP per Speaker Track. The CI mock
+must lock WAV/PCM/16 kHz/mono/start/duration XML, COS q-sign authentication,
+session-token forwarding, durable create/poll behavior, and private derived
+CloudBase file IDs.
 The authenticated page must complete `getSession()` once and then call
 `speakingLab` directly through the SDK; do not add concurrent redundant
 `callAuthenticatedFunction` preflights. The initial Voiceprint and Discussion
@@ -2359,6 +2366,12 @@ a Discussion hides the home hero, Voice ID card, section heading, and list;
 participant actions remain reachable; the transcript is collapsed; the phone
 dialog rests as a bottom sheet with sticky Cancel/Create actions; and returning
 to Discussions restores the home surface.
+Confirm New Discussion contains no Student ID or Guest inputs, defaults its date
+to today in Shanghai, and defaults an empty duration to 480 seconds. Before
+analysis the detail must show one empty Candidates card. After transcription it
+must show three-to-six Candidate tiles, automatic match percentages only where
+available, and identity/access rows under the same card. An unconfirmed VIP
+must remain a Speaker label in Candidate/report content.
 For a new V2 ready report, confirm the signed-in Candidate appears first and
 their turn review is expanded; every turn quotes the correct server transcript
 and time range; CS and IO each show commentary plus `Try saying`; low/unknown

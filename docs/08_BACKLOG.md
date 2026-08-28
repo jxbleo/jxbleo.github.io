@@ -119,9 +119,10 @@ Before commercial use, review:
   reusable Tencent voiceprints across devices and accents, define the production
   confidence/separation thresholds, monitor the 1000-voiceprint AppID limit, and
   add an owner-facing capacity/cleanup audit before enabling automatic matches.
-  Automatic reusable-voiceprint matching also needs a private, provider-approved
-  way to extract one clean sample per diarized track; do not feed the mixed group
-  recording to a single-speaker verify endpoint or infer identity from turn order.
+  The private Tencent CI excerpt boundary is implemented but still needs
+  owner-gated bucket binding, least-privilege CAM review, real-audio conversion
+  benchmarking, cleanup verification, and cost monitoring before production
+  automatic matching is considered accepted.
 
 - Intensive Listening: owner-gated notification-session index and production
   timer rollout; benchmark large catalog scans and mixed bell pagination.

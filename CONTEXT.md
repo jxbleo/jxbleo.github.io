@@ -359,14 +359,16 @@ _Avoid_: Undo, record deletion
 ## DSE Speaking Lab
 
 **Discussion**:
-One DSE Group Interaction workspace whose participant list, formal recording,
-speaker identities, AI analysis, and share snapshots belong together.
+One DSE Group Interaction workspace whose Candidate tracks, access participants,
+formal recording, speaker identities, AI analysis, and share snapshots belong
+together. It may be created before any participant names are entered.
 _Avoid_: Speaking attempt, audio file, chat room
 
 **VIP Participant**:
-An authenticated Mr. Cat Academy student included in a Discussion. A VIP
-Participant may accept or decline access, confirm their own voice, and create a
-Student Share Snapshot after that confirmation.
+An authenticated Mr. Cat Academy student manually invited or automatically
+proposed from a reliable Reusable Voiceprint match. A VIP Participant may
+accept or decline access, confirm their own voice, and create a Student Share
+Snapshot after that confirmation.
 _Avoid_: Registered speaker, account holder, member ID
 
 **Guest Participant**:
@@ -376,9 +378,9 @@ or sharing authority.
 _Avoid_: Non-speaker, temporary account, invited student
 
 **Candidate**:
-A listed participant whose reliably identified Formal Discussion speech is
-eligible for DSE analysis in that Discussion.
-_Avoid_: Every detected voice, invitee, Speaker Track
+A reliable Speaker Track selected from the Formal Discussion Recording for DSE
+analysis, whether or not its person has been named or invited.
+_Avoid_: Listed participant, every detected voice, invitee
 
 **Formal Discussion Recording**:
 The authoritative group audio captured or uploaded for one Discussion and used
@@ -387,7 +389,8 @@ _Avoid_: Voice Reference, confirmation clip, transcript
 
 **Voice Reference**:
 A short, temporary fallback recording made for one participant in one
-Discussion and used only to compare that participant with Formal Discussion speech.
+Discussion and used only to compare that participant with Formal Discussion
+speech. It is optional and is not part of normal Session setup.
 _Avoid_: Reusable Voiceprint, formal answer, account identity
 
 **Reusable Voiceprint**:
@@ -409,9 +412,10 @@ eligible for display.
 _Avoid_: Candidate, student, voice sample
 
 **Non-Candidate Voice**:
-A Speaker Track that cannot be reliably matched to a listed participant or is
-judged to be incidental speech. It may remain as marked context but is excluded
-from Candidate scoring.
+A Speaker Track that is too brief, unreliable, incidental, or outside the six
+strongest eligible tracks. Identity matching is not required for Candidate
+status. A Non-Candidate Voice may remain as marked context but is excluded from
+Candidate scoring.
 _Avoid_: Failed Candidate, Guest Participant, low-scoring speaker
 
 **Voice Match**:

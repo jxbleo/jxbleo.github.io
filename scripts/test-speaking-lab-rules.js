@@ -84,6 +84,37 @@ function run() {
   assert.equal(outsiderCandidate.reason_by_key.spk_01, "POSSIBLE_NON_CANDIDATE");
   assert.equal(lab.isLikelyFacilitatorCue({ start_ms: 560, text: "You may start a discussion now." }), true);
   assert.equal(lab.isLikelyFacilitatorCue({ start_ms: 20000, text: "You may start a discussion now." }), false);
+  const rosterlessTracks = lab.canonicalizeSpeakerTracks(
+    ["A", "B", "C", "D", "E", "F", "X"].map((provider_speaker_id, index) => ({
+      provider_speaker_id,
+      confidence: 0.9,
+      speech_duration_ms: provider_speaker_id === "X" ? 1200 : 30000 - index * 1000,
+      turn_count: provider_speaker_id === "X" ? 1 : 4,
+      candidate_eligible: provider_speaker_id !== "X",
+    })),
+    ["X", "A", "B", "C", "D", "E", "F"].map((provider_speaker_id, index) => ({ provider_speaker_id, start_ms: index * 1000 }))
+  );
+  const rosterlessCandidates = lab.candidateSpeakerKeys(rosterlessTracks.tracks, [], { independent: true });
+  assert.equal(rosterlessCandidates.candidate_keys.length, 6);
+  assert.equal(rosterlessCandidates.candidate_keys.includes("spk_01"), false, "brief outside voice must remain non-Candidate without a roster");
+
+  const excerptPlans = lab.voiceprintExcerptPlans([
+    { segment_id: "e1", speaker_key: "spk_01", start_ms: 0, end_ms: 4500, text: "First part" },
+    { segment_id: "e2", speaker_key: "spk_01", start_ms: 5000, end_ms: 12000, text: "Second part" },
+    { segment_id: "e3", speaker_key: "spk_02", start_ms: 12500, end_ms: 18000, text: "Too short" },
+  ], ["spk_01", "spk_02"]);
+  assert.deepEqual(excerptPlans, [{ speaker_key: "spk_01", start_ms: 0, duration_ms: 12000, source_turn_id: "spk_01_turn_01" }]);
+
+  const automatic = lab.automaticVoiceMatches([
+    { speaker_key: "spk_01", matches: [{ student_uid: "alice", voiceprint_profile_id: "vp-a", score: 83 }, { student_uid: "bob", voiceprint_profile_id: "vp-b", score: 65 }] },
+    { speaker_key: "spk_02", matches: [{ student_uid: "bob", voiceprint_profile_id: "vp-b", score: 82 }, { student_uid: "carol", voiceprint_profile_id: "vp-c", score: 75 }] },
+    { speaker_key: "spk_03", matches: [{ student_uid: "alice", voiceprint_profile_id: "vp-a", score: 80 }, { student_uid: "carol", voiceprint_profile_id: "vp-c", score: 60 }] },
+    { speaker_key: "spk_04", matches: [{ student_uid: "dan", voiceprint_profile_id: "vp-d", score: 69 }] },
+  ]);
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_01").status, "matched");
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_02").reason, "AMBIGUOUS_MATCH");
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_03").reason, "ONE_TO_ONE_CONFLICT");
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_04").reason, "BELOW_SCORE_THRESHOLD");
 
   // 13-15 report speaker/evidence/score contracts.
   const segments = [{ segment_id: "seg_0001", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "hello" }, { segment_id: "seg_0002", speaker_key: "spk_02", start_ms: 1000, end_ms: 2000, text: "world" }];
