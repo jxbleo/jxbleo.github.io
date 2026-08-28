@@ -15,9 +15,6 @@ const flags = new Set(args.filter((arg) => arg.startsWith("--")));
 const requested = args.filter((arg) => !arg.startsWith("--"));
 const dryRun = flags.has("--dry-run");
 const packageAll = flags.has("--all");
-const cloudInstalledDependencies = {
-  speakingLab: { "@cloudbase/node-sdk": "3.18.1" }
-};
 
 function run(command, commandArgs, options = {}) {
   return spawnSync(command, commandArgs, {
@@ -69,7 +66,24 @@ function assertZipAvailable() {
   }
 }
 
-function packageFunction(functionName) {
+const speakingRuntimeFunctions = new Set(["speakingLab", "speakingAiWorker"]);
+const speakingRuntimeMaxBundleBytes = 900000;
+
+function speakingRuntimeBundlePlugins(functionName) {
+  if (!speakingRuntimeFunctions.has(functionName)) return [];
+  return [{
+    name: "speaking-lab-unused-cloudbase-features",
+    setup(build) {
+      build.onResolve({ filter: /^@cloudbase\/wx-cloud-client-sdk$/ }, (args) => ({ path: args.path, namespace: "speaking-empty" }));
+      build.onResolve({ filter: /^\.\/ai$/ }, (args) => args.importer.includes("/@cloudbase/node-sdk/dist/cloudbase.js")
+        ? { path: "node-sdk-ai", namespace: "speaking-empty" }
+        : null);
+      build.onLoad({ filter: /.*/, namespace: "speaking-empty" }, () => ({ contents: "module.exports = {};", loader: "js" }));
+    }
+  }];
+}
+
+async function packageFunction(functionName) {
   const sourceDir = path.join(functionsRoot, functionName);
   const indexPath = path.join(sourceDir, "index.js");
   const outputPath = path.join(outputRoot, `${functionName}.zip`);
@@ -91,10 +105,9 @@ function packageFunction(functionName) {
   const stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), `mrcat-${functionName}-`));
   const bundledIndexPath = path.join(stagingDir, "index.js");
   const bundledPackagePath = path.join(stagingDir, "package.json");
-  const installedDependencies = cloudInstalledDependencies[functionName] || {};
 
   try {
-    esbuild.buildSync({
+    await esbuild.build({
       entryPoints: [indexPath],
       outfile: bundledIndexPath,
       bundle: true,
@@ -102,15 +115,22 @@ function packageFunction(functionName) {
       target: "node18",
       format: "cjs",
       minify: true,
-      external: ["@aws-sdk/client-s3", ...Object.keys(installedDependencies)],
+      external: ["@aws-sdk/client-s3"],
+      plugins: speakingRuntimeBundlePlugins(functionName),
       logLevel: "silent"
     });
+    if (speakingRuntimeFunctions.has(functionName)) {
+      const bundledBytes = fs.statSync(bundledIndexPath).size;
+      if (bundledBytes > speakingRuntimeMaxBundleBytes) {
+        throw new Error(`${functionName} bundle is ${bundledBytes} bytes; maximum is ${speakingRuntimeMaxBundleBytes}`);
+      }
+    }
     fs.writeFileSync(bundledPackagePath, `${JSON.stringify({
       name: functionName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase(),
       version: "1.0.0",
       private: true,
       main: "index.js",
-      dependencies: installedDependencies
+      dependencies: {}
     }, null, 2)}\n`);
 
     const bundledCheck = run("node", ["--check", bundledIndexPath]);
@@ -133,7 +153,7 @@ function packageFunction(functionName) {
   console.log(`Created ${path.relative(root, outputPath)}`);
 }
 
-function main() {
+async function main() {
   const allFunctions = listFunctions();
   const selected = selectFunctions(allFunctions);
   const invalid = selected.filter((name) => !allFunctions.includes(name));
@@ -154,8 +174,11 @@ function main() {
   }
 
   for (const functionName of selected) {
-    packageFunction(functionName);
+    await packageFunction(functionName);
   }
 }
 
-main();
+main().catch((error) => {
+  console.error(error && error.stack || error);
+  process.exitCode = 1;
+});

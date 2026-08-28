@@ -2312,6 +2312,16 @@ known opening facilitator cue must be marked non-Candidate even if the provider
 assigns it to the first Candidate track, and its segment ID must be rejected as
 scoring evidence.
 
+Rebuild `deploy-packages/speakingLab.zip` and
+`deploy-packages/speakingAiWorker.zip` and inspect both archives before every
+deployment. Each must contain only `index.js` and `package.json`, keep
+`package.json.dependencies` empty, and keep the uncompressed bundle below the
+900,000-byte project gate. The package contract test must also confirm that
+only the unused CloudBase AI/model and WeChat-client imports are
+stubbed for this function; auth, database, storage, function invocation, and
+request signing must remain bundled. CloudBase automatic dependency
+installation stays disabled.
+
 Real-audio acceptance is still manual and owner-gated: upload the supplied
 8-minute four-person MP3, record task ID/latency/cost, compare Speaker track
 count and turn boundaries with a human listen, verify any incidental voice is
