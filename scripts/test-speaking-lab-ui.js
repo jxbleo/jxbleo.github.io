@@ -24,7 +24,9 @@ function run() {
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
-  assert.match(page, /Voice Reference|New Discussion/);
+  assert.match(page, /New Discussion/);
+  assert.match(page, /detect Candidates from the recording/);
+  assert.doesNotMatch(page, /discussion-vip-ids|discussion-guests/);
   assert.match(page, /My voiceprint|voiceprint-recorder\.js\?v=/);
   assert.match(page, /invitation-dialog/);
   assert.match(page, /discussion-duration/);
@@ -57,7 +59,10 @@ function run() {
   assert.match(app, /updateDiscussionDuration/);
   assert.match(app, /addVipParticipant|addGuestParticipant/);
   assert.match(app, /renameGuest|removeParticipant/);
-  assert.match(app, /data-voice-record/);
+  assert.match(app, /function shanghaiToday/);
+  assert.match(app, /speaking-candidate-grid/);
+  assert.match(app, /Reliable voiceprint matches send invitations automatically/);
+  assert.doesNotMatch(app, /getElementById\('discussion-vip-ids'\)|getElementById\('discussion-guests'\)/);
   assert.doesNotMatch(app, /localStorage|sessionStorage/);
   assert.match(reportJs, /SHARE_NOT_AVAILABLE|expired|revoked/i);
   assert.match(reportJs, /ensureReportAuth/);
@@ -88,13 +93,14 @@ function run() {
   assert.match(css, /speaking-report-overview/);
   assert.match(css, /speaking-score-grid/);
   assert.match(css, /speaking-turn-review/);
+  assert.match(css, /speaking-candidate-grid/);
   assert.match(css, /border-radius:\s*28px 28px 0 0/);
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
   assert.match(app, /speaking-report-candidates/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260828-5/);
-  assert.match(page, /speaking-lab\.js\?v=20260828-9/);
+  assert.match(page, /speaking-lab\.css\?v=20260828-6/);
+  assert.match(page, /speaking-lab\.js\?v=20260828-10/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

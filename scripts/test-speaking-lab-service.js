@@ -195,6 +195,23 @@ async function run() {
   const participantView = require("../cloudfunctions/speakingLab/index.js")._test.participantView({ participant_id: "p1", participant_kind: "vip", student_uid: "u1", display_name_snapshot: "Roster Name", invitation_status: "accepted", identity_status: "ai_matched", matched_speaker_key: "spk_02" }, { auth_uid: "u1", role: "student", active: true }, {}, 0);
   assert.equal(participantView.roster_display_name, "Roster Name");
   assert.equal(participantView.display_name, "Speaker 2");
+  assert.equal(speakingTest.shanghaiDate(new Date("2026-08-27T16:30:00Z")), "2026-08-28");
+  assert.equal(speakingTest.automaticMatchOutputPath({ discussion_id: "d1", job_id: "j1" }, "spk/01"), "speaking-lab/d1/voice-match/j1/spk_01.wav");
+  const candidateViews = speakingTest.candidateTrackViews({
+    transcript: { speaker_tracks: [
+      { speaker_key: "spk_01", evaluation_role: "candidate", speech_duration_ms: 12000, turn_count: 2 },
+      { speaker_key: "spk_02", evaluation_role: "candidate", speech_duration_ms: 14000, turn_count: 3 },
+    ] },
+    voice_matching: { status: "completed", results: [
+      { speaker_key: "spk_01", status: "matched", score: 84 },
+      { speaker_key: "spk_02", status: "unmatched", reason: "AMBIGUOUS_MATCH" },
+    ] },
+  }, [
+    { participant_id: "p1", participant_kind: "vip", student_uid: "u1", display_name_snapshot: "Private Name", invitation_status: "pending", identity_status: "ai_matched", matched_speaker_key: "spk_01" },
+  ]);
+  assert.equal(candidateViews[0].proposed_name, null, "unconfirmed VIP names must not replace Speaker labels");
+  assert.equal(candidateViews[0].automatic_match_score, 84);
+  assert.equal(candidateViews[1].automatic_match_reason, "AMBIGUOUS_MATCH");
 
   const fixture = { report_version: "dse-speaking-v1", mapping_revision: 1 };
   assert.equal(lab.snapshotInvalidationReason(fixture, { ...fixture }), null);

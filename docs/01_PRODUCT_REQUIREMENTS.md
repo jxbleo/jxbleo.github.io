@@ -2089,11 +2089,15 @@ review remains available.
 ## DSE Speaking Lab V1 (local implementation boundary)
 
 Speaking Lab covers only DSE English Language Paper 4 Part A Group Interaction.
-The creator may invite active students by exact Student ID and add Discussion-
-scoped Guests. Three to six listed participants are eligible for DSE analysis;
-a two-person Discussion does not generate a report. Prompt text is typed or pasted,
-recordings are private, and no pronunciation/delivery score or official total
-is produced. Reports use three integer 0–7 domains plus
+New Session requires only a title, DSE prompt, date, and optional target time;
+it does not require student IDs or Guest names. The date defaults to the current
+Shanghai date and the target defaults to eight minutes for four Candidates.
+After transcription, the server independently selects three to six reliable
+Speaker Tracks as Candidates. Fewer than three detected Candidates do not
+generate a report; a brief or incidental outside voice remains non-Candidate
+context. Prompt text is typed or pasted, recordings are private, and no
+pronunciation/delivery score or official total is produced. Reports use three
+integer 0–7 domains plus
 `Pronunciation & Delivery — Not assessed`.
 
 Every new V2 report also provides a turn-by-turn review for each canonical
@@ -2127,6 +2131,18 @@ identity. The browser produces a 16 kHz mono WAV and sends it directly through
 the authenticated function to Tencent; Mr. Cat Academy does not retain the
 enrolment recording. Discussion-scoped Voice References remain an optional
 fallback and keep their seven-day deletion rule.
+
+Normal Session setup does not ask any participant to record a new Voice
+Reference. After diarization, the server selects one uninterrupted 8–20 second
+turn per Candidate where available, converts it privately to Tencent's 16 kHz
+mono WAV input, and runs 1:N identification against active VIP Reusable
+Voiceprints. A match is proposed only when its score is at least 70 and leads
+the next result by at least 10 points. Matching is one-to-one: one VIP cannot be
+assigned to two Speaker Tracks. A reliable new match creates a pending
+invitation automatically; the creator's own match is accepted for access.
+Every other result stays under its Speaker label. Missing voiceprints, short
+turns, ambiguity, conversion failure, or provider failure must never stop DSE
+analysis.
 
 Student Voice confirmation is still required before a Student Share, while
 teachers may remap and lock mappings. Voiceprint recognition is a proposed
