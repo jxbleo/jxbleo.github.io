@@ -2,6 +2,11 @@
 
 ## 2026-08-29
 
+- Expanded the Writing toolbar title into all safe space between the hamburger and
+  right actions, removed the revision percentage, fixed the title pencil at the
+  far-right edge, and moved title editing into a readable Apple-style modal with
+  keyboard focus containment, Cancel, Save, and inline error feedback.
+
 - Preserved the Sentence Revision card's rounded upper corners in the green skin by clipping the card and rounding its control row, and replaced the skin brush with a recognizable palette SVG while retaining the existing 44px target and accessible labels.
 
 ## 2026-08-28

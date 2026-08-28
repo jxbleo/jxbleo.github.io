@@ -112,6 +112,8 @@
     var currentWritingTitleForm = document.getElementById('current-writing-title-form');
     var currentWritingTitleInput = document.getElementById('current-writing-title-input');
     var currentWritingTitleCancel = document.getElementById('current-writing-title-cancel');
+    var titleEditDialog = document.getElementById('title-edit-dialog');
+    var titleEditError = document.getElementById('title-edit-error');
     var sidebarDockedQuery = window.matchMedia ? window.matchMedia('(min-width: 820px)') : null;
     var leaveConfirmation = document.getElementById('leave-confirmation');
     var incompleteRewriteAlert = document.getElementById('incomplete-rewrite-alert');
@@ -599,9 +601,8 @@
         currentWritingTitleWindow.hidden = false;
         currentWritingTitleWindow.setAttribute('aria-label', state.current ? 'Current writing: ' + title : 'Start new Writing');
         if (currentWritingTitleShell) currentWritingTitleShell.classList.toggle('is-new-writing', !state.current);
-        if (currentWritingTitleEdit) currentWritingTitleEdit.hidden = !state.current || !editableTitle || state.toolbarTitleEditing;
-        if (currentWritingTitleDisplay) currentWritingTitleDisplay.hidden = state.toolbarTitleEditing;
-        if (currentWritingTitleForm) currentWritingTitleForm.hidden = !state.toolbarTitleEditing;
+        if (currentWritingTitleEdit) currentWritingTitleEdit.hidden = !state.current || !editableTitle;
+        if (currentWritingTitleDisplay) currentWritingTitleDisplay.hidden = false;
         document.title = state.current ? title + ' | AI Tutor' : 'Writing | Mr. Cat Academy';
         scheduleCurrentWritingTitleOverflow();
     }
@@ -611,7 +612,14 @@
         if (!state.current || !title || state.busy) return;
         state.toolbarTitleEditing = true;
         state.titleEditError = '';
-        updateCurrentWritingTitle();
+        if (titleEditError) {
+            titleEditError.textContent = '';
+            titleEditError.hidden = true;
+        }
+        if (currentWritingTitleInput) currentWritingTitleInput.setCustomValidity('');
+        if (titleEditDialog) titleEditDialog.hidden = false;
+        app.inert = true;
+        updateOverlayLock();
         window.requestAnimationFrame(function() {
             if (!currentWritingTitleInput) return;
             currentWritingTitleInput.value = title;
@@ -620,11 +628,19 @@
         });
     }
 
-    function cancelToolbarTitleEdit() {
+    function cancelToolbarTitleEdit(restoreFocus) {
+        if (!state.toolbarTitleEditing) return;
         state.toolbarTitleEditing = false;
         state.titleEditError = '';
+        if (titleEditDialog) titleEditDialog.hidden = true;
+        if (titleEditError) {
+            titleEditError.textContent = '';
+            titleEditError.hidden = true;
+        }
+        app.inert = hasBlockingDialogOpen();
+        updateOverlayLock();
         updateCurrentWritingTitle();
-        if (currentWritingTitleEdit && !currentWritingTitleEdit.hidden) currentWritingTitleEdit.focus({ preventScroll: true });
+        if (restoreFocus !== false && currentWritingTitleEdit && !currentWritingTitleEdit.hidden) currentWritingTitleEdit.focus({ preventScroll: true });
     }
 
     function saveToolbarTitle() {
@@ -645,51 +661,27 @@
             state.compositions = state.compositions.map(function(item) {
                 return compositionId(item) === id ? Object.assign({}, item, updated) : item;
             });
-            state.toolbarTitleEditing = false;
             renderPortfolio();
-            updateCurrentWritingTitle();
+            cancelToolbarTitleEdit();
         }).catch(function(error) {
             state.titleEditError = firstText(error && error.message, 'The title could not be saved.');
-            setStatus(state.titleEditError);
+            if (titleEditError) {
+                titleEditError.textContent = state.titleEditError;
+                titleEditError.hidden = false;
+            }
+            if (currentWritingTitleInput) currentWritingTitleInput.focus();
         }).finally(function() {
             if (submit) submit.disabled = false;
         });
     }
 
-    function revisionProgressSummary() {
-        var sentences = safeArray(state.review && state.review.sentences);
-        if (!state.current || !sentences.length) return null;
-        var total = 0;
-        var completed = 0;
-        sentences.forEach(function(sentence, index) {
-            if (!rewriteRequired(sentence)) return;
-            total += 1;
-            var result = state.rewriteResults[sentenceId(sentence, index)];
-            if (result && result.accepted === true) completed += 1;
-        });
-        return {
-            total: total,
-            completed: completed,
-            remaining: Math.max(0, total - completed),
-            percentage: total ? Math.round((completed / total) * 100) : 100
-        };
-    }
-
     function updateRevisionProgress() {
         if (!revisionProgress) return;
         revisionProgress.classList.remove('is-home-quota', 'is-ocr-photo-control');
-        var progress = revisionProgressSummary();
-        revisionProgress.hidden = !progress;
-        if (!progress) {
-            revisionProgress.textContent = '';
-            revisionProgress.removeAttribute('aria-label');
-            revisionProgress.removeAttribute('title');
-            return;
-        }
-        var label = '句子订正进度：' + progress.completed + ' / ' + progress.total + ' 已完成，剩余 ' + progress.remaining + ' 句';
-        revisionProgress.textContent = progress.percentage + '%';
-        revisionProgress.setAttribute('aria-label', label);
-        revisionProgress.setAttribute('title', label);
+        revisionProgress.hidden = true;
+        revisionProgress.textContent = '';
+        revisionProgress.removeAttribute('aria-label');
+        revisionProgress.removeAttribute('title');
     }
 
     function updateOcrPhotoToolbarToggle(visible) {
@@ -3751,7 +3743,7 @@
     }
 
     function hasBlockingDialogOpen() {
-        return state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.sentenceFeedbackOpen || state.scanSubmitConfirmationOpen ||
+        return state.toolbarTitleEditing || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.sentenceFeedbackOpen || state.scanSubmitConfirmationOpen ||
             state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen;
     }
 
@@ -4398,8 +4390,20 @@
     });
     if (currentWritingTitleEdit) currentWritingTitleEdit.addEventListener('click', beginToolbarTitleEdit);
     if (currentWritingTitleCancel) currentWritingTitleCancel.addEventListener('click', cancelToolbarTitleEdit);
+    if (titleEditDialog) titleEditDialog.addEventListener('click', function(event) {
+        if (event.target.closest('[data-cancel-title-edit]')) cancelToolbarTitleEdit();
+    });
     sidebarScrim.addEventListener('click', closeSidebar);
     window.addEventListener('keydown', function(event) {
+        if (state.toolbarTitleEditing && event.key === 'Tab') {
+            var titleControls = titleEditDialog ? titleEditDialog.querySelectorAll('input, button:not(:disabled)') : [];
+            if (!titleControls.length) return;
+            var titleFirst = titleControls[0];
+            var titleLast = titleControls[titleControls.length - 1];
+            if (event.shiftKey && document.activeElement === titleFirst) { event.preventDefault(); titleLast.focus(); }
+            else if (!event.shiftKey && document.activeElement === titleLast) { event.preventDefault(); titleFirst.focus(); }
+            return;
+        }
         if (state.photoViewerOpen) {
             if (event.key === 'ArrowLeft') { event.preventDefault(); stepPhotoViewer(-1); return; }
             if (event.key === 'ArrowRight') { event.preventDefault(); stepPhotoViewer(1); return; }
@@ -4483,6 +4487,7 @@
         }
     });
     window.addEventListener('pageshow', function() {
+        if (state.toolbarTitleEditing) cancelToolbarTitleEdit(false);
         if (state.photoViewerOpen) closePhotoViewer(false);
         if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation(false);
         if (state.photoChoiceOpen) closePhotoChoice(false);
