@@ -10,6 +10,7 @@
     var sidebarToggle = document.getElementById('speaking-sidebar-toggle');
     var sidebarScrim = document.getElementById('speaking-sidebar-scrim');
     var sidebarHome = document.getElementById('speaking-sidebar-home');
+    var sidebarNew = document.getElementById('speaking-sidebar-new');
     var dialog = document.getElementById('discussion-dialog');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
@@ -295,6 +296,12 @@
         voiceDiscard = true;
         stopVoiceReferenceRecording();
         closeSidebar();
+    }
+    function openNewDiscussionDialog() {
+        closeSidebar();
+        document.getElementById('discussion-date').value = shanghaiToday();
+        if (typeof dialog.showModal === 'function') dialog.showModal();
+        else dialog.setAttribute('open', '');
     }
     function renderList(items) {
         if (!items.length) { list.innerHTML = '<div class="speaking-detail-card speaking-empty-state"><div class="speaking-empty-icon" aria-hidden="true">◎</div><h2>Start your first Discussion</h2><p>Add the DSE task and record when the group is ready. Candidates and invitations are created from the audio.</p></div>'; return; }
@@ -629,7 +636,8 @@
     sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
     sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
     sidebarHome.addEventListener('click', returnToSpeakingHome);
-    document.getElementById('new-discussion').addEventListener('click', function () { closeSidebar(); document.getElementById('discussion-date').value = shanghaiToday(); if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', ''); });
+    sidebarNew.addEventListener('click', openNewDiscussionDialog);
+    document.getElementById('new-discussion').addEventListener('click', openNewDiscussionDialog);
     document.getElementById('open-my-voiceprint').addEventListener('click', openVoiceprintDialog);
     document.getElementById('voiceprint-record').addEventListener('click', startMyVoiceprintRecording);
     document.getElementById('voiceprint-stop').addEventListener('click', stopMyVoiceprintRecording);
@@ -680,6 +688,9 @@
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
     document.addEventListener('visibilitychange', function () { if (selectedId && !document.hidden) openDiscussion(selectedId); });
+    window.addEventListener('pageshow', function (event) { if (event.persisted) closeSidebar(); });
+
+    closeSidebar();
 
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260829-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260829-2">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -23,6 +23,9 @@
         <aside class="speaking-sidebar" id="speaking-sidebar" aria-label="Discussion sidebar" aria-hidden="true">
             <div class="speaking-sidebar-actions">
                 <button class="speaking-sidebar-home" id="speaking-sidebar-home" type="button">Home</button>
+                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Create a new Discussion" title="Create a new Discussion">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
             </div>
             <div class="speaking-sidebar-heading">
                 <p class="eyebrow">YOUR DISCUSSIONS</p>
@@ -31,7 +34,7 @@
             <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite"><span class="speaking-status-dot" aria-hidden="true"></span><span>Loading your Discussions…</span></div>
             <section class="speaking-list" id="speaking-list" aria-label="Discussions"></section>
         </aside>
-        <div class="speaking-sidebar-scrim" id="speaking-sidebar-scrim" hidden></div>
+        <div class="speaking-sidebar-scrim" id="speaking-sidebar-scrim" aria-hidden="true" hidden></div>
         <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
             <h1 class="sr-only" id="speaking-lab-title">Speaking Lab</h1>
             <section class="speaking-mode-grid" aria-label="DSE Paper 4 practice modes">
@@ -103,6 +106,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260829-1"></script>
+    <script src="assets/js/speaking-lab.js?v=20260829-2"></script>
 </body>
 </html>
