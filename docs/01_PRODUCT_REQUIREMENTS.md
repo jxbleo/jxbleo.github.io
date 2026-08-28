@@ -2098,8 +2098,12 @@ snapshots are revoked when mapping/report/privacy state changes.
 
 Production speech and text providers fail closed with
 `SPEAKING_PROVIDER_NOT_CONFIGURED` until the owner completes the real-audio
-benchmark and deployment. No deterministic fixture is available through a
-browser or production action. Reusable voiceprint registration independently
+benchmark and deployment. The implementation candidate is Tencent recording-
+file transcription/diarization plus an independently configured OpenAI-
+compatible structured DSE report model. Extra or unreliable voices remain
+anonymous non-Candidate context; the system never assigns identity from speaking
+order. No deterministic fixture is available through a browser or production
+action. Reusable voiceprint registration independently
 fails closed with `SPEAKING_VOICEPRINT_NOT_CONFIGURED` until the Tencent
 credentials, region, group, collections, indexes, and functions are deployed.
 

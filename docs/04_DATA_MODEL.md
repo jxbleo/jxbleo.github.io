@@ -1259,6 +1259,16 @@ provider locator but preserves lifecycle metadata.
 provider and request ID; and `created_at`. It never contains a name, WAV,
 base64 data, transcript, embedding, score, or provider response body.
 
+During Tencent recording-file recognition, `speaking_ai_jobs` may also contain
+the safe provider task locator `provider_task_id`, submission time, and bounded
+poll count. Monotonic `provider_call_count` and `model_call_count` fields give
+each physical provider request a stable usage-ledger identity across manual
+retries. It never contains the temporary audio URL or provider response.
+The matching processing report may contain a server-canonical transcript,
+Candidate/non-Candidate role flags, rejected-segment count, and audio-quality
+warning codes before its immutable `ready` transition. Only a `ready` report
+may become `active_report_version`.
+
 Required uniqueness/index coverage includes Discussion/participant/asset/job/
 report/share/event IDs, Discussion plus participant scope, job status plus
 retry/lease times, asset status plus expiry, and share status plus expiry. Raw
