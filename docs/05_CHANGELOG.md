@@ -2,6 +2,26 @@
 
 ## 2026-08-28
 
+- Made the Speaking Lab Bailian/Qwen structured-report adapter explicitly use
+  non-thinking mode so the DSE result remains one JSON object in
+  `message.content` instead of failing local schema parsing.
+- Sent the Qwen output limit as `max_tokens` instead of the OpenAI-specific
+  `max_completion_tokens`, preventing long four-candidate reports from being
+  truncated by the provider's shorter default limit.
+- Added content-free structured-output diagnostics for failed Speaking model
+  calls so empty, non-JSON, and truncated responses can be distinguished
+  without storing student transcript or model response text.
+- Kept strict validation for required Candidate rows, domain scores, and
+  same-Speaker evidence while discarding untrusted extra model fields during
+  canonical projection. Harmless provider additions no longer reject a whole
+  otherwise valid DSE report and are never persisted.
+- Split parsed-report structural failures into safe object-level error codes so
+  Candidate-array, Candidate-object, Domains-object, and assessed-domain
+  failures can be diagnosed without storing model feedback text.
+- Canonicalized Qwen's common single-object report wrapper and Speaker-keyed
+  Candidate map into the same strict Candidate array before validating counts,
+  scores, and same-Speaker evidence.
+
 - Added the environment-gated Tencent recording-file ASR adapter and durable
   submit/poll pipeline for Speaking Lab, including canonical Speaker tracks,
   incidental-voice exclusion, partial transcript preservation, and safe usage

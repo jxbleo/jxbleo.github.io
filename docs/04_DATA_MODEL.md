@@ -1259,6 +1259,12 @@ provider locator but preserves lifecycle metadata.
 provider and request ID; and `created_at`. It never contains a name, WAV,
 base64 data, transcript, embedding, score, or provider response body.
 
+`speaking_model_usage_events` may retain bounded, content-free structured-output
+diagnostics: provider finish reason, response character count, coarse content
+shape, whether the response closed with a JSON object, and whether a separate
+reasoning field was present. It never stores the model response text, prompt,
+transcript, API key, or temporary audio URL.
+
 During Tencent recording-file recognition, `speaking_ai_jobs` may also contain
 the safe provider task locator `provider_task_id`, submission time, and bounded
 poll count. Monotonic `provider_call_count` and `model_call_count` fields give

@@ -108,7 +108,7 @@ async function run() {
   const modelCalls = [];
   const modelEnv = {
     SPEAKING_AI_TEXT_API_KEY: "private-test-key",
-    SPEAKING_AI_TEXT_API_URL: "https://bailian.example.test/chat/completions",
+    SPEAKING_AI_TEXT_API_URL: "https://workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
     SPEAKING_AI_TEXT_MODEL: "qwen-test",
     SPEAKING_AI_TEXT_PROTOCOL: "chat_json_object",
   };
@@ -126,8 +126,27 @@ async function run() {
   assert.equal(modelResult.output.group_summary_zh, "測試");
   assert.equal(modelResult.usage.total_tokens, 15);
   assert.equal(modelCalls[0].body.response_format.type, "json_object");
-  assert.equal(modelCalls[0].body.max_completion_tokens, 8000);
+  assert.equal(modelCalls[0].body.max_tokens, 8000);
+  assert.equal(Object.prototype.hasOwnProperty.call(modelCalls[0].body, "max_completion_tokens"), false);
+  assert.equal(modelCalls[0].body.enable_thinking, false);
   assert.equal(modelCalls[0].headers.Authorization, "Bearer private-test-key");
+
+  await assert.rejects(
+    () => model.callStructuredModel({ system_prompt: "Return JSON", user_prompt: "JSON input" }, {
+      env: modelEnv,
+      fetch: async () => ({
+        ok: true,
+        status: 200,
+        headers: { get: () => "diagnostic-request" },
+        text: async () => JSON.stringify({ choices: [{ finish_reason: "length", message: { content: "{\"candidates\":[" } }] }),
+      }),
+    }),
+    (error) => error.code === "SPEAKING_AI_SCHEMA_INVALID"
+      && error.responseDiagnostics.finish_reason === "length"
+      && error.responseDiagnostics.content_shape === "json_object"
+      && error.responseDiagnostics.content_closed === false
+      && error.responseDiagnostics.content_length === 15,
+  );
 
   const job = { job_id: "job", status: "queued", stage: "transcription", attempt_count: 0, safe_error_code: null, created_at: null, updated_at: null, finished_at: null };
   const view = require("../cloudfunctions/speakingLab/index.js")._test.publicJob(job);

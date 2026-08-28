@@ -90,6 +90,13 @@ function run() {
   const canonical = lab.canonicalizeReport(valid, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
   assert.deepEqual(canonical.candidates.map((item) => item.speaker_key), ["spk_01", "spk_02"]);
   assert.equal(canonical.candidates[0].domains.pronunciation_delivery.status, "not_assessed");
+  const withProviderExtras = lab.canonicalizeReport({ ...valid, schema_version: "provider-copy", candidates: valid.candidates.map((item) => ({ ...item, provider_note: "discard", domains: { ...item.domains, overall_score: 99 } })) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
+  assert.equal(Object.prototype.hasOwnProperty.call(withProviderExtras, "schema_version"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(withProviderExtras.candidates[0], "provider_note"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(withProviderExtras.candidates[0].domains, "overall_score"), false);
+  const candidateMap = Object.fromEntries(valid.candidates.map((item) => [item.speaker_key, Object.fromEntries(Object.entries(item).filter(([key]) => key !== "speaker_key"))]));
+  const wrappedCandidateMap = lab.canonicalizeReport({ report: { ...valid, candidates: candidateMap } }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
+  assert.deepEqual(wrappedCandidateMap.candidates.map((item) => item.speaker_key), ["spk_01", "spk_02"]);
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: [valid.candidates[0]] }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /CANDIDATE_COUNT/);
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: [valid.candidates[0], { ...valid.candidates[1], speaker_key: "spk_01" }] }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /DUPLICATE/);
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: [valid.candidates[0], { ...valid.candidates[1], speaker_key: "spk_99" }] }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /SPEAKER_INVALID/);
