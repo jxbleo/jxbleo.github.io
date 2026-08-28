@@ -6,6 +6,12 @@
   pointer and keyboard activation now give the static card one short shake without
   flipping it, with a tint-only Reduced Motion fallback.
 
+- Replaced Speaking Lab's manual temporary-COS `PUT` with the authenticated
+  CloudBase browser upload API. The gateway now reserves one exact private path,
+  accepts the SDK-returned file ID only for that path, verifies the real stored
+  byte size, and only then marks the recording uploaded. A ten-minute client
+  ceiling restores retry instead of leaving `Upload recording` spinning.
+
 - Added evidence-linked turn-by-turn DSE Speaking review. The server now groups
   canonical transcript segments into real speaking turns and requires one
   validated CS and IO coaching item per Candidate turn. Student reports show

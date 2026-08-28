@@ -2311,6 +2311,16 @@ leaving `Loading your Discussions…` indefinitely. Reload a valid student sessi
 and confirm the loading state settles and at least one `speakingLab` invocation
 reaches the cloud logs.
 
+The service contract must confirm `startAudioUpload` returns only the reserved
+SDK upload target, never temporary COS credentials, and that
+`finishAudioUpload` accepts an exact-path CloudBase file ID while rejecting an
+HTTPS URL or a different object key. The UI contract must lock the authenticated
+`uploadCloudFile` call, `uploaded_file_id` handoff, ten-minute timeout, restored
+retry state, and cache-busted Speaking assets. In development, upload one real
+MP3, verify the asset changes from `uploading` to `uploaded` with a non-null
+`file_id`, confirm the object exists at the reserved path with the expected
+size, and confirm a failed/aborted upload never enables analysis.
+
 The same command runs `scripts/test-speaking-voiceprints.js`. It must validate
 16 kHz/16-bit/mono WAV structure and duration bounds, opaque Tencent nicknames,
 TC3 signing and session-token forwarding, enrol/update/delete/verify/1:N action

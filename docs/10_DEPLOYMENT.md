@@ -1245,6 +1245,15 @@ branches that Speaking Lab does not call; do not stub auth, database, storage,
 function invocation, or request signing. Wait for `Active` / `Available`; an
 upload success followed by `LimitExceeded.CodeUnzip` is a failed release.
 
+The student formal-audio uploader uses the authenticated CloudBase browser SDK:
+`startAudioUpload` returns a reserved private `cloud_path`, the SDK returns the
+uploaded CloudBase file ID, and `finishAudioUpload` performs exact-path and
+actual-size verification. Publish the cache-busted `cloudbase-client.js`,
+`speaking-lab.js`, and `speaking-lab.html` only after the matching `speakingLab`
+function is Active. In the console, explicitly verify automatic dependency
+installation is disabled for both Speaking functions; a bundled dependency-free
+ZIP must not be combined with platform dependency installation.
+
 `cloudfunctions/_shared/` is bundled into dependent functions and is never a
 standalone CloudBase function. The deploy-plan generator therefore excludes
 underscore-prefixed shared directories; package only `speakingLab` and
