@@ -2370,13 +2370,21 @@ produces a successful run without `CustomArgument` or a Worker token.
 Do not claim provider-backed speech quality until the owner-authorized
 development deployment and real-audio benchmark pass.
 
-For every Speaking Lab visual release, inspect at least one populated list, New
+For every Speaking Lab visual release, inspect the two-card home, Voiceprint
+card, one populated right-side Discussion drawer, New
 Discussion dialog, ready four-Candidate report, and incomplete recording state
 at desktop and 390-pixel phone widths. Confirm no horizontal overflow; opening
-a Discussion hides the home hero, Voice ID card, section heading, and list;
+a Discussion hides the Part A/Part B and Voiceprint cards but leaves the list
+available from the toolbar drawer;
 participant actions remain reachable; the transcript is collapsed; the phone
 dialog rests as a bottom sheet with sticky Cancel/Create actions; and returning
-to Discussions restores the home surface.
+Home from either the drawer or detail restores the mode cards. Confirm the
+toolbar uses the Writing hamburger, has no student-name chip, and opens the
+drawer from the right. The drawer must contain the list directly, close by the
+same rightward path, close with Escape and the mobile scrim, and avoid a desktop
+scrim. Part A must read `DSE Paper 4`, `Part A`, and `Group Discussion` and open
+New Discussion; Part B must read `DSE Paper 4`, `Part B`, `Individual Response`,
+and `Coming soon` without starting a backend action.
 Confirm New Discussion contains no Student ID or Guest inputs, defaults its date
 to today in Shanghai, and defaults an empty duration to 480 seconds. Before
 analysis the detail must show one empty Candidates card. After transcription it
