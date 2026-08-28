@@ -28,7 +28,8 @@
   avoid concurrent temporary-credential initialization inside the browser SDK.
   Page startup still verifies the student and every Speaking action remains
   server-authorized; bounded read/mutation timeouts prevent an indefinite
-  `Loading` state and provide a refresh-and-retry message.
+  `Loading` state and provide a refresh-and-retry message. A successful empty
+  Discussion list now also clears the initial loading label after rendering.
 
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
