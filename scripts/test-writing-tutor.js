@@ -737,11 +737,16 @@ check("revision skins default to green, toggle in place, and persist locally", (
   requireEvery(client, ["revisionSkin: 'green'", "mrcat-writing-revision-skin-v1", "restoreRevisionSkin()", "data-revision-skin"],
     "green default and persisted skin wiring");
   requireEvery(restoreSource, ["localStorage.getItem", "colorful", "green"], "skin preference restore");
-  requireEvery(controlSource, ["aria-pressed", "Use colorful revision theme", "Use green revision theme"], "accessible skin control");
+  requireEvery(controlSource, ["aria-pressed", "Use colorful revision theme", "Use green revision theme", "M12 2a10 10", "<circle"], "accessible palette skin control");
   requireEvery(applySource, ["revision-skin-green", "revision-skin-colorful", "classList.toggle", "aria-label"], "in-place skin application");
   requireEvery(toggleSource, ["localStorage.setItem", "applyRevisionSkin"], "skin toggle persistence");
   assert(/\.revision-skin-toggle\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/is.test(styles),
     "skin control must retain a 44px target");
+  assert(/\.language-sentence-review-card\s*\{[^}]*overflow:\s*hidden/is.test(styles),
+    "the revision card must clip every skin to its rounded boundary");
+  assert(/\.sentence-review-heading\s*\{[^}]*border-radius:\s*29px\s+29px\s+0\s+0/is.test(styles)
+      && /@media\s*\(max-width:\s*760px\)[\s\S]*?\.sentence-review-heading\s*\{[^}]*border-radius:\s*23px\s+23px\s+0\s+0/is.test(styles),
+    "the green control row must preserve matching desktop and phone top corners");
   requireEvery(styles, [".revision-skin-green .sentence-review-heading", ".revision-skin-green .sentence-capsule", "--sentence-color:#0f766e !important"],
     "uniform Language Review-inspired green treatment");
 });

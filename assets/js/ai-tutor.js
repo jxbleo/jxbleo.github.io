@@ -869,7 +869,7 @@
         var colorful = state.revisionSkin === 'colorful';
         var label = colorful ? 'Use green revision theme' : 'Use colorful revision theme';
         return '<button class="revision-skin-toggle is-' + state.revisionSkin + '" type="button" data-revision-skin aria-pressed="' + colorful + '" aria-label="' + label + '" title="' + label + '">' +
-            '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 4.5 5 5L10 19H5v-5l9.5-9.5Z"></path><path d="m12.5 6.5 5 5"></path></svg></button>';
+            '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.6-1.4-.4-.3-.6-.8-.6-1.3 0-1.1.9-2 2-2H17a5 5 0 0 0 5-5C22 5.7 17.5 2 12 2Z"></path><circle cx="8.5" cy="7.5" r="1" fill="currentColor" stroke="none"></circle><circle cx="13.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle><circle cx="17.5" cy="10.5" r="1" fill="currentColor" stroke="none"></circle><circle cx="6.5" cy="12.5" r="1" fill="currentColor" stroke="none"></circle></svg></button>';
     }
 
     function applyRevisionSkin() {

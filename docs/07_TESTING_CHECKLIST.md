@@ -1994,8 +1994,10 @@ High priority improvement:
   Draft/Revised manuscript card remain.
 - Confirm Language Review and the incomplete Draft retain their title treatment, while
   the third card contains no visible `Sentence Revision` heading. Its first row places
-  one 44px skin control at left and the `−` / `+` group at right. Scroll upward and
-  confirm this control row leaves normally while only the capsule row takes over viewport
+  one 44px palette-icon skin control at left and the `−` / `+` group at right.
+  Confirm both green and colorful skins preserve identical rounded upper corners on
+  desktop, iPad, and phone; no control-row background may form a square corner. Scroll
+  upward and confirm this control row leaves normally while only the capsule row takes over viewport
   `top: 0`.
 - Confirm green is the default skin. Toggle once to the existing eight-color treatment
   and again back to green; refresh after each choice and confirm it persists. The active
