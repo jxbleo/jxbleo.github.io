@@ -1258,9 +1258,29 @@ Each Candidate object:
   "strengths": [],
   "priority_actions": [],
   "language_suggestions": [],
-  "interaction_summary": {}
+  "interaction_summary": {},
+  "turn_reviews": [
+    {
+      "turn_id": "spk_01_turn_01",
+      "communication_strategies": {
+        "commentary_zh": "...",
+        "sample_en": "..."
+      },
+      "ideas_organisation": {
+        "commentary_zh": "...",
+        "sample_en": "..."
+      }
+    }
+  ]
 }
 ```
+
+V2 derives canonical turns on the server by joining consecutive same-Speaker
+segments until a speaker/context change or a gap above 2.5 seconds. The model
+must return exactly one review per supplied turn. Transcript quotation and
+timing are projected from immutable segments after validation and are never
+accepted from model output. CS/IO samples provide subordinate VL support rather
+than a separate turn score.
 
 Language suggestions may include original transcript excerpt, explanation, and
 improved alternative, each attached to existing segment IDs. They must not

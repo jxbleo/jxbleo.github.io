@@ -2082,6 +2082,17 @@ recordings are private, and no pronunciation/delivery score or official total
 is produced. Reports use three integer 0–7 domains plus
 `Pronunciation & Delivery — Not assessed`.
 
+Every new V2 report also provides a turn-by-turn review for each canonical
+Candidate speaking turn. A turn combines consecutive ASR sentences from the
+same Candidate and ends when another voice speaks, non-Candidate context
+intervenes, or a material pause occurs. Each turn shows the server-derived AI
+transcript, concise Communication Strategies (CS) and Ideas & Organisation
+(IO) coaching, and one natural English `Try saying` sample beneath each domain.
+Those English examples are Vocabulary/Language support for achieving the CS or
+IO goal, not a fourth score. The server requires exactly one review for every
+canonical Candidate turn and rejects missing, duplicated, foreign, or invented
+turn references.
+
 ASR text is supporting evidence rather than a guaranteed verbatim record. A
 single odd word, phonetic approximation, semantically impossible token, proper
 noun, or low/unknown-confidence phrase must not directly reduce a Candidate's
@@ -2111,6 +2122,11 @@ anonymous peer summaries; Teacher snapshots apply explicit per-participant
 name selection and redact hidden names everywhere. Raw share tokens are
 returned once, stored only as SHA-256 hashes, expire after seven days, and
 snapshots are revoked when mapping/report/privacy state changes.
+Authenticated participant reports retain the existing full Candidate overview;
+the signed-in Candidate's own turn review is visually prioritised. Student
+Share snapshots contain only the sharer's detailed turn review. Teacher Share
+snapshots may include or exclude turn reviews independently of names and other
+report sections.
 
 Production speech and text providers fail closed with
 `SPEAKING_PROVIDER_NOT_CONFIGURED` until the owner completes the real-audio

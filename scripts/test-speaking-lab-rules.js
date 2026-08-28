@@ -8,13 +8,14 @@ function actor(uid, role = "student") { return { auth_uid: uid, role, active: tr
 function participant(id, key, extra = {}) { return { participant_id: id, kind: "vip", student_uid: id, display_name: id, invitation_status: "accepted", identity_status: "teacher_confirmed", matched_speaker_key: key, mapping_revision: 1, ...extra }; }
 function reportFor(keys = ["spk_01", "spk_02"]) {
   const domain = (id, score = 5) => ({ score, commentary_zh: "表现稳定", evidence_segment_ids: [id] });
+  const coaching = () => ({ commentary_zh: "先回应同学，再推进讨论。", sample_en: "I agree with your point, and I would also add that..." });
   return {
     group_summary_zh: "小组总结", group_strengths: ["倾听"], group_priorities: ["回应"], discussion_flow: ["开场"],
     candidates: keys.map((speaker_key, index) => {
       const evidenceId = `seg_${String(index + 1).padStart(4, "0")}`;
       return { speaker_key, summary_zh: "个人总结", domains: {
         communication_strategies: domain(evidenceId), vocabulary_language_patterns: domain(evidenceId), ideas_organisation: domain(evidenceId), pronunciation_delivery: { status: "anything" },
-      }, strengths: ["清晰"], priority_actions: ["继续"], language_suggestions: ["try"], interaction_summary: { turn_count: 2 } };
+      }, strengths: ["清晰"], priority_actions: ["继续"], language_suggestions: ["try"], interaction_summary: { turn_count: 2 }, turn_reviews: [{ turn_id: `${speaker_key}_turn_01`, communication_strategies: coaching(), ideas_organisation: coaching() }] };
     }),
   };
 }
@@ -86,10 +87,21 @@ function run() {
 
   // 13-15 report speaker/evidence/score contracts.
   const segments = [{ segment_id: "seg_0001", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "hello" }, { segment_id: "seg_0002", speaker_key: "spk_02", start_ms: 1000, end_ms: 2000, text: "world" }];
+  const groupedTurns = lab.canonicalSpeakingTurns([
+    { segment_id: "s1", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "I agree", confidence: null },
+    { segment_id: "s2", speaker_key: "spk_01", start_ms: 1200, end_ms: 2200, text: "and I have another reason", confidence: null },
+    { segment_id: "s3", speaker_key: "spk_02", start_ms: 2300, end_ms: 3200, text: "My view" },
+    { segment_id: "s4", speaker_key: "spk_01", start_ms: 3400, end_ms: 4200, text: "To respond" },
+  ], ["spk_01", "spk_02"]);
+  assert.deepEqual(groupedTurns.map((turn) => [turn.turn_id, turn.segment_ids]), [["spk_01_turn_01", ["s1", "s2"]], ["spk_02_turn_01", ["s3"]], ["spk_01_turn_02", ["s4"]]]);
+  assert.equal(groupedTurns[0].asr_text_status, "confidence_unknown");
   const valid = reportFor();
   const canonical = lab.canonicalizeReport(valid, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
   assert.deepEqual(canonical.candidates.map((item) => item.speaker_key), ["spk_01", "spk_02"]);
   assert.equal(canonical.candidates[0].domains.pronunciation_delivery.status, "not_assessed");
+  assert.equal(canonical.candidates[0].interaction_summary.turn_count, 1);
+  assert.equal(canonical.candidates[0].turn_reviews[0].turn_id, "spk_01_turn_01");
+  assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: valid.candidates.map((item, index) => index ? item : { ...item, turn_reviews: [] }) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /TURN_REVIEW_COUNT/);
   const withProviderExtras = lab.canonicalizeReport({ ...valid, schema_version: "provider-copy", candidates: valid.candidates.map((item) => ({ ...item, provider_note: "discard", domains: { ...item.domains, overall_score: 99 } })) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
   assert.equal(Object.prototype.hasOwnProperty.call(withProviderExtras, "schema_version"), false);
   assert.equal(Object.prototype.hasOwnProperty.call(withProviderExtras.candidates[0], "provider_note"), false);
@@ -113,12 +125,15 @@ function run() {
   const studentShare = lab.projectStudentShare({ report: namedReport, segments, participants: [sharer, peer], sharerParticipant: sharer, aliases: { spk_01: "Other", spk_02: "Anonymous" }, discussion: { share_title: "Internal title" } });
   assert.equal(studentShare.title, "DSE Group Discussion Report");
   assert.equal(studentShare.self.domains.pronunciation_delivery.status, "not_assessed");
+  assert.equal(studentShare.self.turn_reviews[0].transcript_text, "hello");
+  assert.equal(studentShare.self.turn_reviews[0].communication_strategies.sample_en, "I agree with your point, and I would also add that...");
   assert.equal(studentShare.participant_summaries[1].speaker_label, "Anonymous");
   assert.equal(Object.prototype.hasOwnProperty.call(studentShare.participant_summaries[1], "summary_zh"), false);
   assert.doesNotMatch(JSON.stringify(studentShare), /Private Peer/);
   assert.equal(Object.prototype.hasOwnProperty.call(studentShare, "transcript"), false);
   assert.equal(Object.prototype.hasOwnProperty.call(studentShare, "roster"), false);
   assert.doesNotMatch(JSON.stringify(studentShare), /participant_id|speaker_key|segment_id|student_id/i);
+  assert.doesNotMatch(JSON.stringify(studentShare), /spk_\d+/i);
 
   // 19 exact-name redaction and Guest badge in teacher projection.
   const teacherShare = lab.projectTeacherShare({ report: canonical, segments, participants: [sharer, { participant_id: "g", kind: "guest", guest_name: "Sam", matched_speaker_key: "spk_02", identity_status: "unconfirmed" }], discussion: { share_title: "Internal" }, selection: { visible_participant_ids: ["a", "g"], transcript: true }, aliases: { spk_01: "Alice", spk_02: "Bob" }, now: new Date("2026-01-01T00:00:00Z") });
