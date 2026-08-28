@@ -2089,7 +2089,14 @@ review remains available.
 
 ## DSE Speaking Lab V1 (local implementation boundary)
 
-Speaking Lab covers only DSE English Language Paper 4 Part A Group Interaction.
+Speaking Lab functionality covers only DSE English Language Paper 4 Part A
+Group Interaction. Its student home presents two equal Paper 4 mode cards:
+active `Part A · Group Discussion` and a non-interactive
+`Part B · Individual Response` placeholder. A separate Voiceprint card sits
+below them. The compact top toolbar has the same hamburger symbol as Writing,
+no student-name chip, and opens a right-side Discussion drawer whose Home
+action returns to the Speaking Lab mode cards. Discussion records live in that
+drawer rather than occupying a second list on the home surface.
 New Session requires only a title, DSE prompt, date, and optional target time;
 it does not require student IDs or Guest names. The date defaults to the current
 Shanghai date and the target defaults to eight minutes for four Candidates.
