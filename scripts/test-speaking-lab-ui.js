@@ -37,6 +37,7 @@ function run() {
   assert.match(app, /Promise\.race\(\[request, timeout\]\)/);
   assert.match(app, /loadMyVoiceprint\(\)\.then\(function \(\) \{ return loadList\(\); \}\)/);
   assert.doesNotMatch(app, /Promise\.all\(\[loadMyVoiceprint\(\), loadList\(\)\]\)/);
+  assert.match(app, /renderList\(result\.discussions \|\| \[\]\); setStatus\(''\)/);
   assert.match(app, /getUserMedia/);
   assert.match(app, /AnalyserNode|createAnalyser/);
   assert.match(app, /-45|0\.98|INPUT_LOSS_SECONDS/);
