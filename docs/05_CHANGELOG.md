@@ -2,6 +2,8 @@
 
 ## 2026-08-28
 
+- Aligned the AI Tutor Writing toolbar with Speaking Lab geometry and material: a centered 1080px rounded glass bar now overhangs the centered 980px card column, while phones retain 14px outer gutters and the same translucent perimeter instead of reverting to a full-bleed strip.
+
 - Simplified the in-progress Writing revision card by removing its visible `Sentence Revision` heading, adding an accessible locally persisted skin control beside the font controls, and making the Language Review-inspired green treatment the default while preserving the existing eight-color option. Number navigation now uses true circles and spans the full card width with safe-area-aware edge scrolling.
 
 - Corrected the Speaking Lab live-recorder disclosure state: Pause, Stop,

@@ -1807,7 +1807,12 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   transmits a restrained energy sweep from left to right. The browser never
   invents percentages or remaining-time estimates.
 - Every screen uses the persistent toolbar hamburger to reveal the Writing
-  sidebar; the waiting card itself contains no duplicate navigation or Upload
+  sidebar. The toolbar follows the Speaking Lab frame: a centered translucent
+  1080px outer glass card over a centered 980px content column, so the toolbar
+  visibly extends beyond the cards beneath it. At phone widths the shell keeps
+  14px viewport gutters and the rounded glass perimeter instead of becoming a
+  full-bleed square strip; card content remains inset another 10px per side.
+  The waiting card itself contains no duplicate navigation or Upload
   Again row. Home inside the sidebar requires confirmation and leaves the
   workspace without cancelling a durable Job. During the brief unconfirmed upload handoff the toolbar action is
   disabled and the card never promises that the task will continue after the

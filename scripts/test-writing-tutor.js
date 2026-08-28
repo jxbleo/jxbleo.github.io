@@ -132,6 +132,24 @@ check("AI Tutor header keeps only the sidebar toggle, editable current title, an
     "the sparse toolbar must keep a centered title between balanced edge columns");
 });
 
+check("Writing toolbar mirrors the wider Speaking Lab glass frame", () => {
+  const styles = read(stylePath);
+  assert(/\.ai-tutor-shell\s*\{[^}]*width:\s*min\(1080px,\s*calc\(100%\s*-\s*28px\)\)/is.test(styles),
+    "Writing must use the same 1080px outer shell as Speaking Lab");
+  assert(/\.ai-tutor-main\s*\{[^}]*width:\s*min\(980px,\s*100%\)[^}]*margin-inline:\s*auto/is.test(styles),
+    "Writing cards must use the centered 980px inner column");
+  assert(/\.ai-tutor-header\s*\{[^}]*border:\s*1px\s+solid\s+rgba\(255,255,255,\.7\)[^}]*radial-gradient[^}]*inset[^}]*blur\(30px\)\s+saturate\(170%\)/is.test(styles),
+    "Writing toolbar must retain the bright layered glass perimeter");
+  const phoneBlock = /@media\s*\(max-width:\s*760px\)\s*\{([\s\S]*?)\n\}/.exec(styles);
+  assert(phoneBlock, "missing Writing phone layout");
+  requireEvery(phoneBlock[1], [
+    ".ai-tutor-shell { width: min(1080px,calc(100% - 28px)); padding: 14px 0; }",
+    "border-width: 1px", "border-radius: 24px", ".stage { width: 100%", "padding: 14px 10px 16px",
+  ], "rounded phone glass frame and inset card column");
+  assert(!/\.ai-tutor-header\s*\{[^}]*border-radius:\s*0/is.test(phoneBlock[1]),
+    "phone Writing toolbar must not flatten into a full-bleed strip");
+});
+
 check("the writing sidebar owns the Home and plus actions", () => {
   const page = read(pagePath);
   const client = read(clientPath);

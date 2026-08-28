@@ -2021,6 +2021,14 @@ Important mobile rules:
 
 - AI Tutor is a self-contained student workspace with a new-writing main surface
   and one responsive Writing sidebar.
+- Its header toolbar uses the same outer/inner geometry as Speaking Lab: the
+  translucent rounded toolbar is centered at a maximum 1080px, while the main
+  card column is centered at a maximum 980px. This leaves a deliberate 50px
+  overhang at each desktop edge. The material uses a bright translucent perimeter,
+  layered white glass, 30px blur, and restrained inset/depth shadows. On phones it
+  keeps 14px viewport gutters, the rounded perimeter, and a 10px inner card inset;
+  it must not collapse into the former full-bleed flat strip. Reduced Transparency
+  replaces the material with an opaque surface.
 - Its header toolbar always shows the same three-line sidebar button at far left.
   It never changes into History or Back text. The current title remains centered
   and language-revision percentage stays at far right only when applicable.
