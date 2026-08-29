@@ -2601,3 +2601,12 @@ practice navigation, three-minute activity sessions, mixed Teacher bell rows,
 and safe IL email summaries. Added importer metadata propagation and focused
 local contract tests. Production indexes, data import, timer configuration,
 and deployment remain owner-gated.
+
+## 2026-08-30 — DSE Paper 4 Speaking Set Library
+
+Added Set-first Speaking navigation, teacher Set editing with immutable IDs and
+revision checks, frozen Discussion/report snapshots, five initial MOCK Sets,
+and one-question 65-second Individual Response Sessions. Added a dedicated Part
+B prompt/schema, private durable analysis pipeline, retry-safe student report,
+Voiceprint sidebar navigation, public-build exclusion for Speaking Set source,
+and focused service/UI/seed tests.

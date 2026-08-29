@@ -1349,3 +1349,15 @@ state, inactivity deadline, context, target, safe counts, and close reason.
 Session summaries are append-only teacher-attempt-email event rows with
 event_kind intensive_listening_session; they never contain typed words,
 answers, slots, or private audio URLs.
+
+## Speaking Set Library additions
+
+Add ADMINONLY `speaking_sets` with unique `set_id`, source/year/version/title,
+Context paragraphs, ordered Part A points, ordered Part B questions,
+`content_revision`, `visible_to_students`, monotonic `next_point_sequence` and
+`next_question_sequence`, and teacher audit fields. Add ADMINONLY
+`speaking_individual_responses` with unique `response_session_id`, authenticated
+owner UID, Set/question snapshots, 65-second limit, private audio/report state,
+revision locators, and soft-delete fields. Shared audio/job/report rows contain
+exactly one of `discussion_id` or `response_session_id`. Index owner/created,
+Set/created, analysis/updated, visibility/revision, and cleanup fields.

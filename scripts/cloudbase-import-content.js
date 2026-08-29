@@ -29,6 +29,10 @@ const COLLECTIONS = {
     file: ".cloudbase-private/import/vocabulary-lexicon-cloudbase.json",
     keyField: "lexicon_id",
   },
+  speaking_sets: {
+    file: ".cloudbase-private/import/speaking-sets-cloudbase.json",
+    keyField: "set_id",
+  },
 };
 
 function usage() {
@@ -39,7 +43,7 @@ Default mode is a dry run. Add --apply to write to CloudBase.
 
 Options:
   --apply                    Execute CloudBase writes
-  --only <list>              Comma-separated collections: sets,grading_keys,intensive_listening_materials,system_config,vocabulary_lexicon
+  --only <list>              Comma-separated collections: sets,grading_keys,intensive_listening_materials,system_config,vocabulary_lexicon,speaking_sets
   --ids <list>               Comma-separated keys to import, matched against each collection key field
   --offset <number>           Skip this many input records before importing, default 0
   --overwrite-existing       Update existing records instead of insert-missing only

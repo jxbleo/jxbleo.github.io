@@ -14,8 +14,36 @@ async function run() {
   const workerSource = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingAiWorker/index.js"), "utf8");
   const functionPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/package.json"), "utf8"));
   const packagerSource = fs.readFileSync(path.join(__dirname, "package-cloudfunctions.js"), "utf8");
+  const prepareSource = fs.readFileSync(path.join(__dirname, "prepare-cloudbase-data.js"), "utf8");
+  const importSource = fs.readFileSync(path.join(__dirname, "cloudbase-import-content.js"), "utf8");
   assert.match(source, /action === "processQueuedJob"/);
+  ["listSpeakingSets", "getSpeakingSet", "teacherCreateSpeakingSet", "teacherUpdateSpeakingSet", "teacherDeleteSpeakingSet", "createIndividualResponse", "startIndividualResponseAudioUpload", "finishIndividualResponseAudioUpload", "startIndividualResponseAnalysis", "deleteIndividualResponse"].forEach((action) => assert.match(source, new RegExp(`action === "${action}"`)));
+  assert.match(source, /SPEAKING_SET_STALE/);
+  assert.match(source, /SPEAKING_SET_IN_USE/);
+  assert.match(source, /visible_to_students !== true/);
+  assert.match(source, /setSnapshot = lab\.buildGroupDiscussionSnapshot/);
+  assert.match(source, /responseSnapshot = lab\.buildIndividualResponseSnapshot/);
+  assert.match(source, /job_type: "individual_response_analysis"/);
+  assert.match(source, /options\.includeReport \? \{ report: row\.report \|\| null \} : \{\}/, "Individual Response lists must not include full reports");
+  assert.match(source, /INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS \+ lab\.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS/, "ASR-measured response duration must be checked server-side");
+  assert.match(source, /next_question_sequence/);
+  assert.match(source, /response_session_id: claimed\.response_session_id/);
+  assert.match(source, /async function studentOwnsSpeakingSetHistory/);
+  assert.match(source, /studentOwnsSpeakingSetHistory\(actor, set\.set_id\)/);
+  assert.match(source, /speaking_individual_responses/);
+  assert.match(source, /getMany\(INDIVIDUAL_RESPONSES, \{ set_id: set\.set_id \}, 1\)/);
+  assert.match(source, /individualResponseAnalysisPrompt/);
+  assert.match(source, /individualResponseUserPrompt/);
+  assert.doesNotMatch(source, /set_snapshot[\s\S]{0,200}part_b:\s*set\.part_b/, "Individual Response snapshots must not include unrelated questions");
+  assert.match(workerSource, /job\.job_type === "individual_response_analysis"/);
+  assert.match(prepareSource, /dse-paper4-sets\.json/);
+  assert.match(prepareSource, /speaking-sets-cloudbase\.json/);
+  assert.match(importSource, /speaking_sets/);
   assert.match(source, /action === "startVoiceRematch"/);
+  assert.match(source, /action === "updateDiscussionTitle"/);
+  assert.match(source, /async function updateDiscussionTitle/);
+  assert.match(source, /DISCUSSION_TITLE_CHANGED/);
+  assert.match(source, /can_edit_title:\s*lab\.canEditDiscussion/);
   assert.match(source, /job_type: "voice_rematch"/);
   assert.match(source, /active_voice_match_job_id/);
   assert.match(source, /source_report_id: sourceReport\.report_id/);
@@ -43,6 +71,10 @@ async function run() {
   assert.doesNotMatch(packagerSource, /installedDependencies|@cloudbase\/node-sdk"\s*:\s*"3\.18\.1"/);
 
   const speakingTest = require("../cloudfunctions/speakingLab/index.js")._test;
+  assert.equal(speakingTest.hasExactlyOneSessionLocator({ discussion_id: "d1" }), true);
+  assert.equal(speakingTest.hasExactlyOneSessionLocator({ response_session_id: "r1" }), true);
+  assert.equal(speakingTest.hasExactlyOneSessionLocator({ discussion_id: "d1", response_session_id: "r1" }), false);
+  assert.equal(speakingTest.hasExactlyOneSessionLocator({}), false);
   assert.doesNotMatch(source, /getUploadMetadata/, "the gateway must not return fragile request-scoped COS credentials");
   assert.match(source, /uploaded_file_id/);
   assert.deepEqual(speakingTest.uploadTargetView("speaking-lab/path.mp3"), {
@@ -72,6 +104,7 @@ async function run() {
   const unknownConfidenceOutput = speech.normalizedProviderOutput({ speaker_tracks: [{ provider_speaker_id: "A", confidence: null }], segments: [{ provider_speaker_id: "A", start_ms: 0, end_ms: 1000, text: "hello", confidence: null }] });
   assert.equal(unknownConfidenceOutput.speaker_tracks[0].confidence, null);
   assert.equal(unknownConfidenceOutput.segments[0].confidence, null);
+  await assert.rejects(() => Promise.resolve().then(() => speech.inspectAudio({ mime_type: "audio/webm", size_bytes: 10, duration_seconds: 69 })), (error) => error.code === "SPEAKING_AUDIO_TOO_LONG");
   assert.equal(model._test.normalizedUsage({}).total_tokens, null);
 
   assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-08-28\./);
@@ -206,6 +239,14 @@ async function run() {
   const participantView = require("../cloudfunctions/speakingLab/index.js")._test.participantView({ participant_id: "p1", participant_kind: "vip", student_uid: "u1", display_name_snapshot: "Roster Name", invitation_status: "accepted", identity_status: "ai_matched", matched_speaker_key: "spk_02" }, { auth_uid: "u1", role: "student", active: true }, {}, 0);
   assert.equal(participantView.roster_display_name, "Roster Name");
   assert.equal(participantView.display_name, "Speaker 2");
+  assert.equal(participantView.requires_voice_confirmation, true);
+  const privateProposalView = require("../cloudfunctions/speakingLab/index.js")._test.participantView({ participant_id: "p-private", participant_kind: "vip", student_uid: "u-private", display_name_snapshot: "Private Proposal", invitation_status: "pending", invitation_source: "automatic_voice_match", identity_status: "ai_matched", matched_speaker_key: "spk_03", voice_match_score: 64 }, { auth_uid: "viewer", role: "student", active: true }, {}, 0);
+  assert.equal(privateProposalView.roster_display_name, "Speaker 3", "a low-score automatic proposal must not expose the proposed VIP name to peers");
+  assert.equal(privateProposalView.display_name, "Speaker 3");
+  const lockedParticipantView = require("../cloudfunctions/speakingLab/index.js")._test.participantView({ participant_id: "p2", participant_kind: "vip", student_uid: "u2", display_name_snapshot: "Locked Name", invitation_status: "accepted", identity_status: "voiceprint_confirmed", matched_speaker_key: "spk_01", identity_notice_at: new Date("2026-08-29T00:00:00Z"), identity_notice_seen_at: null, voice_match_score: 88 }, { auth_uid: "u2", role: "student", active: true }, {}, 0);
+  assert.equal(lockedParticipantView.display_name, "Locked Name");
+  assert.equal(lockedParticipantView.identity_notice_unread, true);
+  assert.equal(lockedParticipantView.requires_voice_confirmation, false);
   assert.equal(speakingTest.shanghaiDate(new Date("2026-08-27T16:30:00Z")), "2026-08-28");
   assert.equal(speakingTest.automaticMatchOutputPath({ discussion_id: "d1", job_id: "j1" }, "spk/01"), "speaking-lab/d1/voice-match/j1/spk_01.wav");
   const candidateViews = speakingTest.candidateTrackViews({
@@ -215,14 +256,14 @@ async function run() {
     ] },
     voice_matching: { status: "completed", results: [
       { speaker_key: "spk_01", status: "matched", score: 84 },
-      { speaker_key: "spk_02", status: "unmatched", reason: "AMBIGUOUS_MATCH" },
+      { speaker_key: "spk_02", status: "review_required", reason: "BELOW_SCORE_THRESHOLD", score: 64 },
     ] },
   }, [
     { participant_id: "p1", participant_kind: "vip", student_uid: "u1", display_name_snapshot: "Private Name", invitation_status: "pending", identity_status: "ai_matched", matched_speaker_key: "spk_01", voice_match_score: 91 },
   ]);
   assert.equal(candidateViews[0].proposed_name, null, "unconfirmed VIP names must not replace Speaker labels");
   assert.equal(candidateViews[0].automatic_match_score, 91, "a rematch score on the participant mapping must supersede the original report score");
-  assert.equal(candidateViews[1].automatic_match_reason, "AMBIGUOUS_MATCH");
+  assert.equal(candidateViews[1].automatic_match_reason, "BELOW_SCORE_THRESHOLD");
 
   const searchableDiscussion = speakingTest.discussionView(
     { auth_uid: "u1", role: "student", active: true },

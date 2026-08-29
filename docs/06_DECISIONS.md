@@ -1379,3 +1379,14 @@ than synthetic Attempt documents. A server-generated ils session ID and
 deterministic Started/final event IDs make retries and concurrent tabs
 idempotent. The one-minute dispatcher owns idle closure and uses the existing
 teacher recipient policy; safe counts are the only email/bell payload.
+
+### Speaking Sets and Part B are separate domain objects
+
+Speaking Sets use their own ADMINONLY collection rather than the general LMS
+`sets` schema. Set IDs and Part A/Part B child IDs are stable; teacher content
+edits increment a revision while every created Session stores a frozen snapshot.
+Individual Response is a separate one-owner Session, not a one-person Group
+Discussion. It reuses private asset/job/report infrastructure only through an
+explicit `session_type` and exactly one Session locator. PP/MOCK is metadata,
+not a publication state. Speaking Set source is excluded from the public static
+artifact and is imported through an owner-gated CloudBase workflow.

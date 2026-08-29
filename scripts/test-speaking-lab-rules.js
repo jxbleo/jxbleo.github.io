@@ -21,6 +21,54 @@ function reportFor(keys = ["spk_01", "spk_02"]) {
 }
 
 function run() {
+  // Speaking Set identity, stable child IDs, snapshots, and Individual Response timing.
+  assert.equal(lab.validateSpeakingSetId("dse-p4-mock-2025-1-3-smartphones-replacing-personal-computers"), "dse-p4-mock-2025-1-3-smartphones-replacing-personal-computers");
+  assert.throws(() => lab.validateSpeakingSetId("DSE Paper 4 / unsafe"), /SPEAKING_SET_ID_INVALID/);
+  assert.equal(lab.validatePaperVersion("1.1"), "1.1");
+  assert.equal(lab.validatePaperVersion(""), null);
+  assert.throws(() => lab.validatePaperVersion("2025"), /SPEAKING_SET_INVALID/);
+  const set = {
+    set_id: "dse-p4-mock-2025-1-3-safe-topic", source_kind: "mock", exam_year: 2025, paper_version: "1.3", title: "Safe Topic",
+    source_note: "Original mock.", context: { source_line: "A source:", title: "<Inert>", body: ["One paragraph", "Two paragraph"] },
+    part_a: { instruction: "Talk about:", discussion_points: [{ point_id: "pa_02", order: 2, text: "Second" }, { point_id: "pa_01", order: 1, text: "First" }] },
+    part_b: { instruction: "Respond:", questions: [{ question_id: "ir_02", order: 2, text: "Second question" }, { question_id: "ir_01", order: 1, text: "First question" }] },
+  };
+  const normalizedSet = lab.normalizeSpeakingSetInput(set);
+  assert.equal(lab.speakingSetDisplayLabel(normalizedSet), "2025 MOCK · Set 1.3 · Safe Topic");
+  assert.deepEqual(normalizedSet.part_a.discussion_points.map((item) => item.point_id), ["pa_01", "pa_02"]);
+  assert.deepEqual(normalizedSet.part_b.questions.map((item) => item.question_id), ["ir_01", "ir_02"]);
+  assert.equal(normalizedSet.next_point_sequence, 3);
+  assert.equal(normalizedSet.next_question_sequence, 3);
+  assert.throws(() => lab.normalizeSpeakingSetInput({ ...set, part_b: { ...set.part_b, questions: [{ question_id: "question-one", order: 1, text: "Unsafe identity" }] } }), /SPEAKING_SET_INVALID/);
+  assert.equal(lab.resolvePartBQuestion(normalizedSet, "ir_01").text, "First question");
+  assert.throws(() => lab.resolvePartBQuestion(normalizedSet, "ir_99"), /SPEAKING_QUESTION_NOT_FOUND/);
+  const snapshot = lab.buildGroupDiscussionSnapshot(normalizedSet);
+  snapshot.context.body[0] = "changed locally";
+  assert.equal(normalizedSet.context.body[0], "One paragraph", "Set snapshots are copied values");
+  assert.equal(lab.individualResponseTimingState(59).warning, false);
+  assert.equal(lab.individualResponseTimingState(60).warning, true);
+  assert.equal(lab.individualResponseTimingState(65).should_stop, true);
+  const individualReport = lab.canonicalizeIndividualResponseReport({ summary_zh: "清晰", domains: {
+    communication_strategies: { score: 5, commentary_zh: "直接回答", evidence_segment_ids: ["seg_0001"] },
+    ideas_organisation: { score: 4, commentary_zh: "有例子", evidence_segment_ids: [] },
+    vocabulary_language_patterns: { score: 5, commentary_zh: "用字準確", evidence_segment_ids: [] },
+    pronunciation_delivery: { status: "scored", score: 7 },
+  }, strengths: ["clear"], priority_actions: ["develop"], language_suggestions: ["try"], sample_response_en: "I would support it." }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "I agree" }]);
+  assert.equal(individualReport.domains.pronunciation_delivery.status, "not_assessed");
+  assert.equal(Object.prototype.hasOwnProperty.call(individualReport, "total_score"), false);
+  const redactedIndividualReport = lab.canonicalizeIndividualResponseReport({ summary_zh: "Alex should expand this point", domains: {
+    communication_strategies: { score: 5, commentary_zh: "Alex responds directly", evidence_segment_ids: ["seg_0001"] },
+    ideas_organisation: { score: 4, commentary_zh: "有例子", evidence_segment_ids: [] },
+    vocabulary_language_patterns: { score: 5, commentary_zh: "用字準確", evidence_segment_ids: [] },
+    pronunciation_delivery: { status: "scored", score: 7 },
+  }, strengths: ["Alex is clear"], priority_actions: ["develop"], language_suggestions: ["try"], sample_response_en: "Alex would support it." }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "Alex agrees" }], { redactNames: ["Alex", "student-01"] });
+  assert.doesNotMatch(JSON.stringify(redactedIndividualReport), /Alex/);
+  assert.throws(() => lab.canonicalizeIndividualResponseReport({ summary_zh: "x", domains: {
+    communication_strategies: { score: 5, commentary_zh: "x", evidence_segment_ids: ["missing"] },
+    ideas_organisation: { score: 4, commentary_zh: "x", evidence_segment_ids: [] },
+    vocabulary_language_patterns: { score: 5, commentary_zh: "x", evidence_segment_ids: [] },
+  }, strengths: [], priority_actions: [], language_suggestions: [], sample_response_en: "x" }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "x" }]), /SPEAKING_AI_EVIDENCE_INVALID/);
+
   // 1-2 participant-count boundaries. Two participants never produce a report.
   [2, 3, 4, 5, 6, 7].forEach((count) => {
     const result = lab.participantCountEligibility(count);
@@ -65,6 +113,9 @@ function run() {
   assert.equal(lab.identityProjection(unconfirmed, { self: false }).named, false);
   assert.equal(lab.identityProjection(unconfirmed, { self: true }).named, false);
   assert.equal(lab.identityProjection(unconfirmed, { teacher: true }).named, false);
+  const automaticallyConfirmed = participant("auto", "spk_01", { identity_status: "voiceprint_confirmed", display_name_snapshot: "Auto Student" });
+  assert.equal(lab.identityProjection(automaticallyConfirmed).label, "Auto Student");
+  assert.equal(lab.canCreateStudentShare(actor("auto"), automaticallyConfirmed, discussion), true);
   const guestProjection = lab.identityProjection({ participant_id: "g", kind: "guest", guest_name: "Sam", matched_speaker_key: "spk_02" }, { teacher: true });
   assert.match(guestProjection.label, /Guest participant · Name not verified/);
   const tracks = lab.canonicalizeSpeakerTracks([{ provider_speaker_id: "A", confidence: 0.9 }, { provider_speaker_id: "B", confidence: 0.9 }, { provider_speaker_id: "C", confidence: 0.9 }], [{ provider_speaker_id: "A", start_ms: 0 }, { provider_speaker_id: "B", start_ms: 10 }, { provider_speaker_id: "C", start_ms: 20 }]);
@@ -112,9 +163,11 @@ function run() {
     { speaker_key: "spk_04", matches: [{ student_uid: "dan", voiceprint_profile_id: "vp-d", score: 69 }] },
   ]);
   assert.equal(automatic.find((item) => item.speaker_key === "spk_01").status, "matched");
-  assert.equal(automatic.find((item) => item.speaker_key === "spk_02").reason, "AMBIGUOUS_MATCH");
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_02").status, "matched", "70%+ locks without a margin gate");
   assert.equal(automatic.find((item) => item.speaker_key === "spk_03").reason, "ONE_TO_ONE_CONFLICT");
-  assert.equal(automatic.find((item) => item.speaker_key === "spk_04").reason, "BELOW_SCORE_THRESHOLD");
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_04").status, "review_required");
+  assert.equal(automatic.find((item) => item.speaker_key === "spk_04").student_uid, "dan", "a low-score proposal keeps the VIP target for private confirmation");
+  assert.equal(lab.automaticVoiceMatches([{ speaker_key: "spk_01", matches: [{ student_uid: "edge", voiceprint_profile_id: "vp-edge", score: 70 }] }])[0].status, "matched");
 
   // 13-15 report speaker/evidence/score contracts.
   const segments = [{ segment_id: "seg_0001", speaker_key: "spk_01", start_ms: 0, end_ms: 1000, text: "hello" }, { segment_id: "seg_0002", speaker_key: "spk_02", start_ms: 1000, end_ms: 2000, text: "world" }];
