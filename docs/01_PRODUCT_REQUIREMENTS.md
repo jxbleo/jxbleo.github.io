@@ -2126,7 +2126,7 @@ report surface takes over. Queued or processing reports show factual stage
 progress plus live Candidate matching. A ready report starts directly with its
 first card, without a redundant back control or ready-status label, and is
 ordered as a four-row Discussion ledger (`Date`, `Duration`, `Candidates`, and
-`Task`),
+`Task`) under the small `SESSION DETAILS` section label,
 the authenticated student's four-domain analysis, and that student's
 turn-by-turn coaching, followed by one collapsed complete script. The Set task
 and Candidate names/matching/access each open in their own modal instead of

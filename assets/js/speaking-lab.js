@@ -466,7 +466,7 @@
     }
     function reportInfoCardMarkup(item, report) {
         var candidateCount = Number.isInteger(item.candidate_count) ? item.candidate_count : (report.candidates || []).length;
-        return '<section class="speaking-report-card speaking-report-info-card" aria-label="Discussion details"><div class="speaking-report-ledger">' +
+        return '<section class="speaking-report-card speaking-report-info-card" aria-label="Session details"><p class="eyebrow accent speaking-report-info-title">SESSION DETAILS</p><div class="speaking-report-ledger">' +
             '<div class="speaking-report-ledger-row"><span class="speaking-report-ledger-label">Date</span><span class="speaking-report-ledger-value">' + esc(formatDate(item.discussion_date)) + '</span></div>' +
             '<div class="speaking-report-ledger-row"><span class="speaking-report-ledger-label">Duration</span><span class="speaking-report-ledger-value">' + esc(reportDuration(item, report)) + '</span></div>' +
             '<button class="speaking-report-ledger-row" type="button" id="view-discussion-candidates"><span class="speaking-report-ledger-label">Candidates</span><span class="speaking-report-ledger-value">' + esc(candidateCount) + '</span></button>' +

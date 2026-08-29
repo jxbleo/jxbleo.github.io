@@ -143,6 +143,7 @@ function run() {
   const infoMarkup = app.slice(app.indexOf("function reportInfoCardMarkup(item, report)"), app.indexOf("function personalAnalysisCardMarkup(report)"));
   assert.doesNotMatch(infoMarkup, /About this Discussion|Recording|speaking-report-share/);
   assert.match(infoMarkup, /Date[\s\S]*Duration[\s\S]*Candidates[\s\S]*Task/);
+  assert.match(infoMarkup, /SESSION DETAILS/);
   assert.match(reportJs, /My turn-by-turn review|What you said · AI transcript/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /prefers-reduced-transparency/);
@@ -189,8 +190,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-11/);
-  assert.match(page, /speaking-lab\.js\?v=20260829-11/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-12/);
+  assert.match(page, /speaking-lab\.js\?v=20260829-12/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

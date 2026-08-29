@@ -13,6 +13,8 @@
   a four-row split ledger for Date, Duration, Candidates, and Task. Candidate
   and Task rows open their independent dialogs, and Student Share now lives in
   the Candidate dialog.
+- Added the restrained `SESSION DETAILS` eyebrow above the ledger, matching the
+  existing `YOUR ANALYSIS` typography without adding a second heading level.
 - Rebuilt the ready report as Discussion details with a modal Set task, the
   signed-in student's CS/IO/VL/PD analysis, and personal turn-by-turn coaching,
   followed by a collapsed complete script with warm-yellow self highlighting.
