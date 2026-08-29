@@ -19,7 +19,7 @@ function run() {
   const voiceprintRecorder = read("assets/js/voiceprint-recorder.js");
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
-  assert.match(page, /Record now|Upload audio/);
+  assert.match(page, /Record on this device|Choose audio file/);
   assert.match(dashboard, /speaking-lab\.html\?v=/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
@@ -54,13 +54,28 @@ function run() {
   assert.match(app, /api\.uploadCloudFile\(result\.upload\.cloud_path, blob\)/);
   assert.match(app, /uploaded_file_id: uploaded\.file_id/);
   assert.doesNotMatch(app, /api\.uploadWithMetadata\(result\.upload, blob\)/);
-  assert.match(app, /finally\(function \(\) \{ file\.value = ''; \}\)/);
+  assert.match(app, /file\.value = ''; prepareAudioFile\(chosen\)/);
   assert.match(cloudbaseClient, /function uploadCloudFile\(cloudPath, file\)/);
   assert.match(cloudbaseClient, /getApp\(\)\.uploadFile/);
   assert.match(app, /loadMyVoiceprint\(\)\.then\(function \(\) \{ return loadList\(\); \}\)/);
   assert.doesNotMatch(app, /Promise\.all\(\[loadMyVoiceprint\(\), loadList\(\)\]\)/);
   assert.match(app, /renderList\(result\.discussions \|\| \[\]\); setStatus\(''\)/);
   assert.match(app, /getUserMedia/);
+  assert.match(app, /data-recording-state="idle"/);
+  assert.match(app, /Record on this device/);
+  assert.match(app, /Finish recording/);
+  assert.match(app, /Recording ready/);
+  assert.match(app, /Upload &amp; analyse/);
+  assert.match(app, /function setRecordingState\(nextState\)/);
+  assert.match(app, /nextState === 'requesting' \? 'Cancel'/);
+  assert.match(app, /activeRecorder\.start\(1000\)/);
+  assert.match(app, /activeRecorder\.onerror/);
+  assert.match(app, /recordingState !== 'idle'/);
+  assert.match(app, /beforeunload/);
+  assert.match(app, /visibilitychange[\s\S]*recordingState !== 'idle'/);
+  assert.match(app, /uploadBlob\(blob, 'formal', null, operationId\)/);
+  assert.match(app, /call\('startAnalysis', \{ discussion_id: discussionId/);
+  assert.doesNotMatch(app, /id="pause-recording"/);
   assert.match(app, /AnalyserNode|createAnalyser/);
   assert.match(app, /-45|0\.98|INPUT_LOSS_SECONDS/);
   assert.match(app, /SPEAKING_PROVIDER_NOT_CONFIGURED|feature not enabled/i);
@@ -104,11 +119,11 @@ function run() {
   assert.match(css, /prefers-reduced-transparency/);
   assert.match(css, /prefers-contrast:\s*more/);
   assert.match(css, /speaking-list\[hidden\].*speaking-detail\[hidden\]/);
-  assert.match(css, /speaking-recording-card > \.speaking-detail-actions\[hidden\].*display:\s*none !important/);
-  assert.match(css, /#upload-recording:disabled.*cursor:\s*not-allowed/);
-  assert.match(css, /#upload-recording\.is-uploading:disabled.*cursor:\s*wait/);
-  assert.match(app, /upload\.classList\.add\('is-uploading'\)/);
-  assert.match(app, /upload\.classList\.remove\('is-uploading'\)/);
+  assert.match(css, /speaking-recording-state\[hidden\].*display:\s*none !important/);
+  assert.match(css, /speaking-recording-live/);
+  assert.match(css, /speaking-recording-review/);
+  assert.match(css, /speaking-recording-uploading/);
+  assert.match(css, /speaking-recording-flow-active/);
   assert.match(css, /speaking-detail-open \.speaking-mode-grid/);
   assert.match(css, /\.speaking-sidebar[^}]*translateX\(calc\(-100% - 32px\)\)/);
   assert.match(css, /\.speaking-sidebar\.is-open[^}]*translateX\(0\)/);
@@ -138,8 +153,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-candidates/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-5/);
-  assert.match(page, /speaking-lab\.js\?v=20260829-5/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-6/);
+  assert.match(page, /speaking-lab\.js\?v=20260829-6/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

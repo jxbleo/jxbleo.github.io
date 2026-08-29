@@ -2427,12 +2427,25 @@ their turn review is expanded; every turn quotes the correct server transcript
 and time range; CS and IO each show commentary plus `Try saying`; low/unknown
 confidence shows an ASR caution; peer reviews collapse; and the two-column
 coaching grid becomes one column without horizontal overflow at 390 pixels.
-Before pressing `Record now`, verify Pause, Stop, Preview, and Upload recording
-are absent and only Record now plus Upload audio are offered. Once recording
-starts, verify the controls appear but Upload recording remains unavailable
-without a wait cursor. Stop with captured audio, confirm Preview and Upload
-enable, then start upload and confirm the wait cursor exists only for the real
-transfer and clears after either success or failure.
+In Ready, verify only target length, `Record on this device`, and
+`Choose audio file` appear. Tap Record twice and confirm only one microphone
+session starts. During Recording, verify only the elapsed/target timer, advisory
+quality message, and `Finish recording` remain actionable; switch the phone to
+another app and back and confirm the same controls and elapsed session survive.
+Finish early, reject the confirmation once, then finish and confirm Review shows
+only Play, Replace, and `Upload & analyse`. Repeated Play taps must toggle one
+preview instead of overlapping audio. Replace must discard only after its
+confirmation and return to Ready.
+
+Choose an audio file and confirm it also enters Review instead of uploading
+immediately. During Uploading, navigation and competing actions remain locked;
+success calls `finishAudioUpload` before automatically starting analysis.
+Transfer failure returns to Review and retries the same operation/asset handoff;
+an analysis-start failure preserves the already-uploaded Discussion and exposes
+the existing manual retry. Exercise microphone denial, unsupported recorder,
+`MediaRecorder.onerror`, stream-ended, 30-minute safe stop, browser leave warning,
+and hidden-to-visible refresh suppression. No Blob/object URL may survive
+Replace, navigation, or page teardown.
 
 Manual voiceprint gates require student first enrolment/update/delete; teacher
 VIP lookup by exact Student ID; teacher VIP and Non-VIP roster enrolment;

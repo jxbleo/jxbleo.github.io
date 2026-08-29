@@ -2104,6 +2104,12 @@ the home cards.
 New Session requires only a title, DSE prompt, date, and optional target time;
 it does not require student IDs or Guest names. The date defaults to the current
 Shanghai date and the target defaults to eight minutes for four Candidates.
+Formal browser recording follows one calm four-step path: Ready, Recording,
+Review, then Uploading. Recording has one Finish action and no Pause; Review
+offers Play, Replace, or `Upload & analyse`. The local recording remains only in
+memory until confirmation, cannot be duplicated by repeated taps or displaced
+by a background/foreground refresh, and starts analysis automatically only
+after the private upload has been verified.
 After transcription, the server independently selects three to six reliable
 Speaker Tracks as Candidates. Fewer than three detected Candidates do not
 generate a report; a brief or incidental outside voice remains non-Candidate

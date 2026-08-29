@@ -2,6 +2,13 @@
 
 ## 2026-08-29
 
+- Rebuilt the Speaking Lab formal browser recorder as a four-state Ready,
+  Recording, Review, and Uploading flow. Removed Pause and competing controls,
+  prevented repeated microphone sessions and visibility refreshes from
+  replacing active controls, added periodic MediaRecorder data and explicit
+  runtime-error handling, made preview a single toggle, retained stable upload
+  retry identity, and combined verified upload with automatic analysis start.
+
 - Connected reliable automatic voice matches to a visible student invitation
   inbox. A matched student's Speaking toolbar now shows a restrained message
   marker while invitations are pending; the left drawer highlights each

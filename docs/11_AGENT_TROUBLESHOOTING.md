@@ -990,6 +990,22 @@ uncertain strings, raw model output, or coordinates.
 - 同一 Sentence Revision 内的输入、翻面、Sample 展开和等待 Runner 的状态轮询不是跨屏导航，禁止反复
   归位。跨屏 renderer 必须比较前后 screen；只有实际进入新屏幕时才重置。
 
+### 2026-08-29 — Speaking browser recorder loses or duplicates its controls
+
+If a live Discussion recording appears to continue while Stop/Upload controls
+disappear, first inspect whether `visibilitychange`, Discussion selection, or a
+mutation called `openDiscussion()` during the in-memory recording. A second
+Record tap can also create competing streams if the action is not state-locked.
+Do not fix either symptom by retaining audio in browser storage or weakening the
+private upload boundary.
+
+The formal recorder must keep one explicit local state, suppress Discussion
+re-rendering until it returns to Ready, deliver MediaRecorder chunks at a fixed
+interval, and own one preview Audio/object URL. Upload failure returns to Review
+with the same operation ID; page teardown stops tracks and revokes the URL.
+Test background/foreground, repeated Record, stream-ended, recorder error,
+Replace, browser leave, and upload retry on a real phone before release.
+
 ### 2026-08-27 — Speaking Lab safe diagnosis
 
 If Speaking analysis returns `SPEAKING_PROVIDER_NOT_CONFIGURED`, this is the
