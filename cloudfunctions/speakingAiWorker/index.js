@@ -61,9 +61,12 @@ async function failExhausted(now) {
     for (const job of result.data || []) {
       if (Number(job.attempt_count || 0) < MAX_ATTEMPTS) continue;
       await db.collection(JOBS).doc(job._id || job.job_id).update({ status: "failed", safe_error_code: "SPEAKING_AI_RETRY_EXHAUSTED", lease_token: null, lease_until: null, finished_at: now, updated_at: now });
-      const discussionResult = await db.collection(DISCUSSIONS).where({ discussion_id: job.discussion_id, active_analysis_job_id: job.job_id }).limit(1).get();
+      const activeJobField = job.job_type === "voice_rematch" ? "active_voice_match_job_id" : "active_analysis_job_id";
+      const discussionResult = await db.collection(DISCUSSIONS).where({ discussion_id: job.discussion_id }).limit(1).get();
       const discussion = discussionResult.data && discussionResult.data[0];
-      if (discussion) await db.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ analysis_status: "failed", updated_at: now });
+      if (discussion && String(discussion[activeJobField] || "") === String(job.job_id)) await db.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update(job.job_type === "voice_rematch"
+        ? { voice_match_status: "failed", voice_match_safe_error_code: "SPEAKING_AI_RETRY_EXHAUSTED", voice_match_last_run_at: now, updated_at: now }
+        : { analysis_status: "failed", updated_at: now });
       count += 1;
     }
   }

@@ -2336,6 +2336,18 @@ runner-up margins below 10, and enforce one VIP per Speaker Track. The CI mock
 must lock WAV/PCM/16 kHz/mono/start/duration XML, COS q-sign authentication,
 session-token forwarding, durable create/poll behavior, and private derived
 CloudBase file IDs.
+Ready-report rematch contracts must expose `Search voice matches` only to an
+accepted VIP Participant or teacher, enqueue one idempotent
+`job_type: "voice_rematch"`, start at `voice_matching`, and leave
+`analysis_status`, the active report version, transcript, DSE scores, and turn
+reviews unchanged. Refresh/reopen and the one-minute worker must resume the
+same job. A second click while queued/processing must replay the active job.
+Completion may add only a non-conflicting >=70 / margin >=10 one-to-one match;
+confirmed, disputed, conflicting, and teacher-locked mappings remain unchanged.
+Terminal job state must omit CI provider job IDs, derived file IDs, student
+UIDs, and voiceprint locators. A real mapping change invalidates existing
+shares; zero changes do not. Provider/CI failure leaves the ready report usable
+and restores a retryable button.
 The authenticated page must complete `getSession()` once and then call
 `speakingLab` directly through the SDK; do not add concurrent redundant
 `callAuthenticatedFunction` preflights. The initial Voiceprint and Discussion

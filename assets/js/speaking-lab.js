@@ -383,16 +383,34 @@
         var participantRows = (item.participants || []).map(function (participant) { return participantRow(participant, item); }).join('');
         var candidateCountText = Number.isInteger(item.candidate_count) ? String(item.candidate_count) : 'Pending';
         var candidatePill = Number.isInteger(item.candidate_count) ? item.candidate_count + ' detected' : 'Waiting for audio';
+        var voiceSearchWorking = ['queued', 'processing'].indexOf(item.voice_match_status) >= 0;
+        var voiceSearchButton = item.can_search_voice_matches ? '<button class="outline-button speaking-voice-search' + (voiceSearchWorking ? ' is-searching' : '') + '" type="button" id="search-voice-matches"' + (voiceSearchWorking ? ' disabled aria-busy="true"' : '') + '><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="m15 15 4.25 4.25M7.5 10.5h1.3l1.1-2.2 1.6 4.4 1.2-2.2h.8"></path></svg><span>' + (voiceSearchWorking ? 'Searching voices…' : 'Search voice matches') + '</span></button>' : '';
+        var voiceSearchNote = '';
+        if (voiceSearchWorking) voiceSearchNote = 'Checking the Candidate clips against currently registered voiceprints.';
+        else if (item.voice_match_status === 'failed') voiceSearchNote = 'The last voice search could not finish. You can try again.';
+        else if (item.voice_match_last_run_at && item.voice_match_safe_error_code) voiceSearchNote = 'Search completed, but automatic matching was temporarily unavailable.';
+        else if (item.voice_match_last_run_at && Number(item.voice_match_last_changed_count || 0) > 0) voiceSearchNote = Number(item.voice_match_last_changed_count) + ' new reliable voice match' + (Number(item.voice_match_last_changed_count) === 1 ? '' : 'es') + ' found. Students still confirm their own voices.';
+        else if (item.voice_match_last_run_at) voiceSearchNote = 'Search complete. No new reliable voice matches were found.';
+        var candidateHeaderActions = '<span class="speaking-candidate-header-actions">' + voiceSearchButton + '<span class="speaking-pill">' + esc(candidatePill) + '</span></span>';
         var identityAccess = participantRows ? '<div class="speaking-identity-access"><h4>Identity &amp; access</h4><ul class="speaking-participants">' + participantRows + '</ul></div>' : '';
         return '<article class="speaking-detail-card">' +
             '<div class="speaking-detail-hero"><div class="speaking-detail-top"><button class="back-link" type="button" id="close-discussion">‹ Discussions</button>' +
             '<div class="speaking-detail-title-row"><div><p class="eyebrow accent">DISCUSSION</p><h2>' + esc(item.title) + '</h2></div><p class="speaking-detail-date">' + esc(formatDate(item.discussion_date)) + '</p></div></div>' +
             workflowMarkup(item) + '<div class="speaking-detail-grid"><dl><dt>Candidates</dt><dd>' + esc(candidateCountText) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(readableStatus(item.recording_status)) + '</dd></dl><dl><dt>Analysis</dt><dd>' + esc(readableStatus(item.analysis_status)) + '</dd></dl></div></div>' +
             '<div class="speaking-detail-body"><section class="speaking-section-card speaking-prompt-card"><header><div><h3>Discussion prompt</h3><p>The DSE task your group should address.</p></div></header><p class="speaking-prompt-text">' + esc(item.prompt_text) + '</p></section>' +
-            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Speaker tracks come from the formal recording. Reliable voiceprint matches send invitations automatically.</p></div><span class="speaking-pill">' + esc(candidatePill) + '</span></header>' + candidateIntro + identityAccess + rosterEditor + '</section>' +
+            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Speaker tracks come from the formal recording. Reliable voiceprint matches send invitations automatically.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + rosterEditor + '</section>' +
             recording + analysis + reportMarkup + '</div></article>';
     }
     function bindInvitationActions() {
+        var voiceSearch = document.getElementById('search-voice-matches');
+        if (voiceSearch) voiceSearch.addEventListener('click', function () {
+            voiceSearch.disabled = true;
+            voiceSearch.classList.add('is-searching');
+            voiceSearch.setAttribute('aria-busy', 'true');
+            call('startVoiceRematch', { discussion_id: selectedId, operation_id: 'voice-rematch-' + selectedId + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) })
+                .then(function () { return openDiscussion(selectedId); })
+                .catch(function (error) { setStatus(friendlyError(error), true); voiceSearch.disabled = false; voiceSearch.classList.remove('is-searching'); voiceSearch.removeAttribute('aria-busy'); });
+        });
         var addVip = document.getElementById('add-vip-participant'); if (addVip) addVip.addEventListener('click', function () { var input = document.getElementById('add-vip-id'); addVip.disabled = true; call('addVipParticipant', { discussion_id: selectedId, student_id: input.value }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); addVip.disabled = false; }); });
         var addGuest = document.getElementById('add-guest-participant'); if (addGuest) addGuest.addEventListener('click', function () { var input = document.getElementById('add-guest-name'); addGuest.disabled = true; call('addGuestParticipant', { discussion_id: selectedId, guest_name: input.value }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); addGuest.disabled = false; }); });
         detail.querySelectorAll('[data-remove-participant]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Remove this participant from the Discussion?')) return; button.disabled = true; call('removeParticipant', { discussion_id: selectedId, participant_id: button.getAttribute('data-remove-participant') }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
@@ -618,7 +636,9 @@
         }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
     function schedulePoll(item, generation) {
-        if (!item || !['queued', 'processing'].includes(item.analysis_status) || generation !== pollGeneration) return;
+        var analysisWorking = item && ['queued', 'processing'].includes(item.analysis_status);
+        var voiceSearchWorking = item && ['queued', 'processing'].includes(item.voice_match_status);
+        if (!item || (!analysisWorking && !voiceSearchWorking) || generation !== pollGeneration) return;
         var delay = document.hidden ? 10000 : 3000;
         pollTimer = window.setTimeout(function () {
             if (generation !== pollGeneration || !selectedId) return;

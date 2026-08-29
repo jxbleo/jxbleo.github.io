@@ -1288,6 +1288,20 @@ the safe provider task locator `provider_task_id`, submission time, and bounded
 poll count. Monotonic `provider_call_count` and `model_call_count` fields give
 each physical provider request a stable usage-ledger identity across manual
 retries. It never contains the temporary audio URL or provider response.
+Voice Rematch rows use `job_type: "voice_rematch"`, `stage:
+"voice_matching"`, `source_report_id`, `source_report_version`, and a bounded
+private `voice_matching_state`. While processing, that state may contain CI job
+and derived-file locators required for polling; the terminal state strips those
+locators plus student/provider voiceprint identifiers and retains only safe
+Speaker result/status/score metadata and counts. It never contains transcript,
+DSE feedback, enrolment audio, or a new ASR/model call.
+
+`speaking_discussions` may additionally contain
+`active_voice_match_job_id`, `voice_match_status` (`queued`, `processing`,
+`ready`, or `failed`), `voice_match_last_run_at`, bounded
+`voice_match_last_result_count`, `voice_match_last_changed_count`, and
+`voice_match_safe_error_code`. These are independent of the report-generation
+job fields so a rematch cannot hide or downgrade a ready report.
 The matching processing report may contain a server-canonical transcript,
 Candidate/non-Candidate role flags, rejected-segment count, and audio-quality
 warning codes before its immutable `ready` transition. Its

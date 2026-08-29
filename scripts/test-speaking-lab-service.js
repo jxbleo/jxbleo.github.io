@@ -11,9 +11,16 @@ const prompts = require("../cloudfunctions/speakingLab/prompts");
 
 async function run() {
   const source = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/index.js"), "utf8");
+  const workerSource = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingAiWorker/index.js"), "utf8");
   const functionPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/package.json"), "utf8"));
   const packagerSource = fs.readFileSync(path.join(__dirname, "package-cloudfunctions.js"), "utf8");
   assert.match(source, /action === "processQueuedJob"/);
+  assert.match(source, /action === "startVoiceRematch"/);
+  assert.match(source, /job_type: "voice_rematch"/);
+  assert.match(source, /active_voice_match_job_id/);
+  assert.match(source, /source_report_id: sourceReport\.report_id/);
+  assert.match(source, /async function processVoiceRematch/);
+  assert.match(workerSource, /job\.job_type === "voice_rematch"/);
   assert.match(source, /dispatch_token/);
   assert.match(source, /SPEAKING_PROVIDER_NOT_CONFIGURED/);
   assert.doesNotMatch(source, /demo\s*=|fixture\s*=|provider_url\s*:/i);
@@ -207,11 +214,29 @@ async function run() {
       { speaker_key: "spk_02", status: "unmatched", reason: "AMBIGUOUS_MATCH" },
     ] },
   }, [
-    { participant_id: "p1", participant_kind: "vip", student_uid: "u1", display_name_snapshot: "Private Name", invitation_status: "pending", identity_status: "ai_matched", matched_speaker_key: "spk_01" },
+    { participant_id: "p1", participant_kind: "vip", student_uid: "u1", display_name_snapshot: "Private Name", invitation_status: "pending", identity_status: "ai_matched", matched_speaker_key: "spk_01", voice_match_score: 91 },
   ]);
   assert.equal(candidateViews[0].proposed_name, null, "unconfirmed VIP names must not replace Speaker labels");
-  assert.equal(candidateViews[0].automatic_match_score, 84);
+  assert.equal(candidateViews[0].automatic_match_score, 91, "a rematch score on the participant mapping must supersede the original report score");
   assert.equal(candidateViews[1].automatic_match_reason, "AMBIGUOUS_MATCH");
+
+  const searchableDiscussion = speakingTest.discussionView(
+    { auth_uid: "u1", role: "student", active: true },
+    { discussion_id: "d1", analysis_status: "ready", active_report_version: "discussion-r1", formal_audio_asset_id: "asset1" },
+    [{ participant_id: "p1", participant_kind: "vip", student_uid: "u1", invitation_status: "accepted" }],
+  );
+  assert.equal(searchableDiscussion.can_search_voice_matches, true);
+  assert.equal(searchableDiscussion.voice_match_status, "not_run");
+  const safeRematchState = speakingTest.completedVoiceMatchState({
+    status: "completed",
+    excerpt_jobs: [{ speaker_key: "spk_01", provider_job_id: "private-provider-job", output_file_id: "private-file", status: "ready" }],
+    results: [{ speaker_key: "spk_01", status: "matched", score: 88, student_uid: "private-student", voiceprint_profile_id: "private-profile", participant_id: "p1" }],
+  });
+  assert.equal(safeRematchState.results[0].participant_id, "p1");
+  assert.equal(Object.prototype.hasOwnProperty.call(safeRematchState.results[0], "student_uid"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(safeRematchState.results[0], "voiceprint_profile_id"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(safeRematchState.excerpt_jobs[0], "provider_job_id"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(safeRematchState.excerpt_jobs[0], "output_file_id"), false);
 
   const fixture = { report_version: "dse-speaking-v1", mapping_revision: 1 };
   assert.equal(lab.snapshotInvalidationReason(fixture, { ...fixture }), null);

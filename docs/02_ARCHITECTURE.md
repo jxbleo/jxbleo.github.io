@@ -1075,6 +1075,17 @@ derived clip. No ffmpeg or new runtime dependency is used. Any missing clip,
 voiceprint, permission, or provider response becomes an unmatched Speaker and
 the worker continues to `dse_analysis`.
 
+A ready Discussion may enqueue `job_type: "voice_rematch"` through the same
+durable queue. This job references the active ready report and formal asset,
+starts directly at `voice_matching`, and stores only bounded private CI polling
+metadata while it runs. It never re-enters audio inspection, transcription, or
+`dse_analysis`. `active_voice_match_job_id` and `voice_match_status` are
+independent of `active_analysis_job_id` and `analysis_status`, so rematching can
+fail or retry without making a ready report unavailable. Completion applies
+only non-conflicting proposed mappings, sanitizes temporary provider/file
+locators from the terminal job state, and invalidates shares only when a mapping
+actually changed.
+
 `cloudfunctions/_shared/tencent-asr-voiceprint.js` implements Tencent Cloud API
 3.0 signing with Node's built-in `crypto`/`fetch` and exposes enrol, update,
 delete, 1:1 verify, and 1:N group-identify calls. It accepts only validated

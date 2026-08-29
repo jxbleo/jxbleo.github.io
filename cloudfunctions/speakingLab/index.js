@@ -135,6 +135,10 @@ function participantView(row, actor, discussion, index = 0) {
   };
 }
 function discussionView(actor, discussion, participants) {
+  const canSearchVoiceMatches = discussion.analysis_status === "ready"
+    && Boolean(discussion.active_report_version)
+    && Boolean(discussion.formal_audio_asset_id)
+    && (lab.isTeacher(actor) || participants.some((row) => lab.participantKind(row) === "vip" && String(row.student_uid || "") === String(actor.auth_uid || "") && row.invitation_status === "accepted"));
   return {
     discussion_id: discussion.discussion_id,
     title: lab.text(discussion.title, MAX_TITLE),
@@ -149,6 +153,12 @@ function discussionView(actor, discussion, participants) {
     analysis_status: discussion.analysis_status || "not_ready",
     mapping_revision: Number(discussion.mapping_revision || 0),
     active_report_version: discussion.active_report_version || null,
+    voice_match_status: discussion.voice_match_status || "not_run",
+    voice_match_last_run_at: discussion.voice_match_last_run_at || null,
+    voice_match_last_result_count: Number.isInteger(discussion.voice_match_last_result_count) ? discussion.voice_match_last_result_count : null,
+    voice_match_last_changed_count: Number.isInteger(discussion.voice_match_last_changed_count) ? discussion.voice_match_last_changed_count : null,
+    voice_match_safe_error_code: discussion.voice_match_safe_error_code || null,
+    can_search_voice_matches: canSearchVoiceMatches,
     created_at: discussion.created_at || null,
     updated_at: discussion.updated_at || null,
     can_edit_roster: lab.canEditDiscussion(actor, discussion, participants),
@@ -193,8 +203,10 @@ function candidateTrackViews(report, participants) {
       proposed_name: identity && identity.named ? identity.label : null,
       invitation_status: participant && participant.invitation_status || null,
       identity_status: participant && participant.identity_status || null,
-      automatic_match_score: match && Number.isFinite(Number(match.score)) ? Number(match.score) : null,
-      automatic_match_reason: match && match.reason || null,
+      automatic_match_score: participant && Number.isFinite(Number(participant.voice_match_score))
+        ? Number(participant.voice_match_score)
+        : match && Number.isFinite(Number(match.score)) ? Number(match.score) : null,
+      automatic_match_reason: participant ? null : match && match.reason || null,
     };
   });
 }
@@ -219,15 +231,18 @@ async function activeVipVoiceprintIndex() {
 }
 async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex) {
   const matches = (Array.isArray(matchingResults) ? matchingResults : []).filter((item) => item.status === "matched" && item.student_uid);
-  if (!matches.length) return matchingResults;
+  if (!matches.length) return { results: matchingResults, changed_count: 0 };
   const changedAt = now();
   const applied = new Map();
+  let changedCount = 0;
   await db.runTransaction(async (transaction) => {
     const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: job.discussion_id }).limit(1).get();
     const discussion = discussionResult.data && discussionResult.data[0];
     const participantResult = await transaction.collection(PARTICIPANTS).where({ discussion_id: job.discussion_id }).limit(20).get();
     const participants = (participantResult.data || []).filter((item) => !item.removed_at);
-    if (!discussion || discussion.deleted_at || String(discussion.active_analysis_job_id || "") !== String(job.job_id)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    const activeJobId = job.job_type === "voice_rematch" ? discussion && discussion.active_voice_match_job_id : discussion && discussion.active_analysis_job_id;
+    if (!discussion || discussion.deleted_at || String(activeJobId || "") !== String(job.job_id)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    if (job.job_type === "voice_rematch" && String(discussion.active_report_version || "") !== String(job.source_report_version || "")) throw new Error("SPEAKING_JOB_SUPERSEDED");
     const nextRevision = Number(discussion.mapping_revision || 0) + 1;
     for (const match of matches) {
       const providerEntry = [...voiceprintIndex.values()].find((entry) => String(entry.profile.voiceprint_profile_id) === String(match.voiceprint_profile_id));
@@ -239,6 +254,10 @@ async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex)
       if (studentParticipant && studentParticipant.matched_speaker_key && String(studentParticipant.matched_speaker_key) !== String(match.speaker_key)) continue;
       if (!studentParticipant && participants.length >= 6) continue;
       const participantId = studentParticipant && studentParticipant.participant_id || id("participant");
+      if (studentParticipant && String(studentParticipant.matched_speaker_key || "") === String(match.speaker_key)) {
+        applied.set(match.speaker_key, participantId);
+        continue;
+      }
       const invitationStatus = String(match.student_uid) === String(discussion.creator_uid)
         ? "accepted"
         : studentParticipant && studentParticipant.invitation_status === "accepted" ? "accepted" : "pending";
@@ -280,12 +299,13 @@ async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex)
         actor_uid: "system", created_at: changedAt,
       });
       applied.set(match.speaker_key, participantId);
+      changedCount += 1;
     }
-    if (applied.size) await transaction.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ mapping_revision: nextRevision, participant_count: participants.length, report_projection_revision: Number(discussion.report_projection_revision || 0) + 1, updated_at: changedAt });
+    if (changedCount) await transaction.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ mapping_revision: nextRevision, participant_count: participants.length, report_projection_revision: Number(discussion.report_projection_revision || 0) + 1, updated_at: changedAt });
   });
-  return matchingResults.map((item) => item.status === "matched" && !applied.has(item.speaker_key)
+  return { results: matchingResults.map((item) => item.status === "matched" && !applied.has(item.speaker_key)
     ? { ...item, status: "unmatched", student_uid: null, voiceprint_profile_id: null, reason: "CURRENT_MAPPING_CONFLICT" }
-    : { ...item, participant_id: applied.get(item.speaker_key) || null });
+    : { ...item, participant_id: applied.get(item.speaker_key) || null }), changed_count: changedCount };
 }
 async function beginAutomaticVoiceMatching(claimed, asset, report) {
   const transcript = reportTranscript(report);
@@ -317,8 +337,8 @@ async function beginAutomaticVoiceMatching(claimed, asset, report) {
   const failed = jobs.filter((item) => item.status === "failed").map((item) => ({ speaker_key: item.speaker_key, status: "unmatched", reason: item.safe_reason_code || "CLIP_UNAVAILABLE" }));
   return { complete: !hasProcessing, voice_matching: { status: hasProcessing ? "processing" : "completed", excerpt_jobs: jobs, results: [...unavailable, ...(!hasProcessing ? failed : [])] } };
 }
-async function finishAutomaticVoiceMatching(claimed, asset, report) {
-  const state = report.voice_matching || {};
+async function finishAutomaticVoiceMatching(claimed, asset, report, stateOverride) {
+  const state = stateOverride || report.voice_matching || {};
   const jobs = Array.isArray(state.excerpt_jobs) ? state.excerpt_jobs : [];
   const updatedJobs = [];
   let pending = false;
@@ -365,7 +385,7 @@ async function finishAutomaticVoiceMatching(claimed, asset, report) {
   const automatic = lab.automaticVoiceMatches(rawResults);
   const applied = await applyAutomaticVoiceMatches(claimed, automatic, voiceprintIndex);
   const existing = Array.isArray(state.results) ? state.results : [];
-  return { complete: true, voice_matching: { status: "completed", excerpt_jobs: updatedJobs.map((item) => ({ speaker_key: item.speaker_key, source_turn_id: item.source_turn_id, status: item.status, safe_reason_code: item.safe_reason_code || null })), results: [...existing, ...applied].sort((left, right) => String(left.speaker_key).localeCompare(String(right.speaker_key))) } };
+  return { complete: true, mapping_changed_count: applied.changed_count, voice_matching: { status: "completed", excerpt_jobs: updatedJobs.map((item) => ({ speaker_key: item.speaker_key, source_turn_id: item.source_turn_id, status: item.status, safe_reason_code: item.safe_reason_code || null })), results: [...existing, ...applied.results].sort((left, right) => String(left.speaker_key).localeCompare(String(right.speaker_key))) } };
 }
 async function invokeWorker(job) {
   const context = CloudBase.getCloudbaseContext();
@@ -783,6 +803,68 @@ async function startAnalysis(actor, event) {
   }
   return { success: true, ...(replay ? { idempotent_replay: true } : {}), job: publicJob(persistedJob) };
 }
+
+async function startVoiceRematch(actor, event) {
+  const rows = await authorizedDiscussion(actor, event.discussion_id);
+  const acceptedParticipant = rows.participants.some((participant) => lab.participantKind(participant) === "vip" && String(participant.student_uid || "") === String(actor.auth_uid || "") && participant.invitation_status === "accepted");
+  if (!lab.isTeacher(actor) && !acceptedParticipant) throw new Error("DISCUSSION_ACCESS_DENIED");
+  if (rows.discussion.analysis_status !== "ready" || !rows.discussion.active_report_version) throw new Error("VOICE_MATCHING_NOT_READY");
+  if (!rows.discussion.formal_audio_asset_id) throw new Error("AUDIO_REQUIRED");
+  const asset = await getOne(ASSETS, { asset_id: rows.discussion.formal_audio_asset_id, discussion_id: rows.discussion.discussion_id, asset_kind: "formal_discussion", status: "uploaded" });
+  if (!asset) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
+  const sourceReport = await getOne(REPORTS, { discussion_id: rows.discussion.discussion_id, report_version: rows.discussion.active_report_version, status: "ready" });
+  if (!sourceReport || !reportTranscript(sourceReport).segments.length) throw new Error("VOICE_MATCHING_NOT_READY");
+  const operationId = lab.stableOperationId(event.operation_id);
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const discussionRevision = Number(rows.discussion.discussion_revision || 1);
+  const jobId = stable("speaking_voice_rematch_job", rows.discussion.discussion_id, rows.discussion.active_report_version, operationId);
+  const old = await getOne(JOBS, { job_id: jobId });
+  if (old && ["queued", "processing", "succeeded"].includes(old.status)) return { success: true, idempotent_replay: true, job: publicJob(old) };
+  const created = now();
+  const job = {
+    job_id: jobId, operation_id: operationId, job_type: "voice_rematch",
+    discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision,
+    formal_audio_asset_id: asset.asset_id, source_report_id: sourceReport.report_id,
+    source_report_version: sourceReport.report_version, status: "queued", stage: "voice_matching",
+    voice_matching_state: null, attempt_count: 0, max_attempts: 5,
+    lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"),
+    next_retry_at: created, safe_error_code: null, provider_config_version: "speaking-voice-rematch-v1",
+    created_at: created, updated_at: created, finished_at: null,
+  };
+  let persistedJob = job;
+  let replay = false;
+  await db.runTransaction(async (transaction) => {
+    const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: rows.discussion.discussion_id }).limit(1).get();
+    const currentDiscussion = discussionResult.data && discussionResult.data[0];
+    if (!currentDiscussion || currentDiscussion.deleted_at || currentDiscussion.analysis_status !== "ready" || String(currentDiscussion.active_report_version || "") !== String(sourceReport.report_version) || String(currentDiscussion.formal_audio_asset_id || "") !== String(asset.asset_id)) throw new Error("VOICE_MATCHING_NOT_READY");
+    if (currentDiscussion.active_voice_match_job_id) {
+      const activeResult = await transaction.collection(JOBS).where({ job_id: currentDiscussion.active_voice_match_job_id }).limit(1).get();
+      const activeJob = activeResult.data && activeResult.data[0];
+      if (activeJob && ["queued", "processing"].includes(activeJob.status)) {
+        persistedJob = activeJob;
+        replay = true;
+        return;
+      }
+    }
+    const jobResult = await transaction.collection(JOBS).where({ job_id: jobId }).limit(1).get();
+    const currentJob = jobResult.data && jobResult.data[0];
+    if (currentJob && ["queued", "processing", "succeeded"].includes(currentJob.status)) {
+      persistedJob = currentJob;
+      replay = true;
+      return;
+    }
+    if (currentJob) await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update(job);
+    else await transaction.collection(JOBS).doc(jobId).create(job);
+    await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({
+      voice_match_status: "queued", active_voice_match_job_id: jobId,
+      voice_match_safe_error_code: null, updated_at: created,
+    });
+  });
+  if (!replay) {
+    try { await invokeWorker(persistedJob); } catch (error) { console.error("speakingLab voice rematch dispatch failed", persistedJob.job_id, error && error.message); }
+  }
+  return { success: true, ...(replay ? { idempotent_replay: true } : {}), job: publicJob(persistedJob) };
+}
 function publicJob(job) { return { job_id: job.job_id, status: job.status, stage: job.stage, attempt_count: Number(job.attempt_count || 0), error_code: job.safe_error_code || null, created_at: job.created_at || null, updated_at: job.updated_at || null, finished_at: job.finished_at || null }; }
 
 async function claimJob(job, token) {
@@ -919,6 +1001,68 @@ function canonicalTranscript(output) {
     non_candidate_speaker_keys: selection.non_candidate_keys,
   };
 }
+
+function completedVoiceMatchState(state) {
+  const value = state && typeof state === "object" ? state : {};
+  return {
+    status: value.status || "completed",
+    safe_reason_code: value.safe_reason_code || null,
+    excerpt_jobs: (Array.isArray(value.excerpt_jobs) ? value.excerpt_jobs : []).map((item) => ({
+      speaker_key: item.speaker_key, source_turn_id: item.source_turn_id || null,
+      status: item.status, safe_reason_code: item.safe_reason_code || null,
+    })),
+    results: (Array.isArray(value.results) ? value.results : []).map((item) => ({
+      speaker_key: item.speaker_key, status: item.status, reason: item.reason || null,
+      score: Number.isFinite(Number(item.score)) ? Number(item.score) : null,
+      margin: Number.isFinite(Number(item.margin)) ? Number(item.margin) : null,
+      participant_id: item.participant_id || null,
+    })),
+  };
+}
+
+async function processVoiceRematch(claimed, discussion, asset) {
+  const sourceReport = await getOne(REPORTS, { report_id: claimed.source_report_id, report_version: claimed.source_report_version, status: "ready" });
+  if (!sourceReport || !reportTranscript(sourceReport).segments.length) throw new Error("VOICE_MATCHING_NOT_READY");
+  let matching;
+  try {
+    matching = claimed.voice_matching_state && claimed.voice_matching_state.status === "processing"
+      ? await finishAutomaticVoiceMatching(claimed, asset, sourceReport, claimed.voice_matching_state)
+      : await beginAutomaticVoiceMatching(claimed, asset, sourceReport);
+  } catch (error) {
+    console.error("speakingLab voice rematch skipped", error && (error.code || error.message));
+    const transcript = reportTranscript(sourceReport);
+    matching = { complete: true, mapping_changed_count: 0, voice_matching: { status: "unavailable", safe_reason_code: error && (error.code || error.message) || "SPEAKING_CLIP_PROVIDER_FAILED", results: transcript.candidate_speaker_keys.map((speaker_key) => ({ speaker_key, status: "unmatched", reason: "AUTOMATIC_MATCHING_UNAVAILABLE" })) } };
+  }
+  if (!matching.complete) {
+    await requeueClaimedJob(claimed, { stage: "voice_matching", voice_matching_state: matching.voice_matching, next_retry_at: new Date(Date.now() + 15000) });
+    return { success: true, status: "pending", stage: "voice_matching", job_id: claimed.job_id };
+  }
+  const finalState = completedVoiceMatchState(matching.voice_matching);
+  const resultCount = finalState.results.filter((item) => item.status === "matched" && item.participant_id).length;
+  const changedCount = Math.max(0, Number(matching.mapping_changed_count || 0));
+  const finishedAt = now();
+  await db.runTransaction(async (transaction) => {
+    const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const currentJob = jobResult.data && jobResult.data[0];
+    const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: claimed.discussion_id }).limit(1).get();
+    const currentDiscussion = discussionResult.data && discussionResult.data[0];
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_voice_match_job_id || "") !== String(claimed.job_id) || String(currentDiscussion.active_report_version || "") !== String(claimed.source_report_version || "") || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({
+      status: "succeeded", stage: "voice_matching_complete", voice_matching_state: finalState,
+      voice_match_result_count: resultCount, voice_match_changed_count: changedCount,
+      safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null,
+      finished_at: finishedAt, updated_at: finishedAt,
+    });
+    await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({
+      voice_match_status: "ready", voice_match_last_run_at: finishedAt,
+      voice_match_last_result_count: resultCount, voice_match_last_changed_count: changedCount,
+      voice_match_safe_error_code: finalState.safe_reason_code, updated_at: finishedAt,
+    });
+  });
+  if (changedCount) await invalidateShares(claimed.discussion_id, { reason: "VOICE_MATCH_CHANGED" });
+  return { success: true, status: "succeeded", stage: "voice_matching_complete", job_id: claimed.job_id, matched_count: resultCount, changed_count: changedCount };
+}
+
 async function processQueuedJob(event) {
   const job = await getOne(JOBS, { job_id: lab.text(event.job_id, 120) });
   if (!job || !secretMatches(job.dispatch_token, event.dispatch_token)) throw new Error("SPEAKING_JOB_NOT_AVAILABLE");
@@ -927,9 +1071,16 @@ async function processQueuedJob(event) {
   try {
     const rows = await discussionRows(claimed.discussion_id);
     const discussion = rows.discussion;
-    if (discussion.deleted_at || String(discussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(discussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    const isVoiceRematch = claimed.job_type === "voice_rematch";
+    const activeJobId = isVoiceRematch ? discussion.active_voice_match_job_id : discussion.active_analysis_job_id;
+    if (discussion.deleted_at || String(activeJobId || "") !== String(claimed.job_id) || Number(discussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    if (isVoiceRematch && String(discussion.active_report_version || "") !== String(claimed.source_report_version || "")) throw new Error("SPEAKING_JOB_SUPERSEDED");
     const asset = await getOne(ASSETS, { asset_id: claimed.formal_audio_asset_id, discussion_id: claimed.discussion_id, asset_kind: "formal_discussion", status: "uploaded" });
     if (!asset) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
+    if (isVoiceRematch) {
+      if (discussion.voice_match_status !== "processing") await db.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ voice_match_status: "processing", updated_at: now() });
+      return await processVoiceRematch(claimed, discussion, asset);
+    }
     const speech = createSpeechProvider();
     if (claimed.stage === "audio_quality") {
       const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes });
@@ -1039,9 +1190,12 @@ async function processQueuedJob(event) {
       const currentJob = jobResult.data && jobResult.data[0];
       if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)) return;
       await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "failed", stage: currentJob.stage || "audio_quality", safe_error_code: code, lease_token: null, lease_until: null, finished_at: failedAt, updated_at: failedAt });
-      const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: currentJob.discussion_id, active_analysis_job_id: currentJob.job_id }).limit(1).get();
+      const activeJobField = currentJob.job_type === "voice_rematch" ? "active_voice_match_job_id" : "active_analysis_job_id";
+      const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: currentJob.discussion_id }).limit(1).get();
       const discussion = discussionResult.data && discussionResult.data[0];
-      if (discussion) await transaction.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ analysis_status: "failed", updated_at: failedAt });
+      if (discussion && String(discussion[activeJobField] || "") === String(currentJob.job_id)) await transaction.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update(currentJob.job_type === "voice_rematch"
+        ? { voice_match_status: "failed", voice_match_safe_error_code: code, voice_match_last_run_at: failedAt, updated_at: failedAt }
+        : { analysis_status: "failed", updated_at: failedAt });
     });
     return { success: false, code, job_id: job.job_id };
   }
@@ -1421,6 +1575,7 @@ function friendlyMessage(code) {
     SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_ASR_UNAVAILABLE: "Speech transcription is temporarily unavailable. Please retry.", SPEAKING_ASR_FAILED: "Tencent could not transcribe this recording. Please check the audio and retry.",
     SPEAKING_ASR_INVALID_RESPONSE: "Tencent returned an incomplete transcript. Please retry.", SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE: "The recording could not be scored reliably. Its available transcript was preserved.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
     SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
+    VOICE_MATCHING_NOT_READY: "Finish the Discussion analysis before searching for voice matches.", OPERATION_ID_REQUIRED: "Refresh the page and try that action again.",
     VOICE_DISPUTE_LOCKED: "Your voice concern is waiting for a teacher. Only a teacher can change the mapping now.",
     VOICE_CONFIRMATION_REQUIRED_FOR_SHARE: "Confirm your voice before creating a student share.", SHARE_PROJECTION_STALE: "The report or identity labels changed. Refresh before sharing.", SHARE_NOT_AVAILABLE: "This share link is no longer available.",
   };
@@ -1453,6 +1608,7 @@ exports.main = async (event = {}) => {
     if (action === "finishVoiceReferenceUpload") return await finishVoiceReferenceUpload(actor, event);
     if (action === "getVoiceConfirmationPlayback") return await getVoiceConfirmationPlayback(actor, event);
     if (action === "startAnalysis") return await startAnalysis(actor, event);
+    if (action === "startVoiceRematch") return await startVoiceRematch(actor, event);
     if (action === "confirmVoice") return await confirmVoice(actor, event);
     if (action === "teacherReopenVoiceReference") return await teacherReopenVoiceReference(actor, event);
     if (action === "teacherUpdateVoiceMapping") return await teacherUpdateVoiceMapping(actor, event);
@@ -1471,6 +1627,6 @@ exports.main = async (event = {}) => {
 
 exports._test = {
   friendlyMessage, publicJob, participantView, discussionView, candidateTrackViews, shanghaiDate, automaticMatchOutputPath,
-  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript,
+  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
 };
