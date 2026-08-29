@@ -2567,6 +2567,8 @@ is an Option-A-style split ledger with exactly four rows: `Date`, `Duration`,
 `Candidates`, and `Task`. A fixed label column and subtle vertical divider map
 each label to a left-aligned value. The only heading is the small blue
 `SESSION DETAILS` label, using the same eyebrow typography as `YOUR ANALYSIS`.
+The report stack itself has no shared border, background, or shadow connecting
+the cards; each visible card keeps its own independent material surface.
 `Candidates` and `Task` are full-row controls
 with disclosure arrows; Candidate names, matching/access, and Student Share
 stay inside the Candidate modal, while the full Group Discussion Task stays

@@ -2336,6 +2336,8 @@ an in-progress upload shows the secure-upload indicator. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
 matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first
+report stack must have no shared border, background, or shadow connecting its
+independent cards. The first
 card must contain exactly four split-ledger rows in Date, Duration, Candidates,
 Task order. Verify the fixed label column, vertical divider, compact mobile
 mapping, `MM:SS` Duration, and one `SESSION DETAILS` eyebrow matching the

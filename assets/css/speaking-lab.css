@@ -345,7 +345,7 @@
 .speaking-transcript-line small { margin-left: 5px; color: #859198; }
 
 /* Student report phase: deliberately separate from recording and upload setup. */
-.speaking-report-phase { overflow: visible; background: transparent; box-shadow: none; }
+.speaking-report-phase { overflow: visible; border: 0; background: transparent; box-shadow: none; }
 .speaking-report-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 4px 14px; }
 .speaking-report-nav .back-link { min-height: 40px; padding: 0 11px; border: 0; border-radius: 12px; color: var(--sl-blue-deep); background: rgba(255,255,255,.46); font-size: .82rem; font-weight: 740; box-shadow: inset 0 1px 0 rgba(255,255,255,.76); }
 .speaking-report-nav .back-link:hover { background: rgba(255,255,255,.76); }

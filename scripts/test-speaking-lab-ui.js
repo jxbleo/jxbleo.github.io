@@ -164,6 +164,7 @@ function run() {
   assert.match(css, /\.speaking-mode-grid[^}]*repeat\(2/);
   assert.match(css, /speaking-report-overview/);
   assert.match(css, /speaking-report-phase/);
+  assert.match(css, /\.speaking-report-phase\s*\{[^}]*border:\s*0/);
   assert.match(css, /speaking-report-ledger-label[^}]*border-right/);
   assert.match(css, /speaking-report-ledger-row[^}]*grid-template-columns:\s*112px/);
   assert.match(css, /speaking-score-grid-four/);
@@ -191,7 +192,7 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-13/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-14/);
   assert.match(page, /speaking-lab\.js\?v=20260829-12/);
   console.log("Speaking Lab UI contracts passed.");
 }
