@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-29 — Separate Speaking upload and student report surfaces
+
+- Split the student Discussion into a preparation/upload phase and a distinct
+  post-upload report phase with factual queued/processing progress and retained
+  Candidate matching.
+- Rebuilt the ready report as Discussion details with a modal Set task, the
+  signed-in student's CS/IO/VL/PD analysis, and personal turn-by-turn coaching,
+  followed by a collapsed complete script with warm-yellow self highlighting.
+- Kept unconfirmed students from receiving another Candidate's analysis or
+  transcript highlight, and kept PD explicitly unassessed.
+
 ## 2026-08-29
 
 - Rebuilt the Speaking Lab formal browser recorder as a four-state Ready,

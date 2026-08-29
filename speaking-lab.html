@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260829-8">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260829-9">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -98,6 +98,13 @@
             <div class="speaking-dialog-actions"><button class="outline-button" value="cancel" formnovalidate>Cancel</button><button class="primary-button" id="discussion-title-save" value="default">Save</button></div>
         </form>
     </dialog>
+    <dialog class="speaking-dialog speaking-prompt-dialog" id="discussion-prompt-dialog" aria-labelledby="discussion-prompt-dialog-title">
+        <div class="speaking-prompt-dialog-body">
+            <div class="speaking-dialog-head"><p class="eyebrow accent">DSE PAPER 4 · PART A</p><h2 id="discussion-prompt-dialog-title">Discussion task</h2><p id="discussion-prompt-dialog-subtitle">The Set question for this Discussion.</p></div>
+            <div class="speaking-prompt-dialog-text" id="discussion-prompt-dialog-text"></div>
+            <div class="speaking-dialog-actions"><button class="primary-button" id="discussion-prompt-close" type="button">Done</button></div>
+        </div>
+    </dialog>
     <dialog class="speaking-dialog" id="voiceprint-dialog" aria-labelledby="voiceprint-dialog-title">
         <div class="speaking-voiceprint-dialog-body">
             <div class="speaking-dialog-head"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="voiceprint-dialog-title">Set up my voiceprint</h2><p>Record once to help Speaking Lab recognise your Speaker track in future discussions.</p></div>
@@ -120,6 +127,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260829-8"></script>
+    <script src="assets/js/speaking-lab.js?v=20260829-9"></script>
 </body>
 </html>

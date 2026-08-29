@@ -2539,14 +2539,20 @@ student Dashboard: a calm blue-green-warm background, one translucent toolbar,
 one high-emphasis hero, and compact material cards. The list surface shows only
 New Discussion, reusable Voice ID status, and responsive Discussion cards. When
 a Discussion opens, those home surfaces withdraw and the detail becomes the
-only content layer. The detail order is fixed as task progress, prompt,
-Candidates, formal recording, analysis action, and report. The Candidates card
-first shows an empty explanation, then one tile per detected Candidate. It
-keeps uncertain tracks as Speaker labels and groups confirmed identity/access
-rows plus optional manual VIP/Non-VIP controls underneath. Automatic matches
-show a percentage and create the existing invitation flow; they never present
-an unconfirmed VIP name as a confirmed Candidate label. This prevents identity
-setup, recording, and report content from competing at one visual level.
+only content layer. The internal Discussion separates preparation from
+reporting instead of stacking both experiences in one long page. Preparation
+retains the Set prompt, Candidate workspace, recorder/file choice, listen/
+replace confirmation, and an indeterminate secure-upload indicator. Immediately
+after the formal asset is accepted, recording controls disappear. The report
+phase shows a calm factual progress card plus Candidate matching while queued
+or processing; it never invents a percentage when only a stage is known.
+
+The Candidates workspace first shows an empty explanation, then one tile per
+detected Candidate. It keeps uncertain tracks as Speaker labels and groups
+confirmed identity/access rows plus optional manual VIP/Non-VIP controls
+underneath. Automatic matches show a percentage and create the existing
+invitation flow; they never present an unconfirmed VIP name as a confirmed
+Candidate label.
 Once a report is ready, the Candidates header places `Search voice matches`
 beside the detected-count pill. Its waveform-search symbol responds immediately
 on press, changes to `Searching voices…` while the durable job is queued or
@@ -2556,21 +2562,25 @@ states say whether reliable new matches were found; failure restores the same
 button for retry. The action never implies that ASR or DSE scoring is being run
 again.
 
-Discussion reports use one dark group-summary surface followed by one light
-Candidate surface per Speaker. Each Candidate keeps the three 0–7 domains in a
-single score grid, then separates Pronunciation Not assessed and the three
-coaching lists. Below those summaries, `My turn-by-turn review` is expanded for
-the signed-in Candidate and peer reviews remain collapsible. Each turn card
-shows time, `What you said · AI transcript`, a visible ASR uncertainty note
-when confidence is low or unavailable, and side-by-side CS and IO coaching.
-Each domain ends with its own English `Try saying` sample; a fixed note explains
-that VL supports these two goals and is not a separate turn score. Transcript
-content stays collapsed by default. On phones,
-lists and score grids become one column, participant actions wrap below the
-identity, and dialogs become bottom sheets with a visible grabber and sticky
-actions. The page must honor reduced motion, reduced transparency, increased
-contrast, minimum touch targets, and the native `hidden` attribute even when a
-container normally declares grid or flex display.
+A ready student report contains exactly three primary cards in order. `About
+this Discussion` shows date, actual transcript duration (or planned-duration
+fallback), Candidate count, and privacy-projected labels; `View Set task` opens
+a dedicated modal instead of expanding the prompt inline, while Candidate
+matching/access and Student Share remain inside the same card. `Your analysis`
+shows only the authenticated student's confirmed Candidate, with CS, IO, and
+VL 0–7 cards plus a fourth PD card fixed to `Not assessed · 暂不评论`, followed
+by strengths, priorities, and language suggestions. `What you could say next
+time` shows every personal speaking turn chronologically with ASR caution,
+original transcript, and side-by-side CS/IO advice plus English samples.
+
+One collapsed `Complete script` follows the three cards. Each line shows its
+privacy-projected Speaker label and time range. Only the signed-in student's
+confirmed Speaker key receives a warm-yellow highlight; an unconfirmed student
+receives no personal analysis, turn advice, or transcript highlight. On phones,
+facts, score grids, and report stages become one column, participant actions
+wrap below identity, and dialogs become bottom sheets with a visible grabber and
+sticky actions. The page honors reduced motion, reduced transparency, increased
+contrast, minimum touch targets, and the native `hidden` attribute.
 
 ### Intensive Listening surfaces
 
