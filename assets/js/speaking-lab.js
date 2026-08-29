@@ -22,6 +22,8 @@
     var promptDialogTitle = document.getElementById('discussion-prompt-dialog-title');
     var promptDialogSubtitle = document.getElementById('discussion-prompt-dialog-subtitle');
     var promptDialogText = document.getElementById('discussion-prompt-dialog-text');
+    var candidateDialog = document.getElementById('discussion-candidate-dialog');
+    var candidateDialogContent = document.getElementById('discussion-candidate-dialog-content');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
     var form = document.getElementById('discussion-form');
@@ -162,6 +164,14 @@
         promptDialogText.textContent = currentDiscussion.prompt_text || 'No Set question is available.';
         if (typeof promptDialog.showModal === 'function') promptDialog.showModal();
         else promptDialog.setAttribute('open', '');
+    }
+    function openCandidateDialog() {
+        if (!currentDiscussion || !candidateDialog || !candidateDialogContent) return;
+        var controls = candidateControls(currentDiscussion);
+        candidateDialogContent.innerHTML = '<div class="speaking-dialog-head"><p class="eyebrow accent">CANDIDATES</p><h2 id="discussion-candidate-dialog-title">Candidate matching</h2><p>Confirmed voiceprints are named automatically. Unclear or unmatched voices remain anonymous.</p></div><div class="speaking-candidate-dialog-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + controls.rosterEditor + '<div class="speaking-dialog-actions"><button class="primary-button" id="discussion-candidate-close" type="button">Done</button></div>';
+        bindInvitationActions(candidateDialogContent);
+        if (typeof candidateDialog.showModal === 'function') candidateDialog.showModal();
+        else candidateDialog.setAttribute('open', '');
     }
     function voiceprintTime(seconds) {
         var value = Math.max(0, Math.min(20, Math.floor(Number(seconds || 0))));
@@ -450,13 +460,11 @@
         if (!seconds) return 'Pending';
         return Math.floor(seconds / 60) + ' min ' + String(seconds % 60).padStart(2, '0') + ' sec';
     }
-    function reportInfoCardMarkup(item, report, controls) {
+    function reportInfoCardMarkup(item, report) {
         var canShare = (item.participants || []).some(function (participant) { return participant.is_self && ['voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(participant.identity_status) >= 0; });
         var candidateCount = Number.isInteger(item.candidate_count) ? item.candidate_count : (report.candidates || []).length;
-        var matchingDetails = controls.identityAccess || controls.rosterEditor ? '<details class="speaking-report-identity"><summary><span><strong>Candidate matching &amp; access</strong><small>Review invitations, voice matches, and names</small></span></summary>' + controls.identityAccess + controls.rosterEditor + '</details>' : '';
-        return '<section class="speaking-report-card speaking-report-info-card"><header class="speaking-report-card-header"><div><p class="eyebrow accent">DISCUSSION DETAILS</p><h2>About this Discussion</h2><p>Your report uses the Set question, the private recording, and confirmed Candidate identities.</p></div><div class="speaking-report-card-actions"><button class="outline-button" type="button" id="view-discussion-prompt">View Set task</button>' + controls.voiceSearchButton + '</div></header>' +
-            '<div class="speaking-report-facts"><dl><dt>Date</dt><dd>' + esc(formatDate(item.discussion_date)) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(reportDuration(item, report)) + '</dd></dl><dl><dt>Candidates</dt><dd>' + esc(candidateCount) + '</dd></dl><dl><dt>Report</dt><dd>Ready</dd></dl></div>' +
-            '<div class="speaking-report-candidate-heading"><h3>Candidates</h3><span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + matchingDetails +
+        return '<section class="speaking-report-card speaking-report-info-card"><header class="speaking-report-card-header"><div><p class="eyebrow accent">DISCUSSION DETAILS</p><h2>About this Discussion</h2><p>Your report uses the Set question, the private recording, and confirmed Candidate identities.</p></div><div class="speaking-report-card-actions"><button class="outline-button" type="button" id="view-discussion-prompt">View Set task</button><button class="outline-button" type="button" id="view-discussion-candidates">View Candidates</button></div></header>' +
+            '<div class="speaking-report-facts"><dl><dt>Date</dt><dd>' + esc(formatDate(item.discussion_date)) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(reportDuration(item, report)) + '</dd></dl><dl><dt>Candidates</dt><dd>' + esc(candidateCount) + '</dd></dl></div>' +
             '<div class="speaking-report-share"><div><strong>Private report sharing</strong><p>' + (canShare ? 'Create a seven-day Student Share with your own confirmed name only.' : 'Confirm your voice before creating a Student Share.') + '</p></div>' + (canShare ? '<button class="primary-button" type="button" id="create-student-share">Create Student Share</button>' : '<span class="speaking-pill">Voice confirmation required</span>') + '</div><div id="student-share-result"></div></section>';
     }
     function personalAnalysisCardMarkup(report) {
@@ -465,7 +473,7 @@
         var labels = {
             communication_strategies: ['CS', 'Communication Strategies'],
             ideas_organisation: ['IO', 'Ideas & Organisation'],
-            vocabulary_language_patterns: ['VL', 'Vocabulary & Language']
+            vocabulary_language_patterns: ['VL', 'Vocabulary & Language Pattern']
         };
         var domains = Object.keys(labels).map(function (key) {
             var domain = own.domains && own.domains[key];
@@ -492,8 +500,7 @@
     }
     function reportReadyMarkup(item) {
         var report = item.report;
-        var controls = candidateControls(item);
-        return '<article class="speaking-detail-card speaking-report-phase"><div class="speaking-report-nav"><button class="back-link" type="button" id="close-discussion">‹ Discussions</button><span class="speaking-pill" data-tone="ready">Report ready</span></div><div class="speaking-report-layout">' + reportInfoCardMarkup(item, report, controls) + personalAnalysisCardMarkup(report) + turnAdviceCardMarkup(report) + transcriptMarkup(report) + '</div></article>';
+        return '<article class="speaking-detail-card speaking-report-phase"><div class="speaking-report-layout">' + reportInfoCardMarkup(item, report) + personalAnalysisCardMarkup(report) + turnAdviceCardMarkup(report) + transcriptMarkup(report) + '</div></article>';
     }
     function reportProcessingMarkup(item) {
         var controls = candidateControls(item);
@@ -540,35 +547,44 @@
             '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Voiceprint matches at 70% or above are named and opened automatically. Lower scores stay anonymous until the matched VIP listens and confirms.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + rosterEditor + '</section>' +
             recording + analysis + reportMarkup + '</div></article>';
     }
-    function bindInvitationActions() {
-        var viewPrompt = document.getElementById('view-discussion-prompt');
+    function bindInvitationActions(root) {
+        root = root || detail;
+        function refreshDiscussion() {
+            if (root === candidateDialogContent && candidateDialog.open && candidateDialog.close) candidateDialog.close();
+            return openDiscussion(selectedId);
+        }
+        var viewPrompt = root.querySelector('#view-discussion-prompt');
         if (viewPrompt) viewPrompt.addEventListener('click', openPromptDialog);
-        var voiceSearch = document.getElementById('search-voice-matches');
+        var viewCandidates = root.querySelector('#view-discussion-candidates');
+        if (viewCandidates) viewCandidates.addEventListener('click', openCandidateDialog);
+        var candidateClose = root.querySelector('#discussion-candidate-close');
+        if (candidateClose) candidateClose.addEventListener('click', function () { if (candidateDialog.open && candidateDialog.close) candidateDialog.close(); else candidateDialog.removeAttribute('open'); });
+        var voiceSearch = root.querySelector('#search-voice-matches');
         if (voiceSearch) voiceSearch.addEventListener('click', function () {
             voiceSearch.disabled = true;
             voiceSearch.classList.add('is-searching');
             voiceSearch.setAttribute('aria-busy', 'true');
             call('startVoiceRematch', { discussion_id: selectedId, operation_id: 'voice-rematch-' + selectedId + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) })
-                .then(function () { return openDiscussion(selectedId); })
+                .then(refreshDiscussion)
                 .catch(function (error) { setStatus(friendlyError(error), true); voiceSearch.disabled = false; voiceSearch.classList.remove('is-searching'); voiceSearch.removeAttribute('aria-busy'); });
         });
-        var addVip = document.getElementById('add-vip-participant'); if (addVip) addVip.addEventListener('click', function () { var input = document.getElementById('add-vip-id'); addVip.disabled = true; call('addVipParticipant', { discussion_id: selectedId, student_id: input.value }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); addVip.disabled = false; }); });
-        var addGuest = document.getElementById('add-guest-participant'); if (addGuest) addGuest.addEventListener('click', function () { var input = document.getElementById('add-guest-name'); addGuest.disabled = true; call('addGuestParticipant', { discussion_id: selectedId, guest_name: input.value }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); addGuest.disabled = false; }); });
-        detail.querySelectorAll('[data-remove-participant]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Remove this participant from the Discussion?')) return; button.disabled = true; call('removeParticipant', { discussion_id: selectedId, participant_id: button.getAttribute('data-remove-participant') }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
-        detail.querySelectorAll('[data-rename-guest]').forEach(function (button) { button.addEventListener('click', function () { var name = window.prompt('Guest name', button.getAttribute('data-current-name') || ''); if (!name) return; button.disabled = true; call('renameGuest', { discussion_id: selectedId, participant_id: button.getAttribute('data-rename-guest'), guest_name: name }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
-        detail.querySelectorAll('[data-invite-action]').forEach(function (button) {
+        var addVip = root.querySelector('#add-vip-participant'); if (addVip) addVip.addEventListener('click', function () { var input = root.querySelector('#add-vip-id'); addVip.disabled = true; call('addVipParticipant', { discussion_id: selectedId, student_id: input.value }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); addVip.disabled = false; }); });
+        var addGuest = root.querySelector('#add-guest-participant'); if (addGuest) addGuest.addEventListener('click', function () { var input = root.querySelector('#add-guest-name'); addGuest.disabled = true; call('addGuestParticipant', { discussion_id: selectedId, guest_name: input.value }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); addGuest.disabled = false; }); });
+        root.querySelectorAll('[data-remove-participant]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Remove this participant from the Discussion?')) return; button.disabled = true; call('removeParticipant', { discussion_id: selectedId, participant_id: button.getAttribute('data-remove-participant') }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
+        root.querySelectorAll('[data-rename-guest]').forEach(function (button) { button.addEventListener('click', function () { var name = window.prompt('Guest name', button.getAttribute('data-current-name') || ''); if (!name) return; button.disabled = true; call('renameGuest', { discussion_id: selectedId, participant_id: button.getAttribute('data-rename-guest'), guest_name: name }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
+        root.querySelectorAll('[data-invite-action]').forEach(function (button) {
             button.addEventListener('click', function () {
                 button.disabled = true;
-                call('respondInvitation', { discussion_id: selectedId, participant_id: button.getAttribute('data-participant-id'), response: button.getAttribute('data-invite-action') }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; });
+                call('respondInvitation', { discussion_id: selectedId, participant_id: button.getAttribute('data-participant-id'), response: button.getAttribute('data-invite-action') }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; });
             });
         });
-        detail.querySelectorAll('[data-confirm-voice]').forEach(function (button) {
+        root.querySelectorAll('[data-confirm-voice]').forEach(function (button) {
             button.addEventListener('click', function () {
                 button.disabled = true;
-                call('confirmVoice', { discussion_id: selectedId, participant_id: button.getAttribute('data-participant-id'), speaker_key: button.getAttribute('data-speaker-key'), mapping_revision: Number(button.getAttribute('data-mapping-revision')), confirmed: button.getAttribute('data-confirm-voice') === 'true' }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; });
+                call('confirmVoice', { discussion_id: selectedId, participant_id: button.getAttribute('data-participant-id'), speaker_key: button.getAttribute('data-speaker-key'), mapping_revision: Number(button.getAttribute('data-mapping-revision')), confirmed: button.getAttribute('data-confirm-voice') === 'true' }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; });
             });
         });
-        detail.querySelectorAll('[data-playback-kind]').forEach(function (button) {
+        root.querySelectorAll('[data-playback-kind]').forEach(function (button) {
             button.addEventListener('click', function () {
                 button.disabled = true;
                 call('getVoiceConfirmationPlayback', { discussion_id: selectedId, participant_id: button.getAttribute('data-participant-id'), playback_kind: button.getAttribute('data-playback-kind') }).then(function (result) {
@@ -579,8 +595,8 @@
                 }).catch(function (error) { setStatus(friendlyError(error), true); }).finally(function () { button.disabled = false; });
             });
         });
-        var share = document.getElementById('create-student-share');
-        if (share) share.addEventListener('click', function () { share.disabled = true; call('createStudentShare', { discussion_id: selectedId }).then(function (result) { var container = document.getElementById('student-share-result'); var url = new URL(result.share_url, window.location.href).href; container.innerHTML = '<p><a href="' + esc(url) + '" target="_blank" rel="noopener">Open private snapshot</a> · expires ' + esc(result.expires_at || 'in 7 days') + '</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="copy-student-share">Copy link</button><button class="outline-button" type="button" id="revoke-student-share">Revoke link</button></div>'; document.getElementById('copy-student-share').addEventListener('click', function () { if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { setStatus('Private link copied.'); }); }); document.getElementById('revoke-student-share').addEventListener('click', function () { call('revokeShare', { share_id: result.share_id }).then(function () { container.innerHTML = '<p>Link revoked.</p>'; }); }); }).catch(function (error) { setStatus(friendlyError(error), true); share.disabled = false; }); });
+        var share = root.querySelector('#create-student-share');
+        if (share) share.addEventListener('click', function () { share.disabled = true; call('createStudentShare', { discussion_id: selectedId }).then(function (result) { var container = root.querySelector('#student-share-result'); var url = new URL(result.share_url, window.location.href).href; container.innerHTML = '<p><a href="' + esc(url) + '" target="_blank" rel="noopener">Open private snapshot</a> · expires ' + esc(result.expires_at || 'in 7 days') + '</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="copy-student-share">Copy link</button><button class="outline-button" type="button" id="revoke-student-share">Revoke link</button></div>'; root.querySelector('#copy-student-share').addEventListener('click', function () { if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { setStatus('Private link copied.'); }); }); root.querySelector('#revoke-student-share').addEventListener('click', function () { call('revokeShare', { share_id: result.share_id }).then(function () { container.innerHTML = '<p>Link revoked.</p>'; }); }); }).catch(function (error) { setStatus(friendlyError(error), true); share.disabled = false; }); });
     }
     function invitationMarkup(invitation) {
         return '<form method="dialog"><div class="speaking-dialog-head"><p class="eyebrow accent">DISCUSSION INVITATION</p><h2 id="invitation-dialog-title">' + esc(invitation.title) + '</h2><p>' + esc(formatDate(invitation.discussion_date)) + ' · Invited by ' + esc(invitation.inviter_name || 'your teacher or group') + '</p></div><ul class="speaking-participants">' + (invitation.participants || []).map(function (participant) { var name = participant.display_name || 'Participant'; return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(name)) + '</span><span><strong>' + esc(name) + '</strong><small>' + esc(participant.kind === 'guest' ? 'Guest participant · Name not verified' : readableStatus(participant.invitation_status)) + '</small></span></span></li>'; }).join('') + '</ul><div class="speaking-dialog-actions"><button class="primary-button" type="button" id="accept-invitation">Accept</button><button class="outline-button" type="button" id="decline-invitation">Decline</button><button class="outline-button" value="cancel">Close</button></div></form>';
