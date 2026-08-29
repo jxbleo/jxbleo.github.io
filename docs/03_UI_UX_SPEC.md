@@ -2564,14 +2564,19 @@ again.
 
 A ready student report contains exactly three primary cards in order. `About
 this Discussion` shows date, actual transcript duration (or planned-duration
-fallback), Candidate count, and privacy-projected labels; `View Set task` opens
-a dedicated modal instead of expanding the prompt inline, while Candidate
-matching/access and Student Share remain inside the same card. `Your analysis`
-shows only the authenticated student's confirmed Candidate, with CS, IO, and
-VL 0–7 cards plus a fourth PD card fixed to `Not assessed · 暂不评论`, followed
-by strengths, priorities, and language suggestions. `What you could say next
-time` shows every personal speaking turn chronologically with ASR caution,
-original transcript, and side-by-side CS/IO advice plus English samples.
+fallback), and Candidate count. Parallel `View Set task` and `View Candidates`
+controls open dedicated modals; neither the task nor Candidate names are
+expanded inline. Candidate matching/access stays inside the Candidate modal,
+while Student Share remains inside the first card. `Your analysis` shows only
+the authenticated student's confirmed Candidate, with CS, IO, and VL 0–7 cards
+plus a fourth PD card fixed to `Not assessed · 暂不评论`, followed by strengths,
+priorities, and language suggestions. `What you could say next time` shows
+every personal speaking turn chronologically with ASR caution, original
+transcript, and side-by-side CS/IO advice plus English samples.
+
+The ready report starts directly with the first card and does not repeat a back
+control or ready-status label. The four dimension names use `&` where needed;
+VL is written as `Vocabulary & Language Pattern`.
 
 One collapsed `Complete script` follows the three cards. Each line shows its
 privacy-projected Speaker label and time range. Only the signed-in student's

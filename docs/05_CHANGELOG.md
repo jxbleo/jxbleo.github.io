@@ -5,9 +5,15 @@
 - Split the student Discussion into a preparation/upload phase and a distinct
   post-upload report phase with factual queued/processing progress and retained
   Candidate matching.
+- Removed redundant ready-report navigation/status chrome so the completed
+  report starts directly with its Discussion information card.
+- Moved Candidate names, voice matching, and access actions into a dedicated
+  `View Candidates` modal parallel to the existing Set-task modal.
 - Rebuilt the ready report as Discussion details with a modal Set task, the
   signed-in student's CS/IO/VL/PD analysis, and personal turn-by-turn coaching,
   followed by a collapsed complete script with warm-yellow self highlighting.
+- Standardized dimension conjunctions to `&`, including the exact VL label
+  `Vocabulary & Language Pattern`.
 - Kept unconfirmed students from receiving another Candidate's analysis or
   transcript highlight, and kept PD explicitly unassessed.
 

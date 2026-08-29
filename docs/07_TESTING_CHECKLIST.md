@@ -2334,14 +2334,17 @@ CS/IO samples without internal segment or Speaker keys.
 Verify a not-yet-uploaded Discussion shows preparation/recording controls and
 an in-progress upload shows the secure-upload indicator. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
-matching, while a ready report shows the three primary cards in order. `View
-Set task` opens and closes a separate modal. For a confirmed student, verify
-CS/IO/VL scores, fixed PD `Not assessed`, every personal turn review, and
-warm-yellow highlights on only that Speaker key in the collapsed Complete
-script. For an unconfirmed student, verify both personal cards use the safe
-empty state, peer analysis is absent, and no transcript line is highlighted.
-Repeat at phone width and with Reduced Motion, Reduced Transparency, and
-Increased Contrast enabled.
+matching, while a ready report shows the three primary cards in order, with no
+redundant back control, `Report ready` label, or Report/Ready fact. `View Set
+task` and `View Candidates` must each open and close a separate modal. Candidate
+names must not appear inline in the first card; verify names, matching, and
+access actions are present in the Candidate modal. For a confirmed student,
+verify CS/IO/VL scores, the exact `Vocabulary & Language Pattern` label, fixed
+PD `Not assessed`, every personal turn review, and warm-yellow highlights on
+only that Speaker key in the collapsed Complete script. For an unconfirmed
+student, verify both personal cards use the safe empty state, peer analysis is
+absent, and no transcript line is highlighted. Repeat at phone width and with
+Reduced Motion, Reduced Transparency, and Increased Contrast enabled.
 Roster-free contracts must select up to six sustained Candidates without any
 participant rows, exclude a brief incidental voice, choose only an
 uninterrupted 8–20 second voiceprint excerpt, reject scores below 70 and

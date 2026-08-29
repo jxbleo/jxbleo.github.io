@@ -30,6 +30,7 @@ function run() {
   assert.match(page, /id="speaking-toolbar-edit"[\s\S]*Edit Discussion title/);
   assert.match(page, /id="discussion-title-dialog"/);
   assert.match(page, /id="discussion-prompt-dialog"/);
+  assert.match(page, /id="discussion-candidate-dialog"/);
   assert.match(page, /id="speaking-sidebar-alert"/);
   assert.match(page, /aria-controls="speaking-sidebar"/);
   assert.match(page, /<a[^>]*class="speaking-sidebar-home"[^>]*href="dashboard\.html"[^>]*>[\s\S]*Home<\/a>/);
@@ -127,12 +128,17 @@ function run() {
   assert.match(app, /function reportReadyMarkup\(item\)/);
   assert.match(app, /function reportProcessingMarkup\(item\)/);
   assert.match(app, /item\.recording_status === 'uploaded'[\s\S]*reportReadyMarkup\(item\)[\s\S]*reportProcessingMarkup\(item\)/);
-  assert.match(app, /About this Discussion|View Set task|Candidate matching &amp; access/);
-  assert.match(app, /YOUR ANALYSIS|Communication Strategies|Ideas &amp; Organisation|Vocabulary &amp; Language/);
+  assert.match(app, /About this Discussion|View Set task/);
+  assert.match(app, /View Candidates|function openCandidateDialog\(\)/);
+  assert.match(app, /YOUR ANALYSIS|Communication Strategies|Ideas &amp; Organisation|Vocabulary &amp; Language Pattern/);
   assert.match(app, /Pronunciation &amp; Delivery[\s\S]*Not assessed · 暂不评论/);
   assert.match(app, /TURN-BY-TURN REVIEW|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
   assert.match(app, /Complete script|is-self|highlighted in yellow/);
   assert.match(app, /speaking-upload-progress-track/);
+  const readyMarkup = app.slice(app.indexOf("function reportReadyMarkup(item)"), app.indexOf("function reportProcessingMarkup(item)"));
+  assert.doesNotMatch(readyMarkup, /speaking-report-nav|Report ready|close-discussion|candidateIntro/);
+  assert.doesNotMatch(readyMarkup, /<dt>Report<\/dt>|<dd>Ready<\/dd>/);
+  assert.match(readyMarkup, /reportInfoCardMarkup\(item, report\)/);
   assert.match(reportJs, /My turn-by-turn review|What you said · AI transcript/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /prefers-reduced-transparency/);
@@ -178,8 +184,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-9/);
-  assert.match(page, /speaking-lab\.js\?v=20260829-9/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-10/);
+  assert.match(page, /speaking-lab\.js\?v=20260829-10/);
   console.log("Speaking Lab UI contracts passed.");
 }
 
