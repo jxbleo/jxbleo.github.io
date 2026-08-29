@@ -356,11 +356,17 @@
 .speaking-report-card-header h2 { margin: 0; color: #1d3039; font-size: clamp(1.25rem,3vw,1.75rem); line-height: 1.12; letter-spacing: -.035em; }
 .speaking-report-card-header p:not(.eyebrow) { max-width: 650px; margin: 8px 0 0; color: var(--sl-muted); font-size: .79rem; line-height: 1.52; }
 .speaking-report-card-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.speaking-report-info-card { background: radial-gradient(circle at 96% 0,rgba(79,181,244,.11),transparent 30%),rgba(253,254,254,.76); }
-.speaking-report-facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; }
-.speaking-report-facts dl { margin: 0; padding: 14px; border: 1px solid rgba(76,99,111,.09); border-radius: 16px; background: rgba(247,250,251,.72); }
-.speaking-report-facts dt { color: #7a8990; font-size: .59rem; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
-.speaking-report-facts dd { margin: 5px 0 0; color: #283b44; font-size: .82rem; font-weight: 760; line-height: 1.35; }
+.speaking-report-info-card { padding: 6px clamp(16px,3vw,22px); background: rgba(253,254,254,.78); }
+.speaking-report-ledger { overflow: hidden; }
+.speaking-report-ledger-row { position: relative; display: grid; width: 100%; min-height: 58px; grid-template-columns: 112px minmax(0,1fr); align-items: center; gap: 16px; padding: 12px 2px; border: 0; border-bottom: 1px solid rgba(75,96,106,.10); color: inherit; background: transparent; text-align: left; }
+.speaking-report-ledger-row:last-child { border-bottom: 0; }
+button.speaking-report-ledger-row { cursor: pointer; transition: transform 100ms ease-out, background 160ms ease; }
+button.speaking-report-ledger-row:hover { background: rgba(8,124,240,.045); }
+button.speaking-report-ledger-row:active { transform: scale(.985); transition-duration: 100ms; }
+button.speaking-report-ledger-row::after { content: ""; position: absolute; right: 4px; top: calc(50% - 4px); width: 7px; height: 7px; border-top: 1.5px solid currentColor; border-right: 1.5px solid currentColor; opacity: .42; transform: rotate(45deg); }
+.speaking-report-ledger-label { align-self: stretch; display: flex; align-items: center; border-right: 1px solid rgba(75,96,106,.11); color: #738189; font-size: .72rem; font-weight: 670; }
+.speaking-report-ledger-value { overflow: hidden; color: #283b44; font-size: .82rem; font-weight: 730; text-overflow: ellipsis; white-space: nowrap; }
+button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right: 20px; }
 .speaking-report-candidate-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 24px 0 10px; }
 .speaking-report-candidate-heading h3 { margin: 0; color: #2c3d45; font-size: .88rem; letter-spacing: -.01em; }
 .speaking-report-identity { overflow: hidden; margin-top: 14px; border: 1px solid rgba(69,94,107,.10); border-radius: 18px; background: rgba(248,251,251,.58); }
@@ -429,6 +435,7 @@
 .speaking-candidate-dialog-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: -5px 0 16px; }
 .speaking-candidate-dialog .speaking-identity-access { margin-top: 16px; }
 .speaking-candidate-dialog .speaking-roster-editor { margin-top: 14px; }
+.speaking-candidate-dialog .speaking-report-share { margin-top: 16px; }
 
 .teacher-voiceprint-search { display: flex; flex: 0 0 min(360px,46%); align-items: end; gap: 8px; }
 .teacher-voiceprint-search label { flex: 1; color: var(--sl-muted); font-size: .75rem; }
@@ -492,10 +499,10 @@
     .speaking-recording-review .speaking-detail-actions > * { width: 100%; }
     .speaking-report-nav { margin-inline: 2px; }
     .speaking-report-card { padding: 19px 16px; border-radius: 22px; }
+    .speaking-report-info-card { padding-block: 6px; }
     .speaking-report-card-header { align-items: stretch; flex-direction: column; gap: 12px; }
     .speaking-report-card-actions { justify-content: stretch; }
     .speaking-report-card-actions > * { flex: 1 1 auto; }
-    .speaking-report-facts { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .speaking-report-share { align-items: stretch; flex-direction: column; }
     .speaking-report-share > button, .speaking-report-share > .speaking-pill { justify-content: center; }
     .speaking-report-stages { grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -524,7 +531,8 @@
     .speaking-roster-editor { grid-template-columns: 1fr; }
     .speaking-roster-editor > p { grid-column: auto; }
     .speaking-recording-settings { grid-template-columns: 1fr; }
-    .speaking-report-facts, .speaking-report-stages { grid-template-columns: 1fr; }
+    .speaking-report-ledger-row { grid-template-columns: 94px minmax(0,1fr); gap: 10px; }
+    .speaking-report-stages { grid-template-columns: 1fr; }
     .speaking-report-card-actions { display: grid; grid-template-columns: 1fr; }
     .speaking-report-card-actions > * { width: 100%; }
     .speaking-dialog-actions { gap: 6px; }
