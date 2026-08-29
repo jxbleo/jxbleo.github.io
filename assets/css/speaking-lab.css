@@ -1,4 +1,4 @@
-.speaking-lab-page {
+.speaking-lab-page, .teacher-speaking-main {
     --sl-blue: #087cf0;
     --sl-blue-deep: #0067d5;
     --sl-blue-soft: rgba(8, 124, 240, 0.10);
@@ -428,6 +428,42 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-report-stages li.is-current { color: #116da9; background: rgba(8,124,240,.085); box-shadow: inset 0 0 0 1px rgba(8,124,240,.10); }
 .speaking-report-stages li.is-current span { color: #fff; background: var(--sl-blue); }
 .speaking-processing-candidates { background: radial-gradient(circle at 98% 0,rgba(255,184,126,.11),transparent 30%),rgba(253,254,254,.75); }
+.teacher-speaking-report-workspace, .teacher-speaking-report-stack, .teacher-speaking-candidate-section { display: grid; gap: 16px; }
+.teacher-speaking-session-card { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.teacher-speaking-session-card .outline-button { margin-bottom: 20px; }
+.teacher-speaking-session-card .eyebrow { margin: 0 0 7px; color: var(--sl-blue-deep); font-size: .61rem; }
+.teacher-speaking-session-card h2 { margin: 0; color: #1d3039; font-size: clamp(1.45rem,3vw,2.1rem); letter-spacing: -.04em; }
+.teacher-speaking-session-card p:not(.eyebrow) { margin: 8px 0 0; color: var(--sl-muted); font-size: .76rem; }
+.teacher-speaking-roster-card { padding: 0; overflow: hidden; }
+.teacher-speaking-roster-card > summary, .teacher-speaking-turns > summary { display: flex; min-height: 72px; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; cursor: pointer; list-style: none; }
+.teacher-speaking-roster-card > summary::-webkit-details-marker, .teacher-speaking-turns > summary::-webkit-details-marker { display: none; }
+.teacher-speaking-roster-card > summary strong, .teacher-speaking-roster-card > summary small, .teacher-speaking-turns > summary strong, .teacher-speaking-turns > summary small { display: block; }
+.teacher-speaking-roster-card > summary strong, .teacher-speaking-turns > summary strong { color: #2b3d46; font-size: .84rem; }
+.teacher-speaking-roster-card > summary small, .teacher-speaking-turns > summary small { margin-top: 4px; color: #7b8990; font-size: .65rem; font-weight: 560; }
+.teacher-speaking-roster-body { padding: 0 20px 20px; border-top: 1px solid rgba(76,97,107,.09); }
+.teacher-speaking-roster-body > p { color: var(--sl-muted); font-size: .72rem; }
+.teacher-speaking-group-analysis { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+.teacher-speaking-group-analysis .speaking-report-list, .teacher-speaking-candidate-report .speaking-report-list { border-color: rgba(78,100,111,.09); color: var(--sl-ink); background: rgba(248,251,251,.72); }
+.teacher-speaking-share-builder[hidden] { display: none !important; }
+.teacher-speaking-share-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.teacher-speaking-share-options > section { padding: 16px; border: 1px solid rgba(76,98,108,.10); border-radius: 18px; background: rgba(248,251,251,.62); }
+.teacher-speaking-share-options h3 { margin: 0 0 12px; color: #40545e; font-size: .79rem; }
+.teacher-speaking-checkbox-grid { display: grid; gap: 9px; }
+.teacher-speaking-checkbox-grid label { display: flex; align-items: flex-start; gap: 8px; color: #43565f; font-size: .72rem; line-height: 1.4; }
+.teacher-speaking-checkbox-grid input { margin-top: 2px; accent-color: var(--sl-blue); }
+.teacher-speaking-share-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+.teacher-speaking-share-footer p { margin: 0; color: var(--sl-muted); font-size: .7rem; }
+.teacher-speaking-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 8px 4px 0; }
+.teacher-speaking-section-heading .eyebrow { margin: 0 0 5px; color: var(--sl-blue-deep); font-size: .61rem; }
+.teacher-speaking-section-heading h2 { margin: 0; color: #243842; font-size: clamp(1.2rem,2.8vw,1.6rem); letter-spacing: -.03em; }
+.teacher-speaking-candidate-header { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: start; }
+.teacher-speaking-candidate-header .speaking-avatar { width: 48px; height: 48px; color: #76531a; background: linear-gradient(145deg,#ffedbd,#fff8e8); }
+.teacher-speaking-candidate-report .speaking-coaching-grid { margin-top: 12px; }
+.teacher-speaking-turns { overflow: hidden; margin-top: 16px; border: 1px solid rgba(47,90,119,.13); border-radius: 18px; background: rgba(244,249,252,.58); }
+.teacher-speaking-turns .speaking-turn-list { display: grid; gap: 9px; padding: 0 14px 14px; }
+.teacher-speaking-transcript { margin: 0; }
+.teacher-speaking-report-empty h2 { margin: 0; color: #263a44; }
+.teacher-speaking-report-empty > p:last-child { color: var(--sl-muted); }
 .speaking-prompt-dialog { width: min(720px,calc(100vw - 24px)); }
 .speaking-prompt-dialog-body { padding: clamp(22px,4vw,34px); }
 .speaking-prompt-dialog-text { max-height: min(52vh,560px); padding: 18px 20px; overflow: auto; border-left: 3px solid rgba(8,124,240,.52); border-radius: 6px 18px 18px 6px; color: #32464f; background: rgba(8,124,240,.055); font-size: .92rem; line-height: 1.7; white-space: pre-wrap; overscroll-behavior: contain; }
@@ -506,6 +542,10 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
     .speaking-report-card-actions > * { flex: 1 1 auto; }
     .speaking-report-share { align-items: stretch; flex-direction: column; }
     .speaking-report-share > button, .speaking-report-share > .speaking-pill { justify-content: center; }
+    .teacher-speaking-session-card, .teacher-speaking-share-footer, .teacher-speaking-section-heading { align-items: stretch; flex-direction: column; }
+    .teacher-speaking-group-analysis, .teacher-speaking-share-options { grid-template-columns: 1fr; }
+    .teacher-speaking-candidate-header { grid-template-columns: auto minmax(0,1fr); }
+    .teacher-speaking-candidate-header > .speaking-pill { grid-column: 2; justify-self: start; }
     .speaking-report-stages { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .speaking-report-layout > .speaking-transcript summary { padding: 17px 16px; }
     .speaking-report-layout .speaking-transcript-lines { padding: 0 10px 10px; }

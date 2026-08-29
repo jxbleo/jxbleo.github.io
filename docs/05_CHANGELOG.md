@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-30 — Complete Teacher Speaking group reports
+
+- Changed Teacher Speaking to load every Discussion through backend pagination
+  and label ready rows as full reports.
+- Expanded a teacher report from a summary into group analysis, every
+  Candidate's CS/IO/VL/PD detail, all turn-by-turn coaching, and the complete
+  teacher-visible transcript.
+- Added an in-report `Share group report` flow with every Candidate name and
+  report section selected by default, while preserving optional name and
+  content redaction before the seven-day private snapshot is created.
+
 ## 2026-08-29 — Center Speaking modals on phones
 
 - Overrode the browser's native mobile `dialog` maximum width and restored
