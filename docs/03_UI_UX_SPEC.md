@@ -2587,7 +2587,9 @@ confirmed Speaker key receives a warm-yellow highlight; an unconfirmed student
 receives no personal analysis, turn advice, or transcript highlight. On phones,
 the ledger preserves its compact label/value mapping, participant actions wrap
 below identity, and dialogs become bottom sheets with a visible grabber and
-sticky actions. The page honors reduced motion, reduced transparency, increased
+sticky actions. Every dialog uses equal 12px inline insets so the browser's
+native maximum width cannot anchor the sheet to only the left edge. The page
+honors reduced motion, reduced transparency, increased
 contrast, minimum touch targets, and the native `hidden` attribute.
 
 ### Intensive Listening surfaces

@@ -2349,6 +2349,9 @@ only that Speaker key in the collapsed Complete script. For an unconfirmed
 student, verify both personal cards use the safe empty state, peer analysis is
 absent, and no transcript line is highlighted. Repeat at phone width and with
 Reduced Motion, Reduced Transparency, and Increased Contrast enabled.
+At a 390px phone viewport, open Create Discussion, Invitation, Edit title, Task,
+Candidates, and Voiceprint dialogs. Each must remain bottom-aligned with equal
+12px left/right insets and no browser-default 38px gap on only the right.
 Roster-free contracts must select up to six sustained Candidates without any
 participant rows, exclude a brief incidental voice, choose only an
 uninterrupted 8–20 second voiceprint excerpt, reject scores below 70 and

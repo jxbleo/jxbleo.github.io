@@ -512,7 +512,7 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
     .speaking-prompt-dialog-text { max-height: 56vh; padding: 16px; }
     .speaking-candidate-dialog-actions { align-items: stretch; flex-direction: column; }
     .speaking-candidate-dialog-actions .speaking-voice-search { width: 100%; }
-    .speaking-dialog { width: 100%; max-height: calc(94vh - env(safe-area-inset-top)); margin: auto 0 0; border-radius: 28px 28px 0 0; }
+    .speaking-dialog { width: calc(100% - 24px); max-width: calc(100% - 24px); max-height: calc(94vh - env(safe-area-inset-top)); margin: auto auto 0; border-radius: 28px 28px 0 0; }
     .speaking-dialog::before { content: ""; display: block; width: 38px; height: 5px; margin: 9px auto -4px; border-radius: 10px; background: rgba(69,87,96,.18); }
     .speaking-form-grid { grid-template-columns: 1fr; }
     .speaking-field-wide { grid-column: auto; }
