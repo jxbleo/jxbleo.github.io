@@ -357,6 +357,7 @@
 .speaking-report-card-header p:not(.eyebrow) { max-width: 650px; margin: 8px 0 0; color: var(--sl-muted); font-size: .79rem; line-height: 1.52; }
 .speaking-report-card-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .speaking-report-info-card { padding: 6px clamp(16px,3vw,22px); background: rgba(253,254,254,.78); }
+.speaking-report-info-title { margin: 14px 2px 3px; color: var(--sl-blue-deep); font-size: .61rem; }
 .speaking-report-ledger { overflow: hidden; }
 .speaking-report-ledger-row { position: relative; display: grid; width: 100%; min-height: 58px; grid-template-columns: 112px minmax(0,1fr); align-items: center; gap: 16px; padding: 12px 2px; border: 0; border-bottom: 1px solid rgba(75,96,106,.10); color: inherit; background: transparent; text-align: left; }
 .speaking-report-ledger-row:last-child { border-bottom: 0; }

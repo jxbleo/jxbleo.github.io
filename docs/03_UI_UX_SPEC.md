@@ -2565,7 +2565,9 @@ again.
 A ready student report contains exactly three primary cards in order. The first
 is an Option-A-style split ledger with exactly four rows: `Date`, `Duration`,
 `Candidates`, and `Task`. A fixed label column and subtle vertical divider map
-each label to a left-aligned value. `Candidates` and `Task` are full-row controls
+each label to a left-aligned value. The only heading is the small blue
+`SESSION DETAILS` label, using the same eyebrow typography as `YOUR ANALYSIS`.
+`Candidates` and `Task` are full-row controls
 with disclosure arrows; Candidate names, matching/access, and Student Share
 stay inside the Candidate modal, while the full Group Discussion Task stays
 inside the Task modal. `Your analysis` shows only the authenticated student's

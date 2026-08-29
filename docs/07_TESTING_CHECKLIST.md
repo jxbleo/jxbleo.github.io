@@ -2338,7 +2338,8 @@ matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first
 card must contain exactly four split-ledger rows in Date, Duration, Candidates,
 Task order. Verify the fixed label column, vertical divider, compact mobile
-mapping, and `MM:SS` Duration. Candidates and Task must each open and close a
+mapping, `MM:SS` Duration, and one `SESSION DETAILS` eyebrow matching the
+`YOUR ANALYSIS` typography. Candidates and Task must each open and close a
 separate modal. Candidate names must not appear inline; verify the Candidate
 modal contains the Task name, matching/access, roster actions, and Student
 Share. For a confirmed student,
