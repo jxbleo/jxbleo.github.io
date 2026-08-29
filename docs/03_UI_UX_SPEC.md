@@ -2490,16 +2490,25 @@ Voiceprint then Discussions so the CloudBase browser SDK does not initialize
 two temporary-credential requests concurrently. Read requests leave the
 loading state with a refresh-and-retry message after 20 seconds; recording and
 other mutating actions retain a longer 90-second response window.
-The formal `Upload recording` action remains visibly busy only while the
-authenticated CloudBase SDK is transferring and the server is verifying the
-asset. It has a ten-minute transfer ceiling; timeout or SDK failure restores the
-action and presents a retryable message. `Upload complete` is never rendered as
-an error label and is never shown before `finishAudioUpload` succeeds.
-Before a live browser recording begins, the secondary recording controls stay
-fully hidden. Starting the recorder reveals Pause/Stop and a disabled Upload
-recording action; stopping with captured audio enables Preview and Upload.
-A disabled not-yet-ready Upload uses a normal unavailable cursor, while the wait
-cursor appears only during the real transfer.
+Formal recording uses four mutually exclusive states: Ready, Recording,
+Review, and Uploading. Ready shows only target length, `Record on this device`,
+and `Choose audio file`. Recording removes every competing action and shows the
+elapsed/target timer, advisory quality message, and one `Finish recording`
+button; Pause is deliberately absent so a DSE Discussion remains continuous.
+Review shows only `Play recording`, `Replace recording`, and the primary
+`Upload & analyse` action. Uploading locks navigation and shows one factual
+secure-upload state; a successful upload automatically starts analysis.
+
+The browser must not re-render or poll the Discussion while any local recording
+state is active. Repeated Record taps are ignored, a hidden-to-visible page does
+not replace the recorder controls, and leaving with an unfinished local copy
+requires explicit discard. MediaRecorder uses periodic data delivery, handles
+its error event, distinguishes microphone denial from recorder failure, and
+keeps one preview player/object URL. The authenticated CloudBase transfer keeps
+the existing ten-minute ceiling; transfer failure returns to Review with the
+same stable operation ID so the student can retry without creating a new asset.
+`Upload complete` is never rendered as an error label and is never shown before
+`finishAudioUpload` succeeds.
 
 Above the Discussion list, `My voiceprint` shows `not set up`, `ready`, or a
 provider-unavailable message. Set up and update use one explicit consent

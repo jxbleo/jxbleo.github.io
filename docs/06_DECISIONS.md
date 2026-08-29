@@ -1,5 +1,31 @@
 # 06 Decisions
 
+## 2026-08-29: Formal browser recording uses one four-state flow
+
+Decision:
+
+Model the student formal recorder as `idle`, `requesting/recording/stopping`,
+`review`, and `uploading`, presented as four mutually exclusive Ready,
+Recording, Review, and Uploading surfaces. Formal DSE recording has no Pause.
+The verified upload automatically requests analysis, while an upload failure
+returns to Review with the same operation ID.
+
+Reason:
+
+The previous independent buttons allowed a second recorder, Discussion
+re-render, file upload, or navigation to compete with an active microphone
+session. One primary action per state makes the common phone flow predictable
+and lets the browser protect the in-memory Blob until the student explicitly
+replaces or uploads it.
+
+Trade-offs:
+
+- Students who genuinely need an interruption must finish and record again.
+- Browser backgrounding still depends on platform recording support, but the
+  application no longer destroys its controls when the page becomes visible.
+- Automatic analysis start removes one click; if that request fails after a
+  verified upload, the existing uploaded-audio screen still offers manual retry.
+
 ## 2026-08-29: Historical voice rematching is a separate durable job
 
 Decision:

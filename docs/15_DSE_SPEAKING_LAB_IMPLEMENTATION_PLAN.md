@@ -1411,19 +1411,25 @@ inactive, missing, self-add, and max-participant errors distinctly.
 
 Provide two explicit choices:
 
-- `Record now`;
-- `Upload audio`.
+- `Record on this device`;
+- `Choose audio file`.
 
-Recording screen contains:
+Implement one explicit local state machine:
 
-- elapsed/target timer;
-- microphone quality meter and visual warning;
-- participant count and internal title;
-- Pause/Resume when supported;
-- Stop with confirmation for accidental early stop;
-- local playback before upload;
-- Replace local recording before server upload;
-- one `Upload recording` action.
+- Ready: editable target length plus the two source choices;
+- Recording: elapsed/target timer, local quality warning, and one
+  `Finish recording` action;
+- Review: one local preview toggle, `Replace recording`, and one
+  `Upload & analyse` action;
+- Uploading: one locked, factual transfer state that automatically enqueues
+  analysis only after `finishAudioUpload` succeeds.
+
+Do not provide Pause for the formal DSE recording. Ignore repeated Record taps,
+request one-second MediaRecorder chunks, handle `MediaRecorder.onerror`, and
+distinguish microphone permission denial from construction/runtime failure.
+While the state is not Ready, suppress Discussion polling and visibility-based
+re-rendering. Leaving with a Recording or Review copy requires explicit discard;
+teardown revokes the single preview object URL and stops all tracks.
 
 Upload accepts only audio files. Do not advertise video support. Show upload
 progress using `fetch`/XHR only if the existing metadata endpoint supports it;
