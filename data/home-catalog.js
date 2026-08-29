@@ -878,7 +878,8 @@ window.__HOME_CATALOG__ = {
         "Health"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-251030"
     },
     {
       "id": "BBC-260319",
