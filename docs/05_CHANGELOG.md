@@ -1,12 +1,17 @@
 # Changelog
 
-## 2026-08-30 — Zoomable BBC audio waveform
+## 2026-08-30 — Full-width BBC audio waveform controls
 
 - Replaced the BBC player's plain percentage rail with a real waveform decoded
   from each lesson's existing MP3, without adding a library or publishing a
   second timing source.
-- Added 1×/2×/4×/8× timeline zoom, horizontal inspection, pointer/touch seek,
-  keyboard seeking, and a media-time playhead across every BBC render theme.
+- Added 1×/2×/4×/8×/16×/32×/64× timeline zoom, horizontal inspection,
+  pointer/touch seek, keyboard seeking, and a media-time playhead across every
+  BBC render theme.
+- Moved Play and `-5s` into the zoom toolbar so the waveform occupies the full
+  player width, and removed the redundant student name from the time row.
+- Kept linked Intensive Listening and worksheet actions side by side at the
+  bottom of BBC lesson cards on phones instead of stacking them.
 - Kept waveform failure non-blocking and fixed zoomed seeking to map against
   the full waveform width and the native media duration, preventing the prior
   visible-window time drift class.

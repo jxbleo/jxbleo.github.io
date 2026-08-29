@@ -21,6 +21,7 @@ vm.runInNewContext(source, sandbox, { filename: 'bbc-waveform.js' });
 async function main() {
   const api = sandbox.window.MrCatBbcWaveform;
   assert(api, 'BBC waveform API should be exported');
+  assert.deepStrictEqual(Array.from(api.DEFAULT_ZOOM_LEVELS), [1, 2, 4, 8, 16, 32, 64]);
 
   assert.strictEqual(api.waveformTimeFromClientX(150, { left: 100, width: 200 }, 360), 90);
   assert.strictEqual(api.waveformTimeFromClientX(50, { left: 100, width: 200 }, 360), 0);
@@ -42,9 +43,11 @@ async function main() {
   assert.strictEqual(status.textContent, 'Waveform unavailable — timeline still works');
   assert.strictEqual(status.hidden, false);
 
-  assert(page.includes('assets/js/bbc-waveform.js?v=20260830-1'), 'BBC page should load the waveform controller');
+  assert(page.includes('assets/js/bbc-waveform.js?v=20260830-2'), 'BBC page should load the waveform controller');
   assert(page.includes('id="waveform-viewport"'), 'BBC page should contain the accessible waveform timeline');
   assert(page.includes('id="waveform-zoom-in"') && page.includes('id="waveform-zoom-out"'), 'BBC page should expose zoom controls');
+  assert(!page.includes('id="identity-status"'), 'BBC player should not render a student-name field');
+  assert(page.includes('has-two-tools'), 'Mobile lesson tools should expose a stable two-capsule layout hook');
   assert(!page.includes("progressWrap.addEventListener('mousedown'"), 'Legacy viewport-relative seeking should be removed');
   assert(page.includes('bbcWaveform.load(data.audioSrc)'), 'Waveform should decode the same audio source used by the player');
 

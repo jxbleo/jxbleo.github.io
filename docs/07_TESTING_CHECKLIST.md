@@ -68,8 +68,9 @@ BBC waveform checks:
 
 - open at least one default, Luminous Milk, and classroom-worksheet BBC lesson
   through local HTTP and confirm the displayed peaks replace the loading state;
-- at 1×, 2×, 4×, and 8×, click the same recognizable peak and confirm the time
-  row/playhead and the audible phrase agree; repeat after horizontal scrolling;
+- at 1×, 2×, 4×, 8×, 16×, 32×, and 64×, click the same recognizable peak and
+  confirm the time row/playhead and the audible phrase agree; repeat after
+  horizontal scrolling;
 - mouse/pen drag seeks continuously, a touch tap seeks, and a touch horizontal
   swipe pans instead of seeking; zooming keeps the current playhead visible;
 - with waveform focus, Left/Right move 5 seconds, Shift+Left/Right move 10
@@ -77,7 +78,10 @@ BBC waveform checks:
 - block the MP3 fetch used for decoding and confirm the flat timeline still
   seeks while audio play, pause, Space, and `-5s` remain usable;
 - check phone widths plus keyboard focus, high contrast, and Reduced Motion;
-  no native audio controls or second player should appear.
+  Play and `-5s` stay above a full-width waveform, the time row has no student
+  name, and no native audio controls or second player should appear;
+- on a phone-width lesson with both tools, `Intensive Listening` and
+  `Download Worksheet` stay left/right on one bottom row of the lesson card.
 
 ## AI Tutor waiting experience and Runner
 

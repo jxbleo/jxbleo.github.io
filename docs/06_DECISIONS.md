@@ -9,7 +9,9 @@ public `audioSrc` assigned to the hidden native media element. Retain only a
 bounded peak array after decoding and add no waveform dependency or secondary
 timestamp artifact. Treat `<audio>.duration` and `<audio>.currentTime` as the
 only playback clock. At every zoom level, seek against the full scrollable
-waveform rectangle rather than the visible viewport.
+waveform rectangle rather than the visible viewport. At high zoom, cap the
+canvas backing-store width while preserving the full CSS timeline width and
+native media-time mapping.
 
 Reason:
 
@@ -25,6 +27,9 @@ Trade-offs:
   playback itself is not delayed and browser caching normally reuses the file.
 - Low-memory or unsupported browsers may fail waveform decoding. They retain a
   flat interactive timeline and every playback/seek control.
+- The 64× timeline can exceed browser canvas dimension limits. A bounded
+  backing store is stretched across the full timeline so the visual stays
+  available without creating a second clock or changing seek precision.
 - The waveform is a navigation aid, not a transcript alignment or grading data
   source.
 
