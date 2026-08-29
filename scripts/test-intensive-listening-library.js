@@ -156,7 +156,7 @@ function testLibraryHelpers() {
   assert.ok(helpers.matches({ title: "BBC Lists", source_label: "BBC", set_id: "IL-BBC-260813" }, "", "lists"));
   assert.ok(helpers.matches({ title: "IELTS Transport", source_label: "IELTS", set_id: "IL-C7-T1-S1" }, "", "transport"));
   assert.ok(helpers.materialHref({ set_id: "IL-BBC-260813", href: "intensive-listening.html?set=IL-BBC-260813" }).includes("return="));
-  assert.match(dashboardJs, /library-intensive-action/);
+  assert.doesNotMatch(dashboardJs, /library-intensive-action|library-card-primary|linkedIntensiveHref/);
   assert.match(ielts, /intensiveListeningLinkHtml/);
 }
 
