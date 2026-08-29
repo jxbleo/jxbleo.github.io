@@ -2118,6 +2118,20 @@ pronunciation/delivery score or official total is produced. Reports use three
 integer 0–7 domains plus
 `Pronunciation & Delivery — Not assessed`.
 
+The student Discussion uses two visibly separate phases. Before the formal
+recording is accepted, the preparation surface contains the Set prompt,
+Candidate setup, and recording/upload controls with an explicit secure-upload
+state. Once the formal recording is uploaded, those controls disappear and the
+report surface takes over. Queued or processing reports show factual stage
+progress plus live Candidate matching. A ready report is ordered as Discussion
+details (date, recording length, Candidate count/names, and a modal Set-task
+viewer), the authenticated student's four-domain analysis, and that student's
+turn-by-turn coaching, followed by one collapsed complete script. CS, IO, and
+VL retain their 0–7 feedback; PD always reads `Not assessed` and receives no
+comment. The complete script highlights only the authenticated student's
+confirmed Speaker track in warm yellow. If that track is not confirmed, the
+personal cards stay empty rather than exposing a peer's analysis.
+
 Every new V2 report also provides a turn-by-turn review for each canonical
 Candidate speaking turn. A turn combines consecutive ASR sentences from the
 same Candidate and ends when another voice speaks, non-Candidate context

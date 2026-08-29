@@ -26,6 +26,10 @@ function run() {
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
+  assert.match(page, /id="speaking-toolbar-title"/);
+  assert.match(page, /id="speaking-toolbar-edit"[\s\S]*Edit Discussion title/);
+  assert.match(page, /id="discussion-title-dialog"/);
+  assert.match(page, /id="discussion-prompt-dialog"/);
   assert.match(page, /id="speaking-sidebar-alert"/);
   assert.match(page, /aria-controls="speaking-sidebar"/);
   assert.match(page, /<a[^>]*class="speaking-sidebar-home"[^>]*href="dashboard\.html"[^>]*>[\s\S]*Home<\/a>/);
@@ -83,14 +87,21 @@ function run() {
   assert.match(app, /This is my voice/);
   assert.match(app, /This isn\\'t my voice/);
   assert.match(app, /updateDiscussionDuration/);
+  assert.match(app, /updateDiscussionTitle/);
+  assert.match(app, /function updateToolbar\(item\)/);
+  assert.match(app, /currentDiscussion\.can_edit_title/);
   assert.match(app, /addVipParticipant|addGuestParticipant/);
   assert.match(app, /renameGuest|removeParticipant/);
   assert.match(app, /function shanghaiToday/);
   assert.match(app, /speaking-candidate-grid/);
-  assert.match(app, /Reliable voiceprint matches send invitations automatically/);
+  assert.match(app, /Voiceprint matches at 70% or above are named and opened automatically/);
   assert.match(app, /function updateSidebarInvitations\(items\)/);
   assert.match(app, /item\.invitation_pending === true/);
-  assert.match(app, /Discussion invitation.*waiting/);
+  assert.match(app, /new Discussion update/);
+  assert.match(app, /identity_notice_unread/);
+  assert.match(app, /acknowledgeIdentityNotice/);
+  assert.match(app, /Listen to the clip\. Is/);
+  assert.match(app, /Auto-locked at 70%\+/);
   assert.match(app, /return loadList\(\);/);
   assert.match(app, /Search voice matches/);
   assert.match(app, /startVoiceRematch/);
@@ -113,7 +124,15 @@ function run() {
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
   assert.match(reportJs, /snapshot\.self|participant_summaries/);
-  assert.match(app, /My turn-by-turn review|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
+  assert.match(app, /function reportReadyMarkup\(item\)/);
+  assert.match(app, /function reportProcessingMarkup\(item\)/);
+  assert.match(app, /item\.recording_status === 'uploaded'[\s\S]*reportReadyMarkup\(item\)[\s\S]*reportProcessingMarkup\(item\)/);
+  assert.match(app, /About this Discussion|View Set task|Candidate matching &amp; access/);
+  assert.match(app, /YOUR ANALYSIS|Communication Strategies|Ideas &amp; Organisation|Vocabulary &amp; Language/);
+  assert.match(app, /Pronunciation &amp; Delivery[\s\S]*Not assessed · 暂不评论/);
+  assert.match(app, /TURN-BY-TURN REVIEW|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
+  assert.match(app, /Complete script|is-self|highlighted in yellow/);
+  assert.match(app, /speaking-upload-progress-track/);
   assert.match(reportJs, /My turn-by-turn review|What you said · AI transcript/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /prefers-reduced-transparency/);
@@ -133,6 +152,12 @@ function run() {
   assert.doesNotMatch(css, /\.speaking-sidebar[^}]*translateX\(calc\(100% \+ 32px\)\)/);
   assert.match(css, /\.speaking-mode-grid[^}]*repeat\(2/);
   assert.match(css, /speaking-report-overview/);
+  assert.match(css, /speaking-report-phase/);
+  assert.match(css, /speaking-report-facts/);
+  assert.match(css, /speaking-score-grid-four/);
+  assert.match(css, /speaking-score-card-pd/);
+  assert.match(css, /speaking-transcript-line\.is-self/);
+  assert.match(css, /speaking-report-stages/);
   assert.match(css, /speaking-score-grid/);
   assert.match(css, /speaking-turn-review/);
   assert.match(css, /speaking-candidate-grid/);
@@ -151,10 +176,10 @@ function run() {
   assert.match(app, /function openNewDiscussionDialog\(\)/);
   assert.match(app, /closeSidebar\(\);\s*\n\s*auth\.getSession\(\)/);
   assert.match(app, /event\.key === 'Escape'/);
-  assert.match(app, /speaking-report-candidates/);
+  assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-6/);
-  assert.match(page, /speaking-lab\.js\?v=20260829-6/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-9/);
+  assert.match(page, /speaking-lab\.js\?v=20260829-9/);
   console.log("Speaking Lab UI contracts passed.");
 }
 
