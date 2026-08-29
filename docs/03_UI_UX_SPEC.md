@@ -2465,9 +2465,11 @@ toolbar uses the Writing hamburger symbol at left, a centered `Speaking Lab`
 label, and no trailing student-name chip. The drawer opens and closes from the
 left on the same path, uses a mobile scrim only while open without blocking the
 closed home or the desktop workspace, and renders the Discussion list directly.
-Its top row pairs Home with a plus button: Home restores the mode-card surface,
-while plus opens the existing New Discussion dialog. Escape and the active
-mobile scrim close it. Home contains two equal mode cards:
+Its top row pairs a native Home link with a plus button: Home navigates directly
+to `dashboard.html`, while plus opens the existing New Discussion dialog. The
+`Discussions` back control inside a selected Discussion remains the separate
+same-page action that restores the mode-card surface. Escape and the active
+mobile scrim close the drawer. The Speaking home contains two equal mode cards:
 `DSE Paper 4 · Part A · Group Discussion` with New Discussion, and the
 non-interactive `DSE Paper 4 · Part B · Individual Response` placeholder with
 `Coming soon`. The reusable Voiceprint card is the third surface below them;

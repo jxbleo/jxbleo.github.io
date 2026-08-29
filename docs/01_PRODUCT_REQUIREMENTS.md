@@ -2095,9 +2095,10 @@ active `Part A · Group Discussion` and a non-interactive
 `Part B · Individual Response` placeholder. A separate Voiceprint card sits
 below them. The compact top toolbar has the same hamburger symbol as Writing,
 no student-name chip, and opens a left-side Discussion drawer. Its top row pairs
-a Home action, which returns to the Speaking Lab mode cards, with a plus action
-that opens New Discussion. Discussion records live in that drawer rather than
-occupying a second list on the home surface. On phones, the dimming scrim exists
+a native Home link, which returns directly to the authenticated Student
+Dashboard, with a plus action that opens New Discussion. Discussion records
+live in that drawer rather than occupying a second list on the home surface. On
+phones, the dimming scrim exists
 only while the drawer is actually open; a closed drawer must never blur or block
 the home cards.
 New Session requires only a title, DSE prompt, date, and optional target time;
