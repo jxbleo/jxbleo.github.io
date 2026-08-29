@@ -40,12 +40,17 @@
     backdrop-filter: blur(28px) saturate(175%);
 }
 .speaking-lab-toolbar::after { content: ""; display: block; width: 42px; height: 42px; }
-.speaking-sidebar-toggle { display: grid; width: 42px; height: 42px; place-items: center; padding: 0; border: 1px solid rgba(74, 95, 106, 0.13); border-radius: 999px; color: var(--sl-blue-deep); background: rgba(255, 255, 255, 0.69); box-shadow: 0 5px 16px rgba(45, 67, 78, 0.06); transition: transform 120ms ease, background 180ms ease, box-shadow 180ms ease; }
+.speaking-sidebar-toggle { position: relative; display: grid; width: 42px; height: 42px; place-items: center; padding: 0; border: 1px solid rgba(74, 95, 106, 0.13); border-radius: 999px; color: var(--sl-blue-deep); background: rgba(255, 255, 255, 0.69); box-shadow: 0 5px 16px rgba(45, 67, 78, 0.06); transition: transform 120ms ease, background 180ms ease, box-shadow 180ms ease; }
 .speaking-sidebar-toggle:active { transform: scale(.96); }
 .speaking-sidebar-toggle:hover { background: rgba(255, 255, 255, 0.94); }
 .speaking-sidebar-toggle[aria-expanded="true"] { border-color: rgba(8, 124, 240, 0.22); background: rgba(224, 241, 255, 0.92); box-shadow: 0 7px 20px rgba(8, 124, 240, 0.12); }
 .speaking-sidebar-toggle svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 280ms cubic-bezier(.22, 1, .36, 1); }
 .speaking-sidebar-toggle[aria-expanded="true"] svg { transform: scaleX(.82); }
+.speaking-sidebar-alert { position: absolute; top: -3px; right: -3px; display: grid; width: 17px; height: 17px; place-items: center; border: 2px solid #f7faf9; border-radius: 999px; color: #fff; background: #e5484d; box-shadow: 0 3px 9px rgba(166, 34, 43, .24); animation: speaking-sidebar-alert-arrive 360ms cubic-bezier(.22, 1, .36, 1) both; }
+.speaking-sidebar-alert[hidden] { display: none !important; }
+.speaking-sidebar-alert svg { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: none; }
+.speaking-sidebar-toggle[aria-expanded="true"] .speaking-sidebar-alert svg { transform: none; }
+@keyframes speaking-sidebar-alert-arrive { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: scale(1); } }
 .speaking-toolbar-title { overflow: hidden; padding-inline: 12px; color: #315465; font-size: .82rem; font-weight: 820; letter-spacing: -.01em; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 
 .speaking-sidebar { position: fixed; z-index: 45; inset: 88px auto max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); display: flex; width: min(380px, calc(100vw - 28px)); min-height: 0; flex-direction: column; overflow: hidden; border: 1px solid rgba(74, 95, 106, 0.13); border-radius: 26px; background: rgba(248, 251, 252, 0.92); box-shadow: 0 24px 70px rgba(31, 52, 63, 0.21), inset 0 1px 0 rgba(255, 255, 255, 0.82); transform: translateX(calc(-100% - 32px)); visibility: hidden; transition: transform 320ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 320ms; will-change: transform; -webkit-backdrop-filter: blur(26px) saturate(155%); backdrop-filter: blur(26px) saturate(155%); }
@@ -150,6 +155,7 @@
 .speaking-sidebar .speaking-list { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 4px; overflow: auto; padding: 0 9px 18px; overscroll-behavior: contain; }
 .speaking-sidebar .speaking-card { grid-template-columns: auto minmax(0, 1fr) 18px; min-height: 76px; gap: 10px; padding: 10px; border-color: transparent; border-radius: 16px; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
 .speaking-sidebar .speaking-card:hover { transform: none; border-color: var(--sl-hairline); background: rgba(255, 255, 255, 0.73); box-shadow: 0 7px 20px rgba(45, 67, 78, 0.06); }
+.speaking-sidebar .speaking-card.is-invitation { border-color: rgba(229, 72, 77, .14); background: rgba(255, 250, 250, .76); }
 .speaking-sidebar .speaking-card-icon { width: 40px; height: 40px; border-radius: 13px; }
 .speaking-sidebar .speaking-card-icon::before { width: 17px; height: 17px; }
 .speaking-sidebar .speaking-card h3 { margin-bottom: 4px; font-size: .82rem; }
@@ -398,6 +404,7 @@
     .speaking-lab-page *, .speaking-lab-page *::before, .speaking-lab-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
     .speaking-card:hover { transform: none; }
     .speaking-voice-search.is-searching svg { animation: none; }
+    .speaking-sidebar-alert { animation: none; }
     .speaking-sidebar { transform: none; opacity: 0; }
     .speaking-sidebar.is-open { opacity: 1; }
 }

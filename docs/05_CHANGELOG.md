@@ -2,6 +2,13 @@
 
 ## 2026-08-29
 
+- Connected reliable automatic voice matches to a visible student invitation
+  inbox. A matched student's Speaking toolbar now shows a restrained message
+  marker while invitations are pending; the left drawer highlights each
+  matching Discussion, opens the existing confirmation dialog, refreshes
+  immediately after accept/decline, and refreshes when the page becomes visible.
+  This reuses `speaking_participants` and adds no notification collection.
+
 - Fixed the Speaking Lab drawer's Home control so it uses a native link to the
   authenticated Student Dashboard. The separate `Discussions` control inside a
   selected Discussion continues to restore the Speaking mode-card surface.

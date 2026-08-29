@@ -2348,6 +2348,17 @@ Terminal job state must omit CI provider job IDs, derived file IDs, student
 UIDs, and voiceprint locators. A real mapping change invalidates existing
 shares; zero changes do not. Provider/CI failure leaves the ready report usable
 and restores a retryable button.
+Sign in as a different matched VIP who was not named at Session creation. Confirm
+the automatic pending invitation makes that Discussion appear in the student's
+left drawer, adds one message glyph to the toolbar trigger, announces the
+waiting count through the trigger's accessible name, and marks only that row as
+`Invitation`. Accept it and confirm the marker/list refresh immediately and the
+Discussion opens with existing Speaker-first identity rules. Repeat with
+Decline and confirm the marker clears without blocking report generation. With
+two pending invitations, resolving one must leave the marker present. Hide and
+restore the tab after a new match and confirm the list refreshes. Reduced Motion
+must remove the glyph's arrival animation, and zero invitations must leave no
+empty badge.
 The authenticated page must complete `getSession()` once and then call
 `speakingLab` directly through the SDK; do not add concurrent redundant
 `callAuthenticatedFunction` preflights. The initial Voiceprint and Discussion

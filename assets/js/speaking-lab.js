@@ -8,6 +8,7 @@
     var status = document.getElementById('speaking-status');
     var sidebar = document.getElementById('speaking-sidebar');
     var sidebarToggle = document.getElementById('speaking-sidebar-toggle');
+    var sidebarAlert = document.getElementById('speaking-sidebar-alert');
     var sidebarScrim = document.getElementById('speaking-sidebar-scrim');
     var sidebarNew = document.getElementById('speaking-sidebar-new');
     var dialog = document.getElementById('discussion-dialog');
@@ -55,6 +56,7 @@
         getDiscussion: true,
         getVoiceConfirmationPlayback: true
     };
+    var sidebarInvitationCount = 0;
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -259,19 +261,34 @@
         });
     }
     function listCard(item) {
-        var pending = (item.participants || []).some(function (participant) { return participant.invitation_status === 'pending'; });
+        var pending = item.invitation_pending === true || (item.participants || []).some(function (participant) { return participant.is_self && participant.invitation_status === 'pending'; });
         var candidateLabel = Number.isInteger(item.candidate_count) ? item.candidate_count + ' Candidate' + (item.candidate_count === 1 ? '' : 's') : 'Candidates pending';
-        return '<button class="speaking-card" type="button" data-discussion-id="' + esc(item.discussion_id) + '">' +
+        return '<button class="speaking-card' + (pending ? ' is-invitation' : '') + '" type="button" data-discussion-id="' + esc(item.discussion_id) + '">' +
             '<span class="speaking-card-icon" aria-hidden="true"></span>' +
             '<span class="speaking-card-copy"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3><span class="speaking-card-date">' + esc(formatDate(item.discussion_date)) + '</span></span>' +
             '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(candidateLabel) + '</span><span class="speaking-pill" data-tone="' + esc(statusTone(item.analysis_status)) + '">' + esc(readableStatus(item.analysis_status)) + '</span>' + (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + '</span>' +
             '<svg class="speaking-card-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
+    function sidebarToggleLabel(expanded) {
+        var action = expanded ? 'Close Discussion sidebar' : 'Open Discussion sidebar';
+        if (!sidebarInvitationCount) return action;
+        return action + '. ' + sidebarInvitationCount + ' Discussion invitation' + (sidebarInvitationCount === 1 ? '' : 's') + ' waiting.';
+    }
+    function updateSidebarInvitations(items) {
+        sidebarInvitationCount = (items || []).filter(function (item) {
+            return item.invitation_pending === true || (item.participants || []).some(function (participant) {
+                return participant.is_self && participant.invitation_status === 'pending';
+            });
+        }).length;
+        sidebarAlert.hidden = sidebarInvitationCount === 0;
+        sidebarToggle.classList.toggle('has-invitations', sidebarInvitationCount > 0);
+        sidebarToggle.setAttribute('aria-label', sidebarToggleLabel(sidebar.classList.contains('is-open')));
+    }
     function openSidebar() {
         sidebar.classList.add('is-open');
         sidebar.setAttribute('aria-hidden', 'false');
         sidebarToggle.setAttribute('aria-expanded', 'true');
-        sidebarToggle.setAttribute('aria-label', 'Close Discussion sidebar');
+        sidebarToggle.setAttribute('aria-label', sidebarToggleLabel(true));
         sidebarScrim.hidden = false;
         document.body.classList.add('speaking-sidebar-open');
     }
@@ -279,7 +296,7 @@
         sidebar.classList.remove('is-open');
         sidebar.setAttribute('aria-hidden', 'true');
         sidebarToggle.setAttribute('aria-expanded', 'false');
-        sidebarToggle.setAttribute('aria-label', 'Open Discussion sidebar');
+        sidebarToggle.setAttribute('aria-label', sidebarToggleLabel(false));
         sidebarScrim.hidden = true;
         document.body.classList.remove('speaking-sidebar-open');
         if (options && options.restoreFocus) sidebarToggle.focus();
@@ -303,6 +320,7 @@
         else dialog.setAttribute('open', '');
     }
     function renderList(items) {
+        updateSidebarInvitations(items);
         if (!items.length) { list.innerHTML = '<div class="speaking-detail-card speaking-empty-state"><div class="speaking-empty-icon" aria-hidden="true">◎</div><h2>Start your first Discussion</h2><p>Add the DSE task and record when the group is ready. Candidates and invitations are created from the audio.</p></div>'; return; }
         list.innerHTML = items.map(listCard).join('');
         list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
@@ -619,7 +637,7 @@
                                 window.history.replaceState(null, '', 'speaking-lab.html');
                                 return loadList();
                             }
-                            return openDiscussion(idValue);
+                            return loadList();
                         }).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; });
                     });
                 });
@@ -705,7 +723,7 @@
     });
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
-    document.addEventListener('visibilitychange', function () { if (selectedId && !document.hidden) openDiscussion(selectedId); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) return; if (selectedId) openDiscussion(selectedId); else loadList(); });
     window.addEventListener('pageshow', function (event) { if (event.persisted) closeSidebar(); });
 
     closeSidebar();

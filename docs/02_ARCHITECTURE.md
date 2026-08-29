@@ -1086,6 +1086,15 @@ only non-conflicting proposed mappings, sanitizes temporary provider/file
 locators from the terminal job state, and invalidates shares only when a mapping
 actually changed.
 
+An automatic match writes the normal `speaking_participants` pending invitation
+row; it does not write a second notification record. `listDiscussions` projects
+that row into the matched student's private Discussion list with
+`invitation_pending: true`, even before normal Discussion read authority is
+granted. The browser derives the toolbar message marker from this trusted list
+projection, refreshes it after invitation responses and when a hidden tab becomes
+visible, and opens the existing invitation dialog from the selected row. The
+marker disappears only when no projected pending invitations remain.
+
 `cloudfunctions/_shared/tencent-asr-voiceprint.js` implements Tencent Cloud API
 3.0 signing with Node's built-in `crypto`/`fetch` and exposes enrol, update,
 delete, 1:1 verify, and 1:N group-identify calls. It accepts only validated

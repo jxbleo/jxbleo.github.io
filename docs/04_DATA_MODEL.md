@@ -1255,6 +1255,12 @@ Existing student/teacher-confirmed identity status is never downgraded by a
 later automatic pass. `speaking_identity_events.event_type` additionally
 accepts `automatic_voice_match_proposed`.
 
+An automatic row with `invitation_status: "pending"` is also the authoritative
+student inbox item. The `listDiscussions` response may project
+`invitation_pending: true` for that student's otherwise unreadable Discussion;
+this is a computed response field, not a stored read-state field or a new
+notification collection. Accept/decline updates the same participant row.
+
 For `speaking_audio_assets`, `file_id` may be `null` only while `status` is
 `uploading`. `startAudioUpload` stores the server-reserved `cloud_path` and
 expected size/type. `finishAudioUpload` writes `file_id` and advances the asset

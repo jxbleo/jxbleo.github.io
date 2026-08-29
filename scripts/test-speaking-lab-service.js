@@ -21,6 +21,10 @@ async function run() {
   assert.match(source, /source_report_id: sourceReport\.report_id/);
   assert.match(source, /async function processVoiceRematch/);
   assert.match(workerSource, /job\.job_type === "voice_rematch"/);
+  assert.match(source, /invitation_source:\s*"automatic_voice_match"/);
+  assert.match(source, /invitation_status:\s*invitationStatus/);
+  assert.match(source, /ownPending[\s\S]*invitation_status === "pending"/);
+  assert.match(source, /invitation_pending:\s*true/);
   assert.match(source, /dispatch_token/);
   assert.match(source, /SPEAKING_PROVIDER_NOT_CONFIGURED/);
   assert.doesNotMatch(source, /demo\s*=|fixture\s*=|provider_url\s*:/i);
