@@ -178,6 +178,7 @@ function run() {
   assert.match(css, /speaking-sidebar-alert-arrive/);
   assert.match(css, /speaking-card\.is-invitation/);
   assert.match(css, /border-radius:\s*28px 28px 0 0/);
+  assert.match(css, /\.speaking-dialog\s*\{[^}]*width:\s*calc\(100% - 24px\)[^}]*max-width:\s*calc\(100% - 24px\)[^}]*margin:\s*auto auto 0/);
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
   assert.match(app, /function openSidebar\(\)/);
@@ -190,7 +191,7 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-12/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-13/);
   assert.match(page, /speaking-lab\.js\?v=20260829-12/);
   console.log("Speaking Lab UI contracts passed.");
 }

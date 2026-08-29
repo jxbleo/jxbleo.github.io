@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-29 — Center Speaking modals on phones
+
+- Overrode the browser's native mobile `dialog` maximum width and restored
+  equal horizontal auto margins, keeping every Speaking modal bottom-aligned
+  with matching 12px left and right insets.
+
 ## 2026-08-29 — Separate Speaking upload and student report surfaces
 
 - Split the student Discussion into a preparation/upload phase and a distinct
