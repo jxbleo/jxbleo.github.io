@@ -1562,7 +1562,9 @@ Shared rules:
   tool. It preserves the BBC URL as the return target. Lessons without the
   explicit relationship show no capsule.
 - This BBC lesson-card capsule is the only student-facing entry. Student
-  Library shows neither an Intensive subtab nor standalone Intensive cards.
+  Library shows neither an Intensive subtab, standalone Intensive cards, nor
+  an Intensive Listening sibling action on a BBC task card. The whole BBC
+  Library card opens the BBC practice page first.
 
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,

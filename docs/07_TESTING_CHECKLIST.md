@@ -170,8 +170,10 @@ Intensive Listening checks:
   Intensive Listening function;
 - visitor UI hides progress, dictation, answer, completion, and Argue controls;
 - public static output contains no reviewed word answers;
-- `BBC-260813` shows one capsule linking `IL-BBC-260813`, while an unlinked BBC
-  lesson shows none;
+- `BBC-260813` shows one capsule linking `IL-BBC-260813` in the BBC practice
+  page's top lesson card, while an unlinked BBC lesson shows none; the Student
+  Library BBC card has no sibling Intensive Listening action and opens BBC
+  practice first;
 - Student Library contains no Intensive subtab, section, or standalone material
   card;
 - unchanged wrong checks do not advance the reveal gate, correct positions lock,

@@ -3188,45 +3188,6 @@ body:not(.teacher-page) .tab-button.active {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
-.student-library-card[role="group"] {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-}
-.library-card-primary {
-    min-width: 0;
-    padding: 0;
-    border: 0;
-    color: inherit;
-    background: transparent;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-.library-card-primary:focus-visible {
-    outline: 2px solid rgba(19, 118, 109, 0.45);
-    outline-offset: 4px;
-    border-radius: 10px;
-}
-.library-intensive-action {
-    display: inline-flex;
-    min-height: 34px;
-    align-items: center;
-    padding: 0 12px;
-    border: 1px solid rgba(19, 118, 109, 0.2);
-    border-radius: 999px;
-    color: #216d5d;
-    background: rgba(229, 244, 235, 0.72);
-    font-size: .78rem;
-    font-weight: 850;
-    text-decoration: none;
-    white-space: nowrap;
-}
-.library-intensive-action:hover,
-.library-intensive-action:focus-visible {
-    border-color: rgba(19, 118, 109, 0.38);
-    background: rgba(214, 240, 228, 0.96);
-}
 .intensive-notification-detail h2 { margin: 8px 0 5px; color: var(--ink); }
 .intensive-notification-events { display: grid; gap: 12px; margin-top: 18px; }
 .intensive-notification-event { padding: 14px 16px; border: 1px solid rgba(19, 118, 109, .14); border-radius: 14px; background: rgba(249, 252, 251, .82); }
