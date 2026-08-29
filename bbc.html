@@ -262,28 +262,129 @@
 
         .progress-wrap {
             min-width: 0;
-        }
-
-        .progress-wrap {
-            cursor: pointer;
             position: relative;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .progress-track {
-            width: 100%;
-            height: 10px;
+        .waveform-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 24px;
+            margin-bottom: 5px;
+            color: rgba(255,255,255,0.76);
+            font-size: 0.7rem;
+            font-weight: 850;
+            letter-spacing: 0.035em;
+            text-transform: uppercase;
+        }
+
+        .waveform-status[hidden] {
+            display: block;
+            visibility: hidden;
+        }
+
+        .waveform-zoom {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px;
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 999px;
-            overflow: hidden;
-            background: rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .waveform-zoom button {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 28px;
+            padding: 0;
+            border: 0;
+            border-radius: 999px;
+            color: inherit;
+            background: transparent;
+            font: inherit;
+            font-size: 1rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .waveform-zoom button:hover:not(:disabled),
+        .waveform-zoom button:focus-visible {
+            color: #16312f;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .waveform-zoom button:active:not(:disabled) {
+            transform: scale(0.92);
+        }
+
+        .waveform-zoom button:disabled {
+            opacity: 0.34;
+            cursor: default;
+        }
+
+        .waveform-zoom-value {
+            min-width: 28px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .waveform-viewport {
+            width: 100%;
+            height: 54px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.09);
+            cursor: crosshair;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.5) transparent;
+            touch-action: pan-x pan-y pinch-zoom;
+            overscroll-behavior-x: contain;
+        }
+
+        .waveform-viewport:focus-visible {
+            outline: 3px solid rgba(255,255,255,0.68);
+            outline-offset: 2px;
+        }
+
+        .waveform-content {
+            --waveform-base: rgba(255,255,255,0.38);
+            --waveform-played: #fde68a;
+            width: 100%;
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .waveform-content canvas,
+        .waveform-played {
+            position: absolute;
+            inset: 0 auto 0 0;
+            height: 100%;
             pointer-events: none;
         }
 
-        .progress-fill {
+        .waveform-played {
             width: 0%;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #fde68a, #fff);
+            overflow: hidden;
+        }
+
+        .waveform-playhead {
+            position: absolute;
+            z-index: 2;
+            top: 3px;
+            bottom: 3px;
+            left: 0;
+            width: 2px;
+            border-radius: 999px;
+            background: #fff;
+            box-shadow: 0 0 0 1px rgba(15,23,42,0.12), 0 0 10px rgba(255,255,255,0.75);
             pointer-events: none;
         }
 
@@ -340,6 +441,34 @@
             align-items: center;
             justify-content: center;
             line-height: 1;
+        }
+
+        @media (max-width: 640px) {
+            .sticky-player {
+                gap: 8px;
+                padding-inline: 9px;
+            }
+
+            .sticky-player .play-btn,
+            .sticky-player .back-btn {
+                width: 34px;
+                height: 34px;
+            }
+
+            .waveform-toolbar {
+                margin-bottom: 3px;
+            }
+
+            .waveform-status {
+                max-width: 104px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .waveform-viewport {
+                height: 48px;
+            }
         }
 
         h2 {
@@ -1566,12 +1695,30 @@
             box-shadow: 0 12px 28px rgba(52,88,246,0.18);
         }
 
-        body.bbc-theme-blue-studio .progress-track {
-            background: #dbeafe;
+        body.bbc-theme-blue-studio .waveform-toolbar {
+            color: rgba(32,53,47,0.66);
         }
 
-        body.bbc-theme-blue-studio .progress-fill {
-            background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+        body.bbc-theme-blue-studio .waveform-zoom,
+        body.bbc-theme-blue-studio .waveform-viewport {
+            border-color: rgba(52,88,246,0.18);
+            background: rgba(52,88,246,0.055);
+        }
+
+        body.bbc-theme-blue-studio .waveform-zoom button:hover:not(:disabled),
+        body.bbc-theme-blue-studio .waveform-zoom button:focus-visible {
+            color: #fff;
+            background: var(--accent);
+        }
+
+        body.bbc-theme-blue-studio .waveform-content {
+            --waveform-base: rgba(52,88,246,0.25);
+            --waveform-played: #3458f6;
+        }
+
+        body.bbc-theme-blue-studio .waveform-playhead {
+            background: #3458f6;
+            box-shadow: 0 0 0 1px #fff, 0 0 9px rgba(52,88,246,0.46);
         }
 
         body.bbc-theme-blue-studio .time-row,
@@ -1764,16 +1911,39 @@
             transform: translateY(2px);
         }
 
-        body.bbc-theme-classroom-worksheet .progress-track {
-            height: 9px;
+        body.bbc-theme-classroom-worksheet .waveform-toolbar {
+            color: #405066;
+        }
+
+        body.bbc-theme-classroom-worksheet .waveform-zoom,
+        body.bbc-theme-classroom-worksheet .waveform-viewport {
             border: 2px solid #1f2937;
-            border-radius: 0;
+            border-radius: 4px;
             background: rgba(255,255,255,0.62);
         }
 
-        body.bbc-theme-classroom-worksheet .progress-fill {
+        body.bbc-theme-classroom-worksheet .waveform-zoom {
+            padding: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .waveform-zoom button {
             border-radius: 0;
-            background: linear-gradient(90deg, #0f766e, #14b8a6);
+        }
+
+        body.bbc-theme-classroom-worksheet .waveform-zoom button:hover:not(:disabled),
+        body.bbc-theme-classroom-worksheet .waveform-zoom button:focus-visible {
+            color: #fff;
+            background: #172033;
+        }
+
+        body.bbc-theme-classroom-worksheet .waveform-content {
+            --waveform-base: rgba(23,32,51,0.25);
+            --waveform-played: #0f766e;
+        }
+
+        body.bbc-theme-classroom-worksheet .waveform-playhead {
+            background: #0f766e;
+            box-shadow: 0 0 0 1px #fff;
         }
 
         body.bbc-theme-classroom-worksheet .time-row,
@@ -2904,12 +3074,30 @@
             box-shadow: 0 10px 24px rgba(var(--milk-rgb),0.19), inset 0 1px 0 #fff;
         }
 
-        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .progress-track {
-            background: rgba(var(--milk-rgb),0.18);
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-toolbar {
+            color: rgba(var(--milk-deep-rgb),0.66);
         }
 
-        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .progress-fill {
-            background: var(--milk-progress);
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-zoom,
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-viewport {
+            border-color: rgba(var(--milk-rgb),0.22);
+            background: rgba(255,255,255,0.42);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-zoom button:hover:not(:disabled),
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-zoom button:focus-visible {
+            color: var(--milk-deep);
+            background: rgba(255,255,255,0.96);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-content {
+            --waveform-base: rgba(var(--milk-deep-rgb),0.24);
+            --waveform-played: var(--milk-deep);
+        }
+
+        body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .waveform-playhead {
+            background: var(--milk-deep);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 9px rgba(var(--milk-rgb),0.42);
         }
 
         body:is(.bbc-theme-milk-sage, .bbc-theme-milk-blue, .bbc-theme-milk-pink, .bbc-theme-milk-purple) .time-row,
@@ -3126,6 +3314,10 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
+            .waveform-viewport {
+                scroll-behavior: auto;
+            }
+
             body.bbc-theme-classroom-worksheet .mc-options li,
             body.bbc-theme-classroom-worksheet .mc-options label,
             body.bbc-theme-classroom-worksheet .option-label {
@@ -3134,6 +3326,25 @@
 
             body.bbc-theme-classroom-worksheet .mc-options li:not(.disabled) label:active {
                 transform: none;
+            }
+        }
+
+        @media (prefers-contrast: more) {
+            .waveform-zoom,
+            .waveform-viewport {
+                border-color: currentColor !important;
+                background: transparent !important;
+            }
+
+            .waveform-content {
+                --waveform-base: currentColor !important;
+                --waveform-played: currentColor !important;
+            }
+
+            .waveform-playhead {
+                width: 3px;
+                background: currentColor !important;
+                box-shadow: 0 0 0 1px Canvas !important;
             }
         }
     </style>
@@ -3169,7 +3380,21 @@
             </audio>
             <button class="player-btn play-btn" id="sticky-play-btn" type="button">▶</button>
             <div class="progress-wrap">
-                <div class="progress-track"><div class="progress-fill" id="sticky-progress-fill"></div></div>
+                <div class="waveform-toolbar">
+                    <span class="waveform-status" id="waveform-status" aria-live="polite">Loading waveform…</span>
+                    <span class="waveform-zoom" aria-label="Waveform zoom">
+                        <button id="waveform-zoom-out" type="button" aria-label="Zoom out waveform" disabled>−</button>
+                        <span class="waveform-zoom-value" id="waveform-zoom-value">1×</span>
+                        <button id="waveform-zoom-in" type="button" aria-label="Zoom in waveform">+</button>
+                    </span>
+                </div>
+                <div class="waveform-viewport" id="waveform-viewport" role="slider" tabindex="0" aria-label="Audio timeline. Click or drag to seek; use arrow keys for five seconds." aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="0:00 of 0:00">
+                    <div class="waveform-content" id="waveform-content">
+                        <canvas id="waveform-base" aria-hidden="true"></canvas>
+                        <div class="waveform-played" id="waveform-played"><canvas id="waveform-played-canvas" aria-hidden="true"></canvas></div>
+                        <div class="waveform-playhead" id="waveform-playhead" aria-hidden="true"></div>
+                    </div>
+                </div>
                 <div class="time-row">
                     <span id="sticky-current-time">0:00</span>
                     <span class="sticky-identity" id="identity-status">Login</span>
@@ -3238,6 +3463,7 @@
 <script src="assets/js/login-navigation.js?v=20260819-1"></script>
 <script src="assets/js/practice-session.js?v=20260819-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260818-1"></script>
+<script src="assets/js/bbc-waveform.js?v=20260830-1"></script>
 <script>
 (function() {
     'use strict';
@@ -3267,7 +3493,6 @@
     var teacherMode = false;
     var teacherAnswerKey = null;
     var teacherAnswersVisible = false;
-    var isDragging = false;
     var resultAudioCtx = null;
     var lastEncouragementIndex = -1;
     var RESULT_SOUND_FAILED_TONES = [
@@ -3289,6 +3514,7 @@
     var answerRevealSavePromise = null;
     var lessonWordsListenersReady = false;
     var audioStartedAt = null;
+    var bbcWaveform = null;
 
     var resultEncouragements = [
         'Small steps, sharp ears, real progress.',
@@ -3415,22 +3641,16 @@
         if (el) el.textContent = value;
     }
 
-    function setProgress(id, pct) {
-        var el = document.getElementById(id);
-        if (el) el.style.width = pct + '%';
-    }
-
     function updateAudioUi() {
         var audio = getAudio();
         if (!audio) return;
         var duration = audio.duration || 0;
         var current = audio.currentTime || 0;
-        var pct = duration ? Math.min(100, Math.max(0, current / duration * 100)) : 0;
         var playText = audio.paused ? '▶' : 'Ⅱ';
         setText('sticky-play-btn', playText);
         setText('sticky-current-time', formatAudioTime(current));
         setText('sticky-duration', formatAudioTime(duration));
-        if (!isDragging) setProgress('sticky-progress-fill', pct);
+        if (bbcWaveform) bbcWaveform.sync();
     }
 
     function toggleAudioPlayback() {
@@ -3501,52 +3721,23 @@
             });
             audio.addEventListener('pause', updateAudioUi);
             audio.addEventListener('ended', updateAudioUi);
-
-            var progressWrap = document.getElementById('sticky-player').querySelector('.progress-wrap');
-            var progressFill = document.getElementById('sticky-progress-fill');
-
-            function seekFromEvent(clientX) {
-                var rect = progressWrap.getBoundingClientRect();
-                var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-                if (progressFill) progressFill.style.width = (pct * 100) + '%';
-                if (audio.duration) audio.currentTime = pct * audio.duration;
-                if (!audio.paused) {
-                    var playPromise = audio.play();
-                    if (playPromise && playPromise.catch) playPromise.catch(function() {});
-                }
+            if (window.MrCatBbcWaveform && !bbcWaveform) {
+                bbcWaveform = new window.MrCatBbcWaveform.BbcWaveform({
+                    audio: audio,
+                    viewport: document.getElementById('waveform-viewport'),
+                    content: document.getElementById('waveform-content'),
+                    baseCanvas: document.getElementById('waveform-base'),
+                    playedCanvas: document.getElementById('waveform-played-canvas'),
+                    playedClip: document.getElementById('waveform-played'),
+                    playhead: document.getElementById('waveform-playhead'),
+                    status: document.getElementById('waveform-status'),
+                    zoomOutButton: document.getElementById('waveform-zoom-out'),
+                    zoomInButton: document.getElementById('waveform-zoom-in'),
+                    zoomLabel: document.getElementById('waveform-zoom-value'),
+                    onSeekEnd: updateAudioUi
+                });
+                bbcWaveform.init();
             }
-
-            function onPointerDown(e) {
-                isDragging = true;
-                seekFromEvent(e.clientX);
-                e.preventDefault();
-            }
-
-            function onPointerMove(e) {
-                if (!isDragging) return;
-                seekFromEvent(e.clientX);
-                e.preventDefault();
-            }
-
-            function onPointerUp() {
-                isDragging = false;
-            }
-
-            if (progressWrap) {
-                progressWrap.addEventListener('mousedown', onPointerDown);
-                progressWrap.addEventListener('touchstart', function(e) {
-                    onPointerDown(e.touches[0]);
-                }, { passive: false });
-            }
-            document.addEventListener('mousemove', onPointerMove);
-            document.addEventListener('mouseup', onPointerUp);
-            document.addEventListener('touchmove', function(e) {
-                if (isDragging) {
-                    onPointerMove(e.touches[0]);
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            document.addEventListener('touchend', onPointerUp);
             document.addEventListener('keydown', handleAudioSpaceShortcut);
         }
         updateAudioUi();
@@ -3883,6 +4074,7 @@
         var audio = document.getElementById('bbc-audio');
         audio.load();
         setupAudioPlayer();
+        if (bbcWaveform) bbcWaveform.load(data.audioSrc);
 
         renderBlanks(data.blanks);
         renderMC(data.multipleChoice);

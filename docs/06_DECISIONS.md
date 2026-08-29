@@ -1,5 +1,33 @@
 # 06 Decisions
 
+## 2026-08-30: Derive BBC waveforms from the played MP3 and keep media time authoritative
+
+Decision:
+
+Generate BBC waveform peaks in the browser by fetching and decoding the same
+public `audioSrc` assigned to the hidden native media element. Retain only a
+bounded peak array after decoding and add no waveform dependency or secondary
+timestamp artifact. Treat `<audio>.duration` and `<audio>.currentTime` as the
+only playback clock. At every zoom level, seek against the full scrollable
+waveform rectangle rather than the visible viewport.
+
+Reason:
+
+A separately generated image, transcript timeline, or viewport-relative
+percentage can visually drift from the audio actually played, especially once
+the timeline is zoomed and scrolled. The same-source normalized waveform plus
+native media time removes those competing clocks and keeps future BBC imports
+automatic.
+
+Trade-offs:
+
+- First entry downloads and briefly decodes the lesson MP3 to calculate peaks;
+  playback itself is not delayed and browser caching normally reuses the file.
+- Low-memory or unsupported browsers may fail waveform decoding. They retain a
+  flat interactive timeline and every playback/seek control.
+- The waveform is a navigation aid, not a transcript alignment or grading data
+  source.
+
 ## 2026-08-29: Formal browser recording uses one four-state flow
 
 Decision:
