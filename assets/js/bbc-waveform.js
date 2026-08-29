@@ -1,8 +1,9 @@
 (function(global) {
     'use strict';
 
-    var DEFAULT_ZOOM_LEVELS = [1, 2, 4, 8];
+    var DEFAULT_ZOOM_LEVELS = [1, 2, 4, 8, 16, 32, 64];
     var MAX_PEAKS = 12000;
+    var MAX_CANVAS_PIXEL_WIDTH = 16384;
     var TOUCH_SEEK_THRESHOLD = 10;
 
     function clamp(value, min, max) {
@@ -207,13 +208,15 @@
     BbcWaveform.prototype.drawCanvas = function(canvas, width, height, played) {
         if (!canvas) return;
         var pixelRatio = Math.min(2, global.devicePixelRatio || 1);
-        canvas.width = Math.round(width * pixelRatio);
+        var canvasPixelWidth = Math.min(MAX_CANVAS_PIXEL_WIDTH, Math.round(width * pixelRatio));
+        var canvasScaleX = canvasPixelWidth / width;
+        canvas.width = canvasPixelWidth;
         canvas.height = Math.round(height * pixelRatio);
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
         var context = canvas.getContext('2d');
         if (!context) return;
-        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        context.setTransform(canvasScaleX, 0, 0, pixelRatio, 0, 0);
         context.clearRect(0, 0, width, height);
 
         var style = getComputedStyle(this.content);
@@ -364,6 +367,7 @@
     };
 
     global.MrCatBbcWaveform = {
+        DEFAULT_ZOOM_LEVELS: DEFAULT_ZOOM_LEVELS.slice(),
         BbcWaveform: BbcWaveform,
         makePeaks: makePeaks,
         waveformTimeFromClientX: waveformTimeFromClientX,

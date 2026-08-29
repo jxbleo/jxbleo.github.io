@@ -1561,6 +1561,9 @@ Shared rules:
   `Intensive Listening` capsule in the top lesson card beside the worksheet
   tool. It preserves the BBC URL as the return target. Lessons without the
   explicit relationship show no capsule.
+- On phone widths, when both `Intensive Listening` and `Download Worksheet`
+  are present, keep them on one row at the bottom of the lesson card with one
+  action aligned left and the other right; they must not stack vertically.
 - This BBC lesson-card capsule is the only student-facing entry. Student
   Library shows neither an Intensive subtab, standalone Intensive cards, nor
   an Intensive Listening sibling action on a BBC task card. The whole BBC
@@ -1612,16 +1615,17 @@ Shared rules:
   A-D markers. Only hover and selection add a surface: selection uses a soft teal
   background and fills the chosen letter marker, without the right-side `✦` used
   by other BBC themes. If an option wraps, the continuation line should align
-  with the option sentence rather than the option letter. The student identity
-  should remain in the audio bar as the English name only rather than the title
-  row, `Visitor` should not be shown there, and the floating History toolbar
-  should not include `Clear`.
+  with the option sentence rather than the option letter. The audio time row
+  contains only current time and duration, with no student or visitor identity,
+  and the floating History toolbar should not include `Clear`.
 - On desktop, pressing Space toggles the BBC audio player only when focus is
   not inside an answer input, choice, button, select, textarea, or modal.
 - The BBC custom player displays a real waveform decoded from the lesson's
   exact MP3. The whole programme is visible at `1×`; `−` and `+` step through
-  `1×`, `2×`, `4×`, and `8×` timeline widths. Zooming keeps the current
-  playhead visible, and a zoomed timeline can scroll horizontally.
+  `1×`, `2×`, `4×`, `8×`, `16×`, `32×`, and `64×` timeline widths. Play and
+  `-5s` share the toolbar above the waveform with the zoom controls so the
+  timeline occupies the full player width. Zooming keeps the current playhead
+  visible, and a zoomed timeline can scroll horizontally.
 - Clicking or mouse/pen dragging on the waveform seeks continuously. On touch,
   a tap seeks while a horizontal swipe pans the zoomed timeline. Left/Right
   move five seconds, Shift+Left/Right move ten seconds, and Home/End move to

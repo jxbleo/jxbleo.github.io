@@ -1761,18 +1761,19 @@ owner explicitly asks for a different behavior.
 
 - `bbc.html` should use one custom player, not two. The hero card should not
   contain a second audio player.
-- The player should stick at the top while the student scrolls. The student
-  name belongs inside the time row between current time and duration, using the
-  same small visual weight as the times.
+- The player should stick at the top while the student scrolls. Its time row
+  contains only current time and duration; do not show student identity there.
 - Do not restore the old fixed identity pill above the player; it caused visual
   conflicts with the progress bar.
 - The custom player uses a real waveform decoded from the exact `audioSrc` MP3.
   Students may click or drag the waveform to seek, use keyboard Left/Right for
-  five-second movement, and zoom the complete timeline through 1x/2x/4x/8x.
+  five-second movement, and zoom the complete timeline through
+  1x/2x/4x/8x/16x/32x/64x.
   At every zoom level, pointer-to-time conversion must use the full scrollable
   waveform width and the native `<audio>.duration`, never only the visible
   viewport width or transcript timestamps.
-- Keep the `-5s` button as a quick convenience beside the waveform, but do not
+- Keep Play and `-5s` in the toolbar above the waveform so the timeline uses
+  the full player width. Keep `-5s` as a quick convenience, but do not
   impose a separate rewind counter now that direct waveform seeking is an
   intentional learning control.
 - Do not reintroduce the native browser audio control. The custom waveform
