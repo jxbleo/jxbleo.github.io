@@ -227,6 +227,7 @@
 .speaking-participant strong { display: block; overflow: hidden; color: #26343b; font-size: .83rem; text-overflow: ellipsis; white-space: nowrap; }
 .speaking-participant small { display: block; margin-top: 3px; color: var(--sl-muted); font-size: .68rem; line-height: 1.35; }
 .speaking-participant-actions { display: flex; max-width: 500px; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.speaking-voice-confirmation-question { flex-basis: 100%; color: var(--sl-muted); font-size: .72rem; line-height: 1.45; }
 .speaking-roster-editor { display: grid; grid-template-columns: 1fr auto 1fr auto; align-items: end; gap: 9px; margin-top: 12px; padding: 14px; border-radius: 17px; background: rgba(82,105,116,.055); }
 .speaking-roster-editor label, .speaking-recording-settings label { margin: 0; color: var(--sl-muted); font-size: .7rem; font-weight: 700; }
 .speaking-roster-editor input, .speaking-recording-settings input { display: block; width: 100%; min-height: 42px; margin-top: 5px; padding: 0 11px; border: 1px solid rgba(74,95,106,.16); border-radius: 12px; color: var(--sl-ink); background: rgba(255,255,255,.78); outline: none; }

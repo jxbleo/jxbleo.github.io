@@ -137,7 +137,7 @@
     }
     function statusTone(value) {
         var state = String(value || '').toLowerCase();
-        if (['ready', 'uploaded', 'accepted', 'student_confirmed', 'teacher_confirmed'].indexOf(state) >= 0) return 'ready';
+        if (['ready', 'uploaded', 'accepted', 'voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(state) >= 0) return 'ready';
         if (['queued', 'processing', 'uploading', 'ai_matched'].indexOf(state) >= 0) return 'working';
         if (['pending', 'failed', 'quality_failed', 'disputed'].indexOf(state) >= 0) return 'attention';
         return 'neutral';
@@ -267,22 +267,23 @@
     }
     function listCard(item) {
         var pending = item.invitation_pending === true || (item.participants || []).some(function (participant) { return participant.is_self && participant.invitation_status === 'pending'; });
+        var voiceMatchNotice = (item.participants || []).some(function (participant) { return participant.is_self && participant.identity_notice_unread; });
         var candidateLabel = Number.isInteger(item.candidate_count) ? item.candidate_count + ' Candidate' + (item.candidate_count === 1 ? '' : 's') : 'Candidates pending';
         return '<button class="speaking-card' + (pending ? ' is-invitation' : '') + '" type="button" data-discussion-id="' + esc(item.discussion_id) + '">' +
             '<span class="speaking-card-icon" aria-hidden="true"></span>' +
             '<span class="speaking-card-copy"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3><span class="speaking-card-date">' + esc(formatDate(item.discussion_date)) + '</span></span>' +
-            '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(candidateLabel) + '</span><span class="speaking-pill" data-tone="' + esc(statusTone(item.analysis_status)) + '">' + esc(readableStatus(item.analysis_status)) + '</span>' + (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + '</span>' +
+            '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(candidateLabel) + '</span><span class="speaking-pill" data-tone="' + esc(statusTone(item.analysis_status)) + '">' + esc(readableStatus(item.analysis_status)) + '</span>' + (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + (voiceMatchNotice ? '<span class="speaking-pill" data-tone="attention">Voice matched</span>' : '') + '</span>' +
             '<svg class="speaking-card-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
     function sidebarToggleLabel(expanded) {
         var action = expanded ? 'Close Discussion sidebar' : 'Open Discussion sidebar';
         if (!sidebarInvitationCount) return action;
-        return action + '. ' + sidebarInvitationCount + ' Discussion invitation' + (sidebarInvitationCount === 1 ? '' : 's') + ' waiting.';
+        return action + '. ' + sidebarInvitationCount + ' new Discussion update' + (sidebarInvitationCount === 1 ? '' : 's') + '.';
     }
     function updateSidebarInvitations(items) {
         sidebarInvitationCount = (items || []).filter(function (item) {
             return item.invitation_pending === true || (item.participants || []).some(function (participant) {
-                return participant.is_self && participant.invitation_status === 'pending';
+                return participant.is_self && (participant.invitation_status === 'pending' || participant.identity_notice_unread);
             });
         }).length;
         sidebarAlert.hidden = sidebarInvitationCount === 0;
@@ -335,29 +336,35 @@
     }
     function participantRow(participant, item) {
         var rosterName = participant.roster_display_name || participant.display_name;
-        var label = participant.kind === 'guest' ? rosterName + ' · Guest participant · Name not verified' : rosterName;
+        var label = participant.kind === 'guest'
+            ? rosterName + ' · Guest participant · Name not verified'
+            : participant.is_self ? rosterName : participant.display_name || 'Candidate';
         var actions = '';
         if (participant.invitation_status === 'pending' && participant.is_self) {
             actions = '<button class="outline-button" type="button" data-invite-action="accept" data-participant-id="' + esc(participant.participant_id) + '">Accept</button><button class="outline-button" type="button" data-invite-action="decline" data-participant-id="' + esc(participant.participant_id) + '">Decline</button>';
         }
         if (participant.is_self && participant.matched_speaker_key && participant.identity_status !== 'disputed') {
+            if (participant.requires_voice_confirmation) actions += '<span class="speaking-voice-confirmation-question">Listen to the clip. Is ' + esc(rosterName) + ' this Speaker?</span>';
             actions += '<button class="outline-button" type="button" data-playback-kind="formal_excerpt" data-participant-id="' + esc(participant.participant_id) + '">Listen to matched voice</button>';
             if (['ai_matched', 'unconfirmed', 'unmatched'].indexOf(participant.identity_status) >= 0) actions += '<button class="primary-button" type="button" data-confirm-voice="true" data-participant-id="' + esc(participant.participant_id) + '" data-speaker-key="' + esc(participant.matched_speaker_key) + '" data-mapping-revision="' + esc(participant.mapping_revision) + '">This is my voice</button>';
             actions += '<button class="outline-button" type="button" data-confirm-voice="false" data-participant-id="' + esc(participant.participant_id) + '" data-speaker-key="' + esc(participant.matched_speaker_key) + '" data-mapping-revision="' + esc(participant.mapping_revision) + '">This isn\'t my voice</button>';
         }
+        if (participant.identity_status === 'voiceprint_confirmed') actions += '<span class="speaking-pill" data-tone="success">Auto-locked at 70%+</span>';
         if (participant.is_self && participant.identity_status === 'disputed') actions += '<span class="speaking-pill">Identity under teacher review</span>';
         if (item.can_edit_roster && participant.kind === 'guest') actions += '<button class="outline-button" type="button" data-rename-guest="' + esc(participant.participant_id) + '" data-current-name="' + esc(rosterName) + '">Rename</button>';
         if (item.can_edit_roster && !participant.is_self) actions += '<button class="outline-button" type="button" data-remove-participant="' + esc(participant.participant_id) + '">Remove</button>';
         var matchNote = participant.matched_speaker_key ? ' · ' + participant.matched_speaker_key.replace(/^spk_0*/, 'Speaker ') : ' · Waiting for a Speaker match';
         if (participant.voice_match_source === 'reusable_voiceprint_1_to_n' && Number.isFinite(Number(participant.voice_match_score))) matchNote += ' · ' + Math.round(Number(participant.voice_match_score)) + '% voice match';
-        return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(rosterName)) + '</span><span><strong>' + esc(label) + '</strong><small>' + esc(readableStatus(participant.invitation_status || 'accepted') + matchNote) + '</small></span></span><span class="speaking-participant-actions">' + actions + '</span></li>';
+        return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(label)) + '</span><span><strong>' + esc(label) + '</strong><small>' + esc(readableStatus(participant.invitation_status || 'accepted') + matchNote) + '</small></span></span><span class="speaking-participant-actions">' + actions + '</span></li>';
     }
     function detectedCandidateMarkup(candidate) {
         var matched = candidate.proposed_name;
-        var statusText = matched ? 'Likely ' + matched : 'Anonymous — no reliable voiceprint match';
-        if (matched && Number.isFinite(Number(candidate.automatic_match_score))) statusText += ' · ' + Math.round(Number(candidate.automatic_match_score)) + '%';
-        if (candidate.identity_status === 'student_confirmed' || candidate.identity_status === 'teacher_confirmed') statusText = matched + ' · Confirmed';
-        return '<article class="speaking-candidate-tile" data-match="' + (matched ? 'matched' : 'anonymous') + '"><span class="speaking-candidate-orb" aria-hidden="true">' + esc(String(candidate.speaker_label || 'S').replace(/Speaker\s*/i, 'S')) + '</span><div><strong>' + esc(candidate.speaker_label || 'Speaker') + '</strong><small>' + esc(statusText) + '</small></div></article>';
+        var confirmed = ['voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(candidate.identity_status) >= 0;
+        var displayLabel = confirmed && matched ? matched : candidate.speaker_label || 'Speaker';
+        var statusText = confirmed && matched ? 'Identity confirmed' : 'Anonymous — no confirmed voiceprint match';
+        if (candidate.identity_status === 'voiceprint_confirmed' && Number.isFinite(Number(candidate.automatic_match_score))) statusText = 'Voiceprint auto-locked · ' + Math.round(Number(candidate.automatic_match_score)) + '%';
+        else if (candidate.identity_status === 'student_confirmed' || candidate.identity_status === 'teacher_confirmed') statusText = 'Confirmed';
+        return '<article class="speaking-candidate-tile" data-match="' + (confirmed && matched ? 'matched' : 'anonymous') + '"><span class="speaking-candidate-orb" aria-hidden="true">' + esc(initials(displayLabel)) + '</span><div><strong>' + esc(displayLabel) + '</strong><small>' + esc(statusText) + '</small></div></article>';
     }
     function reportList(title, items) {
         if (!Array.isArray(items) || !items.length) return '';
@@ -381,7 +388,7 @@
     function internalReportMarkup(item) {
         var report = item.report;
         if (!report) return '';
-        var canShare = (item.participants || []).some(function (participant) { return participant.is_self && ['student_confirmed', 'teacher_confirmed'].indexOf(participant.identity_status) >= 0; });
+        var canShare = (item.participants || []).some(function (participant) { return participant.is_self && ['voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(participant.identity_status) >= 0; });
         var domainLabels = { communication_strategies: 'Communication strategies', vocabulary_language_patterns: 'Vocabulary & language', ideas_organisation: 'Ideas & organisation' };
         var candidates = (report.candidates || []).slice().sort(function (left, right) { return Number(Boolean(right.is_self)) - Number(Boolean(left.is_self)); }).map(function (candidate) {
             var domains = Object.keys(domainLabels).map(function (key) {
@@ -418,7 +425,7 @@
         if (voiceSearchWorking) voiceSearchNote = 'Checking the Candidate clips against currently registered voiceprints.';
         else if (item.voice_match_status === 'failed') voiceSearchNote = 'The last voice search could not finish. You can try again.';
         else if (item.voice_match_last_run_at && item.voice_match_safe_error_code) voiceSearchNote = 'Search completed, but automatic matching was temporarily unavailable.';
-        else if (item.voice_match_last_run_at && Number(item.voice_match_last_changed_count || 0) > 0) voiceSearchNote = Number(item.voice_match_last_changed_count) + ' new reliable voice match' + (Number(item.voice_match_last_changed_count) === 1 ? '' : 'es') + ' found. Students still confirm their own voices.';
+        else if (item.voice_match_last_run_at && Number(item.voice_match_last_changed_count || 0) > 0) voiceSearchNote = Number(item.voice_match_last_changed_count) + ' voice match update' + (Number(item.voice_match_last_changed_count) === 1 ? '' : 's') + ' found. Matches at 70% or above are locked automatically; lower scores require the student to listen and confirm.';
         else if (item.voice_match_last_run_at) voiceSearchNote = 'Search complete. No new reliable voice matches were found.';
         var candidateHeaderActions = '<span class="speaking-candidate-header-actions">' + voiceSearchButton + '<span class="speaking-pill">' + esc(candidatePill) + '</span></span>';
         var identityAccess = participantRows ? '<div class="speaking-identity-access"><h4>Identity &amp; access</h4><ul class="speaking-participants">' + participantRows + '</ul></div>' : '';
@@ -427,7 +434,7 @@
             '<div class="speaking-detail-title-row"><div><p class="eyebrow accent">DISCUSSION</p><h2>' + esc(item.title) + '</h2></div><p class="speaking-detail-date">' + esc(formatDate(item.discussion_date)) + '</p></div></div>' +
             workflowMarkup(item) + '<div class="speaking-detail-grid"><dl><dt>Candidates</dt><dd>' + esc(candidateCountText) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(readableStatus(item.recording_status)) + '</dd></dl><dl><dt>Analysis</dt><dd>' + esc(readableStatus(item.analysis_status)) + '</dd></dl></div></div>' +
             '<div class="speaking-detail-body"><section class="speaking-section-card speaking-prompt-card"><header><div><h3>Discussion prompt</h3><p>The DSE task your group should address.</p></div></header><p class="speaking-prompt-text">' + esc(item.prompt_text) + '</p></section>' +
-            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Speaker tracks come from the formal recording. Reliable voiceprint matches send invitations automatically.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + rosterEditor + '</section>' +
+            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Voiceprint matches at 70% or above are named and opened automatically. Lower scores stay anonymous until the matched VIP listens and confirms.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + rosterEditor + '</section>' +
             recording + analysis + reportMarkup + '</div></article>';
     }
     function bindInvitationActions() {
@@ -843,6 +850,16 @@
         detail.querySelectorAll('[data-voice-file]').forEach(function (input) { input.addEventListener('change', function () { var file = input.files[0]; if (!file) return; var name = input.getAttribute('data-voice-name') || 'this participant'; if (!window.confirm('Use this Voice Reference for ' + name + '?')) { input.value = ''; return; } setStatus('Uploading Voice Reference…'); uploadBlob(file, 'voice_reference', input.getAttribute('data-voice-file')).then(function () { return openDiscussion(selectedId); }).then(function () { setStatus('Voice Reference uploaded.'); }).catch(function (error) { setStatus(friendlyError(error), true); }); }); });
         var analysis = document.getElementById('start-analysis'); if (analysis) analysis.addEventListener('click', function () { analysis.disabled = true; call('startAnalysis', { discussion_id: selectedId, operation_id: 'analysis-' + selectedId }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); analysis.disabled = false; }); });
     }
+    function acknowledgeIdentityNotice(item) {
+        var own = item && (item.participants || []).find(function (participant) { return participant.is_self && participant.identity_notice_unread; });
+        if (!own) return;
+        own.identity_notice_unread = false;
+        call('acknowledgeIdentityNotice', { discussion_id: item.discussion_id }).then(function () {
+            return call('listDiscussions', { page_size: 50 });
+        }).then(function (result) {
+            renderList(result.discussions || []);
+        }).catch(function () { /* The notice remains unread on the server and will reappear safely. */ });
+    }
     function openDiscussion(idValue) {
         if (recordingState !== 'idle') return Promise.resolve(null);
         selectedId = idValue;
@@ -881,6 +898,7 @@
                 detail.innerHTML = detailMarkup(result.discussion);
                 bindInvitationActions();
                 bindRecording();
+                acknowledgeIdentityNotice(result.discussion);
             }
             setStatus('');
             schedulePoll(result.discussion, generation);
