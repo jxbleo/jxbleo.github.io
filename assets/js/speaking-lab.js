@@ -11,7 +11,13 @@
     var sidebarAlert = document.getElementById('speaking-sidebar-alert');
     var sidebarScrim = document.getElementById('speaking-sidebar-scrim');
     var sidebarNew = document.getElementById('speaking-sidebar-new');
+    var toolbarTitle = document.getElementById('speaking-toolbar-title');
+    var toolbarEdit = document.getElementById('speaking-toolbar-edit');
     var dialog = document.getElementById('discussion-dialog');
+    var titleDialog = document.getElementById('discussion-title-dialog');
+    var titleForm = document.getElementById('discussion-title-form');
+    var titleInput = document.getElementById('discussion-title-edit');
+    var titleError = document.getElementById('discussion-title-error');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
     var form = document.getElementById('discussion-form');
@@ -62,6 +68,7 @@
         getVoiceConfirmationPlayback: true
     };
     var sidebarInvitationCount = 0;
+    var currentDiscussion = null;
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -126,6 +133,23 @@
     function shanghaiToday() {
         var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).reduce(function (result, part) { result[part.type] = part.value; return result; }, {});
         return parts.year + '-' + parts.month + '-' + parts.day;
+    }
+    function updateToolbar(item) {
+        currentDiscussion = item && !item.invitation ? item : null;
+        var title = item && item.title ? item.title : 'Speaking Lab';
+        toolbarTitle.textContent = title;
+        toolbarTitle.setAttribute('title', title);
+        toolbarEdit.hidden = !(currentDiscussion && currentDiscussion.can_edit_title);
+        toolbarEdit.disabled = recordingLocksPage();
+        document.title = currentDiscussion ? title + ' | Speaking Lab' : 'Speaking Lab | Mr. Cat Academy';
+    }
+    function openTitleDialog() {
+        if (!currentDiscussion || !currentDiscussion.can_edit_title || recordingLocksPage()) return;
+        titleInput.value = currentDiscussion.title || '';
+        titleError.textContent = '';
+        if (typeof titleDialog.showModal === 'function') titleDialog.showModal();
+        else titleDialog.setAttribute('open', '');
+        window.setTimeout(function () { titleInput.focus(); titleInput.select(); }, 0);
     }
     function voiceprintTime(seconds) {
         var value = Math.max(0, Math.min(20, Math.floor(Number(seconds || 0))));
@@ -318,6 +342,7 @@
         voiceDiscard = true;
         stopVoiceReferenceRecording();
         closeSidebar();
+        updateToolbar(null);
     }
     function openNewDiscussionDialog() {
         if (!allowRecordingNavigation()) return;
@@ -519,6 +544,7 @@
         document.body.classList.toggle('speaking-recording-locked', locked);
         sidebarToggle.disabled = locked;
         sidebarNew.disabled = locked;
+        toolbarEdit.disabled = locked || toolbarEdit.hidden;
         var closeDiscussion = document.getElementById('close-discussion');
         if (closeDiscussion) closeDiscussion.disabled = locked;
         var recordingFlowActive = nextState !== 'idle';
@@ -869,6 +895,7 @@
         var generation = pollGeneration;
         return call('getDiscussion', { discussion_id: idValue }).then(function (result) {
             if (result.invitation) {
+                updateToolbar({ title: result.invitation.title, invitation: true });
                 document.body.classList.remove('speaking-detail-open');
                 detail.hidden = true;
                 list.hidden = false;
@@ -896,6 +923,7 @@
                 document.body.classList.add('speaking-detail-open');
                 detail.hidden = false;
                 detail.innerHTML = detailMarkup(result.discussion);
+                updateToolbar(result.discussion);
                 bindInvitationActions();
                 bindRecording();
                 acknowledgeIdentityNotice(result.discussion);
@@ -913,15 +941,17 @@
             if (generation !== pollGeneration || !selectedId) return;
             call('getDiscussion', { discussion_id: selectedId }).then(function (result) {
                 if (generation !== pollGeneration) return;
-                detail.innerHTML = detailMarkup(result.discussion); bindInvitationActions(); bindRecording(); schedulePoll(result.discussion, generation);
+                detail.innerHTML = detailMarkup(result.discussion); updateToolbar(result.discussion); bindInvitationActions(); bindRecording(); schedulePoll(result.discussion, generation);
             }).catch(function () { schedulePoll(item, generation); });
         }, delay);
     }
     function loadList() {
         document.body.classList.remove('speaking-detail-open');
+        if (!selectedId) updateToolbar(null);
         return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
     sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
+    toolbarEdit.addEventListener('click', openTitleDialog);
     sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
     sidebarNew.addEventListener('click', openNewDiscussionDialog);
     document.getElementById('new-discussion').addEventListener('click', openNewDiscussionDialog);
@@ -971,6 +1001,22 @@
         }).finally(function () {
             button.disabled = false;
         });
+    });
+    titleForm.addEventListener('submit', function (event) {
+        if (event.submitter && event.submitter.value === 'cancel') return;
+        event.preventDefault();
+        if (!currentDiscussion || !currentDiscussion.can_edit_title) return;
+        var title = titleInput.value.trim().replace(/\s+/g, ' ');
+        if (!title) { titleError.textContent = 'Enter a Discussion title.'; titleInput.focus(); return; }
+        var save = document.getElementById('discussion-title-save');
+        save.disabled = true;
+        titleError.textContent = '';
+        call('updateDiscussionTitle', { discussion_id: currentDiscussion.discussion_id, title: title }).then(function () {
+            if (titleDialog.open) titleDialog.close();
+            return loadList();
+        }).catch(function (error) {
+            titleError.textContent = friendlyError(error);
+        }).finally(function () { save.disabled = false; });
     });
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
