@@ -1766,12 +1766,17 @@ owner explicitly asks for a different behavior.
   same small visual weight as the times.
 - Do not restore the old fixed identity pill above the player; it caused visual
   conflicts with the progress bar.
-- The progress bar is display-only. Students should not be able to drag or seek
-  freely.
-- Each playback session has at most seven `-5s` rewinds. Pausing does not reset
-  the allowance. Replaying after the audio ends may reset for the new session.
-- Do not reintroduce the native browser audio control. It looked unfinished and
-  did not support the rewind-limit rule.
+- The custom player uses a real waveform decoded from the exact `audioSrc` MP3.
+  Students may click or drag the waveform to seek, use keyboard Left/Right for
+  five-second movement, and zoom the complete timeline through 1x/2x/4x/8x.
+  At every zoom level, pointer-to-time conversion must use the full scrollable
+  waveform width and the native `<audio>.duration`, never only the visible
+  viewport width or transcript timestamps.
+- Keep the `-5s` button as a quick convenience beside the waveform, but do not
+  impose a separate rewind counter now that direct waveform seeking is an
+  intentional learning control.
+- Do not reintroduce the native browser audio control. The custom waveform
+  player is the single student-facing audio surface.
 - If the student exits or refreshes BBC listening to get another listen, answers
   should not be restored automatically. The owner accepts that the student must
   rewrite answers.

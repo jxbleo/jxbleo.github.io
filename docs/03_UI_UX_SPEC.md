@@ -1618,6 +1618,19 @@ Shared rules:
   should not include `Clear`.
 - On desktop, pressing Space toggles the BBC audio player only when focus is
   not inside an answer input, choice, button, select, textarea, or modal.
+- The BBC custom player displays a real waveform decoded from the lesson's
+  exact MP3. The whole programme is visible at `1×`; `−` and `+` step through
+  `1×`, `2×`, `4×`, and `8×` timeline widths. Zooming keeps the current
+  playhead visible, and a zoomed timeline can scroll horizontally.
+- Clicking or mouse/pen dragging on the waveform seeks continuously. On touch,
+  a tap seeks while a horizontal swipe pans the zoomed timeline. Left/Right
+  move five seconds, Shift+Left/Right move ten seconds, and Home/End move to
+  the programme boundaries when the timeline has keyboard focus.
+- The played waveform and playhead must follow `<audio>.currentTime`; every
+  pointer location is converted against the full scrollable waveform width and
+  `<audio>.duration`, not the visible viewport, decoded-buffer duration, or
+  transcript timestamps. If waveform decoding fails, show a quiet unavailable
+  status and keep a flat interactive timeline so listening remains usable.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
 - When the BBC result dialog appears, a not-passed result uses the shared low,
   descending result sound. Passed and Mastered retain distinct visual states

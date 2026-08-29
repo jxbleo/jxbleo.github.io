@@ -84,6 +84,7 @@ Shared frontend assets:
 - `assets/js/teacher.js`
 - `assets/js/practice-session.js`
 - `assets/js/personal-vocab.js`
+- `assets/js/bbc-waveform.js`
 - `assets/js/intensive-listening.js`
 - `assets/css/intensive-listening.css`
 - `assets/js/reports.js`
@@ -92,6 +93,16 @@ Shared frontend assets:
 - `assets/icons/mrcat-favicon-32.png` and `mrcat-apple-touch-icon.png`
 - `assets/icons/mrcat-icon-192.png`, `mrcat-icon-512.png`, and `mrcat-icon-1024.png`
 - `site.webmanifest`
+
+`bbc-waveform.js` is a dependency-free presentation controller for the shared
+BBC runtime. It fetches and decodes the same public `audioSrc` used by the
+native hidden `<audio>`, retains only a bounded peak array, and releases the
+decoded audio buffer. Waveform shape is sampled in normalized source order,
+while seeking, played-state clipping, and the playhead use the media element's
+authoritative `duration` and the full scrollable waveform bounds. Therefore a
+zoomed viewport cannot accidentally reinterpret its visible width as the whole
+programme. A decode/fetch failure falls back to a flat but still seekable
+timeline and never blocks audio playback.
 
 GitHub Actions tracks the GitHub `main` branch and synchronizes successful
 static builds to the production Tencent COS bucket. The build copies only root

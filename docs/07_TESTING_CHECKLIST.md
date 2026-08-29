@@ -50,6 +50,8 @@ node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
 node --check assets/js/my-words.js
 node --check assets/js/practice-session.js
+node --check assets/js/bbc-waveform.js
+node scripts/test-bbc-waveform.js
 npm run test:login-redirect
 npm run test:my-words
 npm run test:assignment-schedule
@@ -61,6 +63,21 @@ npm run test:cloudbase-auth
 npm run test:intensive-listening
 npm run test:teacheradmin-package
 ```
+
+BBC waveform checks:
+
+- open at least one default, Luminous Milk, and classroom-worksheet BBC lesson
+  through local HTTP and confirm the displayed peaks replace the loading state;
+- at 1×, 2×, 4×, and 8×, click the same recognizable peak and confirm the time
+  row/playhead and the audible phrase agree; repeat after horizontal scrolling;
+- mouse/pen drag seeks continuously, a touch tap seeks, and a touch horizontal
+  swipe pans instead of seeking; zooming keeps the current playhead visible;
+- with waveform focus, Left/Right move 5 seconds, Shift+Left/Right move 10
+  seconds, and Home/End use the exact media boundaries;
+- block the MP3 fetch used for decoding and confirm the flat timeline still
+  seeks while audio play, pause, Space, and `-5s` remain usable;
+- check phone widths plus keyboard focus, high contrast, and Reduced Motion;
+  no native audio controls or second player should appear.
 
 ## AI Tutor waiting experience and Runner
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-30 — Zoomable BBC audio waveform
+
+- Replaced the BBC player's plain percentage rail with a real waveform decoded
+  from each lesson's existing MP3, without adding a library or publishing a
+  second timing source.
+- Added 1×/2×/4×/8× timeline zoom, horizontal inspection, pointer/touch seek,
+  keyboard seeking, and a media-time playhead across every BBC render theme.
+- Kept waveform failure non-blocking and fixed zoomed seeking to map against
+  the full waveform width and the native media duration, preventing the prior
+  visible-window time drift class.
+
 ## 2026-08-30 — Complete Teacher Speaking group reports
 
 - Changed Teacher Speaking to load every Discussion through backend pagination
