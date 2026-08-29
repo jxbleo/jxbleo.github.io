@@ -2274,3 +2274,15 @@ behavior.
 Assignments default to a 100% Completion target and never earn STAR. Student
 library responses contain safe metadata and progress only; private units and
 answers are returned only by the authorized practice flow.
+
+### DSE Paper 4 Speaking Set Library
+
+Speaking Lab now begins with `Choose a Set`. Each teacher-managed Set has one
+immutable `set_id`, PP/MOCK source metadata, a Context article, Part A Group
+Discussion points, and stable Part B Individual Response question IDs. Starting
+Part A creates the existing Discussion from a frozen Set snapshot. Starting one
+Part B question creates a separate private 65-second Individual Response owned
+by the authenticated student. The final five seconds use a red time warning;
+PD remains not assessed and the ASR-error safeguard applies to every AI score
+and comment. Teacher edits affect future Sessions only; existing reports retain
+their snapshots. Voiceprint setup lives in the student sidebar.

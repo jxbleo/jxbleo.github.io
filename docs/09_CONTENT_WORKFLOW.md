@@ -482,3 +482,12 @@ It writes public metadata plus ignored private material/import rows while
 keeping catalogVisible false, and never copies transcript answers into data/.
 Review dictation/listen-only/skip modes and the generated inverse link before
 owner-gated CloudBase import.
+
+### Speaking Set source intake
+
+Author Speaking Sets in `content/speaking/dse-paper4-sets.json`, preserving the
+immutable `set_id` plus stable `pa_NN` and `ir_NN` child IDs. Source kind is
+`pp` only for authentic past-paper material; original/adapted practice remains
+`mock`. Run `npm run test:speaking-lab`, then prepare the ignored
+`.cloudbase-private/import/speaking-sets-cloudbase.json`. Do not place Viewpoint
+Bank, Useful Language, model answers, or Speaking Set source in `dist/`.

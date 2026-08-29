@@ -228,9 +228,7 @@ structured-text providers intentionally fail closed until benchmark approval.
 The student and teacher surfaces also include Tencent reusable-voiceprint
 enrolment: VIP voiceprints follow the authenticated account, Guest voiceprints
 remain scoped to one Discussion, and the enrolment WAV is never retained by the
-application. A ready Discussion can run a separate durable voice-only rematch
-against newly enrolled VIP voiceprints without repeating ASR or DSE analysis.
-Production enablement still requires owner-gated collections,
+application. Production enablement still requires owner-gated collections,
 indexes, runtime configuration, function deployment, and real-device testing.
 
 Run its contracts with:
@@ -244,3 +242,11 @@ Package the owner-gated backend functions locally with:
 ```bash
 npm run package:functions -- speakingLab speakingAiWorker
 ```
+
+Speaking now opens to an authenticated Set library. Each Set contains the
+reviewed Context, Part A Group Discussion points, and question-scoped Part B
+Individual Response prompts. Student sessions snapshot the Set revision at
+creation; teacher Set edits affect future sessions only. The focused test also
+validates the five imported DSE Paper 4 MOCK Sets. Local owner review artifacts
+are prepared with `node scripts/prepare-cloudbase-data.js` and remain under the
+ignored `.cloudbase-private/` directory.

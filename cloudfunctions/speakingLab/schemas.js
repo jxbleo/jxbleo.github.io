@@ -1,6 +1,7 @@
 "use strict";
 
 const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v2";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v1";
 
 const DOMAIN_SCHEMA = {
   type: "object",
@@ -74,4 +75,27 @@ const SPEAKING_REPORT_SCHEMA = {
   },
 };
 
-module.exports = { SPEAKING_REPORT_SCHEMA_VERSION, SPEAKING_REPORT_SCHEMA, DOMAIN_SCHEMA, TURN_REVIEW_SCHEMA, TURN_COACHING_SCHEMA };
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  type: "object", additionalProperties: false,
+  required: ["summary_zh", "domains", "strengths", "priority_actions", "language_suggestions", "sample_response_en"],
+  properties: {
+    summary_zh: { type: "string", maxLength: 1200 },
+    domains: {
+      type: "object", additionalProperties: false,
+      required: ["communication_strategies", "ideas_organisation", "vocabulary_language_patterns", "pronunciation_delivery"],
+      properties: {
+        communication_strategies: DOMAIN_SCHEMA,
+        ideas_organisation: DOMAIN_SCHEMA,
+        vocabulary_language_patterns: DOMAIN_SCHEMA,
+        pronunciation_delivery: { type: "object", additionalProperties: false, required: ["status"], properties: { status: { const: "not_assessed" } } },
+      },
+    },
+    strengths: { type: "array", items: { type: "string", maxLength: 240 }, maxItems: 12 },
+    priority_actions: { type: "array", items: { type: "string", maxLength: 240 }, maxItems: 12 },
+    language_suggestions: { type: "array", items: { type: "string", maxLength: 480 }, maxItems: 12 },
+    sample_response_en: { type: "string", maxLength: 1600 },
+  },
+};
+
+module.exports = { SPEAKING_REPORT_SCHEMA_VERSION, INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, SPEAKING_REPORT_SCHEMA, INDIVIDUAL_RESPONSE_REPORT_SCHEMA, DOMAIN_SCHEMA, TURN_REVIEW_SCHEMA, TURN_COACHING_SCHEMA };

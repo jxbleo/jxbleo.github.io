@@ -1,0 +1,202 @@
+[
+  {
+    "set_id": "dse-p4-mock-2019-screen-time-controls-for-teenagers",
+    "source_kind": "mock",
+    "exam_year": 2019,
+    "paper_version": null,
+    "title": "Screen-time Controls for Teenagers",
+    "source_note": "Based on the officially confirmed 2019 topic title “Apple Screen Control”. Passage and questions are original.",
+    "context": {
+      "source_line": "This article appeared on a youth / education website:",
+      "title": "Can a Phone Teach Us When to Put It Down?",
+      "body": [
+        "Most smartphones now include tools that show users how much time they spend on different apps. They can also block selected apps after a daily limit, silence notifications during study time and provide weekly reports. Supporters say these tools turn an invisible habit into something measurable. A teenager who thinks she uses social media for only an hour may be surprised to discover that the real figure is three hours.",
+        "However, limits do not automatically create self-control. Users can often press an ‘ignore’ button, change the settings or move to another device. Strict controls set by parents may also damage trust and encourage secretive behaviour. Some psychologists therefore recommend a family agreement instead: everyone, including adults, keeps phones away during meals and before bedtime. Technology may provide useful reminders, but lasting change still depends on motivation, good routines and honest conversations."
+      ]
+    },
+    "part_a": {
+      "instruction": "You may want to talk about:",
+      "discussion_points": [
+        { "point_id": "pa_01", "order": 1, "text": "why teenagers may need screen-time controls" },
+        { "point_id": "pa_02", "order": 2, "text": "the limitations of screen-time control tools" },
+        { "point_id": "pa_03", "order": 3, "text": "what rules families and schools should adopt" },
+        { "point_id": "pa_04", "order": 4, "text": "anything else you think is important" }
+      ]
+    },
+    "part_b": {
+      "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+      "questions": [
+        { "question_id": "ir_01", "order": 1, "text": "How much screen time is too much for a secondary school student?" },
+        { "question_id": "ir_02", "order": 2, "text": "Should parents be allowed to check their children’s phone-use reports?" },
+        { "question_id": "ir_03", "order": 3, "text": "Are adults good role models for healthy phone use?" },
+        { "question_id": "ir_04", "order": 4, "text": "Would you use an app that locks your phone while you study?" },
+        { "question_id": "ir_05", "order": 5, "text": "Should phones be banned during school breaks?" },
+        { "question_id": "ir_06", "order": 6, "text": "Which is more harmful: gaming, social media or short videos?" },
+        { "question_id": "ir_07", "order": 7, "text": "Can screen-time limits improve sleep?" },
+        { "question_id": "ir_08", "order": 8, "text": "Is self-discipline more effective than technological control?" }
+      ]
+    },
+    "content_revision": 1,
+    "visible_to_students": true
+  },
+  {
+    "set_id": "dse-p4-mock-2019-translation-apps-and-language-learning",
+    "source_kind": "mock",
+    "exam_year": 2019,
+    "paper_version": null,
+    "title": "Translation Apps and Language Learning",
+    "source_note": "Based on the officially confirmed 2019 topic title “Translation Apps”. Passage and questions are original.",
+    "context": {
+      "source_line": "This article appeared on a youth / education website:",
+      "title": "A Helpful Language Partner — or a Dangerous Shortcut?",
+      "body": [
+        "Translation apps have become fast, cheap and easy to use. A traveller can point a phone camera at a menu, while a student can listen to the pronunciation of an unfamiliar phrase. The apps can reduce anxiety and help people communicate in emergencies. They are particularly useful when users need the general meaning of a message rather than a perfect translation.",
+        "Yet a smooth translation may still be misleading. Apps can miss humour, cultural references and the speaker’s tone. Students who paste entire assignments into a translator may submit unnatural sentences without understanding the grammar. Teachers also worry that constant dependence prevents learners from thinking directly in the target language. Used carefully, an app can act like a dictionary, a pronunciation guide and a checking tool. Used carelessly, it becomes a shortcut that hides mistakes instead of correcting them."
+      ]
+    },
+    "part_a": {
+      "instruction": "You may want to talk about:",
+      "discussion_points": [
+        { "point_id": "pa_01", "order": 1, "text": "the benefits and risks of translation apps" },
+        { "point_id": "pa_02", "order": 2, "text": "activities that should be included in the workshop" },
+        { "point_id": "pa_03", "order": 3, "text": "guidelines for using translation apps in schoolwork" },
+        { "point_id": "pa_04", "order": 4, "text": "anything else you think is important" }
+      ]
+    },
+    "part_b": {
+      "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+      "questions": [
+        { "question_id": "ir_01", "order": 1, "text": "When do you normally use a translation app?" },
+        { "question_id": "ir_02", "order": 2, "text": "Can translation apps replace language teachers?" },
+        { "question_id": "ir_03", "order": 3, "text": "Should students declare when they use a translation app?" },
+        { "question_id": "ir_04", "order": 4, "text": "Are translation apps reliable enough for medical emergencies?" },
+        { "question_id": "ir_05", "order": 5, "text": "Will people become less interested in learning foreign languages?" },
+        { "question_id": "ir_06", "order": 6, "text": "Which is more useful: a dictionary or a translation app?" },
+        { "question_id": "ir_07", "order": 7, "text": "Should translation apps be allowed in examinations?" },
+        { "question_id": "ir_08", "order": 8, "text": "How can users check whether a translation is accurate?" }
+      ]
+    },
+    "content_revision": 1,
+    "visible_to_students": true
+  },
+  {
+    "set_id": "dse-p4-mock-2023-4-1-wearable-smart-devices",
+    "source_kind": "mock",
+    "exam_year": 2023,
+    "paper_version": "4.1",
+    "title": "Wearable Smart Devices",
+    "source_note": "Based on the officially confirmed 2023 Paper 4 version 4.1, “Wearable smart devices”. Passage and questions are original.",
+    "context": {
+      "source_line": "This article appeared on a youth / education website:",
+      "title": "When Your Watch Knows More About You Than You Do",
+      "body": [
+        "Smartwatches, rings and sensor-equipped clothing can count steps, measure heart rate and estimate sleep quality. Some devices remind users to move after long periods of sitting, while others can send an alert when they detect an unusual pattern. For athletes and patients, continuous data may reveal changes that a short clinic visit cannot capture.",
+        "However, wearable data is not always accurate or easy to interpret. A low sleep score may create anxiety even when the user feels well. Personal information may also be stored by technology companies, shared with other services or exposed in a data breach. In schools, wearables create another problem: a smartwatch can receive messages and may be used unfairly during tests. Schools therefore need rules that distinguish a simple health tracker from a communication device, while users need to remember that a gadget offers clues—not a medical diagnosis."
+      ]
+    },
+    "part_a": {
+      "instruction": "You may want to talk about:",
+      "discussion_points": [
+        { "point_id": "pa_01", "order": 1, "text": "why wearable smart devices are popular" },
+        { "point_id": "pa_02", "order": 2, "text": "their disadvantages and privacy risks" },
+        { "point_id": "pa_03", "order": 3, "text": "whether they should be allowed at school" },
+        { "point_id": "pa_04", "order": 4, "text": "anything else you think is important" }
+      ]
+    },
+    "part_b": {
+      "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+      "questions": [
+        { "question_id": "ir_01", "order": 1, "text": "Would you buy a smartwatch or a smart ring?" },
+        { "question_id": "ir_02", "order": 2, "text": "Can health data motivate people to exercise?" },
+        { "question_id": "ir_03", "order": 3, "text": "Do wearables make users unnecessarily anxious?" },
+        { "question_id": "ir_04", "order": 4, "text": "Should schools collect students’ fitness data?" },
+        { "question_id": "ir_05", "order": 5, "text": "Should smartwatches be treated like mobile phones during lessons?" },
+        { "question_id": "ir_06", "order": 6, "text": "Who should own the data collected by a wearable device?" },
+        { "question_id": "ir_07", "order": 7, "text": "Are expensive wearables worth the money?" },
+        { "question_id": "ir_08", "order": 8, "text": "Can a wearable device replace a medical check-up?" }
+      ]
+    },
+    "content_revision": 1,
+    "visible_to_students": true
+  },
+  {
+    "set_id": "dse-p4-mock-2024-1-1-digital-museums",
+    "source_kind": "mock",
+    "exam_year": 2024,
+    "paper_version": "1.1",
+    "title": "Digital Museums",
+    "source_note": "Based on the officially confirmed 2024 Paper 4 version 1.1, “Digital museum”. Passage and questions are original.",
+    "context": {
+      "source_line": "This article appeared on a youth / education website:",
+      "title": "Can a Museum Fit Inside a Phone?",
+      "body": [
+        "Digital museums allow visitors to explore high-resolution images, 3D models and recorded stories without travelling. A student can rotate an ancient object on screen, zoom in on details that are difficult to see behind glass and revisit an exhibition after class. Digital access also helps people who live far away or have mobility difficulties.",
+        "But a virtual tour cannot reproduce the size, texture and atmosphere of a real object in a physical space. Some users click quickly from one image to another without reading deeply. Museums also face costs: items must be photographed, described, translated and stored securely. A better approach may be to connect the two experiences. An online preview can build curiosity before a visit, while interactive maps and audio guides can enrich the visit itself. The goal should not be to replace museums, but to make their collections more accessible and meaningful."
+      ]
+    },
+    "part_a": {
+      "instruction": "You may want to talk about:",
+      "discussion_points": [
+        { "point_id": "pa_01", "order": 1, "text": "the benefits and limitations of a digital museum" },
+        { "point_id": "pa_02", "order": 2, "text": "digital features that would appeal to teenagers" },
+        { "point_id": "pa_03", "order": 3, "text": "how to connect online and in-person visits" },
+        { "point_id": "pa_04", "order": 4, "text": "anything else you think is important" }
+      ]
+    },
+    "part_b": {
+      "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+      "questions": [
+        { "question_id": "ir_01", "order": 1, "text": "Do you prefer visiting a museum online or in person?" },
+        { "question_id": "ir_02", "order": 2, "text": "Should all museum collections be available online for free?" },
+        { "question_id": "ir_03", "order": 3, "text": "Can virtual reality make history more interesting?" },
+        { "question_id": "ir_04", "order": 4, "text": "Would digital exhibits reduce the number of physical visitors?" },
+        { "question_id": "ir_05", "order": 5, "text": "What makes a museum attractive to young people?" },
+        { "question_id": "ir_06", "order": 6, "text": "Should visitors be allowed to take photographs of every exhibit?" },
+        { "question_id": "ir_07", "order": 7, "text": "Are interactive games suitable for serious historical topics?" },
+        { "question_id": "ir_08", "order": 8, "text": "How can museums remain accessible to people without advanced devices?" }
+      ]
+    },
+    "content_revision": 1,
+    "visible_to_students": true
+  },
+  {
+    "set_id": "dse-p4-mock-2025-1-3-smartphones-replacing-personal-computers",
+    "source_kind": "mock",
+    "exam_year": 2025,
+    "paper_version": "1.3",
+    "title": "Smartphones Replacing Personal Computers",
+    "source_note": "Based on the officially confirmed 2025 Paper 4 version 1.3, “As PC ownership declines, smartphones are on the rise”. Passage and questions are original.",
+    "context": {
+      "source_line": "This article appeared on a youth / education website:",
+      "title": "One Device for Everything?",
+      "body": [
+        "For many young people, the smartphone is their camera, map, wallet, television and main way of going online. It is cheaper and more portable than a laptop, and most everyday tasks—messaging, shopping, banking and watching videos—can be completed with a few taps. As phones become more powerful, some families no longer see a reason to own a separate computer.",
+        "Nevertheless, a small screen is not ideal for every task. Writing a long report, analysing a spreadsheet, editing a video or comparing several sources is usually easier with a full keyboard and a larger display. Relying only on phones may also create an educational gap: students can consume information easily but struggle to produce complex work. Instead of asking which device will completely replace the other, consumers should consider which tool is appropriate for each task and whether shared computers can provide affordable access."
+      ]
+    },
+    "part_a": {
+      "instruction": "You may want to talk about:",
+      "discussion_points": [
+        { "point_id": "pa_01", "order": 1, "text": "why smartphones have become more popular than computers" },
+        { "point_id": "pa_02", "order": 2, "text": "tasks for which computers are still necessary" },
+        { "point_id": "pa_03", "order": 3, "text": "how the library should spend its technology budget" },
+        { "point_id": "pa_04", "order": 4, "text": "anything else you think is important" }
+      ]
+    },
+    "part_b": {
+      "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+      "questions": [
+        { "question_id": "ir_01", "order": 1, "text": "Could you live without a personal computer?" },
+        { "question_id": "ir_02", "order": 2, "text": "Should students be expected to use their own phones for schoolwork?" },
+        { "question_id": "ir_03", "order": 3, "text": "Is typing on a phone an important modern skill?" },
+        { "question_id": "ir_04", "order": 4, "text": "Which device is better for learning: a tablet, laptop or smartphone?" },
+        { "question_id": "ir_05", "order": 5, "text": "Do smartphones make people less patient with long texts?" },
+        { "question_id": "ir_06", "order": 6, "text": "Should public libraries lend laptops to users?" },
+        { "question_id": "ir_07", "order": 7, "text": "Will smartphones eventually replace cash and identity cards as well?" },
+        { "question_id": "ir_08", "order": 8, "text": "Is it wasteful to own several digital devices?" }
+      ]
+    },
+    "content_revision": 1,
+    "visible_to_students": true
+  }
+]

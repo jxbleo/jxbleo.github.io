@@ -1317,3 +1317,14 @@ existing timer/SMTP environment, import intended private material/set rows,
 and deploy the affected functions, including `learningReports` and `parentMode`
 when their Completion projections are enabled. No production import, index
 creation, timer change, or deployment is performed by this implementation.
+
+### Speaking Set Library rollout
+
+Create ADMINONLY `speaking_sets` and `speaking_individual_responses` with the
+indexes in `docs/04_DATA_MODEL.md`. Prepare and review
+`.cloudbase-private/import/speaking-sets-cloudbase.json`, inserting only missing
+`set_id` rows. Run `npm run test:speaking-lab`, `npm run verify:release`,
+`npm run build:static`, confirm `dist/content/speaking` is absent, and package
+`speakingLab` plus `speakingAiWorker`. Deploy the gateway before the timer-only
+worker, keep worker browser invocation disabled, import the five Sets, publish
+the cache-busted static site, then smoke-test one Part A and one Part B Session.

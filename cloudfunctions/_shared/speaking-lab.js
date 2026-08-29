@@ -15,7 +15,6 @@ const MIN_SCORING_PARTICIPANTS = 3;
 const MAX_SCORING_PARTICIPANTS = 6;
 const SPEAKER_CONFIDENCE_MIN = 0.5;
 const AUTOMATIC_VOICE_MATCH_MIN_SCORE = 70;
-const AUTOMATIC_VOICE_MATCH_MIN_MARGIN = 10;
 const VOICEPRINT_EXCERPT_MIN_MS = 8000;
 const VOICEPRINT_EXCERPT_MAX_MS = 20000;
 const MAX_REPORT_LIST_ITEMS = 12;
@@ -27,6 +26,22 @@ const ASSESSED_DOMAINS = [
   "vocabulary_language_patterns",
   "ideas_organisation",
 ];
+
+// Speaking Sets intentionally do not use the general LMS `sets` collection.
+// Their content is versioned and snapshotted at Session creation, so keep all
+// validation in this dependency-free boundary shared by the gateway and tests.
+const SPEAKING_SET_ID_MIN = 12;
+const SPEAKING_SET_ID_MAX = 160;
+const SPEAKING_SET_TITLE_MAX = 160;
+const SPEAKING_SET_SOURCE_NOTE_MAX = 1000;
+const SPEAKING_SET_CONTEXT_TITLE_MAX = 300;
+const SPEAKING_SET_CONTEXT_MAX_CHARS = 20000;
+const SPEAKING_SET_CONTEXT_MAX_PARAGRAPHS = 20;
+const SPEAKING_SET_PART_A_MAX = 12;
+const SPEAKING_SET_PART_B_MAX = 20;
+const INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS = 65;
+const INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS = 3;
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v1";
 
 function text(value, limit = 2000) {
   return String(value == null ? "" : value).normalize("NFKC").trim().slice(0, limit);
@@ -108,6 +123,10 @@ function participantIsAccepted(participant) {
   return Boolean(participant && participantKind(participant) === "vip" && participant.invitation_status === "accepted" && participantUid(participant));
 }
 
+function identityIsConfirmed(participant) {
+  return Boolean(participant && ["voiceprint_confirmed", "student_confirmed", "teacher_confirmed"].includes(String(participant.identity_status || "")));
+}
+
 function participantForUid(participants, uid) {
   const target = String(uid || "");
   return (Array.isArray(participants) ? participants : []).find((participant) => participantUid(participant) === target) || null;
@@ -147,8 +166,7 @@ function canConfirmVoice(actor, participant, discussion) {
 function canCreateStudentShare(actor, participant, discussion) {
   if (!canReadDiscussion(actor, discussion, [participant])) return false;
   if (!participant || participantUid(participant) !== actorUid(actor)) return false;
-  return ["student_confirmed", "teacher_confirmed"].includes(String(participant.identity_status || "")) &&
-    Boolean(participant.matched_speaker_key);
+  return identityIsConfirmed(participant) && Boolean(participant.matched_speaker_key);
 }
 
 function canCreateTeacherShare(actor, discussion) {
@@ -182,8 +200,7 @@ function normalizeParticipant(participant, index = 0) {
 function participantName(participant, options = {}) {
   const normalized = normalizeParticipant(participant);
   if (normalized.kind === "guest") return normalized.guest_name || "Guest participant";
-  const confirmed = ["student_confirmed", "teacher_confirmed"].includes(normalized.identity_status);
-  return confirmed ? normalized.display_name : "";
+  return identityIsConfirmed(normalized) ? normalized.display_name : "";
 }
 
 function identityProjection(participant, options = {}) {
@@ -195,7 +212,7 @@ function identityProjection(participant, options = {}) {
   }
   // A teacher may correct or lock a mapping, but merely viewing as a teacher
   // (or viewing one's own row) must never bypass the confirmation state.
-  const canName = ["student_confirmed", "teacher_confirmed"].includes(normalized.identity_status);
+  const canName = identityIsConfirmed(normalized);
   return { label: canName ? normalized.display_name : (options.fallbackLabel || "Speaker"), speaker_key: speakerKey, named: canName, guest: false };
 }
 
@@ -328,7 +345,6 @@ function voiceprintExcerptPlans(segments, candidateSpeakerKeys, options = {}) {
 
 function automaticVoiceMatches(results, options = {}) {
   const minimumScore = Number.isFinite(Number(options.minimumScore)) ? Number(options.minimumScore) : AUTOMATIC_VOICE_MATCH_MIN_SCORE;
-  const minimumMargin = Number.isFinite(Number(options.minimumMargin)) ? Number(options.minimumMargin) : AUTOMATIC_VOICE_MATCH_MIN_MARGIN;
   const proposals = (Array.isArray(results) ? results : []).map((result) => {
     const ranked = (Array.isArray(result && result.matches) ? result.matches : []).map((match) => ({
       student_uid: text(match && match.student_uid, 160),
@@ -341,7 +357,6 @@ function automaticVoiceMatches(results, options = {}) {
     let reason = null;
     if (!top) reason = "NO_REGISTERED_MATCH";
     else if (top.score < minimumScore) reason = "BELOW_SCORE_THRESHOLD";
-    else if (runnerUp && margin < minimumMargin) reason = "AMBIGUOUS_MATCH";
     return {
       speaker_key: text(result && result.speaker_key, 60),
       top,
@@ -351,22 +366,24 @@ function automaticVoiceMatches(results, options = {}) {
     };
   }).filter((item) => item.speaker_key);
   const usedStudents = new Set();
-  const acceptedBySpeaker = new Map();
-  proposals.filter((item) => !item.reason).sort((left, right) => right.top.score - left.top.score || right.margin - left.margin || left.speaker_key.localeCompare(right.speaker_key)).forEach((item) => {
+  const resolvedBySpeaker = new Map();
+  proposals.filter((item) => item.top).sort((left, right) => right.top.score - left.top.score || right.margin - left.margin || left.speaker_key.localeCompare(right.speaker_key)).forEach((item) => {
     if (usedStudents.has(item.top.student_uid)) {
-      acceptedBySpeaker.set(item.speaker_key, { ...item, reason: "ONE_TO_ONE_CONFLICT" });
+      resolvedBySpeaker.set(item.speaker_key, { ...item, reason: "ONE_TO_ONE_CONFLICT" });
       return;
     }
     usedStudents.add(item.top.student_uid);
-    acceptedBySpeaker.set(item.speaker_key, item);
+    resolvedBySpeaker.set(item.speaker_key, item);
   });
   return proposals.map((item) => {
-    const resolved = acceptedBySpeaker.get(item.speaker_key) || item;
+    const resolved = resolvedBySpeaker.get(item.speaker_key) || item;
+    const reviewRequired = resolved.reason === "BELOW_SCORE_THRESHOLD" && Boolean(resolved.top);
+    const matched = !resolved.reason && Boolean(resolved.top);
     return {
       speaker_key: resolved.speaker_key,
-      status: resolved.reason ? "unmatched" : "matched",
-      student_uid: resolved.reason ? null : resolved.top.student_uid,
-      voiceprint_profile_id: resolved.reason ? null : resolved.top.voiceprint_profile_id,
+      status: matched ? "matched" : reviewRequired ? "review_required" : "unmatched",
+      student_uid: matched || reviewRequired ? resolved.top.student_uid : null,
+      voiceprint_profile_id: matched || reviewRequired ? resolved.top.voiceprint_profile_id : null,
       score: resolved.top ? resolved.top.score : null,
       next_best_score: resolved.next_best_score,
       margin: resolved.margin,
@@ -607,7 +624,7 @@ function turnReviewProjection(candidate, segments) {
 
 function projectStudentShare({ report, segments, participants, sharerParticipant, aliases = {}, discussion = {} } = {}) {
   const sharerKey = sharerParticipant && sharerParticipant.matched_speaker_key;
-  if (!sharerKey || !["student_confirmed", "teacher_confirmed"].includes(String(sharerParticipant.identity_status || ""))) throw new Error("VOICE_CONFIRMATION_REQUIRED_FOR_SHARE");
+  if (!sharerKey || !identityIsConfirmed(sharerParticipant)) throw new Error("VOICE_CONFIRMATION_REQUIRED_FOR_SHARE");
   const rows = Array.isArray(participants) ? participants : [];
   const keyLabel = (key) => String(key) === String(sharerKey) ? participantName(sharerParticipant, { self: true }) : (aliases[key] || `Speaker ${String(key).replace(/^spk_0*/, "")}`);
   const own = reportCandidate(report, sharerKey);
@@ -775,6 +792,197 @@ function publicShareFailure() {
   return new Error("SHARE_NOT_AVAILABLE");
 }
 
+function validateSpeakingSetId(value) {
+  const id = normalizeWhitespace(value, SPEAKING_SET_ID_MAX);
+  if (id.length < SPEAKING_SET_ID_MIN || id.length > SPEAKING_SET_ID_MAX || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) {
+    throw new Error("SPEAKING_SET_ID_INVALID");
+  }
+  return id;
+}
+
+function validatePaperVersion(value) {
+  const version = normalizeWhitespace(value, 20);
+  if (!version) return null;
+  if (!/^\d{1,2}\.\d{1,2}$/.test(version)) throw new Error("SPEAKING_SET_INVALID");
+  return version;
+}
+
+function normalizeOrderedRows(value, prefix, max, fieldName) {
+  if (!Array.isArray(value) || value.length < 1 || value.length > max) throw new Error("SPEAKING_SET_INVALID");
+  const seen = new Set();
+  const rows = value.map((row, index) => {
+    if (!row || typeof row !== "object" || Array.isArray(row)) throw new Error("SPEAKING_SET_INVALID");
+    const id = normalizeWhitespace(row[`${fieldName}_id`] || row.id || `${prefix}_${String(index + 1).padStart(2, "0")}`, 80);
+    const textValue = normalizeWhitespace(row.text, fieldName === "question" ? 1200 : 600);
+    if (!id || seen.has(id) || !(new RegExp(`^${prefix}_[0-9]{2,}$`)).test(id) || !textValue) throw new Error("SPEAKING_SET_INVALID");
+    seen.add(id);
+    return { [`${fieldName}_id`]: id, order: Number.isInteger(row.order) ? row.order : index + 1, text: textValue };
+  });
+  rows.sort((left, right) => left.order - right.order || left[`${fieldName}_id`].localeCompare(right[`${fieldName}_id`]));
+  return rows.map((row, index) => ({ ...row, order: index + 1 }));
+}
+
+function nextSpeakingChildSequence(rows, key, prefix) {
+  const highest = (Array.isArray(rows) ? rows : []).reduce((maximum, row) => {
+    const match = String(row && row[key] || "").match(new RegExp(`^${prefix}_([0-9]+)$`));
+    return match ? Math.max(maximum, Number(match[1]) || 0) : maximum;
+  }, 0);
+  return highest + 1;
+}
+
+function normalizeSpeakingSetInput(input = {}, options = {}) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("SPEAKING_SET_INVALID");
+  const setId = validateSpeakingSetId(input.set_id);
+  const sourceKind = normalizeWhitespace(input.source_kind, 12).toLowerCase();
+  if (!["pp", "mock"].includes(sourceKind)) throw new Error("SPEAKING_SET_INVALID");
+  const examYear = Number(input.exam_year);
+  if (!Number.isInteger(examYear) || examYear < 2000 || examYear > 2100) throw new Error("SPEAKING_SET_INVALID");
+  const paperVersion = validatePaperVersion(input.paper_version);
+  const title = normalizeWhitespace(input.title, SPEAKING_SET_TITLE_MAX);
+  if (!title) throw new Error("SPEAKING_SET_INVALID");
+  const sourceNote = normalizeWhitespace(input.source_note, SPEAKING_SET_SOURCE_NOTE_MAX);
+  const context = input.context || {};
+  const contextTitle = normalizeWhitespace(context.title, SPEAKING_SET_CONTEXT_TITLE_MAX);
+  const body = Array.isArray(context.body) ? context.body.map((paragraph) => text(paragraph, 4000)).filter(Boolean) : [];
+  const combined = body.join("\n\n");
+  if (!contextTitle || body.length < 1 || body.length > SPEAKING_SET_CONTEXT_MAX_PARAGRAPHS || combined.length > SPEAKING_SET_CONTEXT_MAX_CHARS) throw new Error("SPEAKING_SET_INVALID");
+  const sourceLine = normalizeWhitespace(context.source_line, 500);
+  const partAInput = input.part_a || {};
+  const partAInstruction = normalizeWhitespace(partAInput.instruction, 500);
+  const partBInput = input.part_b || {};
+  const partBInstruction = normalizeWhitespace(partBInput.instruction, 500);
+  const discussionPoints = normalizeOrderedRows(partAInput.discussion_points, "pa", SPEAKING_SET_PART_A_MAX, "point");
+  const questions = normalizeOrderedRows(partBInput.questions, "ir", SPEAKING_SET_PART_B_MAX, "question");
+  const output = {
+    set_id: setId,
+    source_kind: sourceKind,
+    exam_year: examYear,
+    paper_version: paperVersion,
+    title,
+    source_note: sourceNote,
+    context: { source_line: sourceLine, title: contextTitle, body },
+    part_a: { instruction: partAInstruction, discussion_points: discussionPoints },
+    part_b: { instruction: partBInstruction, questions },
+    content_revision: Number.isInteger(input.content_revision) && input.content_revision > 0 ? input.content_revision : 1,
+    visible_to_students: input.visible_to_students !== false,
+    next_point_sequence: Math.max(nextSpeakingChildSequence(discussionPoints, "point_id", "pa"), Number.isInteger(input.next_point_sequence) ? input.next_point_sequence : 1),
+    next_question_sequence: Math.max(nextSpeakingChildSequence(questions, "question_id", "ir"), Number.isInteger(input.next_question_sequence) ? input.next_question_sequence : 1),
+  };
+  if (!options.includeAudit) return output;
+  return { ...output, created_at: input.created_at || null, created_by_teacher_uid: input.created_by_teacher_uid || null, updated_at: input.updated_at || null, updated_by_teacher_uid: input.updated_by_teacher_uid || null };
+}
+
+function speakingSetDisplayLabel(set = {}) {
+  const source = String(set.source_kind || "mock").toUpperCase();
+  const year = Number.isInteger(Number(set.exam_year)) ? String(set.exam_year) : "";
+  const version = normalizeWhitespace(set.paper_version, 20);
+  return [
+    `${year} ${source}`.trim(),
+    version ? `Set ${version}` : null,
+    normalizeWhitespace(set.title, SPEAKING_SET_TITLE_MAX),
+  ].filter(Boolean).join(" · ");
+}
+
+function publicSpeakingSetProjection(set = {}) {
+  const normalized = normalizeSpeakingSetInput(set, { includeAudit: false });
+  return {
+    set_id: normalized.set_id,
+    display_label: speakingSetDisplayLabel(normalized),
+    source_kind: normalized.source_kind,
+    exam_year: normalized.exam_year,
+    paper_version: normalized.paper_version,
+    title: normalized.title,
+    source_note: normalized.source_note,
+    context: normalized.context,
+    part_a: normalized.part_a,
+    part_b: normalized.part_b,
+    content_revision: normalized.content_revision,
+    visible_to_students: normalized.visible_to_students,
+  };
+}
+
+function buildGroupDiscussionSnapshot(set = {}) {
+  const safe = publicSpeakingSetProjection(set);
+  return {
+    display_label: safe.display_label,
+    source_kind: safe.source_kind,
+    exam_year: safe.exam_year,
+    paper_version: safe.paper_version,
+    title: safe.title,
+    source_note: safe.source_note,
+    context: safe.context,
+    part_a: safe.part_a,
+  };
+}
+
+function buildIndividualResponseSnapshot(set = {}, question = {}) {
+  const safe = publicSpeakingSetProjection(set);
+  const resolved = resolvePartBQuestion(safe, question.question_id || question.id);
+  return {
+    display_label: safe.display_label,
+    source_kind: safe.source_kind,
+    exam_year: safe.exam_year,
+    paper_version: safe.paper_version,
+    title: safe.title,
+    source_note: safe.source_note,
+    context: safe.context,
+    question_snapshot: { question_id: resolved.question_id, order: resolved.order, text: resolved.text },
+  };
+}
+
+function partACompatibilityPrompt(set = {}) {
+  const safe = buildGroupDiscussionSnapshot(set);
+  const article = [safe.context.source_line, safe.context.title, ...safe.context.body].filter(Boolean).join("\n\n");
+  const points = safe.part_a.discussion_points.map((point) => `• ${point.text}`).join("\n");
+  return [article, safe.part_a.instruction, points].filter(Boolean).join("\n\n");
+}
+
+function resolvePartBQuestion(set = {}, questionId) {
+  const id = normalizeWhitespace(questionId, 80);
+  const questions = set.part_b && Array.isArray(set.part_b.questions) ? set.part_b.questions : [];
+  const question = questions.find((row) => String(row.question_id || row.id) === id);
+  if (!question) throw new Error("SPEAKING_QUESTION_NOT_FOUND");
+  return { question_id: normalizeWhitespace(question.question_id || question.id, 80), order: Number(question.order), text: normalizeWhitespace(question.text, 1200) };
+}
+
+function individualResponseTimingState(seconds) {
+  const elapsed = Math.max(0, Number(seconds) || 0);
+  return { elapsed_seconds: elapsed, warning: elapsed >= 60, should_stop: elapsed >= INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS, duration_limit_seconds: INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS };
+}
+
+function canonicalizeIndividualResponseReport(report, segments = [], options = {}) {
+  if (!report || typeof report !== "object" || Array.isArray(report)) throw new Error("INDIVIDUAL_RESPONSE_REPORT_INVALID");
+  const validIds = new Set((Array.isArray(segments) ? segments : []).map((row) => String(row.segment_id || "")));
+  const domains = report.domains && typeof report.domains === "object" ? report.domains : {};
+  const canonical = {};
+  const domainMap = {
+    communication_strategies: "communication_strategies",
+    ideas_organisation: "ideas_organisation",
+    vocabulary_language_patterns: "vocabulary_language_patterns",
+  };
+  Object.entries(domainMap).forEach(([key, sourceKey]) => {
+    const domain = domains[sourceKey];
+    if (!domain || typeof domain !== "object" || Array.isArray(domain)) throw new Error("INDIVIDUAL_RESPONSE_DOMAIN_INVALID");
+    const score = Number(domain.score);
+    if (!Number.isInteger(score) || score < 0 || score > 7) throw new Error("SPEAKING_AI_SCORE_INVALID");
+    const evidence = Array.isArray(domain.evidence_segment_ids) ? domain.evidence_segment_ids.map(String) : [];
+    if (new Set(evidence).size !== evidence.length || evidence.some((id) => !validIds.has(id))) throw new Error("SPEAKING_AI_EVIDENCE_INVALID");
+    canonical[key] = { score, commentary_zh: safeCommentary(domain.commentary_zh), evidence_segment_ids: evidence };
+  });
+  const cleanTextList = (value, limit, itemLimit) => (Array.isArray(value) ? value : []).map((item) => text(item, itemLimit).replace(/[<>]/g, "")).filter(Boolean).slice(0, limit);
+  const output = {
+    report_version: text(options.reportVersion || INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, 80),
+    summary_zh: safeCommentary(report.summary_zh),
+    domains: { ...canonical, pronunciation_delivery: { status: "not_assessed" } },
+    strengths: cleanTextList(report.strengths, 12, 240),
+    priority_actions: cleanTextList(report.priority_actions, 12, 240),
+    language_suggestions: cleanTextList(report.language_suggestions, 12, 480),
+    sample_response_en: text(report.sample_response_en, 1600).replace(/[<>]/g, ""),
+    transcript: (Array.isArray(segments) ? segments : []).map((segment) => ({ segment_id: String(segment.segment_id || ""), start_ms: Number(segment.start_ms || 0), end_ms: Number(segment.end_ms || 0), text: text(segment.text, 2000) })),
+  };
+  return options.redactNames ? redactExactNames(output, options.redactNames) : output;
+}
+
 module.exports = {
   DEFAULT_DURATION_SECONDS,
   MIN_DURATION_SECONDS,
@@ -794,6 +1002,7 @@ module.exports = {
   isTeacher,
   isActiveStudent,
   participantIsAccepted,
+  identityIsConfirmed,
   participantForUid,
   isCreator,
   canReadDiscussion,
@@ -828,5 +1037,22 @@ module.exports = {
   shareTokenHash,
   publicShareFailure,
   AUTOMATIC_VOICE_MATCH_MIN_SCORE,
-  AUTOMATIC_VOICE_MATCH_MIN_MARGIN,
+  SPEAKING_SET_ID_MIN,
+  SPEAKING_SET_ID_MAX,
+  SPEAKING_SET_PART_A_MAX,
+  SPEAKING_SET_PART_B_MAX,
+  INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS,
+  INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS,
+  INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION,
+  validateSpeakingSetId,
+  validatePaperVersion,
+  normalizeSpeakingSetInput,
+  speakingSetDisplayLabel,
+  publicSpeakingSetProjection,
+  buildGroupDiscussionSnapshot,
+  buildIndividualResponseSnapshot,
+  partACompatibilityPrompt,
+  resolvePartBQuestion,
+  individualResponseTimingState,
+  canonicalizeIndividualResponseReport,
 };

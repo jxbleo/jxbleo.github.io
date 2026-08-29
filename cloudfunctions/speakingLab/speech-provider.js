@@ -113,10 +113,12 @@ function normalizeVoiceMatch(value) {
 async function inspectAudio(input = {}) {
   const mime = text(input.mime_type, 80).toLowerCase();
   const size = Number(input.size_bytes);
+  const duration = Number(input.duration_seconds);
   if (!SUPPORTED_MIME.test(mime) || !Number.isFinite(size) || size < 1 || size > MAX_AUDIO_BYTES) {
     throw new SpeakingProviderError("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
   }
-  return { status: "scorable", warning_codes: [], mime_type: mime, size_bytes: Math.round(size) };
+  if (Number.isFinite(duration) && duration > 68) throw new SpeakingProviderError("SPEAKING_AUDIO_TOO_LONG");
+  return { status: "scorable", warning_codes: [], mime_type: mime, size_bytes: Math.round(size), duration_seconds: Number.isFinite(duration) ? Math.max(0, duration) : null };
 }
 
 function taskIdFrom(result) {
