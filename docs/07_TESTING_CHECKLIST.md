@@ -2379,12 +2379,14 @@ at desktop and 390-pixel phone widths. Confirm no horizontal overflow; opening
 a Discussion hides the Part A/Part B and Voiceprint cards but leaves the list
 available from the toolbar drawer;
 participant actions remain reachable; the transcript is collapsed; the phone
-dialog rests as a bottom sheet with sticky Cancel/Create actions; and returning
-Home from either the drawer or detail restores the mode cards. Confirm the
+dialog rests as a bottom sheet with sticky Cancel/Create actions; and the
+`Discussions` back control inside a detail restores the mode cards. Confirm the
 toolbar uses the Writing hamburger, has no student-name chip, and opens the
-drawer from the left. The drawer must contain the list directly, pair Home with
-a plus button that opens New Discussion, close by the same leftward path, close
-with Escape and the mobile scrim, and avoid a desktop scrim. At 390 pixels,
+drawer from the left. The drawer must contain the list directly, pair a native
+Home link to `dashboard.html` with a plus button that opens New Discussion,
+and navigate to the Student Dashboard when Home is activated from both the
+Speaking home and a selected Discussion. It must close by the same leftward
+path, close with Escape and the mobile scrim, and avoid a desktop scrim. At 390 pixels,
 confirm the initial closed state leaves the scrim hidden, the mode cards sharp,
 and every home control clickable; restoring the page from the back-forward
 cache must also start with the drawer closed. Part A must read `DSE Paper 4`,

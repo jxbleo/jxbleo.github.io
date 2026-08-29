@@ -2,6 +2,10 @@
 
 ## 2026-08-29
 
+- Fixed the Speaking Lab drawer's Home control so it uses a native link to the
+  authenticated Student Dashboard. The separate `Discussions` control inside a
+  selected Discussion continues to restore the Speaking mode-card surface.
+
 - Separated the Student Dashboard's Writing, Intensive Listening, and Speaking
   entrances from the welcome hero into three aligned full-width pale-glass
   cards with blue, teal, and orange category washes. Restored visible workspace

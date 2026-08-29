@@ -9,7 +9,6 @@
     var sidebar = document.getElementById('speaking-sidebar');
     var sidebarToggle = document.getElementById('speaking-sidebar-toggle');
     var sidebarScrim = document.getElementById('speaking-sidebar-scrim');
-    var sidebarHome = document.getElementById('speaking-sidebar-home');
     var sidebarNew = document.getElementById('speaking-sidebar-new');
     var dialog = document.getElementById('discussion-dialog');
     var invitationDialog = document.getElementById('invitation-dialog');
@@ -635,7 +634,6 @@
     }
     sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
     sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
-    sidebarHome.addEventListener('click', returnToSpeakingHome);
     sidebarNew.addEventListener('click', openNewDiscussionDialog);
     document.getElementById('new-discussion').addEventListener('click', openNewDiscussionDialog);
     document.getElementById('open-my-voiceprint').addEventListener('click', openVoiceprintDialog);
