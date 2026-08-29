@@ -9,6 +9,10 @@
   report starts directly with its Discussion information card.
 - Moved Candidate names, voice matching, and access actions into a dedicated
   `View Candidates` modal parallel to the existing Set-task modal.
+- Replaced the completed report's first card with the selected Option A layout:
+  a four-row split ledger for Date, Duration, Candidates, and Task. Candidate
+  and Task rows open their independent dialogs, and Student Share now lives in
+  the Candidate dialog.
 - Rebuilt the ready report as Discussion details with a modal Set task, the
   signed-in student's CS/IO/VL/PD analysis, and personal turn-by-turn coaching,
   followed by a collapsed complete script with warm-yellow self highlighting.

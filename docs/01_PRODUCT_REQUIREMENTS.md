@@ -2125,11 +2125,13 @@ state. Once the formal recording is uploaded, those controls disappear and the
 report surface takes over. Queued or processing reports show factual stage
 progress plus live Candidate matching. A ready report starts directly with its
 first card, without a redundant back control or ready-status label, and is
-ordered as Discussion details (date, recording length, and Candidate count),
+ordered as a four-row Discussion ledger (`Date`, `Duration`, `Candidates`, and
+`Task`),
 the authenticated student's four-domain analysis, and that student's
 turn-by-turn coaching, followed by one collapsed complete script. The Set task
 and Candidate names/matching/access each open in their own modal instead of
-expanding inside the card. CS, IO, and VL retain their 0–7 feedback; PD always
+expanding inside the card. Student Share moves into the Candidate modal so the
+ledger contains no secondary controls. CS, IO, and VL retain their 0–7 feedback; PD always
 reads `Not assessed` and receives no comment. The VL label is `Vocabulary &
 Language Pattern`, and all dimension names use `&` instead of spelling out
 `and`. The complete script highlights only the authenticated student's

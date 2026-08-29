@@ -160,15 +160,19 @@
     function openPromptDialog() {
         if (!currentDiscussion || !promptDialog) return;
         promptDialogTitle.textContent = currentDiscussion.title || 'Discussion task';
-        promptDialogSubtitle.textContent = formatDate(currentDiscussion.discussion_date) + ' · DSE Paper 4 Part A Set question';
-        promptDialogText.textContent = currentDiscussion.prompt_text || 'No Set question is available.';
+        promptDialogSubtitle.textContent = formatDate(currentDiscussion.discussion_date) + ' · DSE Paper 4 Part A Group Discussion Task';
+        promptDialogText.textContent = currentDiscussion.prompt_text || 'No Discussion Task is available.';
         if (typeof promptDialog.showModal === 'function') promptDialog.showModal();
         else promptDialog.setAttribute('open', '');
+    }
+    function studentShareMarkup(item) {
+        var canShare = (item.participants || []).some(function (participant) { return participant.is_self && ['voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(participant.identity_status) >= 0; });
+        return '<div class="speaking-report-share"><div><strong>Private report sharing</strong><p>' + (canShare ? 'Create a seven-day Student Share with your own confirmed name only.' : 'Confirm your voice before creating a Student Share.') + '</p></div>' + (canShare ? '<button class="primary-button" type="button" id="create-student-share">Create Student Share</button>' : '<span class="speaking-pill">Voice confirmation required</span>') + '</div><div id="student-share-result"></div>';
     }
     function openCandidateDialog() {
         if (!currentDiscussion || !candidateDialog || !candidateDialogContent) return;
         var controls = candidateControls(currentDiscussion);
-        candidateDialogContent.innerHTML = '<div class="speaking-dialog-head"><p class="eyebrow accent">CANDIDATES</p><h2 id="discussion-candidate-dialog-title">Candidate matching</h2><p>Confirmed voiceprints are named automatically. Unclear or unmatched voices remain anonymous.</p></div><div class="speaking-candidate-dialog-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + controls.rosterEditor + '<div class="speaking-dialog-actions"><button class="primary-button" id="discussion-candidate-close" type="button">Done</button></div>';
+        candidateDialogContent.innerHTML = '<div class="speaking-dialog-head"><p class="eyebrow accent">CANDIDATES</p><h2 id="discussion-candidate-dialog-title">Candidate matching</h2><p>Task · ' + esc(currentDiscussion.title || 'Discussion Task') + '</p></div><div class="speaking-candidate-dialog-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + controls.rosterEditor + studentShareMarkup(currentDiscussion) + '<div class="speaking-dialog-actions"><button class="primary-button" id="discussion-candidate-close" type="button">Done</button></div>';
         bindInvitationActions(candidateDialogContent);
         if (typeof candidateDialog.showModal === 'function') candidateDialog.showModal();
         else candidateDialog.setAttribute('open', '');
@@ -458,14 +462,16 @@
         var lastEnd = transcript.reduce(function (maximum, line) { return Math.max(maximum, Number(line.end_ms || 0)); }, 0);
         var seconds = lastEnd > 0 ? Math.round(lastEnd / 1000) : Number(item.duration_seconds || 0);
         if (!seconds) return 'Pending';
-        return Math.floor(seconds / 60) + ' min ' + String(seconds % 60).padStart(2, '0') + ' sec';
+        return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
     }
     function reportInfoCardMarkup(item, report) {
-        var canShare = (item.participants || []).some(function (participant) { return participant.is_self && ['voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(participant.identity_status) >= 0; });
         var candidateCount = Number.isInteger(item.candidate_count) ? item.candidate_count : (report.candidates || []).length;
-        return '<section class="speaking-report-card speaking-report-info-card"><header class="speaking-report-card-header"><div><p class="eyebrow accent">DISCUSSION DETAILS</p><h2>About this Discussion</h2><p>Your report uses the Set question, the private recording, and confirmed Candidate identities.</p></div><div class="speaking-report-card-actions"><button class="outline-button" type="button" id="view-discussion-prompt">View Set task</button><button class="outline-button" type="button" id="view-discussion-candidates">View Candidates</button></div></header>' +
-            '<div class="speaking-report-facts"><dl><dt>Date</dt><dd>' + esc(formatDate(item.discussion_date)) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(reportDuration(item, report)) + '</dd></dl><dl><dt>Candidates</dt><dd>' + esc(candidateCount) + '</dd></dl></div>' +
-            '<div class="speaking-report-share"><div><strong>Private report sharing</strong><p>' + (canShare ? 'Create a seven-day Student Share with your own confirmed name only.' : 'Confirm your voice before creating a Student Share.') + '</p></div>' + (canShare ? '<button class="primary-button" type="button" id="create-student-share">Create Student Share</button>' : '<span class="speaking-pill">Voice confirmation required</span>') + '</div><div id="student-share-result"></div></section>';
+        return '<section class="speaking-report-card speaking-report-info-card" aria-label="Discussion details"><div class="speaking-report-ledger">' +
+            '<div class="speaking-report-ledger-row"><span class="speaking-report-ledger-label">Date</span><span class="speaking-report-ledger-value">' + esc(formatDate(item.discussion_date)) + '</span></div>' +
+            '<div class="speaking-report-ledger-row"><span class="speaking-report-ledger-label">Duration</span><span class="speaking-report-ledger-value">' + esc(reportDuration(item, report)) + '</span></div>' +
+            '<button class="speaking-report-ledger-row" type="button" id="view-discussion-candidates"><span class="speaking-report-ledger-label">Candidates</span><span class="speaking-report-ledger-value">' + esc(candidateCount) + '</span></button>' +
+            '<button class="speaking-report-ledger-row" type="button" id="view-discussion-prompt"><span class="speaking-report-ledger-label">Task</span><span class="speaking-report-ledger-value">' + esc(item.title || 'Discussion Task') + '</span></button>' +
+            '</div></section>';
     }
     function personalAnalysisCardMarkup(report) {
         var own = (report.candidates || []).find(function (candidate) { return candidate.is_self; });
