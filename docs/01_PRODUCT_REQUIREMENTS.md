@@ -2156,6 +2156,16 @@ Every other result stays under its Speaker label. Missing voiceprints, short
 turns, ambiguity, conversion failure, or provider failure must never stop DSE
 analysis.
 
+The matched student's Speaking Lab projects that pending invitation into the
+left Discussion drawer even when the student was not named at Session creation.
+While any such invitation remains unanswered, the toolbar drawer control shows
+one restrained message marker and its accessible label reports the number
+waiting. Opening the drawer shows the corresponding Discussion with an
+`Invitation` status. Accepting grants the existing participant access and
+refreshes the list immediately; declining removes that student's access without
+changing report generation. The marker represents pending invitations, not a
+separate general-purpose notification or read/unread system.
+
 After a report is ready, any accepted VIP Participant or teacher may explicitly
 run `Search voice matches` from the Candidates card. This creates a separate
 durable Voice Rematch job that reuses the existing canonical transcript and DSE

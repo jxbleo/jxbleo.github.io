@@ -2465,6 +2465,12 @@ toolbar uses the Writing hamburger symbol at left, a centered `Speaking Lab`
 label, and no trailing student-name chip. The drawer opens and closes from the
 left on the same path, uses a mobile scrim only while open without blocking the
 closed home or the desktop workspace, and renders the Discussion list directly.
+When one or more invitations are pending for the signed-in student, a compact
+red message glyph appears at the drawer button's upper-right edge. It arrives
+once without a repeating pulse, is hidden at zero, and is replaced by a static
+state under Reduced Motion. The button's accessible name includes the waiting
+invitation count. The matching Discussion row receives a quiet invitation tint
+and `Invitation` pill; selecting it opens the existing accept/decline dialog.
 Its top row pairs a native Home link with a plus button: Home navigates directly
 to `dashboard.html`, while plus opens the existing New Discussion dialog. The
 `Discussions` back control inside a selected Discussion remains the separate

@@ -1243,7 +1243,10 @@ once and confirm the report still completes with anonymous Speaker labels.
 
 The historical `Search voice matches` release changes both `speakingLab` and
 `speakingAiWorker`; deploy and confirm both functions are Active before
-publishing `speaking-lab.html` and its `20260829-4` CSS/JS assets. Test one ready
+publishing `speaking-lab.html` and its `20260829-5` CSS/JS assets. The
+`20260829-5` frontend additionally exposes automatic-match invitations through
+the existing student Discussion drawer and requires no new collection, index,
+timer, or function configuration. Test one ready
 Discussion after enrolling a new VIP voiceprint: the job must start directly at
 `voice_matching`, the existing report must remain readable, and neither a new
 Tencent ASR task nor a DSE model usage event may be created. Confirm refresh
