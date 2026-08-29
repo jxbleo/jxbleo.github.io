@@ -146,21 +146,73 @@
             button.disabled = false;
         });
     }
+    function loadDiscussionPages(offset, collected) {
+        return call('listDiscussions', { page_size: 50, offset: offset || 0 }).then(function (result) {
+            var rows = collected.concat(result.discussions || []);
+            return result.next_offset != null ? loadDiscussionPages(result.next_offset, rows) : rows;
+        });
+    }
     function load() {
-        return call('listDiscussions', { page_size: 50 }).then(function (result) {
-            list.innerHTML = (result.discussions || []).map(function (item) {
-                return '<button class="speaking-card" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span><strong>' + esc(item.title) + '</strong><small>' + esc(item.analysis_status) + ' · ' + esc(item.participant_count) + ' participants</small></span><span class="speaking-pill">Open</span></button>';
+        return loadDiscussionPages(0, []).then(function (discussions) {
+            list.innerHTML = discussions.map(function (item) {
+                var status = item.analysis_status === 'ready' ? 'Full report ready' : item.analysis_status;
+                return '<button class="speaking-card" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span><strong>' + esc(item.title) + '</strong><small>' + esc(item.discussion_date || 'No date') + ' · ' + esc(item.participant_count) + ' participants · ' + esc(status) + '</small></span><span class="speaking-pill" data-tone="' + (item.analysis_status === 'ready' ? 'ready' : 'working') + '">' + (item.analysis_status === 'ready' ? 'View report' : 'Open') + '</span></button>';
             }).join('') || '<div class="speaking-detail-card">No Discussions yet.</div>';
             list.querySelectorAll('[data-speaking-teacher-id]').forEach(function (button) {
                 button.addEventListener('click', function () { open(button.getAttribute('data-speaking-teacher-id')); });
             });
         });
     }
-    function reportMarkup(report) {
-        if (!report) return '<p>No report has been generated.</p>';
-        return '<section class="speaking-upload-panel"><h3>Current report</h3><p>' + esc(report.group_summary_zh || '') + '</p>' + (report.candidates || []).map(function (candidate) {
-            return '<p><strong>' + esc(candidate.speaker_label || 'Speaker') + '</strong> · ' + esc(candidate.summary_zh || '') + '</p>';
-        }).join('') + '</section>';
+    function timeLabel(value) {
+        var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
+        return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+    }
+    function initials(value) {
+        var parts = String(value || 'Speaker').trim().split(/\s+/).filter(Boolean);
+        return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : String(parts[0] || 'S').slice(0, 2)).toUpperCase();
+    }
+    function reportList(title, items) {
+        if (!Array.isArray(items) || !items.length) return '';
+        return '<section class="speaking-report-list"><h4>' + esc(title) + '</h4><ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul></section>';
+    }
+    function teacherDomainCards(candidate) {
+        var labels = {
+            communication_strategies: ['CS', 'Communication Strategies'],
+            ideas_organisation: ['IO', 'Ideas & Organisation'],
+            vocabulary_language_patterns: ['VL', 'Vocabulary & Language Pattern']
+        };
+        var cards = Object.keys(labels).map(function (key) {
+            var domain = candidate.domains && candidate.domains[key] || {};
+            var score = Number.isFinite(Number(domain.score)) ? Math.max(0, Math.min(7, Number(domain.score))) : null;
+            return '<article class="speaking-score-card" style="--score:' + esc(score == null ? 0 : score) + '"><div class="speaking-score-head"><span><b>' + esc(labels[key][0]) + '</b>' + esc(labels[key][1]) + '</span><strong>' + esc(score == null ? '—' : score) + (score == null ? '' : '<small>/7</small>') + '</strong></div><p>' + esc(domain.commentary_zh || 'No commentary is available for this dimension.') + '</p></article>';
+        }).join('');
+        return cards + '<article class="speaking-score-card speaking-score-card-pd"><div class="speaking-score-head"><span><b>PD</b>Pronunciation &amp; Delivery</span><strong>—</strong></div><p>Not assessed · 暂不评论</p></article>';
+    }
+    function teacherTurnReviewsMarkup(candidate) {
+        var reviews = Array.isArray(candidate.turn_reviews) ? candidate.turn_reviews : [];
+        if (!reviews.length) return '';
+        return '<details class="teacher-speaking-turns"><summary><span><strong>Turn-by-turn review</strong><small>CS &amp; IO coaching for every speaking turn</small></span><span class="speaking-pill">' + esc(reviews.length) + ' turn' + (reviews.length === 1 ? '' : 's') + '</span></summary><div class="speaking-turn-list">' + reviews.map(function (review, index) {
+            var cs = review.communication_strategies || {};
+            var io = review.ideas_organisation || {};
+            var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-turn-caution">Possible ASR error</span>';
+            return '<article class="speaking-turn-card"><header><div><p>Turn ' + esc(index + 1) + ' · ' + esc(timeLabel(review.start_ms)) + '–' + esc(timeLabel(review.end_ms)) + '</p></div>' + caution + '</header><blockquote>' + esc(review.transcript_text || '') + '</blockquote><div class="speaking-turn-coaching"><section data-domain="cs"><p class="speaking-turn-domain">CS · Communication Strategies</p><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section data-domain="io"><p class="speaking-turn-domain">IO · Ideas &amp; Organisation</p><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div></article>';
+        }).join('') + '</div></details>';
+    }
+    function teacherCandidateReportMarkup(candidate) {
+        var label = candidate.speaker_label || 'Speaker';
+        var turnCount = candidate.interaction_summary && Number.isInteger(candidate.interaction_summary.turn_count) ? candidate.interaction_summary.turn_count : (candidate.turn_reviews || []).length;
+        return '<section class="speaking-report-card teacher-speaking-candidate-report"><header class="speaking-report-card-header teacher-speaking-candidate-header"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(label)) + '</span><div><p class="eyebrow accent">CANDIDATE REPORT</p><h2>' + esc(label) + '</h2><p>' + esc(candidate.summary_zh || 'No individual summary is available.') + '</p></div><span class="speaking-pill">' + esc(turnCount) + ' turn' + (turnCount === 1 ? '' : 's') + '</span></header><div class="speaking-score-grid speaking-score-grid-four">' + teacherDomainCards(candidate) + '</div><div class="speaking-coaching-grid">' + reportList('Strengths', candidate.strengths) + reportList('Priority actions', candidate.priority_actions) + reportList('Language suggestions', candidate.language_suggestions) + '</div>' + teacherTurnReviewsMarkup(candidate) + '</section>';
+    }
+    function teacherTranscriptMarkup(report) {
+        if (!Array.isArray(report.transcript) || !report.transcript.length) return '';
+        return '<details class="speaking-report-card speaking-transcript teacher-speaking-transcript"><summary><span><strong>Complete script</strong><small>Full Discussion transcript with the teacher-visible Speaker names</small></span></summary><div class="speaking-transcript-lines">' + report.transcript.map(function (line) {
+            return '<article class="speaking-transcript-line"><header><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(timeLabel(line.start_ms)) + '–' + esc(timeLabel(line.end_ms)) + '</small></header><p>' + esc(line.text || '') + '</p></article>';
+        }).join('') + '</div></details>';
+    }
+    function reportMarkup(report, shareBuilder) {
+        if (!report) return '<section class="speaking-report-card teacher-speaking-report-empty"><p class="eyebrow accent">TEACHER REPORT</p><h2>No report has been generated</h2><p>Upload and analyse the Discussion before reviewing or sharing group performance.</p></section>';
+        var candidates = Array.isArray(report.candidates) ? report.candidates : [];
+        return '<div class="teacher-speaking-report-stack"><section class="speaking-report-card teacher-speaking-group-report"><header class="speaking-report-card-header"><div><p class="eyebrow accent">GROUP REPORT</p><h2>Overall performance</h2><p>' + esc(report.group_summary_zh || 'No group summary is available.') + '</p></div><button class="primary-button" id="teacher-speaking-share" type="button">Share group report</button></header><div class="teacher-speaking-group-analysis">' + reportList('Group strengths', report.group_strengths) + reportList('Group priorities', report.group_priorities) + reportList('Discussion flow', report.discussion_flow) + '</div></section>' + shareBuilder + '<div class="teacher-speaking-candidate-section"><div class="teacher-speaking-section-heading"><div><p class="eyebrow accent">ALL CANDIDATE REPORTS</p><h2>Individual performance</h2></div><span class="speaking-pill">' + esc(candidates.length) + ' Candidates</span></div>' + (candidates.map(teacherCandidateReportMarkup).join('') || '<section class="speaking-report-card"><p>No Candidate reports are available.</p></section>') + '</div>' + teacherTranscriptMarkup(report) + '</div>';
     }
     function shareSectionCheckbox(key, label, checked) {
         return '<label><input type="checkbox" data-share-content="' + esc(key) + '"' + (checked ? ' checked' : '') + '> ' + esc(label) + '</label>';
@@ -191,9 +243,10 @@
                 shareSectionCheckbox('evidence', 'Evidence excerpts', true),
                 shareSectionCheckbox('transcript', 'Transcript', true)
             ].join('');
+            var shareBuilder = '<section id="teacher-speaking-share-builder" class="speaking-report-card teacher-speaking-share-builder" hidden><header class="speaking-report-card-header"><div><p class="eyebrow accent">SHARE GROUP REPORT</p><h2>Choose what the group can see</h2><p>Every Candidate and every report section is selected by default. Clear a name to keep that Candidate anonymous without removing their analysis.</p></div></header><div class="teacher-speaking-share-options"><section><h3>Candidate names</h3><div id="teacher-speaking-name-selection" class="teacher-speaking-checkbox-grid">' + nameSelection + '</div><div class="speaking-detail-actions"><button class="outline-button" type="button" id="teacher-speaking-select-all">Select all</button><button class="outline-button" type="button" id="teacher-speaking-clear-all">Clear all</button></div></section><section><h3>Report content</h3><div id="teacher-speaking-content-selection" class="teacher-speaking-checkbox-grid">' + contentSelection + '</div></section></div><div class="teacher-speaking-share-footer"><button class="primary-button" type="button" id="teacher-speaking-create-share">Create private group link</button><p id="teacher-speaking-share-result"></p></div></section>';
             var disputeHistory = (item.identity_disputes || []).length ? '<section class="speaking-upload-panel"><h3>Student voice concerns</h3>' + item.identity_disputes.map(function (dispute) { var participant = (item.participants || []).find(function (row) { return row.participant_id === dispute.participant_id; }); return '<p><strong>' + esc(participant && (participant.roster_display_name || participant.display_name) || 'Participant') + '</strong> disputed ' + esc(dispute.speaker_key || 'the current match') + ' · revision ' + esc(dispute.mapping_revision) + '</p>'; }).join('') + '</section>' : '';
             detail.hidden = false;
-            detail.innerHTML = '<article class="speaking-detail-card"><button class="outline-button" type="button" id="teacher-speaking-back">← Discussions</button><p class="eyebrow accent">SPEAKING</p><h2>' + esc(item.title) + '</h2><p>' + esc(item.recording_status) + ' · ' + esc(item.analysis_status) + '</p><h3>Roster and identity mapping</h3><p>Only Candidate Speaker tracks from the server report can be assigned.</p><ul class="speaking-participants">' + roster + '</ul>' + disputeHistory + reportMarkup(item.report) + '<div class="speaking-detail-actions"><button class="outline-button" type="button" id="teacher-speaking-save-mapping">Save mapping</button><button class="primary-button" type="button" id="teacher-speaking-share">Create teacher share</button><button class="danger-button" type="button" id="teacher-speaking-delete">Delete Discussion</button></div><section id="teacher-speaking-share-builder" class="speaking-upload-panel" hidden><h3>Teacher share</h3><p>Select content and independently select the names that may appear. An unconfirmed VIP remains a Speaker even when selected.</p><h4>Names</h4><div id="teacher-speaking-name-selection">' + nameSelection + '</div><div class="speaking-detail-actions"><button class="outline-button" type="button" id="teacher-speaking-select-all">Select all</button><button class="outline-button" type="button" id="teacher-speaking-clear-all">Clear all</button></div><h4>Content</h4><div id="teacher-speaking-content-selection">' + contentSelection + '</div><button class="primary-button" type="button" id="teacher-speaking-create-share">Create snapshot</button><p id="teacher-speaking-share-result"></p></section></article>';
+            detail.innerHTML = '<div class="teacher-speaking-report-workspace"><section class="speaking-report-card teacher-speaking-session-card"><div><button class="outline-button" type="button" id="teacher-speaking-back">← Discussions</button><p class="eyebrow accent">TEACHER SPEAKING REPORT</p><h2>' + esc(item.title) + '</h2><p>' + esc(item.recording_status) + ' · ' + esc(item.analysis_status) + ' · ' + esc(item.participant_count) + ' participants</p></div><button class="danger-button" type="button" id="teacher-speaking-delete">Delete Discussion</button></section><details class="speaking-report-card teacher-speaking-roster-card"><summary><span><strong>Roster &amp; voice mapping</strong><small>Teacher-only identity and voiceprint controls</small></span><span class="speaking-pill">' + esc(item.participant_count) + ' participants</span></summary><div class="teacher-speaking-roster-body"><p>Only Candidate Speaker tracks from the server report can be assigned.</p><ul class="speaking-participants">' + roster + '</ul>' + disputeHistory + '<div class="speaking-detail-actions"><button class="primary-button" type="button" id="teacher-speaking-save-mapping">Save voice mapping</button></div></div></details>' + reportMarkup(item.report, shareBuilder) + '</div>';
             bindDetail(item);
         }).catch(function (error) {
             setMessage(error.message || 'Could not load Discussion.', true);
@@ -238,10 +291,18 @@
                 }).catch(function (error) { setMessage(error.message || 'Could not play this private excerpt.', true); }).finally(function () { button.disabled = false; });
             });
         });
-        document.getElementById('teacher-speaking-share').addEventListener('click', function () { document.getElementById('teacher-speaking-share-builder').hidden = false; });
-        document.getElementById('teacher-speaking-select-all').addEventListener('click', function () { detail.querySelectorAll('[data-share-participant]').forEach(function (box) { box.checked = true; }); });
-        document.getElementById('teacher-speaking-clear-all').addEventListener('click', function () { detail.querySelectorAll('[data-share-participant]').forEach(function (box) { box.checked = false; }); });
-        document.getElementById('teacher-speaking-create-share').addEventListener('click', function () {
+        var shareToggle = document.getElementById('teacher-speaking-share');
+        var selectAll = document.getElementById('teacher-speaking-select-all');
+        var clearAll = document.getElementById('teacher-speaking-clear-all');
+        var createShare = document.getElementById('teacher-speaking-create-share');
+        if (shareToggle) shareToggle.addEventListener('click', function () {
+            var builder = document.getElementById('teacher-speaking-share-builder');
+            builder.hidden = false;
+            builder.scrollIntoView({ behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+        });
+        if (selectAll) selectAll.addEventListener('click', function () { detail.querySelectorAll('[data-share-participant]').forEach(function (box) { box.checked = true; }); });
+        if (clearAll) clearAll.addEventListener('click', function () { detail.querySelectorAll('[data-share-participant]').forEach(function (box) { box.checked = false; }); });
+        if (createShare) createShare.addEventListener('click', function () {
             var button = document.getElementById('teacher-speaking-create-share');
             button.disabled = true;
             var ids = Array.prototype.slice.call(detail.querySelectorAll('[data-share-participant]:checked')).map(function (box) { return box.getAttribute('data-share-participant'); });
@@ -249,7 +310,7 @@
             detail.querySelectorAll('[data-share-content]').forEach(function (box) { selection[box.getAttribute('data-share-content')] = box.checked; });
             call('createTeacherShare', { discussion_id: selected, selection: selection }).then(function (share) {
                 var url = new URL(share.share_url, window.location.href).href;
-                document.getElementById('teacher-speaking-share-result').innerHTML = '<a href="' + esc(url) + '" target="_blank" rel="noopener">Open private snapshot</a> · expires ' + esc(share.expires_at || 'in 7 days');
+                document.getElementById('teacher-speaking-share-result').innerHTML = '<a href="' + esc(url) + '" target="_blank" rel="noopener">Open shared group report</a> · expires ' + esc(share.expires_at || 'in 7 days');
             }).catch(function (error) { setMessage(error.message || 'Could not create snapshot.', true); }).finally(function () { button.disabled = false; });
         });
         document.getElementById('teacher-speaking-delete').addEventListener('click', function () {

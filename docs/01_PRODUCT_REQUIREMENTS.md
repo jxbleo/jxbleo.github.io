@@ -2210,6 +2210,18 @@ anonymous peer summaries; Teacher snapshots apply explicit per-participant
 name selection and redact hidden names everywhere. Raw share tokens are
 returned once, stored only as SHA-256 hashes, expire after seven days, and
 snapshots are revoked when mapping/report/privacy state changes.
+
+Teacher Speaking must expose every Discussion available to the teacher, loading
+additional backend pages until the complete list is represented. Opening a
+ready Discussion shows the complete group report: group summary, strengths,
+priorities and flow; every Candidate's CS, IO, VL and fixed-unassessed PD
+analysis; every Candidate's turn-by-turn coaching; and the full teacher-visible
+transcript. The report itself contains a `Share group report` action. A Teacher
+Share selects every Candidate name and every report section by default so the
+result represents the whole group, while still allowing the teacher to hide
+individual names or report sections before creating the seven-day private
+snapshot. The existing server projection remains authoritative for anonymous
+or unresolved Speaker tracks.
 Authenticated participant reports retain the existing full Candidate overview;
 the signed-in Candidate's own turn review is visually prioritised. Student
 Share snapshots contain only the sharer's detailed turn review. Teacher Share

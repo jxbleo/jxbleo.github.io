@@ -119,6 +119,12 @@ function run() {
   assert.match(teacher, /visible_participant_ids|Select all|Clear all/);
   assert.match(teacher, /data-share-content|Individual analysis|Transcript/);
   assert.match(teacher, /turn_reviews.*Turn-by-turn CS and IO coaching/);
+  assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
+  assert.match(teacher, /Full report ready|View report/);
+  assert.match(teacher, /Share group report|Create private group link/);
+  assert.match(teacher, /GROUP REPORT|ALL CANDIDATE REPORTS/);
+  assert.match(teacher, /Communication Strategies|Ideas &amp; Organisation|Vocabulary &amp; Language Pattern/);
+  assert.match(teacher, /Turn-by-turn review|Complete script/);
   assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
@@ -179,6 +185,7 @@ function run() {
   assert.match(css, /speaking-sidebar-alert-arrive/);
   assert.match(css, /speaking-card\.is-invitation/);
   assert.match(css, /border-radius:\s*28px 28px 0 0/);
+  assert.match(css, /teacher-speaking-report-stack|teacher-speaking-candidate-report/);
   assert.match(css, /\.speaking-dialog\s*\{[^}]*width:\s*calc\(100% - 24px\)[^}]*max-width:\s*calc\(100% - 24px\)[^}]*margin:\s*auto auto 0/);
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
@@ -194,6 +201,8 @@ function run() {
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260829-14/);
   assert.match(page, /speaking-lab\.js\?v=20260829-12/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260829-15/);
+  assert.match(teacherPage, /teacher-speaking\.js\?v=20260829-1/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

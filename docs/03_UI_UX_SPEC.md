@@ -2519,8 +2519,24 @@ and a direct save state; no arbitrary audio-file upload is offered for reusable
 voiceprints. The student may remove their own reusable voiceprint. A ready
 voiceprint is described as automatic matching support, never identity proof.
 
-Teacher Speaking is a separate workspace view with paged Discussions, identity
-mapping review, per-participant name selection, and explicit share generation.
+Teacher Speaking is a separate workspace view that follows backend pagination
+until every Discussion is listed. A ready row is labelled `Full report ready`
+and opens one complete teacher report rather than a summary-only view. The
+report begins with group performance and then shows every Candidate's four
+dimensions, strengths, priority actions, language suggestions, turn-by-turn CS
+and IO coaching, and one collapsed complete transcript. Identity mapping stays
+in a separate collapsed teacher-only card so it does not interrupt report
+reading. Report cards are independent surfaces; no translucent parent border
+or line visually joins them.
+
+The group-performance card contains `Share group report`. Activating it reveals
+the share builder directly below the group report. Every Candidate name and
+every content section is selected by default, creating a whole-group teacher
+snapshot unless the teacher deliberately clears a name or section. Clearing a
+name keeps that Candidate's selected analysis but replaces the real name with
+its safe Speaker label. The created link opens the existing private external
+report and expires after seven days.
+
 Its Voiceprint Setup accepts an exact VIP Student ID and records on the current
 teacher device. Every Discussion roster row also provides Record/Update
 Voiceprint, including a Non-VIP row labelled `Name not verified`; teacher

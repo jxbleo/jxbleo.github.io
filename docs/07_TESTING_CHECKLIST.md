@@ -2331,6 +2331,22 @@ split turns at speaker/context boundaries, preserve unknown ASR confidence,
 derive rather than trust turn counts, reject incomplete/duplicate/foreign turn
 reviews, and verify that Student Share contains the sharer's transcript-backed
 CS/IO samples without internal segment or Speaker keys.
+
+Teacher report gates:
+
+- seed or mock more than 50 Discussions and verify Teacher Speaking follows
+  every `next_offset`, lists each Discussion once, and marks ready rows as
+  `Full report ready` with a `View report` action;
+- open a ready Discussion and verify the group summary, strengths, priorities,
+  flow, every Candidate's CS/IO/VL/PD cards, every Candidate's turn reviews,
+  and the complete teacher-visible transcript are present;
+- open `Share group report` and verify all Candidate names and all content
+  sections are checked by default; clear one name and verify only that name is
+  Speaker-labelled while the selected analysis remains in the external report;
+- create the default Teacher Share and verify its private report contains the
+  whole group's performance, no audio/download control, and the seven-day
+  expiry returned by the server.
+
 Verify a not-yet-uploaded Discussion shows preparation/recording controls and
 an in-progress upload shows the secure-upload indicator. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
