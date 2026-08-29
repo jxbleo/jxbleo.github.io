@@ -1,5 +1,33 @@
 # 06 Decisions
 
+## 2026-08-29: Historical voice rematching is a separate durable job
+
+Decision:
+
+Let an accepted VIP Participant or teacher explicitly search a ready
+Discussion again after new reusable voiceprints are enrolled. Implement the
+search as `job_type: "voice_rematch"` starting at the existing
+`voice_matching` stage. It references the active ready report and formal audio,
+but never calls ASR or the DSE analysis model and never mutates the report's
+transcript, scores, or coaching.
+
+Reason:
+
+Voiceprints can be enrolled after a Discussion has finished. Re-running the
+whole pipeline would add cost and could produce a different transcript or
+assessment for what is only an identity update. A separate job keeps the ready
+report continuously available, survives refresh through the existing worker,
+and lets the same threshold/margin/one-to-one safeguards be reused.
+
+Trade-offs:
+
+- Tencent CI and voiceprint identification still incur their normal matching
+  cost for each explicit search.
+- Automatic rematching fills only safe empty/same mappings; a conflict,
+  dispute, student confirmation, or teacher lock still requires teacher action.
+- Mapping changes revoke existing external snapshots so a new share must be
+  generated with the current identity projection.
+
 ## 2026-08-28: Candidate detection precedes optional identity matching
 
 A Discussion is created without a roster. Tencent diarization first selects the

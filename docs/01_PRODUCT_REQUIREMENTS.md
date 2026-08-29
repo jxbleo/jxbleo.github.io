@@ -2156,6 +2156,16 @@ Every other result stays under its Speaker label. Missing voiceprints, short
 turns, ambiguity, conversion failure, or provider failure must never stop DSE
 analysis.
 
+After a report is ready, any accepted VIP Participant or teacher may explicitly
+run `Search voice matches` from the Candidates card. This creates a separate
+durable Voice Rematch job that reuses the existing canonical transcript and DSE
+analysis; it must not call ASR again or regenerate scores/coaching. The job
+checks the current active VIP Reusable Voiceprints, fills only currently safe
+one-to-one matches, never replaces a conflicting, student-confirmed, disputed,
+or teacher-locked mapping, and keeps uncertain results anonymous. A changed
+mapping creates the normal pending invitation and invalidates existing external
+share snapshots. The original Discussion Report content remains unchanged.
+
 Student Voice confirmation is still required before a Student Share, while
 teachers may remap and lock mappings. Voiceprint recognition is a proposed
 match rather than legal identity proof. Guests never receive account access or

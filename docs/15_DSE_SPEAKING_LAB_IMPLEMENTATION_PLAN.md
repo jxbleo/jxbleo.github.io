@@ -39,6 +39,11 @@
 >    grants Student Share permission by itself.
 > 9. The derived CI clip is temporary and deleted after verification. The
 >    implementation adds no ffmpeg or third-party runtime dependency.
+> 10. A ready Discussion may explicitly enqueue a durable Voice Rematch that
+>    reuses the canonical transcript and DSE report, starts at voice matching,
+>    and never repeats ASR or scoring. It fills only non-conflicting mappings,
+>    preserves student/teacher confirmations, and invalidates shares only when
+>    identity projection changes.
 
 ## 0. Executor protocol
 

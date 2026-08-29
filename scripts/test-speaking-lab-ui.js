@@ -72,6 +72,11 @@ function run() {
   assert.match(app, /function shanghaiToday/);
   assert.match(app, /speaking-candidate-grid/);
   assert.match(app, /Reliable voiceprint matches send invitations automatically/);
+  assert.match(app, /Search voice matches/);
+  assert.match(app, /startVoiceRematch/);
+  assert.match(app, /voice_match_status/);
+  assert.match(app, /voice-rematch-/);
+  assert.match(app, /voiceSearchWorking/);
   assert.doesNotMatch(app, /getElementById\('discussion-vip-ids'\)|getElementById\('discussion-guests'\)/);
   assert.doesNotMatch(app, /localStorage|sessionStorage/);
   assert.match(reportJs, /SHARE_NOT_AVAILABLE|expired|revoked/i);
@@ -111,6 +116,8 @@ function run() {
   assert.match(css, /speaking-score-grid/);
   assert.match(css, /speaking-turn-review/);
   assert.match(css, /speaking-candidate-grid/);
+  assert.match(css, /speaking-voice-search/);
+  assert.match(css, /speaking-voice-search-pulse/);
   assert.match(css, /border-radius:\s*28px 28px 0 0/);
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
@@ -124,8 +131,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-candidates/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260829-3/);
-  assert.match(page, /speaking-lab\.js\?v=20260829-3/);
+  assert.match(page, /speaking-lab\.css\?v=20260829-4/);
+  assert.match(page, /speaking-lab\.js\?v=20260829-4/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

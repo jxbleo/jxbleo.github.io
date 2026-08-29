@@ -228,7 +228,9 @@ structured-text providers intentionally fail closed until benchmark approval.
 The student and teacher surfaces also include Tencent reusable-voiceprint
 enrolment: VIP voiceprints follow the authenticated account, Guest voiceprints
 remain scoped to one Discussion, and the enrolment WAV is never retained by the
-application. Production enablement still requires owner-gated collections,
+application. A ready Discussion can run a separate durable voice-only rematch
+against newly enrolled VIP voiceprints without repeating ASR or DSE analysis.
+Production enablement still requires owner-gated collections,
 indexes, runtime configuration, function deployment, and real-device testing.
 
 Run its contracts with:

@@ -6,6 +6,13 @@
   authenticated Student Dashboard. The separate `Discussions` control inside a
   selected Discussion continues to restore the Speaking mode-card surface.
 
+- Added an explicit `Search voice matches` action beside the ready Discussion's
+  Candidates count. It enqueues a durable voice-only rematch against the latest
+  reusable VIP voiceprints, reuses the existing transcript/report, preserves
+  confirmed or teacher-locked mappings, resumes across refresh, and invalidates
+  external shares only when a new mapping is actually added. The UI shows
+  queued/processing/completion/failure states without hiding the ready report.
+
 - Separated the Student Dashboard's Writing, Intensive Listening, and Speaking
   entrances from the welcome hero into three aligned full-width pale-glass
   cards with blue, teal, and orange category washes. Restored visible workspace

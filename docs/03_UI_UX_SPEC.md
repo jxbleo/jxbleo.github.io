@@ -2530,6 +2530,14 @@ rows plus optional manual VIP/Non-VIP controls underneath. Automatic matches
 show a percentage and create the existing invitation flow; they never present
 an unconfirmed VIP name as a confirmed Candidate label. This prevents identity
 setup, recording, and report content from competing at one visual level.
+Once a report is ready, the Candidates header places `Search voice matches`
+beside the detected-count pill. Its waveform-search symbol responds immediately
+on press, changes to `Searching voices…` while the durable job is queued or
+processing, and honors Reduced Motion without pulsing. The page continues
+polling this independent status while the report stays readable. Completion
+states say whether reliable new matches were found; failure restores the same
+button for retry. The action never implies that ASR or DSE scoring is being run
+again.
 
 Discussion reports use one dark group-summary surface followed by one light
 Candidate surface per Speaker. Each Candidate keeps the three 0–7 domains in a
