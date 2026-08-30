@@ -75,6 +75,9 @@ Dashboard Achievements checks:
 - Writing counts only after `status: completed` plus `completed_at`;
 - the grid spans 53 Monday-first weeks, future cells are disabled, phone widths
   start at the newest weeks, and no page-level horizontal overflow appears;
+- the card has no `PAST 12 MONTHS` / `ACHIEVEMENTS` heading or `Less` / `More`
+  intensity-dot legend; achievement total and active-day total share one compact
+  lower-left summary without changing the grid's accessible name;
 - drag the contribution grid fully left and right and confirm adjacent month
   abbreviations never overlap. A partial edge month with only one visible week
   omits its label without shifting the weekday column or contribution cells;
