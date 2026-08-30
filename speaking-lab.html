@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-3">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-5">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -29,22 +29,24 @@
         <aside class="speaking-sidebar" id="speaking-sidebar" aria-label="Speaking sidebar" aria-hidden="true">
             <div class="speaking-sidebar-actions">
                 <a class="speaking-sidebar-home" id="speaking-sidebar-home" href="dashboard.html" aria-label="Back to Dashboard">Home</a>
-                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Create a new Discussion" title="Choose a Set">
+                <button class="speaking-sidebar-voiceprint" id="speaking-sidebar-voiceprint" type="button" aria-label="Open Voiceprint" title="Voiceprint">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M9 20.5h6"/></svg>
+                </button>
+                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Choose a Set" title="Choose a Set">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 </button>
             </div>
-            <nav class="speaking-sidebar-nav" aria-label="Speaking sections">
-                <button class="speaking-sidebar-nav-item is-active" id="speaking-sidebar-choose-set" type="button">New · Choose a Set</button>
-                <button class="speaking-sidebar-nav-item" id="speaking-sidebar-voiceprint" type="button">Voiceprint</button>
+            <nav class="speaking-sidebar-segments" aria-label="Paper 4 practice history" role="tablist">
+                <button class="speaking-sidebar-segment is-active" id="speaking-sidebar-part-a" type="button" role="tab" aria-selected="true" aria-controls="speaking-sidebar-discussions">Part A</button>
+                <button class="speaking-sidebar-segment" id="speaking-sidebar-part-b" type="button" role="tab" aria-selected="false" aria-controls="speaking-sidebar-responses">Part B</button>
             </nav>
-            <div class="speaking-sidebar-heading">
-                <p class="eyebrow">YOUR WORK</p>
-                <h2>Group Discussions</h2>
-            </div>
-            <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite"><span class="speaking-status-dot" aria-hidden="true"></span><span>Loading your Discussions…</span></div>
-            <section class="speaking-list" id="speaking-list" aria-label="Discussions"></section>
-            <div class="speaking-sidebar-heading speaking-sidebar-heading-secondary"><p class="eyebrow">YOUR WORK</p><h2>Individual Responses</h2></div>
-            <section class="speaking-list speaking-response-list" id="speaking-response-list" aria-label="Individual Responses"><p class="speaking-set-loading">Loading Individual Responses…</p></section>
+            <section class="speaking-sidebar-panel" id="speaking-sidebar-discussions" role="tabpanel" aria-labelledby="speaking-sidebar-part-a">
+                <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite"><span class="speaking-status-dot" aria-hidden="true"></span><span>Loading your Discussions…</span></div>
+                <section class="speaking-list" id="speaking-list" aria-label="Group Discussions"></section>
+            </section>
+            <section class="speaking-sidebar-panel" id="speaking-sidebar-responses" role="tabpanel" aria-labelledby="speaking-sidebar-part-b" hidden>
+                <section class="speaking-list speaking-response-list" id="speaking-response-list" aria-label="Individual Responses"><p class="speaking-set-loading">Loading Individual Responses…</p></section>
+            </section>
         </aside>
         <div class="speaking-sidebar-scrim" id="speaking-sidebar-scrim" aria-hidden="true" hidden></div>
         <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
@@ -66,7 +68,28 @@
             </section>
             <p class="sr-only">Recording choices include Record on this device and Choose audio file.</p>
             <section class="speaking-detail" id="speaking-detail" hidden aria-live="polite"></section>
-            <section class="speaking-voiceprint-main speaking-glass-panel" id="speaking-voiceprint-main" hidden aria-live="polite"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2>Voiceprint</h2><p id="speaking-voiceprint-main-summary">Record once to help Speaking Lab recognise your Speaker track in future Group Discussions.</p><div class="speaking-detail-actions"><button class="primary-button" id="speaking-voiceprint-main-open" type="button">Set up voiceprint</button><button class="outline-button" id="speaking-voiceprint-main-back" type="button">Back to Choose a Set</button></div></section>
+            <section class="speaking-voiceprint-main" id="speaking-voiceprint-main" hidden aria-labelledby="voiceprint-page-title">
+                <h2 class="sr-only" id="voiceprint-page-title">Voiceprint</h2>
+                <blockquote id="voiceprint-passage">Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.</blockquote>
+                <p class="speaking-voiceprint-instruction">Read this passage aloud.</p>
+                <label class="speaking-voiceprint-consent">
+                    <input id="voiceprint-consent" type="checkbox">
+                    <span class="speaking-voiceprint-consent-mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5 10.5 3.1 3L15.5 6"/></svg></span>
+                    <span>I agree that this recording may be used for reusable voice matching.</span>
+                </label>
+                <div class="speaking-voiceprint-capture">
+                    <button class="speaking-voiceprint-hold" id="voiceprint-record" type="button" aria-describedby="voiceprint-message">
+                        <span class="speaking-voiceprint-hold-icon" aria-hidden="true">
+                            <svg viewBox="0 0 32 32"><rect x="11" y="5" width="10" height="15" rx="5"/><path d="M7.5 16.5a8.5 8.5 0 0 0 17 0M16 25v3M12 28h8"/></svg>
+                            <span class="speaking-voiceprint-update-badge"><svg viewBox="0 0 16 16"><path d="M12.7 6A5 5 0 1 0 13 9.5M12.7 6V2.7M12.7 6H9.4"/></svg></span>
+                        </span>
+                        <span class="speaking-voiceprint-hold-label" id="voiceprint-record-label">Hold to record</span>
+                        <span class="speaking-voiceprint-time" id="voiceprint-time">00:00</span>
+                    </button>
+                    <p class="speaking-voiceprint-message" id="voiceprint-message" role="status" aria-live="polite">Hold the microphone for at least 10 seconds. Release when you finish.</p>
+                    <button class="primary-button speaking-voiceprint-confirm" id="voiceprint-confirm" type="button" hidden>Confirm &amp; upload voiceprint</button>
+                </div>
+            </section>
         </section>
     </main>
 
@@ -103,28 +126,11 @@
     <dialog class="speaking-dialog speaking-candidate-dialog" id="discussion-candidate-dialog" aria-labelledby="discussion-candidate-dialog-title">
         <div class="speaking-candidate-dialog-body" id="discussion-candidate-dialog-content"></div>
     </dialog>
-    <dialog class="speaking-dialog" id="voiceprint-dialog" aria-labelledby="voiceprint-dialog-title">
-        <div class="speaking-voiceprint-dialog-body">
-            <div class="speaking-dialog-head"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="voiceprint-dialog-title">Set up my voiceprint</h2><p>Record once to help Speaking Lab recognise your Speaker track in future discussions.</p></div>
-            <div class="speaking-privacy-callout"><span aria-hidden="true">✓</span><p>The sample goes directly to Tencent for registration. Mr. Cat Academy does not keep the recording as an audio file.</p></div>
-            <blockquote id="voiceprint-passage">Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.</blockquote>
-            <label class="speaking-consent"><input id="voiceprint-consent" type="checkbox"> I agree that this reusable voiceprint may be used to identify my Speaker track in future Speaking Lab Discussions.</label>
-            <div class="speaking-recording-time" id="voiceprint-time">00:00 / 00:20</div>
-            <p class="speaking-quality-warning" id="voiceprint-message" role="status" aria-live="polite">Record in a quiet place and read the full passage naturally.</p>
-            <div class="speaking-detail-actions">
-                <button class="primary-button" id="voiceprint-record" type="button">Start recording</button>
-                <button class="outline-button" id="voiceprint-stop" type="button" disabled>Finish recording</button>
-                <button class="outline-button" id="voiceprint-close" type="button">Close</button>
-                <button class="danger-button" id="voiceprint-delete" type="button" hidden>Remove voiceprint</button>
-            </div>
-        </div>
-    </dialog>
-
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260827-2"></script>
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260830-4"></script>
+    <script src="assets/js/speaking-lab.js?v=20260830-5"></script>
 </body>
 </html>

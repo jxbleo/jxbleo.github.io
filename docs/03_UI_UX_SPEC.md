@@ -2510,15 +2510,14 @@ once without a repeating pulse, is hidden at zero, and is replaced by a static
 state under Reduced Motion. The button's accessible name includes the waiting
 invitation count. The matching Discussion row receives a quiet invitation tint
 and `Invitation` pill; selecting it opens the existing accept/decline dialog.
-Its top row pairs a native Home link with a plus button: Home navigates directly
-to `dashboard.html`, while plus opens the existing New Discussion dialog. The
-`Discussions` back control inside a selected Discussion remains the separate
-same-page action that restores the mode-card surface. Escape and the active
-mobile scrim close the drawer. The Speaking home contains two equal mode cards:
-`DSE Paper 4 · Part A · Group Discussion` with New Discussion, and the
-non-interactive `DSE Paper 4 · Part B · Individual Response` placeholder with
-`Coming soon`. The reusable Voiceprint card is the third surface below them;
-the Discussion list is not duplicated on Home.
+Its top row places an icon-only Voiceprint action immediately left of the plus
+button: Home navigates directly to `dashboard.html`, Voiceprint opens its own
+full workspace, and plus returns to `Choose a Set`. Directly below, a compact
+two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
+Discussion cards and Part B shows only Individual Response cards. The drawer
+has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
+`Individual Responses` heading rows. Existing record cards retain their normal
+content and state pills. Escape and the active mobile scrim close the drawer.
 creation form asks for title, prompt, date, and optional time only; date opens
 on today's Shanghai date. Voice References are not part of the normal Session
 flow. The browser holds a
@@ -2549,12 +2548,20 @@ same stable operation ID so the student can retry without creating a new asset.
 `Upload complete` is never rendered as an error label and is never shown before
 `finishAudioUpload` succeeds.
 
-Above the Discussion list, `My voiceprint` shows `not set up`, `ready`, or a
-provider-unavailable message. Set up and update use one explicit consent
-checkbox, the fixed English passage, an 8–20 second recorder, live elapsed time,
-and a direct save state; no arbitrary audio-file upload is offered for reusable
-voiceprints. The student may remove their own reusable voiceprint. A ready
-voiceprint is described as automatic matching support, never identity proof.
+Voiceprint is a separate main workspace reached from the drawer microphone
+icon, never a dialog or a card under the Set library. The page shows the fixed
+English passage first, the single instruction `Read this passage aloud.`, one
+explicit privacy-consent check, and one large press-and-hold microphone. Press
+feedback begins on pointer-down and follows the finger; release finishes the
+sample. Under 10 seconds is discarded with a short rerecord message. At least
+10 seconds reveals a separate `Confirm & upload voiceprint` action so release
+does not itself transmit audio. Until that confirmation, the encoded WAV stays
+only in browser memory. An active reusable voiceprint changes the microphone to
+the update treatment with a small refresh badge and `Hold to update`; it does
+not add status cards or fields. Keyboard Space/Enter mirrors press/release,
+pointer cancellation discards the sample, and Reduced Motion retains state
+changes without animated arrival. A ready voiceprint is automatic matching
+support, never identity proof.
 
 Teacher Speaking is a separate workspace view that follows backend pagination
 until every Discussion is listed. A ready row is labelled `Full report ready`
@@ -2665,7 +2672,7 @@ BBC, or IELTS Section URL.
 ### Set-first Speaking home and Part B recorder
 
 The student Speaking home shows `Choose a Set`; Voiceprint is available only
-from the left sidebar. A selected Set renders Context, Part A points with
+from the left sidebar's microphone icon. A selected Set renders Context, Part A points with
 `Start Discussion`, and each Part B question with its own `Start Response`.
 The Set-first journey uses one vertical Apple-style card flow rather than a
 single container around nested rows. The first card establishes the DSE Paper 4

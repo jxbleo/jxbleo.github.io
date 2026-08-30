@@ -2110,18 +2110,17 @@ review remains available.
 
 ## DSE Speaking Lab V1 (local implementation boundary)
 
-Speaking Lab functionality covers only DSE English Language Paper 4 Part A
-Group Interaction. Its student home presents two equal Paper 4 mode cards:
-active `Part A · Group Discussion` and a non-interactive
-`Part B · Individual Response` placeholder. A separate Voiceprint card sits
-below them. The compact top toolbar has the same hamburger symbol as Writing,
-no student-name chip, and opens a left-side Discussion drawer. Its top row pairs
-a native Home link, which returns directly to the authenticated Student
-Dashboard, with a plus action that opens New Discussion. Discussion records
-live in that drawer rather than occupying a second list on the home surface. On
-phones, the dimming scrim exists
-only while the drawer is actually open; a closed drawer must never blur or block
-the home cards.
+Speaking Lab covers DSE English Language Paper 4 Part A Group Discussion and
+question-scoped Part B Individual Response. The compact top toolbar has the
+same hamburger symbol as Writing, no student-name chip, and opens a left-side
+work drawer. Its top row contains a native Home link, an icon-only Voiceprint
+destination, and a plus action that returns to `Choose a Set`. Directly below,
+one `Part A` / `Part B` segmented control switches between Group Discussion and
+Individual Response cards. The drawer contains no `New · Choose a Set`,
+`Voiceprint`, or repeated `Your Work` text rows. Discussion and Response records
+live only in their selected drawer panel rather than being duplicated on the
+home surface. On phones, the dimming scrim exists only while the drawer is
+actually open; a closed drawer must never blur or block the Set cards.
 New Session requires only a title, DSE prompt, date, and optional target time;
 it does not require student IDs or Guest names. The date defaults to the current
 Shanghai date and the target defaults to eight minutes for four Candidates.
@@ -2190,6 +2189,17 @@ identity. The browser produces a 16 kHz mono WAV and sends it directly through
 the authenticated function to Tencent; Mr. Cat Academy does not retain the
 enrolment recording. Discussion-scoped Voice References remain an optional
 fallback and keep their seven-day deletion rule.
+
+Student reusable Voiceprint setup is an independent full Speaking workspace,
+not a dialog and not a card below `Choose a Set`. It contains only the fixed
+reading passage, one short instruction, an explicit privacy-consent check, and
+one microphone press-and-hold control. Recording begins on press, gives
+continuous elapsed feedback, and finishes on release. A sample shorter than 10
+seconds is discarded locally with a rerecord message. A sample of at least 10
+seconds remains only in browser memory until the student activates a separate
+confirmation button; only then is the WAV sent through the existing private
+save action. An account with an active voiceprint uses a visibly distinct
+update state on the same microphone control.
 
 Normal Session setup does not ask any participant to record a new Voice
 Reference. After diarization, the server selects one uninterrupted 8–20 second
