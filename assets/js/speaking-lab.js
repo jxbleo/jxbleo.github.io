@@ -632,10 +632,31 @@
         var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
         return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
     }
+    function groupConsecutiveTranscriptLines(report) {
+        return (Array.isArray(report && report.transcript) ? report.transcript : []).reduce(function (groups, line) {
+            var speakerIdentity = line.speaker_key ? 'key:' + String(line.speaker_key) : 'label:' + String(line.speaker_label || 'Speaker');
+            var previous = groups[groups.length - 1];
+            var textValue = String(line.text || '').trim();
+            if (previous && previous.speaker_identity === speakerIdentity) {
+                previous.end_ms = Math.max(Number(previous.end_ms || 0), Number(line.end_ms || 0));
+                if (textValue) previous.text = [previous.text, textValue].filter(Boolean).join(' ');
+                return groups;
+            }
+            groups.push({
+                speaker_identity: speakerIdentity,
+                speaker_key: line.speaker_key || '',
+                speaker_label: line.speaker_label || 'Speaker',
+                start_ms: Number(line.start_ms || 0),
+                end_ms: Number(line.end_ms || 0),
+                text: textValue
+            });
+            return groups;
+        }, []);
+    }
     function transcriptLinesMarkup(report, ownSpeakerKey, selectedReview) {
         var selectedStart = Number(selectedReview && selectedReview.start_ms);
         var selectedEnd = Number(selectedReview && selectedReview.end_ms);
-        return (Array.isArray(report && report.transcript) ? report.transcript : []).map(function (line) {
+        return groupConsecutiveTranscriptLines(report).map(function (line) {
             var isSelf = ownSpeakerKey && String(line.speaker_key) === String(ownSpeakerKey);
             var isCurrent = isSelf && Number.isFinite(selectedStart) && Number.isFinite(selectedEnd) && Number(line.end_ms || 0) >= selectedStart && Number(line.start_ms || 0) <= selectedEnd;
             return '<article class="speaking-transcript-line' + (isSelf ? ' is-self' : '') + (isCurrent ? ' is-current' : '') + '"><header><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(turnTime(line.start_ms)) + '–' + esc(turnTime(line.end_ms)) + '</small></header><p>' + esc(line.text || '') + '</p></article>';

@@ -2636,8 +2636,12 @@ the cards; each visible card keeps its own independent material surface.
 with disclosure arrows; Candidate names, matching/access, and Student Share
 stay inside the Candidate modal, while the full Group Discussion Task stays
 inside the Task modal. `Transcriptions` opens the complete privacy-projected
-script in an independent centred dialog, with only the signed-in student's
-confirmed Speaker lines highlighted warm yellow. `Your analysis` shows only the
+script in an independent centred dialog. Consecutive ASR segments belonging to
+the same Speaker render as one continuous speech card in both this dialog and
+the Turn-by-Turn context; a new card begins only when the Speaker changes. This
+display grouping never rewrites the stored transcript or scoring evidence. Only
+the signed-in student's confirmed Speaker cards are highlighted warm yellow.
+`Your analysis` shows only the
 authenticated student's confirmed Candidate and begins with four CS/IO/VL/PD
 buttons. Only the selected dimension is visible below. CS, IO, and VL each show
 their own 0–7 score, commentary, strengths, priority actions, and language
