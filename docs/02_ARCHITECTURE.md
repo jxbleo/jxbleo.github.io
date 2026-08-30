@@ -49,6 +49,13 @@ flowchart TD
 
 ## 4. Frontend Structure
 
+Student Dashboard 的 `ACHIEVEMENTS` 贡献格采用独立的读路径：页面先完成原有
+`dashboardBootstrap`，再调用 `getDashboard.getAchievementCalendar`。云函数只扫描
+滚动窗口内的 countable attempts、学生自己的 Writing Composition 完成里程碑，
+并批量解析 sets 元数据，然后返回按上海日期分组的脱敏投影。该投影不进入启动
+bootstrap 或 IndexedDB，避免一年历史拖慢作业首屏，也避免把作文正文或答题内容
+带到浏览器。
+
 Important pages:
 
 - `index.html`: login and public entry

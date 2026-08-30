@@ -48,6 +48,8 @@ find cloudfunctions -name index.js -exec node --check {} \;
 node --check assets/js/login-navigation.js
 node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
+node --check cloudfunctions/getDashboard/achievement-calendar.js
+node scripts/test-dashboard-achievements.js
 node --check assets/js/my-words.js
 node --check assets/js/practice-session.js
 node --check assets/js/bbc-waveform.js
@@ -63,6 +65,20 @@ npm run test:cloudbase-auth
 npm run test:intensive-listening
 npm run test:teacheradmin-package
 ```
+
+Dashboard Achievements checks:
+
+- a BBC/Vocabulary attempt below its threshold does not count; the first pass
+  counts once and later passing retries for the same assignment/self-study set
+  do not add another square;
+- timed Vocabulary Practice and unrelated IELTS attempts do not count;
+- Writing counts only after `status: completed` plus `completed_at`;
+- the grid spans 53 Monday-first weeks, future cells are disabled, phone widths
+  start at the newest weeks, and no page-level horizontal overflow appears;
+- click an active and an empty date, verify the task rows/empty message, Escape
+  and Close behavior, focus restoration, and page-scroll restoration;
+- a failed `getAchievementCalendar` request leaves assignments and Library
+  usable and shows only the card-level retry action.
 
 BBC waveform checks:
 

@@ -70,6 +70,18 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-08-30 — Student Dashboard Achievements
+
+- Replaced the first-card weekly progress area with the approved 53-week
+  Achievements grid while keeping the greeting and motivational sentence.
+- Added a separate `getAchievementCalendar` action: first qualifying BBC or
+  Vocabulary completion counts once, corrected Writing counts once, timed
+  Vocabulary Practice is excluded, and Speaking waits for an explicit
+  correction/practice completion milestone.
+- Verified pure aggregation rules, JavaScript syntax, local Visitor rendering,
+  newest-week phone scrolling, empty-day dialog, Close/Escape behavior, and
+  static diff checks. No test student data was created.
+
 ### 2026-08-27
 
 - Implemented the authenticated Intensive Listening Library, safe catalog and

@@ -13,7 +13,7 @@
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
     <link rel="stylesheet" href="assets/css/app.css?v=20260829-2">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260828-1">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260830-1">
     <link rel="prefetch" href="my-words.html" as="document">
     <link rel="prefetch" href="assets/css/my-words.css?v=20260808-1" as="style">
     <link rel="prefetch" href="assets/js/my-words.js?v=20260808-1" as="script">
@@ -101,6 +101,22 @@
                     <p class="student-motivation" id="student-greeting-motivation">Your next step starts here.</p>
                     <span class="sr-only" id="student-greeting-accessible" role="status" aria-live="polite" aria-atomic="true">Hello. Your next step starts here.</span>
                 </div>
+            </section>
+            <section class="student-achievements-panel is-loading" id="student-achievements-panel" aria-labelledby="student-achievements-title" aria-busy="true">
+                <header class="student-achievements-head">
+                    <div>
+                        <p class="student-achievements-range">PAST 12 MONTHS</p>
+                        <h2 id="student-achievements-title">ACHIEVEMENTS</h2>
+                    </div>
+                    <p class="student-achievements-total" id="student-achievements-total"><strong>—</strong><span>achievements</span></p>
+                </header>
+                <div class="student-achievements-scroll" id="student-achievements-scroll" tabindex="0" aria-label="Achievement calendar. Loading.">
+                    <div class="student-achievements-skeleton" aria-hidden="true"></div>
+                </div>
+                <footer class="student-achievements-foot">
+                    <span id="student-achievements-status" role="status" aria-live="polite">Loading achievements.</span>
+                    <span class="student-achievements-legend" aria-hidden="true"><span>Less</span><i></i><i></i><i></i><i></i><span>More</span></span>
+                </footer>
             </section>
         </section>
 
@@ -228,6 +244,22 @@
                 <button class="student-calendar-outside-close" id="student-calendar-close" type="button">Close</button>
             </div>
         </section>
+
+        <section class="student-achievements-overlay" id="student-achievements-overlay" hidden>
+            <div class="student-achievements-stack" role="dialog" aria-modal="true" aria-labelledby="student-achievements-dialog-title">
+                <section class="student-achievements-dialog">
+                    <header class="student-achievements-dialog-head">
+                        <div>
+                            <p class="student-achievements-dialog-date" id="student-achievements-dialog-date"></p>
+                            <h2 id="student-achievements-dialog-title">Achievements</h2>
+                        </div>
+                        <span class="student-achievements-dialog-count" id="student-achievements-dialog-count"></span>
+                    </header>
+                    <div class="student-achievements-dialog-list" id="student-achievements-dialog-list"></div>
+                </section>
+                <button class="student-achievements-outside-close" id="student-achievements-close" type="button">Close</button>
+            </div>
+        </section>
     </main>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
@@ -237,7 +269,7 @@
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-    <script src="assets/js/dashboard.js?v=20260829-1"></script>
+    <script src="assets/js/dashboard.js?v=20260830-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260810-2"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
 const { summarizeSelfStudyAttempts } = require("./self-study-completions");
+const { achievementWindow, buildAchievementCalendar } = require("./achievement-calendar");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -68,6 +69,19 @@ async function getVisibleSetsByIds(setIds) {
     pageSize: SET_LOOKUP_CHUNK_SIZE,
   })));
   return pages.flat();
+}
+
+async function getSetsByIds(setIds) {
+  const ids = [...new Set((setIds || []).filter(Boolean))];
+  if (!ids.length) return [];
+  const pages = [];
+  for (let index = 0; index < ids.length; index += SET_LOOKUP_CHUNK_SIZE) {
+    pages.push(getAll("sets", {
+      where: { set_id: _.in(ids.slice(index, index + SET_LOOKUP_CHUNK_SIZE)) },
+      pageSize: SET_LOOKUP_CHUNK_SIZE,
+    }));
+  }
+  return (await Promise.all(pages)).flat();
 }
 
 function effectivePercentage(attempt) {
@@ -693,6 +707,25 @@ async function dashboardBootstrap(student) {
     teacher_reply_unread_count: unreadReplies.length,
     teacher_replies: unreadReplies.map((item) => disputeReplyView(item, null)),
     ...splitStarCounts(achievements),
+  };
+}
+
+async function getAchievementCalendar(student) {
+  const now = new Date();
+  const window = achievementWindow(now);
+  const [attempts, compositions] = await Promise.all([
+    getAll("attempts", {
+      where: {
+        student_uid: student.auth_uid,
+        submitted_at: _.gte(window.query_start),
+      },
+    }),
+    getAll("writing_compositions", { where: { student_uid: student.auth_uid } }),
+  ]);
+  const sets = await getSetsByIds(attempts.map((attempt) => attempt.set_id));
+  return {
+    success: true,
+    achievement_calendar: buildAchievementCalendar({ attempts, sets, compositions, now }),
   };
 }
 
@@ -1325,6 +1358,7 @@ exports.main = async (event = {}) => {
     if (action === "submitDispute") return await submitDispute(student, event);
     if (action === "listDisputesForAttempt") return await listDisputesForAttempt(student, event);
     if (action === "dashboardBootstrap") return await dashboardBootstrap(student);
+    if (action === "getAchievementCalendar") return await getAchievementCalendar(student);
     if (action === "listAssignmentPage") return await listAssignmentPage(student, event);
     if (action === "listTeacherReplies") return {
       success: true,
