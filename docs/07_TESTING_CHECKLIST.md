@@ -2408,7 +2408,10 @@ mapping, `MM:SS` Duration, and one `SESSION DETAILS` eyebrow matching the
 and close a separate modal. Candidate names must not appear inline; verify the Candidate
 modal contains the Task name, matching/access, roster actions, and Student
 Share. Verify the Transcriptions dialog contains the complete projected script,
-and that no separate Complete Script or Voice ID card follows the report. For a
+and that no separate Complete Script or Voice ID card follows the report. In
+both Transcriptions and Turn-by-Turn context, verify two or more adjacent ASR
+segments from the same Speaker appear in one card, while the next different
+Speaker begins a new card; test the rule with both self and peer speech. For a
 confirmed student, verify the CS/IO/VL/PD buttons show exactly one dimension at
 a time; each assessed dimension owns its score, commentary, strengths, priority
 actions, and language suggestions; VL uses the exact `Vocabulary & Language

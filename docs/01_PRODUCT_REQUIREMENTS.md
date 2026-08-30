@@ -2147,20 +2147,25 @@ state. Once the formal recording is uploaded, those controls disappear and the
 report surface takes over. Queued or processing reports show factual stage
 progress plus live Candidate matching. A ready report starts directly with its
 first card, without a redundant back control or ready-status label, and is
-ordered as a four-row Discussion ledger (`Date`, `Duration`, `Candidates`, and
-`Task`) under the small `SESSION DETAILS` section label,
+ordered as a five-row Discussion ledger (`Date`, `Duration`, `Candidates`,
+`Task`, and `Transcriptions`) under the small `SESSION DETAILS` section label,
 the authenticated student's four-domain analysis, and that student's
-turn-by-turn coaching, followed by one collapsed complete script. The Set task
+turn-by-turn coaching. The Set task
 and Candidate names/matching/access each open in their own modal instead of
 expanding inside the card. Student Share moves into the Candidate modal so the
 ledger contains no secondary controls. CS, IO, and VL retain their 0–7 feedback; PD always
 reads `Not assessed` and receives no comment. The VL label is `Vocabulary &
 Language Pattern`, and all dimension names use `&` instead of spelling out
-`and`. The complete script highlights only the authenticated student's
-confirmed Speaker track in warm yellow. If that track is not confirmed, the
-personal cards stay empty rather than exposing a peer's analysis.
+`and`. `Transcriptions` opens the complete script in a separate modal and
+highlights only the authenticated student's confirmed Speaker track in warm
+yellow. In both that modal and the Turn-by-Turn context, adjacent ASR segments
+from the same Speaker display as one continuous speech card; a new card begins
+only when the Speaker changes. This rule is identical for self and peer speech
+and never rewrites the stored segment-level transcript used for scoring and
+audit. If the student's track is not confirmed, the personal cards stay empty
+rather than exposing a peer's analysis.
 
-Every new V2 report also provides a turn-by-turn review for each canonical
+Every new V3 report also provides a turn-by-turn review for each canonical
 Candidate speaking turn. A turn combines consecutive ASR sentences from the
 same Candidate and ends when another voice speaks, non-Candidate context
 intervenes, or a material pause occurs. Each turn shows the server-derived AI

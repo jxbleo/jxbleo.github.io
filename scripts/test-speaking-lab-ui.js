@@ -20,7 +20,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260830-6/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260830-7/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
@@ -190,6 +190,23 @@ function run() {
   assert.match(app, /Pronunciation &amp; Delivery[\s\S]*Not assessed · 暂不评论/);
   assert.match(app, /TURN-BY-TURN REVIEW|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
   assert.match(app, /data-turn-index|speaking-turn-context|turnReviewPanelMarkup/);
+  assert.match(app, /function groupConsecutiveTranscriptLines\(report\)/);
+  assert.match(app, /previous && previous\.speaker_identity === speakerIdentity/);
+  assert.match(app, /groupConsecutiveTranscriptLines\(report\)\.map/);
+  const groupingStart = app.indexOf("function groupConsecutiveTranscriptLines(report)");
+  const groupingEnd = app.indexOf("\n    function transcriptLinesMarkup", groupingStart);
+  const groupConsecutiveTranscriptLines = new Function(`${app.slice(groupingStart, groupingEnd)}; return groupConsecutiveTranscriptLines;`)();
+  const groupedTranscript = groupConsecutiveTranscriptLines({ transcript: [
+    { speaker_key: "self", speaker_label: "Student A", start_ms: 0, end_ms: 1000, text: "First sentence." },
+    { speaker_key: "self", speaker_label: "Student A", start_ms: 1000, end_ms: 2200, text: "Second sentence." },
+    { speaker_key: "peer", speaker_label: "Student B", start_ms: 2200, end_ms: 3200, text: "Another speaker." },
+    { speaker_key: "self", speaker_label: "Student A", start_ms: 3200, end_ms: 4000, text: "Student A returns." },
+  ] });
+  assert.equal(groupedTranscript.length, 3, "only adjacent segments from the same Speaker should merge");
+  assert.equal(groupedTranscript[0].text, "First sentence. Second sentence.");
+  assert.equal(groupedTranscript[0].start_ms, 0);
+  assert.equal(groupedTranscript[0].end_ms, 2200);
+  assert.equal(groupedTranscript[2].text, "Student A returns.", "a different intervening Speaker must start a new card");
   assert.match(app, /Transcriptions|is-self|highlighted in yellow/);
   assert.match(app, /speaking-upload-progress-track/);
   const readyMarkup = app.slice(app.indexOf("function reportReadyMarkup(item)"), app.indexOf("function reportProcessingMarkup(item)"));
@@ -267,8 +284,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260830-6/);
-  assert.match(page, /speaking-lab\.js\?v=20260830-6/);
+  assert.match(page, /speaking-lab\.css\?v=20260830-7/);
+  assert.match(page, /speaking-lab\.js\?v=20260830-7/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

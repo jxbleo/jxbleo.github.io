@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-30 — Continuous Speaker transcript cards
+
+- Grouped adjacent ASR segments from the same Speaker into one visible speech
+  card in both `Transcriptions` and Turn-by-Turn context.
+- Kept original transcript segments unchanged for evidence, scoring, and audit;
+  only the student-facing presentation is grouped.
+
 ## 2026-08-30 — Dimension and Turn navigation for Speaking reports
 
 - Replaced the four simultaneous student score cards with CS/IO/VL/PD tabs and
