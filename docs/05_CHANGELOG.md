@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-08-30 — Dimension and Turn navigation for Speaking reports
+
+- Replaced the four simultaneous student score cards with CS/IO/VL/PD tabs and
+  one detailed dimension panel, including phone sticky behavior below the
+  Speaking toolbar.
+- Versioned new Group Discussion reports so each assessed dimension owns its
+  strengths, priority actions, and language suggestions while older immutable
+  reports retain a labelled compatibility presentation.
+- Reworked Turn-by-turn review into a Turn tab bar plus one selected review,
+  with a vertically scrollable full-session context, yellow self highlighting,
+  and stronger selected-turn emphasis. The Turn bar takes over the mobile sticky
+  edge as its card enters view.
+- Moved the complete script into a fifth `Transcriptions` row under Session
+  Details and a centred dialog, and removed separate Complete Script/Voice ID
+  report cards.
+
 ## 2026-08-30 — Simplified Speaking drawer and Voiceprint workspace
 
 - Replaced the student Voiceprint dialog with a dedicated Speaking Lab

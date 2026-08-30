@@ -1342,6 +1342,15 @@ projections derive the turn again and join those fields by validated `turn_id`.
 Ready V1 reports without `turn_reviews` remain readable and render no turn
 section.
 
+V3 `speaking_reports.dse_analysis.candidates[].domains` keeps the existing
+assessed-domain `score`, `commentary_zh`, and validated
+`evidence_segment_ids`, and adds bounded domain-specific `strengths`,
+`priority_actions`, and `language_suggestions` arrays to each CS, IO, and VL
+object. PD remains `{ status: "not_assessed" }`. The gateway constructs this
+canonical shape and discards provider extras. Earlier immutable reports may
+retain Candidate-level coaching arrays; the browser presents those through an
+explicit compatibility layout and never rewrites the stored report.
+
 Required uniqueness/index coverage includes Discussion/participant/asset/job/
 report/share/event IDs, Discussion plus participant scope, job status plus
 retry/lease times, asset status plus expiry, and share status plus expiry. Raw

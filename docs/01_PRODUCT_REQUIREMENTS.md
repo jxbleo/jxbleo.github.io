@@ -2256,7 +2256,13 @@ individual names or report sections before creating the seven-day private
 snapshot. The existing server projection remains authoritative for anonymous
 or unresolved Speaker tracks.
 Authenticated participant reports retain the existing full Candidate overview;
-the signed-in Candidate's own turn review is visually prioritised. Student
+the signed-in Candidate's own analysis is organised by four switchable CS, IO,
+VL, and PD dimensions. New reports store each assessed dimension's strengths,
+priority actions, and language suggestions inside that dimension rather than in
+one undifferentiated Candidate-level group. PD remains explicitly unassessed.
+Historical reports remain immutable and use a compatibility presentation for
+their earlier Candidate-level notes. The signed-in Candidate's own turn review
+is visually prioritised. Student
 Share snapshots contain only the sharer's detailed turn review. Teacher Share
 snapshots may include or exclude turn reviews independently of names and other
 report sections.

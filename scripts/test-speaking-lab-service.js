@@ -8,6 +8,7 @@ const lab = require("../cloudfunctions/_shared/speaking-lab");
 const speech = require("../cloudfunctions/speakingLab/speech-provider");
 const model = require("../cloudfunctions/speakingLab/model-provider");
 const prompts = require("../cloudfunctions/speakingLab/prompts");
+const schemas = require("../cloudfunctions/speakingLab/schemas");
 
 async function run() {
   const source = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/index.js"), "utf8");
@@ -107,12 +108,17 @@ async function run() {
   await assert.rejects(() => Promise.resolve().then(() => speech.inspectAudio({ mime_type: "audio/webm", size_bytes: 10, duration_seconds: 69 })), (error) => error.code === "SPEAKING_AUDIO_TOO_LONG");
   assert.equal(model._test.normalizedUsage({}).total_tokens, null);
 
-  assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-08-28\./);
+  assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-08-30\./);
+  assert.equal(schemas.DOMAIN_SCHEMA.required.includes("strengths"), false, "Part B must keep its existing domain contract");
+  ["strengths", "priority_actions", "language_suggestions"].forEach((field) => {
+    assert.equal(schemas.GROUP_DOMAIN_SCHEMA.required.includes(field), true, `Group Discussion domains must require ${field}`);
+  });
   const systemPrompt = prompts.dseAnalysisPrompt();
   assert.match(systemPrompt, /MANDATORY ASR SAFEGUARD/);
   assert.match(systemPrompt, /Never deduct a score, criticize the Candidate, or propose an exact correction solely because of one odd word/);
   assert.match(systemPrompt, /repeated in at least two distinct segments/);
   assert.match(systemPrompt, /Never infer or criticize pronunciation from transcript spelling/);
+  assert.match(systemPrompt, /CS, IO, and VL must each have their own strengths, priority_actions, and language_suggestions/);
   const guardedUserPrompt = prompts.dseAnalysisUserPrompt({
     taskText: "Discuss a trend.",
     candidateSpeakerKeys: ["spk_01"],
@@ -125,6 +131,8 @@ async function run() {
       { segment_id: "seg_0003", speaker_key: "spk_01", start_ms: 2000, end_ms: 3000, text: "another point", confidence: 0.9 },
     ],
   });
+  assert.match(guardedUserPrompt, /Do not return Candidate-level strengths, priority_actions, or language_suggestions/);
+  assert.match(guardedUserPrompt, /Each assessed domain must contain score, commentary_zh, evidence_segment_ids, strengths, priority_actions, and language_suggestions/);
   assert.match(guardedUserPrompt, /Do not turn one suspicious transcription token into a student error/);
   assert.match(guardedUserPrompt, /exactly one item for every speaking_turns item/);
   const guardedInput = JSON.parse(guardedUserPrompt.split("INPUT_JSON_BEGIN\n")[1].split("\nINPUT_JSON_END")[0]);

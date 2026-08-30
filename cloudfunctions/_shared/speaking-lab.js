@@ -421,8 +421,8 @@ function canonicalizeMapping(mapping, speakerKeys, participants, options = {}) {
   return rows;
 }
 
-function safeList(value, limit = MAX_REPORT_LIST_ITEMS) {
-  return (Array.isArray(value) ? value : []).map((item) => text(item, 240)).filter(Boolean).slice(0, limit);
+function safeList(value, limit = MAX_REPORT_LIST_ITEMS, itemLimit = 240) {
+  return (Array.isArray(value) ? value : []).map((item) => text(item, itemLimit).replace(/[<>]/g, "")).filter(Boolean).slice(0, limit);
 }
 
 function safeCommentary(value) {
@@ -514,7 +514,14 @@ function canonicalDomain(domain, evidenceIds, validSegmentIds, candidateSpeakerK
   const ids = Array.isArray(evidenceIds) ? evidenceIds.map((id) => String(id)) : [];
   const valid = ids.filter((id) => validSegmentIds.has(id));
   if (valid.length !== ids.length || new Set(ids).size !== ids.length) throw new Error("SPEAKING_AI_EVIDENCE_INVALID");
-  return { score, commentary_zh: safeCommentary(domain.commentary_zh), evidence_segment_ids: valid };
+  return {
+    score,
+    commentary_zh: safeCommentary(domain.commentary_zh),
+    evidence_segment_ids: valid,
+    strengths: safeList(domain.strengths, 6),
+    priority_actions: safeList(domain.priority_actions, 6),
+    language_suggestions: safeList(domain.language_suggestions, 6, 480),
+  };
 }
 
 function canonicalizeReport(report, speakerKeys, segments, options = {}) {
@@ -598,7 +605,13 @@ function shareDomainProjection(domains) {
   const output = {};
   ASSESSED_DOMAINS.forEach((name) => {
     const domain = source[name] || {};
-    output[name] = { score: Number.isInteger(domain.score) ? domain.score : null, commentary_zh: safeCommentary(domain.commentary_zh) };
+    output[name] = {
+      score: Number.isInteger(domain.score) ? domain.score : null,
+      commentary_zh: safeCommentary(domain.commentary_zh),
+      strengths: safeList(domain.strengths, 6),
+      priority_actions: safeList(domain.priority_actions, 6),
+      language_suggestions: safeList(domain.language_suggestions, 6, 480),
+    };
   });
   output.pronunciation_delivery = { status: "not_assessed" };
   return output;
