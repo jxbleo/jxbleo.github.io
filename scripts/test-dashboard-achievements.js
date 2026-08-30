@@ -1,8 +1,42 @@
 const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
 const {
   achievementWindow,
   buildAchievementCalendar,
 } = require("../cloudfunctions/getDashboard/achievement-calendar");
+
+function dashboardFunctionSource(name) {
+  const source = fs.readFileSync(path.join(__dirname, "../assets/js/dashboard.js"), "utf8");
+  const start = source.indexOf(`function ${name}(`);
+  assert.notStrictEqual(start, -1, `${name} should exist in dashboard.js`);
+  const bodyStart = source.indexOf("{", start);
+  let depth = 0;
+  for (let index = bodyStart; index < source.length; index += 1) {
+    if (source[index] === "{") depth += 1;
+    if (source[index] === "}") depth -= 1;
+    if (depth === 0) return source.slice(start, index + 1);
+  }
+  throw new Error(`${name} source is incomplete`);
+}
+
+function monthLabels(startDate) {
+  const buildLabels = vm.runInNewContext(`(${dashboardFunctionSource("achievementMonthLabels")})`, {
+    Date,
+    Intl,
+    escapeHtml: (value) => String(value),
+  });
+  return Array.from(buildLabels(startDate).matchAll(/<span>([^<]*)<\/span>/g), (match) => match[1]);
+}
+
+const oneWeekEdgeLabels = monthLabels(new Date(Date.UTC(2025, 7, 25)));
+assert.strictEqual(oneWeekEdgeLabels[0], "", "a one-week leading month should not collide with the next label");
+assert.strictEqual(oneWeekEdgeLabels[1], "Sep");
+
+const twoWeekEdgeLabels = monthLabels(new Date(Date.UTC(2025, 7, 18)));
+assert.strictEqual(twoWeekEdgeLabels[0], "Aug", "a two-week leading month has enough room for its label");
+assert.strictEqual(twoWeekEdgeLabels[2], "Sep");
 
 const now = new Date("2026-08-30T04:00:00.000Z");
 const window = achievementWindow(now);
