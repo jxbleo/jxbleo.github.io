@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-08-31 — Verified GitHub publication fallback
+
+- Added one owner-gated repository publisher that gives ordinary Git Push a
+  bounded attempt and uses GitHub's Git Data API only for recognized network
+  failures.
+- The fallback refuses dirty or divergent worktrees, serializes GitHub write
+  requests, verifies every changed Blob SHA and the complete final Tree SHA,
+  and updates `main` without force only while its original parent is unchanged.
+- After an API publication, the matching commit is reconstructed locally so
+  the release worktree and `origin/main` remain ready for the next fast-forward
+  release.
+- Added focused publisher contract tests and documented the required dry-run,
+  Actions, and live-site verification steps.
+
 ## 2026-08-31 — Separate Writing Back and sidebar navigation
 
 - Matched Speaking Lab's navigation hierarchy: Writing now keeps a dedicated

@@ -3,6 +3,33 @@
 > Manual and lightweight automated checks for this project.
 > Update it when flows, data model, deployment, or testing tools change.
 
+## GitHub Publication Fallback
+
+Run the local contract test after changing the publisher:
+
+```bash
+npm run test:github-publish
+```
+
+Before an owner-authorized publication, require a clean release worktree and
+run:
+
+```bash
+npm run verify:release
+npm run build:static
+npm run publish:github -- --dry-run
+```
+
+The dry run must stop for a dirty tree, a missing remote commit, or a
+non-fast-forward local history. The focused test must confirm supported GitHub
+remote parsing, network-only fallback classification, zero-delimited file
+change parsing, option validation, and deterministic local reconstruction of
+an API commit. After a real publication, verify that GitHub `main` resolves to
+the reported SHA, its Tree SHA equals the local release Tree, the matching
+GitHub Actions run succeeds, and one cache-busted live asset returns the new
+content. Never treat a rejected or conflicted Push as permission to use the
+API fallback.
+
 ## 1. Current Test Reality
 
 There is no full automated test suite yet.
