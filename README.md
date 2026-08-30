@@ -82,6 +82,8 @@ npm run test:writing-tutor
 npm run test:waiting-runner
 npm run package:functions:all
 npm run release:plan
+npm run test:github-publish
+npm run publish:github -- --dry-run
 node scripts/build-home-catalog.js
 node scripts/prepare-cloudbase-data.js
 git diff --check
@@ -105,6 +107,10 @@ Static site deployment and CloudBase deployment are separate:
 
 - Static files: commit and push HTML/CSS/JS/data/audio changes. GitHub Actions
   builds `dist/` and incrementally synchronizes it to Tencent COS.
+- Owner-authorized static publication: `npm run publish:github` tries one
+  bounded ordinary Push, then falls back to GitHub's Git Data API only for a
+  network failure. It refuses dirty, divergent, or unverifiable trees and never
+  force-updates `main`.
 - Cloud functions: edit `cloudfunctions/<name>/`, rebuild the matching ZIP in
   `deploy-packages/`, then upload it in the CloudBase console.
 - CloudBase data: run `node scripts/prepare-cloudbase-data.js`, then dry-run

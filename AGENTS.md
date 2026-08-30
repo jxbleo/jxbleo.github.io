@@ -1397,8 +1397,15 @@ Keep them in mind before changing the same surfaces again.
   `git log --oneline origin/main..HEAD` before pushing. Do not push unrelated
   commits if the owner says another window will handle them.
 - GitHub HTTPS pushes sometimes fail with `Empty reply from server` or DNS
-  errors. If the commit is local and checks passed, retry later; do not rewrite
-  history to "fix" a network failure.
+  errors. For an owner-authorized static release, use
+  `npm run publish:github` from a clean release worktree. It gives ordinary
+  `git push` one bounded attempt, then uses GitHub's Git Data API only for a
+  recognized network failure. The fallback must re-read the current remote
+  SHA, require a fast-forward local descendant, upload and verify every Blob
+  SHA, require the final GitHub Tree SHA to equal local `HEAD^{tree}`, create
+  one commit whose parent is the unchanged remote SHA, and update the branch
+  with `force: false`. Never use the API path to bypass a rejection, dirty
+  worktree, missing remote commit, branch conflict, or failed test.
 
 ### Dashboard drafts versus history
 
@@ -1566,8 +1573,10 @@ when the group headings restart from `第一组` after the 10 quiz groups. Treat
   PID only.
 - GitHub pushes have failed before with network errors such as
   `Failed to connect to github.com port 443` or `Empty reply from server`.
-  Retry with network escalation when appropriate, and never tell the owner a
-  push succeeded unless the command output confirms the remote update.
+  After explicit owner authorization, prefer `npm run publish:github` over
+  indefinite manual retries. Never tell the owner a push succeeded until the
+  script verifies the branch reference and published Tree SHA, and the matching
+  GitHub Actions run has completed successfully.
 - Before committing or pushing, check `git status --short --branch`. This repo
   is often edited from multiple Codex windows, so stage only files that belong
   to the current request.

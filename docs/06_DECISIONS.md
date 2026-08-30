@@ -1159,6 +1159,44 @@ Review condition:
 Revisit if the project adopts a frontend bundler, needs staged promotion, or
 adds public resources outside the current allowlist.
 
+## 2026-08-31: Use Git Data API as a Verified Push-Network Fallback
+
+Decision:
+
+Keep ordinary Git Push as the first static-source publication path, but bound
+its wait time. When and only when an owner-authorized Push fails for a
+recognized GitHub HTTPS network condition, allow the repository publisher to
+use GitHub's Git Data API with exact Blob and Tree verification and a
+non-force branch-reference update.
+
+Reason:
+
+This development network repeatedly reaches `api.github.com` while
+`github.com:443` Push connections stall for more than a minute. Repeating the
+same Push blocks releases even though the reviewed source and GitHub API remain
+available.
+
+Trade-offs:
+
+- Good: release completion no longer depends on one long-lived Git smart-HTTP
+  connection.
+- Good: the remote SHA must remain unchanged, every changed Blob is
+  content-address verified, and the final GitHub Tree must exactly match local
+  `HEAD^{tree}`.
+- Good: `force: false` preserves branch fast-forward protection and existing
+  GitHub Actions continue to run from `main`.
+- Cost: multiple local commits may become one API release commit.
+- Cost: mutating API calls must be serialized and paced to respect GitHub
+  secondary rate limits.
+- Cost: the publisher must reconstruct the API commit locally after success so
+  later releases do not start from divergent histories.
+
+Review condition:
+
+Remove the fallback if GitHub smart-HTTP becomes consistently reliable, or if
+the repository adopts required signed commits, Git LFS, submodules, or branch
+rules that the current verified fallback does not support.
+
 ## AI Tutor model boundary and record ownership
 
 Decision:

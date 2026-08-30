@@ -776,6 +776,8 @@ npm run verify:release
 npm run package:functions:all
 npm run release:plan
 npm run cloudbase:import:content
+npm run test:github-publish
+npm run publish:github -- --dry-run
 ```
 
 What each command does:
@@ -787,6 +789,8 @@ What each command does:
 | `npm run test:teacheradmin-package` | rebuild and inspect `teacherAdmin.zip`, enforce the uncompressed-size guardrail, and smoke-test the local TCB signer | deploy, read production data, request credentials |
 | `npm run release:plan` | write `.cloudbase-private/deploy-plan.md` for owner review | deploy, import data, request credentials |
 | `npm run cloudbase:import:content` | dry-run CloudBase data import plan | write CloudBase unless `-- --apply` is passed |
+| `npm run publish:github -- --dry-run` | validate a clean fast-forward GitHub publication and report changed-file count | push, create GitHub objects, or update `main` |
+| `npm run publish:github` | after explicit owner approval, try a 20-second normal Push and use a verified Git Data API fallback only for network failure | force-update, bypass conflicts, publish a dirty tree, deploy CloudBase, or change secrets |
 
 Agents may run these helper commands. The owner remains responsible for the
 final CloudBase function deploy, owner-only CLI apply command, and any
@@ -794,6 +798,40 @@ environment variable changes.
 
 The generated deploy plan is local and ignored by Git. It is a checklist, not
 an authorization grant.
+
+### GitHub Push network fallback
+
+`scripts/publish-github-main.js` is the canonical static-source publisher when
+the owner has explicitly authorized publication. Run it only from a clean
+release worktree after relevant tests, `npm run verify:release`, and
+`npm run build:static` pass:
+
+```bash
+npm run test:github-publish
+npm run publish:github -- --dry-run
+npm run publish:github
+```
+
+The command first gives ordinary `git push origin HEAD:main` a bounded
+20-second attempt. It switches to GitHub's Git Data API only when that attempt
+fails with a recognized DNS, connection-reset, empty-response, or timeout
+signal. A rejection, non-fast-forward, authentication error, dirty worktree, or
+missing remote commit stops the release.
+
+The fallback rechecks the GitHub branch reference before mutation, uploads
+changed files sequentially as base64 Git Blobs, verifies each returned Blob SHA
+against the local Git object, creates a Tree against the unchanged remote
+parent, and requires the resulting Tree SHA to equal local `HEAD^{tree}`.
+It then creates one release commit and updates `main` with `force: false`.
+The reference is checked once more immediately before update and again after
+update. When successful, the script reconstructs the same API commit locally
+and advances the current branch and `origin/main` tracking reference without
+changing files, so the next release remains a normal fast-forward candidate.
+
+Git Data API publication may condense several local ahead commits into one
+release commit. Their subjects remain in that commit message. GitHub Actions
+must still finish successfully, and the live cache-busted asset must be checked
+before reporting the release complete.
 
 ### Threshold-default rollout
 
