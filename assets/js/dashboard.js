@@ -146,13 +146,6 @@
     var achievementsTotal = document.getElementById('student-achievements-total');
     var achievementsScroll = document.getElementById('student-achievements-scroll');
     var achievementsStatus = document.getElementById('student-achievements-status');
-    var achievementsOverlay = document.getElementById('student-achievements-overlay');
-    var achievementsDialogDate = document.getElementById('student-achievements-dialog-date');
-    var achievementsDialogTitle = document.getElementById('student-achievements-dialog-title');
-    var achievementsDialogCount = document.getElementById('student-achievements-dialog-count');
-    var achievementsDialogList = document.getElementById('student-achievements-dialog-list');
-    var achievementsClose = document.getElementById('student-achievements-close');
-    var achievementsTrigger = null;
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
     var profileContent = document.getElementById('profile-content');
@@ -170,11 +163,10 @@
     var studentLibraryCategoryPopover = document.getElementById('student-sub-tab-bar');
     var accountPanel = document.getElementById('student-account-panel');
     var logoutConfirmOverlay = document.getElementById('logout-confirm-overlay');
-    var calendarButton = document.getElementById('student-calendar-button');
-    var calendarDateLabel = document.getElementById('student-calendar-date');
     var calendarOverlay = document.getElementById('student-calendar-overlay');
     var calendarContent = document.getElementById('student-calendar-content');
     var calendarScroll = document.getElementById('student-calendar-scroll');
+    var calendarTrigger = null;
     var wordsButton = document.getElementById('student-words-button');
     var wordsOpenLink = document.querySelector('.student-words-open-button');
     var myWordsWarmPromise = null;
@@ -368,7 +360,6 @@
     var messageCount = document.getElementById('student-message-count');
     var repliesButton = document.getElementById('student-replies-button');
     var studentCalendarTitleObserver = null;
-    var calendarDateRefreshTimer = null;
     var weeklyFocusTitleObserver = null;
     var studentMessageScrollLock = null;
 
@@ -588,34 +579,6 @@
         return 'ACHIEVEMENT';
     }
 
-    function closeAchievementDay(restoreFocus) {
-        if (!achievementsOverlay || achievementsOverlay.hidden) return;
-        achievementsOverlay.hidden = true;
-        unlockStudentMessageBackground();
-        if (restoreFocus !== false && achievementsTrigger && achievementsTrigger.isConnected) achievementsTrigger.focus();
-        achievementsTrigger = null;
-    }
-
-    function openAchievementDay(key, trigger) {
-        if (!achievementsOverlay || !state.achievementCalendar) return;
-        var day = (state.achievementCalendar.days || []).find(function(item) { return item.date === key; });
-        var items = day && day.items || [];
-        achievementsTrigger = trigger || null;
-        achievementsDialogDate.textContent = (key === state.achievementCalendar.today_date ? 'Today · ' : '') + achievementDateLabel(key, true);
-        achievementsDialogTitle.textContent = items.length ? (items.length === 1 ? '1 achievement' : items.length + ' achievements') : 'No achievements';
-        achievementsDialogCount.textContent = items.length ? String(items.length) : '0';
-        achievementsDialogList.innerHTML = items.length ? items.map(function(item) {
-            return '<article class="student-achievement-item type-' + escapeHtml(item.type || '') + '">' +
-                '<span class="student-achievement-item-mark" aria-hidden="true"></span>' +
-                '<div><p>' + escapeHtml(achievementTypeLabel(item.type)) + '</p><h3>' + escapeHtml(item.title || 'Completed task') + '</h3><span>' + escapeHtml(item.detail || '') + '</span></div>' +
-                '<strong>' + escapeHtml(item.result || 'COMPLETED') + '</strong>' +
-            '</article>';
-        }).join('') : '<div class="student-achievement-empty"><span aria-hidden="true">·</span><p>No completed tasks on this day.</p></div>';
-        lockStudentMessageBackground();
-        achievementsOverlay.hidden = false;
-        window.setTimeout(function() { if (achievementsClose) achievementsClose.focus(); }, 0);
-    }
-
     function loadAchievementCalendar() {
         if (!achievementsPanel) return Promise.resolve(null);
         if (!state.session || state.session.mode !== 'student') {
@@ -637,21 +600,6 @@
             return null;
         });
     }
-
-    if (achievementsScroll) achievementsScroll.addEventListener('click', function(event) {
-        var cell = event.target.closest('[data-achievement-date]');
-        if (cell && !cell.disabled) openAchievementDay(cell.dataset.achievementDate, cell);
-    });
-    if (achievementsClose) achievementsClose.addEventListener('click', function() { closeAchievementDay(true); });
-    if (achievementsOverlay) achievementsOverlay.addEventListener('click', function(event) {
-        if (event.target === achievementsOverlay) closeAchievementDay(true);
-    });
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && achievementsOverlay && !achievementsOverlay.hidden) {
-            event.preventDefault();
-            closeAchievementDay(true);
-        }
-    });
 
     function vocabularySourceKey(item) {
         var raw = [
@@ -762,44 +710,6 @@
             day: day,
             key: year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0')
         };
-    }
-
-    function calendarButtonDateModel(value) {
-        var date = value instanceof Date ? value : new Date(value || Date.now());
-        var parts = shanghaiDateParts(date);
-        if (!parts) return null;
-        var spokenDate = new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Asia/Shanghai',
-            month: 'long',
-            day: 'numeric'
-        }).format(date);
-        return {
-            day: parts.day,
-            isDoubleDigit: parts.day >= 10,
-            ariaLabel: 'Progress calendar, ' + spokenDate
-        };
-    }
-
-    function millisecondsUntilNextShanghaiDay(value) {
-        var now = value instanceof Date ? value.getTime() : Number(value || Date.now());
-        var dayMs = 24 * 60 * 60 * 1000;
-        var shanghaiOffsetMs = 8 * 60 * 60 * 1000;
-        var nextMidnight = Math.floor((now + shanghaiOffsetMs) / dayMs + 1) * dayMs - shanghaiOffsetMs;
-        return Math.max(1000, nextMidnight - now + 1000);
-    }
-
-    function syncCalendarButtonDate() {
-        if (!calendarButton && !calendarDateLabel) return;
-        var now = new Date();
-        var model = calendarButtonDateModel(now);
-        if (!model) return;
-        if (calendarDateLabel) {
-            calendarDateLabel.textContent = String(model.day);
-            calendarDateLabel.classList.toggle('is-double-digit', model.isDoubleDigit);
-        }
-        if (calendarButton) calendarButton.setAttribute('aria-label', model.ariaLabel);
-        if (calendarDateRefreshTimer) window.clearTimeout(calendarDateRefreshTimer);
-        calendarDateRefreshTimer = window.setTimeout(syncCalendarButtonDate, millisecondsUntilNextShanghaiDay(now));
     }
 
     function utcDateFromShanghaiParts(parts) {
@@ -1278,13 +1188,6 @@
         return item.best_improved_at || item.progress_updated_at || finishedCompletionValue(item);
     }
 
-    function studentCalendarCompletionDate(item) {
-        if (!item || !isFinishedStatus(item.status) || normalizedStatus(item.status) === 'cancelled') return null;
-        var value = finishedCompletionValue(item);
-        var date = value ? new Date(value) : null;
-        return date && !isNaN(date.getTime()) ? date : null;
-    }
-
     function studentCalendarMonthSerial(year, month) {
         return (Number(year) * 12) + Number(month) - 1;
     }
@@ -1298,21 +1201,27 @@
         return year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
     }
 
-    function studentCalendarFinishedItems() {
-        return (state.assignments || []).filter(function(item) {
-            return Boolean(studentCalendarCompletionDate(item));
-        });
+    function studentCalendarAchievementDays() {
+        return state.achievementCalendar && Array.isArray(state.achievementCalendar.days)
+            ? state.achievementCalendar.days
+            : [];
     }
 
     function studentCalendarBounds(nowValue) {
-        var today = shanghaiDateParts(nowValue || new Date());
+        var fallbackToday = shanghaiDateParts(nowValue || new Date());
+        var calendar = state.achievementCalendar || {};
+        var todayDate = achievementDate(calendar.today_date);
+        var startDate = achievementDate(calendar.start_date);
+        var today = todayDate ? {
+            year: todayDate.getUTCFullYear(),
+            month: todayDate.getUTCMonth() + 1,
+            day: todayDate.getUTCDate(),
+            key: achievementDateKey(todayDate)
+        } : fallbackToday;
         var currentSerial = studentCalendarMonthSerial(today.year, today.month);
-        var earliestSerial = currentSerial;
-        studentCalendarFinishedItems().forEach(function(item) {
-            var parts = shanghaiDateParts(studentCalendarCompletionDate(item));
-            if (!parts) return;
-            earliestSerial = Math.min(earliestSerial, studentCalendarMonthSerial(parts.year, parts.month));
-        });
+        var earliestSerial = startDate
+            ? studentCalendarMonthSerial(startDate.getUTCFullYear(), startDate.getUTCMonth() + 1)
+            : currentSerial;
         return { earliest: earliestSerial, current: currentSerial, today: today };
     }
 
@@ -1325,19 +1234,11 @@
         var dayCount = new Date(Date.UTC(monthParts.year, monthParts.month, 0)).getUTCDate();
         var itemsByKey = {};
 
-        studentCalendarFinishedItems().forEach(function(item) {
-            var completionDate = studentCalendarCompletionDate(item);
-            var parts = completionDate && shanghaiDateParts(completionDate);
-            if (!parts || parts.year !== monthParts.year || parts.month !== monthParts.month) return;
-            var key = studentCalendarDateKey(parts.year, parts.month, parts.day);
-            if (!itemsByKey[key]) itemsByKey[key] = [];
-            itemsByKey[key].push(item);
-        });
-
-        Object.keys(itemsByKey).forEach(function(key) {
-            itemsByKey[key].sort(function(left, right) {
-                return studentCalendarCompletionDate(right).getTime() - studentCalendarCompletionDate(left).getTime();
-            });
+        studentCalendarAchievementDays().forEach(function(day) {
+            if (!day || typeof day.date !== 'string') return;
+            var date = achievementDate(day.date);
+            if (!date || date.getUTCFullYear() !== monthParts.year || date.getUTCMonth() + 1 !== monthParts.month) return;
+            itemsByKey[day.date] = Array.isArray(day.items) ? day.items.slice() : [];
         });
 
         var days = [];
@@ -1350,9 +1251,6 @@
                 day: dayNumber,
                 items: dayItems,
                 level: Math.min(4, dayItems.length),
-                hasStar: dayItems.some(function(item) {
-                    return normalizedStatus(item.status) === 'mastered' || item.star_claimed === true;
-                }),
                 isToday: dayKey === bounds.today.key,
                 isFuture: dayKey > bounds.today.key
             });
@@ -1394,8 +1292,22 @@
         }).format(new Date(day.key + 'T12:00:00Z'));
     }
 
-    function renderStudentCalendarTask(item) {
-        return renderStudentMessageTask(item, 'finished');
+    function renderStudentCalendarAchievement(item) {
+        var type = achievementTypeLabel(item && item.type);
+        var title = item && item.title || 'Completed task';
+        var result = item && item.result || 'COMPLETED';
+        return '<article class="student-message-task finished student-calendar-achievement"' +
+            ' data-entry-kind="' + escapeHtml(type) + '" data-entry-title="' + escapeHtml(title) + '">' +
+            '<div class="student-message-task-main">' +
+                '<span class="student-message-kicker">' + escapeHtml(type) + '</span>' +
+                '<span class="student-message-title-window">' +
+                    '<strong class="student-message-title-track"><span>' + escapeHtml(title) + '</span></strong>' +
+                '</span>' +
+            '</div>' +
+            '<div class="student-message-task-meta" aria-label="' + escapeHtml(result) + '">' +
+                '<span class="student-message-score">' + escapeHtml(result) + '</span>' +
+            '</div>' +
+        '</article>';
     }
 
     function renderStudentCalendar() {
@@ -1413,7 +1325,7 @@
         var selectedItems = model.selected ? model.selected.items : [];
         var dayButtons = model.days.map(function(day) {
             if (!day) return '<span class="student-calendar-day-empty" aria-hidden="true"></span>';
-            var aria = studentCalendarDayLabel(day) + ', ' + day.items.length + ' completed';
+            var aria = studentCalendarDayLabel(day) + ', ' + day.items.length + (day.items.length === 1 ? ' achievement' : ' achievements');
             return '<button class="student-calendar-day' +
                 (day.isToday ? ' is-today' : '') +
                 (model.selected && day.key === model.selected.key ? ' is-selected' : '') +
@@ -1421,11 +1333,10 @@
                 (day.isFuture ? ' disabled' : '') + ' aria-label="' + escapeHtml(aria) + '"' +
                 (model.selected && day.key === model.selected.key ? ' aria-pressed="true"' : ' aria-pressed="false"') + '>' +
                 '<span>' + day.day + '</span>' +
-                (day.hasStar ? '<span class="student-calendar-day-star" aria-hidden="true">★</span>' : '') +
             '</button>';
         }).join('');
         var detailTitle = model.selected ? studentCalendarDayLabel(model.selected) : 'Completed work';
-        var detailCount = selectedItems.length + ' task' + (selectedItems.length === 1 ? '' : 's');
+        var detailCount = selectedItems.length + ' achievement' + (selectedItems.length === 1 ? '' : 's');
 
         calendarContent.innerHTML =
             '<div class="student-calendar-toolbar">' +
@@ -1441,7 +1352,7 @@
             '<div class="student-calendar-grid" role="grid" aria-label="' + escapeHtml(studentCalendarMonthLabel(model)) + '">' + dayButtons + '</div>' +
             '<section class="student-calendar-detail" aria-live="polite">' +
                 '<div class="student-calendar-detail-head"><h3>' + escapeHtml(detailTitle) + '</h3><span>' + escapeHtml(detailCount) + '</span></div>' +
-                (selectedItems.length ? '<div class="student-calendar-task-list">' + selectedItems.map(renderStudentCalendarTask).join('') + '</div>' : '<p class="student-calendar-empty">No completed work on this day.</p>') +
+                (selectedItems.length ? '<div class="student-calendar-task-list">' + selectedItems.map(renderStudentCalendarAchievement).join('') + '</div>' : '<p class="student-calendar-empty">No achievements on this day.</p>') +
             '</section>';
         if (studentCalendarTitleObserver) studentCalendarTitleObserver.disconnect();
         studentCalendarTitleObserver = setupStudentMessageTitleTracks(calendarContent);
@@ -1456,20 +1367,19 @@
         if (calendarScroll) calendarScroll.scrollTop = 0;
     }
 
-    function setStudentCalendarPanel(open) {
+    function setStudentCalendarPanel(open, trigger) {
         state.calendarPanelOpen = open === true;
         if (!calendarOverlay) return;
+        if (state.calendarPanelOpen && trigger) calendarTrigger = trigger;
         calendarOverlay.hidden = !state.calendarPanelOpen;
-        if (calendarButton) {
-            calendarButton.classList.toggle('active', state.calendarPanelOpen);
-            calendarButton.setAttribute('aria-expanded', state.calendarPanelOpen ? 'true' : 'false');
-        }
         if (!state.calendarPanelOpen) {
             if (studentCalendarTitleObserver) {
                 studentCalendarTitleObserver.disconnect();
                 studentCalendarTitleObserver = null;
             }
             unlockStudentMessageBackground();
+            if (calendarTrigger && calendarTrigger.isConnected) calendarTrigger.focus({ preventScroll: true });
+            calendarTrigger = null;
             return;
         }
         setWordsPanel(false);
@@ -1482,33 +1392,14 @@
         });
     }
 
-    function suspendStudentCalendarForEntry() {
-        state.calendarPanelOpen = false;
-        if (calendarOverlay) calendarOverlay.hidden = true;
-        if (calendarButton) {
-            calendarButton.classList.remove('active');
-            calendarButton.setAttribute('aria-expanded', 'false');
-        }
-    }
-
-    function resumeStudentCalendarAfterEntry(card) {
-        state.calendarPanelOpen = true;
-        if (calendarOverlay) calendarOverlay.hidden = false;
-        if (calendarButton) {
-            calendarButton.classList.add('active');
-            calendarButton.setAttribute('aria-expanded', 'true');
-        }
-        if (card && card.isConnected) card.focus();
-    }
-
-    function closeStudentCalendarForEntry() {
-        state.calendarPanelOpen = false;
-        if (calendarOverlay) calendarOverlay.hidden = true;
-        if (calendarButton) {
-            calendarButton.classList.remove('active');
-            calendarButton.setAttribute('aria-expanded', 'false');
-        }
-        unlockStudentMessageBackground();
+    function openStudentCalendarDate(key, trigger) {
+        var date = achievementDate(key);
+        if (!date || !state.achievementCalendar || key > state.achievementCalendar.today_date) return;
+        state.calendarYear = date.getUTCFullYear();
+        state.calendarMonth = date.getUTCMonth() + 1;
+        state.calendarSelectedDay = key;
+        setStudentCalendarPanel(true, trigger);
+        if (calendarScroll) calendarScroll.scrollTop = 0;
     }
 
     function studentMessageKind(item) {
@@ -4894,10 +4785,6 @@
             setAccountPanel(false);
         });
     });
-    syncCalendarButtonDate();
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible') syncCalendarButtonDate();
-    });
     if (identityChip) {
         identityChip.addEventListener('click', function(event) {
             event.stopPropagation();
@@ -4934,33 +4821,31 @@
             openTeacherRepliesDialog(undefined, { opener: repliesButton });
         });
     }
-    if (calendarButton) {
-        calendarButton.addEventListener('click', function() {
-            setStudentCalendarPanel(true);
-        });
-    }
     var calendarClose = document.getElementById('student-calendar-close');
     if (calendarClose) {
         calendarClose.addEventListener('click', function() {
             setStudentCalendarPanel(false);
-            if (calendarButton) calendarButton.focus();
         });
     }
+    if (achievementsScroll) {
+        achievementsScroll.addEventListener('click', function(event) {
+            var cell = event.target.closest('[data-achievement-date]');
+            if (cell && !cell.disabled) openStudentCalendarDate(cell.dataset.achievementDate, cell);
+        });
+    }
+    if (calendarOverlay) {
+        calendarOverlay.addEventListener('click', function(event) {
+            if (event.target === calendarOverlay) setStudentCalendarPanel(false);
+        });
+    }
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && calendarOverlay && !calendarOverlay.hidden) {
+            event.preventDefault();
+            setStudentCalendarPanel(false);
+        }
+    });
     if (calendarContent) {
         calendarContent.addEventListener('click', function(event) {
-            var taskCard = event.target.closest('.student-message-task[data-open-href]');
-            if (taskCard) {
-                event.preventDefault();
-                event.stopPropagation();
-                var href = taskCard.dataset.openHref;
-                if (!href) return;
-                suspendStudentCalendarForEntry();
-                showPracticeEntryDialog(taskCard, href, {
-                    onDismiss: function() { resumeStudentCalendarAfterEntry(taskCard); },
-                    onCommit: closeStudentCalendarForEntry
-                });
-                return;
-            }
             var monthButton = event.target.closest('[data-calendar-month]');
             if (monthButton && !monthButton.disabled) {
                 shiftStudentCalendarMonth(monthButton.dataset.calendarMonth === 'next' ? 1 : -1);
@@ -4970,20 +4855,6 @@
             if (!dayButton || dayButton.disabled) return;
             state.calendarSelectedDay = dayButton.dataset.calendarDate || '';
             renderStudentCalendar();
-        });
-        calendarContent.addEventListener('keydown', function(event) {
-            if (event.key !== 'Enter' && event.key !== ' ') return;
-            var taskCard = event.target.closest('.student-message-task[data-open-href]');
-            if (!taskCard) return;
-            event.preventDefault();
-            event.stopPropagation();
-            var href = taskCard.dataset.openHref;
-            if (!href) return;
-            suspendStudentCalendarForEntry();
-            showPracticeEntryDialog(taskCard, href, {
-                onDismiss: function() { resumeStudentCalendarAfterEntry(taskCard); },
-                onCommit: closeStudentCalendarForEntry
-            });
         });
     }
     bindMyWordsToolbar();
@@ -5208,7 +5079,6 @@
                     ariaLabel: 'Weekly assignment progress is unavailable. Refresh to retry.'
                 }));
             }
-            if (calendarButton) calendarButton.disabled = true;
             if (messageButton) messageButton.disabled = true;
             var retryButton = document.getElementById('dashboard-retry-button');
             if (retryButton) retryButton.addEventListener('click', function() { window.location.reload(); });

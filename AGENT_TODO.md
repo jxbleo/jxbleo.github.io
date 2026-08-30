@@ -89,6 +89,10 @@ cp .qa-secrets.example .qa-secrets.local
   Shanghai day-of-month inside the square. The date updates daily, suppresses
   the green contribution fill, and retains the accessible Today state without
   a separate legend.
+- Replaced the standalone day-detail popup and header Calendar shortcut with
+  one shared Achievements month calendar. Each contribution square opens its
+  own month and preselects its exact date, using the same achievement data for
+  calendar intensity, result rows, and empty days.
 
 ### 2026-08-27
 

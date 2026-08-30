@@ -24,14 +24,17 @@ days. Today suppresses its green contribution fill and shows the Shanghai
 day-of-month directly inside the square with a restrained plum border and
 number; no separate Today legend or animation is shown. The number updates
 with the server-provided Shanghai date. The button retains
-`aria-current="date"`, and its detail date starts with `Today`. The modal shows
-the full date, count, and compact completed-task rows, or an explicit empty-day
-message. On phones the heading stays fixed, only the task list scrolls, and the
-external Close control remains visible inside the bottom safe area, including
-at a 320 px viewport and with long task titles. Closing restores focus and the
-exact page scroll position. The grid provides four green intensity levels,
-visible focus, Reduced Motion, Reduced Transparency, and increased-contrast
-fallbacks.
+`aria-current="date"`. Activating any past/today square opens the shared
+Achievements month calendar at that square's month with the exact date already
+selected. The calendar uses the same achievement projection as the 53-week
+grid, so its day intensity, selected-day count, completed rows, and empty state
+cannot disagree with the originating square. The former header Calendar button
+and separate compact day-detail dialog are removed. On phones the existing
+calendar surface and external Close control remain inside the safe viewport;
+closing, Escape, or a backdrop click restores focus to the originating square
+and the exact page scroll position. The grid provides four green intensity
+levels, visible focus, Reduced Motion, Reduced Transparency, and
+increased-contrast fallbacks.
 
 | Page | Purpose |
 | --- | --- |

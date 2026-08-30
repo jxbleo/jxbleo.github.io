@@ -946,7 +946,9 @@ flowchart TD
 
 学生主页首张卡片在问候语和励志语下方显示 `ACHIEVEMENTS` 过去 12 个月
 贡献格。一个格子代表上海日期，颜色深度代表当天达成次数；点击包括零次在内的
-任一过去日期，显示该日完成任务的简要弹窗。BBC 与 Vocabulary 只有达到该次
+任一过去日期，打开统一的 Achievements 月历并自动显示该格子所在月份、选中该日，
+下方使用同一份 Achievements 投影显示当天完成项目。右上角不再保留独立 Calendar
+入口，月历只从贡献格进入。BBC 与 Vocabulary 只有达到该次
 提交的合格线才计一次；同一 assignment 的后续合格重试不重复计数，独立自学
 按 `set_id` 的首次合格计一次。Writing 只有 Composition 进入 `completed` 且有
 `completed_at` 才计一次。DSE Speaking 预留相同类别，但在出现明确的订正或
