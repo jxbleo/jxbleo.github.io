@@ -1937,7 +1937,7 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   Prompt 与正文保留各自输入提示，并用与正文一致的灰色衬线占位字体。标化模式仍严格按
   Rubric、Writing Prompt、完整实线分隔线、Your Writing 的控件顺序排列；Rubric 与 Prompt 位于
   分隔线上方，学生正文位于下方。Writing Prompt 初始只显示一行，Your Writing 初始显示三行，两者都随输入
-  自动增高而不出现内部纵向滚动。两处占位文案分别精简为 `Writing Prompt` 与 `Your Writing`。
+  自动增高而不出现内部纵向滚动。两处占位文案分别精简为 `Writing prompt` 与 `Your writing`。
   输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
   选择模式、输入 Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
   定位符，也不进入 History。未提交内容只存在当前页面内存；刷新、关闭、离开后再次进入都必须消失，且不得
@@ -1945,7 +1945,7 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   独立初稿输入页。只有文本模式点击 `Submit`，或照片模式点击底部
   `Scan`，才创建服务端 Composition 并持久化模式及输入。`Your Writing` 的占位文字与首行必须贴近输入框顶部，
   不得因正文行高而视觉下沉。
-  `Writing Prompt` 与 `Your Writing` 输入框内部右下方各提供一个只显示相机图标的按钮，并以 `aria-label` 保留可访问名称；前者 OCR 确认后只回填 Writing Prompt，后者才进入作文正文 OCR。
+  `Writing prompt` 与 `Your writing` 输入框内部右下方各提供一个只显示相机图标的按钮，并以 `aria-label` 保留可访问名称；前者 OCR 确认后只回填 Writing Prompt，后者才进入作文正文 OCR。
   任意相机入口先打开同一个 Apple 风格来源选择层，提供 `Take Photo` 与 `Choose from Library`，取消时
   回到原触发按钮。选择后必须在同一用户手势内同步打开原生输入，避免 iPhone/iPad Safari 阻止选择器。
   拍摄后返回照片暂存区，可继续添加图片，最多八页。选择照片只暂存，

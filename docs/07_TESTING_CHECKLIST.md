@@ -1949,7 +1949,7 @@ High priority improvement:
   mode must retain the control order Rubric, Writing Prompt, full solid divider,
   Your Writing. Prompt begins at one row and Writing at three; type and delete multiline
   content and confirm both grow and shrink without an internal vertical scrollbar.
-  Confirm the exact placeholders read `Writing Prompt` and `Your Writing`, and the first typed line aligns near
+  Confirm the exact placeholders read `Writing prompt` and `Your writing`, and the first typed line aligns near
   the textarea's top edge on phone, iPad, and desktop.
   Confirm icon-only camera buttons sit at the bottom-right of Prompt and Your Writing,
   with distinct accessible names. Tap each on a real iPhone/iPad and verify the

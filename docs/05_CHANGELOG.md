@@ -8,7 +8,7 @@
 - Removed the duplicate Home action from the sidebar. Back closes an open sidebar,
   safely returns a Composition to Writing Home, collapses an expanded local composer,
   or asks before leaving base Writing Home for Dashboard.
-- Shortened the Brainstorming placeholders to `Writing Prompt` and `Your Writing`
+- Shortened the Brainstorming placeholders to `Writing prompt` and `Your writing`
   without changing their accessible labels or auto-growing behavior.
 
 ## 2026-08-30 — Calendar task-entry confirmation
