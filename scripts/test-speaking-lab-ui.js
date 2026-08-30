@@ -20,7 +20,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260830-3/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260830-4/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
@@ -49,6 +49,8 @@ function run() {
   assert.doesNotMatch(page, /id="my-voiceprint-card"/);
   assert.match(page, /id="speaking-sidebar-voiceprint"[^>]*>Voiceprint/);
   assert.match(app, /function renderSpeakingSetDetail\(set\)/);
+  assert.match(app, /function hideSpeakingHomeCards\(\)[\s\S]*speaking-set-library[\s\S]*speaking-voiceprint-main/);
+  assert.match(app, /getDiscussion[\s\S]*then\(function \(result\) \{\s*hideSpeakingHomeCards\(\)/, "opening a Discussion must remove Choose a Set and Voiceprint from the report workspace");
   assert.match(app, /CONTEXT/);
   assert.match(app, /PART A[\s\S]*Group Discussion/);
   assert.match(app, /PART B[\s\S]*Individual Response/);
@@ -244,7 +246,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260830-3/);
-  assert.match(page, /speaking-lab\.js\?v=20260830-3/);
+  assert.match(page, /speaking-lab\.js\?v=20260830-4/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

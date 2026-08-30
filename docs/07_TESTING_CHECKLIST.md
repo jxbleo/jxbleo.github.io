@@ -2609,6 +2609,9 @@ and leave the student Argue queue unchanged.
 - Verify a selected Set appears in overview, Context, Part A, and Part B order;
   Part A and each Part B question keep their action adjacent to the affected
   content.
+- Open a queued, processing, and ready Discussion from both the Set library and
+  Voiceprint surface; confirm neither `Choose a Set` nor the standalone
+  Voiceprint card remains above or below the Discussion/report.
 - At phone widths, verify no Set title, route, question, timer, or action clips;
   Start Discussion, Start Response, and recording actions remain reachable with
   one hand. Recheck reduced-motion, reduced-transparency, and increased-contrast

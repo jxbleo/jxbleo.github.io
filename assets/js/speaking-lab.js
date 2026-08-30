@@ -508,6 +508,12 @@
         document.getElementById('speaking-voiceprint-main-open').textContent = active ? 'Update voiceprint' : 'Set up voiceprint';
         updateToolbar({ title: 'Voiceprint', invitation: true });
     }
+    function hideSpeakingHomeCards() {
+        var library = document.getElementById('speaking-set-library');
+        var voiceprintMain = document.getElementById('speaking-voiceprint-main');
+        if (library) library.hidden = true;
+        if (voiceprintMain) voiceprintMain.hidden = true;
+    }
     function participantRow(participant, item) {
         var rosterName = participant.roster_display_name || participant.display_name;
         var label = participant.kind === 'guest'
@@ -1206,6 +1212,7 @@
         window.history.replaceState(null, '', 'speaking-lab.html?discussion=' + encodeURIComponent(idValue));
         var generation = pollGeneration;
         return call('getDiscussion', { discussion_id: idValue }).then(function (result) {
+            hideSpeakingHomeCards();
             if (result.invitation) {
                 updateToolbar({ title: result.invitation.title, invitation: true });
                 document.body.classList.remove('speaking-detail-open');
