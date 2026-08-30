@@ -155,8 +155,9 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   关联最佳 attempt 入口。`History` 按最新在前显示每次 Cash request、状态与永久凭证，
   并承载未完成 request 的追加凭证及取消操作
 - `To Do List` 默认弹窗不显示 `ASSIGNMENTS` 标题。顶部固定并排显示
-  `TO-DO`、`FINISHED` 两个按钮及各自任务数量，默认选中 `TO-DO`，一次只显示
-  一个分类的任务；所有尚未完成的教师作业（包括未来截止的作业）统一进入
+  `TO-DO`、`FINISHED` 两个文字按钮及各自任务数量，并在同一行追加一个只显示
+  三点对话气泡图标的圆形 Teacher Replies 按钮。默认选中 `TO-DO`，一次只显示
+  一个分类的内容；所有尚未完成的教师作业（包括未来截止的作业）统一进入
   `TO-DO`，空分类显示简短空状态。弹窗高度不随当前分类的任务数量变化；任务
   较多时只滚动卡片内部列表。
   Finished 同时包含已通过的 assignment，以及无需等待老师布置、已达到该 set
@@ -169,11 +170,11 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   红色呼吸式提醒，减少动态效果时改为静态红色强调。有 Upcoming 任务时继续
   显示蓝色进度条和百分比；没有时不显示 `0%` 或进度条，改为不可点击的日历
   勾图标加 `NO TASKS` 空状态。首页本身不直接展开任务行
-- 首页 `To Do List` 按钮右侧放置独立纯对话气泡图标；点击查看全部历史老师回复，
-  图标内部不带勾，红点只提示未读回复。回复弹窗没有左上角 Back 或卡片内关闭
-  图标，卡片外正下方使用与其他学生独立弹窗一致的 `Close` 胶囊；关闭时标记
-  当前回复已读并返回 Dashboard。顶部仅保留与 `PERSONAL CENTER` 同字体、同
-  绿色的 `TEACHER REPLIES` 标题，不显示历史回复数量说明。每条回复按任务名称、题号、
+- 首页不再放置独立 Teacher Replies 气泡按钮；点击 `To Do List` 后使用顶部同一行
+  的圆形纯对话气泡图标查看全部历史老师回复。图标内部不带勾，红点只提示未读回复。
+  切换到回复时仍保留 `TO-DO`、`FINISHED` 和该圆形图标，不增加第二个标题、左上角
+  Back 或卡片内关闭图标；卡片外正下方继续使用统一 `Close` 胶囊，关闭时标记当前
+  回复已读并返回 Dashboard。每条回复按任务名称、题号、
   原始题目排列，再以 `Expected` 和 `Submitted` 展示标准答案与学生提交答案；
   点击首页
   `THIS WEEK` 或 `UPCOMING` 打开的聚焦任务弹窗不显示 Teacher Replies 图标，
@@ -186,7 +187,7 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   不显示 `Progress` 标题、说明文字、Completed 总数或 Active days 统计，月份和
   年份导航直接位于内容顶部。右上角日历入口的图标内部按 `Asia/Shanghai` 显示
   当天日号，并在上海午夜或页面重新激活时更新；该显示不调用后端。最左侧 To Do
-  List 与相邻 Teacher Replies 使用相同玻璃颜色、线宽和 19px 图形视觉尺寸
+  List 使用与其他页头工具相同的玻璃颜色、线宽和 19px 图形视觉尺寸
 - 打开作业并提交答案
 - BBC 与 Vocabulary 的提交结果弹窗统一使用两类短音效：未通过播放低沉下降的
   “叹气”音；Passed 与 Mastered 统一播放同一个明亮上升音，不再把 Mastered
@@ -1330,8 +1331,8 @@ flowchart TD
   mastery lock 规则
 - 历史旧数据可通过 `teacherAdmin.backfillAcceptedAnswerRegrades` 手动分页补算；该动作默认 dry run，必须由登录教师触发
 - 老师批准后的 grading key 是未来评分权威
-- 学生端 Dashboard 的 To Do List 按钮右侧提供独立 Teacher Replies 气泡入口，
-  并保留全部已解决回复；
+- 学生端 Dashboard 的 To Do List 弹窗顶部提供圆形、仅图标的 Teacher Replies
+  入口，并保留全部已解决回复；
   `student_seen` 只控制未读红点，原题 Argue 状态仍是另一处永久查看入口
 
 ### 9.8 周报、月报与共享链接
@@ -1418,8 +1419,8 @@ recorded attempt -> 写入私有邮件 outbox -> 定时 dispatcher 认领 -> SMT
 `THIS WEEK` 的总任务数包含本周任务和全部逾期未完成任务，完成数为本周已
 完成任务；点击后逾期任务排在最前，并以红色脉冲和文字状态提示，减少动态
 效果时改用静态红色强调。点击任一分组打开对应任务列表；下周任务不计入红色
-数字。红色数字只计算逾期、本周未完成任务。未读 Teacher Replies 使用 To Do List 按钮右侧气泡图标
-自己的红点，不计入 To Do List 外部数字。首页这些周进度分区默认直接显示
+数字。红色数字只计算逾期、本周未完成任务。未读 Teacher Replies 使用 To Do List
+弹窗顶部圆形气泡图标自己的红点，不计入 To Do List 外部数字。首页这些周进度分区默认直接显示
 摘要而不展开任务行。
 
 #### 学习报告入口（V1）
