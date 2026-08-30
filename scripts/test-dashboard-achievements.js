@@ -38,6 +38,16 @@ const twoWeekEdgeLabels = monthLabels(new Date(Date.UTC(2025, 7, 18)));
 assert.strictEqual(twoWeekEdgeLabels[0], "Aug", "a two-week leading month has enough room for its label");
 assert.strictEqual(twoWeekEdgeLabels[2], "Sep");
 
+const dashboardHtml = fs.readFileSync(path.join(__dirname, "../dashboard.html"), "utf8");
+assert.ok(!dashboardHtml.includes("student-achievements-head"), "the visible Achievements heading should be removed");
+assert.ok(!dashboardHtml.includes("student-achievements-legend"), "the intensity-dot legend should be removed");
+assert.match(
+  dashboardHtml,
+  /student-achievements-summary[\s\S]*student-achievements-total[\s\S]*student-achievements-status/,
+  "achievement and active-day totals should share the lower summary"
+);
+assert.match(dashboardHtml, /student-achievements-panel[^>]*aria-label="Achievements"/, "the heading-free panel needs an accessible name");
+
 const now = new Date("2026-08-30T04:00:00.000Z");
 const window = achievementWindow(now);
 assert.deepStrictEqual(

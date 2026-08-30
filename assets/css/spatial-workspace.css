@@ -340,45 +340,16 @@
     border-top: 1px solid rgba(65, 87, 96, 0.12);
 }
 
-.liquid-glass-dashboard .student-achievements-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 22px;
-    margin-bottom: 18px;
-}
-
-.liquid-glass-dashboard .student-achievements-range {
-    margin: 0 0 6px;
-    color: rgba(42, 64, 70, 0.46);
-    font-size: 0.65rem;
-    font-weight: 820;
-    letter-spacing: 0.13em;
-    line-height: 1;
-}
-
-.liquid-glass-dashboard .student-achievements-head h2 {
-    margin: 0;
-    color: #1b252b;
-    font-size: clamp(1.12rem, 2vw, 1.42rem);
-    font-weight: 820;
-    letter-spacing: -0.025em;
-    line-height: 1;
-}
 
 .liquid-glass-dashboard .student-achievements-total {
-    display: flex;
+    display: inline-flex;
     align-items: baseline;
-    gap: 7px;
-    margin: 0;
-    color: rgba(42, 64, 70, 0.5);
-    font-size: 0.72rem;
-    font-weight: 700;
+    gap: 4px;
 }
 
 .liquid-glass-dashboard .student-achievements-total strong {
     color: #187969;
-    font-size: 1.18rem;
+    font-size: 0.76rem;
     font-variant-numeric: tabular-nums;
     font-weight: 850;
 }
@@ -508,13 +479,23 @@
 .liquid-glass-dashboard .student-achievements-foot {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 18px;
+    justify-content: flex-start;
     min-height: 18px;
     margin-top: 8px;
     color: rgba(42, 64, 70, 0.48);
-    font-size: 0.62rem;
+    font-size: 0.64rem;
     font-weight: 700;
+}
+
+.liquid-glass-dashboard .student-achievements-summary {
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.liquid-glass-dashboard .student-achievements-summary-divider {
+    color: rgba(42, 64, 70, 0.28);
 }
 
 .liquid-glass-dashboard .student-achievements-foot button {
@@ -528,22 +509,6 @@
     cursor: pointer;
 }
 
-.liquid-glass-dashboard .student-achievements-legend {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.liquid-glass-dashboard .student-achievements-legend i {
-    width: 11px;
-    height: 11px;
-    border-radius: 3px;
-    background: #bde5ce;
-}
-
-.liquid-glass-dashboard .student-achievements-legend i:nth-of-type(2) { background: #75c79b; }
-.liquid-glass-dashboard .student-achievements-legend i:nth-of-type(3) { background: #35a773; }
-.liquid-glass-dashboard .student-achievements-legend i:nth-of-type(4) { background: #137665; }
 
 .liquid-glass-dashboard .student-achievements-skeleton {
     width: 940px;
@@ -1220,10 +1185,6 @@
         padding-top: 22px;
     }
 
-    .liquid-glass-dashboard .student-achievements-head {
-        align-items: flex-start;
-        margin-bottom: 15px;
-    }
 
     .liquid-glass-dashboard .student-achievements-calendar {
         --achievement-cell: 12px;

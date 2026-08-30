@@ -13,7 +13,7 @@
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
     <link rel="stylesheet" href="assets/css/app.css?v=20260830-2">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260830-5">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260830-6">
     <link rel="prefetch" href="my-words.html" as="document">
     <link rel="prefetch" href="assets/css/my-words.css?v=20260808-1" as="style">
     <link rel="prefetch" href="assets/js/my-words.js?v=20260808-1" as="script">
@@ -88,20 +88,16 @@
                     <span class="sr-only" id="student-greeting-accessible" role="status" aria-live="polite" aria-atomic="true">Hello. Your next step starts here.</span>
                 </div>
             </section>
-            <section class="student-achievements-panel is-loading" id="student-achievements-panel" aria-labelledby="student-achievements-title" aria-busy="true">
-                <header class="student-achievements-head">
-                    <div>
-                        <p class="student-achievements-range">PAST 12 MONTHS</p>
-                        <h2 id="student-achievements-title">ACHIEVEMENTS</h2>
-                    </div>
-                    <p class="student-achievements-total" id="student-achievements-total"><strong>—</strong><span>achievements</span></p>
-                </header>
+            <section class="student-achievements-panel is-loading" id="student-achievements-panel" aria-label="Achievements" aria-busy="true">
                 <div class="student-achievements-scroll" id="student-achievements-scroll" tabindex="0" aria-label="Achievement calendar. Loading.">
                     <div class="student-achievements-skeleton" aria-hidden="true"></div>
                 </div>
                 <footer class="student-achievements-foot">
-                    <span id="student-achievements-status" role="status" aria-live="polite">Loading achievements.</span>
-                    <span class="student-achievements-legend" aria-hidden="true"><span>Less</span><i></i><i></i><i></i><i></i><span>More</span></span>
+                    <span class="student-achievements-summary">
+                        <span class="student-achievements-total" id="student-achievements-total"><strong>—</strong><span>achievements</span></span>
+                        <span class="student-achievements-summary-divider" aria-hidden="true">·</span>
+                        <span id="student-achievements-status" role="status" aria-live="polite">Loading achievements.</span>
+                    </span>
                 </footer>
             </section>
         </section>
