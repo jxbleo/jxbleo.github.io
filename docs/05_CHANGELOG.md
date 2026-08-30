@@ -29,7 +29,11 @@
 - Replaced the Today animation with a static plum date marker inside the square.
   The number follows the server-provided Shanghai day, Today no longer uses a
   contribution level color or separate legend, and its accessible current-date
-  state plus `Today` detail label remain intact.
+  state remains intact.
+- Unified the contribution grid with the existing month-calendar surface.
+  Clicking any past/today square now opens its month with that exact date
+  selected and renders the same achievement projection below; the redundant
+  header Calendar button and former compact achievement dialog were removed.
 
 ## 2026-08-30 — Full-width BBC audio waveform controls
 

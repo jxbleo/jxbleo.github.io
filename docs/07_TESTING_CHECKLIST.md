@@ -77,13 +77,16 @@ Dashboard Achievements checks:
   start at the newest weeks, and no page-level horizontal overflow appears;
 - Today suppresses its green level fill, shows the server-provided Shanghai
   day-of-month in static plum type and border without a separate legend,
-  exposes `aria-current="date"`, and prefixes the opened detail date with
-  `Today`;
-- click an active and an empty date, verify the task rows/empty message, Escape
-  and Close behavior, focus restoration, and page-scroll restoration;
-- at 320 x 568 and a common 390 px phone width, verify the modal remains inside
-  the viewport; with enough rows to overflow, only the task list scrolls while
-  the date/count header and safe-area-aware Close control remain visible;
+  and exposes `aria-current="date"`;
+- the header no longer contains the Calendar button; click active, empty, Today,
+  and a prior-month grid date and verify the shared month calendar opens at the
+  clicked month with that exact date selected;
+- the month-calendar intensity, selected-day count, result rows, and empty state
+  use the same achievement projection as the contribution square;
+- verify Close, Escape, and backdrop behavior restore focus and page scroll to
+  the originating square;
+- at 320 x 568 and a common 390 px phone width, verify the month calendar and
+  safe-area-aware external Close control remain inside the viewport;
 - a failed `getAchievementCalendar` request leaves assignments and Library
   usable and shows only the card-level retry action.
 
