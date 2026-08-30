@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-31 — Separate Writing Back and sidebar navigation
+
+- Matched Speaking Lab's navigation hierarchy: Writing now keeps a dedicated
+  circular Back arrow at the leading edge and the three-line sidebar trigger at
+  the far-right edge after the optional title pencil.
+- Removed the duplicate Home action from the sidebar. Back closes an open sidebar,
+  safely returns a Composition to Writing Home, collapses an expanded local composer,
+  or asks before leaving base Writing Home for Dashboard.
+- Shortened the Brainstorming placeholders to `Writing Prompt` and `Your Writing`
+  without changing their accessible labels or auto-growing behavior.
+
 ## 2026-08-30 — Calendar task-entry confirmation
 
 - Made task capsules inside the Student Achievements calendar keyboard/click

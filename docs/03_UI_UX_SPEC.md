@@ -2092,12 +2092,16 @@ Important mobile rules:
   keeps 14px viewport gutters, the rounded perimeter, and a 10px inner card inset;
   it must not collapse into the former full-bleed flat strip. Reduced Transparency
   replaces the material with an opaque surface.
-- Its header toolbar always shows the same three-line sidebar button at far left.
-  It never changes into History or Back text. The current title remains centered
+- Its header toolbar always shows a circular Back arrow at far left. The current title remains centered
   and uses all safe horizontal space after that button. Language-revision percentage
   is not shown. With no Composition selected, the center reads green
-  `Start new Writing` and the right edge stays empty. Home and the icon-only plus
-  action live in the sidebar.
+  `Start new Writing`. The right-side action group keeps the title pencil when
+  applicable and the three-line sidebar button at the far-right edge. The sidebar
+  contains the icon-only plus action and writing list, with no duplicate Home.
+- Back first closes an open sidebar. From a concrete Composition it opens the
+  existing safe-return confirmation and goes to Writing Home; from an expanded
+  new-writing composer it collapses the form without clearing local input; at base
+  Writing Home it opens the leave-to-Dashboard confirmation.
 - While a Composition is open, the flexible center of the top toolbar displays its
   AI-generated or student-edited title. A long title travels horizontally within
   that space with restrained pauses at both ends, matching task-title behavior;
@@ -2128,16 +2132,16 @@ Important mobile rules:
   local fields survive and reappear on the next expansion.
   This retention lasts only while the same page remains open; refresh or leaving
   the page intentionally clears it.
-- The page exposes only the top toolbar above card-based content. Home inside
-  History opens a custom confirmation dialog before returning to Dashboard; the
+- The page exposes only the top toolbar above card-based content. Back at base
+  Writing Home opens a custom confirmation dialog before returning to Dashboard; the
   copy explains that saved work remains available and active OCR or review jobs
   continue in the cloud. The dialog keeps keyboard focus inside it, returns focus
   on cancel, and supports `Escape` as cancel.
-- Home inside History uses red leave-navigation treatment. Its confirmation matches the compact Dashboard/BBC
+- The base Writing Home Back confirmation matches the compact Dashboard/BBC
   Apple-style alert: a 320px glass surface with centered copy and a divided
   two-button footer, green `Cancel` on the left and red `Leave` on the right.
 - Remove the brand mark and the `AI Tutor / Writing Studio` lockup. The three-line
-  sidebar control takes that position and reflects open/closed state with
+  sidebar control occupies the far-right action and reflects open/closed state with
   `aria-expanded`. The sidebar is initially closed as a phone overlay; at `820px`
   and above it auto-opens as a 280px docked column but remains dismissible.
   Clicking the same icon again, the phone scrim, or `Escape`
@@ -2279,7 +2283,8 @@ Important mobile rules:
   section labels, repeated mode switch, `Type` / `Scan` switch, or visible field
   headings. The source form has no student-entered Title control; rubric choice, prompt
   guidance, and manuscript guidance live inside their controls in one muted serif placeholder
-  style while accessible names remain available to assistive technology. Brainstorming retains
+  style while accessible names remain available to assistive technology. The
+  placeholders are exactly `Writing Prompt` and `Your Writing`. Brainstorming retains
   the control order Rubric, Writing Prompt, divider, Your Writing; the divider is one full
   solid line matching the form's top separator. Writing Prompt begins at one row and
   Your Writing at three rows; both grow vertically with content and avoid an internal
