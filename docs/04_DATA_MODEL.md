@@ -944,6 +944,20 @@ is derived from authentication, never from browser-supplied identity.
 
 ## 13. Browser Storage
 
+### Student achievement calendar projection
+
+`getDashboard.getAchievementCalendar` is a response-only projection, not a new
+collection. It groups the rolling 53-week window by Shanghai date and returns
+`start_date`, `today_date`, `end_date`, `total_achievements`, `active_days`, and
+only active `days[]`. Each day item contains a stable non-secret achievement
+key, type, public title/detail, and pass/correction result. BBC/Vocabulary rows
+derive from the earliest qualifying immutable attempt per `assignment_id`, or
+per self-study `set_id` when `assignment_id` is null. Timed Vocabulary Practice
+is excluded. Writing derives once per `writing_compositions.composition_id`
+with `status: completed` and `completed_at`. No answer, question result,
+explanation, manuscript text, transcript, grading key, or raw token is returned
+or cached.
+
 LocalStorage may hold:
 
 - visitor mode

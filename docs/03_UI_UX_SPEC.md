@@ -13,6 +13,18 @@
 
 ## 2. Main Pages
 
+### Student Dashboard Achievements
+
+The first student card keeps the time-aware greeting and motivational sentence
+at the top, followed by one quiet divider and a GitHub-style 53-week
+`ACHIEVEMENTS` grid. The removed weekly progress bar must not reappear. Monday
+starts each column; phones horizontally scroll to the newest weeks by default.
+Every past/today square is a real keyboard-accessible button, including empty
+days. Its modal shows the full date, count, and compact completed-task rows, or
+an explicit empty-day message. Closing restores focus and the exact page scroll
+position. The grid provides four green intensity levels, visible focus, Reduced
+Motion, Reduced Transparency, and increased-contrast fallbacks.
+
 | Page | Purpose |
 | --- | --- |
 | `index.html` | Login and visitor entry |

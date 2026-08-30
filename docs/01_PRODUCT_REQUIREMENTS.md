@@ -944,6 +944,19 @@ flowchart TD
 
 用途：学生 Dashboard 聚合。
 
+学生主页首张卡片在问候语和励志语下方显示 `ACHIEVEMENTS` 过去 12 个月
+贡献格。一个格子代表上海日期，颜色深度代表当天达成次数；点击包括零次在内的
+任一过去日期，显示该日完成任务的简要弹窗。BBC 与 Vocabulary 只有达到该次
+提交的合格线才计一次；同一 assignment 的后续合格重试不重复计数，独立自学
+按 `set_id` 的首次合格计一次。Writing 只有 Composition 进入 `completed` 且有
+`completed_at` 才计一次。DSE Speaking 预留相同类别，但在出现明确的订正或
+练习闭环完成字段前，普通录音、上传或分析完成不得计数。
+
+该 12 个月聚合使用独立 `getAchievementCalendar` action，在 Dashboard 首屏与
+作业 bootstrap 之外加载；失败只让 Achievements 卡片显示重试入口，不能阻塞
+作业、Library 或问候语。返回内容只含日期、类别、公开标题和结果摘要，不含答案、
+作文正文、口语转录或其他私有明细，也不写入 Dashboard IndexedDB 快照。
+
 包括：
 
 - 当前学生 assignments

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-30 — Student Dashboard Achievements calendar
+
+- Replaced the first Dashboard card's retired weekly progress area with a
+  53-week Achievements contribution grid while preserving the greeting and
+  motivational line.
+- Added date-detail dialogs and completion-only rules: first qualifying BBC or
+  Vocabulary participation, and corrected/completed Writing compositions.
+- Added a separate authenticated calendar aggregate so year-long history does
+  not block the assignment bootstrap; Speaking remains intentionally dormant
+  until its correction/practice completion milestone is explicit.
+
 ## 2026-08-30 — Full-width BBC audio waveform controls
 
 - Replaced the BBC player's plain percentage rail with a real waveform decoded

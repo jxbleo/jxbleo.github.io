@@ -52,6 +52,14 @@ back to the complete Dashboard response, but the latency improvement begins
 only after the new function is deployed. No database migration or permission
 change is required.
 
+Student Dashboard Achievements requires the same paired release boundary:
+deploy rebuilt `getDashboard` with `achievement-calendar.js`, then publish the
+cache-busted `dashboard.html`, `assets/js/dashboard.js`, and
+`assets/css/spatial-workspace.css`. The action reads existing `attempts`,
+`sets`, and `writing_compositions`; it creates no collection, index, migration,
+secret, timer, or permission change. After release, verify a student with known
+BBC/Vocabulary passes and a completed Writing Composition, plus one empty day.
+
 ## 3. CloudBase Collections
 
 All project collections should remain `ADMINONLY`:

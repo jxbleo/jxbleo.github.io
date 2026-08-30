@@ -44,6 +44,7 @@
         calendarYear: null,
         calendarMonth: null,
         calendarSelectedDay: '',
+        achievementCalendar: null,
         wordsPanelOpen: false,
         myWordsScrollTop: 0
     };
@@ -141,6 +142,17 @@
     var workspaceConfirmHref = '';
     var workspaceConfirmCloseTimer = null;
     var weeklyFocusProgress = document.getElementById('weekly-focus-progress');
+    var achievementsPanel = document.getElementById('student-achievements-panel');
+    var achievementsTotal = document.getElementById('student-achievements-total');
+    var achievementsScroll = document.getElementById('student-achievements-scroll');
+    var achievementsStatus = document.getElementById('student-achievements-status');
+    var achievementsOverlay = document.getElementById('student-achievements-overlay');
+    var achievementsDialogDate = document.getElementById('student-achievements-dialog-date');
+    var achievementsDialogTitle = document.getElementById('student-achievements-dialog-title');
+    var achievementsDialogCount = document.getElementById('student-achievements-dialog-count');
+    var achievementsDialogList = document.getElementById('student-achievements-dialog-list');
+    var achievementsClose = document.getElementById('student-achievements-close');
+    var achievementsTrigger = null;
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
     var profileContent = document.getElementById('profile-content');
@@ -473,6 +485,171 @@
             if (workspaceConfirmCancel) workspaceConfirmCancel.focus();
         });
     }
+
+    function achievementDate(key) {
+        var match = String(key || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        return match ? new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))) : null;
+    }
+
+    function achievementDateKey(date) {
+        return date.getUTCFullYear() + '-' + String(date.getUTCMonth() + 1).padStart(2, '0') + '-' + String(date.getUTCDate()).padStart(2, '0');
+    }
+
+    function achievementDateLabel(key, includeWeekday) {
+        var date = achievementDate(key);
+        if (!date) return key;
+        return new Intl.DateTimeFormat('en', {
+            timeZone: 'UTC',
+            weekday: includeWeekday ? 'long' : undefined,
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        }).format(date);
+    }
+
+    function emptyAchievementCalendar() {
+        var now = new Date();
+        var shanghaiParts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
+        }).formatToParts(now).reduce(function(output, part) {
+            if (part.type !== 'literal') output[part.type] = Number(part.value);
+            return output;
+        }, {});
+        var today = new Date(Date.UTC(shanghaiParts.year, shanghaiParts.month - 1, shanghaiParts.day));
+        var mondayIndex = (today.getUTCDay() + 6) % 7;
+        var start = new Date(today.getTime() - ((mondayIndex + (52 * 7)) * 86400000));
+        var end = new Date(start.getTime() + (370 * 86400000));
+        return {
+            start_date: achievementDateKey(start),
+            today_date: achievementDateKey(today),
+            end_date: achievementDateKey(end),
+            total_achievements: 0,
+            active_days: 0,
+            days: []
+        };
+    }
+
+    function achievementMonthLabels(startDate) {
+        var labels = [];
+        var previousMonth = -1;
+        for (var column = 0; column < 53; column += 1) {
+            var date = new Date(startDate.getTime() + (column * 7 * 86400000));
+            var month = date.getUTCMonth();
+            var label = '';
+            if (month !== previousMonth) {
+                label = new Intl.DateTimeFormat('en', { timeZone: 'UTC', month: 'short' }).format(date);
+                previousMonth = month;
+            }
+            labels.push('<span>' + escapeHtml(label) + '</span>');
+        }
+        return labels.join('');
+    }
+
+    function renderAchievementCalendar(calendar) {
+        if (!achievementsPanel || !achievementsScroll) return;
+        calendar = calendar && calendar.start_date ? calendar : emptyAchievementCalendar();
+        state.achievementCalendar = calendar;
+        var dayMap = {};
+        (calendar.days || []).forEach(function(day) { dayMap[day.date] = day; });
+        var start = achievementDate(calendar.start_date);
+        if (!start) return;
+        var cells = [];
+        for (var index = 0; index < 371; index += 1) {
+            var key = achievementDateKey(new Date(start.getTime() + (index * 86400000)));
+            var day = dayMap[key] || { date: key, count: 0, items: [] };
+            var future = key > calendar.today_date;
+            var count = Math.max(0, Number(day.count || 0));
+            var level = Math.min(4, count);
+            var label = achievementDateLabel(key, true) + ': ' + count + (count === 1 ? ' achievement' : ' achievements');
+            cells.push('<button class="student-achievement-cell level-' + level + (future ? ' is-future' : '') + '" type="button" data-achievement-date="' + key + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '"' + (future ? ' disabled' : '') + '></button>');
+        }
+        achievementsScroll.innerHTML = '<div class="student-achievements-calendar">' +
+            '<div class="student-achievements-month-corner" aria-hidden="true"></div>' +
+            '<div class="student-achievements-months" aria-hidden="true">' + achievementMonthLabels(start) + '</div>' +
+            '<div class="student-achievements-weekdays" aria-hidden="true"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span></span></div>' +
+            '<div class="student-achievements-grid">' + cells.join('') + '</div>' +
+        '</div>';
+        var total = Number(calendar.total_achievements || 0);
+        if (achievementsTotal) achievementsTotal.innerHTML = '<strong>' + total + '</strong><span>' + (total === 1 ? 'achievement' : 'achievements') + '</span>';
+        if (achievementsStatus) achievementsStatus.textContent = Number(calendar.active_days || 0) + (Number(calendar.active_days || 0) === 1 ? ' active day' : ' active days');
+        achievementsPanel.classList.remove('is-loading', 'has-error');
+        achievementsPanel.setAttribute('aria-busy', 'false');
+        achievementsScroll.setAttribute('aria-label', 'Achievement calendar for the past 12 months. ' + total + (total === 1 ? ' achievement.' : ' achievements.'));
+        window.requestAnimationFrame(function() { achievementsScroll.scrollLeft = achievementsScroll.scrollWidth; });
+    }
+
+    function achievementTypeLabel(type) {
+        if (type === 'bbc') return 'BBC';
+        if (type === 'vocabulary') return 'VOCABULARY';
+        if (type === 'writing') return 'WRITING';
+        if (type === 'speaking') return 'SPEAKING';
+        return 'ACHIEVEMENT';
+    }
+
+    function closeAchievementDay(restoreFocus) {
+        if (!achievementsOverlay || achievementsOverlay.hidden) return;
+        achievementsOverlay.hidden = true;
+        unlockStudentMessageBackground();
+        if (restoreFocus !== false && achievementsTrigger && achievementsTrigger.isConnected) achievementsTrigger.focus();
+        achievementsTrigger = null;
+    }
+
+    function openAchievementDay(key, trigger) {
+        if (!achievementsOverlay || !state.achievementCalendar) return;
+        var day = (state.achievementCalendar.days || []).find(function(item) { return item.date === key; });
+        var items = day && day.items || [];
+        achievementsTrigger = trigger || null;
+        achievementsDialogDate.textContent = achievementDateLabel(key, true);
+        achievementsDialogTitle.textContent = items.length ? (items.length === 1 ? '1 achievement' : items.length + ' achievements') : 'No achievements';
+        achievementsDialogCount.textContent = items.length ? String(items.length) : '0';
+        achievementsDialogList.innerHTML = items.length ? items.map(function(item) {
+            return '<article class="student-achievement-item type-' + escapeHtml(item.type || '') + '">' +
+                '<span class="student-achievement-item-mark" aria-hidden="true"></span>' +
+                '<div><p>' + escapeHtml(achievementTypeLabel(item.type)) + '</p><h3>' + escapeHtml(item.title || 'Completed task') + '</h3><span>' + escapeHtml(item.detail || '') + '</span></div>' +
+                '<strong>' + escapeHtml(item.result || 'COMPLETED') + '</strong>' +
+            '</article>';
+        }).join('') : '<div class="student-achievement-empty"><span aria-hidden="true">·</span><p>No completed tasks on this day.</p></div>';
+        lockStudentMessageBackground();
+        achievementsOverlay.hidden = false;
+        window.setTimeout(function() { if (achievementsClose) achievementsClose.focus(); }, 0);
+    }
+
+    function loadAchievementCalendar() {
+        if (!achievementsPanel) return Promise.resolve(null);
+        if (!state.session || state.session.mode !== 'student') {
+            renderAchievementCalendar(emptyAchievementCalendar());
+            return Promise.resolve(null);
+        }
+        return window.MrCatCloud.callFunction('getDashboard', { action: 'getAchievementCalendar' }).then(function(result) {
+            if (!result || !result.success || !result.achievement_calendar) throw new Error('ACHIEVEMENTS_UNAVAILABLE');
+            renderAchievementCalendar(result.achievement_calendar);
+            return result.achievement_calendar;
+        }).catch(function() {
+            achievementsPanel.classList.remove('is-loading');
+            achievementsPanel.classList.add('has-error');
+            achievementsPanel.setAttribute('aria-busy', 'false');
+            if (achievementsTotal) achievementsTotal.innerHTML = '<strong>—</strong><span>achievements</span>';
+            if (achievementsStatus) achievementsStatus.innerHTML = '<button type="button" id="student-achievements-retry">Retry loading</button>';
+            var retry = document.getElementById('student-achievements-retry');
+            if (retry) retry.addEventListener('click', loadAchievementCalendar);
+            return null;
+        });
+    }
+
+    if (achievementsScroll) achievementsScroll.addEventListener('click', function(event) {
+        var cell = event.target.closest('[data-achievement-date]');
+        if (cell && !cell.disabled) openAchievementDay(cell.dataset.achievementDate, cell);
+    });
+    if (achievementsClose) achievementsClose.addEventListener('click', function() { closeAchievementDay(true); });
+    if (achievementsOverlay) achievementsOverlay.addEventListener('click', function(event) {
+        if (event.target === achievementsOverlay) closeAchievementDay(true);
+    });
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && achievementsOverlay && !achievementsOverlay.hidden) {
+            event.preventDefault();
+            closeAchievementDay(true);
+        }
+    });
 
     function vocabularySourceKey(item) {
         var raw = [
@@ -4977,6 +5154,7 @@
                 state.starCount = 0;
                 updateStarCounter(false);
                 setStudentGreeting('Welcome, Visitor.');
+                loadAchievementCalendar();
                 return loadPublicCatalog().then(function(items) {
                     state.resources = items;
                 });
@@ -4985,6 +5163,7 @@
             var preferredName = englishName(session.profile);
             identityChip.textContent = preferredName;
             setStudentGreeting(greetingFor(preferredName));
+            loadAchievementCalendar();
             return readStudentDashboardCache().then(function(snapshot) {
                 if (applyDashboardCache(snapshot)) {
                     renderWeeklyFocusProgress();
