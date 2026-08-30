@@ -701,14 +701,16 @@ Check:
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
 - the far-left checklist button is visually separated from the right-side
-  utility controls, with the Teacher Replies bubble immediately to its right.
-  It opens a modal whose initially selected button is `TO-DO`, with no separate
-  `ASSIGNMENTS` heading or Teacher Replies control. Its shorter,
+  utility controls and is the only left-side header control. It opens a modal
+  whose initially selected button is `TO-DO`, with no separate `ASSIGNMENTS`
+  heading. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card. Escape and backdrop clicks do not dismiss the modal
-- the default Assignments modal has two equal-width, sticky top buttons:
-  `TO-DO` and `FINISHED`, each with an accurate count. `TO-DO` combines every
+- the default Assignments modal has one sticky top row containing flexible
+  `TO-DO` and `FINISHED` text buttons with accurate counts plus a 42px circular
+  Teacher Replies button. The third button has no visible text and reuses the
+  current three-dot speech-bubble SVG and unread badge. `TO-DO` combines every
   unfinished teacher assignment, including future-due work. Only the selected
   category is visible, click and keyboard Left/Right/Home/End switch categories,
   and empty categories show a compact empty state. The card keeps the same
@@ -744,20 +746,20 @@ Check:
   confirmation open
 - the student assignment entry uses a checklist SVG rather than a bell or a
   single completion checkmark; its glass color, stroke weight, and visible icon
-  size match the neighboring Teacher Replies control rather than using a unique
-  green fill or oversized glyph
-- the main header has a plain speech-bubble SVG immediately to the right of To
-  Do List; it has no embedded checkmark and opens `Teacher Replies`
-  even when the history is empty; all resolved replies appear newest-first,
+  size match the other header controls rather than using a unique green fill or
+  oversized glyph
+- the main header has no separate Teacher Replies control. The circular
+  speech-bubble tab in To Do List has no embedded checkmark and opens Teacher
+  Replies even when the history is empty; all resolved replies appear newest-first,
   previously read replies remain after closing/reopening, and only unread
   replies contribute to the bubble button's red badge
-- Teacher Replies has no top-left Back or in-card close icon. Its header shows
-  only `TEACHER REPLIES` in the same green eyebrow typography as Personal Center,
-  with no `xx replies in your history` line. A centered `Close` capsule sits
-  outside and directly below the card in the same style as other independent
-  student dialogs. Only Close dismisses the dialog, marks currently unseen
-  items read, clears the bubble badge without changing the To Do List badge,
-  restores the main Dashboard and bubble focus, and keeps question navigation
+- Teacher Replies remains inside the To Do List card with the same three top
+  controls visible and has no extra heading, top-left Back, or in-card close
+  icon. A centered `Close` capsule sits outside and directly below the card in
+  the same style as other student dialogs. After the Teacher Replies tab has
+  been viewed, Close dismisses the dialog, marks currently unseen items read,
+  clears the circular tab badge without changing the assignment count, restores
+  the main Dashboard and checklist focus, and keeps question navigation
   working from each complete reply card. Escape and backdrop clicks leave the
   dialog open and do not mark replies read
 - after reaching the bottom of Teacher Replies, ordinary arrival at the edge

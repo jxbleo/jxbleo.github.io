@@ -553,7 +553,6 @@ html.teacher-modal-scroll-locked {
     right: -6px;
 }
 .student-message-button svg,
-.student-replies-button svg,
 .student-calendar-button svg,
 .student-words-button svg {
     width: 19px;
@@ -675,11 +674,6 @@ html.teacher-modal-scroll-locked {
         transform: none !important;
     }
 }
-.student-replies-button[aria-expanded="true"] {
-    border-color: rgba(19, 118, 109, 0.34);
-    background: #fff;
-}
-.student-header-replies-button,
 .student-todo-button {
     width: 42px;
     height: 42px;
@@ -4613,7 +4607,7 @@ body:not(.teacher-page) .tab-button.active {
     top: 0;
     z-index: 4;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 42px;
     gap: 6px;
     margin: 0 -24px;
     padding: 12px 24px;
@@ -4623,6 +4617,7 @@ body:not(.teacher-page) .tab-button.active {
     backdrop-filter: blur(22px) saturate(150%);
 }
 .student-message-tab {
+    position: relative;
     display: inline-flex;
     min-width: 0;
     min-height: 42px;
@@ -4639,6 +4634,27 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 900;
     cursor: pointer;
     transition: color 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+.student-message-tab[data-message-tab="replies"] {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    min-height: 42px;
+    justify-self: end;
+    padding: 0;
+}
+.student-message-tab[data-message-tab="replies"] svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.student-message-tab[data-message-tab="replies"] .notice-dot {
+    top: -7px;
+    right: -6px;
 }
 .student-message-tab:hover { background: rgba(239,248,245,0.96); }
 .student-message-tab:active { transform: scale(0.98); }
@@ -4666,6 +4682,7 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 950;
 }
 .student-message-tab-panel { min-width: 0; padding-top: 14px; }
+.student-message-replies-panel { padding-bottom: 2px; }
 .student-message-tab-panel[hidden] { display: none; }
 @media (prefers-reduced-transparency: reduce) {
     .student-message-tabs { background: #f9fbfa; -webkit-backdrop-filter: none; backdrop-filter: none; }

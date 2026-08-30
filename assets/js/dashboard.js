@@ -358,7 +358,6 @@
     var wordsAddStatus = document.getElementById('my-words-manual-status');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
-    var repliesButton = document.getElementById('student-replies-button');
     var studentCalendarTitleObserver = null;
     var weeklyFocusTitleObserver = null;
     var studentMessageScrollLock = null;
@@ -1822,6 +1821,14 @@
         }).length;
     }
 
+    function initialTeacherReplyVisibleCount(replies) {
+        var lastUnreadIndex = -1;
+        (replies || []).forEach(function(reply, index) {
+            if (reply && reply.student_seen !== true) lastUnreadIndex = index;
+        });
+        return Math.min((replies || []).length, Math.max(5, lastUnreadIndex + 1));
+    }
+
     function studentMessageTotal() {
         if (!state.assignmentsComplete && state.assignmentCounts) return Number(state.assignmentCounts.todo || 0);
         return todoAssignments().length;
@@ -1859,7 +1866,7 @@
                 : 'To Do List');
             messageButton.setAttribute('aria-expanded', 'false');
         }
-        syncTeacherRepliesButton(repliesButton);
+        syncTeacherRepliesButton(document.querySelector('[data-message-tab="replies"]'));
     }
 
     function setTeacherRepliesSeen(seenIds) {
@@ -2013,16 +2020,23 @@
             upcoming: 0,
             finished: finished.length
         };
+        var replies = state.teacherReplies || [];
+        var unreadReplies = teacherReplyUnreadTotal();
+        var visibleReplyCount = initialTeacherReplyVisibleCount(replies);
         var tabs = [
             { id: 'todo', label: 'To-Do', count: Number(counts.todo || 0) + Number(counts.upcoming || 0) },
-            { id: 'finished', label: 'Finished', count: Number(counts.finished || 0) }
+            { id: 'finished', label: 'Finished', count: Number(counts.finished || 0) },
+            { id: 'replies', label: 'Teacher replies', iconOnly: true }
         ];
         var tabMarkup = tabs.map(function(tab, index) {
             return '<button class="student-message-tab" id="student-message-tab-' + tab.id + '" type="button" role="tab"' +
                 ' aria-selected="' + (index === 0 ? 'true' : 'false') + '" aria-controls="student-message-panel-' + tab.id + '"' +
-                ' tabindex="' + (index === 0 ? '0' : '-1') + '" data-message-tab="' + tab.id + '">' +
-                '<span>' + escapeHtml(tab.label) + '</span>' +
-                '<span class="student-message-tab-count">' + escapeHtml(tab.count) + '</span>' +
+                ' tabindex="' + (index === 0 ? '0' : '-1') + '" data-message-tab="' + tab.id + '"' +
+                (tab.iconOnly ? ' aria-label="' + escapeHtml(unreadReplies ? unreadReplies + ' unread teacher ' + (unreadReplies === 1 ? 'reply' : 'replies') : tab.label) + '"' : '') + '>' +
+                (tab.iconOnly
+                    ? '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M21 11.5c0 4.4-4 8-9 8-1.4 0-2.8-.3-4-.8l-5 1.8 1.8-4.1A7.4 7.4 0 0 1 3 11.5c0-4.4 4-8 9-8s9 3.6 9 8Z"></path><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"></path></svg>' +
+                        '<span class="notice-dot danger"' + (unreadReplies ? '' : ' hidden') + '>' + escapeHtml(unreadReplies > 9 ? '9+' : unreadReplies) + '</span>'
+                    : '<span>' + escapeHtml(tab.label) + '</span><span class="student-message-tab-count">' + escapeHtml(tab.count) + '</span>') +
             '</button>';
         }).join('');
         var panels = [
@@ -2041,6 +2055,17 @@
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'Finished assignments will appear here.'
                 ) +
+            '</section>',
+            '<section class="student-message-tab-panel student-message-replies-panel" id="student-message-panel-replies" role="tabpanel" aria-labelledby="student-message-tab-replies" data-message-panel="replies" hidden>' +
+                '<div class="teacher-replies-list">' + (replies.length
+                    ? replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('')
+                    : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
+                (visibleReplyCount < replies.length
+                    ? '<div class="teacher-replies-pull-loader" data-teacher-replies-pull-loader role="status" aria-live="polite">' +
+                        '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle></svg>' +
+                        '<span>Keep scrolling for 5 more</span>' +
+                    '</div>'
+                    : '') +
             '</section>'
         ].join('');
         return '<div class="student-message-tabs" role="tablist" aria-label="Assignment sections">' + tabMarkup + '</div>' + panels;
@@ -2072,6 +2097,117 @@
         });
         windows.forEach(function(titleWindow) { observer.observe(titleWindow); });
         return observer;
+    }
+
+    function setupTeacherRepliesPagination(options) {
+        var host = options.host;
+        var scrollContainer = options.scrollContainer;
+        var replyList = options.replyList;
+        var pullLoader = options.pullLoader;
+        var replies = options.replies || [];
+        var visibleReplyCount = Number(options.visibleReplyCount || 0);
+        var pullDistance = 0;
+        var pullThreshold = 72;
+        var loadingMoreReplies = false;
+        var lastTouchY = null;
+
+        if (!scrollContainer || !replyList || !pullLoader) return;
+
+        function isActive() {
+            return typeof options.isActive !== 'function' || options.isActive();
+        }
+
+        function replyDialogAtBottom() {
+            return isActive() && scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight <= 2;
+        }
+
+        function setReplyPullDistance(distance) {
+            if (!pullLoader || loadingMoreReplies) return;
+            pullDistance = Math.max(0, Math.min(pullThreshold, distance));
+            var pullRatio = pullDistance / pullThreshold;
+            pullLoader.style.setProperty('--teacher-replies-pull-height', (54 * pullRatio) + 'px');
+            pullLoader.style.setProperty('--teacher-replies-pull-margin', (12 * pullRatio) + 'px');
+            pullLoader.style.setProperty('--teacher-replies-pull-opacity', String(pullRatio));
+            pullLoader.style.setProperty('--teacher-replies-pull-offset', (7 * (1 - pullRatio)) + 'px');
+            pullLoader.style.setProperty('--teacher-replies-pull-angle', pullRatio + 'turn');
+            pullLoader.classList.toggle('is-pulling', pullDistance > 0);
+            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+
+        function resetReplyPull() {
+            setReplyPullDistance(0);
+        }
+
+        function revealNextTeacherReplies() {
+            if (!pullLoader || !replyList || loadingMoreReplies || visibleReplyCount >= replies.length) return;
+            loadingMoreReplies = true;
+            pullLoader.classList.add('is-loading');
+            pullLoader.querySelector('span').textContent = 'Loading 5 more';
+            var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.setTimeout(function() {
+                if (!host.isConnected || !replyList) return;
+                var previousCount = visibleReplyCount;
+                visibleReplyCount = Math.min(replies.length, visibleReplyCount + 5);
+                replyList.insertAdjacentHTML('beforeend', replies.slice(previousCount, visibleReplyCount).map(renderTeacherReplyItem).join(''));
+                Array.prototype.slice.call(replyList.children, previousCount).forEach(function(card) {
+                    card.classList.add('is-revealing');
+                });
+                if (typeof options.onAppend === 'function') options.onAppend();
+                scrollContainer.scrollBy({ top: 132, behavior: reducedMotion ? 'auto' : 'smooth' });
+                loadingMoreReplies = false;
+                pullDistance = 0;
+                if (visibleReplyCount >= replies.length) {
+                    pullLoader.classList.add('is-complete');
+                    pullLoader.querySelector('span').textContent = 'All replies loaded';
+                    window.setTimeout(function() {
+                        if (pullLoader && pullLoader.isConnected) pullLoader.remove();
+                        pullLoader = null;
+                    }, reducedMotion ? 0 : 280);
+                } else {
+                    pullLoader.classList.remove('is-loading', 'is-pulling');
+                    pullLoader.removeAttribute('style');
+                    pullLoader.querySelector('span').textContent = 'Keep scrolling for 5 more';
+                }
+            }, reducedMotion ? 0 : 520);
+        }
+
+        function extendReplyPull(delta) {
+            if (!pullLoader || loadingMoreReplies || delta <= 0) return;
+            setReplyPullDistance(pullDistance + Math.min(delta, 28) * 0.72);
+            if (pullDistance >= pullThreshold) revealNextTeacherReplies();
+        }
+
+        scrollContainer.addEventListener('wheel', function(event) {
+            if (!isActive()) return;
+            if (event.deltaY < 0) {
+                resetReplyPull();
+                return;
+            }
+            if (!replyDialogAtBottom() || event.deltaY <= 0) return;
+            event.preventDefault();
+            extendReplyPull(event.deltaY);
+        }, { passive: false });
+        scrollContainer.addEventListener('scroll', function() {
+            if (!replyDialogAtBottom()) resetReplyPull();
+        }, { passive: true });
+        scrollContainer.addEventListener('touchstart', function(event) {
+            if (!isActive()) return;
+            lastTouchY = event.touches && event.touches[0] ? event.touches[0].clientY : null;
+        }, { passive: true });
+        scrollContainer.addEventListener('touchmove', function(event) {
+            if (!isActive()) return;
+            var touch = event.touches && event.touches[0];
+            if (!touch || lastTouchY == null) return;
+            var delta = lastTouchY - touch.clientY;
+            lastTouchY = touch.clientY;
+            if (!replyDialogAtBottom() || delta <= 0) return;
+            event.preventDefault();
+            extendReplyPull(delta);
+        }, { passive: false });
+        scrollContainer.addEventListener('touchend', function() {
+            lastTouchY = null;
+            if (!loadingMoreReplies && pullDistance < pullThreshold) resetReplyPull();
+        }, { passive: true });
     }
 
     function openStudentMessageCenter(scope) {
@@ -2160,13 +2296,15 @@
         document.body.appendChild(overlay);
         lockStudentMessageBackground();
         var messageTitleObserver = setupStudentMessageTitleTracks(overlay);
+        updateDashboardTabNotices();
         if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
 
-        var didMarkSeen = false;
+        var teacherRepliesViewed = false;
         var closed = false;
         function close(markSeen) {
             if (closed) return Promise.resolve();
             closed = true;
+            var shouldMarkRepliesSeen = markSeen !== false && teacherRepliesViewed;
             if (messageTitleObserver) messageTitleObserver.disconnect();
             overlay.remove();
             unlockStudentMessageBackground();
@@ -2174,7 +2312,7 @@
             if (scope === 'finished' && markSeen !== false && identityChip) {
                 identityChip.focus({ preventScroll: true });
             }
-            return Promise.resolve();
+            return shouldMarkRepliesSeen ? markTeacherRepliesSeen(state.teacherReplies || []) : Promise.resolve();
         }
         overlay.studentMessageClose = close;
 
@@ -2206,6 +2344,7 @@
         function selectMessageTab(tab, moveFocus) {
             if (!tab) return;
             var tabId = tab.dataset.messageTab;
+            if (tabId === 'replies') teacherRepliesViewed = true;
             messageTabs.forEach(function(candidate) {
                 var selected = candidate === tab;
                 candidate.setAttribute('aria-selected', selected ? 'true' : 'false');
@@ -2251,6 +2390,31 @@
         }
         overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(bindStudentMessageCard);
 
+        function bindIntegratedTeacherReplyCards() {
+            overlay.querySelectorAll('.teacher-reply-item[data-open-href]').forEach(function(card) {
+                if (card.dataset.replyBound === 'true') return;
+                card.dataset.replyBound = 'true';
+                function openQuestion(event) {
+                    if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var href = card.dataset.openHref;
+                    if (!href || href === '#') return;
+                    suspend();
+                    showPracticeEntryDialog(card, href, {
+                        dialogLabel: 'Go to question confirmation',
+                        enterLabel: 'Go to question',
+                        hideStatus: true,
+                        onDismiss: function() { resume(card); },
+                        onCommit: function() { close(true); }
+                    });
+                }
+                card.addEventListener('click', openQuestion);
+                card.addEventListener('keydown', openQuestion);
+            });
+        }
+        bindIntegratedTeacherReplyCards();
+
         function assignmentItemsForPanel(panelName) {
             if (panelName === 'finished') return finishedAssignments();
             return openTodoAssignments();
@@ -2265,6 +2429,7 @@
             var list = activePanel.querySelector('.student-message-list');
             if (!list) return;
             var panelName = scope === 'finished' ? 'finished' : activePanel.dataset.messagePanel || 'todo';
+            if (panelName === 'replies') return;
             var items = assignmentItemsForPanel(panelName);
             var rendered = list.querySelectorAll('.student-message-task').length;
             var nextItems = items.slice(rendered, rendered + 10);
@@ -2289,6 +2454,25 @@
                 }
             }, { passive: true });
         }
+        if (!scope && messageDialog) {
+            setupTeacherRepliesPagination({
+                host: overlay,
+                scrollContainer: messageDialog,
+                replyList: overlay.querySelector('#student-message-panel-replies .teacher-replies-list'),
+                pullLoader: overlay.querySelector('#student-message-panel-replies [data-teacher-replies-pull-loader]'),
+                replies: state.teacherReplies || [],
+                visibleReplyCount: initialTeacherReplyVisibleCount(state.teacherReplies || []),
+                isActive: function() {
+                    var panel = overlay.querySelector('#student-message-panel-replies');
+                    return panel && !panel.hidden;
+                },
+                onAppend: function() {
+                    if (messageTitleObserver) messageTitleObserver.disconnect();
+                    messageTitleObserver = setupStudentMessageTitleTracks(overlay);
+                    bindIntegratedTeacherReplyCards();
+                }
+            });
+        }
     }
 
     function openTeacherRepliesDialog(replyItems, options) {
@@ -2299,7 +2483,7 @@
             if (reply && reply.student_seen !== true) lastUnreadIndex = index;
         });
         var visibleReplyCount = Math.min(replies.length, Math.max(5, lastUnreadIndex + 1));
-        var opener = options.opener || repliesButton;
+        var opener = options.opener || null;
         var manageScrollLock = options.manageScrollLock !== false;
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay';
@@ -4814,11 +4998,6 @@
     if (messageButton) {
         messageButton.addEventListener('click', function() {
             openStudentMessageCenter();
-        });
-    }
-    if (repliesButton) {
-        repliesButton.addEventListener('click', function() {
-            openTeacherRepliesDialog(undefined, { opener: repliesButton });
         });
     }
     var calendarClose = document.getElementById('student-calendar-close');

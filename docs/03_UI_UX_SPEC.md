@@ -235,8 +235,9 @@ Navigation:
   microphone icon and names the destination; Cancel, backdrop, and Escape close
   it and restore card focus, while Enter follows the existing link. Modified
   clicks keep native browser new-tab behavior
-- assignments and finished work open from a standalone far-left `To Do List`
-  checklist button, separated from the right-side utility controls
+- assignments, finished work, and Teacher Replies open from a standalone
+  far-left `To Do List` checklist button, separated from the right-side utility
+  controls
 - a calendar icon in the right-side utility group opens the signed-in
   student's own completion history in an independent modal. It uses a
   Monday-first natural-month grid rather than Teacher View's `Wxx` columns.
@@ -262,14 +263,15 @@ Navigation:
   without a backend request; its accessible label includes the full day and
   month. Single- and double-digit days remain optically centered on Safari.
 - The far-left To Do List button uses the same neutral glass color, stroke
-  weight, and 19px icon footprint as the other student header icons. Its button
-  diameter remains aligned with the adjacent Teacher Replies control.
-- The main header places a plain Teacher Replies speech-bubble button directly
-  to the right of the far-left To Do List button. Its three quiet dots contain
-  no embedded checkmark, and its badge counts unread replies. Teacher Replies
-  has no top-left Back or in-card close icon. A matching external `Close`
-  capsule sits below the dialog, marks current replies seen, returns to the main
-  Dashboard, and restores bubble focus.
+  weight, and 19px icon footprint as the other student header icons. Teacher
+  Replies no longer occupies a second button in the Dashboard header.
+- The default To Do List switcher keeps `TO-DO` and `FINISHED` as text capsules
+  and adds a 42px circular Teacher Replies control in the same top row. That
+  third control has no visible text: it reuses the plain speech-bubble SVG with
+  three quiet dots and shows unread replies in its red badge. Selecting it keeps
+  the task-list modal footprint and renders the existing Teacher Replies cards,
+  empty state, scrolling, pagination, question-entry confirmation, and Close
+  behavior unchanged.
 - Each Teacher Replies card centers its exercise title on a single-line
   overflow-scrolling track. The saved question text appears without a `Qxx`
   prefix. Expected and Submitted answers have no arrow between them. Their
@@ -319,9 +321,10 @@ Assignment access and progress display:
   heading. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
-  sits directly below the card. `TO-DO` and `FINISHED` are two equal-width
-  buttons fixed at the top of the card, each with a numeric count. `TO-DO` is
-  selected by default and combines every unfinished teacher assignment,
+  sits directly below the card. `TO-DO` and `FINISHED` are two flexible text
+  buttons fixed at the top of the card, each with a numeric count; a circular,
+  icon-only Teacher Replies button completes the same row. `TO-DO` is selected
+  by default and combines every unfinished teacher assignment,
   including future-due work. Only the selected category's task list is visible;
   keyboard Left/Right, Home, and End also switch tabs. The card keeps one fixed
   responsive height across tabs and empty/short/long lists; overflow scrolls
@@ -344,8 +347,8 @@ Assignment access and progress display:
   next 10 without replacing rows or moving the header. A valid owner-scoped
   warm cache may paint those rows immediately while CloudBase revalidates in
   the background; refresh never clears usable cached rows or exposes a spinner.
-- Teacher Replies keeps every unread reply represented in its first in-memory
-  view. Earlier read history stays newest-first. After reaching the internal
+- The Teacher Replies tab keeps every unread reply represented in its first
+  in-memory view. Earlier read history stays newest-first. After reaching the internal
   scroll edge, a further downward scroll meets a short resisted pull, reveals a
   rotating progress indicator, and appends the next five cards with a gentle
   staggered entrance; no `Load 5 more` button appears. The header shows only the
@@ -825,15 +828,14 @@ Student account menu:
   a confirmation message; failure restores the control so the same file may be
   selected again. It explains that either the student or teacher may upload the
   proof; no photo is presented as teacher identity authentication.
-- Teacher Replies uses a separate plain speech-bubble SVG button immediately to
-  the right of the main Dashboard's To Do List button. The default To Do List
-  dialog and focused This Week/Upcoming task-list dialogs omit this control.
-  Its modal lists all resolved replies newest-first, including previously read
-  history. The header contains only `TEACHER REPLIES` in the same green eyebrow
-  typography as `PERSONAL CENTER`; it omits the reply-history count and subtitle.
-  A centered external `Close` capsule below the card marks unseen items read,
-  clears the bubble badge without removing history, closes the dialog, and
-  restores focus to its opener. Each reply card presents
+- Teacher Replies uses the circular, icon-only speech-bubble tab in the default
+  To Do List switcher; focused This Week/Upcoming task-list dialogs omit this
+  control. The tab lists all resolved replies newest-first, including previously
+  read history, without adding a second heading inside the content area. The
+  shared centered external `Close` capsule below the card marks unseen items
+  read after the Teacher Replies tab has been viewed, clears its bubble badge
+  without removing history, closes the dialog, and restores focus to the To Do
+  List opener. Each reply card presents
   the task title first, then its `Qxx` identifier and saved original question
   text so the student can identify the disputed item without opening it. The
   answer comparison labels are `Expected` and `Submitted`; older records with
