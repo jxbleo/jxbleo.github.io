@@ -523,7 +523,10 @@ Practice navigation checks:
 
 - Student Dashboard does not render a cat logo in its header; the standalone
   To Do List button occupies the far-left position without extra brand width,
-  while the header/workspace left and right edges stay aligned. The Teacher
+  while the header glass capsule extends slightly beyond the first workspace
+  card on both sides, matching the Speaking/Writing toolbar treatment. The
+  visible header-to-first-card gap matches the first-to-second-card gap at
+  desktop and phone widths. The Teacher
   header logo remains unchanged. The welcome pane has no `STUDENT WORKSPACE`
   label. Its smaller,
   China-time-aware greeting stays on one line; short greetings remain still,

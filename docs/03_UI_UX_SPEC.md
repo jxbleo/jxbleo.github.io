@@ -355,8 +355,11 @@ Assignment access and progress display:
   unread count while the silent queue prepares reply content.
 - the student header omits the cat logo so it does not consume horizontal
   space. The far-left To Do List control stands alone opposite the right-side
-  utilities. The header glass capsule shares the exact left and right edges of
-  the workspace card below it. The welcome pane has no `STUDENT WORKSPACE`
+  utilities. Like the Speaking and Writing workspace toolbars, the header glass
+  capsule extends slightly beyond the left and right edges of the workspace
+  card below it. The visible gap from that capsule to the first card exactly
+  matches the gap between the first and second Dashboard cards. The welcome
+  pane has no `STUDENT WORKSPACE`
   label. Its smaller China-time-aware English
   greeting remains on one line; only genuine overflow receives a slow,
   reversible horizontal reveal, while reduced motion uses a static ellipsis.

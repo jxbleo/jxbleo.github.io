@@ -40,8 +40,9 @@
 }
 
 .liquid-glass-dashboard .app-header::before {
-    right: 0;
-    left: 0;
+    right: -8px;
+    bottom: 0;
+    left: -8px;
 }
 
 .liquid-glass-dashboard .identity-cluster {
@@ -327,7 +328,7 @@
     gap: clamp(28px, 4vw, 42px);
     align-items: stretch;
     min-height: 0;
-    margin-top: 34px;
+    margin-top: 18px;
     padding: clamp(30px, 4.5vw, 50px);
 }
 
