@@ -13,10 +13,10 @@
 - Fixed the phone detail dialog accidentally inheriting the Teacher sidebar's
   three-column layout. The dialog now keeps its header and Close action visible
   while long task lists scroll independently and respects phone safe areas.
-- Replaced the Today amber ring and explanatory legend with a neutral,
-  internally breathing graphite core. Today no longer uses a contribution
-  level color, while its accessible current-date state and `Today` detail label
-  remain intact; Reduced Motion receives the same marker without animation.
+- Replaced the Today animation with a static plum date marker inside the square.
+  The number follows the server-provided Shanghai day, Today no longer uses a
+  contribution level color or separate legend, and its accessible current-date
+  state plus `Today` detail label remain intact.
 
 ## 2026-08-30 — Full-width BBC audio waveform controls
 

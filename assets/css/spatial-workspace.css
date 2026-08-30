@@ -467,24 +467,23 @@
 
 .liquid-glass-dashboard .student-achievement-cell.is-today {
     z-index: 2;
+    display: grid;
+    place-items: center;
     overflow: hidden;
-    border-color: rgba(52, 67, 75, 0.28);
-    background: rgba(255, 255, 255, 0.72);
-    box-shadow: inset 0 0 0 1px rgba(52, 67, 75, 0.06);
+    border-color: #815d78;
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
 .liquid-glass-dashboard .student-achievement-cell.is-today::after {
-    position: absolute;
-    inset: 2px;
-    border-radius: 2px;
-    background: #44535a;
-    content: "";
-    animation: studentAchievementTodayBreathe 1.9s ease-in-out infinite;
-}
-
-@keyframes studentAchievementTodayBreathe {
-    0%, 100% { opacity: 0.42; transform: scale(0.52); }
-    50% { opacity: 1; transform: scale(1); }
+    display: block;
+    color: #815d78;
+    content: attr(data-achievement-today-day);
+    font-size: 6px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 900;
+    letter-spacing: -0.08em;
+    line-height: 1;
 }
 
 .liquid-glass-dashboard .student-achievement-cell:hover {
@@ -1477,8 +1476,12 @@
     }
 
     .liquid-glass-dashboard .student-achievement-cell.is-today {
-        border-color: #34434b;
+        border-color: #5f4459;
         background: #ffffff;
+    }
+
+    .liquid-glass-dashboard .student-achievement-cell.is-today::after {
+        color: #5f4459;
     }
 }
 
@@ -1491,9 +1494,4 @@
         transition: none;
     }
 
-    .liquid-glass-dashboard .student-achievement-cell.is-today::after {
-        animation: none;
-        opacity: 1;
-        transform: none;
-    }
 }
