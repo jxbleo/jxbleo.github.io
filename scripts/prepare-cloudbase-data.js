@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { spawnSync } = require("child_process");
+const speakingLab = require("../cloudfunctions/_shared/speaking-lab");
 
 const projectRoot = path.resolve(__dirname, "..");
 const cliArgs = process.argv.slice(2);
@@ -61,6 +62,24 @@ function writeVocabularyFallback(filePath, unit) {
       JSON.stringify(unit, null, 2) +
       ";\n"
   );
+}
+
+function prepareSpeakingSets() {
+  const sourcePath = path.join(projectRoot, "content", "speaking", "dse-paper4-sets.json");
+  if (!fs.existsSync(sourcePath)) return [];
+  const source = readJson(sourcePath);
+  if (!Array.isArray(source)) throw new Error("Speaking Set seed must be an array");
+  const sets = source
+    .filter((set) => !selectedIds || selectedIds.has(set.set_id))
+    .map((set) => {
+      const normalized = speakingLab.normalizeSpeakingSetInput(set);
+      return {
+        ...normalized,
+        content_revision: Number(set.content_revision || 1),
+        visible_to_students: set.visible_to_students !== false,
+      };
+    });
+  return sets;
 }
 
 function listJson(dirPath) {
@@ -395,6 +414,7 @@ function main() {
   const gradingKeys = [];
   const intensiveListeningMaterials = [];
   const vocabularyLexicon = new Map();
+  const speakingSets = prepareSpeakingSets();
 
   listJson(path.join(projectRoot, "data"))
     .filter((filePath) => /^BBC-/.test(path.basename(filePath)))
@@ -519,6 +539,8 @@ function main() {
   writeJsonLines(path.join(privateRoot, "grading-keys-cloudbase.json"), gradingKeys);
   writeJsonLines(path.join(privateRoot, "intensive-listening-materials-cloudbase.json"), intensiveListeningMaterials);
   writeJsonLines(path.join(privateRoot, "system-config-cloudbase.json"), systemConfig);
+  writeJson(path.join(privateRoot, "speaking_sets.json"), speakingSets);
+  writeJsonLines(path.join(privateRoot, "speaking-sets-cloudbase.json"), speakingSets);
 
   const vocabularyLexiconCount = prepareVocabularyLexicon(
     Array.from(vocabularyLexicon.values()).sort((left, right) => left.normalized_word.localeCompare(right.normalized_word))
@@ -528,6 +550,7 @@ function main() {
   console.log(`Prepared ${gradingKeys.length} private grading keys`);
   console.log(`Prepared ${intensiveListeningMaterials.length} private Intensive Listening materials`);
   console.log(`Prepared ${vocabularyLexiconCount} shared vocabulary lexicon entries`);
+  console.log(`Prepared ${speakingSets.length} Speaking Sets`);
   if (selectedIds) console.log(`ID filter: ${[...selectedIds].join(", ")}`);
   console.log(`Output: ${outputRoot}`);
   console.log("Do not commit the output directory.");

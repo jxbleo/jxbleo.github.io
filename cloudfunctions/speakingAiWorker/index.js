@@ -12,6 +12,7 @@ const JOBS = "speaking_ai_jobs";
 const DISCUSSIONS = "speaking_discussions";
 const ASSETS = "speaking_audio_assets";
 const PARTICIPANTS = "speaking_participants";
+const INDIVIDUAL_RESPONSES = "speaking_individual_responses";
 const SHARES = "speaking_share_links";
 const VOICEPRINTS = "speaking_voiceprints";
 const VOICEPRINT_EVENTS = "speaking_voiceprint_events";
@@ -61,6 +62,13 @@ async function failExhausted(now) {
     for (const job of result.data || []) {
       if (Number(job.attempt_count || 0) < MAX_ATTEMPTS) continue;
       await db.collection(JOBS).doc(job._id || job.job_id).update({ status: "failed", safe_error_code: "SPEAKING_AI_RETRY_EXHAUSTED", lease_token: null, lease_until: null, finished_at: now, updated_at: now });
+      if (job.job_type === "individual_response_analysis") {
+        const responseResult = await db.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: job.response_session_id }).limit(1).get();
+        const response = responseResult.data && responseResult.data[0];
+        if (response && String(response.active_analysis_job_id || "") === String(job.job_id)) await db.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ analysis_status: "failed", updated_at: now });
+        count += 1;
+        continue;
+      }
       const activeJobField = job.job_type === "voice_rematch" ? "active_voice_match_job_id" : "active_analysis_job_id";
       const discussionResult = await db.collection(DISCUSSIONS).where({ discussion_id: job.discussion_id }).limit(1).get();
       const discussion = discussionResult.data && discussionResult.data[0];

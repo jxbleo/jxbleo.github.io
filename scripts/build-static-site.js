@@ -5,9 +5,15 @@ const root = path.resolve(__dirname, "..");
 const output = path.join(root, "dist");
 const publicDirectories = ["assets", "bbc-audio", "content", "data"];
 const publicRootExtensions = new Set([".html", ".webmanifest"]);
+const privateStaticPrefixes = ["content/speaking"];
+
+function isPublicSource(source) {
+  const relative = path.relative(root, source).split(path.sep).join("/");
+  return !privateStaticPrefixes.some((prefix) => relative === prefix || relative.startsWith(`${prefix}/`));
+}
 
 function copy(source, destination) {
-  fs.cpSync(source, destination, { recursive: true });
+  fs.cpSync(source, destination, { recursive: true, filter: isPublicSource });
 }
 
 fs.rmSync(output, { recursive: true, force: true });

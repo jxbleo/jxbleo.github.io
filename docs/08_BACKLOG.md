@@ -128,3 +128,7 @@ Before commercial use, review:
   timer rollout; benchmark large catalog scans and mixed bell pagination.
 - Intensive Listening: future source-specific importer validation and
   authoring tooling remain outside the first release.
+
+- Speaking Set Library: future Viewpoint Bank, Useful Language, structured
+  search/filtering, Part B sharing, pronunciation/delivery assessment, and
+  richer teacher Individual Response comparison remain outside this release.

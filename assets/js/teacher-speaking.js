@@ -12,6 +12,10 @@
     var voiceprintLocator = null;
     var voiceprintController = null;
     var voiceprintSaving = false;
+    var speakingSetsPanel = document.getElementById('teacher-speaking-sets');
+    var speakingSetList = document.getElementById('teacher-speaking-set-list');
+    var speakingSetEditor = document.getElementById('teacher-speaking-set-editor');
+    var speakingSets = [];
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -152,6 +156,43 @@
             return result.next_offset != null ? loadDiscussionPages(result.next_offset, rows) : rows;
         });
     }
+    function speakingSetLabel(set) { return set.display_label || [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking Set'].filter(Boolean).join(' · '); }
+    function speakingSetMetaLabel(set) { return [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · '); }
+    function renderTeacherSetList(rows) {
+        speakingSets = Array.isArray(rows) ? rows : [];
+        speakingSetList.innerHTML = speakingSets.map(function (set) {
+            return '<article class="teacher-speaking-set-row"><div><small>' + esc(speakingSetMetaLabel(set)) + '</small><h3>' + esc(set.title) + '</h3><small>Revision ' + esc(set.content_revision || 1) + ' · ' + (set.visible_to_students ? 'Shown to students' : 'Hidden from students') + '</small></div><button class="outline-button" type="button" data-speaking-set-edit="' + esc(set.set_id) + '">Edit</button><button class="outline-button" type="button" data-speaking-set-preview="' + esc(set.set_id) + '">Preview</button><button class="danger-button" type="button" data-speaking-set-delete="' + esc(set.set_id) + '">Delete</button></article>';
+        }).join('') || '<div class="speaking-detail-card">No Speaking Sets yet.</div>';
+        speakingSetList.querySelectorAll('[data-speaking-set-edit]').forEach(function (button) { button.addEventListener('click', function () { openSpeakingSetEditor(button.getAttribute('data-speaking-set-edit')); }); });
+        speakingSetList.querySelectorAll('[data-speaking-set-preview]').forEach(function (button) { button.addEventListener('click', function () { openSpeakingSetEditor(button.getAttribute('data-speaking-set-preview'), true); }); });
+        speakingSetList.querySelectorAll('[data-speaking-set-delete]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Delete this Set? Historical Sessions prevent deletion.')) return; button.disabled = true; call('teacherDeleteSpeakingSet', { set_id: button.getAttribute('data-speaking-set-delete') }).then(loadSets).catch(function (error) { setMessage(error.message || 'This Set could not be deleted.', true); button.disabled = false; }); }); });
+    }
+    function editorRowMarkup(kind, row, index) {
+        var isPoint = kind === 'point';
+        var id = row[isPoint ? 'point_id' : 'question_id'];
+        return '<div class="teacher-speaking-set-editor-row" data-editor-row="' + esc(kind) + '" data-' + (isPoint ? 'point' : 'question') + '-id="' + esc(id) + '"><input value="' + esc(id) + '" aria-label="Stable ' + esc(kind) + ' ID" readonly><textarea data-editor-text aria-label="' + esc(kind) + ' text">' + esc(row.text || '') + '</textarea><span class="teacher-speaking-editor-row-actions"><button type="button" class="outline-button" data-row-up="' + esc(kind) + '"' + (index === 0 ? ' disabled' : '') + '>↑</button><button type="button" class="outline-button" data-row-down="' + esc(kind) + '">↓</button><button type="button" class="outline-button" data-row-remove="' + esc(kind) + '">Remove</button></span></div>';
+    }
+    function editorMarkup(set, preview) {
+        var context = set && set.context || { source_line: '', title: '', body: [''] };
+        var partA = set && set.part_a || { instruction: 'You may want to talk about:', discussion_points: [] };
+        var partB = set && set.part_b || { instruction: 'The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.', questions: [] };
+        return '<div class="teacher-speaking-set-editor-grid"><label>Set ID<input id="teacher-set-id" value="' + esc(set && set.set_id || '') + '" required' + (set ? ' readonly' : '') + '></label><label>Source kind<select id="teacher-set-source"><option value="mock"' + (!set || set.source_kind === 'mock' ? ' selected' : '') + '>MOCK</option><option value="pp"' + (set && set.source_kind === 'pp' ? ' selected' : '') + '>PP</option></select></label><label>Exam year<input id="teacher-set-year" type="number" min="2000" max="2100" value="' + esc(set && set.exam_year || '') + '" required></label><label>Paper version<input id="teacher-set-version" placeholder="e.g. 1.1" value="' + esc(set && set.paper_version || '') + '"></label><label>Title<input id="teacher-set-title" maxlength="160" value="' + esc(set && set.title || '') + '" required></label><label>Source note<textarea id="teacher-set-source-note">' + esc(set && set.source_note || '') + '</textarea></label></div><h3>Context</h3><label>Source line<input id="teacher-set-source-line" value="' + esc(context.source_line || '') + '"></label><label>Context title<input id="teacher-set-context-title" value="' + esc(context.title || '') + '" required></label><div class="teacher-speaking-set-editor-list" id="teacher-set-context-body">' + (context.body || ['']).map(function (paragraph) { return '<label>Paragraph<textarea data-context-paragraph>' + esc(paragraph) + '</textarea></label>'; }).join('') + '</div><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-add-paragraph">Add paragraph</button></div><h3>Part A · Group Discussion</h3><label>Instruction<input id="teacher-set-part-a-instruction" value="' + esc(partA.instruction || '') + '"></label><div class="teacher-speaking-set-editor-list" id="teacher-set-points">' + (partA.discussion_points || []).map(function (row, index) { return editorRowMarkup('point', row, index); }).join('') + '</div><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-add-point">Add discussion point</button></div><h3>Part B · Individual Response</h3><label>Instruction<input id="teacher-set-part-b-instruction" value="' + esc(partB.instruction || '') + '"></label><div class="teacher-speaking-set-editor-list" id="teacher-set-questions">' + (partB.questions || []).map(function (row, index) { return editorRowMarkup('question', row, index); }).join('') + '</div><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-add-question">Add question</button></div><label><input type="checkbox" id="teacher-set-visible"' + (!set || set.visible_to_students !== false ? ' checked' : '') + '> Show to students</label><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-editor-close">Close</button>' + (preview ? '' : '<button type="button" class="primary-button" id="teacher-set-editor-save">Save Set</button>') + '</div>';
+    }
+    function bindEditor(set, preview) {
+        var nextPointSequence = Math.max(1, Number(set && set.next_point_sequence) || 1);
+        var nextQuestionSequence = Math.max(1, Number(set && set.next_question_sequence) || 1);
+        var move = function (kind, direction, row) { var listEl = document.getElementById(kind === 'point' ? 'teacher-set-points' : 'teacher-set-questions'); var rows = Array.prototype.slice.call(listEl.querySelectorAll('[data-editor-row]')); var index = rows.indexOf(row); var next = index + direction; if (next < 0 || next >= rows.length) return; if (direction < 0) listEl.insertBefore(row, rows[next]); else listEl.insertBefore(rows[next], row); bindEditorButtons(); };
+        function bindEditorButtons() { speakingSetEditor.querySelectorAll('[data-row-up]').forEach(function (button) { button.onclick = function () { move(button.getAttribute('data-row-up'), -1, button.closest('[data-editor-row]')); }; }); speakingSetEditor.querySelectorAll('[data-row-down]').forEach(function (button) { button.onclick = function () { move(button.getAttribute('data-row-down'), 1, button.closest('[data-editor-row]')); }; }); speakingSetEditor.querySelectorAll('[data-row-remove]').forEach(function (button) { button.onclick = function () { var row = button.closest('[data-editor-row]'); row.remove(); }; }); }
+        bindEditorButtons();
+        document.getElementById('teacher-set-add-paragraph').onclick = function () { var label = document.createElement('label'); label.innerHTML = 'Paragraph<textarea data-context-paragraph></textarea>'; document.getElementById('teacher-set-context-body').appendChild(label); };
+        document.getElementById('teacher-set-add-point').onclick = function () { var id = 'pa_' + String(nextPointSequence++).padStart(2, '0'); var index = document.querySelectorAll('#teacher-set-points [data-editor-row]').length; document.getElementById('teacher-set-points').insertAdjacentHTML('beforeend', editorRowMarkup('point', { point_id: id, text: '' }, index)); bindEditorButtons(); };
+        document.getElementById('teacher-set-add-question').onclick = function () { var id = 'ir_' + String(nextQuestionSequence++).padStart(2, '0'); var index = document.querySelectorAll('#teacher-set-questions [data-editor-row]').length; document.getElementById('teacher-set-questions').insertAdjacentHTML('beforeend', editorRowMarkup('question', { question_id: id, text: '' }, index)); bindEditorButtons(); };
+        document.getElementById('teacher-set-editor-close').onclick = function () { speakingSetEditor.hidden = true; };
+        var save = document.getElementById('teacher-set-editor-save'); if (save) save.onclick = function () { var rows = function (id, key) { return Array.prototype.slice.call(document.querySelectorAll('#' + id + ' [data-editor-row]')).map(function (row, index) { return { [key]: row.getAttribute('data-' + (key === 'point_id' ? 'point' : 'question') + '-id'), order: index + 1, text: row.querySelector('[data-editor-text]').value }; }); }; var payload = { set_id: document.getElementById('teacher-set-id').value, source_kind: document.getElementById('teacher-set-source').value, exam_year: Number(document.getElementById('teacher-set-year').value), paper_version: document.getElementById('teacher-set-version').value, title: document.getElementById('teacher-set-title').value, source_note: document.getElementById('teacher-set-source-note').value, context: { source_line: document.getElementById('teacher-set-source-line').value, title: document.getElementById('teacher-set-context-title').value, body: Array.prototype.slice.call(document.querySelectorAll('[data-context-paragraph]')).map(function (input) { return input.value; }) }, part_a: { instruction: document.getElementById('teacher-set-part-a-instruction').value, discussion_points: rows('teacher-set-points', 'point_id') }, part_b: { instruction: document.getElementById('teacher-set-part-b-instruction').value, questions: rows('teacher-set-questions', 'question_id') }, visible_to_students: document.getElementById('teacher-set-visible').checked }; save.disabled = true; var action = set ? 'teacherUpdateSpeakingSet' : 'teacherCreateSpeakingSet'; var data = set ? { set_id: set.set_id, expected_content_revision: Number(set.content_revision || 1), set: payload } : { set: payload }; call(action, data).then(function () { setMessage('Speaking Set saved.'); speakingSetEditor.hidden = true; return loadSets(); }).catch(function (error) { setMessage(error.message || 'Could not save Speaking Set.', true); }).finally(function () { save.disabled = false; }); };
+        if (preview) speakingSetEditor.querySelectorAll('input,textarea,select,button:not(#teacher-set-editor-close)').forEach(function (control) { control.disabled = true; });
+    }
+    function openSpeakingSetEditor(setId, preview) { var set = setId ? speakingSets.find(function (item) { return item.set_id === setId; }) : null; speakingSetEditor.hidden = false; speakingSetEditor.innerHTML = '<p class="eyebrow accent">' + (preview ? 'PREVIEW' : set ? 'EDIT SET' : 'CREATE SET') + '</p><h2>' + esc(preview ? speakingSetLabel(set) : set ? 'Edit Speaking Set' : 'Create Speaking Set') + '</h2>' + editorMarkup(set, preview); bindEditor(set, preview); }
+    function loadSets() { return call('teacherListSpeakingSets').then(function (result) { renderTeacherSetList(result.sets || []); return result; }); }
     function load() {
         return loadDiscussionPages(0, []).then(function (discussions) {
             list.innerHTML = discussions.map(function (item) {
@@ -323,6 +364,17 @@
         var tab = event.target.closest && event.target.closest('[data-view="speaking"]');
         if (tab) load().catch(function (error) { setMessage(error.message || 'Speaking Lab is unavailable.', true); });
     });
+    panel.querySelectorAll('[data-speaking-workspace]').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            panel.querySelectorAll('[data-speaking-workspace]').forEach(function (item) { item.classList.toggle('is-active', item === tab); });
+            var sets = tab.getAttribute('data-speaking-workspace') === 'sets';
+            speakingSetsPanel.hidden = !sets;
+            list.hidden = sets;
+            detail.hidden = sets || !selected;
+            if (sets) loadSets().catch(function (error) { setMessage(error.message || 'Could not load Speaking Sets.', true); });
+        });
+    });
+    document.getElementById('teacher-speaking-create-set').addEventListener('click', function () { openSpeakingSetEditor('', false); });
     document.getElementById('teacher-voiceprint-find').addEventListener('click', function () {
         var studentId = document.getElementById('teacher-voiceprint-student-id').value.trim();
         if (!studentId) { setMessage('Enter a Student ID first.', true); return; }

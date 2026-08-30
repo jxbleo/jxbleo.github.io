@@ -2638,3 +2638,14 @@ partially complete materials. Cards use semantic sibling actions for Start,
 Continue, Review, and optional Listening Practice; no interactive control is
 nested in an outer link. Practice returns to the validated originating library,
 BBC, or IELTS Section URL.
+
+### Set-first Speaking home and Part B recorder
+
+The student Speaking home shows `Choose a Set`; Voiceprint is available only
+from the left sidebar. A selected Set renders Context, Part A points with
+`Start Discussion`, and each Part B question with its own `Start Response`.
+The Individual Response recorder displays `00:00 / 01:05`, turns red from
+`01:00`, stops at `01:05`, supports one checked audio upload, prevents accidental
+navigation during recording/upload, and preserves audio for analysis retry.
+On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware
+bottom sheets.
