@@ -46,6 +46,15 @@
         var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
         return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
     }
+    function turnCoachingDetailsMarkup(coaching) {
+        var item = coaching || {};
+        if (!(item.strength_zh && item.limitation_zh && item.improvement_zh)) return '<div class="speaking-shared-turn-feedback speaking-shared-turn-feedback-legacy"><article><span>Review</span><p>' + esc(item.commentary_zh || '') + '</p></article></div>';
+        return '<div class="speaking-shared-turn-feedback">' +
+            '<article data-feedback="strength"><span>What worked</span><p>' + esc(item.strength_zh) + '</p></article>' +
+            '<article data-feedback="limitation"><span>What could be stronger</span><p>' + esc(item.limitation_zh) + '</p></article>' +
+            '<article data-feedback="improvement"><span>How to improve</span><p>' + esc(item.improvement_zh) + '</p></article>' +
+            '</div>';
+    }
     function turnReviewsMarkup(candidate, ownReport) {
         var reviews = Array.isArray(candidate && candidate.turn_reviews) ? candidate.turn_reviews : [];
         if (!reviews.length) return '';
@@ -53,7 +62,7 @@
             var cs = review.communication_strategies || {};
             var io = review.ideas_organisation || {};
             var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-shared-turn-caution">AI transcript may contain recognition errors</span>';
-            return '<article class="speaking-shared-turn"><header><strong>Turn ' + esc(index + 1) + '</strong><span>' + esc(timeLabel(review.start_ms)) + '–' + esc(timeLabel(review.end_ms)) + '</span>' + caution + '</header><blockquote><span>What you said · AI transcript</span>' + esc(review.transcript_text || '') + '</blockquote><div class="speaking-shared-turn-grid"><section><h4>CS · Communication Strategies</h4><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-shared-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section><h4>IO · Ideas &amp; Organisation</h4><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-shared-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div></article>';
+            return '<article class="speaking-shared-turn"><header><strong>Turn ' + esc(index + 1) + '</strong><span>' + esc(timeLabel(review.start_ms)) + '–' + esc(timeLabel(review.end_ms)) + '</span>' + caution + '</header><blockquote><span>What you said · AI transcript</span>' + esc(review.transcript_text || '') + '</blockquote><div class="speaking-shared-turn-grid"><section><h4>CS · Communication Strategies</h4>' + turnCoachingDetailsMarkup(cs) + '<div class="speaking-shared-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section><h4>IO · Ideas &amp; Organisation</h4>' + turnCoachingDetailsMarkup(io) + '<div class="speaking-shared-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div></article>';
         }).join('') + '</section>';
     }
     function candidateMarkup(candidate, ownReport) {

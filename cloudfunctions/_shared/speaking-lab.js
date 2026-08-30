@@ -19,6 +19,8 @@ const VOICEPRINT_EXCERPT_MIN_MS = 8000;
 const VOICEPRINT_EXCERPT_MAX_MS = 20000;
 const MAX_REPORT_LIST_ITEMS = 12;
 const MAX_COMMENTARY_LENGTH = 1200;
+const MAX_TURN_COACHING_DETAIL_LENGTH = 900;
+const MAX_TURN_SAMPLE_LENGTH = 1200;
 const MAX_TURN_REVIEWS_PER_CANDIDATE = 80;
 const SPEAKING_TURN_GAP_MS = 2500;
 const ASSESSED_DOMAINS = [
@@ -37,6 +39,7 @@ const SPEAKING_SET_SOURCE_NOTE_MAX = 1000;
 const SPEAKING_SET_CONTEXT_TITLE_MAX = 300;
 const SPEAKING_SET_CONTEXT_MAX_CHARS = 20000;
 const SPEAKING_SET_CONTEXT_MAX_PARAGRAPHS = 20;
+const SPEAKING_SET_PART_A_TASK_MAX = 1600;
 const SPEAKING_SET_PART_A_MAX = 12;
 const SPEAKING_SET_PART_B_MAX = 20;
 const INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS = 65;
@@ -480,8 +483,24 @@ function canonicalSpeakingTurns(segments, candidateSpeakerKeys, options = {}) {
 
 function canonicalTurnCoaching(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("SPEAKING_AI_TURN_COACHING_INVALID");
+  const strength = text(value.strength_zh, MAX_TURN_COACHING_DETAIL_LENGTH).replace(/[<>]/g, "");
+  const limitation = text(value.limitation_zh, MAX_TURN_COACHING_DETAIL_LENGTH).replace(/[<>]/g, "");
+  const improvement = text(value.improvement_zh, MAX_TURN_COACHING_DETAIL_LENGTH).replace(/[<>]/g, "");
+  const sample = text(value.sample_en, MAX_TURN_SAMPLE_LENGTH).replace(/[<>]/g, "");
+  if (!strength || !limitation || !improvement || !sample) throw new Error("SPEAKING_AI_TURN_COACHING_INCOMPLETE");
+  return { strength_zh: strength, limitation_zh: limitation, improvement_zh: improvement, sample_en: sample };
+}
+
+function turnCoachingProjection(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("SPEAKING_AI_TURN_COACHING_INVALID");
+  const sample = text(value.sample_en, MAX_TURN_SAMPLE_LENGTH).replace(/[<>]/g, "");
+  const rich = {
+    strength_zh: text(value.strength_zh, MAX_TURN_COACHING_DETAIL_LENGTH).replace(/[<>]/g, ""),
+    limitation_zh: text(value.limitation_zh, MAX_TURN_COACHING_DETAIL_LENGTH).replace(/[<>]/g, ""),
+    improvement_zh: text(value.improvement_zh, MAX_TURN_COACHING_DETAIL_LENGTH).replace(/[<>]/g, ""),
+  };
+  if (rich.strength_zh && rich.limitation_zh && rich.improvement_zh && sample) return { ...rich, sample_en: sample };
   const commentary = text(value.commentary_zh, 480).replace(/[<>]/g, "");
-  const sample = text(value.sample_en, 800).replace(/[<>]/g, "");
   if (!commentary || !sample) throw new Error("SPEAKING_AI_TURN_COACHING_INCOMPLETE");
   return { commentary_zh: commentary, sample_en: sample };
 }
@@ -629,8 +648,8 @@ function turnReviewProjection(candidate, segments) {
       end_ms: turn.end_ms,
       transcript_text: text(turn.text, 4000),
       asr_text_status: turn.asr_text_status,
-      communication_strategies: canonicalTurnCoaching(review.communication_strategies),
-      ideas_organisation: canonicalTurnCoaching(review.ideas_organisation),
+      communication_strategies: turnCoachingProjection(review.communication_strategies),
+      ideas_organisation: turnCoachingProjection(review.ideas_organisation),
     };
   }).filter(Boolean);
 }
@@ -861,6 +880,7 @@ function normalizeSpeakingSetInput(input = {}, options = {}) {
   if (!contextTitle || body.length < 1 || body.length > SPEAKING_SET_CONTEXT_MAX_PARAGRAPHS || combined.length > SPEAKING_SET_CONTEXT_MAX_CHARS) throw new Error("SPEAKING_SET_INVALID");
   const sourceLine = normalizeWhitespace(context.source_line, 500);
   const partAInput = input.part_a || {};
+  const partATask = normalizeWhitespace(partAInput.task, SPEAKING_SET_PART_A_TASK_MAX);
   const partAInstruction = normalizeWhitespace(partAInput.instruction, 500);
   const partBInput = input.part_b || {};
   const partBInstruction = normalizeWhitespace(partBInput.instruction, 500);
@@ -874,7 +894,7 @@ function normalizeSpeakingSetInput(input = {}, options = {}) {
     title,
     source_note: sourceNote,
     context: { source_line: sourceLine, title: contextTitle, body },
-    part_a: { instruction: partAInstruction, discussion_points: discussionPoints },
+    part_a: { task: partATask, instruction: partAInstruction, discussion_points: discussionPoints },
     part_b: { instruction: partBInstruction, questions },
     content_revision: Number.isInteger(input.content_revision) && input.content_revision > 0 ? input.content_revision : 1,
     visible_to_students: input.visible_to_students !== false,
@@ -947,7 +967,8 @@ function partACompatibilityPrompt(set = {}) {
   const safe = buildGroupDiscussionSnapshot(set);
   const article = [safe.context.source_line, safe.context.title, ...safe.context.body].filter(Boolean).join("\n\n");
   const points = safe.part_a.discussion_points.map((point) => `• ${point.text}`).join("\n");
-  return [article, safe.part_a.instruction, points].filter(Boolean).join("\n\n");
+  const task = safe.part_a.task ? `TASK ${safe.part_a.task}` : "";
+  return [article, task, safe.part_a.instruction, points].filter(Boolean).join("\n\n");
 }
 
 function resolvePartBQuestion(set = {}, questionId) {

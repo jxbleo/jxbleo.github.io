@@ -6,25 +6,31 @@
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#f4f8f5">
     <meta name="description" content="DSE Speaking Lab group interaction practice.">
+    <script>try{if(new URLSearchParams(location.search).get('discussion'))document.documentElement.classList.add('speaking-direct-entry');}catch(error){}</script>
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-7">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-10">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
     <main class="app-shell">
         <header class="app-header speaking-lab-toolbar">
-            <button class="speaking-sidebar-toggle" id="speaking-sidebar-toggle" type="button" aria-label="Open Speaking sidebar" aria-expanded="false" aria-controls="speaking-sidebar">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-                <span class="speaking-sidebar-alert" id="speaking-sidebar-alert" aria-hidden="true" hidden>
-                    <svg viewBox="0 0 16 16"><path d="M3.25 3.5h9.5v6.2H7.2L4.4 12v-2.3H3.25z"/></svg>
-                </span>
+            <button class="speaking-back-button" id="speaking-back-button" type="button" aria-label="Back">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"/></svg>
             </button>
             <span class="speaking-toolbar-title" id="speaking-toolbar-title">Speaking Lab</span>
-            <button class="speaking-toolbar-edit" id="speaking-toolbar-edit" type="button" aria-label="Edit Discussion title" title="Edit Discussion title" hidden>
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"></path><path d="m14.8 6.3 3 3"></path></svg>
-            </button>
+            <span class="speaking-toolbar-actions">
+                <button class="speaking-sidebar-toggle" id="speaking-sidebar-toggle" type="button" aria-label="Open Speaking history" aria-expanded="false" aria-controls="speaking-sidebar" title="Speaking history">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 6.5h14M5 12h14M5 17.5h14"/></svg>
+                    <span class="speaking-sidebar-alert" id="speaking-sidebar-alert" aria-hidden="true" hidden>
+                        <svg viewBox="0 0 16 16"><path d="M3.25 3.5h9.5v6.2H7.2L4.4 12v-2.3H3.25z"/></svg>
+                    </span>
+                </button>
+                <button class="speaking-toolbar-edit" id="speaking-toolbar-edit" type="button" aria-label="Edit Discussion title" title="Edit Discussion title" hidden>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"></path><path d="m14.8 6.3 3 3"></path></svg>
+                </button>
+            </span>
         </header>
         <aside class="speaking-sidebar" id="speaking-sidebar" aria-label="Speaking sidebar" aria-hidden="true">
             <div class="speaking-sidebar-actions">
@@ -51,6 +57,9 @@
         <div class="speaking-sidebar-scrim" id="speaking-sidebar-scrim" aria-hidden="true" hidden></div>
         <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
             <h1 class="sr-only" id="speaking-lab-title">Speaking Lab</h1>
+            <section class="speaking-initial-loading" id="speaking-initial-loading" role="status" aria-live="polite" aria-busy="true" aria-label="Loading Discussion report">
+                <span class="speaking-upload-spinner" aria-hidden="true"></span>
+            </section>
             <section class="speaking-set-library" id="speaking-set-library" aria-labelledby="speaking-set-library-title">
                 <header class="speaking-set-library-heading">
                     <span class="speaking-set-library-symbol" aria-hidden="true">
@@ -116,6 +125,12 @@
             <div class="speaking-dialog-actions"><button class="outline-button" value="cancel" formnovalidate>Cancel</button><button class="primary-button" id="discussion-title-save" value="default">Save</button></div>
         </form>
     </dialog>
+    <dialog class="speaking-dialog speaking-leave-dialog" id="speaking-leave-dialog" aria-labelledby="speaking-leave-dialog-title">
+        <div class="speaking-leave-dialog-body">
+            <div class="speaking-dialog-head"><p class="eyebrow accent">LEAVE SPEAKING LAB?</p><h2 id="speaking-leave-dialog-title">Return to Dashboard</h2><p>You will leave Speaking Lab and return to your student Dashboard.</p></div>
+            <div class="speaking-dialog-actions"><button class="outline-button" id="speaking-leave-cancel" type="button">Stay here</button><button class="primary-button" id="speaking-leave-confirm" type="button">Return to Dashboard</button></div>
+        </div>
+    </dialog>
     <dialog class="speaking-dialog speaking-prompt-dialog" id="discussion-prompt-dialog" aria-labelledby="discussion-prompt-dialog-title">
         <div class="speaking-prompt-dialog-body">
             <div class="speaking-dialog-head"><p class="eyebrow accent">DSE PAPER 4 · PART A</p><h2 id="discussion-prompt-dialog-title">Discussion task</h2><p id="discussion-prompt-dialog-subtitle">The Group Discussion Task for this Discussion.</p></div>
@@ -138,6 +153,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260830-7"></script>
+    <script src="assets/js/speaking-lab.js?v=20260830-10"></script>
 </body>
 </html>

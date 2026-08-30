@@ -5,8 +5,10 @@
     var auth = window.MrCatAuth;
     var list = document.getElementById('speaking-list');
     var detail = document.getElementById('speaking-detail');
+    var initialLoading = document.getElementById('speaking-initial-loading');
     var status = document.getElementById('speaking-status');
     var sidebar = document.getElementById('speaking-sidebar');
+    var backButton = document.getElementById('speaking-back-button');
     var sidebarToggle = document.getElementById('speaking-sidebar-toggle');
     var sidebarAlert = document.getElementById('speaking-sidebar-alert');
     var sidebarScrim = document.getElementById('speaking-sidebar-scrim');
@@ -18,6 +20,10 @@
     var sidebarResponses = document.getElementById('speaking-sidebar-responses');
     var toolbarTitle = document.getElementById('speaking-toolbar-title');
     var toolbarEdit = document.getElementById('speaking-toolbar-edit');
+    var sidebarHome = document.getElementById('speaking-sidebar-home');
+    var leaveDialog = document.getElementById('speaking-leave-dialog');
+    var leaveDialogCancel = document.getElementById('speaking-leave-cancel');
+    var leaveDialogConfirm = document.getElementById('speaking-leave-confirm');
     var dialog = document.getElementById('discussion-dialog');
     var titleDialog = document.getElementById('discussion-title-dialog');
     var titleForm = document.getElementById('discussion-title-form');
@@ -104,6 +110,11 @@
     var responseBlob = null;
     var responseUploadOperationId = '';
     var responseUploadInProgress = false;
+
+    function finishInitialLoading() {
+        document.documentElement.classList.remove('speaking-direct-entry');
+        if (initialLoading) initialLoading.setAttribute('aria-busy', 'false');
+    }
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -443,6 +454,34 @@
         document.body.classList.remove('speaking-sidebar-open');
         if (options && options.restoreFocus) sidebarToggle.focus();
     }
+    function openLeaveSpeakingDialog() {
+        closeSidebar();
+        if (typeof leaveDialog.showModal === 'function') leaveDialog.showModal();
+        else leaveDialog.setAttribute('open', '');
+    }
+    function closeLeaveSpeakingDialog() {
+        if (leaveDialog.open && leaveDialog.close) leaveDialog.close();
+        else leaveDialog.removeAttribute('open');
+    }
+    function handleSpeakingBack() {
+        if (sidebar.classList.contains('is-open')) {
+            closeSidebar({ restoreFocus: false });
+            return;
+        }
+        var voiceprintMain = document.getElementById('speaking-voiceprint-main');
+        var insideSpeakingContent = Boolean(selectedId || selectedSpeakingSet || selectedResponse || !detail.hidden || (voiceprintMain && !voiceprintMain.hidden));
+        if (insideSpeakingContent) {
+            if (responseRecorder && responseRecorder.state !== 'inactive') {
+                setStatus('Finish the Individual Response recording before leaving this page.', true);
+                return;
+            }
+            stopResponseHardware();
+            returnToSpeakingHome();
+            return;
+        }
+        if (!allowRecordingNavigation()) return;
+        openLeaveSpeakingDialog();
+    }
     function setSidebarMode(mode) {
         sidebarMode = mode === 'part-b' ? 'part-b' : 'part-a';
         var showPartA = sidebarMode === 'part-a';
@@ -543,6 +582,7 @@
     }
     function renderSpeakingSetDetail(set) {
         selectedSpeakingSet = set;
+        selectedResponse = null;
         var library = document.getElementById('speaking-set-library');
         if (library) library.hidden = true;
         var main = document.getElementById('speaking-voiceprint-main');
@@ -554,8 +594,11 @@
         var partB = set.part_b || {};
         var points = (partA.discussion_points || []).map(function (point, index) { return '<li class="speaking-set-point"><span class="speaking-set-point-number">' + esc(index + 1) + '</span><span>' + esc(point.text) + '</span></li>'; }).join('');
         var questions = (partB.questions || []).map(function (question, index) { return '<li class="speaking-set-question"><span class="speaking-set-question-number">' + esc(index + 1) + '</span><span class="speaking-set-question-text">' + esc(question.text) + '</span><button class="speaking-set-question-action" type="button" data-start-individual="' + esc(question.question_id) + '"><span>Start Response</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></li>'; }).join('');
-        detail.innerHTML = '<article class="speaking-set-detail"><header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><button class="back-link" type="button" id="speaking-set-back">‹ Choose a Set</button><span class="speaking-set-card-badge">' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</span></div><div class="speaking-set-overview-copy"><p class="eyebrow accent">' + esc(speakingSetMetaLabel(set)) + '</p><h2>' + esc(set.title) + '</h2><p>' + esc(set.source_note || 'DSE English Paper 4 speaking practice') + '</p></div><div class="speaking-set-flow" aria-label="Set sections"><span><b>1</b>Context</span><i aria-hidden="true"></i><span><b>2</b>Part A</span><i aria-hidden="true"></i><span><b>3</b>Part B</span></div></header><section class="speaking-set-context speaking-report-card"><header class="speaking-set-section-head"><span class="speaking-set-section-symbol speaking-set-section-symbol-context" aria-hidden="true">01</span><div><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3></div></header><div class="speaking-set-context-body">' + (context.source_line ? '<p class="speaking-set-source-line"><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section><section class="speaking-set-part speaking-set-part-a speaking-report-card"><header class="speaking-set-section-head"><span class="speaking-set-section-symbol" aria-hidden="true">A</span><div><p class="eyebrow accent">PART A</p><h3>Group Discussion</h3><p>' + esc(partA.instruction || 'You may want to talk about:') + '</p></div></header><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section><section class="speaking-set-part speaking-set-part-b speaking-report-card"><header class="speaking-set-section-head"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">B</span><div><p class="eyebrow accent">PART B</p><h3>Individual Response</h3><p>' + esc(partB.instruction || '') + '</p></div></header><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
-        document.getElementById('speaking-set-back').addEventListener('click', returnToSpeakingSetLibrary);
+        detail.innerHTML = '<article class="speaking-set-detail">' +
+            '<header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-set-card-badge">' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</span></div><div class="speaking-set-overview-copy"><p class="eyebrow accent">' + esc(speakingSetMetaLabel(set)) + '</p><h2>' + esc(set.title) + '</h2><p>' + esc(set.source_note || 'DSE English Paper 4 speaking practice') + '</p></div></header>' +
+            '<section class="speaking-set-context speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3></header><div class="speaking-set-context-body">' + (context.source_line ? '<p class="speaking-set-source-line"><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
+            '<section class="speaking-set-part speaking-set-part-a speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART A GROUP DISCUSSION</p></header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section>' +
+            '<section class="speaking-set-part speaking-set-part-b speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART B INDIVIDUAL RESPONSE</p></header><p class="speaking-set-instruction">' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
         document.getElementById('start-set-discussion').addEventListener('click', function () { openNewDiscussionDialog(set); });
         detail.querySelectorAll('[data-start-individual]').forEach(function (button) { button.addEventListener('click', function () { startIndividualResponse(set, button.getAttribute('data-start-individual')); }); });
         updateToolbar({ title: set.title, invitation: true });
@@ -566,6 +609,8 @@
     function returnToSpeakingSetLibrary() {
         if (!allowRecordingNavigation()) return;
         selectedSpeakingSet = null;
+        selectedResponse = null;
+        stopResponseHardware();
         detail.hidden = true;
         document.getElementById('speaking-set-library').hidden = false;
         document.getElementById('speaking-voiceprint-main').hidden = true;
@@ -662,6 +707,16 @@
             return '<article class="speaking-transcript-line' + (isSelf ? ' is-self' : '') + (isCurrent ? ' is-current' : '') + '"><header><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(turnTime(line.start_ms)) + '–' + esc(turnTime(line.end_ms)) + '</small></header><p>' + esc(line.text || '') + '</p></article>';
         }).join('');
     }
+    function turnCoachingDetailsMarkup(coaching) {
+        var item = coaching || {};
+        var rich = item.strength_zh && item.limitation_zh && item.improvement_zh;
+        if (!rich) return '<div class="speaking-turn-feedback speaking-turn-feedback-legacy"><article><span>Review</span><p>' + esc(item.commentary_zh || '') + '</p></article></div>';
+        return '<div class="speaking-turn-feedback">' +
+            '<article data-feedback="strength"><span>What worked</span><p>' + esc(item.strength_zh) + '</p></article>' +
+            '<article data-feedback="limitation"><span>What could be stronger</span><p>' + esc(item.limitation_zh) + '</p></article>' +
+            '<article data-feedback="improvement"><span>How to improve</span><p>' + esc(item.improvement_zh) + '</p></article>' +
+            '</div>';
+    }
     function turnReviewPanelMarkup(candidate, report, index) {
         var reviews = Array.isArray(candidate && candidate.turn_reviews) ? candidate.turn_reviews : [];
         var review = reviews[index] || reviews[0];
@@ -671,7 +726,7 @@
         var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-turn-caution">AI transcript may contain recognition errors</span>';
         return '<div class="speaking-turn-panel-heading"><div><span class="speaking-turn-number">Turn ' + esc(index + 1) + '</span><span class="speaking-turn-time">' + esc(turnTime(review.start_ms)) + '–' + esc(turnTime(review.end_ms)) + '</span></div>' + caution + '</div>' +
             '<div class="speaking-turn-context" tabindex="0" aria-label="Full Discussion context for Turn ' + esc(index + 1) + '"><div class="speaking-transcript-lines">' + transcriptLinesMarkup(report, candidate.speaker_key, review) + '</div></div>' +
-            '<div class="speaking-turn-coaching"><section data-domain="cs"><p class="speaking-turn-domain">CS · Communication Strategies</p><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section data-domain="io"><p class="speaking-turn-domain">IO · Ideas &amp; Organisation</p><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div>';
+            '<div class="speaking-turn-coaching"><section data-domain="cs"><p class="speaking-turn-domain">CS · Communication Strategies</p>' + turnCoachingDetailsMarkup(cs) + '<div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section data-domain="io"><p class="speaking-turn-domain">IO · Ideas &amp; Organisation</p>' + turnCoachingDetailsMarkup(io) + '<div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div>';
     }
     function candidateControls(item) {
         var candidateTiles = (item.candidates || []).map(detectedCandidateMarkup).join('');
@@ -1169,9 +1224,8 @@
         var stateTone = reportReady ? 'ready' : analysisFailed ? 'attention' : 'working';
         var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
         var responseBody = reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card speaking-response-recorder-card"><div class="speaking-response-timer" id="response-timer">00:00 / 01:05</div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response, or upload an audio file up to 65 seconds.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-record">Start recording</button><label class="outline-button speaking-file-button">Upload existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="outline-button" type="button" id="response-upload" disabled>Upload and analyse</button></div><p class="speaking-response-upload-note" id="response-upload-note"></p></section>';
-        detail.innerHTML = '<article class="speaking-response-workspace"><header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><button class="back-link" type="button" id="response-back">‹ ' + esc(selectedSpeakingSet ? 'Set' : 'Choose a Set') + '</button><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have up to 65 seconds.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>' + responseBody + '</article>';
+        detail.innerHTML = '<article class="speaking-response-workspace"><header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have up to 65 seconds.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>' + responseBody + '</article>';
         updateToolbar({ title: 'Individual Response', invitation: true });
-        document.getElementById('response-back').addEventListener('click', function () { if (!allowRecordingNavigation()) return; stopResponseHardware(); if (selectedSpeakingSet) renderSpeakingSetDetail(selectedSpeakingSet); else returnToSpeakingSetLibrary(); });
         var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
         var retry = document.getElementById('response-retry-analysis'); if (retry) retry.addEventListener('click', function () { retry.disabled = true; call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }).then(function () { return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { retry.disabled = false; setStatus(friendlyError(error), true); }); });
         if (!ready && !reportReady) bindIndividualResponseRecording(response);
@@ -1400,7 +1454,16 @@
             }
             setStatus('');
             schedulePoll(result.discussion, generation);
-        }).catch(function (error) { setStatus(friendlyError(error), true); });
+            return result.discussion || result.invitation || true;
+        }).catch(function (error) {
+            setStatus(friendlyError(error), true);
+            if (document.documentElement.classList.contains('speaking-direct-entry')) {
+                document.body.classList.add('speaking-detail-open');
+                detail.hidden = false;
+                detail.innerHTML = '<article class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><h3>This Discussion could not be opened.</h3><p>' + esc(friendlyError(error)) + '</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="close-discussion">Return to Speaking Lab</button></div></article>';
+            }
+            return null;
+        });
     }
     function schedulePoll(item, generation) {
         var analysisWorking = item && ['queued', 'processing'].includes(item.analysis_status);
@@ -1415,12 +1478,26 @@
             }).catch(function () { schedulePoll(item, generation); });
         }, delay);
     }
+    function loadSidebarLists() {
+        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); return loadIndividualResponses(); }).catch(function (error) { setStatus(friendlyError(error), true); return null; });
+    }
     function loadList() {
         document.body.classList.remove('speaking-detail-open');
         if (!selectedId) updateToolbar(null);
-        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); return loadIndividualResponses().then(function () { if (selectedId) return openDiscussion(selectedId); }); }).catch(function (error) { setStatus(friendlyError(error), true); });
+        return loadSidebarLists().then(function () { if (selectedId) return openDiscussion(selectedId); });
     }
+    backButton.addEventListener('click', handleSpeakingBack);
     sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
+    sidebarHome.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (!allowRecordingNavigation()) return;
+        openLeaveSpeakingDialog();
+    });
+    leaveDialogCancel.addEventListener('click', closeLeaveSpeakingDialog);
+    leaveDialogConfirm.addEventListener('click', function () {
+        closeLeaveSpeakingDialog();
+        window.location.assign('dashboard.html');
+    });
     toolbarEdit.addEventListener('click', openTitleDialog);
     document.getElementById('discussion-prompt-close').addEventListener('click', function () {
         if (promptDialog.open && promptDialog.close) promptDialog.close();
@@ -1523,8 +1600,17 @@
 
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }
+        if (selectedId) {
+            return openDiscussion(selectedId).then(function () {
+                finishInitialLoading();
+                window.setTimeout(function () {
+                    loadMyVoiceprint().then(function () { return loadSpeakingSets(); }).then(function () { return loadSidebarLists(); }).catch(function () { /* The open report remains usable if supplementary navigation data is unavailable. */ });
+                }, 0);
+                return null;
+            });
+        }
         // Legacy startup contract retained: loadMyVoiceprint().then(function () { return loadList(); });
         return loadMyVoiceprint().then(function () { return loadSpeakingSets(); }).then(function () { return loadList(); });
-    }).catch(function () { window.location.replace('index.html?return=speaking-lab.html'); });
+    }).catch(function () { finishInitialLoading(); window.location.replace('index.html?return=speaking-lab.html'); });
     window.addEventListener('pagehide', function () { discardLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; voiceprintPendingResult = null; voiceprintPressActive = false; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (pollTimer) window.clearTimeout(pollTimer); });
 })(window);

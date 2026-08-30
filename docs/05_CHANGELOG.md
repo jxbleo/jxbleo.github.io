@@ -18,6 +18,36 @@
 - Kept unrelated modal exits unchanged and applied the same 75% reduction to
   the opacity-only Reduced Motion fallback.
 
+## 2026-08-30 — Speaking Set navigation and complete Part A tasks
+
+- Replaced the toolbar's leading drawer control with a contextual Back button;
+  retained Discussion history and invitation notices in a trailing control.
+- Added a Dashboard exit confirmation at Speaking home and made nested Speaking
+  workspaces return to `Choose a Set`.
+- Removed redundant inline Back controls, the Set section-progress strip, and
+  01/A/B section tiles; centred the compact Context, Part A, and Part B labels.
+- Restored each of the five imported Part A Task statements as structured Set
+  data, rendered them before the discussion points, included them in frozen
+  Discussion prompts, and exposed them in the teacher Set editor.
+
+## 2026-08-30 — Detailed Speaking turn coaching
+
+- Replaced new Group Discussion turns' single concise CS/IO comment with
+  required strength, limitation, improvement, and English sample fields.
+- Required every comment to explain evidence, effect, and a usable next action,
+  while preserving the mandatory ASR safeguard and the Candidate's intention.
+- Added structured student, teacher, and private-share presentation with a
+  compatibility path for immutable V2/V3 reports.
+- Raised the default bounded model output allowance to 16,000 tokens so a
+  normal four-to-six Candidate Discussion can return the expanded JSON.
+
+## 2026-08-30 — Direct report refresh loading
+
+- Replaced the Set-library/list flash on refreshed Discussion links with one
+  centred loading spinner followed directly by the requested report.
+- Prioritized the target Discussion request after authentication and deferred
+  Voiceprint, Set, and sidebar-list hydration until after the report is visible.
+
 ## 2026-08-30 — Continuous Speaker transcript cards
 
 - Grouped adjacent ASR segments from the same Speaker into one visible speech

@@ -2522,8 +2522,12 @@ The student Speaking Lab is one responsive page with a left-side Discussion draw
 invitation inbox, roster-free creation form, private recording/upload choice,
 one Candidates card, factual queued/processing stages, internal
 Speaker-labelled report, voice confirmation, and Student Share controls. The
-toolbar uses the Writing hamburger symbol at left, a centered `Speaking Lab`
-label, and no trailing student-name chip. The drawer opens and closes from the
+toolbar uses an icon-only Back control at left, a centered `Speaking Lab`
+label, and no trailing student-name chip. A history control at right retains
+the drawer and its invitation marker. Back from any selected Set, Voiceprint,
+Discussion, or Response returns to `Choose a Set`; Back from that home surface
+opens a centred confirmation before navigating to `dashboard.html`. The drawer
+Home action uses the same confirmation. The drawer opens and closes from the
 left on the same path, uses a mobile scrim only while open without blocking the
 closed home or the desktop workspace, and renders the Discussion list directly.
 When one or more invitations are pending for the signed-in student, a compact
@@ -2533,13 +2537,18 @@ state under Reduced Motion. The button's accessible name includes the waiting
 invitation count. The matching Discussion row receives a quiet invitation tint
 and `Invitation` pill; selecting it opens the existing accept/decline dialog.
 Its top row places an icon-only Voiceprint action immediately left of the plus
-button: Home navigates directly to `dashboard.html`, Voiceprint opens its own
+button: Home requests the Dashboard confirmation, Voiceprint opens its own
 full workspace, and plus returns to `Choose a Set`. Directly below, a compact
 two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
 Discussion cards and Part B shows only Individual Response cards. The drawer
 has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
 `Individual Responses` heading rows. Existing record cards retain their normal
 content and state pills. Escape and the active mobile scrim close the drawer.
+Each selected Set uses independent overview, Context, Part A, and Part B cards.
+The overview has no three-step section strip or inline Back button. Context,
+`Part A Group Discussion`, and `Part B Individual Response` use centred blue
+section labels without 01/A/B icon tiles. Part A shows the source `TASK`
+statement before `You may want to talk about:` and its four bullet points.
 creation form asks for title, prompt, date, and optional time only; date opens
 on today's Shanghai date. Voice References are not part of the normal Session
 flow. The browser holds a
@@ -2668,12 +2677,24 @@ suggestions; PD is fixed to Not assessed. At phone widths the four-button bar
 sticks immediately below the Speaking toolbar while the analysis card remains
 in view.
 
+Refreshing or directly opening a URL with a `discussion` locator must never
+render the Set library or Discussion list before the requested report. From the
+first styled frame, the main content area shows only one centred loading spinner.
+The requested Discussion is the first Speaking data request after authentication;
+the spinner is replaced directly by the final report in one state change. Set,
+Voiceprint, and sidebar-list data hydrate sequentially afterward without
+re-rendering or reopening the report.
+
 `What you could say next time` begins with one horizontally scrollable button
 per personal turn and shows only the selected turn. Its context area is an
 independently vertically scrollable view of the complete Discussion, with every
 signed-in-student line highlighted warm yellow and the selected turn receiving
-stronger emphasis. CS/IO advice and achievable English samples follow that
-context. At phone widths the Turn bar uses the same sticky position and higher
+stronger emphasis. CS and IO follow that context as separate sections. Each
+section presents three calm, compact feedback blocks—`What worked`, `What could
+be stronger`, and `How to improve`—followed by the achievable English `Try
+saying` sample. The blocks show complete explanatory text without line clamping;
+historical concise reports use one labelled `Review` block. At phone widths the
+Turn bar uses the same sticky position and higher
 layer, replacing the analysis dimension bar when the Turn card reaches it.
 
 The ready report starts directly with the first card and does not repeat a back

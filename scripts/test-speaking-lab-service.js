@@ -113,12 +113,19 @@ async function run() {
   ["strengths", "priority_actions", "language_suggestions"].forEach((field) => {
     assert.equal(schemas.GROUP_DOMAIN_SCHEMA.required.includes(field), true, `Group Discussion domains must require ${field}`);
   });
+  ["strength_zh", "limitation_zh", "improvement_zh", "sample_en"].forEach((field) => {
+    assert.equal(schemas.TURN_COACHING_SCHEMA.required.includes(field), true, `Turn coaching must require ${field}`);
+  });
   const systemPrompt = prompts.dseAnalysisPrompt();
   assert.match(systemPrompt, /MANDATORY ASR SAFEGUARD/);
   assert.match(systemPrompt, /Never deduct a score, criticize the Candidate, or propose an exact correction solely because of one odd word/);
   assert.match(systemPrompt, /repeated in at least two distinct segments/);
   assert.match(systemPrompt, /Never infer or criticize pronunciation from transcript spelling/);
   assert.match(systemPrompt, /CS, IO, and VL must each have their own strengths, priority_actions, and language_suggestions/);
+  assert.match(systemPrompt, /Do not reduce either domain to one generic sentence/);
+  assert.match(systemPrompt, /strength_zh, limitation_zh, improvement_zh, and sample_en/);
+  assert.match(systemPrompt, /why it helped the DSE discussion/);
+  assert.match(systemPrompt, /specific, immediately usable next step/);
   const guardedUserPrompt = prompts.dseAnalysisUserPrompt({
     taskText: "Discuss a trend.",
     candidateSpeakerKeys: ["spk_01"],
@@ -135,6 +142,8 @@ async function run() {
   assert.match(guardedUserPrompt, /Each assessed domain must contain score, commentary_zh, evidence_segment_ids, strengths, priority_actions, and language_suggestions/);
   assert.match(guardedUserPrompt, /Do not turn one suspicious transcription token into a student error/);
   assert.match(guardedUserPrompt, /exactly one item for every speaking_turns item/);
+  assert.match(guardedUserPrompt, /non-empty strength_zh, limitation_zh, improvement_zh, and sample_en/);
+  assert.match(guardedUserPrompt, /what worked, what limited the turn, why it mattered, and exactly how to improve it/);
   const guardedInput = JSON.parse(guardedUserPrompt.split("INPUT_JSON_BEGIN\n")[1].split("\nINPUT_JSON_END")[0]);
   assert.deepEqual(guardedInput.segments.map((segment) => [segment.asr_confidence, segment.asr_text_status]), [
     [null, "confidence_unknown"],
@@ -212,7 +221,7 @@ async function run() {
   assert.equal(modelResult.output.group_summary_zh, "測試");
   assert.equal(modelResult.usage.total_tokens, 15);
   assert.equal(modelCalls[0].body.response_format.type, "json_object");
-  assert.equal(modelCalls[0].body.max_tokens, 12000);
+  assert.equal(modelCalls[0].body.max_tokens, 16000);
   assert.equal(Object.prototype.hasOwnProperty.call(modelCalls[0].body, "max_completion_tokens"), false);
   assert.equal(modelCalls[0].body.enable_thinking, false);
   assert.equal(modelCalls[0].headers.Authorization, "Bearer private-test-key");
