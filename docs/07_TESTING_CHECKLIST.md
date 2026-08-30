@@ -505,6 +505,10 @@ Shared shell visual checks:
   confirm the exit is a short opacity-only fade. Reopen and close each dialog
   at least three times; every cycle must restore full opacity and working Close
   controls, and no transparent overlay may intercept the Dashboard afterward
+- close task-entry confirmation from public Library, Student Library, To Do,
+  Finished, and Teacher task preview. Confirm its normal exit is 195ms and its
+  Reduced Motion opacity-only exit is 105ms (75% of the prior timing), then
+  verify the originating surface and selected row regain focus without a jump
 - opening any independent Teacher modal from Notifications, Argue, Student
   lookup/cards, assignment tools, practice entry, or success feedback freezes
   the background for mouse wheel, trackpad, and touch gestures while its own
