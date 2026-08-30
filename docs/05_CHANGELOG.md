@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-30 — Simplified Speaking drawer and Voiceprint workspace
+
+- Replaced the student Voiceprint dialog with a dedicated Speaking Lab
+  workspace containing only the reading passage, privacy consent, press-and-hold
+  microphone, concise feedback, and post-recording upload confirmation.
+- Changed Voiceprint capture to begin on press and finish on release, discard
+  samples below 10 seconds, retain valid recordings only in browser memory until
+  explicit confirmation, and visually distinguish an existing voiceprint's
+  update state.
+- Moved Voiceprint to an icon beside the Set plus action and reduced the drawer
+  to a `Part A` / `Part B` switch plus the existing Discussion or Response cards,
+  removing duplicate navigation and `Your Work` headings.
+
 ## 2026-08-30 — Student Dashboard Achievements calendar
 
 - Replaced the first Dashboard card's retired weekly progress area with a

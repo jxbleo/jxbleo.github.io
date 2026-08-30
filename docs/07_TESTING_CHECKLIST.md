@@ -2536,7 +2536,7 @@ Manual voiceprint gates require student first enrolment/update/delete; teacher
 VIP lookup by exact Student ID; teacher VIP and Non-VIP roster enrolment;
 an active teacher target showing the current `Active · Revision n` and latest
 Shanghai-time update immediately after enrolment or replacement;
-consent unchecked; 7.9-second rejection and 20-second automatic stop;
+consent unchecked; 9.9-second rejection and 20-second automatic stop;
 microphone denial; Tencent no-human-voice, capacity, not-found, timeout, and
 invalid-response errors; concurrent update stale protection; account/Guest
 scope isolation; Guest cleanup after removal/Discussion deletion; no enrolment
@@ -2612,6 +2612,18 @@ and leave the student Argue queue unchanged.
 - Open a queued, processing, and ready Discussion from both the Set library and
   Voiceprint surface; confirm neither `Choose a Set` nor the standalone
   Voiceprint card remains above or below the Discussion/report.
+- Open the drawer at desktop and 390px: its first row must be Home, Voiceprint
+  icon, and plus; below it only the `Part A` / `Part B` segmented control and
+  the selected mode's existing cards may appear. Confirm `New · Choose a Set`,
+  text `Voiceprint`, both `Your Work` headings, and the inactive mode's cards
+  are absent.
+- Open Voiceprint from the microphone icon and confirm it replaces the main
+  workspace without a dialog. Consent must be required. Hold the microphone and
+  release below 10 seconds to verify local discard; release at or above 10
+  seconds to verify a confirmation button appears without a server call. Confirm
+  upload once, then reopen and verify the update badge and `Hold to update`
+  treatment. Repeat with pointer cancel, Space/Enter, denied microphone, page
+  navigation with a pending sample, and Reduced Motion.
 - At phone widths, verify no Set title, route, question, timer, or action clips;
   Start Discussion, Start Response, and recording actions remain reachable with
   one hand. Recheck reduced-motion, reduced-transparency, and increased-contrast

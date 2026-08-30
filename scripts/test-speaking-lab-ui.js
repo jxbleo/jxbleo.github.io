@@ -20,7 +20,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260830-4/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260830-5/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
@@ -35,19 +35,24 @@ function run() {
   assert.match(page, /aria-controls="speaking-sidebar"/);
   assert.match(page, /<a[^>]*class="speaking-sidebar-home"[^>]*href="dashboard\.html"[^>]*>[\s\S]*Home<\/a>/);
   assert.doesNotMatch(page, /<button[^>]*id="speaking-sidebar-home"/);
-  assert.match(page, /speaking-sidebar-new[^>]*aria-label="Create a new Discussion"/);
-  assert.match(page, /id="speaking-list"[\s\S]*aria-label="Discussions"/);
+  assert.match(page, /speaking-sidebar-new[^>]*aria-label="Choose a Set"/);
+  assert.match(page, /id="speaking-sidebar-voiceprint"[^>]*aria-label="Open Voiceprint"/);
+  assert.match(page, /id="speaking-sidebar-part-a"[^>]*>Part A<\/button>/);
+  assert.match(page, /id="speaking-sidebar-part-b"[^>]*>Part B<\/button>/);
+  assert.doesNotMatch(page, /New · Choose a Set|<p class="eyebrow">YOUR WORK<\/p>/);
+  assert.match(page, /id="speaking-list"[\s\S]*aria-label="Group Discussions"/);
   assert.match(page, /DSE PAPER 4[\s\S]*PART A[\s\S]*Group Discussion/);
   assert.match(page, /DSE PAPER 4[\s\S]*PART B[\s\S]*Individual Response/);
   assert.match(page, /Coming soon/);
   assert.doesNotMatch(page, /id="speaking-identity"|class="back-link speaking-back-link"/);
   assert.match(page, /detect Candidates from the recording/);
   assert.doesNotMatch(page, /discussion-vip-ids|discussion-guests/);
-  assert.match(page, /My voiceprint|voiceprint-recorder\.js\?v=/);
+  assert.match(page, /voiceprint-recorder\.js\?v=/);
   assert.match(page, /id="speaking-set-library"[\s\S]*Choose a Set/);
   assert.match(page, /speaking-set-library-symbol/);
   assert.doesNotMatch(page, /id="my-voiceprint-card"/);
-  assert.match(page, /id="speaking-sidebar-voiceprint"[^>]*>Voiceprint/);
+  assert.match(page, /id="speaking-voiceprint-main"[\s\S]*Read this passage aloud\.[\s\S]*id="voiceprint-consent"[\s\S]*id="voiceprint-record"[\s\S]*id="voiceprint-confirm"/);
+  assert.doesNotMatch(page, /id="voiceprint-dialog"|id="voiceprint-stop"|id="voiceprint-close"|id="voiceprint-delete"/);
   assert.match(app, /function renderSpeakingSetDetail\(set\)/);
   assert.match(app, /function hideSpeakingHomeCards\(\)[\s\S]*speaking-set-library[\s\S]*speaking-voiceprint-main/);
   assert.match(app, /getDiscussion[\s\S]*then\(function \(result\) \{\s*hideSpeakingHomeCards\(\)/, "opening a Discussion must remove Choose a Set and Voiceprint from the report workspace");
@@ -97,7 +102,7 @@ function run() {
   assert.match(app, /file\.value = ''; prepareAudioFile\(chosen\)/);
   assert.match(cloudbaseClient, /function uploadCloudFile\(cloudPath, file\)/);
   assert.match(cloudbaseClient, /getApp\(\)\.uploadFile/);
-  assert.match(app, /loadMyVoiceprint\(\)\.then\(function \(\) \{ return loadList\(\); \}\)/);
+  assert.match(app, /loadMyVoiceprint\(\)\.then\(function \(\) \{ return loadSpeakingSets\(\); \}\)\.then\(function \(\) \{ return loadList\(\); \}\)/);
   assert.doesNotMatch(app, /Promise\.all\(\[loadMyVoiceprint\(\), loadList\(\)\]\)/);
   assert.match(app, /renderList\(result\.discussions \|\| \[\]\); setStatus\(''\)/);
   assert.match(app, /getUserMedia/);
@@ -120,6 +125,12 @@ function run() {
   assert.match(app, /-45|0\.98|INPUT_LOSS_SECONDS/);
   assert.match(app, /SPEAKING_PROVIDER_NOT_CONFIGURED|feature not enabled/i);
   assert.match(app, /Many people have different ideas/);
+  assert.match(app, /addEventListener\('pointerdown'[\s\S]*startMyVoiceprintRecording/);
+  assert.match(app, /addEventListener\('pointerup'[\s\S]*stopMyVoiceprintRecording\(false\)/);
+  assert.match(app, /elapsed < 10/);
+  assert.match(app, /voiceprintPendingResult = result/);
+  assert.match(app, /voiceprint-confirm'[\s\S]*saveVoiceprintRecording\(voiceprintPendingResult\)/);
+  assert.match(app, /setSidebarMode\('part-a'\)|setSidebarMode\('part-b'\)/);
   assert.match(app, /This is my voice/);
   assert.match(app, /This isn\\'t my voice/);
   assert.match(app, /updateDiscussionDuration/);
@@ -219,6 +230,10 @@ function run() {
   assert.match(css, /speaking-voice-search/);
   assert.match(css, /speaking-voice-search-pulse/);
   assert.match(css, /speaking-sidebar-alert-arrive/);
+  assert.match(css, /speaking-sidebar-segments/);
+  assert.match(css, /speaking-sidebar-panel\[hidden\][^}]*display:\s*none !important/);
+  assert.match(css, /speaking-voiceprint-hold[^}]*touch-action:\s*none/);
+  assert.match(css, /speaking-voiceprint-main\.has-voiceprint \.speaking-voiceprint-update-badge/);
   assert.match(css, /speaking-set-library-heading[^}]*grid-template-columns/);
   assert.match(css, /speaking-set-library\[hidden\][^}]*display:\s*none !important/);
   assert.match(css, /speaking-set-list \.speaking-set-card[^}]*speaking-set-materialize/);
@@ -239,14 +254,14 @@ function run() {
   assert.match(app, /function closeSidebar\(options\)/);
   assert.match(app, /function returnToSpeakingHome\(\)/);
   assert.doesNotMatch(app, /sidebarHome|speaking-sidebar-home/);
-  assert.match(app, /sidebarNew\.addEventListener\('click', openNewDiscussionDialog\)/);
+  assert.match(app, /sidebarNew\.addEventListener\('click',[\s\S]*returnToSpeakingSetLibrary/);
   assert.match(app, /function openNewDiscussionDialog\(\)/);
   assert.match(app, /closeSidebar\(\);\s*\n\s*auth\.getSession\(\)/);
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260830-3/);
-  assert.match(page, /speaking-lab\.js\?v=20260830-4/);
+  assert.match(page, /speaking-lab\.css\?v=20260830-5/);
+  assert.match(page, /speaking-lab\.js\?v=20260830-5/);
   console.log("Speaking Lab UI contracts passed.");
 }
 
