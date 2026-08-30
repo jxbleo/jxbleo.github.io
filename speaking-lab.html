@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-5">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-6">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -126,11 +126,18 @@
     <dialog class="speaking-dialog speaking-candidate-dialog" id="discussion-candidate-dialog" aria-labelledby="discussion-candidate-dialog-title">
         <div class="speaking-candidate-dialog-body" id="discussion-candidate-dialog-content"></div>
     </dialog>
+    <dialog class="speaking-dialog speaking-transcription-dialog" id="discussion-transcription-dialog" aria-labelledby="discussion-transcription-dialog-title">
+        <div class="speaking-transcription-dialog-body">
+            <div class="speaking-dialog-head"><p class="eyebrow accent">SESSION DETAILS</p><h2 id="discussion-transcription-dialog-title">Transcriptions</h2><p>Complete AI transcription · your own turns are highlighted in yellow.</p></div>
+            <div class="speaking-transcription-dialog-scroll" id="discussion-transcription-dialog-content"></div>
+            <div class="speaking-dialog-actions"><button class="primary-button" id="discussion-transcription-close" type="button">Done</button></div>
+        </div>
+    </dialog>
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260827-2"></script>
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260830-5"></script>
+    <script src="assets/js/speaking-lab.js?v=20260830-6"></script>
 </body>
 </html>

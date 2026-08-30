@@ -29,6 +29,9 @@
     var promptDialogText = document.getElementById('discussion-prompt-dialog-text');
     var candidateDialog = document.getElementById('discussion-candidate-dialog');
     var candidateDialogContent = document.getElementById('discussion-candidate-dialog-content');
+    var transcriptionDialog = document.getElementById('discussion-transcription-dialog');
+    var transcriptionDialogContent = document.getElementById('discussion-transcription-dialog-content');
+    var transcriptionDialogClose = document.getElementById('discussion-transcription-close');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
     var form = document.getElementById('discussion-form');
@@ -202,6 +205,15 @@
         bindInvitationActions(candidateDialogContent);
         if (typeof candidateDialog.showModal === 'function') candidateDialog.showModal();
         else candidateDialog.setAttribute('open', '');
+    }
+    function openTranscriptionDialog() {
+        var report = currentDiscussion && currentDiscussion.report;
+        if (!report || !transcriptionDialog || !transcriptionDialogContent) return;
+        var own = (report.candidates || []).find(function (candidate) { return candidate.is_self; });
+        var lines = transcriptLinesMarkup(report, own && own.speaker_key, null);
+        transcriptionDialogContent.innerHTML = lines ? '<div class="speaking-transcript-lines">' + lines + '</div>' : '<p class="speaking-report-empty">No transcription is available.</p>';
+        if (typeof transcriptionDialog.showModal === 'function') transcriptionDialog.showModal();
+        else transcriptionDialog.setAttribute('open', '');
     }
     function voiceprintTime(seconds) {
         var value = Math.max(0, Math.min(20, Math.floor(Number(seconds || 0))));
@@ -620,14 +632,25 @@
         var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
         return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
     }
-    function turnReviewCardsMarkup(candidate) {
-        var reviews = Array.isArray(candidate && candidate.turn_reviews) ? candidate.turn_reviews : [];
-        return reviews.map(function (review, index) {
-            var cs = review.communication_strategies || {};
-            var io = review.ideas_organisation || {};
-            var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-turn-caution">AI transcript may contain recognition errors</span>';
-            return '<article class="speaking-turn-card"><header><div><span class="speaking-turn-number">Turn ' + esc(index + 1) + '</span><span class="speaking-turn-time">' + esc(turnTime(review.start_ms)) + '–' + esc(turnTime(review.end_ms)) + '</span></div>' + caution + '</header><blockquote><span>What you said · AI transcript</span>' + esc(review.transcript_text || '') + '</blockquote><div class="speaking-turn-coaching"><section data-domain="cs"><p class="speaking-turn-domain">CS · Communication Strategies</p><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section data-domain="io"><p class="speaking-turn-domain">IO · Ideas &amp; Organisation</p><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div></article>';
+    function transcriptLinesMarkup(report, ownSpeakerKey, selectedReview) {
+        var selectedStart = Number(selectedReview && selectedReview.start_ms);
+        var selectedEnd = Number(selectedReview && selectedReview.end_ms);
+        return (Array.isArray(report && report.transcript) ? report.transcript : []).map(function (line) {
+            var isSelf = ownSpeakerKey && String(line.speaker_key) === String(ownSpeakerKey);
+            var isCurrent = isSelf && Number.isFinite(selectedStart) && Number.isFinite(selectedEnd) && Number(line.end_ms || 0) >= selectedStart && Number(line.start_ms || 0) <= selectedEnd;
+            return '<article class="speaking-transcript-line' + (isSelf ? ' is-self' : '') + (isCurrent ? ' is-current' : '') + '"><header><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(turnTime(line.start_ms)) + '–' + esc(turnTime(line.end_ms)) + '</small></header><p>' + esc(line.text || '') + '</p></article>';
         }).join('');
+    }
+    function turnReviewPanelMarkup(candidate, report, index) {
+        var reviews = Array.isArray(candidate && candidate.turn_reviews) ? candidate.turn_reviews : [];
+        var review = reviews[index] || reviews[0];
+        if (!review) return '';
+        var cs = review.communication_strategies || {};
+        var io = review.ideas_organisation || {};
+        var caution = review.asr_text_status === 'higher_confidence' ? '' : '<span class="speaking-turn-caution">AI transcript may contain recognition errors</span>';
+        return '<div class="speaking-turn-panel-heading"><div><span class="speaking-turn-number">Turn ' + esc(index + 1) + '</span><span class="speaking-turn-time">' + esc(turnTime(review.start_ms)) + '–' + esc(turnTime(review.end_ms)) + '</span></div>' + caution + '</div>' +
+            '<div class="speaking-turn-context" tabindex="0" aria-label="Full Discussion context for Turn ' + esc(index + 1) + '"><div class="speaking-transcript-lines">' + transcriptLinesMarkup(report, candidate.speaker_key, review) + '</div></div>' +
+            '<div class="speaking-turn-coaching"><section data-domain="cs"><p class="speaking-turn-domain">CS · Communication Strategies</p><p>' + esc(cs.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(cs.sample_en || '') + '</q></div></section><section data-domain="io"><p class="speaking-turn-domain">IO · Ideas &amp; Organisation</p><p>' + esc(io.commentary_zh || '') + '</p><div class="speaking-turn-sample"><span>Try saying</span><q>' + esc(io.sample_en || '') + '</q></div></section></div>';
     }
     function candidateControls(item) {
         var candidateTiles = (item.candidates || []).map(detectedCandidateMarkup).join('');
@@ -666,42 +689,45 @@
             '<div class="speaking-report-ledger-row"><span class="speaking-report-ledger-label">Duration</span><span class="speaking-report-ledger-value">' + esc(reportDuration(item, report)) + '</span></div>' +
             '<button class="speaking-report-ledger-row" type="button" id="view-discussion-candidates"><span class="speaking-report-ledger-label">Candidates</span><span class="speaking-report-ledger-value">' + esc(candidateCount) + '</span></button>' +
             '<button class="speaking-report-ledger-row" type="button" id="view-discussion-prompt"><span class="speaking-report-ledger-label">Task</span><span class="speaking-report-ledger-value">' + esc(item.title || 'Discussion Task') + '</span></button>' +
+            '<button class="speaking-report-ledger-row" type="button" id="view-discussion-transcriptions"><span class="speaking-report-ledger-label">Transcriptions</span><span class="speaking-report-ledger-value">View complete script</span></button>' +
             '</div></section>';
+    }
+    function dimensionCoachingMarkup(own, key, domain) {
+        var hasDimensionFeedback = ['strengths', 'priority_actions', 'language_suggestions'].some(function (field) { return Array.isArray(domain && domain[field]) && domain[field].length; });
+        if (hasDimensionFeedback) return '<div class="speaking-coaching-grid">' + reportList('Strengths', domain.strengths) + reportList('Priority actions', domain.priority_actions) + reportList('Language suggestions', domain.language_suggestions) + '</div>';
+        var legacy = key === 'communication_strategies' ? reportList('Earlier report strengths', own.strengths)
+            : key === 'ideas_organisation' ? reportList('Earlier report priorities', own.priority_actions)
+                : key === 'vocabulary_language_patterns' ? reportList('Earlier language suggestions', own.language_suggestions) : '';
+        return legacy ? '<div class="speaking-coaching-grid speaking-coaching-grid-legacy">' + legacy + '</div>' : '';
+    }
+    function domainPanelMarkup(own, key, shortLabel, fullLabel, selected) {
+        if (key === 'pronunciation_delivery') return '<section class="speaking-domain-panel speaking-domain-panel-pd" id="speaking-domain-panel-pd" role="tabpanel" aria-labelledby="speaking-domain-tab-pd"' + (selected ? '' : ' hidden') + '><div class="speaking-domain-score"><span><b>PD</b>Pronunciation &amp; Delivery</span><strong>—</strong></div><p>Pronunciation &amp; Delivery is not assessed in this version of Speaking Lab.</p></section>';
+        var domain = own.domains && own.domains[key] || {};
+        var score = Number.isFinite(Number(domain.score)) ? Math.max(0, Math.min(7, Number(domain.score))) : 0;
+        var id = shortLabel.toLowerCase();
+        return '<section class="speaking-domain-panel" id="speaking-domain-panel-' + esc(id) + '" role="tabpanel" aria-labelledby="speaking-domain-tab-' + esc(id) + '"' + (selected ? '' : ' hidden') + '><div class="speaking-domain-score" style="--score:' + esc(score) + '"><span><b>' + esc(shortLabel) + '</b>' + esc(fullLabel) + '</span><strong>' + esc(score) + '<small>/7</small></strong></div><p class="speaking-domain-commentary">' + esc(domain.commentary_zh || 'No commentary is available for this dimension.') + '</p>' + dimensionCoachingMarkup(own, key, domain) + '</section>';
     }
     function personalAnalysisCardMarkup(report) {
         var own = (report.candidates || []).find(function (candidate) { return candidate.is_self; });
         if (!own) return '<section class="speaking-report-card speaking-personal-analysis"><header class="speaking-report-card-header"><div><p class="eyebrow accent">YOUR ANALYSIS</p><h2>Individual performance</h2></div></header><div class="speaking-report-empty"><span aria-hidden="true">◎</span><div><strong>Your voice is not connected to a Candidate yet.</strong><p>Use Candidate matching above. Your personal scores and coaching will appear only after your Speaker identity is confirmed.</p></div></div></section>';
-        var labels = {
-            communication_strategies: ['CS', 'Communication Strategies'],
-            ideas_organisation: ['IO', 'Ideas & Organisation'],
-            vocabulary_language_patterns: ['VL', 'Vocabulary & Language Pattern']
-        };
-        var domains = Object.keys(labels).map(function (key) {
-            var domain = own.domains && own.domains[key];
-            var score = domain && Number.isFinite(Number(domain.score)) ? Math.max(0, Math.min(7, Number(domain.score))) : 0;
-            return '<article class="speaking-score-card" style="--score:' + score + '"><div class="speaking-score-head"><span><b>' + esc(labels[key][0]) + '</b>' + esc(labels[key][1]) + '</span><strong>' + esc(score) + '<small>/7</small></strong></div><p>' + esc(domain && domain.commentary_zh || 'No commentary is available for this dimension.') + '</p></article>';
+        var domainTabs = [['cs', 'CS', 'communication_strategies'], ['io', 'IO', 'ideas_organisation'], ['vl', 'VL', 'vocabulary_language_patterns'], ['pd', 'PD', 'pronunciation_delivery']].map(function (row, index) {
+            var domain = own.domains && own.domains[row[2]] || {};
+            var score = row[0] === 'pd' ? '—' : Number.isFinite(Number(domain.score)) ? Math.max(0, Math.min(7, Number(domain.score))) : '—';
+            return '<button class="speaking-report-tab' + (index === 0 ? ' is-active' : '') + '" id="speaking-domain-tab-' + row[0] + '" type="button" role="tab" aria-selected="' + (index === 0 ? 'true' : 'false') + '" aria-controls="speaking-domain-panel-' + row[0] + '" data-report-domain="' + row[0] + '"><span>' + row[1] + '</span><small>' + esc(score) + '</small></button>';
         }).join('');
-        domains += '<article class="speaking-score-card speaking-score-card-pd"><div class="speaking-score-head"><span><b>PD</b>Pronunciation &amp; Delivery</span><strong>—</strong></div><p>Not assessed · 暂不评论</p></article>';
-        return '<section class="speaking-report-card speaking-personal-analysis"><header class="speaking-report-card-header speaking-personal-header"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(own.speaker_label || 'You')) + '</span><div><p class="eyebrow accent">YOUR ANALYSIS</p><h2>' + esc(own.speaker_label || 'Your performance') + '</h2><p>' + esc(own.summary_zh || '') + '</p></div></header><div class="speaking-score-grid speaking-score-grid-four">' + domains + '</div><div class="speaking-coaching-grid">' + reportList('Strengths', own.strengths) + reportList('Priority actions', own.priority_actions) + reportList('Language suggestions', own.language_suggestions) + '</div></section>';
+        var panels = domainPanelMarkup(own, 'communication_strategies', 'CS', 'Communication Strategies', true) + domainPanelMarkup(own, 'ideas_organisation', 'IO', 'Ideas & Organisation', false) + domainPanelMarkup(own, 'vocabulary_language_patterns', 'VL', 'Vocabulary & Language Pattern', false) + domainPanelMarkup(own, 'pronunciation_delivery', 'PD', 'Pronunciation & Delivery', false);
+        return '<section class="speaking-report-card speaking-personal-analysis"><header class="speaking-report-card-header speaking-personal-header"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(own.speaker_label || 'You')) + '</span><div><p class="eyebrow accent">YOUR ANALYSIS</p><h2>' + esc(own.speaker_label || 'Your performance') + '</h2><p>' + esc(own.summary_zh || '') + '</p></div></header><div class="speaking-report-sticky speaking-domain-tabs" role="tablist" aria-label="Analysis dimension">' + domainTabs + '</div><div class="speaking-domain-panels">' + panels + '</div></section>';
     }
     function turnAdviceCardMarkup(report) {
         var own = (report.candidates || []).find(function (candidate) { return candidate.is_self; });
         var reviews = Array.isArray(own && own.turn_reviews) ? own.turn_reviews : [];
-        var body = reviews.length ? '<p class="speaking-turn-review-note">Each turn focuses on CS and IO. VL support is included inside the suggested language samples.</p><div class="speaking-turn-list">' + turnReviewCardsMarkup(own) + '</div>' : '<div class="speaking-report-empty"><span aria-hidden="true">◎</span><div><strong>No personal turns are connected yet.</strong><p>Once your Speaker identity is confirmed, this card will show advice for each of your turns.</p></div></div>';
+        var tabs = reviews.map(function (_review, index) { return '<button class="speaking-turn-tab' + (index === 0 ? ' is-active' : '') + '" type="button" role="tab" aria-selected="' + (index === 0 ? 'true' : 'false') + '" aria-controls="speaking-turn-review-panel" data-turn-index="' + index + '">Turn ' + (index + 1) + '</button>'; }).join('');
+        var body = reviews.length ? '<div class="speaking-report-sticky speaking-turn-tabs" role="tablist" aria-label="Turn review">' + tabs + '</div><div class="speaking-turn-review-panel" id="speaking-turn-review-panel" role="tabpanel">' + turnReviewPanelMarkup(own, report, 0) + '</div>' : '<div class="speaking-report-empty"><span aria-hidden="true">◎</span><div><strong>No personal turns are connected yet.</strong><p>Once your Speaker identity is confirmed, this card will show advice for each of your turns.</p></div></div>';
         return '<section class="speaking-report-card speaking-turn-advice-card"><header class="speaking-report-card-header"><div><p class="eyebrow accent">TURN-BY-TURN REVIEW</p><h2>What you could say next time</h2><p>Replay the thinking behind every turn with a stronger CS or IO choice.</p></div><span class="speaking-pill">' + esc(reviews.length) + ' turn' + (reviews.length === 1 ? '' : 's') + '</span></header>' + body + '</section>';
-    }
-    function transcriptMarkup(report) {
-        var own = (report.candidates || []).find(function (candidate) { return candidate.is_self; });
-        var ownSpeakerKey = own && own.speaker_key;
-        if (!Array.isArray(report.transcript) || !report.transcript.length) return '';
-        return '<details class="speaking-report-card speaking-transcript"><summary><span><strong>Complete script</strong><small>Open the full Discussion transcript · your own turns are highlighted in yellow</small></span></summary><div class="speaking-transcript-lines">' + report.transcript.map(function (line) {
-            var selfClass = ownSpeakerKey && line.speaker_key === ownSpeakerKey ? ' is-self' : '';
-            return '<article class="speaking-transcript-line' + selfClass + '"><header><strong>' + esc(line.speaker_label || 'Speaker') + '</strong><small>' + esc(turnTime(line.start_ms)) + '–' + esc(turnTime(line.end_ms)) + '</small></header><p>' + esc(line.text) + '</p></article>';
-        }).join('') + '</div></details>';
     }
     function reportReadyMarkup(item) {
         var report = item.report;
-        return '<article class="speaking-detail-card speaking-report-phase"><div class="speaking-report-layout">' + reportInfoCardMarkup(item, report) + personalAnalysisCardMarkup(report) + turnAdviceCardMarkup(report) + transcriptMarkup(report) + '</div></article>';
+        return '<article class="speaking-detail-card speaking-report-phase"><div class="speaking-report-layout">' + reportInfoCardMarkup(item, report) + personalAnalysisCardMarkup(report) + turnAdviceCardMarkup(report) + '</div></article>';
     }
     function reportProcessingMarkup(item) {
         var controls = candidateControls(item);
@@ -748,6 +774,31 @@
             '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Voiceprint matches at 70% or above are named and opened automatically. Lower scores stay anonymous until the matched VIP listens and confirms.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + rosterEditor + '</section>' +
             recording + analysis + reportMarkup + '</div></article>';
     }
+    function bindReportInteractions(root) {
+        var report = currentDiscussion && currentDiscussion.report;
+        root.querySelectorAll('[data-report-domain]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var target = button.getAttribute('aria-controls');
+                root.querySelectorAll('[data-report-domain]').forEach(function (tab) { var active = tab === button; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', active ? 'true' : 'false'); });
+                root.querySelectorAll('.speaking-domain-panel').forEach(function (panel) { panel.hidden = panel.id !== target; });
+            });
+        });
+        var own = report && (report.candidates || []).find(function (candidate) { return candidate.is_self; });
+        var turnPanel = root.querySelector('#speaking-turn-review-panel');
+        root.querySelectorAll('[data-turn-index]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var index = Number(button.getAttribute('data-turn-index')) || 0;
+                root.querySelectorAll('[data-turn-index]').forEach(function (tab) { var active = tab === button; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', active ? 'true' : 'false'); });
+                if (!turnPanel || !own || !report) return;
+                turnPanel.innerHTML = turnReviewPanelMarkup(own, report, index);
+                window.requestAnimationFrame(function () {
+                    var context = turnPanel.querySelector('.speaking-turn-context');
+                    var current = context && context.querySelector('.speaking-transcript-line.is-current');
+                    if (context && current) context.scrollTop = Math.max(0, current.offsetTop - (context.clientHeight - current.offsetHeight) / 2);
+                });
+            });
+        });
+    }
     function bindInvitationActions(root) {
         root = root || detail;
         function refreshDiscussion() {
@@ -758,6 +809,8 @@
         if (viewPrompt) viewPrompt.addEventListener('click', openPromptDialog);
         var viewCandidates = root.querySelector('#view-discussion-candidates');
         if (viewCandidates) viewCandidates.addEventListener('click', openCandidateDialog);
+        var viewTranscriptions = root.querySelector('#view-discussion-transcriptions');
+        if (viewTranscriptions) viewTranscriptions.addEventListener('click', openTranscriptionDialog);
         var candidateClose = root.querySelector('#discussion-candidate-close');
         if (candidateClose) candidateClose.addEventListener('click', function () { if (candidateDialog.open && candidateDialog.close) candidateDialog.close(); else candidateDialog.removeAttribute('open'); });
         var voiceSearch = root.querySelector('#search-voice-matches');
@@ -798,6 +851,7 @@
         });
         var share = root.querySelector('#create-student-share');
         if (share) share.addEventListener('click', function () { share.disabled = true; call('createStudentShare', { discussion_id: selectedId }).then(function (result) { var container = root.querySelector('#student-share-result'); var url = new URL(result.share_url, window.location.href).href; container.innerHTML = '<p><a href="' + esc(url) + '" target="_blank" rel="noopener">Open private snapshot</a> · expires ' + esc(result.expires_at || 'in 7 days') + '</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="copy-student-share">Copy link</button><button class="outline-button" type="button" id="revoke-student-share">Revoke link</button></div>'; root.querySelector('#copy-student-share').addEventListener('click', function () { if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { setStatus('Private link copied.'); }); }); root.querySelector('#revoke-student-share').addEventListener('click', function () { call('revokeShare', { share_id: result.share_id }).then(function () { container.innerHTML = '<p>Link revoked.</p>'; }); }); }).catch(function (error) { setStatus(friendlyError(error), true); share.disabled = false; }); });
+        bindReportInteractions(root);
     }
     function invitationMarkup(invitation) {
         return '<form method="dialog"><div class="speaking-dialog-head"><p class="eyebrow accent">DISCUSSION INVITATION</p><h2 id="invitation-dialog-title">' + esc(invitation.title) + '</h2><p>' + esc(formatDate(invitation.discussion_date)) + ' · Invited by ' + esc(invitation.inviter_name || 'your teacher or group') + '</p></div><ul class="speaking-participants">' + (invitation.participants || []).map(function (participant) { var name = participant.display_name || 'Participant'; return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(name)) + '</span><span><strong>' + esc(name) + '</strong><small>' + esc(participant.kind === 'guest' ? 'Guest participant · Name not verified' : readableStatus(participant.invitation_status)) + '</small></span></span></li>'; }).join('') + '</ul><div class="speaking-dialog-actions"><button class="primary-button" type="button" id="accept-invitation">Accept</button><button class="outline-button" type="button" id="decline-invitation">Decline</button><button class="outline-button" value="cancel">Close</button></div></form>';
@@ -1350,6 +1404,10 @@
     document.getElementById('discussion-prompt-close').addEventListener('click', function () {
         if (promptDialog.open && promptDialog.close) promptDialog.close();
         else promptDialog.removeAttribute('open');
+    });
+    transcriptionDialogClose.addEventListener('click', function () {
+        if (transcriptionDialog.open && transcriptionDialog.close) transcriptionDialog.close();
+        else transcriptionDialog.removeAttribute('open');
     });
     sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
     sidebarNew.addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); returnToSpeakingSetLibrary(); });

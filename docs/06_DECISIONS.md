@@ -1,5 +1,32 @@
 # 06 Decisions
 
+## 2026-08-30: Speaking coaching belongs to its assessed dimension
+
+Decision:
+
+Version Group Discussion reports as `dse-speaking-report-v3`. Each assessed
+CS, IO, and VL domain owns its bounded strengths, priority actions, and language
+suggestions alongside its score, commentary, and evidence IDs. Keep PD
+unassessed. Do not migrate or rewrite ready reports; the browser provides a
+labelled compatibility presentation for older Candidate-level coaching.
+
+Reason:
+
+A shared coaching list makes it unclear which DSE criterion a student should
+improve and prevents a four-button report from remaining internally coherent.
+Putting advice at the same validated boundary as its score and evidence keeps
+the UI, prompt, stored report, and private share projection aligned.
+
+Trade-offs:
+
+- New structured responses are larger, but every list is capped at six items
+  and the existing output-token ceiling remains sufficient.
+- Historical reports cannot be perfectly reclassified without a new model call,
+  so they remain immutable and visibly use their legacy grouping.
+- Teacher and share surfaces can adopt the richer lists incrementally because
+  the existing score/commentary fields and root compatibility arrays remain
+  readable.
+
 ## 2026-08-30: Derive BBC waveforms from the played MP3 and keep media time authoritative
 
 Decision:

@@ -1,6 +1,6 @@
 "use strict";
 
-const PROMPT_VERSION = "dse-speaking-prompts-2026-08-28.3";
+const PROMPT_VERSION = "dse-speaking-prompts-2026-08-30.4";
 const INDIVIDUAL_RESPONSE_PROMPT_VERSION = "dse-individual-response-prompts-2026-08-30.1";
 
 function asrTextStatus(confidence) {
@@ -26,6 +26,9 @@ function dseAnalysisPrompt() {
     "A brief unmatched voice may be an outside person: never score it, count it, or attribute it to another Speaker.",
     "Use only supplied evidence segment IDs. Do not output participant names, Student IDs, official grades, or overall totals.",
     "Write the feedback in clear Traditional Chinese, while English improvement examples may remain in English.",
+    "Organise every Candidate's feedback by assessed domain. CS, IO, and VL must each have their own strengths, priority_actions, and language_suggestions; never put those notes into one undifferentiated Candidate-level list.",
+    "For each assessed domain, return 1-3 specific strengths supported by evidence, 1-3 practical priority actions, and 1-3 concise language suggestions. A list may be empty only when reliable transcript evidence is insufficient.",
+    "CS language_suggestions should give natural interaction phrases for entering, responding, clarifying, developing, redirecting, inviting, or concluding. IO language_suggestions should give sentence frames that improve reasoning, support, sequencing, and connection. VL language_suggestions should give precise vocabulary or language-pattern alternatives supported by reliable context.",
     "For every supplied canonical speaking turn, provide a concise turn review for Communication Strategies (CS) and Ideas & Organisation (IO).",
     "CS feedback should explain how the turn enters, maintains, responds to, clarifies, develops, redirects, or concludes the group interaction. IO feedback should explain the relevance, development, support, sequencing, and connection of ideas.",
     "Under both CS and IO, give one natural, achievable English sample the Candidate could have used at that moment. The sample is language support for the CS or IO goal, not a separate Vocabulary & Language Patterns score.",
@@ -65,13 +68,13 @@ function dseAnalysisUserPrompt({ taskText, candidateSpeakerKeys, nonCandidateSpe
   return [
     "Create the requested DSE Group Interaction analysis as JSON.",
     "Required root keys: group_summary_zh, group_strengths, group_priorities, discussion_flow, candidates.",
-    "Each candidate must contain speaker_key, summary_zh, domains, strengths, priority_actions, language_suggestions, interaction_summary, turn_reviews.",
+    "Each candidate must contain speaker_key, summary_zh, domains, interaction_summary, and turn_reviews. Do not return Candidate-level strengths, priority_actions, or language_suggestions.",
     "The domains object must contain communication_strategies, vocabulary_language_patterns, ideas_organisation, and pronunciation_delivery.",
-    "Each assessed domain must contain score, commentary_zh, and evidence_segment_ids. pronunciation_delivery must be {\"status\":\"not_assessed\"}.",
+    "Each assessed domain must contain score, commentary_zh, evidence_segment_ids, strengths, priority_actions, and language_suggestions. pronunciation_delivery must be {\"status\":\"not_assessed\"}.",
     "turn_reviews must contain exactly one item for every speaking_turns item belonging to that Candidate, in chronological order, with no additions or omissions.",
     "Each turn review must contain turn_id plus communication_strategies and ideas_organisation. Each of those two objects must contain commentary_zh and sample_en.",
     "Keep each turn commentary concise and diagnostic. Keep each sample_en to one or two natural DSE-level sentences that could be spoken at that exact point.",
-    "Apply the mandatory ASR safeguard to scores, commentary, priorities, language_suggestions, and every turn review/sample. Do not turn one suspicious transcription token into a student error.",
+    "Apply the mandatory ASR safeguard to scores, commentary, every domain-specific strength, priority action, language suggestion, and every turn review/sample. Do not turn one suspicious transcription token into a student error.",
     "Every Candidate key must appear exactly once and no non-candidate key may appear in candidates.",
     "INPUT_JSON_BEGIN",
     serialized,

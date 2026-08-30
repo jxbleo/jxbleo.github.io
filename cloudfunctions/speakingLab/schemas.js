@@ -1,6 +1,6 @@
 "use strict";
 
-const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v2";
+const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v3";
 const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v1";
 
 const DOMAIN_SCHEMA = {
@@ -11,6 +11,18 @@ const DOMAIN_SCHEMA = {
     score: { type: "integer", minimum: 0, maximum: 7 },
     commentary_zh: { type: "string", maxLength: 1200 },
     evidence_segment_ids: { type: "array", items: { type: "string" }, maxItems: 12 },
+  },
+};
+
+const GROUP_DOMAIN_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["score", "commentary_zh", "evidence_segment_ids", "strengths", "priority_actions", "language_suggestions"],
+  properties: {
+    ...DOMAIN_SCHEMA.properties,
+    strengths: { type: "array", items: { type: "string", maxLength: 240 }, maxItems: 6 },
+    priority_actions: { type: "array", items: { type: "string", maxLength: 240 }, maxItems: 6 },
+    language_suggestions: { type: "array", items: { type: "string", maxLength: 480 }, maxItems: 6 },
   },
 };
 
@@ -50,7 +62,7 @@ const SPEAKING_REPORT_SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["speaker_key", "summary_zh", "domains", "strengths", "priority_actions", "language_suggestions", "interaction_summary", "turn_reviews"],
+        required: ["speaker_key", "summary_zh", "domains", "interaction_summary", "turn_reviews"],
         properties: {
           speaker_key: { type: "string" },
           summary_zh: { type: "string", maxLength: 1200 },
@@ -58,9 +70,9 @@ const SPEAKING_REPORT_SCHEMA = {
             type: "object", additionalProperties: false,
             required: ["communication_strategies", "vocabulary_language_patterns", "ideas_organisation", "pronunciation_delivery"],
             properties: {
-              communication_strategies: DOMAIN_SCHEMA,
-              vocabulary_language_patterns: DOMAIN_SCHEMA,
-              ideas_organisation: DOMAIN_SCHEMA,
+              communication_strategies: GROUP_DOMAIN_SCHEMA,
+              vocabulary_language_patterns: GROUP_DOMAIN_SCHEMA,
+              ideas_organisation: GROUP_DOMAIN_SCHEMA,
               pronunciation_delivery: { type: "object", additionalProperties: false, required: ["status"], properties: { status: { const: "not_assessed" } } },
             },
           },
@@ -98,4 +110,4 @@ const INDIVIDUAL_RESPONSE_REPORT_SCHEMA = {
   },
 };
 
-module.exports = { SPEAKING_REPORT_SCHEMA_VERSION, INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, SPEAKING_REPORT_SCHEMA, INDIVIDUAL_RESPONSE_REPORT_SCHEMA, DOMAIN_SCHEMA, TURN_REVIEW_SCHEMA, TURN_COACHING_SCHEMA };
+module.exports = { SPEAKING_REPORT_SCHEMA_VERSION, INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, SPEAKING_REPORT_SCHEMA, INDIVIDUAL_RESPONSE_REPORT_SCHEMA, DOMAIN_SCHEMA, GROUP_DOMAIN_SCHEMA, TURN_REVIEW_SCHEMA, TURN_COACHING_SCHEMA };

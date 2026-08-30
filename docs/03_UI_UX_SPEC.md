@@ -2626,8 +2626,8 @@ button for retry. The action never implies that ASR or DSE scoring is being run
 again.
 
 A ready student report contains exactly three primary cards in order. The first
-is an Option-A-style split ledger with exactly four rows: `Date`, `Duration`,
-`Candidates`, and `Task`. A fixed label column and subtle vertical divider map
+is an Option-A-style split ledger with exactly five rows: `Date`, `Duration`,
+`Candidates`, `Task`, and `Transcriptions`. A fixed label column and subtle vertical divider map
 each label to a left-aligned value. The only heading is the small blue
 `SESSION DETAILS` label, using the same eyebrow typography as `YOUR ANALYSIS`.
 The report stack itself has no shared border, background, or shadow connecting
@@ -2635,12 +2635,23 @@ the cards; each visible card keeps its own independent material surface.
 `Candidates` and `Task` are full-row controls
 with disclosure arrows; Candidate names, matching/access, and Student Share
 stay inside the Candidate modal, while the full Group Discussion Task stays
-inside the Task modal. `Your analysis` shows only the authenticated student's
-confirmed Candidate, with CS, IO, and VL 0–7 cards plus a fourth PD card fixed
-to `Not assessed · 暂不评论`, followed by strengths, priorities, and language
-suggestions. `What you could say next time` shows every personal speaking turn
-chronologically with ASR caution, original transcript, and side-by-side CS/IO
-advice plus English samples.
+inside the Task modal. `Transcriptions` opens the complete privacy-projected
+script in an independent centred dialog, with only the signed-in student's
+confirmed Speaker lines highlighted warm yellow. `Your analysis` shows only the
+authenticated student's confirmed Candidate and begins with four CS/IO/VL/PD
+buttons. Only the selected dimension is visible below. CS, IO, and VL each show
+their own 0–7 score, commentary, strengths, priority actions, and language
+suggestions; PD is fixed to Not assessed. At phone widths the four-button bar
+sticks immediately below the Speaking toolbar while the analysis card remains
+in view.
+
+`What you could say next time` begins with one horizontally scrollable button
+per personal turn and shows only the selected turn. Its context area is an
+independently vertically scrollable view of the complete Discussion, with every
+signed-in-student line highlighted warm yellow and the selected turn receiving
+stronger emphasis. CS/IO advice and achievable English samples follow that
+context. At phone widths the Turn bar uses the same sticky position and higher
+layer, replacing the analysis dimension bar when the Turn card reaches it.
 
 The ready report starts directly with the first card and does not repeat a back
 control or ready-status label. The four dimension names use `&` where needed;
@@ -2649,10 +2660,9 @@ VL is written as `Vocabulary & Language Pattern`.
 surfaces only. Opening any Discussion removes both from the content column, so
 neither may appear above or below a queued, processing, or ready report.
 
-One collapsed `Complete script` follows the three cards. Each line shows its
-privacy-projected Speaker label and time range. Only the signed-in student's
-confirmed Speaker key receives a warm-yellow highlight; an unconfirmed student
-receives no personal analysis, turn advice, or transcript highlight. On phones,
+There is no separate `Complete script` or Voice ID card below the three report
+cards. An unconfirmed student receives no personal analysis, turn advice, or
+transcript highlight. On phones,
 the ledger preserves its compact label/value mapping, participant actions wrap
 below identity, and dialogs become bottom sheets with a visible grabber and
 sticky actions. Every dialog uses equal 12px inline insets so the browser's

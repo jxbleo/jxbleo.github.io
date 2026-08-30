@@ -20,7 +20,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260830-5/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260830-6/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=/);
@@ -182,21 +182,24 @@ function run() {
   assert.match(app, /function reportReadyMarkup\(item\)/);
   assert.match(app, /function reportProcessingMarkup\(item\)/);
   assert.match(app, /item\.recording_status === 'uploaded'[\s\S]*reportReadyMarkup\(item\)[\s\S]*reportProcessingMarkup\(item\)/);
-  assert.match(app, /speaking-report-ledger-row[\s\S]*Date[\s\S]*Duration[\s\S]*Candidates[\s\S]*Task/);
+  assert.match(app, /speaking-report-ledger-row[\s\S]*Date[\s\S]*Duration[\s\S]*Candidates[\s\S]*Task[\s\S]*Transcriptions/);
   assert.match(app, /view-discussion-candidates|function openCandidateDialog\(\)/);
   assert.match(app, /studentShareMarkup\(currentDiscussion\)|Task ·/);
   assert.match(app, /YOUR ANALYSIS|Communication Strategies|Ideas &amp; Organisation|Vocabulary &amp; Language Pattern/);
+  assert.match(app, /data-report-domain|speaking-domain-panel|dimensionCoachingMarkup/);
   assert.match(app, /Pronunciation &amp; Delivery[\s\S]*Not assessed · 暂不评论/);
   assert.match(app, /TURN-BY-TURN REVIEW|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
-  assert.match(app, /Complete script|is-self|highlighted in yellow/);
+  assert.match(app, /data-turn-index|speaking-turn-context|turnReviewPanelMarkup/);
+  assert.match(app, /Transcriptions|is-self|highlighted in yellow/);
   assert.match(app, /speaking-upload-progress-track/);
   const readyMarkup = app.slice(app.indexOf("function reportReadyMarkup(item)"), app.indexOf("function reportProcessingMarkup(item)"));
   assert.doesNotMatch(readyMarkup, /speaking-report-nav|Report ready|close-discussion|candidateIntro/);
   assert.doesNotMatch(readyMarkup, /<dt>Report<\/dt>|<dd>Ready<\/dd>/);
   assert.match(readyMarkup, /reportInfoCardMarkup\(item, report\)/);
+  assert.doesNotMatch(readyMarkup, /transcriptMarkup|Complete script|Voice ID|voiceprint-card/);
   const infoMarkup = app.slice(app.indexOf("function reportInfoCardMarkup(item, report)"), app.indexOf("function personalAnalysisCardMarkup(report)"));
   assert.doesNotMatch(infoMarkup, /About this Discussion|Recording|speaking-report-share/);
-  assert.match(infoMarkup, /Date[\s\S]*Duration[\s\S]*Candidates[\s\S]*Task/);
+  assert.match(infoMarkup, /Date[\s\S]*Duration[\s\S]*Candidates[\s\S]*Task[\s\S]*Transcriptions/);
   assert.match(infoMarkup, /SESSION DETAILS/);
   assert.match(reportJs, /My turn-by-turn review|What you said · AI transcript/);
   assert.match(css, /prefers-reduced-motion/);
@@ -223,6 +226,10 @@ function run() {
   assert.match(css, /speaking-score-grid-four/);
   assert.match(css, /speaking-score-card-pd/);
   assert.match(css, /speaking-transcript-line\.is-self/);
+  assert.match(css, /speaking-report-sticky[^}]*overflow-x:\s*auto/);
+  assert.match(css, /speaking-report-sticky[^}]*position:\s*sticky/);
+  assert.match(css, /speaking-turn-context[^}]*overflow-y:\s*auto/);
+  assert.match(css, /speaking-turn-tabs[^}]*z-index:\s*22/);
   assert.match(css, /speaking-report-stages/);
   assert.match(css, /speaking-score-grid/);
   assert.match(css, /speaking-turn-review/);
@@ -260,8 +267,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260830-5/);
-  assert.match(page, /speaking-lab\.js\?v=20260830-5/);
+  assert.match(page, /speaking-lab\.css\?v=20260830-6/);
+  assert.match(page, /speaking-lab\.js\?v=20260830-6/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

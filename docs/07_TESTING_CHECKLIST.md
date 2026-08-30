@@ -2401,16 +2401,24 @@ matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first
 report stack must have no shared border, background, or shadow connecting its
 independent cards. The first
-card must contain exactly four split-ledger rows in Date, Duration, Candidates,
-Task order. Verify the fixed label column, vertical divider, compact mobile
+card must contain exactly five split-ledger rows in Date, Duration, Candidates,
+Task, Transcriptions order. Verify the fixed label column, vertical divider, compact mobile
 mapping, `MM:SS` Duration, and one `SESSION DETAILS` eyebrow matching the
-`YOUR ANALYSIS` typography. Candidates and Task must each open and close a
-separate modal. Candidate names must not appear inline; verify the Candidate
+`YOUR ANALYSIS` typography. Candidates, Task, and Transcriptions must each open
+and close a separate modal. Candidate names must not appear inline; verify the Candidate
 modal contains the Task name, matching/access, roster actions, and Student
-Share. For a confirmed student,
-verify CS/IO/VL scores, the exact `Vocabulary & Language Pattern` label, fixed
-PD `Not assessed`, every personal turn review, and warm-yellow highlights on
-only that Speaker key in the collapsed Complete script. For an unconfirmed
+Share. Verify the Transcriptions dialog contains the complete projected script,
+and that no separate Complete Script or Voice ID card follows the report. For a
+confirmed student, verify the CS/IO/VL/PD buttons show exactly one dimension at
+a time; each assessed dimension owns its score, commentary, strengths, priority
+actions, and language suggestions; VL uses the exact `Vocabulary & Language
+Pattern` label; and PD remains `Not assessed`. At 390px, scroll through the
+analysis card and confirm its button bar sticks below the toolbar. Continue into
+Turn-by-turn review and confirm the horizontally scrollable Turn bar replaces
+the dimension bar at the same sticky edge. Switch turns and verify the context
+is independently vertically scrollable, includes the complete Discussion, and
+uses warm-yellow highlights on only that Speaker key with stronger emphasis on
+the selected turn. For an unconfirmed
 student, verify both personal cards use the safe empty state, peer analysis is
 absent, and no transcript line is highlighted. Repeat at phone width and with
 Reduced Motion, Reduced Transparency, and Increased Contrast enabled.

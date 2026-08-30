@@ -7,7 +7,7 @@ const lab = require("../cloudfunctions/_shared/speaking-lab");
 function actor(uid, role = "student") { return { auth_uid: uid, role, active: true, student_id: uid, english_name: uid }; }
 function participant(id, key, extra = {}) { return { participant_id: id, kind: "vip", student_uid: id, display_name: id, invitation_status: "accepted", identity_status: "teacher_confirmed", matched_speaker_key: key, mapping_revision: 1, ...extra }; }
 function reportFor(keys = ["spk_01", "spk_02"]) {
-  const domain = (id, score = 5) => ({ score, commentary_zh: "表现稳定", evidence_segment_ids: [id] });
+  const domain = (id, score = 5) => ({ score, commentary_zh: "表现稳定", evidence_segment_ids: [id], strengths: ["有证据的优点"], priority_actions: ["下一步行动"], language_suggestions: ["I would build on that by adding..."] });
   const coaching = () => ({ commentary_zh: "先回应同学，再推进讨论。", sample_en: "I agree with your point, and I would also add that..." });
   return {
     group_summary_zh: "小组总结", group_strengths: ["倾听"], group_priorities: ["回应"], discussion_flow: ["开场"],
@@ -183,6 +183,9 @@ function run() {
   const canonical = lab.canonicalizeReport(valid, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
   assert.deepEqual(canonical.candidates.map((item) => item.speaker_key), ["spk_01", "spk_02"]);
   assert.equal(canonical.candidates[0].domains.pronunciation_delivery.status, "not_assessed");
+  assert.deepEqual(canonical.candidates[0].domains.communication_strategies.strengths, ["有证据的优点"]);
+  assert.deepEqual(canonical.candidates[0].domains.communication_strategies.priority_actions, ["下一步行动"]);
+  assert.deepEqual(canonical.candidates[0].domains.communication_strategies.language_suggestions, ["I would build on that by adding..."]);
   assert.equal(canonical.candidates[0].interaction_summary.turn_count, 1);
   assert.equal(canonical.candidates[0].turn_reviews[0].turn_id, "spk_01_turn_01");
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: valid.candidates.map((item, index) => index ? item : { ...item, turn_reviews: [] }) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /TURN_REVIEW_COUNT/);
