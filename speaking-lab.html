@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-2">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-3">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -49,8 +49,14 @@
         <div class="speaking-sidebar-scrim" id="speaking-sidebar-scrim" aria-hidden="true" hidden></div>
         <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
             <h1 class="sr-only" id="speaking-lab-title">Speaking Lab</h1>
-            <section class="speaking-set-library speaking-glass-panel" id="speaking-set-library" aria-labelledby="speaking-set-library-title">
-                <div class="speaking-set-library-heading"><div><p class="eyebrow accent">DSE PAPER 4</p><h2 id="speaking-set-library-title">Choose a Set</h2><p>Start with the article, then practise Part A Group Discussion or one Part B Individual Response question.</p></div><button class="outline-button" id="speaking-set-search-toggle" type="button" hidden>Filter</button></div>
+            <section class="speaking-set-library" id="speaking-set-library" aria-labelledby="speaking-set-library-title">
+                <header class="speaking-set-library-heading">
+                    <span class="speaking-set-library-symbol" aria-hidden="true">
+                        <svg viewBox="0 0 32 32"><path d="M6.5 18.5v-5m4 8v-11m4 15v-19m4 15v-11m4 8v-5"/></svg>
+                    </span>
+                    <div class="speaking-set-library-copy"><p class="eyebrow accent">DSE PAPER 4</p><h2 id="speaking-set-library-title">Choose a Set</h2><p>Read the context, then practise a Group Discussion or one Individual Response question.</p></div>
+                    <button class="outline-button" id="speaking-set-search-toggle" type="button" hidden>Filter</button>
+                </header>
                 <label class="speaking-set-search" id="speaking-set-search-wrap" hidden><span class="sr-only">Search Sets</span><input id="speaking-set-search" type="search" placeholder="Search Sets" autocomplete="off"></label>
                 <div class="speaking-set-list" id="speaking-set-list" aria-live="polite"><p class="speaking-set-loading">Loading Sets…</p></div>
             </section>
@@ -119,6 +125,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260830-2"></script>
+    <script src="assets/js/speaking-lab.js?v=20260830-3"></script>
 </body>
 </html>
