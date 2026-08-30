@@ -19,6 +19,9 @@ The first student card keeps the time-aware greeting and motivational sentence
 at the top, followed by one quiet divider and a GitHub-style 53-week
 `ACHIEVEMENTS` grid. The removed weekly progress bar must not reappear. Monday
 starts each column; phones horizontally scroll to the newest weeks by default.
+At either horizontal edge, a partial month occupying fewer than two visible
+week columns omits its month abbreviation so adjacent month labels never
+overlap; weekday labels and contribution cells remain aligned.
 Every past/today square is a real keyboard-accessible button, including empty
 days. Today suppresses its green contribution fill and shows the Shanghai
 day-of-month directly inside the square with a restrained plum border and

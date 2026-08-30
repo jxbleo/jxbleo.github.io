@@ -520,19 +520,23 @@
     }
 
     function achievementMonthLabels(startDate) {
-        var labels = [];
-        var previousMonth = -1;
-        for (var column = 0; column < 53; column += 1) {
-            var date = new Date(startDate.getTime() + (column * 7 * 86400000));
-            var month = date.getUTCMonth();
-            var label = '';
-            if (month !== previousMonth) {
-                label = new Intl.DateTimeFormat('en', { timeZone: 'UTC', month: 'short' }).format(date);
-                previousMonth = month;
+        var labels = new Array(53).fill('');
+        var runStart = 0;
+        var runMonth = startDate.getUTCMonth();
+        var monthFormatter = new Intl.DateTimeFormat('en', { timeZone: 'UTC', month: 'short' });
+        for (var column = 1; column <= 53; column += 1) {
+            var date = column < 53 ? new Date(startDate.getTime() + (column * 7 * 86400000)) : null;
+            var month = date ? date.getUTCMonth() : -1;
+            if (column === 53 || month !== runMonth) {
+                if (column - runStart >= 2) {
+                    var runDate = new Date(startDate.getTime() + (runStart * 7 * 86400000));
+                    labels[runStart] = monthFormatter.format(runDate);
+                }
+                runStart = column;
+                runMonth = month;
             }
-            labels.push('<span>' + escapeHtml(label) + '</span>');
         }
-        return labels.join('');
+        return labels.map(function(label) { return '<span>' + escapeHtml(label) + '</span>'; }).join('');
     }
 
     function renderAchievementCalendar(calendar) {
