@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-30 — Faster task-entry dismissal
+
+- Reduced the shared task-entry confirmation Close transition to 75% of its
+  previous timing across Library, Student assignment lists, and Teacher task
+  previews, while preserving the existing path, focus restoration, and scroll
+  restoration.
+- Kept unrelated modal exits unchanged and applied the same 75% reduction to
+  the opacity-only Reduced Motion fallback.
+
 ## 2026-08-30 — Continuous Speaker transcript cards
 
 - Grouped adjacent ASR segments from the same Speaker into one visible speech

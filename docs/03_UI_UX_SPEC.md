@@ -219,7 +219,9 @@ Navigation:
   and keeps the background locked until that exit completes, then runs the
   existing close, focus-restoration, and scroll-restoration behavior. Exit
   begins from the dialog's live presentation state so closing during entrance
-  does not jump. Reduced-motion mode uses a 140ms opacity-only exit
+  does not jump. Task-entry confirmations use 75% of that close timing across
+  Library, assignment lists, and Teacher task previews: 195ms normally and
+  105ms in Reduced Motion. Other modal exits retain 260ms / 140ms
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
 - the Dashboard hero contains only the personalized greeting and one

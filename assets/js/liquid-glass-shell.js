@@ -73,7 +73,13 @@
 
     function playModalClose(root, surface, button) {
         var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var isPracticeEntry = root.matches(".practice-entry-overlay");
         var duration = reduceMotion ? 140 : 260;
+        var finishPadding = 20;
+        if (isPracticeEntry) {
+            duration = Math.round(duration * 0.75);
+            finishPadding = 15;
+        }
         var easing = reduceMotion ? "ease-out" : "cubic-bezier(.32, 0, .2, 1)";
         var animations = [];
 
@@ -132,7 +138,7 @@
         return {
             animations: animations,
             finished: new Promise(function (resolve) {
-                window.setTimeout(resolve, duration + 20);
+                window.setTimeout(resolve, duration + finishPadding);
             })
         };
     }
