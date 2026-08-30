@@ -1830,14 +1830,14 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   two endpoint nodes. Normal work has no process label; the connector continuously
   transmits a restrained energy sweep from left to right. The browser never
   invents percentages or remaining-time estimates.
-- Every screen uses the persistent toolbar hamburger to reveal the Writing
-  sidebar. The toolbar follows the Speaking Lab frame: a centered translucent
+- Every screen uses the persistent toolbar's far-right hamburger to reveal the
+  Writing sidebar and its far-left arrow for hierarchical Back. The toolbar follows the Speaking Lab frame: a centered translucent
   1080px outer glass card over a centered 980px content column, so the toolbar
   visibly extends beyond the cards beneath it. At phone widths the shell keeps
   14px viewport gutters and the rounded glass perimeter instead of becoming a
   full-bleed square strip; card content remains inset another 10px per side.
   The waiting card itself contains no duplicate navigation or Upload
-  Again row. Home inside the sidebar requires confirmation and leaves the
+  Again row. Back at base Writing Home requires confirmation and leaves the
   workspace without cancelling a durable Job. During the brief unconfirmed upload handoff the toolbar action is
   disabled and the card never promises that the task will continue after the
   page closes. The runner is nevertheless visible immediately; there is no
@@ -1875,16 +1875,19 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - Student Dashboard 在 Library 之前提供独立的 `AI Tutor` 入口。作文作品不是 Assignment、
   Attempt、Exercise Progress 或 STAR；老师分享 Library 题目只会预填 Writing Prompt。
 - AI Tutor 页面只保留一个顶部工具栏；工具栏不再显示品牌图标、`AI Tutor`、`Writing Studio`、
-  学生身份、Home、New、History 或 Back 文本。最左侧始终是三横线按钮；中间在未选作文时显示
+  学生身份、Home、New、History 或 Back 文本。最左侧始终是圆形返回箭头；中间在未选作文时显示
   绿色 `Start new Writing`，选中作文后显示其标题；不再显示逐句订正百分比或主页字数额度。
-  标题尽量占满三横线与右侧操作之间的宽度；已有有效标题时，铅笔固定在工具栏最右侧，点击后
+  标题尽量占满返回箭头与右侧操作之间的宽度；已有有效标题时，铅笔位于右侧操作组，三横线
+  侧边栏按钮固定在工具栏最右端。点击铅笔后
   打开独立的标题编辑弹窗，而不是把小输入框挤进工具栏。OCR 确认阶段仍可在右侧临时显示
   `Show image` / `Hide image` 上下文操作。
+- 返回箭头先关闭已展开的侧栏；在具体作文中通过既有确认返回 Writing Home；新作文表单已展开时
+  无损收起表单；只有位于 Writing Home 基层时才显示离开确认并返回 Dashboard。
 - 三横线控制同一个简洁 Writing sidebar。手机初始收起并以遮罩抽屉显示；iPad/桌面等宽度达到
-  `820px` 时初始自动展开为停靠侧栏，但再次点击仍可隐藏。侧栏只保留红色 Home、加号和作文标题；
+  `820px` 时初始自动展开为停靠侧栏，但再次点击仍可隐藏。侧栏只保留加号和作文标题，不再重复 Home；
   不显示统计、写作画像、筛选器、分数、日期、模式或状态徽章。未完成作文按最近活动优先组成
   `Continue`，已完成作文随后按最近完成优先组成 `Completed`。点击作文直接进入其当前服务端阶段，
-  不再增加进入确认弹窗；手机选中后收起侧栏，宽屏保持停靠。Home 仍使用自定义离开确认。
+  不再增加进入确认弹窗；手机选中后收起侧栏，宽屏保持停靠。
 - 点击侧栏加号会让主区域回到原有 Polishing/Brainstorming 新作文界面，不预选模式，也不创建云端
   草稿；仅在学生明确 Submit 或 Scan 后创建 Composition。新作文主页不再重复展示 Continue/Review
   作文卡片，所有历史作文统一由侧栏承担。
@@ -1934,7 +1937,8 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   Prompt 与正文保留各自输入提示，并用与正文一致的灰色衬线占位字体。标化模式仍严格按
   Rubric、Writing Prompt、完整实线分隔线、Your Writing 的控件顺序排列；Rubric 与 Prompt 位于
   分隔线上方，学生正文位于下方。Writing Prompt 初始只显示一行，Your Writing 初始显示三行，两者都随输入
-  自动增高而不出现内部纵向滚动。正文占位文案仍为 `Type or paste your writing here…`。输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
+  自动增高而不出现内部纵向滚动。两处占位文案分别精简为 `Writing Prompt` 与 `Your Writing`。
+  输入界面不显示独立的模式切换或 `Type` / `Scan` 双按钮。
   选择模式、输入 Prompt/Writing 都只是当前标签页的临时表单状态，不调用 `createComposition`、不生成 URL
   定位符，也不进入 History。未提交内容只存在当前页面内存；刷新、关闭、离开后再次进入都必须消失，且不得
   通过 `sessionStorage`、`localStorage` 或其他浏览器持久层恢复。刷新仍停留 Writing Home，不得进入已废弃的

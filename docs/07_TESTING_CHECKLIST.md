@@ -1890,18 +1890,19 @@ High priority improvement:
   On phone, confirm 14px outer gutters, rounded corners, and an additional 10px card
   inset; the toolbar must never become a full-bleed flat strip. Verify the bright
   translucent edge, layered glass, and depth remain legible over content, while
-  Reduced Transparency produces a solid surface. The same three-line sidebar button stays at far left everywhere,
+  Reduced Transparency produces a solid surface. The same circular Back arrow stays at far left everywhere,
   current title uses all available middle space, and no revision percentage appears.
-  For an existing title, confirm the pencil is fixed at the far-right edge.
+  For an existing title, confirm the pencil sits before the three-line sidebar button,
+  which remains fixed at the far-right edge.
   With no Composition selected, confirm green `Start new Writing` and no word quota.
-  Confirm Home and the icon-only plus action appear inside the sidebar and that
+  Confirm the icon-only plus action appears inside the sidebar, Home is absent, and
   there is no student chip, brand mark,
   `AI Tutor / Writing Studio` label, secondary toolbar, or duplicate portfolio panel.
 - Confirm the sidebar starts closed below `820px` and auto-opens as a docked 280px
   column at `820px` and above. Re-clicking the trigger must hide it at every width.
   On phone, also close it by scrim and `Escape`; confirm background scroll lock.
   On wide screens, confirm the main area shifts without a scrim or scroll lock.
-- Confirm the sidebar contains only Home, plus, `Continue`, `Completed`, and writing
+- Confirm the sidebar contains only plus, `Continue`, `Completed`, and writing
   titles. Unfinished work must precede completed work; newest completed work comes
   first. There must be no counts, profile, filters, dates, scores, modes, or badges.
   Selecting a row must directly open its current stage, close the phone overlay,
@@ -1909,11 +1910,14 @@ High priority improvement:
 - Open a titled Composition, use the toolbar pencil, then cancel and save separate
   edits. Confirm the centered title and sidebar row update together, activity order
   does not change, long-title motion still works, and placeholder titles expose no pencil.
-- Click Home inside the Writing sidebar and confirm the custom dialog appears before navigation.
+- Click Back with the sidebar open and confirm it closes the sidebar first. From a
+  Composition, confirm Back asks before returning to Writing Home; from an expanded
+  composer, confirm it collapses without clearing input; at base Writing Home,
+  confirm the custom dialog appears before Dashboard navigation.
   Cancel by button and `Escape`, then confirm leaving during queued OCR and queued
   review returns to Dashboard without cancelling either cloud job; reopening the
   Composition resumes the same job.
-- Confirm sidebar Home is red and the alert matches the Dashboard/BBC compact
+- Confirm the leave alert matches the Dashboard/BBC compact
   glass style: `Cancel` is the green left split action, `Leave` is the red right
   split action, and Cancel receives initial keyboard focus.
 - Verify direct text and 2–8 page photo flows; OCR must preserve errors and
@@ -1945,7 +1949,7 @@ High priority improvement:
   mode must retain the control order Rubric, Writing Prompt, full solid divider,
   Your Writing. Prompt begins at one row and Writing at three; type and delete multiline
   content and confirm both grow and shrink without an internal vertical scrollbar.
-  Confirm `Type or paste your writing here…` and the first typed line align near
+  Confirm the exact placeholders read `Writing Prompt` and `Your Writing`, and the first typed line aligns near
   the textarea's top edge on phone, iPad, and desktop.
   Confirm icon-only camera buttons sit at the bottom-right of Prompt and Your Writing,
   with distinct accessible names. Tap each on a real iPhone/iPad and verify the

@@ -102,6 +102,7 @@
     var writingProfileSummary = document.getElementById('writing-profile-summary');
     var portfolioSidebar = document.getElementById('portfolio-sidebar');
     var sidebarScrim = document.getElementById('sidebar-scrim');
+    var writingBackButton = document.getElementById('writing-back-button');
     var portfolioToggle = document.getElementById('portfolio-toggle');
     var revisionProgress = document.getElementById('revision-progress');
     var currentWritingTitleWindow = document.getElementById('current-writing-title-window');
@@ -161,14 +162,15 @@
         });
     }
 
-    function isWritingDetailScreen() {
-        return Boolean(state.current && state.screen !== 'welcome');
-    }
-
     function updateToolbarNavigation() {
-        if (!portfolioToggle) return;
-        portfolioToggle.setAttribute('aria-label', state.sidebarOpen ? 'Close writing sidebar' : 'Open writing sidebar');
-        portfolioToggle.setAttribute('aria-expanded', String(state.sidebarOpen));
+        if (writingBackButton) {
+            var backLabel = state.sidebarOpen ? 'Close writing sidebar' : state.current ? 'Back to Writing home' : state.homeComposerOpen ? 'Close new writing' : 'Back to Dashboard';
+            writingBackButton.setAttribute('aria-label', backLabel);
+        }
+        if (portfolioToggle) {
+            portfolioToggle.setAttribute('aria-label', state.sidebarOpen ? 'Close writing sidebar' : 'Open writing sidebar');
+            portfolioToggle.setAttribute('aria-expanded', String(state.sidebarOpen));
+        }
     }
 
     function isSidebarDockedViewport() {
@@ -1938,7 +1940,7 @@
             ? '<div class="field source-control-only"><select id="writing-rubric" aria-label="Rubric"><option value="">Choose a Rubric</option>' + rubricOptions(state.rubricId) + '</select></div>'
             : '';
         var prompt = standardized
-            ? '<div class="field inline-writing-field prompt-writing-field">' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea class="source-auto-grow source-prompt-input" id="writing-prompt" rows="1" maxlength="6000" aria-label="Writing Prompt" placeholder="Type or paste the full writing prompt…">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
+            ? '<div class="field inline-writing-field prompt-writing-field">' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea class="source-auto-grow source-prompt-input" id="writing-prompt" rows="1" maxlength="6000" aria-label="Writing Prompt" placeholder="Writing Prompt">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
             : '';
         return standardized ? '<section class="section-block source-fields">' + rubric + prompt + '</section>' : '';
     }
@@ -1959,7 +1961,7 @@
     }
 
     function textSourceHtml() {
-        return '<div class="field inline-writing-field">' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript source-auto-grow" id="writing-text" rows="3" maxlength="30000" aria-label="Your Writing" placeholder="Type or paste your writing here…">' + escapeHtml(state.confirmedText) + '</textarea></div>';
+        return '<div class="field inline-writing-field">' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript source-auto-grow" id="writing-text" rows="3" maxlength="30000" aria-label="Your Writing" placeholder="Your Writing">' + escapeHtml(state.confirmedText) + '</textarea></div>';
     }
 
     function boundedPhotoIndex(value, count) {
@@ -4203,8 +4205,7 @@
         }
         var button = event.target.closest('button,[data-open-composition],[data-cancel-leave],[data-cancel-photo-remove],[data-review-scan-submit],[data-close-sentence-feedback],[data-manuscript-sentence]');
         if (!button) return;
-        if (button.matches('#history-home')) openLeaveConfirmation();
-        else if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
+        if (button.matches('[data-cancel-leave]')) closeLeaveConfirmation();
         else if (button.matches('[data-cancel-photo-remove]')) closePhotoRemoveConfirmation();
         else if (button.matches('[data-confirm-photo-remove]')) confirmPhotoRemoval();
         else if (button.matches('[data-close-incomplete-rewrite]')) closeIncompleteRewriteAlert();
@@ -4386,6 +4387,22 @@
     document.getElementById('history-new-writing').addEventListener('click', function() {
         if (!isSidebarDockedViewport()) closeSidebar();
         returnToTutorHome();
+    });
+    writingBackButton.addEventListener('click', function() {
+        if (state.sidebarOpen) {
+            closeSidebar();
+            return;
+        }
+        if (state.current) {
+            openLeaveConfirmation('writing-home');
+            return;
+        }
+        if (state.homeComposerOpen) {
+            state.homeComposerOpen = false;
+            renderWelcome();
+            return;
+        }
+        openLeaveConfirmation();
     });
     portfolioToggle.addEventListener('click', function() {
         state.sidebarOpen ? closeSidebar() : openSidebar();

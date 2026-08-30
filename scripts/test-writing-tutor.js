@@ -120,17 +120,20 @@ const promptPath = "cloudfunctions/writingTutor/prompts.js";
 const rubricPath = "cloudfunctions/writingTutor/rubrics.js";
 const schemaPath = "cloudfunctions/writingTutor/schemas.js";
 
-check("AI Tutor header keeps only the sidebar toggle, wide current title, and far-right pencil", () => {
+check("AI Tutor header keeps Back, a wide current title, and trailing pencil/sidebar actions", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
   assert(header, "missing AI Tutor top toolbar");
-  requireEvery(header[1], ["portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "ai-tutor-header-actions", "current-writing-title-edit", "revision-progress"], "AI Tutor toolbar");
+  requireEvery(header[1], ["writing-back-button", "m14.5 5-7 7 7 7", "portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "ai-tutor-header-actions", "current-writing-title-edit", "revision-progress"], "AI Tutor toolbar");
+  assert(header[1].indexOf("writing-back-button") < header[1].indexOf("current-writing-title-window")
+      && header[1].indexOf("current-writing-title-edit") < header[1].indexOf("portfolio-toggle"),
+    "Back must lead the toolbar and the sidebar control must remain the final trailing action");
   assert(!/current-writing-title-form/.test(header[1]), "the title form must live in a separate dialog rather than the toolbar");
   assert(!/>Home<|>New<|>History<|>Back<|header-back|header-new-writing|student-chip/.test(header[1]),
     "Home, New, History, Back, and student identity must not remain as toolbar text");
   assert(/\.ai-tutor-header\s*\{[^}]*grid-template-columns:\s*42px\s+minmax\(0,1fr\)\s+auto/is.test(styles),
-    "the sparse toolbar must give the title all space between the fixed menu and right actions");
+    "the sparse toolbar must give the title all space between fixed Back and the right actions");
 });
 
 check("Writing toolbar mirrors the wider Speaking Lab glass frame", () => {
@@ -151,13 +154,15 @@ check("Writing toolbar mirrors the wider Speaking Lab glass frame", () => {
     "phone Writing toolbar must not flatten into a full-bleed strip");
 });
 
-check("the writing sidebar owns the Home and plus actions", () => {
+check("the writing sidebar owns the plus action without duplicating Home", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const sidebar = /<aside\b[^>]*id=["']portfolio-sidebar["'][^>]*>([\s\S]*?)<\/aside>/.exec(page);
   assert(sidebar, "missing History drawer");
-  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-home"', ">Home</button>", 'id="history-new-writing"', "M12 5v14M5 12h14"],
+  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-new-writing"', "M12 5v14M5 12h14"],
     "writing sidebar navigation actions");
+  assert(!/history-home|>Home<|sidebar-home-action/.test(sidebar[1]),
+    "the sidebar must not duplicate the toolbar Back hierarchy with Home");
   assert(/history-new-writing[\s\S]{0,500}isSidebarDockedViewport\(\)[\s\S]{0,180}returnToTutorHome\(\)/.test(client),
     "the plus action must reveal the existing new-writing surface and close only the narrow overlay");
 });
@@ -223,7 +228,7 @@ check("AI Tutor keeps one sparse top toolbar", () => {
   const client = read(clientPath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
   assert(header, "missing AI Tutor top toolbar");
-  requireEvery(header[1], ["portfolio-toggle", "current-writing-title-window", "revision-progress"], "AI Tutor top toolbar");
+  requireEvery(header[1], ["writing-back-button", "portfolio-toggle", "current-writing-title-window", "revision-progress"], "AI Tutor top toolbar");
   assert(!/brand-lockup|AI Tutor Writing Studio/i.test(`${page}\n${client}`),
     "the removed AI Tutor Writing Studio brand lockup must not remain in the writing workspace");
   assert(!/mobile-toolbar|mobile-context/.test(`${page}\n${client}`),
@@ -281,8 +286,8 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, ["current-writing-title-window", "current-writing-title-track"], "current writing title markup");
-  assert(/portfolio-toggle[\s\S]*current-writing-title-window[\s\S]*ai-tutor-header-actions[\s\S]*current-writing-title-edit/.test(page),
-    "the current title must remain between the menu and the far-right pencil");
+  assert(/writing-back-button[\s\S]*current-writing-title-window[\s\S]*ai-tutor-header-actions[\s\S]*current-writing-title-edit[\s\S]*portfolio-toggle/.test(page),
+    "the current title must remain between Back and the trailing pencil/menu actions");
   const titleSource = functionSource(client, "updateCurrentWritingTitle", "sentencePalette");
   requireEvery(titleSource, ["editableCompositionTitle(state.current)", "document.title", "aria-label"],
     "current writing title projection");
@@ -343,29 +348,26 @@ check("portfolio is a responsive sidebar that auto-docks on wide screens and rem
     "Escape must hide an open portfolio drawer");
 });
 
-check("History Home uses a custom confirmation before Dashboard navigation", () => {
+check("toolbar Back follows the Writing hierarchy before Dashboard navigation", () => {
   const page = read(pagePath);
   const client = read(clientPath);
-  const homeTag = /<button\b[^>]*id=["']history-home["'][^>]*>/i.exec(page);
-  assert(homeTag, "History Home must be a button so it cannot navigate immediately");
-  assert(!/<a\b[^>]*id=["']history-home["']/i.test(page),
-    "History Home must not be a direct Dashboard anchor");
+  assert(/<button\b[^>]*id=["']writing-back-button["'][^>]*>/i.test(page),
+    "Writing needs one persistent Back button");
+  assert(!/history-home/.test(`${page}\n${client}`), "the retired History Home control must be absent");
   requireEvery(page, ["leave-confirmation", "role=\"alertdialog\"", "aria-modal=\"true\"", "data-cancel-leave", "data-confirm-leave"],
     "custom leave-confirmation dialog");
-  assert(/matches\s*\(\s*["']#history-home["']\s*\)[\s\S]{0,120}(?:openLeave|showLeave|confirm)/i.test(client),
-    "clicking History Home must open the custom confirmation dialog");
+  assert(/writingBackButton\.addEventListener[\s\S]{0,900}state\.sidebarOpen[\s\S]{0,160}closeSidebar\(\)[\s\S]{0,320}state\.current[\s\S]{0,160}openLeaveConfirmation\(['"]writing-home['"]\)[\s\S]{0,360}state\.homeComposerOpen[\s\S]{0,220}renderWelcome\(\)[\s\S]{0,220}openLeaveConfirmation\(\)/.test(client),
+    "Back must close the sidebar, return a Composition home, collapse the composer, then leave Writing in that order");
   assert(/data-confirm-leave[\s\S]{0,180}(?:confirmLeave|dashboard\.html|window\.location)/i.test(client)
       && /function\s+confirmLeave\s*\([^)]*\)[\s\S]{0,400}(?:dashboard\.html|window\.location)/i.test(client),
     "only the dialog confirmation action may navigate back to Dashboard");
-  assert(!/history-home[^\n]{0,400}(?:href\s*=\s*["'][^"']*dashboard|location\.(?:href|assign|replace)\s*\(?\s*["'][^"']*dashboard)/i.test(`${page}\n${client}`),
-    "History Home must not navigate directly before confirmation");
 });
 
-check("History Home and Leave dialog use the approved red and Apple-style treatment", () => {
+check("Back and Leave dialog use the approved Apple-style treatment", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
-  assert(/\.sidebar-home-action\s*\{[^}]*color\s*:\s*#(?:c9403a|aa4141)/i.test(styles),
-    "Home inside History must retain the red leave-navigation treatment");
+  assert(/\.writing-back-button\s*,\s*\.portfolio-toggle\s*\{[^}]*border-radius:\s*999px/i.test(styles),
+    "Back and History must use matching circular toolbar controls");
   requireEvery(page, [">Cancel<", ">Leave<"], "Leave dialog actions");
   assert(/\.confirmation-dialog\s*\{[^}]*width\s*:\s*min\(320px[^}]*border-radius\s*:\s*22px/is.test(styles),
     "Leave dialog must use the compact 320px Apple-style glass box");
@@ -478,10 +480,10 @@ check("the first writing screen keeps only the compact source controls", () => {
   ], "compact Writing source screen");
   assert(!renderSource.includes("Title (Optional)") && !renderSource.includes('id="writing-title"'),
     "the initial Writing form must not ask students for a Title");
-  requireEvery(textSource, ['aria-label="Your Writing"', 'rows="3"', "writing-text", "Type or paste your writing here…", "cameraOnlyButton('writing'"], "language text-entry field");
+  requireEvery(textSource, ['aria-label="Your Writing"', 'rows="3"', "writing-text", 'placeholder="Your Writing"', "cameraOnlyButton('writing'"], "language text-entry field");
   const sourceFields = functionSource(client, "sourceFieldsHtml", "rubricOptions");
   const cameraButton = functionSource(client, "cameraOnlyButton", "sourceFieldsHtml");
-  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'rows="1"', "source-fixed-divider"], "Brainstorming source fields");
+  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'placeholder="Writing Prompt"', 'rows="1"', "source-fixed-divider"], "Brainstorming source fields");
   assert(sourceFields.indexOf('aria-label="Rubric"') < sourceFields.indexOf('aria-label="Writing Prompt"')
       && sourceFields.indexOf('aria-label="Writing Prompt"') < sourceFields.indexOf("source-fixed-divider"),
     "Brainstorming source order must be Rubric, Writing Prompt, then divider before Writing");
