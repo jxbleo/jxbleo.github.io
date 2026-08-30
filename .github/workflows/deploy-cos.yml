@@ -39,6 +39,7 @@ jobs:
           test ! -e dist/scripts
           test ! -e dist/docs
           test ! -e dist/AGENTS.md
+          test ! -e dist/content/speaking
 
       - name: Upload public artifact to COS
         env:

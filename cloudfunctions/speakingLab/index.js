@@ -10,7 +10,7 @@ const clipProvider = require("../_shared/tencent-ci-audio");
 const { createSpeechProvider } = require("./speech-provider");
 const { createModelProvider } = require("./model-provider");
 const { SPEAKING_REPORT_SCHEMA_VERSION } = require("./schemas");
-const { PROMPT_VERSION, dseAnalysisPrompt, dseAnalysisUserPrompt } = require("./prompts");
+const { PROMPT_VERSION, dseAnalysisPrompt, dseAnalysisUserPrompt, INDIVIDUAL_RESPONSE_PROMPT_VERSION, individualResponseAnalysisPrompt, individualResponseUserPrompt } = require("./prompts");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -24,6 +24,8 @@ const SHARES = "speaking_share_links";
 const USAGE = "speaking_model_usage_events";
 const VOICEPRINTS = "speaking_voiceprints";
 const VOICEPRINT_EVENTS = "speaking_voiceprint_events";
+const SPEAKING_SETS = "speaking_sets";
+const INDIVIDUAL_RESPONSES = "speaking_individual_responses";
 const MAX_TITLE = 120;
 const MAX_PROMPT = 10000;
 const MAX_FILE_BYTES = 120 * 1024 * 1024;
@@ -31,6 +33,7 @@ const MAX_REFERENCE_BYTES = 12 * 1024 * 1024;
 const VOICE_PASSAGE_VERSION = "dse-voice-reference-v1";
 const VOICEPRINT_PASSAGE_VERSION = "dse-reusable-voiceprint-v1";
 const VOICEPRINT_PASSAGE = "Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.";
+const INDIVIDUAL_RESPONSE_MAX_FILE_BYTES = 50 * 1024 * 1024;
 
 function now() { return new Date(); }
 function shanghaiDate(value = now()) {
@@ -45,6 +48,9 @@ function secretMatches(left, right) {
   const a = Buffer.from(String(left || ""));
   const b = Buffer.from(String(right || ""));
   return a.length > 0 && a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+function hasExactlyOneSessionLocator(row) {
+  return Boolean(row && Boolean(row.discussion_id) !== Boolean(row.response_session_id));
 }
 function replaceFields(values, fields) {
   const command = db.command;
@@ -112,6 +118,8 @@ async function authorizedDiscussion(actor, discussionId, write = false) {
 function participantView(row, actor, discussion, index = 0) {
   const item = lab.normalizeParticipant(row);
   const self = Boolean(item.student_uid && lab.actorUid(actor) === item.student_uid);
+  const privateAutomaticProposal = row.invitation_source === "automatic_voice_match" && !lab.identityIsConfirmed(row);
+  const maySeeRosterName = !privateAutomaticProposal || self || lab.isTeacher(actor);
   const matchedNumber = String(item.matched_speaker_key || "").replace(/^spk_0*/, "");
   const projection = lab.identityProjection(row, { fallbackLabel: matchedNumber ? `Speaker ${matchedNumber}` : `Speaker ${index + 1}` });
   return {
@@ -119,7 +127,7 @@ function participantView(row, actor, discussion, index = 0) {
     kind: item.kind,
     is_self: Boolean(self),
     is_creator: Boolean(item.student_uid && String(item.student_uid) === String(discussion && discussion.creator_uid || "")),
-    roster_display_name: item.kind === "guest" ? item.guest_name : item.display_name,
+    roster_display_name: item.kind === "guest" ? item.guest_name : maySeeRosterName ? item.display_name : projection.label,
     display_name: item.kind === "guest" ? item.guest_name : projection.label,
     guest_name_not_verified: item.kind === "guest",
     invitation_status: item.invitation_status,
@@ -127,6 +135,8 @@ function participantView(row, actor, discussion, index = 0) {
     matched_speaker_key: item.matched_speaker_key,
     voice_match_source: row.voice_match_source || null,
     voice_match_score: Number.isFinite(Number(row.voice_match_score)) ? Number(row.voice_match_score) : null,
+    requires_voice_confirmation: Boolean(self && item.identity_status === "ai_matched" && item.matched_speaker_key),
+    identity_notice_unread: Boolean(self && row.identity_notice_at && !row.identity_notice_seen_at),
     mapping_revision: item.mapping_revision,
     voice_reference_status: row.voice_reference_status || "missing",
     voice_reference_passage_version: row.voice_reference_passage_version || VOICE_PASSAGE_VERSION,
@@ -144,7 +154,11 @@ function discussionView(actor, discussion, participants) {
     title: lab.text(discussion.title, MAX_TITLE),
     discussion_date: discussion.discussion_date || null,
     prompt_text: lab.text(discussion.prompt_text, MAX_PROMPT),
-    prompt_source: "typed",
+    prompt_source: discussion.prompt_source || "typed",
+    session_type: discussion.session_type || "group_discussion",
+    set_id: discussion.set_id || null,
+    set_content_revision: Number.isInteger(discussion.set_content_revision) ? discussion.set_content_revision : null,
+    set_snapshot: discussion.set_snapshot || null,
     duration_seconds: lab.normalizeDurationSeconds(discussion.duration_seconds, discussion.participant_count || participants.length),
     participant_count: participants.length,
     candidate_count: Number.isInteger(discussion.candidate_count) ? discussion.candidate_count : null,
@@ -162,8 +176,292 @@ function discussionView(actor, discussion, participants) {
     created_at: discussion.created_at || null,
     updated_at: discussion.updated_at || null,
     can_edit_roster: lab.canEditDiscussion(actor, discussion, participants),
+    can_edit_title: lab.canEditDiscussion(actor, discussion, participants),
     participants: participants.map((row, index) => participantView(row, actor, discussion, index)),
   };
+}
+
+function speakingSetView(set, options = {}) {
+  const projection = lab.publicSpeakingSetProjection(set);
+  if (options.teacher) {
+    projection.created_at = set.created_at || null;
+    projection.updated_at = set.updated_at || null;
+    projection.content_revision = Number(set.content_revision || projection.content_revision || 1);
+    const normalized = lab.normalizeSpeakingSetInput(set);
+    projection.next_point_sequence = normalized.next_point_sequence;
+    projection.next_question_sequence = normalized.next_question_sequence;
+  }
+  return projection;
+}
+
+async function getSpeakingSetById(setId) {
+  const idValue = lab.validateSpeakingSetId(setId);
+  const set = await getOne(SPEAKING_SETS, { set_id: idValue });
+  if (!set) throw new Error("SPEAKING_SET_NOT_FOUND");
+  return set;
+}
+
+async function listSpeakingSets(actor) {
+  const teacher = lab.isTeacher(actor);
+  const rows = await getMany(SPEAKING_SETS, teacher ? {} : { visible_to_students: true }, 500);
+  const sets = rows.filter((row) => teacher || row.visible_to_students !== false).map((row) => speakingSetView(row, { teacher }));
+  sets.sort((left, right) => Number(right.exam_year) - Number(left.exam_year) || String(right.paper_version || "").localeCompare(String(left.paper_version || ""), undefined, { numeric: true }) || left.title.localeCompare(right.title));
+  return { success: true, sets };
+}
+
+async function getSpeakingSet(actor, event) {
+  const set = await getSpeakingSetById(event.set_id);
+  if (lab.isTeacher(actor)) return { success: true, set: speakingSetView(set, { teacher: true }) };
+  if (set.visible_to_students !== true) {
+    if (!await studentOwnsSpeakingSetHistory(actor, set.set_id)) throw new Error("SPEAKING_SET_NOT_VISIBLE");
+  }
+  return { success: true, set: speakingSetView(set) };
+}
+
+async function teacherListSpeakingSets(actor) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  return listSpeakingSets(actor);
+}
+
+async function teacherGetSpeakingSet(actor, event) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const set = await getSpeakingSetById(event.set_id);
+  return { success: true, set: speakingSetView(set, { teacher: true }) };
+}
+
+async function studentOwnsSpeakingSetHistory(actor, setId) {
+  const discussions = await getMany(DISCUSSIONS, { set_id: setId }, 500);
+  for (const discussion of discussions.filter((row) => !row.deleted_at)) {
+    if (String(discussion.creator_uid || "") === String(actor.auth_uid || "")) return true;
+    const participant = await getOne(PARTICIPANTS, { discussion_id: discussion.discussion_id, student_uid: actor.auth_uid });
+    if (participant && !participant.removed_at) return true;
+  }
+  const response = await getOne(INDIVIDUAL_RESPONSES, { set_id: setId, student_uid: actor.auth_uid, deleted_at: null });
+  return Boolean(response);
+}
+
+async function teacherCreateSpeakingSet(actor, event) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const normalized = lab.normalizeSpeakingSetInput(event.set || event, { includeAudit: false });
+  const existing = await getOne(SPEAKING_SETS, { set_id: normalized.set_id });
+  if (existing) throw new Error("SPEAKING_SET_EXISTS");
+  const created = now();
+  const row = { ...normalized, content_revision: 1, created_at: created, created_by_teacher_uid: actor.auth_uid, updated_at: created, updated_by_teacher_uid: actor.auth_uid };
+  await db.collection(SPEAKING_SETS).doc(row.set_id).create(row);
+  return { success: true, set: speakingSetView(row, { teacher: true }) };
+}
+
+async function teacherUpdateSpeakingSet(actor, event) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const setId = lab.validateSpeakingSetId(event.set_id || event.set && event.set.set_id);
+  const current = await getSpeakingSetById(setId);
+  const expected = Number(event.expected_content_revision);
+  if (!Number.isInteger(expected) || expected !== Number(current.content_revision || 1)) throw new Error("SPEAKING_SET_STALE");
+  const normalized = lab.normalizeSpeakingSetInput({ ...(event.set || event), set_id: setId }, { includeAudit: false });
+  const currentNormalized = lab.normalizeSpeakingSetInput(current);
+  const currentPointIds = new Set(currentNormalized.part_a.discussion_points.map((row) => row.point_id));
+  const currentQuestionIds = new Set(currentNormalized.part_b.questions.map((row) => row.question_id));
+  const addedPointSequences = normalized.part_a.discussion_points.filter((row) => !currentPointIds.has(row.point_id)).map((row) => Number(row.point_id.slice(3)));
+  const addedQuestionSequences = normalized.part_b.questions.filter((row) => !currentQuestionIds.has(row.question_id)).map((row) => Number(row.question_id.slice(3)));
+  if (addedPointSequences.some((sequence) => sequence < currentNormalized.next_point_sequence)
+    || addedQuestionSequences.some((sequence) => sequence < currentNormalized.next_question_sequence)) throw new Error("SPEAKING_SET_INVALID");
+  normalized.next_point_sequence = Math.max(currentNormalized.next_point_sequence, normalized.next_point_sequence);
+  normalized.next_question_sequence = Math.max(currentNormalized.next_question_sequence, normalized.next_question_sequence);
+  const updated = now();
+  const row = { ...normalized, content_revision: expected + 1, created_at: current.created_at || updated, created_by_teacher_uid: current.created_by_teacher_uid || actor.auth_uid, updated_at: updated, updated_by_teacher_uid: actor.auth_uid };
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(SPEAKING_SETS).where({ set_id: setId }).limit(1).get();
+    const latest = result.data && result.data[0];
+    if (!latest || Number(latest.content_revision || 1) !== expected) throw new Error("SPEAKING_SET_STALE");
+    await transaction.collection(SPEAKING_SETS).doc(latest._id || setId).update(row);
+  });
+  return { success: true, set: speakingSetView(row, { teacher: true }) };
+}
+
+async function teacherSetSpeakingSetVisibility(actor, event) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const set = await getSpeakingSetById(event.set_id);
+  const visible = event.visible_to_students === true;
+  if (set.visible_to_students === visible) return { success: true, set: speakingSetView(set, { teacher: true }), idempotent_replay: true };
+  const updated = now();
+  const row = { ...set, visible_to_students: visible, updated_at: updated, updated_by_teacher_uid: actor.auth_uid };
+  await db.collection(SPEAKING_SETS).doc(set._id || set.set_id).update({ visible_to_students: visible, updated_at: updated, updated_by_teacher_uid: actor.auth_uid });
+  return { success: true, set: speakingSetView(row, { teacher: true }) };
+}
+
+async function teacherDeleteSpeakingSet(actor, event) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const set = await getSpeakingSetById(event.set_id);
+  const discussionRefs = await getMany(DISCUSSIONS, { set_id: set.set_id }, 1);
+  const responseRefs = await getMany(INDIVIDUAL_RESPONSES, { set_id: set.set_id }, 1);
+  if (discussionRefs.length || responseRefs.length) throw new Error("SPEAKING_SET_IN_USE");
+  await db.collection(SPEAKING_SETS).doc(set._id || set.set_id).remove();
+  return { success: true, deleted: true, set_id: set.set_id };
+}
+
+function responseView(actor, row, options = {}) {
+  const teacher = lab.isTeacher(actor);
+  const owner = String(row.student_uid || "") === String(actor.auth_uid || "");
+  if (!teacher && !owner) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
+  return {
+    response_session_id: row.response_session_id,
+    session_type: "individual_response",
+    student_id_snapshot: teacher ? row.student_id_snapshot || null : null,
+    student_name_snapshot: teacher ? row.student_name_snapshot || null : null,
+    set_id: row.set_id,
+    set_content_revision: Number(row.set_content_revision || 1),
+    set_snapshot: row.set_snapshot || null,
+    question_snapshot: row.question_snapshot || null,
+    title: lab.text(row.title, MAX_TITLE),
+    response_date: row.response_date || null,
+    duration_limit_seconds: 65,
+    recording_status: row.recording_status || "not_uploaded",
+    formal_audio_asset_id: teacher ? row.formal_audio_asset_id || null : null,
+    analysis_status: row.analysis_status || "not_ready",
+    active_analysis_job_id: teacher ? row.active_analysis_job_id || null : null,
+    active_report_version: row.active_report_version || null,
+    duration_seconds: row.duration_seconds != null && Number.isFinite(Number(row.duration_seconds)) ? Math.max(0, Number(row.duration_seconds)) : null,
+    ...(options.includeReport ? { report: row.report || null } : {}),
+    created_at: row.created_at || null,
+    updated_at: row.updated_at || null,
+  };
+}
+
+async function listIndividualResponses(actor, event) {
+  const rows = await getMany(INDIVIDUAL_RESPONSES, lab.isTeacher(actor) ? {} : { student_uid: actor.auth_uid, deleted_at: null }, 500);
+  const offset = Math.max(0, Number(event.offset || 0));
+  const eligible = rows.filter((row) => !row.deleted_at && (lab.isTeacher(actor) || String(row.student_uid) === String(actor.auth_uid))).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  const responses = eligible.slice(offset, offset + Math.min(50, Math.max(1, Number(event.page_size || 20)))).map((row) => responseView(actor, row));
+  return { success: true, responses, next_offset: offset + responses.length < eligible.length ? offset + responses.length : null };
+}
+
+async function getIndividualResponse(actor, event) {
+  const row = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140) });
+  if (!row || row.deleted_at) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  return { success: true, response: responseView(actor, row, { includeReport: true }) };
+}
+
+async function createIndividualResponse(actor, event) {
+  if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
+  const set = await getSpeakingSetById(event.set_id);
+  if (set.visible_to_students !== true) throw new Error("SPEAKING_SET_NOT_VISIBLE");
+  const question = lab.resolvePartBQuestion(set, event.question_id);
+  const responseSnapshot = lab.buildIndividualResponseSnapshot(set, question);
+  const operationId = lab.stableOperationId(event.operation_id || "");
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const responseId = stable("speaking_response", actor.auth_uid, set.set_id, question.question_id, operationId);
+  const replay = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: responseId, student_uid: actor.auth_uid });
+  if (replay) return { success: true, idempotent_replay: true, response: responseView(actor, replay) };
+  const created = now();
+  const response = {
+    response_session_id: responseId,
+    session_type: "individual_response",
+    student_uid: actor.auth_uid,
+    student_id_snapshot: lab.text(actor.student_id, 120),
+    student_name_snapshot: lab.normalizeWhitespace(actor.english_name || actor.name || "", 160),
+    set_id: set.set_id,
+    set_content_revision: Number(set.content_revision || 1),
+    set_snapshot: {
+      display_label: responseSnapshot.display_label,
+      source_kind: responseSnapshot.source_kind,
+      exam_year: responseSnapshot.exam_year,
+      paper_version: responseSnapshot.paper_version,
+      title: responseSnapshot.title,
+      source_note: responseSnapshot.source_note,
+      context: responseSnapshot.context,
+    },
+    question_snapshot: question,
+    title: `${set.title} · IR Q${question.order} · ${shanghaiDate(created)}`,
+    response_date: lab.text(event.response_date, 30) || shanghaiDate(created),
+    duration_limit_seconds: 65,
+    recording_status: "not_uploaded",
+    formal_audio_asset_id: null,
+    analysis_status: "not_ready",
+    active_analysis_job_id: null,
+    active_report_version: null,
+    active_audio_revision: 0,
+    operation_id: operationId,
+    created_at: created,
+    updated_at: created,
+    deleted_at: null,
+  };
+  await db.collection(INDIVIDUAL_RESPONSES).doc(responseId).create(response);
+  return { success: true, response: responseView(actor, response) };
+}
+
+async function startIndividualResponseAudioUpload(actor, event) {
+  const response = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140), deleted_at: null });
+  if (!response) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  if (String(response.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
+  const operationId = lab.stableOperationId(event.operation_id || "");
+  if (!operationId) throw new Error("OPERATION_ID_REQUIRED");
+  const mime = lab.text(event.mime_type, 80).toLowerCase();
+  const size = Number(event.size_bytes);
+  const duration = Number(event.duration_seconds);
+  if (!/^audio\/(webm|mp4|mpeg|wav|x-m4a|aac)$/.test(mime) || !Number.isFinite(size) || size < 1 || size > INDIVIDUAL_RESPONSE_MAX_FILE_BYTES) throw new Error("AUDIO_FILE_INVALID");
+  if (Number.isFinite(duration) && duration > lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
+  const assetId = stable("speaking_individual_response_asset", response.student_uid, response.response_session_id, operationId);
+  const existing = await getOne(ASSETS, { asset_id: assetId, response_session_id: response.response_session_id });
+  if (existing && existing.status === "uploaded") return { success: true, idempotent_replay: true, asset_id: assetId, status: "uploaded" };
+  const cloudPath = `speaking-lab/individual-response/${response.response_session_id}/${assetId}.${mime.split("/")[1].replace("x-", "")}`;
+  const created = now();
+  const row = { asset_id: assetId, response_session_id: response.response_session_id, session_type: "individual_response", participant_id: null, asset_kind: "individual_response", upload_operation_id: operationId, status: "uploading", file_id: null, cloud_path: cloudPath, mime_type: mime, expected_size_bytes: Math.round(size), duration_ms: Number.isFinite(duration) ? Math.round(duration * 1000) : null, quality_status: "pending", quality_codes: [], created_at: created, updated_at: created, expires_at: new Date(created.getTime() + 30 * 60 * 1000), delete_after: null };
+  if (existing) await db.collection(ASSETS).doc(existing._id || existing.asset_id).update({ ...row, updated_at: created });
+  else await db.collection(ASSETS).doc(assetId).create(row);
+  return { success: true, asset_id: assetId, upload: uploadTargetView(cloudPath) };
+}
+
+async function finishIndividualResponseAudioUpload(actor, event) {
+  const response = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140), deleted_at: null });
+  if (!response) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  if (String(response.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
+  const asset = await getOne(ASSETS, { asset_id: lab.text(event.asset_id, 160), response_session_id: response.response_session_id, asset_kind: "individual_response" });
+  if (!asset) throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
+  if (asset.status === "uploaded") return { success: true, idempotent_replay: true, asset_id: asset.asset_id };
+  const fileId = asset.file_id ? verifiedUploadedFileId(asset.file_id, asset.cloud_path) : verifiedUploadedFileId(event.uploaded_file_id, asset.cloud_path);
+  const info = await app.getFileInfo({ fileList: [fileId] });
+  const file = info && info.fileList && info.fileList[0];
+  if (!file || Number(file.size || 0) < 1 || Number(file.size || 0) > INDIVIDUAL_RESPONSE_MAX_FILE_BYTES || Number(file.size || 0) !== Number(asset.expected_size_bytes || 0)) throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
+  const duration = Number(event.duration_seconds || asset.duration_ms && Number(asset.duration_ms) / 1000);
+  if (Number.isFinite(duration) && duration > lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
+  const uploadedAt = now();
+  await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ status: "uploaded", file_id: fileId, actual_size_bytes: Number(file.size), duration_ms: Number.isFinite(duration) ? Math.round(duration * 1000) : asset.duration_ms || null, uploaded_at: uploadedAt, updated_at: uploadedAt, expires_at: null });
+  await db.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ formal_audio_asset_id: asset.asset_id, duration_seconds: Number.isFinite(duration) && duration > 0 ? duration : null, recording_status: "uploaded", analysis_status: "not_ready", active_analysis_job_id: null, active_audio_revision: Number(response.active_audio_revision || 0) + 1, updated_at: uploadedAt });
+  return { success: true, asset_id: asset.asset_id, status: "uploaded" };
+}
+
+async function startIndividualResponseAnalysis(actor, event) {
+  const row = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140), deleted_at: null });
+  if (!row) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  if (String(row.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
+  if (!row.formal_audio_asset_id || row.recording_status !== "uploaded") throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
+  const operationId = lab.stableOperationId(event.operation_id || `analysis-${row.response_session_id}`);
+  const jobId = stable("speaking_individual_response_job", row.response_session_id, String(row.active_audio_revision || 0), operationId);
+  const existing = await getOne(JOBS, { job_id: jobId });
+  if (existing && ["queued", "processing", "succeeded"].includes(existing.status)) return { success: true, idempotent_replay: true, job: publicJob(existing) };
+  const created = now();
+  const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: "dse-individual-response-prompts-v1", schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-v1", created_at: created, updated_at: created, finished_at: null };
+  await db.runTransaction(async (transaction) => {
+    const currentResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: row.response_session_id }).limit(1).get();
+    const current = currentResult.data && currentResult.data[0];
+    if (!current || current.deleted_at || current.formal_audio_asset_id !== row.formal_audio_asset_id) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+    const existingResult = await transaction.collection(JOBS).where({ job_id: jobId }).limit(1).get();
+    if (existingResult.data && existingResult.data[0]) await transaction.collection(JOBS).doc(existingResult.data[0]._id || jobId).update(job);
+    else await transaction.collection(JOBS).doc(jobId).create(job);
+    await transaction.collection(INDIVIDUAL_RESPONSES).doc(current._id || current.response_session_id).update({ analysis_status: "queued", active_analysis_job_id: jobId, updated_at: created });
+  });
+  try { await invokeWorker(job); } catch (_error) { /* timer dispatch remains the retry boundary */ }
+  return { success: true, job: publicJob(job) };
+}
+
+async function deleteIndividualResponse(actor, event) {
+  const row = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140), deleted_at: null });
+  if (!row) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  if (String(row.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
+  const deletedAt = now();
+  await db.collection(INDIVIDUAL_RESPONSES).doc(row._id || row.response_session_id).update({ deleted_at: deletedAt, updated_at: deletedAt });
+  if (row.formal_audio_asset_id) await db.collection(ASSETS).doc(row.formal_audio_asset_id).update({ delete_after: new Date(deletedAt.getTime() + 7 * 24 * 60 * 60 * 1000), updated_at: deletedAt });
+  return { success: true, deleted: true, response_session_id: row.response_session_id };
 }
 function uploadTargetView(cloudPath) {
   return { upload_mode: "cloudbase_js_sdk", cloud_path: cloudPath };
@@ -198,7 +496,7 @@ function candidateTrackViews(report, participants) {
       speaker_label: `Speaker ${speakerKey.replace(/^spk_0*/, "")}`,
       speech_duration_ms: Number(track.speech_duration_ms || 0),
       turn_count: Number(track.turn_count || 0),
-      match_status: participant ? "proposed" : match && match.status || "unmatched",
+      match_status: participant ? (lab.identityIsConfirmed(participant) ? "confirmed" : "review_required") : match && match.status || "unmatched",
       participant_id: participant && participant.participant_id || null,
       proposed_name: identity && identity.named ? identity.label : null,
       invitation_status: participant && participant.invitation_status || null,
@@ -230,7 +528,7 @@ async function activeVipVoiceprintIndex() {
   return byProviderId;
 }
 async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex) {
-  const matches = (Array.isArray(matchingResults) ? matchingResults : []).filter((item) => item.status === "matched" && item.student_uid);
+  const matches = (Array.isArray(matchingResults) ? matchingResults : []).filter((item) => ["matched", "review_required"].includes(item.status) && item.student_uid);
   if (!matches.length) return { results: matchingResults, changed_count: 0 };
   const changedAt = now();
   const applied = new Map();
@@ -245,25 +543,33 @@ async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex)
     if (job.job_type === "voice_rematch" && String(discussion.active_report_version || "") !== String(job.source_report_version || "")) throw new Error("SPEAKING_JOB_SUPERSEDED");
     const nextRevision = Number(discussion.mapping_revision || 0) + 1;
     for (const match of matches) {
+      const automaticConfirmation = match.status === "matched" && Number(match.score) >= lab.AUTOMATIC_VOICE_MATCH_MIN_SCORE;
       const providerEntry = [...voiceprintIndex.values()].find((entry) => String(entry.profile.voiceprint_profile_id) === String(match.voiceprint_profile_id));
       const student = providerEntry && providerEntry.student;
       if (!student || String(student.auth_uid || "") !== String(match.student_uid)) continue;
       const speakerOwner = participants.find((participant) => String(participant.matched_speaker_key || "") === String(match.speaker_key));
       const studentParticipant = participants.find((participant) => lab.participantKind(participant) === "vip" && String(participant.student_uid || "") === String(match.student_uid));
+      if (studentParticipant && studentParticipant.identity_status === "disputed") continue;
       if (speakerOwner && (!studentParticipant || String(speakerOwner.participant_id) !== String(studentParticipant.participant_id))) continue;
       if (studentParticipant && studentParticipant.matched_speaker_key && String(studentParticipant.matched_speaker_key) !== String(match.speaker_key)) continue;
       if (!studentParticipant && participants.length >= 6) continue;
       const participantId = studentParticipant && studentParticipant.participant_id || id("participant");
       if (studentParticipant && String(studentParticipant.matched_speaker_key || "") === String(match.speaker_key)) {
-        applied.set(match.speaker_key, participantId);
-        continue;
+        if (lab.identityIsConfirmed(studentParticipant) || (!automaticConfirmation && studentParticipant.identity_status === "ai_matched")) {
+          await transaction.collection(PARTICIPANTS).doc(studentParticipant._id || studentParticipant.participant_id).update({
+            voice_match_source: "reusable_voiceprint_1_to_n", voice_match_score: match.score,
+            voice_match_margin: match.margin, voiceprint_profile_id: match.voiceprint_profile_id, updated_at: changedAt,
+          });
+          applied.set(match.speaker_key, participantId);
+          continue;
+        }
       }
-      const invitationStatus = String(match.student_uid) === String(discussion.creator_uid)
+      const invitationStatus = automaticConfirmation
         ? "accepted"
-        : studentParticipant && studentParticipant.invitation_status === "accepted" ? "accepted" : "pending";
-      const preservedIdentityStatus = studentParticipant && ["student_confirmed", "teacher_confirmed"].includes(studentParticipant.identity_status)
-        ? studentParticipant.identity_status
-        : "ai_matched";
+        : String(match.student_uid) === String(discussion.creator_uid)
+          ? "accepted"
+          : studentParticipant && studentParticipant.invitation_status === "accepted" ? "accepted" : "pending";
+      const identityStatus = automaticConfirmation ? "voiceprint_confirmed" : "ai_matched";
       const row = {
         participant_id: participantId,
         discussion_id: job.discussion_id,
@@ -275,7 +581,11 @@ async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex)
         invited_at: studentParticipant && studentParticipant.invited_at || changedAt,
         responded_at: invitationStatus === "accepted" ? studentParticipant && studentParticipant.responded_at || changedAt : null,
         invitation_source: "automatic_voice_match",
-        identity_status: preservedIdentityStatus,
+        identity_status: identityStatus,
+        identity_confirmed_at: automaticConfirmation ? changedAt : null,
+        identity_confirmed_by_uid: automaticConfirmation ? "system" : null,
+        identity_confirmation_source: automaticConfirmation ? "reusable_voiceprint_1_to_n" : null,
+        ...(automaticConfirmation ? { identity_notice_at: changedAt, identity_notice_seen_at: null } : {}),
         matched_speaker_key: match.speaker_key,
         mapping_revision: nextRevision,
         voice_match_source: "reusable_voiceprint_1_to_n",
@@ -294,16 +604,16 @@ async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex)
       const identityEventId = id("identity_event");
       await transaction.collection(EVENTS).doc(identityEventId).create({
         event_id: identityEventId, discussion_id: job.discussion_id, participant_id: participantId,
-        event_type: "automatic_voice_match_proposed", speaker_key: match.speaker_key,
-        score: match.score, margin: match.margin, mapping_revision: nextRevision,
-        actor_uid: "system", created_at: changedAt,
+        event_type: automaticConfirmation ? "automatic_voice_match_confirmed" : "automatic_voice_match_proposed",
+        speaker_key: match.speaker_key, score: match.score, margin: match.margin,
+        mapping_revision: nextRevision, actor_uid: "system", created_at: changedAt,
       });
       applied.set(match.speaker_key, participantId);
       changedCount += 1;
     }
     if (changedCount) await transaction.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ mapping_revision: nextRevision, participant_count: participants.length, report_projection_revision: Number(discussion.report_projection_revision || 0) + 1, updated_at: changedAt });
   });
-  return { results: matchingResults.map((item) => item.status === "matched" && !applied.has(item.speaker_key)
+  return { results: matchingResults.map((item) => ["matched", "review_required"].includes(item.status) && !applied.has(item.speaker_key)
     ? { ...item, status: "unmatched", student_uid: null, voiceprint_profile_id: null, reason: "CURRENT_MAPPING_CONFLICT" }
     : { ...item, participant_id: applied.get(item.speaker_key) || null }), changed_count: changedCount };
 }
@@ -479,8 +789,15 @@ function internalReportView(actor, report, participants) {
 }
 async function createDiscussion(actor, event) {
   if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
-  const title = lab.normalizeWhitespace(event.title, MAX_TITLE);
-  const prompt = lab.text(event.prompt_text, MAX_PROMPT);
+  let set = null;
+  let setSnapshot = null;
+  if (event.set_id) {
+    set = await getSpeakingSetById(event.set_id);
+    if (set.visible_to_students !== true) throw new Error("SPEAKING_SET_NOT_VISIBLE");
+    setSnapshot = lab.buildGroupDiscussionSnapshot(set);
+  }
+  const title = lab.normalizeWhitespace(event.title || (set && `${set.title} · ${shanghaiDate()}`), MAX_TITLE);
+  const prompt = set ? lab.partACompatibilityPrompt(set) : lab.text(event.prompt_text, MAX_PROMPT);
   if (!title) throw new Error("DISCUSSION_TITLE_REQUIRED");
   if (!prompt) throw new Error("DISCUSSION_PROMPT_REQUIRED");
   if (event.duration_seconds != null && event.duration_seconds !== "" && !lab.durationIsValid(event.duration_seconds)) throw new Error("DURATION_INVALID");
@@ -496,6 +813,8 @@ async function createDiscussion(actor, event) {
   const discussion = {
     discussion_id: discussionId, creator_uid: actor.auth_uid, title, discussion_date: lab.text(event.discussion_date, 30) || shanghaiDate(created),
     prompt_text: prompt, prompt_source: "typed", prompt_version: "dse-speaking-prompt-v1",
+    session_type: "group_discussion",
+    ...(set ? { set_id: set.set_id, set_content_revision: Number(set.content_revision || 1), set_snapshot: setSnapshot, prompt_source: "speaking_set" } : {}),
     participant_count: 1, candidate_count: null, duration_seconds: lab.normalizeDurationSeconds(event.duration_seconds, 4), roster_status: "draft",
     recording_status: "missing", analysis_status: "not_ready", active_analysis_job_id: null, active_report_version: null,
     formal_audio_asset_id: null, created_at: created, updated_at: created, deleted_at: null,
@@ -611,6 +930,30 @@ async function updateDiscussionDuration(actor, event) {
   return { success: true, duration_seconds: duration, duration_source: "manual" };
 }
 
+async function updateDiscussionTitle(actor, event) {
+  const rows = await authorizedDiscussion(actor, event.discussion_id, true);
+  const title = lab.normalizeWhitespace(event.title, MAX_TITLE);
+  if (!title) throw new Error("DISCUSSION_TITLE_REQUIRED");
+  const changedAt = now();
+  let changed = false;
+  await db.runTransaction(async (transaction) => {
+    const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: rows.discussion.discussion_id }).limit(1).get();
+    const currentDiscussion = discussionResult.data && discussionResult.data[0];
+    const participantResult = await transaction.collection(PARTICIPANTS).where({ discussion_id: rows.discussion.discussion_id }).limit(20).get();
+    const currentParticipants = (participantResult.data || []).filter((item) => !item.removed_at);
+    if (!currentDiscussion || currentDiscussion.deleted_at || !lab.canEditDiscussion(actor, currentDiscussion, currentParticipants)) throw new Error("DISCUSSION_ACCESS_DENIED");
+    if (lab.normalizeWhitespace(currentDiscussion.title, MAX_TITLE) === title) return;
+    await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({
+      title,
+      report_projection_revision: Number(currentDiscussion.report_projection_revision || 0) + 1,
+      updated_at: changedAt,
+    });
+    changed = true;
+  });
+  if (changed) await invalidateShares(rows.discussion.discussion_id, { reason: "DISCUSSION_TITLE_CHANGED" });
+  return { success: true, title, changed };
+}
+
 async function startAudioUpload(actor, event, kind = "formal") {
   const rows = await authorizedDiscussion(actor, event.discussion_id, false);
   const acceptedCaller = rows.participants.some((item) => lab.participantKind(item) === "vip" && String(item.student_uid) === String(actor.auth_uid) && item.invitation_status === "accepted");
@@ -704,10 +1047,12 @@ async function getVoiceConfirmationPlayback(actor, event) {
     if (!participant.matched_speaker_key) throw new Error("VOICE_MATCH_UNCERTAIN");
     asset = await getOne(ASSETS, { asset_id: rows.discussion.formal_audio_asset_id, discussion_id: rows.discussion.discussion_id, asset_kind: "formal_discussion", status: "uploaded" });
     const report = await getOne(REPORTS, { discussion_id: rows.discussion.discussion_id, report_version: rows.discussion.active_report_version, status: "ready" });
-    const excerpt = (reportTranscript(report).segments || []).filter((segment) => String(segment.speaker_key) === String(participant.matched_speaker_key)).sort((left, right) => Number(left.start_ms) - Number(right.start_ms))[0];
-    if (!excerpt) throw new Error("AUDIO_NOT_FOUND");
-    start = Number(excerpt.start_ms);
-    end = Math.min(Number(excerpt.end_ms), start + 12000);
+    const segments = reportTranscript(report).segments || [];
+    const plan = lab.voiceprintExcerptPlans(segments, [participant.matched_speaker_key])[0];
+    const excerpt = segments.filter((segment) => String(segment.speaker_key) === String(participant.matched_speaker_key)).sort((left, right) => Number(left.start_ms) - Number(right.start_ms))[0];
+    if (!plan && !excerpt) throw new Error("AUDIO_NOT_FOUND");
+    start = plan ? Number(plan.start_ms) : Number(excerpt.start_ms);
+    end = plan ? start + Number(plan.duration_ms) : Math.min(Number(excerpt.end_ms), start + 12000);
   }
   const duration = Number(asset && asset.duration_ms);
   if (!asset || !Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end <= start || !Number.isFinite(duration) || end > duration) throw new Error("AUDIO_PLAYBACK_BOUNDS_INVALID");
@@ -715,6 +1060,16 @@ async function getVoiceConfirmationPlayback(actor, event) {
   const row = result && result.fileList && result.fileList[0];
   if (!row || !(row.tempFileURL || row.tempFileUrl || row.url)) throw new Error("AUDIO_NOT_FOUND");
   return { success: true, url: row.tempFileURL || row.tempFileUrl || row.url, start_ms: start, end_ms: end, expires_at: new Date(Date.now() + 5 * 60 * 1000) };
+}
+async function acknowledgeIdentityNotice(actor, event) {
+  if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
+  const rows = await authorizedDiscussion(actor, event.discussion_id);
+  const participant = rows.participants.find((item) => lab.participantKind(item) === "vip" && String(item.student_uid || "") === String(actor.auth_uid || ""));
+  if (!participant) throw new Error("DISCUSSION_ACCESS_DENIED");
+  if (!participant.identity_notice_at || participant.identity_notice_seen_at) return { success: true, acknowledged: false };
+  const seenAt = now();
+  await db.collection(PARTICIPANTS).doc(participant._id || participant.participant_id).update({ identity_notice_seen_at: seenAt, updated_at: seenAt });
+  return { success: true, acknowledged: true, seen_at: seenAt };
 }
 async function teacherReopenVoiceReference(actor, event) {
   if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
@@ -896,7 +1251,7 @@ async function requeueClaimedJob(claimed, values = {}) {
     const result = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
     const current = result.data && result.data[0];
     if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)) return;
-    await transaction.collection(JOBS).doc(current._id || current.job_id).update({
+    const update = {
       ...values,
       status: "queued",
       attempt_count: Math.max(0, Number(current.attempt_count || 1) - 1),
@@ -904,7 +1259,10 @@ async function requeueClaimedJob(claimed, values = {}) {
       lease_until: null,
       next_retry_at: values.next_retry_at || new Date(Date.now() + 15000),
       updated_at: changedAt,
-    });
+    };
+    await transaction.collection(JOBS).doc(current._id || current.job_id).update(
+      replaceFields(update, Object.prototype.hasOwnProperty.call(values, "voice_matching_state") ? ["voice_matching_state"] : [])
+    );
     accepted = true;
   });
   return accepted;
@@ -1047,12 +1405,12 @@ async function processVoiceRematch(claimed, discussion, asset) {
     const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: claimed.discussion_id }).limit(1).get();
     const currentDiscussion = discussionResult.data && discussionResult.data[0];
     if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_voice_match_job_id || "") !== String(claimed.job_id) || String(currentDiscussion.active_report_version || "") !== String(claimed.source_report_version || "") || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1)) throw new Error("SPEAKING_JOB_SUPERSEDED");
-    await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({
+    await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update(replaceFields({
       status: "succeeded", stage: "voice_matching_complete", voice_matching_state: finalState,
       voice_match_result_count: resultCount, voice_match_changed_count: changedCount,
       safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null,
       finished_at: finishedAt, updated_at: finishedAt,
-    });
+    }, ["voice_matching_state"]));
     await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({
       voice_match_status: "ready", voice_match_last_run_at: finishedAt,
       voice_match_last_result_count: resultCount, voice_match_last_changed_count: changedCount,
@@ -1063,12 +1421,101 @@ async function processVoiceRematch(claimed, discussion, asset) {
   return { success: true, status: "succeeded", stage: "voice_matching_complete", job_id: claimed.job_id, matched_count: resultCount, changed_count: changedCount };
 }
 
+function individualResponseReportIdentity(job) {
+  return {
+    report_id: stable("speaking_individual_response_report", job.response_session_id, String(job.response_revision || 1)),
+    report_version: `response-r${Math.max(1, Number(job.response_revision || 1))}`,
+  };
+}
+
+function canonicalIndividualTranscript(output) {
+  const source = output && typeof output === "object" ? output : {};
+  const segments = Array.isArray(source.segments) ? source.segments : [];
+  if (!segments.length) throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
+  const primary = (Array.isArray(source.speaker_tracks) ? source.speaker_tracks : []).slice().sort((left, right) => Number(right.speech_duration_ms || 0) - Number(left.speech_duration_ms || 0))[0];
+  const speakerId = primary && primary.provider_speaker_id;
+  const own = speakerId ? segments.filter((segment) => String(segment.provider_speaker_id) === String(speakerId)) : segments;
+  const canonical = own.map((segment, index) => ({ segment_id: `seg_${String(index + 1).padStart(4, "0")}`, start_ms: Math.max(0, Math.round(Number(segment.start_ms || 0))), end_ms: Math.max(0, Math.round(Number(segment.end_ms || 0))), text: lab.text(segment.text, 2000), confidence: segment.confidence != null && Number.isFinite(Number(segment.confidence)) ? Math.max(0, Math.min(1, Number(segment.confidence))) : null })).filter((segment) => segment.text && segment.end_ms > segment.start_ms);
+  if (!canonical.length) throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
+  return { language: source.language || "en", duration_ms: Number(source.duration_ms || 0), segments: canonical };
+}
+
+async function processIndividualResponseQueuedJob(claimed) {
+  const response = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: claimed.response_session_id, deleted_at: null });
+  if (!response || String(response.active_analysis_job_id || "") !== String(claimed.job_id) || Number(response.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+  const asset = await getOne(ASSETS, { asset_id: claimed.formal_audio_asset_id, response_session_id: claimed.response_session_id, asset_kind: "individual_response", status: "uploaded" });
+  if (!asset) throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
+  if (claimed.stage === "audio_quality") {
+    const speech = createSpeechProvider();
+    const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes, duration_seconds: Number(asset.duration_ms || 0) / 1000 || undefined });
+    await requeueClaimedJob(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
+    return { success: true, status: "queued", stage: "transcription", job_id: claimed.job_id };
+  }
+  if (claimed.stage === "transcription") {
+    const speech = createSpeechProvider();
+    const input = claimed.provider_task_id ? { task_id: claimed.provider_task_id } : { audio_url: await temporaryAudioUrl(asset) };
+    const callIndex = await reserveProviderCall(claimed, "provider_call_count");
+    let transcription;
+    try { transcription = await speech.transcribeAndDiarize(input); } catch (error) { await saveProviderUsage(claimed, "individual_transcription", callIndex, speech.name, { outcome: "failed", safe_error_code: error && error.code, request_id: error && error.requestId, usage: {} }); throw error; }
+    await saveProviderUsage(claimed, "individual_transcription", callIndex, speech.name, { request_id: transcription.request_id, usage: transcription.output && transcription.output.usage || {} });
+    if (transcription.status === "pending") {
+      await requeueClaimedJob(claimed, { stage: "transcription", provider_task_id: transcription.task_id, next_retry_at: new Date(Date.now() + 15000) });
+      return { success: true, status: "pending", stage: "transcription", job_id: claimed.job_id };
+    }
+    const transcript = canonicalIndividualTranscript(transcription.output);
+    if (Number(transcript.duration_ms || 0) > (lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) * 1000) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
+    const transcriptIdentity = individualResponseReportIdentity(claimed);
+    const existingTranscriptReport = await getOne(REPORTS, { report_id: transcriptIdentity.report_id });
+    const transcriptRow = { ...transcriptIdentity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-v1", status: "processing", transcript, updated_at: now() };
+    if (existingTranscriptReport) await db.collection(REPORTS).doc(existingTranscriptReport._id || transcriptIdentity.report_id).update(transcriptRow);
+    else await db.collection(REPORTS).doc(transcriptIdentity.report_id).create({ ...transcriptRow, created_at: now() });
+    await db.collection(JOBS).doc(claimed._id || claimed.job_id).update({ stage: "analysis", transcript_metadata: { segment_count: transcript.segments.length, duration_ms: transcript.duration_ms }, updated_at: now() });
+    claimed = { ...claimed, stage: "analysis", transcript };
+  }
+  const currentJob = await getOne(JOBS, { job_id: claimed.job_id });
+  const responseReportIdentity = individualResponseReportIdentity(claimed);
+  const processingReport = await getOne(REPORTS, { report_id: responseReportIdentity.report_id, response_session_id: response.response_session_id, status: "processing" });
+  const transcript = claimed.transcript || processingReport && processingReport.transcript || currentJob && currentJob.transcript;
+  if (!transcript || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
+  const question = response.question_snapshot && response.question_snapshot.text || "";
+  const model = createModelProvider();
+  const callIndex = await reserveProviderCall(claimed, "model_call_count");
+  let output;
+  try {
+    const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
+    output = { report: result.output, usage: result.usage, request_id: result.request_id };
+    await saveProviderUsage(claimed, "individual_analysis", callIndex, model.name, { model: model.model, protocol: model.protocol, request_id: result.request_id, usage: result.usage });
+  } catch (error) {
+    await saveProviderUsage(claimed, "individual_analysis", callIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, request_id: error && error.requestId, response_diagnostics: error && error.responseDiagnostics, usage: {} });
+    throw error;
+  }
+  const analysis = lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
+  const identity = individualResponseReportIdentity(claimed);
+  const finishedAt = now();
+  const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-v1", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
+  await db.runTransaction(async (transaction) => {
+    const currentJobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const latestJob = currentJobResult.data && currentJobResult.data[0];
+    const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: response.response_session_id }).limit(1).get();
+    const latestResponse = responseResult.data && responseResult.data[0];
+    if (!latestJob || latestJob.status !== "processing" || !secretMatches(latestJob.lease_token, claimed.lease_token) || !latestResponse || latestResponse.deleted_at || String(latestResponse.active_analysis_job_id || "") !== String(claimed.job_id) || Number(latestResponse.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    const existingReportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
+    if (existingReportResult.data && existingReportResult.data[0]) await transaction.collection(REPORTS).doc(existingReportResult.data[0]._id || identity.report_id).update(reportRow);
+    else await transaction.collection(REPORTS).doc(identity.report_id).create(reportRow);
+    await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
+    await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt });
+  });
+  return { success: true, status: "succeeded", stage: "publishing", job_id: claimed.job_id };
+}
+
 async function processQueuedJob(event) {
   const job = await getOne(JOBS, { job_id: lab.text(event.job_id, 120) });
   if (!job || !secretMatches(job.dispatch_token, event.dispatch_token)) throw new Error("SPEAKING_JOB_NOT_AVAILABLE");
   let claimed;
   try { claimed = await claimJob(job, event.dispatch_token); } catch (error) { return { success: true, status: "stale_or_already_claimed" }; }
   try {
+    if (!hasExactlyOneSessionLocator(claimed)) throw new Error("SPEAKING_JOB_LOCATOR_INVALID");
+    if (claimed.job_type === "individual_response_analysis") return await processIndividualResponseQueuedJob(claimed);
     const rows = await discussionRows(claimed.discussion_id);
     const discussion = rows.discussion;
     const isVoiceRematch = claimed.job_type === "voice_rematch";
@@ -1190,6 +1637,12 @@ async function processQueuedJob(event) {
       const currentJob = jobResult.data && jobResult.data[0];
       if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)) return;
       await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "failed", stage: currentJob.stage || "audio_quality", safe_error_code: code, lease_token: null, lease_until: null, finished_at: failedAt, updated_at: failedAt });
+      if (currentJob.job_type === "individual_response_analysis") {
+        const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: currentJob.response_session_id }).limit(1).get();
+        const response = responseResult.data && responseResult.data[0];
+        if (response && String(response.active_analysis_job_id || "") === String(currentJob.job_id)) await transaction.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ analysis_status: "failed", updated_at: failedAt });
+        return;
+      }
       const activeJobField = currentJob.job_type === "voice_rematch" ? "active_voice_match_job_id" : "active_analysis_job_id";
       const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: currentJob.discussion_id }).limit(1).get();
       const discussion = discussionResult.data && discussionResult.data[0];
@@ -1220,7 +1673,7 @@ async function confirmVoice(actor, event) {
     if (current.identity_status === "disputed") throw new Error("VOICE_DISPUTE_LOCKED");
     if (!Number.isInteger(expectedRevision) || expectedRevision !== Number(current.mapping_revision || 0) || expectedSpeakerKey !== String(current.matched_speaker_key || "")) throw new Error("VOICE_MATCH_STALE");
     const changedAt = now();
-    await transaction.collection(PARTICIPANTS).doc(current._id || current.participant_id).update({ identity_status: status, identity_confirmed_at: accepted ? changedAt : null, identity_confirmed_by_uid: accepted ? actor.auth_uid : null, identity_confirmation_source: accepted ? "student" : null, updated_at: changedAt });
+    await transaction.collection(PARTICIPANTS).doc(current._id || current.participant_id).update({ identity_status: status, identity_confirmed_at: accepted ? changedAt : null, identity_confirmed_by_uid: accepted ? actor.auth_uid : null, identity_confirmation_source: accepted ? "student" : null, ...(current.identity_notice_at ? { identity_notice_seen_at: changedAt } : {}), updated_at: changedAt });
     if (!accepted) await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ report_projection_revision: Number(currentDiscussion.report_projection_revision || 0) + 1, updated_at: changedAt });
     await transaction.collection(EVENTS).doc(eventId).create({ event_id: eventId, discussion_id: rows.discussion.discussion_id, participant_id: current.participant_id, speaker_key: current.matched_speaker_key, event_type: accepted ? "student_confirmed" : "student_disputed", mapping_revision: current.mapping_revision, actor_uid: actor.auth_uid, created_at: changedAt });
   });
@@ -1257,7 +1710,7 @@ async function teacherUpdateVoiceMapping(actor, event) {
       const participant = currentParticipants.find((item) => String(item.participant_id) === String(eventRow.participant.participant_id));
       if (!participant) throw new Error("VOICE_MATCH_STALE");
       const pair = mapping.find((item) => item.participant_id === String(participant.participant_id));
-      const update = { mapping_revision: nextRevision, updated_at: changedAt };
+      const update = { mapping_revision: nextRevision, identity_notice_at: null, identity_notice_seen_at: null, updated_at: changedAt };
       if (pair) Object.assign(update, { matched_speaker_key: pair.speaker_key, identity_status: "teacher_confirmed", identity_confirmed_at: changedAt, identity_confirmed_by_uid: actor.auth_uid, identity_confirmation_source: "teacher", ...(participant.voice_reference_asset_id ? { voice_reference_status: "deletion_due" } : {}) });
       else Object.assign(update, { matched_speaker_key: null, identity_status: "unmatched", identity_confirmed_at: null, identity_confirmed_by_uid: null, identity_confirmation_source: null });
       await transaction.collection(PARTICIPANTS).doc(participant._id || participant.participant_id).update(update);
@@ -1563,7 +2016,7 @@ async function deleteDiscussion(actor, event) {
 function friendlyMessage(code) {
   const messages = {
     AUTH_REQUIRED: "Please sign in first.", STUDENT_REQUIRED: "This action is for students.", TEACHER_REQUIRED: "Teacher access is required.",
-    DISCUSSION_NOT_FOUND: "This Discussion is no longer available.", DISCUSSION_ACCESS_DENIED: "You do not have access to this Discussion.",
+    DISCUSSION_NOT_FOUND: "This Discussion is no longer available.", DISCUSSION_ACCESS_DENIED: "You do not have access to this Discussion.", DISCUSSION_TITLE_REQUIRED: "Enter a Discussion title.",
     ROSTER_FROZEN: "The participant list is already frozen.", PARTICIPANT_LIMIT_REACHED: "A Discussion can have up to six participants.", DSE_REQUIRES_THREE_TO_SIX: "A DSE report requires three to six listed participants. Two participants do not generate a report.",
     GUEST_NAME_DUPLICATE: "That participant name is already in this Discussion. Add a suffix such as 1 or 2.",
     DURATION_INVALID: "Choose a recording time from 180 to 1800 seconds.", RECORDING_SETUP_LOCKED: "Recording setup is locked after the formal audio is uploaded.",
@@ -1574,10 +2027,11 @@ function friendlyMessage(code) {
     VOICEPRINT_CAPACITY_REACHED: "The Tencent voiceprint library has reached its current capacity.", VOICEPRINT_PROVIDER_UNAVAILABLE: "Tencent voiceprint service is temporarily unavailable. Please try again.", VOICEPRINT_PROVIDER_INVALID_RESPONSE: "Tencent returned an invalid voiceprint response. Please try again.", VOICEPRINT_PROVIDER_FAILED: "Tencent could not save this voiceprint. Please record again.", VOICEPRINT_NOT_FOUND: "This voiceprint no longer exists at Tencent. Record it again.", VOICEPRINT_STALE: "This voiceprint changed in another session. Refresh before trying again.",
     SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_ASR_UNAVAILABLE: "Speech transcription is temporarily unavailable. Please retry.", SPEAKING_ASR_FAILED: "Tencent could not transcribe this recording. Please check the audio and retry.",
     SPEAKING_ASR_INVALID_RESPONSE: "Tencent returned an incomplete transcript. Please retry.", SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE: "The recording could not be scored reliably. Its available transcript was preserved.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
-    SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
+    SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", SPEAKING_AUDIO_TOO_LONG: "Individual Response audio must be no longer than 65 seconds.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
     VOICE_MATCHING_NOT_READY: "Finish the Discussion analysis before searching for voice matches.", OPERATION_ID_REQUIRED: "Refresh the page and try that action again.",
     VOICE_DISPUTE_LOCKED: "Your voice concern is waiting for a teacher. Only a teacher can change the mapping now.",
     VOICE_CONFIRMATION_REQUIRED_FOR_SHARE: "Confirm your voice before creating a student share.", SHARE_PROJECTION_STALE: "The report or identity labels changed. Refresh before sharing.", SHARE_NOT_AVAILABLE: "This share link is no longer available.",
+    SPEAKING_SET_NOT_FOUND: "This Speaking Set is no longer available.", SPEAKING_SET_NOT_VISIBLE: "This Speaking Set is not available for new practice.", SPEAKING_SET_ID_INVALID: "Enter a valid Speaking Set ID.", SPEAKING_SET_EXISTS: "That Speaking Set ID is already in use.", SPEAKING_SET_INVALID: "Check the Speaking Set content and try again.", SPEAKING_SET_STALE: "This Speaking Set changed in another editor. Refresh before saving.", SPEAKING_SET_IN_USE: "This Speaking Set has historical Sessions and cannot be deleted. Hide it from students instead.", SPEAKING_QUESTION_NOT_FOUND: "That individual question is no longer available.", INDIVIDUAL_RESPONSE_NOT_FOUND: "This Individual Response is no longer available.", INDIVIDUAL_RESPONSE_ACCESS_DENIED: "You do not have access to this Individual Response.", INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG: "Individual Response audio must be no longer than 65 seconds.", INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE: "The Individual Response upload is incomplete. Retry the same upload.", INDIVIDUAL_RESPONSE_ANALYSIS_NOT_READY: "This Individual Response report is not ready yet.", SPEAKING_JOB_LOCATOR_INVALID: "This Speaking analysis job is invalid. Please retry.",
   };
   return messages[code] || "The Speaking Lab request could not be completed. Please try again.";
 }
@@ -1588,6 +2042,21 @@ exports.main = async (event = {}) => {
     if (action === "getSharedReport") return await getSharedReport(event);
     if (action === "processQueuedJob") return await processQueuedJob(event);
     const actor = await profileForAuth();
+    if (action === "listSpeakingSets") return await listSpeakingSets(actor);
+    if (action === "getSpeakingSet") return await getSpeakingSet(actor, event);
+    if (action === "teacherListSpeakingSets") return await teacherListSpeakingSets(actor);
+    if (action === "teacherGetSpeakingSet") return await teacherGetSpeakingSet(actor, event);
+    if (action === "teacherCreateSpeakingSet") return await teacherCreateSpeakingSet(actor, event);
+    if (action === "teacherUpdateSpeakingSet") return await teacherUpdateSpeakingSet(actor, event);
+    if (action === "teacherSetSpeakingSetVisibility") return await teacherSetSpeakingSetVisibility(actor, event);
+    if (action === "teacherDeleteSpeakingSet") return await teacherDeleteSpeakingSet(actor, event);
+    if (action === "listIndividualResponses") return await listIndividualResponses(actor, event);
+    if (action === "getIndividualResponse") return await getIndividualResponse(actor, event);
+    if (action === "createIndividualResponse") return await createIndividualResponse(actor, event);
+    if (action === "startIndividualResponseAudioUpload") return await startIndividualResponseAudioUpload(actor, event);
+    if (action === "finishIndividualResponseAudioUpload") return await finishIndividualResponseAudioUpload(actor, event);
+    if (action === "startIndividualResponseAnalysis") return await startIndividualResponseAnalysis(actor, event);
+    if (action === "deleteIndividualResponse") return await deleteIndividualResponse(actor, event);
     if (action === "listDiscussions") return await listDiscussions(actor, event);
     if (action === "getDiscussion") return await getDiscussion(actor, event);
     if (action === "getMyVoiceprint") return await getMyVoiceprint(actor);
@@ -1600,6 +2069,7 @@ exports.main = async (event = {}) => {
     if (action === "addVipParticipant") return await addParticipant(actor, event, "vip");
     if (action === "addGuestParticipant") return await addParticipant(actor, event, "guest");
     if (action === "renameGuest") return await renameGuest(actor, event);
+    if (action === "updateDiscussionTitle") return await updateDiscussionTitle(actor, event);
     if (action === "updateDiscussionDuration") return await updateDiscussionDuration(actor, event);
     if (action === "respondInvitation") return await respondInvitation(actor, event);
     if (action === "startAudioUpload") return await startAudioUpload(actor, event);
@@ -1607,6 +2077,7 @@ exports.main = async (event = {}) => {
     if (action === "startVoiceReferenceUpload") return await startVoiceReferenceUpload(actor, event);
     if (action === "finishVoiceReferenceUpload") return await finishVoiceReferenceUpload(actor, event);
     if (action === "getVoiceConfirmationPlayback") return await getVoiceConfirmationPlayback(actor, event);
+    if (action === "acknowledgeIdentityNotice") return await acknowledgeIdentityNotice(actor, event);
     if (action === "startAnalysis") return await startAnalysis(actor, event);
     if (action === "startVoiceRematch") return await startVoiceRematch(actor, event);
     if (action === "confirmVoice") return await confirmVoice(actor, event);
@@ -1627,6 +2098,8 @@ exports.main = async (event = {}) => {
 
 exports._test = {
   friendlyMessage, publicJob, participantView, discussionView, candidateTrackViews, shanghaiDate, automaticMatchOutputPath,
-  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState,
-  constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
+  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator,
+  constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, SPEAKING_SETS, INDIVIDUAL_RESPONSES, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
+  setActions: { listSpeakingSets, getSpeakingSet, teacherListSpeakingSets, teacherGetSpeakingSet, teacherCreateSpeakingSet, teacherUpdateSpeakingSet, teacherSetSpeakingSetVisibility, teacherDeleteSpeakingSet },
+  responseActions: { listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, deleteIndividualResponse },
 };

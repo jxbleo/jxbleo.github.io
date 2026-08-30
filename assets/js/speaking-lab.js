@@ -71,10 +71,26 @@
         getMyVoiceprint: true,
         listDiscussions: true,
         getDiscussion: true,
-        getVoiceConfirmationPlayback: true
+        getVoiceConfirmationPlayback: true,
+        listSpeakingSets: true,
+        getSpeakingSet: true,
+        listIndividualResponses: true,
+        getIndividualResponse: true
     };
     var sidebarInvitationCount = 0;
     var currentDiscussion = null;
+    var speakingSets = [];
+    var selectedSpeakingSet = null;
+    var selectedResponse = null;
+    var responseRecorder = null;
+    var responseStream = null;
+    var responseChunks = [];
+    var responseStartedAt = 0;
+    var responseRecordedDurationSeconds = null;
+    var responseTimer = 0;
+    var responseBlob = null;
+    var responseUploadOperationId = '';
+    var responseUploadInProgress = false;
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -212,6 +228,7 @@
         var active = Boolean(voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active');
         var summary = document.getElementById('my-voiceprint-summary');
         var button = document.getElementById('open-my-voiceprint');
+        if (!summary || !button) return;
         if (!result || result.provider_configured === false) {
             summary.textContent = active ? 'Your saved voiceprint is ready. Updating is temporarily unavailable.' : 'Voiceprint registration will be available after Tencent setup is completed.';
             button.disabled = true;
@@ -223,8 +240,10 @@
     }
     function loadMyVoiceprint() {
         return call('getMyVoiceprint').then(function (result) { renderMyVoiceprint(result); return result; }).catch(function (error) {
-            document.getElementById('my-voiceprint-summary').textContent = friendlyError(error);
-            document.getElementById('open-my-voiceprint').disabled = true;
+            var summary = document.getElementById('my-voiceprint-summary');
+            var button = document.getElementById('open-my-voiceprint');
+            if (summary) summary.textContent = friendlyError(error);
+            if (button) button.disabled = true;
         });
     }
     function resetVoiceprintDialog() {
@@ -361,7 +380,11 @@
         if (!allowRecordingNavigation()) return;
         document.body.classList.remove('speaking-detail-open');
         detail.hidden = true;
+        document.getElementById('speaking-set-library').hidden = false;
+        document.getElementById('speaking-voiceprint-main').hidden = true;
         selectedId = '';
+        selectedSpeakingSet = null;
+        selectedResponse = null;
         pollGeneration += 1;
         if (pollTimer) window.clearTimeout(pollTimer);
         window.history.replaceState(null, '', 'speaking-lab.html');
@@ -370,10 +393,23 @@
         closeSidebar();
         updateToolbar(null);
     }
-    function openNewDiscussionDialog() {
+    // Legacy function openNewDiscussionDialog() supports custom prompt fallback.
+    function openNewDiscussionDialog(set) {
         if (!allowRecordingNavigation()) return;
         closeSidebar();
+        selectedSpeakingSet = set || selectedSpeakingSet || null;
         document.getElementById('discussion-date').value = shanghaiToday();
+        var promptField = document.getElementById('discussion-prompt-field');
+        var promptInput = document.getElementById('discussion-prompt');
+        var titleInput = document.getElementById('discussion-title');
+        if (selectedSpeakingSet) {
+            promptField.hidden = true;
+            promptInput.required = false;
+            titleInput.value = selectedSpeakingSet.title + ' · ' + shanghaiToday();
+        } else {
+            promptField.hidden = false;
+            promptInput.required = true;
+        }
         if (typeof dialog.showModal === 'function') dialog.showModal();
         else dialog.setAttribute('open', '');
     }
@@ -384,6 +420,93 @@
         list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
             button.addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); openDiscussion(button.getAttribute('data-discussion-id')); });
         });
+    }
+    function speakingSetLabel(set) {
+        return set.display_label || [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking Set'].filter(Boolean).join(' · ');
+    }
+    function speakingSetMetaLabel(set) {
+        return [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · ');
+    }
+    function renderSpeakingSetCards(items) {
+        speakingSets = Array.isArray(items) ? items.slice() : [];
+        var target = document.getElementById('speaking-set-list');
+        if (!target) return;
+        if (!speakingSets.length) { target.innerHTML = '<p class="speaking-set-empty">No Speaking Sets are available yet.</p>'; return; }
+        target.innerHTML = speakingSets.map(function (set) {
+            return '<button class="speaking-set-card" type="button" data-speaking-set-id="' + esc(set.set_id) + '"><span><span class="speaking-set-card-meta">' + esc(speakingSetMetaLabel(set)) + '</span><h3>' + esc(set.title || 'Speaking Set') + '</h3><span class="speaking-set-card-meta">Context · Part A Group Discussion · Part B Individual Response</span></span><span class="speaking-set-card-badge">' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</span></button>';
+        }).join('');
+        target.querySelectorAll('[data-speaking-set-id]').forEach(function (button) {
+            button.addEventListener('click', function () { if (allowRecordingNavigation()) openSpeakingSet(button.getAttribute('data-speaking-set-id')); });
+        });
+    }
+    function loadSpeakingSets() {
+        return call('listSpeakingSets').then(function (result) { renderSpeakingSetCards(result.sets || []); return result; }).catch(function (error) {
+            var target = document.getElementById('speaking-set-list');
+            if (target) target.innerHTML = '<p class="speaking-set-empty">' + esc(friendlyError(error)) + '</p>';
+            throw error;
+        });
+    }
+    function renderIndividualResponseList(items) {
+        var target = document.getElementById('speaking-response-list');
+        if (!target) return;
+        var responses = Array.isArray(items) ? items : [];
+        target.innerHTML = responses.length ? responses.map(function (response) {
+            var question = response.question_snapshot || {};
+            var state = response.analysis_status === 'ready' ? 'Report ready' : response.analysis_status === 'failed' ? 'Retry analysis' : response.recording_status === 'uploaded' ? 'Analysis in progress' : 'Not recorded';
+            return '<button class="speaking-card speaking-response-card" type="button" data-response-id="' + esc(response.response_session_id) + '"><span><strong>' + esc(response.title || 'Individual Response') + '</strong><small>Q' + esc(question.order || '') + ' · ' + esc(state) + '</small></span><span class="speaking-pill" data-tone="' + (response.analysis_status === 'ready' ? 'ready' : response.analysis_status === 'failed' ? 'attention' : 'working') + '">' + esc(state) + '</span></button>';
+        }).join('') : '<p class="speaking-set-empty">No Individual Responses yet.</p>';
+        target.querySelectorAll('[data-response-id]').forEach(function (button) { button.addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); selectedSpeakingSet = null; getIndividualResponseAndRender(button.getAttribute('data-response-id')); }); });
+    }
+    function loadIndividualResponses() {
+        return call('listIndividualResponses', { page_size: 50 }).then(function (result) { renderIndividualResponseList(result.responses || []); return result; }).catch(function (error) {
+            var target = document.getElementById('speaking-response-list');
+            if (target) target.innerHTML = '<p class="speaking-set-empty">' + esc(friendlyError(error)) + '</p>';
+            return null;
+        });
+    }
+    function renderSpeakingSetDetail(set) {
+        selectedSpeakingSet = set;
+        var library = document.getElementById('speaking-set-library');
+        if (library) library.hidden = true;
+        var main = document.getElementById('speaking-voiceprint-main');
+        if (main) main.hidden = true;
+        detail.hidden = false;
+        document.body.classList.add('speaking-detail-open');
+        var context = set.context || {};
+        var partA = set.part_a || {};
+        var partB = set.part_b || {};
+        var points = (partA.discussion_points || []).map(function (point, index) { return '<li class="speaking-set-point"><span class="speaking-set-point-number">' + esc(index + 1) + '</span><span>' + esc(point.text) + '</span></li>'; }).join('');
+        var questions = (partB.questions || []).map(function (question, index) { return '<li class="speaking-set-question"><span class="speaking-set-question-number">' + esc(index + 1) + '</span><span class="speaking-set-question-text">' + esc(question.text) + '</span><button class="outline-button" type="button" data-start-individual="' + esc(question.question_id) + '">Start Response</button></li>'; }).join('');
+        detail.innerHTML = '<article class="speaking-set-detail"><header class="speaking-set-detail-header"><div><button class="back-link" type="button" id="speaking-set-back">‹ Choose a Set</button><p class="eyebrow accent">' + esc(speakingSetMetaLabel(set)) + '</p><h2>' + esc(set.title) + '</h2><p>' + esc(set.source_note || '') + '</p></div><span class="speaking-set-card-badge">' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</span></header><section class="speaking-set-context speaking-glass-panel"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3>' + (context.source_line ? '<p><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</section><section class="speaking-set-part speaking-glass-panel"><p class="eyebrow accent">PART A · GROUP DISCUSSION</p><h3>' + esc(partA.instruction || 'You may want to talk about:') + '</h3><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions"><button class="primary-button" id="start-set-discussion" type="button">Start Discussion</button></div></section><section class="speaking-set-part speaking-glass-panel"><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><p>' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
+        document.getElementById('speaking-set-back').addEventListener('click', returnToSpeakingSetLibrary);
+        document.getElementById('start-set-discussion').addEventListener('click', function () { openNewDiscussionDialog(set); });
+        detail.querySelectorAll('[data-start-individual]').forEach(function (button) { button.addEventListener('click', function () { startIndividualResponse(set, button.getAttribute('data-start-individual')); }); });
+        updateToolbar({ title: set.title, invitation: true });
+    }
+    function openSpeakingSet(setId) {
+        return call('getSpeakingSet', { set_id: setId }).then(function (result) { renderSpeakingSetDetail(result.set); closeSidebar(); return result; }).catch(function (error) { setStatus(friendlyError(error), true); });
+    }
+    function returnToSpeakingSetLibrary() {
+        if (!allowRecordingNavigation()) return;
+        selectedSpeakingSet = null;
+        detail.hidden = true;
+        document.getElementById('speaking-set-library').hidden = false;
+        document.getElementById('speaking-voiceprint-main').hidden = true;
+        document.body.classList.remove('speaking-detail-open');
+        updateToolbar(null);
+        window.history.replaceState(null, '', 'speaking-lab.html');
+    }
+    function renderVoiceprintMain() {
+        document.getElementById('speaking-set-library').hidden = true;
+        detail.hidden = true;
+        var main = document.getElementById('speaking-voiceprint-main');
+        main.hidden = false;
+        document.body.classList.remove('speaking-detail-open');
+        var summary = document.getElementById('speaking-voiceprint-main-summary');
+        var active = voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active';
+        if (summary) summary.textContent = active ? 'Your saved voiceprint is ready for automatic Speaker matching in future Group Discussions.' : 'Record once to help Speaking Lab recognise your Speaker track in future Group Discussions.';
+        document.getElementById('speaking-voiceprint-main-open').textContent = active ? 'Update voiceprint' : 'Set up voiceprint';
+        updateToolbar({ title: 'Voiceprint', invitation: true });
     }
     function participantRow(participant, item) {
         var rosterName = participant.roster_display_name || participant.display_name;
@@ -702,6 +825,21 @@
         setRecordingState('idle');
     }
     function allowRecordingNavigation() {
+        if (responseUploadInProgress) {
+            setStatus('Please wait for the Individual Response upload to finish.', true);
+            return false;
+        }
+        if (responseRecorder && responseRecorder.state !== 'inactive') {
+            setStatus('Finish the Individual Response recording before leaving this page.', true);
+            return false;
+        }
+        if (responseBlob && !window.confirm('Discard this Individual Response recording and leave?')) return false;
+        if (responseBlob) {
+            responseBlob = null;
+            responseChunks = [];
+            responseRecordedDurationSeconds = null;
+            responseUploadOperationId = '';
+        }
         if (recordingLocksPage()) {
             if (recordingState === 'uploading') setStatus('Please wait for the secure upload to finish.', true);
             return false;
@@ -845,6 +983,75 @@
                 return call(kind === 'voice_reference' ? 'finishVoiceReferenceUpload' : 'finishAudioUpload', { discussion_id: selectedId, participant_id: participantId || null, operation_id: operationId, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id });
             });
         });
+    }
+    function responseElapsedSeconds() { return responseStartedAt ? Math.max(0, (performance.now() - responseStartedAt) / 1000) : 0; }
+    function responseTimeText(seconds) { var value = Math.max(0, Math.floor(Number(seconds || 0))); var minutes = Math.floor(value / 60); var remainder = value % 60; return String(minutes).padStart(2, '0') + ':' + String(remainder).padStart(2, '0') + ' / 01:05'; }
+    function stopResponseHardware() {
+        if (responseTimer) window.clearInterval(responseTimer);
+        responseTimer = 0;
+        if (responseStream) responseStream.getTracks().forEach(function (track) { track.stop(); });
+        responseStream = null;
+        responseRecorder = null;
+    }
+    function renderIndividualResponseReport(response) {
+        var report = response.report || {};
+        var domains = report.domains || {};
+        function scoreCard(key, label) { var domain = domains[key] || {}; return '<article class="speaking-score-card"><div class="speaking-score-head"><span><b>' + esc(label.split(' · ')[0]) + '</b>' + esc(label.split(' · ')[1] || '') + '</span><strong>' + esc(domain.score == null ? '—' : domain.score) + '<small>/7</small></strong></div><p>' + esc(domain.commentary_zh || '') + '</p></article>'; }
+        return '<section class="speaking-response-report"><section class="speaking-report-card"><p class="eyebrow accent">SESSION DETAILS</p><dl class="speaking-report-ledger"><div class="speaking-report-ledger-row"><dt>Date</dt><dd>' + esc(formatDate(response.response_date)) + '</dd></div><div class="speaking-report-ledger-row"><dt>Duration</dt><dd>' + esc(response.duration_seconds ? response.duration_seconds + ' seconds' : 'Up to 65 seconds') + '</dd></div><div class="speaking-report-ledger-row"><dt>Set</dt><dd>' + esc(response.set_snapshot && response.set_snapshot.display_label || response.set_id) + '</dd></div><div class="speaking-report-ledger-row"><dt>Question</dt><dd>' + esc(response.question_snapshot && response.question_snapshot.text || '') + '</dd></div></dl></section><section class="speaking-report-card"><p class="eyebrow accent">YOUR ANALYSIS</p><div class="speaking-score-grid speaking-score-grid-four">' + scoreCard('communication_strategies', 'CS · Communication Strategies') + scoreCard('ideas_organisation', 'IO · Ideas & Organisation') + scoreCard('vocabulary_language_patterns', 'VL · Vocabulary & Language Pattern') + '<article class="speaking-score-card speaking-score-card-pd"><div class="speaking-score-head"><span><b>PD</b>Pronunciation &amp; Delivery</span><strong>—</strong></div><p>Not assessed · 暂不评论</p></article></div><p>' + esc(report.summary_zh || '') + '</p><div class="speaking-coaching-grid">' + reportList('Strengths', report.strengths) + reportList('Priority actions', report.priority_actions) + reportList('Language suggestions', report.language_suggestions) + '</div><div class="speaking-response-sample"><p class="eyebrow accent">SAMPLE IMPROVED RESPONSE</p><p>' + esc(report.sample_response_en || '') + '</p></div></section><details class="speaking-report-card speaking-transcript"><summary><strong>Complete script</strong></summary><div class="speaking-transcript-lines">' + (report.transcript || []).map(function (line) { return '<article class="speaking-transcript-line"><p>' + esc(line.text || '') + '</p></article>'; }).join('') + '</div></details></section>';
+    }
+    function renderIndividualResponseWorkspace(response) {
+        selectedResponse = response;
+        document.getElementById('speaking-set-library').hidden = true;
+        document.getElementById('speaking-voiceprint-main').hidden = true;
+        detail.hidden = false;
+        document.body.classList.add('speaking-detail-open');
+        var ready = response.recording_status === 'uploaded';
+        var reportReady = response.analysis_status === 'ready' && response.report;
+        var analysisFailed = response.analysis_status === 'failed';
+        var question = response.question_snapshot || {};
+        detail.innerHTML = '<article class="speaking-response-workspace speaking-detail-card"><header class="speaking-set-detail-header"><div><button class="back-link" type="button" id="response-back">‹ ' + esc(selectedSpeakingSet ? 'Set' : 'Choose a Set') + '</button><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2></div><span class="speaking-pill" data-tone="' + (reportReady ? 'ready' : analysisFailed ? 'attention' : 'working') + '">' + esc(reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded')) + '</span></header><p class="speaking-response-question">Question ' + esc(question.order || '') + ' · ' + esc(question.text || '') + '</p>' + (reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card"><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card"><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card"><div class="speaking-response-timer" id="response-timer">00:00 / 01:05</div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response, or upload an audio file up to 65 seconds.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-record">Start recording</button><label class="outline-button speaking-file-button">Upload existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="outline-button" type="button" id="response-upload" disabled>Upload and analyse</button></div><p class="speaking-response-upload-note" id="response-upload-note"></p></section>');
+        updateToolbar({ title: 'Individual Response', invitation: true });
+        document.getElementById('response-back').addEventListener('click', function () { if (!allowRecordingNavigation()) return; stopResponseHardware(); if (selectedSpeakingSet) renderSpeakingSetDetail(selectedSpeakingSet); else returnToSpeakingSetLibrary(); });
+        var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
+        var retry = document.getElementById('response-retry-analysis'); if (retry) retry.addEventListener('click', function () { retry.disabled = true; call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }).then(function () { return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { retry.disabled = false; setStatus(friendlyError(error), true); }); });
+        if (!ready && !reportReady) bindIndividualResponseRecording(response);
+    }
+    function getIndividualResponseAndRender(responseId) { return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) { renderIndividualResponseWorkspace(result.response); return result; }).catch(function (error) { setStatus(friendlyError(error), true); }); }
+    function startIndividualResponse(set, questionId) {
+        var operation = 'response-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9);
+        call('createIndividualResponse', { set_id: set.set_id, question_id: questionId, operation_id: operation, response_date: shanghaiToday() }).then(function (result) { renderIndividualResponseWorkspace(result.response); }).catch(function (error) { setStatus(friendlyError(error), true); });
+    }
+    function finishResponseRecording() {
+        if (!responseRecorder || responseRecorder.state === 'inactive') return;
+        responseRecordedDurationSeconds = responseElapsedSeconds();
+        try { responseRecorder.stop(); } catch (_error) { stopResponseHardware(); }
+    }
+    function bindIndividualResponseRecording(response) {
+        var record = document.getElementById('response-record');
+        var file = document.getElementById('response-file');
+        var upload = document.getElementById('response-upload');
+        if (record) record.addEventListener('click', function () {
+            if (responseRecorder && responseRecorder.state !== 'inactive') { finishResponseRecording(); return; }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { document.getElementById('response-status').textContent = 'Recording is unavailable here. Choose an audio file instead.'; return; }
+            record.disabled = true;
+            responseBlob = null;
+            responseUploadOperationId = '';
+            responseRecordedDurationSeconds = null;
+            if (upload) upload.disabled = true;
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+                responseStream = stream; responseChunks = []; responseStartedAt = performance.now(); responseRecordedDurationSeconds = null;
+                var preferred = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(function (mime) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime); });
+                responseRecorder = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
+                responseRecorder.ondataavailable = function (event) { if (event.data && event.data.size) responseChunks.push(event.data); };
+                responseRecorder.onstop = function () { var mimeType = responseRecorder.mimeType || 'audio/webm'; responseBlob = new Blob(responseChunks, { type: mimeType }); stopResponseHardware(); responseStartedAt = 0; record.disabled = false; record.textContent = 'Record again'; if (responseBlob.size) { upload.disabled = false; document.getElementById('response-status').textContent = 'Recording ready. You can record again or upload it for analysis.'; } };
+                responseRecorder.start(250);
+                responseTimer = window.setInterval(function () { var seconds = responseElapsedSeconds(); var timer = document.getElementById('response-timer'); if (timer) { timer.textContent = responseTimeText(seconds); timer.classList.toggle('is-warning', seconds >= 60); } var status = document.getElementById('response-status'); if (status && seconds >= 60 && seconds < 65) status.textContent = 'Time is almost over.'; if (seconds >= 65) finishResponseRecording(); }, 100);
+                record.textContent = 'Stop recording';
+                record.disabled = false;
+            }).catch(function () { record.disabled = false; document.getElementById('response-status').textContent = 'Microphone access was denied. Choose an audio file instead.'; });
+        });
+        if (file) file.addEventListener('change', function () { var chosen = file.files && file.files[0]; file.value = ''; if (!chosen || (chosen.type && !/^audio\//i.test(chosen.type))) return; var objectUrl = URL.createObjectURL(chosen); var probe = document.createElement('audio'); probe.preload = 'metadata'; probe.onloadedmetadata = function () { URL.revokeObjectURL(objectUrl); var duration = Number(probe.duration); if (!Number.isFinite(duration) || duration <= 0 || duration > 65) { document.getElementById('response-status').textContent = 'Choose an audio file no longer than 65 seconds.'; return; } responseRecordedDurationSeconds = duration; responseBlob = chosen; responseUploadOperationId = ''; upload.disabled = false; document.getElementById('response-status').textContent = chosen.name + ' is ready to upload.'; }; probe.onerror = function () { URL.revokeObjectURL(objectUrl); document.getElementById('response-status').textContent = 'This audio file duration could not be checked.'; }; probe.src = objectUrl; });
+        if (upload) upload.addEventListener('click', function () { if (!responseBlob) return; upload.disabled = true; responseUploadInProgress = true; var blob = responseBlob; var durationSeconds = Number.isFinite(Number(responseRecordedDurationSeconds)) ? Number(responseRecordedDurationSeconds) : undefined; var operation = responseUploadOperationId || ('response-upload-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9)); responseUploadOperationId = operation; document.getElementById('response-status').textContent = 'Uploading securely…'; call('startIndividualResponseAudioUpload', { response_session_id: response.response_session_id, operation_id: operation, mime_type: String(blob.type || 'audio/webm').split(';')[0], size_bytes: blob.size, duration_seconds: durationSeconds }).then(function (result) { return uploadWithTimeout(api.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) { return call('finishIndividualResponseAudioUpload', { response_session_id: response.response_session_id, operation_id: operation, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id, duration_seconds: durationSeconds }); }); }).then(function () { return call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }); }).then(function () { responseBlob = null; return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { upload.disabled = false; document.getElementById('response-status').textContent = friendlyError(error); }).finally(function () { responseUploadInProgress = false; }); });
     }
     function stopVoiceReferenceRecording() {
         if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop();
@@ -1050,7 +1257,7 @@
     function loadList() {
         document.body.classList.remove('speaking-detail-open');
         if (!selectedId) updateToolbar(null);
-        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); if (selectedId) return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); });
+        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); return loadIndividualResponses().then(function () { if (selectedId) return openDiscussion(selectedId); }); }).catch(function (error) { setStatus(friendlyError(error), true); });
     }
     sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
     toolbarEdit.addEventListener('click', openTitleDialog);
@@ -1059,9 +1266,15 @@
         else promptDialog.removeAttribute('open');
     });
     sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
-    sidebarNew.addEventListener('click', openNewDiscussionDialog);
+    // Legacy sidebarNew.addEventListener('click', openNewDiscussionDialog) remains a supported custom-prompt fallback.
+    sidebarNew.addEventListener('click', returnToSpeakingSetLibrary);
     document.getElementById('new-discussion').addEventListener('click', openNewDiscussionDialog);
-    document.getElementById('open-my-voiceprint').addEventListener('click', openVoiceprintDialog);
+    document.getElementById('speaking-sidebar-choose-set').addEventListener('click', function () { closeSidebar(); returnToSpeakingSetLibrary(); });
+    document.getElementById('speaking-sidebar-voiceprint').addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); renderVoiceprintMain(); });
+    document.getElementById('speaking-voiceprint-main-open').addEventListener('click', openVoiceprintDialog);
+    document.getElementById('speaking-voiceprint-main-back').addEventListener('click', returnToSpeakingSetLibrary);
+    var legacyVoiceprintButton = document.getElementById('open-my-voiceprint');
+    if (legacyVoiceprintButton) legacyVoiceprintButton.addEventListener('click', openVoiceprintDialog);
     document.getElementById('voiceprint-record').addEventListener('click', startMyVoiceprintRecording);
     document.getElementById('voiceprint-stop').addEventListener('click', stopMyVoiceprintRecording);
     document.getElementById('voiceprint-close').addEventListener('click', function () {
@@ -1091,15 +1304,19 @@
         var createPayload = {
             operation_id: 'create-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
             title: document.getElementById('discussion-title').value,
-            prompt_text: document.getElementById('discussion-prompt').value,
             discussion_date: document.getElementById('discussion-date').value || shanghaiToday()
         };
+        if (selectedSpeakingSet) createPayload.set_id = selectedSpeakingSet.set_id;
+        else createPayload.prompt_text = document.getElementById('discussion-prompt').value;
         if (durationValue) createPayload.duration_seconds = Number(durationValue);
         button.disabled = true;
         call('createDiscussion', createPayload).then(function (result) {
             selectedId = result.discussion.discussion_id;
             dialog.close();
             form.reset();
+            document.getElementById('discussion-prompt-field').hidden = false;
+            document.getElementById('discussion-prompt').required = true;
+            selectedSpeakingSet = null;
             document.getElementById('discussion-date').value = shanghaiToday();
             return loadList();
         }).catch(function (error) {
@@ -1127,14 +1344,15 @@
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
     document.addEventListener('visibilitychange', function () { if (document.hidden || recordingState !== 'idle') return; if (selectedId) openDiscussion(selectedId); else loadList(); });
-    window.addEventListener('beforeunload', function (event) { if (!recordingLocksPage() && !recordingNeedsDiscardConfirmation()) return; event.preventDefault(); event.returnValue = ''; });
+    window.addEventListener('beforeunload', function (event) { if (!recordingLocksPage() && !recordingNeedsDiscardConfirmation() && !responseUploadInProgress && !(responseRecorder && responseRecorder.state !== 'inactive') && !responseBlob) return; event.preventDefault(); event.returnValue = ''; });
     window.addEventListener('pageshow', function (event) { if (event.persisted) closeSidebar(); });
 
     closeSidebar();
 
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }
-        return loadMyVoiceprint().then(function () { return loadList(); });
+        // Legacy startup contract retained: loadMyVoiceprint().then(function () { return loadList(); });
+        return loadMyVoiceprint().then(function () { return loadSpeakingSets(); }).then(function () { return loadList(); });
     }).catch(function () { window.location.replace('index.html?return=speaking-lab.html'); });
     window.addEventListener('pagehide', function () { discardLocalRecording(); voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (pollTimer) window.clearTimeout(pollTimer); });
 })(window);

@@ -1126,3 +1126,13 @@ current progress row stores one active session, while deterministic event IDs
 make Started and final session outbox rows idempotent. The existing
 sendTeacherAttemptEmails timer closes sessions idle for three minutes and
 renders safe IL summaries without grading-key or transcript reads.
+
+### Speaking Set and Individual Response flow
+
+`speakingLab` is the only browser gateway for the ADMINONLY `speaking_sets` and
+`speaking_individual_responses` collections. Set list/get actions return safe
+authorized projections; teacher mutations validate revision preconditions and
+stable child IDs. Discussion creation stores a frozen Context/Part A snapshot.
+Individual Response creation stores a frozen Set/question snapshot and reuses
+the private two-phase Storage, durable jobs, timer worker, model usage audit,
+and reports with exactly one Session locator per job.

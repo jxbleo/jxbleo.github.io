@@ -2569,3 +2569,15 @@ exposing self-study IL to Parent Mode.
 Teacher preview must reveal immediately, open the compact `Provide this word for
 every student?` confirmation, apply one idempotent Provided Word policy change,
 and leave the student Argue queue unchanged.
+
+### Speaking Set Library and Individual Response
+
+- Run `npm run test:speaking-lab`; confirm rule, service, UI, voiceprint, and
+  five-Set seed contracts pass.
+- Run `npm run build:static`; confirm `dist/content/speaking` does not exist.
+- Verify stable Set/child IDs, stale revision rejection, snapshot immutability,
+  hidden-Set history access, and in-use deletion refusal.
+- Verify Part B warns at 60 seconds, stops at 65, rejects longer files, blocks
+  accidental navigation, and retries failed analysis without another upload.
+- Verify students mutate only owned responses; teachers can list/read all.
+- Smoke-test one Set Discussion and one Individual Response after deployment.

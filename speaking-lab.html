@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260829-14">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260830-2">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
     <main class="app-shell">
         <header class="app-header speaking-lab-toolbar">
-            <button class="speaking-sidebar-toggle" id="speaking-sidebar-toggle" type="button" aria-label="Open Discussion sidebar" aria-expanded="false" aria-controls="speaking-sidebar">
+            <button class="speaking-sidebar-toggle" id="speaking-sidebar-toggle" type="button" aria-label="Open Speaking sidebar" aria-expanded="false" aria-controls="speaking-sidebar">
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
                 <span class="speaking-sidebar-alert" id="speaking-sidebar-alert" aria-hidden="true" hidden>
                     <svg viewBox="0 0 16 16"><path d="M3.25 3.5h9.5v6.2H7.2L4.4 12v-2.3H3.25z"/></svg>
@@ -26,52 +26,41 @@
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"></path><path d="m14.8 6.3 3 3"></path></svg>
             </button>
         </header>
-        <aside class="speaking-sidebar" id="speaking-sidebar" aria-label="Discussion sidebar" aria-hidden="true">
+        <aside class="speaking-sidebar" id="speaking-sidebar" aria-label="Speaking sidebar" aria-hidden="true">
             <div class="speaking-sidebar-actions">
                 <a class="speaking-sidebar-home" id="speaking-sidebar-home" href="dashboard.html" aria-label="Back to Dashboard">Home</a>
-                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Create a new Discussion" title="Create a new Discussion">
+                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Create a new Discussion" title="Choose a Set">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 </button>
             </div>
+            <nav class="speaking-sidebar-nav" aria-label="Speaking sections">
+                <button class="speaking-sidebar-nav-item is-active" id="speaking-sidebar-choose-set" type="button">New · Choose a Set</button>
+                <button class="speaking-sidebar-nav-item" id="speaking-sidebar-voiceprint" type="button">Voiceprint</button>
+            </nav>
             <div class="speaking-sidebar-heading">
-                <p class="eyebrow">YOUR DISCUSSIONS</p>
-                <h2>Discussion list</h2>
+                <p class="eyebrow">YOUR WORK</p>
+                <h2>Group Discussions</h2>
             </div>
             <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite"><span class="speaking-status-dot" aria-hidden="true"></span><span>Loading your Discussions…</span></div>
             <section class="speaking-list" id="speaking-list" aria-label="Discussions"></section>
+            <div class="speaking-sidebar-heading speaking-sidebar-heading-secondary"><p class="eyebrow">YOUR WORK</p><h2>Individual Responses</h2></div>
+            <section class="speaking-list speaking-response-list" id="speaking-response-list" aria-label="Individual Responses"><p class="speaking-set-loading">Loading Individual Responses…</p></section>
         </aside>
         <div class="speaking-sidebar-scrim" id="speaking-sidebar-scrim" aria-hidden="true" hidden></div>
         <section class="speaking-lab-main" aria-labelledby="speaking-lab-title">
             <h1 class="sr-only" id="speaking-lab-title">Speaking Lab</h1>
-            <section class="speaking-mode-grid" aria-label="DSE Paper 4 practice modes">
-                <article class="speaking-mode-card speaking-mode-group speaking-glass-panel">
-                    <div class="speaking-mode-copy">
-                        <div class="speaking-mode-kicker"><span>DSE PAPER 4</span><strong>PART A</strong></div>
-                        <h2>Group Discussion</h2>
-                        <p>Record one DSE discussion and turn it into clear, evidence-based coaching.</p>
-                        <p class="speaking-privacy-note"><span aria-hidden="true">●</span> Private recording · DSE-aligned analysis</p>
-                    </div>
-                    <button class="primary-button speaking-new-discussion" id="new-discussion" type="button">
-                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                        <span>New Discussion</span>
-                    </button>
-                </article>
-                <article class="speaking-mode-card speaking-mode-individual speaking-glass-panel" aria-labelledby="individual-response-title">
-                    <div class="speaking-mode-copy">
-                        <div class="speaking-mode-kicker"><span>DSE PAPER 4</span><strong>PART B</strong></div>
-                        <h2 id="individual-response-title">Individual Response</h2>
-                        <p>Respond to a DSE prompt with focused ideas and clear support.</p>
-                    </div>
-                    <span class="speaking-coming-soon">Coming soon</span>
-                </article>
+            <section class="speaking-set-library speaking-glass-panel" id="speaking-set-library" aria-labelledby="speaking-set-library-title">
+                <div class="speaking-set-library-heading"><div><p class="eyebrow accent">DSE PAPER 4</p><h2 id="speaking-set-library-title">Choose a Set</h2><p>Start with the article, then practise Part A Group Discussion or one Part B Individual Response question.</p></div><button class="outline-button" id="speaking-set-search-toggle" type="button" hidden>Filter</button></div>
+                <label class="speaking-set-search" id="speaking-set-search-wrap" hidden><span class="sr-only">Search Sets</span><input id="speaking-set-search" type="search" placeholder="Search Sets" autocomplete="off"></label>
+                <div class="speaking-set-list" id="speaking-set-list" aria-live="polite"><p class="speaking-set-loading">Loading Sets…</p></div>
             </section>
-            <section class="speaking-voiceprint-card" id="my-voiceprint-card" aria-labelledby="my-voiceprint-title">
-                <div class="speaking-voiceprint-icon" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-                <div class="speaking-voiceprint-copy"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2 id="my-voiceprint-title">My voiceprint</h2><p id="my-voiceprint-summary">Checking your voiceprint…</p></div>
-                <button class="outline-button" id="open-my-voiceprint" type="button" disabled>Set up voiceprint</button>
+            <section class="speaking-mode-grid speaking-legacy-cards" hidden aria-hidden="true" aria-label="DSE Paper 4 practice modes">
+                <span>DSE PAPER 4 PART A Group Discussion</span><span>DSE PAPER 4 PART B Individual Response</span><span class="speaking-coming-soon">Coming soon</span>
+                <button id="new-discussion" type="button">New Discussion</button>
             </section>
             <p class="sr-only">Recording choices include Record on this device and Choose audio file.</p>
             <section class="speaking-detail" id="speaking-detail" hidden aria-live="polite"></section>
+            <section class="speaking-voiceprint-main speaking-glass-panel" id="speaking-voiceprint-main" hidden aria-live="polite"><p class="eyebrow accent">REUSABLE VOICE ID</p><h2>Voiceprint</h2><p id="speaking-voiceprint-main-summary">Record once to help Speaking Lab recognise your Speaker track in future Group Discussions.</p><div class="speaking-detail-actions"><button class="primary-button" id="speaking-voiceprint-main-open" type="button">Set up voiceprint</button><button class="outline-button" id="speaking-voiceprint-main-back" type="button">Back to Choose a Set</button></div></section>
         </section>
     </main>
 
@@ -80,7 +69,7 @@
             <div class="speaking-dialog-head"><p class="eyebrow accent">NEW SESSION</p><h2 id="discussion-dialog-title">Create a Discussion</h2><p>Add the DSE task and recording plan. Speaking Lab will detect Candidates from the recording; names can be added inside the Session.</p></div>
             <div class="speaking-form-grid">
                 <label class="speaking-field speaking-field-wide"><span>Discussion title</span><input id="discussion-title" name="title" maxlength="120" required placeholder="e.g. Social media and teenagers"></label>
-                <label class="speaking-field speaking-field-wide"><span>DSE discussion prompt</span><textarea id="discussion-prompt" name="prompt_text" maxlength="10000" required placeholder="Paste the DSE discussion task here."></textarea></label>
+                <label class="speaking-field speaking-field-wide" id="discussion-prompt-field"><span>DSE discussion prompt</span><textarea id="discussion-prompt" name="prompt_text" maxlength="10000" placeholder="Paste the DSE discussion task here."></textarea></label>
                 <label class="speaking-field"><span>Discussion date</span><input id="discussion-date" name="discussion_date" type="date"></label>
                 <label class="speaking-field"><span>Recording time</span><input id="discussion-duration" name="duration_seconds" type="number" min="180" max="1800" step="30" placeholder="480 seconds · 4 Candidates"></label>
             </div>
@@ -130,6 +119,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260829-12"></script>
+    <script src="assets/js/speaking-lab.js?v=20260830-2"></script>
 </body>
 </html>
