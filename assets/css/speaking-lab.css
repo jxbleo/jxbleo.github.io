@@ -479,7 +479,7 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .teacher-voiceprint-search input { width: 100%; min-height: 42px; margin-top: 5px; padding: 0 11px; border: 1px solid var(--sl-hairline); border-radius: 12px; background: rgba(255,255,255,.76); }
 .speaking-dialog { width: min(680px, calc(100vw - 28px)); max-height: min(88vh, 860px); padding: 0; overflow: auto; border: 1px solid rgba(255,255,255,.74); border-radius: 27px; color: var(--sl-ink); background: rgba(248,251,251,.91); box-shadow: 0 34px 90px rgba(22,43,54,.27), inset 0 1px 0 rgba(255,255,255,.92); -webkit-backdrop-filter: blur(34px) saturate(160%); backdrop-filter: blur(34px) saturate(160%); }
 .speaking-dialog::backdrop { background: rgba(24,37,44,.38); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
-.speaking-dialog form, .speaking-voiceprint-dialog-body, #invitation-dialog-content { padding: clamp(22px,4vw,34px); }
+.speaking-dialog form, #invitation-dialog-content { padding: clamp(22px,4vw,34px); }
 .speaking-dialog-head { margin-bottom: 22px; }
 .speaking-dialog-head .eyebrow { margin: 0 0 7px; color: var(--sl-blue-deep); font-size: .64rem; }
 .speaking-dialog-head h2 { margin: 0; font-size: clamp(1.55rem,4vw,2.15rem); line-height: 1.1; letter-spacing: -.04em; }
@@ -495,10 +495,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-dialog textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
 .speaking-dialog input:focus, .speaking-dialog textarea:focus, .speaking-roster-editor input:focus, .speaking-recording-settings input:focus { border-color: rgba(8,124,240,.48); box-shadow: 0 0 0 4px rgba(8,124,240,.09); }
 .speaking-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 23px; }
-.speaking-voiceprint-dialog-body blockquote { margin: 18px 0; padding: 16px 18px; border: 0; border-radius: 16px; color: #274351; background: rgba(8,124,240,.07); font-size: .91rem; line-height: 1.65; }
-.speaking-privacy-callout { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 10px; margin-bottom: 17px; padding: 12px; border-radius: 14px; color: #365e4e; background: rgba(34,154,101,.08); }
-.speaking-privacy-callout span { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 50%; color: #fff; background: #2a9a6a; font-size: .72rem; }
-.speaking-privacy-callout p { margin: 1px 0 0; font-size: .74rem; line-height: 1.45; }
 .speaking-consent { display: flex !important; align-items: flex-start; gap: 10px; padding: 13px; border: 1px solid rgba(71,95,105,.12); border-radius: 14px; background: rgba(255,255,255,.65); color: #465860; font-size: .78rem; line-height: 1.5; }
 .speaking-consent input { width: auto !important; min-height: 0; margin: 3px 0 0 !important; flex: 0 0 auto; }
 .speaking-dialog .speaking-recording-time { font-size: 2.25rem; text-align: left; }
