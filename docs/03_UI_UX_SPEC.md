@@ -40,7 +40,13 @@ calendar surface and external Close control remain inside the safe viewport;
 closing, Escape, or a backdrop click restores focus to the originating square
 and the exact page scroll position. The grid provides four green intensity
 levels, visible focus, Reduced Motion, Reduced Transparency, and
-increased-contrast fallbacks.
+increased-contrast fallbacks. Every task capsule inside the selected calendar
+day is keyboard/click accessible and opens the same task-entry confirmation as
+the To Do List. Opening confirmation temporarily suspends the calendar layer;
+its external `Close` restores that exact calendar date, internal scroll
+position, and originating task focus, while `Enter` closes both layers and
+opens the exercise or Writing Composition. Escape and backdrop clicks leave
+the task-entry confirmation open.
 
 | Page | Purpose |
 | --- | --- |

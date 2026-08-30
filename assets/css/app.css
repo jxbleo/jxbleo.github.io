@@ -1256,16 +1256,6 @@ html.teacher-modal-scroll-locked {
     font-weight: 720;
 }
 .student-calendar-task-list { display: grid; gap: 8px; }
-.student-calendar-achievement {
-    cursor: default;
-}
-.student-calendar-achievement:hover,
-.student-calendar-achievement:focus-visible {
-    transform: none;
-    border-color: rgba(19, 118, 109, 0.16);
-    background: linear-gradient(135deg, #f4fbf7, #fff);
-    box-shadow: none;
-}
 .student-calendar-empty {
     margin: 0;
     padding: 18px 10px;
