@@ -85,9 +85,10 @@ cp .qa-secrets.example .qa-secrets.local
   header/list/Close within the safe viewport, and added a persistent Today
   marker plus accessible current-date label. Verified empty and 12-row dialogs
   at 320 x 568 and the empty dialog at a common 390 px phone width.
-- Replaced the amber Today ring/legend with the approved neutral breathing core
-  inside the square, retained the accessible Today state, and added a static
-  Reduced Motion fallback.
+- Replaced the Today animation with approved option F: a static plum
+  Shanghai day-of-month inside the square. The date updates daily, suppresses
+  the green contribution fill, and retains the accessible Today state without
+  a separate legend.
 
 ### 2026-08-27
 

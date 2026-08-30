@@ -20,11 +20,11 @@ at the top, followed by one quiet divider and a GitHub-style 53-week
 `ACHIEVEMENTS` grid. The removed weekly progress bar must not reappear. Monday
 starts each column; phones horizontally scroll to the newest weeks by default.
 Every past/today square is a real keyboard-accessible button, including empty
-days. Today suppresses its green contribution fill and uses one restrained
-graphite core that breathes entirely inside the square; no separate Today
-legend is shown. Reduced Motion freezes the core at its fully visible state.
-The button retains `aria-current="date"`, and its detail date starts with
-`Today`. The modal shows
+days. Today suppresses its green contribution fill and shows the Shanghai
+day-of-month directly inside the square with a restrained plum border and
+number; no separate Today legend or animation is shown. The number updates
+with the server-provided Shanghai date. The button retains
+`aria-current="date"`, and its detail date starts with `Today`. The modal shows
 the full date, count, and compact completed-task rows, or an explicit empty-day
 message. On phones the heading stays fixed, only the task list scrolls, and the
 external Close control remains visible inside the bottom safe area, including

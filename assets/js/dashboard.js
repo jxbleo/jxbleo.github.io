@@ -562,7 +562,8 @@
             var count = Math.max(0, Number(day.count || 0));
             var level = Math.min(4, count);
             var label = (today ? 'Today, ' : '') + achievementDateLabel(key, true) + ': ' + count + (count === 1 ? ' achievement' : ' achievements');
-            cells.push('<button class="student-achievement-cell level-' + level + (today ? ' is-today' : '') + (future ? ' is-future' : '') + '" type="button" data-achievement-date="' + key + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '"' + (today ? ' aria-current="date"' : '') + (future ? ' disabled' : '') + '></button>');
+            var todayDay = today ? String(Number(key.slice(8, 10))) : '';
+            cells.push('<button class="student-achievement-cell level-' + level + (today ? ' is-today' : '') + (future ? ' is-future' : '') + '" type="button" data-achievement-date="' + key + '"' + (today ? ' data-achievement-today-day="' + todayDay + '"' : '') + ' aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '"' + (today ? ' aria-current="date"' : '') + (future ? ' disabled' : '') + '></button>');
         }
         achievementsScroll.innerHTML = '<div class="student-achievements-calendar">' +
             '<div class="student-achievements-month-corner" aria-hidden="true"></div>' +
