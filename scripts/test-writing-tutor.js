@@ -480,10 +480,10 @@ check("the first writing screen keeps only the compact source controls", () => {
   ], "compact Writing source screen");
   assert(!renderSource.includes("Title (Optional)") && !renderSource.includes('id="writing-title"'),
     "the initial Writing form must not ask students for a Title");
-  requireEvery(textSource, ['aria-label="Your Writing"', 'rows="3"', "writing-text", 'placeholder="Your Writing"', "cameraOnlyButton('writing'"], "language text-entry field");
+  requireEvery(textSource, ['aria-label="Your Writing"', 'rows="3"', "writing-text", 'placeholder="Your writing"', "cameraOnlyButton('writing'"], "language text-entry field");
   const sourceFields = functionSource(client, "sourceFieldsHtml", "rubricOptions");
   const cameraButton = functionSource(client, "cameraOnlyButton", "sourceFieldsHtml");
-  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'placeholder="Writing Prompt"', 'rows="1"', "source-fixed-divider"], "Brainstorming source fields");
+  requireEvery(sourceFields, ['aria-label="Rubric"', 'aria-label="Writing Prompt"', 'placeholder="Writing prompt"', 'rows="1"', "source-fixed-divider"], "Brainstorming source fields");
   assert(sourceFields.indexOf('aria-label="Rubric"') < sourceFields.indexOf('aria-label="Writing Prompt"')
       && sourceFields.indexOf('aria-label="Writing Prompt"') < sourceFields.indexOf("source-fixed-divider"),
     "Brainstorming source order must be Rubric, Writing Prompt, then divider before Writing");

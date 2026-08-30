@@ -1940,7 +1940,7 @@
             ? '<div class="field source-control-only"><select id="writing-rubric" aria-label="Rubric"><option value="">Choose a Rubric</option>' + rubricOptions(state.rubricId) + '</select></div>'
             : '';
         var prompt = standardized
-            ? '<div class="field inline-writing-field prompt-writing-field">' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea class="source-auto-grow source-prompt-input" id="writing-prompt" rows="1" maxlength="6000" aria-label="Writing Prompt" placeholder="Writing Prompt">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
+            ? '<div class="field inline-writing-field prompt-writing-field">' + (allowPromptScan ? cameraOnlyButton('prompt', 'Scan writing prompt') : '') + '<textarea class="source-auto-grow source-prompt-input" id="writing-prompt" rows="1" maxlength="6000" aria-label="Writing Prompt" placeholder="Writing prompt">' + escapeHtml(state.promptText) + '</textarea></div><div class="source-fixed-divider" aria-hidden="true"></div>'
             : '';
         return standardized ? '<section class="section-block source-fields">' + rubric + prompt + '</section>' : '';
     }
@@ -1961,7 +1961,7 @@
     }
 
     function textSourceHtml() {
-        return '<div class="field inline-writing-field">' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript source-auto-grow" id="writing-text" rows="3" maxlength="30000" aria-label="Your Writing" placeholder="Your Writing">' + escapeHtml(state.confirmedText) + '</textarea></div>';
+        return '<div class="field inline-writing-field">' + cameraOnlyButton('writing', 'Scan your writing') + '<textarea class="manuscript source-auto-grow" id="writing-text" rows="3" maxlength="30000" aria-label="Your Writing" placeholder="Your writing">' + escapeHtml(state.confirmedText) + '</textarea></div>';
     }
 
     function boundedPhotoIndex(value, count) {

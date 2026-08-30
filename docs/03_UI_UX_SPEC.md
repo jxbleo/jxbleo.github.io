@@ -2284,7 +2284,7 @@ Important mobile rules:
   headings. The source form has no student-entered Title control; rubric choice, prompt
   guidance, and manuscript guidance live inside their controls in one muted serif placeholder
   style while accessible names remain available to assistive technology. The
-  placeholders are exactly `Writing Prompt` and `Your Writing`. Brainstorming retains
+  placeholders are exactly `Writing prompt` and `Your writing`. Brainstorming retains
   the control order Rubric, Writing Prompt, divider, Your Writing; the divider is one full
   solid line matching the form's top separator. Writing Prompt begins at one row and
   Your Writing at three rows; both grow vertically with content and avoid an internal
