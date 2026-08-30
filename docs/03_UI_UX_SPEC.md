@@ -2661,8 +2661,18 @@ BBC, or IELTS Section URL.
 The student Speaking home shows `Choose a Set`; Voiceprint is available only
 from the left sidebar. A selected Set renders Context, Part A points with
 `Start Discussion`, and each Part B question with its own `Start Response`.
+The Set-first journey uses one vertical Apple-style card flow rather than a
+single container around nested rows. The first card establishes the DSE Paper 4
+context; each Set is a separate pressable card with year/source identity,
+three-step route, and anchored chevron. A selected Set becomes four vertically
+ordered surfaces: overview, Context, Part A, and Part B. Context copy has a
+quiet reading measure, while the two practice cards keep their action beside
+the content it affects. Individual Response uses separate overview, question,
+recorder/progress, and report cards instead of one enclosing panel.
 The Individual Response recorder displays `00:00 / 01:05`, turns red from
 `01:00`, stops at `01:05`, supports one checked audio upload, prevents accidental
 navigation during recording/upload, and preserves audio for analysis retry.
 On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware
-bottom sheets.
+bottom sheets. Cards reduce to one readable column, action buttons become
+full-width where necessary, and decorative movement becomes a cross-fade under
+reduced-motion preferences.

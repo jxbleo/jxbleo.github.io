@@ -2626,3 +2626,13 @@ and one-question 65-second Individual Response Sessions. Added a dedicated Part
 B prompt/schema, private durable analysis pipeline, retry-safe student report,
 Voiceprint sidebar navigation, public-build exclusion for Speaking Set source,
 and focused service/UI/seed tests.
+
+## 2026-08-30 — Apple-style Speaking Set card flow
+
+Reworked the student Set library, selected-Set task view, and Individual
+Response workspace into a restrained vertical card system aligned with the
+Speaking report and Writing correction surfaces. Added clearer year/source
+identity, Context/Part A/Part B wayfinding, direct action mapping, responsive
+phone layouts, press feedback, material depth, and reduced-motion,
+reduced-transparency, and increased-contrast fallbacks. Backend behavior and
+stored Set/Response data are unchanged.

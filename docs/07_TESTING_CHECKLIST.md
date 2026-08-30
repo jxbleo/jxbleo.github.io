@@ -2601,4 +2601,14 @@ and leave the student Argue queue unchanged.
 - Verify Part B warns at 60 seconds, stops at 65, rejects longer files, blocks
   accidental navigation, and retries failed analysis without another upload.
 - Verify students mutate only owned responses; teachers can list/read all.
+- Verify the Set library is a vertical sequence of independent cards rather
+  than one enclosing panel, and that every card has visible press feedback,
+  keyboard focus, and an unambiguous disclosure arrow.
+- Verify a selected Set appears in overview, Context, Part A, and Part B order;
+  Part A and each Part B question keep their action adjacent to the affected
+  content.
+- At phone widths, verify no Set title, route, question, timer, or action clips;
+  Start Discussion, Start Response, and recording actions remain reachable with
+  one hand. Recheck reduced-motion, reduced-transparency, and increased-contrast
+  media preferences.
 - Smoke-test one Set Discussion and one Individual Response after deployment.
