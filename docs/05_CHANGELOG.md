@@ -2638,3 +2638,6 @@ identity, Context/Part A/Part B wayfinding, direct action mapping, responsive
 phone layouts, press feedback, material depth, and reduced-motion,
 reduced-transparency, and increased-contrast fallbacks. Backend behavior and
 stored Set/Response data are unchanged.
+
+- Kept `Choose a Set` and the standalone Voiceprint card out of every opened
+  Discussion workspace, including completed reports reached from the sidebar.

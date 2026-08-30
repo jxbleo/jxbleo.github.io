@@ -2635,6 +2635,9 @@ advice plus English samples.
 The ready report starts directly with the first card and does not repeat a back
 control or ready-status label. The four dimension names use `&` where needed;
 VL is written as `Vocabulary & Language Pattern`.
+`Choose a Set` and the standalone Voiceprint surface are home/navigation
+surfaces only. Opening any Discussion removes both from the content column, so
+neither may appear above or below a queued, processing, or ready report.
 
 One collapsed `Complete script` follows the three cards. Each line shows its
 privacy-projected Speaker label and time range. Only the signed-in student's
