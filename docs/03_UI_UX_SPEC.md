@@ -20,10 +20,15 @@ at the top, followed by one quiet divider and a GitHub-style 53-week
 `ACHIEVEMENTS` grid. The removed weekly progress bar must not reappear. Monday
 starts each column; phones horizontally scroll to the newest weeks by default.
 Every past/today square is a real keyboard-accessible button, including empty
-days. Its modal shows the full date, count, and compact completed-task rows, or
-an explicit empty-day message. Closing restores focus and the exact page scroll
-position. The grid provides four green intensity levels, visible focus, Reduced
-Motion, Reduced Transparency, and increased-contrast fallbacks.
+days. Today has a persistent amber outline, an adjacent legend key, and
+`aria-current="date"`; its detail date also starts with `Today`. The modal shows
+the full date, count, and compact completed-task rows, or an explicit empty-day
+message. On phones the heading stays fixed, only the task list scrolls, and the
+external Close control remains visible inside the bottom safe area, including
+at a 320 px viewport and with long task titles. Closing restores focus and the
+exact page scroll position. The grid provides four green intensity levels,
+visible focus, Reduced Motion, Reduced Transparency, and increased-contrast
+fallbacks.
 
 | Page | Purpose |
 | --- | --- |

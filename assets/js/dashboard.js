@@ -558,10 +558,11 @@
             var key = achievementDateKey(new Date(start.getTime() + (index * 86400000)));
             var day = dayMap[key] || { date: key, count: 0, items: [] };
             var future = key > calendar.today_date;
+            var today = key === calendar.today_date;
             var count = Math.max(0, Number(day.count || 0));
             var level = Math.min(4, count);
-            var label = achievementDateLabel(key, true) + ': ' + count + (count === 1 ? ' achievement' : ' achievements');
-            cells.push('<button class="student-achievement-cell level-' + level + (future ? ' is-future' : '') + '" type="button" data-achievement-date="' + key + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '"' + (future ? ' disabled' : '') + '></button>');
+            var label = (today ? 'Today, ' : '') + achievementDateLabel(key, true) + ': ' + count + (count === 1 ? ' achievement' : ' achievements');
+            cells.push('<button class="student-achievement-cell level-' + level + (today ? ' is-today' : '') + (future ? ' is-future' : '') + '" type="button" data-achievement-date="' + key + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '"' + (today ? ' aria-current="date"' : '') + (future ? ' disabled' : '') + '></button>');
         }
         achievementsScroll.innerHTML = '<div class="student-achievements-calendar">' +
             '<div class="student-achievements-month-corner" aria-hidden="true"></div>' +
@@ -599,7 +600,7 @@
         var day = (state.achievementCalendar.days || []).find(function(item) { return item.date === key; });
         var items = day && day.items || [];
         achievementsTrigger = trigger || null;
-        achievementsDialogDate.textContent = achievementDateLabel(key, true);
+        achievementsDialogDate.textContent = (key === state.achievementCalendar.today_date ? 'Today · ' : '') + achievementDateLabel(key, true);
         achievementsDialogTitle.textContent = items.length ? (items.length === 1 ? '1 achievement' : items.length + ' achievements') : 'No achievements';
         achievementsDialogCount.textContent = items.length ? String(items.length) : '0';
         achievementsDialogList.innerHTML = items.length ? items.map(function(item) {

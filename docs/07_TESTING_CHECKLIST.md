@@ -75,8 +75,13 @@ Dashboard Achievements checks:
 - Writing counts only after `status: completed` plus `completed_at`;
 - the grid spans 53 Monday-first weeks, future cells are disabled, phone widths
   start at the newest weeks, and no page-level horizontal overflow appears;
+- Today has a clearly visible amber outline and legend key, exposes
+  `aria-current="date"`, and prefixes the opened detail date with `Today`;
 - click an active and an empty date, verify the task rows/empty message, Escape
   and Close behavior, focus restoration, and page-scroll restoration;
+- at 320 x 568 and a common 390 px phone width, verify the modal remains inside
+  the viewport; with enough rows to overflow, only the task list scrolls while
+  the date/count header and safe-area-aware Close control remain visible;
 - a failed `getAchievementCalendar` request leaves assignments and Library
   usable and shows only the card-level retry action.
 

@@ -10,6 +10,11 @@
 - Added a separate authenticated calendar aggregate so year-long history does
   not block the assignment bootstrap; Speaking remains intentionally dormant
   until its correction/practice completion milestone is explicit.
+- Fixed the phone detail dialog accidentally inheriting the Teacher sidebar's
+  three-column layout. The dialog now keeps its header and Close action visible
+  while long task lists scroll independently, respects phone safe areas, and
+  marks Today with an amber ring, legend key, accessible current-date state,
+  and `Today` detail label.
 
 ## 2026-08-30 — Full-width BBC audio waveform controls
 

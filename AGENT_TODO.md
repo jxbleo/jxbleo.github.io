@@ -81,6 +81,10 @@ cp .qa-secrets.example .qa-secrets.local
 - Verified pure aggregation rules, JavaScript syntax, local Visitor rendering,
   newest-week phone scrolling, empty-day dialog, Close/Escape behavior, and
   static diff checks. No test student data was created.
+- Fixed the mobile detail dialog's inherited Teacher-sidebar grid rule, kept
+  header/list/Close within the safe viewport, and added a persistent Today
+  marker plus accessible current-date label. Verified empty and 12-row dialogs
+  at 320 x 568 and the empty dialog at a common 390 px phone width.
 
 ### 2026-08-27
 
