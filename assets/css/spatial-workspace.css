@@ -467,10 +467,24 @@
 
 .liquid-glass-dashboard .student-achievement-cell.is-today {
     z-index: 2;
-    border-color: #c77d22;
-    outline: 2px solid #d99238;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.92), 0 4px 11px rgba(150, 88, 20, 0.24);
+    overflow: hidden;
+    border-color: rgba(52, 67, 75, 0.28);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: inset 0 0 0 1px rgba(52, 67, 75, 0.06);
+}
+
+.liquid-glass-dashboard .student-achievement-cell.is-today::after {
+    position: absolute;
+    inset: 2px;
+    border-radius: 2px;
+    background: #44535a;
+    content: "";
+    animation: studentAchievementTodayBreathe 1.9s ease-in-out infinite;
+}
+
+@keyframes studentAchievementTodayBreathe {
+    0%, 100% { opacity: 0.42; transform: scale(0.52); }
+    50% { opacity: 1; transform: scale(1); }
 }
 
 .liquid-glass-dashboard .student-achievement-cell:hover {
@@ -512,31 +526,6 @@
     font-weight: 820;
     text-decoration: underline;
     cursor: pointer;
-}
-
-.liquid-glass-dashboard .student-achievements-foot-keys,
-.liquid-glass-dashboard .student-achievements-today-key {
-    display: inline-flex;
-    align-items: center;
-}
-
-.liquid-glass-dashboard .student-achievements-foot-keys {
-    gap: 14px;
-}
-
-.liquid-glass-dashboard .student-achievements-today-key {
-    gap: 6px;
-    color: rgba(96, 61, 22, 0.72);
-}
-
-.liquid-glass-dashboard .student-achievements-today-key i {
-    width: 10px;
-    height: 10px;
-    border: 1px solid #c77d22;
-    border-radius: 3px;
-    outline: 2px solid #d99238;
-    outline-offset: 1px;
-    background: rgba(255, 255, 255, 0.62);
 }
 
 .liquid-glass-dashboard .student-achievements-legend {
@@ -1243,14 +1232,7 @@
     }
 
     .liquid-glass-dashboard .student-achievements-foot {
-        align-items: flex-start;
         margin-top: 5px;
-    }
-
-    .liquid-glass-dashboard .student-achievements-foot-keys {
-        align-items: flex-end;
-        flex-direction: column;
-        gap: 8px;
     }
 
     .student-achievements-overlay {
@@ -1493,6 +1475,11 @@
     .liquid-glass-dashboard .student-achievement-cell {
         border-color: rgba(27, 37, 43, 0.34);
     }
+
+    .liquid-glass-dashboard .student-achievement-cell.is-today {
+        border-color: #34434b;
+        background: #ffffff;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1502,5 +1489,11 @@
 
     .liquid-glass-dashboard .student-achievement-cell {
         transition: none;
+    }
+
+    .liquid-glass-dashboard .student-achievement-cell.is-today::after {
+        animation: none;
+        opacity: 1;
+        transform: none;
     }
 }
