@@ -2440,10 +2440,22 @@ Turn-by-turn review and confirm the horizontally scrollable Turn bar replaces
 the dimension bar at the same sticky edge. Switch turns and verify the context
 is independently vertically scrollable, includes the complete Discussion, and
 uses warm-yellow highlights on only that Speaker key with stronger emphasis on
-the selected turn. For an unconfirmed
+the selected turn. For every new V4 turn, verify both CS and IO visibly contain
+non-empty `What worked`, `What could be stronger`, and `How to improve` blocks
+plus `Try saying`; the text must be specific to that turn, explain impact, and
+contain an actionable step rather than one generic sentence. Open an immutable
+V2/V3 fixture and verify its `commentary_zh` remains visible in one `Review`
+block. Repeat the detailed and legacy checks in Teacher Speaking and in both
+student/teacher private share snapshots. For an unconfirmed
 student, verify both personal cards use the safe empty state, peer analysis is
 absent, and no transcript line is highlighted. Repeat at phone width and with
 Reduced Motion, Reduced Transparency, and Increased Contrast enabled.
+- Open or refresh `speaking-lab.html?discussion=<owned-id>` with an empty browser
+  cache and with a warm cache. Before the final report appears, verify the main
+  area contains only one centred spinner: the Set library, Discussion list,
+  preparation view, and processing view must never flash. After the report is
+  visible, opening the sidebar confirms its data can hydrate without replacing
+  or reopening the report.
 At a 390px phone viewport, open Create Discussion, Invitation, Edit title, Task,
 Candidates, and Voiceprint dialogs. Each must remain bottom-aligned with equal
 12px left/right insets and no browser-default 38px gap on only the right.
@@ -2540,9 +2552,10 @@ analysis the detail must show one empty Candidates card. After transcription it
 must show three-to-six Candidate tiles, automatic match percentages only where
 available, and identity/access rows under the same card. An unconfirmed VIP
 must remain a Speaker label in Candidate/report content.
-For a new V2 ready report, confirm the signed-in Candidate appears first and
+For a new V4 ready report, confirm the signed-in Candidate appears first and
 their turn review is expanded; every turn quotes the correct server transcript
-and time range; CS and IO each show commentary plus `Try saying`; low/unknown
+and time range; CS and IO each show strength, limitation, improvement, and `Try
+saying`; low/unknown
 confidence shows an ASR caution; peer reviews collapse; and the two-column
 coaching grid becomes one column without horizontal overflow at 390 pixels.
 In Ready, verify only target length, `Record on this device`, and
@@ -2640,8 +2653,13 @@ and leave the student Argue queue unchanged.
   than one enclosing panel, and that every card has visible press feedback,
   keyboard focus, and an unambiguous disclosure arrow.
 - Verify a selected Set appears in overview, Context, Part A, and Part B order;
-  Part A and each Part B question keep their action adjacent to the affected
-  content.
+  its overview has no three-step strip, its Context/Part labels are centred
+  without 01/A/B tiles, and the Part A Task appears before the four bullet
+  points. Part A and each Part B question keep their action adjacent to the
+  affected content.
+- Verify toolbar Back returns every selected Set, Discussion, Response, and
+  Voiceprint surface to `Choose a Set`. From `Choose a Set`, Back and drawer
+  Home must show the Dashboard confirmation; cancelling stays in Speaking Lab.
 - Open a queued, processing, and ready Discussion from both the Set library and
   Voiceprint surface; confirm neither `Choose a Set` nor the standalone
   Voiceprint card remains above or below the Discussion/report.

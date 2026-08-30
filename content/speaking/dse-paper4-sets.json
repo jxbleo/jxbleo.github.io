@@ -15,6 +15,7 @@
       ]
     },
     "part_a": {
+      "task": "Your school’s Parent–Teacher Association is preparing a guide on healthy smartphone use. Your group is discussing what the guide should recommend.",
       "instruction": "You may want to talk about:",
       "discussion_points": [
         { "point_id": "pa_01", "order": 1, "text": "why teenagers may need screen-time controls" },
@@ -36,7 +37,7 @@
         { "question_id": "ir_08", "order": 8, "text": "Is self-discipline more effective than technological control?" }
       ]
     },
-    "content_revision": 1,
+    "content_revision": 2,
     "visible_to_students": true
   },
   {
@@ -55,6 +56,7 @@
       ]
     },
     "part_a": {
+      "task": "Your school’s English Club is organising a workshop called ‘Use Translation Apps Wisely’. Your group is planning the workshop.",
       "instruction": "You may want to talk about:",
       "discussion_points": [
         { "point_id": "pa_01", "order": 1, "text": "the benefits and risks of translation apps" },
@@ -76,7 +78,7 @@
         { "question_id": "ir_08", "order": 8, "text": "How can users check whether a translation is accurate?" }
       ]
     },
-    "content_revision": 1,
+    "content_revision": 2,
     "visible_to_students": true
   },
   {
@@ -95,6 +97,7 @@
       ]
     },
     "part_a": {
+      "task": "Your class is doing a project on wearable technology. Your group is discussing how teenagers should use wearable smart devices.",
       "instruction": "You may want to talk about:",
       "discussion_points": [
         { "point_id": "pa_01", "order": 1, "text": "why wearable smart devices are popular" },
@@ -116,7 +119,7 @@
         { "question_id": "ir_08", "order": 8, "text": "Can a wearable device replace a medical check-up?" }
       ]
     },
-    "content_revision": 1,
+    "content_revision": 2,
     "visible_to_students": true
   },
   {
@@ -135,6 +138,7 @@
       ]
     },
     "part_a": {
+      "task": "Your school is helping a local museum attract more teenage visitors. Your group is discussing how the museum should develop its digital services.",
       "instruction": "You may want to talk about:",
       "discussion_points": [
         { "point_id": "pa_01", "order": 1, "text": "the benefits and limitations of a digital museum" },
@@ -156,7 +160,7 @@
         { "question_id": "ir_08", "order": 8, "text": "How can museums remain accessible to people without advanced devices?" }
       ]
     },
-    "content_revision": 1,
+    "content_revision": 2,
     "visible_to_students": true
   },
   {
@@ -175,6 +179,7 @@
       ]
     },
     "part_a": {
+      "task": "Your school library is reviewing its technology budget. Your group is discussing whether it should buy more laptops or rely more on students’ smartphones.",
       "instruction": "You may want to talk about:",
       "discussion_points": [
         { "point_id": "pa_01", "order": 1, "text": "why smartphones have become more popular than computers" },
@@ -196,7 +201,7 @@
         { "question_id": "ir_08", "order": 8, "text": "Is it wasteful to own several digital devices?" }
       ]
     },
-    "content_revision": 1,
+    "content_revision": 2,
     "visible_to_students": true
   }
 ]

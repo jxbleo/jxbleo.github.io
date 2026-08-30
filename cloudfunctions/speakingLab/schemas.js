@@ -1,6 +1,6 @@
 "use strict";
 
-const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v3";
+const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v4";
 const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v1";
 
 const DOMAIN_SCHEMA = {
@@ -29,10 +29,12 @@ const GROUP_DOMAIN_SCHEMA = {
 const TURN_COACHING_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["commentary_zh", "sample_en"],
+  required: ["strength_zh", "limitation_zh", "improvement_zh", "sample_en"],
   properties: {
-    commentary_zh: { type: "string", maxLength: 480 },
-    sample_en: { type: "string", maxLength: 800 },
+    strength_zh: { type: "string", minLength: 1, maxLength: 900 },
+    limitation_zh: { type: "string", minLength: 1, maxLength: 900 },
+    improvement_zh: { type: "string", minLength: 1, maxLength: 900 },
+    sample_en: { type: "string", minLength: 1, maxLength: 1200 },
   },
 };
 

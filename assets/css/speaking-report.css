@@ -23,7 +23,13 @@
 .speaking-shared-turn-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:#e8f0eb; }
 .speaking-shared-turn-grid > section { padding:14px; background:#fff; }
 .speaking-shared-turn-grid h4 { margin:0; color:#2b6848; font-size:13px; }
-.speaking-shared-turn-grid p { margin:7px 0 0; font-size:13px; }
+.speaking-shared-turn-feedback { display:grid; gap:8px; margin-top:12px; }
+.speaking-shared-turn-feedback article { padding:10px 11px; border-radius:11px; background:#f4f8f6; }
+.speaking-shared-turn-feedback article[data-feedback="strength"] { background:#edf8f1; }
+.speaking-shared-turn-feedback article[data-feedback="limitation"] { background:#fff7e9; }
+.speaking-shared-turn-feedback article[data-feedback="improvement"] { background:#eef5fb; }
+.speaking-shared-turn-feedback span { display:block; margin-bottom:4px; color:#718279; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+.speaking-shared-turn-feedback p { margin:0; font-size:13px; line-height:1.58; }
 .speaking-shared-sample { margin-top:10px; padding:10px 11px; border-radius:11px; color:#2b4c3b; background:#eef7f1; }
 .speaking-shared-sample span,.speaking-shared-sample q { display:block; }
 .speaking-shared-sample span { margin-bottom:4px; color:#73857b; font-size:10px; font-weight:700; text-transform:uppercase; }

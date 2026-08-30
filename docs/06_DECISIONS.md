@@ -1,5 +1,31 @@
 # 06 Decisions
 
+## 2026-08-30: Turn coaching uses explicit evidence-effect-action fields
+
+Decision:
+
+Version new Group Discussion reports as `dse-speaking-report-v4`. For both CS
+and IO, every canonical turn requires bounded `strength_zh`, `limitation_zh`,
+`improvement_zh`, and `sample_en` fields. Keep immutable V2/V3 commentary
+readable through a projection-only compatibility path. Use the existing hard
+output cap of 16,000 tokens and make that cap the default for V4.
+
+Reason:
+
+A single free-form commentary field encouraged short, interchangeable feedback
+and could not guarantee that students saw what worked, what constrained the
+turn, or what to do next. Separate required fields make those teaching purposes
+machine-checkable while retaining one model call and the existing privacy/ASR
+safeguards.
+
+Trade-offs:
+
+- V4 responses are larger and may cost more than concise V2/V3 reports.
+- A six-Candidate report has less output headroom, so the prompt bounds each
+  field to one or two complete sentences and the provider budget uses 16,000.
+- Historical reports remain immutable and cannot gain the new detail without a
+  deliberate reanalysis that creates a new report version.
+
 ## 2026-08-30: Speaking coaching belongs to its assessed dimension
 
 Decision:

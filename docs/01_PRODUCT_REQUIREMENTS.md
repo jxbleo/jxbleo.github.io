@@ -2114,9 +2114,13 @@ review remains available.
 ## DSE Speaking Lab V1 (local implementation boundary)
 
 Speaking Lab covers DSE English Language Paper 4 Part A Group Discussion and
-question-scoped Part B Individual Response. The compact top toolbar has the
-same hamburger symbol as Writing, no student-name chip, and opens a left-side
-work drawer. Its top row contains a native Home link, an icon-only Voiceprint
+question-scoped Part B Individual Response. The compact top toolbar has a
+contextual Back control at left, no student-name chip, and a history control at
+right that opens the existing left-side work drawer. Back from any Set,
+Voiceprint, Discussion, or Response workspace returns to `Choose a Set`; Back
+from `Choose a Set` opens a confirmation before returning to the student
+Dashboard. Its drawer top row contains a Home link using the same confirmation,
+an icon-only Voiceprint
 destination, and a plus action that returns to `Choose a Set`. Directly below,
 one `Part A` / `Part B` segmented control switches between Group Discussion and
 Individual Response cards. The drawer contains no `New · Choose a Set`,
@@ -2166,16 +2170,27 @@ and never rewrites the stored segment-level transcript used for scoring and
 audit. If the student's track is not confirmed, the personal cards stay empty
 rather than exposing a peer's analysis.
 
-Every new V3 report also provides a turn-by-turn review for each canonical
+A refresh or direct visit to an owned Discussion URL must show one neutral
+loading spinner and then the final Discussion/report state. It must not expose
+the Set library, Discussion list, preparation screen, or any other intermediate
+surface while the target is resolving. Supplementary Voiceprint, Set, and
+sidebar-history data may load afterward without replacing the visible report.
+
+Every new V4 report also provides a turn-by-turn review for each canonical
 Candidate speaking turn. A turn combines consecutive ASR sentences from the
 same Candidate and ends when another voice speaks, non-Candidate context
 intervenes, or a material pause occurs. Each turn shows the server-derived AI
-transcript, concise Communication Strategies (CS) and Ideas & Organisation
-(IO) coaching, and one natural English `Try saying` sample beneath each domain.
+transcript and separate Communication Strategies (CS) and Ideas & Organisation
+(IO) coaching. Under each domain, the report must explain a concrete strength
+and why it helped, a specific limitation or cautious development opportunity
+and its effect, and an immediately usable improvement step. One natural English
+`Try saying` sample demonstrates that improvement beneath each domain.
 Those English examples are Vocabulary/Language support for achieving the CS or
 IO goal, not a fourth score. The server requires exactly one review for every
 canonical Candidate turn and rejects missing, duplicated, foreign, or invented
-turn references.
+turn references. Generic one-sentence comments and interchangeable advice across
+different turns or domains do not satisfy the report contract. Immutable V2/V3
+reports retain their earlier concise commentary presentation.
 
 ASR text is supporting evidence rather than a guaranteed verbatim record. A
 single odd word, phonetic approximation, semantically impossible token, proper
@@ -2315,8 +2330,12 @@ answers are returned only by the authorized practice flow.
 ### DSE Paper 4 Speaking Set Library
 
 Speaking Lab now begins with `Choose a Set`. Each teacher-managed Set has one
-immutable `set_id`, PP/MOCK source metadata, a Context article, Part A Group
-Discussion points, and stable Part B Individual Response question IDs. Starting
+immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part
+A `task` statement followed by its Group Discussion points, and stable Part B
+Individual Response question IDs. The selected-Set overview omits the redundant
+Context/Part A/Part B progress strip. Context, `Part A Group Discussion`, and
+`Part B Individual Response` use centred blue labels without 01/A/B icon tiles.
+Starting
 Part A creates the existing Discussion from a frozen Set snapshot. Starting one
 Part B question creates a separate private 65-second Individual Response owned
 by the authenticated student. The final five seconds use a red time warning;

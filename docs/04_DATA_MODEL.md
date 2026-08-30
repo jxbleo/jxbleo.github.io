@@ -1354,6 +1354,17 @@ canonical shape and discards provider extras. Earlier immutable reports may
 retain Candidate-level coaching arrays; the browser presents those through an
 explicit compatibility layout and never rewrites the stored report.
 
+V4 replaces each new Group Discussion turn domain's single
+`commentary_zh` with four required fields: `strength_zh`, `limitation_zh`,
+`improvement_zh`, and `sample_en`. The first three are bounded Traditional
+Chinese explanations of what worked and why, what limited the turn and its
+effect, and the next specific action. `sample_en` is a bounded one-to-three
+sentence demonstration that preserves the Candidate's apparent intention.
+Canonicalization rejects a new V4 model response when any field is empty. Read
+projections continue to accept immutable V2/V3 `commentary_zh` plus `sample_en`
+rows and return them unchanged for the legacy UI path; stored historical reports
+are never migrated in place.
+
 Required uniqueness/index coverage includes Discussion/participant/asset/job/
 report/share/event IDs, Discussion plus participant scope, job status plus
 retry/lease times, asset status plus expiry, and share status plus expiry. Raw
@@ -1379,7 +1390,7 @@ answers, slots, or private audio URLs.
 ## Speaking Set Library additions
 
 Add ADMINONLY `speaking_sets` with unique `set_id`, source/year/version/title,
-Context paragraphs, ordered Part A points, ordered Part B questions,
+Context paragraphs, `part_a.task`, ordered Part A points, ordered Part B questions,
 `content_revision`, `visible_to_students`, monotonic `next_point_sequence` and
 `next_question_sequence`, and teacher audit fields. Add ADMINONLY
 `speaking_individual_responses` with unique `response_session_id`, authenticated

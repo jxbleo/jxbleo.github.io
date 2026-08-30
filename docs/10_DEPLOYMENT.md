@@ -1182,10 +1182,11 @@ The first production-candidate adapter uses these non-secret ASR values:
 The DSE report adapter requires `SPEAKING_AI_TEXT_API_KEY`,
 `SPEAKING_AI_TEXT_API_URL`, `SPEAKING_AI_TEXT_MODEL`, and
 `SPEAKING_AI_TEXT_PROTOCOL=chat_json_object`. Optional bounds are
-`SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS` and `SPEAKING_AI_TIMEOUT_MS`. V2
-turn-by-turn reports default to 12,000 output tokens (hard-capped at 16,000);
-if the environment already pins the older 8,000 value, raise it to `12000`
-before benchmarking four-to-six Candidate reports. Enter each
+`SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS` and `SPEAKING_AI_TIMEOUT_MS`. Detailed V4
+turn-by-turn reports default to 16,000 output tokens, which is also the hard
+cap. If the environment explicitly pins an earlier 8,000 or 12,000 value, raise
+it to `16000` before benchmarking four-to-six Candidate reports; otherwise the
+expanded per-turn JSON may be cut off before validation. Enter each
 environment key/value as its own console row; never paste several assignments
 into the environment-key field and never copy a key value into chat, Git, a
 deploy plan, or a database row.

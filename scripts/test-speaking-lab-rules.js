@@ -8,7 +8,12 @@ function actor(uid, role = "student") { return { auth_uid: uid, role, active: tr
 function participant(id, key, extra = {}) { return { participant_id: id, kind: "vip", student_uid: id, display_name: id, invitation_status: "accepted", identity_status: "teacher_confirmed", matched_speaker_key: key, mapping_revision: 1, ...extra }; }
 function reportFor(keys = ["spk_01", "spk_02"]) {
   const domain = (id, score = 5) => ({ score, commentary_zh: "表现稳定", evidence_segment_ids: [id], strengths: ["有证据的优点"], priority_actions: ["下一步行动"], language_suggestions: ["I would build on that by adding..."] });
-  const coaching = () => ({ commentary_zh: "先回应同学，再推进讨论。", sample_en: "I agree with your point, and I would also add that..." });
+  const coaching = () => ({
+    strength_zh: "先回应了同学的观点，显示有聆听并能接续讨论。",
+    limitation_zh: "回应后很快转到自己的看法，两者之间的逻辑关系仍不够清楚。",
+    improvement_zh: "先概括对方观点，再明确说明自己补充的是原因、例子还是限制。",
+    sample_en: "I agree with your point, and I would also add that...",
+  });
   return {
     group_summary_zh: "小组总结", group_strengths: ["倾听"], group_priorities: ["回应"], discussion_flow: ["开场"],
     candidates: keys.map((speaker_key, index) => {
@@ -188,6 +193,12 @@ function run() {
   assert.deepEqual(canonical.candidates[0].domains.communication_strategies.language_suggestions, ["I would build on that by adding..."]);
   assert.equal(canonical.candidates[0].interaction_summary.turn_count, 1);
   assert.equal(canonical.candidates[0].turn_reviews[0].turn_id, "spk_01_turn_01");
+  assert.match(canonical.candidates[0].turn_reviews[0].communication_strategies.strength_zh, /回应了同学/);
+  assert.match(canonical.candidates[0].turn_reviews[0].communication_strategies.limitation_zh, /逻辑关系/);
+  assert.match(canonical.candidates[0].turn_reviews[0].communication_strategies.improvement_zh, /概括对方观点/);
+  const legacyTurnProjection = lab.turnReviewProjection({ speaker_key: "spk_01", turn_reviews: [{ turn_id: "spk_01_turn_01", communication_strategies: { commentary_zh: "旧版 CS 点评", sample_en: "I agree." }, ideas_organisation: { commentary_zh: "旧版 IO 点评", sample_en: "For example..." } }] }, segments);
+  assert.equal(legacyTurnProjection[0].communication_strategies.commentary_zh, "旧版 CS 点评", "immutable V2/V3 reports must keep their legacy turn commentary");
+  assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: valid.candidates.map((item, index) => index ? item : { ...item, turn_reviews: item.turn_reviews.map((review) => ({ ...review, communication_strategies: { commentary_zh: "too brief", sample_en: "I agree." } })) }) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /TURN_COACHING_INCOMPLETE/, "new reports must provide all detailed coaching fields");
   assert.throws(() => lab.canonicalizeReport({ ...valid, candidates: valid.candidates.map((item, index) => index ? item : { ...item, turn_reviews: [] }) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] }), /TURN_REVIEW_COUNT/);
   const withProviderExtras = lab.canonicalizeReport({ ...valid, schema_version: "provider-copy", candidates: valid.candidates.map((item) => ({ ...item, provider_note: "discard", domains: { ...item.domains, overall_score: 99 } })) }, ["spk_01", "spk_02"], segments, { candidateSpeakerKeys: ["spk_01", "spk_02"] });
   assert.equal(Object.prototype.hasOwnProperty.call(withProviderExtras, "schema_version"), false);
