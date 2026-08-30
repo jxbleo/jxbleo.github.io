@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-30 — Calendar task-entry confirmation
+
+- Made task capsules inside the Student Achievements calendar keyboard/click
+  destinations that reuse the To Do List task-entry confirmation.
+- Closing confirmation now restores the same calendar date, scroll position,
+  and task focus; entering closes both modal layers before navigation.
+- Extended the achievement projection with safe owned-work locators for BBC,
+  Vocabulary, and Writing without returning answers or complete attempt data.
+
 ## 2026-08-30 — Faster task-entry dismissal
 
 - Reduced the shared task-entry confirmation Close transition to 75% of its

@@ -54,7 +54,9 @@ Student Dashboard 的 `ACHIEVEMENTS` 贡献格采用独立的读路径：页面�
 滚动窗口内的 countable attempts、学生自己的 Writing Composition 完成里程碑，
 并批量解析 sets 元数据，然后返回按上海日期分组的脱敏投影。该投影不进入启动
 bootstrap 或 IndexedDB，避免一年历史拖慢作业首屏，也避免把作文正文或答题内容
-带到浏览器。
+带到浏览器。投影只附带重新打开当前学生自有任务所需的安全定位符；Dashboard
+用这些定位符在浏览器内生成现有练习或 Writing 路由，并复用任务清单的进入确认，
+不会把答案、批改细节或完整 attempt 内容加入日历响应。
 
 Important pages:
 

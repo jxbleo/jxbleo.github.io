@@ -89,6 +89,10 @@ Dashboard Achievements checks:
   clicked month with that exact date selected;
 - the month-calendar intensity, selected-day count, result rows, and empty state
   use the same achievement projection as the contribution square;
+- click and keyboard-open BBC, Vocabulary, and Writing task capsules inside a
+  selected calendar day. Each must suspend the calendar and open the shared
+  task-entry confirmation; `Close` restores the same date, internal scroll,
+  and capsule focus, while `Enter` closes both layers and opens the owned task;
 - verify Close, Escape, and backdrop behavior restore focus and page scroll to
   the originating square;
 - at 320 x 568 and a common 390 px phone width, verify the month calendar and

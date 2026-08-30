@@ -1295,22 +1295,80 @@
         }).format(new Date(day.key + 'T12:00:00Z'));
     }
 
+    function studentCalendarAchievementHref(item) {
+        if (!item) return '';
+        if (String(item.type || '').toLowerCase() === 'writing') {
+            var compositionId = String(item.composition_id || '').trim();
+            return compositionId
+                ? withReturnParam('ai-tutor.html?composition=' + encodeURIComponent(compositionId), dashboardReturnUrl('resources'))
+                : '';
+        }
+        var setId = String(item.set_id || '').trim();
+        if (!setId) return '';
+        var set = {
+            set_id: setId,
+            id: setId,
+            title: item.title || setId,
+            section_id: item.type || '',
+            link: defaultPracticeLink(setId)
+        };
+        return assignmentOpenHref({
+            assignment_id: item.assignment_id || null,
+            source: item.assignment_id ? 'assignment' : 'self_study',
+            status: 'passed',
+            best_percentage: item.percentage,
+            history_attempt_id: item.attempt_id || null,
+            prefill_attempt_id: item.attempt_id || null,
+            set: set
+        });
+    }
+
     function renderStudentCalendarAchievement(item) {
         var type = achievementTypeLabel(item && item.type);
         var title = item && item.title || 'Completed task';
         var result = item && item.result || 'COMPLETED';
+        var href = studentCalendarAchievementHref(item);
+        var hideStatus = String(item && item.type || '').toLowerCase() === 'writing';
         return '<article class="student-message-task finished student-calendar-achievement"' +
-            ' data-entry-kind="' + escapeHtml(type) + '" data-entry-title="' + escapeHtml(title) + '">' +
+            ' data-entry-kind="' + escapeHtml(type) + '" data-entry-title="' + escapeHtml(title) + '"' +
+            ' data-entry-status="passed" data-entry-best="' + escapeHtml(item && item.percentage != null ? item.percentage : '') + '"' +
+            ' data-entry-locked="false" data-calendar-hide-status="' + (hideStatus ? 'true' : 'false') + '"' +
+            (href ? ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Review before opening ' + escapeHtml(title) + '"' : '') + '>' +
             '<div class="student-message-task-main">' +
                 '<span class="student-message-kicker">' + escapeHtml(type) + '</span>' +
                 '<span class="student-message-title-window">' +
                     '<strong class="student-message-title-track"><span>' + escapeHtml(title) + '</span></strong>' +
                 '</span>' +
             '</div>' +
-            '<div class="student-message-task-meta" aria-label="' + escapeHtml(result) + '">' +
+            '<div class="student-message-task-meta" aria-hidden="true">' +
                 '<span class="student-message-score">' + escapeHtml(result) + '</span>' +
+                (href ? '<svg viewBox="0 0 24 24" focusable="false"><path d="m9 5 7 7-7 7"></path></svg>' : '') +
             '</div>' +
         '</article>';
+    }
+
+    function openStudentCalendarAchievement(card, event) {
+        if (!card || !calendarOverlay) return;
+        if (event && event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+        var href = card.dataset.openHref;
+        if (!href) return;
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        calendarOverlay.hidden = true;
+        showPracticeEntryDialog(card, href, {
+            hideStatus: card.dataset.calendarHideStatus === 'true',
+            onDismiss: function() {
+                calendarOverlay.hidden = false;
+                window.requestAnimationFrame(function() {
+                    if (card.isConnected) card.focus({ preventScroll: true });
+                });
+            },
+            onCommit: function() {
+                setStudentCalendarPanel(false);
+            }
+        });
     }
 
     function renderStudentCalendar() {
@@ -5029,6 +5087,11 @@
     });
     if (calendarContent) {
         calendarContent.addEventListener('click', function(event) {
+            var taskCard = event.target.closest('.student-calendar-achievement[data-open-href]');
+            if (taskCard) {
+                openStudentCalendarAchievement(taskCard, event);
+                return;
+            }
             var monthButton = event.target.closest('[data-calendar-month]');
             if (monthButton && !monthButton.disabled) {
                 shiftStudentCalendarMonth(monthButton.dataset.calendarMonth === 'next' ? 1 : -1);
@@ -5038,6 +5101,10 @@
             if (!dayButton || dayButton.disabled) return;
             state.calendarSelectedDay = dayButton.dataset.calendarDate || '';
             renderStudentCalendar();
+        });
+        calendarContent.addEventListener('keydown', function(event) {
+            var taskCard = event.target.closest('.student-calendar-achievement[data-open-href]');
+            if (taskCard) openStudentCalendarAchievement(taskCard, event);
         });
     }
     bindMyWordsToolbar();

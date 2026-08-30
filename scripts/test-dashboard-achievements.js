@@ -39,6 +39,8 @@ assert.strictEqual(twoWeekEdgeLabels[0], "Aug", "a two-week leading month has en
 assert.strictEqual(twoWeekEdgeLabels[2], "Sep");
 
 const dashboardHtml = fs.readFileSync(path.join(__dirname, "../dashboard.html"), "utf8");
+const dashboardJs = fs.readFileSync(path.join(__dirname, "../assets/js/dashboard.js"), "utf8");
+const dashboardCss = fs.readFileSync(path.join(__dirname, "../assets/css/app.css"), "utf8");
 assert.ok(!dashboardHtml.includes("student-achievements-head"), "the visible Achievements heading should be removed");
 assert.ok(!dashboardHtml.includes("student-achievements-legend"), "the intensity-dot legend should be removed");
 assert.match(
@@ -47,6 +49,49 @@ assert.match(
   "achievement and active-day totals should share the lower summary"
 );
 assert.match(dashboardHtml, /student-achievements-panel[^>]*aria-label="Achievements"/, "the heading-free panel needs an accessible name");
+assert.ok(dashboardHtml.includes("assets/css/app.css?v=20260830-3"), "calendar interaction styles should be cache-busted");
+assert.ok(dashboardHtml.includes("assets/js/dashboard.js?v=20260830-7"), "calendar interaction logic should be cache-busted");
+
+const achievementHref = vm.runInNewContext(`(${dashboardFunctionSource("studentCalendarAchievementHref")})`, {
+  String,
+  encodeURIComponent,
+  withReturnParam: (href, returnUrl) => `${href}|return=${returnUrl}`,
+  dashboardReturnUrl: (view) => `dashboard.html?view=${view}`,
+  defaultPracticeLink: (setId) => `bbc.html?set=${setId}`,
+  assignmentOpenHref: (item) => JSON.stringify(item),
+});
+const exerciseHrefModel = JSON.parse(achievementHref({
+  type: "bbc",
+  set_id: "BBC-260101",
+  assignment_id: "work-1",
+  attempt_id: "a2",
+  percentage: 80,
+  title: "A New Year",
+}));
+assert.strictEqual(exerciseHrefModel.assignment_id, "work-1");
+assert.strictEqual(exerciseHrefModel.history_attempt_id, "a2");
+assert.strictEqual(exerciseHrefModel.prefill_attempt_id, "a2");
+assert.strictEqual(exerciseHrefModel.set.link, "bbc.html?set=BBC-260101");
+assert.strictEqual(
+  achievementHref({ type: "writing", composition_id: "essay" }),
+  "ai-tutor.html?composition=essay|return=dashboard.html?view=resources"
+);
+
+const renderCalendarAchievement = vm.runInNewContext(`(${dashboardFunctionSource("renderStudentCalendarAchievement")})`, {
+  achievementTypeLabel: (type) => String(type || "").toUpperCase(),
+  studentCalendarAchievementHref: () => "bbc.html?set=BBC-260101",
+  escapeHtml: (value) => String(value == null ? "" : value),
+});
+const calendarTaskMarkup = renderCalendarAchievement({ type: "bbc", title: "A New Year", result: "80% PASS", percentage: 80 });
+assert.ok(calendarTaskMarkup.includes('class="student-message-task finished student-calendar-achievement"'));
+assert.ok(calendarTaskMarkup.includes('data-entry-status="passed" data-entry-best="80"'));
+assert.ok(calendarTaskMarkup.includes('data-open-href="bbc.html?set=BBC-260101" role="link" tabindex="0"'));
+assert.ok(calendarTaskMarkup.includes('<svg viewBox="0 0 24 24"'));
+assert.ok(dashboardJs.includes("calendarOverlay.hidden = true;"), "opening a calendar task should suspend the calendar layer");
+assert.match(dashboardJs, /onDismiss:[\s\S]*calendarOverlay\.hidden = false;[\s\S]*card\.focus\(\{ preventScroll: true \}\)/);
+assert.match(dashboardJs, /onCommit:[\s\S]*setStudentCalendarPanel\(false\)/);
+assert.ok(dashboardJs.includes("calendarContent.addEventListener('keydown'"), "calendar task capsules should support Enter and Space");
+assert.ok(!dashboardCss.includes(".student-calendar-achievement {\n    cursor: default;"), "calendar task capsules should retain task-list interaction feedback");
 
 const now = new Date("2026-08-30T04:00:00.000Z");
 const window = achievementWindow(now);
@@ -84,6 +129,18 @@ assert.deepStrictEqual(calendar.days.map((day) => [day.date, day.count]), [
   ["2026-08-26", 2],
 ]);
 assert.strictEqual(calendar.days[0].items[0].result, "80% PASS", "the first qualifying attempt should define the day");
+assert.deepStrictEqual(
+  {
+    set_id: calendar.days[0].items[0].set_id,
+    assignment_id: calendar.days[0].items[0].assignment_id,
+    attempt_id: calendar.days[0].items[0].attempt_id,
+  },
+  { set_id: "BBC-260101", assignment_id: "work-1", attempt_id: "a2" },
+  "exercise achievements should expose only the safe locators needed to reopen the owned task"
+);
+assert.strictEqual(calendar.days[1].items[0].assignment_id, null, "self-study navigation should not invent an assignment");
+assert.strictEqual(calendar.days[1].items[0].set_id, "VOCAB-01");
+assert.strictEqual(calendar.days[1].items[1].composition_id, "essay", "writing achievements should reopen the owned composition");
 assert.deepStrictEqual(calendar.days[1].items.map((item) => item.type), ["vocabulary", "writing"]);
 
 console.log("Dashboard achievement calendar tests passed.");

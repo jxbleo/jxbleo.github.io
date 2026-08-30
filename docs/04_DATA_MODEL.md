@@ -950,7 +950,10 @@ is derived from authentication, never from browser-supplied identity.
 collection. It groups the rolling 53-week window by Shanghai date and returns
 `start_date`, `today_date`, `end_date`, `total_achievements`, `active_days`, and
 only active `days[]`. Each day item contains a stable non-secret achievement
-key, type, public title/detail, and pass/correction result. BBC/Vocabulary rows
+key, type, public title/detail, pass/correction result, and only the safe route
+locators needed to reopen owned work: `set_id`, nullable `assignment_id`, and
+the qualifying `attempt_id` for exercises, or `composition_id` for Writing.
+BBC/Vocabulary rows
 derive from the earliest qualifying immutable attempt per `assignment_id`, or
 per self-study `set_id` when `assignment_id` is null. Timed Vocabulary Practice
 is excluded. Writing derives once per `writing_compositions.composition_id`
