@@ -20,7 +20,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260830-10/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260831-1/);
   assert.match(page, /new URLSearchParams\(location\.search\)\.get\('discussion'\)[\s\S]*speaking-direct-entry/);
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
@@ -37,8 +37,7 @@ function run() {
   assert.match(page, /id="discussion-candidate-dialog"/);
   assert.match(page, /id="speaking-sidebar-alert"/);
   assert.match(page, /aria-controls="speaking-sidebar"/);
-  assert.match(page, /<a[^>]*class="speaking-sidebar-home"[^>]*href="dashboard\.html"[^>]*>[\s\S]*Home<\/a>/);
-  assert.doesNotMatch(page, /<button[^>]*id="speaking-sidebar-home"/);
+  assert.doesNotMatch(page, /speaking-sidebar-home|id="speaking-sidebar-home"|>Home<\/a>/);
   assert.match(page, /speaking-sidebar-new[^>]*aria-label="Choose a Set"/);
   assert.match(page, /id="speaking-sidebar-voiceprint"[^>]*aria-label="Open Voiceprint"/);
   assert.match(page, /id="speaking-sidebar-part-a"[^>]*>Part A<\/button>/);
@@ -184,7 +183,7 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260830-3/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260831-1/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=20260830-3/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
@@ -254,7 +253,8 @@ function run() {
   assert.match(css, /speaking-detail-open \.speaking-mode-grid/);
   assert.match(css, /\.speaking-sidebar[^}]*translateX\(calc\(-100% - 32px\)\)/);
   assert.match(css, /\.speaking-sidebar\.is-open[^}]*translateX\(0\)/);
-  assert.match(css, /\.speaking-sidebar-home[^}]*text-decoration:\s*none/);
+  assert.match(css, /\.speaking-sidebar-actions[^}]*grid-template-columns:\s*repeat\(2,\s*44px\)[^}]*justify-content:\s*end/);
+  assert.doesNotMatch(css, /\.speaking-sidebar-home/);
   assert.match(css, /\.speaking-sidebar-scrim\[hidden\][^}]*display:\s*none !important/);
   assert.match(css, /\.speaking-sidebar-scrim:not\(\[hidden\]\)[^}]*display:\s*block/);
   assert.doesNotMatch(css, /\.speaking-sidebar[^}]*translateX\(calc\(100% \+ 32px\)\)/);
@@ -303,15 +303,15 @@ function run() {
   assert.match(app, /function handleSpeakingBack\(\)/);
   assert.match(app, /backButton\.addEventListener\('click', handleSpeakingBack\)/);
   assert.match(app, /openLeaveSpeakingDialog\(\)[\s\S]*window\.location\.assign\('dashboard\.html'\)/);
-  assert.match(app, /sidebarHome\.addEventListener\('click'/);
+  assert.doesNotMatch(app, /sidebarHome|speaking-sidebar-home/);
   assert.match(app, /sidebarNew\.addEventListener\('click',[\s\S]*returnToSpeakingSetLibrary/);
   assert.match(app, /function openNewDiscussionDialog\(\)/);
   assert.match(app, /closeSidebar\(\);\s*\n\s*auth\.getSession\(\)/);
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260830-10/);
-  assert.match(page, /speaking-lab\.js\?v=20260830-10/);
+  assert.match(page, /speaking-lab\.css\?v=20260831-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260831-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

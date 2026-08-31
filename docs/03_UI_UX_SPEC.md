@@ -2532,7 +2532,7 @@ label, and no trailing student-name chip. A history control at right retains
 the drawer and its invitation marker. Back from any selected Set, Voiceprint,
 Discussion, or Response returns to `Choose a Set`; Back from that home surface
 opens a centred confirmation before navigating to `dashboard.html`. The drawer
-Home action uses the same confirmation. The drawer opens and closes from the
+has no duplicate Home action. It opens and closes from the
 left on the same path, uses a mobile scrim only while open without blocking the
 closed home or the desktop workspace, and renders the Discussion list directly.
 When one or more invitations are pending for the signed-in student, a compact
@@ -2541,9 +2541,9 @@ once without a repeating pulse, is hidden at zero, and is replaced by a static
 state under Reduced Motion. The button's accessible name includes the waiting
 invitation count. The matching Discussion row receives a quiet invitation tint
 and `Invitation` pill; selecting it opens the existing accept/decline dialog.
-Its top row places an icon-only Voiceprint action immediately left of the plus
-button: Home requests the Dashboard confirmation, Voiceprint opens its own
-full workspace, and plus returns to `Choose a Set`. Directly below, a compact
+Its top row contains only two right-aligned icon buttons: Voiceprint immediately
+left of plus. Voiceprint opens its own full workspace, and plus returns to
+`Choose a Set`. Directly below, a compact
 two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
 Discussion cards and Part B shows only Individual Response cards. The drawer
 has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
