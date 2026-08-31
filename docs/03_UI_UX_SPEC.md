@@ -2731,6 +2731,18 @@ Continue, Review, and optional Listening Practice; no interactive control is
 nested in an outer link. Practice returns to the validated originating library,
 BBC, or IELTS Section URL.
 
+The Library and practice runtime share the same workspace language as Writing
+and Speaking: a floating glass toolbar with a circular leading Back control and
+centered current title, a soft spatial-gradient page background, large rounded
+glass surfaces, compact pill/segmented controls, and consistent 44px-or-larger
+actions. Intensive Listening keeps its own teal accent so the feature remains
+identifiable without returning to the former dark utility header. Practice
+progress stays in the toolbar, material statistics sit inside the opening glass
+panel, and Start, Completion, Leave, and Argue states use the same light glass
+hierarchy. Narrow layouts preserve safe-area insets, ellipsize long toolbar
+titles, collapse the progress rail to its percentage, and never introduce
+horizontal page overflow.
+
 ### Set-first Speaking home and Part B recorder
 
 The student Speaking home shows `Choose a Set`; Voiceprint is available only

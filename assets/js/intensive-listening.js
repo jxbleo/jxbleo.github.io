@@ -718,6 +718,7 @@
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
+      $('.il-toolbar-title').textContent = state.material.title;
       renderMaterialContext();
       $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
       $('#audio').src = state.material.audio_src; hydrateLocalUnits(); renderProgress();
@@ -725,7 +726,7 @@
         document.body.classList.add('il-visitor-mode');
         $('#header-progress').parentElement.hidden = true;
         $('.il-stats').hidden = true;
-        $('.il-mode').textContent = 'VISITOR · LISTEN ONLY';
+        $('.il-toolbar-title').setAttribute('aria-label', 'Visitor · listen only · ' + state.material.title);
         $('#start-copy').textContent = 'Listen to the full programme. Dictation, answers, and saved progress require a student account.';
         $('#start-note').textContent = 'Visitor Mode plays public audio only and never loads answer data.';
         $('#previous-unit-button').hidden = true; $('#next-unit-button').hidden = true;
