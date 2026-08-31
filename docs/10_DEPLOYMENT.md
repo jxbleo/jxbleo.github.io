@@ -1205,6 +1205,23 @@ function invocation whose body contains `code: "UNKNOWN_ACTION"`, rendered by th
 client as the generic AI writing request error. Deploy and verify the bundled
 function first, then publish the matching static asset version.
 
+On 2026-08-31, commit `6d2418c` added quote-aware canonical sentence
+boundaries and was deployed as a code-only `writingTutor` update. Function detail
+was verified `Active` / `Available` at 11:21:01 with Node.js 18.15,
+`index.main`, 300-second timeout, and 512 MB memory unchanged. The online
+function was downloaded after deployment and its bundled `index.js` SHA-256
+matched the approved package byte-for-byte; an unauthenticated smoke invocation
+reached the handler and returned `AUTH_REQUIRED` as expected. No static asset,
+worker, collection, index, timer, provider setting, or environment value changed.
+
+CloudBase CLI 3.7 may incorrectly package the caller's current working directory
+when `fn code update --dir <absolute-path>` is used, causing a false 1.5 MB ZIP
+limit or a COS upload timeout. For an already bundled Writing release, extract
+`writingTutor.zip`, change the shell working directory to that two-file bundle,
+and run `tcb fn code update writingTutor --deployMode zip` there. Verify the
+final function detail and download comparison; do not treat upload completion as
+activation.
+
 ## Speaking Lab owner-gated rollout
 
 Create the ten `ADMINONLY` Speaking collections and indexes from the
