@@ -772,6 +772,10 @@ STAR 不阻止未来重新布置同一个 set。
     `Check` 后必须同时保留本地草稿和 Composition 的 `pending_rewrite_check`，只有结果成功发布才
     清理。网络断开、provider 失败或页面刷新不得清空。双面卡片的 inactive face 必须真正 hidden/
     inert，而不是只靠视觉旋转；键盘切换和 reduced-motion 也必须走同一互斥状态。
+ 19. Language Review 把带引号的一句拆成两张卡片，且两张卡片都建议互相合并：先检查服务器
+    `sentenceUnits`，不要归因于模型自由断句。模型收到的是已经分配好稳定 ID 的数组。确认引号内多个
+    句末标点和 `?” and...` / `?” he asked...` 已被确定性合并，同时段落空行仍是硬边界；补测
+    弯/直单双引号、所有格撇号和英寸符号。不要只改提示词隐藏“合并”建议。
 
 ## 6. 维护规则
 

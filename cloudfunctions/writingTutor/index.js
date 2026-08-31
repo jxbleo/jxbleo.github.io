@@ -443,15 +443,104 @@ function imageExtension(mimeType) {
   return { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }[mimeType] || "";
 }
 
+function hasParagraphBreak(value) {
+  return /\n[\t \r]*\n/.test(String(value || ""));
+}
+
+function straightQuoteRole(source, index, character) {
+  const previous = source[index - 1] || "";
+  const next = source[index + 1] || "";
+  const word = /[A-Za-z0-9]/;
+  if (character === "'" && word.test(previous) && word.test(next)) return null;
+  if ((!previous || /[\s([{:;,\-—]/.test(previous)) && next && !/\s/.test(next)) return "open";
+  if (previous && !/\s/.test(previous) && (!next || /[\s.!?,;:)\]}]/.test(next))) return "close";
+  return null;
+}
+
+function pairedQuoteRanges(source) {
+  const ranges = [];
+  const smartOpeners = { "“": [], "‘": [] };
+  const smartClosers = { "”": "“", "’": "‘" };
+  const straightOpeners = { '"': null, "'": null };
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (Object.prototype.hasOwnProperty.call(smartOpeners, character)) {
+      smartOpeners[character].push(index);
+      continue;
+    }
+    if (Object.prototype.hasOwnProperty.call(smartClosers, character)) {
+      const opener = smartClosers[character];
+      const start = smartOpeners[opener].pop();
+      if (Number.isInteger(start) && !hasParagraphBreak(source.slice(start, index + 1))) {
+        ranges.push({ start, end: index });
+      }
+      continue;
+    }
+    if (character !== '"' && character !== "'") continue;
+    if (source[index - 1] === "\\") continue;
+    const role = straightQuoteRole(source, index, character);
+    if (role === "open") {
+      straightOpeners[character] = index;
+      continue;
+    }
+    if (role === "close") {
+      const start = straightOpeners[character];
+      straightOpeners[character] = null;
+      if (Number.isInteger(start) && !hasParagraphBreak(source.slice(start, index + 1))) {
+        ranges.push({ start, end: index });
+      }
+    }
+  }
+  return ranges;
+}
+
+function paragraphBreakAtBoundary(source, currentStart, currentEnd, nextStart, nextEnd) {
+  const current = source.slice(currentStart, currentEnd);
+  const next = source.slice(nextStart, nextEnd);
+  const trailing = current.match(/\s*$/);
+  const leading = next.match(/^\s*/);
+  return hasParagraphBreak(`${trailing ? trailing[0] : ""}${source.slice(currentEnd, nextStart)}${leading ? leading[0] : ""}`);
+}
+
+function quotedContinuation(current, next) {
+  return /[.!?][”’"'](?:[)\]]*)\s*$/.test(current)
+    && /^\s*[a-z]/.test(next);
+}
+
 function sentenceUnits(manuscript) {
   const source = String(manuscript || "");
-  let parts = [];
+  let entries = [];
   try {
     const segmenter = new Intl.Segmenter("en", { granularity: "sentence" });
-    parts = Array.from(segmenter.segment(source), (item) => item.segment).filter((item) => item.trim());
+    entries = Array.from(segmenter.segment(source), (item) => ({
+      start: item.index, end: item.index + item.segment.length,
+    })).filter((item) => source.slice(item.start, item.end).trim());
   } catch (_error) {
-    parts = source.match(/[^.!?\n]+(?:[.!?]+[\"')\]]*|$)/g) || [];
+    const pattern = /[^.!?\n]+(?:[.!?]+[\"'”’\)\]]*|$)/g;
+    let match;
+    while ((match = pattern.exec(source)) !== null) {
+      if (match[0].trim()) entries.push({ start: match.index, end: match.index + match[0].length });
+      if (!match[0]) pattern.lastIndex += 1;
+    }
   }
+  if (!entries.length) return [];
+  const quoteRanges = pairedQuoteRanges(source);
+  const parts = [];
+  let current = { ...entries[0] };
+  for (let index = 1; index < entries.length; index += 1) {
+    const next = entries[index];
+    const insidePairedQuote = quoteRanges.some((range) => range.start < next.start && next.start <= range.end);
+    const crossesParagraph = paragraphBreakAtBoundary(source, current.start, current.end, next.start, next.end);
+    const currentText = source.slice(current.start, current.end);
+    const nextText = source.slice(next.start, next.end);
+    if (!crossesParagraph && (insidePairedQuote || quotedContinuation(currentText, nextText))) {
+      current.end = next.end;
+      continue;
+    }
+    parts.push(source.slice(current.start, current.end));
+    current = { ...next };
+  }
+  parts.push(source.slice(current.start, current.end));
   return parts.map((original, index) => ({
     sentence_id: `s${String(index + 1).padStart(3, "0")}`,
     original,
