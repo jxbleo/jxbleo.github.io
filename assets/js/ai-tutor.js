@@ -4026,7 +4026,7 @@
 
     function openLeaveConfirmation(action) {
         if (state.leaveDialogOpen) return;
-        state.leaveDialogAction = action === 'discard' ? 'discard' : action === 'writing-home' ? 'writing-home' : 'dashboard';
+        state.leaveDialogAction = action === 'discard' ? 'discard' : 'dashboard';
         state.returnFocus = document.activeElement;
         state.leaveDialogOpen = true;
         var title = leaveConfirmation.querySelector('#leave-confirmation-title');
@@ -4036,10 +4036,6 @@
             if (title) title.textContent = 'Discard this writing?';
             if (copy) copy.textContent = 'This draft will be permanently removed from History.';
             if (confirm) confirm.textContent = 'Discard';
-        } else if (state.leaveDialogAction === 'writing-home') {
-            if (title) title.textContent = 'Back to Writing?';
-            if (copy) copy.textContent = 'Your saved work is safe. Any cloud processing will continue in the background.';
-            if (confirm) confirm.textContent = 'Back';
         } else {
             if (title) title.textContent = 'Leave this writing?';
             if (copy) copy.textContent = 'Your saved work is safe. OCR and AI review will continue in the background.';
@@ -4069,10 +4065,6 @@
         closeLeaveConfirmation(false);
         if (action === 'discard') {
             discardDraftAndReturn();
-            return;
-        }
-        if (action === 'writing-home') {
-            returnToTutorHome();
             return;
         }
         stopOcrPolling();
@@ -4394,7 +4386,7 @@
             return;
         }
         if (state.current) {
-            openLeaveConfirmation('writing-home');
+            returnToTutorHome();
             return;
         }
         if (state.homeComposerOpen) {

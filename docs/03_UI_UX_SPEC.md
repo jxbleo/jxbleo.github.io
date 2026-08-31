@@ -2098,10 +2098,10 @@ Important mobile rules:
   `Start new Writing`. The right-side action group keeps the title pencil when
   applicable and the three-line sidebar button at the far-right edge. The sidebar
   contains the icon-only plus action and writing list, with no duplicate Home.
-- Back first closes an open sidebar. From a concrete Composition it opens the
-  existing safe-return confirmation and goes to Writing Home; from an expanded
-  new-writing composer it collapses the form without clearing local input; at base
-  Writing Home it opens the leave-to-Dashboard confirmation.
+- Back first closes an open sidebar. From a concrete Composition it returns directly
+  to Writing Home; from an expanded new-writing composer it collapses the form without
+  clearing local input. Internal Writing navigation never opens a confirmation; only
+  Back at base Writing Home opens the leave-to-Dashboard confirmation.
 - While a Composition is open, the flexible center of the top toolbar displays its
   AI-generated or student-edited title. A long title travels horizontally within
   that space with restrained pauses at both ends, matching task-title behavior;

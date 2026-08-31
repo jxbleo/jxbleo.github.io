@@ -356,8 +356,10 @@ check("toolbar Back follows the Writing hierarchy before Dashboard navigation", 
   assert(!/history-home/.test(`${page}\n${client}`), "the retired History Home control must be absent");
   requireEvery(page, ["leave-confirmation", "role=\"alertdialog\"", "aria-modal=\"true\"", "data-cancel-leave", "data-confirm-leave"],
     "custom leave-confirmation dialog");
-  assert(/writingBackButton\.addEventListener[\s\S]{0,900}state\.sidebarOpen[\s\S]{0,160}closeSidebar\(\)[\s\S]{0,320}state\.current[\s\S]{0,160}openLeaveConfirmation\(['"]writing-home['"]\)[\s\S]{0,360}state\.homeComposerOpen[\s\S]{0,220}renderWelcome\(\)[\s\S]{0,220}openLeaveConfirmation\(\)/.test(client),
+  assert(/writingBackButton\.addEventListener[\s\S]{0,900}state\.sidebarOpen[\s\S]{0,160}closeSidebar\(\)[\s\S]{0,320}state\.current[\s\S]{0,160}returnToTutorHome\(\)[\s\S]{0,360}state\.homeComposerOpen[\s\S]{0,220}renderWelcome\(\)[\s\S]{0,220}openLeaveConfirmation\(\)/.test(client),
     "Back must close the sidebar, return a Composition home, collapse the composer, then leave Writing in that order");
+  assert(!/openLeaveConfirmation\(['"]writing-home['"]\)/.test(client),
+    "internal Composition Back must not open a confirmation dialog");
   assert(/data-confirm-leave[\s\S]{0,180}(?:confirmLeave|dashboard\.html|window\.location)/i.test(client)
       && /function\s+confirmLeave\s*\([^)]*\)[\s\S]{0,400}(?:dashboard\.html|window\.location)/i.test(client),
     "only the dialog confirmation action may navigate back to Dashboard");

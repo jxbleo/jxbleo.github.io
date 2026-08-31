@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-31 — Writing Back confirmation boundary
+
+- Removed the confirmation step when Back moves from a Composition to Writing Home.
+- Kept direct sidebar dismissal and composer collapse, while reserving the leave
+  confirmation exclusively for Writing Home to Student Dashboard navigation.
+- Preserved the separate Discard confirmation because it permanently deletes eligible
+  unsubmitted draft data rather than navigating backward.
+
 ## 2026-08-31 — Safari Speaking report width containment
 
 - Constrained the ready Speaking report's grid, cards, and intermediate panels

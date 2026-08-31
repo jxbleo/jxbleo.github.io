@@ -1938,9 +1938,10 @@ High priority improvement:
   edits. Confirm the centered title and sidebar row update together, activity order
   does not change, long-title motion still works, and placeholder titles expose no pencil.
 - Click Back with the sidebar open and confirm it closes the sidebar first. From a
-  Composition, confirm Back asks before returning to Writing Home; from an expanded
+  Composition, confirm Back returns directly to Writing Home without a dialog; from an expanded
   composer, confirm it collapses without clearing input; at base Writing Home,
-  confirm the custom dialog appears before Dashboard navigation.
+  confirm the custom dialog appears before Dashboard navigation. Verify that this is
+  the only Back transition inside Writing that opens a confirmation.
   Cancel by button and `Escape`, then confirm leaving during queued OCR and queued
   review returns to Dashboard without cancelling either cloud job; reopening the
   Composition resumes the same job.
