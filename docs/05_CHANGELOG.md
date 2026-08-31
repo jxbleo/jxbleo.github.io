@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-31 — Safari Speaking report width containment
+
+- Constrained the ready Speaking report's grid, cards, and intermediate panels
+  to the phone viewport so Safari cannot size the whole report from a long Turn
+  tab row.
+- Kept Turn navigation independently momentum-scrollable and preserved its
+  edge-to-edge sticky presentation without allowing whole-page horizontal pan.
+- Added static regression coverage and bumped the Speaking stylesheet/page
+  cache versions used by the student and teacher entries.
+
 ## 2026-08-31 — Quote-aware Writing sentence boundaries
 
 - Added a deterministic repair layer after English sentence segmentation so punctuation inside balanced straight or curly quotations does not create extra Sentence Revision cards.
