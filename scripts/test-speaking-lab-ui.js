@@ -20,7 +20,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260831-1/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260831-2/);
   assert.match(page, /new URLSearchParams\(location\.search\)\.get\('discussion'\)[\s\S]*speaking-direct-entry/);
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
@@ -183,7 +183,7 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260831-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260831-2/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=20260830-3/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
@@ -207,6 +207,11 @@ function run() {
     assert.match(source, /commentary_zh/, "historical turn reviews must retain a legacy display path");
   });
   assert.match(css, /speaking-turn-feedback/);
+  assert.match(css, /\.speaking-report-layout \{ display: grid; grid-template-columns: minmax\(0,1fr\);/, "report grid must not inherit a wide Safari min-content track");
+  assert.match(css, /\.speaking-detail, \.speaking-detail-card, \.speaking-report-phase, \.speaking-report-layout, \.speaking-report-card \{ width: 100%; min-width: 0; max-width: 100%; \}/, "report ancestors and cards must stay inside the phone viewport");
+  assert.match(css, /\.speaking-report-sticky \{[^}]*width: 100%;[^}]*min-width: 0;[^}]*max-width: 100%;[^}]*overflow-x: auto;/, "only the sticky tab row may scroll horizontally");
+  assert.match(css, /\.speaking-turn-tabs \{ grid-auto-columns: minmax\(78px,max-content\); justify-content: start; \}/);
+  assert.match(css, /width: calc\(100% \+ 32px\); max-width: calc\(100% \+ 32px\); margin-inline: -16px;/, "phone tab rows must keep their edge-to-edge presentation without widening the page");
   assert.match(app, /function groupConsecutiveTranscriptLines\(report\)/);
   assert.match(app, /previous && previous\.speaker_identity === speakerIdentity/);
   assert.match(app, /groupConsecutiveTranscriptLines\(report\)\.map/);
@@ -310,7 +315,7 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260831-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260831-2/);
   assert.match(page, /speaking-lab\.js\?v=20260831-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);

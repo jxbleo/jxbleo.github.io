@@ -2474,7 +2474,11 @@ actions, and language suggestions; VL uses the exact `Vocabulary & Language
 Pattern` label; and PD remains `Not assessed`. At 390px, scroll through the
 analysis card and confirm its button bar sticks below the toolbar. Continue into
 Turn-by-turn review and confirm the horizontally scrollable Turn bar replaces
-the dimension bar at the same sticky edge. Switch turns and verify the context
+the dimension bar at the same sticky edge. Repeat in iPhone Safari with at least
+six personal Turns: at 100% Page Zoom, the toolbar and every report card must
+remain aligned to the same viewport width; swiping Session Details or a report
+card must not move the document sideways, while swiping the Turn bar must move
+only its buttons. Switch turns and verify the context
 is independently vertically scrollable, includes the complete Discussion, and
 uses warm-yellow highlights on only that Speaker key with stronger emphasis on
 the selected turn. For every new V4 turn, verify both CS and IO visibly contain

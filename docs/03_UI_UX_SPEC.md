@@ -2701,6 +2701,12 @@ saying` sample. The blocks show complete explanatory text without line clamping;
 historical concise reports use one labelled `Review` block. At phone widths the
 Turn bar uses the same sticky position and higher
 layer, replacing the analysis dimension bar when the Turn card reaches it.
+The report grid, every report card, and their intermediate layout containers
+must remain no wider than the phone viewport. Safari must not use the Turn
+bar's max-content width to enlarge the report grid or shrink the visual page.
+Only the Turn bar itself may scroll horizontally; swiping any other report
+surface must never pan the whole document. The phone Turn and dimension bars
+may still extend to the card edges while remaining explicitly width-bounded.
 
 The ready report starts directly with the first card and does not repeat a back
 control or ready-status label. The four dimension names use `&` where needed;
