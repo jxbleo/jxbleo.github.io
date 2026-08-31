@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-31 — Simplified Speaking sidebar navigation
+
+- Removed the duplicate Home action from the Speaking Lab drawer; the toolbar
+  Back control remains the single Dashboard exit and retains its confirmation.
+- Kept only the right-aligned Voiceprint and Choose-a-Set buttons in the drawer
+  action row, preserving 44px touch targets on phone and desktop.
+- Removed the unused Home styles and listener, and bumped the static cache
+  versions for the changed Speaking assets.
+
 ## 2026-08-31 — Verified GitHub publication fallback
 
 - Added one owner-gated repository publisher that gives ordinary Git Push a

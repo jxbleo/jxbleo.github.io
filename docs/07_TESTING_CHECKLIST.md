@@ -2689,13 +2689,14 @@ and leave the student Argue queue unchanged.
   points. Part A and each Part B question keep their action adjacent to the
   affected content.
 - Verify toolbar Back returns every selected Set, Discussion, Response, and
-  Voiceprint surface to `Choose a Set`. From `Choose a Set`, Back and drawer
-  Home must show the Dashboard confirmation; cancelling stays in Speaking Lab.
+  Voiceprint surface to `Choose a Set`. From `Choose a Set`, Back must show the
+  Dashboard confirmation; cancelling stays in Speaking Lab. Confirm the drawer
+  has no duplicate Home action.
 - Open a queued, processing, and ready Discussion from both the Set library and
   Voiceprint surface; confirm neither `Choose a Set` nor the standalone
   Voiceprint card remains above or below the Discussion/report.
-- Open the drawer at desktop and 390px: its first row must be Home, Voiceprint
-  icon, and plus; below it only the `Part A` / `Part B` segmented control and
+- Open the drawer at desktop and 390px: its first row must contain only the
+  right-aligned Voiceprint icon and plus; below it only the `Part A` / `Part B` segmented control and
   the selected mode's existing cards may appear. Confirm `New · Choose a Set`,
   text `Voiceprint`, both `Your Work` headings, and the inactive mode's cards
   are absent.

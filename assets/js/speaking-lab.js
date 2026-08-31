@@ -20,7 +20,6 @@
     var sidebarResponses = document.getElementById('speaking-sidebar-responses');
     var toolbarTitle = document.getElementById('speaking-toolbar-title');
     var toolbarEdit = document.getElementById('speaking-toolbar-edit');
-    var sidebarHome = document.getElementById('speaking-sidebar-home');
     var leaveDialog = document.getElementById('speaking-leave-dialog');
     var leaveDialogCancel = document.getElementById('speaking-leave-cancel');
     var leaveDialogConfirm = document.getElementById('speaking-leave-confirm');
@@ -1488,11 +1487,6 @@
     }
     backButton.addEventListener('click', handleSpeakingBack);
     sidebarToggle.addEventListener('click', function () { if (sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); else openSidebar(); });
-    sidebarHome.addEventListener('click', function (event) {
-        event.preventDefault();
-        if (!allowRecordingNavigation()) return;
-        openLeaveSpeakingDialog();
-    });
     leaveDialogCancel.addEventListener('click', closeLeaveSpeakingDialog);
     leaveDialogConfirm.addEventListener('click', function () {
         closeLeaveSpeakingDialog();

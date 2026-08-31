@@ -2123,9 +2123,9 @@ contextual Back control at left, no student-name chip, and a history control at
 right that opens the existing left-side work drawer. Back from any Set,
 Voiceprint, Discussion, or Response workspace returns to `Choose a Set`; Back
 from `Choose a Set` opens a confirmation before returning to the student
-Dashboard. Its drawer top row contains a Home link using the same confirmation,
-an icon-only Voiceprint
-destination, and a plus action that returns to `Choose a Set`. Directly below,
+Dashboard. The drawer does not duplicate that route with a Home action. Its top
+row contains only an icon-only Voiceprint destination and a plus action that
+returns to `Choose a Set`, aligned as two right-side touch targets. Directly below,
 one `Part A` / `Part B` segmented control switches between Group Discussion and
 Individual Response cards. The drawer contains no `New · Choose a Set`,
 `Voiceprint`, or repeated `Your Work` text rows. Discussion and Response records
