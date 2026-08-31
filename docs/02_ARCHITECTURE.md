@@ -938,8 +938,13 @@ mainland-accessible OpenAI-compatible Chat Completions endpoints and models.
 Supported transports are Chat JSON Schema, Chat JSON Object, and a compatibility
 Responses JSON Schema path. JSON Object providers receive the complete schema,
 are checked by the same local schema validator, and receive one automatic repair
-attempt for malformed structure. Server-side `Intl.Segmenter` assigns stable
-sentence IDs before language review. Responses are rejected for missing, duplicate,
+attempt for malformed structure. Server-side `Intl.Segmenter` assigns candidate
+boundaries before language review. A deterministic quote-aware repair layer then
+merges boundaries inside balanced curly/straight quotations and lower-case
+continuations after quoted terminal punctuation. It never repairs across a
+paragraph break, treats apostrophes and measurement marks as non-quotation
+punctuation, and only then assigns stable sentence IDs. Responses are rejected
+for missing, duplicate,
 or unknown IDs; the server then restores each exact original sentence by ID instead
 of trusting the model to echo whitespace and punctuation unchanged. Student text is
 delimited as untrusted data in every prompt.

@@ -2258,6 +2258,50 @@ check("Qwen OCR defaults to the low-latency vision model", () => {
   }
 });
 
+check("server sentence units keep quoted continuations and embedded quotations intact", () => {
+  const backend = require(path.join(root, functionPath));
+  const directQuestion = backend._test.sentenceUnits('He asked, “Why should we care?” and then explained his view.');
+  assert.deepStrictEqual(directQuestion.map((item) => item.original), [
+    'He asked, “Why should we care?” and then explained his view.',
+  ], "a lower-case continuation after quoted terminal punctuation must remain in the same unit");
+
+  const dialogueTag = backend._test.sentenceUnits('“Are you?” he asked. Then he left.');
+  assert.deepStrictEqual(dialogueTag.map((item) => item.original), [
+    '“Are you?” he asked. ', 'Then he left.',
+  ], "a dialogue tag must remain with its quotation without absorbing the next sentence");
+
+  const embeddedQuotation = backend._test.sentenceUnits('The slogan was “Buy less. Choose well. Make it last.” This shaped my view.');
+  assert.deepStrictEqual(embeddedQuotation.map((item) => item.original), [
+    'The slogan was “Buy less. Choose well. Make it last.” ', 'This shaped my view.',
+  ], "terminal punctuation inside one paired quotation must not create extra training cards");
+
+  const straightQuotation = backend._test.sentenceUnits('The sign read "Stop. Think. Act." Then we continued.');
+  assert.deepStrictEqual(straightQuotation.map((item) => item.original), [
+    'The sign read "Stop. Think. Act." ', 'Then we continued.',
+  ], "straight double quotes must receive the same boundary protection as curly quotes");
+  assert.strictEqual(backend._test.sentenceUnits('He wrote:"Stop. Think." Then he continued.').length, 2,
+    "a quotation immediately after sentence punctuation must still be paired");
+
+  const savedSegmenter = Intl.Segmenter;
+  try {
+    Intl.Segmenter = undefined;
+    const fallbackQuotation = backend._test.sentenceUnits('The sign read "Stop. Think. Act." Then we continued.');
+    assert.strictEqual(fallbackQuotation.length, 2, "the fallback tokenizer must apply the same quote-aware repair");
+  } finally {
+    Intl.Segmenter = savedSegmenter;
+  }
+
+  const possessive = backend._test.sentenceUnits("The students' work was strong. It impressed me.");
+  assert.strictEqual(possessive.length, 2, "a possessive apostrophe must not open a quotation range");
+  assert.deepStrictEqual(possessive.map((item) => item.sentence_id), ["s001", "s002"]);
+
+  const inchMarks = backend._test.sentenceUnits('The screen is 6" wide. The other is 5" wide.');
+  assert.strictEqual(inchMarks.length, 2, "measurement marks must not be paired as quotation marks");
+
+  const paragraphBoundary = backend._test.sentenceUnits('He asked, “Why?”\n\nand then began a new paragraph.');
+  assert.strictEqual(paragraphBoundary.length, 2, "quote-aware repair must never merge across a paragraph break");
+});
+
 check("server canonicalization overrides contradictory AI summary fields", () => {
   const backend = require(path.join(root, functionPath));
   const rubrics = require(path.join(root, rubricPath));

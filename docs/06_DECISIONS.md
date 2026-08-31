@@ -1,5 +1,21 @@
 # 06 Decisions
 
+## 2026-08-31: Writing sentence identity is quote-aware and server-owned
+
+Decision:
+
+Keep server-generated sentence IDs as the only language-review boundary. Run the platform English segmenter first, then deterministically merge candidate boundaries that fall inside a balanced straight/curly quotation or before a lower-case continuation after quoted terminal punctuation. Treat a blank-line paragraph break as a hard boundary, and do not treat possessive apostrophes or measurement marks as quotation pairs.
+
+Reason:
+
+General Unicode sentence segmentation recognizes punctuation boundaries but does not parse the outer grammar of direct speech. It can split one grammatical sentence into two valid IDs, forcing the model to review both fragments and recommend that they be reunited. Repairing this before the model call preserves stable, code-owned identity and keeps the model responsible only for analysis.
+
+Trade-offs:
+
+- The repair is deliberately conservative and does not attempt full syntactic parsing.
+- A genuinely new sentence that incorrectly begins with a lower-case letter immediately after a closing quotation may be treated as a continuation; a paragraph break remains an explicit escape boundary.
+- Existing stored reviews remain immutable and adopt the new boundary only after a deliberate new review.
+
 ## 2026-08-30: Turn coaching uses explicit evidence-effect-action fields
 
 Decision:

@@ -2113,6 +2113,12 @@ High priority improvement:
   bounds, change only analysis/feedback text, leave source/student/title/
   capsule text unchanged, remeasure both flip-card faces without blank space,
   and restore the chosen level after refresh. Each button keeps a 44px hit area.
+- Submit manuscripts containing `He asked, “Why?” and continued`, `“Are you?” he asked`,
+  and an embedded multi-sentence quotation such as `“Stop. Think. Act.”`. Confirm each
+  grammatical outer sentence receives one stable card, the following independent
+  sentence remains separate, straight and curly quotes behave alike, possessive
+  apostrophes and inch marks do not open quote ranges, and no automatic repair
+  crosses a blank-line paragraph boundary.
 - Confirm `Language Review` begins with `CEFR Writing Estimate` before its
   overview. Test A1 and C2 boundaries plus lower/middle/upper positions; verify
   they render as A1-/A1/A1+ and C2-/C2/C2+, the rationale is Simplified Chinese,

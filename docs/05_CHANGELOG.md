@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-31 — Quote-aware Writing sentence boundaries
+
+- Added a deterministic repair layer after English sentence segmentation so punctuation inside balanced straight or curly quotations does not create extra Sentence Revision cards.
+- Kept lower-case dialogue tags and connecting clauses after quoted terminal punctuation with their grammatical sentence, while preserving blank-line paragraph boundaries.
+- Distinguished quotation marks from possessive apostrophes and measurement marks, and added focused regression coverage for the primary and fallback tokenizers.
+
 ## 2026-08-31 — Simplified Speaking sidebar navigation
 
 - Removed the duplicate Home action from the Speaking Lab drawer; the toolbar
