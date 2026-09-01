@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260831-2">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260901-1">
     <title>Speaking Lab | Mr. Cat Academy</title>
 </head>
 <body class="app-page liquid-glass-shell speaking-lab-page">
@@ -23,9 +23,7 @@
             <span class="speaking-toolbar-actions">
                 <button class="speaking-sidebar-toggle" id="speaking-sidebar-toggle" type="button" aria-label="Open Speaking history" aria-expanded="false" aria-controls="speaking-sidebar" title="Speaking history">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 6.5h14M5 12h14M5 17.5h14"/></svg>
-                    <span class="speaking-sidebar-alert" id="speaking-sidebar-alert" aria-hidden="true" hidden>
-                        <svg viewBox="0 0 16 16"><path d="M3.25 3.5h9.5v6.2H7.2L4.4 12v-2.3H3.25z"/></svg>
-                    </span>
+                    <span class="speaking-sidebar-alert" id="speaking-sidebar-alert" aria-hidden="true" hidden></span>
                 </button>
                 <button class="speaking-toolbar-edit" id="speaking-toolbar-edit" type="button" aria-label="Edit Discussion title" title="Edit Discussion title" hidden>
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"></path><path d="m14.8 6.3 3 3"></path></svg>
@@ -36,9 +34,11 @@
             <div class="speaking-sidebar-actions">
                 <button class="speaking-sidebar-voiceprint" id="speaking-sidebar-voiceprint" type="button" aria-label="Open Voiceprint" title="Voiceprint">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M9 20.5h6"/></svg>
+                    <span class="speaking-sidebar-action-label">Voiceprint</span>
                 </button>
-                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Choose a Set" title="Choose a Set">
+                <button class="speaking-sidebar-new" id="speaking-sidebar-new" type="button" aria-label="Start New" title="Start New">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    <span class="speaking-sidebar-action-label">Start New</span>
                 </button>
             </div>
             <nav class="speaking-sidebar-segments" aria-label="Paper 4 practice history" role="tablist">
@@ -47,6 +47,7 @@
             </nav>
             <section class="speaking-sidebar-panel" id="speaking-sidebar-discussions" role="tabpanel" aria-labelledby="speaking-sidebar-part-a">
                 <div class="speaking-banner" id="speaking-status" role="status" aria-live="polite"><span class="speaking-status-dot" aria-hidden="true"></span><span>Loading your Discussions…</span></div>
+                <label class="speaking-discussion-filter" for="speaking-discussion-sort"><span>Filter</span><select id="speaking-discussion-sort"><option value="newest" selected>Newest first</option><option value="oldest">Oldest first</option></select></label>
                 <section class="speaking-list" id="speaking-list" aria-label="Group Discussions"></section>
             </section>
             <section class="speaking-sidebar-panel" id="speaking-sidebar-responses" role="tabpanel" aria-labelledby="speaking-sidebar-part-b" hidden>
@@ -152,6 +153,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/speaking-lab.js?v=20260831-1"></script>
+    <script src="assets/js/speaking-lab.js?v=20260901-1"></script>
 </body>
 </html>

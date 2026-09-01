@@ -41,6 +41,9 @@ async function run() {
   assert.match(prepareSource, /speaking-sets-cloudbase\.json/);
   assert.match(importSource, /speaking_sets/);
   assert.match(source, /action === "startVoiceRematch"/);
+  assert.match(source, /action === "acknowledgeReportViewed"/);
+  assert.match(source, /report_seen_version/);
+  assert.match(source, /formal_audio_uploaded_at/);
   assert.match(source, /action === "updateDiscussionTitle"/);
   assert.match(source, /async function updateDiscussionTitle/);
   assert.match(source, /DISCUSSION_TITLE_CHANGED/);
@@ -289,6 +292,18 @@ async function run() {
   );
   assert.equal(searchableDiscussion.can_search_voice_matches, true);
   assert.equal(searchableDiscussion.voice_match_status, "not_run");
+  assert.equal(searchableDiscussion.report_unread, true);
+  const seenDiscussion = speakingTest.discussionView(
+    { auth_uid: "u1", role: "student", active: true },
+    { discussion_id: "d1", analysis_status: "ready", active_report_version: "discussion-r1", formal_audio_asset_id: "asset1" },
+    [{ participant_id: "p1", participant_kind: "vip", student_uid: "u1", invitation_status: "accepted", report_seen_version: "discussion-r1" }],
+  );
+  assert.equal(seenDiscussion.report_unread, false);
+  const sameDateOlderUpload = { discussion_id: "d1", discussion_date: "2026-09-01", formal_audio_uploaded_at: "2026-09-01T01:00:00.000Z" };
+  const sameDateNewerUpload = { discussion_id: "d2", discussion_date: "2026-09-01", formal_audio_uploaded_at: "2026-09-01T02:00:00.000Z" };
+  const laterDiscussionDate = { discussion_id: "d3", discussion_date: "2026-09-02", formal_audio_uploaded_at: "2026-09-01T00:30:00.000Z" };
+  assert.deepEqual([sameDateOlderUpload, sameDateNewerUpload, laterDiscussionDate].sort((left, right) => speakingTest.compareDiscussionOrder(left, right, "newest")).map((item) => item.discussion_id), ["d3", "d2", "d1"]);
+  assert.deepEqual([sameDateOlderUpload, sameDateNewerUpload, laterDiscussionDate].sort((left, right) => speakingTest.compareDiscussionOrder(left, right, "oldest")).map((item) => item.discussion_id), ["d1", "d2", "d3"]);
   const safeRematchState = speakingTest.completedVoiceMatchState({
     status: "completed",
     excerpt_jobs: [{ speaker_key: "spk_01", provider_job_id: "private-provider-job", output_file_id: "private-file", status: "ready" }],

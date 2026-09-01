@@ -2349,3 +2349,20 @@ by the authenticated student. The final five seconds use a red time warning;
 PD remains not assessed and the ASR-error safeguard applies to every AI score
 and comment. Teacher edits affect future Sessions only; existing reports retain
 their snapshots. Voiceprint setup lives in the student sidebar.
+
+The Part A history drawer labels its two primary actions `Voiceprint` and
+`Start New`. Discussion cards omit Candidate counts and use one state symbol:
+a rotating ring while processing, a blue circle when the report is ready, a
+red exclamation mark after failure, and a reserved blue filled star after a
+future completed Practice. A compact Filter controls the entire list order.
+`Newest first` is the default and sorts by Discussion date, then by formal-audio
+upload time within the same date; `Oldest first` reverses both comparisons.
+Status never overrides the selected order.
+
+A ready report remains unread for each accepted VIP participant until that
+student successfully opens and renders it. Unread state is stored against the
+active report version, so it follows the student across devices and becomes
+unread again after report regeneration. Opening only the drawer does not clear
+it. Title changes, identity changes, and Voiceprint rematching do not create a
+new unread report. The row title and the drawer button show a small red dot
+while any invitation, identity notice, or report update remains unread.

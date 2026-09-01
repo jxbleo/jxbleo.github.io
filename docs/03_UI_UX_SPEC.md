@@ -2535,20 +2535,31 @@ opens a centred confirmation before navigating to `dashboard.html`. The drawer
 has no duplicate Home action. It opens and closes from the
 left on the same path, uses a mobile scrim only while open without blocking the
 closed home or the desktop workspace, and renders the Discussion list directly.
-When one or more invitations are pending for the signed-in student, a compact
-red message glyph appears at the drawer button's upper-right edge. It arrives
-once without a repeating pulse, is hidden at zero, and is replaced by a static
-state under Reduced Motion. The button's accessible name includes the waiting
-invitation count. The matching Discussion row receives a quiet invitation tint
-and `Invitation` pill; selecting it opens the existing accept/decline dialog.
-Its top row contains only two right-aligned icon buttons: Voiceprint immediately
-left of plus. Voiceprint opens its own full workspace, and plus returns to
-`Choose a Set`. Directly below, a compact
+When one or more invitations, identity notices, or ready reports are unread for
+the signed-in student, a compact red dot appears at the drawer button's
+upper-right edge. It arrives once without a repeating pulse, is hidden at zero,
+and is static under Reduced Motion. The button's accessible name includes the
+waiting update count. An unread ready report also places a red dot at the top
+edge of its title. The report dot clears only after the completed report renders
+and its report-version acknowledgement succeeds; opening the drawer alone does
+not clear it. The matching pending-invitation row retains its quiet tint and
+`Invitation` pill.
+
+The drawer's top row contains two equal labelled actions: microphone plus
+`Voiceprint` on the left and plus plus `Start New` on the right. Voiceprint
+opens its own full workspace, and Start New returns to `Choose a Set`. Directly
+below, a compact
 two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
 Discussion cards and Part B shows only Individual Response cards. The drawer
 has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
-`Individual Responses` heading rows. Existing record cards retain their normal
-content and state pills. Escape and the active mobile scrim close the drawer.
+`Individual Responses` heading rows. Part A has a quiet `Filter` select whose
+default `Newest first` ordering uses Discussion date and then upload sequence;
+`Oldest first` reverses it. Processing and ready items never bypass that order.
+Cards omit Candidate and analysis-status pills: a rotating ring means
+processing, a blue circle means report ready, a red exclamation mark means
+failed, a neutral ring means no uploaded report, and a blue filled star is
+reserved for a future completed Practice. Escape and the active mobile scrim
+close the drawer.
 Each selected Set uses independent overview, Context, Part A, and Part B cards.
 The overview has no three-step section strip or inline Back button. Context,
 `Part A Group Discussion`, and `Part B Individual Response` use centred blue

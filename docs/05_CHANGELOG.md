@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-01 — Speaking history states, sorting, and report unread markers
+
+- Labelled the drawer actions `Voiceprint` and `Start New`, removed Candidate
+  and status pills from Part A history, and added restrained state icons for
+  processing, ready, failed, not-uploaded, and future practised states.
+- Added a Filter-controlled date order with upload-time tie-breaking for
+  multiple Discussions on the same date; statuses never override the chosen
+  order.
+- Added per-student, per-report-version unread acknowledgements. Ready reports
+  show a red title dot and contribute to the toolbar dot until the report is
+  successfully rendered, persist across devices, and become unread again only
+  when a new report version is generated.
+
 ## 2026-08-31 — Writing Back confirmation boundary
 
 - Removed the confirmation step when Back moves from a Composition to Writing Home.
