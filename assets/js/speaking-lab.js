@@ -18,6 +18,7 @@
     var sidebarPartB = document.getElementById('speaking-sidebar-part-b');
     var sidebarDiscussions = document.getElementById('speaking-sidebar-discussions');
     var sidebarResponses = document.getElementById('speaking-sidebar-responses');
+    var discussionSort = document.getElementById('speaking-discussion-sort');
     var toolbarTitle = document.getElementById('speaking-toolbar-title');
     var toolbarEdit = document.getElementById('speaking-toolbar-edit');
     var leaveDialog = document.getElementById('speaking-leave-dialog');
@@ -95,7 +96,8 @@
         listIndividualResponses: true,
         getIndividualResponse: true
     };
-    var sidebarInvitationCount = 0;
+    var sidebarUpdateCount = 0;
+    var discussionSortOrder = 'newest';
     var currentDiscussion = null;
     var speakingSets = [];
     var selectedSpeakingSet = null;
@@ -411,29 +413,46 @@
         document.getElementById('voiceprint-record-label').textContent = 'Preparing recording…';
         current.stop().then(function (result) { voiceprintRecordingReady(result, token); }).catch(function (error) { voiceprintRecordingFailed(error, token); });
     }
+    function discussionCardState(item) {
+        if (item.practice_status === 'completed') return 'practised';
+        if (item.analysis_status === 'failed') return 'failed';
+        if (['queued', 'processing'].includes(item.analysis_status)) return 'processing';
+        if (item.analysis_status === 'ready') return 'ready';
+        return 'not-started';
+    }
+    function discussionCardIcon(state) {
+        if (state === 'practised') return '<svg class="speaking-card-star" viewBox="0 0 24 24"><path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.5 6.3-.9Z"/></svg>';
+        if (state === 'failed') return '<span class="speaking-card-error">!</span>';
+        return '';
+    }
+    function discussionCardStateLabel(state) {
+        return { processing: 'Processing', ready: 'Report ready', practised: 'Practised', failed: 'Processing failed', 'not-started': 'Not uploaded' }[state] || 'Discussion';
+    }
     function listCard(item) {
         var pending = item.invitation_pending === true || (item.participants || []).some(function (participant) { return participant.is_self && participant.invitation_status === 'pending'; });
         var voiceMatchNotice = (item.participants || []).some(function (participant) { return participant.is_self && participant.identity_notice_unread; });
-        var candidateLabel = Number.isInteger(item.candidate_count) ? item.candidate_count + ' Candidate' + (item.candidate_count === 1 ? '' : 's') : 'Candidates pending';
-        return '<button class="speaking-card' + (pending ? ' is-invitation' : '') + '" type="button" data-discussion-id="' + esc(item.discussion_id) + '">' +
-            '<span class="speaking-card-icon" aria-hidden="true"></span>' +
-            '<span class="speaking-card-copy"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3><span class="speaking-card-date">' + esc(formatDate(item.discussion_date)) + '</span></span>' +
-            '<span class="speaking-card-meta"><span class="speaking-pill">' + esc(candidateLabel) + '</span><span class="speaking-pill" data-tone="' + esc(statusTone(item.analysis_status)) + '">' + esc(readableStatus(item.analysis_status)) + '</span>' + (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + (voiceMatchNotice ? '<span class="speaking-pill" data-tone="attention">Voice matched</span>' : '') + '</span>' +
+        var state = discussionCardState(item);
+        var meta = (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + (voiceMatchNotice ? '<span class="speaking-pill" data-tone="attention">Voice matched</span>' : '');
+        var accessibleStatus = discussionCardStateLabel(state) + (item.report_unread ? ', new report' : '');
+        return '<button class="speaking-card' + (pending ? ' is-invitation' : '') + '" type="button" data-state="' + esc(state) + '" data-discussion-id="' + esc(item.discussion_id) + '" aria-label="' + esc((item.title || 'Untitled Discussion') + '. ' + accessibleStatus + '.') + '">' +
+            '<span class="speaking-card-icon" aria-hidden="true">' + discussionCardIcon(state) + '</span>' +
+            '<span class="speaking-card-copy"><span class="speaking-card-title"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3>' + (item.report_unread ? '<span class="speaking-card-unread-dot" aria-hidden="true"></span>' : '') + '</span><span class="speaking-card-date">' + esc(formatDate(item.discussion_date)) + '</span></span>' +
+            (meta ? '<span class="speaking-card-meta">' + meta + '</span>' : '') +
             '<svg class="speaking-card-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
     function sidebarToggleLabel(expanded) {
         var action = expanded ? 'Close Discussion sidebar' : 'Open Discussion sidebar';
-        if (!sidebarInvitationCount) return action;
-        return action + '. ' + sidebarInvitationCount + ' new Discussion update' + (sidebarInvitationCount === 1 ? '' : 's') + '.';
+        if (!sidebarUpdateCount) return action;
+        return action + '. ' + sidebarUpdateCount + ' new Discussion update' + (sidebarUpdateCount === 1 ? '' : 's') + '.';
     }
-    function updateSidebarInvitations(items) {
-        sidebarInvitationCount = (items || []).filter(function (item) {
-            return item.invitation_pending === true || (item.participants || []).some(function (participant) {
+    function updateSidebarUpdates(items) {
+        sidebarUpdateCount = (items || []).filter(function (item) {
+            return item.report_unread === true || item.invitation_pending === true || (item.participants || []).some(function (participant) {
                 return participant.is_self && (participant.invitation_status === 'pending' || participant.identity_notice_unread);
             });
         }).length;
-        sidebarAlert.hidden = sidebarInvitationCount === 0;
-        sidebarToggle.classList.toggle('has-invitations', sidebarInvitationCount > 0);
+        sidebarAlert.hidden = sidebarUpdateCount === 0;
+        sidebarToggle.classList.toggle('has-updates', sidebarUpdateCount > 0);
         sidebarToggle.setAttribute('aria-label', sidebarToggleLabel(sidebar.classList.contains('is-open')));
     }
     function openSidebar() {
@@ -529,7 +548,7 @@
         else dialog.setAttribute('open', '');
     }
     function renderList(items) {
-        updateSidebarInvitations(items);
+        updateSidebarUpdates(items);
         if (!items.length) { list.innerHTML = '<div class="speaking-detail-card speaking-empty-state"><div class="speaking-empty-icon" aria-hidden="true">◎</div><h2>Start your first Discussion</h2><p>Add the DSE task and record when the group is ready. Candidates and invitations are created from the audio.</p></div>'; return; }
         list.innerHTML = items.map(listCard).join('');
         list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
@@ -1403,10 +1422,20 @@
         if (!own) return;
         own.identity_notice_unread = false;
         call('acknowledgeIdentityNotice', { discussion_id: item.discussion_id }).then(function () {
-            return call('listDiscussions', { page_size: 50 });
+            return call('listDiscussions', { page_size: 50, sort_order: discussionSortOrder });
         }).then(function (result) {
             renderList(result.discussions || []);
         }).catch(function () { /* The notice remains unread on the server and will reappear safely. */ });
+    }
+    function acknowledgeReportViewed(item) {
+        if (!item || !item.report_unread || item.analysis_status !== 'ready' || !item.report) return;
+        call('acknowledgeReportViewed', { discussion_id: item.discussion_id }).then(function (result) {
+            if (!result || !result.success) return null;
+            item.report_unread = false;
+            return call('listDiscussions', { page_size: 50, sort_order: discussionSortOrder });
+        }).then(function (result) {
+            if (result) renderList(result.discussions || []);
+        }).catch(function () { /* The report remains unread on the server and will reappear safely. */ });
     }
     function openDiscussion(idValue) {
         if (recordingState !== 'idle') return Promise.resolve(null);
@@ -1450,6 +1479,7 @@
                 bindInvitationActions();
                 bindRecording();
                 acknowledgeIdentityNotice(result.discussion);
+                acknowledgeReportViewed(result.discussion);
             }
             setStatus('');
             schedulePoll(result.discussion, generation);
@@ -1473,12 +1503,12 @@
             if (generation !== pollGeneration || !selectedId) return;
             call('getDiscussion', { discussion_id: selectedId }).then(function (result) {
                 if (generation !== pollGeneration) return;
-                detail.innerHTML = detailMarkup(result.discussion); updateToolbar(result.discussion); bindInvitationActions(); bindRecording(); schedulePoll(result.discussion, generation);
+                detail.innerHTML = detailMarkup(result.discussion); updateToolbar(result.discussion); bindInvitationActions(); bindRecording(); acknowledgeReportViewed(result.discussion); schedulePoll(result.discussion, generation);
             }).catch(function () { schedulePoll(item, generation); });
         }, delay);
     }
     function loadSidebarLists() {
-        return call('listDiscussions', { page_size: 50 }).then(function (result) { renderList(result.discussions || []); setStatus(''); return loadIndividualResponses(); }).catch(function (error) { setStatus(friendlyError(error), true); return null; });
+        return call('listDiscussions', { page_size: 50, sort_order: discussionSortOrder }).then(function (result) { renderList(result.discussions || []); setStatus(''); return loadIndividualResponses(); }).catch(function (error) { setStatus(friendlyError(error), true); return null; });
     }
     function loadList() {
         document.body.classList.remove('speaking-detail-open');
@@ -1507,6 +1537,10 @@
     sidebarVoiceprint.addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); renderVoiceprintMain(); });
     sidebarPartA.addEventListener('click', function () { setSidebarMode('part-a'); });
     sidebarPartB.addEventListener('click', function () { setSidebarMode('part-b'); });
+    discussionSort.addEventListener('change', function () {
+        discussionSortOrder = discussionSort.value === 'oldest' ? 'oldest' : 'newest';
+        loadSidebarLists();
+    });
     var voiceprintRecordButton = document.getElementById('voiceprint-record');
     voiceprintRecordButton.addEventListener('pointerdown', function (event) {
         if (event.pointerType === 'mouse' && event.button !== 0) return;

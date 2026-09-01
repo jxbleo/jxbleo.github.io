@@ -1263,6 +1263,16 @@ provider locator and lifecycle per subject); and `speaking_voiceprint_events`
 (append-only enrol/update/delete consent and actor audit).
 
 New `speaking_discussions.candidate_count` is nullable until transcription.
+`speaking_discussions.formal_audio_uploaded_at` records the successful formal
+upload time and is the same-date history tie-breaker; title, voice mapping, and
+other `updated_at` changes must not reorder the list. Each accepted VIP
+`speaking_participants` row may contain `report_seen_version` and
+`report_seen_at`. `report_seen_version` is advanced only after that student
+successfully renders and acknowledges the current ready report. The
+`discussionView.report_unread` response field is computed when the active
+report version differs; it is not stored on the Discussion and never applies to
+teachers or Guests. A newly generated report version therefore becomes unread
+without identity/title edits affecting read state.
 Automatic VIP rows use `invitation_source: "automatic_voice_match"`,
 `identity_status: "ai_matched"`,
 `voice_match_source: "reusable_voiceprint_1_to_n"`, bounded numeric

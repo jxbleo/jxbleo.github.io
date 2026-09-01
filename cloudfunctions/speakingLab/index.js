@@ -145,6 +145,14 @@ function participantView(row, actor, discussion, index = 0) {
   };
 }
 function discussionView(actor, discussion, participants) {
+  const ownParticipant = !lab.isTeacher(actor) && participants.find((row) => lab.participantKind(row) === "vip"
+    && String(row.student_uid || "") === String(actor.auth_uid || "")
+    && row.invitation_status === "accepted");
+  const reportUnread = Boolean(lab.isActiveStudent(actor)
+    && ownParticipant
+    && discussion.analysis_status === "ready"
+    && discussion.active_report_version
+    && String(ownParticipant.report_seen_version || "") !== String(discussion.active_report_version));
   const canSearchVoiceMatches = discussion.analysis_status === "ready"
     && Boolean(discussion.active_report_version)
     && Boolean(discussion.formal_audio_asset_id)
@@ -172,6 +180,8 @@ function discussionView(actor, discussion, participants) {
     voice_match_last_result_count: Number.isInteger(discussion.voice_match_last_result_count) ? discussion.voice_match_last_result_count : null,
     voice_match_last_changed_count: Number.isInteger(discussion.voice_match_last_changed_count) ? discussion.voice_match_last_changed_count : null,
     voice_match_safe_error_code: discussion.voice_match_safe_error_code || null,
+    report_unread: reportUnread,
+    recording_uploaded_at: discussion.formal_audio_uploaded_at || null,
     can_search_voice_matches: canSearchVoiceMatches,
     created_at: discussion.created_at || null,
     updated_at: discussion.updated_at || null,
@@ -179,6 +189,22 @@ function discussionView(actor, discussion, participants) {
     can_edit_title: lab.canEditDiscussion(actor, discussion, participants),
     participants: participants.map((row, index) => participantView(row, actor, discussion, index)),
   };
+}
+
+function discussionOrderTimestamp(value) {
+  const parsed = new Date(value || 0).getTime();
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function compareDiscussionOrder(left, right, sortOrder = "newest") {
+  const direction = sortOrder === "oldest" ? 1 : -1;
+  const leftDate = String(left && left.discussion_date || "");
+  const rightDate = String(right && right.discussion_date || "");
+  if (leftDate !== rightDate) return leftDate.localeCompare(rightDate) * direction;
+  const leftUploadedAt = discussionOrderTimestamp(left && (left.formal_audio_uploaded_at || left.created_at));
+  const rightUploadedAt = discussionOrderTimestamp(right && (right.formal_audio_uploaded_at || right.created_at));
+  if (leftUploadedAt !== rightUploadedAt) return (leftUploadedAt - rightUploadedAt) * direction;
+  return String(left && left.discussion_id || "").localeCompare(String(right && right.discussion_id || "")) * direction;
 }
 
 function speakingSetView(set, options = {}) {
@@ -710,9 +736,10 @@ async function invokeWorker(job) {
 
 async function listDiscussions(actor, event) {
   const pageSize = Math.min(Math.max(Number(event.page_size || 20), 1), 50);
+  const sortOrder = event.sort_order === "oldest" ? "oldest" : "newest";
   const all = await getMany(DISCUSSIONS, {}, 500);
   const visible = [];
-  for (const discussion of all.sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0))) {
+  for (const discussion of all.sort((left, right) => compareDiscussionOrder(left, right, sortOrder))) {
     if (discussion.deleted_at) continue;
     const participants = sortParticipants(await getMany(PARTICIPANTS, { discussion_id: discussion.discussion_id }, 20));
     const ownPending = participants.some((participant) => String(participant.student_uid || "") === String(actor.auth_uid || "") && participant.invitation_status === "pending");
@@ -720,6 +747,7 @@ async function listDiscussions(actor, event) {
     else if (ownPending && lab.isActiveStudent(actor)) visible.push({
       discussion_id: discussion.discussion_id, title: lab.text(discussion.title, MAX_TITLE), discussion_date: discussion.discussion_date || null,
       participant_count: participants.length, analysis_status: "invitation", roster_status: discussion.roster_status || "draft",
+      recording_uploaded_at: discussion.formal_audio_uploaded_at || null,
       invitation_pending: true, participants: participants.filter((participant) => !participant.removed_at).map((participant) => ({ participant_id: participant.participant_id, kind: lab.participantKind(participant), display_name: lab.participantKind(participant) === "guest" ? participant.guest_name : participant.display_name_snapshot, invitation_status: participant.invitation_status })),
     });
   }
@@ -1014,7 +1042,7 @@ async function finishAudioUpload(actor, event, kind = "formal") {
       const previous = await getOne(ASSETS, { asset_id: rows.discussion.formal_audio_asset_id, discussion_id: rows.discussion.discussion_id });
       if (previous) await db.collection(ASSETS).doc(previous._id || previous.asset_id).update({ status: "superseded", superseded_by_asset_id: asset.asset_id, updated_at: uploadedAt });
     }
-    await db.collection(DISCUSSIONS).doc(rows.discussion._id || rows.discussion.discussion_id).update({ formal_audio_asset_id: asset.asset_id, recording_status: "uploaded", analysis_status: "not_ready", active_analysis_job_id: null, active_report_version: null, discussion_revision: Number(rows.discussion.discussion_revision || 1) + (replacing ? 1 : 0), updated_at: uploadedAt });
+    await db.collection(DISCUSSIONS).doc(rows.discussion._id || rows.discussion.discussion_id).update({ formal_audio_asset_id: asset.asset_id, formal_audio_uploaded_at: uploadedAt, recording_status: "uploaded", analysis_status: "not_ready", active_analysis_job_id: null, active_report_version: null, discussion_revision: Number(rows.discussion.discussion_revision || 1) + (replacing ? 1 : 0), updated_at: uploadedAt });
     if (replacing) await invalidateShares(rows.discussion.discussion_id, { reason: "FORMAL_AUDIO_REPLACED" });
   }
   else {
@@ -1070,6 +1098,19 @@ async function acknowledgeIdentityNotice(actor, event) {
   const seenAt = now();
   await db.collection(PARTICIPANTS).doc(participant._id || participant.participant_id).update({ identity_notice_seen_at: seenAt, updated_at: seenAt });
   return { success: true, acknowledged: true, seen_at: seenAt };
+}
+async function acknowledgeReportViewed(actor, event) {
+  if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
+  const rows = await authorizedDiscussion(actor, event.discussion_id);
+  const participant = rows.participants.find((item) => lab.participantKind(item) === "vip"
+    && String(item.student_uid || "") === String(actor.auth_uid || "")
+    && item.invitation_status === "accepted");
+  if (!participant) throw new Error("DISCUSSION_ACCESS_DENIED");
+  const reportVersion = rows.discussion.analysis_status === "ready" && rows.discussion.active_report_version;
+  if (!reportVersion || String(participant.report_seen_version || "") === String(reportVersion)) return { success: true, acknowledged: false };
+  const seenAt = now();
+  await db.collection(PARTICIPANTS).doc(participant._id || participant.participant_id).update({ report_seen_version: reportVersion, report_seen_at: seenAt, updated_at: seenAt });
+  return { success: true, acknowledged: true, report_version: reportVersion, seen_at: seenAt };
 }
 async function teacherReopenVoiceReference(actor, event) {
   if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
@@ -2078,6 +2119,7 @@ exports.main = async (event = {}) => {
     if (action === "finishVoiceReferenceUpload") return await finishVoiceReferenceUpload(actor, event);
     if (action === "getVoiceConfirmationPlayback") return await getVoiceConfirmationPlayback(actor, event);
     if (action === "acknowledgeIdentityNotice") return await acknowledgeIdentityNotice(actor, event);
+    if (action === "acknowledgeReportViewed") return await acknowledgeReportViewed(actor, event);
     if (action === "startAnalysis") return await startAnalysis(actor, event);
     if (action === "startVoiceRematch") return await startVoiceRematch(actor, event);
     if (action === "confirmVoice") return await confirmVoice(actor, event);
@@ -2098,7 +2140,7 @@ exports.main = async (event = {}) => {
 
 exports._test = {
   friendlyMessage, publicJob, participantView, discussionView, candidateTrackViews, shanghaiDate, automaticMatchOutputPath,
-  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator,
+  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator, compareDiscussionOrder,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, SPEAKING_SETS, INDIVIDUAL_RESPONSES, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
   setActions: { listSpeakingSets, getSpeakingSet, teacherListSpeakingSets, teacherGetSpeakingSet, teacherCreateSpeakingSet, teacherUpdateSpeakingSet, teacherSetSpeakingSetVisibility, teacherDeleteSpeakingSet },
   responseActions: { listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, deleteIndividualResponse },

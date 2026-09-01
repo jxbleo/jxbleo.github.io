@@ -2714,10 +2714,24 @@ Motion, Reduced Transparency, and Increased Contrast.
   Voiceprint surface; confirm neither `Choose a Set` nor the standalone
   Voiceprint card remains above or below the Discussion/report.
 - Open the drawer at desktop and 390px: its first row must contain only the
-  right-aligned Voiceprint icon and plus; below it only the `Part A` / `Part B` segmented control and
+  equal labelled `Voiceprint` and `Start New` actions; below it only the `Part A` / `Part B` segmented control and
   the selected mode's existing cards may appear. Confirm `New · Choose a Set`,
-  text `Voiceprint`, both `Your Work` headings, and the inactive mode's cards
+  both `Your Work` headings, and the inactive mode's cards
   are absent.
+- Verify Part A cards contain no Candidate count or analysis-status pill. Check
+  the rotating processing ring, blue ready circle, red failed exclamation,
+  neutral not-uploaded ring, and the placeholder blue filled Practice star.
+  Reduced Motion must stop the processing rotation without hiding its state.
+- Verify `Newest first` is selected initially and orders by Discussion date
+  descending, then formal upload time descending within one date. Switch to
+  `Oldest first` and verify both comparisons reverse. Mixed processing, ready,
+  and failed records must remain in the selected chronological order.
+- Generate a report for two VIP participants and verify each account sees its
+  own red title dot plus the toolbar dot on every device. Opening only the
+  drawer must not clear either dot. Successfully render the report as one
+  student and verify only that participant's dot clears across devices. A new
+  report version must restore the dot; title, identity mapping, and Voiceprint
+  changes must not. A failed acknowledgement must leave the dot visible.
 - Open Voiceprint from the microphone icon and confirm it replaces the main
   workspace without a dialog. Consent must be required. Hold the microphone and
   release below 10 seconds to verify local discard; release at or above 10
