@@ -49,7 +49,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .skip-link:focus { transform: none; }
 .ai-tutor-shell { width: min(1080px, calc(100% - 28px)); min-height: 100vh; margin: 0 auto; padding: 14px 0; }
 .ai-tutor-header {
-    position: sticky; z-index: 80; top: 10px; display: grid; grid-template-columns: 42px minmax(0,1fr) auto; align-items: center; gap: 8px;
+    position: sticky; z-index: 80; top: 10px; display: grid; grid-template-columns: 42px minmax(0,1fr) auto; align-items: center; gap: 0;
     min-height: 66px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.7); border-radius: 24px;
     background: radial-gradient(circle 220px at 18% 10%,rgba(255,255,255,.7),transparent 72%),linear-gradient(135deg,rgba(255,255,255,.44),rgba(255,255,255,.18));
     box-shadow: 0 12px 34px rgba(32,52,63,.1),0 2px 8px rgba(32,52,63,.04),inset 0 1px 0 rgba(255,255,255,.76),inset 0 -1px 0 rgba(96,117,127,.12);
@@ -65,15 +65,14 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .current-writing-title-shell { width: 100%; min-width: 0; justify-self: stretch; }
 .current-writing-title-display { display: block; width: 100%; min-width: 0; }
 .current-writing-title-shell.is-new-writing .current-writing-title-track { color: var(--ai-accent); }
-.current-writing-title-window { width: 100%; min-width: 0; overflow: hidden; color: #315f54; text-align: center; white-space: nowrap; }
-.current-writing-title-track { display: block; width: max-content; max-width: none; margin-inline: auto; font-size: .8rem; font-weight: 850; line-height: 1.25; white-space: nowrap; will-change: transform; }
-.current-writing-title-window.is-overflowing { mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
-.current-writing-title-window.is-overflowing .current-writing-title-track { margin-inline: 0; animation: currentWritingTitleScroll var(--current-writing-title-duration,9s) ease-in-out infinite alternate; }
+.current-writing-title-window { display: flex; width: 100%; min-width: 0; height: 42px; align-items: center; overflow: hidden; color: #315f54; text-align: center; white-space: nowrap; }
+.current-writing-title-track { display: block; width: max-content; max-width: none; margin-inline: auto; padding-inline: 10px; box-sizing: border-box; font-size: .8rem; font-weight: 850; line-height: 1.25; white-space: nowrap; will-change: transform; }
+.current-writing-title-window.is-overflowing .current-writing-title-track { margin-inline: 0; animation: currentWritingTitleScroll var(--current-writing-title-duration,10s) ease-in-out infinite alternate; }
 .ai-tutor-header-actions { display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: 6px; }
 .current-writing-title-edit { display: grid; flex: 0 0 auto; place-items: center; width: 42px; height: 42px; padding: 0; border: 0; border-radius: 14px; color: var(--ai-accent); background: transparent; }
 .current-writing-title-edit:hover { background: var(--ai-accent-soft); }
 .current-writing-title-edit svg { width: 18px; height: 18px; }
-@keyframes currentWritingTitleScroll { 0%,16% { transform: translate3d(0,0,0); } 84%,100% { transform: translate3d(var(--current-writing-title-shift,0),0,0); } }
+@keyframes currentWritingTitleScroll { 0%,18% { transform: translate3d(0,0,0); } 82%,100% { transform: translate3d(var(--current-writing-title-shift,0),0,0); } }
 .revision-progress { min-width: 0; }
 .revision-progress.is-ocr-photo-control { min-width: 0; }
 .ocr-toolbar-photo-toggle { min-width: 92px; padding-inline: 13px; color: var(--ai-accent); border-color: rgba(15,118,110,.18); background: rgba(255,255,255,.88); }
@@ -634,7 +633,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 @media (max-width: 760px) {
     .practice-entry-overlay { padding: 18px; }
     .ai-tutor-shell { width: min(1080px,calc(100% - 28px)); padding: 14px 0; }
-    .ai-tutor-header { top: 10px; width: 100%; max-width: 100%; min-height: 62px; padding-left: max(10px,env(safe-area-inset-left)); padding-right: max(10px,env(safe-area-inset-right)); border-width: 1px; border-radius: 24px; }
+    .ai-tutor-header { top: 10px; width: 100%; max-width: 100%; min-height: 62px; grid-template-columns: 40px minmax(0,1fr) auto; gap: 0; padding-left: max(10px,env(safe-area-inset-left)); padding-right: max(10px,env(safe-area-inset-right)); border-width: 1px; border-radius: 24px; }
     .current-writing-title-window { max-width: none; }
     .current-writing-title-track { font-size: .74rem; }
     .writing-back-button, .portfolio-toggle { width: 40px; min-width: 40px; height: 40px; }
@@ -688,7 +687,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 }
 
 @media (max-width: 420px) {
-    .ai-tutor-header { grid-template-columns: 40px minmax(0,2.2fr) auto; gap: 6px; }
+    .ai-tutor-header { grid-template-columns: 40px minmax(0,2.2fr) auto; gap: 0; }
     .writing-pending-pill { flex-basis: calc(100vw - 38px); }
     .result-actions > button { flex-basis: 100%; }
     .confirmation-layer { padding-right: 0; padding-left: 0; }

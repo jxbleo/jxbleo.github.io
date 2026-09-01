@@ -125,6 +125,7 @@
     var photoViewerLayer = document.getElementById('photo-viewer-layer');
     var sentenceCardResizeObserver = null;
     var currentWritingTitleResizeObserver = null;
+    var currentWritingTitleMeasureFrame = 0;
     var stageViewportResetToken = 0;
     var stageMaterializeToken = 0;
     var revisionTextScales = [0.9, 1, 1.15, 1.3];
@@ -576,22 +577,24 @@
     }
 
     function updateCurrentWritingTitleOverflow() {
-        if (!currentWritingTitleWindow || !currentWritingTitleTrack || currentWritingTitleWindow.hidden) return;
+        currentWritingTitleMeasureFrame = 0;
+        if (!currentWritingTitleWindow || !currentWritingTitleTrack) return;
+        currentWritingTitleWindow.classList.remove('is-overflowing');
+        currentWritingTitleWindow.style.removeProperty('--current-writing-title-shift');
+        currentWritingTitleWindow.style.removeProperty('--current-writing-title-duration');
+        if (currentWritingTitleWindow.hidden) return;
         var overflow = Math.ceil(currentWritingTitleTrack.scrollWidth - currentWritingTitleWindow.clientWidth);
         var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var shouldScroll = !reduceMotion && currentWritingTitleWindow.clientWidth > 0 && overflow > 2;
         currentWritingTitleWindow.classList.toggle('is-overflowing', shouldScroll || (reduceMotion && overflow > 2));
-        if (!shouldScroll) {
-            currentWritingTitleWindow.style.removeProperty('--current-writing-title-shift');
-            currentWritingTitleWindow.style.removeProperty('--current-writing-title-duration');
-            return;
-        }
+        if (!shouldScroll) return;
         currentWritingTitleWindow.style.setProperty('--current-writing-title-shift', (-overflow) + 'px');
-        currentWritingTitleWindow.style.setProperty('--current-writing-title-duration', Math.max(7, Math.min(14, 6 + (overflow / 28))) + 's');
+        currentWritingTitleWindow.style.setProperty('--current-writing-title-duration', Math.max(8, Math.min(22, 6 + (overflow / 32))).toFixed(2) + 's');
     }
 
     function scheduleCurrentWritingTitleOverflow() {
-        window.requestAnimationFrame(updateCurrentWritingTitleOverflow);
+        if (currentWritingTitleMeasureFrame) window.cancelAnimationFrame(currentWritingTitleMeasureFrame);
+        currentWritingTitleMeasureFrame = window.requestAnimationFrame(updateCurrentWritingTitleOverflow);
     }
 
     function updateCurrentWritingTitle() {

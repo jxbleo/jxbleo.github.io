@@ -2276,10 +2276,14 @@ High priority improvement:
   replace that movement with a brief fade.
   Confirm returning home clears the locator, while an already-pruned empty locator
   falls back cleanly without an error loop.
-- Confirm the current AI/student title appears between the menu and far-right pencil. Test a
-  long title at phone, iPad, and desktop widths: it must stay inside the toolbar and
-  travel horizontally with end pauses. With Reduced Motion enabled it must remain
-  still and truncate with an ellipsis.
+- Confirm the current AI/student title appears between Back and the trailing
+  progress/edit/sidebar actions. Its viewport must begin exactly at the Back
+  circle's right edge and stop at the leading edge of the trailing action group,
+  without overlapping a percentage or OCR image action. Test short and
+  120-character titles at phone, iPad, and desktop widths: short titles remain
+  centered; long titles stay inside the toolbar and reveal the complete line
+  through horizontal travel with endpoint pauses. With Reduced Motion enabled it
+  must remain still and truncate with an ellipsis.
 - Click the far-right pencil and confirm a separate centered title dialog opens with
   a readable normal-size input, Cancel, and Save. The toolbar must not turn into an
   inline input. Verify keyboard focus stays in the dialog, Escape/Cancel preserves the
@@ -2435,6 +2439,14 @@ split turns at speaker/context boundaries, preserve unknown ASR confidence,
 derive rather than trust turn counts, reject incomplete/duplicate/foreign turn
 reviews, and verify that Student Share contains the sharer's transcript-backed
 CS/IO samples without internal segment or Speaker keys.
+
+At 320px, 390px, 768px, and 1024px widths, open Speaking Home and a Discussion
+with both a short and a 120-character title. The title viewport must begin at
+the Back circle's right edge and stop at the leading edge of the trailing
+history/edit action group without covering any button. Short titles stay
+centered; long titles pause at both boundaries and reveal the complete line by
+horizontal movement. Reduced Motion keeps the same width but uses one stable
+ellipsis instead.
 
 Teacher report gates:
 

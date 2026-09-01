@@ -2107,9 +2107,12 @@ Important mobile rules:
   clearing local input. Internal Writing navigation never opens a confirmation; only
   Back at base Writing Home opens the leave-to-Dashboard confirmation.
 - While a Composition is open, the flexible center of the top toolbar displays its
-  AI-generated or student-edited title. A long title travels horizontally within
-  that space with restrained pauses at both ends, matching task-title behavior;
-  Reduced Motion uses a stable single-line ellipsis. A valid current title exposes
+  AI-generated or student-edited title. Its viewport begins at the Back button's
+  inner edge and ends at the leading edge of the trailing progress/edit/sidebar
+  action group, so a percentage or OCR image action never overlaps the title.
+  Short titles stay centered; a long title travels horizontally through that full
+  safe width with restrained pauses at both ends, matching Speaking Discussion
+  titles. Reduced Motion uses a stable single-line ellipsis. A valid current title exposes
   a green pencil fixed at the far-right edge. Activation opens a standalone Apple-style
   dialog with a readable input and Cancel/Save controls; the toolbar title remains
   visible behind the modal. Refreshing the page must reopen the same Composition.
@@ -2533,7 +2536,11 @@ one Candidates card, factual queued/processing stages, internal
 Speaker-labelled report, voice confirmation, and Student Share controls. The
 toolbar uses an icon-only Back control at left, a centered `Speaking Lab`
 label, and no trailing student-name chip. A history control at right retains
-the drawer and its invitation marker. Back from any selected Set, Voiceprint,
+the drawer and its invitation marker. The title viewport starts at the Back
+circle's right edge and ends at the leading edge of the trailing history/edit
+action group. Short titles remain centered; an overflowing Discussion title
+moves horizontally through the full safe width with restrained pauses at both
+ends. Reduced Motion uses one stable ellipsis. Back from any selected Set, Voiceprint,
 Discussion, or Response returns to `Choose a Set`; Back from that home surface
 opens a centred confirmation before navigating to `dashboard.html`. The drawer
 has no duplicate Home action. It opens and closes from the
