@@ -16,9 +16,13 @@
 ### Student Dashboard Achievements
 
 The first student card keeps the time-aware greeting and motivational sentence
-at the top, followed by one quiet divider and a GitHub-style 53-week
-`ACHIEVEMENTS` grid. The removed weekly progress bar must not reappear. Monday
-starts each column; phones horizontally scroll to the newest weeks by default.
+at the top. The greeting is a small, quiet contextual line; the motivational
+sentence is the section's medium-large primary heading with tight display
+tracking and leading. On phones it may wrap to three balanced lines, while the
+tablet treatment normally uses two. One quiet divider then introduces the
+GitHub-style 53-week `ACHIEVEMENTS` grid. The removed weekly progress bar must
+not reappear. Monday starts each column; phones horizontally scroll to the
+newest weeks by default.
 The card shows no separate `PAST 12 MONTHS` / `ACHIEVEMENTS` heading and no
 `Less` / `More` intensity-dot legend. Achievement total and active-day total
 share one compact summary at the lower left below the grid.

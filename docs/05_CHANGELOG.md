@@ -2800,3 +2800,13 @@ stored Set/Response data are unchanged.
 
 - Kept `Choose a Set` and the standalone Voiceprint card out of every opened
   Discussion workspace, including completed reports reached from the sidebar.
+
+## 2026-09-01 — Student Dashboard welcome hierarchy
+
+- Rebalanced the Achievements card so the time-aware student greeting reads as
+  quiet context and the rotating motivational sentence becomes the primary
+  medium-large heading.
+- Added phone and tablet typography tuned independently for legible tracking,
+  leading, and balanced wrapping without changing the Achievements calendar.
+- Promoted the motivational sentence to the semantic `h1`, retained the combined
+  live-region announcement, and cache-busted the shared workspace stylesheet.
