@@ -45,6 +45,8 @@ async function run() {
   assert.match(source, /report_seen_version/);
   assert.match(source, /formal_audio_uploaded_at/);
   assert.match(source, /action === "updateDiscussionTitle"/);
+  assert.match(source, /action === "updateDiscussionDate"/);
+  assert.match(source, /async function updateDiscussionDate/);
   assert.match(source, /async function updateDiscussionTitle/);
   assert.match(source, /DISCUSSION_TITLE_CHANGED/);
   assert.match(source, /can_edit_title:\s*lab\.canEditDiscussion/);

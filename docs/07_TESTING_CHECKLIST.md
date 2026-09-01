@@ -2428,9 +2428,7 @@ cover participant/duration boundaries, server-UID access, Guest collisions,
 one-to-one mapping and stale confirmation, Candidate/non-Candidate exclusion,
 strict evidence and 0–7 report canonicalization, forced non-assessment of
 pronunciation, Student/Teacher redaction, per-snapshot aliases, token hashing,
-idempotency/lease projections, and forbidden queue content. Static tests cover
-student recording fallback, no browser audio persistence, noindex external
-page, no audio/download controls, teacher name selection, and reduced motion.
+idempotency/lease projections, and forbidden queue content. Static tests cover direct Set-backed Discussion creation without a New Session dialog, removal of duplicate card Back and manual Invite/Add controls, Audio date persistence, full-screen TTS/countdown/waveform recording, target-plus-five automatic stop, student recording fallback, no browser audio persistence, noindex external page, no audio/download controls, teacher name selection, and reduced motion.
 They also lock the student hierarchy classes, native hidden-state override,
 single-focus detail mode, structured report score grid, mobile bottom-sheet
 breakpoint, reduced-transparency fallback, and increased-contrast fallback.
@@ -2463,8 +2461,7 @@ Teacher report gates:
   whole group's performance, no audio/download control, and the seven-day
   expiry returned by the server.
 
-Verify a not-yet-uploaded Discussion shows preparation/recording controls and
-an in-progress upload shows the secure-upload indicator. After upload, those
+Click `Start Discussion` and verify one request creates and opens the Set-backed Discussion with no intermediate modal. Verify toolbar Back is the only return control, and no `Invite VIP` or `Add Non-VIP` appears. A not-yet-uploaded Discussion must show preparation/recording controls and an in-progress upload must show the secure-upload indicator. Put a prior date beside `Choose audio file` and verify reopening preserves it; starting on-device recording must reset the date to Shanghai today. Grant microphone permission and verify the viewport becomes the recording surface, Chinese TTS precedes five synchronized countdown beeps, the waveform reacts to voice level, and an eight-minute target enters a final five-second warning before automatic stop at 8:05. Repeat with Reduced Motion, denied microphone permission, manual early Finish, and a background/foreground cycle. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
 matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first

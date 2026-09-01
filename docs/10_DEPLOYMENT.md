@@ -1343,6 +1343,8 @@ branches that Speaking Lab does not call; do not stub auth, database, storage,
 function invocation, or request signing. Wait for `Active` / `Available`; an
 upload success followed by `LimitExceeded.CodeUnzip` is a failed release.
 
+The immersive recording release adds authenticated `updateDiscussionDate`; deploy the rebuilt `speakingLab` gateway before publishing the cache-busted Speaking assets or existing-file date changes will fail closed. No collection, index, permission, secret, timer, or data migration changes are required.
+
 The student formal-audio uploader uses the authenticated CloudBase browser SDK:
 `startAudioUpload` returns a reserved private `cloud_path`, the SDK returns the
 uploaded CloudBase file ID, and `finishAudioUpload` performs exact-path and
