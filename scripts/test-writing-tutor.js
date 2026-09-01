@@ -293,11 +293,17 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
     "current writing title projection");
   requireEvery(client, ["scrollWidth", "clientWidth", "ResizeObserver", "prefers-reduced-motion"],
     "responsive title overflow behavior");
-  assert(/\.current-writing-title-window\s*\{[^}]*min-width\s*:\s*0[^}]*overflow\s*:\s*hidden/is.test(styles)
-      && /\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:\s*42px\s+minmax\(0,1fr\)\s+auto/is.test(styles),
-    "the toolbar title must shrink within the available mobile width");
+  assert(/\.current-writing-title-window\s*\{[^}]*display\s*:\s*flex[^}]*min-width\s*:\s*0[^}]*height\s*:\s*42px[^}]*overflow\s*:\s*hidden/is.test(styles)
+      && /\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:\s*42px\s+minmax\(0,1fr\)\s+auto[^}]*gap\s*:\s*0/is.test(styles),
+    "the toolbar title must span the full safe space between Back and the trailing action group");
+  assert(/@media\s*\(max-width:\s*760px\)[\s\S]*\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:\s*40px\s+minmax\(0,1fr\)\s+auto[^}]*gap\s*:\s*0/is.test(styles),
+    "the mobile title boundary must begin at the 40px Back button edge");
+  assert(!/\.current-writing-title-window\.is-overflowing\s*\{[^}]*mask-image/is.test(styles),
+    "the title viewport must use action boundaries instead of an inset fade mask");
   assert(/\.current-writing-title-window\.is-overflowing\s+\.current-writing-title-track\s*\{[^}]*animation[^}]*infinite\s+alternate/is.test(styles),
     "long titles must move horizontally with pauses in both directions");
+  assert(/0%,18%[^}]*translate3d\(0,0,0\)[\s\S]*82%,100%[^}]*--current-writing-title-shift/is.test(styles),
+    "Writing must use the same restrained title endpoint pauses as Speaking");
   const reducedMotion = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([\s\S]*?)\n\}/i.exec(styles);
   assert(reducedMotion && /current-writing-title-track[\s\S]*text-overflow\s*:\s*ellipsis/i.test(reducedMotion[1]),
     "reduced-motion users must receive a stable ellipsis instead of title animation");

@@ -19,6 +19,7 @@
     var sidebarDiscussions = document.getElementById('speaking-sidebar-discussions');
     var sidebarResponses = document.getElementById('speaking-sidebar-responses');
     var discussionSort = document.getElementById('speaking-discussion-sort');
+    var toolbarTitleWindow = document.getElementById('speaking-toolbar-title-window');
     var toolbarTitle = document.getElementById('speaking-toolbar-title');
     var toolbarEdit = document.getElementById('speaking-toolbar-edit');
     var leaveDialog = document.getElementById('speaking-leave-dialog');
@@ -99,6 +100,7 @@
     var sidebarUpdateCount = 0;
     var discussionSortOrder = 'newest';
     var currentDiscussion = null;
+    var toolbarTitleMeasureFrame = 0;
     var speakingSets = [];
     var selectedSpeakingSet = null;
     var selectedResponse = null;
@@ -181,6 +183,21 @@
         var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).reduce(function (result, part) { result[part.type] = part.value; return result; }, {});
         return parts.year + '-' + parts.month + '-' + parts.day;
     }
+    function measureToolbarTitle() {
+        toolbarTitleMeasureFrame = 0;
+        toolbarTitleWindow.classList.remove('is-overflowing');
+        toolbarTitleWindow.style.removeProperty('--speaking-toolbar-title-shift');
+        toolbarTitleWindow.style.removeProperty('--speaking-toolbar-title-duration');
+        var overflow = Math.ceil(toolbarTitle.scrollWidth - toolbarTitleWindow.clientWidth);
+        if (overflow <= 1) return;
+        toolbarTitleWindow.style.setProperty('--speaking-toolbar-title-shift', '-' + overflow + 'px');
+        toolbarTitleWindow.style.setProperty('--speaking-toolbar-title-duration', Math.max(8, Math.min(22, 6 + overflow / 32)).toFixed(2) + 's');
+        toolbarTitleWindow.classList.add('is-overflowing');
+    }
+    function scheduleToolbarTitleMeasure() {
+        if (toolbarTitleMeasureFrame) window.cancelAnimationFrame(toolbarTitleMeasureFrame);
+        toolbarTitleMeasureFrame = window.requestAnimationFrame(measureToolbarTitle);
+    }
     function updateToolbar(item) {
         currentDiscussion = item && !item.invitation ? item : null;
         var title = item && item.title ? item.title : 'Speaking Lab';
@@ -188,6 +205,7 @@
         toolbarTitle.setAttribute('title', title);
         toolbarEdit.hidden = !(currentDiscussion && currentDiscussion.can_edit_title);
         toolbarEdit.disabled = recordingLocksPage();
+        scheduleToolbarTitleMeasure();
         document.title = currentDiscussion ? title + ' | Speaking Lab' : 'Speaking Lab | Mr. Cat Academy';
     }
     function openTitleDialog() {
@@ -1622,6 +1640,12 @@
     document.addEventListener('visibilitychange', function () { if (document.hidden || recordingState !== 'idle' || voiceprintPressActive || voiceprintSaving || voiceprintPendingResult) return; if (selectedId) openDiscussion(selectedId); else loadList(); });
     window.addEventListener('beforeunload', function (event) { if (!recordingLocksPage() && !recordingNeedsDiscardConfirmation() && !responseUploadInProgress && !(responseRecorder && responseRecorder.state !== 'inactive') && !responseBlob && !voiceprintPressActive && !voiceprintController && !voiceprintPendingResult && !voiceprintSaving) return; event.preventDefault(); event.returnValue = ''; });
     window.addEventListener('pageshow', function (event) { if (event.persisted) closeSidebar(); });
+
+    if (typeof window.ResizeObserver === 'function') {
+        new window.ResizeObserver(scheduleToolbarTitleMeasure).observe(toolbarTitleWindow);
+    } else {
+        window.addEventListener('resize', scheduleToolbarTitleMeasure);
+    }
 
     setSidebarMode('part-a');
     closeSidebar();

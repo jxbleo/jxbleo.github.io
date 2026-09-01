@@ -30,6 +30,7 @@ function run() {
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
   assert.match(page, /id="speaking-leave-dialog"[\s\S]*Return to Dashboard/);
+  assert.match(page, /id="speaking-toolbar-title-window"[\s\S]*id="speaking-toolbar-title"/);
   assert.match(page, /id="speaking-toolbar-title"/);
   assert.match(page, /id="speaking-toolbar-edit"[\s\S]*Edit Discussion title/);
   assert.match(page, /id="discussion-title-dialog"/);
@@ -298,6 +299,10 @@ function run() {
   assert.match(css, /speaking-voice-search/);
   assert.match(css, /speaking-voice-search-pulse/);
   assert.match(css, /speaking-sidebar-alert-arrive/);
+  assert.match(css, /\.speaking-lab-toolbar[^}]*grid-template-columns:\s*44px minmax\(0, 1fr\) auto/);
+  assert.match(css, /\.speaking-toolbar-title-window[^}]*display:\s*flex[^}]*height:\s*44px[^}]*overflow:\s*hidden/);
+  assert.match(css, /speaking-toolbar-title-scroll[\s\S]*--speaking-toolbar-title-shift/);
+  assert.match(css, /prefers-reduced-motion[\s\S]*speaking-toolbar-title-window\.is-overflowing[\s\S]*text-overflow:\s*ellipsis/);
   assert.match(css, /speaking-sidebar-segments/);
   assert.match(css, /speaking-sidebar-panel\[hidden\][^}]*display:\s*none !important/);
   assert.match(css, /speaking-voiceprint-hold[^}]*touch-action:\s*none/);
@@ -319,6 +324,9 @@ function run() {
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
   assert.match(app, /function openSidebar\(\)/);
+  assert.match(app, /function measureToolbarTitle\(\)[\s\S]*scrollWidth - toolbarTitleWindow\.clientWidth/);
+  assert.match(app, /--speaking-toolbar-title-shift[\s\S]*--speaking-toolbar-title-duration/);
+  assert.match(app, /ResizeObserver[\s\S]*observe\(toolbarTitleWindow\)/);
   assert.match(app, /function closeSidebar\(options\)/);
   assert.match(app, /function returnToSpeakingHome\(\)/);
   assert.match(app, /function handleSpeakingBack\(\)/);
