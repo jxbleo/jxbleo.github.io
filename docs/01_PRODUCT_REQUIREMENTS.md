@@ -2135,12 +2135,8 @@ Individual Response cards. The drawer contains no `New · Choose a Set`,
 live only in their selected drawer panel rather than being duplicated on the
 home surface. On phones, the dimming scrim exists only while the drawer is
 actually open; a closed drawer must never blur or block the Set cards.
-New Session requires only a title, DSE prompt, date, and optional target time;
-it does not require student IDs or Guest names. The date defaults to the current
-Shanghai date and the target defaults to eight minutes for four Candidates.
-Formal browser recording follows one calm four-step path: Ready, Recording,
-Review, then Uploading. Recording has one Finish action and no Pause; Review
-offers Play, Replace, or `Upload & analyse`. The local recording remains only in
+`Start Discussion` creates the Set-backed Discussion immediately and enters it; there is no second New Session dialog. The server-backed audio date defaults to the current Shanghai date for device recording, while an existing file exposes an editable date beside its chooser. The target defaults to eight minutes.
+Formal browser recording follows Ready, a full-screen opening cue, Recording, Review, then Uploading. After microphone permission, Chinese TTS announces the start, a visible and audible five-second countdown runs, and the live waveform follows microphone level. Recording has one Finish action and no Pause. At the selected target, a final five-second visible and audible warning begins and the recorder stops automatically at target plus five seconds (8:05 for an eight-minute Discussion). Review offers Play, Replace, or `Upload & analyse`. The local recording remains only in
 memory until confirmation, cannot be duplicated by repeated taps or displaced
 by a background/foreground refresh, and starts analysis automatically only
 after the private upload has been verified.
@@ -2154,8 +2150,8 @@ integer 0–7 domains plus
 
 The student Discussion uses two visibly separate phases. Before the formal
 recording is accepted, the preparation surface contains the Set prompt,
-Candidate setup, and recording/upload controls with an explicit secure-upload
-state. Once the formal recording is uploaded, those controls disappear and the
+automatic Candidate matching guidance, and recording/upload controls with an explicit secure-upload
+state. It does not repeat the toolbar Back control with an inner `Discussions` button, and it does not expose `Invite VIP` or `Add Non-VIP`; reusable voiceprints and server Candidate detection drive identity. Once the formal recording is uploaded, those controls disappear and the
 report surface takes over. Queued or processing reports show factual stage
 progress plus live Candidate matching. A ready report starts directly with its
 first card, without a redundant back control or ready-status label, and is
@@ -2342,8 +2338,7 @@ A `task` statement followed by its Group Discussion points, and stable Part B
 Individual Response question IDs. The selected-Set overview omits the redundant
 Context/Part A/Part B progress strip. Context, `Part A Group Discussion`, and
 `Part B Individual Response` use centred blue labels without 01/A/B icon tiles.
-Starting
-Part A creates the existing Discussion from a frozen Set snapshot. Starting one
+Starting Part A immediately creates and opens the Discussion from a frozen Set snapshot without a New Session dialog. Starting one
 Part B question creates a separate private 65-second Individual Response owned
 by the authenticated student. The final five seconds use a red time warning;
 PD remains not assessed and the ASR-error safeguard applies to every AI score

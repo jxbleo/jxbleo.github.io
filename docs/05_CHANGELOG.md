@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-01 — Immersive Speaking Discussion recording
+
+- Made `Start Discussion` create and open the Set-backed Discussion directly, removing the redundant New Session dialog, inner `Discussions` controls, and student `Invite VIP` / `Add Non-VIP` controls.
+- Added a server-backed Audio date beside existing-file selection; device recording resets it to the current Shanghai date.
+- Rebuilt Group Discussion capture as a full-viewport microphone-level waveform with Chinese TTS, a five-second audible/visible opening countdown, and an automatic five-second ending alarm. An eight-minute target now stops at 8:05.
+- Added reduced-motion/transparency/contrast fallbacks, focused frontend/backend contracts, and new static cache versions.
+
 ## 2026-09-01 — Speaking history states, sorting, and report unread markers
 
 - Labelled the drawer actions `Voiceprint` and `Start New`, removed Candidate

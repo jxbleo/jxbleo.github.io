@@ -2531,7 +2531,7 @@ not duplicated inside the paper. Title extraction also uses one reversible contr
 ## Speaking Lab V1 surfaces
 
 The student Speaking Lab is one responsive page with a left-side Discussion drawer,
-invitation inbox, roster-free creation form, private recording/upload choice,
+invitation inbox, direct Set-backed Discussion creation, private recording/upload choice,
 one Candidates card, factual queued/processing stages, internal
 Speaker-labelled report, voice confirmation, and Student Share controls. The
 toolbar uses an icon-only Back control at left, a centered `Speaking Lab`
@@ -2576,21 +2576,13 @@ The overview has no three-step section strip or inline Back button. Context,
 `Part A Group Discussion`, and `Part B Individual Response` use centred blue
 section labels without 01/A/B icon tiles. Part A shows the source `TASK`
 statement before `You may want to talk about:` and its four bullet points.
-creation form asks for title, prompt, date, and optional time only; date opens
-on today's Shanghai date. Voice References are not part of the normal Session
-flow. The browser holds a
-recording only in memory until upload and never writes audio to browser
-storage. A microphone denial always leaves the file-upload path available.
+`Start Discussion` creates and opens the Set-backed Discussion immediately; no New Session modal appears. The toolbar Back control is the only return action, so Discussion and processing cards do not repeat an inner `Discussions` button. Student Candidate surfaces do not show `Invite VIP` or `Add Non-VIP`; automatic reusable-voiceprint matching and server Candidate detection drive identity. Voice References are not part of the normal Session flow. The browser holds a recording only in memory until upload and never writes audio to browser storage. A microphone denial always leaves the file-upload path available.
 After the one student-session check, initial data loads in the fixed order
 Voiceprint then Discussions so the CloudBase browser SDK does not initialize
 two temporary-credential requests concurrently. Read requests leave the
 loading state with a refresh-and-retry message after 20 seconds; recording and
 other mutating actions retain a longer 90-second response window.
-Formal recording uses four mutually exclusive states: Ready, Recording,
-Review, and Uploading. Ready shows only target length, `Record on this device`,
-and `Choose audio file`. Recording removes every competing action and shows the
-elapsed/target timer, advisory quality message, and one `Finish recording`
-button; Pause is deliberately absent so a DSE Discussion remains continuous.
+Formal recording uses mutually exclusive Ready, Requesting, Countdown, Recording, Ending, Review, and Uploading states. Ready shows target length, `Record on this device`, `Choose audio file`, and an Audio date to the file chooser right; device recording resets that date to today. After microphone permission, the whole viewport becomes the recording surface, Chinese TTS announces a five-second start, five visible numbers and synchronized beeps count down, and a microphone-level waveform stays live through the Discussion. Recording keeps one `Finish recording` button and no Pause. At target time the full-screen surface enters a five-second audible/visible Ending warning and stops automatically at target plus five seconds; an eight-minute target therefore ends at 8:05.
 Review shows only `Play recording`, `Replace recording`, and the primary
 `Upload & analyse` action. Uploading locks navigation and shows one factual
 secure-upload state; a successful upload automatically starts analysis.

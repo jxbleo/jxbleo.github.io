@@ -25,7 +25,6 @@
     var leaveDialog = document.getElementById('speaking-leave-dialog');
     var leaveDialogCancel = document.getElementById('speaking-leave-cancel');
     var leaveDialogConfirm = document.getElementById('speaking-leave-confirm');
-    var dialog = document.getElementById('discussion-dialog');
     var titleDialog = document.getElementById('discussion-title-dialog');
     var titleForm = document.getElementById('discussion-title-form');
     var titleInput = document.getElementById('discussion-title-edit');
@@ -41,7 +40,6 @@
     var transcriptionDialogClose = document.getElementById('discussion-transcription-close');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
-    var form = document.getElementById('discussion-form');
     var selectedId = new URLSearchParams(window.location.search).get('discussion') || '';
     var activeStream = null;
     var recorder = null;
@@ -56,6 +54,8 @@
     var recordingPreviewAudio = null;
     var recordingPreviewUrl = '';
     var recordingTargetNoticeShown = false;
+    var recordingCountdownTimer = 0;
+    var recordingSpeech = null;
     var qualityFrame = 0;
     var qualityAnalyser = null;
     var qualityContext = null;
@@ -231,7 +231,7 @@
     function openCandidateDialog() {
         if (!currentDiscussion || !candidateDialog || !candidateDialogContent) return;
         var controls = candidateControls(currentDiscussion);
-        candidateDialogContent.innerHTML = '<div class="speaking-dialog-head"><p class="eyebrow accent">CANDIDATES</p><h2 id="discussion-candidate-dialog-title">Candidate matching</h2><p>Task · ' + esc(currentDiscussion.title || 'Discussion Task') + '</p></div><div class="speaking-candidate-dialog-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + controls.rosterEditor + studentShareMarkup(currentDiscussion) + '<div class="speaking-dialog-actions"><button class="primary-button" id="discussion-candidate-close" type="button">Done</button></div>';
+        candidateDialogContent.innerHTML = '<div class="speaking-dialog-head"><p class="eyebrow accent">CANDIDATES</p><h2 id="discussion-candidate-dialog-title">Candidate matching</h2><p>Task · ' + esc(currentDiscussion.title || 'Discussion Task') + '</p></div><div class="speaking-candidate-dialog-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + studentShareMarkup(currentDiscussion) + '<div class="speaking-dialog-actions"><button class="primary-button" id="discussion-candidate-close" type="button">Done</button></div>';
         bindInvitationActions(candidateDialogContent);
         if (typeof candidateDialog.showModal === 'function') candidateDialog.showModal();
         else candidateDialog.setAttribute('open', '');
@@ -545,25 +545,27 @@
         closeSidebar();
         updateToolbar(null);
     }
-    // Legacy function openNewDiscussionDialog() supports custom prompt fallback.
-    function openNewDiscussionDialog(set) {
+    function createDiscussionFromSet(set) {
         if (!allowRecordingNavigation()) return;
         closeSidebar();
-        selectedSpeakingSet = set || selectedSpeakingSet || null;
-        document.getElementById('discussion-date').value = shanghaiToday();
-        var promptField = document.getElementById('discussion-prompt-field');
-        var promptInput = document.getElementById('discussion-prompt');
-        var titleInput = document.getElementById('discussion-title');
-        if (selectedSpeakingSet) {
-            promptField.hidden = true;
-            promptInput.required = false;
-            titleInput.value = selectedSpeakingSet.title + ' · ' + shanghaiToday();
-        } else {
-            promptField.hidden = false;
-            promptInput.required = true;
-        }
-        if (typeof dialog.showModal === 'function') dialog.showModal();
-        else dialog.setAttribute('open', '');
+        if (!set || !set.set_id) return;
+        var button = document.getElementById('start-set-discussion');
+        if (button) { button.disabled = true; button.querySelector('span').textContent = 'Starting…'; }
+        setStatus('Creating your Discussion…');
+        return call('createDiscussion', {
+            operation_id: 'create-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
+            set_id: set.set_id,
+            title: set.title + ' · ' + shanghaiToday(),
+            discussion_date: shanghaiToday(),
+            duration_seconds: 480
+        }).then(function (result) {
+            selectedId = result.discussion.discussion_id;
+            selectedSpeakingSet = null;
+            return loadList();
+        }).catch(function (error) {
+            setStatus(friendlyError(error), true);
+            if (button) { button.disabled = false; button.querySelector('span').textContent = 'Start Discussion'; }
+        });
     }
     function renderList(items) {
         updateSidebarUpdates(items);
@@ -635,7 +637,7 @@
             '<section class="speaking-set-context speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3></header><div class="speaking-set-context-body">' + (context.source_line ? '<p class="speaking-set-source-line"><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
             '<section class="speaking-set-part speaking-set-part-a speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART A GROUP DISCUSSION</p></header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section>' +
             '<section class="speaking-set-part speaking-set-part-b speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART B INDIVIDUAL RESPONSE</p></header><p class="speaking-set-instruction">' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
-        document.getElementById('start-set-discussion').addEventListener('click', function () { openNewDiscussionDialog(set); });
+        document.getElementById('start-set-discussion').addEventListener('click', function () { createDiscussionFromSet(set); });
         detail.querySelectorAll('[data-start-individual]').forEach(function (button) { button.addEventListener('click', function () { startIndividualResponse(set, button.getAttribute('data-start-individual')); }); });
         updateToolbar({ title: set.title, invitation: true });
     }
@@ -768,7 +770,6 @@
         var candidateTiles = (item.candidates || []).map(detectedCandidateMarkup).join('');
         var candidateIntro = candidateTiles ? '<div class="speaking-candidate-grid">' + candidateTiles + '</div>' : '<div class="speaking-candidate-empty"><span aria-hidden="true">◎</span><p><strong>Candidates appear after transcription.</strong><br>Reusable voiceprints are checked automatically; unclear matches remain Speaker 1, Speaker 2, and so on.</p></div>';
         var participantRows = (item.participants || []).map(function (participant) { return participantRow(participant, item); }).join('');
-        var rosterEditor = item.can_edit_roster ? '<div class="speaking-roster-editor"><label>VIP Student ID<input id="add-vip-id" placeholder="Login ID"></label><button class="outline-button" type="button" id="add-vip-participant">Invite VIP</button><label>Non-VIP name<input id="add-guest-name" placeholder="Self-declared name"></label><button class="outline-button" type="button" id="add-guest-participant">Add Non-VIP</button><p>Adding a name does not change the AI analysis. Unconfirmed Speakers stay anonymous.</p></div>' : '';
         var candidatePill = Number.isInteger(item.candidate_count) ? item.candidate_count + ' detected' : 'Waiting for audio';
         var voiceSearchWorking = ['queued', 'processing'].indexOf(item.voice_match_status) >= 0;
         var voiceSearchButton = item.can_search_voice_matches ? '<button class="outline-button speaking-voice-search' + (voiceSearchWorking ? ' is-searching' : '') + '" type="button" id="search-voice-matches"' + (voiceSearchWorking ? ' disabled aria-busy="true"' : '') + '><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="m15 15 4.25 4.25M7.5 10.5h1.3l1.1-2.2 1.6 4.4 1.2-2.2h.8"></path></svg><span>' + (voiceSearchWorking ? 'Searching voices…' : 'Search voice matches') + '</span></button>' : '';
@@ -784,7 +785,7 @@
             voiceSearchButton: voiceSearchButton,
             voiceSearchNote: voiceSearchNote,
             identityAccess: participantRows ? '<div class="speaking-identity-access"><h4>Identity &amp; access</h4><ul class="speaking-participants">' + participantRows + '</ul></div>' : '',
-            rosterEditor: rosterEditor
+            rosterEditor: ''
         };
     }
     function reportDuration(item, report) {
@@ -848,21 +849,20 @@
         var stageTitle = item.analysis_status === 'queued' ? 'Your report is in the queue' : item.analysis_status === 'processing' ? 'AI is building your report' : failed ? 'The report needs another try' : 'Your recording is ready for analysis';
         var stageCopy = item.analysis_status === 'queued' ? 'The recording is secure. Speaking Lab will begin transcription as soon as the analysis worker is available.' : item.analysis_status === 'processing' ? 'Speaking Lab is transcribing the Discussion, detecting Candidates, checking voiceprints, and preparing personal coaching.' : failed ? 'Your recording is still here. Retry the analysis without uploading it again.' : 'Start the analysis to create the DSE report.';
         var action = working ? '<span class="speaking-pill speaking-stage" aria-live="polite">' + esc(item.analysis_status === 'queued' ? 'Waiting for analysis worker' : 'Transcribing · matching · coaching') + '</span>' : '<button class="primary-button" type="button" id="start-analysis">' + (failed ? 'Retry analysis' : 'Analyse Discussion') + '</button>';
-        return '<article class="speaking-detail-card speaking-report-phase speaking-report-processing"><div class="speaking-report-nav"><button class="back-link" type="button" id="close-discussion">‹ Discussions</button><span class="speaking-pill" data-tone="working">Report in progress</span></div><div class="speaking-report-layout"><section class="speaking-report-card speaking-report-progress-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h2>' + esc(stageTitle) + '</h2><p>' + esc(stageCopy) + '</p><ol class="speaking-report-stages"><li class="is-done"><span>1</span><strong>Recording uploaded</strong></li><li class="' + (working ? 'is-current' : '') + '"><span>2</span><strong>Transcript &amp; Candidates</strong></li><li class="' + (item.analysis_status === 'processing' ? 'is-current' : '') + '"><span>3</span><strong>Voice matching</strong></li><li><span>4</span><strong>Personal report</strong></li></ol><div class="speaking-detail-actions">' + action + '<button class="outline-button" type="button" id="view-discussion-prompt">View Set task</button></div></section><section class="speaking-report-card speaking-processing-candidates"><header class="speaking-report-card-header"><div><p class="eyebrow accent">CANDIDATE MATCHING</p><h2>Candidates</h2><p>Confirmed voiceprints are named automatically. Unclear or unmatched voices stay anonymous.</p></div><div class="speaking-report-card-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div></header>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + controls.rosterEditor + '</section></div></article>';
+        return '<article class="speaking-detail-card speaking-report-phase speaking-report-processing"><div class="speaking-report-nav"><span class="speaking-pill" data-tone="working">Report in progress</span></div><div class="speaking-report-layout"><section class="speaking-report-card speaking-report-progress-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h2>' + esc(stageTitle) + '</h2><p>' + esc(stageCopy) + '</p><ol class="speaking-report-stages"><li class="is-done"><span>1</span><strong>Recording uploaded</strong></li><li class="' + (working ? 'is-current' : '') + '"><span>2</span><strong>Transcript &amp; Candidates</strong></li><li class="' + (item.analysis_status === 'processing' ? 'is-current' : '') + '"><span>3</span><strong>Voice matching</strong></li><li><span>4</span><strong>Personal report</strong></li></ol><div class="speaking-detail-actions">' + action + '<button class="outline-button" type="button" id="view-discussion-prompt">View Set task</button></div></section><section class="speaking-report-card speaking-processing-candidates"><header class="speaking-report-card-header"><div><p class="eyebrow accent">CANDIDATE MATCHING</p><h2>Candidates</h2><p>Confirmed voiceprints are named automatically. Unclear or unmatched voices stay anonymous.</p></div><div class="speaking-report-card-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div></header>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + '</section></div></article>';
     }
     function detailMarkup(item) {
         if (item.recording_status === 'uploaded') return item.analysis_status === 'ready' && item.report ? reportReadyMarkup(item) : reportProcessingMarkup(item);
         var canRecord = item.recording_status !== 'uploaded';
         var targetMinutes = Math.max(3, Math.min(30, Number(item.duration_seconds || 480) / 60));
         var recording = canRecord ? '<section class="speaking-section-card speaking-recording-card" data-recording-state="idle"><header><div><h3>Record the Discussion</h3><p>Record here or choose one audio file. Nothing is uploaded until you confirm.</p></div><span class="speaking-pill" id="recording-target-pill">Target ' + esc(targetMinutes % 1 ? targetMinutes.toFixed(1) : targetMinutes) + ' min</span></header>' +
-            '<div class="speaking-recording-state" id="recording-ready"><div class="speaking-recording-settings"><label>Target length<div class="speaking-duration-field"><input id="recording-duration" type="number" min="3" max="30" step="0.5" value="' + esc(targetMinutes) + '" inputmode="decimal"><span>minutes</span></div></label></div><div class="speaking-recording-choice"><button class="primary-button" type="button" id="record-now">Record on this device</button><label class="outline-button speaking-file-button" id="audio-file-label">Choose audio file<input type="file" accept="audio/*" hidden id="audio-file"></label></div><p class="speaking-recording-note">Keep this page open while recording. You can listen before anything is uploaded.</p><p class="speaking-quality-warning" id="recording-message" role="status" aria-live="polite"></p></div>' +
-            '<div class="speaking-recording-state speaking-recording-live" id="recording-live" hidden><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-time" id="recording-time">00:00 / ' + esc(String(Math.floor(Number(item.duration_seconds || 480) / 60)).padStart(2, '0') + ':' + String(Number(item.duration_seconds || 480) % 60).padStart(2, '0')) + '</div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div>' +
+            '<div class="speaking-recording-state" id="recording-ready"><div class="speaking-recording-settings"><label>Target length<div class="speaking-duration-field"><input id="recording-duration" type="number" min="3" max="30" step="0.5" value="' + esc(targetMinutes) + '" inputmode="decimal"><span>minutes</span></div></label></div><div class="speaking-recording-choice"><button class="primary-button" type="button" id="record-now">Record on this device</button><label class="outline-button speaking-file-button" id="audio-file-label">Choose audio file<input type="file" accept="audio/*" hidden id="audio-file"></label><label class="speaking-audio-date"><span>Audio date</span><input id="recording-date" type="date" value="' + esc(item.discussion_date || shanghaiToday()) + '"></label></div><p class="speaking-recording-note">Device recordings use today. For an existing audio file, choose the date it was recorded.</p><p class="speaking-quality-warning" id="recording-message" role="status" aria-live="polite"></p></div>' +
+            '<div class="speaking-recording-state speaking-recording-live" id="recording-live" hidden><div class="speaking-recording-live-content"><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-countdown" id="recording-countdown" aria-live="assertive" hidden>5</div><div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function (_value, index) { return '<i class="speaking-recording-wave-bar" style="--wave-index:' + index + '"></i>'; }).join('') + '</div><div class="speaking-recording-time" id="recording-time">00:00 / ' + esc(String(Math.floor((Number(item.duration_seconds || 480) + 5) / 60)).padStart(2, '0') + ':' + String((Number(item.duration_seconds || 480) + 5) % 60).padStart(2, '0')) + '</div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-review" id="recording-review" hidden><div class="speaking-recording-ready-mark" aria-hidden="true">✓</div><h4>Recording ready</h4><p id="recording-review-copy">Listen once if you want to check it, then upload and start the analysis.</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="preview-recording">Play recording</button><button class="outline-button" type="button" id="replace-recording">Replace recording</button><button class="primary-button" type="button" id="upload-recording">Upload &amp; analyse</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-uploading" id="recording-uploading" hidden aria-live="polite" aria-busy="true"><span class="speaking-upload-spinner" aria-hidden="true"></span><h4>Uploading securely</h4><p>Keep this page open. Analysis will begin automatically.</p><div class="speaking-upload-progress-track" role="progressbar" aria-label="Secure upload in progress"><span></span></div></div></section>' : '';
         var stage = item.analysis_status === 'queued' ? 'Preparing transcript and Candidates' : item.analysis_status === 'processing' ? 'Matching voices and analysing discussion' : '';
         var analysis = item.recording_status === 'uploaded' && item.analysis_status !== 'ready' ? '<div class="speaking-analysis-action">' + (stage ? '<span class="speaking-pill speaking-stage">' + esc(stage) + '</span>' : '<button class="primary-button" type="button" id="start-analysis">' + (item.analysis_status === 'failed' ? 'Retry analysis' : 'Analyse Discussion') + '</button>') + '</div>' : '';
         var reportMarkup = '';
-        var rosterEditor = item.can_edit_roster ? '<div class="speaking-roster-editor"><label>VIP Student ID<input id="add-vip-id" placeholder="Login ID"></label><button class="outline-button" type="button" id="add-vip-participant">Invite VIP</button><label>Non-VIP name<input id="add-guest-name" placeholder="Self-declared name"></label><button class="outline-button" type="button" id="add-guest-participant">Add Non-VIP</button><p>Adding a name does not change the AI analysis. Unconfirmed Speakers stay anonymous.</p></div>' : '';
         var candidateTiles = (item.candidates || []).map(detectedCandidateMarkup).join('');
         var candidateIntro = candidateTiles ? '<div class="speaking-candidate-grid">' + candidateTiles + '</div>' : '<div class="speaking-candidate-empty"><span aria-hidden="true">◎</span><p><strong>Candidates appear after transcription.</strong><br>Reusable voiceprints are checked automatically; unclear matches remain Speaker 1, Speaker 2, and so on.</p></div>';
         var participantRows = (item.participants || []).map(function (participant) { return participantRow(participant, item); }).join('');
@@ -879,11 +879,11 @@
         var candidateHeaderActions = '<span class="speaking-candidate-header-actions">' + voiceSearchButton + '<span class="speaking-pill">' + esc(candidatePill) + '</span></span>';
         var identityAccess = participantRows ? '<div class="speaking-identity-access"><h4>Identity &amp; access</h4><ul class="speaking-participants">' + participantRows + '</ul></div>' : '';
         return '<article class="speaking-detail-card">' +
-            '<div class="speaking-detail-hero"><div class="speaking-detail-top"><button class="back-link" type="button" id="close-discussion">‹ Discussions</button>' +
+            '<div class="speaking-detail-hero"><div class="speaking-detail-top">' +
             '<div class="speaking-detail-title-row"><div><p class="eyebrow accent">DISCUSSION</p><h2>' + esc(item.title) + '</h2></div><p class="speaking-detail-date">' + esc(formatDate(item.discussion_date)) + '</p></div></div>' +
             workflowMarkup(item) + '<div class="speaking-detail-grid"><dl><dt>Candidates</dt><dd>' + esc(candidateCountText) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(readableStatus(item.recording_status)) + '</dd></dl><dl><dt>Analysis</dt><dd>' + esc(readableStatus(item.analysis_status)) + '</dd></dl></div></div>' +
             '<div class="speaking-detail-body"><section class="speaking-section-card speaking-prompt-card"><header><div><h3>Discussion prompt</h3><p>The DSE task your group should address.</p></div></header><p class="speaking-prompt-text">' + esc(item.prompt_text) + '</p></section>' +
-            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Voiceprint matches at 70% or above are named and opened automatically. Lower scores stay anonymous until the matched VIP listens and confirms.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + rosterEditor + '</section>' +
+            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Voiceprint matches at 70% or above are named and opened automatically. Lower scores stay anonymous until the matched VIP listens and confirms.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + '</section>' +
             recording + analysis + reportMarkup + '</div></article>';
     }
     function bindReportInteractions(root) {
@@ -934,8 +934,6 @@
                 .then(refreshDiscussion)
                 .catch(function (error) { setStatus(friendlyError(error), true); voiceSearch.disabled = false; voiceSearch.classList.remove('is-searching'); voiceSearch.removeAttribute('aria-busy'); });
         });
-        var addVip = root.querySelector('#add-vip-participant'); if (addVip) addVip.addEventListener('click', function () { var input = root.querySelector('#add-vip-id'); addVip.disabled = true; call('addVipParticipant', { discussion_id: selectedId, student_id: input.value }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); addVip.disabled = false; }); });
-        var addGuest = root.querySelector('#add-guest-participant'); if (addGuest) addGuest.addEventListener('click', function () { var input = root.querySelector('#add-guest-name'); addGuest.disabled = true; call('addGuestParticipant', { discussion_id: selectedId, guest_name: input.value }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); addGuest.disabled = false; }); });
         root.querySelectorAll('[data-remove-participant]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Remove this participant from the Discussion?')) return; button.disabled = true; call('removeParticipant', { discussion_id: selectedId, participant_id: button.getAttribute('data-remove-participant') }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
         root.querySelectorAll('[data-rename-guest]').forEach(function (button) { button.addEventListener('click', function () { var name = window.prompt('Guest name', button.getAttribute('data-current-name') || ''); if (!name) return; button.disabled = true; call('renameGuest', { discussion_id: selectedId, participant_id: button.getAttribute('data-rename-guest'), guest_name: name }).then(refreshDiscussion).catch(function (error) { setStatus(friendlyError(error), true); button.disabled = false; }); }); });
         root.querySelectorAll('[data-invite-action]').forEach(function (button) {
@@ -971,14 +969,15 @@
     function elapsedText() {
         var seconds = Math.max(0, Math.floor((performance.now() - recordingStartedAt) / 1000));
         var elapsed = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
-        var target = String(Math.floor(recordingTargetSeconds / 60)).padStart(2, '0') + ':' + String(recordingTargetSeconds % 60).padStart(2, '0');
+        var stopAt = recordingTargetSeconds + 5;
+        var target = String(Math.floor(stopAt / 60)).padStart(2, '0') + ':' + String(stopAt % 60).padStart(2, '0');
         return elapsed + ' / ' + target;
     }
     function recordingElapsedSeconds() {
         return recordingStartedAt ? Math.max(0, (performance.now() - recordingStartedAt) / 1000) : 0;
     }
     function recordingLocksPage() {
-        return ['requesting', 'recording', 'stopping', 'uploading'].indexOf(recordingState) >= 0;
+        return ['requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(recordingState) >= 0;
     }
     function recordingNeedsDiscardConfirmation() {
         return recordingState === 'recording' || recordingState === 'review';
@@ -996,13 +995,17 @@
         var review = document.getElementById('recording-review');
         var uploading = document.getElementById('recording-uploading');
         if (ready) ready.hidden = nextState !== 'idle';
-        if (live) live.hidden = ['requesting', 'recording', 'stopping'].indexOf(nextState) < 0;
+        if (live) live.hidden = ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(nextState) < 0;
         if (review) review.hidden = nextState !== 'review';
         if (uploading) uploading.hidden = nextState !== 'uploading';
         var liveStatus = document.getElementById('recording-live-status');
-        if (liveStatus) liveStatus.textContent = nextState === 'requesting' ? 'Starting microphone…' : nextState === 'stopping' ? 'Finishing recording…' : 'Recording';
+        if (liveStatus) liveStatus.textContent = nextState === 'requesting' ? 'Starting microphone…' : nextState === 'countdown' ? 'Get ready' : nextState === 'ending' ? 'Discussion ending' : nextState === 'stopping' ? 'Finishing recording…' : 'Recording';
+        var countdown = document.getElementById('recording-countdown');
+        if (countdown) countdown.hidden = ['countdown', 'ending'].indexOf(nextState) < 0;
+        var liveTimer = document.getElementById('recording-time');
+        if (liveTimer) liveTimer.hidden = nextState === 'countdown';
         var finish = document.getElementById('stop-recording');
-        if (finish) { finish.textContent = nextState === 'requesting' ? 'Cancel' : 'Finish recording'; finish.disabled = nextState === 'stopping'; }
+        if (finish) { finish.textContent = ['requesting', 'countdown'].indexOf(nextState) >= 0 ? 'Cancel' : 'Finish recording'; finish.disabled = nextState === 'stopping'; }
         var locked = recordingLocksPage();
         document.body.classList.toggle('speaking-recording-locked', locked);
         sidebarToggle.disabled = locked;
@@ -1035,6 +1038,10 @@
     function stopRecordingHardware() {
         if (recordingTimer) window.clearInterval(recordingTimer);
         recordingTimer = 0;
+        if (recordingCountdownTimer) window.clearTimeout(recordingCountdownTimer);
+        recordingCountdownTimer = 0;
+        if (recordingSpeech && window.speechSynthesis) window.speechSynthesis.cancel();
+        recordingSpeech = null;
         if (activeStream) activeStream.getTracks().forEach(function (track) { track.stop(); });
         activeStream = null;
         recorder = null;
@@ -1097,6 +1104,91 @@
         return true;
     }
     function showQualityWarning(message) { var warning = document.getElementById('quality-warning'); if (warning) warning.textContent = message || ''; }
+    function playRecordingBeep(urgent) {
+        if (!qualityContext || !qualityContext.createOscillator || !qualityContext.createGain) return;
+        try {
+            var oscillator = qualityContext.createOscillator();
+            var gain = qualityContext.createGain();
+            var startsAt = qualityContext.currentTime;
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(urgent ? 1046 : 784, startsAt);
+            gain.gain.setValueAtTime(0.0001, startsAt);
+            gain.gain.exponentialRampToValueAtTime(urgent ? 0.2 : 0.13, startsAt + 0.012);
+            gain.gain.exponentialRampToValueAtTime(0.0001, startsAt + 0.16);
+            oscillator.connect(gain).connect(qualityContext.destination);
+            oscillator.start(startsAt);
+            oscillator.stop(startsAt + 0.18);
+        } catch (error) {}
+    }
+    function speakRecordingCue(text) {
+        return new Promise(function (resolve) {
+            if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { resolve(); return; }
+            var settled = false;
+            var timeout = window.setTimeout(done, 3500);
+            function done() {
+                if (settled) return;
+                settled = true;
+                window.clearTimeout(timeout);
+                recordingSpeech = null;
+                resolve();
+            }
+            try {
+                window.speechSynthesis.cancel();
+                recordingSpeech = new window.SpeechSynthesisUtterance(text);
+                recordingSpeech.lang = 'zh-CN';
+                recordingSpeech.rate = 0.92;
+                recordingSpeech.onend = done;
+                recordingSpeech.onerror = done;
+                window.speechSynthesis.speak(recordingSpeech);
+            } catch (error) { done(); }
+        });
+    }
+    function runOpeningCountdown(captureGeneration) {
+        setRecordingState('countdown');
+        showQualityWarning('讨论将在 5 秒后开始');
+        return speakRecordingCue('讨论将在五秒钟后开始。').then(function () {
+            return new Promise(function (resolve) {
+                var remaining = 5;
+                function tick() {
+                    if (captureGeneration !== recordingCaptureGeneration || recordingState !== 'countdown') { resolve(false); return; }
+                    var countdown = document.getElementById('recording-countdown');
+                    if (countdown) countdown.textContent = String(remaining);
+                    playRecordingBeep(remaining === 1);
+                    if (remaining === 1) {
+                        recordingCountdownTimer = window.setTimeout(function () { recordingCountdownTimer = 0; resolve(true); }, 1000);
+                        return;
+                    }
+                    remaining -= 1;
+                    recordingCountdownTimer = window.setTimeout(tick, 1000);
+                }
+                tick();
+            });
+        }).then(function (ready) {
+            if (!ready || captureGeneration !== recordingCaptureGeneration || recordingState !== 'countdown') return false;
+            showQualityWarning('可以开始讨论了');
+            return speakRecordingCue('可以开始讨论了。').then(function () { return captureGeneration === recordingCaptureGeneration && recordingState === 'countdown'; });
+        });
+    }
+    function updateRecordingWaveform(samples, rms) {
+        var bars = document.querySelectorAll('.speaking-recording-wave-bar');
+        if (!bars.length) return;
+        var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        bars.forEach(function (bar, index) {
+            var sampleIndex = Math.min(samples.length - 1, Math.floor((index + 0.5) * samples.length / bars.length));
+            var input = reducedMotion ? rms * 3.2 : Math.max(Math.abs(samples[sampleIndex]) * 5.5, rms * 4.2);
+            var centreWeight = 0.7 + 0.3 * Math.sin(Math.PI * (index + 1) / (bars.length + 1));
+            var level = Math.max(0.1, Math.min(1, (0.1 + input) * centreWeight));
+            bar.style.transform = 'scaleY(' + level.toFixed(3) + ')';
+        });
+    }
+    function persistDiscussionDate(value) {
+        var date = String(value || '').trim();
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return Promise.resolve(null);
+        return call('updateDiscussionDate', { discussion_id: selectedId, discussion_date: date }).catch(function (error) {
+            setStatus('The audio date could not be saved. ' + friendlyError(error), true);
+            return null;
+        });
+    }
     function monitorQuality(stream) {
         var AudioContextCtor = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextCtor) return;
@@ -1117,6 +1209,7 @@
                 var sum = 0; var clipped = 0;
                 for (var index = 0; index < samples.length; index += 1) { var value = samples[index]; sum += value * value; if (Math.abs(value) >= CLIPPING_AMPLITUDE) clipped += 1; }
                 var rms = Math.sqrt(sum / samples.length);
+                updateRecordingWaveform(samples, rms);
                 var dbfs = rms > 0 ? 20 * Math.log10(rms) : -Infinity;
                 var now = performance.now();
                 var muted = stream.getTracks().some(function (track) { return track.readyState === 'ended' || track.muted; });
@@ -1164,6 +1257,9 @@
         if (recordingState !== 'idle') return;
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { setRecordingMessage('Recording is unavailable here. Choose an audio file instead.'); return; }
         setRecordingMessage('');
+        var dateField = document.getElementById('recording-date');
+        if (dateField) dateField.value = shanghaiToday();
+        persistDiscussionDate(shanghaiToday());
         setRecordingState('requesting');
         showQualityWarning('Allow microphone access to begin recording.');
         var captureGeneration = ++recordingCaptureGeneration;
@@ -1199,21 +1295,53 @@
                 recordingUploadOperationId = 'speaking-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
                 setRecordingState('review');
             };
-            try { activeRecorder.start(1000); }
-            catch (error) { recordingStartFailure('This browser could not begin recording. Choose an audio file instead.'); return; }
-            recordingStartedAt = performance.now();
-            recordingTargetNoticeShown = false;
             monitorQuality(stream);
-            stream.getTracks().forEach(function (track) { track.addEventListener('ended', function () { if (captureGeneration === recordingCaptureGeneration && recorder === activeRecorder && activeRecorder.state !== 'inactive') { showQualityWarning('Microphone signal ended. Finishing the recording safely…'); setRecordingState('stopping'); activeRecorder.stop(); } }); });
-            setRecordingState('recording');
-            var timer = document.getElementById('recording-time');
-            if (timer) timer.textContent = elapsedText();
-            recordingTimer = window.setInterval(function () {
+            stream.getTracks().forEach(function (track) {
+                track.addEventListener('ended', function () {
+                    if (captureGeneration !== recordingCaptureGeneration || recorder !== activeRecorder) return;
+                    if (recordingState === 'requesting' || recordingState === 'countdown') {
+                        recordingStartFailure('The microphone signal ended before recording began. Check the input or choose an audio file.');
+                        return;
+                    }
+                    if (activeRecorder.state !== 'inactive') {
+                        showQualityWarning('Microphone signal ended. Finishing the recording safely…');
+                        setRecordingState('stopping');
+                        activeRecorder.stop();
+                    }
+                });
+            });
+            runOpeningCountdown(captureGeneration).then(function (ready) {
+                if (!ready || captureGeneration !== recordingCaptureGeneration || recorder !== activeRecorder) return;
+                try { activeRecorder.start(1000); }
+                catch (error) { recordingStartFailure('This browser could not begin recording. Choose an audio file instead.'); return; }
+                recordingStartedAt = performance.now();
+                recordingTargetNoticeShown = false;
+                setRecordingState('recording');
+                showQualityWarning('Discussion in progress · keep this screen awake.');
+                var timer = document.getElementById('recording-time');
                 if (timer) timer.textContent = elapsedText();
-                var elapsed = recordingElapsedSeconds();
-                if (!recordingTargetNoticeShown && elapsed >= recordingTargetSeconds) { recordingTargetNoticeShown = true; showQualityWarning('Target time reached. Finish at the group\'s next natural stopping point.'); }
-                if (elapsed >= 1800 && recorder === activeRecorder && activeRecorder.state !== 'inactive') { showQualityWarning('The 30-minute limit was reached. Finishing the recording safely…'); setRecordingState('stopping'); activeRecorder.stop(); }
-            }, 250);
+                recordingTimer = window.setInterval(function () {
+                    if (timer) timer.textContent = elapsedText();
+                    var elapsed = recordingElapsedSeconds();
+                    if (elapsed >= recordingTargetSeconds) {
+                        var remaining = Math.max(0, Math.ceil(recordingTargetSeconds + 5 - elapsed));
+                        if (recordingState === 'recording') setRecordingState('ending');
+                        var countdown = document.getElementById('recording-countdown');
+                        if (countdown) countdown.textContent = String(remaining);
+                        if (remaining > 0 && recordingTargetNoticeShown !== remaining) {
+                            recordingTargetNoticeShown = remaining;
+                            playRecordingBeep(remaining <= 2);
+                            showQualityWarning('Discussion ends automatically in ' + remaining + ' second' + (remaining === 1 ? '.' : 's.'));
+                        }
+                        if (elapsed >= recordingTargetSeconds + 5 && recorder === activeRecorder && activeRecorder.state !== 'inactive') {
+                            playRecordingBeep(true);
+                            showQualityWarning('Time is up. Finishing the recording safely…');
+                            setRecordingState('stopping');
+                            activeRecorder.stop();
+                        }
+                    }
+                }, 250);
+            });
         }).catch(function (error) {
             if (captureGeneration !== recordingCaptureGeneration) return;
             var denied = error && (error.name === 'NotAllowedError' || error.name === 'SecurityError');
@@ -1353,8 +1481,8 @@
         }).catch(function () { setStatus('Microphone access was denied. Choose an audio file instead.', true); });
     }
     function finishFormalRecording() {
-        if (recordingState === 'requesting') { discardLocalRecording(); setRecordingMessage('Recording cancelled.'); return; }
-        if (!recorder || recorder.state === 'inactive' || recordingState !== 'recording') return;
+        if (['requesting', 'countdown'].indexOf(recordingState) >= 0) { discardLocalRecording(); setRecordingMessage('Recording cancelled.'); return; }
+        if (!recorder || recorder.state === 'inactive' || ['recording', 'ending'].indexOf(recordingState) < 0) return;
         if (recordingElapsedSeconds() < Math.min(60, recordingTargetSeconds / 2) && !window.confirm('Finish this recording early?')) return;
         setRecordingState('stopping');
         showQualityWarning('Finishing the recording safely…');
@@ -1430,7 +1558,8 @@
         var preview = document.getElementById('preview-recording'); if (preview) preview.addEventListener('click', toggleRecordingPreview);
         var replace = document.getElementById('replace-recording'); if (replace) replace.addEventListener('click', function () { if (!window.confirm('Replace this recording? The current copy has not been uploaded.')) return; discardLocalRecording(); });
         var upload = document.getElementById('upload-recording'); if (upload) upload.addEventListener('click', uploadPreparedRecording);
-        var file = document.getElementById('audio-file'); if (file) file.addEventListener('change', function () { var chosen = file.files && file.files[0]; file.value = ''; prepareAudioFile(chosen); });
+        var date = document.getElementById('recording-date'); if (date) date.addEventListener('change', function () { persistDiscussionDate(date.value); });
+        var file = document.getElementById('audio-file'); if (file) file.addEventListener('change', function () { var chosen = file.files && file.files[0]; file.value = ''; persistDiscussionDate(date && date.value).then(function () { prepareAudioFile(chosen); }); });
         detail.querySelectorAll('[data-voice-record]').forEach(function (button) { button.addEventListener('click', function () { startVoiceReferenceRecording(button.getAttribute('data-voice-record'), button.getAttribute('data-voice-name') || 'this participant', button); }); });
         detail.querySelectorAll('[data-voice-file]').forEach(function (input) { input.addEventListener('change', function () { var file = input.files[0]; if (!file) return; var name = input.getAttribute('data-voice-name') || 'this participant'; if (!window.confirm('Use this Voice Reference for ' + name + '?')) { input.value = ''; return; } setStatus('Uploading Voice Reference…'); uploadBlob(file, 'voice_reference', input.getAttribute('data-voice-file')).then(function () { return openDiscussion(selectedId); }).then(function () { setStatus('Voice Reference uploaded.'); }).catch(function (error) { setStatus(friendlyError(error), true); }); }); });
         var analysis = document.getElementById('start-analysis'); if (analysis) analysis.addEventListener('click', function () { analysis.disabled = true; call('startAnalysis', { discussion_id: selectedId, operation_id: 'analysis-' + selectedId }).then(function () { return openDiscussion(selectedId); }).catch(function (error) { setStatus(friendlyError(error), true); analysis.disabled = false; }); });
@@ -1551,7 +1680,7 @@
     });
     sidebarScrim.addEventListener('click', function () { closeSidebar({ restoreFocus: true }); });
     sidebarNew.addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); returnToSpeakingSetLibrary(); });
-    document.getElementById('new-discussion').addEventListener('click', openNewDiscussionDialog);
+    document.getElementById('new-discussion').addEventListener('click', returnToSpeakingSetLibrary);
     sidebarVoiceprint.addEventListener('click', function () { if (!allowRecordingNavigation()) return; closeSidebar(); renderVoiceprintMain(); });
     sidebarPartA.addEventListener('click', function () { setSidebarMode('part-a'); });
     sidebarPartB.addEventListener('click', function () { setSidebarMode('part-b'); });
@@ -1589,35 +1718,6 @@
     });
     document.getElementById('voiceprint-confirm').addEventListener('click', function () {
         if (voiceprintPendingResult) saveVoiceprintRecording(voiceprintPendingResult);
-    });
-    form.addEventListener('submit', function (event) {
-        if (event.submitter && event.submitter.value === 'cancel') return;
-        event.preventDefault();
-        var button = document.getElementById('discussion-create');
-        var durationValue = document.getElementById('discussion-duration').value;
-        var createPayload = {
-            operation_id: 'create-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
-            title: document.getElementById('discussion-title').value,
-            discussion_date: document.getElementById('discussion-date').value || shanghaiToday()
-        };
-        if (selectedSpeakingSet) createPayload.set_id = selectedSpeakingSet.set_id;
-        else createPayload.prompt_text = document.getElementById('discussion-prompt').value;
-        if (durationValue) createPayload.duration_seconds = Number(durationValue);
-        button.disabled = true;
-        call('createDiscussion', createPayload).then(function (result) {
-            selectedId = result.discussion.discussion_id;
-            dialog.close();
-            form.reset();
-            document.getElementById('discussion-prompt-field').hidden = false;
-            document.getElementById('discussion-prompt').required = true;
-            selectedSpeakingSet = null;
-            document.getElementById('discussion-date').value = shanghaiToday();
-            return loadList();
-        }).catch(function (error) {
-            setStatus(friendlyError(error), true);
-        }).finally(function () {
-            button.disabled = false;
-        });
     });
     titleForm.addEventListener('submit', function (event) {
         if (event.submitter && event.submitter.value === 'cancel') return;

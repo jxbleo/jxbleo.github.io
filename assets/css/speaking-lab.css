@@ -268,7 +268,7 @@ html.speaking-direct-entry .speaking-voiceprint-main { display: none !important;
 .speaking-duration-field { position: relative; }
 .speaking-duration-field input { padding-right: 72px; font-variant-numeric: tabular-nums; }
 .speaking-duration-field span { position: absolute; top: 50%; right: 12px; color: #75848b; font-size: .68rem; font-weight: 650; pointer-events: none; transform: translateY(-35%); }
-.speaking-recording-choice { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 16px; }
+.speaking-recording-choice { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr) minmax(150px,.72fr); align-items: stretch; gap: 10px; margin-top: 16px; }
 .speaking-recording-choice .primary-button, .speaking-recording-choice .speaking-file-button { min-height: 52px; }
 .speaking-recording-note { margin: 10px 0 0; color: var(--sl-muted); font-size: .7rem; line-height: 1.45; text-align: center; }
 .speaking-recording-live, .speaking-recording-review, .speaking-recording-uploading { margin-top: 4px; padding: clamp(20px,4vw,30px); border: 1px solid rgba(79,100,111,.10); border-radius: 21px; text-align: center; background: rgba(255,255,255,.62); }
@@ -885,3 +885,27 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
     .speaking-response-recorder-card .speaking-detail-actions { display: grid; grid-template-columns: 1fr; }
     .speaking-response-recorder-card .speaking-detail-actions > * { width: 100%; }
 }
+
+
+/* Immersive Group Discussion recording flow. */
+body.speaking-recording-locked { overflow: hidden; overscroll-behavior: none; }
+.speaking-audio-date { display: grid; grid-template-rows: auto 1fr; gap: 4px; min-width: 0; color: var(--sl-muted); font-size: .62rem; font-weight: 760; letter-spacing: .035em; text-transform: uppercase; }
+.speaking-audio-date input { width: 100%; min-height: 36px; padding: 0 10px; border: 1px solid rgba(74,95,106,.16); border-radius: 12px; color: var(--sl-ink); background: rgba(255,255,255,.78); font: inherit; font-size: .73rem; font-weight: 680; letter-spacing: 0; text-transform: none; }
+.speaking-recording-live { position: fixed; inset: 0; z-index: 1200; display: grid; margin: 0; padding: max(24px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left)); place-items: center; overflow: hidden; border: 0; border-radius: 0; color: #f5fbff; background: radial-gradient(circle at 50% 38%,rgba(48,142,205,.27),transparent 34%),linear-gradient(155deg,#081824 0%,#102f42 54%,#0b222e 100%); }
+.speaking-recording-live::before { content: ""; position: absolute; inset: -25%; pointer-events: none; background: conic-gradient(from 90deg,rgba(60,179,242,.13),transparent 28%,rgba(55,208,159,.11),transparent 66%,rgba(90,161,245,.12)); filter: blur(70px); animation: speaking-recording-ambient 12s linear infinite; }
+.speaking-recording-live-content { position: relative; z-index: 1; display: grid; width: min(100%,760px); justify-items: center; }
+.speaking-recording-live .speaking-recording-live-label { color: rgba(231,245,253,.76); font-size: .76rem; font-weight: 760; letter-spacing: .12em; text-transform: uppercase; }
+.speaking-recording-live .speaking-recording-live-label span { background: #ff6259; box-shadow: 0 0 0 5px rgba(255,98,89,.13); }
+.speaking-recording-countdown { margin: clamp(18px,4vh,36px) 0 4px; color: #fff; font-size: clamp(5.5rem,25vw,12rem); font-variant-numeric: tabular-nums; font-weight: 620; line-height: .9; letter-spacing: -.075em; text-shadow: 0 12px 48px rgba(20,133,208,.35); }
+.speaking-recording-countdown[hidden], .speaking-recording-time[hidden] { display: none !important; }
+.speaking-recording-waveform { display: flex; width: min(92vw,680px); height: clamp(120px,25vh,220px); align-items: center; justify-content: center; gap: clamp(3px,1vw,9px); margin: clamp(22px,5vh,52px) 0; }
+.speaking-recording-wave-bar { width: clamp(3px,.7vw,7px); height: 100%; border-radius: 999px; background: linear-gradient(180deg,rgba(131,222,255,.88),rgba(74,183,241,.56) 48%,rgba(70,221,177,.82)); box-shadow: 0 0 18px rgba(70,188,243,.16); transform: scaleY(.1); transition: transform 80ms linear; will-change: transform; }
+.speaking-recording-live .speaking-recording-time { margin: 2px 0 4px; color: #f4fbff; font-size: clamp(2.2rem,9vw,4.8rem); }
+.speaking-recording-live .speaking-quality-warning { max-width: 560px; color: rgba(229,243,250,.78); font-size: clamp(.78rem,2vw,.94rem); }
+.speaking-recording-live .speaking-finish-recording { border-color: rgba(255,255,255,.17); color: #fff; background: rgba(227,76,70,.82); box-shadow: 0 14px 36px rgba(2,12,19,.25); }
+@keyframes speaking-recording-ambient { to { transform: rotate(360deg); } }
+@media (max-width: 760px) { .speaking-recording-choice { grid-template-columns: 1fr 1fr; } .speaking-audio-date { grid-column: 2; } }
+@media (max-width: 520px) { .speaking-recording-choice { grid-template-columns: 1fr; } .speaking-audio-date { grid-column: auto; } }
+@media (prefers-reduced-motion: reduce) { .speaking-recording-live::before { animation: none; } .speaking-recording-wave-bar { transition-duration: 180ms; } }
+@media (prefers-reduced-transparency: reduce) { .speaking-recording-live { background: #102b3b; } }
+@media (prefers-contrast: more) { .speaking-recording-live { background: #06131c; } .speaking-recording-wave-bar { background: #8de1ff; } }

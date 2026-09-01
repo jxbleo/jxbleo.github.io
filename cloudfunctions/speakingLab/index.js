@@ -948,6 +948,18 @@ async function renameGuest(actor, event) {
   });
   return { success: true, participant_id: participant.participant_id, guest_name: guestName };
 }
+async function updateDiscussionDate(actor, event) {
+  const rows = await authorizedDiscussion(actor, event.discussion_id, true);
+  if (rows.discussion.roster_status !== "draft" || rows.discussion.recording_status === "uploaded" || rows.discussion.analysis_status !== "not_ready") throw new Error("RECORDING_SETUP_LOCKED");
+  const discussionDate = lab.text(event.discussion_date, 30);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(discussionDate);
+  const parsed = match ? new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))) : null;
+  if (!match || parsed.getUTCFullYear() !== Number(match[1]) || parsed.getUTCMonth() !== Number(match[2]) - 1 || parsed.getUTCDate() !== Number(match[3])) throw new Error("DISCUSSION_DATE_INVALID");
+  const changedAt = now();
+  await db.collection(DISCUSSIONS).doc(rows.discussion._id || rows.discussion.discussion_id).update({ discussion_date: discussionDate, updated_at: changedAt });
+  return { success: true, discussion_date: discussionDate };
+}
+
 async function updateDiscussionDuration(actor, event) {
   const rows = await authorizedDiscussion(actor, event.discussion_id, true);
   if (rows.discussion.roster_status !== "draft" || rows.discussion.recording_status === "uploaded" || rows.discussion.analysis_status !== "not_ready") throw new Error("RECORDING_SETUP_LOCKED");
@@ -2060,7 +2072,7 @@ function friendlyMessage(code) {
     DISCUSSION_NOT_FOUND: "This Discussion is no longer available.", DISCUSSION_ACCESS_DENIED: "You do not have access to this Discussion.", DISCUSSION_TITLE_REQUIRED: "Enter a Discussion title.",
     ROSTER_FROZEN: "The participant list is already frozen.", PARTICIPANT_LIMIT_REACHED: "A Discussion can have up to six participants.", DSE_REQUIRES_THREE_TO_SIX: "A DSE report requires three to six listed participants. Two participants do not generate a report.",
     GUEST_NAME_DUPLICATE: "That participant name is already in this Discussion. Add a suffix such as 1 or 2.",
-    DURATION_INVALID: "Choose a recording time from 180 to 1800 seconds.", RECORDING_SETUP_LOCKED: "Recording setup is locked after the formal audio is uploaded.",
+    DISCUSSION_DATE_INVALID: "Choose a valid audio date.", DURATION_INVALID: "Choose a recording time from 180 to 1800 seconds.", RECORDING_SETUP_LOCKED: "Recording setup is locked after the formal audio is uploaded.",
     AUDIO_REQUIRED: "Upload the formal Discussion recording first.", AUDIO_FILE_INVALID: "Choose a supported audio file.", AUDIO_UPLOAD_INCOMPLETE: "The audio upload is incomplete. Retry the same upload.",
     IDEMPOTENCY_KEY_REUSED: "That upload request was already used for a different file. Start a new upload.", VOICE_REFERENCE_LOCKED: "This Voice Reference is locked. Ask a teacher to reopen it.",
     SPEAKING_VOICEPRINT_NOT_CONFIGURED: "Tencent voiceprint registration is not configured yet.", VOICEPRINT_CONSENT_REQUIRED: "Confirm consent before registering this reusable voiceprint.",
@@ -2111,6 +2123,7 @@ exports.main = async (event = {}) => {
     if (action === "addGuestParticipant") return await addParticipant(actor, event, "guest");
     if (action === "renameGuest") return await renameGuest(actor, event);
     if (action === "updateDiscussionTitle") return await updateDiscussionTitle(actor, event);
+    if (action === "updateDiscussionDate") return await updateDiscussionDate(actor, event);
     if (action === "updateDiscussionDuration") return await updateDiscussionDuration(actor, event);
     if (action === "respondInvitation") return await respondInvitation(actor, event);
     if (action === "startAudioUpload") return await startAudioUpload(actor, event);
