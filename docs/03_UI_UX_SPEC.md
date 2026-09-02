@@ -2493,6 +2493,12 @@ Important mobile rules:
   inline shake instead; Reduced Motion replaces the shake with a brief static tint.
   Revised sentences are non-interactive.
   Do not show Revised for a manuscript that began with no required revisions.
+- The manuscript card ends with one quiet, right-aligned word count for the active
+  version. An incomplete Draft counts the confirmed original manuscript. Once Revised
+  is available, switching the centered segmented control changes the same footer to the
+  reconstructed Revised count or back to the original Draft count. Use the backend's
+  Unicode-aware Writing token rule, tabular numerals, and singular/plural English copy;
+  never repeat the count in Sentence Revision or invoke AI to calculate it.
 - Phone layouts constrain every card, grid, and dynamic text block to the
   viewport. Long unbroken model text wraps; photo previews collapse to one
   column; horizontal overflow is confined to the capsule row.

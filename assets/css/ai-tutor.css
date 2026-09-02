@@ -383,6 +383,8 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .manuscript-version-button:focus-visible { outline: 3px solid rgba(65,105,193,.22); outline-offset: 2px; }
 .manuscript-text { margin-top: 18px; color: #3c392f; font: 1.04rem/1.92 ui-serif, Georgia, serif; letter-spacing: .002em; white-space: pre-wrap; overflow-wrap: anywhere; }
 .is-revised-view .manuscript-text { color: #343936; line-height: 1.85; }
+.manuscript-word-count { margin: 20px 2px 0; color: rgba(52,57,54,.52); font-size: .7rem; font-weight: 720; font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: .025em; text-align: right; }
+.is-draft-view .manuscript-word-count { color: rgba(91,70,34,.56); }
 .manuscript-sentence-highlight { display: inline; border: 0; color: inherit; background: transparent; box-shadow: none; font: inherit; line-height: inherit; text-align: left; cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .manuscript-sentence-highlight.is-draft { margin: 0; padding: .03em .02em; border-radius: .22em; }
 .manuscript-sentence-highlight.is-draft.needs-revision { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: rgba(178,62,59,.78); text-decoration-thickness: 1.15px; text-underline-offset: .25em; text-decoration-skip-ink: none; }

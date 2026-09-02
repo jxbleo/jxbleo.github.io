@@ -2160,6 +2160,11 @@ High priority improvement:
   sentence-width block.
 - Focus a highlighted Draft sentence with the keyboard and confirm Enter and Space
   activate its capsule and revision row just like a pointer click.
+- Confirm the second full-manuscript card shows one low-emphasis word count at its
+  bottom-right. Before completion, Draft must show the confirmed original count. After
+  completion, toggle Draft / Revised and confirm the count switches between the unchanged
+  original and the reconstructed accepted-rewrite text, including correct `1 word` /
+  `N words` copy. The Sentence Revision card must not duplicate this count.
 - Complete only some required corrections and confirm no `Revised` segment appears.
   Then complete every required correction and reopen the record: the Draft card
   shows `Draft / Revised`, defaults to Revised, replaces each corrected source

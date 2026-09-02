@@ -761,6 +761,41 @@
             }).join('') + '</div>';
     }
 
+    function manuscriptWordCount(value) {
+        var normalized = String(value || '').normalize('NFKC');
+        if (!normalized) return 0;
+        var words = normalized.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*|\d+(?:[.,]\d+)*|[\p{Script=Han}]/gu);
+        return words ? words.length : 0;
+    }
+
+    function manuscriptTextForView(manuscript, sentences, view, revisionSummary) {
+        var source = String(manuscript || '');
+        if (view !== 'revised' || !revisionSummary || !revisionSummary.available) return source;
+        var cursor = 0;
+        var output = '';
+        sentences.forEach(function(sentence, index) {
+            var original = String(sentence && sentence.original || '');
+            if (!original) return;
+            var matchAt = source.indexOf(original, cursor);
+            if (matchAt < 0) return;
+            var leadingWhitespace = (original.match(/^\s*/) || [''])[0];
+            var withoutLeading = original.slice(leadingWhitespace.length);
+            var trailingWhitespace = (withoutLeading.match(/\s*$/) || [''])[0];
+            var visibleSentence = withoutLeading.slice(0, withoutLeading.length - trailingWhitespace.length);
+            var replacement = firstText(revisionSummary.replacements[sentenceId(sentence, index)], visibleSentence);
+            output += source.slice(cursor, matchAt) + leadingWhitespace + replacement + trailingWhitespace;
+            cursor = matchAt + original.length;
+        });
+        return output + source.slice(cursor);
+    }
+
+    function manuscriptWordCountHtml(manuscript, sentences, view, revisionSummary) {
+        var resolvedView = view === 'revised' && revisionSummary && revisionSummary.available ? 'revised' : 'draft';
+        var count = manuscriptWordCount(manuscriptTextForView(manuscript, sentences, resolvedView, revisionSummary));
+        var versionLabel = resolvedView === 'revised' ? 'Revised' : 'Draft';
+        return '<p class="manuscript-word-count" aria-label="' + versionLabel + ' word count: ' + count + '">' + count + (count === 1 ? ' word' : ' words') + '</p>';
+    }
+
     function highlightedManuscriptHtml(manuscript, sentences, view, revisionSummary) {
         var source = String(manuscript || '');
         var cursor = 0;
@@ -3204,7 +3239,7 @@
             '</section>';
         stage.innerHTML = '<div class="language-review-stack">' +
             '<section class="surface language-review-card language-overall-card"><h2 class="language-card-title">Language Review</h2>' + (state.readOnly ? '<p class="language-readonly-note">这是作品库中已保存的语言训练记录，只读显示。</p>' : '') + cefrHtml + '<p>' + escapeHtml(firstText(state.review && state.review.overview, state.review && state.review.summary, '请阅读整体建议，再逐句完成需要修改的表达。')) + '</p></section>' +
-            '<section class="surface language-review-card language-manuscript-card ' + (state.manuscriptView === 'revised' ? 'is-revised-view' : 'is-draft-view') + '">' + manuscriptVersionControlHtml(revisionSummary.available) + '<div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences, state.manuscriptView, revisionSummary) + '</div></section>' +
+            '<section class="surface language-review-card language-manuscript-card ' + (state.manuscriptView === 'revised' ? 'is-revised-view' : 'is-draft-view') + '">' + manuscriptVersionControlHtml(revisionSummary.available) + '<div class="manuscript-text">' + highlightedManuscriptHtml(manuscript, sentences, state.manuscriptView, revisionSummary) + '</div>' + manuscriptWordCountHtml(manuscript, sentences, state.manuscriptView, revisionSummary) + '</section>' +
             sentenceReviewHtml + '</div>';
         if (!revisionSummary.available) window.requestAnimationFrame(observeSentenceCardHeights);
         if (previousScreen !== state.screen) scheduleStageViewportReset();

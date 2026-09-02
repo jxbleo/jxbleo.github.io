@@ -1271,6 +1271,40 @@ check("Draft preserves paragraphs and marks original revision needs like proofre
     "inline sentence navigation must remain clickable and keyboard accessible");
 });
 
+check("the manuscript card reports the active Draft or Revised word count", () => {
+  const client = read(clientPath);
+  const styles = read(stylePath);
+  const countSource = functionSource(client, "manuscriptWordCount", "manuscriptTextForView");
+  const textSource = functionSource(client, "manuscriptTextForView", "manuscriptWordCountHtml");
+  const labelSource = functionSource(client, "manuscriptWordCountHtml", "highlightedManuscriptHtml");
+  const renderSource = functionSource(client, "renderLanguage", "sentenceVisualStatus");
+  const countWords = Function(countSource + "\nreturn manuscriptWordCount;")();
+  const textForView = Function(
+    "function firstText(){ for(var i=0;i<arguments.length;i+=1){ if(arguments[i] != null && String(arguments[i]).trim()) return String(arguments[i]).trim(); } return ''; }" +
+    "function sentenceId(sentence,index){ return sentence && sentence.sentence_id || String(index); }" +
+    textSource + "\nreturn manuscriptTextForView;"
+  )();
+  assert.strictEqual(countWords("One well-written sentence, 2.5 times."), 5,
+    "manuscript word count must match the backend English token rule");
+  const original = "First draft. Second draft.";
+  const revised = textForView(original, [
+    { sentence_id: "s1", original: "First draft. " },
+    { sentence_id: "s2", original: "Second draft." },
+  ], "revised", { available: true, replacements: { s2: "A clearer final sentence." } });
+  assert.strictEqual(revised, "First draft. A clearer final sentence.",
+    "Revised count text must replace only the accepted sentence and preserve boundaries");
+  assert.strictEqual(countWords(original), 4);
+  assert.strictEqual(countWords(revised), 6);
+  requireEvery(textSource, ["view !== 'revised'", "revisionSummary.available", "revisionSummary.replacements", "source.slice(cursor, matchAt)", "leadingWhitespace", "trailingWhitespace"],
+    "revised full-text reconstruction for word count");
+  requireEvery(labelSource, ["Draft", "Revised", "word count", "count === 1 ? ' word' : ' words'"],
+    "active manuscript word-count label");
+  requireEvery(renderSource, ["manuscriptWordCountHtml(manuscript, sentences, state.manuscriptView, revisionSummary)"],
+    "word count inside the second manuscript card");
+  requireEvery(styles, [".manuscript-word-count", "font-variant-numeric: tabular-nums", "text-align: right", ".is-draft-view .manuscript-word-count"],
+    "quiet bottom-right word-count styling");
+});
+
 check("completed writing offers a default Revised manuscript without another AI call", () => {
   const client = read(clientPath);
   const summarySource = functionSource(client, "manuscriptRevisionSummary", "manuscriptVersionControlHtml");

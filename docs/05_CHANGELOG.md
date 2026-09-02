@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-02 — Draft and Revised word counts
+
+- Added a quiet bottom-right word count to the full-manuscript card, including the
+  in-progress Draft-only state.
+- Made the count follow the active Draft/Revised version, reconstructing Revised from
+  persisted accepted student rewrites without another AI request.
+- Kept counting aligned with the backend Writing token rule and added focused regression
+  coverage plus refreshed static asset versions.
+
 ## 2026-09-02 — My Words Scan photo intake and progress redesign
 
 - Rebuilt Scan Words photo intake around the Writing flow's familiar single
