@@ -11,6 +11,7 @@
     "test:vocabulary-session": "node scripts/test-vocabulary-session-assignment.js",
     "test:cloudbase-auth": "node scripts/test-cloudbase-auth-preflight.js",
     "test:my-words": "node scripts/test-my-words-features.js",
+    "test:my-words-scan": "node scripts/test-my-words-scan.js",
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
     "test:login-redirect": "node scripts/test-login-redirect.js",
     "test:bbc-correction": "node scripts/test-bbc-inline-correction.js",

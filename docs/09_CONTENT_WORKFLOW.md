@@ -497,3 +497,7 @@ For a full historical refresh, run
 Markdown, then `node scripts/prepare-cloudbase-data.js --only-speaking-sets`.
 The generator validates the 306 PP identities, year totals, stable child IDs,
 Context length/uniqueness and complete Part B duplication before writing.
+Scan Words is private student activity, not canonical content. Processed
+photos, OCR, marks, and candidates remain in ADMINONLY scan collections and are
+never imported into `content/`, public `data/`, or grading keys. Only reviewed
+vocabulary and safe sentence provenance cross the existing My Words boundary.

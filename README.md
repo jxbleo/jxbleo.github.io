@@ -256,3 +256,10 @@ creation; teacher Set edits affect future sessions only. The focused test also
 validates the five imported DSE Paper 4 MOCK Sets. Local owner review artifacts
 are prepared with `node scripts/prepare-cloudbase-data.js` and remain under the
 ignored `.cloudbase-private/` directory.
+## Scan Words
+
+The authenticated My Words workspace includes V1 Scan Words for up to five
+locally cropped/masked photos. OCR runs through private `vocabularyScan`
+per-page jobs; reviewed words and phrases use the existing My Words save and
+enrichment path. See `docs/18_MY_WORDS_SCAN_IMPLEMENTATION_PLAN.md`,
+`npm run test:my-words-scan`, and `docs/10_DEPLOYMENT.md`.

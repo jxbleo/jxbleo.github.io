@@ -1402,3 +1402,37 @@ then use the same command with `--apply` after owner approval. The import insert
 missing Set IDs only; the separate migration changes only
 `visible_to_students:false` on the five known MOCK IDs. Deploy `speakingLab`
 before publishing the filtered student/teacher library.
+## My Words Scan owner-gated rollout
+
+Create `vocabulary_scan_sessions`, `vocabulary_scan_pages`, and
+`vocabulary_scan_jobs` as `ADMINONLY`, then add the composite indexes documented
+in `docs/04_DATA_MODEL.md`. Keep `VOCABULARY_SCAN_ENABLED=false` only while the
+infrastructure is incomplete. `vocabularyScan` reuses the existing Writing
+vision-provider contract, so configure `WRITING_AI_VISION_API_KEY`,
+`WRITING_AI_VISION_API_URL`, `WRITING_AI_VISION_MODEL`,
+`WRITING_AI_VISION_PROTOCOL`, and `WRITING_AI_VISION_IMAGE_TRANSPORT` (or the
+documented `WRITING_AI_*` fallbacks); no new provider secret belongs in Git.
+
+Configure the same random CloudBase-only `VOCAB_SCAN_WORKER_CRON_TOKEN` on the
+worker and in its trusted timer payload. Create a one-minute
+`vocabulary-scan-worker-minute` timer. Package locally with:
+
+```bash
+npm run package:functions -- vocabularyScan vocabularyScanWorker studentVocabulary
+```
+
+Deploy `studentVocabulary`, `vocabularyScan`, and `vocabularyScanWorker` before
+publishing the cache-busted static assets. With the switch still false, verify
+the disabled capability response; then temporarily enable it, smoke-test camera
+or library upload, crop, white pen/eraser, OCR, single-word and non-adjacent
+phrase commit, dictionary enrichment, discard, and cleanup using a real active
+student account. After that smoke test, leave
+`VOCABULARY_SCAN_ENABLED=true`: V1 launches to every active student, with no
+cohort gate. Rollback is the global switch back to false; the worker must remain
+deployed until queued cleanup finishes. Agents may package and generate this
+plan but must not create collections/indexes/timers, set secrets, deploy
+functions, or publish without the owner's exact authorization.
+
+### 2026-09-02 rollout record
+
+With explicit owner authorization, production received the three ADMINONLY scan collections and all documented indexes, updated `studentVocabulary`, new `vocabularyScan` and `vocabularyScanWorker` functions, an enabled one-minute worker timer with matching private token, authenticated-only Scan access, worker `invoke: false`, and `VOCABULARY_SCAN_ENABLED=true`. Empty-worker and unauthenticated Scan invocations passed; real-student end-to-end photo/OCR verification remains a post-publication smoke check.

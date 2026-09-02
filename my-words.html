@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
     <link rel="stylesheet" href="assets/css/my-words.css?v=20260808-1">
+    <link rel="stylesheet" href="assets/css/my-words-scan.css?v=20260902-2">
 </head>
 <body class="my-words-page">
     <main class="my-words-shell">
@@ -27,12 +28,17 @@
                 <button type="button" data-my-words-nav="word-list" aria-selected="true">My Words</button>
                 <button type="button" data-my-words-nav="study" aria-selected="false">Review</button>
             </nav>
+            <button id="my-words-add-trigger" class="my-words-header-icon" type="button" aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel">
+                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
         </header>
 
-        <button id="my-words-add-trigger" type="button" hidden aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel"></button>
-
         <section class="my-words-add-panel" id="my-words-add-panel" aria-hidden="true" inert>
-            <form id="my-words-add-form">
+            <div class="my-words-add-choices" role="group" aria-label="Add to My Words">
+                <button type="button" class="outline-button" data-open-manual>Add a word</button>
+                <button type="button" class="primary-button" data-open-scan>Scan Words</button>
+            </div>
+            <form id="my-words-add-form" hidden>
                 <label for="my-words-add-input">Add a word or short phrase</label>
                 <input id="my-words-add-input" type="text" maxlength="120" autocomplete="off" placeholder="Type a word or short phrase">
                 <button id="my-words-add-submit" type="submit">Save</button>
@@ -156,6 +162,64 @@
         </div>
     </section>
 
+    <section id="my-words-scan-overlay" class="my-words-scan-overlay" hidden aria-labelledby="my-words-scan-title">
+        <div class="my-words-scan-shell" role="dialog" aria-modal="true">
+            <header class="my-words-scan-header">
+                <button type="button" class="outline-button" data-scan-close>Back</button>
+                <h1 id="my-words-scan-title">Scan Words</h1>
+                <button type="button" class="outline-button" data-scan-discard>Discard</button>
+            </header>
+            <div class="my-words-scan-status" id="my-words-scan-status" role="status" aria-live="polite"></div>
+            <section class="my-words-scan-phase" data-scan-phase="choose">
+                <h2>Choose photos</h2>
+                <p>Processed photos are uploaded temporarily for recognition and deleted after completion or expiry.</p>
+                <div class="my-words-scan-inputs">
+                    <label class="primary-button">Camera<input data-scan-camera type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="environment" multiple hidden></label>
+                    <label class="outline-button">Photo library<input data-scan-library type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple hidden></label>
+                </div>
+                <div class="my-words-scan-drop" data-scan-drop>Drop up to five photos here</div>
+                <div class="my-words-scan-pages" data-scan-pages></div>
+                <button type="button" class="primary-button" data-scan-next disabled>Prepare photos</button>
+            </section>
+            <section class="my-words-scan-phase" data-scan-phase="edit" hidden>
+                <h2>Prepare photos</h2>
+                <div data-scan-editor></div>
+                <div class="my-words-scan-edit-actions" role="toolbar" aria-label="Photo editing tools">
+                    <button type="button" class="outline-button" data-scan-page-prev aria-label="Previous photo">‹</button>
+                    <span data-scan-page-label></span>
+                    <button type="button" class="outline-button" data-scan-page-next aria-label="Next photo">›</button>
+                    <button type="button" class="outline-button" data-scan-mode="crop" aria-pressed="true">Crop</button>
+                    <button type="button" class="outline-button" data-scan-mode="mask" aria-pressed="false">White pen</button>
+                    <button type="button" class="outline-button" data-scan-mode="erase" aria-pressed="false">Eraser</button>
+                    <label>Size <input data-scan-brush type="range" min="4" max="80" value="24"></label>
+                    <button type="button" class="outline-button" data-scan-undo>Undo</button>
+                    <button type="button" class="outline-button" data-scan-redo>Redo</button>
+                    <button type="button" class="primary-button" data-scan-run>Scan</button>
+                </div>
+            </section>
+            <section class="my-words-scan-phase" data-scan-phase="review" hidden>
+                <h2>Review OCR</h2>
+                <div data-scan-review></div>
+                <div class="my-words-scan-phrase-actions" hidden>
+                    <span>Phrase mode · tap any words in this sentence</span>
+                    <button type="button" class="primary-button" data-scan-finish-phrase aria-label="Finish phrase">✓</button>
+                    <button type="button" class="outline-button" data-scan-cancel-phrase>Cancel</button>
+                </div>
+                <div class="my-words-scan-candidate-drawer" data-scan-drawer>
+                    <button type="button" data-scan-drawer-toggle aria-expanded="true"><span data-scan-selected-count>0</span> selected</button>
+                    <div data-scan-candidate-list></div>
+                    <button type="button" class="primary-button" data-scan-commit disabled>Add 0 items</button>
+                </div>
+            </section>
+        </div>
+        <div class="my-words-scan-preview" data-scan-preview hidden>
+            <div role="dialog" aria-modal="true" aria-label="Processed photo preview">
+                <button type="button" class="outline-button" data-scan-preview-close>Close preview</button>
+                <img data-scan-preview-image alt="Processed scan photo">
+            </div>
+        </div>
+    </section>
+
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260815-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
@@ -163,6 +227,7 @@
     <script src="assets/js/personal-vocab.js?v=20260818-1"></script>
     <script src="assets/js/my-words-export.js?v=20260801-1"></script>
     <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-    <script src="assets/js/my-words.js?v=20260819-1"></script>
+    <script src="assets/js/my-words.js?v=20260902-2"></script>
+    <script src="assets/js/my-words-scan.js?v=20260902-2"></script>
 </body>
 </html>

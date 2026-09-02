@@ -1414,3 +1414,50 @@ records and five retained `source_kind: mock` records with
 `visible_to_students: false`. Stable `set_id` and `paper_version` values are the
 identity; title is never a key. Existing Session snapshots remain unchanged
 when a canonical Set is edited or hidden.
+## Scan collections (ADMINONLY)
+
+V1 adds `vocabulary_scan_sessions`, `vocabulary_scan_pages`, and
+`vocabulary_scan_jobs`.
+
+`vocabulary_scan_sessions` is one top-level document per logical batch. It
+contains unique `scan_id`; authenticated `student_uid`; stable
+`operation_id`; ordered `page_ids` and `page_count`; the upload `page_manifest`;
+bounded server-built `candidates` and monotonic `candidate_revision`;
+`committed_candidates`, `commit_operation_id`, and `commit_summary` for replay;
+`day_key`, quota reservation/refund fields including immutable
+`quota_reserved_pages`, `provider_call_started`; prompt/
+schema/canonicalization versions; `cleanup_status`/safe `cleanup_error`;
+seven-day `expires_at`; lifecycle timestamps; and one of `uploading`, `queued`,
+`processing`, `review`, `partial_failure`, `committing`, `completed`,
+`discarded`, or `expired`.
+
+`vocabulary_scan_pages` contains unique deterministic `page_id`, parent
+`scan_id`, `student_uid`, immutable `page_index`, state, expected MIME/size,
+private `file_id`/`cloud_path`, canonical OCR, uncertainty acknowledgements,
+safe failure/cleanup codes, provider-call boundary, expiry, and lifecycle
+timestamps. A failed storage deletion keeps its private file locators until the
+worker succeeds; it must never null them and make the leak unretryable.
+
+`vocabulary_scan_jobs` contains unique deterministic `job_id`, scan/page/owner
+locators, `job_type: vocabulary_page_ocr`, private dispatch and lease tokens,
+queued/processing/succeeded/failed/superseded state, attempt and retry/lease
+times, safe model metadata/aggregate token counts, version fields, safe failure
+code, and lifecycle timestamps. A transactionally claimed live lease is the
+only authority allowed to publish OCR.
+
+Create these indexes (all ascending unless a time direction is stated):
+
+- sessions: unique `scan_id`; unique `student_uid + operation_id`;
+  `student_uid + status + updated_at DESC`; `status + expires_at`;
+  `status + cleanup_status + updated_at`; and `student_uid + scan_id`;
+- pages: unique `page_id`; unique `scan_id + student_uid + page_index`;
+  `scan_id + student_uid`; and `status + cleanup_error`;
+- jobs: unique `job_id`; `scan_id + student_uid`; `status + next_retry_at`;
+  and `status + lease_until`.
+
+The `students` profile uses top-level operational fields
+`active_vocabulary_scan_id`, `vocabulary_scan_usage_day`,
+`vocabulary_scan_count_today`, and `vocabulary_scan_pages_today`. They are
+server-owned, not teacher-editable. Permanent vocabulary `saved_examples` may
+retain bounded `context_token_ranges`, but vocabulary items never contain scan
+file IDs, URLs, or full OCR pages.

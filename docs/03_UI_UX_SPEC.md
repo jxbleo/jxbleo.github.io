@@ -2789,3 +2789,17 @@ search, Year and PP/MOCK filters; Teacher also provides visibility filtering.
 The student initially renders 48 cards and Teacher 50, with a restrained Show
 more control. Filters reset the visible batch and must remain one-column and
 full-width at phone breakpoints.
+## Scan Words
+
+The full-screen flow has Choose photos, Prepare photos, and Review OCR phases.
+It supports camera/library/desktop drop, five ordered pages, rectangular crop,
+drag handles and crop movement, white mask strokes, adjustable brush size, a
+true mask-only eraser, per-page undo/redo, processed-image preview, focus-safe
+modal scroll locking, reduced motion, and forced-colors affordances. OCR renders
+as DOM text plus token buttons; amber mark cues and red uncertainty states are
+separate from green candidate states. Tapping an amber-marked token dismisses
+the cue while applying the normal selection. Short tap immediately stages a
+word in the bottom drawer; long press starts an explicit same-sentence phrase
+composer, and only individually tapped tokens belong to that phrase even when
+they are non-adjacent. The drawer remains editable until `Add <n> items`, with
+failed candidates remaining removable and retryable.
