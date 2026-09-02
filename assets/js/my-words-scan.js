@@ -7,9 +7,22 @@
     if (!overlay || !openButton || !window.MrCatCloud) return;
 
     var statusNode = document.getElementById('my-words-scan-status');
+    var shell = overlay.querySelector('.my-words-scan-shell');
     var pageHost = overlay.querySelector('[data-scan-pages]');
+    var photoEmpty = overlay.querySelector('[data-scan-photo-empty]');
+    var photoCount = overlay.querySelector('[data-scan-photo-count]');
+    var photoChoice = overlay.querySelector('[data-scan-photo-choice]');
+    var photoChoiceTitle = overlay.querySelector('#my-words-scan-photo-choice-title');
     var editorHost = overlay.querySelector('[data-scan-editor]');
     var reviewHost = overlay.querySelector('[data-scan-review]');
+    var reviewHeading = overlay.querySelector('[data-scan-review-heading]');
+    var progressHost = overlay.querySelector('[data-scan-progress]');
+    var progressStep = overlay.querySelector('[data-scan-progress-step]');
+    var progressTrack = overlay.querySelector('[data-scan-progress-track]');
+    var progressBar = overlay.querySelector('[data-scan-progress-bar]');
+    var progressCount = overlay.querySelector('[data-scan-progress-count]');
+    var readyHint = overlay.querySelector('[data-scan-ready-hint]');
+    var drawer = overlay.querySelector('[data-scan-drawer]');
     var drawerHost = overlay.querySelector('[data-scan-candidate-list]');
     var countNode = overlay.querySelector('[data-scan-selected-count]');
     var commitButton = overlay.querySelector('[data-scan-commit]');
@@ -22,6 +35,7 @@
     var state = {
         phase: 'choose',
         files: [],
+        activePhoto: 0,
         activeEditor: 0,
         editorMode: 'crop',
         scan: null,
@@ -40,6 +54,10 @@
         commitOperation: null,
         didCommit: false,
         busy: false,
+        photoChoiceOpen: false,
+        photoChoiceReplaceIndex: null,
+        pendingPhotoReplaceIndex: null,
+        photoChoiceReturnFocus: null,
         lastFocus: null,
         scrollY: 0,
         bodyStyle: null
@@ -113,6 +131,7 @@
             if (item.url) URL.revokeObjectURL(item.url);
         });
         state.files = [];
+        state.activePhoto = 0;
         state.preparedFiles = null;
         state.uploadOperation = null;
     }
@@ -134,12 +153,44 @@
         previewImage.removeAttribute('src');
     }
 
+    function closePhotoChoice(restoreFocus) {
+        if (!state.photoChoiceOpen) return;
+        var focusTarget = state.photoChoiceReturnFocus;
+        state.photoChoiceOpen = false;
+        state.photoChoiceReplaceIndex = null;
+        state.photoChoiceReturnFocus = null;
+        photoChoice.hidden = true;
+        shell.inert = false;
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && focusTarget.focus) {
+            focusTarget.focus({ preventScroll: true });
+        }
+    }
+
+    function openPhotoChoice(trigger, replaceIndex) {
+        var replacing = Number.isInteger(replaceIndex) && Boolean(state.files[replaceIndex]);
+        if (state.busy || (!replacing && state.files.length >= 5) || state.photoChoiceOpen) {
+            if (!replacing && state.files.length >= 5) say('You can scan up to five photos at a time.');
+            return;
+        }
+        state.photoChoiceOpen = true;
+        state.photoChoiceReplaceIndex = replacing ? replaceIndex : null;
+        state.photoChoiceReturnFocus = trigger || document.activeElement;
+        photoChoiceTitle.textContent = replacing ? 'Replace Photo' : 'Add Photos';
+        photoChoice.hidden = false;
+        shell.inert = true;
+        window.requestAnimationFrame(function() {
+            var first = photoChoice.querySelector('[data-scan-photo-source="camera"]');
+            if (first) first.focus({ preventScroll: true });
+        });
+    }
+
     function close() {
         if (state.busy) return;
         stopPolling();
         if (state.syncTimer) window.clearTimeout(state.syncTimer);
         state.syncTimer = null;
         closePreview();
+        closePhotoChoice(false);
         overlay.hidden = true;
         unlockPage();
         releaseLocalFiles();
@@ -182,6 +233,7 @@
 
     function addFiles(fileList, replaceIndex) {
         var incoming = Array.prototype.slice.call(fileList || []);
+        if (!incoming.length) return;
         if (replaceIndex == null && state.files.length + incoming.length > 5) {
             say('Choose no more than five photos.');
             return;
@@ -198,7 +250,9 @@
                 state.files.splice(replaceIndex, 1, items[0]);
             } else {
                 state.files = state.files.concat(items);
+                state.activePhoto = Math.max(0, state.files.length - items.length);
             }
+            if (replaceIndex != null) state.activePhoto = replaceIndex;
             state.activeEditor = Math.min(state.activeEditor, Math.max(0, state.files.length - 1));
             renderPages();
             if (state.phase === 'edit') renderEditor();
@@ -208,55 +262,98 @@
         });
     }
 
-    function replaceFile(index) {
-        var input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/jpeg,image/png,image/webp,image/heic,image/heif';
-        input.addEventListener('change', function() { addFiles(input.files, index); });
-        input.click();
+    function scanIcon(paths) {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('aria-hidden', 'true');
+        paths.forEach(function(value) {
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', value);
+            svg.appendChild(path);
+        });
+        return svg;
     }
 
     function renderPages() {
         pageHost.textContent = '';
-        state.files.forEach(function(item, index) {
-            var card = document.createElement('div');
-            card.className = 'my-words-scan-page-thumb';
+        state.activePhoto = Math.max(0, Math.min(state.activePhoto, Math.max(0, state.files.length - 1)));
+        var hasPhotos = state.files.length > 0;
+        pageHost.hidden = !hasPhotos;
+        photoEmpty.hidden = hasPhotos;
+        photoCount.textContent = state.files.length + ' of 5 photo' + (state.files.length === 1 ? '' : 's');
+        if (hasPhotos) {
+            var index = state.activePhoto;
+            var item = state.files[index];
+            var card = document.createElement('figure');
+            card.className = 'my-words-scan-photo-card';
+            var counter = document.createElement('span');
+            counter.className = 'my-words-scan-photo-counter';
+            counter.setAttribute('role', 'status');
+            counter.setAttribute('aria-live', 'polite');
+            counter.textContent = 'Page ' + (index + 1) + '/' + state.files.length;
+            var frame = document.createElement('div');
+            frame.className = 'my-words-scan-photo-frame';
+            var open = document.createElement('button');
+            open.type = 'button';
+            open.className = 'my-words-scan-photo-open';
+            open.setAttribute('aria-label', 'Enlarge photo ' + (index + 1));
             var image = document.createElement('img');
             image.src = item.url;
-            image.alt = 'Photo ' + (index + 1) + ' of ' + state.files.length;
-            var actions = document.createElement('div');
-            actions.className = 'my-words-scan-thumb-actions';
-            var edit = document.createElement('button');
-            edit.type = 'button';
-            edit.className = 'outline-button';
-            edit.textContent = 'Edit';
-            edit.addEventListener('click', function() {
-                state.activeEditor = index;
-                setPhase('edit');
-                renderEditor();
+            image.alt = 'Selected photo ' + (index + 1) + ' of ' + state.files.length;
+            open.appendChild(image);
+            open.addEventListener('click', function() {
+                previewImage.src = item.url;
+                preview.hidden = false;
+                overlay.querySelector('[data-scan-preview-close]').focus();
             });
-            var replace = document.createElement('button');
-            replace.type = 'button';
-            replace.className = 'outline-button';
-            replace.textContent = 'Replace';
-            replace.addEventListener('click', function() { replaceFile(index); });
             var remove = document.createElement('button');
             remove.type = 'button';
-            remove.className = 'outline-button';
-            remove.textContent = 'Remove';
+            remove.className = 'my-words-scan-photo-remove';
+            remove.setAttribute('aria-label', 'Remove photo ' + (index + 1));
+            remove.appendChild(scanIcon(['m7 7 10 10', 'M17 7 7 17']));
             remove.addEventListener('click', function() {
                 URL.revokeObjectURL(item.url);
                 state.files.splice(index, 1);
+                state.activePhoto = Math.min(index, Math.max(0, state.files.length - 1));
                 state.activeEditor = Math.min(state.activeEditor, Math.max(0, state.files.length - 1));
                 renderPages();
             });
-            actions.appendChild(edit);
+            frame.appendChild(open);
+            frame.appendChild(remove);
+            if (state.files.length > 1) {
+                [-1, 1].forEach(function(step) {
+                    var arrow = document.createElement('button');
+                    arrow.type = 'button';
+                    arrow.className = 'my-words-scan-photo-arrow ' + (step < 0 ? 'is-previous' : 'is-next');
+                    arrow.disabled = step < 0 ? index === 0 : index === state.files.length - 1;
+                    arrow.setAttribute('aria-label', step < 0 ? 'Previous photo' : 'Next photo');
+                    arrow.appendChild(scanIcon([step < 0 ? 'm15 5-7 7 7 7' : 'm9 5 7 7-7 7']));
+                    arrow.addEventListener('click', function() { state.activePhoto += step; renderPages(); });
+                    frame.appendChild(arrow);
+                });
+            }
+            var actions = document.createElement('div');
+            actions.className = 'my-words-scan-photo-actions';
+            var replace = document.createElement('button');
+            replace.type = 'button';
+            replace.className = 'my-words-scan-replace-photo';
+            replace.appendChild(scanIcon(['M4 7h11', 'm12 4 3 3-3 3', 'M20 17H9', 'm12 3-3 3 3 3']));
+            replace.appendChild(document.createTextNode('Replace'));
+            replace.addEventListener('click', function() { openPhotoChoice(replace, index); });
+            var add = document.createElement('button');
+            add.type = 'button';
+            add.className = 'outline-button my-words-scan-add-photo';
+            add.disabled = state.files.length >= 5;
+            add.appendChild(scanIcon(['M4 8.5h16v10.5H4z', 'm8 8.5 1.3-2h5.4l1.3 2', 'M12 11v5', 'M9.5 13.5h5']));
+            add.appendChild(document.createTextNode(state.files.length >= 5 ? '5 Photos Added' : 'Add Photo'));
+            add.addEventListener('click', function() { openPhotoChoice(add); });
             actions.appendChild(replace);
-            actions.appendChild(remove);
-            card.appendChild(image);
+            actions.appendChild(add);
+            card.appendChild(counter);
+            card.appendChild(frame);
             card.appendChild(actions);
             pageHost.appendChild(card);
-        });
+        }
         overlay.querySelector('[data-scan-next]').disabled = state.files.length < 1;
     }
 
@@ -517,7 +614,8 @@
             setBusy(false);
             setPhase('review');
             if (result.scan) hydrateScan(result.scan);
-            say('Reading your pages…');
+            renderScanProgress(result.scan);
+            say('');
             poll();
         }).catch(function(error) {
             setBusy(false);
@@ -529,6 +627,32 @@
     function isReviewReady(scan) {
         var pages = (scan.pages || []).filter(function(page) { return page.status !== 'deleted'; });
         return pages.length > 0 && pages.every(function(page) { return page.status === 'succeeded' || page.status === 'failed'; });
+    }
+
+    function renderScanProgress(scan) {
+        var pages = ((scan && scan.pages) || []).filter(function(page) { return page.status !== 'deleted'; });
+        var complete = pages.filter(function(page) { return page.status === 'succeeded' || page.status === 'failed'; }).length;
+        var total = Math.max(1, pages.length);
+        var percentage = Math.round((complete / total) * 100);
+        progressHost.hidden = false;
+        reviewHeading.hidden = true;
+        readyHint.hidden = true;
+        drawer.hidden = true;
+        reviewHost.textContent = '';
+        progressStep.textContent = 'SCANNING · ' + complete + '/' + total + (total === 1 ? ' PAGE CHECKED' : ' PAGES CHECKED');
+        progressTrack.setAttribute('aria-valuemax', String(total));
+        progressTrack.setAttribute('aria-valuenow', String(complete));
+        progressBar.style.width = percentage + '%';
+        var remaining = total - complete;
+        progressCount.textContent = remaining > 0 ? 'Scanning ' + remaining + ' remaining page' + (remaining === 1 ? '' : 's') + '…' : 'Finishing your scan…';
+    }
+
+    function showReviewReady(scan) {
+        var succeeded = ((scan && scan.pages) || []).filter(function(page) { return page.status === 'succeeded'; }).length;
+        progressHost.hidden = true;
+        reviewHeading.hidden = false;
+        readyHint.hidden = succeeded < 1;
+        drawer.hidden = false;
     }
 
     function poll() {
@@ -544,10 +668,11 @@
                     renderReview(result.scan);
                     setPhase('review');
                     var failed = (result.scan.pages || []).filter(function(page) { return page.status === 'failed'; }).length;
-                    say(failed ? failed + ' page' + (failed === 1 ? '' : 's') + ' need attention.' : 'Tap a word to stage it. Long-press to start a phrase.');
+                    say(failed ? failed + ' page' + (failed === 1 ? '' : 's') + ' need attention.' : '');
                     return;
                 }
-                say('Reading your pages…');
+                renderScanProgress(result.scan);
+                say('');
                 state.pollTimer = window.setTimeout(run, 3500);
             }).catch(function() {
                 say('Network unavailable. Your scan is saved; reconnecting…');
@@ -798,6 +923,7 @@
     }
 
     function renderReview(scan) {
+        showReviewReady(scan);
         reviewHost.textContent = '';
         state.tokenRegistry.clear();
         (scan.pages || []).filter(function(page) { return page.status !== 'deleted'; }).forEach(function(page) {
@@ -937,6 +1063,7 @@
         overlay.hidden = false;
         lockPage();
         setPhase('choose');
+        renderPages();
         say('Checking Scan Words…');
         overlay.querySelector('[data-scan-close]').focus();
         callScan({ action: 'getCapability' }).then(function(result) {
@@ -955,9 +1082,10 @@
             if (isReviewReady(result.scan)) {
                 renderReview(result.scan);
                 setPhase('review');
-                say('Continued your saved scan. Tap a word to stage it.');
+                say('');
             } else {
                 setPhase('review');
+                renderScanProgress(result.scan);
                 poll();
             }
         }).catch(function(error) {
@@ -996,7 +1124,7 @@
 
     function focusTrap(event) {
         if (overlay.hidden || event.key !== 'Tab') return;
-        var scope = preview.hidden ? overlay.querySelector('.my-words-scan-shell') : preview;
+        var scope = !preview.hidden ? preview : (!photoChoice.hidden ? photoChoice : shell);
         var focusable = Array.prototype.slice.call(scope.querySelectorAll('button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')).filter(function(item) { return !item.hidden && item.offsetParent !== null; });
         if (!focusable.length) return;
         var first = focusable[0];
@@ -1007,7 +1135,16 @@
 
     overlay.addEventListener('click', function(event) {
         var target = event.target;
-        if (target.closest('[data-scan-close]')) close();
+        if (target.closest('[data-scan-photo-source]')) {
+            var source = target.closest('[data-scan-photo-source]').dataset.scanPhotoSource;
+            state.pendingPhotoReplaceIndex = state.photoChoiceReplaceIndex;
+            closePhotoChoice(false);
+            var input = overlay.querySelector(source === 'camera' ? '[data-scan-camera]' : '[data-scan-library]');
+            if (input) input.click();
+        }
+        else if (target.closest('[data-scan-photo-choice-close]')) closePhotoChoice();
+        else if (target.closest('[data-scan-add-photo]')) openPhotoChoice(target.closest('[data-scan-add-photo]'));
+        else if (target.closest('[data-scan-close]')) close();
         else if (target.closest('[data-scan-discard]')) discard();
         else if (target.closest('[data-scan-next]')) { state.activeEditor = 0; setPhase('edit'); renderEditor(); }
         else if (target.closest('[data-scan-run]')) upload();
@@ -1040,8 +1177,18 @@
             if (input) input.focus();
         }
     });
-    overlay.querySelector('[data-scan-camera]').addEventListener('change', function(event) { addFiles(event.target.files); event.target.value = ''; });
-    overlay.querySelector('[data-scan-library]').addEventListener('change', function(event) { addFiles(event.target.files); event.target.value = ''; });
+    overlay.querySelector('[data-scan-camera]').addEventListener('change', function(event) {
+        var replaceIndex = state.pendingPhotoReplaceIndex;
+        state.pendingPhotoReplaceIndex = null;
+        addFiles(event.target.files, replaceIndex);
+        event.target.value = '';
+    });
+    overlay.querySelector('[data-scan-library]').addEventListener('change', function(event) {
+        var replaceIndex = state.pendingPhotoReplaceIndex;
+        state.pendingPhotoReplaceIndex = null;
+        addFiles(event.target.files, replaceIndex);
+        event.target.value = '';
+    });
     var drop = overlay.querySelector('[data-scan-drop]');
     drop.addEventListener('dragover', function(event) { event.preventDefault(); drop.classList.add('is-over'); });
     drop.addEventListener('dragleave', function() { drop.classList.remove('is-over'); });
@@ -1050,6 +1197,7 @@
         focusTrap(event);
         if (overlay.hidden || event.key !== 'Escape') return;
         if (!preview.hidden) closePreview();
+        else if (state.photoChoiceOpen) closePhotoChoice();
         else if (state.phrase) cancelPhrase();
         else close();
     });
