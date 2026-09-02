@@ -18,11 +18,13 @@
 The first student card keeps the time-aware greeting and motivational sentence
 at the top. The greeting is a small, quiet contextual line; the motivational
 sentence is the section's medium-large primary heading with tight display
-tracking and leading. On phones it may wrap to three balanced lines, while the
-tablet treatment normally uses two. One quiet divider then introduces the
-GitHub-style 53-week `ACHIEVEMENTS` grid. The removed weekly progress bar must
-not reappear. Monday starts each column; phones horizontally scroll to the
-newest weeks by default.
+tracking and leading. On phones the sentence uses the full available card width
+and normal line-fill wrapping: each line fills naturally before the next one
+begins, rather than balancing line lengths into an unnecessary fourth line.
+The tablet treatment may retain balanced wrapping and normally uses two lines.
+One quiet divider then introduces the GitHub-style 53-week `ACHIEVEMENTS` grid.
+The removed weekly progress bar must not reappear. Monday starts each column;
+phones horizontally scroll to the newest weeks by default.
 The card shows no separate `PAST 12 MONTHS` / `ACHIEVEMENTS` heading and no
 `Less` / `More` intensity-dot legend. Achievement total and active-day total
 share one compact summary at the lower left below the grid.
