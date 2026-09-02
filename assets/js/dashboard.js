@@ -2103,7 +2103,7 @@
             '</button>';
         }).join('');
         var panels = [
-            '<section class="student-message-tab-panel" id="student-message-panel-todo" role="tabpanel" aria-labelledby="student-message-tab-todo" data-message-panel="todo">' +
+            '<section class="student-message-tab-panel" id="student-message-panel-todo" role="tabpanel" aria-labelledby="student-message-tab-todo" data-message-panel="todo" tabindex="0">' +
                 renderStudentMessageFlatList(
                     todos.map(function(item) {
                         return renderStudentMessageTask(item, isOverdueAssignment(item)
@@ -2113,22 +2113,16 @@
                     'No unfinished assignments.'
                 ) +
             '</section>',
-            '<section class="student-message-tab-panel" id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished" hidden>' +
+            '<section class="student-message-tab-panel" id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished" tabindex="0" hidden>' +
                 renderStudentMessageFlatList(
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'Finished assignments will appear here.'
                 ) +
             '</section>',
-            '<section class="student-message-tab-panel student-message-replies-panel" id="student-message-panel-replies" role="tabpanel" aria-labelledby="student-message-tab-replies" data-message-panel="replies" hidden>' +
+            '<section class="student-message-tab-panel student-message-replies-panel" id="student-message-panel-replies" role="tabpanel" aria-labelledby="student-message-tab-replies" data-message-panel="replies" tabindex="0" hidden>' +
                 '<div class="teacher-replies-list">' + (replies.length
                     ? replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('')
                     : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
-                (visibleReplyCount < replies.length
-                    ? '<div class="teacher-replies-pull-loader" data-teacher-replies-pull-loader role="status" aria-live="polite">' +
-                        '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle></svg>' +
-                        '<span>Keep scrolling for 5 more</span>' +
-                    '</div>'
-                    : '') +
             '</section>'
         ].join('');
         return '<div class="student-message-tabs" role="tablist" aria-label="Assignment sections">' + tabMarkup + '</div>' + panels;
@@ -2166,111 +2160,33 @@
         var host = options.host;
         var scrollContainer = options.scrollContainer;
         var replyList = options.replyList;
-        var pullLoader = options.pullLoader;
         var replies = options.replies || [];
         var visibleReplyCount = Number(options.visibleReplyCount || 0);
-        var pullDistance = 0;
-        var pullThreshold = 72;
         var loadingMoreReplies = false;
-        var lastTouchY = null;
 
-        if (!scrollContainer || !replyList || !pullLoader) return;
-
-        function isActive() {
-            return typeof options.isActive !== 'function' || options.isActive();
-        }
-
-        function replyDialogAtBottom() {
-            return isActive() && scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight <= 2;
-        }
-
-        function setReplyPullDistance(distance) {
-            if (!pullLoader || loadingMoreReplies) return;
-            pullDistance = Math.max(0, Math.min(pullThreshold, distance));
-            var pullRatio = pullDistance / pullThreshold;
-            pullLoader.style.setProperty('--teacher-replies-pull-height', (54 * pullRatio) + 'px');
-            pullLoader.style.setProperty('--teacher-replies-pull-margin', (12 * pullRatio) + 'px');
-            pullLoader.style.setProperty('--teacher-replies-pull-opacity', String(pullRatio));
-            pullLoader.style.setProperty('--teacher-replies-pull-offset', (7 * (1 - pullRatio)) + 'px');
-            pullLoader.style.setProperty('--teacher-replies-pull-angle', pullRatio + 'turn');
-            pullLoader.classList.toggle('is-pulling', pullDistance > 0);
-            scrollContainer.scrollTop = scrollContainer.scrollHeight;
-        }
-
-        function resetReplyPull() {
-            setReplyPullDistance(0);
-        }
+        if (!scrollContainer || !replyList) return null;
 
         function revealNextTeacherReplies() {
-            if (!pullLoader || !replyList || loadingMoreReplies || visibleReplyCount >= replies.length) return;
+            if (!host.isConnected || !replyList || loadingMoreReplies || visibleReplyCount >= replies.length) return;
             loadingMoreReplies = true;
-            pullLoader.classList.add('is-loading');
-            pullLoader.querySelector('span').textContent = 'Loading 5 more';
-            var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            window.setTimeout(function() {
-                if (!host.isConnected || !replyList) return;
-                var previousCount = visibleReplyCount;
-                visibleReplyCount = Math.min(replies.length, visibleReplyCount + 5);
-                replyList.insertAdjacentHTML('beforeend', replies.slice(previousCount, visibleReplyCount).map(renderTeacherReplyItem).join(''));
-                Array.prototype.slice.call(replyList.children, previousCount).forEach(function(card) {
-                    card.classList.add('is-revealing');
-                });
-                if (typeof options.onAppend === 'function') options.onAppend();
-                scrollContainer.scrollBy({ top: 132, behavior: reducedMotion ? 'auto' : 'smooth' });
-                loadingMoreReplies = false;
-                pullDistance = 0;
-                if (visibleReplyCount >= replies.length) {
-                    pullLoader.classList.add('is-complete');
-                    pullLoader.querySelector('span').textContent = 'All replies loaded';
-                    window.setTimeout(function() {
-                        if (pullLoader && pullLoader.isConnected) pullLoader.remove();
-                        pullLoader = null;
-                    }, reducedMotion ? 0 : 280);
-                } else {
-                    pullLoader.classList.remove('is-loading', 'is-pulling');
-                    pullLoader.removeAttribute('style');
-                    pullLoader.querySelector('span').textContent = 'Keep scrolling for 5 more';
-                }
-            }, reducedMotion ? 0 : 520);
+            var previousCount = visibleReplyCount;
+            visibleReplyCount = Math.min(replies.length, visibleReplyCount + 5);
+            replyList.insertAdjacentHTML('beforeend', replies.slice(previousCount, visibleReplyCount).map(renderTeacherReplyItem).join(''));
+            Array.prototype.slice.call(replyList.children, previousCount).forEach(function(card) {
+                card.classList.add('is-revealing');
+            });
+            if (typeof options.onAppend === 'function') options.onAppend();
+            loadingMoreReplies = false;
         }
 
-        function extendReplyPull(delta) {
-            if (!pullLoader || loadingMoreReplies || delta <= 0) return;
-            setReplyPullDistance(pullDistance + Math.min(delta, 28) * 0.72);
-            if (pullDistance >= pullThreshold) revealNextTeacherReplies();
-        }
-
-        scrollContainer.addEventListener('wheel', function(event) {
-            if (!isActive()) return;
-            if (event.deltaY < 0) {
-                resetReplyPull();
-                return;
+        function revealWhenNearEdge() {
+            if (scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight <= 96) {
+                revealNextTeacherReplies();
             }
-            if (!replyDialogAtBottom() || event.deltaY <= 0) return;
-            event.preventDefault();
-            extendReplyPull(event.deltaY);
-        }, { passive: false });
-        scrollContainer.addEventListener('scroll', function() {
-            if (!replyDialogAtBottom()) resetReplyPull();
-        }, { passive: true });
-        scrollContainer.addEventListener('touchstart', function(event) {
-            if (!isActive()) return;
-            lastTouchY = event.touches && event.touches[0] ? event.touches[0].clientY : null;
-        }, { passive: true });
-        scrollContainer.addEventListener('touchmove', function(event) {
-            if (!isActive()) return;
-            var touch = event.touches && event.touches[0];
-            if (!touch || lastTouchY == null) return;
-            var delta = lastTouchY - touch.clientY;
-            lastTouchY = touch.clientY;
-            if (!replyDialogAtBottom() || delta <= 0) return;
-            event.preventDefault();
-            extendReplyPull(delta);
-        }, { passive: false });
-        scrollContainer.addEventListener('touchend', function() {
-            lastTouchY = null;
-            if (!loadingMoreReplies && pullDistance < pullThreshold) resetReplyPull();
-        }, { passive: true });
+        }
+
+        scrollContainer.addEventListener('scroll', revealWhenNearEdge, { passive: true });
+        return revealWhenNearEdge;
     }
 
     function openStudentMessageCenter(scope) {
@@ -2404,9 +2320,12 @@
             });
         }
         var messageTabs = Array.prototype.slice.call(overlay.querySelectorAll('[data-message-tab]'));
+        var messagePanelScrollPositions = Object.create(null);
+        var checkTeacherRepliesEdge = null;
         function selectMessageTab(tab, moveFocus) {
             if (!tab) return;
             var tabId = tab.dataset.messageTab;
+            var selectedPanel = null;
             if (tabId === 'replies') teacherRepliesViewed = true;
             messageTabs.forEach(function(candidate) {
                 var selected = candidate === tab;
@@ -2414,11 +2333,18 @@
                 candidate.tabIndex = selected ? 0 : -1;
             });
             overlay.querySelectorAll('[data-message-panel]').forEach(function(panel) {
-                panel.hidden = panel.dataset.messagePanel !== tabId;
+                var panelId = panel.dataset.messagePanel;
+                if (!panel.hidden) messagePanelScrollPositions[panelId] = panel.scrollTop;
+                panel.hidden = panelId !== tabId;
+                if (panelId === tabId) selectedPanel = panel;
             });
             if (moveFocus) tab.focus();
-            var dialog = overlay.querySelector('.student-message-dialog');
-            if (dialog) dialog.scrollTop = 0;
+            if (selectedPanel) {
+                window.requestAnimationFrame(function() {
+                    selectedPanel.scrollTop = Number(messagePanelScrollPositions[tabId] || 0);
+                    if (tabId === 'replies' && checkTeacherRepliesEdge) checkTeacherRepliesEdge();
+                });
+            }
         }
         messageTabs.forEach(function(tab, index) {
             tab.addEventListener('click', function() { selectMessageTab(tab, false); });
@@ -2483,11 +2409,11 @@
             return openTodoAssignments();
         }
 
-        function appendNextAssignmentBatch() {
+        function appendNextAssignmentBatch(activePanel) {
             if (scope && scope !== 'finished') return;
-            var activePanel = scope === 'finished'
+            activePanel = activePanel || (scope === 'finished'
                 ? overlay.querySelector('.student-message-sections')
-                : overlay.querySelector('[data-message-panel]:not([hidden])');
+                : overlay.querySelector('[data-message-panel]:not([hidden])'));
             if (!activePanel) return;
             var list = activePanel.querySelector('.student-message-list');
             if (!list) return;
@@ -2510,7 +2436,15 @@
         }
 
         var messageDialog = overlay.querySelector('.student-message-dialog');
-        if (messageDialog && (!scope || scope === 'finished')) {
+        if (!scope) {
+            overlay.querySelectorAll('[data-message-panel="todo"], [data-message-panel="finished"]').forEach(function(panel) {
+                panel.addEventListener('scroll', function() {
+                    if (panel.scrollHeight - panel.scrollTop - panel.clientHeight <= 96) {
+                        appendNextAssignmentBatch(panel);
+                    }
+                }, { passive: true });
+            });
+        } else if (messageDialog && scope === 'finished') {
             messageDialog.addEventListener('scroll', function() {
                 if (messageDialog.scrollHeight - messageDialog.scrollTop - messageDialog.clientHeight <= 96) {
                     appendNextAssignmentBatch();
@@ -2518,17 +2452,13 @@
             }, { passive: true });
         }
         if (!scope && messageDialog) {
-            setupTeacherRepliesPagination({
+            var repliesPanel = overlay.querySelector('#student-message-panel-replies');
+            checkTeacherRepliesEdge = setupTeacherRepliesPagination({
                 host: overlay,
-                scrollContainer: messageDialog,
+                scrollContainer: repliesPanel,
                 replyList: overlay.querySelector('#student-message-panel-replies .teacher-replies-list'),
-                pullLoader: overlay.querySelector('#student-message-panel-replies [data-teacher-replies-pull-loader]'),
                 replies: state.teacherReplies || [],
                 visibleReplyCount: initialTeacherReplyVisibleCount(state.teacherReplies || []),
-                isActive: function() {
-                    var panel = overlay.querySelector('#student-message-panel-replies');
-                    return panel && !panel.hidden;
-                },
                 onAppend: function() {
                     if (messageTitleObserver) messageTitleObserver.disconnect();
                     messageTitleObserver = setupStudentMessageTitleTracks(overlay);
@@ -2559,12 +2489,6 @@
                     '<div class="teacher-replies-list">' + (replies.length
                         ? replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('')
                         : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
-                    (visibleReplyCount < replies.length
-                        ? '<div class="teacher-replies-pull-loader" data-teacher-replies-pull-loader role="status" aria-live="polite">' +
-                            '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle></svg>' +
-                            '<span>Keep scrolling for 5 more</span>' +
-                        '</div>'
-                        : '') +
                 '</section>' +
                 '<button class="student-message-close teacher-replies-outside-close" id="teacher-replies-close" type="button" aria-label="Close Teacher Replies">Close</button>' +
             '</div>';
@@ -2607,104 +2531,19 @@
         closeButton.addEventListener('click', function() { close(true); });
         var replyDialog = overlay.querySelector('.teacher-replies-dialog');
         var replyList = overlay.querySelector('.teacher-replies-list');
-        var pullLoader = overlay.querySelector('[data-teacher-replies-pull-loader]');
-        var pullDistance = 0;
-        var pullThreshold = 72;
-        var loadingMoreReplies = false;
-        var lastTouchY = null;
-
-        function replyDialogAtBottom() {
-            return replyDialog && replyDialog.scrollHeight - replyDialog.scrollTop - replyDialog.clientHeight <= 2;
-        }
-
-        function setReplyPullDistance(distance) {
-            if (!pullLoader || loadingMoreReplies) return;
-            pullDistance = Math.max(0, Math.min(pullThreshold, distance));
-            var pullRatio = pullDistance / pullThreshold;
-            pullLoader.style.setProperty('--teacher-replies-pull-height', (54 * pullRatio) + 'px');
-            pullLoader.style.setProperty('--teacher-replies-pull-margin', (12 * pullRatio) + 'px');
-            pullLoader.style.setProperty('--teacher-replies-pull-opacity', String(pullRatio));
-            pullLoader.style.setProperty('--teacher-replies-pull-offset', (7 * (1 - pullRatio)) + 'px');
-            pullLoader.style.setProperty('--teacher-replies-pull-angle', pullRatio + 'turn');
-            pullLoader.classList.toggle('is-pulling', pullDistance > 0);
-            if (replyDialog) replyDialog.scrollTop = replyDialog.scrollHeight;
-        }
-
-        function resetReplyPull() {
-            setReplyPullDistance(0);
-        }
-
-        function revealNextTeacherReplies() {
-            if (!pullLoader || !replyList || loadingMoreReplies || visibleReplyCount >= replies.length) return;
-            loadingMoreReplies = true;
-            pullLoader.classList.add('is-loading');
-            pullLoader.querySelector('span').textContent = 'Loading 5 more';
-            var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            window.setTimeout(function() {
-                if (!overlay.isConnected || !replyList) return;
-                var previousCount = visibleReplyCount;
-                visibleReplyCount = Math.min(replies.length, visibleReplyCount + 5);
-                replyList.insertAdjacentHTML('beforeend', replies.slice(previousCount, visibleReplyCount).map(renderTeacherReplyItem).join(''));
-                Array.prototype.slice.call(replyList.children, previousCount).forEach(function(card) {
-                    card.classList.add('is-revealing');
-                });
+        var checkTeacherRepliesEdge = setupTeacherRepliesPagination({
+            host: overlay,
+            scrollContainer: replyDialog,
+            replyList: replyList,
+            replies: replies,
+            visibleReplyCount: visibleReplyCount,
+            onAppend: function() {
                 if (replyTitleObserver) replyTitleObserver.disconnect();
                 replyTitleObserver = setupStudentMessageTitleTracks(overlay);
                 bindTeacherReplyCards();
-                if (replyDialog) replyDialog.scrollBy({ top: 132, behavior: reducedMotion ? 'auto' : 'smooth' });
-                loadingMoreReplies = false;
-                pullDistance = 0;
-                if (visibleReplyCount >= replies.length) {
-                    pullLoader.classList.add('is-complete');
-                    pullLoader.querySelector('span').textContent = 'All replies loaded';
-                    window.setTimeout(function() {
-                        if (pullLoader && pullLoader.isConnected) pullLoader.remove();
-                        pullLoader = null;
-                    }, reducedMotion ? 0 : 280);
-                } else {
-                    pullLoader.classList.remove('is-loading', 'is-pulling');
-                    pullLoader.removeAttribute('style');
-                    pullLoader.querySelector('span').textContent = 'Keep scrolling for 5 more';
-                }
-            }, reducedMotion ? 0 : 520);
-        }
-
-        function extendReplyPull(delta) {
-            if (!pullLoader || loadingMoreReplies || delta <= 0) return;
-            setReplyPullDistance(pullDistance + Math.min(delta, 28) * 0.72);
-            if (pullDistance >= pullThreshold) revealNextTeacherReplies();
-        }
-
-        if (replyDialog && pullLoader) {
-            replyDialog.addEventListener('wheel', function(event) {
-                if (event.deltaY < 0) {
-                    resetReplyPull();
-                    return;
-                }
-                if (!replyDialogAtBottom() || event.deltaY <= 0) return;
-                event.preventDefault();
-                extendReplyPull(event.deltaY);
-            }, { passive: false });
-            replyDialog.addEventListener('scroll', function() {
-                if (!replyDialogAtBottom()) resetReplyPull();
-            }, { passive: true });
-            replyDialog.addEventListener('touchstart', function(event) {
-                lastTouchY = event.touches && event.touches[0] ? event.touches[0].clientY : null;
-            }, { passive: true });
-            replyDialog.addEventListener('touchmove', function(event) {
-                var touch = event.touches && event.touches[0];
-                if (!touch || lastTouchY == null) return;
-                var delta = lastTouchY - touch.clientY;
-                lastTouchY = touch.clientY;
-                if (!replyDialogAtBottom() || delta <= 0) return;
-                event.preventDefault();
-                extendReplyPull(delta);
-            }, { passive: false });
-            replyDialog.addEventListener('touchend', function() {
-                lastTouchY = null;
-                if (!loadingMoreReplies && pullDistance < pullThreshold) resetReplyPull();
-            }, { passive: true });
-        }
+            }
+        });
+        if (checkTeacherRepliesEdge) window.requestAnimationFrame(checkTeacherRepliesEdge);
         window.setTimeout(function() { closeButton.focus(); }, 0);
         function bindTeacherReplyCards() {
             overlay.querySelectorAll('.teacher-reply-item[data-open-href]').forEach(function(card) {

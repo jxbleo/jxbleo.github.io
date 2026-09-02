@@ -752,15 +752,18 @@ Check:
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card. Escape and backdrop clicks do not dismiss the modal
-- the default Assignments modal has one sticky top row containing flexible
+- the default Assignments modal has one fixed top row containing flexible
   `TO-DO` and `FINISHED` text buttons with accurate counts plus a 42px circular
   Teacher Replies button. The third button has no visible text and reuses the
   current three-dot speech-bubble SVG and unread badge. `TO-DO` combines every
   unfinished teacher assignment, including future-due work. Only the selected
   category is visible, click and keyboard Left/Right/Home/End switch categories,
   and empty categories show a compact empty state. The card keeps the same
-  responsive height for empty, short, and long lists; long lists scroll inside
-  it. Finished rows remain ordered by completion time with the newest first
+  responsive height for empty, short, and long lists. `TO-DO`, `FINISHED`, and
+  Teacher Replies each scroll in their own focusable internal region with normal
+  wheel, trackpad, and touch movement; switching tabs retains the prior scroll
+  position and never moves the top controls. Finished rows remain ordered by
+  completion time with the newest first
 - a countable self-study attempt that reaches the set passing standard appears
   once in To Do List FINISHED, the Personal Center Finished count/list, and the
   completion calendar on its first passing date without waiting for assignment
@@ -807,11 +810,11 @@ Check:
   the main Dashboard and checklist focus, and keeps question navigation
   working from each complete reply card. Escape and backdrop clicks leave the
   dialog open and do not mark replies read
-- after reaching the bottom of Teacher Replies, ordinary arrival at the edge
-  does not load or show a button. Continuing to scroll downward reveals a
-  resisted rotating indicator, then appends exactly five older cards with a
-  staggered entrance. Reduced motion removes the spin/entrance animation while
-  preserving the five-card pagination
+- arriving near the bottom of Teacher Replies appends exactly five older cards
+  with a staggered entrance and without requiring a second resisted gesture.
+  Verify wheel, trackpad, and touch scrolling remain native and responsive at
+  the boundary, with no spinner or button. Reduced motion removes the entrance
+  animation while preserving the five-card pagination
 - each Teacher Replies card shows its centered task title first on the same
   bounded overflow-scrolling track used by task rows. The saved question has no
   `Qxx.` prefix and wraps cleanly on phone and iPad. `Expected` and `Submitted`
@@ -1137,8 +1140,10 @@ Check:
   correct answers, explanations, grading keys, credentials, or auth tokens
 - With more than 20 assignments, verify bootstrap returns no more than 10 To Do
   and 10 Finished rows, each list appends exactly 10 at its internal scroll edge,
-  all unread Teacher Replies are ready in memory, and each resisted
-  scroll-past-bottom gesture appends five earlier read replies without a button
+  and switching between the two lists preserves their independent positions.
+  Verify all unread Teacher Replies are ready in memory and arriving near its
+  internal scroll edge appends five earlier read replies without blocking the
+  active wheel/touch gesture or showing a spinner/button
 - clicking Account opens an independent dialog containing names, Login ID,
   class, System, reset password, and delete account. The main student detail has
   no bottom Account settings disclosure. The dialog's class editor lists existing active classes

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-02 — Natural Student task-list scrolling
+
+- Made To-Do, Finished, and Teacher Replies independently scrollable while the
+  shared tab controls stay fixed and each tab retains its own position.
+- Replaced Teacher Replies' resisted scroll-past-bottom gesture with native
+  edge pagination that appends five older cards without blocking wheel,
+  trackpad, or touch movement.
+- Added focused regression coverage and refreshed Dashboard static asset
+  versions.
+
 ## 2026-09-02 — Draft and Revised word counts
 
 - Added a quiet bottom-right word count to the full-manuscript card, including the

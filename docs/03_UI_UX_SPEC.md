@@ -291,8 +291,9 @@ Navigation:
   third control has no visible text: it reuses the plain speech-bubble SVG with
   three quiet dots and shows unread replies in its red badge. Selecting it keeps
   the task-list modal footprint and renders the existing Teacher Replies cards,
-  empty state, scrolling, pagination, question-entry confirmation, and Close
-  behavior unchanged.
+  empty state, question-entry confirmation, and Close behavior. Teacher Replies
+  uses the same native internal scrolling as the two assignment tabs and loads
+  earlier history at its own scroll edge.
 - Each Teacher Replies card centers its exercise title on a single-line
   overflow-scrolling track. The saved question text appears without a `Qxx`
   prefix. Expected and Submitted answers have no arrow between them. Their
@@ -348,8 +349,11 @@ Assignment access and progress display:
   by default and combines every unfinished teacher assignment,
   including future-due work. Only the selected category's task list is visible;
   keyboard Left/Right, Home, and End also switch tabs. The card keeps one fixed
-  responsive height across tabs and empty/short/long lists; overflow scrolls
-  inside the card rather than resizing it.
+  responsive height across tabs and empty/short/long lists. Each of the three
+  tabs owns an independent, keyboard-focusable internal scroll region, so the
+  top controls stay fixed and switching tabs preserves each list's position.
+  Wheel, trackpad, and touch gestures scroll the selected region natively rather
+  than moving or resizing the card.
   Empty categories show their own compact empty state. Finished tasks are
   sorted newest-completed first. FINISHED includes both passed/mastered
   assignments and distinct countable self-study sets whose recorded best has
@@ -369,10 +373,10 @@ Assignment access and progress display:
   warm cache may paint those rows immediately while CloudBase revalidates in
   the background; refresh never clears usable cached rows or exposes a spinner.
 - The Teacher Replies tab keeps every unread reply represented in its first
-  in-memory view. Earlier read history stays newest-first. After reaching the internal
-  scroll edge, a further downward scroll meets a short resisted pull, reveals a
-  rotating progress indicator, and appends the next five cards with a gentle
-  staggered entrance; no `Load 5 more` button appears. The header shows only the
+  in-memory view. Earlier read history stays newest-first. Arriving near the
+  tab's internal scroll edge appends the next five cards with a gentle staggered
+  entrance. It does not intercept wheel/touch gestures and shows neither a
+  resisted pull indicator nor a `Load 5 more` button. The header shows only the
   unread count while the silent queue prepares reply content.
 - the student header omits the cat logo so it does not consume horizontal
   space. The far-left To Do List control stands alone opposite the right-side

@@ -16,6 +16,7 @@
     "test:login-redirect": "node scripts/test-login-redirect.js",
     "test:bbc-correction": "node scripts/test-bbc-inline-correction.js",
     "test:assignment-schedule": "node scripts/test-assignment-due-weeks.js",
+    "test:student-task-scroll": "node scripts/test-student-task-scroll.js",
     "test:content-editions": "node scripts/test-content-editions.js",
     "test:learning-reports": "node scripts/test-learning-reports.js && node scripts/test-learning-report-service.js",
     "test:star-rewards": "node scripts/test-star-rewards.js",
