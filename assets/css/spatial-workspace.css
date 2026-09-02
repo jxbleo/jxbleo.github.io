@@ -1163,11 +1163,12 @@
     }
 
     .liquid-glass-dashboard .student-welcome-copy .student-motivation {
-        max-width: 19rem;
+        max-width: none;
         margin-top: 11px;
         font-size: clamp(1.82rem, 8.1vw, 2.08rem);
         letter-spacing: -0.046em;
         line-height: 1.075;
+        text-wrap: wrap;
     }
 
     .liquid-glass-dashboard .weekly-focus-progress {

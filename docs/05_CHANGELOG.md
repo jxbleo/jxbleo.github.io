@@ -2835,3 +2835,11 @@ enrichment remains the post-commit path. Main-agent review added draggable crop
 handles, a mask-only eraser, monotonic candidate sync, transactional upload/
 quota/commit guards, retryable cleanup, safe usage telemetry, and focused
 behavior tests. Production rollout on 2026-09-02 created the three ADMINONLY scan collections and documented indexes, deployed the three related functions, enabled the private one-minute worker timer, and enabled Scan Words for all active students.
+
+## 2026-09-02 — Natural mobile motivational wrapping
+
+- Let the Dashboard motivational heading use the full available phone width and
+  normal line-fill wrapping, preventing balanced text from creating an avoidable
+  fourth line with conspicuous empty space on earlier lines.
+- Retained balanced wrapping on tablet and wider layouts, and cache-busted the
+  shared workspace stylesheet for the phone-only correction.
