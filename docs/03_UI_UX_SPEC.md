@@ -2795,7 +2795,14 @@ full-width at phone breakpoints.
 ## Scan Words
 
 The full-screen flow has Choose photos, Prepare photos, and Review OCR phases.
-It supports camera/library/desktop drop, five ordered pages, rectangular crop,
+The Choose phase follows the established Writing photo intake pattern while
+using the My Words green palette: one large `Add Photos` card opens a bottom
+source sheet with `Take Photo`, `Choose from Library`, and `Cancel`. After
+selection, one large current-photo preview replaces the empty card. It shows
+the page counter, previous/next controls, remove, replace, and add-photo actions;
+the student never has to decipher a thumbnail grid. The library path may add
+multiple photos, the camera path adds one, and the batch stops at five.
+It also supports desktop drop, five ordered pages, rectangular crop,
 drag handles and crop movement, white mask strokes, adjustable brush size, a
 true mask-only eraser, per-page undo/redo, processed-image preview, focus-safe
 modal scroll locking, reduced motion, and forced-colors affordances. OCR renders
@@ -2806,3 +2813,13 @@ word in the bottom drawer; long press starts an explicit same-sentence phrase
 composer, and only individually tapped tokens belong to that phrase even when
 they are non-adjacent. The drawer remains editable until `Add <n> items`, with
 failed candidates remaining removable and retryable.
+
+After upload, Review first shows a dedicated scanning state instead of an empty
+OCR surface: an animated document scanner, determinate completed-page bar,
+`x/y pages checked`, and remaining-page text update from each poll. Reduced Motion
+keeps the same progress information without the moving scan beam. The word list,
+selection drawer, and Review heading remain hidden until every retained page is
+terminal. When at least one page succeeds, a green `Scan complete` guide appears
+above the OCR text and explains both gestures: tap adds one word; long-press starts
+a phrase, after which any individually tapped words in that same sentence—including
+non-adjacent words—join the phrase.

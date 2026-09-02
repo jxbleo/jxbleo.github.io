@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-09-02 — My Words Scan photo intake and progress redesign
+
+- Rebuilt Scan Words photo intake around the Writing flow's familiar single
+  `Add Photos` card and bottom source sheet for camera, library, and cancel.
+- Replaced the thumbnail-button layout with one large current-photo preview,
+  page navigation, remove, replace, add-photo, and an explicit five-photo count
+  while retaining desktop drop and the existing preparation tools.
+- Added a dedicated OCR-in-progress surface with an animated scanner, real
+  completed-page progress, and remaining-page status instead of an empty Review.
+- Added a successful-scan guide above the OCR result explaining tap-to-add and
+  long-press phrase selection, including non-adjacent words in one sentence.
+- Unified the flow with My Words green surfaces, responsive controls, accessible
+  focus treatment, Reduced Motion, and Reduced Transparency behavior.
+
 ## 2026-09-01 — Immersive Speaking Discussion recording
 
 - Made `Start Discussion` create and open the Set-backed Discussion directly, removing the redundant New Session dialog, inner `Discussions` controls, and student `Invite VIP` / `Add Non-VIP` controls.
