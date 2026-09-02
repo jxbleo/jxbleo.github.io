@@ -1050,3 +1050,17 @@ index must not be fixed by changing the timer; use the bounded fallback,
 record the risk, and ask the owner to gate index creation. If duplicate
 Started/final rows appear, inspect deterministic session event IDs and
 transaction claims; never overwrite an existing outbox row.
+### Scan Words symptoms
+
+`Scan Words is not available` usually means the feature switch is off or the
+function is not deployed. Upload verification failures indicate missing or
+expired signed metadata. Queued pages require the worker and provider
+configuration; stuck processing pages require lease recovery. Missing
+ADMINONLY collections/indexes can look like an empty scan. Unsupported HEIC is
+a browser decode limitation: convert or retake the photo. Quota is
+Shanghai-calendar based. Never log image, OCR, Context, candidate, or provider
+bodies. If deletion fails, keep `file_id`/`cloud_path` and
+`cleanup_error: PHOTO_DELETE_RETRY_REQUIRED`; nulling the locator would prevent
+the worker from retrying private-file cleanup. Diagnose a stale candidate
+drawer through `candidate_revision` and serialized client sync, never by
+trusting browser-provided text.

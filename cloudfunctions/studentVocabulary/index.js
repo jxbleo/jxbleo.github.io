@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const cloudbase = require("@cloudbase/node-sdk");
+const { upsertPersonalVocabularyItem } = require("../_shared/personal-vocabulary-items");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -346,71 +347,12 @@ async function recommendationMapForItems(items, currentLexicon) {
 }
 
 async function addWord(student, event) {
-  const error = validationErrorForText(event.text);
-  if (error) throw new Error(error);
-
-  const text = compactText(event.text, 120);
-  const normalizedText = normalizeVocabularyText(text);
-  const vocabId = vocabularyId(student.auth_uid, normalizedText);
-  const now = new Date();
-  const sourceSetId = compactText(event.source_set_id, 80) || null;
-  const savedExample = savedExampleFromEvent(event, text, now);
-  const update = {
-    text,
-    normalized_text: normalizedText,
-    status: "active",
-    source_set_id: sourceSetId,
-    source_title: compactText(event.source_title, 160),
-    source_path: compactText(event.source_path, 300),
-    context: compactText(event.context, 320),
-    last_added_at: now,
-    activity_updated_at: now,
-    updated_at: now,
-  };
-
-  const existing = await getOwnedItem(student, vocabId);
-  if (existing) {
-    await db.collection(COLLECTION).doc(existing._id).update({
-      ...update,
-      saved_examples: mergeSavedExamples(existing.saved_examples, savedExample),
-      times_added: Number(existing.times_added || 1) + 1,
-    });
-    const nextItem = {
-      ...existing,
-      ...update,
-      lookup_status: existing.lookup_status || "pending",
-      saved_examples: mergeSavedExamples(existing.saved_examples, savedExample),
-      times_added: Number(existing.times_added || 1) + 1,
-    };
-    const lexiconItem = await getLexiconItemOrNull(normalizedText);
-    return {
-      success: true,
-      created: false,
-      word: itemView(nextItem, lexiconItem),
-    };
-  }
-
-  const record = {
-    vocab_id: vocabId,
-    student_uid: student.auth_uid,
-    student_id_snapshot: student.student_id,
-    times_added: 1,
-    created_at: now,
-    lookup_status: "pending",
-    learning_status: "new",
-    review_due_at: now,
-    review_interval_days: 0,
-    review_streak: 0,
-    personal_note: "",
-    saved_examples: savedExample ? [savedExample] : [],
-    ...update,
-  };
-  await db.collection(COLLECTION).add(record);
-  const lexiconItem = await getLexiconItemOrNull(normalizedText);
+  const result = await upsertPersonalVocabularyItem({ db, student, event });
+  const lexiconItem = await getLexiconItemOrNull(result.normalized_text);
   return {
     success: true,
-    created: true,
-    word: itemView(record, lexiconItem),
+    created: result.created,
+    word: itemView({ ...result.record, lookup_status: result.record.lookup_status || "pending" }, lexiconItem),
   };
 }
 

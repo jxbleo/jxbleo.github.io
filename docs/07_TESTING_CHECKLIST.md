@@ -2764,3 +2764,15 @@ Motion, Reduced Transparency, and Increased Contrast.
   still fetch one full Set by ID.
 - Test search, Year/source/visibility filters and Show more at desktop and phone
   widths; smoke-test one early PP and one 2026 recalled PP.
+### Scan Words V1
+
+Run syntax checks for scan assets/functions, `npm run test:my-words-scan`,
+`npm run test:my-words`, `npm run test:writing-tutor`, `npm run verify:release`,
+and `git diff --check`. Manual acceptance with a real student covers ordered
+five-page upload, drag/move crop, adjustable white pen, true mask eraser,
+per-page undo/redo, processed-photo preview, refresh/cross-device candidate
+replay, short-tap staging, non-adjacent phrase ordering, source-mark dismissal,
+uncertainty acknowledgement, partial page retry/removal, duplicate commit
+replay, interrupted upload recovery, discard/expiry/cleanup retry, and
+post-commit dictionary enrichment. Repeat the layout pass at desktop and 390px
+phone widths and confirm no console errors or horizontal overflow.

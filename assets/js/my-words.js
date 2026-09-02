@@ -924,8 +924,16 @@
         else addPanel.setAttribute('inert', '');
         addTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
         addTrigger.setAttribute('aria-label', open ? 'Close add word' : 'Add a word');
-        if (open) window.setTimeout(function() { addInput.focus(); }, 170);
-        else {
+        if (open) {
+            addForm.hidden = true;
+            var addChoices = addPanel.querySelector('.my-words-add-choices');
+            if (addChoices) addChoices.hidden = false;
+            window.setTimeout(function() {
+                var firstChoice = addPanel.querySelector('.my-words-add-choices button');
+                if (firstChoice) firstChoice.focus();
+            }, 170);
+        } else {
+            addForm.hidden = true;
             addInput.value = '';
             addStatus.textContent = '';
         }
@@ -1511,6 +1519,13 @@
             if (!word || !word.vocab_id) return;
             upsertItem(word);
             renderAll();
+        });
+        window.addEventListener('mrcat:scan-committed', function() {
+            if (!state.session || state.session.mode !== 'student') return;
+            reloadWords().catch(function() {});
+        });
+        window.addEventListener('mrcat:close-add-panel', function() {
+            setAddOpen(false);
         });
     }
 

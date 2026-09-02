@@ -1156,3 +1156,17 @@ Set ID, source/year/version, title, revision and visibility; opening or editing
 one Set calls its authorized detail action for Context, Part A and Part B. This
 keeps the 306-card student and teacher libraries responsive without exposing the
 canonical private corpus through static assets.
+## My Words Scan
+
+`my-words.html` mounts an isolated scan client. The browser keeps originals and
+editing state locally, uploads only processed JPEGs using signed metadata, and
+polls `vocabularyScan`. That function owns authenticated sessions, pages,
+canonical OCR, candidates, quotas, and one durable job per page. The
+`vocabularyScanWorker` timer retries jobs, recovers leases, expires sessions,
+and retries private-file cleanup without clearing a locator before deletion is
+confirmed. Upload handoff, quota reservation, page-job leases, candidate
+revisions, and per-candidate commits are idempotent/transaction guarded. The
+scan provider reuses the Writing vision adapter and marks quota usage at the
+actual outbound provider-request boundary. Commit reuses the shared personal-
+vocabulary upsert; dictionary enrichment remains the existing post-save
+behavior.
