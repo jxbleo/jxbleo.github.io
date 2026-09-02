@@ -959,3 +959,10 @@ cp .qa-secrets.example .qa-secrets.local
 - Verified Speaking contracts, syntax, release checks, private-source exclusion,
   static build and function package. Static publication and authenticated
   post-deploy smoke testing remain the final release steps.
+
+### 2026-09-02 — My Words Scan V1 production rollout
+
+- Created and verified the three ADMINONLY scan collections and fourteen documented business indexes.
+- Deployed `studentVocabulary`, `vocabularyScan`, and `vocabularyScanWorker`; enabled the private one-minute timer and the all-active-students feature switch.
+- Corrected CloudBase `getUserInfo()` sync/async compatibility found by the unauthenticated invoke smoke test, added a regression assertion, rebuilt, and redeployed the Scan gateway.
+- Empty-worker execution and unauthenticated `AUTH_REQUIRED` behavior passed. Real-student photo/OCR/dictionary enrichment remains the post-static-publication smoke check.

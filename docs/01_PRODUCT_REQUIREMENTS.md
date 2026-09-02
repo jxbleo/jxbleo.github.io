@@ -2370,3 +2370,20 @@ question intent, while its three-paragraph Context is original adapted practice
 prose. The five original MOCK seeds remain stored for historical Sessions but
 are hidden from new student selection. The 2023-2026 source notes must continue
 to identify candidate-recall wording where exact official text is unavailable.
+## Scan Words (V1)
+
+Active students may scan one to five locally cropped/masked photos from the
+full My Words workspace. Processed images and canonical OCR are private,
+expire after seven days, and are removed after completion/discard. Students
+review clickable OCR tokens. A short tap immediately stages one word in the
+bottom drawer; a long press starts a same-sentence phrase in which only the
+explicitly tapped, potentially non-adjacent tokens belong to the phrase. The
+drawer remains editable until one batch Add action. Amber source-mark cues and
+red OCR uncertainty are distinct from green saved selections; tapping a marked
+token dismisses its amber cue. Commit stores the bounded source sentence and
+then uses existing My Words dictionary enrichment, without asking the student
+to confirm or edit a definition in the scan flow. Visitors, teachers, and
+Parent Mode do not receive this entry point. The server enforces authentication,
+idempotency, one active scan, per-page retry, and 10-scan/30-page Shanghai-day
+quotas. Once owner-gated infrastructure and smoke testing are complete, the
+feature switch applies to every active student rather than a cohort.
