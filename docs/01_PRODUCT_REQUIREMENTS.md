@@ -2339,11 +2339,15 @@ Speaking Lab now begins with `Choose a Set`. Each teacher-managed Set has one
 immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part
 A `task` statement followed by its Group Discussion points, and stable Part B
 Individual Response question IDs. The selected-Set overview omits the redundant
-Context/Part A/Part B progress strip. Context, `Part A Group Discussion`, and
-`Part B Individual Response` use centred blue labels without 01/A/B icon tiles.
+Context/Part A/Part B progress strip and shows `YYYY Past Paper · Set X.X` in
+one leading line without a duplicate PP badge. Context,
+`Part A - Group Discussion`, and `Part B - Individual Response` use centred
+blue labels without 01/A/B icon tiles.
 Starting Part A immediately creates and opens the Discussion from a frozen Set snapshot without a New Session dialog. Starting one
-Part B question creates a separate private 65-second Individual Response owned
-by the authenticated student. The final five seconds use a red time warning;
+Part B question opens a modal recorder over the unchanged Set detail and creates
+a separate private 65-second Individual Response owned by the authenticated
+student. The whole question card is the entry; there is no separate
+`Start Response` control or intermediate page. The final five seconds use a red time warning;
 PD remains not assessed and the ASR-error safeguard applies to every AI score
 and comment. Teacher edits affect future Sessions only; existing reports retain
 their snapshots. Voiceprint setup lives in the student sidebar.

@@ -2719,8 +2719,13 @@ Motion, Reduced Transparency, and Increased Contrast.
 - Verify a selected Set appears in overview, Context, Part A, and Part B order;
   its overview has no three-step strip, its Context/Part labels are centred
   without 01/A/B tiles, and the Part A Task appears before the four bullet
-  points. Part A and each Part B question keep their action adjacent to the
-  affected content.
+  points. The overview must show `YYYY Past Paper · Set X.X` without a second PP
+  badge. Confirm the section labels read `Part A - Group Discussion` and
+  `Part B - Individual Response`.
+- Verify each Part B question is one keyboard-accessible disclosure card with no
+  `Start Response` text. Selecting it must open the question-scoped recorder as
+  a modal over the unchanged Set page; starting, stopping, re-recording,
+  uploading and closing must not navigate to an intermediate workspace.
 - Verify toolbar Back returns every selected Set, Discussion, Response, and
   Voiceprint surface to `Choose a Set`. From `Choose a Set`, Back must show the
   Dashboard confirmation; cancelling stays in Speaking Lab. Confirm the drawer
@@ -2755,7 +2760,7 @@ Motion, Reduced Transparency, and Increased Contrast.
   treatment. Repeat with pointer cancel, Space/Enter, denied microphone, page
   navigation with a pending sample, and Reduced Motion.
 - At phone widths, verify no Set title, route, question, timer, or action clips;
-  Start Discussion, Start Response, and recording actions remain reachable with
+  Start Discussion, each Part B question card, and recording actions remain reachable with
   one hand. Recheck reduced-motion, reduced-transparency, and increased-contrast
   media preferences.
 - Smoke-test one Set Discussion and one Individual Response after deployment.

@@ -2874,3 +2874,12 @@ behavior tests. Production rollout on 2026-09-02 created the three ADMINONLY sca
 - Preserved singular/plural labels and the existing compact live-region summary,
   and cache-busted the shared stylesheet and Dashboard script for the revised
   numeric markup.
+
+## 2026-09-02 — Set detail and Part B modal recorder
+
+- Collapsed the selected-Set identity into one `YYYY Past Paper · Set X.X` line
+  and removed the duplicate PP badge row.
+- Standardised the centred Part headings as `Part A - Group Discussion` and
+  `Part B - Individual Response`.
+- Replaced each Part B card's nested Start action with a full-card disclosure
+  that opens the 65-second microphone recorder in a focused modal over the Set.

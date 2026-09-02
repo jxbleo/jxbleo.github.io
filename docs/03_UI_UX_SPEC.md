@@ -2581,11 +2581,19 @@ failed, a neutral ring means no uploaded report, and a blue filled star is
 reserved for a future completed Practice. Escape and the active mobile scrim
 close the drawer.
 Each selected Set uses independent overview, Context, Part A, and Part B cards.
-The overview has no three-step section strip or inline Back button. Context,
-`Part A Group Discussion`, and `Part B Individual Response` use centred blue
-section labels without 01/A/B icon tiles. Part A shows the source `TASK`
+The overview has no three-step section strip or inline Back button. Its first
+line reads `YYYY Past Paper · Set X.X`; no duplicate PP badge or empty badge row
+is rendered. Context, `Part A - Group Discussion`, and
+`Part B - Individual Response` use centred blue section labels without 01/A/B
+icon tiles. Part A shows the source `TASK`
 statement before `You may want to talk about:` and its four bullet points.
-`Start Discussion` creates and opens the Set-backed Discussion immediately; no New Session modal appears. The toolbar Back control is the only return action, so Discussion and processing cards do not repeat an inner `Discussions` button. Student Candidate surfaces do not show `Invite VIP` or `Add Non-VIP`; automatic reusable-voiceprint matching and server Candidate detection drive identity. Voice References are not part of the normal Session flow. The browser holds a recording only in memory until upload and never writes audio to browser storage. A microphone denial always leaves the file-upload path available.
+`Start Discussion` creates and opens the Set-backed Discussion immediately; no
+New Session modal appears. Every Part B question is one full-width disclosure
+card with no nested `Start Response` action. Selecting it leaves the Set visible
+behind a modal recorder containing the question, 65-second timer and primary
+microphone control. The toolbar Back control is the only return action, so
+Discussion and processing cards do not repeat an inner `Discussions` button.
+Student Candidate surfaces do not show `Invite VIP` or `Add Non-VIP`; automatic reusable-voiceprint matching and server Candidate detection drive identity. Voice References are not part of the normal Session flow. The browser holds a recording only in memory until upload and never writes audio to browser storage. A microphone denial always leaves the file-upload path available.
 After the one student-session check, initial data loads in the fixed order
 Voiceprint then Discussions so the CloudBase browser SDK does not initialize
 two temporary-credential requests concurrently. Read requests leave the
