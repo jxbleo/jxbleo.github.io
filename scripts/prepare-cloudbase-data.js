@@ -8,6 +8,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const cliArgs = process.argv.slice(2);
 let outputRootArg = "";
 let selectedIds = null;
+let onlySpeakingSets = false;
 for (let index = 0; index < cliArgs.length; index += 1) {
   const arg = cliArgs[index];
   if (arg === "--ids") {
@@ -15,6 +16,8 @@ for (let index = 0; index < cliArgs.length; index += 1) {
     if (!value || value.startsWith("--")) throw new Error("--ids requires a comma-separated value");
     selectedIds = new Set(value.split(",").map((item) => item.trim()).filter(Boolean));
     if (!selectedIds.size) throw new Error("--ids requires at least one set ID");
+  } else if (arg === "--only-speaking-sets") {
+    onlySpeakingSets = true;
   } else if (arg.startsWith("--")) {
     throw new Error(`Unknown option: ${arg}`);
   } else if (!outputRootArg) {
@@ -415,6 +418,15 @@ function main() {
   const intensiveListeningMaterials = [];
   const vocabularyLexicon = new Map();
   const speakingSets = prepareSpeakingSets();
+
+  if (onlySpeakingSets) {
+    writeJson(path.join(privateRoot, "speaking_sets.json"), speakingSets);
+    writeJsonLines(path.join(privateRoot, "speaking-sets-cloudbase.json"), speakingSets);
+    console.log(`Prepared ${speakingSets.length} Speaking Sets`);
+    console.log(`Output: ${outputRoot}`);
+    console.log("Do not commit the output directory.");
+    return;
+  }
 
   listJson(path.join(projectRoot, "data"))
     .filter((filePath) => /^BBC-/.test(path.basename(filePath)))

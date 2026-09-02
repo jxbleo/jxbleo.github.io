@@ -2753,3 +2753,14 @@ Motion, Reduced Transparency, and Increased Contrast.
   one hand. Recheck reduced-motion, reduced-transparency, and increased-contrast
   media preferences.
 - Smoke-test one Set Discussion and one Individual Response after deployment.
+
+### Complete Paper 4 corpus
+
+- Assert 311 total records: 306 visible PP and five hidden MOCK.
+- Assert year counts, unique Set IDs/year-version pairs, four Part A points,
+  eight Part B questions, substantive original Contexts and no repeated full
+  Part B list or redundant `In your view/opinion` prefix.
+- Assert list responses omit Context/Part A/Part B; opening and teacher editing
+  still fetch one full Set by ID.
+- Test search, Year/source/visibility filters and Show more at desktop and phone
+  widths; smoke-test one early PP and one 2026 recalled PP.

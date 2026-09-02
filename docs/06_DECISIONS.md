@@ -1497,3 +1497,12 @@ Discussion. It reuses private asset/job/report infrastructure only through an
 explicit `session_type` and exactly one Session locator. PP/MOCK is metadata,
 not a publication state. Speaking Set source is excluded from the public static
 artifact and is imported through an owner-gated CloudBase workflow.
+
+### Complete Paper 4 corpus and summary/detail boundary (2026-09-02)
+
+Keep one canonical private corpus with stable PP Set IDs. The 306 visible
+past-paper practices preserve verified identity and question intent while using
+original adapted Context prose. Retain the five original MOCKs for history but
+hide them from new practice. List operations return metadata summaries; full
+content is fetched only when one authorized Set is opened. This protects the
+private source and avoids returning all 306 Contexts on every library load.

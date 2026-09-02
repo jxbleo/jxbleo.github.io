@@ -16,6 +16,8 @@
     var speakingSetList = document.getElementById('teacher-speaking-set-list');
     var speakingSetEditor = document.getElementById('teacher-speaking-set-editor');
     var speakingSets = [];
+    var speakingSetDetails = {};
+    var speakingSetRenderLimit = 50;
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -158,14 +160,36 @@
     }
     function speakingSetLabel(set) { return set.display_label || [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking Set'].filter(Boolean).join(' · '); }
     function speakingSetMetaLabel(set) { return [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · '); }
-    function renderTeacherSetList(rows) {
-        speakingSets = Array.isArray(rows) ? rows : [];
-        speakingSetList.innerHTML = speakingSets.map(function (set) {
+    function renderTeacherSetResults() {
+        var query = String(document.getElementById('teacher-speaking-set-search').value || '').trim().toLowerCase();
+        var year = document.getElementById('teacher-speaking-set-year').value;
+        var source = document.getElementById('teacher-speaking-set-source').value;
+        var visibility = document.getElementById('teacher-speaking-set-visibility').value;
+        var filtered = speakingSets.filter(function (set) {
+            var haystack = [set.exam_year, set.paper_version, set.title, set.display_label].join(' ').toLowerCase();
+            var shown = set.visible_to_students !== false;
+            return (!query || haystack.indexOf(query) !== -1) && (!year || String(set.exam_year) === year) && (!source || set.source_kind === source) && (!visibility || (visibility === 'shown' ? shown : !shown));
+        });
+        var visible = filtered.slice(0, speakingSetRenderLimit);
+        speakingSetList.innerHTML = visible.map(function (set) {
             return '<article class="teacher-speaking-set-row"><div><small>' + esc(speakingSetMetaLabel(set)) + '</small><h3>' + esc(set.title) + '</h3><small>Revision ' + esc(set.content_revision || 1) + ' · ' + (set.visible_to_students ? 'Shown to students' : 'Hidden from students') + '</small></div><button class="outline-button" type="button" data-speaking-set-edit="' + esc(set.set_id) + '">Edit</button><button class="outline-button" type="button" data-speaking-set-preview="' + esc(set.set_id) + '">Preview</button><button class="danger-button" type="button" data-speaking-set-delete="' + esc(set.set_id) + '">Delete</button></article>';
-        }).join('') || '<div class="speaking-detail-card">No Speaking Sets yet.</div>';
+        }).join('') || '<div class="speaking-detail-card">No Speaking Sets match these filters.</div>';
         speakingSetList.querySelectorAll('[data-speaking-set-edit]').forEach(function (button) { button.addEventListener('click', function () { openSpeakingSetEditor(button.getAttribute('data-speaking-set-edit')); }); });
         speakingSetList.querySelectorAll('[data-speaking-set-preview]').forEach(function (button) { button.addEventListener('click', function () { openSpeakingSetEditor(button.getAttribute('data-speaking-set-preview'), true); }); });
         speakingSetList.querySelectorAll('[data-speaking-set-delete]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Delete this Set? Historical Sessions prevent deletion.')) return; button.disabled = true; call('teacherDeleteSpeakingSet', { set_id: button.getAttribute('data-speaking-set-delete') }).then(loadSets).catch(function (error) { setMessage(error.message || 'This Set could not be deleted.', true); button.disabled = false; }); }); });
+        var more = document.getElementById('teacher-speaking-set-more');
+        more.hidden = visible.length >= filtered.length;
+        more.textContent = 'Show more · ' + String(filtered.length - visible.length) + ' remaining';
+    }
+    function renderTeacherSetList(rows) {
+        speakingSets = Array.isArray(rows) ? rows : [];
+        speakingSetRenderLimit = 50;
+        var yearInput = document.getElementById('teacher-speaking-set-year');
+        var selectedYear = yearInput.value;
+        var years = Array.from(new Set(speakingSets.map(function (set) { return String(set.exam_year || ''); }).filter(Boolean))).sort(function (a, b) { return Number(b) - Number(a); });
+        yearInput.innerHTML = '<option value="">All years</option>' + years.map(function (value) { return '<option value="' + esc(value) + '">' + esc(value) + '</option>'; }).join('');
+        if (years.indexOf(selectedYear) !== -1) yearInput.value = selectedYear;
+        renderTeacherSetResults();
     }
     function editorRowMarkup(kind, row, index) {
         var isPoint = kind === 'point';
@@ -191,8 +215,16 @@
         var save = document.getElementById('teacher-set-editor-save'); if (save) save.onclick = function () { var rows = function (id, key) { return Array.prototype.slice.call(document.querySelectorAll('#' + id + ' [data-editor-row]')).map(function (row, index) { return { [key]: row.getAttribute('data-' + (key === 'point_id' ? 'point' : 'question') + '-id'), order: index + 1, text: row.querySelector('[data-editor-text]').value }; }); }; var payload = { set_id: document.getElementById('teacher-set-id').value, source_kind: document.getElementById('teacher-set-source').value, exam_year: Number(document.getElementById('teacher-set-year').value), paper_version: document.getElementById('teacher-set-version').value, title: document.getElementById('teacher-set-title').value, source_note: document.getElementById('teacher-set-source-note').value, context: { source_line: document.getElementById('teacher-set-source-line').value, title: document.getElementById('teacher-set-context-title').value, body: Array.prototype.slice.call(document.querySelectorAll('[data-context-paragraph]')).map(function (input) { return input.value; }) }, part_a: { task: document.getElementById('teacher-set-part-a-task').value, instruction: document.getElementById('teacher-set-part-a-instruction').value, discussion_points: rows('teacher-set-points', 'point_id') }, part_b: { instruction: document.getElementById('teacher-set-part-b-instruction').value, questions: rows('teacher-set-questions', 'question_id') }, visible_to_students: document.getElementById('teacher-set-visible').checked }; save.disabled = true; var action = set ? 'teacherUpdateSpeakingSet' : 'teacherCreateSpeakingSet'; var data = set ? { set_id: set.set_id, expected_content_revision: Number(set.content_revision || 1), set: payload } : { set: payload }; call(action, data).then(function () { setMessage('Speaking Set saved.'); speakingSetEditor.hidden = true; return loadSets(); }).catch(function (error) { setMessage(error.message || 'Could not save Speaking Set.', true); }).finally(function () { save.disabled = false; }); };
         if (preview) speakingSetEditor.querySelectorAll('input,textarea,select,button:not(#teacher-set-editor-close)').forEach(function (control) { control.disabled = true; });
     }
-    function openSpeakingSetEditor(setId, preview) { var set = setId ? speakingSets.find(function (item) { return item.set_id === setId; }) : null; speakingSetEditor.hidden = false; speakingSetEditor.innerHTML = '<p class="eyebrow accent">' + (preview ? 'PREVIEW' : set ? 'EDIT SET' : 'CREATE SET') + '</p><h2>' + esc(preview ? speakingSetLabel(set) : set ? 'Edit Speaking Set' : 'Create Speaking Set') + '</h2>' + editorMarkup(set, preview); bindEditor(set, preview); }
-    function loadSets() { return call('teacherListSpeakingSets').then(function (result) { renderTeacherSetList(result.sets || []); return result; }); }
+    function renderSpeakingSetEditor(set, preview) { speakingSetEditor.hidden = false; speakingSetEditor.innerHTML = '<p class="eyebrow accent">' + (preview ? 'PREVIEW' : set ? 'EDIT SET' : 'CREATE SET') + '</p><h2>' + esc(preview ? speakingSetLabel(set) : set ? 'Edit Speaking Set' : 'Create Speaking Set') + '</h2>' + editorMarkup(set, preview); bindEditor(set, preview); }
+    function openSpeakingSetEditor(setId, preview) {
+        if (!setId) { renderSpeakingSetEditor(null, false); return Promise.resolve(); }
+        var summary = speakingSets.find(function (item) { return item.set_id === setId; });
+        speakingSetEditor.hidden = false;
+        speakingSetEditor.innerHTML = '<p class="eyebrow accent">' + (preview ? 'PREVIEW' : 'EDIT SET') + '</p><h2>' + esc(summary ? speakingSetLabel(summary) : 'Speaking Set') + '</h2><p>Loading Set content…</p>';
+        var request = speakingSetDetails[setId] ? Promise.resolve({ set: speakingSetDetails[setId] }) : call('teacherGetSpeakingSet', { set_id: setId });
+        return request.then(function (result) { speakingSetDetails[setId] = result.set; renderSpeakingSetEditor(result.set, preview); }).catch(function (error) { speakingSetEditor.innerHTML = '<p class="eyebrow accent">SET UNAVAILABLE</p><h2>Could not load this Set</h2><p>' + esc(error.message || 'Please try again.') + '</p>'; });
+    }
+    function loadSets() { return call('teacherListSpeakingSets').then(function (result) { speakingSetDetails = {}; renderTeacherSetList(result.sets || []); return result; }); }
     function load() {
         return loadDiscussionPages(0, []).then(function (discussions) {
             list.innerHTML = discussions.map(function (item) {
@@ -384,6 +416,11 @@
         });
     });
     document.getElementById('teacher-speaking-create-set').addEventListener('click', function () { openSpeakingSetEditor('', false); });
+    ['teacher-speaking-set-search', 'teacher-speaking-set-year', 'teacher-speaking-set-source', 'teacher-speaking-set-visibility'].forEach(function (id) {
+        var control = document.getElementById(id);
+        control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', function () { speakingSetRenderLimit = 50; renderTeacherSetResults(); });
+    });
+    document.getElementById('teacher-speaking-set-more').addEventListener('click', function () { speakingSetRenderLimit += 50; renderTeacherSetResults(); });
     document.getElementById('teacher-voiceprint-find').addEventListener('click', function () {
         var studentId = document.getElementById('teacher-voiceprint-student-id').value.trim();
         if (!studentId) { setMessage('Enter a Student ID first.', true); return; }

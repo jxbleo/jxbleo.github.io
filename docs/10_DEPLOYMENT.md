@@ -1394,3 +1394,11 @@ indexes in `docs/04_DATA_MODEL.md`. Prepare and review
 `speakingLab` plus `speakingAiWorker`. Deploy the gateway before the timer-only
 worker, keep worker browser invocation disabled, import the five Sets, publish
 the cache-busted static site, then smoke-test one Part A and one Part B Session.
+
+For the 306-PP release, prepare with
+`node scripts/prepare-cloudbase-data.js --only-speaking-sets`, dry-run
+`npm run cloudbase:import:content -- --only speaking_sets --hide-overlapping-speaking-mocks`,
+then use the same command with `--apply` after owner approval. The import inserts
+missing Set IDs only; the separate migration changes only
+`visible_to_students:false` on the five known MOCK IDs. Deploy `speakingLab`
+before publishing the filtered student/teacher library.

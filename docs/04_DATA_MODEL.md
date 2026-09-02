@@ -1408,3 +1408,9 @@ owner UID, Set/question snapshots, 65-second limit, private audio/report state,
 revision locators, and soft-delete fields. Shared audio/job/report rows contain
 exactly one of `discussion_id` or `response_session_id`. Index owner/created,
 Set/created, analysis/updated, visibility/revision, and cleanup fields.
+
+The canonical release holds 311 `speaking_sets`: 306 visible `source_kind: pp`
+records and five retained `source_kind: mock` records with
+`visible_to_students: false`. Stable `set_id` and `paper_version` values are the
+identity; title is never a key. Existing Session snapshots remain unchanged
+when a canonical Set is edited or hidden.
