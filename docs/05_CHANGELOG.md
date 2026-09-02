@@ -2817,3 +2817,12 @@ stored Set/Response data are unchanged.
   leading, and balanced wrapping without changing the Achievements calendar.
 - Promoted the motivational sentence to the semantic `h1`, retained the combined
   live-region announcement, and cache-busted the shared workspace stylesheet.
+
+## 2026-09-02 — Complete DSE Paper 4 Set library
+
+- Added 306 visible PP practices for 2012-2019 and 2023-2026 with stable IDs,
+  original adapted Contexts, four Part A points and eight Part B questions.
+- Corrected the duplicated 2017 Set 4.1 Part B source list and added regression
+  coverage for `Keeping the Elderly Active`.
+- Retained but hid the five historical MOCK seeds, added student/teacher filters
+  and bounded rendering, and changed Set lists to metadata-only projections.

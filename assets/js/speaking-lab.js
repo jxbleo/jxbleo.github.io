@@ -102,6 +102,7 @@
     var currentDiscussion = null;
     var toolbarTitleMeasureFrame = 0;
     var speakingSets = [];
+    var speakingSetRenderLimit = 48;
     var selectedSpeakingSet = null;
     var selectedResponse = null;
     var responseRecorder = null;
@@ -581,17 +582,37 @@
     function speakingSetMetaLabel(set) {
         return [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · ');
     }
-    function renderSpeakingSetCards(items) {
-        speakingSets = Array.isArray(items) ? items.slice() : [];
+    function renderSpeakingSetResults() {
         var target = document.getElementById('speaking-set-list');
         if (!target) return;
-        if (!speakingSets.length) { target.innerHTML = '<p class="speaking-set-empty">No Speaking Sets are available yet.</p>'; return; }
-        target.innerHTML = speakingSets.map(function (set) {
+        var query = String(document.getElementById('speaking-set-search').value || '').trim().toLowerCase();
+        var year = document.getElementById('speaking-set-year-filter').value;
+        var source = document.getElementById('speaking-set-source-filter').value;
+        var filtered = speakingSets.filter(function (set) {
+            var haystack = [set.exam_year, set.paper_version, set.title, set.display_label].join(' ').toLowerCase();
+            return (!query || haystack.indexOf(query) !== -1) && (!year || String(set.exam_year) === year) && (!source || String(set.source_kind) === source);
+        });
+        var visible = filtered.slice(0, speakingSetRenderLimit);
+        if (!visible.length) { target.innerHTML = '<p class="speaking-set-empty">No Speaking Sets match these filters.</p>'; }
+        else target.innerHTML = visible.map(function (set) {
             return '<button class="speaking-set-card" type="button" data-speaking-set-id="' + esc(set.set_id) + '"><span class="speaking-set-card-leading"><strong>' + esc(set.exam_year || 'DSE') + '</strong><small>' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</small></span><span class="speaking-set-card-copy"><span class="speaking-set-card-meta">' + esc(set.paper_version ? 'Set ' + set.paper_version + ' · DSE Paper 4' : 'DSE Paper 4') + '</span><h3>' + esc(set.title || 'Speaking Set') + '</h3><span class="speaking-set-card-route"><span>Context</span><i aria-hidden="true"></i><span>Part A</span><i aria-hidden="true"></i><span>Part B</span></span></span><span class="speaking-set-card-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button>';
         }).join('');
         target.querySelectorAll('[data-speaking-set-id]').forEach(function (button) {
             button.addEventListener('click', function () { if (allowRecordingNavigation()) openSpeakingSet(button.getAttribute('data-speaking-set-id')); });
         });
+        var more = document.getElementById('speaking-set-more');
+        more.hidden = visible.length >= filtered.length;
+        more.textContent = 'Show more · ' + String(filtered.length - visible.length) + ' remaining';
+    }
+    function renderSpeakingSetCards(items) {
+        speakingSets = Array.isArray(items) ? items.slice() : [];
+        speakingSetRenderLimit = 48;
+        var yearInput = document.getElementById('speaking-set-year-filter');
+        var selectedYear = yearInput.value;
+        var years = Array.from(new Set(speakingSets.map(function (set) { return String(set.exam_year || ''); }).filter(Boolean))).sort(function (a, b) { return Number(b) - Number(a); });
+        yearInput.innerHTML = '<option value="">All years</option>' + years.map(function (value) { return '<option value="' + esc(value) + '">' + esc(value) + '</option>'; }).join('');
+        if (years.indexOf(selectedYear) !== -1) yearInput.value = selectedYear;
+        renderSpeakingSetResults();
     }
     function loadSpeakingSets() {
         return call('listSpeakingSets').then(function (result) { renderSpeakingSetCards(result.sets || []); return result; }).catch(function (error) {
@@ -1688,6 +1709,11 @@
         discussionSortOrder = discussionSort.value === 'oldest' ? 'oldest' : 'newest';
         loadSidebarLists();
     });
+    ['speaking-set-search', 'speaking-set-year-filter', 'speaking-set-source-filter'].forEach(function (id) {
+        var control = document.getElementById(id);
+        control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', function () { speakingSetRenderLimit = 48; renderSpeakingSetResults(); });
+    });
+    document.getElementById('speaking-set-more').addEventListener('click', function () { speakingSetRenderLimit += 48; renderSpeakingSetResults(); });
     var voiceprintRecordButton = document.getElementById('voiceprint-record');
     voiceprintRecordButton.addEventListener('pointerdown', function (event) {
         if (event.pointerType === 'mouse' && event.button !== 0) return;

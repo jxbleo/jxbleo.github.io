@@ -491,3 +491,9 @@ immutable `set_id` plus stable `pa_NN` and `ir_NN` child IDs. Source kind is
 `mock`. Run `npm run test:speaking-lab`, then prepare the ignored
 `.cloudbase-private/import/speaking-sets-cloudbase.json`. Do not place Viewpoint
 Bank, Useful Language, model answers, or Speaking Set source in `dist/`.
+
+For a full historical refresh, run
+`node scripts/import-dse-paper4-speaking-sets.js` against the owner-reviewed
+Markdown, then `node scripts/prepare-cloudbase-data.js --only-speaking-sets`.
+The generator validates the 306 PP identities, year totals, stable child IDs,
+Context length/uniqueness and complete Part B duplication before writing.

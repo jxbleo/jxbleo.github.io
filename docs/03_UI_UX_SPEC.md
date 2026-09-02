@@ -2783,3 +2783,9 @@ On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware
 bottom sheets. Cards reduce to one readable column, action buttons become
 full-width where necessary, and decorative movement becomes a cross-fade under
 reduced-motion preferences.
+
+With the full corpus, both student and teacher Set libraries provide topic/Set
+search, Year and PP/MOCK filters; Teacher also provides visibility filtering.
+The student initially renders 48 cards and Teacher 50, with a restrained Show
+more control. Filters reset the visible batch and must remain one-column and
+full-width at phone breakpoints.

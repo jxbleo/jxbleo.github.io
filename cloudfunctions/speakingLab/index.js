@@ -220,6 +220,25 @@ function speakingSetView(set, options = {}) {
   return projection;
 }
 
+function speakingSetSummaryView(set, options = {}) {
+  const projection = speakingSetView(set, options);
+  const summary = {
+    set_id: projection.set_id,
+    source_kind: projection.source_kind,
+    exam_year: projection.exam_year,
+    paper_version: projection.paper_version,
+    title: projection.title,
+    display_label: projection.display_label,
+    content_revision: projection.content_revision,
+    visible_to_students: projection.visible_to_students,
+  };
+  if (options.teacher) {
+    summary.created_at = projection.created_at || null;
+    summary.updated_at = projection.updated_at || null;
+  }
+  return summary;
+}
+
 async function getSpeakingSetById(setId) {
   const idValue = lab.validateSpeakingSetId(setId);
   const set = await getOne(SPEAKING_SETS, { set_id: idValue });
@@ -230,7 +249,7 @@ async function getSpeakingSetById(setId) {
 async function listSpeakingSets(actor) {
   const teacher = lab.isTeacher(actor);
   const rows = await getMany(SPEAKING_SETS, teacher ? {} : { visible_to_students: true }, 500);
-  const sets = rows.filter((row) => teacher || row.visible_to_students !== false).map((row) => speakingSetView(row, { teacher }));
+  const sets = rows.filter((row) => teacher || row.visible_to_students !== false).map((row) => speakingSetSummaryView(row, { teacher }));
   sets.sort((left, right) => Number(right.exam_year) - Number(left.exam_year) || String(right.paper_version || "").localeCompare(String(left.paper_version || ""), undefined, { numeric: true }) || left.title.localeCompare(right.title));
   return { success: true, sets };
 }

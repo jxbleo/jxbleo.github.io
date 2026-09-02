@@ -948,3 +948,14 @@ cp .qa-secrets.example .qa-secrets.local
   static build, and local function packaging. No CloudBase collections,
   secrets, timers, provider adapters, deployments, or static publication were
   performed. Owner still needs the provider benchmark and gated rollout.
+
+### 2026-09-02 — Complete Paper 4 Set library release
+
+- Imported 306 visible PP Sets and retained five hidden MOCKs in CloudBase;
+  deployed the metadata-summary `speakingLab` gateway.
+- Added full-corpus generation/validation, student and teacher filters, bounded
+  rendering, focused private-data preparation and a visibility-only MOCK
+  migration.
+- Verified Speaking contracts, syntax, release checks, private-source exclusion,
+  static build and function package. Static publication and authenticated
+  post-deploy smoke testing remain the final release steps.

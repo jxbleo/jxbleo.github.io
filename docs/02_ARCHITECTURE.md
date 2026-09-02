@@ -1150,3 +1150,9 @@ stable child IDs. Discussion creation stores a frozen Context/Part A snapshot.
 Individual Response creation stores a frozen Set/question snapshot and reuses
 the private two-phase Storage, durable jobs, timer worker, model usage audit,
 and reports with exactly one Session locator per job.
+
+The complete library uses a summary/detail boundary: list actions return only
+Set ID, source/year/version, title, revision and visibility; opening or editing
+one Set calls its authorized detail action for Context, Part A and Part B. This
+keeps the 306-card student and teacher libraries responsive without exposing the
+canonical private corpus through static assets.

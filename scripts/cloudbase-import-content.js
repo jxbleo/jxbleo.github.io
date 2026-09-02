@@ -7,6 +7,13 @@ const { spawnSync } = require("child_process");
 const projectRoot = path.resolve(__dirname, "..");
 const DEFAULT_ENV_ID = "mrcat-dev-d9gwy2v1icdfdf597";
 const DEFAULT_REGION = "ap-shanghai";
+const OVERLAPPING_SPEAKING_MOCK_IDS = [
+  "dse-p4-mock-2019-screen-time-controls-for-teenagers",
+  "dse-p4-mock-2019-translation-apps-and-language-learning",
+  "dse-p4-mock-2023-4-1-wearable-smart-devices",
+  "dse-p4-mock-2024-1-1-digital-museums",
+  "dse-p4-mock-2025-1-3-smartphones-replacing-personal-computers",
+];
 
 const COLLECTIONS = {
   sets: {
@@ -47,6 +54,8 @@ Options:
   --ids <list>               Comma-separated keys to import, matched against each collection key field
   --offset <number>           Skip this many input records before importing, default 0
   --overwrite-existing       Update existing records instead of insert-missing only
+  --hide-overlapping-speaking-mocks
+                             Set only visible_to_students=false on the five superseded MOCK Sets
   --env-id <envId>           CloudBase environment ID
   --region <region>          CloudBase region
   --chunk-size <number>      Records per CloudBase command, default 10
@@ -59,6 +68,7 @@ Examples:
   npm run cloudbase:import:content -- --apply --only sets,grading_keys
   npm run cloudbase:import:content -- --apply --only grading_keys --ids NGSL-C --overwrite-existing
   npm run cloudbase:import:content -- --only vocabulary_lexicon
+  npm run cloudbase:import:content -- --only speaking_sets --hide-overlapping-speaking-mocks
 `);
 }
 
@@ -69,6 +79,7 @@ function parseArgs(argv) {
     ids: null,
     offset: 0,
     overwriteExisting: false,
+    hideOverlappingSpeakingMocks: false,
     envId: process.env.TCB_ENV_ID || DEFAULT_ENV_ID,
     region: process.env.TCB_REGION || DEFAULT_REGION,
     chunkSize: 10,
@@ -85,6 +96,8 @@ function parseArgs(argv) {
       options.apply = true;
     } else if (arg === "--overwrite-existing") {
       options.overwriteExisting = true;
+    } else if (arg === "--hide-overlapping-speaking-mocks") {
+      options.hideOverlappingSpeakingMocks = true;
     } else if (arg === "--only") {
       options.only = requireValue(argv, ++index, arg).split(",").map((item) => item.trim()).filter(Boolean);
     } else if (arg === "--ids") {
@@ -117,6 +130,9 @@ function parseArgs(argv) {
   });
   if (options.ids && options.ids.length === 0) {
     throw new Error("--ids requires at least one key");
+  }
+  if (options.hideOverlappingSpeakingMocks && !options.only.includes("speaking_sets")) {
+    throw new Error("--hide-overlapping-speaking-mocks requires --only speaking_sets");
   }
 
   return options;
@@ -184,6 +200,21 @@ function buildMgoPayload(collectionName, keyField, records, overwriteExisting) {
     Command: JSON.stringify({
       update: collectionName,
       updates,
+    }),
+  }];
+}
+
+function buildSpeakingMockVisibilityPayload() {
+  return [{
+    TableName: "speaking_sets",
+    CommandType: "UPDATE",
+    Command: JSON.stringify({
+      update: "speaking_sets",
+      updates: OVERLAPPING_SPEAKING_MOCK_IDS.map((setId) => ({
+        q: { set_id: setId, source_kind: "mock" },
+        u: { $set: { visible_to_students: false } },
+        upsert: false,
+      })),
     }),
   }];
 }
@@ -259,6 +290,11 @@ function main() {
       const payload = buildMgoPayload(collectionName, config.keyField, batch, options.overwriteExisting);
       runTcb(options, payload);
     });
+  }
+
+  if (options.hideOverlappingSpeakingMocks) {
+    console.log(`speaking_sets: hide ${OVERLAPPING_SPEAKING_MOCK_IDS.length} superseded MOCK Sets (visibility field only)`);
+    if (options.apply) runTcb(options, buildSpeakingMockVisibilityPayload());
   }
 
   if (!options.apply) {

@@ -2361,3 +2361,12 @@ unread again after report regeneration. Opening only the drawer does not clear
 it. Title changes, identity changes, and Voiceprint rematching do not create a
 new unread report. The row title and the drawer button show a small red dot
 while any invitation, identity notice, or report update remains unread.
+
+### Complete Paper 4 Set corpus
+
+The student library contains 306 visible PP practices covering 2012-2019 and
+2023-2026. Every record preserves its stable year/Set identity, topic and
+question intent, while its three-paragraph Context is original adapted practice
+prose. The five original MOCK seeds remain stored for historical Sessions but
+are hidden from new student selection. The 2023-2026 source notes must continue
+to identify candidate-recall wording where exact official text is unavailable.
