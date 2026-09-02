@@ -313,6 +313,8 @@ async function requestBody(config, options, correction) {
 }
 
 async function callOnce(config, options, correction) {
+  const body = JSON.stringify(await requestBody(config, options, correction));
+  if (typeof options.onRequestStart === "function") await options.onRequestStart();
   const controller = new AbortController();
   const timeoutMs = Math.min(MAX_PROVIDER_TIMEOUT_MS, Math.max(1000, normalizeTimeoutMs(options.timeoutMs)));
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -321,7 +323,7 @@ async function callOnce(config, options, correction) {
     response = await fetch(config.apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.apiKey}` },
-      body: JSON.stringify(await requestBody(config, options, correction)),
+      body,
       signal: controller.signal,
     });
   } catch (error) {

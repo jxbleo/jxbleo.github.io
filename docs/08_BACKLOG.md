@@ -132,3 +132,7 @@ Before commercial use, review:
 - Speaking Set Library: future Viewpoint Bank, Useful Language, structured
   search/filtering, Part B sharing, pronunciation/delivery assessment, and
   richer teacher Individual Response comparison remain outside this release.
+
+Scan Words V1 is implemented. Keep context-specific dictionary senses, image
+token boxes, PDF scanning, scan history, and context-aware AI enrichment as
+explicit post-V1 backlog items; they are intentionally outside this release.

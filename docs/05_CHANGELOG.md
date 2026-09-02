@@ -2826,3 +2826,12 @@ stored Set/Response data are unchanged.
   coverage for `Keeping the Elderly Active`.
 - Retained but hid the five historical MOCK seeds, added student/teacher filters
   and bounded rendering, and changed Set lists to metadata-only projections.
+### 2026-09-02 — My Words Scan V1
+
+Added authenticated five-page photo intake with local crop/mask editing,
+private per-page OCR jobs, canonical token/phrase review, resumable commit,
+daily quotas, expiry, and worker cleanup. Existing My Words dictionary
+enrichment remains the post-commit path. Main-agent review added draggable crop
+handles, a mask-only eraser, monotonic candidate sync, transactional upload/
+quota/commit guards, retryable cleanup, safe usage telemetry, and focused
+behavior tests. Production rollout on 2026-09-02 created the three ADMINONLY scan collections and documented indexes, deployed the three related functions, enabled the private one-minute worker timer, and enabled Scan Words for all active students.

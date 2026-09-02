@@ -1506,3 +1506,17 @@ original adapted Context prose. Retain the five original MOCKs for history but
 hide them from new practice. List operations return metadata summaries; full
 content is fetched only when one authorized Set is opened. This protects the
 private source and avoids returning all 306 Contexts on every library load.
+### Dedicated Scan domain (2026-09-02)
+
+Scan sessions/pages/jobs are separate from writing and vocabulary-test data so
+temporary OCR and image retention cannot leak into learning history. Native
+Canvas avoids a new dependency. Candidates are reconstructed server-side from
+owned token IDs, and commits reuse a shared personal-vocabulary upsert to keep
+deduplication and enrichment behavior consistent.
+
+The scan-specific adapter reuses the existing Writing vision transport rather
+than introducing another provider stack. That transport exposes an optional
+callback immediately before the outbound model request; Scan Words uses it as
+the quota boundary, while all existing Writing callers retain identical
+behavior. This keeps provider configuration/protocol handling unified without
+coupling scan sessions to Writing compositions.
