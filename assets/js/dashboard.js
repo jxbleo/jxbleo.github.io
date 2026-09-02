@@ -566,8 +566,9 @@
             '<div class="student-achievements-grid">' + cells.join('') + '</div>' +
         '</div>';
         var total = Number(calendar.total_achievements || 0);
+        var activeDays = Number(calendar.active_days || 0);
         if (achievementsTotal) achievementsTotal.innerHTML = '<strong>' + total + '</strong><span>' + (total === 1 ? 'achievement' : 'achievements') + '</span>';
-        if (achievementsStatus) achievementsStatus.textContent = Number(calendar.active_days || 0) + (Number(calendar.active_days || 0) === 1 ? ' active day' : ' active days');
+        if (achievementsStatus) achievementsStatus.innerHTML = '<strong>' + activeDays + '</strong> <span>' + (activeDays === 1 ? 'active day' : 'active days') + '</span>';
         achievementsPanel.classList.remove('is-loading', 'has-error');
         achievementsPanel.setAttribute('aria-busy', 'false');
         achievementsScroll.setAttribute('aria-label', 'Achievement calendar for the past 12 months. ' + total + (total === 1 ? ' achievement.' : ' achievements.'));

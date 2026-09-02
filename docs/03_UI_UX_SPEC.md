@@ -27,7 +27,8 @@ The removed weekly progress bar must not reappear. Monday starts each column;
 phones horizontally scroll to the newest weeks by default.
 The card shows no separate `PAST 12 MONTHS` / `ACHIEVEMENTS` heading and no
 `Less` / `More` intensity-dot legend. Achievement total and active-day total
-share one compact summary at the lower left below the grid.
+share one compact summary at the lower left below the grid; both numeric values
+use the same restrained green accent while their labels remain muted.
 At either horizontal edge, a partial month occupying fewer than two visible
 week columns omits its month abbreviation so adjacent month labels never
 overlap; weekday labels and contribution cells remain aligned.

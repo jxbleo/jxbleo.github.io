@@ -2843,3 +2843,11 @@ behavior tests. Production rollout on 2026-09-02 created the three ADMINONLY sca
   fourth line with conspicuous empty space on earlier lines.
 - Retained balanced wrapping on tablet and wider layouts, and cache-busted the
   shared workspace stylesheet for the phone-only correction.
+
+## 2026-09-02 — Matching Achievements summary numbers
+
+- Styled the Active Days number with the same restrained green accent used by
+  the Achievements total while keeping both labels muted.
+- Preserved singular/plural labels and the existing compact live-region summary,
+  and cache-busted the shared stylesheet and Dashboard script for the revised
+  numeric markup.

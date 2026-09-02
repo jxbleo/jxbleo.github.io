@@ -50,7 +50,7 @@ assert.match(
 );
 assert.match(dashboardHtml, /student-achievements-panel[^>]*aria-label="Achievements"/, "the heading-free panel needs an accessible name");
 assert.ok(dashboardHtml.includes("assets/css/app.css?v=20260830-3"), "calendar interaction styles should be cache-busted");
-assert.ok(dashboardHtml.includes("assets/js/dashboard.js?v=20260830-7"), "calendar interaction logic should be cache-busted");
+assert.ok(dashboardHtml.includes("assets/js/dashboard.js?v=20260902-1"), "calendar interaction logic should be cache-busted");
 
 const achievementHref = vm.runInNewContext(`(${dashboardFunctionSource("studentCalendarAchievementHref")})`, {
   String,
