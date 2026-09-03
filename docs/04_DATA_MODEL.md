@@ -1262,6 +1262,15 @@ per physical provider call); `speaking_voiceprints` (one private reusable
 provider locator and lifecycle per subject); and `speaking_voiceprint_events`
 (append-only enrol/update/delete consent and actor audit).
 
+`speaking_reports` has a unique `report_id` index and a unique compound
+`discussion_id + response_session_id + report_version` index named
+`uniq_session_report_version`. Exactly one session locator is populated, so
+the compound key preserves one version per Group Discussion or Individual
+Response. Do not recreate the former unique
+`discussion_id + report_version` index: every Individual Response omits
+`discussion_id`, so MongoDB treats its first report as
+`null + response-r1` and rejects the second report as a duplicate.
+
 New `speaking_discussions.candidate_count` is nullable until transcription.
 `speaking_discussions.formal_audio_uploaded_at` records the successful formal
 upload time and is the same-date history tie-breaker; title, voice mapping, and

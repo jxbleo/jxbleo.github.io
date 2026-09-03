@@ -1031,6 +1031,17 @@ failure recovery budget. `SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE` may still leave
 a private processing report containing the usable canonical transcript. Never
 copy the temporary audio URL or Tencent response into diagnosis notes.
 
+If one Individual Response report succeeds but a later one ends at
+`transcription` with `DATABASE_REQUEST_FAILED`, inspect the database platform
+log before blaming ASR. An `InsertDocument` duplicate on
+`uniq_discussion_version` with `{ discussion_id: null, report_version:
+"response-r1" }` means the obsolete two-field unique index is blocking every
+second IR report. Replace it with the unique
+`discussion_id + response_session_id + report_version` index, preserving the
+unique `report_id` index. The uploaded audio and completed Tencent task remain
+usable; after the index migration, requeue the same failed job instead of
+asking the student to record again or creating another ASR task.
+
 If a share is unavailable, treat missing, expired, and revoked tokens as the
 same `SHARE_NOT_AVAILABLE` outcome. Duplicate uploads/jobs should replay their
 stable operation ID; a stale lease or mapping revision must never publish.

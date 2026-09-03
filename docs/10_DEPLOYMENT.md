@@ -1245,6 +1245,18 @@ expanded per-turn JSON may be cut off before validation. Enter each
 environment key/value as its own console row; never paste several assignments
 into the environment-key field and never copy a key value into chat, Git, a
 deploy plan, or a database row.
+
+Before enabling Individual Response analysis, verify `speaking_reports` keeps
+both `uniq_report_id` and the unique compound index
+`uniq_session_report_version` on
+`discussion_id + response_session_id + report_version`. The old
+`uniq_discussion_version` index on only
+`discussion_id + report_version` must not exist: missing Discussion locators
+collapse every first Individual Response report to the same
+`null + response-r1` key. When migrating an existing environment, check that
+the new compound key has no duplicates, create the new unique index first,
+then drop the old one so there is no interval without a uniqueness guard.
+
 Set the environment-level function ACL override for `speakingAiWorker` to
 `{"invoke": false}`. CloudBase documents that timer triggers bypass client
 ACLs, so configure one one-minute timer named `speaking-ai-worker-minute`

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-09-03 — Individual Response report-index repair
+
+- Replaced the production `speaking_reports` unique
+  `discussion_id + report_version` index with a session-aware
+  `discussion_id + response_session_id + report_version` index.
+- Prevented separate first-revision Individual Responses from colliding on the
+  shared `{ discussion_id: null, report_version: response-r1 }` key while
+  retaining uniqueness for both Group Discussion and Individual Response
+  reports.
+- Requeued the affected failed IR job against its existing uploaded audio and
+  completed Tencent ASR task; the report reached `ready` without re-recording.
+
 ## 2026-09-02 — Natural Student task-list scrolling
 
 - Made To-Do, Finished, and Teacher Replies independently scrollable while the

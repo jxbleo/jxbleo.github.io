@@ -2661,6 +2661,14 @@ known opening facilitator cue must be marked non-Candidate even if the provider
 assigns it to the first Candidate track, and its segment ID must be rejected as
 scoring evidence.
 
+In the CloudBase smoke test, generate ready `response-r1` reports for two
+different Individual Response Session IDs and confirm both coexist. Verify the
+unique report index is
+`discussion_id + response_session_id + report_version`, not the historical
+two-field `discussion_id + report_version` index, and confirm two copies of the
+same Session/version are still rejected. Also generate or read a Group
+Discussion report to ensure its missing Response locator remains valid.
+
 The service contract must also lock the ASR scoring safeguard: every model
 segment includes normalized confidence and one of `confidence_unknown`,
 `low_confidence`, or `higher_confidence`; the system prompt forbids a score
