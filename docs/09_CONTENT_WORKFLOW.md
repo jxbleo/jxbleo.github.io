@@ -493,10 +493,23 @@ immutable `set_id` plus stable `pa_NN` and `ir_NN` child IDs. Source kind is
 Bank, Useful Language, model answers, or Speaking Set source in `dist/`.
 
 For a full historical refresh, run
-`node scripts/import-dse-paper4-speaking-sets.js` against the owner-reviewed
-Markdown, then `node scripts/prepare-cloudbase-data.js --only-speaking-sets`.
-The generator validates the 306 PP identities, year totals, stable child IDs,
-Context length/uniqueness and complete Part B duplication before writing.
+`node scripts/import-dse-paper4-speaking-sets.js --output <review-file>` against
+the owner-reviewed Markdown. The raw generator is intentionally blocked from
+overwriting the audited canonical file because recalled indexes can reverse or
+misplace Part B questions. Review each year and store its evidence plus
+replacement JSON under `content/speaking/audits/dse-paper4/`, then run
+`node scripts/apply-dse-paper4-audits.js` for a dry validation and repeat with
+`--write` to update the canonical library. Only then run
+`node scripts/prepare-cloudbase-data.js --only-speaking-sets`.
+
+The audit merger requires one replacement for every one of the 311 stable Set
+IDs, retains all stable Part A/Part B IDs, permits printed order to differ from
+the ID suffix, increments the canonical audited revision to at least 2, and
+checks 150–220-word original Contexts, source disclosure, counts, uniqueness
+and prohibited redundant opinion prefixes. Never copy an official Context
+article into the practice library. `--allow-unaudited-overwrite` exists only as
+an explicit recovery escape hatch and must always be followed by reapplying the
+reviewed audits before import.
 Scan Words is private student activity, not canonical content. Processed
 photos, OCR, marks, and candidates remain in ADMINONLY scan collections and are
 never imported into `content/`, public `data/`, or grading keys. Only reviewed

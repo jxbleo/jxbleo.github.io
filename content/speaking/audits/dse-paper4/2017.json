@@ -1,0 +1,2664 @@
+{
+  "audit_year": 2017,
+  "accessed_at": "2026-09-02",
+  "status": "ready_for_parent_review",
+  "copyright_note": "The scanned question paper was used for verification. Context passages below are original mock adaptations, not reproductions. Existing practice paraphrases are retained for Part A and Part B, with print order corrected.",
+  "sources": [
+    {
+      "level": "primary-catalogue",
+      "publisher": "Hong Kong Examinations and Assessment Authority",
+      "title": "HKDSE Subject Examination Report and Question Papers publication catalogue",
+      "url": "https://www.hkeaa.edu.hk/en/Resources/publications/list_of_publications/hkdse_erqp_pub/",
+      "accessed_at": "2026-09-02",
+      "use": "Confirms that the 2017 English Language examination report and question-paper publication exists; the catalogue does not reproduce each speaking set."
+    },
+    {
+      "level": "secondary-scan",
+      "publisher": "DSEPP mirror",
+      "title": "2017 HKDSE English Language Paper 4 scan (24 pages)",
+      "url": "https://dsepp.com/wp-content/uploads/2018/12/2017-DSE-ENG-LANG-4.pdf",
+      "accessed_at": "2026-09-02",
+      "use": "Page-by-page source for set number, topic, Part A task and bullet order, and Part B print order. The PDF presents HKEAA-branded examination pages but is hosted on a third-party mirror."
+    },
+    {
+      "level": "secondary-index",
+      "publisher": "DSE Treasure",
+      "title": "DSE English Paper 4 topic index",
+      "url": "https://dsetreasure.com/dse-english-paper-4-%E9%A1%8C%E7%9B%AE/",
+      "accessed_at": "2026-09-02",
+      "use": "Independent topic-level corroboration; not relied on where wording or order differs from the scan."
+    }
+  ],
+  "validation": {
+    "year": 2017,
+    "record_count": 24,
+    "expected_record_count": 24,
+    "all_contexts_150_to_220_words": true,
+    "context_word_counts": {
+      "1.1": 170,
+      "1.2": 168,
+      "1.3": 164,
+      "2.1": 160,
+      "2.2": 175,
+      "2.3": 164,
+      "3.1": 166,
+      "3.2": 165,
+      "3.3": 157,
+      "4.1": 157,
+      "4.2": 164,
+      "4.3": 159,
+      "5.1": 152,
+      "5.2": 155,
+      "5.3": 152,
+      "6.1": 158,
+      "6.2": 150,
+      "6.3": 161,
+      "7.1": 159,
+      "7.2": 157,
+      "7.3": 155,
+      "8.1": 160,
+      "8.2": 156,
+      "8.3": 166
+    },
+    "all_sets_have_four_part_a_points": true,
+    "all_sets_have_eight_part_b_questions": true,
+    "stable_ids_unique": true,
+    "exact_print_order_restored": true,
+    "duplicate_part_b_questions": []
+  },
+  "records": [
+    {
+      "set_id": "dse-p4-pp-2017-1-1-working-in-shenzhen",
+      "exam_year": 2017,
+      "paper_version": "1.1",
+      "replacement": {
+        "title": "Working in Shenzhen",
+        "source_note": "2017 HKDSE Paper 4 Set 1.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 1.1 practice; it is not the official examination passage.",
+          "title": "Working in Shenzhen: Discussion Context",
+          "body": [
+            "A Hong Kong graduate has accepted an entry-level finance job in Shenzhen after finding few suitable openings at home. His salary is similar to what he expected in Hong Kong, while rent and daily expenses are lower. He also believes that working in a fast-growing business district will give him experience with new markets and clients.",
+            "The move has not been effortless. His journey to work is long, office practices are unfamiliar, and some websites and online services he normally uses are unavailable. Although he can return to Hong Kong at weekends, he misses his family and established circle of friends. He advises applicants to compare the whole employment package instead of focusing only on salary.",
+            "More Hongkongers may consider cross-border work as transport links improve and companies expand in the Greater Bay Area. However, a decision should also take account of language, workplace culture, housing, career development and personal responsibilities. Anyone interested should visit the city, speak to current employees and agree clear employment terms before accepting an offer."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group has been asked to discuss whether Hongkongers could benefit from working in Shenzhen. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Advantages and disadvantages of working in Shenzhen"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether this will become a popular trend"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Advice for people who would like to work in Shenzhen"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever visited Shenzhen?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you be interested in working in Shenzhen?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you consider living outside of Hong Kong?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What would you miss most if you moved away from Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What do you think would be the best part of working in Shenzhen?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What challenges might you face working in mainland China?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is it more common now for Hongkongers to work abroad than in the past?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think Hong Kong benefits or loses out when young people choose to work in Shenzhen?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 1,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "exact"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence matches the printed order.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 170
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-1-2-giving-money-to-parents",
+      "exam_year": 2017,
+      "paper_version": "1.2",
+      "replacement": {
+        "title": "Giving money to parents",
+        "source_note": "2017 HKDSE Paper 4 Set 1.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 1.2 practice; it is not the official examination passage.",
+          "title": "Giving money to parents: Discussion Context",
+          "body": [
+            "In some Hong Kong families, adult children regularly give part of their income to their parents. The payment may help with household bills, medical expenses or retirement, but it can also be a symbolic way of expressing gratitude. Parents who supported their children for many years may value the gesture even when they do not depend on the money.",
+            "The custom can become difficult when young adults are paying rent, saving for a home or caring for children of their own. A fixed amount that seems reasonable in one household may create pressure in another. Problems are more likely when expectations are never discussed or when brothers and sisters contribute very different amounts.",
+            "Families could treat financial support as one possible form of care rather than a compulsory test of respect. Time, practical help, regular contact and support at medical appointments may be equally meaningful. An honest conversation about needs and affordability can help parents and children find an arrangement that protects both family relationships and financial security."
+          ]
+        },
+        "part_a": {
+          "instruction": "As part of your English class, your group has been asked to respond to a blog entry about giving money to parents. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons people give money to their parents"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether this tradition should continue in Hong Kong today"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Other ways people can show respect to their parents"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What kinds of gifts do parents usually appreciate?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Besides giving money, how can children support their parents?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you personally give money to your parents?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should children talk openly with their parents about money?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think young people today show enough respect to older generations?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do parents still expect financial support from their children?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "If you were a parent, would you expect your children to give you money?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should children give money to their parents even if their parents are wealthy?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 2,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "exact"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence matches the printed order.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 168
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-1-3-hong-kong-book-fair",
+      "exam_year": 2017,
+      "paper_version": "1.3",
+      "replacement": {
+        "title": "Hong Kong Book Fair",
+        "source_note": "2017 HKDSE Paper 4 Set 1.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 1.3 practice; it is not the official examination passage.",
+          "title": "Hong Kong Book Fair: Discussion Context",
+          "body": [
+            "The Hong Kong Book Fair attracts large crowds because visitors can browse many publishers in one place, meet writers and discover books at promotional prices. A central theme can give the event a clearer identity. One recent fair highlighted Chinese martial arts literature, including novels, manuscripts, comics and screen adaptations connected with well-known Hong Kong writers.",
+            "Supporters said the theme introduced younger readers to an influential part of popular culture and showed overseas visitors how local stories had travelled across languages and media. Others felt that a single genre could not represent the variety of books published in Hong Kong, and that crowded sales booths sometimes received more attention than reading itself.",
+            "A future theme should be broad enough to include different ages, languages and types of writing. Possible choices include stories of Hong Kong neighbourhoods, science and the future, or books that became films. Exhibitions, talks and workshops could then turn the fair into a cultural experience rather than only a large marketplace."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group has been asked to discuss a theme for a future Hong Kong Book Fair. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why the Hong Kong Book Fair is popular"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether Chinese martial arts literature was a suitable theme"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "A possible theme for the future"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you be interested in visiting the Hong Kong Book Fair?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you enjoy reading Kung Fu or martial arts-themed books?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is the Book Fair a good place to find and buy books?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think the Hong Kong Book Fair will stay popular in the future?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Who do you think enjoys the Book Fair more—young people or older people?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would a creative or interesting theme encourage you to attend the Book Fair?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is the Book Fair a good way to inspire young people to read more?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think Kung Fu literature truly reflects Hong Kong's culture?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 3,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "exact"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence matches the printed order.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 164
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-2-1-cantonese",
+      "exam_year": 2017,
+      "paper_version": "2.1",
+      "replacement": {
+        "title": "Cantonese",
+        "source_note": "2017 HKDSE Paper 4 Set 2.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 2.1 practice; it is not the official examination passage.",
+          "title": "Cantonese: Discussion Context",
+          "body": [
+            "People who settle in Hong Kong without speaking Cantonese can often manage at international workplaces, yet everyday situations may still be difficult. Talking to taxi drivers, understanding notices in small shops and joining conversations with neighbours can require local language skills. These barriers may leave newcomers dependent on friends or separated from parts of community life.",
+            "Learning Cantonese can make practical tasks easier and help people understand humour, television, food culture and local concerns. It may also widen employment choices and make friendships with Cantonese-speaking residents more natural. Progress can be slow because pronunciation and tones are unfamiliar, while many courses do not fit adults’ working hours.",
+            "Language classes are only one solution. Schools, employers and community groups could organise conversation partners, subtitled activities and neighbourhood visits where learners use simple Cantonese without embarrassment. Local speakers can help by being patient and avoiding switching languages immediately. Connection should be a shared effort rather than a test newcomers must pass alone."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are doing a project on the importance of Cantonese in everyday life in Hong Kong. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Problems non-Cantonese speaking people may have if they live in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Advantages if they learn Cantonese"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways to help people who do not speak Cantonese feel more connected to Hong Kong"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think learning Chinese is easy?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you know anyone who doesn't speak Cantonese?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What can you do to help someone learn Cantonese?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Can you name a job where speaking Cantonese is essential?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Is it more important to be able to read or speak Chinese?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Are adults too old to learn Cantonese effectively?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think Cantonese will become less important in the future?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should more be done to promote Cantonese among non-Cantonese speakers?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 4,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "exact"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence matches the printed order.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 160
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-2-2-ice-bucket-challenge",
+      "exam_year": 2017,
+      "paper_version": "2.2",
+      "replacement": {
+        "title": "Ice Bucket Challenge",
+        "source_note": "2017 HKDSE Paper 4 Set 2.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 2.2 practice; it is not the official examination passage.",
+          "title": "Ice Bucket Challenge: Discussion Context",
+          "body": [
+            "The Ice Bucket Challenge spread rapidly because it combined a simple action, a public nomination and a clear deadline. Participants filmed themselves pouring cold water over their heads, shared the clip online and invited friends to join or donate. The humorous videos attracted attention while introducing a serious illness to people who might not otherwise have heard about it.",
+            "Its success also raised questions. Some viewers remembered the entertainment but not the cause, and public pressure may have encouraged people to participate without understanding the charity. Online campaigns can disappear quickly once a new trend arrives. A strong fundraiser therefore needs reliable information, transparent donation arrangements and a way to keep supporters involved after the videos stop circulating.",
+            "Students could design other digital activities such as a sponsored skills challenge, an online performance or a team quiz. The activity should be safe, easy to explain and suitable for people with different abilities. Popularity matters, but the group should also judge whether the idea raises useful awareness, protects participants and directs support to a trustworthy organisation."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is raising money for Hong Kong charities. Discuss whether online activities such as the Ice Bucket Challenge would be suitable.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why the Ice Bucket Challenge was so successful"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Other online activities you could hold to raise money for charity"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether your suggestions would be popular"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever helped raise money for a charity?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you take part in a challenge like the Ice Bucket Challenge?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Who would you invite to join you in doing the Ice Bucket Challenge?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Besides raising money, what other ways can people support charities?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why is it important for students to get involved in charity work?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should private companies also support charitable causes?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is social media the best way for young people to engage with charity?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What do you think is more important for charities—raising awareness or raising money?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 5,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "exact"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence matches the printed order.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 175
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-2-3-hong-kong-observatory-signals",
+      "exam_year": 2017,
+      "paper_version": "2.3",
+      "replacement": {
+        "title": "Hong Kong Observatory signals",
+        "source_note": "2017 HKDSE Paper 4 Set 2.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 2.3 practice; it is not the official examination passage.",
+          "title": "Hong Kong Observatory signals: Discussion Context",
+          "body": [
+            "Hong Kong uses a range of signals to warn the public about typhoons, heavy rain, thunderstorms and other dangerous conditions. The system gives schools, families and businesses a shared reference point for making safety decisions. Clear warnings can reduce travel during severe weather and allow emergency services to prepare before conditions become worse.",
+            "However, the same signal may affect districts differently. A warning can close schools even when the weather near some campuses appears calm, while transport disruption and childcare problems create difficulties for working families. Businesses also need to decide when staff should leave, and members of the public may misunderstand what each signal actually requires them to do.",
+            "Improvements could include more district-specific information, clearer mobile alerts and practical advice linked to each warning. Any change must remain simple enough to understand quickly and must not encourage people to ignore territory-wide risks. The Observatory, schools, employers and transport operators should communicate consistently so that safety messages do not compete with one another."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are doing a project about the Hong Kong Observatory. Discuss how suitable the current warning signals are.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages of the current warning signals"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Possible problems caused for families, schools and businesses by the current signals"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Possible improvements to the current system"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "How do you generally feel when a typhoon is approaching Hong Kong?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What actions do you usually take when schools are closed due to severe weather warnings?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What activities do most people in Hong Kong engage in during a typhoon?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What is your reaction when the Red Rainstorm Warning Signal is issued?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Which types of businesses are most affected by typhoons in modern Hong Kong?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Have you ever experienced fear during a typhoon?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What should the police do about people who go to the beach during Typhoon Signal No. 8?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think it is reasonable for taxi fares to double during a typhoon? Why or why not?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 6,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 164
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-3-1-eq",
+      "exam_year": 2017,
+      "paper_version": "3.1",
+      "replacement": {
+        "title": "EQ",
+        "source_note": "2017 HKDSE Paper 4 Set 3.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 3.1 practice; it is not the official examination passage.",
+          "title": "EQ: Discussion Context",
+          "body": [
+            "Emotional intelligence, often called EQ, involves recognising feelings, managing reactions and responding appropriately to other people. Students may experience anxiety about examinations, disagreements with friends, family expectations or uncertainty about the future. If they cannot discuss these emotions or recover from setbacks, concentration and relationships may suffer even when their academic ability is strong.",
+            "A high EQ does not replace knowledge or reasoning, but it can help people cooperate, make decisions under pressure and ask for support. These skills develop through experience rather than a single lesson. Group work, sport, creative activities and family conversations can all give young people opportunities to listen, negotiate and understand different points of view.",
+            "Schools could teach students how to name emotions, handle conflict and recognise when professional help is needed. Peer-support programmes and trained counsellors may make help easier to seek. Activities should not force students to reveal private experiences in public. The aim is to build a respectful environment in which emotional skills are practised alongside academic learning."
+          ]
+        },
+        "part_a": {
+          "instruction": "You have been asked to give a presentation on developing younger students’ emotional intelligence. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What problems students face which affect their emotions"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why EQ is important"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways your school can help students to develop emotional intelligence"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Who do you usually turn to when you face personal problems?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do your friends often share their problems with you?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you enjoy working in groups?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you agree that having a high IQ is essential?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Which do you think matters more for success: EQ or IQ?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How can having a big family contribute to developing emotional intelligence?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think Hong Kong schools help students build strong EQ skills?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you believe all successful people have high emotional intelligence?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 7,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 166
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-3-2-libraries",
+      "exam_year": 2017,
+      "paper_version": "3.2",
+      "replacement": {
+        "title": "Libraries",
+        "source_note": "2017 HKDSE Paper 4 Set 3.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 3.2 practice; it is not the official examination passage.",
+          "title": "Libraries: Discussion Context",
+          "body": [
+            "Public libraries compete with smartphones, streaming services and the large amount of free information available online. Teenagers may still value quiet study space, reliable internet access and books they cannot afford to buy. Yet some see libraries as places with strict rules, outdated collections and few reasons to visit once schoolwork is finished.",
+            "Modern libraries can offer more than shelves of printed books. Digital lending, media-making equipment, reading clubs and talks with writers can connect traditional services with young people’s interests. Flexible seating and group areas may also help students who have little study space at home. These changes require funding, staff training and careful management of noise.",
+            "New activities should support the library’s educational purpose rather than turn it into another shopping centre. Teenagers could help choose events and recommend materials, while librarians could teach how to judge whether online information is trustworthy. A successful library would provide both quiet and collaborative zones and remain accessible to people who do not own expensive devices."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group has been asked to suggest how modern libraries could be made more attractive to teenagers. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What young people currently like about libraries"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Reasons many young people don't use libraries"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "New activities that might attract more people to use libraries"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "When did you first visit a library?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Who do you think uses libraries more often—adults or young people?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What kinds of books do you usually borrow from the library?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do you believe libraries are important?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How is your school library different from a public library?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think libraries are still necessary now that the internet is widely available?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How do you think libraries will evolve in the future?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How would closing libraries impact the local community?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 8,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 165
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-3-3-road-safety",
+      "exam_year": 2017,
+      "paper_version": "3.3",
+      "replacement": {
+        "title": "Road Safety",
+        "source_note": "2017 HKDSE Paper 4 Set 3.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 3.3 practice; it is not the official examination passage.",
+          "title": "Road Safety: Discussion Context",
+          "body": [
+            "Road accidents in Hong Kong have fallen over time as vehicles, roads and public education have improved. Seat belts, airbags, better lighting and safer junctions reduce some risks, while enforcement discourages dangerous driving. Technology can also warn drivers when they leave a lane or approach an obstacle.",
+            "Safety equipment cannot prevent every collision. Speeding, drink-driving, mobile-phone use and tiredness still depend on human choices. Pedestrians may cross between vehicles or look at screens instead of traffic, and cyclists can be vulnerable when roads do not provide enough space. Older people and children may need more time and clearer signals when crossing.",
+            "Reducing accidents requires drivers, passengers and pedestrians to share responsibility. Schools can teach practical road behaviour, the government can improve crossings and cycle routes, and police can target the most dangerous offences. Campaigns are most useful when they explain the consequences of risky behaviour and are supported by road design that makes the safer choice easier."
+          ]
+        },
+        "part_a": {
+          "instruction": "The Transport Police are visiting your school. Discuss road safety in Hong Kong.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why the number of accidents has fallen in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Some common causes of road accidents"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What people should do to make sure they are safe while using the road"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think Hong Kong roads are generally safe?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Should schools provide more education about road safety?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Should bicycles be allowed to share the same roads as cars?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What dangerous behaviours do pedestrians sometimes engage in?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What actions can help elderly people cross roads more safely?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How can we prevent people from crossing roads illegally?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think most people in Hong Kong follow road safety rules?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Would reducing the number of cars in Hong Kong make the roads safer?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 9,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 157
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-4-1-keeping-the-elderly-active",
+      "exam_year": 2017,
+      "paper_version": "4.1",
+      "replacement": {
+        "title": "Keeping the Elderly Active",
+        "source_note": "2017 HKDSE Paper 4 Set 4.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 4.1 practice; it is not the official examination passage.",
+          "title": "Keeping the Elderly Active: Discussion Context",
+          "body": [
+            "Groups of older residents often gather in parks to sing, dance and play music. The activity is inexpensive, social and easy to join, so it can reduce loneliness and help participants remain physically and mentally active. Performers may also enjoy sharing songs that carry memories from earlier stages of their lives.",
+            "Outdoor performances can disturb nearby residents and other park users, especially when amplifiers are loud or several groups compete for space. Strict bans may reduce complaints, but they can also create conflict and remove an activity that many elderly people value. Building a costly performance venue will not help if it is inconvenient or difficult to book.",
+            "A balanced plan could set reasonable hours and sound limits, designate several performance areas and provide indoor alternatives during bad weather. Performers should help monitor noise, while officials should explain rules consistently. Community centres, underused sports facilities and sheltered public spaces could offer additional venues without excluding other users."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are doing a social studies project on keeping older people active. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why the elderly enjoy singing in parks"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Problems with having outdoor music performances"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways to overcome these problems"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do older people in your family enjoy singing?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do elderly people enjoy doing in their free time?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What is the difference between the songs the elderly enjoy and those the young enjoy?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Have you ever seen groups of elderly people singing in the park?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are there activities that are not suitable for the elderly?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why is it important for the elderly to keep busy?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do some old people prefer to stay at home?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should retirement be something to look forward to or to worry about?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 10,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "exact"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence matches the printed order.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 157
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-4-2-legal-age",
+      "exam_year": 2017,
+      "paper_version": "4.2",
+      "replacement": {
+        "title": "Legal age",
+        "source_note": "2017 HKDSE Paper 4 Set 4.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 4.2 practice; it is not the official examination passage.",
+          "title": "Legal age: Discussion Context",
+          "body": [
+            "Hong Kong law sets different minimum ages for activities such as employment, driving, marriage and getting a tattoo. These limits are intended to protect young people and the public when a decision carries lasting consequences or requires mature judgement. Tattoo rules are especially strict because an unsafe procedure can cause infection and the result may be difficult to remove.",
+            "A single legal age cannot measure the maturity of every teenager. Some young people can manage responsibility earlier than others, while parental permission does not always remove health or safety risks. Different activities also involve different levels of danger, so it is reasonable for the limits not to be identical.",
+            "When reviewing an age limit, the government should consider evidence about harm, young people’s rights and whether the rule can be enforced. Education and access to trustworthy advice may work better than punishment alone. Any proposed change should explain why that age is suitable and what additional safeguards, supervision or consent would still be required."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class has been asked to discuss whether various legal ages are suitable. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why the government has age limits for people getting tattoos"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why the age limits differ for different activities"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether any age limits should be changed"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like tattoos?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Why do you think it's risky for young people to stay home alone?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What age do you think is best for getting married?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What kind of tattoo do you think people are most likely to regret?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Which do you think is worse: underage smoking or underage driving?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think most people in Hong Kong follow legal age restrictions?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think the government should give teenagers more responsibilities?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "At what age do you think someone becomes an adult?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 11,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 164
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-4-3-social-problems",
+      "exam_year": 2017,
+      "paper_version": "4.3",
+      "replacement": {
+        "title": "Social Problems",
+        "source_note": "2017 HKDSE Paper 4 Set 4.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 4.3 practice; it is not the official examination passage.",
+          "title": "Social Problems: Discussion Context",
+          "body": [
+            "Some young people withdraw from face-to-face contact for long periods and spend most of their time alone at home. The causes can include anxiety, bullying, academic pressure, family conflict or fear of failure. Technology may make isolation easier to maintain, but using the internet is not itself proof that a person has a serious social problem.",
+            "Extended withdrawal can interrupt education, employment, sleep and physical health. Families may feel helpless if direct pressure leads to arguments or deeper avoidance. The young person may also lose confidence in ordinary activities, making it harder to return to school or reconnect with friends.",
+            "Support should begin with patient, non-judgemental contact and an effort to understand the individual’s circumstances. Families can seek advice from counsellors or health professionals, while schools can offer flexible return plans and a trusted adult to speak with. Small steps, such as regular routines and low-pressure activities, may be more effective than demanding an immediate return to normal life."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your Liberal Studies class is discussing social problems faced by young people. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why some young people avoid social contact"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why this is a problem for them and their families"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How to overcome these problems"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you prefer staying at home or going out to meet friends?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "How much time do you usually spend by yourself?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why is it important to communicate with family and friends?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do some young people find it hard to talk to their families?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How can parents improve communication with their children?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Does the internet make social withdrawal worse?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Will the problem of young people withdrawing from society become more serious in the future?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What are the benefits of spending time alone?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 12,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 159
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-5-1-boot-camps",
+      "exam_year": 2017,
+      "paper_version": "5.1",
+      "replacement": {
+        "title": "Boot camps",
+        "source_note": "2017 HKDSE Paper 4 Set 5.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 5.1 practice; it is not the official examination passage.",
+          "title": "Boot camps: Discussion Context",
+          "body": [
+            "Some parents send children to military-style boot camps because they believe modern family life has made young people dependent and unwilling to face difficulty. Campers may have to wake early, complete physical tasks, clean shared facilities and manage without domestic help. Supporters say the experience can teach discipline, teamwork and basic self-care.",
+            "A harsh programme may also humiliate children, create safety risks or confuse obedience with independence. Young people have different physical and emotional needs, and a short period of discomfort does not automatically change habits at home. Parents who solve every problem for their children may need to change their own behaviour as well.",
+            "Independence can be developed through ordinary responsibilities such as budgeting, cooking, planning travel, volunteering or joining a supervised outdoor programme. If a boot camp is considered, its staff, safety standards and methods should be checked carefully. The goal should be confidence and responsibility, not punishment or fear."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your Liberal Studies class is studying children who are overprotected by their parents. Discuss whether boot camps would be suitable for Hong Kong.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What children might learn in a boot camp"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether boot camp would be popular with Hong Kong parents"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Other methods to encourage students to be more independent"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to attend a boot camp?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "How would you feel if you were sent to a boot camp?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Where do you think would be a suitable location for a boot camp in Hong Kong?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are there certain children who should not be sent to a boot camp?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What would be the best age for children to attend a boot camp?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why do you think parents spoil their children?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What problems do spoiled children face when they grow up?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Why do you think the number of overprotected children is increasing?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 13,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 152
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-5-2-food",
+      "exam_year": 2017,
+      "paper_version": "5.2",
+      "replacement": {
+        "title": "Food",
+        "source_note": "2017 HKDSE Paper 4 Set 5.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 5.2 practice; it is not the official examination passage.",
+          "title": "Food: Discussion Context",
+          "body": [
+            "Food can influence energy, concentration and mood, although no single item guarantees that a person will feel happy. Meals containing protein, fruit, vegetables and whole grains may provide steadier energy than snacks high in sugar. Schools therefore have a reason to consider both nutrition and how appealing their menus are to students.",
+            "A menu offering only foods labelled healthy may be unpopular if choices are expensive, unfamiliar or badly prepared. Claims about mood-enhancing foods can also be exaggerated. Stress, sleep, exercise and relationships may affect emotions more strongly than one meal, and students with allergies or medical needs require suitable alternatives.",
+            "Schools could provide clear information, affordable balanced meals and smaller portions of less nutritious treats instead of imposing a complete ban. Students could taste-test new dishes and help improve presentation. The aim should be to make a healthy choice convenient and enjoyable while teaching students to evaluate health claims rather than follow fashionable advice."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is researching foods that may affect how students feel. Discuss whether the ideas in the context would be suitable.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Foods in schools which are good or bad for your mood"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether school menus should only offer healthy food"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "The benefits of having mood-enhancing foods"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What healthy foods do you usually eat?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you worry about eating unhealthy food?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think about the health benefits of the food you eat?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are there any foods you avoid because they are bad for you?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are people today more aware of the importance of eating healthy food?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Apart from food, what other things can influence your mood?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How can you make sure you eat foods that are good for your mood?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Why do you think so many mood-damaging foods are popular among young people?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 14,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 155
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-5-3-good-teachers-are-the-most-important-factor-in-educational-success",
+      "exam_year": 2017,
+      "paper_version": "5.3",
+      "replacement": {
+        "title": "Good teachers are the most important factor in educational success",
+        "source_note": "2017 HKDSE Paper 4 Set 5.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 5.3 practice; it is not the official examination passage.",
+          "title": "Good teachers are the most important factor in educational success: Discussion Context",
+          "body": [
+            "Good teachers can explain difficult ideas, notice when learners are confused and create a classroom where students are willing to participate. Their expectations and feedback may strongly influence confidence and progress. For students with limited support outside school, a skilled teacher can be especially important.",
+            "Educational success nevertheless depends on more than teaching. Students must practise, persist and take responsibility for their work. Family support, school resources, class size, health and prior knowledge also shape results. Even an excellent teacher cannot control every factor, while motivated learners sometimes succeed despite weak instruction.",
+            "A debate on this motion should first define both “good teachers” and “educational success”. One side may argue that teachers connect all other resources to the learner; the other may stress effort and circumstances beyond the classroom. The strongest conclusion will compare the relative influence of each factor rather than claiming that teachers either determine everything or make no difference."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is preparing for a debate on the motion: “Good teachers are the most important factor in educational success.” Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Arguments for the motion"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Arguments against the motion"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Which side would be easier to argue"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to become a teacher in the future?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think being a teacher is a good job?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What kind of students do teachers usually like?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What is the most important skill a teacher should have?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do teachers receive enough respect in society?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What qualities make someone a good teacher?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Does learning always require hard work?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Have you ever been inspired by a teacher?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 15,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 152
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-6-1-the-importance-of-smartphones-in-china",
+      "exam_year": 2017,
+      "paper_version": "6.1",
+      "replacement": {
+        "title": "The importance of smartphones in China",
+        "source_note": "2017 HKDSE Paper 4 Set 6.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 6.1 practice; it is not the official examination passage.",
+          "title": "The importance of smartphones in China: Discussion Context",
+          "body": [
+            "Smartphones have changed how people in China communicate, pay for services, travel and obtain information. For many users, one device can replace a camera, wallet, map and computer. This convenience has helped mobile services grow quickly, but it also means that cost, data access and digital skills affect who receives the benefits.",
+            "A premium international brand may struggle when the economy slows and strong local competitors offer capable phones at lower prices. Fashion also changes: a device once treated as a status symbol may become less distinctive. Brand reputation, software, after-sales service and links with other products can still persuade some customers to pay more.",
+            "Future success will depend on whether new features solve real problems and whether prices match consumers’ expectations. The group should distinguish the importance of smartphones in general from the prospects of one company. It should also consider privacy, distraction, electronic waste and unequal access when judging whether wider smartphone use is entirely positive."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is doing a project on the importance of smartphones in China. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "How smartphones benefit people"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why sales of iPhones did not grow in China in 2016"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether iPhones will continue to be successful in China"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like Apple iPhones?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are iPhones more popular among younger people or older people?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why are people willing to pay a premium price for Apple products?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do people line up to buy new Apple products?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why do you think Apple has been so successful?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What problems can smartphones cause?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do you think Chinese consumers like buying American products such as the iPhone?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How do you think smartphones will change in the future?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 16,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 158
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-6-2-online-games-day-at-school",
+      "exam_year": 2017,
+      "paper_version": "6.2",
+      "replacement": {
+        "title": "Online Games Day at school",
+        "source_note": "2017 HKDSE Paper 4 Set 6.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 6.2 practice; it is not the official examination passage.",
+          "title": "Online Games Day at school: Discussion Context",
+          "body": [
+            "A study reported that teenagers who regularly played online games achieved slightly higher results in some school subjects. Many games require players to read instructions, solve puzzles, manage resources and cooperate with teammates. These skills could support learning, although the finding does not prove that gaming itself caused the better scores.",
+            "A school Online Games Day might include strategy tournaments, collaborative puzzles and student-designed educational games. Activities could interest students who do not usually join sports events and provide opportunities to discuss teamwork and digital citizenship. Organisers would still need suitable devices, a stable network and games that are appropriate for different ages.",
+            "Possible problems include excessive screen time, unfair access to equipment, online behaviour and competition becoming too intense. The school should set sensible time limits, provide non-digital breaks and avoid games that reward spending money. Success should be judged by participation and learning, not only by who wins."
+          ]
+        },
+        "part_a": {
+          "instruction": "The Student Union wants to introduce an Online Games Day at school. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The benefits of playing online games"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Possible activities for the Online Games Day"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Problems you may face setting up an Online Games Day"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you play online games?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you like your school to use more games during lessons?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do older people worry too much about teenagers playing online games?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think online games help improve reading and math skills?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What other activities can help develop reading and math skills?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you agree that students can benefit from playing online games?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think all online games are beneficial?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Will online games become a bigger part of school life in the future?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 17,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 150
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-6-3-working-holidays",
+      "exam_year": 2017,
+      "paper_version": "6.3",
+      "replacement": {
+        "title": "Working Holidays",
+        "source_note": "2017 HKDSE Paper 4 Set 6.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 6.3 practice; it is not the official examination passage.",
+          "title": "Working Holidays: Discussion Context",
+          "body": [
+            "A working holiday allows young adults to fund part of their travel by taking temporary jobs overseas. Advertisements may offer farm work, fruit picking or jobs on tourist boats. Participants can meet local people, improve language skills and learn to manage money and daily life away from home.",
+            "The experience can also involve long hours, basic accommodation, remote locations and work that is more physically demanding than expected. An attractive advertisement may not explain wages, insurance, transport or visa conditions clearly. Some students may be prepared for customer service work but not for operating equipment or living far from medical help.",
+            "Applicants should check employers, contracts and legal requirements before travelling. They also need emergency savings, health cover and a realistic plan for communication with family. Other suitable jobs might include hospitality, childcare or event support, depending on skills and local rules. A successful working holiday combines travel with safe, lawful employment rather than treating any overseas job as an adventure."
+          ]
+        },
+        "part_a": {
+          "instruction": "You have been asked to give a presentation on working holidays. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages of going on a working holiday"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether the type of jobs in the advertisement are suitable for Hong Kong students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Other types of jobs that are suitable for students"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to go on a working holiday?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would your parents allow you to go on a working holiday?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you enjoy working on a farm?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is eighteen too young for students to go on a working holiday?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Is it a good idea to work in a Chinese restaurant during a working holiday?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What skills do students need to have for a successful working holiday?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What problems might students face when working on a remote farm?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What are the advantages for countries that hire people on working holidays?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 18,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 161
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-7-1-giving-blood",
+      "exam_year": 2017,
+      "paper_version": "7.1",
+      "replacement": {
+        "title": "Giving blood",
+        "source_note": "2017 HKDSE Paper 4 Set 7.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 7.1 practice; it is not the official examination passage.",
+          "title": "Giving blood: Discussion Context",
+          "body": [
+            "Hong Kong hospitals need a reliable supply of donated blood for surgery, emergencies and the treatment of serious illness. Young first-time donors can help meet present needs and may continue donating as adults. A school collection can also show students how one voluntary action supports people they may never meet.",
+            "Some students are unable to donate because of age, health or eligibility rules, while others are anxious about needles, pain or feeling unwell. Pressure from classmates could make a voluntary event uncomfortable. Organisers therefore need accurate screening information, trained medical staff, privacy and a clear message that declining is acceptable.",
+            "The school could hold the event in a quiet, accessible hall at a time that does not conflict with examinations or strenuous activities. Talks from medical staff, donor stories and opportunities to ask questions may reduce fear. Students who cannot give blood could help with publicity or logistics, allowing the campaign to encourage participation without treating donation as compulsory."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school would like to invite the Red Cross to collect blood from students and staff. Help the Students’ Union plan the event.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why giving blood is important"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How to encourage students to take part in the event"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Suitable times and places for the event"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you personally consider donating blood?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Why do some people enjoy giving blood?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "How could more adults be encouraged to donate blood?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why are some people afraid of giving blood?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How can the Red Cross help donors feel more relaxed during the process?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What do students learn from the experience of donating blood?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should people receive payment for donating blood?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should giving blood be compulsory?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 19,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 159
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-7-2-tourists",
+      "exam_year": 2017,
+      "paper_version": "7.2",
+      "replacement": {
+        "title": "Tourists",
+        "source_note": "2017 HKDSE Paper 4 Set 7.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 7.2 practice; it is not the official examination passage.",
+          "title": "Tourists: Discussion Context",
+          "body": [
+            "A travel-book cover has to attract attention while giving readers an honest idea of Hong Kong. Harbour views and dense city streets show energy and an international skyline, while temples, country parks and geological landscapes reveal heritage and natural space that some visitors may not expect.",
+            "A familiar skyline is easy to recognise, but it can repeat an image already used by many travel guides. A less familiar photograph may create curiosity yet fail to communicate the city immediately. The choice also depends on the intended readers and whether the book focuses on culture, outdoor travel, architecture or a general introduction.",
+            "The group should compare what each image includes and what it leaves out. A strong cover needs visual impact, a clear connection with the book and enough originality to stand out. If one photograph cannot represent the city’s contrasts, the designer might use a carefully balanced composition, provided it remains simple and does not mislead visitors."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group has been invited to select a photograph to represent Hong Kong on a travel-book cover. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What attracts tourists to Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What each picture represents about Hong Kong"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Which photograph should be chosen for the cover of the travel book"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Which places do tourists often visit in Hong Kong?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are there any places in Hong Kong you would like to visit?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What can be done to attract more tourists to Hong Kong?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What makes Hong Kong special compared to other cities?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are you proud to live in Hong Kong?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you agree that Hong Kong is an international city?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What do tourists usually find interesting about Hong Kong culture?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What do tourists think of when they hear the name \"Hong Kong\"?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 20,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 157
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-7-3-more-bus-lanes-are-needed-in-hong-kong",
+      "exam_year": 2017,
+      "paper_version": "7.3",
+      "replacement": {
+        "title": "More bus lanes are needed in Hong Kong",
+        "source_note": "2017 HKDSE Paper 4 Set 7.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 7.3 practice; it is not the official examination passage.",
+          "title": "More bus lanes are needed in Hong Kong: Discussion Context",
+          "body": [
+            "Buses carry a large share of Hong Kong passengers, but their journeys can become slow and unreliable in heavy traffic. Supporters of more bus lanes argue that giving priority to vehicles carrying many people would shorten travel times, make timetables more dependable and encourage drivers to leave private cars at home.",
+            "Opponents point out that road space is limited. Removing a general traffic lane could worsen congestion for taxis, delivery vehicles and people who must drive for work. A bus lane that is poorly located or active all day may remain underused at quieter times and move pollution rather than reduce it.",
+            "Possible compromises include peak-hour lanes, better enforcement, traffic-signal priority and regular reviews of passenger numbers. Other solutions could involve congestion charges, improved interchange between buses and rail, and better information for passengers. The group should judge proposals by how many people benefit, their effect on journey times and whether they reduce total traffic."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is preparing to debate the motion: “More bus lanes are needed in Hong Kong.” Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether buses are a convenient form of travel"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether bus lanes are a suitable solution to traffic congestion"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Other solutions to the traffic congestion problems"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy taking the bus?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do you dislike about taking the bus?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer taking the bus or the MTR?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think Hong Kong has a good bus service overall?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How do you usually spend your time while riding the bus?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think road congestion is a serious problem in Hong Kong?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What improvements could be made to Hong Kong's bus services?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are buses the cause of traffic congestion or a solution to it in Hong Kong?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 21,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 155
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-8-1-discrimination-against-older-people",
+      "exam_year": 2017,
+      "paper_version": "8.1",
+      "replacement": {
+        "title": "Discrimination against older people",
+        "source_note": "2017 HKDSE Paper 4 Set 8.1 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 8.1 practice; it is not the official examination passage.",
+          "title": "Discrimination against older people: Discussion Context",
+          "body": [
+            "Some capable employees are required to leave work at a fixed retirement age even when they wish to continue. Older workers may offer experience, reliability and knowledge that can be passed to younger colleagues. Continuing employment can also provide income, routine and social contact as people live longer.",
+            "Employers may worry about health, training costs or whether promotion opportunities for younger staff will be reduced. Yet decisions based only on age can ignore large differences between individuals. Keeping everyone in the same role indefinitely may not be suitable, but automatically excluding applicants over a certain age is also unfair.",
+            "Reducing discrimination could involve flexible hours, retraining, phased retirement and recruitment based on ability rather than stereotypes. Government guidance and legal protection may help, but workplaces also need practical ways to review performance and adapt duties. The aim should be genuine choice: older people should neither be forced out of suitable work nor pressured to continue when they prefer to retire."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is doing a project on discrimination in Hong Kong. Discuss discrimination against older people.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Advantages of allowing older people to work"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Advantages of not allowing older people to work"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What can be done to reduce discrimination against older people"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to continue working when you are over 60?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "How can older people spend their time if they are not working?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why do you think some employers are reluctant to hire older workers?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "At what age do you think people should retire?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think people will retire at a later age in the future?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What advantages can older workers bring to a company?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do some people want to keep working after the age of 60?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do young people also experience age discrimination?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 22,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 160
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-8-2-keeping-hong-kong-s-streets-clean",
+      "exam_year": 2017,
+      "paper_version": "8.2",
+      "replacement": {
+        "title": "Keeping Hong Kong's Streets Clean",
+        "source_note": "2017 HKDSE Paper 4 Set 8.2 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 8.2 practice; it is not the official examination passage.",
+          "title": "Keeping Hong Kong's Streets Clean: Discussion Context",
+          "body": [
+            "An elderly cleaner on a modest wage was fined after pouring waste water onto a street. Her employer later offered to pay the penalty. The case led to debate about whether a standard fine treats everyone equally when the same amount creates very different hardship for people with different incomes.",
+            "Fines can communicate that littering and pollution are unacceptable, and simple fixed penalties are easy to understand. However, punishment may appear unfair when rules are unclear, enforcement is inconsistent or an offence happens during work. Very high penalties can create financial distress without changing the behaviour that caused the problem.",
+            "Clean streets also depend on convenient bins, public education, responsible employers and consistent enforcement. Alternatives such as warnings, community service or income-related penalties could be considered, but each may be harder to administer. A fair system should distinguish deliberate dumping from minor mistakes while still requiring individuals and companies to prevent waste from entering public spaces."
+          ]
+        },
+        "part_a": {
+          "instruction": "Discuss whether fines and penalties are an effective way to keep Hong Kong streets clean.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether the elderly cleaner should have been fined"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether fines and penalties stop people littering"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Any problems that fines and penalties cause"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think there is a lot of litter in Hong Kong?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do you do if there is no bin for your rubbish?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why do you think people litter?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are there other ways to stop people from littering?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you agree that throwing water on the street counts as littering?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Does government advertising help reduce littering?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Are fines an effective way to stop anti-social behaviour?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should wealthy people pay the same fines as those with lower incomes?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 23,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "close",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 156
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2017-8-3-night-biking",
+      "exam_year": 2017,
+      "paper_version": "8.3",
+      "replacement": {
+        "title": "Night Hiking and Camping",
+        "source_note": "2017 HKDSE Paper 4 Set 8.3 topic and task structure cross-referenced against a complete examination scan. Part A and Part B are faithful practice paraphrases in the verified print order. The context is an original mock adaptation and is not official HKEAA text.",
+        "context": {
+          "source_line": "Original mock context written for 2017 HKDSE Paper 4 Set 8.3 practice; it is not the official examination passage.",
+          "title": "Planning a Safe Night Hike and Camp",
+          "body": [
+            "A group of students is considering a night hike and overnight camp on a Hong Kong mountain to mark graduation. Walking after dark can feel adventurous, offer cooler temperatures and give hikers a chance to see the city lights or sunrise. Sharing the challenge may also strengthen friendships at the end of school.",
+            "Night travel makes familiar risks harder to manage. Paths can be difficult to follow, weather can change, and tired hikers may fall or become separated. Each participant needs suitable shoes, water, warm and waterproof clothing, a charged torch and emergency contact arrangements. Heavy bags and unnecessary equipment can make the route more difficult.",
+            "The group should choose a route that matches everyone’s experience, check official weather and trail information, and tell a responsible person about the plan. Camping must be allowed at the chosen site, and students should carry out all rubbish. A clear meeting system and a willingness to cancel in unsafe conditions are more important than reaching the summit on schedule."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is considering a night hike and camp on a mountain to celebrate graduation. Discuss the preparation for the trip.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why night hiking has become popular with students"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What you should or should not take on the trip"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Any problems you may face on the trip"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Why do people enjoy camping?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is it better to hike alone or in a group?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Who enjoys hiking more—young people or the elderly?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What memorable things do people usually see when they go hiking?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should mountain bikes be allowed on hiking trails?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How can hikers protect the environment while enjoying nature?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think hiking will become more popular in the future?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How does hiking affect the environment?"
+            }
+          ]
+        }
+      },
+      "audit": {
+        "source_page": 24,
+        "classifications": {
+          "year": "exact",
+          "set_number": "exact",
+          "title": "conflict",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a_task": "close",
+          "part_a_discussion_points": "close",
+          "part_b_wording": "close",
+          "part_b_print_order": "conflict"
+        },
+        "confidence": "high",
+        "notes": [
+          "The current title “Night biking” conflicts with the scanned paper, which concerns a night hike and camp.",
+          "The current Part B sequence does not match the printed question order; the replacement restores the print order while retaining the existing practice paraphrases.",
+          "The official/printed context was used only to understand topic scope. The replacement context is newly written and must be labelled as non-official."
+        ],
+        "context_word_count": 166
+      }
+    }
+  ]
+}

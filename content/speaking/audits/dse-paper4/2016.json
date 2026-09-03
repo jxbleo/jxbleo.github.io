@@ -1,0 +1,3450 @@
+{
+  "audit_year": 2016,
+  "accessed_at": "2026-09-02",
+  "scope": "All 27 HKDSE English Language Paper 4 sets for 2016",
+  "methodology": {
+    "primary_evidence": "Complete 27-page examination scan; one examiner sheet per set, visually checked for Part A task, discussion points and Part B printed order.",
+    "secondary_cross_checks": [
+      "Chenglish.hk Paper 4 analysis index",
+      "DSE Treasure 2016 speaking analysis"
+    ],
+    "copyright_treatment": "Official context articles were used only to establish topic and scenario. Every replacement is an original 3–4 paragraph practice text in a natural source genre and contains no candidate-facing meta-instructions."
+  },
+  "sources": [
+    {
+      "tier": 1,
+      "label": "2016 HKDSE English Language Paper 4 examination scan",
+      "url": "https://dsepp.com/wp-content/uploads/2018/12/2016-DSE-ENG-LANG-4.pdf",
+      "notes": "Complete scan with HKEAA examination headers; hosted by a third-party archive."
+    },
+    {
+      "tier": 1,
+      "label": "HKEAA 2016 publications catalogue",
+      "url": "https://www.hkeaa.edu.hk/en/Resources/publications/list_of_publications/hkdse_erqp_pub/2016.html",
+      "notes": "Official HKEAA catalogue confirming publication of the 2016 English Language examination papers."
+    },
+    {
+      "tier": 2,
+      "label": "Chenglish.hk Paper 4 Analysis",
+      "url": "https://chenglish.hk/paper4analysis.html",
+      "notes": "Independent index of all 27 2016 tasks and Part A discussion points."
+    },
+    {
+      "tier": 3,
+      "label": "DSE Treasure Paper 4 topic analysis",
+      "url": "https://dsetreasure.com/dse-english-paper-4-%E9%A1%8C%E7%9B%AE/",
+      "notes": "Independent topic and question cross-check; treated as secondary because wording may be adapted."
+    }
+  ],
+  "global_findings": [
+    "All 27 set numbers and topics are supported by the examination scan.",
+    "The existing Part A discussion points are substantively accurate, but the generic instruction often removes the actual task type and scenario.",
+    "Part B order is wrong in 24 of 27 sets. Sets 9.1, 9.2 and 9.3 are already in printed order.",
+    "All 27 Contexts have been rewritten as natural, topic-specific practice texts; none reproduces an official source article or includes candidate-facing discussion instructions.",
+    "Stable point_id and question_id values are preserved. The replacement changes display order without reassigning semantic identity."
+  ],
+  "records": [
+    {
+      "set_id": "dse-p4-pp-2016-1-1-charity-work",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "1.1",
+      "title": "Charity Work Outside Hong Kong",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Charity Work Outside Hong Kong",
+        "body": [
+          "A Hong Kong secondary school is considering an overseas service trip in which students would help a community organisation with teaching, repairs and daily activities. The trip would expose students to living conditions different from their own, but each participant would have to pay for travel and accommodation.",
+          "Supporters believe direct service can build empathy, teamwork and a stronger understanding of global inequality. Critics question whether a short visit creates lasting benefit, whether students are properly trained and whether the money might be better spent supporting local charities.",
+          "The proposed seven-day visit would combine classroom support with practical jobs such as painting community facilities. A partner charity would supervise the work, arrange child-protection training and explain which projects local residents have requested.",
+          "The school must decide whether overseas service should become a graduation requirement. Subsidies could widen access, while a local alternative might help students who cannot travel and ensure that volunteering is motivated by service rather than a certificate."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is discussing the kinds of charity work your school could be involved in. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The benefits of students doing charity work outside Hong Kong"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "The concerns of doing charity work outside Hong Kong"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Whether charity work outside Hong Kong should be a requirement at secondary school"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Have you ever done any charity work?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Would you prefer to do charity work locally or overseas?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Do you think it's important to donate money to charity?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "Which is more important: giving money or giving your time?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Do you think it is necessary to leave Hong Kong to do charity work?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Should students have to pay to do charity work outside Hong Kong?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "Do you think charity work can really make a difference?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Who benefits more from charity work outside Hong Kong—the volunteers or the local communities?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 160,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-1-2-starting-your-own-business",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "1.2",
+      "title": "Starting Your Own Business",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Starting Your Own Business",
+        "body": [
+          "Many Hong Kong homes have limited storage space. A new business proposes delivering secure boxes to customers, collecting them after packing, keeping an online inventory and returning individual items on request. Customers would pay a monthly fee rather than rent a larger flat.",
+          "The service may be convenient for seasonal clothes, books and keepsakes, yet customers may worry about price, privacy, damage and the time needed to retrieve an item. A successful company would also need reliable collection, transparent insurance and advertising that explains why it is better than self-storage.",
+          "Spacebox would photograph and label every container before moving it to a warehouse. Users could request next-day delivery through an app, although urgent access and oversized objects would cost extra under the proposed price plan.",
+          "The founders are considering student discounts, shared family accounts and reusable packing materials. Before launching, they need to prove that the warehouse is secure and that customers can understand insurance limits, collection times and cancellation charges."
+        ]
+      },
+      "part_a": {
+        "instruction": "As members of an extra-curricular course called “Starting Your Own Business”, your group has been asked to decide whether it would be worthwhile starting a similar business to Spacebox. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Whether Spacebox is a good business idea"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Ways the business idea could be improved"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Different ways to advertise your business"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "What items would you put inside your Spacebox?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 2,
+            "text": "What do you usually do with belongings you no longer need?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 3,
+            "text": "Do you think you keep too many things you no longer need?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 4,
+            "text": "What problems are caused by a lack of space in Hong Kong?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "How do you try to create more space in your home?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "How could flats in Hong Kong be designed to provide more storage space?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 7,
+            "text": "What space-saving tips would you give to someone moving into a small flat in Hong Kong?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 8,
+            "text": "Is having fewer possessions the key to a happier life?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 161,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          6,
+          5,
+          1,
+          4,
+          2,
+          3,
+          7
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-1-3-learning-through-play",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "1.3",
+      "title": "Learning Through Play",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Learning Through Play",
+        "body": [
+          "Some educators argue that play is not a break from learning but one of the ways children learn. Building games can develop planning, outdoor exploration can encourage curiosity, and role-play can improve communication. However, Hong Kong schools often have tight timetables and strong pressure to show measurable academic progress.",
+          "Teachers must decide how much freedom children should have, what kinds of games are suitable and how learning can be observed without turning every activity into a test. Parents may welcome creative lessons but still worry about safety, discipline and whether play reduces time for reading, writing and mathematics.",
+          "One primary school has tested a weekly ninety-minute play session. Pupils choose from construction challenges, drama corners and supervised garden activities, then record what they discovered in a short learning journal.",
+          "The pilot has produced lively lessons, but teachers report that large classes make observation difficult. The school is deciding whether to expand the programme, reduce homework on play days and invite parents to see how apparently simple games develop useful skills."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is planning to write an essay in class about whether learning through play should be a regular part of education in Hong Kong schools. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Games that you played when you were younger"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "The advantages and disadvantages of allowing children to play at school"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Whether learning through play should be a regular part of a child's education"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you do any outdoor activities?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 2,
+            "text": "Do you think Hong Kong children can easily find places to play?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 3,
+            "text": "What toys did you enjoy playing with when you were very young?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "Do you enjoy going outdoors and exploring nature?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 5,
+            "text": "Do you think it's fun to get dirty while playing?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "Should the government provide more indoor playrooms for children?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 7,
+            "text": "If you were in charge of a kindergarten class, where would you take the children for a day?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Do you think playing video games is as educational as outdoor play?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 170,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          4,
+          7,
+          5,
+          6,
+          2,
+          3,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-2-1-scams",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "2.1",
+      "title": "Phone Scams",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Phone Scams",
+        "body": [
+          "Phone and online scams often create a false sense of urgency. A caller may pretend to represent a bank, a message may promise a prize, or an email may appear to come from a friend who needs money. Criminals rely on fear, trust and personal information to make victims act before checking.",
+          "Young people are not automatically safe simply because they use technology confidently. Useful precautions include refusing to share passwords, contacting an organisation through an official number and asking a trusted adult for advice. Public education must reach both frequent internet users and people who may be unfamiliar with changing scam methods.",
+          "A recent school survey found that suspicious calls were often ignored, but convincing messages from hacked accounts caused more confusion. Several students said they would transfer a small sum if the request appeared to come from a close friend.",
+          "The school plans a public-awareness presentation using recorded examples, a verification checklist and a demonstration of caller-ID manipulation. Organisers want advice that protects victims without making people afraid of every unfamiliar message or genuine request for help."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is going to give a presentation to your school about how to avoid different kinds of scams. Discuss with your group what to include in your talk. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The different types of scams"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Possible victims of scams"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "How to avoid being a victim of scams"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Is it safe to store personal information on a phone?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Have you ever received an unwanted phone call?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Have you or someone you know ever been tricked?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "Do you think scamming is a very serious crime?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Do you think there is an increasing trend of people being scammed in Hong Kong?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Do you think enough has been done to educate the public about the dangers of scams?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "If a friend emailed you asking for help and money, what would you do?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Do you think people who lie always do it to harm others?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 179,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-2-2-open-day-celebrations",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "2.2",
+      "title": "Street Art for the School Open Day",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Street Art for the School Open Day",
+        "body": [
+          "A school celebrating its anniversary has invited a Hong Kong street artist to paint a mural. Her work uses bold lines, local images and large public walls, so the mural could become a memorable feature of the campus and a focus for the Open Day.",
+          "The school must choose a visible but suitable location and decide which images represent its history, values and students. The artist might also give a demonstration or involve students in planning. At the same time, organisers need to consider cost, safety, maintenance and whether the design will remain meaningful after the celebration.",
+          "The artist has suggested a wall beside the main entrance, where the work would be visible to visitors but exposed to strong sun and rain. Her first sketch combines the old school building, neighbourhood shops and portraits designed from student photographs.",
+          "During Open Day, she could lead a stencil workshop and explain how a mural moves from research to final painting. The anniversary committee must decide how much creative control students should have and who will repair or replace the work in future."
+        ]
+      },
+      "part_a": {
+        "instruction": "It is the 50th anniversary of the founding of your school and Bao Ho has been invited to paint a mural for the school. You are discussing plans for the Open Day celebration. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Images Bao Ho should include in her painting"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "An appropriate location for the painting"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "How Bao Ho might help the school celebrate the Open Day"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Can you draw well?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Do you think you are a creative person?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 3,
+            "text": "Do you think art should be a compulsory subject in secondary school?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 4,
+            "text": "Would your parents encourage you to become an artist?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Do you think street art is popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Do you think Bao Ho's success will last, or will it be short-lived?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 7,
+            "text": "Why are artistic skills often considered less important than academic skills?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 8,
+            "text": "Do you think art in the East is very different from art in the West?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 180,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          2,
+          6,
+          4,
+          3,
+          1,
+          5
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-2-3-living-with-your-parents-in-your-twenties",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "2.3",
+      "title": "Living with Parents in Your Twenties",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Living with Parents in Your Twenties",
+        "body": [
+          "High housing costs mean many young adults in Hong Kong continue living with their parents after starting work. Staying at home can reduce expenses, allow family members to support one another and make daily life more convenient. It can also reflect a family tradition rather than a failure to become independent.",
+          "Sharing a home may nevertheless limit privacy and create disagreements about money, chores, visitors and personal schedules. Independence can still be developed through paying part of the household costs, making decisions responsibly and planning for the future. Families need expectations that respect both the young adult and the parents.",
+          "In one household, a working daughter pays rent, cooks twice a week and manages her own savings while sharing a flat with her parents. She values family company but finds it difficult when relatives expect to know all her plans.",
+          "Housing advisers say moving out is not the only sign of adulthood. Clear household agreements, private space and long-term financial goals can reduce tension, although both generations must be willing to treat the arrangement as a partnership between adults."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is discussing the idea of living at home with your parents when you are in your twenties. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The benefits of living at home with your parents"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "The disadvantages of living at home with your parents"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Other ways young adults can be independent while living with their parents"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "When you start working, do you want to live with your parents?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 2,
+            "text": "If you moved out, would you prefer to live alone or with friends?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 3,
+            "text": "How would you feel if you moved out of your parents' home?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "At what age do you think a person should start living independently?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Are girls more likely than boys to live with their parents?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "Do you think parents want their children to continue living with them?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 7,
+            "text": "Why do more young adults want to live on their own?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 8,
+            "text": "Is living with parents a tradition in Hong Kong?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 179,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          6,
+          7,
+          5,
+          4,
+          2,
+          1,
+          3
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-3-1-educational-apps-for-students",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "3.1",
+      "title": "Educational Apps for Students",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Educational Apps for Students",
+        "body": [
+          "A school Computer Club has been asked to recommend educational apps for new tablets. Possible choices include tools for practising languages, organising revision, exploring scientific models and checking understanding through quizzes. The most attractive app is not necessarily the one that produces the best learning.",
+          "Students should consider price, accessibility, privacy, accuracy and whether an app works without a fast internet connection. Too much screen time may distract learners, while a well-designed app can give immediate feedback and allow practice at an appropriate level. Teachers also need training and a clear purpose for using each tool.",
+          "The club has a fixed budget and can purchase only two subscriptions this year. Trial users liked the science model but found it demanding on older tablets; the language app was easier to use, although some feedback was inaccurate.",
+          "Members will test each option with students from different forms and collect teachers’ comments before recommending a purchase. They also want an offline mode and a policy that prevents advertising or unnecessary collection of pupils’ personal data."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the Computer Club and your group is discussing apps to buy for the school’s computer tablets. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Which of the four apps above is the most useful for students"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "What other kinds of educational apps Hong Kong students may need"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Whether there are any disadvantages of using apps for schoolwork"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you use any apps to help you study?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Does your teacher use apps in the classroom?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 3,
+            "text": "Do you think educational apps should be free for students?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 4,
+            "text": "Would you like to design your own educational app?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do you think educational apps will become more or less popular in the future?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Which subjects benefit the most from using educational apps?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "Why might some students not want to use apps for learning?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Do students who use educational apps at school have an unfair advantage?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 172,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          4,
+          6,
+          5,
+          3,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-3-2-surge-in-complaints-against-hong-kong-taxi-drivers",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "3.2",
+      "title": "Complaints against Hong Kong Taxi Drivers",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Complaints against Hong Kong Taxi Drivers",
+        "body": [
+          "Complaints about Hong Kong taxis have increased, with passengers reporting overcharging, refusal of hire and poor behaviour. Because taxis are often used by visitors, one bad journey can damage the city’s reputation as well as trust in the industry. Drivers, however, also face congestion, long hours and rising operating costs.",
+          "Improvement could combine fair enforcement with better support. Clear fare information, easier complaint procedures, driver training and recognition for good service may all help. The industry must also respond to competition from app-based hire-car services while ensuring that passengers receive safe, reliable and courteous transport.",
+          "The Transport Department is considering mystery-passenger checks and a clearer digital receipt showing the route and fare. Driver groups support action against serious misconduct but want complaints investigated before penalties affect a licence.",
+          "Tourism representatives propose a multilingual booking guide and a voluntary service badge for trained drivers. Any reform will need enough taxis at busy times, simple reporting for visitors and rewards that make professional service worth maintaining."
+        ]
+      },
+      "part_a": {
+        "instruction": "As a follow-up on Hong Kong tourism in your English Language class, your group has been asked to discuss the image of Hong Kong taxi drivers and to suggest ways to improve this image. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Reasons for the dramatic rise in complaints"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Possible steps to improve the behaviour of taxi drivers"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Ways to promote Hong Kong taxis to tourists"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_07",
+            "order": 1,
+            "text": "How often do you take a taxi in Hong Kong?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 2,
+            "text": "What is your favourite type of public transport?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Have you or your family ever had a bad experience in a taxi?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "What would you do if a taxi driver overcharged you?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Would you ever consider using Uber in Hong Kong?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 6,
+            "text": "What do you think should be done to penalize taxi drivers who receive complaints?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 7,
+            "text": "Do you think Uber means the end for traditional Hong Kong taxis?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 8,
+            "text": "Do you think online hire-car services should be allowed in Hong Kong?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 164,
+        "official_part_b_order_as_current_question_positions": [
+          7,
+          8,
+          6,
+          5,
+          4,
+          1,
+          3,
+          2
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-3-3-wild-animals-should-be-protected-and-not-shot",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "3.3",
+      "title": "Protecting Wild Animals",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Protecting Wild Animals",
+        "body": [
+          "Wild boars sometimes enter residential areas in search of food. Some residents fear damage or injury and call for the animals to be removed, while conservation groups argue that shooting should be a last resort. Feeding by people and easy access to rubbish can make encounters more frequent.",
+          "A balanced policy could include secure bins, public warnings, habitat management and trained teams that move animals away from crowded places. Any decision must consider human safety, animal welfare and the practical limits of non-lethal methods. The debate is about when protection should give way to control.",
+          "Wildlife officers have recorded more reports near housing estates after residents left food beside rubbish collection points. Most encounters ended without injury, but frightened animals can behave unpredictably when surrounded or chased for photographs.",
+          "A district trial will install animal-proof bins and send trained teams to crowded locations. Officials will review whether these measures reduce conflict before deciding when relocation, fertility control or lethal action can be justified."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group has to prepare a debate with the motion “Wild animals should be protected and not shot”. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Arguments for the motion"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Arguments against the motion"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Which side would be easier to argue"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you think wild boars are cute or ugly?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Would you like to keep a wild boar as a pet?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "What other wild animals cause problems in Hong Kong?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "If a wild boar approached you, what would you do?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 5,
+            "text": "Do you think it is cruel to shoot wild animals?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 6,
+            "text": "Should wild boars be protected in Hong Kong?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 7,
+            "text": "Is the advice not to call the police when you see a wild boar sensible?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 8,
+            "text": "Why do you think hunting is a popular sport?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 163,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          5,
+          2,
+          1,
+          4,
+          3
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-4-1-replacing-history-and-geography-with-computer-programming",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "4.1",
+      "title": "Computer Programming in Schools",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Computer Programming in Schools",
+        "body": [
+          "Some schools are considering whether computer programming should receive more curriculum time. Programming can develop logical thinking, creativity and problem-solving, and these skills may be useful in many future jobs. Supporters even suggest reducing time for subjects such as history and geography.",
+          "Others argue that students need knowledge of society, place and the past in order to make responsible decisions. Programming may also be difficult to teach well without trained staff and suitable equipment. Schools must decide whether it should begin in primary school and how to balance technical skills with a broad education.",
+          "A proposed timetable would give every junior student one programming lesson a week. Rather than memorising code, classes would design simple games, test instructions and explain why a solution failed, but the change would reduce time available for other subjects.",
+          "The principal has asked departments to suggest a balanced curriculum. One option links programming with maps, historical data and creative projects, allowing digital skills to support existing subjects instead of replacing the knowledge those subjects provide."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the student council and are having a discussion on whether your school should change its curriculum. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Whether students should learn history and geography at school"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Whether compulsory programming should be taught at primary school"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Other subjects that can help students develop logical thinking and creativity"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_04",
+            "order": 1,
+            "text": "Would you like to learn computer programming?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 2,
+            "text": "Do you like learning history and geography?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "What would you rather study: arts or science?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 4,
+            "text": "What is the most important skill you have learned at school?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 5,
+            "text": "Why do you think some students might not want to learn computer programming?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "Do you think all your subjects help you develop logical thinking and creativity?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 7,
+            "text": "Do you think schools should focus more on helping students get jobs or developing life skills?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think there are any subjects that should be removed from the Hong Kong curriculum?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 170,
+        "official_part_b_order_as_current_question_positions": [
+          4,
+          5,
+          6,
+          7,
+          3,
+          2,
+          1,
+          8
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-4-2-socialising-after-school",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "4.2",
+      "title": "Socialising after School",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Socialising after School",
+        "body": [
+          "After-school time gives teenagers a chance to relax and maintain friendships, but suitable meeting places can be difficult to find. Libraries are quiet and inexpensive, shopping centres are convenient but crowded, and activity centres may offer useful facilities but close early.",
+          "A good hangout should be safe, affordable, accessible and welcoming to young people. It should also allow conversation without disturbing others. Schools and communities may need to provide more spaces, while students must show that socialising can be responsible and does not prevent them from completing homework or family duties.",
+          "The Peer Counselling team surveyed students about three possible venues: a covered area on campus, a youth centre and a café offering a group discount. Cost and travel time mattered more to respondents than fashionable decoration.",
+          "The team hopes to propose a welcoming space with Wi-Fi, drinking water and some organised activities, while keeping areas for ordinary conversation. Rules on noise, closing time and respectful behaviour would be agreed with students rather than imposed without consultation."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the Peer Counselling team and are giving a presentation to the school on places where students can socialise after school. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The importance of socialising after school"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Which of the suggested places would be most popular with Hong Kong students"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Other places where students can socialise"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "What do you usually do after school?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "After school, do you prefer to study or have fun?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Are your after-school activities the same every day?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you have time to socialize with friends after school?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do your parents mind what you do after school?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "After school, do you prefer to spend time alone or with a group of friends?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "What makes an interesting after-school hangout spot?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Why do some people have a negative view of teenagers socializing after school?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 167,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          4,
+          5,
+          3,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-4-3-private-kitchens",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "4.3",
+      "title": "Private Kitchens",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Private Kitchens",
+        "body": [
+          "Private kitchens serve small groups in flats, studios or other spaces rather than in conventional restaurants. Customers may enjoy a personal atmosphere, unusual menus and direct contact with the cook. Operators can test creative ideas without paying for a large dining room.",
+          "The model raises concerns about licences, hygiene, fire safety, prices and consumer protection. Neighbours may also be affected by noise or frequent visitors. Private kitchens can add variety to Hong Kong’s food culture, but their success depends on trust, clear standards and honest information about what customers are paying for.",
+          "A local cook runs a twelve-seat private kitchen twice a week, serving one seasonal menu announced online. Guests appreciate meeting the chef, but first-time customers say it is difficult to check licences, allergy arrangements and refund terms.",
+          "Restaurant owners argue that all food businesses should meet comparable safety requirements. Private-kitchen operators reply that small bookings and limited menus are different from full restaurants. A sensible policy would protect diners without removing the experimentation that attracts them."
+        ]
+      },
+      "part_a": {
+        "instruction": "You and your group are working on a project on dining experiences in Hong Kong. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The advantages of private kitchens"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "The disadvantages of private kitchens"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "The impact private kitchens may have on the restaurant industry"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_07",
+            "order": 1,
+            "text": "Which restaurant is your favourite?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 2,
+            "text": "Would you like to try dining in a private kitchen?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Do you enjoy trying something new each time you eat out?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 4,
+            "text": "Why do you think private kitchens have become popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 5,
+            "text": "What would make you decide not to return to a restaurant?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Does good food always need to be expensive?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "Should meals in private kitchens cost less than those in licensed restaurants?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 8,
+            "text": "Is a restaurant's reputation important to you?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 168,
+        "official_part_b_order_as_current_question_positions": [
+          7,
+          5,
+          6,
+          1,
+          8,
+          3,
+          2,
+          4
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-5-1-hong-kong-s-buskers",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "5.1",
+      "title": "Hong Kong Buskers",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Hong Kong Buskers",
+        "body": [
+          "Buskers bring live music and performance into streets and public spaces. Supporters say they make the city more lively and give new artists a way to meet audiences. A performer can gain experience without first being invited to a concert hall.",
+          "Critics complain about noise, repeated songs, blocked walkways and performers who seem to pressure people for money. Improving busking may require suitable locations, reasonable time limits and a fair permit system. The government must encourage creativity without making public performance so controlled that its energy disappears.",
+          "A residents’ letter has asked the district to ban amplification after repeated evening performances below nearby flats. Musicians respond that a total restriction would silence skilled performers along with the small number who cause complaints.",
+          "The arts committee is considering marked pitches, audition-free registration and quiet hours near homes. It may also publish a public code covering volume, crowd management and voluntary donations, with warnings before a performer loses access to popular locations."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group has decided to reply to the letter to the editor about Hong Kong buskers. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Whether you agree or disagree with the writer's point of view"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "How to improve the quality of busking in Hong Kong"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "How the government can encourage busking"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_07",
+            "order": 1,
+            "text": "What type of music do you enjoy listening to?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 2,
+            "text": "Are you good at singing?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 3,
+            "text": "Would you like to try being a busker?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 4,
+            "text": "Do you often see buskers in Hong Kong?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 5,
+            "text": "Why do you think some people are opposed to buskers?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "Do you think people should give money to buskers?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 7,
+            "text": "Do you believe buskers are similar to beggars?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Why do you think music plays such an important role in people's lives and cultures worldwide?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 160,
+        "official_part_b_order_as_current_question_positions": [
+          7,
+          8,
+          5,
+          6,
+          3,
+          2,
+          4,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-5-2-living-in-the-past",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "5.2",
+      "title": "History Week",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: History Week",
+        "body": [
+          "A school plans to hold a History Week and wants one Events Day to bring a chosen period to life. Students could create an exhibition, perform scenes, prepare food, invite a speaker or design an interactive trail around the campus.",
+          "The organisers need a period with enough reliable information and features that can be shown respectfully. Activities should do more than provide costumes and decorations; they should help students understand how people lived and why events mattered. Cost, accuracy, participation and links to the curriculum all need to be considered.",
+          "Students have shortlisted the 1960s in Hong Kong, the age of maritime trade and the early development of railways. Each choice offers strong visual material, but borrowed objects and specialist speakers would affect the budget.",
+          "The Events Day could combine an evidence-based exhibition with oral histories, demonstrations and a problem-solving trail. Teachers want sources clearly labelled so that entertainment supports accurate learning, while organisers hope every class can contribute without repeating the same display."
+        ]
+      },
+      "part_a": {
+        "instruction": "As part of your school’s upcoming History Week, you have been asked to organise an Events Day that focuses on one particular period in history. In your group discuss what your school could do to celebrate the period you choose. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Which period you would choose"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Important features of that period"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "What events you would organise in the school"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you enjoy studying history?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Do you like watching TV programmes about history?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Did you learn a lot about Hong Kong's history at school?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "Do you enjoy visiting historical sites?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Which historical figure do you admire the most?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Would you like to live in the past?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 7,
+            "text": "Why is it important to learn about history?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 8,
+            "text": "Do you think history tends to repeat itself?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 164,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          1,
+          2
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-5-3-the-use-of-electronic-devices",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "5.3",
+      "title": "Electronic Devices and Social Skills",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Electronic Devices and Social Skills",
+        "body": [
+          "Electronic devices help young people study, communicate and organise daily life. Yet constant checking can interrupt face-to-face conversation, reduce attention and make quiet moments uncomfortable. Online contact may keep friendships active, but it does not always develop the same listening and social skills as meeting in person.",
+          "Schools and families must decide whether limits are needed and how they can be realistic. Device-free activities, agreed times and better role models may work better than a total ban. The goal is not to reject technology, but to help young people use it without weakening relationships or well-being.",
+          "The Student Union observed that lunchtime groups often sat together while every member looked at a separate screen. Students said devices helped arrange meetings, yet notifications continued interrupting conversations after friends had arrived.",
+          "A proposed Connection Week would provide phone-free tables, cooperative games and short workshops on attentive listening. Participation would be voluntary, and secure storage would be available, allowing the campaign to demonstrate alternatives instead of treating normal device use as wrongdoing."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the Student Union and are concerned about students’ use of electronic devices. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The negative effects of electronic devices on young people"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Why developing social skills is important"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Whether young people should be encouraged to have more face-to-face interaction"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_07",
+            "order": 1,
+            "text": "Which electronic device do you use the most?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 2,
+            "text": "How do you usually stay in touch with your friends?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Could you live without electronic devices?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 4,
+            "text": "Can using electronic devices affect someone's ability to make new friends?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 5,
+            "text": "Do you think students should spend more or less time on electronic devices?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 6,
+            "text": "How do electronic devices influence people's social lives?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 7,
+            "text": "Should parents control how much time children spend on electronic devices?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 8,
+            "text": "Is the overuse of electronic devices a problem in Hong Kong?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 169,
+        "official_part_b_order_as_current_question_positions": [
+          7,
+          8,
+          6,
+          2,
+          3,
+          1,
+          4,
+          5
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-6-1-a-walkable-city",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "6.1",
+      "title": "A More Walkable Hong Kong",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: A More Walkable Hong Kong",
+        "body": [
+          "Walking in Hong Kong can be difficult when pavements are narrow, crossings are inconvenient and construction or parked objects block the route. Heat, rain, traffic and poor signs also discourage people, especially children, older residents and wheelchair users.",
+          "A more walkable city would need shade, seating, safer crossings, connected paths and clear information. A campaign leaflet should identify real obstacles, explain practical improvements and show how walking benefits health, neighbourhood businesses and the environment. Its message must be organised so readers can act on it quickly.",
+          "A street audit around the school found missing dropped kerbs, delivery boxes across pavements and crossings that gave slower walkers too little time. Students also mapped shaded routes that already make short journeys pleasant.",
+          "The proposed leaflet will pair photographs of obstacles with a neighbourhood walking map and a channel for reporting hazards. Community groups want improvements tested with wheelchair users, parents and older residents before money is spent on decorative features."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is helping to design a campaign leaflet about making Hong Kong a more walkable city. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The challenges people face when walking through the streets of Hong Kong"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Suggestions for improving the street conditions for pedestrians"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Content and organisation of the leaflet"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you prefer walking or taking the bus?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "How much walking do you usually do each day?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "What's the longest distance you've ever walked in a single day?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "What useful things can you do while walking?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 5,
+            "text": "Do you think walking is the best way to stay fit?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 6,
+            "text": "Do you prefer walking on the beach, in the countryside, or in the city?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "How would your neighbourhood change if vehicles were banned?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Which part of Hong Kong do you think should be turned into a pedestrian-only area?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 158,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          4,
+          3,
+          5,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-6-2-singapore-style-public-conduct-laws",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "6.2",
+      "title": "Singapore-style Public Conduct Laws",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Singapore-style Public Conduct Laws",
+        "body": [
+          "Singapore is known for strict public-conduct rules, including controls on littering, eating in some transport areas and the sale of chewing gum. Some people believe similar rules could make Hong Kong cleaner and more orderly. Others worry that copying penalties ignores differences between the two cities.",
+          "Effective rules must be understandable, proportionate and enforced consistently. Heavy fines may discourage behaviour, but they can also seem unfair if public facilities or education are inadequate. The government should consider whether each proposed law solves a genuine problem and whether less severe measures could work.",
+          "The proposal includes higher littering fines, restrictions on food in public transport and tighter control of chewing gum sales. Supporters expect visible rules to change habits quickly; civil-rights groups ask how warnings, appeals and enforcement records would work.",
+          "Officials will compare cleanliness data, enforcement costs and the effect on visitors before recommending legislation. They are also considering more bins and public education, because punishment may have little effect when facilities are inconvenient or rules appear arbitrary."
+        ]
+      },
+      "part_a": {
+        "instruction": "Imagine the Hong Kong Government is proposing to introduce five laws in line with Singapore. In your group discuss this proposal. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Some reasons why the Government would like to implement these laws"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Possible consequences of implementing these laws"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "The fairness of the punishments mentioned in the article"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_05",
+            "order": 1,
+            "text": "Should chewing gum be banned in schools?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 2,
+            "text": "Do you think people should be allowed to eat or drink on the MTR?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 3,
+            "text": "Do you think littering is a serious issue in Hong Kong?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 4,
+            "text": "What rules did your parents make you follow when you were younger?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 5,
+            "text": "Should Hong Kong adopt punishments similar to Singapore for littering?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 6,
+            "text": "If you could create a new rule for your school, what would it be?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 7,
+            "text": "Which of the laws mentioned in the article would bother you the most?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Do you think stricter punishments help reduce crime?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 168,
+        "official_part_b_order_as_current_question_positions": [
+          5,
+          6,
+          4,
+          8,
+          2,
+          7,
+          3,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-6-3-hong-kong-themed-coffee-shop-in-shanghai",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "6.3",
+      "title": "A Hong Kong-themed Coffee Shop in Shanghai",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: A Hong Kong-themed Coffee Shop in Shanghai",
+        "body": [
+          "A business course is developing a Hong Kong-themed coffee shop for Shanghai. The shop could serve local drinks and snacks, display familiar street signs or transport designs, and introduce stories about Hong Kong neighbourhoods and popular culture.",
+          "A strong theme should feel authentic without becoming a collection of stereotypes. The team must choose products that travel well, decorations that create atmosphere and prices suitable for local customers. They should also decide which aspects of Hong Kong to promote and how the shop can stand out from other themed cafés.",
+          "Market research in Shanghai suggests customers recognise milk tea, egg tarts and Hong Kong cinema, but know less about everyday neighbourhood culture. The team therefore plans rotating menus and small displays telling the stories behind selected objects.",
+          "Designers favour tiled walls and compact booth seating rather than filling the room with unrelated souvenirs. Local suppliers would prepare fresh ingredients, while guest events featuring music, illustration and travel stories could keep the theme changing after the opening publicity ends."
+        ]
+      },
+      "part_a": {
+        "instruction": "As part of an extra-curricular Business Studies course, your group is going to present ideas for a Hong Kong-themed coffee shop in Shanghai. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "What items you could sell in the coffee shop"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "What you would like to promote about Hong Kong"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "How you would decorate the coffee shop"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you often go to coffee shops?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Would you like to visit a teddy bear coffee shop?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 3,
+            "text": "Do you think there are too many Western-style coffee shops in Hong Kong?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Why do you think Western-style coffee shops are so popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 5,
+            "text": "Do you think a Hong Kong-themed coffee shop would be popular in China?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you think a teddy bear coffee shop would be popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "What theme do you think would be most popular for a coffee shop in Hong Kong?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "How important is the atmosphere in a coffee shop?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 167,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          5,
+          4,
+          3,
+          6,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-7-1-trophies-for-losing-teams",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "7.1",
+      "title": "Trophies for Losing Teams",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Trophies for Losing Teams",
+        "body": [
+          "Some schools give trophies to every child who takes part in a competition. Supporters say this protects confidence, recognises effort and encourages less experienced students to continue. Critics argue that a trophy loses meaning if it does not represent achievement.",
+          "Learning to lose can teach resilience, honesty and respect for stronger opponents, but constant pressure to win may encourage anxiety or cheating. Schools must decide which activities should remain competitive, how effort should be recognised and whether awards can celebrate progress without pretending that every result is the same.",
+          "A sports day committee has proposed participation medals for younger pupils and performance trophies for older teams. Coaches believe beginners need encouragement, whereas several students say honest results make improvement more satisfying.",
+          "The revised award system could recognise sportsmanship, persistence and personal progress alongside first place. Competitive events would remain, but teachers would review activities that repeatedly exclude less experienced players or place excessive pressure on a single child."
+        ]
+      },
+      "part_a": {
+        "instruction": "In preparation for writing an essay, your group is discussing whether Hong Kong schools should treat all children as winners. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The pros and cons of giving trophies to losing teams"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Whether learning how to lose is an important lesson to learn"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Whether certain competitive games should be discouraged at school"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "What competition would you most like to win?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "How do you usually feel when you lose?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Are you a very competitive person?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "Do you feel pressure to win at school?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "How important do you think trophies are?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "In sports, is winning the only thing that matters?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 7,
+            "text": "Do you think coming second is the same as losing?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Do you think the pressure to win in sports encourages cheating?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 158,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          6,
+          5,
+          4,
+          2,
+          3,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-7-2-oxford-dictionary-word-of-the-year",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "7.2",
+      "title": "Emoticons as Word of the Year",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Emoticons as Word of the Year",
+        "body": [
+          "An emoticon was selected as a Word of the Year, reflecting how often people now use pictures in digital messages. Emoticons can show tone quickly, cross language barriers and make informal communication warmer. Their meaning, however, may change across cultures, age groups and situations.",
+          "A message made only of pictures can be unclear, and frequent informal use may not prepare students for careful writing. At the same time, languages have always changed as new tools appear. The question is whether picture-based communication supplements words or gradually replaces skills people still need.",
+          "Editors chose a “face with tears of joy” because it appeared in millions of messages and represented a major change in everyday communication. The decision was widely discussed precisely because the winning item was an image rather than a conventional word.",
+          "Teachers note that students already switch between formal essays and informal chats. Misunderstandings are most likely when an unfamiliar symbol carries different meanings for different readers, suggesting that context and audience remain important even in very short messages."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group are members of an English club and are discussing ways people communicate in the 21st century. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The advantages of using emoticons to communicate"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Whether an emoticon is a good choice for Word of the Year"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Whether picture-based language will grow more or less popular in the future"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_06",
+            "order": 1,
+            "text": "Do you use emoticons when sending text messages?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Which emoticons do you like the most?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 3,
+            "text": "Do you use emoticons when communicating with your parents?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "How do you feel when you receive a message made up of emoticons?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "What problems might arise if a message only contains emoticons?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Could frequent use of emoticons cause people to forget how to write properly?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "Do you think people interpret emoticons differently?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "Does choosing an emoticon as Word of the Year suggest that society is becoming less intelligent?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 170,
+        "official_part_b_order_as_current_question_positions": [
+          6,
+          7,
+          8,
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-7-3-meditation",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "7.3",
+      "title": "Meditation in Secondary Schools",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Meditation in Secondary Schools",
+        "body": [
+          "Meditation programmes teach students to sit quietly, focus on breathing and notice thoughts without reacting immediately. Some schools believe short sessions could reduce stress, improve concentration and help students manage emotions during demanding school days.",
+          "Results depend on good instruction and voluntary, respectful participation. Students may feel embarrassed, consider the practice a waste of time or connect it with beliefs they do not share. Schools also need time, space and trained staff. Meditation should therefore be judged as one possible well-being tool rather than a cure for every problem.",
+          "A six-week school trial would offer ten minutes of guided practice before afternoon lessons. Participation records would not affect grades, and students uncomfortable with closing their eyes could use a quiet breathing or listening exercise instead.",
+          "Counsellors will collect anonymous feedback on stress and concentration, while teachers record whether the transition into lessons becomes calmer. The trial will stop if sessions create discomfort or replace professional support needed by students with serious mental-health concerns."
+        ]
+      },
+      "part_a": {
+        "instruction": "The Education Bureau is considering whether meditation training should be introduced into secondary schools in Hong Kong. Your group is discussing whether this is a good idea. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Why it might be necessary to teach students meditation"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Ways it could be introduced into schools"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Possible problems faced by schools"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_06",
+            "order": 1,
+            "text": "What do you usually do to relax?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Do you think you would enjoy a meditation class?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 3,
+            "text": "What helps you feel calm?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 4,
+            "text": "Did you feel a lot of pressure when you were in primary school?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 5,
+            "text": "Are you good at managing your emotions?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 6,
+            "text": "What things in life frustrate you?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 7,
+            "text": "Do you think meditation is a good use of time?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 8,
+            "text": "How could meditation training benefit athletes or the army?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 163,
+        "official_part_b_order_as_current_question_positions": [
+          6,
+          7,
+          5,
+          8,
+          3,
+          4,
+          1,
+          2
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-8-1-twins",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "8.1",
+      "title": "Twins in Schools",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Twins in Schools",
+        "body": [
+          "A school project is exploring the experiences of twins. Twins may share a close relationship and similar appearance, but they are still individuals with different interests, abilities and personalities. School practices can either recognise this individuality or encourage constant comparison.",
+          "The project could examine whether twins prefer the same class, how parents and teachers avoid confusing them and what advantages or difficulties they experience. Students will need reliable information from interviews, surveys and published research, then choose a presentation format that is informative without treating twins as a curiosity.",
+          "The project team plans confidential interviews with twins, parents and teachers from several year groups. Questions will cover classroom placement, mistaken identity, competition and whether people expect twins to share friends or interests.",
+          "Findings could be presented through paired audio clips, charts and short profiles in which each twin approves the final wording. Names and photographs would be optional, helping the exhibition challenge assumptions without exposing private family experiences."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a school project on the subject of twins. This is your first meeting and you are brainstorming ideas. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Possible content for the project"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "How you are going to get the information you need"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "How you could present your project"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you know any twins personally?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 2,
+            "text": "Would you like to be a twin?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "What challenges might parents of twins face?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "Do you think identical twins should be placed in separate classes?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 5,
+            "text": "In the future, would you be happy to have twins as your children?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 6,
+            "text": "What do you think are the advantages of being a twin?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 7,
+            "text": "If you were an identical twin, would you dress the same as your sibling?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "What do you find most interesting about twins?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 158,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          6,
+          3,
+          5,
+          7,
+          2,
+          4,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-8-2-social-media",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "8.2",
+      "title": "Students on Social Media",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Students on Social Media",
+        "body": [
+          "Students use social media to share photos, maintain friendships and express identity. A carefully chosen post can create a positive impression, but constant comparison and pressure for approval may affect confidence. Tags and images can also spread beyond the audience originally intended.",
+          "Acceptable behaviour includes asking permission, protecting private information and responding respectfully. Schools should help students think about lasting digital footprints without monitoring every conversation. Young people need practical strategies for dealing with unwanted tags, misleading images, online pressure and disagreements that move between screens and school life.",
+          "The counselling team has received reports of embarrassing photographs being reposted after the original uploader deleted them. Other students describe anxiety when popular classmates appear to have perfect social lives every day.",
+          "A peer-led campaign would demonstrate privacy settings, permission before tagging and ways to report harmful content. It would also remind viewers that edited posts show selected moments, not a complete measure of someone’s friendships, appearance or success."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the Peer Counselling team concerned about students’ behaviour on social media. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Whether it is important to present a good image on social media"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "What is acceptable behaviour on social media"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Other problems young people have using social media"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_07",
+            "order": 1,
+            "text": "Do you post photos on social media?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 2,
+            "text": "What kinds of photos do you usually share?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 3,
+            "text": "Do you like looking at other people's photos online?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 4,
+            "text": "What types of photos would you never share with friends on social media?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 5,
+            "text": "Do you mind if someone tags you without your permission?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 6,
+            "text": "Do you think young people feel pressured when using social media?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 7,
+            "text": "Should the use of social media be monitored?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 8,
+            "text": "Do you judge people based on what they post on social media?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 158,
+        "official_part_b_order_as_current_question_positions": [
+          7,
+          8,
+          6,
+          5,
+          4,
+          1,
+          2,
+          3
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-8-3-biking-gadgets",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "8.3",
+      "title": "Bicycle Safety Gadgets",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Bicycle Safety Gadgets",
+        "body": [
+          "A Bicycle Club is preparing a safety talk and comparing several cycling gadgets. Lights, reflective equipment, helmets and wearable signals may reduce risk, but no product can replace attention, road knowledge and responsible behaviour. Some gadgets may be expensive or uncomfortable.",
+          "The club should judge each item by effectiveness, ease of use, price and suitability for Hong Kong conditions. Its two recommendations need clear reasons and should form part of wider advice about checking a bicycle, choosing safe routes, following traffic rules and responding to pedestrians and other road users.",
+          "Four advertised products include a bright wheel light, an inflatable helmet, a handlebar direction signal and a jacket with reflective panels. The products address different dangers, so choosing two requires attention to both visibility and head protection.",
+          "Club members will compare independent safety testing rather than promotional claims. Their talk will also cover braking distance, hand signals and route planning, because a gadget that is poorly fitted or distracts its rider can create a new hazard."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are all members of your school’s Bicycle Club. You are going to give a talk about bicycle safety in Hong Kong and recommend two of the gadgets above to your club. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "How to be safe when cycling in Hong Kong"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "The advantages and disadvantages of the gadgets advertised"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Which two you would recommend"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_08",
+            "order": 1,
+            "text": "Do you ride a bicycle?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 2,
+            "text": "Do you think it is safe to ride a bicycle in Hong Kong?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 3,
+            "text": "Why do you think so few people ride bicycles in Hong Kong?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 4,
+            "text": "Do you think cycling is becoming more popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 5,
+            "text": "Do you think there should be more cycle paths in Hong Kong?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 6,
+            "text": "Should all cyclists be required to wear helmets?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 7,
+            "text": "Do you think cyclists should be allowed to take their bikes on the MTR?"
+          },
+          {
+            "question_id": "ir_01",
+            "order": 8,
+            "text": "What can the government do to encourage more people to cycle in Hong Kong?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 166,
+        "official_part_b_order_as_current_question_positions": [
+          8,
+          7,
+          5,
+          6,
+          2,
+          3,
+          4,
+          1
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "conflict",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "conflict",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B contained the right question topics but not the printed order; the replacement preserves question_id and changes order only.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-9-1-short-story-vending-machines",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "9.1",
+      "title": "Short Story Vending Machines",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Short Story Vending Machines",
+        "body": [
+          "Short story vending machines print a brief story for someone waiting at a station or public building. They offer a quick alternative to looking at a phone and may introduce readers to writers they would not normally choose. The experience is simple, surprising and easy to share.",
+          "Machines alone will not solve declining interest in literature. Location, cost, story quality, language choice and environmental impact all matter. Reading clubs, live events and school recommendations may reach different audiences. The aim should be to make literature inviting while preserving the depth that longer reading can provide.",
+          "The council is considering installing a machine beside a busy ferry waiting area. Readers could select one-, three- or five-minute stories in Chinese or English, printed on recyclable paper without advertisements.",
+          "Local writers welcome a new way to reach the public but want clear payment and selection arrangements. Librarians suggest printing a code linking each extract to borrowed books, author events and accessible electronic versions for readers who need larger text."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is part of a reading club and you are discussing ways to encourage the reading of literature. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Whether fewer people are interested in reading literature than before"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Whether short story vending machines will encourage people to read more literature"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Other ways to promote the reading of literature"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like to read stories?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "What do you like to read?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Do you think you would use a short story vending machine?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "What do you usually do while you are waiting?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Should readers have to pay for stories from vending machines?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Will short story vending machines replace electronic reading devices?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Would short story vending machines be popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What are the benefits of reading literature?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 166,
+        "official_part_b_order_as_current_question_positions": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "exact",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B was already in the printed order.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-9-2-international-left-handers-day",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "9.2",
+      "title": "International Left-Handers Day",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: International Left-Handers Day",
+        "body": [
+          "International Left-Handers Day draws attention to everyday objects and routines designed mainly for right-handed people. Desks, scissors, tools and sports instruction can create small but repeated frustrations. Awareness can help schools notice barriers that right-handed students may never see.",
+          "An event could include demonstrations, adapted equipment and activities in which participants try common tasks with their non-dominant hand. Organisers should avoid stereotypes that all left-handed people are more creative or athletic. The purpose is practical inclusion and understanding, not turning a natural difference into a performance.",
+          "Students have found that several classroom desks and computer mice are uncomfortable for left-handed users. The school can borrow adapted sports equipment and invite a designer to explain why products should be tested by people with different needs.",
+          "The organising team proposes a lunchtime exhibition, a handwriting station and a review of school equipment. Activities will focus on practical barriers and solutions; claims about personality or intelligence will be labelled as myths unless supported by reliable evidence."
+        ]
+      },
+      "part_a": {
+        "instruction": "Today is International Left-Handers Day. Your group is organising activities for the day at your school. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "Some of the frustrations that left-handed people experience"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "How these difficulties can be overcome"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Activities you may organise for the event"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you know any left-handed people?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "How well can you use your left hand?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Can you use both hands and both feet equally well?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you think it would be a good idea to celebrate International Left-Handers Day?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do you think left-handers have an advantage in sports?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you think left-handers are more creative than right-handers?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Do you think left-handed children should be forced to become right-handed?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think all children should be taught to use both hands well at an early age?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 163,
+        "official_part_b_order_as_current_question_positions": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "exact",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B was already in the printed order.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2016-9-3-texting-lanes",
+      "source_kind": "pp",
+      "exam_year": 2016,
+      "paper_version": "9.3",
+      "title": "Texting Lanes",
+      "source_note": "2016 Paper 4 set identity, Part A task and Part B printed order cross-referenced against a complete examination scan and two independent public indexes. Context is a newly written practice adaptation, not official examination text.",
+      "context": {
+        "source_line": "Original practice context written in an HKDSE-style source genre; it is not the official 2016 examination text.",
+        "title": "Practice context: Texting Lanes",
+        "body": [
+          "Some cities have experimented with marked lanes for people who text while walking. The idea attracts attention to distracted pedestrians, who may miss traffic signals, obstacles and other people. Yet a special lane may appear to approve the risky behaviour it is meant to reduce.",
+          "A texting lane is also difficult to enforce and may be ignored by the people paying least attention. Public messages, safer street design, school education and personal habits could be more effective. Any campaign should explain the danger clearly and encourage people to stop moving before using a phone.",
+          "A temporary lane in another city attracted photographs but little consistent use. Observers found that distracted walkers crossed the markings whenever crowds formed, while pedestrians without phones sometimes used the empty space.",
+          "The Student Union is considering floor signs at school exits, short videos based on real near-misses and designated stopping places away from crossings. Success would be measured by safer behaviour, not by how many people notice a colourful lane."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is part of the Student Union and you are discussing ways to raise awareness about texting while walking. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "The problems caused by using smartphones while walking"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "Whether texting lanes can help to solve these problems"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "Other ways of making people aware of the dangers of texting while walking"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you use your smartphone while you are walking?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Would you walk in a texting lane?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Why do people use their smartphones while they are walking?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Are you aware of your surroundings when you use your smartphone?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do you think texting lanes should be created in Hong Kong?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Should people be punished if they do not use the texting lanes?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Do you think the problem of texting while walking will get worse?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "How would your phone habits be different if it was illegal to use smartphones while walking?"
+          }
+        ]
+      },
+      "audit": {
+        "accessed_at": "2026-09-02",
+        "confidence": "high",
+        "context_word_count": 165,
+        "official_part_b_order_as_current_question_positions": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "field_status": {
+          "exam_year": "exact",
+          "paper_version": "exact",
+          "title": "close",
+          "context": "unsupported",
+          "part_a.instruction": "conflict",
+          "part_a.discussion_points": "exact",
+          "part_b.question_set": "close",
+          "part_b.printed_order": "exact",
+          "part_b.questions.ir_01.text": "close",
+          "part_b.questions.ir_02.text": "close",
+          "part_b.questions.ir_03.text": "close",
+          "part_b.questions.ir_04.text": "close",
+          "part_b.questions.ir_05.text": "close",
+          "part_b.questions.ir_06.text": "close",
+          "part_b.questions.ir_07.text": "close",
+          "part_b.questions.ir_08.text": "close"
+        },
+        "notes": [
+          "The previous generic cross-topic Context was replaced by a natural, topic-specific practice text in an appropriate source genre.",
+          "Part B was already in the printed order.",
+          "Question wording in the existing library is generally a close modernised transcription; punctuation and a few nouns differ from the scan."
+        ]
+      }
+    }
+  ]
+}

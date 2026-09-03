@@ -1506,6 +1506,19 @@ original adapted Context prose. Retain the five original MOCKs for history but
 hide them from new practice. List operations return metadata summaries; full
 content is fetched only when one authorized Set is opened. This protects the
 private source and avoids returning all 306 Contexts on every library load.
+
+### Paper 4 evidence hierarchy and audited regeneration (2026-09-03)
+
+Past-paper identity and task content use a recorded evidence hierarchy:
+official HKEAA material, then a complete HKEAA-branded scan, then independent
+topic indexes, then multiple candidate-recall sources. Lower-tier wording is
+valid only as clearly labelled practice paraphrase. Official Context articles
+are not reproduced; every preparation article is original mock prose tied to
+the verified task. Year-scoped audit artifacts are durable private source, and
+a deterministic merger—not the raw Markdown generator—owns canonical rebuilds.
+Stable child IDs survive display-order corrections; `order` remains the only
+display sequence. Existing Session/report snapshots never migrate with later
+content corrections.
 ### Dedicated Scan domain (2026-09-02)
 
 Scan sessions/pages/jobs are separate from writing and vocabulary-test data so

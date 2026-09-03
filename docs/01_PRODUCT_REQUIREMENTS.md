@@ -2372,11 +2372,22 @@ while any invitation, identity notice, or report update remains unread.
 ### Complete Paper 4 Set corpus
 
 The student library contains 306 visible PP practices covering 2012-2019 and
-2023-2026. Every record preserves its stable year/Set identity, topic and
-question intent, while its three-paragraph Context is original adapted practice
-prose. The five original MOCK seeds remain stored for historical Sessions but
-are hidden from new student selection. The 2023-2026 source notes must continue
-to identify candidate-recall wording where exact official text is unavailable.
+2023-2026. Every record preserves its stable year/Set identity and stable child
+IDs. Topic, Part A task/points and Part B question order are taken from the
+highest available evidence for that year; changing printed order updates the
+child `order` without deleting its stable ID. Every Context is original mock
+practice prose and must say that it is not the official examination article.
+The five original MOCK seeds remain stored for historical Sessions but are
+hidden from new student selection.
+
+The corpus keeps a private year-by-year audit beside the canonical source.
+Official HKEAA material or a complete HKEAA-branded scan outranks public topic
+indexes, which outrank candidate-recall summaries. A recalled question may be
+used as clearly labelled practice wording but must never be described as an
+exact official quotation. This limitation is especially important for 2026
+Part B, whose public sources do not preserve official wording or printed order.
+Existing Discussion and Individual Response snapshots remain unchanged after
+an audited correction.
 ## Scan Words (V1)
 
 Active students may scan one to five locally cropped/masked photos from the

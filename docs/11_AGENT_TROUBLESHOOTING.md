@@ -1064,3 +1064,15 @@ bodies. If deletion fails, keep `file_id`/`cloud_path` and
 the worker from retrying private-file cleanup. Diagnose a stale candidate
 drawer through `candidate_revision` and serialized client sync, never by
 trusting browser-provided text.
+
+### Paper 4 audit corrections disappear after regenerating content
+
+`scripts/import-dse-paper4-speaking-sets.js` produces a raw recall-based draft;
+it is not the audited source of truth. It now refuses to overwrite the
+canonical file unless the operator explicitly opts into the unsafe recovery
+flag. Generate to a separate review path, update the relevant year audit under
+`content/speaking/audits/dse-paper4/`, and run
+`node scripts/apply-dse-paper4-audits.js --write`. If Part B looks reversed,
+inspect each question's stable `question_id` and numeric `order` separately;
+do not renumber IDs merely to make the suffix match display order. Existing
+reports use frozen snapshots and must not be rewritten.

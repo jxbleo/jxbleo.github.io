@@ -1,0 +1,2922 @@
+{
+  "audit_year": 2019,
+  "accessed_on": "2026-09-02",
+  "policy": {
+    "copyright": "Official context articles are not reproduced. Each PP replacement context is newly written practice material based only on the verified scenario and prompts.",
+    "labels": {
+      "exact": "Directly supported by an accessible printed/official source.",
+      "close": "Substance is corroborated but wording is paraphrased or derived from candidate recall.",
+      "unsupported": "No source-specific support; current text should not be presented as source-grounded.",
+      "conflict": "Evidence disagrees with the current record and requires correction.",
+      "original_mock": "Newly written practice material; explicitly not official."
+    }
+  },
+  "sources": [
+    {
+      "id": "HKEAA-2019-1.1",
+      "tier": "primary",
+      "title": "2019 HKDSE English Language Paper 4, Set 1.1 (Examiner)",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Subject_Information/eng_lang/EngPaper4-Examiner2019.pdf",
+      "supports": "Official Set 1.1 context, Part A and all eight Part B questions."
+    },
+    {
+      "id": "HKEAA-2019-SAMPLES",
+      "tier": "primary",
+      "title": "2019 HKDSE English Language Examination Paper 4 Annotated Samples",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Subject_Information/eng_lang/2019-Sample-ENG-Paper4.pdf",
+      "supports": "Official confirmation of Set 8.2 McSleepers and its Part A framing through annotated candidate samples."
+    },
+    {
+      "id": "HKEAA-2019-BRIEFING",
+      "tier": "primary",
+      "title": "2019 DSE English Language Briefing",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Subject_Information/eng_lang/PowerPoint-ENG-1910.pdf",
+      "supports": "Official confirmation of Set 3.3 Cheating, 8.2 McSleepers, 2.2 Screen Time Control and 6.2 Translation Apps."
+    },
+    {
+      "id": "SCAN-2019-CANDIDATE",
+      "tier": "secondary-scan",
+      "title": "Scanned 2019 Paper 4 candidate pages, Sets 1.1–7.2",
+      "url": "https://www.scribd.com/document/671714856/2019-P4-Candidate-5",
+      "supports": "Sequential candidate-paper images and OCR for Set numbers, context scenarios and printed Part A points from 1.1 through 7.2. OCR errors were corrected only where the page image/context made the reading unambiguous."
+    },
+    {
+      "id": "DSE-TREASURE-2019-RECALL",
+      "tier": "secondary-recall",
+      "title": "DSE Treasure Paper 4 topic and Individual Response index",
+      "url": "https://dsetreasure.com/dse-english-paper-4-%E9%A1%8C%E7%9B%AE/",
+      "supports": "All 2019 topic labels and recalled Part B questions; the publisher expressly warns that candidate-recall wording differs from the original examination wording."
+    },
+    {
+      "id": "HKEAA-PUBLICATIONS",
+      "tier": "primary-index",
+      "title": "HKEAA Subject Examination Report and Question Papers publication list",
+      "url": "https://www.hkeaa.edu.hk/en/Resources/publications/list_of_publications/hkdse_erqp_pub/",
+      "supports": "Confirms the official 2019 examination-report/question-paper publication exists; full copyrighted paper is not freely reproduced on this index."
+    }
+  ],
+  "pp_summary": {
+    "expected": 24,
+    "found": 24,
+    "printed_order": [
+      "1.1",
+      "1.2",
+      "1.3",
+      "2.1",
+      "2.2",
+      "2.3",
+      "3.1",
+      "3.2",
+      "3.3",
+      "4.1",
+      "4.2",
+      "4.3",
+      "5.1",
+      "5.2",
+      "5.3",
+      "6.1",
+      "6.2",
+      "6.3",
+      "7.1",
+      "7.2",
+      "7.3",
+      "8.1",
+      "8.2",
+      "8.3"
+    ],
+    "note": "2019 uses eight groups of three printed Sets (1.1 through 8.3)."
+  },
+  "pp_records": [
+    {
+      "set_id": "dse-p4-pp-2019-1-1-redevelopment",
+      "paper_version": "1.1",
+      "current_title": "Redevelopment",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "exact"
+        },
+        "confidence": "high",
+        "source_ids": [
+          "HKEAA-2019-1.1",
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "All eight Part B questions were replaced with the exact wording visible on the official HKEAA examiner sheet.",
+        "context_word_count": 150
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-1-1-redevelopment",
+        "source_kind": "pp",
+        "paper_version": "1.1",
+        "title": "Redevelopment",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 1.1 scenario (not official text):",
+          "title": "Redevelopment: Questions and Trade-offs",
+          "body": [
+            "New railway stations and private investment can quickly change an older district. Better transport may bring visitors, jobs and safer buildings, while new cafés and shops can make an area feel more lively. Owners may also welcome the chance to repair properties that have been neglected for years.",
+            "The same changes can be painful for long-term residents. When rents rise, small family businesses may close and tenants may be forced to move. Bars and restaurants can create noise late at night, and a neighbourhood may lose the services, relationships and character that once made it feel like home.",
+            "Redevelopment therefore needs more than new buildings. Residents could be consulted fairly and transparently before plans are approved, while affordable housing, compensation and support for traditional shops could reduce disruption. The central question is how Hong Kong can improve old districts without treating the people who already live there as an obstacle."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is discussing the redevelopment of older districts in Hong Kong. Your group has been asked to discuss the problems redevelopment causes. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why old districts are redeveloped"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What problems redevelopments cause"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What the government should do to reduce the problems residents face"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What do you like about the area you live in?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What is the biggest advantage of redevelopment?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What types of shops are typical of old neighbourhoods?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do older people like to live in traditional districts?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What would you like to change about your district?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you prefer to live in an old neighbourhood or a redeveloped area?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is the redevelopment of old areas too slow in Hong Kong?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Who benefits most from redevelopment?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 1.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper and the official HKEAA examiner sheet. The Part B questions match the official HKEAA examiner sheet. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-1-2-wedding-photography",
+      "paper_version": "1.2",
+      "current_title": "Wedding Photography",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. The third Part A point is corrected from plural “styles … are” to the printed singular “style … is”. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 150
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-1-2-wedding-photography",
+        "source_kind": "pp",
+        "paper_version": "1.2",
+        "title": "Wedding Photography",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 1.2 scenario (not official text):",
+          "title": "Wedding Photography: Questions and Trade-offs",
+          "body": [
+            "Wedding photographs are expected to preserve an important day, but couples now have many styles to choose from. Creative photographs use unusual ideas, glamorous shoots depend on impressive locations, storytelling photography records natural emotions, and studio sessions offer privacy and control over lighting and weather.",
+            "Each style involves trade-offs. Travelling overseas may produce striking pictures but costs more and takes time. Studio portraits are reliable but can look formal, while candid photographs may capture genuine feelings yet miss the carefully planned details of the ceremony. Family members may also have different ideas about what a wedding album should show.",
+            "A couple should decide whether the priority is personality, tradition, scenery or the relationships shared with guests. The best photographs may combine several approaches instead of following one fashion. Cost, comfort, privacy and the meaning the pictures will have many years later should all guide the choice for both partners involved."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class teacher is getting married. She has asked you about what type of wedding photos you like best. You are discussing this with your group. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why wedding photographs are important"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What is important for wedding photos to show"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Which style you think is most popular"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy having your photo taken?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you attended a wedding before?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What kinds of photos do you like to share?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What do people usually do with their wedding photos?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you spend a lot on your wedding?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What matters more: wedding photos or wedding videos?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Are professional photos still valuable today?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are weddings still significant in Hong Kong?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 1.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-1-3-online-crime",
+      "paper_version": "1.3",
+      "current_title": "Online Crime",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 153
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-1-3-online-crime",
+        "source_kind": "pp",
+        "paper_version": "1.3",
+        "title": "Online Crime",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 1.3 scenario (not official text):",
+          "title": "Online Crime: Questions and Trade-offs",
+          "body": [
+            "Online scams can reach people through shopping sites, social media, dating platforms, email and text messages. A false seller may take payment without delivering the promised product, while a criminal may pretend to be a bank or a trusted friend in order to collect passwords, account details or money.",
+            "Students may believe they are unlikely targets because they have limited savings, but their identities, photographs and online accounts still have value. Reusing one password across several services makes a single mistake more serious. A friendly message can also create false trust before the sender asks for money or private information.",
+            "Protection begins with simple habits: use different passwords, turn on two-step verification, check web addresses and avoid rushed payments. Suspicious requests should be confirmed through another channel and reported to an adult, the platform or the police. Schools can help students practise recognising warning signs rather than merely telling them to be careful."
+          ]
+        },
+        "part_a": {
+          "instruction": "The police will be visiting your school to talk about online crimes. Your teacher has asked your group to discuss this problem first. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether online crime is a serious problem in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What type of online crimes students should worry about most"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How students should protect themselves"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you shop online?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you spend a lot of time on the internet?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you consider making friends online?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should schools teach students about online safety?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Can genuine friendships be formed through the internet?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why are online crimes becoming more common?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What kinds of people are most vulnerable to online scams?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Who should be held responsible for internet fraud?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 1.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-2-1-fortune-telling",
+      "paper_version": "2.1",
+      "current_title": "Fortune Telling",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 157
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-2-1-fortune-telling",
+        "source_kind": "pp",
+        "paper_version": "2.1",
+        "title": "Fortune Telling",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 2.1 scenario (not official text):",
+          "title": "Fortune Telling: Questions and Trade-offs",
+          "body": [
+            "Fortune telling remains visible in parts of Hong Kong, especially around temples and traditional market streets. Visitors may have their palms or faces read, consult the Chinese zodiac or ask about relationships, careers and health. For some people the experience is entertainment; for others it is a serious cultural practice.",
+            "Its appeal comes partly from uncertainty. A confident prediction can make a person feel understood and may offer a way to organise difficult choices. Family customs and curiosity also attract customers. Critics, however, question whether vague statements only seem accurate and worry that vulnerable people may pay repeatedly for advice they cannot verify.",
+            "Modern technology may change the service rather than end it. Online readings can reach younger audiences, while traditional practitioners may continue to attract people who value face-to-face contact. Its future will depend on whether it is treated as cultural heritage, commercial entertainment or professional advice, and on how customers are protected from dishonest claims."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is doing a project on Hong Kong culture in the 21st century. Your group has been asked to discuss the art of fortune telling. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why people like going to fortune tellers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why fortune telling is an important part of Chinese culture"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether fortune telling will remain popular in the modern world"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you ever visit a fortune teller?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you believe in the accuracy of fortune telling?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Are you curious about your future?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What kinds of people tend to believe in fortune telling?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you be interested in studying fortune telling?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think some people are naturally lucky?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do fortune tellers take advantage of others?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should fortune tellers be required to have a license?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 2.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-2-2-apple-screen-time-control",
+      "paper_version": "2.2",
+      "current_title": "Apple Screen Time Control",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "HKEAA-2019-BRIEFING",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 164
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-2-2-apple-screen-time-control",
+        "source_kind": "pp",
+        "paper_version": "2.2",
+        "title": "Apple Screen Time Control",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 2.2 scenario (not official text):",
+          "title": "Apple Screen Time Control: Questions and Trade-offs",
+          "body": [
+            "Screen-time tools allow parents to see how long children use particular apps and to set periods when games, videos or social media are unavailable. Essential services, such as school materials or emergency messages, can remain open. Supporters say these controls make family rules clear and reduce arguments about late-night phone use.",
+            "The software cannot solve every problem. A strict limit may interrupt useful work, and young people may feel that constant monitoring invades their privacy. They can also move to another device or focus on reaching the limit instead of learning self-control. Parents who spend hours on their own phones may find their rules difficult to defend.",
+            "Controls work best when families agree on the purpose of each rule and review it as children become more responsible. Device-free meals, sensible bedtimes and adults setting a good example can support the technology. The question is not only how much time students spend online, but what they do there and what offline activities are being displaced."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is holding a meeting to introduce Apple Screen Time Control to students and parents. Your group is meeting to discuss the idea. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether parents should control students' screen time"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Advantages and disadvantages of Apple Screen Time Control"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether software like Apple Screen Time Control is the best way to limit students' screen time"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you spend a lot of time on the internet?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Does your online activity interfere with your homework?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you be okay with your parents managing your screen time?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do students spend so much time on their phones?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What's the biggest issue caused by excessive screen use?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Does phone use affect how families interact?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should parents be aware of everything their children do online?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Can students be trusted to manage their own screen time?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 2.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-2-3-international-sport",
+      "paper_version": "2.3",
+      "current_title": "International Sport",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 158
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-2-3-international-sport",
+        "source_kind": "pp",
+        "paper_version": "2.3",
+        "title": "International Sport",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 2.3 scenario (not official text):",
+          "title": "International Sport: Questions and Trade-offs",
+          "body": [
+            "Small countries can succeed in international sport when they invest in facilities, qualified coaches and opportunities for young players. Iceland’s rise in football attracted attention because its population is limited, yet a long-term training system helped local athletes compete with much larger nations. Hong Kong faces similar limits on land and player numbers.",
+            "Sending coaches or youth teams overseas may expose them to new methods and a different sporting culture. Such exchanges can inspire athletes, but a short visit will not repair weak local leagues, limited school time or poor support for competitors. Money spent on officials and publicity may also be criticised if athletes lack medical or training resources.",
+            "Hong Kong must decide what success means: medals, public participation, healthier citizens or a stronger professional system. Learning from another country requires adapting its ideas rather than copying them. Schools, sports associations and government need clear responsibilities, patient funding and ways for talented young people to continue training."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is doing a project on “The Importance of International Sport”. Your group has been asked to discuss the development of sport in Hong Kong. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether Hong Kong is successful in international sport"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether sport is important to Hong Kong people"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether Hong Kong can learn from other countries to improve sports"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Can training help improve athletic skills?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Why do many teenagers in Hong Kong stop playing sports?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do women have equal opportunities in sports as men?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why are some countries more successful in sports than others?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are people's attitudes toward sports changing in Hong Kong?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is there too much focus on sports these days?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Will Hong Kong ever become well-known for its achievements in sports?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Can playing sports teach valuable life skills?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 2.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-3-1-facebook",
+      "paper_version": "3.1",
+      "current_title": "Facebook",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 159
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-3-1-facebook",
+        "source_kind": "pp",
+        "paper_version": "3.1",
+        "title": "Facebook",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 3.1 scenario (not official text):",
+          "title": "Facebook: Questions and Trade-offs",
+          "body": [
+            "Facebook once appeared to be the natural place for young people to share photographs, messages and news, but many users have moved to newer platforms. Older relatives, community groups and event organisers may still rely on it, so leaving completely can mean losing useful connections and information.",
+            "The service also raises questions about privacy and trust. Employers may look at public posts, false accounts can deceive users, and misleading stories may spread faster than corrections. A joke written for friends can remain searchable years later. People who compare their lives with carefully edited posts may also feel isolated rather than connected.",
+            "Users should review privacy settings, check the source of surprising claims and think before posting information about themselves or others. Social media is likely to remain popular even if individual brands rise and fall, because the desire to communicate will continue. The more important issue is whether future platforms give users meaningful control over their data and attention."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are doing a project on social media. Your group has been asked to discuss Facebook and the future of social media. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether young people in Hong Kong use Facebook"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What advice you would give people about using Facebook"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether social media will continue to be popular"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you use Facebook yourself?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do most users enjoy doing on Facebook?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Which social media platform do you like the most?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should schools teach students how to use social media properly?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why can social media make people feel isolated?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How can you tell if information on social media is reliable?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How do you think social media will evolve in the future?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Why do some people create fake Facebook profiles?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 3.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-3-2-sex-discrimination",
+      "paper_version": "3.2",
+      "current_title": "Sex Discrimination",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 156
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-3-2-sex-discrimination",
+        "source_kind": "pp",
+        "paper_version": "3.2",
+        "title": "Sex Discrimination",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 3.2 scenario (not official text):",
+          "title": "Sex Discrimination: Questions and Trade-offs",
+          "body": [
+            "Pay differences between men and women cannot be explained simply by ability. Women and men can perform the same professional tasks, yet promotion decisions, occupational stereotypes and unequal caring responsibilities may shape their careers. A worker who takes time away to care for family members may lose experience, income and opportunities to advance.",
+            "Some employers assume that men are more suitable for competitive leadership or long working hours, while women are directed towards lower-paid caring and support roles. Even when the work is comparable, secrecy around salaries makes unfair differences hard to identify. These patterns can influence students before they enter the workplace.",
+            "Possible responses include transparent salary ranges, equal-pay reviews, affordable childcare and flexible arrangements available to all parents. Schools can challenge the idea that particular careers belong to one gender. Laws matter, but organisations must also examine how they recruit, evaluate and promote staff so that performance is judged by evidence rather than expectations."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your careers advisor is discussing discrimination in the workplace. Your group has been asked to discuss the gender pay gap. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether there are differences in job performance between men and women"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why women are generally paid less than men"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How the gender pay gap could be reduced"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What kind of job suits you best?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are certain jobs more appropriate for women than for men?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What roles are traditionally seen as male or female jobs?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "In what other ways do women face unfair treatment?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should unequal pay between men and women be against the law?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Will the gender pay gap continue to exist in the future?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Besides gender, what other reasons explain pay differences among people?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is Hong Kong becoming a more equal society?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 3.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-3-3-cheating",
+      "paper_version": "3.3",
+      "current_title": "Cheating",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "HKEAA-2019-BRIEFING",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 163
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-3-3-cheating",
+        "source_kind": "pp",
+        "paper_version": "3.3",
+        "title": "Cheating",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 3.3 scenario (not official text):",
+          "title": "Cheating: Questions and Trade-offs",
+          "body": [
+            "When two homework assignments look almost identical, a school must find out what happened before deciding on a punishment. One student may have copied, both may have used the same online source, or they may have worked together when collaboration was not allowed. Similar work is a warning sign, not complete proof.",
+            "Students cheat for different reasons, including fear of failure, heavy workloads, unclear instructions and the belief that everyone else is doing it. Technology makes copied essays and automatic translation easy to obtain, but it can also help teachers compare drafts and understand how work developed. Punishment alone may hide the cause without changing behaviour.",
+            "A fair response should distinguish a first minor offence from repeated or organised dishonesty. Students need clear rules, a chance to explain and support if they lack skills or time management. Rewriting the task, meeting parents or detention may be appropriate, while serious cases require stronger action. Prevention should make honest work achievable as well as expected."
+          ]
+        },
+        "part_a": {
+          "instruction": "Two students have been caught cheating at your school. Your class teacher has asked your group to discuss this issue. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why students cheat"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether cheating is a common problem in schools"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Suitable ways of dealing with the problem"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Can teachers tell when students are cheating?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is cheating more common now than it used to be?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Does technology make it easier to cheat?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is copying content from the internet considered cheating?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "If parents help too much with homework, is that cheating?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What kinds of students are more likely to cheat?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Are some forms of cheating more serious than others?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is cheating a common issue in society?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 3.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-4-1-living-in-a-densely-populated-urban-area",
+      "paper_version": "4.1",
+      "current_title": "Living in a Densely Populated Urban Area",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 162
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-4-1-living-in-a-densely-populated-urban-area",
+        "source_kind": "pp",
+        "paper_version": "4.1",
+        "title": "Living in a Densely Populated Urban Area",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 4.1 scenario (not official text):",
+          "title": "Living in a Densely Populated Urban Area: Questions and Trade-offs",
+          "body": [
+            "A small action in a crowded city can reveal very different ideas about courtesy. One lift passenger may hold the door for someone approaching, while another presses “close” because every second matters. The first person sees patience and consideration; the second sees an unnecessary delay for everyone already inside.",
+            "Similar conflicts occur on pavements, escalators, trains and in queues. Limited space and long working hours can make people hurried, but crowding does not excuse blocking doors, pushing or ignoring those who need a seat. At the same time, rules that sound polite may be impractical if they slow a busy system or create danger.",
+            "Better behaviour depends on clear expectations and awareness of other people. Signs, station announcements and school education can help, but design matters too: wider passages, visible queues and enough time for lift doors to close reduce conflict. Urban courtesy is not about performing one fixed gesture; it is about judging how an action affects others in that moment."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is working on a project about living in densely populated urban areas. Your group has been asked to discuss the two points of view expressed in the context. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Which letter you agree with"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Other situations when crowded places cause problems"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How to deal with these problems"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you prefer taking the lift or using the stairs?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are you usually in a rush?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What behaviours do you consider rude?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think young people today are polite?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Does city life make people less courteous?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should politeness be taught?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why is it important to be polite?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do ideas about politeness change over time?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 4.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-4-2-unusual-english-names",
+      "paper_version": "4.2",
+      "current_title": "Unusual English Names",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 168
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-4-2-unusual-english-names",
+        "source_kind": "pp",
+        "paper_version": "4.2",
+        "title": "Unusual English Names",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 4.2 scenario (not official text):",
+          "title": "Unusual English Names: Questions and Trade-offs",
+          "body": [
+            "Many Hong Kong people use an English name at school or work. Some choose a familiar name because it is easy for teachers and colleagues to remember, while others select a word, brand or invented spelling that expresses individuality. A name may also resemble the sound or meaning of a person’s Chinese name.",
+            "Unusual names can be memorable and personally meaningful, but they may create unexpected problems. Listeners may not know how to pronounce them, computer forms may reject punctuation, and an employer may make unfair assumptions before meeting the applicant. A name that seems amusing to one culture may have an unwanted meaning in another.",
+            "Students should be free to decide how they wish to be addressed, yet it helps to check pronunciation, spelling and possible associations. They can use different names in informal and professional settings or simply use their Chinese name. Respect works both ways: the person choosing a name should consider its audience, and others should avoid mocking a choice they do not understand."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your English teacher has asked you about the use of unusual English names in Hong Kong. Your group is going to discuss this topic. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "How students choose their English name"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What type of names you think are suitable and unsuitable"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What problems unusual names cause"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you and your friends use English names when talking to each other?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think it's important for someone to have a unique or special name?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do teachers usually call students by their English names or their Chinese names?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are Chinese names typically used only among close friends and family?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should foreigners living in Hong Kong adopt a Chinese name?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What are some reasons people decide to change their names?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do certain names become trendy or popular over time?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What should parents keep in mind when naming their children?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 4.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-4-3-person-of-the-year",
+      "paper_version": "4.3",
+      "current_title": "Person of the Year",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 161
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-4-3-person-of-the-year",
+        "source_kind": "pp",
+        "paper_version": "4.3",
+        "title": "Person of the Year",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 4.3 scenario (not official text):",
+          "title": "Person of the Year: Questions and Trade-offs",
+          "body": [
+            "A school’s Person of the Year award can show students what kinds of achievement and behaviour the community values. Famous candidates may include artists, athletes, businesspeople or public officials, each representing a different route to success. Their stories can demonstrate perseverance, talent, service or the ability to overcome disadvantage.",
+            "Popularity alone is not a reliable standard. Students may know little about some nominees, disagree with their decisions or feel that celebrity receives more attention than quiet service. A person can also be successful without being a suitable role model in every part of life. The selection process should therefore explain which qualities are being recognised.",
+            "The school could invite nominations from students and require evidence of positive impact. Local volunteers, former students, teachers or young innovators may feel more relevant than internationally known figures. A balanced choice should inspire effort without suggesting that wealth or fame is the only measure of success, and should allow respectful disagreement about the final result."
+          ]
+        },
+        "part_a": {
+          "instruction": "The principal wants to add more people to the Person of the Year list. Your group has been asked to suggest other people who might be good candidates. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What can be learned from role models"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why some students may not select the nominees listed"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Other potential nominees"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you have someone you look up to as a role model?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think you could be a positive role model for others?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Can musicians be considered good role models? Why or why not?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should older students in school set an example for younger ones?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Does being seen as a role model create stress for celebrities?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do people have different role models at different stages of life?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Can someone who hasn't been very successful still be a good role model?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How is a role model different from an idol?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 4.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-5-1-cctv",
+      "paper_version": "5.1",
+      "current_title": "CCTV",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 161
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-5-1-cctv",
+        "source_kind": "pp",
+        "paper_version": "5.1",
+        "title": "CCTV",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 5.1 scenario (not official text):",
+          "title": "CCTV: Questions and Trade-offs",
+          "body": [
+            "CCTV cameras can help a school investigate theft, bullying or damage and may discourage some unsafe behaviour. Recordings from entrances and public corridors can provide evidence when witnesses disagree. Parents may also feel reassured that incidents can be reviewed rather than decided only by rumour.",
+            "Constant recording, however, changes how a school feels. Cameras may capture private conversations, be placed where they are not necessary or create suspicion between students and staff. A recording can cause further harm if too many people can view it, if it is kept indefinitely or if it is used for a purpose students were never told about.",
+            "Any system needs rules before cameras are installed. The school should identify specific risks, avoid sensitive areas, limit access to authorised staff and delete recordings after a stated period unless an incident is being investigated. Students and parents should know where cameras are and how to complain. Security should be improved without treating everyone as a potential offender."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school principal wants to introduce CCTV cameras to your school. Your class teacher wants you to discuss this topic. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Advantages of CCTV cameras"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Disadvantages of CCTV cameras"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What rules there should be about the use of CCTV cameras in school"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think CCTV is a useful tool?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Does the presence of CCTV make you feel uneasy or concerned?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you believe CCTV helps prevent or reduce crime?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "How do you think CCTV technology will develop in the future?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are there certain public areas where CCTV should not be allowed?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should people be concerned about their privacy being affected by CCTV?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is it appropriate to show CCTV footage on the news?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Which is more important: protecting personal privacy or ensuring public safety?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 5.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-5-2-the-hkust-campus-in-guangzhou",
+      "paper_version": "5.2",
+      "current_title": "The HKUST Campus in Guangzhou",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 160
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-5-2-the-hkust-campus-in-guangzhou",
+        "source_kind": "pp",
+        "paper_version": "5.2",
+        "title": "The HKUST Campus in Guangzhou",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 5.2 scenario (not official text):",
+          "title": "The HKUST Campus in Guangzhou: Questions and Trade-offs",
+          "body": [
+            "A Hong Kong university may open a campus in mainland China to gain more space, reach a wider group of students and build research partnerships. New laboratories and government support can allow programmes that are difficult to develop on a crowded Hong Kong campus. Cross-border study may also connect graduates with opportunities in the Greater Bay Area.",
+            "Hong Kong students could benefit from new friendships and a better understanding of mainland life, but adjustment may be demanding. Teaching methods, internet services, payment systems, healthcare arrangements and daily language use may differ. Students also need clear information about qualifications, fees, accommodation and whether courses are shared between campuses.",
+            "Before applying, students should visit if possible, compare curricula and speak with current learners. Universities should provide orientation, academic advice and support for emergencies. Expansion is worthwhile only if the new campus protects teaching quality and student welfare rather than serving mainly as a way to increase enrolment or improve an institution’s image."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school has invited HKUST to give a talk on the new Guangzhou campus to S.6 students. Your group will help to facilitate a Q&A session after the talk. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why Hong Kong universities want to develop in mainland China"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What problems Hong Kong students may face studying on the Mainland"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What advice to give to students thinking about studying on the Mainland"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you personally be interested in studying in mainland China?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What motivates people to choose mainland China for their studies?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What are the benefits of pursuing education in the Mainland?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What can students gain or learn from studying in mainland China?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think studying in the Mainland will become more common in the future?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is it helpful for students to study outside of Hong Kong?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should more universities from Hong Kong set up campuses or programmes in mainland China?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What difficulties might arise from building stronger academic connections with mainland institutions?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 5.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-5-3-space-travel",
+      "paper_version": "5.3",
+      "current_title": "Space Travel",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 166
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-5-3-space-travel",
+        "source_kind": "pp",
+        "paper_version": "5.3",
+        "title": "Space Travel",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 5.3 scenario (not official text):",
+          "title": "Space Travel: Questions and Trade-offs",
+          "body": [
+            "Private companies have proposed sending wealthy passengers and invited artists around the Moon. Supporters say seeing Earth from space could inspire paintings, films and ideas that reach millions of people. Commercial missions may also test equipment, create jobs and reduce the cost of future launches without depending entirely on government programmes.",
+            "The price remains enormous and the journey carries serious risks. Critics ask whether one passenger’s experience justifies resources that could support health, education or environmental work on Earth. Rocket launches also have environmental effects, while ordinary people are unlikely to afford space tourism for many years. Public excitement can hide these trade-offs.",
+            "Spending choices depend on who pays and who benefits. A privately funded flight is different from a government project, yet both use shared scientific knowledge and regulation. Space travel may become more common if safety improves and costs fall, but popularity should not be confused with public value. Clear goals and transparent costs are needed before calling it a good use of money."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your English teacher has asked your class to write an essay entitled “Space travel is a good use of money.” You have been asked to discuss this topic in groups first. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why people are so interested in space travel"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether space tourism will become popular"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether there are better ways to spend money"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Are you personally interested in travelling to space?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you like to experience being a space tourist?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think humans will live on the moon within our lifetime?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What do you think would be the most exciting part of going on a space journey?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Who else do you think should be included on a space trip?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What challenges might people face during long space missions?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should space exploration be managed by private companies or by governments?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What kind of personality or skills are important for someone who wants to travel in space?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 5.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-6-1-the-killing-of-animals",
+      "paper_version": "6.1",
+      "current_title": "The Killing of Animals",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 156
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-6-1-the-killing-of-animals",
+        "source_kind": "pp",
+        "paper_version": "6.1",
+        "title": "The Killing of Animals",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 6.1 scenario (not official text):",
+          "title": "The Killing of Animals: Questions and Trade-offs",
+          "body": [
+            "When wild animal numbers increase near homes, residents may report damaged property, stolen food or dangerous encounters. Governments sometimes use selective killing, or culling, to reduce a population quickly. Supporters argue that this protects people and prevents animals from starving when an area cannot support them.",
+            "Animal-welfare groups question whether culling addresses the cause. Feeding by visitors, easy access to rubbish and the loss of natural habitat can draw animals into urban areas. Relocating them may only move the conflict, while birth control is slower and needs long-term monitoring. No single method works equally well for every species or location.",
+            "A responsible programme should use reliable population data and consider non-lethal measures first. Secure bins, public education, enforcement against feeding and habitat management can reduce contact. If killing is proposed, authorities must explain why alternatives are insufficient and how suffering will be minimised. The debate requires both concern for human safety and respect for animal welfare."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are in a school debating club. The next debate will be: “Selective killing should not be used to control animal numbers in Hong Kong.” Your group is meeting to discuss this question. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why governments use selective killing to control animal numbers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Other methods of controlling animal numbers"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether or not you support culling"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you describe yourself as someone who loves animals?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is there a wild animal you'd really like to see in person?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "How do wild animals create problems in Hong Kong?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What do you think is the most effective way to manage the monkey population in Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why do some people feed wild animals like monkeys, even when it's discouraged?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think most people in Hong Kong care about animals?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Which wild animals cause the most trouble in Hong Kong?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think people sometimes focus too much on animal rights and welfare?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 6.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-6-2-translation-apps",
+      "paper_version": "6.2",
+      "current_title": "Translation Apps",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "HKEAA-2019-BRIEFING",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 163
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-6-2-translation-apps",
+        "source_kind": "pp",
+        "paper_version": "6.2",
+        "title": "Translation Apps",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 6.2 scenario (not official text):",
+          "title": "Translation Apps: Questions and Trade-offs",
+          "body": [
+            "Translation devices can turn speech or writing into another language within seconds. Travellers may use them at hotels and restaurants, while students can check the general meaning of unfamiliar text or listen to pronunciation. They reduce anxiety when people need basic communication and no human interpreter is available.",
+            "A fluent-looking translation can still be wrong. Apps may miss humour, tone, technical meanings or cultural references, and users who do not know the target language may not notice the error. Allowing unrestricted use at school could help understanding, but it could also prevent students from practising vocabulary, grammar and independent expression.",
+            "Schools need rules based on the purpose of a task. A device may be useful for research, accessibility or checking a draft, but not when the aim is to assess the student’s own language. Learning languages remains valuable for relationships, cultural understanding and judging whether technology is accurate. The strongest users will treat translation tools as assistance rather than a substitute for thought."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your ICT class is discussing how technology is changing the world. Your group has been asked to discuss translation devices. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages and disadvantages of using translation devices"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether translation devices should be allowed at school"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether learning languages is still important"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Which language would you like to learn and why?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever used a translation app or device?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you enjoy speaking in a foreign language?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are translation apps simple and convenient to use?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Who do you think benefits the most from translation technology?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think fewer people will study foreign languages in the future?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do some people find it easier to learn languages than others?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are you concerned that we might rely too much on technology?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 6.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-6-3-selfies",
+      "paper_version": "6.3",
+      "current_title": "Selfies",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 159
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-6-3-selfies",
+        "source_kind": "pp",
+        "paper_version": "6.3",
+        "title": "Selfies",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 6.3 scenario (not official text):",
+          "title": "Selfies: Questions and Trade-offs",
+          "body": [
+            "Selfies make it easy to record an experience and share it immediately. A striking photograph can attract attention online, help friends feel connected and give travellers a personal memory. The search for an unusual background, however, can move attention away from what is happening around the photographer.",
+            "Accidents occur when people stand near cliffs, roads, trains, water or wild animals while concentrating on a screen. Social pressure may encourage a person to take greater risks for likes or to copy an image that appears safe online. Problems also include disturbing other visitors, revealing someone’s location and photographing people without permission.",
+            "Warnings and barriers are useful at known danger spots, but a complete ban may be difficult to enforce. Platforms, schools and tourist sites can explain how risky images are created and avoid rewarding dangerous behaviour. Before taking a photograph, users should stop, check the surroundings and decide whether the picture is worth the risk to themselves or anyone nearby."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are a member of the school photography society. Your group has been asked to discuss problems caused by selfies. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why selfies are so popular"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The dangers caused by taking selfies"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Why people are willing to take such risks"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think people take too many selfies these days?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What are some fun or unique places in Hong Kong to take selfies?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is taking selfies mostly something that young people enjoy?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think selfies will continue to be popular in the future?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think areas where selfies are banned (no-selfie zones) will become more common?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would no-selfie zones actually help prevent accidents or problems?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Besides the risk of injury, what other issues can selfies cause?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What makes a selfie look good or stand out?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 6.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-7-1-drinks-from-hong-kong",
+      "paper_version": "7.1",
+      "current_title": "Drinks from Hong Kong",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "conflict",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. The editorial title is corrected from “Drinks from Hong Kong” to the printed “A Hong Kong Drink”. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 171
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-7-1-drinks-from-hong-kong",
+        "source_kind": "pp",
+        "paper_version": "7.1",
+        "title": "A Hong Kong Drink",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 7.1 scenario (not official text):",
+          "title": "A Hong Kong Drink: A Name for Yuenyeung",
+          "body": [
+            "Yuenyeung is a Hong Kong drink that combines coffee with milk tea and can be served hot or cold. Its Cantonese name refers to mandarin ducks, a traditional symbol of a pair. Local customers recognise it immediately, but visitors may not know how to pronounce the name or understand what the drink contains.",
+            "An English name could make menus and tourism advertising easier to understand. A simple description might explain the ingredients, while a creative name could be more memorable. Yet replacing the local name completely could remove the cultural story that makes the drink distinctive. A poor name might also suggest the wrong flavour or make it sound like an imported product.",
+            "Promotion could combine the original name with a clear explanation and consistent spelling. Cafés might offer tasting events, demonstrations or maps of traditional shops, while tourism campaigns could link the drink to Hong Kong’s café culture. The most suitable choice should be accurate, easy to say and strong enough to represent both the drink and its local identity."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class teacher has asked your group to think of a name that could better promote yuenyeung, a well-known Hong Kong drink. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "A suitable name for the drink"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why this name would be suitable"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How else the government could promote the drink"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What's your favourite drink and why do you like it?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you prefer drinking tea or coffee?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Which drinks are most popular among young people today?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do older and younger people enjoy the same kinds of drinks?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What local Hong Kong food would you recommend to tourists?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think tourists would enjoy trying a unique Hong Kong drink?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Besides food and drinks, what other parts of Hong Kong culture should be promoted to visitors?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Have you ever bought a product just because it had a catchy or interesting name?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 7.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-7-2-electronic-lai-see",
+      "paper_version": "7.2",
+      "current_title": "Electronic Lai See",
+      "audit": {
+        "classification": {
+          "printing_order": "exact",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "exact",
+          "part_b": "close"
+        },
+        "confidence": "medium-high",
+        "source_ids": [
+          "SCAN-2019-CANDIDATE",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "The printed Part A task and prompts are directly supported by the candidate-paper scan. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 161
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-7-2-electronic-lai-see",
+        "source_kind": "pp",
+        "paper_version": "7.2",
+        "title": "Electronic Lai See",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 7.2 scenario (not official text):",
+          "title": "Electronic Lai See: Questions and Trade-offs",
+          "body": [
+            "Electronic payments allow people to send lai see through a phone in seconds, even when relatives cannot meet in person. Digital packets can include greetings, animations and group games, and users do not need to visit a bank for new notes. For busy or overseas families, the convenience is clear.",
+            "Many people still value the physical red packet. Choosing an envelope, offering it with both hands and meeting relatives give the gift warmth that a notification may not provide. Older family members may find payment apps difficult, while users of any age may worry about fraud, data collection or sending money to the wrong account.",
+            "Traditions often change without disappearing. Families could use electronic lai see when distance makes it helpful and keep physical packets for face-to-face visits. Other Lunar New Year customs may also be affected by online shopping, shorter holidays and virtual greetings. The important question is whether technology supports relationships or merely makes an obligation faster to complete."
+          ]
+        },
+        "part_a": {
+          "instruction": "You have been asked to write an essay titled “Are Hongkongers open to change?” Your group has been asked to discuss the use of e-payments as lai see. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why people are using e-payments for lai see"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether real money will remain popular"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What other changes to the Lunar New Year people might dislike"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Is giving lai see electronically becoming common in Hong Kong?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever received lai see through an e-payment app?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you rather get lai see in digital form or as physical red packets?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do you think e-payments haven't become more popular in Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think giving lai see is an outdated tradition?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why is e-payment so widely used in mainland China?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What does the act of giving lai see say about someone's personality or values?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think technology is making relationships feel less personal or meaningful?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 7.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against a sequential scan of the printed candidate paper. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-7-3-inequality-in-hong-kong",
+      "paper_version": "7.3",
+      "current_title": "Inequality in Hong Kong",
+      "audit": {
+        "classification": {
+          "printing_order": "close",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "close",
+          "part_b": "close"
+        },
+        "confidence": "medium",
+        "source_ids": [
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "No freely accessible printed candidate page was found for this late Set; topic and prompts agree across the current library and the candidate-recall index, while the task lead-in is an original practice bridge. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 158
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-7-3-inequality-in-hong-kong",
+        "source_kind": "pp",
+        "paper_version": "7.3",
+        "title": "Inequality in Hong Kong",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 7.3 scenario (not official text):",
+          "title": "Inequality in Hong Kong: Questions and Trade-offs",
+          "body": [
+            "Hong Kong offers efficient transport, public services and opportunities in an international economy, yet residents do not share these benefits equally. High housing costs, different school resources and gaps between wages can shape where people live, what they can study and how secure they feel about the future.",
+            "Some inequality reflects different choices, skills and responsibilities, but very large gaps can reduce social mobility. Families with fewer resources may struggle to afford tutoring, suitable housing or time for training. When people believe that effort cannot improve their position, trust in institutions and other social groups may weaken.",
+            "Policies can address barriers without promising that every outcome will be identical. Affordable housing, accessible childcare, well-funded schools, job training and fair wages may widen opportunity. Taxes and benefits also require careful design so that help reaches those who need it without creating unnecessary complexity. A more equal society should be judged by dignity, opportunity and participation as well as income."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is examining inequality in Hong Kong. Your group has been asked to discuss whether Hong Kong is an unequal society and what could be done. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether Hong Kong really is an unequal society"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why unequal societies may have problems"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Policies that would make Hong Kong a more equal society"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy living in Hong Kong? Why or why not?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think people who are struggling financially in Hong Kong need more support?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Are people in Hong Kong concerned about social and economic inequality?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Does everyone in Hong Kong have the same opportunities to succeed?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you describe Hong Kong as a fair society?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is income or wealth inequality a serious issue?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you want to live in a society where everyone is completely equal?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think inequality always means a society is unfair?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 7.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against candidate-recall indexes. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-8-1-co-living",
+      "paper_version": "8.1",
+      "current_title": "Co-living",
+      "audit": {
+        "classification": {
+          "printing_order": "close",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "close",
+          "part_b": "close"
+        },
+        "confidence": "medium",
+        "source_ids": [
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "No freely accessible printed candidate page was found for this late Set; topic and prompts agree across the current library and the candidate-recall index, while the task lead-in is an original practice bridge. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 159
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-8-1-co-living",
+        "source_kind": "pp",
+        "paper_version": "8.1",
+        "title": "Co-living",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 8.1 scenario (not official text):",
+          "title": "Co-living: Questions and Trade-offs",
+          "body": [
+            "Co-living developments give residents a private sleeping area while kitchens, lounges, workspaces or laundry facilities are shared. Short leases and included furniture can suit students and young workers who move frequently. Sharing expensive facilities may reduce costs and create opportunities to meet people in an unfamiliar city.",
+            "The arrangement also brings difficulties. Residents may disagree about noise, guests, cleaning and the use of common areas. Limited private space can be stressful, especially when strangers have different schedules. Advertised rents may not be cheaper once service charges are included, and frequent changes of residents can prevent a stable community from forming.",
+            "Clear rules should cover quiet hours, visitors, shared expenses, security and ways to resolve conflict. Residents need honest information about room size, fees and who manages complaints before signing an agreement. Co-living can add another housing option, but it should not be presented as a complete answer to high rents or a reason to accept unsafe and overcrowded accommodation."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is discussing co-living as a possible response to Hong Kong’s housing needs. Your group has been asked to consider the idea. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages of co-living"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The disadvantages of co-living"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What rules you think co-living accommodation should have"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think you would enjoy living in a co-living space? Why or why not?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What aspects of co-living might be difficult for you?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think co-living will become more common in the future?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why is it important for people to have some private space, even in shared living situations?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What would your ideal living space or dream home look like?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why do some people prefer to live alone rather than with others?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What life skills or lessons could someone learn from co-living?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should the government support or promote co-living as a housing solution?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 8.1 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against candidate-recall indexes. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-8-2-mcsleepers",
+      "paper_version": "8.2",
+      "current_title": "McSleepers",
+      "audit": {
+        "classification": {
+          "printing_order": "close",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "close",
+          "part_b": "close"
+        },
+        "confidence": "medium",
+        "source_ids": [
+          "HKEAA-2019-SAMPLES",
+          "HKEAA-2019-BRIEFING",
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "No freely accessible printed candidate page was found for this late Set; topic and prompts agree across the current library and the candidate-recall index, while the task lead-in is an original practice bridge. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 160
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-8-2-mcsleepers",
+        "source_kind": "pp",
+        "paper_version": "8.2",
+        "title": "McSleepers",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 8.2 scenario (not official text):",
+          "title": "McSleepers: Questions and Trade-offs",
+          "body": [
+            "Some people without secure housing spend the night in twenty-four-hour fast-food restaurants and have become known as “McSleepers”. Bright lighting, air conditioning, toilets and the presence of staff can feel safer than sleeping outdoors. Buying a small item may also allow a person to remain indoors for several hours.",
+            "The arrangement is not a real home. Sleep is interrupted, personal belongings are difficult to protect and washing facilities are limited. Other customers may feel uncomfortable, while employees must handle complaints without training as social workers. Removing people may protect the business in the short term but leave vulnerable individuals in a more dangerous place.",
+            "Restaurants can set reasonable behaviour rules and connect customers with outreach services, but private companies cannot solve homelessness alone. Government and community groups need emergency shelters, affordable housing, mental-health care and help with employment or documents. The presence of McSleepers should be treated as evidence of a wider housing problem, not simply as poor customer behaviour."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is discussing homelessness and people who sleep overnight in 24-hour McDonald’s restaurants. Your group has been asked to consider the issue. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What problems homeless people face"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why they go to McDonald's"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How this affects McDonald's"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy going to McDonald's? Why or why not?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever been to McDonald's late at night? What was it like?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Besides McDonald's, where else do homeless people usually sleep?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think McDonald's is a company that cares about the community?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What do you think would be the hardest part about sleeping in a McDonald's?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What kinds of people are more likely to become homeless?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should private companies do more to help address homelessness?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Why does homelessness still exist in rich cities like Hong Kong?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 8.2 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against candidate-recall indexes. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2019-8-3-age-limit-for-political-leaders",
+      "paper_version": "8.3",
+      "current_title": "Age Limit for Political Leaders",
+      "audit": {
+        "classification": {
+          "printing_order": "close",
+          "title": "exact",
+          "current_context": "unsupported",
+          "replacement_context": "original_mock",
+          "part_a": "close",
+          "part_b": "close"
+        },
+        "confidence": "medium",
+        "source_ids": [
+          "DSE-TREASURE-2019-RECALL"
+        ],
+        "notes": "No freely accessible printed candidate page was found for this late Set; topic and prompts agree across the current library and the candidate-recall index, while the task lead-in is an original practice bridge. Part B remains a clearly labelled practice paraphrase because the accessible recall source warns that its wording is not verbatim.",
+        "context_word_count": 159
+      },
+      "replacement": {
+        "set_id": "dse-p4-pp-2019-8-3-age-limit-for-political-leaders",
+        "source_kind": "pp",
+        "paper_version": "8.3",
+        "title": "Age Limit for Political Leaders",
+        "visible_to_students": true,
+        "context": {
+          "source_line": "Original practice article based on the verified 2019 HKDSE Paper 4 Set 8.3 scenario (not official text):",
+          "title": "Age Limit for Political Leaders: Questions and Trade-offs",
+          "body": [
+            "Political leadership requires judgement, communication, integrity and the ability to respond to change. Older leaders may offer long experience, knowledge of institutions and established relationships. Younger leaders may bring different priorities, greater familiarity with new technology and a longer personal stake in decisions about the future.",
+            "Age does not guarantee either wisdom or innovation. Health and energy vary greatly between individuals, and a young leader can be inflexible just as an older leader can adapt quickly. A strict upper age limit might remove capable candidates and encourage discrimination, while ignoring age completely may leave legitimate questions about stamina and succession unanswered.",
+            "Voters and organisations should examine evidence of competence, health, ethics and recent performance rather than rely on a number alone. Term limits, transparent medical information and leadership teams with different generations may address some concerns more fairly. The goal is not to choose the youngest or oldest person, but to create accountable leadership that understands a changing society."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is discussing whether age should be considered when political leaders are selected. Your group has been asked to consider the issue. You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What skills a political leader needs in today's society"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The strengths and limitations of older leaders"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether age should be a factor in choosing a leader"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you be interested in becoming a leader yourself?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you prefer a younger or older leader? Why?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What is the biggest advantage younger leaders might have?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should older leaders be respected simply because of their age?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do older leaders understand the needs and views of younger people?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How important is life experience when it comes to leadership?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think there should be age limits for political leaders?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is society unfair or discriminatory toward older people?"
+            }
+          ]
+        },
+        "source_note": "2019 HKDSE Paper 4 Set 8.3 past-paper practice. The Set number, topic and Part A prompts were cross-referenced against candidate-recall indexes. The Part B questions are practice paraphrases based on a candidate-recall index and are not claimed as verbatim official wording. The context below is newly written, original practice material based on the verified scenario; it is not the official examination article."
+      }
+    }
+  ],
+  "hidden_mock_summary": {
+    "expected": 2,
+    "found": 2,
+    "note": "These are internal original mocks and are not part of the 2019 public examination."
+  },
+  "hidden_mock_records": [
+    {
+      "set_id": "dse-p4-mock-2019-screen-time-controls-for-teenagers",
+      "current_title": "Screen-time Controls for Teenagers",
+      "audit": {
+        "classification": {
+          "identity": "exact",
+          "originality": "exact",
+          "internal_alignment": "exact",
+          "past_paper_status": "not_applicable"
+        },
+        "confidence": "high",
+        "source_ids": [],
+        "notes": "Internally coherent and original. It has no paper_version and visible_to_students is false, so it is correctly separated from the 24 verified/recalled past-paper Sets.",
+        "context_word_count": 159
+      },
+      "replacement": {
+        "set_id": "dse-p4-mock-2019-screen-time-controls-for-teenagers",
+        "source_kind": "mock",
+        "paper_version": null,
+        "title": "Screen-time Controls for Teenagers",
+        "visible_to_students": false,
+        "context": {
+          "source_line": "Original mock practice article (not an official HKDSE examination text):",
+          "title": "Can a Phone Teach Us When to Put It Down?",
+          "body": [
+            "Most smartphones now show how much time users spend on different apps. They can block selected services after a daily limit, silence notifications during study periods and produce weekly reports. Supporters say the data turns an invisible habit into something measurable and helps families notice patterns that would otherwise be ignored.",
+            "Limits do not automatically create self-control. Users can press an “ignore” button, change settings or move to another device. Strict monitoring may damage trust and encourage secretive behaviour, especially when adults do not follow the same rules. The purpose of online activity also matters: an hour of homework is different from an hour of endless short videos.",
+            "Some families prefer a shared agreement in which everyone keeps phones away during meals, study sessions and before bedtime. Schools can teach students to manage notifications and recognise persuasive app design. Technology can provide reminders, but lasting change depends on motivation, realistic routines and honest conversations about sleep, learning and relationships."
+          ]
+        },
+        "part_a": {
+          "instruction": "You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why teenagers may need screen-time controls"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "the limitations of screen-time control tools"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "what rules families and schools should adopt"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "How much screen time is too much for a secondary school student?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Should parents be allowed to check their children’s phone-use reports?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Are adults good role models for healthy phone use?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you use an app that locks your phone while you study?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should phones be banned during school breaks?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Which is more harmful: gaming, social media or short videos?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Can screen-time limits improve sleep?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is self-discipline more effective than technological control?"
+            }
+          ]
+        },
+        "source_note": "Original internal 2019-themed mock practice set. It is not an HKDSE past-paper question and must remain hidden from the past-paper library unless deliberately published as a mock."
+      }
+    },
+    {
+      "set_id": "dse-p4-mock-2019-translation-apps-and-language-learning",
+      "current_title": "Translation Apps and Language Learning",
+      "audit": {
+        "classification": {
+          "identity": "exact",
+          "originality": "exact",
+          "internal_alignment": "exact",
+          "past_paper_status": "not_applicable"
+        },
+        "confidence": "high",
+        "source_ids": [],
+        "notes": "Internally coherent and original. It has no paper_version and visible_to_students is false, so it is correctly separated from the 24 verified/recalled past-paper Sets.",
+        "context_word_count": 150
+      },
+      "replacement": {
+        "set_id": "dse-p4-mock-2019-translation-apps-and-language-learning",
+        "source_kind": "mock",
+        "paper_version": null,
+        "title": "Translation Apps and Language Learning",
+        "visible_to_students": false,
+        "context": {
+          "source_line": "Original mock practice article (not an official HKDSE examination text):",
+          "title": "A Helpful Language Partner — or a Dangerous Shortcut?",
+          "body": [
+            "Translation apps are fast, inexpensive and easy to use. A traveller can point a phone camera at a menu, while a student can listen to the pronunciation of an unfamiliar phrase. The apps reduce anxiety and may help people communicate in an emergency when no interpreter is available.",
+            "A smooth translation can still be misleading. Software may miss humour, cultural references, specialist meanings and the speaker’s tone. Students who paste an entire assignment into an app may submit unnatural sentences without understanding the grammar. Constant dependence can also prevent learners from thinking directly in the language they are studying.",
+            "Used carefully, an app can act as a dictionary, pronunciation guide and checking tool. Students should compare uncertain results, declare when substantial help was used and keep a record of their own corrections. Schools need rules that distinguish learning support from work that falsely appears to be the student’s own language."
+          ]
+        },
+        "part_a": {
+          "instruction": "You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the benefits and risks of translation apps"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "activities that should be included in the workshop"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "guidelines for using translation apps in schoolwork"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "When do you normally use a translation app?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Can translation apps replace language teachers?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Should students declare when they use a translation app?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are translation apps reliable enough for medical emergencies?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Will people become less interested in learning foreign languages?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Which is more useful: a dictionary or a translation app?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should translation apps be allowed in examinations?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How can users check whether a translation is accurate?"
+            }
+          ]
+        },
+        "source_note": "Original internal 2019-themed mock practice set. It is not an HKDSE past-paper question and must remain hidden from the past-paper library unless deliberately published as a mock."
+      }
+    }
+  ]
+}

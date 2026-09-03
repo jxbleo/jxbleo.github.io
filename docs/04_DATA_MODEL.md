@@ -1413,7 +1413,10 @@ The canonical release holds 311 `speaking_sets`: 306 visible `source_kind: pp`
 records and five retained `source_kind: mock` records with
 `visible_to_students: false`. Stable `set_id` and `paper_version` values are the
 identity; title is never a key. Existing Session snapshots remain unchanged
-when a canonical Set is edited or hidden.
+when a canonical Set is edited or hidden. Stable `pa_NN` and `ir_NN` values
+remain attached to their records when audited printed order changes; `order`
+is the display sequence and therefore does not have to numerically match the
+suffix of the stable child ID.
 ## Scan collections (ADMINONLY)
 
 V1 adds `vocabulary_scan_sessions`, `vocabulary_scan_pages`, and

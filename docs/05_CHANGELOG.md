@@ -2859,6 +2859,25 @@ stored Set/Response data are unchanged.
   coverage for `Keeping the Elderly Active`.
 - Retained but hid the five historical MOCK seeds, added student/teacher filters
   and bounded rendering, and changed Set lists to metadata-only projections.
+
+## 2026-09-03 — Year-by-year Paper 4 content audit
+
+- Cross-referenced all 306 Past Paper practices in twelve independent yearly
+  audits using official HKEAA material where public, complete HKEAA-branded
+  scans where available, and explicitly graded secondary/recalled sources.
+- Replaced generic Context templates with 150–220-word topic-specific original
+  mock articles that are clearly labelled as non-official.
+- Corrected task contexts, titles, missing/replaced questions and printed Part B
+  order while preserving all stable Set/point/question IDs and historical
+  report snapshots. High-risk fixes include 2013 Set 10.1, 2017 Set 8.3,
+  swapped 2023 Sets 1.1/1.3 and 2025 Set 6.1.
+- Added durable audit evidence, a deterministic audit merger, regression checks
+  for child-ID/order independence, and a guard against raw recall generation
+  overwriting the reviewed library.
+- Imported revision 2 into the development CloudBase `speaking_sets` collection:
+  306 audited Past Paper practices are student-visible and the five retained
+  historical MOCK seeds remain hidden.
+
 ### 2026-09-02 — My Words Scan V1
 
 Added authenticated five-page photo intake with local crop/mask editing,

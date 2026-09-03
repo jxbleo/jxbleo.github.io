@@ -2776,6 +2776,14 @@ Motion, Reduced Transparency, and Increased Contrast.
 - Assert year counts, unique Set IDs/year-version pairs, four Part A points,
   eight Part B questions, substantive original Contexts and no repeated full
   Part B list or redundant `In your view/opinion` prefix.
+- Run `node scripts/apply-dse-paper4-audits.js` without `--write`; it must find
+  exactly one audited replacement per stable Set ID. Confirm child ID sets stay
+  unchanged while their `order` values remain continuous even when printed
+  order differs from the ID suffix.
+- Spot-check the recorded high-risk corrections: 2013 Set 10.1 Chindogu
+  Society, 2017 Set 8.3 Night Hiking and Camping, swapped 2023 Sets 1.1/1.3,
+  and the corrected missing 2025 Set 6.1 Part A point. Confirm 2026 Part B
+  remains labelled recalled/practice wording rather than exact official text.
 - Assert list responses omit Context/Part A/Part B; opening and teacher editing
   still fetch one full Set by ID.
 - Test search, Year/source/visibility filters and Show more at desktop and phone

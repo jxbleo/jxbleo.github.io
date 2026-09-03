@@ -1156,6 +1156,14 @@ Set ID, source/year/version, title, revision and visibility; opening or editing
 one Set calls its authorized detail action for Context, Part A and Part B. This
 keeps the 306-card student and teacher libraries responsive without exposing the
 canonical private corpus through static assets.
+
+The canonical source is rebuilt from year-scoped reviewed evidence under
+`content/speaking/audits/dse-paper4/` by
+`scripts/apply-dse-paper4-audits.js`. The merger validates one audited record
+per stable Set ID and writes only reviewed content fields; audit metadata stays
+beside the source and remains excluded from `dist/`. The older Markdown parser
+is a draft generator and cannot overwrite the audited canonical file without
+an explicit recovery flag.
 ## My Words Scan
 
 `my-words.html` mounts an isolated scan client. The browser keeps originals and

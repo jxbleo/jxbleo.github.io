@@ -1,0 +1,3088 @@
+{
+  "audit_year": 2024,
+  "accessed_on": "2026-09-03",
+  "scope": {
+    "canonical_records": 25,
+    "past_paper_records": 24,
+    "hidden_mock_records": 1,
+    "expected_past_paper_versions": 24
+  },
+  "methodology": {
+    "status_values": [
+      "exact",
+      "close",
+      "unsupported",
+      "conflict"
+    ],
+    "copyright_boundary": "Official context passages were used only to verify topic and task meaning. Replacement contexts are newly written mock articles and must not be labelled as official text.",
+    "source_hierarchy": [
+      "HKEAA official material",
+      "full-paper scan/reproduction",
+      "candidate-recall compilation"
+    ]
+  },
+  "sources": [
+    {
+      "level": "official",
+      "title": "HKEAA Briefing Session for the 2024 HKDSE English Language — Paper 4 Samples of Performance",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Subject_Information/eng_lang/PowerPoint-ENG-2024.pdf",
+      "supports": "Official confirmation of 2024 versions 1.1 Digital museum, 1.2 Food delivery workers, 2.1 Tourism Management and 2.3 Comfort food; assessment context.",
+      "accessed_on": "2026-09-03"
+    },
+    {
+      "level": "official",
+      "title": "HKEAA Samples of Candidates' Performance — 2024 Exam",
+      "url": "https://www.hkeaa.edu.hk/en/HKDSE/assessment/subject_information/category_a_subjects/eng_lang/sp/2024.html",
+      "supports": "Official Paper 4 sample-performance index and release context.",
+      "accessed_on": "2026-09-03"
+    },
+    {
+      "level": "full_paper_reproduction",
+      "title": "DSE 2024 Paper 4 — 48-page scanned question paper and examiner prompts",
+      "url": "https://www.scribd.com/document/951718395/DSE-2024-Paper-4",
+      "supports": "Complete 24-version sequence, task scenarios, Part A prompts and printed Part B question order. OCR artefacts were corrected conservatively.",
+      "accessed_on": "2026-09-03"
+    },
+    {
+      "level": "candidate_recall_secondary",
+      "title": "DSE Treasure — 2024 DSE Speaking topics",
+      "url": "https://dsetreasure.com/dse-english-paper-4-%E9%A1%8C%E7%9B%AE/",
+      "supports": "Independent corroboration of topic/version ordering and Part A ideas; the site explicitly warns that recalled wording may differ.",
+      "accessed_on": "2026-09-03"
+    }
+  ],
+  "replacements": [
+    {
+      "set_id": "dse-p4-pp-2024-1-1-digital-museum",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "1.1",
+      "title": "Digital Museums",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Museums Without Walls",
+        "body": [
+          "Museums once depended mainly on visitors walking through their doors. Today, many institutions also place paintings, objects and historical records online. A digital collection can reach students who live far away, support people who cannot travel easily and allow fragile items to be examined without being handled. Zoom tools, audio commentary and searchable labels can make details easier to notice.",
+          "Online access, however, is not the same as standing beside an original object. A screen cannot fully show its scale, texture or the atmosphere of a gallery. Digital projects also require careful photography, accurate descriptions and long-term technical support. If the experience becomes only a quick slideshow, visitors may look without understanding.",
+          "Local museums therefore need to connect rather than separate the two formats. Online previews can arouse curiosity, while guided activities, workshops and changing exhibitions can give people reasons to visit in person. The key question is how technology can widen access while preserving the special value of a real museum visit."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a project on digital museums. You are meeting to discuss the topic. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why some museums want to put their art collections online"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "how viewing art online is different from viewing it in person"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how local museums can compete with digital museums to attract visitors"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you enjoy going to museums?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Should there be more art lessons in schools?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Who visits museums more: young people or the elderly?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you think digital museums will become more popular?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Should students be encouraged to visit art museums?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you prefer looking at art or making your own art?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should all museums be free to the public?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What can people learn by viewing art?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-mock-2024-1-1-digital-museums",
+      "source_kind": "mock",
+      "exam_year": 2024,
+      "paper_version": "1.1",
+      "title": "Digital Museums — Independent Mock",
+      "source_note": "Independent mock retained as hidden content. It is not an additional 2024 past-paper version. Passage and questions are original practice material.",
+      "context": {
+        "source_line": "Independent mock article (not an HKDSE past-paper passage):",
+        "title": "Can a Museum Fit Inside a Phone?",
+        "body": [
+          "A digital museum allows visitors to examine high-resolution images, three-dimensional models and recorded stories without travelling. Students can rotate an ancient object, zoom in on small details and return to an exhibit after class. Online access also supports people who live far away or find a physical visit difficult.",
+          "A virtual tour cannot reproduce the scale, texture and atmosphere of seeing an original object in a gallery. Some users click quickly without reading, and advanced features may exclude people with older devices or slow connections. Museums must also pay to photograph, describe, translate and securely store their collections.",
+          "The strongest plan may connect the two experiences. An online preview can build curiosity before a visit, while maps, captions and audio can support visitors inside the museum. Interactive games can invite exploration if they respect the subject. The purpose is not to replace the building, but to give more people a meaningful way into its collection."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is advising a local museum on a new digital access plan. You are meeting to discuss the proposal. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the benefits and limitations of a digital museum"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "digital features that would appeal to teenagers"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how to connect online and in-person visits"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you prefer visiting a museum online or in person?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Should all museum collections be available online for free?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Can virtual reality make history more interesting?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Would digital exhibits reduce the number of physical visitors?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "What makes a museum attractive to young people?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Should visitors be allowed to take photographs of every exhibit?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Are interactive games suitable for serious historical topics?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "How can museums remain accessible to people without advanced devices?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "hidden_mock",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "exact",
+          "exact",
+          "exact",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "exact",
+          "exact",
+          "exact",
+          "exact",
+          "exact",
+          "exact",
+          "exact",
+          "exact"
+        ],
+        "overall_confidence": "high_as_mock",
+        "notes": "This hidden record duplicates past-paper version 1.1 by topic but is intentionally independent mock content. Keep it hidden and do not present it as a second official Set 1.1."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-1-2-delivery-apps",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "1.2",
+      "title": "Food Delivery Workers",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "The People Behind the Delivery App",
+        "body": [
+          "Ordering dinner by phone has become routine for many households. Apps offer menus from hundreds of restaurants, cashless payment and live tracking, which is useful for busy workers, families and people staying at home. Restaurants can reach customers beyond their neighbourhood, while riders can choose shifts that fit around other responsibilities.",
+          "Convenience may hide difficult working conditions. Delivery workers face traffic, bad weather and pressure to arrive quickly. Some pay for their own bicycles, fuel and repairs, yet receive no guaranteed hours, sick leave or protection when orders are scarce. Low delivery fees can make meals attractive to customers while shifting costs and risks to workers.",
+          "Possible improvements include minimum payments, accident insurance, rest facilities and clearer rules about employment status. Apps could also group nearby orders and encourage reusable packaging to reduce waste. Consumers, restaurants and platforms all benefit from the service, so the discussion should consider how responsibility can be shared fairly."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a project on home food delivery. You are meeting to discuss the topic. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the popularity of food delivery apps"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "the challenges of working as a food delivery worker"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how to improve the working conditions of food delivery workers"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you prefer food delivery or home-cooked food?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you like to order food online?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Would you like to work as a food delivery worker?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Would you be interested in working in the food industry?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do food delivery apps encourage unhealthy eating habits?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "How can food delivery be more environmentally friendly?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Do you think home food delivery will continue to be popular?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think technology will replace food delivery workers in the future?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "conflict",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-1-3-unattractive-buildings-in-hong-kong",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "1.3",
+      "title": "'Ugly' Buildings",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "When a Building Divides Opinion",
+        "body": [
+          "A building can be useful, historically important and still be disliked for its appearance. People may object to a strange shape, ageing concrete or a colour that clashes with nearby streets. In a dense city, one large structure can influence an entire skyline, so arguments about beauty often become arguments about identity and public space.",
+          "Demolition is not always the best answer. A controversial building may represent the design ideas of its time or contain memories shared by a community. Replacing it creates waste and can remove affordable facilities. On the other hand, serious safety problems, poor access or an impractical layout may make renovation expensive and difficult.",
+          "A fair decision should consider more than a popularity vote. Planners can examine structural condition, cultural value, environmental cost and the needs of people who use the site. Public consultation and creative reuse may turn an unpopular building into a useful landmark. The challenge is deciding which faults can be improved and which justify replacement."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is working on a project about 'ugly' buildings. You are meeting to discuss the issue. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "whether it is important for buildings to look attractive"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "reasons for keeping buildings that many people consider ugly"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how to decide whether a building should stay or be replaced"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like old buildings?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you have a favourite building in Hong Kong?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Which district in Hong Kong has the most beautiful buildings?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Should Hong Kong build even taller buildings?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Should a building be approved by the public before it is built?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Why do some people consider old buildings more beautiful than new buildings?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Do you think Hong Kong looks different from other big cities?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What makes a building beautiful?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "conflict",
+          "conflict",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-2-1-the-global-impact-of-tourism",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "2.1",
+      "title": "Tourism Management",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Managing the Crowds",
+        "body": [
+          "Tourism brings money, jobs and international attention to cities. Visitors support hotels, restaurants, transport and small shops, while heritage sites may receive funding because more people value them. Travel can also introduce local culture to a wider audience and encourage residents to see familiar places with fresh interest.",
+          "Too many visitors can create different problems. Popular districts may become crowded, rents can rise and everyday services may focus more on tourists than residents. Natural areas and historic buildings can be damaged when large groups arrive at the same time. Noise, waste and disrespectful behaviour may weaken local support for tourism.",
+          "Destinations have tried entry reservations, visitor charges, limits on new hotels and campaigns that explain local customs. Hong Kong could apply different measures to busy attractions rather than one rule for the whole city. Good management should protect residents and the environment without making visitors feel unwelcome or excluding travellers with smaller budgets."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a project on the impact of tourism in different parts of the world. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "benefits tourism can bring to a city"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "problems tourism can bring to a city"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "whether Hong Kong should follow any of the management strategies described in the article"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What do tourists like to do in Hong Kong?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "What can people learn from visiting another country?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "What makes Hong Kong a good place to visit?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Would you like to work in the tourism industry?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Is it better to plan your own trip or join a tour?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you prefer to travel alone or with friends and family?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Why do so many people travel these days?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "How can you be a responsible tourist?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-2-2-driverless-trams",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "2.2",
+      "title": "Driverless Tram Concept for Hong Kong",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A New Generation of Tram",
+        "body": [
+          "A design team has proposed an electric double-decker tram that can operate without a driver. Cameras and sensors would monitor pedestrians, vehicles and signals, while an automatic control system would adjust speed and stop the tram. Supporters say the technology could improve punctuality and help the network respond more quickly to passenger demand.",
+          "The design also changes the passenger experience. Large windows, outward-facing seats and information screens could make journeys easier for visitors and commuters. Yet a driver does more than control a vehicle. Passengers may need help during an emergency, and crowded streets create situations that software may find difficult to predict. Some people may also worry about job losses or system failure.",
+          "Before introducing driverless trams, operators could run supervised trials and publish clear safety results. Accessible boarding, multilingual announcements and space for wheelchairs should be part of the design. The aim should be to modernise an icon of Hong Kong without losing public confidence or the character that makes tram travel distinctive."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of your school's Technology Club. Your group has been asked to discuss the driverless tram concept. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "whether driverless trams are a good idea for Hong Kong"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "whether the public would like this design"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "other features which could be added to the tram"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you often take the tram?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Would you ride on a driverless tram?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Is public transport in Hong Kong too crowded?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Are trams a good mode of transport?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Are trams getting less popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Should more people use public transport?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Will driverless vehicles become more common in Hong Kong?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "How can the tram company make more money?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "close",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-2-3-comfort-food",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "2.3",
+      "title": "Comfort Food",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Why Certain Foods Feel Special",
+        "body": [
+          "Comfort food is not simply a type of dish. It is food connected with safety, memory or care. A bowl of congee may remind someone of being looked after at home, while a familiar snack may recall school days or celebrations. During stress, people often choose such foods because the taste is predictable and the memory is reassuring.",
+          "Many popular comfort foods are high in salt, sugar or fat, but this does not mean they must be banned. Portion size, frequency and preparation method matter. A home-cooked soup or fruit-based dessert can provide comfort without becoming an everyday unhealthy habit. Different generations may also choose different dishes because their memories and lifestyles are not the same.",
+          "Food offers temporary relief, but it cannot solve every cause of stress. Exercise, sleep, conversation and time outdoors may support mental health for longer. A balanced approach should allow people to enjoy meaningful foods while recognising when eating is replacing other forms of care."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a project on comfort food. You are meeting to discuss this topic. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "reasons why people eat comfort food"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "whether comfort food can be part of a healthy diet"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "other ways to reduce stress and improve mental health"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What is your favourite comfort food?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "When do you eat comfort food?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Should snacks be banned from school?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do young and old people like the same kind of comfort food?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Did your eating habits change during the pandemic?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Should companies provide comfort food for their employees?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should comfort food come with health warnings?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think you could live without comfort food?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "exact",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "close",
+          "conflict",
+          "conflict",
+          "close",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-3-1-multifunctional-cafes",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "3.1",
+      "title": "Multi-functional Cafés in Hong Kong",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "More Than Coffee",
+        "body": [
+          "Some cafés now combine food and drink with another service. Customers might study in a coding café, book a massage from a social enterprise, have a haircut or use washing machines while waiting. In a city where rent is high and free space is limited, one venue serving several purposes can appear both practical and creative.",
+          "The combination must still make sense. Noise from a busy salon may disturb students, while food hygiene and customer privacy require careful planning. Two services also mean more equipment, staff training and licences. If neither side is managed well, the business may feel confusing rather than convenient.",
+          "A successful owner should identify a clear group of customers and design the space around their needs. Reliable Wi-Fi, comfortable seating, transparent prices and a booking system may be more important than unusual decoration. Partnerships with local clubs or charities can also build a community. The strongest idea is not necessarily the most surprising one, but the one people would return to regularly."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of your school's Business Club. You are doing a project on multi-functional cafés. You are meeting to discuss this. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why multi-functional cafés are popular"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "which multi-functional café will attract the most customers"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "what advice you have for people who want to open a multi-functional café"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like going to cafés?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Is a café a good place to do homework?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Would you like to work at a café?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you like going to chain coffee shops, like Starbucks?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Why are coffee shops so popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you think multi-functional cafés are a good idea?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Do you think multi-functional cafés will take over traditional coffee shops?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What other businesses could benefit from mixed use of space?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "close",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-3-2-podcasting",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "3.2",
+      "title": "Podcasting",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Hong Kong in Your Headphones",
+        "body": [
+          "Podcasts allow listeners to explore a subject while travelling, exercising or doing routine work. A tourism series about Hong Kong could use short news-style episodes, first-person stories or relaxed conversations with residents. Sound can create a strong sense of place through market voices, ferry horns and interviews that a written guide may not capture.",
+          "A useful series needs more than a list of famous attractions. Episodes could introduce neighbourhood traditions, affordable food, hiking routes and practical travel advice. Different speakers would show that the city has many viewpoints. However, information about prices, opening hours and transport can become outdated, so each episode needs a date and reliable sources.",
+          "To keep listeners interested, the programme could use a clear host, a regular length and a question that is answered by the end. Transcripts would help learners and people with hearing difficulties. A good tourism podcast should make listeners curious while respecting local communities instead of presenting the city as a collection of photo opportunities."
+        ]
+      },
+      "part_a": {
+        "instruction": "The Tourism Board has invited students to promote Hong Kong to international visitors through podcasts. Your group is meeting to plan a series of podcasts. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "which type of podcast can best promote Hong Kong"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "what to include in the podcasts"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how to keep listeners interested in the series"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you listen to podcasts?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "When do you listen to a podcast?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "What do you like to listen to on a podcast?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you think making a podcast would be fun?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "If you created a podcast, what would you talk about?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Are podcasts a good way to learn about a place?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Why do some people prefer videos over podcasts?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What skills should a podcast host have?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "exact",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-3-3-empowering-vulnerable-communities",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "3.3",
+      "title": "Feeding Communities",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Sharing Food Safely",
+        "body": [
+          "Hong Kong produces large amounts of edible surplus food while some families struggle to afford regular meals. Community fridges let people leave suitable food for others to take, and food-rescue groups collect surplus ingredients from businesses before preparing meal boxes. Both approaches reduce waste and offer practical support without complicated application procedures.",
+          "Good intentions are not enough. Donated food must be within date, stored at the correct temperature and clearly labelled. Volunteers need training, regular cleaning schedules and a plan for items that cannot be distributed. Privacy also matters: people should be able to receive help without being photographed or treated as a publicity opportunity.",
+          "A school could begin with a limited collection of sealed dry food or partner with an experienced charity. Students might organise inventories, create multilingual safety notices and explain why reliable small donations are more useful than occasional large campaigns. The project should be judged by whether it meets community needs safely and respectfully, not simply by how many items are collected."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the Social Service Club. You are meeting to discuss how to help communities in need. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why it is important for young people to help communities in need"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "which community food project would be best to organise in your school"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "what else your school can do to help communities in need"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Have you done any community service?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "What kinds of food are good to donate?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Is a lot of food wasted in Hong Kong?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Why do businesses want to donate their leftover food?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do you think a community fridge project would work where you live?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Would you leave food in a community fridge?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should more be done to raise awareness of communities in need?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What should you consider before volunteering?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "conflict",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-4-1-a-vocational-graduate-school-project",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "4.1",
+      "title": "Vocational Training in Germany",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Learning at Work and at School",
+        "body": [
+          "Vocational education combines classroom study with practical training in a workplace. A trainee might spend several days learning from skilled employees and the remaining time studying technical and general subjects. Courses can lead to recognised qualifications in areas such as healthcare, electrical work, design, media production and business services.",
+          "This pathway offers experience that a lecture-based programme may not provide. Students practise using equipment, working with customers and solving real problems while discovering whether a career suits them. Employers help shape the training and gain workers with relevant skills. Society benefits when essential industries have a steady supply of qualified people.",
+          "However, students may worry that vocational routes have lower status or limit later choices. Clear progression to higher qualifications, fair pay during training and strong career guidance can address these concerns. Schools should present university and vocational education as different routes rather than a simple ranking. The best choice depends on a learner’s interests, strengths and future plans."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a project on job training for graduates of secondary school. You are meeting to discuss the topic. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "what vocational training offers that university does not"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "how vocational training can benefit society"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "what would attract more students to join a vocational training course"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What do you want to do after secondary school?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Why is going to university important to Hong Kong students?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "How can young people learn more about different careers?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "When should students start thinking about their career?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Would you ever work for no pay to get some job experience?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Would you like to go to a foreign country to gain work experience?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Which is more important: qualifications or experience?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Why do employers value vocational training?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "conflict",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-4-2-book-club",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "4.2",
+      "title": "Book Club",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A Book Club That Students Want to Join",
+        "body": [
+          "A school book club meets every Friday, but attendance has fallen. Members receive vocabulary worksheets and discuss selected quotations from classic novels. Some students appreciate the structure, yet others say the books feel too similar to English lessons. New members may stop coming when they have not finished the reading or when a few confident speakers dominate every conversation.",
+          "Book clubs can still offer something valuable. Reading a shared story gives students a reason to exchange interpretations, learn about different experiences and make friends outside their usual classes. The challenge is to protect thoughtful discussion without turning a voluntary activity into another assessed lesson.",
+          "Members could vote on a mix of contemporary fiction, graphic novels and non-fiction, with shorter texts between longer books. Rotating discussion roles, online meetings and occasional film comparisons could widen participation. Snacks or creative activities may make meetings friendlier, but the books should remain central. A successful club makes reading feel social while allowing members with different speeds and tastes to contribute."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group has been asked to suggest changes to improve the Book Club. You are meeting to discuss this. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why students should join a book club"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "why students may not be interested in joining a book club"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how to make meetings more interesting and enjoyable for students"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What types of books do you enjoy reading?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you prefer reading paper books or e-books?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Would you rather join a book club or a film club?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Are Hong Kong people too busy to read books?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do you think a book club is a good place to make friends?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Would you join a book club that meets online?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Which do you learn more from: fiction or non-fiction books?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What is the difference between reading for pleasure and reading for study?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "exact",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-4-3-fragrant-notes-of-hong-kong",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "4.3",
+      "title": "The Smells of Hong Kong",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A City Remembered Through Smell",
+        "body": [
+          "Hong Kong is often introduced through its skyline and food, but smell can create an equally powerful memory. Dried seafood in Sheung Wan, incense near a temple and curry fish balls at a street stall each suggest a place, activity and part of local life. Trees after rain and sea air also challenge the idea that the city is only concrete and traffic.",
+          "Smell is personal, so one scent may attract some visitors and upset others. Strong food, exhaust fumes or wet-market odours can be described honestly without suggesting that the whole city is unpleasant. A display should also avoid artificial scents that trigger allergies or overwhelm people in a closed space.",
+          "An event stall could use sealed scent containers, photographs and short recorded stories from residents. Visitors might match smells to districts or vote for the scent that best represents Hong Kong. Choosing only three requires balance: heritage, everyday food and nature could each have a place. The goal is to make visitors curious about the stories behind the smells, not just test whether they like them."
+        ]
+      },
+      "part_a": {
+        "instruction": "The Tourism Board is organising an event called 'Discover Hong Kong'. Your group wants to set up a stall to introduce the different smells of Hong Kong. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why introducing Hong Kong through smells is a good idea"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "which three smells best represent Hong Kong and why"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "ways to attract visitors to your stall"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What is your favourite smell?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "What smell do you hate most?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "What smells remind you of your school?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "What smell do you like most in nature?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "What smells remind you of your home?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Would you buy something because it smells good?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should foods that have strong smells be banned in public areas?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Should movies incorporate smell in their production?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-5-1-tv-talent-show",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "5.1",
+      "title": "Talent-based Reality TV Shows",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Talent Under the Spotlight",
+        "body": [
+          "Television competitions turn singing, cooking, dancing and unusual skills into weekly entertainment. Viewers follow contestants through challenges, judges give immediate comments and audiences may vote for favourites. This combination of performance and personal story helps explain why talent shows attract attention across different age groups.",
+          "Taking part can provide professional feedback, confidence and valuable contacts. Even contestants who do not win may reach a large audience and discover how they perform under pressure. Yet public criticism can be harsh, editing may simplify a person into a character and young performers may struggle to balance training, school and private life.",
+          "Producers should explain rules clearly, provide support and avoid creating conflict only for ratings. Contestants also need realistic expectations: exposure is not the same as a lasting career. Talent develops through practice, resilience and guidance, but success also depends on opportunity and judgement. A responsible programme should celebrate growth as well as dramatic results."
+        ]
+      },
+      "part_a": {
+        "instruction": "A local TV company is inviting the public to share their views about TV talent shows. Your group has been invited to take part. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why TV talent shows are popular"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "how participants can benefit from being in TV talent shows"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "what problems participants could face when taking part in TV talent shows"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you watch TV talent shows?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Would you like to be on a TV talent show?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Which do you like to watch more: people singing or people cooking?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "How can young people develop their talents?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do you agree that talent can be developed through hard work?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you think people can develop a new talent later in life?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should students pursue artistic talents rather than academics?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Why does being talented not always lead to success?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "close",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-5-2-job-fair",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "5.2",
+      "title": "Top Jobs of the Future",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Preparing for Jobs That Are Changing",
+        "body": [
+          "Predictions about future work often focus on technology, but demand is likely to grow in several fields. Software developers will build digital services, healthcare workers will support an ageing population and construction workers will maintain homes and transport. Artists and designers will shape games, advertising and virtual experiences, while conservation officers will protect natural habitats.",
+          "Students may be drawn to jobs they already see in films or social media, while overlooking occupations with strong demand but less publicity. Salary matters, yet working conditions, training time, job security and personal interest also influence a sustainable career choice. Some roles will change through automation rather than disappear completely.",
+          "A school job fair can help by offering short demonstrations, conversations with workers and honest information about qualifications. Former students could explain unexpected routes into their careers, and employers could provide mini tasks instead of only promotional talks. The fair should encourage exploration rather than force teenagers to make a final decision before they understand their options."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your school is holding a job fair on the theme of 'Jobs of the Future'. Your group is discussing the topic. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why there will be a demand for the jobs mentioned in the article"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "which jobs will attract the most students"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how to promote the job fair"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What job would you like to do?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "What jobs would you not like to do?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Who would you ask for advice when choosing a job?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Would you prefer a job in technology or the arts?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Is salary important to you when choosing a job?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you think it is important to try different jobs?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should students start planning their careers in secondary school?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What jobs do you think will disappear in the future?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "conflict",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "conflict",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-5-3-home-based-education",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "5.3",
+      "title": "Homeschooling",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Learning Beyond a Traditional Classroom",
+        "body": [
+          "Homeschooling means that a child receives most formal education at home rather than attending a conventional school. Families may choose it because of health, travel, special learning needs or dissatisfaction with the pace of classroom teaching. Lessons can follow individual interests and schedules, and parents may spend more time learning with their children.",
+          "The arrangement also places heavy demands on families. Adults need subject knowledge, time and suitable materials, while students still need friends, teamwork and contact with viewpoints beyond the home. Assessment and progression must be planned carefully. In a small flat or a household where adults work long hours, flexibility may be harder to achieve than it appears.",
+          "Online courses have made home learning easier, but technology does not replace teaching or social development. Community classes, sports and regular professional guidance could reduce some weaknesses. Homeschooling may suit a limited number of students in Hong Kong, yet it should be judged by learning quality and wellbeing rather than presented as automatically easier or better."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is discussing the idea of homeschooling in Hong Kong. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the advantages of homeschooling"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "the disadvantages of homeschooling"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "whether homeschooling will become more popular in Hong Kong"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like studying at home?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Would you like to be homeschooled?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Do you think homeschooling would be easier than going to school?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Why don't parents in Hong Kong homeschool their children?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Do parents make good homeschooling teachers?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Why do you think some homeschoolers score higher on tests?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Who would benefit most from homeschooling?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think homeschooling is the future of education?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-6-1-calligraphy",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "6.1",
+      "title": "The Lost Art of Handwriting",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Does Handwriting Still Matter?",
+        "body": [
+          "Typing and voice input have reduced the amount of handwriting people do each day. Messages are faster to edit and share on a screen, yet students still write notes, complete some examinations and fill in certain forms by hand. Clear writing can help a reader, while forming letters may support memory and fine motor control.",
+          "Calligraphy adds an artistic and cultural dimension. It asks writers to slow down, control pressure and pay attention to shape and spacing. For some people it is a link to tradition; for others it is a quiet creative activity. Beautiful writing, however, should not be confused with intelligence, and students with motor difficulties should not be unfairly judged.",
+          "A school club could teach basic techniques, compare writing systems, create cards and signs, or invite a local artist to demonstrate. Digital tablets could also show how traditional skills can be adapted. The club should focus on expression and improvement rather than perfect handwriting, making the activity welcoming to beginners."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your school is setting up some new clubs. You are meeting to discuss whether a calligraphy club is a good choice. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "whether handwriting is still important today"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "how students can improve their handwriting"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "activities that can be held by the club"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like to do your homework with pen and paper?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you usually take notes with pen and paper?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Should teachers give extra marks for good handwriting?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Is calligraphy more popular among young people or older people?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Should calligraphy be made a school subject?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Is it fair to judge a person by their handwriting?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Why do people collect art like calligraphy?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think handwriting can show someone's personality?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "close",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-6-2-rooftop-agricultural-program-in-schools",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "6.2",
+      "title": "Urban Farming",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A School Farm Above the City",
+        "body": [
+          "Most food eaten in Hong Kong arrives from elsewhere, yet many rooftops receive enough light to grow herbs and vegetables. A school farm could give students practical knowledge about soil, weather and nutrition. Green plants may cool part of the building, provide a calmer space and turn an unused area into a shared project.",
+          "Rooftop farming requires more than planting seeds. The roof must be safe and able to carry containers, water and people. Students need a timetable for watering during weekends and holidays, and the school must plan drainage, tool storage and protection during storms. Light, heat and pests also affect which crops are suitable.",
+          "Harvested food could be used in cookery lessons, sold for a charity project or shared with a community organisation, provided hygiene rules are followed. Different classes could record growth and compare methods. The value of the farm would not depend only on the amount of food produced, but on whether students learn to care for a long-term environmental project together."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of the school's Cookery Club. Your group would like to start an urban farm on your school's rooftop. You are meeting to discuss this. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the benefits of having a farm on the school's rooftop"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "how you will organise the care of the farm"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "what you will do with the food you grow"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you think farming is a good hobby?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Are you interested in visiting rooftop farms?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "If you had a farm, what would you grow?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Why do people enjoy visiting farms?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Are young people more interested in farming these days?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Should schools offer after-school farming classes?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Other than farming, what else can rooftops be used for?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What are the possible problems of having a rooftop farm?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "conflict",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-6-3-finding-jobs-online",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "6.3",
+      "title": "Ways Teens Can Earn Money Online",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Earning Online While Still at School",
+        "body": [
+          "Teenagers can now tutor younger students, create videos, write blogs, complete surveys or promote products online. Such work may fit around school hours and remove travel time. It can also develop communication, planning and digital skills, while allowing a student to test an interest before choosing a future career.",
+          "The risks are easy to underestimate. Income may be irregular, personal information can be misused and advertisements sometimes promise unrealistic earnings. Influencers may feel pressure to share private life or promote products they do not trust. Long hours on a screen can affect study, sleep and health, and younger workers may not understand contracts or tax responsibilities.",
+          "Students should check the identity of an employer, agree on payment in writing and avoid paying fees to obtain a job. Parents and careers teachers can help review opportunities without taking over every decision. Online work is most useful when the hours are limited, the task is legal and safe, and learning remains the main priority."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your careers teacher would like your group to discuss online job options for students. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the advantages of working online"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "the disadvantages of working online"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "which online job Hong Kong teenagers would be most interested in"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "What online job would you like to do?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Does your school help students to find jobs?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Would you rather work online or work in an office?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you think having an online job might affect your studies?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "How would your parents feel if you had an online job?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "What kind of volunteer work could people do online?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should people under sixteen be allowed to work online?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think working online will be the trend of the future?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-7-1-planning-a-school-trip",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "7.1",
+      "title": "Learning Outside the Classroom",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "Choosing a Place to Learn",
+        "body": [
+          "Hong Kong offers many places where lessons can move beyond a textbook. A science museum lets students test ideas through exhibits, a restored heritage site connects buildings with social history, and a wetland reserve makes ecosystems visible. Seeing evidence directly can help students ask better questions and remember what they have learned.",
+          "The most famous attraction is not automatically the best choice. Organisers need to consider the learning goal, travel time, cost, accessibility, group size and weather. Students should have enough freedom to explore while teachers maintain safety. A tightly packed schedule may produce photographs but little observation or discussion.",
+          "Before the trip, groups could research one question; during it, they could collect notes, sketches or recordings; afterwards, they could share different conclusions. Interactive tasks should support the visit rather than distract from it. A good school trip gives students experiences that cannot be copied in the classroom and makes the connection to their subjects clear."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your class is organising a school trip to a local attraction. Your group has been invited to help plan the trip. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the benefits of learning outside of the classroom"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "what to consider when deciding which attraction to choose"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "which local attraction your group would recommend"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like going on school trips?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Would you like to join an overseas school trip?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "When is the best time for a school trip?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "What other local attractions do students like to visit?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Which do you like more: science or history?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Is walking in nature a waste of time?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Should schools offer more learning outside of the classroom?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "How do you think school trips will change in the future?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-7-2-sleeping-pods",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "7.2",
+      "title": "'Take-A-Nap' Campaign",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A Short Rest at School",
+        "body": [
+          "Teenagers need substantial sleep, but homework, travel and phone use can make nights too short. Research suggests that a brief daytime nap may improve attention, mood and memory. A sleeping pod provides a reclining seat, soft sound and a timed wake-up system, giving users privacy without requiring a bed or a separate room.",
+          "Pods also raise practical questions. They take up space, need regular cleaning and may be expensive compared with quiet chairs. Long naps can leave users feeling slow or make it harder to sleep at night. A timetable slot might help tired students, but it could also reduce lesson or activity time and create pressure on limited places.",
+          "A school trial could use bookings, a twenty-minute limit and clear hygiene rules. Students should learn that pods are not a substitute for healthy sleep habits. Rest areas, short walks and screen breaks may help too. The decision should consider whether the equipment improves wellbeing for enough students to justify its cost and supervision."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are committee members of your school's Health Club. Your club is thinking of buying sleeping pods for the school. You are meeting to discuss this topic. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the benefits of taking afternoon naps"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "how to promote the use of sleeping pods"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "whether afternoon naps should be included in the school timetable"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like taking naps?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "How many hours of sleep do you need?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Do students get enough sleep?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Would you like to try sleeping pods?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Where else would sleeping pods be useful?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Other than a nap, what are ways to re-energise yourself?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Does napping make you more productive?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Why do some people think napping is bad?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-7-3-the-cross-harbour-race",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "7.3",
+      "title": "Mascot Design Contest for the Cross Harbour Race",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A Face for the Cross Harbour Race",
+        "body": [
+          "The Cross Harbour Race combines open-water swimming with a famous city view. Organisers want a mascot that can appear at the event and on shirts, bottles and souvenirs. A successful character should be easy to recognise from a distance, work in both flat images and costume form, and express energy, courage and connection with Victoria Harbour.",
+          "Choosing an animal simply because it is cute may not be enough. A dolphin or fish links clearly to water, while a lion can represent Hong Kong spirit but may be less connected to swimming. Designers should consider local identity, safety, colours, movement and whether the image appeals to children and adults without copying an existing character.",
+          "The group could sketch several options, test them with students and explain the meaning behind each feature. The final mascot should also work in small digital icons and be practical for a performer to wear. Good design supports the event rather than distracting from athletes, and gives spectators a friendly symbol they can remember."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your teacher wants your class to enter a mascot design contest for the Cross Harbour Race. Your group is meeting to discuss ideas for designing a mascot. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "what qualities make a good mascot"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "what to consider when choosing a mascot for the Cross Harbour Race"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "whether you would recommend using any of the proposed characters"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Are sports events popular in Hong Kong?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you like watching sports events?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Is the Cross Harbour Race suitable for people of all ages?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Why do people like to buy toys and other souvenirs at sports events?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "How else could the Cross Harbour Race be promoted in Hong Kong?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "How can Hong Kong benefit from holding major sports events?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Why do large corporations sponsor major sports events?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do mascots appeal to people of all ages?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-8-1-instant-noodle-exhibition",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "8.1",
+      "title": "Instant Noodles Have Changed the World",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "A Small Invention with Global Reach",
+        "body": [
+          "Instant noodles began as a practical answer to a simple problem: how to make a familiar meal quick to store, transport and prepare. Drying cooked noodles allowed them to last, while packaging them in a cup later made the product even easier to eat. Low cost, long shelf life and many flavours helped the idea spread across countries and social groups.",
+          "An exhibition could use instant noodles to show that inventions do not need to be large machines. Successful products often combine observation, repeated testing and an understanding of everyday needs. At the same time, the story has drawbacks. Many instant noodle products contain high levels of salt, and single-use cups and wrappers create waste.",
+          "Students could compare instant noodles with other inventions that changed daily routines, such as refrigeration, electronic payment or the reusable water bottle. The exhibit should neither advertise nor condemn the food. Instead, it can ask how convenience, health, cost and environmental impact shape whether an invention remains valuable over time."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your school is holding an exhibition on inventions that changed the world. Your group is thinking about including instant noodles in the exhibition. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "why instant noodles are popular"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "whether instant noodles should be included in the exhibition"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "other inventions that could be included"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Do you like instant noodles?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you often eat fast food?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Should students be allowed to eat any food they like at school?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Which fast food would you choose to represent Hong Kong?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Should the school tuck shop sell instant noodles?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Does eating instant noodles encourage poor eating habits?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Can students learn from past inventions?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "What are the qualities of a successful inventor?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-8-2-private-space-travel",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "8.2",
+      "title": "Space Tourism",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "When Space Becomes a Private Journey",
+        "body": [
+          "Private companies have begun carrying passengers high above Earth for short periods of weightlessness. Supporters argue that competition can speed up engineering, lower future costs and create new research opportunities. Images and personal accounts from travellers may also inspire interest in science and make space exploration feel less distant.",
+          "For now, tickets are available only to extremely wealthy people, and each launch uses energy and produces emissions. More flights could add debris to an already crowded area around Earth. Safety is another concern: passengers face risks, while accidents could affect people and property on the ground. Public resources may also be used to support private businesses.",
+          "Encouragement should therefore depend on strong safety rules, transparent environmental reporting and benefits beyond entertainment. Companies could fund scientific experiments and technology that serves people on Earth. Private travel may contribute to exploration, but excitement alone is not enough to justify every flight. The central question is who gains, who carries the risk and what wider purpose the journey serves."
+        ]
+      },
+      "part_a": {
+        "instruction": "You are members of your school's Science Club. You have gathered to discuss the issue of private space travel. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the benefits of private space travel"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "the disadvantages of private space travel"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "whether private space travel should be encouraged"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "Would you like to go to outer space?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Are you interested in outer space?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Is going to outer space a good use of time and money?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Why are some rich people so interested in going to outer space?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Why are some people interested in studying outer space?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do you think space travellers are heroes?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "What qualities make a good space traveller?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Do you think humans will live on other planets one day?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "close",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2024-8-3-shopping-through-social-media",
+      "source_kind": "pp",
+      "exam_year": 2024,
+      "paper_version": "8.3",
+      "title": "Shopping on Social Media",
+      "source_note": "2024 HKDSE English Language Paper 4 past-paper topic. Title, Part A task and prompts, and Part B question order were cross-checked against a scanned full paper; official HKEAA sample-performance material independently confirms selected versions. The context below is original practice material, not the official passage.",
+      "context": {
+        "source_line": "Original HKEAA-style practice article based on the verified 2024 Paper 4 topic (not the official passage):",
+        "title": "From Post to Purchase",
+        "body": [
+          "Social-media platforms now let users discover and buy products without leaving an app. A video can demonstrate an item, a customer can ask questions in comments and a direct link can complete the purchase. Small sellers gain access to large audiences without opening a physical shop, while buyers receive recommendations connected to their interests.",
+          "The same speed can make careful judgement difficult. Sponsored posts may look like personal advice, reviews can be false and an attractive video may hide poor quality. Some shoppers are uncomfortable sharing payment details, and it can be difficult to return goods to a seller with no clear address. Constant personalised advertising may also encourage unnecessary spending.",
+          "Traditional shops can respond by combining physical service with online communication, allowing customers to inspect items and order later. Platforms should verify sellers, identify paid promotions and provide clear complaint procedures. Social shopping is likely to grow, but trust will determine whether it becomes a normal part of retail rather than a place associated with scams."
+        ]
+      },
+      "part_a": {
+        "instruction": "Your group is doing a project on shopping on social media. You are meeting to discuss this. You may want to talk about:",
+        "discussion_points": [
+          {
+            "point_id": "pa_01",
+            "order": 1,
+            "text": "the benefits of shopping on social media"
+          },
+          {
+            "point_id": "pa_02",
+            "order": 2,
+            "text": "the benefits of selling on social media"
+          },
+          {
+            "point_id": "pa_03",
+            "order": 3,
+            "text": "how shopping through social media may affect traditional businesses"
+          },
+          {
+            "point_id": "pa_04",
+            "order": 4,
+            "text": "anything else you think is important"
+          }
+        ]
+      },
+      "part_b": {
+        "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+        "questions": [
+          {
+            "question_id": "ir_01",
+            "order": 1,
+            "text": "How much time do you spend on social media?"
+          },
+          {
+            "question_id": "ir_02",
+            "order": 2,
+            "text": "Do you buy things on social media?"
+          },
+          {
+            "question_id": "ir_03",
+            "order": 3,
+            "text": "Do you trust shops on social media?"
+          },
+          {
+            "question_id": "ir_04",
+            "order": 4,
+            "text": "Do you think you will buy more through social media in the future?"
+          },
+          {
+            "question_id": "ir_05",
+            "order": 5,
+            "text": "Have you had any bad experiences shopping on social media?"
+          },
+          {
+            "question_id": "ir_06",
+            "order": 6,
+            "text": "Do online reviews help you decide whether to buy something?"
+          },
+          {
+            "question_id": "ir_07",
+            "order": 7,
+            "text": "Will shopping through social media become the norm?"
+          },
+          {
+            "question_id": "ir_08",
+            "order": 8,
+            "text": "Should selling on social media be more regulated?"
+          }
+        ]
+      },
+      "audit": {
+        "classification": "past_paper",
+        "year_status": "exact",
+        "version_status": "exact",
+        "title_status": "close",
+        "context_status": "unsupported",
+        "part_a_instruction_status": "conflict",
+        "part_a_point_statuses": [
+          "close",
+          "close",
+          "close",
+          "exact"
+        ],
+        "part_b_question_statuses": [
+          "conflict",
+          "close",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict",
+          "conflict"
+        ],
+        "overall_confidence": "high",
+        "notes": "The current auto-generated context is generic and does not reliably reflect the source passage. Replace it with the original mock context supplied here. Exact official wording was normalised only for obvious OCR punctuation and spelling artefacts."
+      }
+    }
+  ],
+  "validation": {
+    "checks": [
+      {
+        "set_id": "dse-p4-pp-2024-1-1-digital-museum",
+        "context_words": 163,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-mock-2024-1-1-digital-museums",
+        "context_words": 155,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-1-2-delivery-apps",
+        "context_words": 154,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-1-3-unattractive-buildings-in-hong-kong",
+        "context_words": 163,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-2-1-the-global-impact-of-tourism",
+        "context_words": 153,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-2-2-driverless-trams",
+        "context_words": 165,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-2-3-comfort-food",
+        "context_words": 160,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-3-1-multifunctional-cafes",
+        "context_words": 166,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-3-2-podcasting",
+        "context_words": 163,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-3-3-empowering-vulnerable-communities",
+        "context_words": 166,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-4-1-a-vocational-graduate-school-project",
+        "context_words": 159,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-4-2-book-club",
+        "context_words": 166,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-4-3-fragrant-notes-of-hong-kong",
+        "context_words": 178,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-5-1-tv-talent-show",
+        "context_words": 153,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-5-2-job-fair",
+        "context_words": 163,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-5-3-home-based-education",
+        "context_words": 166,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-6-1-calligraphy",
+        "context_words": 163,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-6-2-rooftop-agricultural-program-in-schools",
+        "context_words": 166,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-6-3-finding-jobs-online",
+        "context_words": 162,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-7-1-planning-a-school-trip",
+        "context_words": 156,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-7-2-sleeping-pods",
+        "context_words": 164,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-7-3-the-cross-harbour-race",
+        "context_words": 167,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-8-1-instant-noodle-exhibition",
+        "context_words": 165,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-8-2-private-space-travel",
+        "context_words": 166,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      },
+      {
+        "set_id": "dse-p4-pp-2024-8-3-shopping-through-social-media",
+        "context_words": 167,
+        "point_count": 4,
+        "question_count": 8,
+        "stable_point_ids": true,
+        "stable_question_ids": true
+      }
+    ],
+    "bad_checks": [],
+    "duplicate_context_titles": [],
+    "duplicate_questions_within_set": []
+  }
+}

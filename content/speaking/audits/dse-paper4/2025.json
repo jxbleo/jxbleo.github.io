@@ -1,0 +1,3032 @@
+{
+  "audit_year": 2025,
+  "accessed_on": "2026-09-03",
+  "scope": {
+    "past_paper_records": 24,
+    "hidden_mock_records": 1,
+    "expected_versions": [
+      "1.1",
+      "1.2",
+      "1.3",
+      "2.1",
+      "2.2",
+      "2.3",
+      "3.1",
+      "3.2",
+      "3.3",
+      "4.1",
+      "4.2",
+      "4.3",
+      "5.1",
+      "5.2",
+      "5.3",
+      "6.1",
+      "6.2",
+      "6.3",
+      "7.1",
+      "7.2",
+      "7.3",
+      "8.1",
+      "8.2",
+      "8.3"
+    ]
+  },
+  "methodology": [
+    "Official HKEAA sources were used to confirm the examination year, Paper 4 framework and timetable, but they do not expose all 24 task sheets as searchable official text.",
+    "The full topic map was cross-referenced across a speaking-paper archive and two independent candidate-recall compilations. Candidate-recall wording is never labelled official.",
+    "Where recall sources conflicted, the conflict is recorded. A known 2.1/2.3 copy-and-paste swap in one source was not propagated.",
+    "No official context passage was reproduced. Every PP replacement contains a newly written 150–220 word mock context tied to the scenario and prompts."
+  ],
+  "important_findings": [
+    "The corpus contains 24 PP records plus one separate hidden mock for version 1.3.",
+    "Set 6.1 has a substantive Part A defect in the current canonical record: two promotion questions duplicate one another and the unwanted-clothing question is missing. The replacement corrects it.",
+    "The exact official wording and official order of Part B questions cannot be established from public sources. The eight recalled concepts are retained, normalised and marked low confidence for exact order.",
+    "The 8.1–8.3 records have weaker evidence than 1.1–7.3 because only two indexed archives were found and one of those carries the detailed Part B reconstruction."
+  ],
+  "sources": [
+    {
+      "id": "HKEAA_SAMPLE_2025",
+      "tier": "official",
+      "title": "HKEAA Samples of Candidates’ Performance — 2025 Exam — Paper 4",
+      "url": "https://www.hkeaa.edu.hk/en/HKDSE/assessment/subject_information/category_a_subjects/eng_lang/sp/2025_Paper4.html",
+      "supports": "Confirms the 2025 Paper 4 assessment and official sample-performance materials; it does not publish all 24 task sheets as searchable text."
+    },
+    {
+      "id": "HKEAA_TIMETABLE_2025",
+      "tier": "official",
+      "title": "2025 HKDSE Finalised Examination Timetable",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/Circulars/HKDSE/HKDSE_Finalised_Examination_Timetable_for_2025_Examination.pdf",
+      "supports": "Confirms English Language Speaking ran from 11–20 March 2025, with a special session on 22 March."
+    },
+    {
+      "id": "DSE_SPEAKING_ARCHIVE",
+      "tier": "secondary_archive",
+      "title": "DSE Speaking — Papers Archive",
+      "url": "https://www.dsespeaking.com/papers",
+      "supports": "Lists all 24 2025 versions, fuller scenario titles and the apparent source type of each reading text."
+    },
+    {
+      "id": "DSE_TREASURE_RECALL",
+      "tier": "candidate_recall_secondary",
+      "title": "DSE Treasure — 2025–2012 Paper 4 topic analysis",
+      "url": "https://dsetreasure.com/dse-english-paper-4-%E9%A1%8C%E7%9B%AE/",
+      "supports": "Provides all 24 reconstructed Part A prompts and Part B question sets. The page explicitly states that it is based on first-hand candidate feedback and wording will differ from the real paper."
+    },
+    {
+      "id": "SPENCER_LAM_DAILY_RECALL",
+      "tier": "candidate_recall_secondary",
+      "title": "Spencer Lam — 2025 DSE Speaking daily question recall",
+      "url": "https://spencerlam.hk/blog/2025/03/13/dse-speaking-%E9%A1%8C%E7%9B%AE-2025/",
+      "supports": "Independently corroborates versions 1.1–7.3 and most Part A/Part B concepts. Its page contains an apparent copy-and-paste swap between the 2.1 and 2.3 Part B blocks and does not show 8.1–8.3 in the indexed text."
+    },
+    {
+      "id": "HUOSHI_12_MARCH_REVIEW",
+      "tier": "education_provider_secondary",
+      "title": "Huoshi Academy — 12 March 2025 speaking topic review",
+      "url": "https://m.huoshixueyuan.com/news_show.php?id=7100",
+      "supports": "Corroborates the three 12 March topics and the Part A concepts for 2.1–2.3."
+    }
+  ],
+  "records": [
+    {
+      "set_id": "dse-p4-pp-2025-1-1-olympic-fencer-cheung-ka-long",
+      "paper_version": "1.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic, scenario and three Part A prompts are independently corroborated. The eight Part B concepts are corroborated, but exact wording and order are reconstructed.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-1-1-olympic-fencer-cheung-ka-long",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "1.1",
+        "title": "Olympic Fencer Cheung Ka Long",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 1.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "A Champion Comes Back to School",
+          "body": [
+            "Hong Kong fencer Edgar Cheung Ka-long has shown young people that success in sport is built over many years. Behind his Olympic medals are long training sessions, repeated technical practice and the ability to recover after mistakes. His achievements have also increased local interest in fencing, a sport that many students previously knew only from international competitions on television.",
+            "A school visit by Cheung could therefore be more than a celebrity appearance. A short demonstration might introduce basic fencing movements, while an interview could explore pressure, motivation, injuries and the choices required to become a full-time athlete. Students with little interest in sport could still learn about goal-setting, resilience and representing Hong Kong on an international stage.",
+            "The organising committee would need to plan carefully. Activities should be safe, inclusive and useful for a large audience, rather than limited to a few experienced athletes. Interview questions should encourage thoughtful answers instead of repeating facts already available online. The committee must also decide how to turn a memorable visit into lasting benefits for students after the event has ended."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are members of your school’s organising committee. The school plans to invite Olympic fencer Edgar Cheung Ka-long for a campus visit and personal interview. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "How could this event positively impact youth and students"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What kinds of activities could be organised during his visit"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What questions would be interesting to ask him"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What do you think about experiencing the Olympic Games through television broadcasts?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever tuned in to watch any Olympic competitions?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Did you engage in any sports activities during your summer break?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you consider fencing to be a risky or hazardous sport?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What steps could the government take to promote the sport of fencing?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Which qualities do you believe are crucial for someone to succeed as a professional athlete?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think the government should provide financial assistance to outstanding athletes?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "In what ways can Cheung Ka Long's story motivate and inspire young people?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-1-2-taking-photos-in-public-places",
+      "paper_version": "1.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic, overseas-restriction context and Part A prompts are independently corroborated. Part B wording/order remains reconstructed.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-1-2-taking-photos-in-public-places",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "1.2",
+        "title": "Taking Photos in Public Places",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 1.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock online published article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "When a Photograph Becomes a Public Problem",
+          "body": [
+            "Popular destinations increasingly face conflicts between visitors looking for striking photographs and residents trying to continue their daily lives. At some crowded locations overseas, barriers, warning signs or restricted areas have been introduced after tourists blocked roads, entered private property or gathered for long periods at the same viewpoint. Such measures can protect safety, but they may also make a place feel less welcoming.",
+            "Hong Kong has many locations that attract photographers, from harbour promenades and traditional markets to colourful housing estates. Photography can promote the city and help visitors record meaningful experiences. Problems arise, however, when people photograph strangers without permission, interrupt businesses, damage property or create dangerous crowds simply to copy an image seen on social media.",
+            "Rules should therefore respond to specific harm rather than ban photography everywhere. Clear signs, marked photo zones and better crowd management may solve some problems, while serious cases could require penalties. The challenge is to protect privacy, safety and neighbourhood life without preventing responsible visitors from enjoying and sharing public places."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school media club is preparing a feature after reading about restrictions on photography at crowded public attractions overseas. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What are some well-known places in Hong Kong where people love to take photos"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why might some individuals feel uncomfortable with photos being taken in public spaces"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Do you think Hong Kong should introduce regulations regarding photography in public areas"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you usually share the pictures you take with your friends?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Which age group do you think enjoys photography more—young people or older adults?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is capturing photos while travelling important to you? Why or why not?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you often take pictures when you're out in public places?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you go to a specific location just to take photos there?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think taking pictures can negatively affect other people's experiences?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Does tourism create disturbances or inconvenience in urban areas?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Have you ever uploaded photos taken in public settings online?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-1-3-smartphones-compared-to-personal-computers",
+      "paper_version": "1.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "The official-topic record is corroborated by three secondary archives. Keep the separate hidden mock clearly labelled as mock.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-1-3-smartphones-compared-to-personal-computers",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "1.3",
+        "title": "Smartphones Compared to Personal Computers",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 1.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock technology website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "One Screen Cannot Do Every Job",
+          "body": [
+            "Smartphones have become the main digital device for many young people. They are portable, relatively affordable and able to handle communication, banking, entertainment, navigation and quick searches. Improved cameras and mobile applications have made tasks that once required several separate devices possible from one pocket-sized screen. For everyday use, a phone may seem more convenient than a personal computer.",
+            "Yet convenience is not the same as suitability. Writing a long report, comparing several sources, editing detailed images or managing a spreadsheet is often easier with a keyboard, a larger display and desktop software. Students who depend only on phones may be able to consume information quickly but find it harder to produce complex work or organise many files.",
+            "The future is therefore unlikely to be a simple victory for one device. Phones may replace computers for more routine tasks, while laptops and desktops remain important for study, creative work and professional use. Schools must consider whether students have fair access to suitable equipment and teach them to choose the right tool rather than use the newest one automatically."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is preparing a technology forum about the rise of smartphones and whether they may replace personal computers. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why are smartphones so widely used and popular today"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Do personal computers still offer advantages for students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Do you believe smartphones will eventually take the place of PCs"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think you could manage without using a smartphone?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Should students be allowed to use smartphones while at school?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you personally use a smartphone?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Which do you find more convenient for tasks—smartphones or personal computers?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you use a PC to complete your school assignments?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should schools provide laptops or computers for student use?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What do you think leads teenagers to spend too much time on their smartphones?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think very young children should be given access to smartphones?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-mock-2025-1-3-smartphones-replacing-personal-computers",
+      "paper_version": "1.3",
+      "source_kind": "mock",
+      "status": "excluded_from_past_paper_count",
+      "confidence": "not_applicable",
+      "notes": [
+        "This is an original hidden practice set, not a recalled 2025 past-paper record.",
+        "Its paper_version intentionally overlaps official-topic version 1.3, so source_kind and visible_to_students=false must remain explicit.",
+        "It was not rewritten as part of the 24-paper audit."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-mock-2025-1-3-smartphones-replacing-personal-computers",
+        "source_kind": "mock",
+        "exam_year": 2025,
+        "paper_version": "1.3",
+        "title": "Smartphones Replacing Personal Computers",
+        "source_note": "Based on the officially confirmed 2025 Paper 4 version 1.3, “As PC ownership declines, smartphones are on the rise”. Passage and questions are original.",
+        "context": {
+          "source_line": "This article appeared on a youth / education website:",
+          "title": "One Device for Everything?",
+          "body": [
+            "For many young people, the smartphone is their camera, map, wallet, television and main way of going online. It is cheaper and more portable than a laptop, and most everyday tasks—messaging, shopping, banking and watching videos—can be completed with a few taps. As phones become more powerful, some families no longer see a reason to own a separate computer.",
+            "Nevertheless, a small screen is not ideal for every task. Writing a long report, analysing a spreadsheet, editing a video or comparing several sources is usually easier with a full keyboard and a larger display. Relying only on phones may also create an educational gap: students can consume information easily but struggle to produce complex work. Instead of asking which device will completely replace the other, consumers should consider which tool is appropriate for each task and whether shared computers can provide affordable access."
+          ]
+        },
+        "part_a": {
+          "instruction": "You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why smartphones have become more popular than computers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "tasks for which computers are still necessary"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "how the library should spend its technology budget"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Could you live without a personal computer?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Should students be expected to use their own phones for schoolwork?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is typing on a phone an important modern skill?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Which device is better for learning: a tablet, laptop or smartphone?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do smartphones make people less patient with long texts?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should public libraries lend laptops to users?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Will smartphones eventually replace cash and identity cards as well?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is it wasteful to own several digital devices?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": false
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-2-1-a-trip-to-shenzhen",
+      "paper_version": "2.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "version_and_topic": "medium",
+        "part_a_task_and_points": "medium",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic and Part A are strongly corroborated. One daily-recall page accidentally places the phobia Part B block under this heading; the travel questions are supported by the other full recall source.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-2-1-a-trip-to-shenzhen",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "2.1",
+        "title": "A Trip to Shenzhen",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 2.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock local newspaper written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Why Weekenders Are Heading North",
+          "body": [
+            "Short trips from Hong Kong to Shenzhen have become an attractive weekend choice. Faster cross-boundary transport allows visitors to reach shopping centres, restaurants, parks and entertainment venues without taking a flight. Many travellers also believe that food, personal services and family activities offer good value, so a day trip can feel like an affordable change from their normal routine.",
+            "Shenzhen’s appeal is not based on price alone. New districts, large indoor attractions and rapidly changing technology give repeat visitors something different to explore. Digital payment, online booking and recommendations shared on social media make planning easier. At the same time, crowded checkpoints, unfamiliar applications and differences in service expectations can create inconvenience for some travellers.",
+            "Hong Kong businesses cannot compete simply by asking residents to stay. They need to offer experiences worth choosing, such as neighbourhood events, creative packages, family discounts or late-night activities linked to local culture. Better service and clearer value may encourage residents to divide their leisure spending between both cities rather than treating the choice as a competition with only one winner."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school tourism club is discussing the growing number of Hong Kong residents taking leisure trips to Shenzhen and how Hong Kong businesses might respond. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What features make Shenzhen stand out as a travel destination compared to other places"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why do travelers often choose Shenzhen over other locations for their trips"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What can Hong Kong businesses do to encourage locals to spend their holidays within the city"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "How do you usually spend your weekends?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever visited Shenzhen before?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you be interested in taking a family trip to Shenzhen?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "If you went to Shenzhen with your family, what activities would you plan to do?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think Hong Kong residents will continue the trend of travelling to Shenzhen?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Besides visiting Shenzhen, what other ways can Hong Kong people enjoy their leisure time?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is it convenient to shop for everyday items in Shenzhen?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How do you think the travel habits of Hong Kong people will change in the future?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-2-2-driving-experiences-in-hong-kong",
+      "paper_version": "2.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic, Part A and eight driving-related Part B concepts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-2-2-driving-experiences-in-hong-kong",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "2.2",
+        "title": "Driving Experiences in Hong Kong",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 2.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock news webpage written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Is Learning to Drive Worth It in Hong Kong?",
+          "body": [
+            "For some Hong Kong residents, driving offers privacy, comfort and direct access to places that are difficult to reach by public transport. It can be especially useful for families with young children, elderly relatives or heavy equipment. Learning to drive may also provide a practical skill for travel or future employment, even if a person does not immediately buy a car.",
+            "The disadvantages are equally clear. Vehicles, fuel, insurance, tolls and parking are expensive, while traffic and limited parking spaces can turn a short journey into a stressful one. Hong Kong’s rail and bus networks already serve most urban areas, so many teenagers see little need to spend time and money on lessons before they can afford a vehicle.",
+            "Whether Hong Kong is car-friendly depends on whom the transport system is designed to serve. Policies that make driving easier may increase congestion and pollution, but policies that discourage cars can inconvenience people with genuine needs. Young people should therefore consider cost, safety, environmental impact and future usefulness before deciding whether a driving licence is an important step towards adulthood."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school life-skills team is preparing a feature on whether learning to drive is worthwhile for young people in Hong Kong. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What are the advantages and difficulties of being a driver in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Is Hong Kong a city that supports and accommodates car drivers well"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Why do relatively few teenagers in Hong Kong choose to learn how to drive"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think driving lessons should be part of the school curriculum?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Should people under 18 be allowed to drive in Hong Kong?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you believe the government should promote car ownership and driving?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is driving in Hong Kong generally safe?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you see driving as a milestone or symbol of becoming an adult?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Are you personally interested in learning how to drive?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think it's important for teenagers in Hong Kong to learn driving skills?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How do you think travel habits in Hong Kong will change in the coming years?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-2-3-teenagers-in-hong-kong-and-their-fears",
+      "paper_version": "2.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "version_and_topic": "medium",
+        "part_a_task_and_points": "medium",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic and Part A are strongly corroborated. One daily-recall page accidentally repeats the driving Part B block here; the phobia questions are supported by the other full recall source.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-2-3-teenagers-in-hong-kong-and-their-fears",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "2.3",
+        "title": "Teenagers in Hong Kong and Their Fears",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 2.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock magazine written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Understanding the Fears Teenagers Carry",
+          "body": [
+            "Teenage fears are not limited to obvious phobias such as heights, insects or enclosed spaces. Many students worry about examination results, disappointing their families, speaking in front of others or being rejected by friends. Online comparison can make these concerns feel more serious because young people repeatedly see carefully edited versions of other people’s success and appearance.",
+            "Fear can be useful when it warns someone about real danger, but it becomes harmful when it prevents normal learning, relationships or daily activities. Avoiding every uncomfortable situation may provide short-term relief while making the fear stronger. Adults sometimes dismiss teenage worries as unimportant, which can leave a young person feeling ashamed or unwilling to seek support.",
+            "Helpful responses depend on the seriousness of the problem. Talking to trusted friends, parents, teachers or counsellors can make a fear easier to understand. Gradual practice, reliable information and healthy routines may also build confidence. Schools should create a climate in which asking for help is treated as responsible behaviour, while serious or continuing anxiety receives professional attention."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your student wellness team is preparing an awareness campaign about fears experienced by teenagers in Hong Kong. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What fears are commonly experienced by teenagers in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What are the underlying reasons behind these fears"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What approaches can teenagers take to manage or overcome their fears"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you know anyone who is afraid of animals?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Who do you usually talk to when you're feeling scared?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "How would you help a friend overcome their fear of speaking in front of others?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Did you have any fears when you were younger?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why do you think some people are afraid of using elevators?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think fear tends to decrease as people grow older?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How do fears affect teenagers' confidence levels?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "In what ways can fear influence a person's self-esteem or sense of confidence?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-3-1-exploring-wildlife-tourism",
+      "paper_version": "3.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic and Part A/Part B concept sets are independently corroborated. Exact wording/order is not official.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-3-1-exploring-wildlife-tourism",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "3.1",
+        "title": "Exploring Wildlife Tourism",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 3.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock local newspaper written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Wildlife Tourism: Protection or Performance?",
+          "body": [
+            "Animal encounters are sold as unforgettable travel experiences. Visitors may watch dolphin shows, ride elephants or camels, photograph captive wild animals, or join tours that promise close contact with creatures in their natural habitat. Such activities can create jobs and fund conservation, especially where local communities have few other sources of income.",
+            "The same industry can also cause serious harm. Animals may be trained through fear, kept in unsuitable spaces or forced to interact with visitors for long hours. Even apparently harmless wildlife watching can disturb feeding and breeding when boats, vehicles or crowds move too close. Tourists often cannot tell whether an operator’s conservation claims are genuine.",
+            "Responsible tourism requires more than choosing an activity that looks educational. Travellers should examine how animals are housed, whether physical contact is necessary and where the money goes. Governments can set welfare standards and punish misleading operators, while communities can design smaller tours that protect habitats. A successful activity should improve the long-term well-being of both wildlife and local residents."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is carrying out a project on wildlife tourism and its effects on animals and local communities. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What kinds of tourism activities involve interactions with animals"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How might these activities negatively impact the well-being of animals"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "In what ways can animal-related tourism support both wildlife and local communities"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever attended a show featuring animals?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What actions can the government take to raise public awareness about protecting animals?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why do people enjoy watching animal performances while on holiday?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think all animal shows should be prohibited?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do animals involved in performances have a good quality of life?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How would you encourage others to treat animals with compassion?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What makes animal performances appealing to audiences?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Would you be interested in trying a camel ride experience?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-3-2-trends-in-popular-music-today",
+      "paper_version": "3.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Topic and Part A/Part B concept sets are independently corroborated. Exact wording/order is not official.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-3-2-trends-in-popular-music-today",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "3.2",
+        "title": "Trends in Popular Music Today",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 3.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock news website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "From Bands to Solo Stars",
+          "body": [
+            "Popular music once depended heavily on bands whose members developed a shared sound and public identity. Today, individual performers can record at home, collaborate remotely and reach listeners through short videos or streaming platforms. This makes it easier for solo artists to enter the market without waiting for a record company or several band members to agree on every decision.",
+            "Bands still offer something distinctive. Live instruments, different personalities and visible teamwork can create performances that one singer cannot easily reproduce. Groups may also divide the work of composing, arranging and interacting with fans. However, disagreements, higher touring costs and the difficulty of maintaining a stable line-up can make a band harder to manage.",
+            "Social media affects both types of performer. A memorable clip may introduce unknown musicians to millions of viewers, but algorithms can reward appearance and constant posting more than musical skill. Trends change quickly, and artists may feel pressure to produce short, attention-grabbing content. The future of pop music will depend on whether audiences continue to value strong songs and live performance alongside online popularity."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school music club is preparing a presentation about changes in popular music, including the changing roles of bands, solo performers and social media. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Are music bands popular among people in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Who tends to give more impressive performances—solo singers or bands"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What impact does social media have on the popularity of pop music"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think music groups will eventually disappear?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you enjoy listening to music in your free time?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do boys and girls usually have different tastes in music?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is music a significant part of teenagers' lives today?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should all students be encouraged to learn a musical instrument?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think teenagers in Hong Kong prefer international music groups over local ones?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do younger and older generations tend to enjoy the same kinds of music?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Would you be interested in joining a music group or band?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-3-3-maintaining-personal-health-and-wellness",
+      "paper_version": "3.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Self-Care Month scenario and all core prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-3-3-maintaining-personal-health-and-wellness",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "3.3",
+        "title": "Maintaining Personal Health and Wellness",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 3.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock local magazine written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Self-Care Is More Than a Day Off",
+          "body": [
+            "Self-care is often presented online as buying treats or escaping from responsibilities, but its basic purpose is to maintain physical and mental health. Enough sleep, regular movement, balanced meals, supportive relationships and time away from constant notifications can help students manage pressure. These habits are simple to describe but difficult to maintain during busy school terms.",
+            "A school Self-Care Month could introduce practical activities rather than one-off slogans. Short exercise sessions, sleep workshops, quiet spaces, peer-support training and guidance on seeking professional help could serve different needs. Activities should avoid suggesting that students are personally responsible for every problem when workload, family pressure or bullying may also affect well-being.",
+            "Participation is more likely when events are private, flexible and free from judgement. Student leaders can help choose relevant activities, but teachers and health professionals should provide reliable information. Success should not be measured only by attendance. The school should also ask whether students feel safer requesting help and whether healthy routines continue after the campaign ends."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your student council is organising Self-Care Month to promote students’ physical and mental well-being. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Do students in Hong Kong have a good understanding of self-care"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What kinds of events might be held to highlight the importance of self-care during Self-Care Month"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How can we motivate students to get involved in self-care activities"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think physical exercise helps improve mental health?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are students in Hong Kong generally aware of the importance of self-care?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What do you usually do to manage or reduce stress?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Does your school organise wellness programmes or activities for students?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you feel you get enough sleep regularly?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think students in Hong Kong have sufficient time for physical activity?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "In what ways can parents support their children's mental and physical well-being?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Who do you think should take primary responsibility for students' health—schools or parents?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-4-1-anime-festival-highlights",
+      "paper_version": "4.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "School movie-festival and anime scenario, Part A and eight Part B concepts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-4-1-anime-festival-highlights",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "4.1",
+        "title": "Anime Festival Highlights",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 4.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock film magazine written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "More Than One Kind of School Movie",
+          "body": [
+            "A school movie festival can introduce students to stories and styles they would not normally choose. Anime films such as Spirited Away combine detailed visual design with themes about courage, identity, family and the environment. Their popularity among young audiences may attract students who rarely attend school cultural events, while subtitles can make a Japanese-language film accessible.",
+            "A successful programme should still offer variety. Comedy, documentary, science fiction, local cinema and short student productions may appeal to different age groups and interests. Organisers also need to consider running time, age suitability, copyright permission and whether each film provides something worth discussing rather than being selected only because it is famous.",
+            "Activities around the screenings can turn passive viewing into a shared experience. Students might join a costume display, animation workshop, film quiz, review competition or discussion with a local creator. The festival should balance entertainment with learning and provide alternatives for students who are not anime fans. Audience feedback can then guide the selection of future films."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school movie club is planning a film festival and is considering including an anime film such as Spirited Away. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Is the anime film a good fit for inclusion in the film festival"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What other genres of movies are popular among students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What extra activities could be organised to enhance the film festival experience"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy watching anime movies?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Which anime film do you like the most?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer anime or live-action films?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What aspects of anime do you find appealing?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think anime films have artistic value?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Are anime films suitable for adult audiences?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should every anime movie end on a happy note?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What kind of films make you want to watch them again?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-4-2-understanding-personality-tests",
+      "paper_version": "4.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Career-choice/personality-test scenario and prompts are independently corroborated; some recall wording is grammatically weak and has been normalised.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-4-2-understanding-personality-tests",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "4.2",
+        "title": "Understanding Personality Tests",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 4.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock online newspaper written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Can a Personality Test Choose Your Career?",
+          "body": [
+            "Online personality tests have become popular among teenagers because they provide quick labels and attractive descriptions. Career advisers sometimes use structured questionnaires to help students discuss whether they prefer independent work, social interaction, careful routines or creative problem-solving. A result can give a student helpful vocabulary for describing strengths and possible working environments.",
+            "Problems arise when a test is treated as a final answer. People may respond differently depending on mood or experience, and broad categories cannot capture every ability, value or circumstance. A teenager may avoid an interesting subject because a result says it does not match one “type”. Employers may also use weak tests unfairly when judging applicants.",
+            "Career choices should combine several kinds of evidence. Students can speak to advisers, interview workers, try short courses, volunteer, complete internships and reflect on subjects they enjoy. Personality tests may begin a conversation, but they should not close it. The most useful plan allows interests and skills to change as a young person gains knowledge and real experience."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school Careers Team is considering whether personality tests such as MBTI should be used to help students explore future careers. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "How can personality tests help with choosing a career path"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What are the limitations or disadvantages of using personality tests for career decisions"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What other approaches can be used to identify a suitable career"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever taken a personality test? If so, which one, what were your results, and did you find them accurate?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you and your friends share similar personality traits?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is it important to understand your own personality?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are personality tests popular among teenagers in Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should employers take personality test results into account when hiring?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What kind of personality traits in a friend do you get along with best?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think personality test results are meaningful or useful?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Have your personality test results changed since you were younger?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-4-3-the-world-of-scouting",
+      "paper_version": "4.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "School scouting-club proposal and prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-4-3-the-world-of-scouting",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "4.3",
+        "title": "The World of Scouting",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 4.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "A New Scouting Club for Today’s Students",
+          "body": [
+            "Scouting has traditionally combined outdoor skills, teamwork and community service. Members may learn first aid, navigation, cooking, camping and leadership while working towards badges. These activities give students responsibility outside the classroom and can build confidence through practical challenges that have clear goals.",
+            "Some teenagers nevertheless see scouting as old-fashioned or too demanding. Uniform costs, weekend commitments and unfamiliar outdoor activities may discourage them. A new school club could respond by offering trial sessions and linking traditional skills with current interests, such as environmental monitoring, digital mapping, event planning or emergency preparedness.",
+            "To win support from the School Board, organisers must show that activities will be safe, inclusive and properly supervised. Students with different physical abilities should have meaningful ways to participate. Partnerships with experienced leaders can provide training and equipment, while school-based service projects may demonstrate immediate value. Promotion should focus on real experiences and friendships rather than simply telling students that scouting is good for them."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is preparing a proposal to the School Board for a new Scouting Club. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What can be done to make scouting more attractive to students"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What advantages does scouting provide for secondary school students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What kinds of activities could be organised for scouts"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever gone camping before?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are you interested in joining the scouts?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you enjoy being outdoors and spending time in nature?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you rather go camping with friends or with family?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think scouting is a popular activity in Hong Kong?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you be excited to sleep in a tent?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What do you think is the most important lesson you can learn from scouting?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you believe scouting can help make the world a better place?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-5-1-traditional-bamboo-scaffolding",
+      "paper_version": "5.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Bamboo-scaffolding heritage/safety topic and prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-5-1-traditional-bamboo-scaffolding",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "5.1",
+        "title": "Traditional Bamboo Scaffolding",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 5.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Bamboo Above the Streets",
+          "body": [
+            "Bamboo scaffolding has long been a familiar feature of Hong Kong construction and festival work. Skilled workers can transport and assemble bamboo quickly, even around buildings with irregular shapes. The material is light, flexible and renewable, and generations of practitioners have developed specialised knowledge about selecting poles and tying strong joints.",
+            "Its cultural value does not remove the need for strict safety. Weather, damaged materials, poor platforms or incorrect ties can endanger workers and people below. Safety depends on trained workers, suitable protective equipment, regular inspection and clear control of the area around a site. Simply changing to another material would not eliminate careless planning or weak supervision.",
+            "Hong Kong must decide how traditional knowledge should continue in a modern industry. Training programmes can preserve skilled techniques while updating them to meet current standards. Public education may help people understand the craft without romanticising risk. The strongest approach would judge bamboo and metal systems by evidence, use each where appropriate and make worker protection the first requirement."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is preparing a project on bamboo scaffolding as part of Hong Kong’s cultural heritage and modern construction industry. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What are the advantages of using bamboo for scaffolding"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How can the safety of bamboo scaffolding be improved"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Is bamboo scaffolding considered part of Hong Kong's cultural heritage"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever noticed scaffolding structures in Hong Kong?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think workers who build bamboo scaffolding should be paid more?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you be interested in learning how to build bamboo scaffolding?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you feel uneasy about the risk of injury when walking beneath bamboo scaffolding?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should bamboo scaffolding be taught in secondary school programmes?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What measures can be taken to make bamboo scaffolding safer?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Are you interested in pursuing a career in Hong Kong's construction industry?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you believe traditional craftsmanship should be preserved and passed on through education?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-5-2-coffee-vs-energy-drinks",
+      "paper_version": "5.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Coffee/energy-drink health campaign and prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-5-2-coffee-vs-energy-drinks",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "5.2",
+        "title": "Coffee vs. Energy Drinks",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 5.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock webpage written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "What Is Really Inside an Energy Boost?",
+          "body": [
+            "Coffee and energy drinks are easy for teenagers to buy and are often associated with studying, sport or staying awake. Both may contain caffeine, while many energy drinks also contain large amounts of sugar and are marketed with exciting images. A temporary feeling of alertness can make these products seem useful during examination periods.",
+            "Too much caffeine may disturb sleep, increase nervousness and cause headaches or a rapid heartbeat. Poor sleep can then make a student rely on another drink the next day. Effects differ by body size and the amount consumed, so a large serving designed for an adult may be unsuitable for a younger person. Mixing several caffeinated products also makes intake difficult to judge.",
+            "A school health club could compare labels, explain serving sizes and promote alternatives such as water, rest and better study planning. Education may be more effective than a simple ban, which can make products seem forbidden and attractive. However, age limits, warning labels or sales restrictions may be justified for high-caffeine drinks if clear health evidence supports them."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school health club is planning a campaign about the effects of coffee and caffeinated energy drinks on teenagers. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What negative effects can coffee and energy drinks have on teenagers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How will the club raise awareness among students about these risks"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Should teenagers be allowed to buy coffee and energy drinks"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "How do teenagers usually respond when their favourite items are banned?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you enjoy drinking energy drinks?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Which beverages are most popular among teenagers?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What can be done to discourage teens from consuming coffee and energy drinks?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do younger people tend to drink more coffee than older adults?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should schools prohibit the sale of unhealthy drinks?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What advice should parents give to a child who is addicted to energy drinks?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think banning something is an effective way to influence teenagers' behaviour?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-5-3-considering-a-gap-year",
+      "paper_version": "5.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Gap-year benefits, challenges and activities are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-5-3-considering-a-gap-year",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "5.3",
+        "title": "Considering a Gap Year",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 5.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock blog post written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "A Year with a Purpose",
+          "body": [
+            "A gap year is a planned break between secondary school and further study or employment. Young people may travel, volunteer, work, improve a language or explore a possible career. Time away from formal education can build independence and help someone return with clearer goals, especially when the activities involve real responsibility.",
+            "The experience also has risks. Travel and unpaid programmes can be expensive, while a poorly planned year may become months without useful progress. Some students worry about falling behind friends or losing study habits. Others may accept unsafe work or commercial volunteer programmes that benefit the organiser more than the community.",
+            "A productive gap year needs a purpose, budget and timetable without requiring every week to be busy. Students should research organisations, discuss safety and agree on what they hope to learn. Local work or community service can be as valuable as international travel. The final decision should reflect a student’s needs and resources rather than the idea that a gap year is automatically adventurous or impressive."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your careers club is preparing a feature about taking a gap year after secondary school. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What are the advantages of taking a gap year"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What difficulties might someone face during a gap year"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What kinds of activities do young people typically engage in during a gap year"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "How can you ensure your gap year is productive and meaningful?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is taking a gap year a common choice among youth in Hong Kong?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What would you choose to do during your gap year?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Which destination would you select for your gap year experience?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think travelling during a gap year is beneficial?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you prefer to spend your gap year volunteering or travelling?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What career are you planning to pursue?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are you personally interested in taking a gap year?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-6-1-the-rise-of-second-hand-fashion",
+      "paper_version": "6.1",
+      "source_kind": "pp",
+      "status": "corrected",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "A definite current-data defect was found: two Part A items duplicated promotion and omitted ways to deal with unwanted clothing. The corrected three prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-6-1-the-rise-of-second-hand-fashion",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "6.1",
+        "title": "The Rise of Second-hand Fashion",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 6.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock fashion website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Giving Clothes a Second Life",
+          "body": [
+            "Cheap and rapidly changing fashion encourages people to buy more clothes than they regularly wear. Unwanted items may be stored for years or thrown away even when they remain usable. Better options include repairing, altering, swapping, donating or selling garments, although each choice requires time and a reliable way to judge condition and quality.",
+            "Second-hand fashion is becoming more visible in Hong Kong through online platforms, charity shops and small vintage businesses. Buyers may save money, find unusual designs and reduce waste. Social media has also changed the image of pre-owned clothing by presenting it as creative and environmentally responsible rather than simply an option for people with limited budgets.",
+            "Concerns about hygiene, fake branded goods and inconsistent sizing still discourage some shoppers. Clear photographs, washing standards, honest descriptions and simple return rules can build trust. Schools and community groups could organise swap events or repair workshops, but promotion should not encourage another form of excessive shopping. The main goal is to use clothing for longer and buy more thoughtfully."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your social studies class is carrying out a project on unwanted clothing and the growth of second-hand fashion in Hong Kong. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What are some ways to deal with unwanted clothing?"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Why is second-hand fashion gaining popularity in Hong Kong?"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What approaches can be taken to encourage second-hand fashion?"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy shopping for new clothes?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Why do people tend to buy clothes more frequently these days?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why do people often throw away clothes they no longer wear?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you be open to wearing second-hand clothing?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are you concerned about hygiene when it comes to second-hand clothes?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What is your opinion on purchasing second-hand fashion?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do some people have a negative view of second-hand clothing?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What are the reasons some individuals avoid wearing pre-owned clothes?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-6-2-benefits-of-learning-foreign-languages",
+      "paper_version": "6.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Foreign-language choice and out-of-class learning prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-6-2-benefits-of-learning-foreign-languages",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "6.2",
+        "title": "Benefits of Learning Foreign Languages",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 6.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock newspaper written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Which Language Should Students Learn Next?",
+          "body": [
+            "Learning another language can help Hong Kong students communicate during travel, understand another culture and prepare for study or work. Some choose a language because of music and entertainment, while others consider business links, family background or future education. Motivation matters because progress requires regular practice over a long period.",
+            "Schools deciding which language to offer must look beyond popularity. They need qualified teachers, suitable materials and enough students to sustain the course. Mandarin, Japanese, Korean, French, Spanish and other languages may each serve different interests. Choosing only the language believed to have the greatest economic value could ignore student enthusiasm, while following a short-lived trend may waste resources.",
+            "Classroom lessons provide structure, but real improvement also comes from songs, films, reading, online exchanges and conversation. Digital tools can increase access, although students need guidance to judge quality and protect privacy. A successful programme should set realistic goals and help students continue learning independently rather than promising fluency from a few lessons each week."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is considering which foreign language course should be offered to students and how language learning can continue outside class. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why do students in Hong Kong choose to study foreign languages"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Which languages are most commonly learned by students in Hong Kong"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What are some ways to learn languages outside of the traditional classroom setting"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Are you interested in learning new languages in the future?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think knowing multiple languages will be essential in the future?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is learning additional languages important for career success?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you prefer studying languages online or in a school environment?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Can listening to music help you learn a new language?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is it necessary to understand a country's culture to learn its language effectively?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you rather study an Asian language or a European one?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are you a fan of Korean culture?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-6-3-school-adventure-trips",
+      "paper_version": "6.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "The three adventure options and decision prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-6-3-school-adventure-trips",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "6.3",
+        "title": "School Adventure Trips",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 6.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock travel agency website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "One Free Adventure—Which Would You Choose?",
+          "body": [
+            "A travel agency has offered the school one free group adventure: swimming near sea turtles in Australia, exploring a volcanic cave in Iceland, or viewing a clear night sky in Morocco. Each trip promises a rare experience, but excitement alone is not enough to decide which students should join or how the school should prepare them.",
+            "The marine trip requires confident swimming and careful protection of wildlife. The cave visit may involve cold weather, uneven ground and strict safety equipment. Stargazing could offer cultural exchange and science learning, but long travel and unfamiliar conditions may concern families. Cost beyond the free package, insurance, health needs and environmental impact must also be considered.",
+            "Students asking for parental approval should present accurate information rather than hide the risks. Training, supervision, emergency plans and regular communication can make a proposal more convincing. The best choice should offer educational value to the whole group and remain accessible to students with different abilities. Participants could later share their learning with the school so that the benefit extends beyond a small number of travellers."
+          ]
+        },
+        "part_a": {
+          "instruction": "A travel agency has offered your school one free adventure trip: swimming with turtles in Australia, exploring a volcanic cave in Iceland, or stargazing in Morocco. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Which of the three trips do you think is the most exciting or worthwhile"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How would you persuade your parents to let you go on this trip"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What kinds of difficulties or challenges might you face during the trip"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you enjoy going on an adventure-style trip?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you prefer travelling to distant places or staying closer to home?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you rather travel with your family or with friends?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you choose an adventurous trip or a relaxing vacation?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are you curious about exploring marine life?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you prefer going on a school-organised trip or a personal one?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What do you think is the most unforgettable part of an adventure trip?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think adventure trips are suitable for students?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-7-1-introduction-to-beekeeping",
+      "paper_version": "7.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "School urban-beekeeping/beehive scenario and core prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-7-1-introduction-to-beekeeping",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "7.1",
+        "title": "Introduction to Beekeeping",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 7.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock Australian newspaper written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Could a Beehive Belong at School?",
+          "body": [
+            "Urban beekeeping has appeared on rooftops, in community gardens and at some schools. A managed hive can help students observe pollination, insect behaviour and the connection between food and local ecosystems. Honey production may attract attention, but the deeper educational value comes from collecting evidence and caring for living creatures responsibly.",
+            "Keeping bees on a school campus also creates real concerns. Some students may be allergic or frightened, neighbours may worry about swarms, and inexperienced handling can harm both people and bees. A hive needs a suitable location, trained supervision, protective equipment and a plan for holidays, extreme weather and disease.",
+            "Before installing a hive, the student council should consult specialists, families and nearby residents. Alternatives such as planting bee-friendly flowers, monitoring wild pollinators or visiting a professional apiary can teach similar lessons with less risk. If the project proceeds, access should be controlled and participation voluntary. The school should treat bee welfare and public safety as continuing responsibilities, not just problems during the launch."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are members of the student council. The school is considering putting a managed beehive on campus as an urban-beekeeping project. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What are the advantages of having a beekeeping program at school"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What challenges or risks might come with keeping bees on campus"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What other student activities could help raise awareness and knowledge about bees"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you find bees interesting or enjoyable?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Are you afraid of bees?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you be interested in trying beekeeping yourself?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you enjoy eating honey?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you consider keeping insects as pets?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What steps can the school take to make beekeeping safer for everyone?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think your neighbors would be concerned if you kept bees at home?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you believe Hong Kong is a good place for urban beekeeping?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-7-2-the-role-of-subtitles-in-media",
+      "paper_version": "7.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Campus TV subtitle scenario and core prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-7-2-the-role-of-subtitles-in-media",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "7.2",
+        "title": "The Role of Subtitles in Media",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 7.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock news website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Should Campus TV Add Subtitles?",
+          "body": [
+            "Subtitles can make school television programmes easier to follow in noisy places and more accessible to viewers who are deaf or hard of hearing. They may also help students learn unfamiliar words, identify names and understand speech delivered in a second language. A written record can make announcements clearer when audio quality is poor.",
+            "Producing accurate subtitles takes time. Automatic systems may misunderstand names, accents or subject vocabulary, while manually checking every line creates extra work for the Campus TV team. Subtitles can also cover important visual information if they are badly placed. Fast live programmes, music performances or shows built around visual humour may need a different approach.",
+            "The club could begin with news, interviews and educational features where accuracy has clear value. Students should choose readable size, timing and colour, then ask viewers with different needs to test the result. Subtitles do not have to be added in exactly the same way to every programme. A flexible policy can improve access without making production demands impossible for a student team."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your Campus TV team is considering whether subtitles should be added to programmes produced at school. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What advantages come with adding subtitles to campus TV programs"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Do you think students will support the idea of including subtitles"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Are there any types of shows where subtitles might not be appropriate or necessary"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Does your school have a campus TV club or program?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you prefer watching with English or Chinese subtitles?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you like using subtitles even when watching movies in your native language?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are subtitles popular among teenagers?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you find it hard to watch movies that don't have subtitles?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why do you think some young people enjoy using subtitles?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you feel that subtitles make movies less enjoyable to watch?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Can subtitles help people learn a new language?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-7-3-what-does-a-personal-shopper-do",
+      "paper_version": "7.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "high",
+      "field_confidence": {
+        "version_and_topic": "high",
+        "part_a_task_and_points": "high",
+        "part_b_question_concepts": "medium_high",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL",
+        "SPENCER_LAM_DAILY_RECALL"
+      ],
+      "notes": [
+        "Personal-shopping career and AI-retail scenario and prompts are independently corroborated.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-7-3-what-does-a-personal-shopper-do",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "7.3",
+        "title": "What Does a Personal Shopper Do?",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 7.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock news website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Personal Shopping in an Age of AI",
+          "body": [
+            "A personal shopper helps clients choose products that suit their needs, budget or style. The job may involve researching items, visiting stores, arranging fittings and explaining alternatives. Teenagers with strong communication skills could gain useful experience through supervised part-time work, but they would also need reliability, product knowledge and respect for customer privacy.",
+            "Artificial intelligence can already recommend products from browsing history, answer routine questions and create virtual images of clothing. Such tools may make shopping faster, yet they can repeat biased data, encourage unnecessary purchases or misunderstand a client’s feelings. Human staff remain useful when a decision is personal, expensive or difficult to explain through a list of preferences.",
+            "Shopping will probably combine digital and physical services rather than move entirely in one direction. Customers may research online, try items in a store and receive advice from both software and staff. Future personal shoppers will need to use technology without becoming controlled by it. Their value will depend on trust, judgement and the ability to understand needs that a customer has not expressed clearly."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your Careers Team is preparing a feature on personal shopping as a future job and the possible impact of artificial intelligence on retail staff. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Is working as a personal shopper a suitable job for teenagers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Do you think artificial intelligence will eventually replace human sales assistants in physical stores"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How do you think shopping habits and experiences will evolve in the future"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy going shopping?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you prefer shopping online or visiting stores in person?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you rather shop alone or with friends?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What kinds of items do you enjoy buying the most?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think you'd be good at helping others shop as a personal shopper?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "If you were very busy, would you consider hiring a personal shopper?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What challenges do you think personal shoppers face in their job?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you see shopping more as a fun activity or a basic necessity?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-8-1-video-shooting-contests",
+      "paper_version": "8.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "version_and_topic": "medium",
+        "part_a_task_and_points": "medium",
+        "part_b_question_concepts": "medium",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL"
+      ],
+      "notes": [
+        "Version number, tourism-video scenario and Part A prompts are corroborated by two archives; the eight Part B items rely mainly on one candidate-recall compilation, so exact wording/order is low confidence.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-8-1-video-shooting-contests",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "8.1",
+        "title": "Video Shooting Contests",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 8.1. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Hong Kong in Ninety Seconds",
+          "body": [
+            "A tourism video contest has asked students to create a short film for young visitors to Hong Kong. Famous views such as Victoria Harbour can establish the location quickly, but a video made only of familiar landmarks may look like many existing advertisements. Street markets, hiking routes, neighbourhood food and creative spaces could show a wider range of experiences.",
+            "Activities should be visually interesting and realistic for visitors to try. The team might follow a low-cost day across several districts, introduce local snacks, compare city and countryside, or ask young residents for recommendations. Music, captions and a clear story can hold attention, while accurate transport and accessibility information makes the video useful rather than merely attractive.",
+            "Filming in a busy city requires preparation. The team must consider weather, crowd noise, permission, privacy and the time needed to move between locations. Drones or risky camera positions should not be used simply for dramatic shots. A successful entry will present Hong Kong honestly, avoid stereotypes and make viewers curious enough to explore responsibly."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is entering a competition to produce a short video for young tourists visiting Hong Kong. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Which famous spots in Hong Kong should we showcase in the video"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "What kinds of activities can we include to make the video fun and engaging for young viewers"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What difficulties might we face while filming the video"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What aspects of Hong Kong do you think should be highlighted on social media?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever taken photos at popular tourist attractions?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What features make Hong Kong an attractive destination for travellers?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "How can social media help promote Hong Kong as a travel hotspot?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think influencers play a major role in boosting tourism?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you use social media to find travel advice or tips?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What kind of information or visuals would you share to attract tourists to Hong Kong?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is social media a powerful tool for discovering and promoting places like Hong Kong?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-8-2-classic-video-games",
+      "paper_version": "8.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "version_and_topic": "medium",
+        "part_a_task_and_points": "medium",
+        "part_b_question_concepts": "medium",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL"
+      ],
+      "notes": [
+        "Version number, classic-video-game project and Part A prompts are corroborated by two archives; the eight Part B items rely mainly on one candidate-recall compilation.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-8-2-classic-video-games",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "8.2",
+        "title": "Classic Video Games",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 8.2. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock online magazine written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Why Old Games Still Find New Players",
+          "body": [
+            "Classic video games such as Super Mario Bros remain popular even though their graphics and controls are simpler than those of modern titles. Clear goals, memorable music and carefully designed challenges allow new players to understand them quickly. Older players may also return because the games are connected to childhood memories and can be shared across generations.",
+            "Video games have stayed popular by changing with technology. Online play, mobile devices, live streaming and independent developers have brought games to wider audiences. At the same time, familiar characters and older design ideas are repeatedly remade or re-released. This mixture of novelty and recognition helps the industry attract both experienced players and beginners.",
+            "Future games may use more realistic virtual worlds, artificial intelligence and movement-based controls, but technical power will not guarantee enjoyment. Cost, privacy, excessive play and age suitability will remain important concerns. The most successful games are likely to combine new forms of interaction with the qualities that made classic games last: understandable rules, fair challenge and a reason to try again."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is preparing a project about the continuing popularity of classic video games and how games may develop in the future. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why do people still enjoy classic video games like Super Mario Bros today"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How have video games remained popular over the years"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What do you think video games will be like in the future"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you consider video games to be a form of artistic expression?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you ever thought about becoming a game designer or developer?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What effects do video games have on young people?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do adults and teenagers tend to enjoy different types of games?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should younger kids be encouraged to try out older, classic video games?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you prefer games with everyday characters or ones featuring superheroes?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think all video games are suitable for children?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you personally enjoy playing video games?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2025-8-3-using-linkedin-for-networking",
+      "paper_version": "8.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "version_and_topic": "medium",
+        "part_a_task_and_points": "medium",
+        "part_b_question_concepts": "medium",
+        "exact_part_b_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "DSE_SPEAKING_ARCHIVE",
+        "DSE_TREASURE_RECALL"
+      ],
+      "notes": [
+        "Version number, teenage LinkedIn scenario and Part A prompts are corroborated by two archives; the eight Part B items rely mainly on one candidate-recall compilation.",
+        "No official passage text was copied. The replacement context is original and explicitly labelled as mock practice material."
+      ],
+      "replacement": {
+        "set_id": "dse-p4-pp-2025-8-3-using-linkedin-for-networking",
+        "source_kind": "pp",
+        "exam_year": 2025,
+        "paper_version": "8.3",
+        "title": "Using LinkedIn for Networking",
+        "source_note": "Reconstructed practice set for recalled 2025 HKDSE Paper 4 version 8.3. Topic, task and question concepts were cross-referenced against candidate-recall and archive sources; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock business website written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Teenagers Build Professional Profiles Online",
+          "body": [
+            "LinkedIn and similar professional networks are attracting some teenagers who want to learn about careers, internships and university pathways. Unlike entertainment-focused platforms, a professional profile highlights skills, projects and achievements. Students may follow organisations, contact mentors and discover types of work that they had not previously considered.",
+            "Early networking can be useful, but it also creates pressure to present an impressive public identity before a young person has much experience. Profiles may exaggerate achievements, and job information shared online is not automatically reliable. Public contact details, messages from strangers and permanent records of careless posts create privacy and safety concerns.",
+            "Schools can teach students to check an organisation’s official website, compare claims across sources and ask a trusted adult before accepting an opportunity. A simple, truthful profile may help with exploration without forcing students to choose one career too early. Social media can open a door, but real preparation still requires study, practical experience, reflection and conversations with people who understand the work."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your Careers Team is preparing a feature on the growing popularity of LinkedIn among teenagers and the role of social media in career planning. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why are more teenagers choosing LinkedIn over other social media platforms"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Can social media play a positive role in helping people build and grow their careers"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Should secondary school students begin thinking seriously about their future career paths"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What are some common ways teenagers explore and prepare for future job opportunities?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think sharing your profile on social media can help with job searching?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What can be done to check if the information on social media is trustworthy?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "How do you think social media helps people discover career opportunities?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you personally use any social media platforms?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What kind of job are you hoping to have in the future?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What types of jobs do you think teenagers are most likely to pursue in the coming years?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Which social media platforms do you think are the most popular right now?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    }
+  ],
+  "validation": {
+    "unique_set_ids": true,
+    "pp_version_count": 24,
+    "hidden_mock_count": 1,
+    "context_word_counts": [
+      {
+        "set_id": "dse-p4-pp-2025-1-1-olympic-fencer-cheung-ka-long",
+        "words": 178
+      },
+      {
+        "set_id": "dse-p4-pp-2025-1-2-taking-photos-in-public-places",
+        "words": 170
+      },
+      {
+        "set_id": "dse-p4-pp-2025-1-3-smartphones-compared-to-personal-computers",
+        "words": 178
+      },
+      {
+        "set_id": "dse-p4-pp-2025-2-1-a-trip-to-shenzhen",
+        "words": 176
+      },
+      {
+        "set_id": "dse-p4-pp-2025-2-2-driving-experiences-in-hong-kong",
+        "words": 179
+      },
+      {
+        "set_id": "dse-p4-pp-2025-2-3-teenagers-in-hong-kong-and-their-fears",
+        "words": 172
+      },
+      {
+        "set_id": "dse-p4-pp-2025-3-1-exploring-wildlife-tourism",
+        "words": 168
+      },
+      {
+        "set_id": "dse-p4-pp-2025-3-2-trends-in-popular-music-today",
+        "words": 178
+      },
+      {
+        "set_id": "dse-p4-pp-2025-3-3-maintaining-personal-health-and-wellness",
+        "words": 166
+      },
+      {
+        "set_id": "dse-p4-pp-2025-4-1-anime-festival-highlights",
+        "words": 167
+      },
+      {
+        "set_id": "dse-p4-pp-2025-4-2-understanding-personality-tests",
+        "words": 168
+      },
+      {
+        "set_id": "dse-p4-pp-2025-4-3-the-world-of-scouting",
+        "words": 158
+      },
+      {
+        "set_id": "dse-p4-pp-2025-5-1-traditional-bamboo-scaffolding",
+        "words": 167
+      },
+      {
+        "set_id": "dse-p4-pp-2025-5-2-coffee-vs-energy-drinks",
+        "words": 175
+      },
+      {
+        "set_id": "dse-p4-pp-2025-5-3-considering-a-gap-year",
+        "words": 168
+      },
+      {
+        "set_id": "dse-p4-pp-2025-6-1-the-rise-of-second-hand-fashion",
+        "words": 170
+      },
+      {
+        "set_id": "dse-p4-pp-2025-6-2-benefits-of-learning-foreign-languages",
+        "words": 164
+      },
+      {
+        "set_id": "dse-p4-pp-2025-6-3-school-adventure-trips",
+        "words": 178
+      },
+      {
+        "set_id": "dse-p4-pp-2025-7-1-introduction-to-beekeeping",
+        "words": 165
+      },
+      {
+        "set_id": "dse-p4-pp-2025-7-2-the-role-of-subtitles-in-media",
+        "words": 172
+      },
+      {
+        "set_id": "dse-p4-pp-2025-7-3-what-does-a-personal-shopper-do",
+        "words": 175
+      },
+      {
+        "set_id": "dse-p4-pp-2025-8-1-video-shooting-contests",
+        "words": 171
+      },
+      {
+        "set_id": "dse-p4-pp-2025-8-2-classic-video-games",
+        "words": 172
+      },
+      {
+        "set_id": "dse-p4-pp-2025-8-3-using-linkedin-for-networking",
+        "words": 163
+      }
+    ],
+    "contexts_outside_150_220": [],
+    "duplicate_primary_part_a_points": [],
+    "part_a_shape_errors": [],
+    "part_b_shape_errors": []
+  }
+}

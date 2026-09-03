@@ -1,0 +1,3045 @@
+{
+  "audit_year": 2026,
+  "accessed_on": "2026-09-03",
+  "scope": {
+    "canonical_file_reviewed": "content/speaking/dse-paper4-sets.json",
+    "records_reviewed": 24,
+    "canonical_modified": false,
+    "purpose": "Independent year-level content audit and import-ready replacement proposals."
+  },
+  "methodology": [
+    "Official HKEAA documents confirm the 2026 Paper 4 format, assessment period and task structure, but no official public source located in this audit contained the 24 live task sheets.",
+    "Every topic, Part A concept and Part B concept was compared across DSE Best and DSE Treasure, two separately published full-year candidate-recall compilations. Additional day-level sources were used where available.",
+    "No recalled context passage was treated as official. Every replacement context is newly written, 150–220 words, topic-specific and explicitly labelled as mock practice material.",
+    "Exact Part B order is never claimed because DSE Best states that its editor arranged those questions by difficulty rather than preserving official order."
+  ],
+  "important_findings": [
+    "All 24 paper versions and their topic sequence are consistently corroborated.",
+    "Part A concepts are generally reliable, but exact task wording and the unseen preparation texts are not verifiable from public official sources.",
+    "Part B concepts are usable as reconstructed practice, but exact wording and order remain low confidence for every set.",
+    "Paper 6.3 has a substantive source problem: only seven coherent questions are supported and one source contains an implausible “elderly ... summer homework” line. Its eighth question is clearly marked as practice-only.",
+    "Papers 3.1, 5.2, 7.3 and 8.1 contain smaller cross-source conflicts documented in their record notes."
+  ],
+  "sources": [
+    {
+      "id": "HKEAA_2026_FRAMEWORK",
+      "tier": "primary",
+      "title": "2026 HKDSE English Language Assessment Framework",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Subject_Information/eng_lang/2026hkdse-e-elang.pdf",
+      "supports": "Official Paper 4 format and assessed speaking abilities; it does not publish the 24 live task sheets."
+    },
+    {
+      "id": "HKEAA_2026_INFO_DAY",
+      "tier": "primary",
+      "title": "2026 HKDSE Info Day English Language Seminar",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/Event/archive/2026/2026_HKDSE_Info_Day_English_Seminar_Website.pdf",
+      "supports": "Official confirmation of the short-text-and-context format, Part A group interaction and Part B individual response."
+    },
+    {
+      "id": "HKEAA_2026_ORAL_REMINDERS",
+      "tier": "primary",
+      "title": "2026 DSE oral examination reminders",
+      "url": "https://blog.hkeaa.edu.hk/blog/DSE-2026-oral-reminders",
+      "supports": "Official confirmation that English Paper 4 ran from 10 to 19 March 2026 and of the live examination procedure."
+    },
+    {
+      "id": "DSEBEST_2026_RECALL",
+      "tier": "candidate_recall_aggregate",
+      "title": "2026 DSE Speaking question collection",
+      "url": "https://dse.best/blog/2026-dse-speaking-questions-set",
+      "supports": "All 24 paper versions, topic sequence, Part A points and recalled Part B concepts. The publisher explicitly states that wording may be inaccurate and Part B order was arranged by the editor."
+    },
+    {
+      "id": "DSETREASURE_2026_RECALL",
+      "tier": "candidate_recall_analysis",
+      "title": "2026 DSE English Paper 4 question analysis",
+      "url": "https://dsetreasure.com/dse-english-paper-4-speaking-analysis-2026/",
+      "supports": "All 24 paper versions, polished reconstructions of Part A and Part B, and an explicit warning that wording differs from the real paper."
+    },
+    {
+      "id": "DSESPEAKING_2026_DAY1",
+      "tier": "candidate_recall_archive",
+      "title": "2026 DSE Speaking archive — Day 1",
+      "url": "https://www.dsespeaking.com/papers/2026-speaking",
+      "supports": "Independent recall of Papers 1.1–1.3, including Part A and all eight Part B concepts."
+    },
+    {
+      "id": "JINGSAILIAN_2026_DAY2",
+      "tier": "education_provider_repost",
+      "title": "11 March 2026 DSE oral examination review",
+      "url": "https://www.jingsailian.com/dse/1632306.html",
+      "supports": "Independent corroboration of Papers 2.1–2.3 and the visiting-international-students scenario in Paper 2.3."
+    },
+    {
+      "id": "SJDS_2026_WEEK1",
+      "tier": "education_provider_repost",
+      "title": "2026 DSE English oral first-week question summary",
+      "url": "https://sjds.net/577148.html",
+      "supports": "Independent topic and Part A corroboration for Papers 1.1–4.3; wording remains a repost/reconstruction."
+    },
+    {
+      "id": "JINGSAILIAN_2026_DAY7",
+      "tier": "education_provider_repost",
+      "title": "18 March 2026 DSE oral questions",
+      "url": "https://www.jingsailian.com/dse/1632660.html",
+      "supports": "Independent topic-level corroboration for Papers 7.1–7.3."
+    },
+    {
+      "id": "SJDS_2026_DAY7",
+      "tier": "education_provider_repost",
+      "title": "18 March 2026 DSE oral topic recap",
+      "url": "https://sjds.net/584550.html",
+      "supports": "Independent topic-level corroboration for Papers 7.1–7.3."
+    }
+  ],
+  "records": [
+    {
+      "set_id": "dse-p4-pp-2026-1-1-hong-kong-s-two-dish-rice-culture",
+      "paper_version": "1.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "DSESPEAKING_2026_DAY1",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 174,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-1-1-hong-kong-s-two-dish-rice-culture",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "1.1",
+        "title": "Two-Dish Rice Meals in Hong Kong",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 1.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Two-Dish Rice Meals in Hong Kong",
+          "body": [
+            "Two-dish rice shops have become a familiar sight in many Hong Kong neighbourhoods. Customers choose two ready-made dishes, add rice and receive a hot meal within minutes. Office workers and students often value the low price, short waiting time and wide choice, while some diners also associate the food with simple home-style cooking.",
+            "The meal has attracted attention beyond its practical value. Online posts now review unusual combinations, compare portion sizes and introduce small independent shops. However, frequent customers may need to consider salt, oil, nutritional balance and the waste created by takeaway containers. Shops also face pressure to keep prices affordable while paying rent and maintaining food quality.",
+            "Some tourism promoters believe two-dish rice could be introduced as an everyday Hong Kong food experience. Bilingual labels, smaller tasting portions and neighbourhood food maps might help visitors order confidently. Others warn that promotion should not turn an ordinary community meal into an expensive attraction. Any plan should therefore protect affordability, explain the food clearly and respect the people who rely on it every day."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Two-Dish Rice Meals in Hong Kong”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons this type of meal has become widespread in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The benefits and drawbacks of choosing two-dish rice meals"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways to promote this meal to visitors and tourists"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever tried a two-dish rice meal before?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do you usually like to eat during lunchtime?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What kind of food do you pick when you need something quick?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "When choosing a meal, which matters more to you—its cost or its quality?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How can shops selling two-dish rice enhance their services and grow their business?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "In what ways can online influencers help promote two-dish rice meals?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think two-dish rice might eventually become a recognised part of Hong Kong's food culture?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think changes in the economy can influence people's eating habits and food traditions?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-1-2-financial-awareness-and-money-management-habits",
+      "paper_version": "1.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "DSESPEAKING_2026_DAY1",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 179,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-1-2-financial-awareness-and-money-management-habits",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "1.2",
+        "title": "Financial Literacy among Teenagers",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 1.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Financial Literacy among Teenagers",
+          "body": [
+            "Financial literacy means understanding how to budget, save, borrow and make informed choices about money. Teenagers now encounter digital wallets, online shopping, subscription services and targeted advertising at an early age. Although cashless payments are convenient, they may also make spending feel less real and make it harder to notice how quickly small purchases add up.",
+            "Students can build practical habits without having a large income. They may record daily expenses, separate needs from wants, set a weekly limit and save part of any allowance before spending the rest. Comparing prices and waiting before making an online purchase can also reduce impulsive decisions. An emergency fund, even a small one, provides protection when an unexpected cost appears.",
+            "Schools could strengthen financial education through realistic tasks rather than definitions alone. Students might prepare a monthly budget, compare bank products, identify misleading advertisements or discuss the risks of borrowing. Parents and community organisations could contribute examples from everyday life. Effective education should help young people ask questions, understand consequences and make independent decisions instead of simply telling them never to spend."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Financial Literacy among Teenagers”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The significance of understanding basic financial skills"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Practical saving strategies that students can follow"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Methods to strengthen financial education in schools"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Why do many people find managing their finances challenging?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Why do some individuals lack clear financial concepts?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why is saving money difficult for certain people?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you tend to purchase more items than you actually need?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why do some people today fail to develop a habit of saving?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How might peer pressure affect the financial choices of teenagers?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How important is having an emergency fund for your family and yourself?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "If you were given a thousand dollars, how much of it would you put aside as savings?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-1-3-dishonesty-on-the-internet",
+      "paper_version": "1.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "DSESPEAKING_2026_DAY1",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 183,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-1-3-dishonesty-on-the-internet",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "1.3",
+        "title": "Online Dishonesty",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 1.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Online Dishonesty",
+          "body": [
+            "People do not always present an accurate picture of themselves online. Some edit photographs, exaggerate achievements or hide sponsorships because they want attention, approval or commercial success. Others share false information as a joke, repeat a claim without checking it or use artificial intelligence to produce convincing material that they then present as their own work.",
+            "Online dishonesty can damage trust even when no money is lost. A friend may feel betrayed after discovering that a personal story was invented, while a misleading health or financial claim can cause real harm. Edited images may also create unrealistic expectations about appearance and lifestyle. However, not every alteration is equally serious, and users should consider purpose, context and likely consequences.",
+            "Protection begins with careful habits. Users can check the original source, compare several reliable reports, examine dates and images, and pause before forwarding surprising claims. Platforms can label advertisements and manipulated media, while schools can teach verification skills. If a friend posts something false, a private and respectful conversation may be more effective than public embarrassment, unless the content creates an urgent risk to others."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Online Dishonesty”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons why people may behave dishonestly online"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How you would feel if a friend lied online"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways to protect people from false or dishonest content online"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you regularly spend time on social media platforms?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you enjoy adding enhanced or edited photos to your own social-media posts?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Is being truthful when using the internet important?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is it common for people to embellish or exaggerate their achievements online?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Have you encountered cases where people were dishonest on the internet?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think it is acceptable for people to upload digitally altered photographs?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is it wrong to publish online content that was produced by AI?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How can you check that the information you see online is accurate?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-2-1-social-media-trends-in-food-and-drink",
+      "paper_version": "2.1",
+      "source_kind": "pp",
+      "status": "verified_topic_with_material_reconstruction_limits",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "medium_high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "JINGSAILIAN_2026_DAY2",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions.",
+        "One recall compilation includes an influencer-promotion question, while another includes a broader question about promoting traditional food. Both fit the topic, but the exact eighth-question set is not fully consistent across sources."
+      ],
+      "context_word_count": 188,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-2-1-social-media-trends-in-food-and-drink",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "2.1",
+        "title": "Food and Drink Trends on Social Media",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 2.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Food and Drink Trends on Social Media",
+          "body": [
+            "A food or drink can become fashionable within days when short videos make it colourful, unusual and easy to recognise. Matcha drinks and desserts are one example. Their bright green appearance works well in photographs, while influencers can introduce new combinations to large audiences. Repeated online exposure may persuade customers to try a product even before they know much about its taste or origin.",
+            "Viral attention can create opportunities for cafés, farmers and small food businesses. Shops may develop new products, attract younger customers and introduce aspects of Japanese tea culture. At the same time, sudden demand can raise ingredient prices, encourage waste and reward appearance more than quality. Businesses that expand too quickly may struggle when the trend moves on to something else.",
+            "Responsible promotion should give customers useful information as well as attractive images. Influencers can identify paid partnerships, explain ingredients and avoid unsupported health claims. Producers can offer different sweetness levels, reduce unnecessary packaging and distinguish traditional matcha from products that merely use its colour. A lasting market will depend on quality, cultural respect and repeat customers rather than a brief burst of online popularity."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Food and Drink Trends on Social Media”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons certain foods and drinks gain attention on social platforms"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How online influencers and social media shape people's choices in food and beverages"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Potential opportunities and difficulties that the matcha market may encounter because of social media trends"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What types of food or drinks do you enjoy most?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you enjoy matcha-flavoured drinks or desserts?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you be interested in trying a variety of matcha-based products?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do you think matcha has become more widely favoured in recent years?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think matcha-based drinks might replace other soft-drink options?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should online influencers play a role in promoting certain kinds of food and drinks?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you like to learn a traditional skill or craft related to food culture?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think traditional culinary culture—including matcha—deserves protection?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-2-2-the-growth-and-impact-of-online-shopping",
+      "paper_version": "2.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "JINGSAILIAN_2026_DAY2",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 177,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-2-2-the-growth-and-impact-of-online-shopping",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "2.2",
+        "title": "E-commerce and Local Retail",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 2.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "E-commerce and Local Retail",
+          "body": [
+            "Online shopping allows customers to compare products, order at any hour and receive purchases without travelling. It can help people with limited mobility and give small sellers access to customers beyond their neighbourhood. Yet buyers cannot always inspect goods before paying, and misleading reviews, complicated returns, excessive packaging and impulsive purchasing remain common concerns.",
+            "Physical shops provide services that websites cannot fully reproduce. Customers can try products, ask questions and receive an item immediately. Local shops may also give a district its character and provide informal contact among residents. Their difficulty is that rent and staff costs are high, while online competitors can operate with wider stock and frequent discounts.",
+            "Traditional retailers could combine personal service with useful digital tools, such as online catalogues, simple ordering and collection in store. District promotions and loyalty programmes may encourage repeat visits. Government support might include practical training, grants for digital improvement and policies that reduce barriers for small businesses. The aim should not be to prevent online shopping, but to preserve genuine choice and a varied local retail environment."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “E-commerce and Local Retail”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The benefits and drawbacks of online shopping for both buyers and shop owners"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Practical ways for physical shops to stay competitive"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How the government can support local retail businesses"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy buying things through online platforms?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Which do you prefer—shopping online or shopping in physical stores?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think people can become overly dependent on or addicted to online shopping?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do some customers still favour visiting physical stores?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What can shoppers do to help support traditional shops?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Does the availability of delivery services make online shopping more appealing?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is money the main factor influencing how people choose where to shop?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "In what ways does the growth of online shopping influence the local community?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-2-3-promoting-hong-kong-cinema-internationally",
+      "paper_version": "2.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "JINGSAILIAN_2026_DAY2",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 177,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-2-3-promoting-hong-kong-cinema-internationally",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "2.3",
+        "title": "Introducing Hong Kong Cinema to International Students",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 2.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Introducing Hong Kong Cinema to International Students",
+          "body": [
+            "A group of international students will visit your school, and your class plans to introduce them to Hong Kong cinema. Local films are known for energetic action, distinctive urban locations, martial arts, comedy and stories about family or community life. They can show visitors aspects of Cantonese language and Hong Kong identity that ordinary tourist information may not capture.",
+            "Choosing suitable films requires care. Action and visual storytelling can cross language barriers, while youth or family films may offer themes that students easily understand. Older films can provide valuable cultural history. However, subtitles may not carry Cantonese wordplay, local references or differences in tone. Fast editing, unfamiliar social customs and violent content may also make some titles less suitable for a school audience.",
+            "The class could select short clips from several genres and provide a brief introduction before each one. A glossary, discussion questions and information about filming locations would help visitors follow the stories. The programme should represent Hong Kong cinema fairly instead of suggesting that one famous star or one genre defines the entire industry."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is going to introduce several Hong Kong films to visiting international students. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "What makes Hong Kong films appealing to viewers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Types of Hong Kong movies that would be suitable to introduce to international students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Possible difficulties international audiences may face when watching Hong Kong films"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy watching films in your free time?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What kind of movies do you prefer most?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do young people of different genders tend to enjoy the same movie genres?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you like watching movies from overseas?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Which do you enjoy more—fantasy films or stories based on real life?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What elements do you think make a film engaging or enjoyable?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think becoming a film star is essential for success in the movie industry?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Would you consider working in the film industry in the future?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-3-1-the-introduction-of-self-driving-taxis",
+      "paper_version": "3.1",
+      "source_kind": "pp",
+      "status": "verified_topic_with_material_reconstruction_limits",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "medium_high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions.",
+        "The two main recall compilations agree on the topic and Part A, but differ in several Part B phrasings and include overlapping taxi-use concepts. The replacement keeps eight useful reconstructed concepts; exact wording and order are not official."
+      ],
+      "context_word_count": 180,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-3-1-the-introduction-of-self-driving-taxis",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "3.1",
+        "title": "Introducing Robotaxis in Hong Kong",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 3.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Introducing Robotaxis in Hong Kong",
+          "body": [
+            "Robotaxis are vehicles that use cameras, sensors, maps and computer systems to travel without a driver controlling every movement. Supporters argue that they could provide round-the-clock service, reduce accidents caused by tired or distracted drivers and improve transport for people who find it difficult to drive. Hong Kong's dense road network, however, would be a demanding environment for the technology.",
+            "Crowded junctions, pedestrians, road works, heavy rain and narrow streets can create situations that are difficult to predict. If a robotaxi causes an accident, responsibility may be shared among the operator, software developer and vehicle owner. Passengers may also worry about cybersecurity, privacy and what happens when the system fails. Existing taxi drivers could face disruption to their livelihoods.",
+            "A cautious introduction could begin with limited routes, low speeds and trained remote support. Clear safety standards, insurance rules and public reporting would be essential. Similar technology might later assist buses, airport shuttles or delivery vehicles, especially on fixed routes. Whether robotaxis improve transport will depend not only on technical ability but also on public trust and integration with mass transit."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Introducing Robotaxis in Hong Kong”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The potential benefits of bringing autonomous taxis to Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Possible drawbacks or risks of adopting robotaxi services"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether self-driving technology could be applied to other transport modes"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you ever travel by taxi?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you prefer taking a taxi or taking a bus?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think taxi fares in Hong Kong are expensive?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "In what situations would you choose a taxi instead of public transport?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you be willing to try using a robotaxi?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How could taxi services be improved in Hong Kong?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think robotaxis could help reduce traffic congestion?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think robotaxis will eventually replace human taxi drivers?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-3-2-tipping-in-hong-kong-s-service-culture",
+      "paper_version": "3.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 181,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-3-2-tipping-in-hong-kong-s-service-culture",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "3.2",
+        "title": "Tipping Culture in Hong Kong",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 3.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Tipping Culture in Hong Kong",
+          "body": [
+            "Tipping is expected in some places but remains less central to everyday service in Hong Kong, where restaurants often add a service charge. People may still give extra money to hotel staff, delivery workers, taxi drivers or others who provide unusually helpful service. A tip can express appreciation directly and may encourage workers to give careful, friendly attention.",
+            "Problems arise when an optional reward becomes a social obligation. Customers may feel uncertain about whom to tip and how much, especially if a service charge is already included. Workers in visible roles may receive more than kitchen staff or cleaners who also contribute. Employers might even rely on tips instead of providing fair and stable wages.",
+            "If tipping becomes more common, businesses should state their policy clearly. Digital payment systems could allow a genuine 'no tip' choice without embarrassment, and restaurants could explain whether tips are shared. Good service should still come from training, professional standards and proper pay. Hong Kong must therefore decide whether tipping would improve appreciation for service workers or simply add cost, pressure and confusion to ordinary transactions."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Tipping Culture in Hong Kong”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Which types of jobs deserve to receive tips"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether tipping encourages better quality service"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Possible issues that may arise if tipping becomes common in Hong Kong"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever given a tip before?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is tipping a usual practice in Hong Kong?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you prefer to work in a job where employees receive tips?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should a delivery worker receive a certain amount of tips?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should customers still tip if the service they receive is poor?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should tipping be something optional, or should it be required?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do some restaurants choose not to have a tipping system?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should tips given to servers be shared with other restaurant staff?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-3-3-the-use-of-home-remedies",
+      "paper_version": "3.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 184,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-3-3-the-use-of-home-remedies",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "3.3",
+        "title": "Home Remedies",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 3.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Home Remedies",
+          "body": [
+            "Many families use simple home remedies for minor problems. Warm drinks, rest, steam, herbal teas or familiar foods may bring comfort when someone has a mild cough, sore throat or stomach discomfort. These remedies are convenient, inexpensive and often passed from one generation to the next, so they can carry cultural as well as practical meaning.",
+            "A remedy that feels familiar is not automatically safe. Some ingredients can cause allergies, interact with medicine or be unsuitable for children, pregnant people or patients with particular conditions. More seriously, a person may mistake an urgent illness for a minor one and delay professional treatment. Claims shared online can make this risk worse when they are not supported by reliable evidence.",
+            "People should distinguish supportive self-care from medical treatment. They can check ingredients, use moderate amounts and seek qualified advice if symptoms are severe, unusual or persistent. Health education can respect family traditions while explaining warning signs and scientific evidence. Home remedies may have a useful place in daily care, but they should not be presented as guaranteed cures or complete replacements for doctors and prescribed treatment."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Home Remedies”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The benefits of using home remedies for minor health issues"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The potential risks or limitations of relying on home remedies"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How common home-remedy practices are in Hong Kong"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you or your family ever used home remedies before?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you usually trust home remedies?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer visiting a doctor or relying on home remedies when feeling unwell?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do you think some people avoid seeking medical help?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why do many people choose home remedies instead of conventional medicine?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think home remedies are safer than modern medical treatments?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "To what extent could home remedies replace regular medical care?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you enjoy drinking green tea?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-4-1-entrepreneurship-for-young-people",
+      "paper_version": "4.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 178,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-4-1-entrepreneurship-for-young-people",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "4.1",
+        "title": "Student Entrepreneurship",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 4.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Student Entrepreneurship",
+          "body": [
+            "Your school is considering a student business fair. Suggested stalls include handmade gifts, tutoring services, simple snacks and digital design. Students would choose one idea, prepare a small budget and operate the stall for a limited period. The activity is intended to develop creativity and practical skills rather than to encourage students to make large profits.",
+            "Running even a small business can teach planning, communication, pricing and problem-solving. Students may gain confidence when customers value their work. Difficulties include balancing orders with homework, controlling costs, following food-safety or copyright rules and handling complaints. A popular idea can also become stressful if demand is greater than a student can manage.",
+            "Parents and schools can provide guidance without taking control. Workshops could cover budgeting, honest advertising, customer privacy and basic legal responsibilities. Teachers might approve plans, set spending limits and arrange safe selling spaces, while parents could offer advice and emotional support. Clear rules should protect students from financial loss and excessive pressure. Success should be judged by what students learn, not only by how much money a stall earns."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is considering a student business fair. Using the business ideas in the text, discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Which type of business would you choose to start as a student"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The advantages and difficulties of running a business while studying"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How parents and schools can support students who run businesses"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to start your own business in the future?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think Hong Kong provides a good environment for students to run a business?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why are more teenagers becoming business owners nowadays?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you believe young people are capable of operating a successful business?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What factors would you consider when starting a business?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think students should focus only on academic studies, or also develop business skills?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Which would you choose to run—a service business or a handicraft business?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Which type of business do you think is more challenging: offering services or producing handmade goods?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-4-2-artificial-intelligence-in-the-workplace",
+      "paper_version": "4.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 178,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-4-2-artificial-intelligence-in-the-workplace",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "4.2",
+        "title": "Artificial Intelligence in the Workplace",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 4.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Artificial Intelligence in the Workplace",
+          "body": [
+            "Artificial intelligence can sort information, produce routine documents, answer common questions and control machines. As these systems improve, data-entry, basic customer service and repetitive production work may change substantially. AI can help employees complete some tasks more quickly, but a job usually contains several responsibilities, so transformation may be more common than complete replacement.",
+            "Machines still struggle with genuine empathy, moral responsibility and unpredictable situations. They can also produce confident but inaccurate answers. If workers accept results without checking them, mistakes may spread into reports, decisions or customer advice. Other concerns include confidential data, unfair bias, unclear ownership of generated work and the gradual loss of human skills.",
+            "Workplaces need rules that match the risk of each task. Staff should verify important output, protect personal information and know when a human decision is required. Training can help employees use AI as an assistant rather than a substitute for judgement. Employers should also explain how roles may change and support affected workers. The central question is not simply what AI can do, but what people should remain responsible for."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Artificial Intelligence in the Workplace”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Types of jobs that may be replaced or greatly changed by artificial intelligence"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Tasks that artificial intelligence is unable to perform effectively"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Possible disadvantages of relying on AI to complete work tasks"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy doing tasks such as cooking by yourself?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you feel comfortable working alongside AI-powered robots?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you be willing to try food prepared by AI-controlled machines?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you accept being served by robots in restaurants?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think artificial intelligence may lead to job losses?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should AI be used to help write formal work documents and letters?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "If you had your own AI assistant, what tasks would you want it to handle?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you plan to make use of AI tools in your future career?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-4-3-choosing-a-field-of-study",
+      "paper_version": "4.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "SJDS_2026_WEEK1"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 175,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-4-3-choosing-a-field-of-study",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "4.3",
+        "title": "Choosing a Major",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 4.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Choosing a Major",
+          "body": [
+            "Choosing a field of study can influence a student's learning experience and future opportunities, but no single factor provides a perfect answer. Interest and ability matter because a demanding programme requires sustained effort. Students should also examine course content, teaching methods, entry requirements, cost and the kinds of work or further study that graduates pursue.",
+            "Some programmes become popular because they are linked with professional status, stable employment or new industries. Media attention and salary expectations can make a subject seem attractive even when students know little about the daily work involved. Popularity may also increase competition for places and create pressure to follow a trend rather than consider personal suitability.",
+            "Parents can offer experience, financial guidance and emotional support, but their expectations may become too influential. Schools can help through counselling, subject tasters, workplace visits and conversations with current students or professionals. A good decision should combine reliable research with self-understanding. Students also need to remember that careers change, and a degree is one stage of development rather than a guarantee of lifelong success."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Choosing a Major”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Key factors students should think about when selecting a major in higher education"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Reasons certain academic programmes are especially popular"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How parents influence students' choices of subjects or majors"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to continue your studies in higher education?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you prefer studying locally or overseas?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What do you think is the biggest difficulty when choosing a major?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is earning potential an important factor for you when selecting a major?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Which is more important when choosing a major: personal interest or future career prospects?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think studying at a top university guarantees career success?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What can students do to better prepare themselves for the job market?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How can schools help students adapt to changing employment demands?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-5-1-online-examinations",
+      "paper_version": "5.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 173,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-5-1-online-examinations",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "5.1",
+        "title": "Online Examinations",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 5.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Online Examinations",
+          "body": [
+            "Online examinations can reduce printing, simplify the collection of scripts and provide fast results for questions that can be marked automatically. Students may type, use multimedia material and sit an assessment when travel to school is impossible. Digital records are easier to store, but these advantages depend on reliable systems and fair access to equipment.",
+            "An unstable connection, device failure or platform error can interrupt a high-stakes examination. Home environments differ, and not every student has a quiet room or suitable computer. Schools may also find it difficult to protect privacy and prevent unauthorised help. Long periods on screen can disadvantage students who type slowly or need particular support.",
+            "Before using online examinations, schools should provide practice sessions, technical assistance and loan devices. Rules must explain identity checks, permitted materials, data protection and what happens after a disconnection. A backup paper or rescheduling procedure can prevent technical faults from deciding a student's result. Online assessment may suit some subjects and purposes, but practical, artistic and extended handwritten tasks may still require different methods."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Online Examinations”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages of conducting online examinations for both students and teachers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Possible problems or challenges faced by students and teachers when taking online exams"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Measures schools should take to ensure online examinations can be carried out effectively"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever taken an online examination before?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you like to take exams at home instead of at school?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Which do you prefer: traditional paper-based exams or online exams?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think online exams are suitable for all academic subjects?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What risks or problems may occur during online examinations?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "In which situations are paper-based exams more effective than online exams?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "When do people still need to rely on traditional written exams?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think online exams will completely replace paper exams in the future?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-5-2-money-and-personal-happiness",
+      "paper_version": "5.2",
+      "source_kind": "pp",
+      "status": "verified_topic_with_material_reconstruction_limits",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "medium_high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions.",
+        "Recall compilations disagree on at least one Part B concept (a purchased item that brought happiness versus two very similar past-versus-present happiness questions). The replacement follows the fuller DSE Treasure reconstruction but exact wording/order remains low confidence."
+      ],
+      "context_word_count": 182,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-5-2-money-and-personal-happiness",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "5.2",
+        "title": "Can Money Buy Happiness?",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 5.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Can Money Buy Happiness?",
+          "body": [
+            "Money can provide food, housing, healthcare and freedom from some forms of worry. In a city with high living costs, financial security understandably matters to many families. Yet an increase in income does not always create a lasting increase in happiness. Expectations may rise, comparison with others may continue and greater wealth can bring new responsibilities or fear of loss.",
+            "Many important sources of well-being cannot simply be purchased. Trust, friendship, health, purpose and a sense of belonging develop through time and attention. Expensive possessions may bring brief excitement, but people soon become used to them. This does not mean that money is unimportant; rather, its effect often depends on whether basic needs are secure and how it is used.",
+            "People can strengthen well-being through relationships, exercise, rest, creative activity, volunteering and achievable personal goals. Simple experiences may be especially valuable when they are shared or meaningful. Society can also reduce unnecessary comparison by recognising different definitions of success. A balanced view accepts that money can remove hardship and create opportunities while rejecting the idea that wealth alone guarantees a satisfying life."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Can Money Buy Happiness?”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons people may not feel happier even when they have more money"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether wealth is considered important by most people in Hong Kong"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways people can achieve happiness without relying on money"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What have you bought that made you happy?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What makes you happier: shopping or doing sports?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Can changes in the weather influence your mood?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Which period of your life do you think has been the happiest?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What can people do to feel happier in their daily lives?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "At what stage of life do people usually feel happiest?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think people today are less happy than before?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you believe people nowadays are generally happier than people in the past?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-5-3-shared-working-environments",
+      "paper_version": "5.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 177,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-5-3-shared-working-environments",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "5.3",
+        "title": "Co-working Spaces",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 5.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Co-working Spaces",
+          "body": [
+            "Co-working spaces provide desks, internet, meeting rooms and shared facilities to people who do not work for the same organisation. They attract freelancers, remote employees and small companies that may not need a permanent office. Flexible membership and lower initial costs can make these spaces more practical than renting and managing a private workplace.",
+            "Working near people from different industries can reduce isolation and create opportunities to exchange ideas or find clients. However, an open environment may be noisy, distracting or unsuitable for confidential conversations. Members may compete for meeting rooms, worry about data security or feel pressure to socialise when they need to concentrate. Different professions also require different equipment and working hours.",
+            "A well-designed space can offer quiet zones, private booths, accessible furniture, secure storage and clear booking systems. Rules should cover calls, guests, cleanliness and the handling of sensitive information. Community events can be optional rather than constant. Co-working is most useful when it gives members genuine flexibility: places for focused work, collaboration and private discussion instead of one fashionable open room for everyone."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Co-working Spaces”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons shared working spaces have become increasingly popular"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The advantages and drawbacks of using co-working spaces"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How co-working spaces cater to people from different professional fields"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you prefer working from home or outside your home?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you like to work in a traditional office environment?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer a quiet workplace or a more interactive and social one?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What challenges might people face when working in a co-working space?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What facilities do you think a good co-working space should provide?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What rules should be introduced to maintain a good working environment in co-working spaces?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think building professional networks is important in a workplace?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should the government encourage the development of co-working spaces?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-6-1-relationships-between-parents-and-teenagers",
+      "paper_version": "6.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 180,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-6-1-relationships-between-parents-and-teenagers",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "6.1",
+        "title": "Relationships between Parents and Teenagers",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 6.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Relationships between Parents and Teenagers",
+          "body": [
+            "Teenagers often seek greater independence while parents remain responsible for their safety and education. This difference can create emotional distance even when both sides care about each other. Busy schedules, school pressure and constant phone use may reduce opportunities for relaxed conversation. Teenagers may also fear criticism and therefore keep worries or interests to themselves.",
+            "Common sources of frustration include comparisons with other children, repeated questions, strict control of friendships and online activity, and decisions made without listening. Parents may see these actions as protection, while teenagers experience them as a lack of trust. Arguments become harder to solve when either side interrupts, raises old complaints or treats one disagreement as proof of a person's character.",
+            "Families can reduce conflict by choosing a calm time to talk, explaining reasons and agreeing on boundaries that can change with age. Regular meals or shared activities create contact without forcing serious discussion every time. Teenagers should communicate plans honestly, while parents should listen before offering solutions. The goal is not to remove every disagreement but to handle differences without damaging respect or closeness."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Relationships between Parents and Teenagers”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons teenagers may feel emotionally distant from their parents"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Types of parental behaviour that teenagers find most upsetting or frustrating"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways parents and teenagers can reduce conflicts and arguments"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What topics or issues do family members argue about most often?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What kinds of activities do families commonly enjoy doing together?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think it is important for teenagers to share meals with their parents?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you believe family gatherings are still necessary today?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think teenagers should value their family more, or their friends more?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think it is embarrassing or uncomfortable to share personal interests with parents?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think face-to-face communication is still important nowadays?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are traditional family values becoming less important than in the past?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-6-2-set-jetting",
+      "paper_version": "6.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 171,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-6-2-set-jetting",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "6.2",
+        "title": "Set-jetting in Hong Kong",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 6.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Set-jetting in Hong Kong",
+          "body": [
+            "Set-jetting means travelling to places seen in films or television programmes. Hong Kong offers recognisable skylines, street markets, housing estates, harbour views and neighbourhoods used in local and international productions. Visitors may enjoy comparing real locations with scenes and learning how a director transformed an ordinary place on screen.",
+            "Film tourism can bring customers to local shops, renew interest in older movies and introduce visitors to districts outside the usual tourist areas. It can also cause crowding, noise and intrusive photography near homes or businesses. A location may be promoted without enough explanation, and its popularity may disappear when attention moves to another production.",
+            "Hong Kong could create themed routes, multilingual maps and short clips that explain each location's film and community history. Partnerships among filmmakers, tourism bodies and residents would help information remain accurate and visits respectful. Promotion should include transport advice, opening hours and rules for photography. The strongest experience would connect cinema with food, architecture and local stories rather than treating neighbourhoods merely as backgrounds for social-media pictures."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Set-jetting in Hong Kong”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Whether Hong Kong is a good location for set-jetting"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The advantages and disadvantages of set-jetting for Hong Kong's tourism industry"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How Hong Kong can be promoted as a set-jetting destination"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like watching films?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you know any famous TV or film locations?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why do people enjoy visiting film locations?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you like to take part in set-jetting?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What should tourists consider before visiting filming locations?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What impact does set-jetting have on the local economy?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How does social media influence tourism?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think social media can help promote Hong Kong's tourism sector?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-6-3-summer-activities-for-teenagers-in-hong-kong",
+      "paper_version": "6.3",
+      "source_kind": "pp",
+      "status": "verified_topic_with_material_reconstruction_limits",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "medium_high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions.",
+        "Only seven coherent Part B concepts are independently usable. One aggregate contains the implausible line “Should the elderly be given summer homework?”, while another lists only seven questions. Question ir_08 is therefore an explicitly practice-only reconstruction, not a recalled official question."
+      ],
+      "context_word_count": 178,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-6-3-summer-activities-for-teenagers-in-hong-kong",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "6.3",
+        "title": "Summer Activities for Teenagers",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 6.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Summer Activities for Teenagers",
+          "body": [
+            "A community centre is planning summer activities for teenagers. Its initial ideas are a water-sports day, a digital-media workshop and a short volunteer project. Organisers want the programme to be enjoyable, but they also hope participants will learn skills and meet people outside their usual friendship groups. The budget and number of staff are limited.",
+            "Before selecting activities, the centre must consider safety, cost, location, supervision and the interests of different age groups. Outdoor programmes need weather and emergency plans, while indoor workshops require suitable equipment. Teenagers may be more willing to join when they can choose among options, attend with friends and understand clearly what the activity involves.",
+            "Other possibilities include cooking, first aid, career visits, drama, hiking or community service. A balanced programme could include both active and quiet choices, with fees kept affordable. Promotion should use student-friendly language without making unrealistic promises. Feedback after each activity would help the centre improve future programmes. The organisers must decide whether summer activities should focus mainly on rest, learning, social connection or a sensible combination of all three."
+          ]
+        },
+        "part_a": {
+          "instruction": "A community centre is planning summer activities for teenagers. Using the ideas in the text, discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Things to consider when organising summer activities for teenagers"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Whether teenagers would be interested in joining the activities mentioned above"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "What other types of activities could be organised"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you think your summer holiday from school is long enough?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Should teachers give students summer holiday homework?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think teenagers should try new activities during the summer?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should summer activities focus more on relaxation or learning?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you prefer indoor activities or outdoor activities?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you prefer taking part in summer activities alone or in groups?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you join a water-sports activity?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What should teenagers gain from a well-designed summer activity?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-7-1-pen-friend-programmes-and-letter-writing",
+      "paper_version": "7.1",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "JINGSAILIAN_2026_DAY7",
+        "SJDS_2026_DAY7"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 176,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-7-1-pen-friend-programmes-and-letter-writing",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "7.1",
+        "title": "A Pen-friend Programme",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 7.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "A Pen-friend Programme",
+          "body": [
+            "The English Club plans to start a pen-friend programme with students in another place. Participants would exchange letters or carefully supervised messages several times during the school year. Unlike quick comments on social media, a letter gives the writer time to organise ideas, describe daily life and ask thoughtful questions about another person's experiences.",
+            "The programme could strengthen writing skills, curiosity and cross-cultural understanding. It also requires safeguards. Students should not share private addresses, phone numbers or other sensitive information, and they need guidance on respectful language and stereotypes. Slow replies or very different levels of English may cause frustration unless expectations are explained at the beginning.",
+            "The English Club could provide model openings, topic lists, vocabulary support and translation advice without writing letters for participants. Teachers might check the first exchange and arrange group activities based on what students learn. Displays, lunchtime sharing sessions and stories from previous participants could encourage others to join. The scheme should value genuine communication rather than perfect grammar and offer a clear process for reporting uncomfortable or inappropriate messages."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your English Club is planning a pen-friend programme. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages of taking part in a pen-friend programme"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How the English Club can offer support to students in the scheme"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Methods to motivate students to join the pen-friend programme"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do people still write letters in modern society?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do many young people nowadays have pen friends?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer communicating by writing letters or by speaking to your friends?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think writing letters can help build or strengthen friendships?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What topics would you like to share with your pen friend?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What would you write in your very first letter to a pen friend?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How can a pen-friend scheme help you learn about different cultures?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "If you could choose a pen friend from anywhere in the world, which place would you choose?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-7-2-the-rise-of-the-ugly-cute-aesthetic",
+      "paper_version": "7.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium_high",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "JINGSAILIAN_2026_DAY7",
+        "SJDS_2026_DAY7"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 186,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-7-2-the-rise-of-the-ugly-cute-aesthetic",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "7.2",
+        "title": "The 'Ugly-cute' Trend",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 7.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "The 'Ugly-cute' Trend",
+          "body": [
+            "The term 'ugly-cute' describes characters and products that combine awkward, strange or imperfect features with a playful appeal. Collectible figures such as Labubu have helped bring this style to a wide audience. Their unusual appearance stands out in photographs, while limited editions, surprise boxes and social-media communities add excitement to buying and exchanging them.",
+            "For teenagers, the trend may make beauty feel more flexible and show that charm does not require perfect symmetry. Collecting can provide a hobby and a way to connect with friends. However, pressure to own rare items may encourage overspending, comparison and speculative resale. Some buyers may value popularity or price more than design, and constant promotion can make a temporary trend feel essential.",
+            "The popularity of ugly-cute products suggests that people can enjoy imperfection, humour and strong personality in design. At the same time, a commercial trend does not automatically change deeper attitudes towards human appearance. Consumers should consider why they want an item, how much they can afford and whether the product has lasting meaning for them. Creative industries can learn from the trend without relying only on artificial scarcity."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “The 'Ugly-cute' Trend”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons the ugly-cute trend has become popular"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The positive and negative effects of this trend on teenagers"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "How the ugly-cute trend reflects a shift in attitudes towards beauty standards"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like the ugly-cute trend?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think the Labubu character is ugly or cute?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Would you consider buying a Labubu product in the future?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you purchase products that do not match traditional beauty standards?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Is the ugly-cute style generally accepted by society?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you be willing to spend a large amount of money on a rare product?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do trendy products help teenagers make friends?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think the ugly-cute trend influences the art and creative industries?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-7-3-the-importance-of-note-taking-skills",
+      "paper_version": "7.3",
+      "source_kind": "pp",
+      "status": "verified_topic_with_material_reconstruction_limits",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "high",
+        "part_a_concepts": "medium_high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL",
+        "JINGSAILIAN_2026_DAY7",
+        "SJDS_2026_DAY7"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions.",
+        "Sources disagree slightly on the first Part A point: one says the importance of handwritten notes, while another broadens it to whether note-taking improves learning. The replacement uses the more specific independently recalled handwritten-notes wording."
+      ],
+      "context_word_count": 178,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-7-3-the-importance-of-note-taking-skills",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "7.3",
+        "title": "Note-taking Skills",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 7.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Note-taking Skills",
+          "body": [
+            "Taking notes requires students to select important ideas, connect information and express it briefly. Writing by hand can slow the process enough to encourage thought, while digital tools allow quick searching, rearrangement and the addition of links, images or recordings. Simply copying every word, however, is unlikely to produce useful notes in either format.",
+            "Different subjects may need different methods. A timeline can clarify history, a labelled diagram may suit science and a two-column page can separate key ideas from examples or questions. Colour can highlight a small number of categories, but too much decoration may consume time without improving understanding. Students should review and correct notes soon after a lesson.",
+            "Technology can support learning through shared documents, handwriting tablets, speech-to-text and reminder systems. It can also create distraction or encourage students to save material they never read again. Schools can demonstrate several note-taking strategies and let students compare what works for them. Strong study habits combine clear notes with active recall, practice questions, discussion, regular review and enough rest rather than treating note-taking as a complete solution."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Note-taking Skills”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The importance of taking notes by hand"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "How technology can help students take and use notes"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Other strategies students can use to improve their studies"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you usually take notes during lessons at school?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think taking notes is helpful for students' learning?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think schools should teach students how to take notes effectively?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you find writing notes by hand difficult?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What advice would you give students about taking notes?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How do note-taking skills help you improve your studies?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think using colours and drawings can improve learning?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think students will continue to take notes by hand in the future?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-8-1-encouraging-visits-to-hong-kong-s-country-parks",
+      "paper_version": "8.1",
+      "source_kind": "pp",
+      "status": "verified_topic_with_material_reconstruction_limits",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "medium_high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions.",
+        "Sources vary between “country parks” and the broader “green spaces in urban areas” for Part A point 2. The replacement uses country parks because that is the paper topic and remains faithful to both concepts."
+      ],
+      "context_word_count": 178,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-8-1-encouraging-visits-to-hong-kong-s-country-parks",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "8.1",
+        "title": "Promoting Hong Kong's Country Parks",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 8.1. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Promoting Hong Kong's Country Parks",
+          "body": [
+            "Hong Kong's country parks protect hills, woodland, reservoirs and coastlines close to a densely populated city. For young people who spend much of their time indoors or online, visiting nature can provide exercise, reduce stress and build awareness of local plants, animals and landscapes. Country parks also protect water catchments and habitats used by the wider community.",
+            "Easy access to green space improves city life, but large visitor numbers can damage trails, disturb wildlife and create litter or fire risks. Maintaining parks also requires public land and long-term funding. Visitors with limited mobility or little outdoor experience may find some routes difficult, while extreme heat and sudden weather changes can create safety problems.",
+            "Promotion should therefore encourage responsible visits rather than simply more visits. Schools could organise guided walks, conservation projects and beginner-friendly route planning. Clear transport information, multilingual signs and digital trail guides would help new visitors. Campaigns should explain preparation, waste reduction and respect for wildlife. Success should be measured through appreciation and protection of nature, not only the number of people arriving at popular viewpoints."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing “Promoting Hong Kong's Country Parks”. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Why it is important for young people in a city to experience nature"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "The advantages and disadvantages of having country parks near an urban area"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways to promote Hong Kong's country parks responsibly"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy visiting country parks?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you choose to hike in a country park or shop in a shopping mall?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "How does spending time in green spaces improve people's well-being?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What role do country parks play in Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you like to work as a volunteer in a country park?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How is visiting an organic farm beneficial for students?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "How can schools help students appreciate Hong Kong's natural environment?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How can schools promote country parks to students?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-8-2-responding-to-an-ageing-population",
+      "paper_version": "8.2",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 178,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-8-2-responding-to-an-ageing-population",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "8.2",
+        "title": "Raising Hong Kong's Retirement Age to 70",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 8.2. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Raising Hong Kong's Retirement Age to 70",
+          "body": [
+            "Hong Kong, like many societies, has a growing proportion of older residents. One proposal is to raise the retirement age to 70. Supporters argue that people are living longer, many remain healthy and experienced workers can continue contributing. A later retirement age may also reduce pressure on pension systems and help sectors facing labour shortages.",
+            "Opponents point out that health, income and working conditions differ greatly. A desk-based professional may be able to work longer than someone in a physically demanding job. Compulsory later retirement could limit rest, family care or opportunities for younger workers. Some employees may wish to continue, while others need a secure way to leave work earlier.",
+            "Public support would probably depend on flexibility. Options could include voluntary extensions, phased retirement, part-time roles, retraining and protection against age discrimination. Employers would need to adapt workplaces and judge performance fairly rather than assuming that every older worker has the same ability. The debate is therefore not only about one number, but about choice, financial security and how different generations can participate in work with dignity."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is preparing a debate on the motion: ‘The retirement age in Hong Kong should be increased to 70.’ Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Reasons supporting the motion"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Reasons opposing the motion"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Whether people in Hong Kong would support this policy"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy spending time or working with elderly people?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What can young people teach elderly people?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What can elderly people teach younger generations?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think young people and elderly people can become friends?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How can society deal with the issue of an ageing population?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is it necessary for the government to set a retirement age?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should elderly people be required to retire to create more job opportunities for young people?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should the elderly receive financial support from the government?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2026-8-3-greater-bay-area-job-opportunities-for-hong-kong-youth",
+      "paper_version": "8.3",
+      "source_kind": "pp",
+      "status": "verified_with_reconstructed_wording",
+      "confidence": "medium",
+      "field_confidence": {
+        "year_and_version": "high",
+        "topic": "medium_high",
+        "part_a_concepts": "high",
+        "part_a_exact_wording": "low",
+        "part_b_question_concepts": "medium_high",
+        "part_b_exact_wording_and_order": "low",
+        "context_text": "original_mock_not_official"
+      },
+      "evidence_source_ids": [
+        "HKEAA_2026_FRAMEWORK",
+        "HKEAA_2026_INFO_DAY",
+        "HKEAA_2026_ORAL_REMINDERS",
+        "DSEBEST_2026_RECALL",
+        "DSETREASURE_2026_RECALL"
+      ],
+      "notes": [
+        "No official 2026 task sheet or preparation passage was publicly available in the sources located for this audit. The record must remain labelled as reconstructed candidate-recall practice, not as verbatim official content.",
+        "The paper number, topic sequence and three substantive Part A prompts agree across the two full-year recall compilations.",
+        "The Part B concepts are substantially corroborated, but neither exact wording nor official question order can be established; one compilation explicitly says its editor reordered Part B questions."
+      ],
+      "context_word_count": 186,
+      "replacement": {
+        "set_id": "dse-p4-pp-2026-8-3-greater-bay-area-job-opportunities-for-hong-kong-youth",
+        "source_kind": "pp",
+        "exam_year": 2026,
+        "paper_version": "8.3",
+        "title": "Youth Employment in the Greater Bay Area",
+        "source_note": "Reconstructed practice set for recalled 2026 HKDSE Paper 4 version 8.3. The paper version, topic and Part A concepts were cross-referenced against independent candidate-recall compilations; exact official wording and Part B order could not be verified. The context is new, original mock material and is not an HKEAA passage.",
+        "context": {
+          "source_line": "Original mock article written in an HKDSE-style format; not an official HKEAA passage:",
+          "title": "Youth Employment in the Greater Bay Area",
+          "body": [
+            "The Greater Bay Area Youth Employment Scheme connects eligible Hong Kong young people with jobs in mainland cities of the Greater Bay Area. Participants may gain experience in a larger market, learn how different workplaces operate and develop professional networks across cities. Opportunities in technology, finance, design and other sectors may broaden their understanding of possible careers.",
+            "Moving away from Hong Kong also creates practical and personal challenges. Participants may need to adjust to workplace expectations, housing, transport, digital services and different legal or administrative arrangements. Some worry about family separation, language use or whether experience gained outside Hong Kong will support their longer-term career. Salary alone may not answer these concerns.",
+            "The scheme could attract more applicants through clear job descriptions, transparent pay, mentoring and help with accommodation and daily procedures. Former participants should share both benefits and difficulties rather than only promotional success stories. Employers can explain training and future progression, while organisers should provide a route for support when placements go wrong. A strong programme would help participants make informed choices and connect the experience to later opportunities in Hong Kong or elsewhere."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is discussing the Greater Bay Area Youth Employment Scheme. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "The advantages for young people in Hong Kong of working in the Greater Bay Area"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "Difficulties young people may encounter when working in the Greater Bay Area"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "Ways to encourage more people to take part in the scheme"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to work outside Hong Kong?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Besides Hong Kong, which places would you like to work in?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "If you had the opportunity to work in mainland China, which city would you choose?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Which do you value more when choosing a job, salary or work experience?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What factors do you consider important when selecting a job?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think it is important to gain working experience outside Hong Kong?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What would you miss the most if you joined the Greater Bay Area Youth Employment Scheme?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How do you think the Admission Scheme for Mainland Talents and Professionals will affect local job opportunities?"
+            }
+          ]
+        },
+        "content_revision": 1,
+        "visible_to_students": true,
+        "next_point_sequence": 5,
+        "next_question_sequence": 9
+      }
+    }
+  ],
+  "validation": {
+    "record_count": 24,
+    "expected_record_count": 24,
+    "unique_set_ids": 24,
+    "unique_paper_versions": 24,
+    "contexts_within_150_220_words": 24,
+    "context_word_counts": {
+      "1.1": 174,
+      "1.2": 179,
+      "1.3": 183,
+      "2.1": 188,
+      "2.2": 177,
+      "2.3": 177,
+      "3.1": 180,
+      "3.2": 181,
+      "3.3": 184,
+      "4.1": 178,
+      "4.2": 178,
+      "4.3": 175,
+      "5.1": 173,
+      "5.2": 182,
+      "5.3": 177,
+      "6.1": 180,
+      "6.2": 171,
+      "6.3": 178,
+      "7.1": 176,
+      "7.2": 186,
+      "7.3": 178,
+      "8.1": 178,
+      "8.2": 178,
+      "8.3": 186
+    },
+    "duplicate_full_contexts": [],
+    "records_with_four_part_a_points": 24,
+    "records_with_eight_part_b_questions": 24,
+    "stable_point_ids": true,
+    "stable_question_ids": true
+  }
+}

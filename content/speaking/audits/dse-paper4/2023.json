@@ -1,0 +1,2993 @@
+{
+  "audit_year": 2023,
+  "accessed": "2026-09-02",
+  "scope": {
+    "canonical_records": 25,
+    "past_paper_records": 24,
+    "hidden_mock_records": 1,
+    "expected_past_paper_versions": "1.1–8.3 (24 versions)"
+  },
+  "methodology": {
+    "source_priority": [
+      "official HKEAA pages and sample-performance PDF",
+      "full-paper scan/OCR",
+      "contemporaneous candidate-recall sources"
+    ],
+    "status_definitions": {
+      "exact": "Matches the verified identity, meaning and printed order.",
+      "close": "Same verified meaning, but wording has been paraphrased or the title is broader/narrower.",
+      "unsupported": "No evidence that this material is the official text; replacement is explicitly original mock material.",
+      "conflict": "Wrong version/topic, missing or substituted item, or material change in printed order."
+    },
+    "copyright_rule": "Official context passages are not reproduced. Every replacement context is newly written, 150–220 words, and explicitly labelled as mock/adapted practice material.",
+    "stable_id_rule": "Existing set_id, point_id and question_id values are preserved. Because canonical 1.1 and 1.3 are swapped, their stable set_id slugs remain semantically misleading; migration should not silently rename them."
+  },
+  "key_findings": [
+    "The canonical 2023 version 1.1 and 1.3 topics are reversed. Printed 1.1 is Unmanned Convenience Stores; printed 1.3 is Plant-Based Meats.",
+    "The 24 past-paper versions are real and complete for 1.1–8.3. No missing or extra past-paper version was found.",
+    "Many Part A prompts preserve the topic but use candidate-recall paraphrases rather than printed wording.",
+    "Part B order/content conflicts are material in 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 4.2, 4.3, 5.1, 5.2 and 5.3.",
+    "Current generic contexts are not supported as official passages. All 24 replacements are original, topic-specific mock contexts.",
+    "The one hidden wearable mock is internally coherent and correctly hidden, but its current context is shorter than the 150–220-word audit standard."
+  ],
+  "sources": [
+    {
+      "tier": 1,
+      "publisher": "Hong Kong Examinations and Assessment Authority",
+      "title": "2023 English Language Paper 4 Samples of Candidates’ Performance",
+      "url": "https://www.hkeaa.edu.hk/en/HKDSE/assessment/subject_information/category_a_subjects/eng_lang/sp/2023_Paper4.html",
+      "supports": "Officially confirms versions 2.1 Night Owls, 4.1 Wearable smart devices, 6.2 Good habits every student should develop, and 8.1 Eating insects.",
+      "accessed": "2026-09-02"
+    },
+    {
+      "tier": 1,
+      "publisher": "Hong Kong Examinations and Assessment Authority",
+      "title": "2023 English Language Examination Paper 4 Samples (PDF)",
+      "url": "https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Subject_Information/eng_lang/2023-Sample-ENG-Paper4.pdf",
+      "supports": "Official sample-performance summary and four confirmed paper-version titles.",
+      "accessed": "2026-09-02"
+    },
+    {
+      "tier": 1,
+      "publisher": "Hong Kong Examinations and Assessment Authority",
+      "title": "2023 Question Papers publication listing",
+      "url": "https://www.hkeaa.edu.hk/en/Resources/publications/list_of_publications/hkdse_erqp_pub/2023.html",
+      "supports": "Confirms that the authoritative full paper is a paid HKEAA publication; no freely licensed official full-paper text was found.",
+      "accessed": "2026-09-02"
+    },
+    {
+      "tier": 2,
+      "publisher": "Scribd user upload",
+      "title": "HKDSE 2023 P4 (48-page scan/OCR)",
+      "url": "https://www.scribd.com/document/930902882/HKDSE-2023-P4",
+      "supports": "Page images/OCR for versions 1.1–7.2; used to check printed version order, scenario, Part A prompts and Part B order.",
+      "accessed": "2026-09-02"
+    },
+    {
+      "tier": 2,
+      "publisher": "Scribd user upload",
+      "title": "P 4 (scan/OCR)",
+      "url": "https://www.scribd.com/document/839721139/p4",
+      "supports": "Independent scan/OCR covering versions 1.1–8.3, including 7.3–8.3.",
+      "accessed": "2026-09-02"
+    },
+    {
+      "tier": 3,
+      "publisher": "DSE Treasure",
+      "title": "DSE English Paper 4 topic analysis 2025–2012",
+      "url": "https://dsetreasure.com/dse-english-paper-4-%E9%A1%8C%E7%9B%AE/",
+      "supports": "Candidate-recall topic list, Part A prompts and Part B questions for all 2023 versions; the page itself warns wording may differ.",
+      "accessed": "2026-09-02"
+    },
+    {
+      "tier": 3,
+      "publisher": "Spencer Lam English Team",
+      "title": "2023 DSE Speaking topics",
+      "url": "https://spencerlam.hk/blog/2023/03/22/2023-dse-speaking-%E9%A1%8C%E7%9B%AE/",
+      "supports": "Contemporaneous candidate-recall corroboration for 2023 themes and Part A sub-topics.",
+      "accessed": "2026-09-02"
+    }
+  ],
+  "records": [
+    {
+      "set_id": "dse-p4-pp-2023-1-1-plant-based-meat",
+      "source_kind": "pp",
+      "existing_paper_version": "1.1",
+      "verified_paper_version": "1.1",
+      "current_title": "Plant-Based Meat",
+      "recommended_title": "Unmanned Convenience Stores",
+      "audit": {
+        "set_identity": "conflict",
+        "title": "conflict",
+        "context": "unsupported",
+        "part_a": "conflict",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "The canonical 1.1 and 1.3 topics are swapped. The printed 2023 paper identifies 1.1 as unmanned convenience stores and 1.3 as plant-based meats. Stable set_id is retained here as requested, although its slug becomes misleading.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Unmanned Convenience Stores",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 1.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 1.1 topic:",
+          "title": "A Store with No Cashier",
+          "body": [
+            "A convenience-store chain is testing a small branch inside a busy railway station. Cameras and shelf sensors record what customers pick up, while a payment screen prepares the bill automatically. Shoppers can pay by card, phone or cash before an exit gate opens. One employee remains on site to restock shelves, answer questions and help customers when the system fails.",
+            "Supporters say the shop can operate for longer hours and reduce queues, especially when commuters are in a hurry. The company can also use sales data to keep popular products in stock. However, the branch offers fewer products than a normal store, and some customers worry about privacy, inaccurate bills and what happens if they need help. Others fear that automated stores will reduce entry-level jobs.",
+            "Retail analysts add that Hong Kong presents special challenges: shops are crowded, customers include tourists and elderly people, and electronic systems must cope with several payment methods. A successful unmanned shop may therefore need clear instructions, reliable security and staff who can respond quickly from nearby."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is doing a project on unmanned convenience stores. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the benefits of unmanned convenience stores"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "the limitations of unmanned convenience stores"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether unmanned convenience stores are a good idea for Hong Kong"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you often shop at convenience stores?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do people usually buy at a convenience store?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer self-checkout or paying a cashier?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Is customer service important to you when shopping?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think there will be more theft in unmanned stores?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Would you find shopping at an unmanned store too impersonal?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think the trend of unmanned stores will continue to grow?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think automation is making life too convenient?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 172,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-1-2-cinema-vs-streaming-services",
+      "source_kind": "pp",
+      "existing_paper_version": "1.2",
+      "verified_paper_version": "1.2",
+      "current_title": "Cinema vs Streaming Services",
+      "recommended_title": "Cinemas vs Streaming Services",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "Topic and Part A are reliable. The canonical Part B contains the right themes but changes the printed order and merges the home/cinema contrast into other wording.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Cinemas vs Streaming Services",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 1.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 1.2 topic:",
+          "title": "Is This the End of Cinemas?",
+          "body": [
+            "Movie streaming has changed how audiences choose entertainment. For one monthly fee, viewers can watch a large library of films at home or on a mobile device. They can pause a film, choose subtitles and avoid travel. New releases also reach online platforms more quickly than before, so some people visit cinemas less often.",
+            "Cinemas still offer an experience that a living room cannot easily copy. A large screen, powerful sound and a shared audience can make a film feel like a special event. Friends may also combine a cinema visit with a meal or shopping. Yet tickets and snacks are expensive, popular screenings sell out, and travelling home after a late film can be inconvenient.",
+            "Local cinema operators are experimenting with loyalty programmes, student prices, comfortable seats and special screenings. Some show classic films, sports events or question-and-answer sessions with filmmakers. Their challenge is to give audiences a reason to leave home while keeping prices affordable and ensuring that smaller, less commercial films can still reach the public."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is studying the entertainment industry. Discuss how the popularity of movie streaming services affects cinemas.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "whether going to the cinema is a popular pastime in Hong Kong"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "what cinemas can do to compete with movie streaming services"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "the disadvantages of movie streaming services"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like watching movies?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you go to the cinema often?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Which do you prefer: watching a movie in the cinema or at home?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you pay for a movie streaming service?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What can people learn from watching movies?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What is your most memorable experience of going to the cinema?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think movie streaming services make people less social?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think movie streaming services will eventually replace cinemas?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 169,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-1-3-unmanned-store",
+      "source_kind": "pp",
+      "existing_paper_version": "1.3",
+      "verified_paper_version": "1.3",
+      "current_title": "Unmanned Store",
+      "recommended_title": "Plant-Based Meats",
+      "audit": {
+        "set_identity": "conflict",
+        "title": "conflict",
+        "context": "unsupported",
+        "part_a": "conflict",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "The canonical 1.1 and 1.3 topics are swapped. The printed 2023 paper identifies 1.3 as plant-based meats. Stable set_id is retained here as requested, although its slug becomes misleading.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Plant-Based Meats",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 1.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 1.3 topic:",
+          "title": "Plant-Based Food Meets Cantonese Cooking",
+          "body": [
+            "Plant-based meat is now appearing in dishes that once depended on pork, beef or seafood. A Hong Kong restaurant has tested meat-free versions of familiar Cantonese dishes, using products made from beans, grains and vegetable oils. Its chefs say that flavour and texture are important because diners may reject a sustainable choice if it does not feel satisfying.",
+            "Interest in these products is driven by several concerns. Some consumers want more vegetarian choices, while others hope to reduce the environmental impact of livestock farming. Health is another reason, although nutritionists warn that plant-based products can still contain high levels of salt or fat. They should be compared carefully rather than assumed to be healthy.",
+            "A secondary school is considering serving plant-based meals in its canteen on Green Mondays. Supporters believe students could discover new food and think about climate change. Critics worry about price, food waste and whether the dishes respect students’ cultural preferences. The school must decide whether to encourage participation, require it or offer plant-based food beside the usual menu."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is considering serving plant-based meats in the canteen on Green Mondays. Discuss your views.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why plant-based meats are gaining popularity"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "whether the school should encourage students to adopt a vegetarian diet"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether people will eat less meat in the future"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you prefer meat or vegetables?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Have you been to a vegetarian restaurant?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do most teenagers eat healthily?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think you could eat only vegetarian food?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why is it difficult for people to change their eating habits?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How could vegetarianism be promoted in Hong Kong?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you think fine dining and plant-based meat can be a successful combination?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you agree that meat is essential in Chinese cuisine?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 172,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-2-1-regular-sleeping-habits",
+      "source_kind": "pp",
+      "existing_paper_version": "2.1",
+      "verified_paper_version": "2.1",
+      "current_title": "Regular Sleeping Habits",
+      "recommended_title": "Night Owls",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "very high",
+        "notes": "The official HKEAA sample-performance PDF confirms version 2.1 as “Night Owls”. Canonical Part B contains one unsupported replacement question and does not preserve the printed order.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Night Owls",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 2.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 2.1 topic:",
+          "title": "Different Body Clocks at Work",
+          "body": [
+            "Some people feel most alert early in the morning, while others naturally become energetic late at night. These patterns are partly influenced by habits and partly by the body’s internal clock. Problems arise when a person’s preferred schedule does not match school or work. A night owl who must start at eight o’clock may lose sleep even when trying to go to bed earlier.",
+            "Regular sleep matters. Too little sleep can affect concentration, mood and long-term health. Early risers may find it easier to follow normal timetables and exercise before the day becomes busy. Night owls, however, may enjoy quiet hours for creative work and can be highly productive when interruptions are limited.",
+            "Some employers are testing flexible starting times or allowing staff to work from home. Supporters say performance should matter more than the hour at which someone arrives. Managers worry that different schedules may make teamwork and customer service harder. Any flexible system would need shared meeting hours, clear deadlines and rules to prevent employees from working late and starting early at the same time."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is doing a project on sleeping patterns. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the advantages of being a night owl"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "the advantages of getting up early"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether companies should offer flexible working hours for people with different sleeping patterns"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you wake up early on weekends?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you often have problems waking up in the morning?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What do you do if you cannot fall asleep?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What do you do to keep yourself awake when you are sleepy?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Have you ever overslept and missed something important?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What time of day are you most productive?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you consider a job that requires working at night?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you envy people who need only a few hours of sleep?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 177,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-2-2-social-media-apps-for-communication",
+      "source_kind": "pp",
+      "existing_paper_version": "2.2",
+      "verified_paper_version": "2.2",
+      "current_title": "Social Media Apps for Communication",
+      "recommended_title": "Teachers and Students on Social Media",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "The canonical title is too broad. One Part B question about Instagram is missing, while school safety education is duplicated in adapted form.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Teachers and Students on Social Media",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 2.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 2.2 topic:",
+          "title": "Should Teachers and Students Be Online Friends?",
+          "body": [
+            "Social media can make communication between teachers and students quick and familiar. A teacher may post reminders, share useful links or answer simple questions after school. Some students also feel more comfortable asking for help online than speaking in front of a class. Used carefully, a class account can strengthen learning and allow positive role models to reach students where they already spend time.",
+            "Personal accounts create different problems. Informal messages can blur the boundary between friendship and professional communication. Students may see private photographs or opinions that were never intended for a school audience, while teachers may learn more about students’ social lives than is appropriate. Screenshots can spread beyond the intended group, and a late-night message may create unrealistic expectations about when teachers must reply.",
+            "A school is considering a policy that would stop teachers and students from connecting through personal accounts. Official class accounts would remain available and all messages would be visible to the school. The proposal may protect both sides, but it could also remove a useful channel unless the school offers a practical alternative."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is considering a policy that would not allow teachers and students to be friends on social media. Discuss the proposal.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why students like to connect with teachers on social media"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "problems that may result from connecting with teachers on social media"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether you agree with the proposed policy"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What do you like to share on social media?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do young people spend too much time on social media?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think many Hong Kong teachers are active on social media?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why do you think Instagram is so popular?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should schools teach students how to use social media safely?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should parents monitor their children’s friends on social media?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Does social media negatively affect your learning?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should schools monitor their students’ social media activities?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 180,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-2-3-graduation-celebration",
+      "source_kind": "pp",
+      "existing_paper_version": "2.3",
+      "verified_paper_version": "2.3",
+      "current_title": "Graduation Celebration",
+      "recommended_title": "Graduation Celebration",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "The scenario and Part A are close, but the canonical Part B is largely reconstructed and does not match the printed question set or order.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Graduation Celebration",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 2.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 2.3 topic:",
+          "title": "Three Unusual Graduation Ideas",
+          "body": [
+            "A local events company has suggested three experiences for a class graduation celebration. The first is a short helicopter flight over Victoria Harbour and the Geopark. It offers excellent photographs but is expensive and can take only a few students at a time. Bad weather may also cause a last-minute cancellation.",
+            "The second option is a cooking lesson with a well-known chef. Students would prepare a meal together and then hold a dinner party. The activity is social and can include teachers, although the restaurant has limited space and must know about allergies in advance. The third option is an outdoor zip-line experience. Trained guides provide safety equipment, but participants must travel to the site and some may be afraid of heights.",
+            "The class has a fixed budget and wants the celebration to be memorable without excluding anyone. Organisers must consider cost, safety, transport, group size and the meaning of graduation. They may choose one of the suggested activities or design a simpler event at school that allows every student to participate."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is in charge of organising a graduation celebration for your class. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "what to consider when planning a graduation celebration"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "whether any of the three suggested activities are suitable"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "other ways the class could celebrate graduation"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to go on a helicopter ride?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you like your teachers to attend your graduation celebration?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What is the best way to celebrate something?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "How do students usually celebrate graduation in Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you like your graduation celebration to be held outdoors?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Which do you prefer: a big celebration or a small one?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you like to be on a graduation organising committee?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is a graduation celebration meaningful to you?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 172,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-3-1-the-pandemic-and-the-fashion-industry",
+      "source_kind": "pp",
+      "existing_paper_version": "3.1",
+      "verified_paper_version": "3.1",
+      "current_title": "The Pandemic and the Fashion Industry",
+      "recommended_title": "Fashion after the Pandemic",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "Part A is sound. Canonical Part B loses the distinction between liking fashion and shopping for clothes, and changes the printed order.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Fashion after the Pandemic",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 3.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 3.1 topic:",
+          "title": "How Staying Home Changed Fashion",
+          "body": [
+            "Periods of working and studying from home changed what many people expected from clothes. Instead of formal outfits, shoppers looked for soft fabrics, loose shapes and items that could be worn for both a video meeting and an evening at home. Some consumers bought fewer clothes because they had fewer social events, while others spent more time browsing online shops.",
+            "Social media became an important source of fashion ideas. Short videos showed viewers how to combine comfortable clothes or turn old items into new outfits. At the same time, fast-moving online trends encouraged impulse buying. Customers could order several sizes, return unwanted items and expect rapid delivery, creating extra packaging and transport.",
+            "Fashion companies now face mixed expectations. Customers want comfort and low prices, but many also ask for durable products, fair working conditions and less waste. Shops can respond with clearer size information, repair services, recycled materials and collections suitable for flexible work. The challenge is to remain profitable without encouraging people to buy clothes they will rarely wear."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is discussing how people’s attitudes towards buying clothes changed after the pandemic.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "how the pandemic changed the way people dress"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "how the pandemic changed the way people shop for clothes"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "how the fashion industry can respond to these changes"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like fashion?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you like shopping for clothes?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you dress differently at home and when you go out?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you prefer shopping for clothes in stores or online?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do Hong Kong teenagers like to follow fashion trends?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Where do people get their inspiration for fashion?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Which is more important when you buy clothes: comfort or appearance?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think keeping up with fashion trends is a waste of money?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 170,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-3-2-student-cleaning-sessions",
+      "source_kind": "pp",
+      "existing_paper_version": "3.2",
+      "verified_paper_version": "3.2",
+      "current_title": "Student Cleaning Sessions",
+      "recommended_title": "Student Cleaning Sessions",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is semantically reliable; replacement mainly restores the printed task framing and concise question wording.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Student Cleaning Sessions",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 3.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 3.2 topic:",
+          "title": "What Students Learn from Cleaning",
+          "body": [
+            "At some Japanese schools, students spend about twenty minutes cleaning classrooms and shared areas after lunch. Each class receives specific duties, and students work in small groups. The practice is not intended to replace professional cleaners. Instead, it teaches students to care for spaces that everyone uses and to notice the work required to keep a school comfortable.",
+            "Teachers say cleaning can develop responsibility, cooperation and respect. A student who must sweep a corridor may be less likely to drop litter there later. Similar benefits can come from household chores: young people feel that they make a useful contribution and learn practical skills. However, poorly organised sessions may become unfair if responsible students do most of the work or if younger pupils are given unsafe tasks.",
+            "A Hong Kong school is considering adding short cleaning sessions to its timetable as part of an environmental campaign. It must decide how often sessions should occur, which duties suit different forms and how to provide equipment and supervision. The plan should improve habits without reducing lesson time or allowing cleaning to be used as punishment."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your principal would like to add student cleaning sessions to the timetable. Discuss the proposal.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the benefits of adding cleaning sessions to the timetable"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "possible problems with requiring students to clean the school"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "cleaning tasks that are suitable for different forms"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you enjoy doing housework?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you help with household chores at home?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What can make cleaning tasks more enjoyable?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "How can parents motivate their children to do housework?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you agree that teenagers are messier than adults?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you agree that housework can bring family members closer?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should cleaning workers receive more respect in society?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Will technology change housework in the future?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 182,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-3-3-planting-at-school",
+      "source_kind": "pp",
+      "existing_paper_version": "3.3",
+      "verified_paper_version": "3.3",
+      "current_title": "Planting at School",
+      "recommended_title": "Growing Plants at School",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is substantially reliable. The verified paper frames the article around horticultural therapy and school well-being.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Growing Plants at School",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 3.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 3.3 topic:",
+          "title": "Gardening as a Way to Feel Better",
+          "body": [
+            "Horticultural therapy uses plants and gardening activities to support physical and mental health. Participants may water seedlings, arrange flowers or grow vegetables. These simple tasks provide a clear routine and a visible result. Time spent in green spaces can also reduce stress, encourage gentle movement and give people a break from screens and crowded indoor environments.",
+            "Schools can use gardening in several ways. A small herb garden can support science lessons, while flowers can improve an unattractive corner of the campus. Students may learn patience because plants need regular care, not attention only when an event is approaching. Produce can be used in cooking activities or sold for charity. However, gardens require space, tools, water and a plan for weekends and holidays.",
+            "One school wants to develop students’ interest in growing plants as part of a well-being programme. Some students may prefer sports, music or art, so participation should offer different roles such as design, photography and record keeping. The school must decide whether gardening will attract enough interest and how it can complement other activities rather than replace them."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school wants to develop students’ interest in growing plants. Discuss the idea.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the benefits that growing plants can bring to students and the school"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "whether growing plants will be popular among students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "other activities that can promote students’ well-being"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like going to country parks?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you like gardening?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do young people or older people enjoy caring for plants more?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are there enough green spaces in Hong Kong?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Is gardening a popular hobby in Hong Kong?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you prefer caring for plants or keeping a pet?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should there be plants in the work environment?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Which do you prefer: real plants or artificial plants?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 180,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-4-1-wearable-smart-devices",
+      "source_kind": "pp",
+      "existing_paper_version": "4.1",
+      "verified_paper_version": "4.1",
+      "current_title": "Wearable Smart Devices",
+      "recommended_title": "Wearable Smart Devices",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "very high",
+        "notes": "The official HKEAA sample-performance PDF confirms version 4.1 and title. Canonical content is close but should use “allowed”, not “prohibited”, to preserve the prompt’s neutral direction.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Wearable Smart Devices",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 4.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 4.1 topic:",
+          "title": "More than a Smartwatch",
+          "body": [
+            "Wearable technology now includes rings, bracelets, clothing and shoes as well as smartwatches. A smart ring can collect information about sleep, movement and heart rate without displaying messages. Sensor-equipped clothing covers more of the body and may provide useful information about breathing, posture or exercise technique. Athletes and patients may therefore benefit from data collected throughout the day.",
+            "The same devices raise questions. Measurements are not always accurate, and users may worry unnecessarily about a single unusual result. Companies can collect location and health data that people would normally keep private. Wearables are also expensive and may become outdated quickly. In schools, a watch that receives messages can distract students or provide unfair help during a test.",
+            "Supporters argue that simple fitness trackers can motivate students to move and help physical-education classes set personal goals. A complete ban may treat every device as if it were a phone. Schools could instead require communication features to be disabled, prohibit devices during tests and explain how health information should be protected."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is doing a project on new technologies. Discuss wearable smart devices.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why wearable smart devices are becoming popular"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "the disadvantages of wearable smart devices"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether wearable smart devices should be allowed at school"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you or your friends have a wearable smart device?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you buy a wearable smart device?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer a smartwatch or a smart ring?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think wearable smart devices are a waste of money?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think there are too many smart devices in our lives?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Are wearable smart devices fashionable?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Can wearable smart devices help us become healthier?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Would you be concerned about privacy if you wore a wearable smart device?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 169,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-4-2-adaptability",
+      "source_kind": "pp",
+      "existing_paper_version": "4.2",
+      "verified_paper_version": "4.2",
+      "current_title": "Adaptability",
+      "recommended_title": "Adaptability Quotient",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "Canonical Part B changes the printed sequence and replaces the question about the importance of new experiences with a different future-oriented question.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Adaptability Quotient",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 4.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 4.2 topic:",
+          "title": "AQ: Learning to Handle Change",
+          "body": [
+            "People often talk about IQ and emotional intelligence, but employers increasingly discuss adaptability quotient, or AQ. It describes a person’s ability to learn, adjust and keep working when circumstances change. New technology, unexpected events and changing customer needs mean that knowledge learned once may not remain useful for an entire career.",
+            "Adaptability does not mean accepting every change without question. It involves noticing what is different, asking for information and testing a sensible response. People can develop it by varying routines, learning unfamiliar skills and listening to viewpoints outside their usual circle. Reflection is also important: after a plan fails, an adaptable person identifies what can be improved instead of simply repeating the same action.",
+            "A school is planning an AQ workshop. Some teachers want problem-solving games and surprise challenges, while others prefer talks by people who changed careers or overcame setbacks. Students may feel uncomfortable if activities reward risk-taking without providing support. The workshop therefore needs a safe way to practise change and a clear explanation of how adaptability differs from intelligence, confidence and obedience."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is organising a workshop on adaptability quotient. Brainstorm ideas for the workshop.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why adaptability is becoming more important"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "whether adaptability is more important than intelligence"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether adaptability can be taught"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like trying new things?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Can you adapt to new environments quickly?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you think having new experiences is important?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Are Hong Kong students adaptable?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Are young people better at coping with change than older people?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think change is always good?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you consider yourself a risk-taker?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Why are some people more adaptable than others?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 176,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-4-3-social-media-apps",
+      "source_kind": "pp",
+      "existing_paper_version": "4.3",
+      "verified_paper_version": "4.3",
+      "current_title": "Social Media Apps",
+      "recommended_title": "Social Media and Well-being",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "The verified article concerns using social media positively. Canonical Part B changes the order of real-life, addiction and self-control questions.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Social Media and Well-being",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 4.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 4.3 topic:",
+          "title": "Using Social Media with Purpose",
+          "body": [
+            "Social media can spread useful knowledge, encourage creativity and help people find communities. It can also fill every quiet moment with comparison, advertising and upsetting news. A feed is selected by both the user and the platform, so it may give a distorted picture of other people’s lives. Popular accounts often show carefully edited highlights rather than ordinary experiences.",
+            "Digital-well-being advisers suggest using social media with a purpose. Before opening an app, a user can ask what they need to do and close it afterwards. Unfollowing accounts that create anger or pressure can improve the experience. Turning off unnecessary notifications and keeping phones away during study or sleep also reduces automatic checking. If a platform seriously affects someone’s mood, taking a temporary break may be sensible.",
+            "A school Mental Health and Wellness Club wants to promote healthier habits without presenting all social media as harmful. It could run a feed-cleaning workshop, a notification-free challenge or a campaign about realistic posting. The club must make activities supportive rather than judgmental and explain when students should seek help from an adult."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are members of the Mental Health and Wellness Club. Discuss how social media affects students’ well-being.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "what kinds of people are popular on social media"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "the negative effects of social media on users"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "what the club can do to promote better social-media habits"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you use social media?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Would you like to be popular on social media?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "How do you feel when someone likes your social-media posts?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do social-media posts show someone’s real life?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do people become addicted to social media?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How do you control your use of social media?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you agree that there is a lack of compassion on social media?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Does social media affect people’s self-esteem?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 179,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-5-1-family-history-and-dna",
+      "source_kind": "pp",
+      "existing_paper_version": "5.1",
+      "verified_paper_version": "5.1",
+      "current_title": "Family History and DNA",
+      "recommended_title": "Family History and DNA Tests",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "Canonical Part B reorders most questions and adds an unsupported relationship-maintenance question in place of interest in family history.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Family History and DNA Tests",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 5.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 5.1 topic:",
+          "title": "Finding Family Stories through DNA",
+          "body": [
+            "Home DNA kits have made family-history research easier to begin. A customer sends a small sample to a company and later receives an estimate of where their ancestors may have lived. The result can challenge family assumptions and lead users to old records or distant relatives. For some people, the search provides a stronger sense of identity and preserves stories that might otherwise disappear.",
+            "The result is not a complete family history. Estimates depend on the company’s database and may change as more samples are added. Unexpected relatives or information about parentage can cause distress. DNA is also highly personal: once data is stored, users may not fully control whether it is used for research, shared with another company or requested by authorities.",
+            "A class project is examining whether DNA tests are a good way to research family history. Alternatives include interviewing relatives, collecting photographs, reading public records and mapping important family events. These methods take time but provide names, choices and experiences that a percentage on a DNA report cannot explain. A careful project should combine evidence and respect relatives who prefer not to participate."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is researching family history. Discuss the use of DNA tests for this purpose.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why people want to know about their family history"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "possible disadvantages of DNA testing"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "other ways to find out about family history"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Are you interested in your family’s history?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you often visit your relatives?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you feel closer to your relatives or your friends?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "How can you keep a record of important family events?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "How would you feel if you found out you were related to someone famous?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think young people know much about their family history?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you be interested in taking a DNA test?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Is personality affected more by DNA or by the environment?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 186,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-5-2-online-transactions",
+      "source_kind": "pp",
+      "existing_paper_version": "5.2",
+      "verified_paper_version": "5.2",
+      "current_title": "Online Transactions",
+      "recommended_title": "Selling Donations Online",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "The verified scenario specifically involves student donations sold through Carousell. Canonical Part B omits whether many Hong Kong people sell online and changes the printed order.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Selling Donations Online",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 5.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 5.2 topic:",
+          "title": "From Unwanted Items to a School Fund",
+          "body": [
+            "Online marketplaces allow people to photograph an item, write a short description and offer it for sale within minutes. Buyers can compare prices, ask questions and arrange delivery or collection. Second-hand trading may reduce waste because clothes, books and electronics remain useful instead of being thrown away. It can also help a small organisation reach more customers than a physical sale.",
+            "A school plans to sell items donated by students to raise money. The organising team must inspect each item, record who donated it and decide on a fair price. Clear photographs and honest descriptions will reduce complaints. Valuable items may need secure storage, while unsold goods require a plan. Students should not publish personal phone numbers or meet unknown buyers alone.",
+            "Online selling also creates risks. A buyer may disappear, claim an item is damaged or send a false payment message. Delivery costs can remove much of the profit from a cheap product. The school therefore needs one official account, adult supervision and rules for payment, collection and refunds. Good organisation will determine whether convenience leads to useful income or a confusing dispute."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school plans to sell student-donated products online for a fundraising event. Discuss how to organise it.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the benefits of buying and selling products online"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "how to organise the donations for listing online"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "problems that may occur when selling products online"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you buy things online?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do many people sell things online in Hong Kong?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Could selling things online become a full-time job?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Would you like to start your own business?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Will more jobs involve the internet in the future?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "What are the difficulties of owning your own business?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What advice would you give someone starting a business?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "What qualities make someone a good entrepreneur?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 184,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-5-3-online-fitness-classes",
+      "source_kind": "pp",
+      "existing_paper_version": "5.3",
+      "verified_paper_version": "5.3",
+      "current_title": "Online Fitness Classes",
+      "recommended_title": "Online Fitness Classes",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "conflict",
+        "confidence": "high",
+        "notes": "Canonical Part A is sound, but most Part B questions do not preserve the printed wording or order and several are unsupported replacements.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Online Fitness Classes",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 5.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 5.3 topic:",
+          "title": "A Fitness Class in Your Living Room",
+          "body": [
+            "A fitness centre is offering live online yoga classes led by experienced instructors. Members join through a phone or laptop camera and can speak to other participants using a chat function. The package includes ten lessons, a mat and a water bottle. Supporters say the service saves travel time and lets people exercise even when weather, illness or a busy schedule keeps them at home.",
+            "Online classes are not suitable for everyone. An instructor may not see a student’s posture clearly, especially in a small room or with a poor connection. Participants need enough space to move safely and must decide whether the class level matches their ability. Some people are motivated by exercising with others in a studio, while others feel less embarrassed at home.",
+            "Before joining, customers should compare the instructor’s qualifications, timetable, class size, price and safety support. They should also check whether recordings are made and how camera images are used. Online fitness may remain popular as one option, but gyms can still provide equipment, direct correction and a stronger sense of community."
+          ]
+        },
+        "part_a": {
+          "instruction": "You and your friends want to join online fitness classes. Discuss the following points.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the advantages of online fitness classes"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "things to consider when choosing an online fitness class"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether online fitness classes will continue to be popular"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Have you ever attended an online fitness class?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think you are a sporty person?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Are there any disadvantages to online fitness classes?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should yoga be taught at school?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you prefer to exercise alone or in a group?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is going to the gym popular nowadays?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is Hong Kong becoming a healthier society?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Why are some people obese even though they exercise?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 177,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-6-1-storytelling-in-advertising",
+      "source_kind": "pp",
+      "existing_paper_version": "6.1",
+      "verified_paper_version": "6.1",
+      "current_title": "Storytelling in Advertising",
+      "recommended_title": "Storytelling in Advertising",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is reliable in topic and sequence; replacement restores the specific sports-drink task.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Storytelling in Advertising",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 6.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 6.1 topic:",
+          "title": "Why a Story Can Sell a Product",
+          "body": [
+            "Some of the most memorable advertisements do more than list a product’s features. They present a character, a problem and a satisfying ending. Viewers may remember a funny mistake, an unexpected act of kindness or a small personal victory long after they forget the price. If the product helps the story reach its conclusion, the brand becomes connected with that emotion.",
+            "Storytelling can also fail. A dramatic story may attract attention while leaving viewers unsure what is being sold. An emotional message can feel dishonest if the product has little connection to it. Celebrities may dominate the advertisement, and a joke that works for one audience may offend another. A good campaign therefore needs a simple idea, a clear audience and a believable role for the product.",
+            "A Business Studies class must advertise a new sports drink called Champion. The group could show a student preparing for a difficult race, a team recovering from a mistake or an ordinary person completing a personal challenge. Sound, colour, humour and a short slogan can make the advertisement memorable, but the claims about the drink must remain accurate."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your Business Studies teacher wants your group to use storytelling to advertise a sports drink called Champion. Discuss the campaign.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "whether storytelling is a good way to advertise"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "ideas that could be used in a storyline about the sports drink"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "how to make the advertisement memorable"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like watching advertisements?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you think advertisements are annoying?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Have you ever bought something because of an advertisement?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do celebrities make advertisements more effective?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Would you like to work in the advertising industry?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Does advertising make people buy things they do not really need?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Would you pay extra to watch programmes without advertisements?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Should advertisements targeting children be banned?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 185,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-6-2-advice-to-s-4-students",
+      "source_kind": "pp",
+      "existing_paper_version": "6.2",
+      "verified_paper_version": "6.2",
+      "current_title": "Advice to S.4 Students",
+      "recommended_title": "Good Habits for S.4 Students",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "very high",
+        "notes": "The official HKEAA sample-performance PDF confirms version 6.2 as “Good habits every student should develop”. Canonical content is semantically reliable.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Good Habits for S.4 Students",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 6.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 6.2 topic:",
+          "title": "Habits That Make Senior Forms Manageable",
+          "body": [
+            "Moving into the senior forms brings more demanding subjects, longer assignments and decisions about future study. Successful students do not depend only on last-minute effort. They organise deadlines, divide large tasks into smaller steps and choose a regular time and place to work. A realistic plan includes rest and other activities, because an impossible timetable is quickly abandoned.",
+            "Active study is more effective than simply rereading a textbook. Students can take concise notes, test themselves, explain an idea to a classmate and ask questions before confusion grows. Study groups are useful when members arrive prepared and remain focused. Good sleep also supports memory and concentration; staying awake all night to revise may reduce the benefit of the extra hours.",
+            "A group of senior students is preparing a sharing session for S.4. The session should recognise both academic and personal challenges, including time management, changing friendships and pressure about subject choices. Advice will be more convincing if speakers describe mistakes they made, practical habits that helped and places where younger students can seek support."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is preparing a sharing session to help S.4 students prepare for the senior forms.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "challenges that S.4 students can expect"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "how to help S.4 students develop good habits"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "other advice to give S.4 students"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What is your favourite subject?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do you usually do after school?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you like working in groups?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "What is the best thing about studying in the senior forms?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What is one thing you have learned about developing good habits?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "How can students improve their time management?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What is the best way to motivate yourself to study?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Which is more important for success: knowledge or social skills?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 173,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-6-3-celebrating-school-anniversary",
+      "source_kind": "pp",
+      "existing_paper_version": "6.3",
+      "verified_paper_version": "6.3",
+      "current_title": "Celebrating School Anniversary",
+      "recommended_title": "School Anniversary Performances",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is reliable but the title should reflect the specific choice among three performing acts.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "School Anniversary Performances",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 6.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 6.3 topic:",
+          "title": "Choose an Act for the Anniversary",
+          "body": [
+            "A school is choosing one professional act for its anniversary celebration. The first option is a local rock band that performs energetic two-hour shows. It costs $10,000 and needs a large stage and a full sound system. The band may attract students who enjoy contemporary music, but the volume and technical requirements could create difficulties in a school hall.",
+            "The second option is a bilingual stand-up comedian. A one-hour performance costs $5,000 and requires only a small stage and microphone. Comedy is affordable and easy to arrange, although jokes must be suitable for students, parents and former pupils. The third option is a lion-dance group offering traditional, LED and hip-hop performances. It costs $7,000 for fifteen minutes and requires a large space plus meals for eight performers.",
+            "The organising team must consider audience appeal, cultural meaning, length, safety, space and value for money. The most popular act is not automatically the best choice if it excludes part of the school community or leaves too little budget for other anniversary activities."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your school is celebrating its anniversary. Choose one of three performing acts for the celebration.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "what students would like about each act"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "other important factors when choosing an act"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "the best option for the school celebration"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like watching lion dance?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you enjoy watching live shows at school?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you enjoy performing on stage?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you prefer telling jokes or listening to them?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What is your most memorable school celebration?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think celebrations are a good use of school money?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "What are the best ways performers can promote themselves?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think it is difficult to be a musician nowadays?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 170,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-7-1-different-views-of-time",
+      "source_kind": "pp",
+      "existing_paper_version": "7.1",
+      "verified_paper_version": "7.1",
+      "current_title": "Different Views of Time",
+      "recommended_title": "Time in Different Cultures",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is reliable. Replacement uses the verified article focus and concise original ordering.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Time in Different Cultures",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 7.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 7.1 topic:",
+          "title": "Is Being Late Always Disrespectful?",
+          "body": [
+            "Ideas about time differ across cultures and situations. In some places, arriving late for a business meeting suggests poor preparation or disrespect. Daily life is organised around calendars, deadlines and exact transport schedules. In other places, relationships and changing circumstances may matter more than a fixed starting time, so an event begins when the necessary people have arrived.",
+            "Researchers often describe cultures as fast-paced or slow-paced, but these labels can become stereotypes. A country may value punctual trains while allowing long social meals. Age, occupation and city life also influence behaviour. Mobile phones have changed expectations because people can update one another immediately, yet constant messages may make schedules feel even more demanding.",
+            "Hong Kong is often associated with speed, long working hours and the idea that time is money. This can support efficiency, but it may also leave little room for rest, family and unplanned conversation. A slower life does not require ignoring responsibilities. People can protect meal times, reduce unnecessary appointments, walk without checking a phone and agree on which deadlines truly matter."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is doing a project on how different cultures view time.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "Hong Kong people’s attitude towards time"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "whether attitudes towards time are changing"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "how to live a more slow-paced life"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Are you often late for school?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is being on time important to you?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "How do you feel when your friends are late?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you prefer a fast-paced or a slow-paced life?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Is a fast-paced lifestyle healthy?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do Hong Kong people have a good work-life balance?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Is work-life balance important?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you agree that time is money?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 175,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-7-2-video-game-internship",
+      "source_kind": "pp",
+      "existing_paper_version": "7.2",
+      "verified_paper_version": "7.2",
+      "current_title": "Video Game Internship",
+      "recommended_title": "Video Game Internship",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is reliable and follows the printed sequence closely.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Video Game Internship",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 7.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 7.2 topic:",
+          "title": "Summer Intern Wanted by a Game Studio",
+          "body": [
+            "A Hong Kong video-game company is recruiting a summer intern. Applicants should know either coding or graphic-design software, solve problems calmly, work well in teams and communicate in Cantonese and English. The successful student will help designers test visual effects, give feedback on games and prepare social-media posts for new releases.",
+            "The advertisement promises experience in a fast-growing industry and a chance to see how a game moves from an idea to a finished product. An internship can help students understand workplace expectations, discover whether a career suits them and build contacts. However, applicants may be attracted mainly by the idea of playing games. Real development involves repeated testing, technical difficulties, deadlines and accepting criticism.",
+            "The school Career Team is deciding whether to display the advertisement. Before recommending it, the team should check working hours, supervision, payment, insurance and the tasks given to a student. It should also explain that gaming interests are not enough without relevant skills. If approved, the opportunity could be promoted through a career talk, student examples and a fair application workshop."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is deciding whether a video-game internship advertisement should be posted by the school Career Team.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "how students can benefit from internships"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "whether the video-game internship is suitable for students"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "ways the Career Team can promote internships"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like playing video games?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you want to work in the video-game industry?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do parents like their children to take part in internship programmes?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should internships be compulsory for students?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Do you think video games are too violent?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Should the video-game industry do more to attract female workers?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why are video games so addictive?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are video gamers given enough recognition by society?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 176,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-7-3-wild-animals-as-pets",
+      "source_kind": "pp",
+      "existing_paper_version": "7.3",
+      "verified_paper_version": "7.3",
+      "current_title": "Wild Animals as Pets",
+      "recommended_title": "Wild Animals as Pets",
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "The second scan plus two contemporaneous recall sources corroborate the identity, Part A and Part B sequence. OCR is weaker than for earlier versions, so punctuation is adapted.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Wild Animals as Pets",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 7.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 7.3 topic:",
+          "title": "When an Online Trend Threatens Wildlife",
+          "body": [
+            "Videos of small wild animals in cafés and private homes can receive millions of views. Their large eyes and unusual behaviour make them appear harmless, and viewers may want the same experience. Wildlife groups warn that online popularity can increase demand, encouraging traders to remove animals from natural habitats and transport them in poor conditions.",
+            "A wild animal may survive in a home without living well. It can need a specialised diet, a large territory, contact with its own species and activity at times when an owner wants to sleep. Even a caring person may not recognise illness or stress. Some animals can bite, spread disease or be abandoned when they become difficult to manage. The trade also adds pressure to species already affected by habitat loss.",
+            "Social media platforms, cafés and pet sellers all influence what people consider an acceptable pet. Clear labels, restrictions on harmful content and public education may reduce impulsive purchases. Schools can help students distinguish between admiring wildlife and owning it. A responsible choice should consider animal welfare, public safety, conservation and whether a domestic animal can meet the owner’s needs instead."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your class is doing a project on animal conservation. Discuss the topic of keeping wild animals as pets.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "the advantages of keeping wild animals as pets"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "the disadvantages of keeping wild animals as pets"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "how social media may affect people’s choice of pets"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "What is your favourite animal?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "What do you think is the best pet to have?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Why do some people go to cafés to see wild animals?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should cafés use wild animals to attract customers?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Why do some people keep dangerous animals as pets?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Why are some people not suitable pet owners?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Why do some owners spend a lot of money on their pets?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Are animal rights given too much importance?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 187,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-8-1-insects-as-food",
+      "source_kind": "pp",
+      "existing_paper_version": "8.1",
+      "verified_paper_version": "8.1",
+      "current_title": "Insects as Food",
+      "recommended_title": "Eating Insects",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "very high",
+        "notes": "The official HKEAA sample-performance PDF confirms version 8.1 as “Eating insects”. Canonical content is close; one grammar error in Part A should be removed.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Eating Insects",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 8.1 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 8.1 topic:",
+          "title": "Could Insects Become Everyday Food?",
+          "body": [
+            "As the world population grows, producing enough protein without using more land and water will become difficult. In many countries, insects have been eaten for generations. Crickets, beetle larvae and other species can contain protein, vitamins and minerals. They also require less space and feed than cattle and can produce far fewer greenhouse-gas emissions.",
+            "These advantages do not make insect food an easy choice. People who did not grow up eating insects may feel disgust or worry about safety. Farms need hygiene standards, clear labelling and controls on species and feed. Allergy risks must also be studied. Products may be easier to accept when insects are ground into flour for noodles, snack bars or dumpling fillings rather than served whole.",
+            "A group is considering the food people may eat in the future. Promotion could begin with small tastings, chef demonstrations and honest information about nutrition and environmental impact. Price and flavour will matter as much as education. Insect products should be offered as another option, not presented as a punishment or as the only responsible diet."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is doing a project on food in the future. Discuss insects as food.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "how eating insects can benefit people and the environment"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "why people may not want to eat insects"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "how to promote insect-based food"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you like to try eating insects?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Is eating healthy food important to people in Hong Kong?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Should people change their diet to protect the environment?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you think Hong Kong should promote eating insects?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should restaurants have insects on their menus?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you think Hong Kong people will eat healthier food in the future?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Should Hong Kong develop insect farms?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Can people protect the environment by changing their diet?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 176,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-8-2-walking-habits",
+      "source_kind": "pp",
+      "existing_paper_version": "8.2",
+      "verified_paper_version": "8.2",
+      "current_title": "Walking Habits",
+      "recommended_title": "Walking-Friendly Cities",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "Canonical content is reliable. The verified task focuses on city design and Hong Kong residents’ activity, not walking habits alone.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Walking-Friendly Cities",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 8.2 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 8.2 topic:",
+          "title": "Why City Design Changes How Much We Walk",
+          "body": [
+            "A large step-count study found that people in Hong Kong walk more than residents of many other cities. Dense neighbourhoods, frequent public transport and nearby shops mean that walking is often part of an ordinary journey. Research also links regular walking with better heart health, lower stress and a reduced risk of several long-term illnesses. It is free and requires no special equipment.",
+            "High average figures can hide important differences. Some districts have steep slopes, narrow pavements or roads that are difficult to cross. Summer heat, heavy rain, poor air quality and crowded streets discourage longer walks. Elderly people, wheelchair users and parents with young children may face broken surfaces or missing lifts that other pedestrians barely notice.",
+            "A walking-friendly city needs connected pavements, shade, seating, safe crossings, clear signs and routes that lead somewhere useful. Schools and workplaces can support walking through maps, step challenges and secure places for belongings, but activity should not become unhealthy competition. The group must decide whether Hong Kong’s environment encourages genuine choice or simply makes residents walk out of necessity."
+          ]
+        },
+        "part_a": {
+          "instruction": "Your group is doing a project on walking-friendly cities. Discuss Hong Kong.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "what makes Hong Kong suitable for walking"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "what discourages people from walking in Hong Kong"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether Hong Kong people are physically active"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like walking around the city?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Where is the best place in Hong Kong to go for a walk?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "What things do people do while they are walking?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Why is walking especially good for older people?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "What is the longest walk or hike you have taken?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Do you sometimes take the stairs instead of the lift?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Do you find that walking helps you think?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Do you think people will walk less in the future?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 177,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-pp-2023-8-3-harbourside-concert-series-in-hong-kong",
+      "source_kind": "pp",
+      "existing_paper_version": "8.3",
+      "verified_paper_version": "8.3",
+      "current_title": "Harbourside Concert Series in Hong Kong",
+      "recommended_title": "Harbourside Concert Series",
+      "audit": {
+        "set_identity": "exact",
+        "title": "close",
+        "context": "unsupported",
+        "part_a": "close",
+        "part_b": "close",
+        "confidence": "high",
+        "notes": "The second scan plus two recall sources corroborate the printed version, concert scenario, Part A prompts and Part B order. OCR punctuation is adapted.",
+        "evidence_source_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "replacement": {
+        "title": "Harbourside Concert Series",
+        "source_note": "Past-paper practice based on the cross-referenced 2023 HKDSE Paper 4 version 8.3 topic and printed prompt order. The context is original mock material, not the official HKEAA passage. Task and question wording is lightly adapted for practice.",
+        "context": {
+          "source_line": "Original mock context written for practice after cross-referencing the 2023 HKDSE Paper 4 version 8.3 topic:",
+          "title": "Three Nights of Music by the Harbour",
+          "body": [
+            "The Harbourside Concert Series will present three evenings of classical music on a lawn beside Victoria Harbour. A chamber orchestra, a sinfonietta and a philharmonic orchestra will perform on different nights with guest musicians. Audiences can bring a small mat, watch the harbour lights and experience orchestral music outside a formal concert hall.",
+            "Tickets are available for one, two or three evenings, with a lower price for the complete series. Schools that join a Music for Schools programme can receive student tickets, classroom activities and promotional materials. The setting may attract young people who find concert halls expensive or formal. However, unfamiliar music, bad weather, transport after the event and limited seating could reduce interest.",
+            "A school Music Club has been asked to discuss whether students would attend and how the event should be promoted. Short performances at assembly, musician visits and student-made videos may create curiosity. The club can also introduce classical music through film scores, instrument workshops and opportunities to choose part of a programme. Promotion should explain the experience, not assume that students already know the composers."
+          ]
+        },
+        "part_a": {
+          "instruction": "You are members of the school Music Club. Discuss the Harbourside Concert Series.",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "whether the Harbourside Concert Series will be popular with young people"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "how the event can be promoted in school"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "other ways to introduce classical music to students"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Do you like listening to music?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Do you like going to music concerts?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do you prefer indoor or outdoor concerts?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Do you prefer live music or listening to music online?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should classical-music concerts be free for young people?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Is Hong Kong a good place for outdoor concerts?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Can concerts attract more tourists to Hong Kong?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "How can the government support concert organisers?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "context_word_count": 180,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    },
+    {
+      "set_id": "dse-p4-mock-2023-4-1-wearable-smart-devices",
+      "source_kind": "mock",
+      "existing_paper_version": "4.1",
+      "visible_to_students": false,
+      "audit": {
+        "set_identity": "exact",
+        "title": "exact",
+        "context": "original",
+        "part_a": "exact",
+        "part_b": "exact",
+        "confidence": "high",
+        "notes": "Hidden internal mock is clearly labelled as original and is internally coherent. It should not be represented as a second past-paper version 4.1. Its context is 129 words, below the 150–220 audit target, so a longer replacement is supplied."
+      },
+      "replacement": {
+        "title": "Wearable Smart Devices — Privacy and Health",
+        "source_note": "Original hidden mock inspired by the officially confirmed 2023 Paper 4 version 4.1 theme. This is not an HKEAA question paper.",
+        "context": {
+          "source_line": "Original mock context for internal practice:",
+          "title": "When Your Watch Knows More About You",
+          "body": [
+            "Smartwatches, rings and sensor-equipped clothing can count steps, measure heart rate and estimate sleep quality. Some devices remind users to move after long periods of sitting, while others send an alert when they detect an unusual pattern. Athletes may use the data to plan training, and patients can show a longer record to a doctor. Continuous information can reveal changes that a short clinic visit might miss.",
+            "Wearable data is not always accurate or easy to interpret. A low sleep score may create anxiety even when the user feels well. Personal information may be stored by technology companies, shared with other services or exposed in a data breach. Users may not understand what they accepted when they first set up the device.",
+            "Schools face an additional problem because a smartwatch can receive messages and may be used unfairly during tests. A sensible policy could distinguish a basic health tracker from a communication device, restrict wearables during assessments and prohibit schools from collecting fitness data without clear consent. Students should also remember that a gadget offers useful clues, not a medical diagnosis."
+          ]
+        },
+        "part_a": {
+          "instruction": "You may want to talk about:",
+          "discussion_points": [
+            {
+              "point_id": "pa_01",
+              "order": 1,
+              "text": "why wearable smart devices are popular"
+            },
+            {
+              "point_id": "pa_02",
+              "order": 2,
+              "text": "their disadvantages and privacy risks"
+            },
+            {
+              "point_id": "pa_03",
+              "order": 3,
+              "text": "whether they should be allowed at school"
+            },
+            {
+              "point_id": "pa_04",
+              "order": 4,
+              "text": "anything else you think is important"
+            }
+          ]
+        },
+        "part_b": {
+          "instruction": "The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.",
+          "questions": [
+            {
+              "question_id": "ir_01",
+              "order": 1,
+              "text": "Would you buy a smartwatch or a smart ring?"
+            },
+            {
+              "question_id": "ir_02",
+              "order": 2,
+              "text": "Can health data motivate people to exercise?"
+            },
+            {
+              "question_id": "ir_03",
+              "order": 3,
+              "text": "Do wearables make users unnecessarily anxious?"
+            },
+            {
+              "question_id": "ir_04",
+              "order": 4,
+              "text": "Should schools collect students’ fitness data?"
+            },
+            {
+              "question_id": "ir_05",
+              "order": 5,
+              "text": "Should smartwatches be treated like mobile phones during lessons?"
+            },
+            {
+              "question_id": "ir_06",
+              "order": 6,
+              "text": "Who should own the data collected by a wearable device?"
+            },
+            {
+              "question_id": "ir_07",
+              "order": 7,
+              "text": "Are expensive wearables worth the money?"
+            },
+            {
+              "question_id": "ir_08",
+              "order": 8,
+              "text": "Can a wearable device replace a medical check-up?"
+            }
+          ]
+        }
+      },
+      "validation": {
+        "previous_context_word_count": 142,
+        "context_word_count": 181,
+        "discussion_point_count": 4,
+        "question_count": 8,
+        "stable_point_ids_preserved": true,
+        "stable_question_ids_preserved": true
+      }
+    }
+  ],
+  "validation": {
+    "past_paper_record_count": 24,
+    "hidden_mock_record_count": 1,
+    "all_pp_contexts_between_150_and_220_words": true,
+    "all_pp_records_have_4_discussion_points": true,
+    "all_pp_records_have_8_questions": true,
+    "duplicate_recommended_pp_titles": [],
+    "exact_duplicate_context_pairs": [],
+    "stable_set_ids_preserved": true
+  }
+}

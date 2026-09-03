@@ -528,6 +528,7 @@ function parseArgs(argv) {
     else if (key === "--output") args.output = path.resolve(argv[++index]);
     else if (key === "--markdown-output") args.markdownOutput = path.resolve(argv[++index]);
     else if (key === "--check") args.check = true;
+    else if (key === "--allow-unaudited-overwrite") args.allowUnauditedOverwrite = true;
     else throw new Error(`Unknown argument: ${key}`);
   }
   return args;
@@ -535,6 +536,12 @@ function parseArgs(argv) {
 
 function run() {
   const args = parseArgs(process.argv);
+  if (!args.check && args.output === DEFAULT_OUTPUT && !args.allowUnauditedOverwrite) {
+    throw new Error(
+      "Refusing to overwrite the audited Paper 4 library with generated recall data. " +
+      "Write to a review file with --output, or explicitly pass --allow-unaudited-overwrite and then reapply scripts/apply-dse-paper4-audits.js."
+    );
+  }
   const records = parseMarkdown(fs.readFileSync(args.input, "utf8"));
   if (records.length !== 306) throw new Error(`Expected 306 Sets, found ${records.length}`);
   const oldMocks = JSON.parse(fs.readFileSync(DEFAULT_OUTPUT, "utf8")).filter((set) => set.source_kind === "mock").map((set) => ({ ...set, visible_to_students: false }));
