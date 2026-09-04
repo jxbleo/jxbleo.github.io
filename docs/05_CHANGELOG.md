@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-04 — Centred Speaking dialogs on phones
+
+- Replaced the phone-only bottom-sheet treatment with one viewport-centred
+  layout for every Speaking Lab dialog, including the Individual Response
+  recorder and Dashboard-return confirmation.
+- Added dynamic-viewport height limits, safe-area-aware equal inline gutters,
+  internal momentum scrolling, complete rounded corners, and retained sticky
+  actions for long dialog content.
+- Removed the mobile sheet grabber and added regression coverage preventing
+  bottom anchoring from returning.
+
 ## 2026-09-03 — Individual Response report-index repair
 
 - Replaced the production `speaking_reports` unique

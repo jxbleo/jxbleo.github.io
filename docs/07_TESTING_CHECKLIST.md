@@ -2593,8 +2593,9 @@ Discussion dialog, ready four-Candidate report, and incomplete recording state
 at desktop and 390-pixel phone widths. Confirm no horizontal overflow; opening
 a Discussion hides the Part A/Part B and Voiceprint cards but leaves the list
 available from the toolbar drawer;
-participant actions remain reachable; the transcript is collapsed; the phone
-dialog rests as a bottom sheet with sticky Cancel/Create actions; and the
+participant actions remain reachable; the transcript is collapsed; every phone
+dialog is visually centred in the live viewport with complete rounded corners,
+safe-area-aware equal inline gutters, internal scrolling, and sticky actions; and the
 `Discussions` back control inside a detail restores the mode cards. Confirm the
 toolbar uses the Writing hamburger, has no student-name chip, and opens the
 drawer from the left. The drawer must contain the list directly, pair a native

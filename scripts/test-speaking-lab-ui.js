@@ -25,7 +25,7 @@ function run() {
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260904-1/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
@@ -206,7 +206,7 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260902-2/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260904-1/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=20260902-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
@@ -329,10 +329,12 @@ function run() {
   assert.match(css, /speaking-set-part-b/);
   assert.match(css, /speaking-response-recorder-card/);
   assert.match(css, /speaking-card\.is-invitation/);
-  assert.match(css, /border-radius:\s*28px 28px 0 0/);
+  assert.doesNotMatch(css, /margin:\s*auto auto 0|border-radius:\s*28px 28px 0 0/, "phone dialogs must not be bottom-anchored sheets");
   assert.match(css, /\.speaking-report-phase\s*\{[^}]*border:\s*0/);
   assert.match(css, /teacher-speaking-report-stack|teacher-speaking-candidate-report/);
-  assert.match(css, /\.speaking-dialog\s*\{[^}]*width:\s*calc\(100% - 24px\)[^}]*max-width:\s*calc\(100% - 24px\)[^}]*margin:\s*auto auto 0/);
+  assert.match(css, /\.speaking-dialog\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0[^}]*margin:\s*auto/);
+  assert.match(css, /@media \(max-width:\s*760px\)[\s\S]*\.speaking-dialog\s*\{[^}]*safe-area-inset-left[^}]*safe-area-inset-right[^}]*88dvh[^}]*margin:\s*auto[^}]*border-radius:\s*26px/);
+  assert.match(css, /\.speaking-dialog::before\s*\{[^}]*content:\s*none[^}]*display:\s*none/);
   assert.match(app, /classList\.add\('speaking-detail-open'\)/);
   assert.match(app, /classList\.remove\('speaking-detail-open'\)/);
   assert.match(app, /function openSidebar\(\)/);
@@ -351,7 +353,7 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260902-2/);
+  assert.match(page, /speaking-lab\.css\?v=20260904-1/);
   assert.match(page, /speaking-lab\.js\?v=20260902-2/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);

@@ -2753,10 +2753,13 @@ neither may appear above or below a queued, processing, or ready report.
 There is no separate `Complete script` or Voice ID card below the three report
 cards. An unconfirmed student receives no personal analysis, turn advice, or
 transcript highlight. On phones,
-the ledger preserves its compact label/value mapping, participant actions wrap
-below identity, and dialogs become bottom sheets with a visible grabber and
-sticky actions. Every dialog uses equal 12px inline insets so the browser's
-native maximum width cannot anchor the sheet to only the left edge. The page
+the ledger preserves its compact label/value mapping and participant actions wrap
+below identity. Every independent Speaking dialog—including invitations, title
+editing, Dashboard-return confirmation, Task, Candidates, Transcriptions, and
+the Individual Response recorder—remains visually centred in the live viewport.
+Dialogs use complete rounded corners, safe-area-aware equal inline insets, a
+dynamic-viewport height cap, internal scrolling, and sticky actions; they must
+never become bottom-anchored sheets or drift toward one horizontal edge. The page
 honors reduced motion, reduced transparency, increased
 contrast, minimum touch targets, and the native `hidden` attribute.
 
@@ -2800,8 +2803,8 @@ recorder/progress, and report cards instead of one enclosing panel.
 The Individual Response recorder displays `00:00 / 01:05`, turns red from
 `01:00`, stops at `01:05`, supports one checked audio upload, prevents accidental
 navigation during recording/upload, and preserves audio for analysis retry.
-On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware
-bottom sheets. Cards reduce to one readable column, action buttons become
+On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware,
+viewport-centred cards. Cards reduce to one readable column, action buttons become
 full-width where necessary, and decorative movement becomes a cross-fade under
 reduced-motion preferences.
 
