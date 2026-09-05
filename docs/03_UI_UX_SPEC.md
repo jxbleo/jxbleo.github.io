@@ -2618,6 +2618,13 @@ amber means the group is too quiet, blue-green means the level is suitable,
 soft coral means it is too loud, and a muted warning surface means the
 microphone signal needs attention. State changes are smoothed and held briefly
 to avoid flashes during natural pauses; colour is never the only cue.
+While any live recording state is active, the recorder surface is temporarily
+mounted directly under `body`, outside the filtered and clipped Discussion
+cards. Review, cancellation, permission failure, recorder failure, and normal
+completion restore it to its original DOM position before another render. This
+portal boundary is required for consistent full-viewport rendering in Safari
+and other browsers that treat filtered ancestors as fixed-position containing
+blocks.
 Review shows only `Play recording`, `Replace recording`, and the primary
 `Upload & analyse` action. Uploading locks navigation and shows one factual
 secure-upload state; a successful upload automatically starts analysis.

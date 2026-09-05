@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-06 — Reliable full-screen Group recording surface
+
+- Moved the live Group Discussion recorder into a temporary body-level portal
+  for Requesting, Countdown, Recording, Ending, and Stopping states.
+- Prevented filtered, overflow-hidden Discussion cards from becoming the fixed
+  recorder's containing block and clipping it outside the current phone view.
+- Restored the same recorder node and its event listeners to the original card
+  on review, cancellation, permission failure, recorder failure, and completion.
+
 ## 2026-09-05 — Assign class members by default
 
 - Made the Teacher Assign student picker automatically select every currently

@@ -58,6 +58,7 @@
     var recordingTargetNoticeShown = false;
     var recordingCountdownTimer = 0;
     var recordingSpeech = null;
+    var recordingLiveOrigin = null;
     var qualityFrame = 0;
     var qualityAnalyser = null;
     var qualityContext = null;
@@ -1015,6 +1016,28 @@
         var element = document.getElementById('recording-message');
         if (element) element.textContent = message || '';
     }
+    function mountRecordingLiveToViewport(live) {
+        if (!live || live.parentNode === document.body) return;
+        recordingLiveOrigin = {
+            parent: live.parentNode,
+            nextSibling: live.nextSibling
+        };
+        document.body.appendChild(live);
+    }
+    function restoreRecordingLiveFromViewport(live) {
+        if (!live || live.parentNode !== document.body) {
+            if (!live) recordingLiveOrigin = null;
+            return;
+        }
+        var origin = recordingLiveOrigin;
+        recordingLiveOrigin = null;
+        if (!origin || !origin.parent || !origin.parent.isConnected) {
+            live.remove();
+            return;
+        }
+        if (origin.nextSibling && origin.nextSibling.parentNode === origin.parent) origin.parent.insertBefore(live, origin.nextSibling);
+        else origin.parent.appendChild(live);
+    }
     function setRecordingState(nextState) {
         recordingState = nextState;
         var card = document.querySelector('.speaking-recording-card');
@@ -1023,10 +1046,13 @@
         var live = document.getElementById('recording-live');
         var review = document.getElementById('recording-review');
         var uploading = document.getElementById('recording-uploading');
+        var liveState = ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(nextState) >= 0;
         if (ready) ready.hidden = nextState !== 'idle';
+        if (live && liveState) mountRecordingLiveToViewport(live);
         if (live) {
-            live.hidden = ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(nextState) < 0;
+            live.hidden = !liveState;
             live.setAttribute('data-recording-state', nextState);
+            if (!liveState) restoreRecordingLiveFromViewport(live);
         }
         if (review) review.hidden = nextState !== 'review';
         if (uploading) uploading.hidden = nextState !== 'uploading';

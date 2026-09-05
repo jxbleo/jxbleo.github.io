@@ -131,6 +131,9 @@ function run() {
   assert.match(app, /Recording ready/);
   assert.match(app, /Upload &amp; analyse/);
   assert.match(app, /function setRecordingState\(nextState\)/);
+  assert.match(app, /function mountRecordingLiveToViewport\(live\)[\s\S]*document\.body\.appendChild\(live\)/);
+  assert.match(app, /function restoreRecordingLiveFromViewport\(live\)[\s\S]*origin\.parent\.insertBefore\(live, origin\.nextSibling\)/);
+  assert.match(app, /liveState[\s\S]*mountRecordingLiveToViewport\(live\)[\s\S]*restoreRecordingLiveFromViewport\(live\)/);
   assert.match(app, /['requesting', 'countdown'][\s\S]*Cancel/);
   assert.match(app, /activeRecorder\.start\(1000\)/);
   assert.match(app, /runOpeningCountdown\(captureGeneration\)/);
@@ -361,7 +364,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260905-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260905-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260906-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");
