@@ -65,7 +65,12 @@
     var qualityBadSince = 0;
     var qualityRecoverySince = 0;
     var qualityReadyAt = 0;
+    var qualityVisualState = 'listening';
+    var qualityVisualCandidate = '';
+    var qualityVisualSince = 0;
+    var qualitySmoothedDbfs = -60;
     var LOW_VOLUME_DBFS = -45;
+    var HIGH_VOLUME_DBFS = -10;
     var CLIPPING_AMPLITUDE = 0.98;
     var INPUT_LOSS_SECONDS = 3;
     var VOICE_REFERENCE_PASSAGE = 'Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.';
@@ -881,7 +886,7 @@
         var targetMinutes = Math.max(3, Math.min(30, Number(item.duration_seconds || 480) / 60));
         var recording = canRecord ? '<section class="speaking-section-card speaking-recording-card" data-recording-state="idle"><header><div><h3>Record the Discussion</h3><p>Record here or choose one audio file. Nothing is uploaded until you confirm.</p></div><span class="speaking-pill" id="recording-target-pill">Target ' + esc(targetMinutes % 1 ? targetMinutes.toFixed(1) : targetMinutes) + ' min</span></header>' +
             '<div class="speaking-recording-state" id="recording-ready"><div class="speaking-recording-settings"><label>Target length<div class="speaking-duration-field"><input id="recording-duration" type="number" min="3" max="30" step="0.5" value="' + esc(targetMinutes) + '" inputmode="decimal"><span>minutes</span></div></label></div><div class="speaking-recording-choice"><button class="primary-button" type="button" id="record-now">Record on this device</button><label class="outline-button speaking-file-button" id="audio-file-label">Choose audio file<input type="file" accept="audio/*" hidden id="audio-file"></label><label class="speaking-audio-date"><span>Audio date</span><input id="recording-date" type="date" value="' + esc(item.discussion_date || shanghaiToday()) + '"></label></div><p class="speaking-recording-note">Device recordings use today. For an existing audio file, choose the date it was recorded.</p><p class="speaking-quality-warning" id="recording-message" role="status" aria-live="polite"></p></div>' +
-            '<div class="speaking-recording-state speaking-recording-live" id="recording-live" hidden><div class="speaking-recording-live-content"><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-countdown" id="recording-countdown" aria-live="assertive" hidden>5</div><div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function (_value, index) { return '<i class="speaking-recording-wave-bar" style="--wave-index:' + index + '"></i>'; }).join('') + '</div><div class="speaking-recording-time" id="recording-time">00:00 / ' + esc(String(Math.floor((Number(item.duration_seconds || 480) + 5) / 60)).padStart(2, '0') + ':' + String((Number(item.duration_seconds || 480) + 5) % 60).padStart(2, '0')) + '</div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div></div>' +
+            '<div class="speaking-recording-state speaking-recording-live" id="recording-live" data-level="listening" data-recording-state="idle" hidden><div class="speaking-recording-live-content"><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-countdown" id="recording-countdown" aria-live="assertive" hidden>5</div><div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function (_value, index) { return '<i class="speaking-recording-wave-bar" style="--wave-index:' + index + '"></i>'; }).join('') + '</div><div class="speaking-recording-level" id="recording-level-indicator"><span class="speaking-recording-level-icon" aria-hidden="true"></span><strong id="recording-level-label" role="status" aria-live="polite">Listening for the group…</strong></div><div class="speaking-recording-time" id="recording-time">00:00 / ' + esc(String(Math.floor((Number(item.duration_seconds || 480) + 5) / 60)).padStart(2, '0') + ':' + String((Number(item.duration_seconds || 480) + 5) % 60).padStart(2, '0')) + '</div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-review" id="recording-review" hidden><div class="speaking-recording-ready-mark" aria-hidden="true">✓</div><h4>Recording ready</h4><p id="recording-review-copy">Listen once if you want to check it, then upload and start the analysis.</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="preview-recording">Play recording</button><button class="outline-button" type="button" id="replace-recording">Replace recording</button><button class="primary-button" type="button" id="upload-recording">Upload &amp; analyse</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-uploading" id="recording-uploading" hidden aria-live="polite" aria-busy="true"><span class="speaking-upload-spinner" aria-hidden="true"></span><h4>Uploading securely</h4><p>Keep this page open. Analysis will begin automatically.</p><div class="speaking-upload-progress-track" role="progressbar" aria-label="Secure upload in progress"><span></span></div></div></section>' : '';
         var stage = item.analysis_status === 'queued' ? 'Preparing transcript and Candidates' : item.analysis_status === 'processing' ? 'Matching voices and analysing discussion' : '';
@@ -1019,7 +1024,10 @@
         var review = document.getElementById('recording-review');
         var uploading = document.getElementById('recording-uploading');
         if (ready) ready.hidden = nextState !== 'idle';
-        if (live) live.hidden = ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(nextState) < 0;
+        if (live) {
+            live.hidden = ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(nextState) < 0;
+            live.setAttribute('data-recording-state', nextState);
+        }
         if (review) review.hidden = nextState !== 'review';
         if (uploading) uploading.hidden = nextState !== 'uploading';
         var liveStatus = document.getElementById('recording-live-status');
@@ -1077,6 +1085,11 @@
         qualityIssue = '';
         qualityBadSince = 0;
         qualityRecoverySince = 0;
+        qualityVisualState = 'listening';
+        qualityVisualCandidate = '';
+        qualityVisualSince = 0;
+        qualitySmoothedDbfs = -60;
+        setRecordingLevelVisual('listening');
     }
     function discardLocalRecording() {
         recordingCaptureGeneration += 1;
@@ -1128,6 +1141,43 @@
         return true;
     }
     function showQualityWarning(message) { var warning = document.getElementById('quality-warning'); if (warning) warning.textContent = message || ''; }
+    function setRecordingLevelVisual(state) {
+        var live = document.getElementById('recording-live');
+        var label = document.getElementById('recording-level-label');
+        var messages = {
+            listening: 'Listening for the group…',
+            low: 'Speak a little louder or move the device closer',
+            good: 'Sound level looks good',
+            high: 'A little too loud · move the device farther away',
+            input: 'Microphone signal needs attention'
+        };
+        qualityVisualState = messages[state] ? state : 'listening';
+        if (live) live.setAttribute('data-level', qualityVisualState);
+        if (label) label.textContent = messages[qualityVisualState];
+    }
+    function updateRecordingLevelVisual(nextState, now) {
+        if (recordingState !== 'recording' && recordingState !== 'ending') {
+            qualityVisualCandidate = '';
+            qualityVisualSince = 0;
+            if (qualityVisualState !== 'listening') setRecordingLevelVisual('listening');
+            return;
+        }
+        if (nextState === qualityVisualState) {
+            qualityVisualCandidate = '';
+            qualityVisualSince = 0;
+            return;
+        }
+        if (qualityVisualCandidate !== nextState) {
+            qualityVisualCandidate = nextState;
+            qualityVisualSince = now;
+            return;
+        }
+        var settleMs = nextState === 'high' || nextState === 'input' ? 350 : nextState === 'low' ? 1200 : 500;
+        if (now - qualityVisualSince < settleMs) return;
+        qualityVisualCandidate = '';
+        qualityVisualSince = 0;
+        setRecordingLevelVisual(nextState);
+    }
     function playRecordingBeep(urgent) {
         if (!qualityContext || !qualityContext.createOscillator || !qualityContext.createGain) return;
         try {
@@ -1227,6 +1277,11 @@
             qualityIssue = '';
             qualityBadSince = 0;
             qualityRecoverySince = 0;
+            qualityVisualState = 'listening';
+            qualityVisualCandidate = '';
+            qualityVisualSince = 0;
+            qualitySmoothedDbfs = -60;
+            setRecordingLevelVisual('listening');
             function frame() {
                 if (!qualityAnalyser) return;
                 qualityAnalyser.getFloatTimeDomainData(samples);
@@ -1237,11 +1292,16 @@
                 var dbfs = rms > 0 ? 20 * Math.log10(rms) : -Infinity;
                 var now = performance.now();
                 var muted = stream.getTracks().some(function (track) { return track.readyState === 'ended' || track.muted; });
+                if (Number.isFinite(dbfs)) qualitySmoothedDbfs = qualitySmoothedDbfs * 0.82 + dbfs * 0.18;
+                else qualitySmoothedDbfs = -60;
+                var clippingRatio = clipped / samples.length;
+                var visualLevel = muted || dbfs === -Infinity ? 'input' : clippingRatio >= 0.01 || qualitySmoothedDbfs > HIGH_VOLUME_DBFS ? 'high' : qualitySmoothedDbfs < LOW_VOLUME_DBFS ? 'low' : 'good';
+                updateRecordingLevelVisual(visualLevel, now);
                 var issue = '';
                 var thresholdSeconds = 0;
                 var message = '';
                 if (now >= qualityReadyAt && (muted || dbfs === -Infinity)) { issue = 'input'; thresholdSeconds = INPUT_LOSS_SECONDS; message = 'Microphone signal lost. Check that the phone can still hear the group.'; }
-                else if (now >= qualityReadyAt && clipped / samples.length >= 0.01) { issue = 'clipping'; thresholdSeconds = 1; message = 'The sound is clipping. Move the phone slightly farther away.'; }
+                else if (now >= qualityReadyAt && (clippingRatio >= 0.01 || qualitySmoothedDbfs > HIGH_VOLUME_DBFS)) { issue = 'clipping'; thresholdSeconds = 1; message = 'The sound is too loud. Move the phone slightly farther away.'; }
                 else if (now >= qualityReadyAt && dbfs < LOW_VOLUME_DBFS) { issue = 'low'; thresholdSeconds = 4; message = 'Move the phone closer so the group can be heard.'; }
                 if (issue) {
                     qualityRecoverySince = 0;

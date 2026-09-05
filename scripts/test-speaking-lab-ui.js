@@ -25,7 +25,7 @@ function run() {
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260904-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260905-1/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
@@ -137,6 +137,9 @@ function run() {
   assert.match(app, /SpeechSynthesisUtterance[\s\S]*讨论将在五秒钟后开始[\s\S]*可以开始讨论了/);
   assert.match(app, /recordingTargetSeconds \+ 5[\s\S]*activeRecorder\.stop/);
   assert.match(app, /speaking-recording-wave-bar[\s\S]*updateRecordingWaveform/);
+  assert.match(app, /data-level="listening"[\s\S]*recording-level-label/);
+  assert.match(app, /function updateRecordingLevelVisual\(nextState, now\)/);
+  assert.match(app, /HIGH_VOLUME_DBFS[\s\S]*Speak a little louder[\s\S]*Sound level looks good[\s\S]*A little too loud/);
   assert.match(app, /Audio date[\s\S]*id="recording-date"/);
   assert.match(app, /activeRecorder\.onerror/);
   assert.match(app, /recordingState !== 'idle'/);
@@ -206,7 +209,7 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /Record a VIP voiceprint|teacher-voiceprint-student-id/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260904-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260905-1/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=20260902-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
@@ -275,6 +278,10 @@ function run() {
   assert.match(css, /speaking-list\[hidden\].*speaking-detail\[hidden\]/);
   assert.match(css, /speaking-recording-state\[hidden\].*display:\s*none !important/);
   assert.match(css, /speaking-recording-live/);
+  assert.match(css, /speaking-recording-live\[data-level="low"\]/);
+  assert.match(css, /speaking-recording-live\[data-level="good"\]/);
+  assert.match(css, /speaking-recording-live\[data-level="high"\]/);
+  assert.match(css, /speaking-recording-countdown[^}]*position:\s*fixed[^}]*top:\s*50%[^}]*left:\s*50%/);
   assert.match(css, /speaking-recording-review/);
   assert.match(css, /speaking-recording-uploading/);
   assert.match(css, /speaking-recording-flow-active/);
@@ -353,8 +360,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260904-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260902-2/);
+  assert.match(page, /speaking-lab\.css\?v=20260905-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260905-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

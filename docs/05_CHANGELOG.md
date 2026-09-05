@@ -10,6 +10,16 @@
 - Kept the drawer compact when empty and made its existing count toggle collapse
   the complete drawer height as well as the internal list.
 
+## 2026-09-05 — Group recording level guidance
+
+- Replaced the dark full-screen Group Discussion recorder with a light,
+  Apple-style ambient surface and a more legible live waveform.
+- Fixed both opening and final countdown numbers to the visual viewport centre
+  across phone, tablet, and desktop browser heights.
+- Added smoothed full-screen quiet, suitable, too-loud, and microphone-signal
+  states with matching plain-language guidance, while retaining delayed quality
+  warnings to avoid reacting to brief pauses.
+
 ## 2026-09-04 — Centred Speaking dialogs on phones
 
 - Replaced the phone-only bottom-sheet treatment with one viewport-centred

@@ -2607,6 +2607,14 @@ two temporary-credential requests concurrently. Read requests leave the
 loading state with a refresh-and-retry message after 20 seconds; recording and
 other mutating actions retain a longer 90-second response window.
 Formal recording uses mutually exclusive Ready, Requesting, Countdown, Recording, Ending, Review, and Uploading states. Ready shows target length, `Record on this device`, `Choose audio file`, and an Audio date to the file chooser right; device recording resets that date to today. After microphone permission, the whole viewport becomes the recording surface, Chinese TTS announces a five-second start, five visible numbers and synchronized beeps count down, and a microphone-level waveform stays live through the Discussion. Recording keeps one `Finish recording` button and no Pause. At target time the full-screen surface enters a five-second audible/visible Ending warning and stops automatically at target plus five seconds; an eight-minute target therefore ends at 8:05.
+The full-screen recorder uses a light, restrained ambient surface rather than a
+dark camera-style view. The countdown is fixed to the live viewport centre so
+browser toolbar and safe-area differences cannot move it upward. Once recording
+starts, the waveform and a text status communicate input level together: warm
+amber means the group is too quiet, blue-green means the level is suitable,
+soft coral means it is too loud, and a muted warning surface means the
+microphone signal needs attention. State changes are smoothed and held briefly
+to avoid flashes during natural pauses; colour is never the only cue.
 Review shows only `Play recording`, `Replace recording`, and the primary
 `Upload & analyse` action. Uploading locks navigation and shows one factual
 secure-upload state; a successful upload automatically starts analysis.
