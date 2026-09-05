@@ -1129,6 +1129,9 @@ Teacher can:
   card
 - filter students inside that dialog with one search field and one `Class`
   select
+- choosing a specific Class automatically selects every currently assignable
+  student in that class; existing selections remain selected, teachers may
+  still remove individuals, and choosing `All` does not select every student
 - choose Work first or Students first. The opposite picker should color-code
   existing assignment state for the selected counterpart: open `in_progress`
   pairs are colored and disabled; completed/mastered history is colored but

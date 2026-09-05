@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-05 — Assign class members by default
+
+- Made the Teacher Assign student picker automatically select every currently
+  assignable member when a specific class is chosen, while preserving existing
+  selections and individual removal controls.
+- Kept the `All` filter non-selecting and refreshed the Teacher script cache
+  version.
+
 ## 2026-09-05 — Compact fixed Scan Words selection drawer
 
 - Stopped the Scan Words selected-candidate drawer from growing with long

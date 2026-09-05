@@ -4028,6 +4028,18 @@
         });
     }
 
+    function selectAssignClassCandidates(classGroup) {
+        classGroup = String(classGroup || '');
+        if (!classGroup) return 0;
+        var selectedCount = 0;
+        (state.candidates || []).forEach(function(student) {
+            if (String(student.class_group || '') !== classGroup || candidateStatus(student).disabled) return;
+            state.selectedAssignStudentUids[student.auth_uid] = true;
+            selectedCount += 1;
+        });
+        return selectedCount;
+    }
+
     function rememberSelectedCandidates() {
         candidateList.querySelectorAll('.candidate-checkbox').forEach(function(checkbox) {
             if (checkbox.checked) {
@@ -8700,7 +8712,11 @@
         renderSetOptions();
     });
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
-    document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
+    document.getElementById('assign-class-filter').addEventListener('change', function() {
+        selectAssignClassCandidates(this.value);
+        renderSetOptions();
+        renderCandidates();
+    });
     document.getElementById('library-search').addEventListener('input', function() {
         renderTeacherLibrary(teacherLibraryActiveTab);
     });

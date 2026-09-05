@@ -1067,6 +1067,9 @@ Check:
   open individual record preserves its `assignment_id`
 - Assign supports choosing Students before Work and Work before Students; the
   opposite picker color-codes prior assignment state
+- choosing a specific Class in the Assign student picker immediately selects
+  every currently assignable class member, preserves prior selections, and
+  choosing `All` does not bulk-select the complete school
 - Assign marks open `in_progress` student/work pairs as mergeable for a complete
   Class Assign, while completed/mastered pairs stay colored and selectable
 - every selected task previews Not started, Existing progress, and Already
