@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#f4f8f5">
     <title>Dashboard | Mr. Cat Academy</title>
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260902-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260906-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260902-2">
     <link rel="prefetch" href="my-words.html" as="document">
@@ -188,24 +188,39 @@
         </section>
 
         <section class="student-words-overlay" id="student-words-overlay" hidden>
-            <div class="student-words-stack" role="dialog" aria-modal="true" aria-labelledby="student-words-title">
+            <div class="student-words-stack" role="dialog" aria-modal="true" aria-label="Recent saved words">
                 <section class="student-words-dialog">
                     <header class="student-words-dialog-head">
-                        <div class="student-words-title-block">
-                            <div class="student-words-title-line">
-                                <h2 class="eyebrow accent" id="student-words-title">My Words</h2>
-                                <span class="student-words-count" id="student-words-count" aria-live="polite"></span>
-                            </div>
-                            <p>Recently saved</p>
-                        </div>
+                        <button class="student-words-dialog-icon" id="student-words-preview-add-trigger" type="button" aria-label="Add to My Words" aria-expanded="false" aria-controls="student-words-preview-add-menu">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"></path></svg>
+                        </button>
                     </header>
+                    <section class="student-words-preview-add-menu" id="student-words-preview-add-menu" aria-hidden="true" hidden inert>
+                        <div class="student-words-preview-add-choices" role="group" aria-label="Choose how to add words">
+                            <button type="button" data-preview-direct-input>
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 19.5h4l10.6-10.6a2.1 2.1 0 0 0-3-3L5 16.5l-1 3Z"></path><path d="m13.8 7.7 3 3"></path></svg>
+                                <span><strong>Direct Input</strong><small>Type a word or phrase</small></span>
+                            </button>
+                            <a href="my-words.html?add=scan" data-preview-scan>
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5a1 1 0 0 0-1 1v3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path><path d="M7 12h10"></path></svg>
+                                <span><strong>Scan</strong><small>Add from photos</small></span>
+                            </a>
+                        </div>
+                        <form class="student-words-preview-add-form" id="student-words-preview-add-form" hidden>
+                            <label for="student-words-preview-add-input">Word or short phrase</label>
+                            <div>
+                                <input id="student-words-preview-add-input" type="text" maxlength="120" autocomplete="off" placeholder="Type a word or short phrase">
+                                <button type="submit">Add</button>
+                            </div>
+                            <p id="student-words-preview-add-status" role="status" aria-live="polite"></p>
+                        </form>
+                    </section>
                     <div class="student-words-dialog-scroll" id="student-words-dialog-scroll">
                         <div class="student-words-preview" id="student-words-preview" aria-live="polite" aria-busy="true">
                             <div class="student-words-preview-loading">Loading your recent words…</div>
                         </div>
                     </div>
                     <footer class="student-words-dialog-footer">
-                        <p class="student-words-remainder" id="student-words-remainder" hidden></p>
                         <a class="student-words-open-button" href="my-words.html">
                             <span>Open My Words</span>
                             <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m7 4 6 6-6 6"></path></svg>
@@ -236,7 +251,7 @@
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-    <script src="assets/js/dashboard.js?v=20260902-2"></script>
+    <script src="assets/js/dashboard.js?v=20260906-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

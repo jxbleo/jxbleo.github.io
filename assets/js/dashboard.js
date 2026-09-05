@@ -345,7 +345,14 @@
     var wordsOverlay = document.getElementById('student-words-overlay');
     var wordsScroll = document.getElementById('student-words-dialog-scroll');
     var wordsPreview = document.getElementById('student-words-preview');
-    var wordsRemainder = document.getElementById('student-words-remainder');
+    var wordsPreviewAddTrigger = document.getElementById('student-words-preview-add-trigger');
+    var wordsPreviewAddMenu = document.getElementById('student-words-preview-add-menu');
+    var wordsPreviewAddChoices = wordsPreviewAddMenu && wordsPreviewAddMenu.querySelector('.student-words-preview-add-choices');
+    var wordsPreviewDirectInput = wordsPreviewAddMenu && wordsPreviewAddMenu.querySelector('[data-preview-direct-input]');
+    var wordsPreviewScan = wordsPreviewAddMenu && wordsPreviewAddMenu.querySelector('[data-preview-scan]');
+    var wordsPreviewAddForm = document.getElementById('student-words-preview-add-form');
+    var wordsPreviewAddInput = document.getElementById('student-words-preview-add-input');
+    var wordsPreviewAddStatus = document.getElementById('student-words-preview-add-status');
     var wordsSearchTrigger = document.getElementById('my-words-search-trigger');
     var wordsExportTrigger = document.getElementById('my-words-export-trigger');
     var wordsExportPanel = document.getElementById('my-words-export-panel');
@@ -4081,10 +4088,6 @@
             return (word.status || 'active') === 'active';
         });
         var visibleWords = activeWords.slice(0, 7);
-        var reportedTotal = Number(state.vocabTotalCount || 0);
-        var total = Math.max(Number.isFinite(reportedTotal) ? reportedTotal : 0, activeWords.length);
-        var count = document.getElementById('student-words-count');
-        if (count) count.textContent = total + (total === 1 ? ' word' : ' words');
         wordsPreview.setAttribute('aria-busy', 'false');
 
         if (!visibleWords.length) {
@@ -4095,12 +4098,68 @@
             '</div>';
         }
 
-        var remainder = Math.max(0, total - visibleWords.length);
-        if (wordsRemainder) {
-            wordsRemainder.hidden = remainder === 0;
-            wordsRemainder.textContent = remainder + (remainder === 1 ? ' more word' : ' more words');
-        }
         bindMyWordsPreviewActions();
+    }
+
+    function setWordsPreviewAddOpen(open, showForm) {
+        if (!wordsPreviewAddTrigger || !wordsPreviewAddMenu) return;
+        var shouldOpen = open === true;
+        wordsPreviewAddMenu.hidden = !shouldOpen;
+        wordsPreviewAddMenu.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        if (shouldOpen) wordsPreviewAddMenu.removeAttribute('inert');
+        else wordsPreviewAddMenu.setAttribute('inert', '');
+        wordsPreviewAddTrigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        wordsPreviewAddTrigger.setAttribute('aria-label', shouldOpen ? 'Close add menu' : 'Add to My Words');
+        if (wordsPreviewAddChoices) wordsPreviewAddChoices.hidden = Boolean(shouldOpen && showForm);
+        if (wordsPreviewAddForm) wordsPreviewAddForm.hidden = !shouldOpen || !showForm;
+        if (!shouldOpen) {
+            if (wordsPreviewAddInput) wordsPreviewAddInput.value = '';
+            if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = '';
+        }
+    }
+
+    function saveWordsPreviewInput(event) {
+        event.preventDefault();
+        if (!wordsPreviewAddInput || !wordsPreviewAddForm) return;
+        var text = String(wordsPreviewAddInput.value || '').replace(/\s+/g, ' ').trim();
+        var validation = manualWordValidation(text);
+        if (validation) {
+            if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = validation;
+            wordsPreviewAddInput.focus();
+            return;
+        }
+        var submit = wordsPreviewAddForm.querySelector('button[type="submit"]');
+        if (submit) {
+            submit.disabled = true;
+            submit.textContent = 'Adding…';
+        }
+        if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = '';
+        callStudentVocabulary({
+            action: 'add',
+            text: text,
+            source_set_id: null,
+            source_title: 'My Words',
+            source_path: 'dashboard.html?view=words',
+            context: ''
+        }).then(function(result) {
+            if (!result.word) throw new Error('Unable to add this word.');
+            upsertVocabItem(result.word);
+            if (result.created) state.vocabTotalCount = Math.max(Number(state.vocabTotalCount || 0) + 1, state.vocabItems.length);
+            renderMyWordsPreview();
+            setWordsPreviewAddOpen(false, false);
+            wordsPreviewAddTrigger.focus({ preventScroll: true });
+            if (wordsScroll) wordsScroll.scrollTop = 0;
+            if (window.MrCatPersonalVocab && window.MrCatPersonalVocab.enrichWord) {
+                window.MrCatPersonalVocab.enrichWord(result.word, false);
+            }
+        }).catch(function(error) {
+            if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = error.message || 'Unable to add this word.';
+        }).finally(function() {
+            if (submit) {
+                submit.disabled = false;
+                submit.textContent = 'Add';
+            }
+        });
     }
 
     function loadMyWordsPreview() {
@@ -4141,11 +4200,13 @@
             wordsButton.setAttribute('aria-expanded', state.wordsPanelOpen ? 'true' : 'false');
         }
         if (!state.wordsPanelOpen) {
+            setWordsPreviewAddOpen(false, false);
             if (wasOpen) unlockStudentMessageBackground();
             return;
         }
         setAccountPanel(false);
         lockStudentMessageBackground();
+        if (wordsPreviewAddTrigger) wordsPreviewAddTrigger.disabled = !state.session || state.session.mode !== 'student';
         if (wordsScroll) wordsScroll.scrollTop = 0;
         loadMyWordsPreview();
         window.requestAnimationFrame(function() {
@@ -4969,6 +5030,39 @@
             if (useMyWordsFallbackTransition(event)) event.preventDefault();
         });
     }
+    if (wordsPreviewAddTrigger) {
+        wordsPreviewAddTrigger.addEventListener('click', function() {
+            var open = wordsPreviewAddTrigger.getAttribute('aria-expanded') !== 'true';
+            setWordsPreviewAddOpen(open, false);
+            if (open && wordsPreviewDirectInput) wordsPreviewDirectInput.focus();
+        });
+    }
+    if (wordsPreviewDirectInput) {
+        wordsPreviewDirectInput.addEventListener('click', function() {
+            setWordsPreviewAddOpen(true, true);
+            if (wordsPreviewAddInput) wordsPreviewAddInput.focus();
+        });
+    }
+    if (wordsPreviewScan) {
+        wordsPreviewScan.addEventListener('click', function(event) {
+            if (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            setWordsPanel(false);
+        });
+    }
+    if (wordsPreviewAddForm) wordsPreviewAddForm.addEventListener('submit', saveWordsPreviewInput);
+    if (wordsOverlay) {
+        wordsOverlay.addEventListener('click', function(event) {
+            if (!wordsPreviewAddMenu || wordsPreviewAddMenu.hidden) return;
+            if (wordsPreviewAddMenu.contains(event.target) || wordsPreviewAddTrigger.contains(event.target)) return;
+            setWordsPreviewAddOpen(false, false);
+        });
+    }
+    document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape' || !wordsPreviewAddMenu || wordsPreviewAddMenu.hidden) return;
+        event.preventDefault();
+        setWordsPreviewAddOpen(false, false);
+        wordsPreviewAddTrigger.focus();
+    });
     var wordsClose = document.getElementById('student-words-close');
     if (wordsClose) {
         wordsClose.addEventListener('click', function() {

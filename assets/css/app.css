@@ -734,6 +734,7 @@ html.teacher-modal-scroll-locked {
     min-height: 0;
 }
 .student-words-dialog {
+    position: relative;
     display: grid;
     grid-template-rows: auto auto auto auto minmax(0, 1fr);
     width: 100%;
@@ -752,29 +753,6 @@ html.teacher-modal-scroll-locked {
     padding: 17px 18px 13px 20px;
     background: rgba(255,255,255,0.82);
     backdrop-filter: blur(18px) saturate(150%);
-}
-.student-words-title-block { min-width: 0; }
-.student-words-title-line {
-    display: flex;
-    align-items: baseline;
-    gap: 9px;
-}
-.student-words-title-line h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-}
-.student-words-count {
-    color: var(--muted);
-    font-size: 0.76rem;
-    font-weight: 700;
-    white-space: nowrap;
-}
-.student-words-title-block > p {
-    margin: 4px 0 0;
-    color: var(--muted);
-    font-size: 0.78rem;
 }
 .student-words-dialog-actions {
     display: flex;
@@ -880,29 +858,122 @@ html.teacher-modal-scroll-locked {
     backdrop-filter: blur(30px) saturate(160%);
 }
 .student-words-dialog-head {
-    display: grid;
-    place-items: center;
-    align-content: center;
-    justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     min-height: 66px;
-    padding: 15px 20px 12px;
-    text-align: center;
+    padding: 11px 18px;
     background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.06));
 }
-.student-words-title-line {
-    justify-content: center;
+.student-words-dialog-head .student-words-dialog-icon {
+    width: 44px;
+    height: 44px;
 }
-.student-words-title-line h2 {
-    color: var(--accent);
-    font-size: 0.76rem;
-    font-weight: 850;
-    letter-spacing: 0.16em;
-    line-height: 1.2;
-    text-transform: uppercase;
+#student-words-preview-add-trigger svg { transition: transform 180ms ease; }
+#student-words-preview-add-trigger[aria-expanded="true"] svg { transform: rotate(45deg); }
+.student-words-preview-add-menu {
+    position: absolute;
+    z-index: 4;
+    top: 61px;
+    right: 18px;
+    width: min(292px, calc(100% - 36px));
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 18px;
+    background: rgba(250,252,251,0.94);
+    box-shadow: 0 18px 48px rgba(20,54,47,0.22), 0 2px 8px rgba(20,54,47,0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(155%);
+    backdrop-filter: blur(24px) saturate(155%);
+    transform-origin: top right;
+    animation: studentWordsAddMenuIn 180ms cubic-bezier(.22,1,.36,1) both;
 }
-.student-words-title-block > p {
-    margin-top: 5px;
-    font-size: 0.74rem;
+.student-words-preview-add-menu[hidden] { display: none; }
+.student-words-preview-add-choices {
+    display: grid;
+    gap: 4px;
+}
+.student-words-preview-add-choices > button,
+.student-words-preview-add-choices > a {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    min-height: 54px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 13px;
+    color: var(--ink);
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+.student-words-preview-add-choices > button:hover,
+.student-words-preview-add-choices > a:hover {
+    background: rgba(19,118,109,0.09);
+}
+.student-words-preview-add-choices svg {
+    width: 22px;
+    height: 22px;
+    justify-self: center;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.student-words-preview-add-choices span { display: grid; gap: 2px; }
+.student-words-preview-add-choices strong { font-size: 0.84rem; }
+.student-words-preview-add-choices small { color: var(--muted); font-size: 0.7rem; }
+.student-words-preview-add-form { padding: 7px; }
+.student-words-preview-add-form > label {
+    display: block;
+    margin: 0 2px 8px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 760;
+}
+.student-words-preview-add-form > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px;
+}
+.student-words-preview-add-form input {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(19,118,109,0.2);
+    border-radius: 12px;
+    color: var(--ink);
+    background: rgba(255,255,255,0.9);
+    font: inherit;
+    font-size: 16px;
+}
+.student-words-preview-add-form button {
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 12px;
+    color: #fff;
+    background: var(--accent);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 820;
+    cursor: pointer;
+}
+.student-words-preview-add-form button:disabled { opacity: 0.56; cursor: default; }
+.student-words-preview-add-form p {
+    min-height: 1.2em;
+    margin: 7px 2px 0;
+    color: var(--muted);
+    font-size: 0.7rem;
+    line-height: 1.3;
+}
+@keyframes studentWordsAddMenuIn {
+    from { opacity: 0; transform: translateY(-5px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .student-words-dialog-scroll {
     padding: 0 18px;
@@ -1031,13 +1102,6 @@ html.teacher-modal-scroll-locked {
     background: linear-gradient(180deg, transparent, rgba(248,251,249,0.82));
     content: "";
     pointer-events: none;
-}
-.student-words-remainder {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.74rem;
-    font-weight: 720;
-    text-align: center;
 }
 .student-words-open-button {
     display: flex;
@@ -4002,6 +4066,10 @@ body:not(.teacher-page) .tab-button.active {
 .my-words-message .profile-actions { width: min(220px, 100%); }
 
 .student-words-dialog-icon:focus-visible,
+.student-words-preview-add-choices > button:focus-visible,
+.student-words-preview-add-choices > a:focus-visible,
+.student-words-preview-add-form input:focus-visible,
+.student-words-preview-add-form button:focus-visible,
 .student-words-outside-close:focus-visible,
 .my-word-toggle:focus-visible,
 .my-word-speak:focus-visible,
@@ -4012,8 +4080,6 @@ body:not(.teacher-page) .tab-button.active {
 }
 
 @media (max-width: 380px) {
-    .student-words-title-line h2 { font-size: 0.76rem; }
-    .student-words-count { font-size: 0.7rem; }
     .my-word-primary-copy { gap: 5px; }
     .my-words-input-shell > span { display: none; }
 }
@@ -4032,6 +4098,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-message-task { transition-duration: 1ms; }
 
     .student-calendar-day.is-selected { animation: none; }
+    .student-words-preview-add-menu { animation: none; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -4039,6 +4106,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-words-dialog,
     .student-words-dialog-head,
     .student-words-dialog-footer,
+    .student-words-preview-add-menu,
     .student-words-outside-close,
     .student-calendar-dialog,
     .student-calendar-outside-close,
@@ -10759,7 +10827,6 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         border-radius: 25px;
     }
     .student-words-dialog-head { padding: 15px 14px 12px 17px; }
-    .student-words-title-block > p { display: none; }
     .student-words-dialog-icon { width: 40px; height: 40px; }
     .my-words-manual { padding-inline: 14px; }
     .my-words-search-wrap { padding-inline: 12px; }

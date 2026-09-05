@@ -1570,6 +1570,23 @@
                 renderVisitor();
                 return null;
             }
+            var openRequestedAddMode = function() {
+                var url = new URL(window.location.href);
+                var requestedAddMode = url.searchParams.get('add');
+                if (requestedAddMode !== 'scan' && requestedAddMode !== 'manual') return;
+                url.searchParams.delete('add');
+                window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+                if (requestedAddMode === 'scan') {
+                    var scanButton = document.querySelector('[data-open-scan]');
+                    if (scanButton) scanButton.click();
+                    return;
+                }
+                setAddOpen(true);
+                var manualButton = document.querySelector('[data-open-manual]');
+                if (manualButton) manualButton.click();
+            };
+            if (document.readyState === 'complete') window.setTimeout(openRequestedAddMode, 0);
+            else window.addEventListener('load', openRequestedAddMode, { once: true });
             var cached = readFirstPageCache();
             if (cached) {
                 state.revalidatingFirstPage = true;

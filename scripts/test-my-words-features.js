@@ -61,9 +61,17 @@ async function main() {
   assert(dashboardHtml.includes('id="student-words-overlay"'), "Dashboard notebook must open the My Words quick preview");
   assert(dashboardHtml.includes('class="student-words-open-button" href="my-words.html"'), "the preview must link to the dedicated My Words workspace");
   assert(dashboardHtml.includes('id="student-words-preview"'), "the preview must expose a bounded recent-word surface");
+  assert(dashboardHtml.includes('id="student-words-preview-add-trigger"'), "the preview must expose its add action in the top-right corner");
+  assert(dashboardHtml.includes('data-preview-direct-input'), "the preview add menu must offer direct input");
+  assert(dashboardHtml.includes('href="my-words.html?add=scan" data-preview-scan'), "the preview add menu must route Scan into the complete scanner");
+  assert(!dashboardHtml.includes('id="student-words-title"'), "the preview must not retain the My Words heading");
+  assert(!dashboardHtml.includes('id="student-words-count"'), "the preview must not retain the total-word field");
+  assert(!dashboardHtml.includes('id="student-words-remainder"'), "the preview must not retain the remaining-word field");
   assert(!dashboardHtml.includes('id="my-words-search-trigger"'), "Dashboard must not retain the complete My Words runtime");
   assert(dashboardJs.includes("activeWords.slice(0, 7)"), "the Dashboard preview must show at most seven recent active words");
   assert(dashboardJs.includes("data-preview-speak"), "preview rows must provide pronunciation");
+  assert(dashboardJs.includes("function saveWordsPreviewInput(event)"), "direct input must save from the Dashboard preview");
+  assert(myWordsJs.includes("requestedAddMode === 'scan'"), "the complete My Words workspace must consume the Scan entry route");
   assert(dashboardJs.includes("window.location.hash === '#my-words'"), "legacy Dashboard My Words links must redirect");
   assert(bbcHtml.includes('class="blank-num" data-mrcat-vocab-ignore'), "BBC fill-blank question numbers must stay outside My Words selections");
   assert(bbcHtml.includes('class="mc-num" data-mrcat-vocab-ignore'), "BBC multiple-choice question numbers must stay outside My Words selections");

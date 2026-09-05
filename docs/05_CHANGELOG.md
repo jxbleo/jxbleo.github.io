@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-09-06 — Dashboard My Words add entry
+
+- Moved the primary add entry into the Dashboard My Words preview as a 44px
+  upper-right `+` with two focused choices: `Direct Input` and `Scan`.
+- Kept direct word/phrase entry inside the preview, including validation,
+  immediate list refresh, and the existing automatic dictionary enrichment.
+- Routed Scan into the complete My Words workspace and automatically opened the
+  existing Scan Words surface there instead of duplicating its state on the
+  Dashboard.
+- Removed the preview's `My Words`, saved-total, `Recently saved`, and remaining
+  `more words` fields while retaining the recent-word rows and `Open My Words`.
+
 ## 2026-09-06 — Reliable full-screen Group recording surface
 
 - Moved the live Group Discussion recorder into a temporary body-level portal
