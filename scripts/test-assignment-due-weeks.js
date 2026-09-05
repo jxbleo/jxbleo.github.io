@@ -278,7 +278,8 @@ function teacherAssignmentEditHooks() {
       renderMatrixAttemptChart: renderMatrixAttemptChart,
       attemptHasDetail: attemptHasDetail,
       mergeAttemptDetail: mergeAttemptDetail,
-      renderMatrixAttemptWrongRows: renderMatrixAttemptWrongRows
+      renderMatrixAttemptWrongRows: renderMatrixAttemptWrongRows,
+      selectAssignClassCandidates: selectAssignClassCandidates
     };
 })();`;
 
@@ -463,6 +464,22 @@ function testTeacherAssignmentEditDelegation() {
   assert(source.includes("assignment_ids: items.map(assignmentStableId)"));
   assert(source.includes("assignment_ids: cancelableItems.map(assignmentStableId)"));
   assert(source.includes("assignmentStableId(item) && status !== 'cancelled'"));
+}
+
+function testTeacherAssignClassAutoSelection() {
+  const { hooks } = teacherAssignmentEditHooks();
+  hooks.state.candidates = [
+    { auth_uid: "student-a", class_group: "Class 1", availability: "available" },
+    { auth_uid: "student-b", class_group: "Class 1", availability: "in_progress" },
+    { auth_uid: "student-c", class_group: "Class 2", availability: "available" },
+  ];
+  hooks.state.selectedAssignStudentUids = { "student-existing": true };
+  assert.equal(hooks.selectAssignClassCandidates("Class 1"), 2);
+  assert.equal(hooks.state.selectedAssignStudentUids["student-a"], true);
+  assert.equal(hooks.state.selectedAssignStudentUids["student-b"], true);
+  assert.equal(hooks.state.selectedAssignStudentUids["student-c"], undefined);
+  assert.equal(hooks.state.selectedAssignStudentUids["student-existing"], true);
+  assert.equal(hooks.selectAssignClassCandidates(""), 0);
 }
 
 function testTeacherAttemptChartBackendThresholds() {
@@ -982,6 +999,7 @@ function testAccountStarHistoryModel() {
 
 async function main() {
   testTeacherAssignmentEditDelegation();
+  testTeacherAssignClassAutoSelection();
   testTeacherAttemptChartBackendThresholds();
   testTeacherPhoneMatrixDensityIsolation();
   testDashboardScheduleModel();
