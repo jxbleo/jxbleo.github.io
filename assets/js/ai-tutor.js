@@ -64,8 +64,11 @@
         waitingAudioContext: null,
         waitingAudioOutput: null,
         sidebarOpen: false,
-        toolbarTitleEditing: false,
+        sidebarTitleEditMode: false,
+        titleEditing: false,
         titleEditError: '',
+        titleEditTargetId: '',
+        titleEditReturnFocus: null,
         homeComposerOpen: false,
         homeComposerPreparing: false,
         homeComposerError: '',
@@ -104,12 +107,12 @@
     var sidebarScrim = document.getElementById('sidebar-scrim');
     var writingBackButton = document.getElementById('writing-back-button');
     var portfolioToggle = document.getElementById('portfolio-toggle');
+    var sidebarTitleEdit = document.getElementById('sidebar-title-edit');
     var revisionProgress = document.getElementById('revision-progress');
     var currentWritingTitleWindow = document.getElementById('current-writing-title-window');
     var currentWritingTitleTrack = document.getElementById('current-writing-title-track');
     var currentWritingTitleShell = document.getElementById('current-writing-title-shell');
     var currentWritingTitleDisplay = document.getElementById('current-writing-title-display');
-    var currentWritingTitleEdit = document.getElementById('current-writing-title-edit');
     var currentWritingTitleForm = document.getElementById('current-writing-title-form');
     var currentWritingTitleInput = document.getElementById('current-writing-title-input');
     var currentWritingTitleCancel = document.getElementById('current-writing-title-cancel');
@@ -600,23 +603,40 @@
     function updateCurrentWritingTitle() {
         updateRevisionProgress();
         if (!currentWritingTitleWindow || !currentWritingTitleTrack) return;
-        var editableTitle = editableCompositionTitle(state.current);
         var title = state.current ? compositionTitle(state.current) : 'Start new Writing';
         currentWritingTitleTrack.textContent = title;
         currentWritingTitleWindow.hidden = false;
         currentWritingTitleWindow.setAttribute('aria-label', state.current ? 'Current writing: ' + title : 'Start new Writing');
         if (currentWritingTitleShell) currentWritingTitleShell.classList.toggle('is-new-writing', !state.current);
-        if (currentWritingTitleEdit) currentWritingTitleEdit.hidden = !state.current || !editableTitle;
         if (currentWritingTitleDisplay) currentWritingTitleDisplay.hidden = false;
         document.title = state.current ? title + ' | AI Tutor' : 'Writing | Mr. Cat Academy';
         scheduleCurrentWritingTitleOverflow();
     }
 
-    function beginToolbarTitleEdit() {
-        var title = editableCompositionTitle(state.current);
-        if (!state.current || !title || state.busy) return;
-        state.toolbarTitleEditing = true;
+    function titleEditComposition(id) {
+        id = firstText(id);
+        if (!id) return null;
+        if (state.current && compositionId(state.current) === id) return state.current;
+        return safeArray(state.compositions).find(function(item) { return compositionId(item) === id; }) || null;
+    }
+
+    function focusSidebarTitle(id) {
+        if (!portfolioList || !id) return;
+        Array.prototype.some.call(portfolioList.querySelectorAll('[data-open-composition]'), function(row) {
+            if (row.getAttribute('data-open-composition') !== id) return false;
+            row.focus({ preventScroll: true });
+            return true;
+        });
+    }
+
+    function beginSidebarTitleEdit(id, returnFocus) {
+        var target = titleEditComposition(id);
+        if (!target || state.busy) return;
+        var title = editableCompositionTitle(target);
+        state.titleEditing = true;
         state.titleEditError = '';
+        state.titleEditTargetId = compositionId(target);
+        state.titleEditReturnFocus = returnFocus || null;
         if (titleEditError) {
             titleEditError.textContent = '';
             titleEditError.hidden = true;
@@ -633,10 +653,14 @@
         });
     }
 
-    function cancelToolbarTitleEdit(restoreFocus) {
-        if (!state.toolbarTitleEditing) return;
-        state.toolbarTitleEditing = false;
+    function cancelTitleEdit(restoreFocus) {
+        if (!state.titleEditing) return;
+        var returnFocus = state.titleEditReturnFocus;
+        var targetId = state.titleEditTargetId;
+        state.titleEditing = false;
         state.titleEditError = '';
+        state.titleEditTargetId = '';
+        state.titleEditReturnFocus = null;
         if (titleEditDialog) titleEditDialog.hidden = true;
         if (titleEditError) {
             titleEditError.textContent = '';
@@ -645,11 +669,14 @@
         app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         updateCurrentWritingTitle();
-        if (restoreFocus !== false && currentWritingTitleEdit && !currentWritingTitleEdit.hidden) currentWritingTitleEdit.focus({ preventScroll: true });
+        if (restoreFocus !== false) {
+            if (returnFocus && returnFocus.isConnected) returnFocus.focus({ preventScroll: true });
+            else focusSidebarTitle(targetId);
+        }
     }
 
-    function saveToolbarTitle() {
-        var id = compositionId(state.current);
+    function saveSidebarTitle() {
+        var id = firstText(state.titleEditTargetId);
         var title = firstText(currentWritingTitleInput && currentWritingTitleInput.value);
         if (!id || !title) {
             if (currentWritingTitleInput) currentWritingTitleInput.setCustomValidity('Enter a writing title.');
@@ -661,13 +688,16 @@
         if (submit) submit.disabled = true;
         writingCall('updateCompositionTitle', { composition_id: id, title: title }).then(function(result) {
             var updated = result.composition || { title: title, title_source: 'student' };
-            state.current = Object.assign({}, state.current, updated);
-            state.title = editableCompositionTitle(state.current);
+            if (state.current && compositionId(state.current) === id) {
+                state.current = Object.assign({}, state.current, updated);
+                state.title = editableCompositionTitle(state.current);
+            }
             state.compositions = state.compositions.map(function(item) {
                 return compositionId(item) === id ? Object.assign({}, item, updated) : item;
             });
+            cancelTitleEdit(false);
             renderPortfolio();
-            cancelToolbarTitleEdit();
+            window.requestAnimationFrame(function() { focusSidebarTitle(id); });
         }).catch(function(error) {
             state.titleEditError = firstText(error && error.message, 'The title could not be saved.');
             if (titleEditError) {
@@ -954,6 +984,7 @@
         Array.prototype.forEach.call(document.querySelectorAll('[data-disable-when-busy]'), function(button) {
             button.disabled = Boolean(busy);
         });
+        updateSidebarTitleEditModeControl();
     }
 
     function clearWaitingPollSchedule() {
@@ -1599,6 +1630,24 @@
         return state.compositions.filter(function(item) { return !isEmptyCompositionDraft(item); });
     }
 
+    function updateSidebarTitleEditModeControl() {
+        if (!sidebarTitleEdit || !portfolioSidebar) return;
+        var hasItems = portfolioCompositions().length > 0;
+        if (!hasItems) state.sidebarTitleEditMode = false;
+        portfolioSidebar.classList.toggle('is-title-editing', state.sidebarTitleEditMode);
+        sidebarTitleEdit.setAttribute('aria-pressed', String(state.sidebarTitleEditMode));
+        sidebarTitleEdit.setAttribute('aria-label', state.sidebarTitleEditMode ? 'Finish editing writing titles' : 'Edit writing titles');
+        sidebarTitleEdit.disabled = state.busy || !hasItems;
+    }
+
+    function setSidebarTitleEditMode(active, restoreFocus) {
+        state.sidebarTitleEditMode = Boolean(active) && portfolioCompositions().length > 0;
+        renderPortfolio();
+        if (restoreFocus !== false && sidebarTitleEdit && !sidebarTitleEdit.disabled) {
+            sidebarTitleEdit.focus({ preventScroll: true });
+        }
+    }
+
     function compositionSortTime(item, completed) {
         item = item || {};
         var value = completed
@@ -1612,14 +1661,16 @@
 
     function portfolioGroupHtml(label, items) {
         if (!items.length) return '';
+        var editDelayOffset = label === 'Completed' ? 5 : 0;
         return '<section class="portfolio-group" aria-label="' + escapeHtml(label) + '">' +
             '<p class="portfolio-group-label">' + escapeHtml(label) + '</p>' +
-            items.map(function(item) {
+            items.map(function(item, index) {
                 var id = compositionId(item);
                 var active = state.current && compositionId(state.current) === id;
-                return '<article class="portfolio-item' + (active ? ' is-active' : '') + '">' +
+                var action = state.sidebarTitleEditMode ? 'Edit title ' : 'Open ';
+                return '<article class="portfolio-item' + (active ? ' is-active' : '') + '" style="--title-edit-delay:' + (-(index + editDelayOffset) * 47) + 'ms">' +
                     '<button class="portfolio-open" type="button" data-open-composition="' + escapeHtml(id) + '"' +
-                    ' aria-label="Open ' + escapeHtml(compositionTitle(item)) + '"><strong>' +
+                    ' aria-label="' + action + escapeHtml(compositionTitle(item)) + '"><strong>' +
                     escapeHtml(compositionTitle(item)) + '</strong></button></article>';
             }).join('') + '</section>';
     }
@@ -1634,9 +1685,11 @@
         }).sort(function(a, b) { return compositionSortTime(b, true) - compositionSortTime(a, true); });
         if (!portfolioItems.length) {
             portfolioList.innerHTML = '<div class="empty-sidebar">Your writing will appear here.</div>';
+            updateSidebarTitleEditModeControl();
             return;
         }
         portfolioList.innerHTML = portfolioGroupHtml('Continue', unfinished) + portfolioGroupHtml('Completed', completed);
+        updateSidebarTitleEditModeControl();
     }
 
     function renderWritingProfile() {
@@ -1700,7 +1753,9 @@
     }
 
     function showWelcomeToolbar() {
-        state.toolbarTitleEditing = false;
+        state.titleEditing = false;
+        state.titleEditTargetId = '';
+        state.titleEditReturnFocus = null;
         updateCurrentWritingTitle();
         if (revisionProgress) {
             revisionProgress.hidden = true;
@@ -1776,7 +1831,9 @@
         state.homeComposerOpen = false;
         state.homeComposerPreparing = false;
         state.homeComposerError = '';
-        state.toolbarTitleEditing = false;
+        state.titleEditing = false;
+        state.titleEditTargetId = '';
+        state.titleEditReturnFocus = null;
         state.review = null;
         state.readOnly = false;
         state.inputMethod = 'text';
@@ -3494,7 +3551,9 @@
     function loadComposition(id, forceReadOnly, options) {
         options = options || {};
         if (!id || state.busy) return Promise.resolve();
-        state.toolbarTitleEditing = false;
+        state.titleEditing = false;
+        state.titleEditTargetId = '';
+        state.titleEditReturnFocus = null;
         if (!isSidebarDockedViewport()) closeSidebar();
         setStatus('');
         if (!options.preserveStage) renderLoading('', '');
@@ -3785,7 +3844,7 @@
     }
 
     function hasBlockingDialogOpen() {
-        return state.toolbarTitleEditing || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.sentenceFeedbackOpen || state.scanSubmitConfirmationOpen ||
+        return state.titleEditing || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.sentenceFeedbackOpen || state.scanSubmitConfirmationOpen ||
             state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen;
     }
 
@@ -4041,6 +4100,10 @@
 
     function closeSidebar() {
         state.sidebarOpen = false;
+        if (state.sidebarTitleEditMode) {
+            state.sidebarTitleEditMode = false;
+            renderPortfolio();
+        }
         portfolioSidebar.classList.remove('is-open');
         app.classList.remove('has-sidebar-open');
         sidebarScrim.hidden = true;
@@ -4189,7 +4252,7 @@
     document.addEventListener('submit', function(event) {
         if (event.target.id === 'current-writing-title-form') {
             event.preventDefault();
-            saveToolbarTitle();
+            saveSidebarTitle();
             return;
         }
         if (event.target.id === 'writing-source-form') {
@@ -4255,7 +4318,11 @@
             destroyAiWaitingExperience();
             if (typeof waitingAction === 'function') waitingAction();
         }
-        else if (button.matches('[data-open-composition]')) loadComposition(button.getAttribute('data-open-composition'));
+        else if (button.matches('[data-open-composition]')) {
+            var selectedCompositionId = button.getAttribute('data-open-composition');
+            if (state.sidebarTitleEditMode) beginSidebarTitleEdit(selectedCompositionId, button);
+            else loadComposition(selectedCompositionId);
+        }
         else if (button.matches('[data-open-photo-choice]')) openPhotoChoice(
             button.getAttribute('data-open-photo-choice'),
             button.getAttribute('data-photo-target'),
@@ -4415,8 +4482,13 @@
     document.addEventListener('pointerdown', unlockWaitingReadySound, { passive: true });
 
     document.getElementById('history-new-writing').addEventListener('click', function() {
+        if (state.sidebarTitleEditMode) setSidebarTitleEditMode(false, false);
         if (!isSidebarDockedViewport()) closeSidebar();
         returnToTutorHome();
+    });
+    if (sidebarTitleEdit) sidebarTitleEdit.addEventListener('click', function() {
+        if (state.busy || sidebarTitleEdit.disabled) return;
+        setSidebarTitleEditMode(!state.sidebarTitleEditMode);
     });
     writingBackButton.addEventListener('click', function() {
         if (state.sidebarOpen) {
@@ -4437,14 +4509,13 @@
     portfolioToggle.addEventListener('click', function() {
         state.sidebarOpen ? closeSidebar() : openSidebar();
     });
-    if (currentWritingTitleEdit) currentWritingTitleEdit.addEventListener('click', beginToolbarTitleEdit);
-    if (currentWritingTitleCancel) currentWritingTitleCancel.addEventListener('click', cancelToolbarTitleEdit);
+    if (currentWritingTitleCancel) currentWritingTitleCancel.addEventListener('click', cancelTitleEdit);
     if (titleEditDialog) titleEditDialog.addEventListener('click', function(event) {
-        if (event.target.closest('[data-cancel-title-edit]')) cancelToolbarTitleEdit();
+        if (event.target.closest('[data-cancel-title-edit]')) cancelTitleEdit();
     });
     sidebarScrim.addEventListener('click', closeSidebar);
     window.addEventListener('keydown', function(event) {
-        if (state.toolbarTitleEditing && event.key === 'Tab') {
+        if (state.titleEditing && event.key === 'Tab') {
             var titleControls = titleEditDialog ? titleEditDialog.querySelectorAll('input, button:not(:disabled)') : [];
             if (!titleControls.length) return;
             var titleFirst = titleControls[0];
@@ -4523,7 +4594,7 @@
             return;
         }
         if (event.key === 'Escape') {
-            if (state.toolbarTitleEditing) cancelToolbarTitleEdit();
+            if (state.titleEditing) cancelTitleEdit();
             else if (state.photoViewerOpen) closePhotoViewer();
             else if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation();
             else if (state.photoChoiceOpen) closePhotoChoice();
@@ -4536,7 +4607,7 @@
         }
     });
     window.addEventListener('pageshow', function() {
-        if (state.toolbarTitleEditing) cancelToolbarTitleEdit(false);
+        if (state.titleEditing) cancelTitleEdit(false);
         if (state.photoViewerOpen) closePhotoViewer(false);
         if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation(false);
         if (state.photoChoiceOpen) closePhotoChoice(false);

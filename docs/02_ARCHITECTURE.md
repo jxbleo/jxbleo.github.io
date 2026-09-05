@@ -816,6 +816,13 @@ surface. The sidebar is a projection of server Compositions only: unfinished
 records sort by recent activity before completed records, which sort by
 `completed_at` with update/create fallbacks. Each row contains only the title and
 loads its current server stage directly without an entry-confirmation layer.
+The sidebar action row owns one title-edit mode toggle beside New. While active,
+row activation resolves that row's stable Composition ID and opens the shared
+title dialog instead of navigating; outside edit mode the same row continues to
+load its current server stage. Saving still crosses the owned
+`updateCompositionTitle` boundary and updates the selected toolbar title only
+when the edited Composition is current. Closing the sidebar or choosing New exits
+edit mode without a database write.
 
 All writing and revision camera affordances route through one application-owned
 photo-source action sheet. Camera and library remain separate native file inputs;

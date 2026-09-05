@@ -2119,9 +2119,10 @@ Important mobile rules:
 - Its header toolbar always shows a circular Back arrow at far left. The current title remains centered
   and uses all safe horizontal space after that button. Language-revision percentage
   is not shown. With no Composition selected, the center reads green
-  `Start new Writing`. The right-side action group keeps the title pencil when
-  applicable and the three-line sidebar button at the far-right edge. The sidebar
-  contains the icon-only plus action and writing list, with no duplicate Home.
+  `Start new Writing`. The three-line sidebar button remains at the far-right edge;
+  the toolbar title pencil is removed so the title can use that released width.
+  The sidebar contains an icon-only plus action and one title-edit pencil in the
+  same top row, followed by the writing list, with no duplicate Home.
 - Back first closes an open sidebar. From a concrete Composition it returns directly
   to Writing Home; from an expanded new-writing composer it collapses the form without
   clearing local input. Internal Writing navigation never opens a confirmation; only
@@ -2132,10 +2133,9 @@ Important mobile rules:
   action group, so a percentage or OCR image action never overlaps the title.
   Short titles stay centered; a long title travels horizontally through that full
   safe width with restrained pauses at both ends, matching Speaking Discussion
-  titles. Reduced Motion uses a stable single-line ellipsis. A valid current title exposes
-  a green pencil fixed at the far-right edge. Activation opens a standalone Apple-style
-  dialog with a readable input and Cancel/Save controls; the toolbar title remains
-  visible behind the modal. Refreshing the page must reopen the same Composition.
+  titles. A narrow mask lets the moving title disappear naturally as it approaches
+  either toolbar action boundary. Reduced Motion uses a stable single-line ellipsis.
+  Refreshing the page must reopen the same Composition.
 - A just-created New Writing placeholder with no title, prompt, manuscript, photo/OCR,
   AI job, or result is invisible in History and excluded from the portfolio count. Leaving
   it or selecting New again triggers guarded automatic cleanup. Input-page `Discard` is a
@@ -2531,10 +2531,13 @@ Important mobile rules:
 - Completed portfolio items are read-only. `Use as new` creates another
   Composition; `重新上传` exists only inside an active Composition and clearly
   states that successful confirmation replaces its current review.
-- A selected Composition with a valid title exposes a pencil at the far-right edge
-  of the toolbar. It opens a separate readable title dialog rather than an inline
-  toolbar input. Saving updates the selected title and sidebar row in place; cancel
-  leaves the stored title unchanged. Sidebar rows themselves remain title-only.
+- The sidebar top action row exposes one pencil beside New. Activating it enters a
+  reversible edit mode: every visible title receives a small, staggered shake and
+  row activation opens that Composition's separate readable title dialog rather
+  than navigating. The pencil's selected state communicates the mode; activating
+  it again, closing the sidebar, or choosing New exits. Reduced Motion replaces the
+  shake with a static green title cue. Saving updates the targeted row and, when it
+  is current, the toolbar title; cancel leaves the stored title unchanged.
   A student title is authoritative and is never replaced by later AI work.
 - When a new Composition has no student title, its first successful review uses
   the same model response to supply a concise `2–6` English-word title. There is

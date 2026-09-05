@@ -1364,6 +1364,11 @@ Decision:
   `Untitled writing` fallback. The Composition
   records that ownership instead of inferring it from current title text after a
   student rename.
+- Title editing is an explicit sidebar mode, not a permanent control beside every
+  row and not a toolbar action. One pencil beside New switches all visible title
+  rows from navigation to selection-for-edit; the transient shake is only a mode
+  cue and becomes a static tint under Reduced Motion. The selected Composition ID
+  remains the authoritative target of the existing modal/server save boundary.
 
 Why:
 

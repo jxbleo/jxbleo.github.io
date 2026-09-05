@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-06 — Sidebar title-edit mode
+
+- Removed the title pencil from the Writing toolbar so long titles can travel
+  through the full safe width and fade cleanly at both action boundaries.
+- Added one pencil beside New in the Writing sidebar; it toggles a restrained
+  staggered title-shake mode in which selecting a title opens that writing's
+  existing edit dialog without navigating into it.
+- Added a static green alternative for Reduced Motion and regression coverage for
+  title targeting, focus restoration, modal saving, and ordinary row navigation.
+
 ## 2026-09-06 — Dashboard My Words add entry
 
 - Moved the primary add entry into the Dashboard My Words preview as a 44px

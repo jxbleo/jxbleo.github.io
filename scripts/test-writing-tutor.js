@@ -120,15 +120,16 @@ const promptPath = "cloudfunctions/writingTutor/prompts.js";
 const rubricPath = "cloudfunctions/writingTutor/rubrics.js";
 const schemaPath = "cloudfunctions/writingTutor/schemas.js";
 
-check("AI Tutor header keeps Back, a wide current title, and trailing pencil/sidebar actions", () => {
+check("AI Tutor header keeps Back, a wide current title, and only the trailing sidebar action", () => {
   const page = read(pagePath);
   const styles = read(stylePath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
   assert(header, "missing AI Tutor top toolbar");
-  requireEvery(header[1], ["writing-back-button", "m14.5 5-7 7 7 7", "portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "ai-tutor-header-actions", "current-writing-title-edit", "revision-progress"], "AI Tutor toolbar");
+  requireEvery(header[1], ["writing-back-button", "m14.5 5-7 7 7 7", "portfolio-toggle", "M4 7h16M4 12h16M4 17h16", "current-writing-title-window", "ai-tutor-header-actions", "revision-progress"], "AI Tutor toolbar");
   assert(header[1].indexOf("writing-back-button") < header[1].indexOf("current-writing-title-window")
-      && header[1].indexOf("current-writing-title-edit") < header[1].indexOf("portfolio-toggle"),
+      && header[1].indexOf("current-writing-title-window") < header[1].indexOf("portfolio-toggle"),
     "Back must lead the toolbar and the sidebar control must remain the final trailing action");
+  assert(!/current-writing-title-edit/.test(header[1]), "the title pencil must not consume toolbar width");
   assert(!/current-writing-title-form/.test(header[1]), "the title form must live in a separate dialog rather than the toolbar");
   assert(!/>Home<|>New<|>History<|>Back<|header-back|header-new-writing|student-chip/.test(header[1]),
     "Home, New, History, Back, and student identity must not remain as toolbar text");
@@ -154,12 +155,12 @@ check("Writing toolbar mirrors the wider Speaking Lab glass frame", () => {
     "phone Writing toolbar must not flatten into a full-bleed strip");
 });
 
-check("the writing sidebar owns the plus action without duplicating Home", () => {
+check("the writing sidebar owns plus and title-edit actions without duplicating Home", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const sidebar = /<aside\b[^>]*id=["']portfolio-sidebar["'][^>]*>([\s\S]*?)<\/aside>/.exec(page);
   assert(sidebar, "missing History drawer");
-  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-new-writing"', "M12 5v14M5 12h14"],
+  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-new-writing"', "M12 5v14M5 12h14", 'id="sidebar-title-edit"', 'aria-pressed="false"'],
     "writing sidebar navigation actions");
   assert(!/history-home|>Home<|sidebar-home-action/.test(sidebar[1]),
     "the sidebar must not duplicate the toolbar Back hierarchy with Home");
@@ -286,10 +287,11 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
   const client = read(clientPath);
   const styles = read(stylePath);
   requireEvery(page, ["current-writing-title-window", "current-writing-title-track"], "current writing title markup");
-  assert(/writing-back-button[\s\S]*current-writing-title-window[\s\S]*ai-tutor-header-actions[\s\S]*current-writing-title-edit[\s\S]*portfolio-toggle/.test(page),
-    "the current title must remain between Back and the trailing pencil/menu actions");
+  assert(/writing-back-button[\s\S]*current-writing-title-window[\s\S]*ai-tutor-header-actions[\s\S]*portfolio-toggle/.test(page),
+    "the current title must remain between Back and the trailing menu action");
+  assert(!/current-writing-title-edit/.test(page), "the removed toolbar pencil must stay absent");
   const titleSource = functionSource(client, "updateCurrentWritingTitle", "sentencePalette");
-  requireEvery(titleSource, ["editableCompositionTitle(state.current)", "document.title", "aria-label"],
+  requireEvery(titleSource, ["document.title", "aria-label"],
     "current writing title projection");
   requireEvery(client, ["scrollWidth", "clientWidth", "ResizeObserver", "prefers-reduced-motion"],
     "responsive title overflow behavior");
@@ -298,8 +300,8 @@ check("the toolbar shows and safely scrolls the current AI-generated title", () 
     "the toolbar title must span the full safe space between Back and the trailing action group");
   assert(/@media\s*\(max-width:\s*760px\)[\s\S]*\.ai-tutor-header\s*\{[^}]*grid-template-columns\s*:\s*40px\s+minmax\(0,1fr\)\s+auto[^}]*gap\s*:\s*0/is.test(styles),
     "the mobile title boundary must begin at the 40px Back button edge");
-  assert(!/\.current-writing-title-window\.is-overflowing\s*\{[^}]*mask-image/is.test(styles),
-    "the title viewport must use action boundaries instead of an inset fade mask");
+  assert(/\.current-writing-title-window\s*\{[^}]*mask-image\s*:\s*linear-gradient/is.test(styles),
+    "the title must fade at both toolbar action boundaries");
   assert(/\.current-writing-title-window\.is-overflowing\s+\.current-writing-title-track\s*\{[^}]*animation[^}]*infinite\s+alternate/is.test(styles),
     "long titles must move horizontally with pauses in both directions");
   assert(/0%,18%[^}]*translate3d\(0,0,0\)[\s\S]*82%,100%[^}]*--current-writing-title-shift/is.test(styles),
@@ -386,23 +388,34 @@ check("Back and Leave dialog use the approved Apple-style treatment", () => {
     "Cancel must be green and Leave must be red");
 });
 
-check("the toolbar title pencil saves student edits through updateCompositionTitle", () => {
+check("sidebar edit mode shakes titles and saves the selected title", () => {
   const page = read(pagePath);
   const client = read(clientPath);
+  const styles = read(stylePath);
   const header = /<header\b[^>]*class=["'][^"']*ai-tutor-header[^"']*["'][^>]*>([\s\S]*?)<\/header>/.exec(page);
-  assert(header && /current-writing-title-edit/.test(header[1]), "the pencil must stay at the far right of the toolbar");
+  assert(header && !/current-writing-title-edit/.test(header[1]), "the toolbar pencil must be removed");
+  const sidebar = /<aside\b[^>]*id=["']portfolio-sidebar["'][^>]*>([\s\S]*?)<\/aside>/.exec(page);
+  requireEvery(sidebar && sidebar[1], ['id="history-new-writing"', 'id="sidebar-title-edit"', 'aria-pressed="false"'],
+    "sidebar title-edit mode control");
   assert(!/current-writing-title-form|current-writing-title-input/.test(header[1]), "the title input must not be squeezed into the toolbar");
   requireEvery(page, ['id="title-edit-dialog"', 'role="dialog"', 'aria-modal="true"', "current-writing-title-form", "current-writing-title-input", ">Cancel<", ">Save<"],
     "standalone title editor dialog");
   const titleSource = functionSource(client, "updateCurrentWritingTitle", "updateRevisionProgress");
-  requireEvery(titleSource, ["beginToolbarTitleEdit", "cancelToolbarTitleEdit", "saveToolbarTitle", "editableCompositionTitle", "currentWritingTitleEdit.hidden"],
-    "toolbar title editing lifecycle");
-  requireEvery(client, ["titleEditDialog.hidden = false", "app.inert = true", "titleEditDialog.querySelectorAll('input, button:not(:disabled)')", "cancelToolbarTitleEdit(false)"],
+  requireEvery(titleSource, ["beginSidebarTitleEdit", "cancelTitleEdit", "saveSidebarTitle", "titleEditTargetId"],
+    "sidebar title editing lifecycle");
+  requireEvery(client, ["sidebarTitleEditMode", "updateSidebarTitleEditModeControl", "setSidebarTitleEditMode"],
+    "sidebar title-edit mode state");
+  requireEvery(client, ["titleEditDialog.hidden = false", "app.inert = true", "titleEditDialog.querySelectorAll('input, button:not(:disabled)')", "cancelTitleEdit(false)"],
     "modal title editing focus and lifecycle");
+  requireEvery(styles, ["portfolioTitleWiggle", ".portfolio-sidebar.is-title-editing .portfolio-open strong", "prefers-reduced-motion: reduce"],
+    "visible and reduced-motion title edit cues");
+  assert(/sidebarTitleEdit\.addEventListener[\s\S]{0,300}setSidebarTitleEditMode/.test(client)
+      && /state\.sidebarTitleEditMode[\s\S]{0,160}beginSidebarTitleEdit\(selectedCompositionId, button\)/.test(client),
+    "the sidebar pencil must toggle edit mode and title rows must edit the selected writing");
   assert(/writingCall\s*\(\s*["']updateCompositionTitle["']/.test(client),
-    "saving the toolbar title editor must call updateCompositionTitle");
-  assert(/event\.target\.id\s*===\s*["']current-writing-title-form["'][\s\S]{0,160}saveToolbarTitle\(\)/.test(client),
-    "the toolbar title form submit path must save the edited title");
+    "saving the sidebar title editor must call updateCompositionTitle");
+  assert(/event\.target\.id\s*===\s*["']current-writing-title-form["'][\s\S]{0,160}saveSidebarTitle\(\)/.test(client),
+    "the title form submit path must save the selected sidebar title");
 });
 
 check("Writing main area is a focused new-writing surface while saved work stays in the sidebar", () => {
@@ -596,7 +609,7 @@ check("initial-draft autosave does not replace the established re-upload path", 
 
 check("selecting a saved writing enters its current stage directly", () => {
   const client = read(clientPath);
-  assert(/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,160}loadComposition\(button\.getAttribute\(["']data-open-composition["']\)\)/.test(client),
+  assert(/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,420}else\s+loadComposition\(selectedCompositionId\)/.test(client),
     "saved writing rows must load the Composition directly");
   assert(!/matches\s*\(\s*["']\[data-open-composition\]["']\s*\)[\s\S]{0,160}showCompositionEntryDialog/.test(client),
     "saved writing rows must not add a second confirmation step");

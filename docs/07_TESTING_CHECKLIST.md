@@ -1938,24 +1938,29 @@ High priority improvement:
   translucent edge, layered glass, and depth remain legible over content, while
   Reduced Transparency produces a solid surface. The same circular Back arrow stays at far left everywhere,
   current title uses all available middle space, and no revision percentage appears.
-  For an existing title, confirm the pencil sits before the three-line sidebar button,
-  which remains fixed at the far-right edge.
+  Confirm the three-line sidebar button remains fixed at the far-right edge and no
+  title pencil remains in the toolbar, so the title uses the released width and
+  fades at both button boundaries.
   With no Composition selected, confirm green `Start new Writing` and no word quota.
-  Confirm the icon-only plus action appears inside the sidebar, Home is absent, and
+  Confirm the icon-only plus and title-edit actions appear inside the sidebar, Home is absent, and
   there is no student chip, brand mark,
   `AI Tutor / Writing Studio` label, secondary toolbar, or duplicate portfolio panel.
 - Confirm the sidebar starts closed below `820px` and auto-opens as a docked 280px
   column at `820px` and above. Re-clicking the trigger must hide it at every width.
   On phone, also close it by scrim and `Escape`; confirm background scroll lock.
   On wide screens, confirm the main area shifts without a scrim or scroll lock.
-- Confirm the sidebar contains only plus, `Continue`, `Completed`, and writing
+- Confirm the sidebar contains only plus, the title-edit pencil, `Continue`, `Completed`, and writing
   titles. Unfinished work must precede completed work; newest completed work comes
   first. There must be no counts, profile, filters, dates, scores, modes, or badges.
   Selecting a row must directly open its current stage, close the phone overlay,
   and keep the wide sidebar docked.
-- Open a titled Composition, use the toolbar pencil, then cancel and save separate
-  edits. Confirm the centered title and sidebar row update together, activity order
-  does not change, long-title motion still works, and placeholder titles expose no pencil.
+- Open the sidebar and activate the pencil beside New. Confirm every visible title
+  begins a small staggered shake, row activation opens that row's title dialog
+  without navigating, and the pencil exposes its selected state. Cancel and save
+  separate edits; confirm the current toolbar title updates only when its own row
+  was edited and activity order does not change. Re-click the pencil, close the
+  sidebar, and choose New separately to confirm each exits edit mode. With Reduced
+  Motion enabled, confirm titles use a static green cue and never shake.
 - Click Back with the sidebar open and confirm it closes the sidebar first. From a
   Composition, confirm Back returns directly to Writing Home without a dialog; from an expanded
   composer, confirm it collapses without clearing input; at base Writing Home,
@@ -2308,7 +2313,7 @@ High priority improvement:
   centered; long titles stay inside the toolbar and reveal the complete line
   through horizontal travel with endpoint pauses. With Reduced Motion enabled it
   must remain still and truncate with an ellipsis.
-- Click the far-right pencil and confirm a separate centered title dialog opens with
+- Enter sidebar title-edit mode, click one title, and confirm a separate centered title dialog opens with
   a readable normal-size input, Cancel, and Save. The toolbar must not turn into an
   inline input. Verify keyboard focus stays in the dialog, Escape/Cancel preserves the
   stored title, Save updates both toolbar and sidebar, and a server error remains visible

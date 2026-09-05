@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260902-1">
+    <link rel="stylesheet" href="assets/css/ai-tutor.css?v=20260906-2">
     <link rel="stylesheet" href="assets/css/ai-waiting-runner.css?v=20260826-2">
 </head>
 <body class="ai-tutor-page">
@@ -28,9 +28,6 @@
             </div>
             <div class="ai-tutor-header-actions">
                 <span class="revision-progress" id="revision-progress" hidden></span>
-                <button class="current-writing-title-edit" id="current-writing-title-edit" type="button" aria-label="Edit writing title" hidden>
-                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.3-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.3 16 4 20Z"></path><path d="m14.8 6.5 2.7 2.7"></path></svg>
-                </button>
                 <button class="portfolio-toggle" id="portfolio-toggle" type="button" aria-label="Open writing sidebar" aria-expanded="false" aria-controls="portfolio-sidebar" data-disable-when-busy>
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
                 </button>
@@ -42,6 +39,9 @@
                 <div class="sidebar-actions" role="group" aria-label="写作导航">
                     <button class="sidebar-new-action" id="history-new-writing" type="button" aria-label="Start new writing">
                         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+                    </button>
+                    <button class="sidebar-title-edit-action" id="sidebar-title-edit" type="button" aria-label="Edit writing titles" aria-pressed="false" data-disable-when-busy>
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.3-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.3 16 4 20Z"></path><path d="m14.8 6.5 2.7 2.7"></path></svg>
                     </button>
                 </div>
                 <div class="portfolio-list" id="portfolio-list" aria-live="polite"></div>
@@ -211,6 +211,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/ai-waiting-runner.js?v=20260826-2"></script>
-    <script src="assets/js/ai-tutor.js?v=20260902-1"></script>
+    <script src="assets/js/ai-tutor.js?v=20260906-2"></script>
 </body>
 </html>
