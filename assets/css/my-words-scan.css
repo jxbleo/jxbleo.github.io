@@ -848,38 +848,69 @@
     position: sticky;
     bottom: 10px;
     z-index: 4;
-    padding: 12px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: 100%;
+    height: 176px;
+    height: clamp(142px, 22dvh, 176px);
+    max-height: calc(100dvh - 32px);
+    padding: 9px;
+    overflow: hidden;
     border: 1px solid var(--scan-line);
-    border-radius: 20px;
+    border-radius: 18px;
     background: rgba(250, 253, 251, .95);
     box-shadow: 0 14px 38px rgba(20, 72, 58, .16);
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
 }
 
+.my-words-scan-candidate-drawer.is-collapsed {
+    grid-template-rows: auto auto;
+    height: auto;
+}
+
+.my-words-scan-candidate-drawer.is-empty {
+    grid-template-rows: auto 0 auto;
+    height: auto;
+}
+
 .my-words-scan-candidate-drawer > [data-scan-drawer-toggle] {
+    min-height: 26px;
+    padding: 2px 5px 5px;
     border: 0;
     background: transparent;
     color: var(--scan-accent-dark);
+    font-size: .72rem;
     font-weight: 850;
+    text-align: left;
     cursor: pointer;
 }
 
 .my-words-scan-candidate-list {
     display: grid;
-    max-height: 34vh;
-    gap: 8px;
-    overflow: auto;
-    padding: 10px 0;
+    min-height: 0;
+    gap: 5px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 3px 1px 5px;
+    scrollbar-color: rgba(19, 118, 109, .28) transparent;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.my-words-scan-candidate-list[hidden] {
+    display: none;
 }
 
 .my-words-scan-candidate {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px;
+    gap: 6px;
+    min-height: 35px;
+    padding: 4px 5px 4px 8px;
     border: 1px solid rgba(19, 118, 109, .08);
-    border-radius: 13px;
+    border-radius: 10px;
     background: #f2f8f5;
 }
 
@@ -890,15 +921,41 @@
 .my-words-scan-candidate > div {
     display: grid;
     flex: 1;
-    gap: 2px;
+    gap: 0;
     min-width: 0;
+}
+
+.my-words-scan-candidate strong {
+    overflow: hidden;
+    color: var(--scan-ink);
+    font-size: .7rem;
+    font-weight: 850;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .my-words-scan-candidate small {
     overflow: hidden;
     color: #5b726a;
+    font-size: .6rem;
+    line-height: 1.25;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.my-words-scan-candidate > .outline-button {
+    flex: 0 0 auto;
+    min-height: 29px;
+    padding: 4px 8px;
+    border-radius: 9px;
+    font-size: .61rem;
+}
+
+.my-words-scan-candidate-drawer > [data-scan-commit] {
+    min-height: 38px;
+    padding-block: 7px;
+    font-size: .72rem;
 }
 
 .my-words-scan-preview {
@@ -1184,8 +1241,11 @@
         flex-direction: column;
     }
 
-    .my-words-scan-candidate {
-        align-items: flex-start;
+    .my-words-scan-candidate-drawer {
+        bottom: max(7px, env(safe-area-inset-bottom));
+        height: 150px;
+        height: clamp(138px, 19dvh, 158px);
+        padding: 7px;
     }
 
     .my-words-scan-photo-choice-sheet {

@@ -146,6 +146,10 @@
         state.nextRevision = 0;
         state.commitOperation = null;
         phraseActions.hidden = true;
+        drawerHost.hidden = false;
+        drawer.classList.remove('is-collapsed');
+        drawer.classList.add('is-empty');
+        drawerToggle.setAttribute('aria-expanded', 'true');
     }
 
     function closePreview() {
@@ -995,6 +999,7 @@
 
     function renderDrawer() {
         var specs = Array.from(state.selected.values());
+        drawer.classList.toggle('is-empty', specs.length < 1);
         countNode.textContent = specs.length;
         commitButton.textContent = 'Add ' + specs.length + ' item' + (specs.length === 1 ? '' : 's');
         commitButton.disabled = state.busy || specs.length < 1;
@@ -1157,6 +1162,7 @@
         else if (target.closest('[data-scan-cancel-phrase]')) cancelPhrase();
         else if (target.closest('[data-scan-drawer-toggle]')) {
             drawerHost.hidden = !drawerHost.hidden;
+            drawer.classList.toggle('is-collapsed', drawerHost.hidden);
             drawerToggle.setAttribute('aria-expanded', drawerHost.hidden ? 'false' : 'true');
         }
         else if (target.closest('[data-scan-commit]')) commitCandidates();

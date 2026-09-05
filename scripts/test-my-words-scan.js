@@ -87,7 +87,7 @@ assert(html.includes("data-scan-progress") && html.includes("data-scan-progress-
 assert(html.includes("Long-press") && html.includes("not next to each other"));
 assert(html.includes('data-scan-mode="crop"') && html.includes('data-scan-mode="mask"') && html.includes('data-scan-mode="erase"'));
 assert(html.includes("data-scan-preview") && html.includes("data-scan-page-prev"));
-assert(html.includes("assets/js/my-words-scan.js?v=20260902-4") && html.includes("assets/css/my-words-scan.css?v=20260902-4"));
+assert(html.includes("assets/js/my-words-scan.js?v=20260905-1") && html.includes("assets/css/my-words-scan.css?v=20260905-1"));
 
 assert(js.includes("getBoundingClientRect") && js.includes("destination-out"));
 assert(js.includes("cropHandles") && js.includes("exportProcessed") && js.includes("3000"));
@@ -98,12 +98,15 @@ assert(js.includes("state.didCommit") && js.includes("mrcat:scan-committed"));
 assert(js.includes("focusTrap") && js.includes("window.scrollTo(0, state.scrollY)"));
 assert(js.includes("openPhotoChoice") && js.includes("pendingPhotoReplaceIndex") && js.includes("my-words-scan-photo-card"));
 assert(js.includes("renderScanProgress") && js.includes("showReviewReady") && js.includes("aria-valuenow"));
+assert(js.includes("is-collapsed") && js.includes("is-empty"));
 assert(js.includes("textContent") && !js.includes("reviewHost.innerHTML") && !js.includes("drawerHost.innerHTML"));
 assert(myWordsJs.includes("mrcat:close-add-panel") && myWordsJs.includes("mrcat:scan-committed"));
 
 assert(css.includes("touch-action: none") && css.includes("prefers-reduced-motion") && css.includes("forced-colors"));
 assert(css.includes("my-words-scan-photo-choice-sheet") && css.includes("my-words-scan-photo-drop") && css.includes("my-words-scan-replace-photo"));
 assert(css.includes("myWordsScanBeam") && css.includes("my-words-scan-ready-hint") && css.includes("-webkit-touch-callout: none"));
+assert(css.includes("grid-template-rows: auto minmax(0, 1fr) auto") && css.includes("height: clamp(142px, 22dvh, 176px)") && css.includes("overflow-y: auto"));
+assert(css.includes(".my-words-scan-candidate strong") && css.includes("font-size: .7rem"));
 assert(css.includes("is-phrase-anchor") && css.includes("is-marked") && css.includes("is-selected"));
 
 assert(backend.includes("db.runTransaction") && backend.includes("claimPageJob"));

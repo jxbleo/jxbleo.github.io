@@ -2818,6 +2818,13 @@ and Review controls remain hidden. After one or more pages succeed, confirm the
 `Scan complete` guide explains tap-to-add and long-press phrase selection before
 the OCR text. With Reduced Motion enabled, the scan beam must stop while page
 progress and live status remain understandable.
+Select at least 30 words from a long multi-page OCR result. Confirm the selected
+drawer reaches one fixed height after the first selection and never grows as
+more words are added; only its candidate list scrolls, while the count header and
+Add action stay visible. Verify compact words and one-line Contexts remain
+distinguishable, Remove works from the internal list, removing the final item
+returns the drawer to its compact empty height, and the count toggle collapses
+and restores the drawer without losing selections. Repeat at 390px and desktop.
 ### Listening V2
 
 Run `npm run test:listening-shadowing`,
