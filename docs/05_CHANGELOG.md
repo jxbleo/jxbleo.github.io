@@ -2953,3 +2953,17 @@ publication fixtures into a temporary object database, and raised Shadowing
 selectors, navigation, and take actions to 44px touch targets. The final
 provider audit also added Tencent's required `{"type":"end"}` text frame after
 the one permitted `rec_mode=1` binary WAV message.
+
+### 2026-09-05 — Listening V2 provider-disabled production rollout
+
+- Published commit `dad41862` to GitHub `main` and deployed the complete static
+  site to CloudBase Hosting.
+- Created and verified all six Listening V2 collections as `ADMINONLY`, with the
+  reviewed identity, lookup, quota, and cleanup indexes.
+- Deployed `intensiveListening`, `teacherAdmin`,
+  `sendTeacherAttemptEmails`, and `listeningMaintenance`; raised the two
+  Listening timeouts to 30 and 60 seconds respectively.
+- Added the six-hour `listeningMaintenanceEvery6Hours` timer and accepted the
+  trusted native SCF timer envelope while retaining the private token fallback.
+- Kept Tencent SOE-N scoring disabled and the score policy unapproved pending
+  representative real-audio benchmarking and explicit owner activation.

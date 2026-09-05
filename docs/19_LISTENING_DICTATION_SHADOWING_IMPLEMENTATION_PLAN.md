@@ -14,14 +14,16 @@ single-track authoring switches, optimistic private drafts that cannot hide the
 live material, stale-publication protection, immutable publication history, and
 track-specific progress revision replacement.
 
-Production remains intentionally fail-closed. Before rollout, the owner must
-create/review the ADMINONLY collections and indexes, benchmark and approve the
-score policy, configure Tencent SOE-N credentials and the maintenance timer,
-then authorize deployment. No real Tencent request or production mutation is
-part of this implementation review.
+The owner authorized rollout on 2026-09-05. The static site, four affected cloud
+functions, six ADMINONLY collections, reviewed indexes, and the six-hour native
+maintenance timer are deployed. Production Shadowing scoring remains
+intentionally fail-closed until real-audio benchmarking approves the score
+policy and Tencent SOE-N is enabled for the runtime; no real paid provider
+request was made during deployment.
 
-> Status: product decisions approved; local implementation and main-agent
-> review complete; production rollout remains owner-gated.
+> Status: product decisions approved; implementation, review, and provider-
+> disabled production rollout complete; real scoring activation remains gated
+> by the benchmark and owner approval.
 >
 > Audience: coding agents, including lower-capability agents. Follow the frozen
 > rules, state machines, data boundaries, API contracts, visual requirements,
@@ -1504,7 +1506,8 @@ Implementation is complete only when all are true:
 - [ ] Apple-style visual QA passes across desktop, iPad, and phone.
 - [ ] Accessibility preference modes work.
 - [ ] All documentation, tests, package rules, and cache versions are current.
-- [ ] No deployment or production mutation occurred.
+- [x] Deployment mutations are recorded in the 2026-09-05 rollout record;
+  provider scoring remains disabled pending benchmark approval.
 
 ## 25. Executor handoff
 

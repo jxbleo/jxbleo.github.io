@@ -1450,13 +1450,21 @@ functions, or publish without the owner's exact authorization.
 With explicit owner authorization, production received the three ADMINONLY scan collections and all documented indexes, updated `studentVocabulary`, new `vocabularyScan` and `vocabularyScanWorker` functions, an enabled one-minute worker timer with matching private token, authenticated-only Scan access, worker `invoke: false`, and `VOCABULARY_SCAN_ENABLED=true`. Empty-worker and unauthenticated Scan invocations passed; real-student end-to-end photo/OCR verification remains a post-publication smoke check.
 ### Listening V2 rollout
 
-Before rollout, the owner must create the ADMINONLY Listening V2 collections and
-indexes, review/import private material and track rows, approve a scoring policy,
-bind Tencent SOE-N credentials only in CloudBase, and configure the
-`LISTENING_MAINTENANCE_TOKEN` timer payload. Package `intensiveListening`,
-`teacherAdmin`, and `listeningMaintenance` locally, then run the Listening test
-suite and release verification. Keep `intensiveListening` at a timeout of at
-least 30 seconds so its bounded seven-second provider wait leaves time for
-authenticated reads, private-file validation, and terminal persistence. This
-worktree performed none of those
-production actions and contains no provider credentials.
+On 2026-09-05, with explicit owner authorization, production received these six
+ADMINONLY collections: `listening_material_drafts`,
+`listening_material_history`, `listening_shadowing_progress`,
+`listening_shadowing_takes`, `listening_shadowing_usage`, and
+`listening_assignment_tracks`. Their reviewed unique/query/cleanup indexes were
+created and verified. The deployed functions are `intensiveListening`,
+`teacherAdmin`, `sendTeacherAttemptEmails`, and `listeningMaintenance`;
+`intensiveListening` uses a 30-second timeout and `listeningMaintenance` uses a
+60-second timeout. A native timer named `listeningMaintenanceEvery6Hours` runs
+at `0 15 */6 * * * *`; the handler accepts only its trusted SCF timer source and
+exact trigger name, or the private token fallback. Static Hosting received all
+1,300 generated files, and critical live-object ETags matched their local MD5s.
+
+Shadowing scoring remains fail-closed: do not set
+`LISTENING_SHADOWING_SCORING_ENABLED=true` or approve the private
+`listening_shadowing_score_policy` until representative real-audio benchmarking
+has been reviewed by the owner and Tencent SOE-N access is confirmed. No
+provider credentials or paid evaluation request were added during rollout.
