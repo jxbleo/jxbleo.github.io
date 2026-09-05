@@ -25,7 +25,10 @@ async function cleanTake(take, now) {
 exports.main = async (event = {}) => {
   const expected = String(process.env.LISTENING_MAINTENANCE_TOKEN || "").trim();
   const supplied = String(event.timer_token || event.Message || event.message || "").trim();
-  if (!expected || supplied !== expected) return { success: false, code: "TIMER_UNAUTHORIZED" };
+  const trustedTimer = String(process.env.TRIGGER_SRC || "").toLowerCase() === "timer"
+    && String(event.Type || event.type || "").toLowerCase() === "timer"
+    && String(event.TriggerName || event.triggerName || "") === "listeningMaintenanceEvery6Hours";
+  if (!trustedTimer && (!expected || supplied !== expected)) return { success: false, code: "TIMER_UNAUTHORIZED" };
   const now = new Date();
   const reserved = await rows(TAKE_COLLECTION, { status: "reserved" });
   const uploaded = await rows(TAKE_COLLECTION, { status: "uploaded" });

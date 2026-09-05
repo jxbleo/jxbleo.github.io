@@ -12,6 +12,7 @@ const shadowing = fs.readFileSync(path.join(root, "assets", "js", "listening-sha
 const service = fs.readFileSync(path.join(root, "cloudfunctions", "intensiveListening", "service.js"), "utf8");
 const maintenance = fs.readFileSync(path.join(root, "cloudfunctions", "listeningMaintenance", "index.js"), "utf8");
 assert.match(maintenance, /event\.timer_token \|\| event\.Message \|\| event\.message/, "maintenance accepts the CloudBase timer Message field");
+assert.match(maintenance, /process\.env\.TRIGGER_SRC[\s\S]*listeningMaintenanceEvery6Hours/, "maintenance accepts only its trusted CloudBase timer source and trigger name");
 const gateway = fs.readFileSync(path.join(root, "cloudfunctions", "intensiveListening", "index.js"), "utf8");
 const teacherHtml = fs.readFileSync(path.join(root, "teacher.html"), "utf8");
 
