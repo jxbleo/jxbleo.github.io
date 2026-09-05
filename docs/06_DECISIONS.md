@@ -1533,3 +1533,20 @@ callback immediately before the outbound model request; Scan Words uses it as
 the quota boundary, while all existing Writing callers retain identical
 behavior. This keeps provider configuration/protocol handling unified without
 coupling scan sessions to Writing compositions.
+### Listening V2: explicit tracks and provider isolation
+
+Listening stores Dictation and Shadowing as explicit tracks under one stable
+material identity. This preserves existing Dictation progress while preventing
+new Shadowing scoring rules from leaking into old assignment/status semantics.
+Shadowing scoring is fail-closed behind an approved system policy and a single
+server Tencent SOE-N adapter. The browser uploads only to a server-reserved
+private path; raw valid audio carries a seven-day cleanup deadline, invalid audio
+is removed, and ambiguous provider outcomes are terminal rather than retried.
+The provider's documented `SuggestedScore` is the sentence total; the product
+does not synthesize another total from metrics whose scales may vary by mode.
+Exact word duplicates are reused only within the same student, and a server
+transaction lock prevents simultaneous tabs from creating parallel paid calls.
+For Tencent recording mode, the adapter sends exactly one binary WAV message
+and then the documented JSON `{"type":"end"}` text message; it never retries an
+ambiguous provider outcome.
+See [ADR 0006](adr/0006-tencent-soe-n-shadowing-assessment.md).

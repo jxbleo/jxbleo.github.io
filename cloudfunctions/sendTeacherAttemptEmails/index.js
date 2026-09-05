@@ -16,6 +16,7 @@ const DISPATCH_LIMIT = 20;
 const MAX_RETRIES = 5;
 const CLAIM_TIMEOUT_MS = 10 * 60 * 1000;
 const INTENSIVE_PROGRESS = "intensive_listening_progress";
+const SHADOWING_PROGRESS = "listening_shadowing_progress";
 const INTENSIVE_MATERIALS = "intensive_listening_materials";
 
 function text(value) {
@@ -258,6 +259,55 @@ async function closeIdleIntensiveSessions(now) {
   return closed;
 }
 
+async function closeIdleShadowingSessions(now) {
+  let rows;
+  try { rows = await getAll(SHADOWING_PROGRESS, { notification_session_status: "active" }); }
+  catch (_) { rows = await getAll(SHADOWING_PROGRESS); }
+  const expired = rows.filter((row) => dateValue(row.notification_session_due_at) > 0 && dateValue(row.notification_session_due_at) <= now.getTime());
+  if (!expired.length) return 0;
+  const materials = new Map((await getAll(INTENSIVE_MATERIALS)).map((row) => [text(row.set_id || row.material_id), row]));
+  let closed = 0;
+  for (const row of expired) {
+    const material = materials.get(text(row.set_id || row.material_id));
+    if (!material) continue;
+    let snapshot = null;
+    await db.runTransaction(async (transaction) => {
+      const result = await transaction.collection(SHADOWING_PROGRESS).where({ progress_id: text(row.progress_id), student_uid: text(row.student_uid) }).limit(1).get();
+      const current = result.data && result.data[0] ? recordData(result.data[0]) : null;
+      if (!current || current.notification_session_status !== "active" || dateValue(current.notification_session_due_at) > now.getTime()) return;
+      snapshot = current;
+      await transaction.collection(SHADOWING_PROGRESS).doc(current._id).update({
+        notification_session_status: "paused",
+        notification_session_due_at: null,
+        notification_closed_at: now,
+        notification_close_reason: "idle",
+        notification_latest_percentage: Number(current.notification_latest_percentage) || Number(current.percentage) || 0,
+        notification_latest_completed_count: Number(current.notification_latest_completed_count) || Number(current.qualified_segment_count) || 0,
+        notification_latest_independent_count: Number(current.notification_latest_independent_count) || 0,
+        notification_latest_assisted_count: Number(current.notification_latest_assisted_count) || 0,
+        updated_at: now,
+      });
+    });
+    if (!snapshot) continue;
+    const student = await getOne("students", { auth_uid: text(snapshot.student_uid) });
+    if (!student) continue;
+    const endSummary = {
+      percentage: Number(snapshot.notification_latest_percentage) || Number(snapshot.percentage) || 0,
+      completed_unit_count: Number(snapshot.notification_latest_completed_count) || Number(snapshot.qualified_segment_count) || 0,
+      independent_unit_count: Number(snapshot.notification_latest_independent_count) || 0,
+      assisted_unit_count: Number(snapshot.notification_latest_assisted_count) || 0,
+    };
+    await createIntensiveEvent(intensiveNotifications.buildSessionEvent({
+      student, material, record: snapshot, sessionId: snapshot.notification_session_id, phase: "paused", occurredAt: now,
+      startSummary: { percentage: Number(snapshot.notification_start_percentage) || 0, completed_unit_count: Number(snapshot.notification_start_completed_count) || 0 },
+      endSummary, targetPercentage: snapshot.notification_target_percentage, assignmentId: snapshot.notification_assignment_id,
+      practiceContext: snapshot.notification_practice_context, practiceTrack: "shadowing",
+    }));
+    closed += 1;
+  }
+  return closed;
+}
+
 async function assignmentForJob(job) {
   if (!job.assignment_id) return null;
   return await getOne("assignments", { assignment_id: job.assignment_id })
@@ -421,7 +471,7 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
 
 async function dispatch(now) {
   const recovered = await recoverStaleClaims(now);
-  const intensive_paused_sessions = await closeIdleIntensiveSessions(now);
+  const intensive_paused_sessions = await closeIdleIntensiveSessions(now) + await closeIdleShadowingSessions(now);
   const anchors = await dueEvents(now);
   const recipients = await enabledRecipients();
   const summary = {
@@ -488,6 +538,7 @@ exports.main = async (event = {}) => {
 module.exports._test = {
   authorizedTimerEvent,
   closeIdleIntensiveSessions,
+  closeIdleShadowingSessions,
   deliveryMessageId,
   isIntensiveEvent,
   smtpConfiguration,

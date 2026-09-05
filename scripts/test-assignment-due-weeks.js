@@ -214,9 +214,7 @@ function dashboardScheduleHooks() {
       weeklyFocusModel: weeklyFocusModel,
       renderWeeklyFocusProgress: renderWeeklyFocusProgress,
       studentCalendarModel: studentCalendarModel,
-      calendarButtonDateModel: calendarButtonDateModel,
-      studentCalendarCompletionDate: studentCalendarCompletionDate,
-      renderStudentCalendarTask: renderStudentCalendarTask,
+      renderStudentCalendarAchievement: renderStudentCalendarAchievement,
       renderTeacherReplyItem: renderTeacherReplyItem,
       renderStudentMessageTask: renderStudentMessageTask,
       renderStudentMessageSection: renderStudentMessageSection,
@@ -228,7 +226,11 @@ function dashboardScheduleHooks() {
       setWeeklyFocusProgress: function(target) { weeklyFocusProgress = target; }
     };
 })();`;
-  const window = { addEventListener() {} };
+  const window = {
+    addEventListener() {},
+    requestAnimationFrame(callback) { callback(0); return 1; },
+    cancelAnimationFrame() {},
+  };
   const document = {
     body: null,
     documentElement: null,
@@ -553,13 +555,19 @@ function testStudentCalendarModel() {
   const activityDay = Math.max(1, Math.min(values.day, 12));
   const dayKey = `${values.year}-${String(values.month).padStart(2, "0")}-${String(activityDay).padStart(2, "0")}`;
   const completedAt = new Date(`${dayKey}T09:30:00+08:00`).toISOString();
-  hooks.state.assignments = [
-    { assignment_id: "passed", status: "passed", completed_at: completedAt, best_percentage: 84 },
-    { assignment_id: "mastered", status: "mastered", mastered_at: completedAt, best_percentage: 100, star_claimed: true },
-    { assignment_id: null, achievement_id: "self-study", source: "self_study", status: "mastered", mastered_at: completedAt, best_percentage: 96, star_claimed: true },
-    { assignment_id: "unfinished", status: "to_do", updated_at: completedAt },
-    { assignment_id: "cancelled", status: "cancelled", completed_at: completedAt },
-  ];
+  hooks.state.achievementCalendar = {
+    start_date: `${values.year}-${String(values.month).padStart(2, "0")}-01`,
+    today_date: `${values.year}-${String(values.month).padStart(2, "0")}-${String(values.day).padStart(2, "0")}`,
+    days: [{
+      date: dayKey,
+      count: 3,
+      items: [
+        { assignment_id: "passed", set_id: "BBC-PASSED", type: "bbc", result: "84% PASS", percentage: 84 },
+        { assignment_id: "mastered", set_id: "VOCAB-MASTERED", type: "vocabulary", result: "100% STAR", percentage: 100 },
+        { assignment_id: null, set_id: "BBC-SELF-STUDY", type: "bbc", result: "96% PASS", percentage: 96 },
+      ],
+    }],
+  };
 
   const model = hooks.studentCalendarModel(values.year, values.month, dayKey, now);
   assert(model.days.length === 35 || model.days.length === 42);
@@ -568,18 +576,12 @@ function testStudentCalendarModel() {
   const activity = model.days.find((day) => day && day.key === dayKey);
   assert(activity);
   assert.equal(activity.level, 3);
-  assert.equal(activity.hasStar, true);
   assert.equal(activity.items.length, 3);
   assert.equal(model.selected.key, dayKey);
 
   const firstDay = model.days.find((day) => day);
   const expectedMondayIndex = (new Date(Date.UTC(values.year, values.month - 1, 1)).getUTCDay() + 6) % 7;
   assert.equal(model.days.indexOf(firstDay), expectedMondayIndex);
-
-  const calendarButtonDate = hooks.calendarButtonDateModel(new Date("2026-07-27T16:30:00.000Z"));
-  assert.equal(calendarButtonDate.day, 28);
-  assert.equal(calendarButtonDate.isDoubleDigit, true);
-  assert.equal(calendarButtonDate.ariaLabel, "Progress calendar, 28 July");
 
   const finishedSection = hooks.renderStudentMessageSection(
     "Finished",
@@ -608,34 +610,32 @@ function testStudentCalendarModel() {
 
   const defaultSections = hooks.renderDefaultStudentMessageSections(
     [{ assignment_id: "current", status: "to_do" }],
-    [],
     [{ assignment_id: "finished", status: "passed", best_percentage: 90 }]
   );
   assert(defaultSections.includes('role="tablist"'));
   assert.equal((defaultSections.match(/role="tab"/g) || []).length, 3);
   assert.equal((defaultSections.match(/role="tabpanel"/g) || []).length, 3);
-  assert(defaultSections.includes('data-message-tab="week"'));
-  assert(defaultSections.includes('data-message-tab="upcoming"'));
+  assert(defaultSections.includes('data-message-tab="todo"'));
   assert(defaultSections.includes('data-message-tab="finished"'));
-  assert(defaultSections.includes('id="student-message-panel-week" role="tabpanel"'));
-  assert(defaultSections.includes('id="student-message-panel-upcoming" role="tabpanel" aria-labelledby="student-message-tab-upcoming" data-message-panel="upcoming" hidden'));
-  assert(defaultSections.includes('id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished" hidden'));
-  assert(defaultSections.indexOf("This Week") < defaultSections.indexOf("Upcoming"));
-  assert(defaultSections.indexOf("Upcoming") < defaultSections.indexOf("Finished"));
-  assert(defaultSections.includes("No upcoming assignments."));
-  assert.equal((defaultSections.match(/student-message-tab-count/g) || []).length, 3);
-  assert(defaultSections.includes('<span class="student-message-tab-count">0</span>'));
+  assert(defaultSections.includes('data-message-tab="replies"'));
+  assert(defaultSections.includes('id="student-message-panel-todo" role="tabpanel"'));
+  assert(defaultSections.includes('id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished"'));
+  assert(defaultSections.includes('data-message-panel="finished" tabindex="0" hidden'));
+  assert(defaultSections.includes('id="student-message-panel-replies" role="tabpanel" aria-labelledby="student-message-tab-replies" data-message-panel="replies"'));
+  assert(defaultSections.indexOf("To-Do") < defaultSections.indexOf("Finished"));
+  assert(defaultSections.indexOf("Finished") < defaultSections.indexOf("Teacher replies"));
+  assert.equal((defaultSections.match(/student-message-tab-count/g) || []).length, 2);
+  assert.equal((defaultSections.match(/<span class="student-message-tab-count">1<\/span>/g) || []).length, 2);
   assert.equal((defaultSections.match(/aria-selected="true"/g) || []).length, 1);
 
   const populatedSections = hooks.renderDefaultStudentMessageSections(
     [{ assignment_id: "current", status: "to_do" }],
-    [{ assignment_id: "upcoming", status: "to_do" }],
     [{ assignment_id: "finished", status: "passed", best_percentage: 90 }]
   );
-  assert.equal((populatedSections.match(/<span class="student-message-tab-count">1<\/span>/g) || []).length, 3);
-  assert(populatedSections.includes('data-message-panel="week"'));
-  assert(populatedSections.includes('data-message-panel="upcoming" hidden'));
-  assert(populatedSections.includes('data-message-panel="finished" hidden'));
+  assert.equal((populatedSections.match(/<span class="student-message-tab-count">1<\/span>/g) || []).length, 2);
+  assert(populatedSections.includes('data-message-panel="todo"'));
+  assert(populatedSections.includes('data-message-panel="finished" tabindex="0" hidden'));
+  assert(populatedSections.includes('data-message-panel="replies"'));
 
   const teacherReply = hooks.renderTeacherReplyItem({
     status: "approved",
@@ -664,14 +664,15 @@ function testStudentCalendarModel() {
   assert(!teacherReply.includes("<b>Before</b>"));
   assert(!teacherReply.includes("<b>Yours</b>"));
 
-  const calendarTask = hooks.renderStudentCalendarTask({
+  const calendarTask = hooks.renderStudentCalendarAchievement({
     assignment_id: "calendar-task",
-    status: "passed",
-    completed_at: completedAt,
-    best_percentage: 88,
-    set: { set_id: "BBC-CALENDAR", title: "A long calendar task title", link: "bbc.html?set=BBC-CALENDAR" },
+    type: "bbc",
+    result: "PASSED · 88%",
+    percentage: 88,
+    set_id: "BBC-CALENDAR",
+    title: "A long calendar task title",
   });
-  assert(calendarTask.includes('class="student-message-task finished"'));
+  assert(calendarTask.includes('class="student-message-task finished student-calendar-achievement"'));
   assert(calendarTask.includes('class="student-message-title-window"'));
   assert(calendarTask.includes('data-open-href='));
   assert(calendarTask.includes('88%'));
@@ -716,9 +717,7 @@ function testStudentModalShellMarkup() {
   assert(!dashboardHtml.includes('id="logout-confirm-back"'));
   assert(!dashboardHtml.includes('id="logout-confirm-close"'));
   assert(dashboardHtml.includes('id="student-account-close"'));
-  assert(dashboardHtml.includes('id="student-replies-button"'));
-  assert(dashboardHtml.includes('id="student-calendar-date" aria-hidden="true"'));
-  assert(dashboardHtml.indexOf('id="student-message-button"') < dashboardHtml.indexOf('id="student-replies-button"'));
+  assert(!dashboardHtml.includes('id="student-replies-button"'));
   assert(dashboardJs.includes("studentDashboardCacheName = 'mrcat-student-dashboard-v1'"));
   assert(dashboardJs.includes("action: 'dashboardBootstrap'"));
   assert(dashboardJs.includes("action: 'listAssignmentPage'"));
@@ -783,7 +782,7 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes(".logout-confirm-stack {\n    width: min(320px, calc(100% - 32px));"));
   assert(appCss.includes(".logout-confirm-dialog {\n    width: 100%;\n    overflow: hidden;\n    border: 1px solid rgba(255,255,255,0.88);\n    border-radius: 22px;"));
   assert(appCss.includes(".logout-confirm-actions {\n    display: grid;\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n    border-top: 0.5px solid rgba(24,49,43,0.16);"));
-  assert(appCss.includes("#logout-confirm-submit {\n    border-left: 0.5px solid rgba(24,49,43,0.16);\n    color: var(--danger);\n    background: transparent;"));
+  assert(appCss.includes(".logout-confirm-submit {\n    border-left: 0.5px solid rgba(24,49,43,0.16);\n    color: var(--danger);\n    background: transparent;"));
   assert(appCss.includes(".student-account-outside-close,\n.student-star-outside-close,\n.password-dialog-outside-close"));
   assert(!liquidGlassCss.includes(".password-dialog, .logout-confirm-dialog"));
   assert(appCss.includes(".account-feedback-row:hover,\n.account-feedback-row:active {\n    background: transparent;\n    transform: none;\n}"));
@@ -896,32 +895,40 @@ function testDashboardScheduleModel() {
   hooks.renderWeeklyFocusProgress();
   assert(!target.innerHTML.includes("OVERDUE"));
   assert(target.innerHTML.includes("THIS WEEK"));
-  assert(target.innerHTML.includes("UPCOMING"));
+  assert(!target.innerHTML.includes("UPCOMING"));
   assert(target.innerHTML.includes("0 of 2 assignments are finished"));
   assert(target.innerHTML.includes("include 1 overdue"));
   assert(target.innerHTML.includes("this-week has-overdue"));
   assert(!target.innerHTML.includes('data-weekly-focus-scope="overdue"'));
   assert(target.innerHTML.includes('data-weekly-focus-scope="week"'));
-  assert(target.innerHTML.includes('data-weekly-focus-scope="upcoming"'));
+  assert(!target.innerHTML.includes('data-weekly-focus-scope="upcoming"'));
 
   current.status = "passed";
   hooks.renderWeeklyFocusProgress();
   assert(target.innerHTML.includes("50%"));
-  assert(target.innerHTML.includes("UPCOMING"));
+  assert(!target.innerHTML.includes("UPCOMING"));
   assert(target.innerHTML.includes("THIS WEEK"));
 
   hooks.state.assignments = [overdue, upcoming];
   hooks.renderWeeklyFocusProgress();
-  assert(target.innerHTML.includes("UPCOMING"));
+  assert(target.innerHTML.includes("0%"));
+  assert(target.innerHTML.includes("0 of 1 assignments are finished"));
+  assert(!target.innerHTML.includes("UPCOMING"));
 
   hooks.state.assignments = [overdue];
   hooks.renderWeeklyFocusProgress();
-  const upcomingMarkup = target.innerHTML.slice(target.innerHTML.indexOf("UPCOMING"));
-  assert(upcomingMarkup.includes("NO TASKS"));
-  assert(upcomingMarkup.includes("weekly-progress-empty-status"));
-  assert(upcomingMarkup.includes('d="m8.8 15.4 2.1 2.1 4.5-4.5"'));
-  assert(!upcomingMarkup.includes("weekly-progress-percent"));
-  assert(!upcomingMarkup.includes('data-weekly-focus-scope="upcoming"'));
+  assert(target.innerHTML.includes("THIS WEEK"));
+  assert(target.innerHTML.includes("0 of 1 assignments are finished"));
+  assert(target.innerHTML.includes("include 1 overdue"));
+  assert(!target.innerHTML.includes("UPCOMING"));
+
+  hooks.state.assignments = [];
+  hooks.renderWeeklyFocusProgress();
+  assert(target.innerHTML.includes("THIS WEEK"));
+  assert(target.innerHTML.includes("weekly-progress-percent"));
+  assert(target.innerHTML.includes("0%"));
+  assert(target.innerHTML.includes("No assignments are scheduled for this week"));
+  assert(target.innerHTML.includes('data-weekly-focus-scope="week"'));
 
   hooks.state.assignments = [
     { assignment_id: "finished-old", status: "passed", completed_at: "2026-01-01T10:00:00.000Z" },

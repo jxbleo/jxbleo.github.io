@@ -2818,3 +2818,17 @@ and Review controls remain hidden. After one or more pages succeed, confirm the
 `Scan complete` guide explains tap-to-add and long-press phrase selection before
 the OCR text. With Reduced Motion enabled, the scan beam must stop while page
 progress and live status remain understandable.
+### Listening V2
+
+Run `npm run test:listening-shadowing`,
+`npm run test:listening-shadowing-provider`, and
+`npm run test:listening-authoring`. Verify transcript redaction before reveal,
+legacy `listen_only` normalization, 80 pass/79 red cap, monotonic best score,
+WAV validation, duplicate take replay, provider fixture isolation, track-aware
+assignment payloads, teacher editor validation, no private source in static
+output, pre-upload provider-configuration gating, policy-change cleanup,
+single-take locking, server-timed complete-listen tokens, and
+`listeningMaintenance` timer-token gating. Manual browser QA covers
+Dictation/Shadowing selection, complete-play counting, microphone denial,
+record/upload failure, To Improve, teacher per-line timing/text editing, reduced
+motion, keyboard focus, and 1440px, 1024px, 768px, and 390px viewports.

@@ -1038,7 +1038,8 @@ concrete `set_id`; it is not a new collection.
 
 ## 15. Intensive Listening
 
-All three Intensive Listening collections remain `ADMINONLY`. Materials store
+All Intensive Listening and Listening V2 collections remain `ADMINONLY`.
+Materials store
 `material_id`, `set_id`, `audio_src`, `content_version`, and ordered units with
 speaker, start/end seconds, reviewed text, and word slots. Browser bootstrap
 receives timing, speaker, slot IDs, and punctuation only. Progress stores
@@ -1473,3 +1474,36 @@ The `students` profile uses top-level operational fields
 server-owned, not teacher-editable. Permanent vocabulary `saved_examples` may
 retain bounded `context_token_ranges`, but vocabulary items never contain scan
 file IDs, URLs, or full OCR pages.
+## Listening V2 collections (ADMINONLY)
+
+`intensive_listening_materials` keeps existing private Dictation fields and may
+add `schema_version: 2`, `media`, `transcript_revision`, and explicit
+`tracks.dictation` / `tracks.shadowing` rows with stable `segment_id`, timing,
+practice mode, and track revision. Shadowing reference text/words are private.
+`listening_material_drafts` keeps one private top-level teacher draft per
+`material_id`. Its `draft_revision` is an optimistic concurrency counter and
+`base_publication_revision` prevents a stale draft replacing a newer published
+material. Draft saves never mutate or hide the learner-visible record.
+
+`listening_material_history` is private immutable publication audit. One row
+per material publication revision stores the teacher, timestamp, impact
+(`dictation|shadowing|both|metadata`), and bounded private before/after material
+snapshots. Students never query either authoring collection.
+
+`listening_shadowing_progress` is unique by student + material + Shadowing
+revision and stores per-segment complete-listen count, transcript reveal state,
+best product score/take, word states, qualified/assisted/independent flags, and
+bounded pending/completed server play tokens. Public projections omit private
+word states until that segment's transcript is revealed.
+`listening_shadowing_takes` is immutable attempt
+history with owner/material/segment/revision hashes, idempotent `client_take_id`,
+private upload path and registered `file_id`, validation/provider status,
+product score, private word states, and delete-after timestamp. The same
+collection contains one non-attempt student lock document used only to enforce
+the single in-flight take invariant. `listening_shadowing_usage` records one
+billable provider boundary with stable take/reference/audio/policy/provider
+revisions plus Shanghai `usage_day` and `billable_claimed` for quota enforcement.
+`listening_assignment_tracks` stores one student/assignment/set/track
+participation row; the parent assignment has `assignment_kind: listening` and
+`required_listening_tracks`. All collections remain ADMINONLY and require
+owner-reviewed indexes.

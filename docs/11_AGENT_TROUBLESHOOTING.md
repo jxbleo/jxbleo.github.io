@@ -1087,3 +1087,19 @@ flag. Generate to a separate review path, update the relevant year audit under
 inspect each question's stable `question_id` and numeric `order` separately;
 do not renumber IDs merely to make the suffix match display order. Existing
 reports use frozen snapshots and must not be rewritten.
+For Listening Shadowing, `SCORING_NOT_AVAILABLE` is an intentional fail-closed
+response when the system policy or Tencent configuration is absent. Check only
+the safe take status, policy/provider revision, and category; never print audio
+paths, transcript/reference words, credentials, or provider bodies. An
+`outcome_unknown` take must not be retried automatically. If a valid take is
+past `delete_after`, run the owner-gated maintenance worker and preserve its
+locator until deletion succeeds.
+
+Tencent SOE-N WebSocket signing is not the same as TC3 API signing. Use the
+lower-case documented query names, sign the unescaped sorted parameter string
+with HMAC-SHA1 against `soe.cloud.tencent.com/soe/api/<appid>?`, wait for the
+successful JSON handshake, send the WAV once, and accept only `final=1` as the
+result. Do not add `app_id`, `secret_id`, a TC3 session-token header, or a
+browser-side signature. Missing credentials must fail before upload; a scoring
+policy revision change after upload must delete or schedule deletion of the
+temporary file and release the student's take lock.

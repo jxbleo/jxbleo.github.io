@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
     <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260904-1">
+    <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260905-2">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
@@ -72,6 +73,7 @@
                 <button class="tab-button active" type="button" data-view="view"><span aria-hidden="true">V</span>View</button>
                 <button class="tab-button" type="button" data-view="tasks"><span aria-hidden="true">A</span>Assign</button>
                 <button class="tab-button" type="button" data-view="library"><span aria-hidden="true">L</span>Library</button>
+                <button class="tab-button" type="button" data-view="listening"><span aria-hidden="true">N</span>Listening</button>
                 <button class="tab-button" type="button" data-view="speaking"><span aria-hidden="true">S</span>Speaking</button>
             </nav>
 
@@ -350,6 +352,25 @@
                             <div class="matrix-loading-card" role="status" aria-label="Loading assignment progress"></div>
                         </div>
                     </section>
+        </section>
+
+                <section class="dashboard-view" id="view-listening" hidden>
+                    <section class="teacher-listening-main" aria-labelledby="teacher-listening-title">
+                        <header class="teacher-listening-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1 id="teacher-listening-title">Listening</h1><p>Author, review, and publish one material with separate Dictation and Shadowing tracks.</p></div><button class="primary-button" id="teacher-listening-new" type="button">New material</button></header>
+                        <p class="teacher-listening-message" id="teacher-listening-message" role="status" aria-live="polite"></p>
+                        <div class="teacher-listening-layout">
+                            <section class="teacher-listening-material-list" id="teacher-listening-material-list" aria-label="Listening materials"><div class="empty-card">Loading Listening materials…</div></section>
+                            <section class="teacher-listening-editor" id="teacher-listening-editor" hidden aria-labelledby="teacher-listening-editor-title">
+                                <div class="teacher-listening-editor-head"><div><p class="eyebrow accent">MATERIAL EDITOR</p><h2 id="teacher-listening-editor-title">New material</h2></div><span class="teacher-listening-status" id="teacher-listening-status">Draft</span></div>
+                                <div class="teacher-listening-editor-tabs" role="tablist" aria-label="Listening editor sections"><button class="is-active" type="button" data-listening-editor-tab="common" role="tab">Common</button><button type="button" data-listening-editor-tab="dictation" role="tab">Dictation</button><button type="button" data-listening-editor-tab="shadowing" role="tab">Shadowing</button></div>
+                                <div class="teacher-listening-editor-panel is-active" data-listening-editor-panel="common"><div class="teacher-listening-fields"><label>Material ID<input id="teacher-listening-id" placeholder="IL-BBC-260905" autocomplete="off"></label><label>Title<input id="teacher-listening-title" placeholder="A focused listening lesson"></label><label>Source label<input id="teacher-listening-source" placeholder="BBC"></label><label>Series label<input id="teacher-listening-series" placeholder="BBC 6 Minute English"></label><label>Media type<select id="teacher-listening-media-kind"><option value="audio">Audio</option><option value="video">Video</option></select></label><label>Audio or video URL<input id="teacher-listening-media" placeholder="assets/audio/example.mp3" inputmode="url"></label><label>Transcript revision<input id="teacher-listening-revision" value="1"></label></div></div>
+                                <div class="teacher-listening-editor-panel" data-listening-editor-panel="dictation" hidden><div class="teacher-listening-track-head"><div><strong>Dictation lines</strong><p>Edit timing and transcript directly. Answer slots remain private.</p></div><div class="teacher-listening-track-tools"><label class="teacher-listening-track-toggle"><input id="teacher-listening-dictation-enabled" type="checkbox" data-listening-track-enabled="dictation" checked><span>Enabled</span></label><button class="outline-button" type="button" data-listening-add-segment="dictation">Add line</button></div></div><div class="teacher-listening-segment-list" id="teacher-listening-dictation-rows"></div><textarea id="teacher-listening-dictation" hidden></textarea></div>
+                                <div class="teacher-listening-editor-panel" data-listening-editor-panel="shadowing" hidden><div class="teacher-listening-track-head"><div><strong>Shadowing lines</strong><p>Keep each scored line to 30 words or fewer. Reference words are rebuilt safely from the transcript.</p></div><div class="teacher-listening-track-tools"><label class="teacher-listening-track-toggle"><input id="teacher-listening-shadowing-enabled" type="checkbox" data-listening-track-enabled="shadowing" checked><span>Enabled</span></label><button class="outline-button" type="button" data-listening-add-segment="shadowing">Add line</button></div></div><div class="teacher-listening-segment-list" id="teacher-listening-shadowing-rows"></div><textarea id="teacher-listening-shadowing" hidden></textarea></div>
+                                <div class="teacher-listening-editor-actions"><button class="outline-button" id="teacher-listening-validate" type="button">Validate</button><button class="outline-button" id="teacher-listening-preview" type="button">Preview</button><button class="outline-button teacher-listening-hide" id="teacher-listening-hide" type="button" hidden>Hide</button><button class="primary-button" id="teacher-listening-save" type="button">Save draft</button><button class="primary-button" id="teacher-listening-publish" type="button">Publish</button></div>
+                                <pre class="teacher-listening-validation" id="teacher-listening-validation" aria-live="polite"></pre>
+                            </section>
+                        </div>
+                    </section>
                 </section>
 
                 <section class="dashboard-view" id="view-speaking" hidden>
@@ -445,7 +466,8 @@
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/teacher.js?v=20260817-2"></script>
+    <script src="assets/js/teacher.js?v=20260905-1"></script>
+    <script src="assets/js/teacher-listening.js?v=20260905-2"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
     <script src="assets/js/teacher-speaking.js?v=20260902-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>

@@ -93,10 +93,11 @@ git diff --check
 `.cloudbase-private/`. Do not commit that directory.
 
 
-Intensive Listening accepts a self-contained private JSON whose segments use
-`dictation`, `listen_only`, or `skip`. The importer keeps full text and
-answers under ignored private output; only metadata enters the static site.
-Teacher-approved Provided Words can later be exported back to a current JSON.
+Listening accepts a self-contained private JSON with independent `dictation`
+and `shadowing` tracks; legacy `listen_only` input remains compatible as
+`context_only`. The importer keeps transcripts, answer slots, and Shadowing
+reference words in private output; only metadata enters the static site.
+Teacher-approved Provided Words can later be exported back to current JSON.
 
 The release scripts are owner-gated. They verify, package, and generate a local
 deploy plan, but they do not log in to CloudBase or deploy anything.
@@ -183,6 +184,10 @@ Supporting docs:
   detailed implementation plan for the DSE Group Interaction Speaking Lab,
   per-Discussion voice identity, durable audio analysis, and privacy-preserving
   report sharing
+- [docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md](docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md):
+  approved executable plan for the unified Listening workspace, independent
+  Dictation and Shadowing Tracks, Tencent SOE-N scoring, teacher authoring,
+  abuse controls, temporary audio retention, and Apple-style interaction
 
 ## Documentation Rule
 
@@ -208,16 +213,20 @@ most important backend principles are:
 Known technical risks are tracked in [docs/08_BACKLOG.md](docs/08_BACKLOG.md)
 and [docs/11_AGENT_TROUBLESHOOTING.md](docs/11_AGENT_TROUBLESHOOTING.md).
 
-### Intensive Listening Library
+### Listening
 
-Intensive Listening is a separate authenticated student workspace at
+Listening is a separate authenticated student workspace at
 intensive-listening-library.html. It lists only safe metadata and server
-progress; private transcript material remains behind the intensiveListening
-function. Dashboard capsules and linked BBC/IELTS entry points preserve
-same-origin returns. Run the focused contracts with:
+progress; Dictation and Shadowing are selected only after opening a material,
+and private transcript material remains behind the intensiveListening function.
+Dashboard capsules and linked BBC/IELTS entry points preserve same-origin
+returns. Run the focused contracts with:
 
 ~~~bash
 npm run test:intensive-listening-library
+npm run test:listening-shadowing
+npm run test:listening-shadowing-provider
+npm run test:listening-authoring
 ~~~
 
 The one-minute sendTeacherAttemptEmails timer also closes idle three-minute

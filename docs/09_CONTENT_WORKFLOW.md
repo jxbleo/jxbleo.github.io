@@ -514,3 +514,11 @@ Scan Words is private student activity, not canonical content. Processed
 photos, OCR, marks, and candidates remain in ADMINONLY scan collections and are
 never imported into `content/`, public `data/`, or grading keys. Only reviewed
 vocabulary and safe sentence provenance cross the existing My Words boundary.
+### Listening V2 source intake
+
+The importer accepts `schemaVersion: 2` sources with explicit `tracks`.
+Dictation slots may carry private answers/accepted variants; Shadowing segments
+may carry stable reference words (maximum 30 scored words). It writes V2 track
+metadata to ignored private import rows and keeps transcript/reference text out
+of public `data/`. Review both track counts and every Shadowing segment before
+owner-gated import.

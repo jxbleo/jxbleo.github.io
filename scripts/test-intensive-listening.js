@@ -49,7 +49,7 @@ function run() {
   assert.strictEqual(revealed.state.assisted, true);
   assert.strictEqual(revealed.state.reveal_position_version, 2);
   assert.strictEqual(revealed.answerText, "It's a good boy.");
-  assert.strictEqual(revealed.state.completed, true, "revealed units still count as assisted completion");
+  assert.strictEqual(revealed.state.completed, false, "revealing must not complete the line before the learner writes it");
   assert.deepStrictEqual(
     revealed.state.correct_positions,
     [true, false, true, true],
@@ -67,10 +67,13 @@ function run() {
   assert.strictEqual(publicView.units[0].slots[3].suffix, ".");
   assert.strictEqual(publicView.units[0].practice_mode, "dictation");
   const revealedProgress = service.publicProgress(material, { unit_states: { "unit-01": revealed.state } });
-  assert.strictEqual(revealedProgress.completed_count, 1);
-  assert.strictEqual(revealedProgress.assisted_count, 1);
+  assert.strictEqual(revealedProgress.completed_count, 0);
+  assert.strictEqual(revealedProgress.assisted_count, 0);
   assert.deepStrictEqual(revealedProgress.unit_progress["unit-01"].correct_positions, [true, false, true, true]);
   assert.strictEqual(revealedProgress.unit_progress["unit-01"].correct_positions_reliable, true);
+  const completedAfterReveal = service.gradeUnit(unit(), ["wrong", "a", "wrong", "wrong"], revealed.state, "student:unit");
+  assert.strictEqual(completedAfterReveal.state.completed, true);
+  assert.strictEqual(completedAfterReveal.state.assisted, true, "completion after reveal remains assisted");
 
   const legacyRevealedState = {
     checks: 3,

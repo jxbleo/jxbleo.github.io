@@ -1592,11 +1592,14 @@ Shared rules:
 - `Tab` replays the current unit. Correct slots lock green; incorrect slots
   remain editable red. The server reveals answers only after three effective
   checks and keeps independent/assisted completion counts separate.
-- Show Answer completes the unit as assisted without changing Word Slot grading
-  marks: independently correct slots stay green, while wrong or blank student
-  entries remain red or neutral and become read-only. Historical assisted states
-  that cannot prove per-slot correctness render unknown positions neutrally,
-  never as synthetic green answers.
+- Show Answer does not complete or advance the unit. While the reviewed text is
+  visible, the lower action reads `Hide`; the top control also toggles to
+  `Hide`. Focusing any writable Word Slot hides and clears the browser's answer
+  copy before accepting input. The learner must finish the current line
+  correctly; that later completion is recorded as assisted. Independently
+  correct slots stay green, while wrong or blank entries remain red or neutral.
+  Historical assisted states that cannot prove per-slot correctness render
+  unknown positions neutrally, never as synthetic green answers.
 - The top bar defaults to `Practice Mode`, with pause/play, a draggable progress
   bar, elapsed/total time, and `0.75× / 1× / 1.25× / 1.5× / 2×` speed choices.
 - `Test Mode` requires confirmation, clears Practice answers/feedback, restarts
@@ -2844,3 +2847,21 @@ terminal. When at least one page succeeds, a green `Scan complete` guide appears
 above the OCR text and explains both gestures: tap adds one word; long-press starts
 a phrase, after which any individually tapped words in that same sentence—including
 non-adjacent words—join the phrase.
+### Listening V2 interaction surface
+
+The visible product language is `Listening`. The ordinary Library keeps its
+existing listening-comprehension card and one Listening action; track choice
+happens only inside the material. The material opens a light Apple-style mode
+chooser, then a focused Dictation or Shadowing workspace. Shadowing shows one
+responsive segment at a time with previous/next navigation, Listen, Record,
+one 0–100 score, coloured transcript words after reveal, and a To Improve
+continuation action. A qualified take advances to the next line after a short
+confirmation. Video material keeps the picture playing silently during the
+student take. Controls are keyboard reachable, use live status text, preserve
+44px touch targets, respect reduced motion and safe areas, and collapse to one
+column on narrow layouts. Pre-reveal cards never contain transcript, reference
+words, or word-state feedback.
+
+Teacher Listening uses the same restrained light/glass visual language as
+Writing and Speaking. Timing, speaker, practice mode, and transcript are edited
+in direct per-line controls; raw segment JSON is not the primary authoring UI.

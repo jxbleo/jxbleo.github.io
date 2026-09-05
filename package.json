@@ -40,6 +40,9 @@
     "import:intensive-listening": "node scripts/import-intensive-listening.js",
     "test:intensive-listening": "node scripts/test-intensive-listening.js",
     "test:intensive-listening-library": "node scripts/test-intensive-listening-library.js",
+    "test:listening-shadowing": "node scripts/test-listening-shadowing.js",
+    "test:listening-shadowing-provider": "node scripts/test-listening-shadowing-provider.js",
+    "test:listening-authoring": "node scripts/test-listening-authoring.js",
     "test:teacheradmin-package": "node scripts/test-teacheradmin-package.js"
   },
   "devDependencies": {

@@ -26,7 +26,10 @@
     lastAudioTime: null,
     lastActivitySentAt: 0,
     activityInFlight: false,
-    activityPending: ''
+    activityPending: '',
+    dictationEnabled: true,
+    shadowingEnabled: false,
+    shadowingCompleted: false
   };
 
   function $(selector) { return document.querySelector(selector); }
@@ -263,7 +266,7 @@
       if (finish) { finish.href = linked; finish.textContent = 'Continue to Listening Practice'; }
     } else {
       headerLink.hidden = true;
-      if (finish) { finish.href = safeReturnUrl(); finish.textContent = 'Back to Intensive Listening'; }
+      if (finish) { finish.href = safeReturnUrl(); finish.textContent = 'Back to Listening'; }
     }
   }
   function formatTime(value) {
@@ -304,6 +307,11 @@
 
   function bindSlots() {
     document.querySelectorAll('.il-word-slot').forEach(function(input) {
+      input.addEventListener('focus', function() {
+        if (!currentLocal().answerVisible) return;
+        var slotIndex = Number(input.dataset.slotIndex);
+        hideAnswer(slotIndex);
+      });
       input.addEventListener('input', function() {
         var index = Number(input.dataset.slotIndex);
         var local = currentLocal();
@@ -398,16 +406,17 @@
           '<span class="il-provided-word" aria-label="Provided word">' + escapeHtml(slot.provided_text || '') + '</span>' +
           '<span class="il-punctuation">' + escapeHtml(slot.suffix || '') + '</span></span>';
       }
-      var disabled = server.completed === true || (server.correct_positions || [])[index] === true || local.answerVisible || state.teacherMode;
+      var disabled = server.completed === true || (server.correct_positions || [])[index] === true || state.teacherMode;
       return '<span class="il-word-token"><span class="il-punctuation">' + escapeHtml(slot.prefix || '') + '</span>' +
-        '<input class="il-word-slot ' + escapeHtml(local.marks[index] || '') + '" data-slot-index="' + index + '" aria-label="Word ' + (index + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false" value="' + escapeHtml(local.entries[index]) + '" ' + (disabled ? 'disabled' : '') + '>' +
+        '<input class="il-word-slot ' + escapeHtml(local.marks[index] || '') + '" data-slot-index="' + index + '" aria-label="Word ' + (index + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false" value="' + escapeHtml(local.entries[index]) + '" ' + (disabled ? 'disabled' : local.answerVisible ? 'readonly' : '') + '>' +
         '<span class="il-punctuation">' + escapeHtml(slot.suffix || '') + '</span></span>';
     }).join('');
     $('#check-count').textContent = state.teacherMode ? 'TEACHER PREVIEW' : Math.min(Number(server.checks) || 0, 3) + ' / 3 checks';
-    $('#continue-button').textContent = state.currentIndex === state.material.units.length - 1 ? 'Finish' : 'Continue';
+    $('#continue-button').textContent = 'Hide';
     $('#check-button').hidden = state.teacherMode;
     $('#check-button').disabled = state.busy || server.completed === true;
-    $('#answer-button').disabled = state.busy || local.answerVisible;
+    $('#answer-button').disabled = state.busy;
+    $('#answer-button').textContent = local.answerVisible ? 'Hide' : 'Show Answer';
     renderAnswerTokens();
     bindSlots();
     if (state.started && !state.teacherMode && !state.playing) window.setTimeout(function() {
@@ -421,7 +430,7 @@
     updateUnitNavigation();
     if (currentUnit() && isDictation(currentUnit())) {
       $('#check-button').disabled = busy || state.teacherMode || currentServer().completed === true;
-      $('#answer-button').disabled = busy || currentLocal().answerVisible;
+      $('#answer-button').disabled = busy;
     }
     if (message) { $('#feedback').className = 'il-feedback'; $('#feedback').textContent = message; }
   }
@@ -455,7 +464,8 @@
     });
   }
   function showAnswer() {
-    if (state.visitorMode || state.busy || !isDictation(currentUnit()) || currentLocal().answerVisible) return;
+    if (state.visitorMode || state.busy || !isDictation(currentUnit())) return;
+    if (currentLocal().answerVisible) { hideAnswer(); return; }
     var unit = currentUnit(); var local = currentLocal();
     setBusy(true, state.teacherMode ? 'Opening the reviewed answer…' : 'Checking whether the answer is available…');
     call('reveal', { unit_id: unit.unit_id, replay_delta: local.replayDelta }).then(function(result) {
@@ -474,6 +484,20 @@
     }).catch(function(error) {
       setBusy(false); $('#feedback').className = 'il-feedback error'; $('#feedback').textContent = error.message;
     });
+  }
+  function hideAnswer(focusIndex) {
+    var local = currentLocal();
+    if (!local || !local.answerVisible) return;
+    local.answerVisible = false;
+    local.answerText = '';
+    local.answers = [];
+    renderUnit();
+    $('#feedback').className = 'il-feedback';
+    $('#feedback').textContent = 'Answer hidden. Finish the current line from memory.';
+    if (Number.isInteger(focusIndex)) window.setTimeout(function() {
+      var target = document.querySelector('[data-slot-index="' + focusIndex + '"]:not(:disabled)');
+      if (target) target.focus();
+    }, 0);
   }
 
   function nextPlaybackEndIndex(startIndex) {
@@ -568,6 +592,14 @@
       $('#feedback').className = 'il-feedback';
       $('#feedback').textContent = 'This unit still needs your answer.';
       renderUnit(); replayUnit(false);
+      return;
+    }
+    if (state.shadowingEnabled && !state.shadowingCompleted) {
+      $('#feedback').hidden = false;
+      $('#feedback').className = 'il-feedback success';
+      $('#feedback').textContent = 'Dictation complete. Choose Shadowing above when you are ready.';
+      var chooser = document.getElementById('listening-track-chooser');
+      if (chooser) chooser.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     var progress = state.progress;
@@ -690,7 +722,7 @@
         material: {
           material_id: state.setId,
           set_id: state.setId,
-          title: String(source.title || 'Intensive Listening'),
+          title: String(source.title || 'Listening'),
           audio_src: audioSrc,
           content_version: 'visitor-public-audio-v1',
           sequence_count: 1,
@@ -715,6 +747,9 @@
       state.progress = result.progress || { percentage: 0, completed_count: 0, independent_count: 0, assisted_count: 0, replay_count: 0, best_percentage: 0, unit_progress: {} };
       state.linkedPractice = result.linked_practice || null;
       state.assignmentContext = result.assignment_context || null;
+      state.dictationEnabled = Boolean(result.tracks && result.tracks.dictation && result.tracks.dictation.enabled);
+      state.shadowingEnabled = Boolean(result.tracks && result.tracks.shadowing && result.tracks.shadowing.enabled);
+      state.shadowingCompleted = Boolean(result.shadowing_progress && result.shadowing_progress.completed);
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
@@ -722,6 +757,13 @@
       renderMaterialContext();
       $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
       $('#audio').src = state.material.audio_src; hydrateLocalUnits(); renderProgress();
+      if (!state.dictationEnabled && state.shadowingEnabled) {
+        state.started = true;
+        $('#start-screen').hidden = true;
+        $('#practice-shell').hidden = false;
+        $('#practice-card').hidden = true;
+        return;
+      }
       if (state.visitorMode) {
         document.body.classList.add('il-visitor-mode');
         $('#header-progress').parentElement.hidden = true;
@@ -737,7 +779,7 @@
         state.started = true; $('#export-button').hidden = false; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
         renderUnit(); $('#feedback').textContent = 'Teacher preview · replay the unit, then open Show Answer to mark a word.'; return;
       }
-      if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100) {
+      if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100 && !state.shadowingEnabled) {
         $('#start-screen').hidden = true; $('#completion-screen').hidden = false;
         $('#completion-percent').textContent = state.progress.best_percentage + '%';
         $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; return;
@@ -755,11 +797,14 @@
   $('#replay-button').addEventListener('click', function() { state.playing ? pauseAudio('Paused · press Replay to continue') : replayUnit(true); });
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);
-  $('#continue-button').addEventListener('click', advanceUnit);
+  $('#continue-button').addEventListener('click', function() { hideAnswer(); });
   $('#previous-unit-button').addEventListener('click', function() { moveToUnit(-1); });
   $('#next-unit-button').addEventListener('click', function() { moveToUnit(1); });
   $('#restart-button').addEventListener('click', startTemporaryReplay);
   $('#export-button').addEventListener('click', exportLatest);
+  document.addEventListener('mrcat:listening-shadowing-progress', function(event) {
+    state.shadowingCompleted = Boolean(event.detail && event.detail.completed);
+  });
   $('#audio').addEventListener('timeupdate', function() {
     if (!state.playing) return;
     var currentTime = Number($('#audio').currentTime) || 0;

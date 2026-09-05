@@ -72,10 +72,9 @@
     var date = item.published_on ? new Date(item.published_on + 'T00:00:00').toLocaleDateString(undefined, {
       year: 'numeric', month: 'short', day: 'numeric'
     }) : (item.source_set_id || '');
-    var meta = [date, item.dictation_unit_count + ' dictation units'].filter(Boolean).join(' · ');
+    var meta = [date, 'Listening material'].filter(Boolean).join(' · ');
     var completed = percent > 0
-      ? '<span class="ill-card-progress-copy">' + escapeHtml(Number(progress.independent_count) || 0) +
-        ' independent · ' + escapeHtml(Number(progress.assisted_count) || 0) + ' with answers</span>'
+      ? '<span class="ill-card-progress-copy">' + escapeHtml(percent) + '% complete</span>'
       : '';
     var linked = item.linked_practice && item.linked_practice.href
       ? '<a class="ill-secondary-action" href="' + escapeHtml(append(item.linked_practice.href, 'return', materialHref(item))) + '">Listening Practice</a>'

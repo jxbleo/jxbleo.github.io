@@ -5,6 +5,8 @@ const exerciseProgress = require("../_shared/exercise-progress");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const intensiveSpelling = require("../_shared/intensive-listening-spelling");
+const intensiveListeningService = require("../intensiveListening/service");
+const listeningShadowing = require("../intensiveListening/shadowing-service");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -28,6 +30,10 @@ const WRITING_USAGE_COLLECTION = "writing_ai_usage_events";
 const DEFAULT_WRITING_AI_DAILY_WORD_LIMIT = 5000;
 const NOTIFICATION_FEED_PAGE_SIZE = 10;
 const DISPUTE_FEED_PAGE_SIZE = 5;
+const LISTENING_MATERIAL_COLLECTION = "intensive_listening_materials";
+const LISTENING_DRAFT_COLLECTION = "listening_material_drafts";
+const LISTENING_HISTORY_COLLECTION = "listening_material_history";
+const LISTENING_ASSIGNMENT_TRACK_COLLECTION = "listening_assignment_tracks";
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -1387,8 +1393,330 @@ async function listSets() {
       edition_number: set.edition_number == null ? null : Number(set.edition_number),
       edition_label: set.edition_label || "",
       is_latest_edition: set.is_latest_edition === true,
+      listening_tracks: isIntensiveListeningSet(set) ? {
+        dictation: Number(set.dictation_unit_count || 0) > 0,
+        shadowing: Number(set.shadowing_segment_count || 0) > 0,
+      } : null,
     })).sort((a, b) => a.title.localeCompare(b.title)),
   };
+}
+
+function listeningMaterialId(value) {
+  const id = text(value);
+  if (!id || id.length > 120 || !/^IL-[A-Za-z0-9._:-]+$/.test(id)) throw new Error("LISTENING_MATERIAL_ID_INVALID");
+  return id;
+}
+
+function listeningDraftFromEvent(event) {
+  const raw = event && (event.material || event.draft || event.payload);
+  if (!raw || typeof raw !== "object") throw new Error("LISTENING_DRAFT_REQUIRED");
+  const id = listeningMaterialId(raw.material_id || raw.materialId || event.material_id);
+  const source = JSON.parse(JSON.stringify(raw));
+  const normalized = intensiveListeningService.normalizedMaterial(source);
+  const tracks = source.tracks && typeof source.tracks === "object" ? source.tracks : {};
+  const copySegment = (segment, index, track) => {
+    const item = segment && typeof segment === "object" ? segment : {};
+    const segmentId = text(item.segment_id || item.segmentId || item.unit_id) || `${track}_${String(index + 1).padStart(3, "0")}`;
+    const start = Number(item.start_seconds == null ? item.start : item.start_seconds);
+    const end = Number(item.end_seconds == null ? item.end : item.end_seconds);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end <= start) throw new Error("LISTENING_SEGMENT_TIME_INVALID");
+    const output = {
+      segment_id: segmentId,
+      speaker: text(item.speaker || item.speaker_name).slice(0, 120),
+      text: text(item.text || item.transcript).slice(0, 3000),
+      start_seconds: start,
+      end_seconds: end,
+      practice_mode: track === "shadowing"
+        ? (intensiveListeningService.normalizedPracticeMode(item) === "skip"
+          ? "skip"
+          : intensiveListeningService.normalizedPracticeMode(item) === "context_only" ? "context_only" : "shadowing")
+        : intensiveListeningService.normalizedPracticeMode(item),
+    };
+    if (!output.text && output.practice_mode !== "skip") throw new Error("LISTENING_SEGMENT_TEXT_REQUIRED");
+    if (track === "dictation") {
+      output.slots = (Array.isArray(item.slots) ? item.slots : []).slice(0, 120).map((slot, slotIndex) => ({
+        slot_id: text(slot && (slot.slot_id || slot.slotId)) || `${segmentId}_w${String(slotIndex + 1).padStart(3, "0")}`,
+        prefix: text(slot && slot.prefix).slice(0, 20),
+        suffix: text(slot && slot.suffix).slice(0, 20),
+        answer: text(slot && (slot.answer || slot.text)).slice(0, 160),
+        accepted_answers: (Array.isArray(slot && (slot.accepted_answers || slot.acceptedAnswers)) ? (slot.accepted_answers || slot.acceptedAnswers) : []).map((answer) => text(answer).slice(0, 160)).filter(Boolean),
+        spelling_requirement: text(slot && (slot.spelling_requirement || slot.spellingRequirement)) === "provided" ? "provided" : "required",
+      }));
+      if (output.practice_mode === "dictation" && !output.slots.length) throw new Error("LISTENING_SLOTS_REQUIRED");
+    } else {
+      output.reference_words = (Array.isArray(item.reference_words || item.referenceWords) ? (item.reference_words || item.referenceWords) : []).slice(0, 30).map((word, wordIndex) => ({
+        word_id: text(word && (word.word_id || word.wordId)) || `rw_${String(wordIndex + 1).padStart(3, "0")}`,
+        text: text(word && (word.text || word.word || word.reference_word)).slice(0, 160),
+        unscored: word && word.unscored === true,
+      })).filter((word) => word.text);
+    }
+    return output;
+  };
+  const dictation = (Array.isArray(tracks.dictation && tracks.dictation.segments) ? tracks.dictation.segments : normalized.tracks.dictation.segments).map((segment, index) => copySegment(segment, index, "dictation"));
+  const shadowing = (Array.isArray(tracks.shadowing && tracks.shadowing.segments) ? tracks.shadowing.segments : normalized.tracks.shadowing.segments).map((segment, index) => copySegment(segment, index, "shadowing"));
+  const dictationEnabled = (!tracks.dictation || tracks.dictation.enabled !== false) && dictation.some((segment) => segment.practice_mode === "dictation");
+  const shadowingEnabled = (!tracks.shadowing || tracks.shadowing.enabled !== false) && shadowing.some((segment) => segment.practice_mode === "shadowing");
+  if (!dictationEnabled && !shadowingEnabled) throw new Error("LISTENING_TRACKS_EMPTY");
+  return {
+    material_id: id,
+    set_id: id,
+    schema_version: 2,
+    title: text(source.title).slice(0, 240) || id,
+    source_family: text(source.source_family || source.sourceFamily).slice(0, 80),
+    source_label: text(source.source_label || source.sourceLabel).slice(0, 120),
+    series_label: text(source.series_label || source.seriesLabel).slice(0, 160),
+    published_on: text(source.published_on || source.publishedOn),
+    media: source.media && typeof source.media === "object" ? { kind: text(source.media.kind) === "video" ? "video" : "audio", src: text(source.media.src || source.media.url || source.audio_src).slice(0, 500), mime_type: text(source.media.mime_type || source.media.mimeType).slice(0, 80) } : { kind: "audio", src: text(source.audio_src || source.audioSrc).slice(0, 500), mime_type: "" },
+    audio_src: text(source.audio_src || source.audioSrc || source.media && source.media.src).slice(0, 500),
+    transcript_revision: text(source.transcript_revision || source.transcriptRevision) || "1",
+    content_version: text(source.content_version || source.contentVersion) || "1",
+    linked_practice_set_id: text(source.linked_practice_set_id || source.linkedPracticeSetId) || null,
+    units: dictation,
+    tracks: {
+      dictation: { enabled: dictationEnabled, revision: text(tracks.dictation && tracks.dictation.revision) || "1", segments: dictation },
+      shadowing: { enabled: shadowingEnabled, revision: text(tracks.shadowing && tracks.shadowing.revision) || "1", segments: shadowing },
+    },
+    publication_status: "draft",
+    visible: false,
+  };
+}
+
+function listeningTeacherView(material, includeSource = true, metadata = {}) {
+  const source = intensiveListeningService.sourceMaterial(material);
+  const normalized = intensiveListeningService.normalizedMaterial(material);
+  return {
+    material_id: normalized.material_id,
+    set_id: normalized.set_id,
+    title: normalized.title,
+    source_label: normalized.source_label,
+    series_label: normalized.series_label,
+    published_on: normalized.published_on,
+    schema_version: normalized.schema_version,
+    transcript_revision: normalized.transcript_revision,
+    publication_status: normalized.publication_status,
+    has_published: metadata.has_published === true,
+    draft_revision: Math.max(0, Number(material.draft_revision) || 0),
+    updated_at: material.updated_at || null,
+    media: normalized.media,
+    tracks: {
+      dictation: { enabled: normalized.tracks.dictation.enabled, revision: normalized.tracks.dictation.revision, segment_count: normalized.tracks.dictation.segments.length },
+      shadowing: { enabled: normalized.tracks.shadowing.enabled, revision: normalized.tracks.shadowing.revision, segment_count: normalized.tracks.shadowing.segments.length },
+    },
+    source: includeSource ? source : null,
+  };
+}
+
+async function listListeningMaterials() {
+  const [publishedRows, draftRows] = await Promise.all([
+    getAll(LISTENING_MATERIAL_COLLECTION, { orderBy: { field: "updated_at", direction: "desc" } }),
+    getAll(LISTENING_DRAFT_COLLECTION, { orderBy: { field: "updated_at", direction: "desc" } }),
+  ]);
+  const published = new Map(publishedRows.map((row) => [text(row.material_id || row.set_id), row]));
+  const drafts = new Map(draftRows.map((row) => [text(row.material_id || row.set_id), row]));
+  const ids = [...new Set([...published.keys(), ...drafts.keys()])].filter(Boolean);
+  const materials = ids.map((id) => {
+    const draft = drafts.get(id);
+    const live = published.get(id);
+    return listeningTeacherView(draft || live, false, { has_published: Boolean(live) });
+  }).sort((left, right) => new Date(right.updated_at || 0).getTime() - new Date(left.updated_at || 0).getTime());
+  return { success: true, materials };
+}
+
+async function getListeningMaterial(event) {
+  const id = listeningMaterialId(event.material_id || event.set_id);
+  const draft = await getOne(LISTENING_DRAFT_COLLECTION, { material_id: id }) || await getOne(LISTENING_DRAFT_COLLECTION, { set_id: id });
+  const published = await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: id }) || await getOne(LISTENING_MATERIAL_COLLECTION, { set_id: id });
+  const material = draft || published;
+  if (!material) throw new Error("LISTENING_MATERIAL_NOT_FOUND");
+  return { success: true, material: listeningTeacherView(material, true, { has_published: Boolean(published) }) };
+}
+
+function listeningValidation(material) {
+  const normalized = intensiveListeningService.normalizedMaterial(material);
+  const errors = [];
+  const warnings = [];
+  ["dictation", "shadowing"].forEach((track) => {
+    const source = normalized.tracks[track];
+    const segments = source.segments || [];
+    if (source.enabled && !segments.length) errors.push(`${track}: enabled track has no segments`);
+    segments.forEach((segment, index) => {
+      if (segment.end_seconds <= segment.start_seconds) errors.push(`${track} ${index + 1}: end must be after start`);
+      if (!segment.text && segment.practice_mode !== "skip") errors.push(`${track} ${index + 1}: transcript text is required`);
+      if (track === "shadowing" && segment.practice_mode === "shadowing" && intensiveListeningService.normalizedMaterial && intensiveListeningService.normalizedMaterial(material)) {
+        const words = require("../intensiveListening/shadowing-service").referenceWords(segment);
+        if (words.length > 30) errors.push(`${track} ${index + 1}: maximum 30 scored words`);
+        if (!words.length) warnings.push(`${track} ${index + 1}: no scored reference words; verify the transcript`);
+      }
+    });
+  });
+  if (!normalized.media.src) errors.push("common: media source is required");
+  if (!normalized.source_label) warnings.push("common: source label is empty");
+  return { valid: errors.length === 0, errors, warnings, counts: { dictation: normalized.tracks.dictation.segments.length, shadowing: normalized.tracks.shadowing.segments.length } };
+}
+
+async function saveListeningMaterial(event, teacher) {
+  const draft = listeningDraftFromEvent(event);
+  const validation = listeningValidation(draft);
+  if (!validation.valid) throw new Error(`LISTENING_VALIDATION_FAILED:${validation.errors.join("; ")}`);
+  const existing = await getOne(LISTENING_DRAFT_COLLECTION, { material_id: draft.material_id });
+  const published = await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: draft.material_id });
+  const expectedRevision = Math.max(0, Number(event.draft_revision) || 0);
+  const currentRevision = Math.max(0, Number(existing && existing.draft_revision) || 0);
+  if (existing && expectedRevision !== currentRevision) throw new Error("LISTENING_DRAFT_CONFLICT");
+  const now = new Date();
+  const payload = {
+    ...draft,
+    draft_revision: currentRevision + 1,
+    base_publication_revision: Math.max(0, Number(published && published.publication_revision) || 0),
+    updated_at: now,
+    updated_by_teacher_uid: teacher.auth_uid,
+    created_at: existing && existing.created_at || now,
+    created_by_teacher_uid: existing && existing.created_by_teacher_uid || teacher.auth_uid,
+  };
+  if (existing) await db.collection(LISTENING_DRAFT_COLLECTION).doc(existing._id).update(payload);
+  else await db.collection(LISTENING_DRAFT_COLLECTION).doc(draft.material_id).create(payload);
+  return { success: true, saved: true, validation, material: listeningTeacherView(payload, true, { has_published: Boolean(published) }) };
+}
+
+async function validateListeningMaterial(event) {
+  const draft = listeningDraftFromEvent(event);
+  return { success: true, validation: listeningValidation(draft), material: listeningTeacherView(draft, false) };
+}
+
+function listeningTrackChanged(current, candidate, track, commonChanged) {
+  if (!current || commonChanged) return Boolean(current);
+  const currentTrack = intensiveListeningService.normalizedMaterial(current).tracks[track];
+  const candidateTrack = intensiveListeningService.normalizedMaterial(candidate).tracks[track];
+  return JSON.stringify({ enabled: currentTrack.enabled, segments: currentTrack.segments }) !== JSON.stringify({ enabled: candidateTrack.enabled, segments: candidateTrack.segments });
+}
+
+function nextListeningRevision(track) {
+  return `${track.slice(0, 1)}_${Date.now().toString(36)}_${randomRecordId("rev").slice(-8)}`;
+}
+
+function publishedListeningMaterial(draft, current) {
+  if (!current) return draft;
+  const before = intensiveListeningService.normalizedMaterial(current);
+  const after = intensiveListeningService.normalizedMaterial(draft);
+  const commonChanged = JSON.stringify(before.media) !== JSON.stringify(after.media);
+  const dictationChanged = listeningTrackChanged(current, draft, "dictation", commonChanged);
+  const shadowingChanged = listeningTrackChanged(current, draft, "shadowing", commonChanged);
+  const dictationRevision = dictationChanged ? nextListeningRevision("dictation") : before.tracks.dictation.revision;
+  const shadowingRevision = shadowingChanged ? nextListeningRevision("shadowing") : before.tracks.shadowing.revision;
+  return {
+    ...draft,
+    content_version: dictationRevision,
+    dictation_revision: dictationRevision,
+    shadowing_revision: shadowingRevision,
+    transcript_revision: commonChanged ? nextListeningRevision("transcript") : before.transcript_revision,
+    tracks: {
+      ...draft.tracks,
+      dictation: { ...draft.tracks.dictation, revision: dictationRevision },
+      shadowing: { ...draft.tracks.shadowing, revision: shadowingRevision },
+    },
+  };
+}
+
+async function upsertListeningSet(material, status, now) {
+  const normalized = intensiveListeningService.normalizedMaterial(material);
+  const id = normalized.material_id;
+  const set = await getOne("sets", { set_id: id });
+  const setUpdate = {
+    set_id: id,
+    title: normalized.title || id,
+    type: "intensive-listening",
+    course: "Listening",
+    section_id: "intensive-listening",
+    link: `intensive-listening.html?set=${encodeURIComponent(id)}`,
+    visible: status === "published",
+    schema_version: 2,
+    dictation_unit_count: normalized.tracks.dictation.enabled ? listeningShadowing.trainingSegments(normalized, "dictation").length : 0,
+    shadowing_segment_count: normalized.tracks.shadowing.enabled ? listeningShadowing.trainingSegments(normalized, "shadowing").length : 0,
+    track_count: listeningShadowing.enabledTracks(normalized).length,
+    mastery_enabled: false,
+    passing_percentage: 100,
+    mastery_percentage: 100,
+    source_family: normalized.source_family || "",
+    source_label: normalized.source_label || "",
+    series_label: normalized.series_label || "",
+    published_on: normalized.published_on || "",
+    linked_practice_set_id: normalized.linked_practice_set_id || null,
+    updated_at: now,
+  };
+  if (set) await db.collection("sets").doc(set._id).update(setUpdate);
+  else await db.collection("sets").add({ ...setUpdate, created_at: now });
+}
+
+async function publishListeningMaterial(event, teacher) {
+  const id = listeningMaterialId(event.material_id || event.set_id);
+  const draft = await getOne(LISTENING_DRAFT_COLLECTION, { material_id: id });
+  const current = await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: id });
+  if (!draft && !current) throw new Error("LISTENING_MATERIAL_NOT_FOUND");
+  const currentPublicationRevision = Math.max(0, Number(current && current.publication_revision) || 0);
+  if (draft && Math.max(0, Number(draft.base_publication_revision) || 0) !== currentPublicationRevision) {
+    throw new Error("LISTENING_PUBLISH_CONFLICT");
+  }
+  const candidate = publishedListeningMaterial(draft || current, current);
+  const validation = listeningValidation(candidate);
+  if (!validation.valid) throw new Error(`LISTENING_VALIDATION_FAILED:${validation.errors.join("; ")}`);
+  const now = new Date();
+  const nextPublicationRevision = currentPublicationRevision + 1;
+  const payload = {
+    ...candidate,
+    publication_status: "published",
+    publication_revision: nextPublicationRevision,
+    visible: true,
+    published_at: current && current.published_at || now,
+    updated_at: now,
+    updated_by_teacher_uid: teacher.auth_uid,
+    created_at: current && current.created_at || now,
+    created_by_teacher_uid: current && current.created_by_teacher_uid || teacher.auth_uid,
+  };
+  delete payload._id;
+  delete payload.draft_revision;
+  delete payload.base_publication_revision;
+  const beforeNormalized = current ? intensiveListeningService.normalizedMaterial(current) : null;
+  const afterNormalized = intensiveListeningService.normalizedMaterial(payload);
+  const commonChanged = Boolean(beforeNormalized) && JSON.stringify(beforeNormalized.media) !== JSON.stringify(afterNormalized.media);
+  const dictationChanged = !current || listeningTrackChanged(current, payload, "dictation", commonChanged);
+  const shadowingChanged = !current || listeningTrackChanged(current, payload, "shadowing", commonChanged);
+  const impact = commonChanged || (dictationChanged && shadowingChanged)
+    ? "both"
+    : dictationChanged ? "dictation" : shadowingChanged ? "shadowing" : "metadata";
+  const historyId = `listening-history-${id}-${nextPublicationRevision}`;
+  try {
+    await db.collection(LISTENING_HISTORY_COLLECTION).doc(historyId).create({
+      history_id: historyId,
+      material_id: id,
+      previous_publication_revision: currentPublicationRevision,
+      publication_revision: nextPublicationRevision,
+      impact,
+      previous_material: current ? intensiveListeningService.sourceMaterial(current) : null,
+      published_material: intensiveListeningService.sourceMaterial(payload),
+      published_by_teacher_uid: teacher.auth_uid,
+      published_at: now,
+      created_at: now,
+    });
+  } catch (error) {
+    const message = String(error && (error.message || error.code) || "").toLowerCase();
+    if (!message.includes("exist") && !message.includes("duplicate") && !message.includes("already")) throw error;
+  }
+  if (current) await db.collection(LISTENING_MATERIAL_COLLECTION).doc(current._id).update(payload);
+  else await db.collection(LISTENING_MATERIAL_COLLECTION).add(payload);
+  await upsertListeningSet(payload, "published", now);
+  if (draft) await db.collection(LISTENING_DRAFT_COLLECTION).doc(draft._id).remove();
+  return { success: true, material: listeningTeacherView(payload, true, { has_published: true }) };
+}
+
+async function hideListeningMaterial(event, teacher) {
+  const id = listeningMaterialId(event.material_id || event.set_id);
+  const material = await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: id });
+  if (!material) throw new Error("LISTENING_MATERIAL_NOT_FOUND");
+  const now = new Date();
+  const update = { publication_status: "hidden", visible: false, updated_at: now, updated_by_teacher_uid: teacher.auth_uid };
+  await db.collection(LISTENING_MATERIAL_COLLECTION).doc(material._id).update(update);
+  await upsertListeningSet({ ...material, ...update }, "hidden", now);
+  return { success: true, material: listeningTeacherView({ ...material, ...update }, true, { has_published: true }) };
 }
 
 function getAssignmentState(assignments) {
@@ -1713,6 +2041,70 @@ async function integrateOpenAssignmentIntoBatch(
   };
 }
 
+async function listeningTrackSelection(event, setOptions, set) {
+  const requested = Array.isArray(setOptions.listening_tracks)
+    ? setOptions.listening_tracks
+    : Array.isArray(event.listening_tracks) ? event.listening_tracks : [];
+  const normalized = [...new Set(requested.map((track) => text(track).toLowerCase()).filter(Boolean))]
+    .filter((track) => track === "dictation" || track === "shadowing");
+  const material = await getOne(LISTENING_MATERIAL_COLLECTION, { set_id: set.set_id }) || await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: set.set_id });
+  const available = material && material.tracks || {};
+  // Older IL rows have only units and therefore remain Dictation-only. New V2
+  // rows may explicitly opt into one or both tracks.
+  const fallback = ["dictation", "shadowing"].filter((track) => available[track] && available[track].enabled !== false && Array.isArray(available[track].segments) && available[track].segments.some((segment) => {
+    const mode = intensiveListeningService.normalizedPracticeMode(segment);
+    return mode === track;
+  }));
+  if (!fallback.includes("dictation") && material && Array.isArray(material.units) && material.units.some((unit) => intensiveListeningService.normalizedPracticeMode(unit) === "dictation")) fallback.unshift("dictation");
+  const tracks = normalized.length ? normalized : (fallback.length ? fallback : ["dictation"]);
+  tracks.forEach((track) => {
+    if (!fallback.includes(track)) throw new Error("LISTENING_TRACK_DISABLED");
+  });
+  return tracks;
+}
+
+async function ensureListeningAssignmentTracks(student, set, assignmentId, tracks) {
+  if (!assignmentId || !isIntensiveListeningSet(set)) return;
+  const material = await getOne(LISTENING_MATERIAL_COLLECTION, { set_id: set.set_id }) || await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: set.set_id });
+  const now = new Date();
+  const source = material && material.tracks || {};
+  const [dictationProgress, shadowingProgress] = await Promise.all([
+    getOne("intensive_listening_progress", { student_uid: student.auth_uid, set_id: set.set_id }),
+    getOne("listening_shadowing_progress", { student_uid: student.auth_uid, set_id: set.set_id }),
+  ]);
+  for (const track of tracks) {
+    const existing = await getOne(LISTENING_ASSIGNMENT_TRACK_COLLECTION, { assignment_id: assignmentId, student_uid: student.auth_uid, track });
+    const segments = source[track] && Array.isArray(source[track].segments) ? source[track].segments : track === "dictation" ? (material && material.units || []) : [];
+    const historicalPercentage = track === "shadowing"
+      ? Math.max(0, Math.min(100, Number(shadowingProgress && shadowingProgress.percentage) || 0))
+      : Math.max(0, Math.min(100, Number(dictationProgress && (dictationProgress.best_percentage == null ? dictationProgress.percentage : dictationProgress.best_percentage)) || 0));
+    const completedCount = track === "shadowing"
+      ? Number(shadowingProgress && shadowingProgress.qualified_segment_count) || 0
+      : historicalPercentage >= 100 ? segments.filter((segment) => intensiveListeningService.normalizedPracticeMode(segment) === track).length : 0;
+    const payload = {
+      participation_id: existing && (existing.participation_id || existing._id) || randomRecordId("listening-track"),
+      assignment_id: assignmentId,
+      student_uid: student.auth_uid,
+      set_id: set.set_id,
+      track,
+      status: (existing && existing.status === "completed") || historicalPercentage >= 100 ? "completed" : "to_do",
+      segment_count: segments.filter((segment) => intensiveListeningService.normalizedPracticeMode(segment) === track).length,
+      completed_count: Math.max(existing && Number(existing.completed_count) || 0, completedCount),
+      percentage: Math.max(existing && Number(existing.percentage) || 0, historicalPercentage),
+      created_at: existing && existing.created_at || now,
+      updated_at: now,
+    };
+    if (existing) await db.collection(LISTENING_ASSIGNMENT_TRACK_COLLECTION).doc(existing._id).update(payload);
+    else await db.collection(LISTENING_ASSIGNMENT_TRACK_COLLECTION).add(payload);
+  }
+  const participation = await getAll(LISTENING_ASSIGNMENT_TRACK_COLLECTION, { where: { assignment_id: assignmentId, student_uid: student.auth_uid } });
+  const required = participation.filter((row) => tracks.includes(row.track) && row.status !== "cancelled");
+  if (required.length === tracks.length && required.every((row) => row.status === "completed")) {
+    const parent = await getOne("assignments", { assignment_id: assignmentId, student_uid: student.auth_uid });
+    if (parent) await db.collection("assignments").doc(parent._id).update({ status: "passed", completed_at: parent.completed_at || now, latest_percentage: 100, best_percentage: Math.max(Number(parent.best_percentage) || 0, 100), updated_at: now });
+  }
+}
+
 function createAssignmentOptionsBySet(event, setIds) {
   const allowed = new Set(setIds);
   const map = new Map();
@@ -1754,6 +2146,7 @@ async function createAssignments(event, teacher) {
     const dueAt = dueWeekEnd(dueInput);
     if (!dueAt) throw new Error("DUE_WEEK_REQUIRED");
     const isIntensive = isIntensiveListeningSet(set);
+    const listeningTracks = isIntensive ? await listeningTrackSelection(event, setOptions, set) : [];
     const passingPercentage = isIntensive
       ? safePercentage(optionOrEventValue(setOptions, event, "passing_percentage"), 100)
       : safePercentage(
@@ -1770,6 +2163,9 @@ async function createAssignments(event, teacher) {
       ? masteryPercentageForSet(set)
       : Math.max(passingPercentage, masteryPercentageForSet(set));
     const masteryPercentage = isIntensive ? 100 : safePercentage(masteryValue, defaultMastery);
+    if (isIntensive && (hasOwn(setOptions, "passing_percentage") || hasOwn(event, "passing_percentage") || hasOwn(setOptions, "mastery_percentage") || hasOwn(event, "mastery_percentage") || hasOwn(setOptions, "mastery_enabled") || hasOwn(event, "mastery_enabled"))) {
+      throw new Error("LISTENING_ASSIGNMENT_STANDARDS_NOT_ALLOWED");
+    }
     const assignmentBatchId = [
       "assign",
       setId,
@@ -1848,7 +2244,23 @@ async function createAssignments(event, teacher) {
         integrated_existing_assignment: assignmentResult.integratedExisting === true,
         completed_before_assignment: assignmentResult.completedBeforeAssignment === true,
         best_percentage: assignmentResult.bestPercentage == null ? null : assignmentResult.bestPercentage,
+        assignment_kind: isIntensive ? "listening" : "exercise",
+        required_listening_tracks: isIntensive ? listeningTracks : [],
       };
+      if (isIntensive) {
+        const assignmentRecord = await getAssignmentByStableId(assignmentResult.assignmentId);
+        if (assignmentRecord) {
+          await db.collection("assignments").doc(assignmentRecord._id).update({
+            assignment_kind: "listening",
+            required_listening_tracks: listeningTracks,
+            listening_track_count: listeningTracks.length,
+            mastery_enabled: false,
+            mastery_percentage: 100,
+            updated_at: new Date(),
+          });
+        }
+        await ensureListeningAssignmentTracks(student, set, assignmentResult.assignmentId, listeningTracks);
+      }
       created.push(createdItem);
       createdForBatch.push(createdItem);
     }
@@ -3046,7 +3458,7 @@ async function listDisputePage(event) {
   const status = ["pending", "approved", "rejected"].includes(text(event.status))
     ? text(event.status)
     : "pending";
-  const cursor = feedCursor(event.cursor);
+  const cursor = Math.max(0, Number(event.cursor) || 0);
   const [references, totalCount, approvedCount, rejectedCount] = await Promise.all([
     disputeReferenceMaps([], { includeDetails: false }),
     getCount("answer_disputes"),
@@ -4259,6 +4671,13 @@ exports.main = async (event) => {
     if (action === "deleteStudentAccount") return await deleteStudentAccount(event, teacher);
     if (action === "resetStudentPassword") return await resetStudentPassword(event, teacher);
     if (action === "listSets") return await listSets();
+    if (action === "listListeningMaterials") return await listListeningMaterials();
+    if (action === "getListeningMaterial") return await getListeningMaterial(event);
+    if (action === "saveListeningDraft") return await saveListeningMaterial(event, teacher);
+    if (action === "validateListeningMaterial") return await validateListeningMaterial(event);
+    if (action === "previewListeningMaterial") return await getListeningMaterial(event);
+    if (action === "publishListeningMaterial") return await publishListeningMaterial(event, teacher);
+    if (action === "hideListeningMaterial") return await hideListeningMaterial(event, teacher);
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
     if (action === "createAssignments") return await createAssignments(event, teacher);
     if (action === "updateAssignments") return await updateAssignments(event, teacher);
@@ -4339,6 +4758,18 @@ exports.main = async (event) => {
             ? "A Cash request can keep up to three active photos."
           : error.message === "EVIDENCE_FILE_INVALID"
             ? "Choose a JPG, PNG, or WebP photo up to 10 MB."
+          : /^LISTENING_VALIDATION_FAILED/.test(error.message || "")
+            ? `Listening material needs attention: ${(error.message || "").replace(/^LISTENING_VALIDATION_FAILED:?/, "")}`
+          : error.message === "LISTENING_MATERIAL_ID_INVALID"
+            ? "Listening material IDs must start with IL-."
+          : error.message === "LISTENING_MATERIAL_NOT_FOUND"
+            ? "This Listening material was not found."
+          : error.message === "LISTENING_DRAFT_REQUIRED"
+            ? "Listening material data is required."
+          : error.message === "LISTENING_DRAFT_CONFLICT"
+            ? "This Listening draft changed in another tab. Reload it before saving again."
+          : error.message === "LISTENING_PUBLISH_CONFLICT"
+            ? "The published Listening material changed after this draft began. Reload it before publishing."
           : error.message === "MASTERY_REQUIRED"
             ? "Mastery percentage is required when Earn STAR is enabled."
             : error.message === "DUE_WEEK_REQUIRED"

@@ -72,8 +72,9 @@ function testDashboardIntegrationContract() {
   assert(backend.includes("visibleAssignmentViews.concat(selfStudyViews)"), "self-study completions must use the deduplicated assignment projection");
   assert(backend.includes("representedFinishedAssignmentSetIds"), "a finished assignment must deduplicate the same completed set");
   assert(frontend.includes("function finishedAssignments()"));
-  assert(frontend.includes("function studentCalendarFinishedItems()"));
-  assert(frontend.includes("if (item.source === 'self_study')"), "self-study calendar placement must prefer first passing completion");
+  assert(frontend.includes("function studentCalendarAchievementDays()"));
+  assert(frontend.includes("action: 'getAchievementCalendar'"), "achievement dates must come from the server-derived calendar rather than browser inference");
+  assert(backend.includes("achievement_calendar: buildAchievementCalendar({ attempts, sets, compositions, now })"));
   assert(frontend.includes("var finishedCount = (state.assignments || []).filter"));
 }
 

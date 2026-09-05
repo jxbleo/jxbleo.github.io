@@ -2,6 +2,9 @@
 
 const assert = require("assert");
 const { execFileSync } = require("child_process");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
 const publish = require("./publish-github-main");
 
 assert.equal(publish.parseRepoSlug("https://github.com/jxbleo/jxbleo.github.io.git"), "jxbleo/jxbleo.github.io");
@@ -35,6 +38,18 @@ const commitInput = {
   identity: { name: "Mr Cat Release Test", email: "release-test@example.invalid" },
   date: "2026-08-30T00:00:00.000Z",
 };
+const testObjectDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "mrcat-git-objects-"));
+const previousObjectDirectory = process.env.GIT_OBJECT_DIRECTORY;
+let testObjectDirectoryCleaned = false;
+function cleanupTestObjectDirectory() {
+  if (testObjectDirectoryCleaned) return;
+  testObjectDirectoryCleaned = true;
+  if (previousObjectDirectory == null) delete process.env.GIT_OBJECT_DIRECTORY;
+  else process.env.GIT_OBJECT_DIRECTORY = previousObjectDirectory;
+  fs.rmSync(testObjectDirectory, { recursive: true, force: true });
+}
+process.env.GIT_OBJECT_DIRECTORY = testObjectDirectory;
+process.on("exit", cleanupTestObjectDirectory);
 assert.equal(
   publish.createMatchingLocalCommit(commitInput),
   publish.createMatchingLocalCommit(commitInput),
@@ -61,4 +76,5 @@ assert.equal(
   "local reconstruction must match the real GitHub Git Data API commit"
 );
 
+cleanupTestObjectDirectory();
 console.log("GitHub publication fallback contracts passed.");

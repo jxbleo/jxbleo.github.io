@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const shadowing = require("./shadowing-service");
 
 function normalizeAnswer(value) {
   return String(value == null ? "" : value)
@@ -29,6 +30,11 @@ function isCorrect(entry, slot) {
 function practiceMode(unit) {
   const mode = String(unit && unit.practice_mode || "dictation");
   return ["dictation", "listen_only", "skip"].includes(mode) ? mode : "dictation";
+}
+
+function normalizedPracticeMode(unit) {
+  const mode = practiceMode(unit);
+  return mode === "listen_only" ? "context_only" : mode;
 }
 
 function isProvided(slot) {
@@ -113,7 +119,7 @@ function gradeUnit(unit, entries, previousValue, context, replayDelta = 0) {
   const next = {
     checks: previous.checks + (effective ? 1 : 0),
     completed,
-    assisted: false,
+    assisted: previous.assisted === true,
     correct_positions: marks,
     last_marks: marks,
     last_wrong_hashes: marks.map((mark, index) => mark ? "" : hashes[index]),
@@ -133,7 +139,7 @@ function revealUnit(unit, previousValue, replayDelta = 0) {
     remaining: 0,
     state: {
       ...previous,
-      completed: true,
+      completed: false,
       assisted: true,
       reveal_position_version: 2,
       replays: previous.replays + Math.max(0, Math.min(1000, Number(replayDelta) || 0)),
@@ -163,14 +169,14 @@ function progressSummary(material, unitStates) {
 function publicMaterial(material) {
   const units = Array.isArray(material && material.units) ? material.units : [];
   const dictation = dictationUnits(material);
-  return {
+  const output = {
     material_id: String(material.material_id || material.set_id || ""),
     set_id: String(material.set_id || material.material_id || ""),
     title: String(material.title || "Intensive Listening"),
     source_label: String(material.source_label || ""),
     series_label: String(material.series_label || ""),
     published_on: String(material.published_on || ""),
-    audio_src: String(material.audio_src || ""),
+    audio_src: String(material.audio_src || material.audioSrc || material.media && (material.media.src || material.media.audio_src || material.media.audioSrc) || ""),
     content_version: String(material.content_version || "1"),
     policy_revision: Math.max(1, Number(material.policy_revision) || 1),
     unit_count: dictation.length,
@@ -190,6 +196,44 @@ function publicMaterial(material) {
       })),
     })),
   };
+  // V2 fields are additive so existing Dictation clients and compatibility
+  // URLs keep working while new Listening clients can select a Track. The
+  // full reviewed text and Shadowing reference words remain server-only.
+  const normalized = shadowing.normalizeMaterial(material);
+  output.schema_version = normalized.schema_version;
+  output.media = { ...normalized.media };
+  output.transcript_revision = normalized.transcript_revision;
+  output.linked_practice_set_id = normalized.linked_practice_set_id;
+  output.tracks = {};
+  ["dictation", "shadowing"].forEach((track) => {
+    const source = normalized.tracks[track];
+    const training = shadowing.trainingSegments(normalized, track);
+    output.tracks[track] = {
+      enabled: Boolean(source && source.enabled),
+      revision: source && source.revision || "1",
+      segment_count: training.length,
+      segments: shadowing.trackSegments(normalized, track).map((segment) => {
+        const safe = {
+          segment_id: segment.segment_id,
+          start_seconds: segment.start_seconds,
+          end_seconds: segment.end_seconds,
+          speaker: segment.speaker,
+          practice_mode: normalizedPracticeMode(segment),
+        };
+        if (track === "dictation") {
+          safe.slots = (segment.slots || []).map((slot) => ({
+            slot_id: String(slot.slot_id || ""),
+            prefix: String(slot.prefix || ""),
+            suffix: String(slot.suffix || ""),
+            spelling_requirement: isProvided(slot) ? "provided" : "required",
+            provided_text: isProvided(slot) ? String(slot.answer || "") : "",
+          }));
+        }
+        return safe;
+      }),
+    };
+  });
+  return output;
 }
 
 function sourceMaterial(material) {
@@ -202,12 +246,12 @@ function sourceMaterial(material) {
     return [hours, minutes, seconds].map((part) => String(part).padStart(2, "0")).join(":")
       + "." + String(millis).padStart(3, "0");
   };
-  return {
+  const output = {
     schemaVersion: 1,
     materialId: String(material.material_id || material.set_id || ""),
     sourceSetId: String(material.source_set_id || material.set_id || "").replace(/^IL-/, ""),
     title: String(material.title || ""),
-    audioSrc: String(material.audio_src || ""),
+    audioSrc: String(material.audio_src || material.audioSrc || material.media && (material.media.src || material.media.audio_src || material.media.audioSrc) || ""),
     contentVersion: String(material.content_version || "1"),
     policyRevision: Math.max(1, Number(material.policy_revision) || 1),
     segments: (material.units || []).map((unit) => {
@@ -215,13 +259,55 @@ function sourceMaterial(material) {
         speaker: String(unit.speaker || ""),
         text: String(unit.text || ""),
         timestamp: `${secondsClock(unit.start_seconds)}-${secondsClock(unit.end_seconds)}`,
-        practiceMode: practiceMode(unit),
+        practiceMode: normalizedPracticeMode(unit),
       };
       const provided = (unit.slots || []).map((slot, index) => isProvided(slot) ? index + 1 : 0).filter(Boolean);
       if (provided.length) output.providedWordPositions = provided;
       return output;
     }),
   };
+  const normalized = shadowing.normalizeMaterial(material);
+  if (normalized.schema_version >= 2 || material && material.tracks) {
+    output.schemaVersion = 2;
+    output.media = { ...normalized.media };
+    output.transcriptRevision = normalized.transcript_revision;
+    output.linkedPracticeSetId = normalized.linked_practice_set_id;
+    output.tracks = {};
+    ["dictation", "shadowing"].forEach((track) => {
+      const source = normalized.tracks[track];
+      output.tracks[track] = {
+        enabled: Boolean(source && source.enabled),
+        revision: source && source.revision || "1",
+        segments: shadowing.trackSegments(normalized, track).map((segment) => {
+          const item = {
+            segmentId: segment.segment_id,
+            timestamp: `${secondsClock(segment.start_seconds)}-${secondsClock(segment.end_seconds)}`,
+            speaker: segment.speaker,
+            text: segment.text,
+            practiceMode: normalizedPracticeMode(segment),
+          };
+          if (track === "dictation") {
+            item.slots = (segment.slots || []).map((slot) => ({
+              slotId: slot.slot_id,
+              prefix: slot.prefix || "",
+              suffix: slot.suffix || "",
+              answer: slot.answer || "",
+              acceptedAnswers: slot.accepted_answers || [],
+              spellingRequirement: isProvided(slot) ? "provided" : "required",
+            }));
+          } else {
+            item.referenceWords = shadowing.referenceWords(segment).map((word) => ({
+              wordId: word.word_id,
+              text: word.text,
+              unscored: word.unscored === true,
+            }));
+          }
+          return item;
+        }),
+      };
+    });
+  }
+  return output;
 }
 
 function progressScope(material) {
@@ -261,6 +347,7 @@ module.exports = {
   gradeUnit,
   revealUnit,
   practiceMode,
+  normalizedPracticeMode,
   isProvided,
   dictationUnits,
   progressSummary,
@@ -268,4 +355,6 @@ module.exports = {
   sourceMaterial,
   progressScope,
   publicProgress,
+  normalizedMaterial: shadowing.normalizeMaterial,
+  publicListeningMaterial: shadowing.safeTrackMaterial,
 };

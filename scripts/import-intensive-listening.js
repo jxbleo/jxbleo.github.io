@@ -11,8 +11,10 @@ function usage() {
   node scripts/import-intensive-listening.js <material.json> [--set-id <IL-ID>] [--title <title>] [--audio-src <public/path.mp3>] [--content-version <version>] [--source-family <family>] [--source-label <label>] [--series-label <label>] [--published-on <YYYY-MM-DD>] [--linked-practice-set-id <set-id>]
 
 The JSON may be an array of transcript records or a self-contained object with
-materialId, sourceSetId, title, audioSrc, contentVersion, and segments. Segment
-practiceMode values are dictation, listen_only, or skip. Public content contains
+materialId, sourceSetId, title, audioSrc, contentVersion, and segments. V2
+objects may also contain media, transcriptRevision, and explicit tracks with
+dictation and shadowing segments. Segment practiceMode values are dictation,
+listen_only/context_only, or skip. Public content contains
 metadata only; text and answers are written to ignored private source data.`);
 }
 
@@ -60,8 +62,8 @@ function timeRange(record, index) {
     start = clockSeconds(parts[0]);
     end = clockSeconds(parts[1]);
   } else {
-    start = clockSeconds(record.start == null ? record.start_time : record.start);
-    end = clockSeconds(record.end == null ? record.end_time : record.end);
+    start = clockSeconds(record.start == null ? (record.start_time == null ? record.start_seconds : record.start_time) : record.start);
+    end = clockSeconds(record.end == null ? (record.end_time == null ? record.end_seconds : record.end_time) : record.end);
   }
   if (start < 0 || end <= start) throw new Error(`Record ${index} must end after it starts`);
   return { start, end };
@@ -148,10 +150,13 @@ if (/^(?:https?:)?\/\//i.test(audioSrc) || audioSrc.startsWith("/")) throw new E
 const audioPath = path.join(projectRoot, audioSrc);
 if (!fs.existsSync(audioPath)) throw new Error(`Audio file is missing: ${audioSrc}`);
 
-const records = Array.isArray(payload)
+const schemaVersion = Number(payload && (payload.schemaVersion || payload.schema_version)) || 1;
+const sourceTracks = payload && payload.tracks && typeof payload.tracks === "object" ? payload.tracks : null;
+let records = Array.isArray(payload)
   ? payload
-  : ["segments", "transcript", "items", "results"].map((key) => payload && payload[key]).find(Array.isArray);
-if (!records || !records.length) throw new Error("Transcript must be an array or contain a segments array");
+  : ["segments", "transcript", "items", "results"].map((key) => payload && payload[key]).find(Array.isArray)
+    || (sourceTracks && sourceTracks.dictation && Array.isArray(sourceTracks.dictation.segments) ? sourceTracks.dictation.segments : null);
+if (!records) records = [];
 
 const units = records.map((record, index) => {
   if (!record || typeof record !== "object") throw new Error(`Record ${index + 1} must be an object`);
@@ -159,10 +164,18 @@ const units = records.map((record, index) => {
   if (!text) throw new Error(`Record ${index + 1} has no text`);
   const range = timeRange(record, index + 1);
   let practiceMode = String(record.practiceMode || record.practice_mode || "dictation").trim().toLowerCase();
-  if (!["dictation", "listen_only", "skip"].includes(practiceMode)) {
+  if (!["dictation", "listen_only", "context_only", "skip"].includes(practiceMode)) {
     throw new Error(`Record ${index + 1} has unsupported practiceMode: ${practiceMode}`);
   }
-  const slots = practiceMode === "dictation" ? slotsForText(text, index + 1) : [];
+  const suppliedSlots = Array.isArray(record.slots) ? record.slots : null;
+  if (practiceMode === "context_only") practiceMode = "listen_only";
+  const slots = practiceMode === "dictation"
+    ? (suppliedSlots && suppliedSlots.length ? suppliedSlots.map((slot, slotIndex) => ({
+      slot_id: String(slot.slotId || slot.slot_id || `u${String(index + 1).padStart(2, "0")}-w${String(slotIndex + 1).padStart(3, "0")}`),
+      prefix: String(slot.prefix || ""), suffix: String(slot.suffix || ""), answer: String(slot.answer || slot.text || ""),
+      accepted_answers: Array.isArray(slot.acceptedAnswers || slot.accepted_answers) ? (slot.acceptedAnswers || slot.accepted_answers).map(String) : [String(slot.answer || slot.text || "")],
+      spelling_requirement: String(slot.spellingRequirement || slot.spelling_requirement || "required") === "provided" ? "provided" : "required",
+    })) : slotsForText(text, index + 1)) : [];
   const providedPositions = record.providedWordPositions || record.provided_word_positions || [];
   if (!Array.isArray(providedPositions)) throw new Error(`Record ${index + 1} providedWordPositions must be an array`);
   const uniqueProvided = [...new Set(providedPositions.map(Number))];
@@ -187,7 +200,22 @@ const units = records.map((record, index) => {
 });
 
 const dictationUnits = units.filter((unit) => unit.practice_mode === "dictation");
-if (!dictationUnits.length) throw new Error("The material must contain at least one dictation segment");
+const shadowingSegments = sourceTracks && sourceTracks.shadowing && Array.isArray(sourceTracks.shadowing.segments)
+  ? sourceTracks.shadowing.segments.map((segment, index) => {
+    const range = timeRange(segment, index + 1);
+    const text = String(segment.text == null ? segment.transcript || "" : segment.text).trim();
+    if (!text) throw new Error(`Shadowing segment ${index + 1} has no text`);
+    return {
+      segment_id: String(segment.segmentId || segment.segment_id || `shadow-${String(index + 1).padStart(3, "0")}`),
+      speaker: String(segment.speaker || segment.speaker_name || "").trim(), text,
+      start_seconds: range.start, end_seconds: range.end,
+      practice_mode: String(segment.practiceMode || segment.practice_mode || "shadowing").trim().toLowerCase(),
+      reference_words: Array.isArray(segment.referenceWords || segment.reference_words) ? (segment.referenceWords || segment.reference_words).map((word, wordIndex) => ({
+        word_id: String(word.wordId || word.word_id || `w${String(wordIndex + 1).padStart(3, "0")}`), text: String(word.text || ""), unscored: word.unscored === true,
+      })) : [],
+    };
+  }) : [];
+if (!dictationUnits.length && !shadowingSegments.length) throw new Error("The material must contain at least one dictation or shadowing segment");
 
 const material = {
   material_id: setId,
@@ -207,6 +235,26 @@ const material = {
   segmentation_policy: "source_segments",
   units,
 };
+if (schemaVersion >= 2 || sourceTracks) {
+  const dictationTrack = sourceTracks && sourceTracks.dictation || {};
+  const shadowingTrack = sourceTracks && sourceTracks.shadowing || {};
+  material.schema_version = 2;
+  material.schemaVersion = 2;
+  material.media = payload.media && typeof payload.media === "object" ? { ...payload.media } : { audio_src: audioSrc };
+  material.transcript_revision = String(payload.transcriptRevision || payload.transcript_revision || "1");
+  material.tracks = {
+    dictation: {
+      enabled: dictationTrack.enabled !== false && dictationUnits.length > 0,
+      revision: String(dictationTrack.revision || "1"),
+      segments: units.filter((unit) => unit.practice_mode === "dictation").map((unit) => ({ ...unit, segment_id: unit.unit_id })),
+    },
+    shadowing: {
+      enabled: shadowingTrack.enabled !== false && shadowingSegments.length > 0,
+      revision: String(shadowingTrack.revision || "1"),
+      segments: shadowingSegments,
+    },
+  };
+}
 
 const metaPath = path.join(projectRoot, "content", "intensive-listening", `${setId}.json`);
 const meta = {
@@ -216,8 +264,8 @@ const meta = {
   href: `intensive-listening.html?set=${encodeURIComponent(setId)}`,
   publishedOn: publishedOn || String(payload && payload.publishedOn || existingMeta.publishedOn || "") || new Date().toISOString().slice(0, 10),
   topic: seriesLabel,
-  tags: ["Intensive Listening", sourceLabel].filter(Boolean),
-  note: `${dictationUnits.length} dictation units`,
+  tags: ["Listening", sourceLabel].filter(Boolean),
+  note: `${dictationUnits.length + shadowingSegments.length} listening segments`,
   sourceFamily,
   sourceLabel,
   seriesLabel,
@@ -225,6 +273,9 @@ const meta = {
   linkedPracticeSetId: linkedPracticeSetId || null,
   dictationUnitCount: dictationUnits.length,
   sequenceUnitCount: units.length,
+  schemaVersion: material.schema_version || 1,
+  shadowingSegmentCount: shadowingSegments.length,
+  trackCount: (dictationUnits.length ? 1 : 0) + (shadowingSegments.length ? 1 : 0),
   catalogVisible: false,
   visible: true,
 };
@@ -287,6 +338,9 @@ const setRecord = {
   linked_practice_set_id: linkedPracticeSetId || null,
   dictation_unit_count: dictationUnits.length,
   sequence_unit_count: units.length,
+  schema_version: material.schema_version || 1,
+  transcript_revision: material.transcript_revision || "1",
+  tracks: material.tracks || null,
   feedback_policy: "always",
   visible: true,
 };

@@ -2935,3 +2935,21 @@ behavior tests. Production rollout on 2026-09-02 created the three ADMINONLY sca
   `Part B - Individual Response`.
 - Replaced each Part B card's nested Start action with a full-card disclosure
   that opens the 65-second microphone recorder in a focused modal over the Set.
+### 2026-09-05 — Listening V2 vertical slice
+
+Added a unified Listening material chooser, separate Dictation/Shadowing
+progress, server-only Shadowing scoring with Tencent SOE-N isolation, bounded
+WAV validation/quota/idempotency paths, teacher material authoring actions and
+editor, track-aware assignment records, and owner-gated seven-day cleanup.
+Legacy Intensive Listening remains compatible and no CloudBase production
+resources were changed. Main-agent review added server-timed playback credit,
+pre-upload provider gating, a cross-tab single-take lock, transcript-safe word
+feedback, non-completing Dictation reveal, separate Dictation/Shadowing email
+sessions, direct per-line teacher controls, track enable switches, isolated
+optimistic drafts, immutable publication history, and revision-specific
+progress replacement. Final regression review also restored numeric Argue
+pagination after the notification feed adopted compound cursors, moved Git
+publication fixtures into a temporary object database, and raised Shadowing
+selectors, navigation, and take actions to 44px touch targets. The final
+provider audit also added Tencent's required `{"type":"end"}` text frame after
+the one permitted `rec_mode=1` binary WAV message.

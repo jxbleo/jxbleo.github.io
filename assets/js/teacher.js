@@ -326,7 +326,7 @@
             });
         });
     }
-    var teacherViews = ['tasks', 'view', 'library', 'speaking'];
+    var teacherViews = ['tasks', 'view', 'library', 'listening', 'speaking'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -3596,12 +3596,20 @@
     }
 
     function defaultAssignParamsForSet(set) {
+        var intensive = isIntensiveListeningSet(set);
+        var listeningTracks = [];
+        if (intensive) {
+            var availableTracks = set && set.listening_tracks || {};
+            if (availableTracks.dictation === true || Number(set && set.dictation_unit_count) > 0 || (!set.shadowing_segment_count && availableTracks.dictation !== false)) listeningTracks.push('dictation');
+            if (availableTracks.shadowing === true || Number(set && set.shadowing_segment_count) > 0) listeningTracks.push('shadowing');
+        }
         return {
             datePreset: 'this_week',
             week: assignDefaultDateValue(0),
             passingPercentage: formatPercentInput(defaultPassingForSet(set)),
             masteryEnabled: false,
-            masteryPercentage: ''
+            masteryPercentage: '',
+            listeningTracks: listeningTracks
         };
     }
 
@@ -3615,6 +3623,7 @@
         if (!params.week) params.week = assignDefaultDateValue(0);
         if (!params.datePreset) params.datePreset = 'this_week';
         if (!params.passingPercentage) params.passingPercentage = formatPercentInput(defaultPassingForSet(set));
+        if (!Array.isArray(params.listeningTracks)) params.listeningTracks = defaultAssignParamsForSet(set).listeningTracks;
         return params;
     }
 
@@ -3754,20 +3763,28 @@
     function renderAssignParamRow(set) {
         var setId = String(set && set.set_id || '');
         var params = assignParamForSet(set);
+        var intensive = isIntensiveListeningSet(set);
+        var trackControls = intensive ? '<div class="assign-listening-track-controls" role="group" aria-label="Listening tracks">' +
+            ['dictation', 'shadowing'].map(function(track) {
+                var available = track === 'dictation'
+                    ? (set.listening_tracks && set.listening_tracks.dictation === true || Number(set.dictation_unit_count) > 0 || !set.shadowing_segment_count)
+                    : (set.listening_tracks && set.listening_tracks.shadowing === true || Number(set.shadowing_segment_count) > 0);
+                if (!available) return '';
+                return '<label><input type="checkbox" data-set-id="' + escapeHtml(setId) + '" data-assign-param="listeningTracks" data-listening-track="' + track + '"' + (params.listeningTracks.indexOf(track) !== -1 ? ' checked' : '') + '><span>' + (track === 'dictation' ? 'Dictation' : 'Shadowing') + '</span></label>';
+            }).join('') + '</div>' : percentagePickerTriggerHtml(
+                params.passingPercentage,
+                'Passing percentage',
+                'data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage"',
+                'Choose',
+                defaultPassingForSet(set)
+            );
         return '<div class="assign-params-row" role="row">' +
             '<div class="assign-params-cell task" role="cell">' +
                 '<strong>' + escapeHtml(set && (set.title || set.set_id) || setId) + '</strong>' +
                 '<small>' + escapeHtml(setId) + '</small>' +
             '</div>' +
             '<div class="assign-params-cell date" role="cell">' + renderAssignDateControls(setId, params) + '</div>' +
-            '<div class="assign-params-cell passing" role="cell">' +
-                percentagePickerTriggerHtml(
-                    params.passingPercentage,
-                    isIntensiveListeningSet(set) ? 'Completion target' : 'Passing percentage',
-                    'data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage"',
-                    'Choose',
-                    defaultPassingForSet(set)
-                ) +
+            '<div class="assign-params-cell passing" role="cell">' + trackControls +
             '</div>' +
             '<div class="assign-params-cell star" role="cell">' + renderAssignStarControls(setId, params, set) + '</div>' +
         '</div>';
@@ -3784,6 +3801,14 @@
                 ? formatPercentInput(defaultMasteryForSet(set))
                 : '';
             renderAssignParameterTable();
+            return;
+        }
+        if (key === 'listeningTracks') {
+            var track = control.getAttribute('data-listening-track');
+            params.listeningTracks = params.listeningTracks || [];
+            if (control.checked && params.listeningTracks.indexOf(track) === -1) params.listeningTracks.push(track);
+            if (!control.checked) params.listeningTracks = params.listeningTracks.filter(function(item) { return item !== track; });
+            updateAssignOptionsSummary();
             return;
         }
         params[key] = control.value;
@@ -3862,6 +3887,9 @@
             var label = set.title || set.set_id || 'Task';
             var passing = validateAssignPercent(params.passingPercentage, label + ' Passing %', true);
             var intensive = isIntensiveListeningSet(set);
+            if (intensive && (!params.listeningTracks || !params.listeningTracks.length)) {
+                throw new Error('Choose at least one Listening track for ' + label + '.');
+            }
             var masteryEnabled = intensive ? false : params.masteryEnabled === true;
             var mastery = validateAssignPercent(params.masteryPercentage, label + ' Mastery %', masteryEnabled);
             if (masteryEnabled && Number(mastery) < Number(passing)) {
@@ -3871,11 +3899,14 @@
             if (!dueAt) throw new Error('Choose a due week for ' + label + '.');
             var option = {
                 set_id: set.set_id,
-                due_at: dueAt,
-                passing_percentage: passing,
-                mastery_enabled: masteryEnabled
+                due_at: dueAt
             };
-            if (masteryEnabled) option.mastery_percentage = mastery;
+            if (intensive) option.listening_tracks = params.listeningTracks.slice();
+            else {
+                option.passing_percentage = passing;
+                option.mastery_enabled = masteryEnabled;
+                if (masteryEnabled) option.mastery_percentage = mastery;
+            }
             return option;
         });
         return {
@@ -8174,13 +8205,13 @@
     function initialTeacherView() {
         if (restoredTeacherWorkspaceView) return restoredTeacherWorkspaceView;
         var view = new URLSearchParams(window.location.search).get('view') || '';
-        return view === 'library' ? 'library' : (view === 'speaking' ? 'speaking' : 'view');
+        return view === 'library' ? 'library' : (view === 'listening' ? 'listening' : (view === 'speaking' ? 'speaking' : 'view'));
     }
 
     function rememberTeacherView(viewName) {
         if (teacherViews.indexOf(viewName) === -1 || !window.history || !window.history.replaceState) return;
         var url = new URL(window.location.href);
-        if (viewName === 'library') url.searchParams.set('view', viewName);
+        if (viewName === 'library' || viewName === 'listening') url.searchParams.set('view', viewName);
         else url.searchParams.delete('view');
         var nextState = Object.assign({}, window.history.state || {});
         if (nextState[TEACHER_HISTORY_STATE_KEY]) {
@@ -8210,6 +8241,7 @@
         if (viewName === 'tasks') updateAssignView();
         if (viewName === 'view') renderAssignmentOverview();
         if (viewName === 'library') renderTeacherLibrary(teacherLibraryActiveTab);
+        if (viewName === 'listening' && window.__MRCAT_TEACHER_LISTENING_TEST__ && window.__MRCAT_TEACHER_LISTENING_TEST__.setView) window.__MRCAT_TEACHER_LISTENING_TEST__.setView();
         if (viewName === 'speaking' && window.MrCatTeacherSpeaking) window.MrCatTeacherSpeaking.load();
         if (viewName === 'view' && teacherLiveDataLoadedAt
             && Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {

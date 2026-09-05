@@ -1178,3 +1178,31 @@ scan provider reuses the Writing vision adapter and marks quota usage at the
 actual outbound provider-request boundary. Commit reuses the shared personal-
 vocabulary upsert; dictionary enrichment remains the existing post-save
 behavior.
+### Listening V2 provider and track boundary
+
+The Listening V2 gateway keeps Dictation in the existing `intensiveListening`
+service and adds an additive track contract. `shadowing-service.js` owns pure
+normalization, stable reference-word IDs, word-state alignment, pass/cap scoring,
+progress monotonicity, WAV validation, and duplicate keys. `tencent-soe-n.js`
+is the only Tencent SOE-N signing/WebSocket adapter and is imported by the cloud
+function only; browser code cannot call a provider or receive credentials.
+Shadowing complete-listen credit uses a server-issued, segment-bound token with
+an earliest-completion time derived from the reviewed segment duration; a
+browser-generated timer cannot increment reveal progress. Takes use a reserve →
+private upload → register upload → finish flow, with a cancellation cleanup path
+for interrupted browser uploads, a transaction-owned single-active
+take lock per student, deterministic client idempotency, provider outcome
+categories, and usage rows claimed immediately before the outbound request.
+The Tencent adapter signs the documented host/path/appid plus sorted unescaped
+query, waits for the JSON handshake, sends one complete recording, and accepts
+only the final provider result. Product score uses Tencent `SuggestedScore` and
+applies the reviewed red-word pass cap. `listeningMaintenance` is a timer-token-
+gated cleanup boundary for expired takes and seven-day audio.
+
+Teacher authoring uses a separate ADMINONLY `listening_material_drafts` record,
+so saving work never mutates or hides the current learner-visible material.
+Draft revisions reject stale multi-tab saves; the captured publication revision
+rejects a stale publish. Publishing replaces the one current material, writes a
+private immutable `listening_material_history` audit row, and changes only the
+affected Dictation/Shadowing revision unless shared media changed, in which case
+both revisions change. Students never select a version.

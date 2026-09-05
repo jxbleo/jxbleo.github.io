@@ -2405,3 +2405,18 @@ Parent Mode do not receive this entry point. The server enforces authentication,
 idempotency, one active scan, per-page retry, and 10-scan/30-page Shanghai-day
 quotas. Once owner-gated infrastructure and smoke testing are complete, the
 feature switch applies to every active student rather than a cohort.
+### Listening V2: Dictation and Shadowing
+
+Listening is one material surface with explicit Dictation and Shadowing tracks.
+Existing Intensive Listening URLs remain valid and are Dictation-compatible;
+legacy `listen_only` segments normalize to `context_only` at the service
+boundary. Shadowing is line-based: each segment requires a complete audible play
+before a private recording can be scored, uses the approved server-side Tencent
+SOE-N adapter, and qualifies at an integer score of 80 or above. A red word caps
+the product score at 79; a yellow word may still qualify. Transcript text and
+reference words stay server-only until the student's configured reveal threshold
+(1/2/3/5 complete listens, default 3, or off). Best scores are monotonic and
+unqualified lines appear in a To Improve queue. Shadowing never creates STARs,
+Argue requests, or teacher score overrides. Raw valid takes are private and
+cleaned by the owner-gated maintenance job within seven days; invalid takes are
+deleted immediately.

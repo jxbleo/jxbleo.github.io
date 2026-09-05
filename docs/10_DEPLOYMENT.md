@@ -1448,3 +1448,15 @@ functions, or publish without the owner's exact authorization.
 ### 2026-09-02 rollout record
 
 With explicit owner authorization, production received the three ADMINONLY scan collections and all documented indexes, updated `studentVocabulary`, new `vocabularyScan` and `vocabularyScanWorker` functions, an enabled one-minute worker timer with matching private token, authenticated-only Scan access, worker `invoke: false`, and `VOCABULARY_SCAN_ENABLED=true`. Empty-worker and unauthenticated Scan invocations passed; real-student end-to-end photo/OCR verification remains a post-publication smoke check.
+### Listening V2 rollout
+
+Before rollout, the owner must create the ADMINONLY Listening V2 collections and
+indexes, review/import private material and track rows, approve a scoring policy,
+bind Tencent SOE-N credentials only in CloudBase, and configure the
+`LISTENING_MAINTENANCE_TOKEN` timer payload. Package `intensiveListening`,
+`teacherAdmin`, and `listeningMaintenance` locally, then run the Listening test
+suite and release verification. Keep `intensiveListening` at a timeout of at
+least 30 seconds so its bounded seven-second provider wait leaves time for
+authenticated reads, private-file validation, and terminal persistence. This
+worktree performed none of those
+production actions and contains no provider credentials.

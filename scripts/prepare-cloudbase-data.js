@@ -397,6 +397,9 @@ function buildSet(meta, overrides = {}) {
   if (type === "intensive-listening") {
     set.dictation_unit_count = Number(meta.dictationUnitCount || overrides.dictationUnitCount || 0);
     set.sequence_unit_count = Number(meta.sequenceUnitCount || overrides.sequenceUnitCount || 0);
+    set.shadowing_segment_count = Number(meta.shadowingSegmentCount || overrides.shadowingSegmentCount || 0);
+    set.track_count = Number(meta.trackCount || overrides.trackCount || 0);
+    set.schema_version = Number(meta.schemaVersion || overrides.schemaVersion || 1);
     set.mastery_enabled = false;
     set.passing_percentage = overrides.passingPercentage == null ? 100 : overrides.passingPercentage;
     set.mastery_percentage = 100;
@@ -499,7 +502,10 @@ function main() {
   listJson(path.join(projectRoot, "content", "intensive-listening")).filter(selectedFile).forEach((metaPath) => {
     const meta = readJson(metaPath);
     const material = privateSourceFor("intensive-listening", meta.id);
-    if (!material || !Array.isArray(material.units) || !material.units.length) {
+    const trackSegments = material && material.tracks && typeof material.tracks === "object"
+      ? Object.values(material.tracks).reduce((count, track) => count + (Array.isArray(track && track.segments) ? track.segments.length : 0), 0)
+      : 0;
+    if (!material || (!Array.isArray(material.units) || !material.units.length) && !trackSegments) {
       throw new Error(`Intensive Listening ${meta.id} is missing its private material source`);
     }
     if (String(material.set_id || "") !== String(meta.id)) {
@@ -508,7 +514,7 @@ function main() {
     sets.push(buildSet(meta, {
       type: "intensive-listening",
       course: "Intensive Listening",
-      estimatedMinutes: Math.max(1, Math.ceil(Number(material.units.at(-1).end_seconds || 0) / 60)),
+      estimatedMinutes: Math.max(1, Math.ceil(Number((material.units || []).at(-1) && (material.units || []).at(-1).end_seconds || (material.tracks && material.tracks.shadowing && material.tracks.shadowing.segments || []).at(-1) && (material.tracks.shadowing.segments || []).at(-1).end_seconds || 0) / 60)),
       passingPercentage: 100,
       masteryPercentage: 100,
       sourceFamily: material.source_family || meta.sourceFamily,
@@ -519,6 +525,9 @@ function main() {
       linkedPracticeSetId: material.linked_practice_set_id || meta.linkedPracticeSetId,
       dictationUnitCount: (material.units || []).filter((unit) => String(unit.practice_mode || "dictation") === "dictation").length,
       sequenceUnitCount: (material.units || []).length,
+      shadowingSegmentCount: (material.tracks && material.tracks.shadowing && material.tracks.shadowing.segments || []).length,
+      trackCount: Object.keys(material.tracks || {}).filter((track) => material.tracks[track] && material.tracks[track].enabled !== false && Array.isArray(material.tracks[track].segments) && material.tracks[track].segments.length).length,
+      schemaVersion: Number(material.schema_version || material.schemaVersion || meta.schemaVersion || 1),
     }));
     material.source_family = material.source_family || meta.sourceFamily || "";
     material.source_label = material.source_label || meta.sourceLabel || "";
@@ -526,6 +535,8 @@ function main() {
     material.published_on = material.published_on || meta.publishedOn || "";
     material.source_set_id = material.source_set_id || meta.sourceSetId || meta.id.replace(/^IL-/, "");
     material.linked_practice_set_id = material.linked_practice_set_id || meta.linkedPracticeSetId || null;
+    material.schema_version = Number(material.schema_version || material.schemaVersion || meta.schemaVersion || 1);
+    material.transcript_revision = String(material.transcript_revision || material.transcriptRevision || "1");
     intensiveListeningMaterials.push(material);
   });
 

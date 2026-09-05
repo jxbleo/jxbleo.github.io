@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
+
+const root = path.resolve(__dirname, "..");
+const importer = fs.readFileSync(path.join(root, "scripts", "import-intensive-listening.js"), "utf8");
+const prepare = fs.readFileSync(path.join(root, "scripts", "prepare-cloudbase-data.js"), "utf8");
+const html = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
+const shadowing = fs.readFileSync(path.join(root, "assets", "js", "listening-shadowing.js"), "utf8");
+const service = fs.readFileSync(path.join(root, "cloudfunctions", "intensiveListening", "service.js"), "utf8");
+const maintenance = fs.readFileSync(path.join(root, "cloudfunctions", "listeningMaintenance", "index.js"), "utf8");
+const gateway = fs.readFileSync(path.join(root, "cloudfunctions", "intensiveListening", "index.js"), "utf8");
+const teacherHtml = fs.readFileSync(path.join(root, "teacher.html"), "utf8");
+
+assert.match(importer, /explicit tracks/);
+assert.match(importer, /schemaVersion/);
+assert.match(importer, /transcript_revision/);
+assert.match(importer, /shadowingSegmentCount/);
+assert.match(prepare, /shadowingSegmentCount/);
+assert.match(service, /provided_text/);
+assert.match(html, /data-listening-track="dictation"/);
+assert.match(html, /data-listening-track="shadowing"/);
+assert.match(html, /Show transcript after/);
+assert.match(html, /Your raw take is private and temporary/);
+assert.match(shadowing, /reserveShadowingTake/);
+assert.match(shadowing, /finishShadowingTake/);
+assert.match(shadowing, /startListen/);
+assert.match(shadowing, /registerShadowingUpload/);
+assert.match(shadowing, /cancelShadowingTake/);
+assert.match(shadowing, /audioDataToWav/);
+assert.match(shadowing, /mrcat:listening-shadowing-progress/);
+assert.match(fs.readFileSync(path.join(root, "assets", "js", "intensive-listening.js"), "utf8"), /Dictation complete\. Choose Shadowing above/);
+assert.match(gateway, /earliest_complete_at/);
+assert.match(gateway, /billable_claimed/);
+assert.match(gateway, /student_take_lock/);
+assert.match(gateway, /assertShadowingProviderConfigured/);
+assert.match(teacherHtml, /teacher-listening-segment-list/);
+assert.match(teacherHtml, /data-listening-track-enabled="dictation"/);
+assert.match(teacherHtml, /data-listening-track-enabled="shadowing"/);
+assert.doesNotMatch(teacherHtml, /Dictation segments JSON/);
+const teacherAdmin = fs.readFileSync(path.join(root, "cloudfunctions", "teacherAdmin", "index.js"), "utf8");
+assert.match(teacherAdmin, /listening_material_drafts/);
+assert.match(teacherAdmin, /LISTENING_DRAFT_CONFLICT/);
+assert.match(teacherAdmin, /listening_material_history/);
+assert.match(maintenance, /LISTENING_MAINTENANCE_TOKEN/);
+assert.match(maintenance, /delete_after/);
+console.log("Listening authoring and UI contract tests passed.");

@@ -155,11 +155,177 @@ The real-name, period-specific ordering of eligible Class members by Completed
 Class Items, with equal counts sharing the same rank.
 _Avoid_: Overall ability ranking, cross-course score ranking
 
-## Intensive Listening
+## Listening
+
+**Listening Entry**:
+The single action on an existing Library listening-exercise card that opens its
+linked Listening Material. Library does not expose Dictation or Shadowing as
+separate actions and does not show either Track's progress; Track selection and
+Track progress belong inside Listening.
+_Avoid_: Dictation card, Shadowing card, Track progress on Library
+
+**Listening Material**:
+One complete audio- or video-led learning source with one reviewed transcript and
+one optional linked listening-comprehension exercise. It may enable a Dictation
+Track, a Shadowing Track, or both without becoming duplicate Library materials.
+_Avoid_: Practice Track, media file, separate Shadowing material
+
+**Listening Practice Track**:
+Exactly one independently assignable and progress-bearing training mode within a
+Listening Material: Dictation or Shadowing. The two Tracks share Source Media and
+the reviewed transcript but may use different Segment boundaries.
+_Avoid_: Duplicate material, UI version, linked comprehension exercise
+
+**Listening Assignment**:
+One teacher-created task requiring the learner to complete the Dictation Track,
+the Shadowing Track, or both for one Listening Material. A two-Track assignment
+appears as one task but finishes only after each required Track is complete; it
+uses a due week rather than a percentage or STAR standard.
+_Avoid_: Two material assignments, score-threshold assignment, STAR assignment
+
+**Listening Track Progress**:
+One learner's durable completion state for one Practice Track of one Listening
+Material. Dictation and Shadowing progress are independent and appear inside
+Listening, never on the Library card.
+_Avoid_: Listening-comprehension exercise progress, Library progress, combined score
+
+**Listening Draft**:
+A teacher-only proposed replacement for the current Listening Material or one of
+its Practice Tracks. Editing, validation, and preview do not affect learners
+until the teacher explicitly publishes it.
+_Avoid_: Live material, student-visible version, autosaved publication
+
+**Published Listening Material**:
+The one current learner-visible state of a Listening Material. Publishing a
+Draft replaces this state after showing which Practice Track progress will be
+recalculated; private audit history is not a selectable learner version.
+_Avoid_: Parallel edition, draft preview, deleted history
+
+**Dictation Track**:
+The Listening Practice Track in which required Word Slots are typed and spelling
+policy may be challenged through Argue.
+_Avoid_: Shadowing, complete Listening Material
+
+**Dictation Track Completion**:
+The state reached only when every Dictation Segment in the current Track is
+complete. Context-Only and Skipped Segments do not add graded requirements.
+_Avoid_: Listening-comprehension exercise completion, average score threshold
+
+**Shadowing Track**:
+The Listening Practice Track in which Student Takes receive one Shadowing Score
+and unsatisfactory results are resolved only through retry.
+_Avoid_: Dictation, complete Listening Material
+
+**Source Media**:
+The complete audio or video used by one Listening Material and shared by its
+enabled Practice Tracks.
+Segment boundaries refer to positions in this media rather than to physically
+cut files.
+_Avoid_: Student recording, per-segment clip
+
+**Shadowing Segment**:
+One timestamped speech unit that the learner hears and then reproduces in a
+Student Take. Audio-led practice records after audible playback has finished;
+video-led practice may replay the same picture silently during recording so the
+learner can dub the speaker without capturing the model audio.
+_Avoid_: Sentence, Word Slot, recording over audible Source Media
+
+**Student Take**:
+One learner recording made for one Shadowing Segment after its Source Media
+playback.
+_Avoid_: Source Media, complete session recording, reusable voiceprint
+
+**Temporary Take Audio**:
+The private raw audio for one valid Student Take, retained for no more than seven
+days and then automatically deleted. Shadowing keeps durable scores and word
+states but no long-term recording archive; invalid, silent, or corrupt captures
+are discarded as soon as validation finishes.
+_Avoid_: Learning portfolio, permanent teaching archive, voiceprint source
+
+**Independent Pass**:
+A Shadowing Segment passed without the learner revealing its reviewed transcript.
+After a pass, practice advances automatically to the next Segment.
+_Avoid_: Assisted Completion, merely viewing feedback
+
+**Assisted Completion**:
+A Shadowing Segment completed after its reviewed transcript has been revealed.
+The transcript may appear automatically after the learner's chosen number of
+complete listens, and assisted completion never counts as an Independent Pass.
+_Avoid_: Independent Pass, failed attempt
+
+**Transcript Reveal Threshold**:
+The learner-controlled number of complete Source Media plays after which a
+Shadowing Segment's reviewed transcript appears automatically. The learner may
+turn automatic reveal off; starting playback without completing the Segment does
+not advance this count.
+_Avoid_: Failed-take count, replay-button taps, teacher-only setting
+
+**Muted Dubbing Playback**:
+For video-led practice, replaying the current video picture without its audio
+while recording the Student Take, aligned to the same Segment boundaries.
+_Avoid_: Silent source material, simultaneous audible shadowing
+
+**Almost Result**:
+A Student Take that is close enough for the learner to continue voluntarily but
+does not satisfy Independent Pass. It never advances automatically.
+_Avoid_: Pass, failure that blocks continuation
+
+**Shadowing Score**:
+The single learner-visible integer from 0 to 100 returned for one valid Student
+Take. A score of 80 or higher qualifies the Segment and advances practice
+automatically; 79 or lower does not qualify it. Internal assessment evidence may
+support this number but is not presented as separate learner scores. It measures
+complete, intelligible, and reasonably connected reproduction of the reviewed
+wording; it does not grade voice identity, gender, emotion, or imitation of the
+source speaker's personal accent.
+_Avoid_: Multiple visible subscores, teacher-adjustable passing line
+
+**Shadowing Word Feedback**:
+The transcript-level explanation of one Student Take using only three word
+states: normal text for a clearly matched word, yellow for a matched but
+borderline word, and red for a clearly misread, omitted, unrecorded, or very
+low-accuracy word. A red word prevents that Take from reaching the qualifying
+score. The product does not infer an articulatory cause from a low score.
+_Avoid_: Phoneme diagnosis, generated pronunciation explanation, green wall of text
+
+**Shadowing Retry Resolution**:
+The exclusive learner remedy for an unsatisfactory Shadowing Score: record
+another Student Take and retain the higher Best Shadowing Score. Shadowing has
+no student Argue or teacher score-override path; Argue remains limited to
+Dictation Word Slots and their spelling policy.
+_Avoid_: Shadowing dispute, teacher-adjusted Shadowing Score
+
+**Unscored Reference Word**:
+A reviewed proper name, place name, rare expression, or unclear source word that
+remains visible in the Shadowing transcript but is excluded from word colour and
+Shadowing Score calculation for every learner using that material policy.
+_Avoid_: Provided Word, accepted paraphrase, learner-specific exception
+
+**Best Shadowing Score**:
+The highest valid Shadowing Score one learner has achieved for one Shadowing
+Segment. A later lower Student Take remains history but never lowers this value.
+_Avoid_: Latest score, material-wide average
+
+**Qualified Segment**:
+A Shadowing Segment whose Best Shadowing Score is at least 80, whether achieved
+independently or after transcript assistance.
+_Avoid_: Merely visited Segment, Almost Result
+
+**To Improve Queue**:
+The ordered return path containing every Shadowing Segment the learner chose to
+continue past before reaching a Best Shadowing Score of 80. After the first pass
+through the material, practice returns to these Segments until they qualify.
+_Avoid_: Failed material, optional recommendations
+
+**Shadowing Track Completion**:
+The state reached only when every Shadowing Segment in the current material has
+qualified. It is based on qualified-Segment count, not an average of Segment
+scores; assisted Segments count while retaining their assistance marker.
+_Avoid_: Reaching the end once, average score threshold
 
 **Listening Segment**:
-One timestamped part of an Intensive Listening Material whose teaching behavior
-is explicitly Dictation, Listen Only, or Skip.
+One timestamped part of a Dictation Track whose teaching behavior is explicitly
+Dictation, Context Only, or Skip.
 _Avoid_: Sentence, physically cut audio file
 
 **Dictation Segment**:
@@ -167,7 +333,7 @@ A Listening Segment whose required Word Slots must be transcribed before the
 segment is complete.
 _Avoid_: Every transcript row, listen-only passage
 
-**Listen-Only Segment**:
+**Context-Only Segment**:
 A Listening Segment that students hear in sequence without typing or grading.
 _Avoid_: Skipped Segment, free-answer question
 
@@ -439,14 +605,6 @@ A fixed, expiring external projection created by a voice-confirmed VIP
 Participant. It identifies only that sharing participant and keeps every other
 participant anonymous.
 _Avoid_: Live report, invitation link, authenticated report
-
-**Intensive Listening Library**:
-An authenticated student catalog backed by visible sets plus live private
-materials. Cards expose source metadata, Completion progress, one optional
-linked practice exercise, and a safe same-origin return; transcript units,
-answers, and timing remain server-only.
-_Avoid_: Public transcript catalog, ordinary Library tab, or local progress as
-the authority.
 
 **Teacher Share Snapshot**:
 A fixed, expiring external projection whose content and per-participant name

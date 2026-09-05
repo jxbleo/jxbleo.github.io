@@ -136,3 +136,10 @@ Before commercial use, review:
 Scan Words V1 is implemented. Keep context-specific dictionary senses, image
 token boxes, PDF scanning, scan history, and context-aware AI enrichment as
 explicit post-V1 backlog items; they are intentionally outside this release.
+### Listening V2 follow-up
+
+Owner-gated production policy approval, Tencent cost/quality benchmarking,
+collection indexes, timer configuration, and real-device microphone smoke tests
+remain rollout work. Future iterations may add richer phoneme feedback and
+teacher analytics, but must preserve the 80/79 product boundary and private
+provider contract.

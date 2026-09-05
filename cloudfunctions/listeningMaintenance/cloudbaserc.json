@@ -5,10 +5,10 @@
   "functionRoot": ".",
   "functions": [
     {
-      "name": "intensiveListening",
+      "name": "listeningMaintenance",
       "runtime": "Nodejs18.15",
       "handler": "index.main",
-      "timeout": 30,
+      "timeout": 60,
       "memorySize": 256,
       "installDependency": false
     }

@@ -7,16 +7,17 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/mrcat-apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#f3f8f8">
-  <title>Intensive Listening · Mr. Cat Academy</title>
+  <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
   <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260831-2">
+  <link rel="stylesheet" href="assets/css/listening-shadowing.css?v=20260905-2">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
     <button class="il-back" id="back-button" type="button" aria-label="Back">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path></svg>
     </button>
-    <span class="il-toolbar-title">Intensive Listening</span>
+    <span class="il-toolbar-title">Listening</span>
     <div class="il-header-progress">
       <progress id="header-progress" max="100" value="0"></progress>
       <strong id="header-progress-label">0%</strong>
@@ -36,6 +37,18 @@
         <span><strong id="independent-count">0</strong><small>Independent</small></span>
         <span><strong id="assisted-count">0</strong><small>With answer</small></span>
         <span><strong id="replay-count">0</strong><small>Replays</small></span>
+      </div>
+    </section>
+
+    <section class="listening-track-chooser" id="listening-track-chooser" hidden aria-labelledby="listening-track-title">
+      <div>
+        <span class="il-eyebrow">LISTENING WORKSPACE</span>
+        <h2 id="listening-track-title">Choose how you want to practise</h2>
+        <p>Every material keeps Dictation and Shadowing progress separate.</p>
+      </div>
+      <div class="listening-track-actions" role="group" aria-label="Listening tracks">
+        <button class="listening-track-button is-selected" type="button" data-listening-track="dictation" aria-pressed="true"><span>Dictation</span><small>Listen, type, check</small></button>
+        <button class="listening-track-button" type="button" data-listening-track="shadowing" aria-pressed="false"><span>Shadowing</span><small>Listen, record, improve</small></button>
       </div>
     </section>
 
@@ -75,12 +88,27 @@
         <button class="il-continue" id="continue-button" type="button">Continue</button>
       </div>
     </section>
+
+    <section class="shadowing-workspace" id="shadowing-workspace" hidden aria-labelledby="shadowing-title">
+      <div class="shadowing-heading">
+        <div><span class="il-eyebrow">SHADOWING</span><h2 id="shadowing-title">Hear it. Say it. Make it yours.</h2><p id="shadowing-subtitle">Listen all the way through before you record your first take.</p></div>
+        <div class="shadowing-summary" aria-label="Shadowing progress"><strong id="shadowing-progress-percent">0%</strong><span id="shadowing-progress-copy">0 of 0 lines qualified</span></div>
+      </div>
+      <div class="shadowing-controls">
+        <label for="shadowing-reveal-threshold">Show transcript after</label>
+        <select id="shadowing-reveal-threshold"><option value="1">1 complete listen</option><option value="2">2 complete listens</option><option value="3" selected>3 complete listens</option><option value="5">5 complete listens</option><option value="off">Never automatically</option></select>
+        <span class="shadowing-safe-note">Your raw take is private and temporary.</span>
+      </div>
+      <video class="shadowing-video" id="shadowing-video" preload="metadata" playsinline hidden></video>
+      <div class="shadowing-list" id="shadowing-list" aria-live="polite"></div>
+      <p class="shadowing-status" id="shadowing-status" role="status" aria-live="polite"></p>
+    </section>
   </main>
 
   <section class="il-start-screen" id="start-screen">
     <div class="il-start-card">
       <span class="il-eyebrow">FOCUS SESSION</span>
-      <h1 id="start-title">Intensive Listening</h1>
+      <h1 id="start-title">Listening</h1>
       <p id="start-copy">Preparing your material…</p>
       <button class="il-start-button" id="start-button" type="button" disabled><span id="start-button-label">Loading</span></button>
       <span class="il-start-note" id="start-note">The first unit waits for you. Later units play once automatically.</span>
@@ -94,7 +122,7 @@
       <h1>Listening finished.</h1>
       <p id="completion-summary"></p>
       <div class="il-completion-actions">
-        <a class="il-finish" id="completion-finish" href="intensive-listening-library.html">Back to Intensive Listening</a>
+        <a class="il-finish" id="completion-finish" href="intensive-listening-library.html">Back to Listening</a>
         <button class="il-restart" id="restart-button" type="button">Clear &amp; Start Again</button>
       </div>
       <span class="il-restart-note">A new run is temporary. Your 100% best record stays locked.</span>
@@ -134,6 +162,7 @@
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-  <script src="assets/js/intensive-listening.js?v=20260831-2"></script>
+  <script src="assets/js/intensive-listening.js?v=20260905-1"></script>
+  <script src="assets/js/listening-shadowing.js?v=20260905-2"></script>
 </body>
 </html>
