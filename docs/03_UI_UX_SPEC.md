@@ -2847,6 +2847,14 @@ terminal. When at least one page succeeds, a green `Scan complete` guide appears
 above the OCR text and explains both gestures: tap adds one word; long-press starts
 a phrase, after which any individually tapped words in that same sentence—including
 non-adjacent words—join the phrase.
+
+The selected-candidate drawer must never grow with the candidate count. With at
+least one selection it uses a fixed compact viewport-height-capped frame; only
+the candidate list scrolls, so a long article remains visible and selectable.
+Candidate rows use a smaller word label, one-line Context preview, and compact
+Remove control. The count header and `Add <n> items` action remain fixed above
+and below the internal list. With zero selections the drawer contracts to its
+empty controls, and its existing header toggle can collapse or restore the list.
 ### Listening V2 interaction surface
 
 The visible product language is `Listening`. The ordinary Library keeps its

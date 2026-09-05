@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-05 — Compact fixed Scan Words selection drawer
+
+- Stopped the Scan Words selected-candidate drawer from growing with long
+  articles or large selections; candidates now scroll inside a fixed-height
+  drawer while the OCR text remains visible.
+- Reduced selected-word, Context, spacing, and Remove-control sizes while
+  preserving touch-friendly actions, the fixed count header, and Add action.
+- Kept the drawer compact when empty and made its existing count toggle collapse
+  the complete drawer height as well as the internal list.
+
 ## 2026-09-04 — Centred Speaking dialogs on phones
 
 - Replaced the phone-only bottom-sheet treatment with one viewport-centred
