@@ -10,6 +10,7 @@ const root = path.resolve(__dirname, "..");
 const dashboard = fs.readFileSync(path.join(root, "dashboard.html"), "utf8");
 const libraryHtml = fs.readFileSync(path.join(root, "intensive-listening-library.html"), "utf8");
 const libraryJs = fs.readFileSync(path.join(root, "assets/js/intensive-listening-library.js"), "utf8");
+const intensiveCss = fs.readFileSync(path.join(root, "assets/css/intensive-listening.css"), "utf8");
 const dashboardJs = fs.readFileSync(path.join(root, "assets/js/dashboard.js"), "utf8");
 const teacherJs = fs.readFileSync(path.join(root, "assets/js/teacher.js"), "utf8");
 const ielts = fs.readFileSync(path.join(root, "ielts-listening.html"), "utf8");
@@ -34,6 +35,11 @@ function testDashboardCapsules() {
   assert.match(libraryHtml, /ill-search/);
   assert.match(libraryHtml, /Newest/);
   assert.match(libraryHtml, /Oldest/);
+  assert.match(
+    intensiveCss,
+    /@media \(max-width: 680px\)[\s\S]*?\.il-header \{ top: max\(10px, env\(safe-area-inset-top\)\);[\s\S]*?margin-top: max\(14px, env\(safe-area-inset-top\)\);/,
+    "The phone practice toolbar should match the Writing/Speaking top spacing while retaining the safe area"
+  );
   assert.match(teacherJs, /data-open-intensive-event-id/);
   assert.match(teacherJs, /attempt_offset/);
   assert.match(teacherJs, /return !\/\^IL-/);

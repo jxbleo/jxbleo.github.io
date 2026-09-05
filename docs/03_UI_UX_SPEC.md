@@ -2807,7 +2807,10 @@ The Library and practice runtime share the same workspace language as Writing
 and Speaking: a floating glass toolbar with a circular leading Back control and
 centered current title, a soft spatial-gradient page background, large rounded
 glass surfaces, compact pill/segmented controls, and consistent 44px-or-larger
-actions. Intensive Listening keeps its own teal accent so the feature remains
+actions. On narrow screens, the practice toolbar keeps the same 14px visual
+top offset as the Writing and Speaking workspaces while respecting a larger
+device safe-area inset. Intensive Listening keeps its own teal accent so the
+feature remains
 identifiable without returning to the former dark utility header. Practice
 progress stays in the toolbar, material statistics sit inside the opening glass
 panel, and Start, Completion, Leave, and Argue states use the same light glass

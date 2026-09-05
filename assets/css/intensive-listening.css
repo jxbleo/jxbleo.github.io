@@ -236,7 +236,7 @@ button.il-answer-token:hover, button.il-answer-token:focus-visible { border-colo
   .il-material-heading { grid-template-columns: 1fr; align-items: start; }
 }
 @media (max-width: 680px) {
-  .il-header { top: max(8px, env(safe-area-inset-top)); width: calc(100% - 20px); margin-top: max(8px, env(safe-area-inset-top)); grid-template-columns: 44px minmax(0, 1fr) auto; gap: 8px; border-radius: 22px; }
+  .il-header { top: max(10px, env(safe-area-inset-top)); width: calc(100% - 20px); margin-top: max(14px, env(safe-area-inset-top)); grid-template-columns: 44px minmax(0, 1fr) auto; gap: 8px; border-radius: 22px; }
   .il-toolbar-title { padding-inline: 4px; }
   .il-header-progress { min-width: 3.1em; grid-template-columns: auto; }
   .il-header-progress progress { display: none; }

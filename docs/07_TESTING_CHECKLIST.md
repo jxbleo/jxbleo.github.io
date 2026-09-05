@@ -2726,9 +2726,11 @@ At 390px and 1024px widths, verify Library and practice use the shared floating
 glass toolbar, circular Back control, centered title, spatial background, and
 rounded glass panels without horizontal overflow. Long material titles must
 ellipsis in the toolbar while remaining complete in the page heading. On phone,
-the progress rail collapses to the percentage; Start, main practice, Completion,
-Leave, and Argue surfaces remain inside safe-area insets. Repeat with Reduced
-Motion, Reduced Transparency, and Increased Contrast.
+the practice toolbar has the same 14px visual top offset as Writing and Speaking
+(or the larger device safe-area inset), and the progress rail collapses to the
+percentage; Start, main practice, Completion, Leave, and Argue surfaces remain
+inside safe-area insets. Repeat with Reduced Motion, Reduced Transparency, and
+Increased Contrast.
 
 ### Speaking Set Library and Individual Response
 

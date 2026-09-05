@@ -3016,3 +3016,11 @@ the one permitted `rec_mode=1` binary WAV message.
   trusted native SCF timer envelope while retaining the private token fallback.
 - Kept Tencent SOE-N scoring disabled and the score policy unapproved pending
   representative real-audio benchmarking and explicit owner activation.
+
+## 2026-09-06 — Listening practice toolbar spacing
+
+- Matched the narrow-screen Listening practice toolbar's top offset to the
+  Writing and Speaking workspaces while preserving larger device safe-area
+  insets.
+- Cache-busted the Listening practice stylesheet and added a focused regression
+  assertion for the mobile toolbar position.
