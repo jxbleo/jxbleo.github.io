@@ -45,17 +45,19 @@ Current verification uses:
 Dashboard learning-workspace checks:
 
 - desktop and 320/375/390/430px phone widths show exactly three stacked bands
-  in Writing, Intensive Listening, Speaking order with no horizontal overflow;
+  in Writing Space, Listening Studio, Speaking Lab order with no horizontal
+  overflow;
 - the pale hero contains only the greeting and motivational sentence; no
   `THIS WEEK` progress row or progress track returns. The three cards sit below
   it as independent surfaces, align with its exact left/right edges, and have no
   shared outer container;
-- visible titles read `WRITING`, `INTENSIVE LISTENING`, and
-  `SPEAKING · HKDSE PAPER 4`; the Speaking purpose names Group Interaction, and
-  its accessible/confirmation copy names HKDSE Paper 4 Speaking;
-- the cards use separate blue, teal, and orange pale-glass washes with circular
-  `写`, `听`, and `说` identifiers. The confirmation still repeats the approved
-  pen, headphones, or microphone SVG;
+- visible titles read `Writing Space`, `Listening Studio`, and `Speaking Lab`.
+  Speaking Lab shows a small same-line `HKDSE Paper 4` capsule; its purpose and
+  accessible/confirmation copy name Group Interaction and Individual Response;
+- the cards use separate blue, teal, and orange pale-glass washes with compact
+  rounded-square notebook-and-pen, headphones-and-waveform, and microphone
+  icons in the former right-side glyph position. No `写`, `听`, or `说` remains.
+  The confirmation still repeats the matching SVG;
 - tablet and desktop show the complete purpose sentence. At 320/375/390/430px,
   all three cards keep equal heights and each purpose wraps naturally without
   clipping or page overflow;

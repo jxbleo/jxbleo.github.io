@@ -16,15 +16,17 @@ const teacherJs = fs.readFileSync(path.join(root, "assets/js/teacher.js"), "utf8
 const ielts = fs.readFileSync(path.join(root, "ielts-listening.html"), "utf8");
 
 function testDashboardCapsules() {
-  assert.match(dashboard, /student-skill-card writing[^>]*aria-label="Writing\./);
-  assert.match(dashboard, /student-skill-card intensive-listening[^>]*aria-label="Intensive Listening\./);
-  assert.match(dashboard, /student-skill-card speaking[^>]*aria-label="Speaking\./);
+  assert.match(dashboard, /student-skill-card writing[^>]*aria-label="Writing Space\./);
+  assert.match(dashboard, /student-skill-card intensive-listening[^>]*aria-label="Listening Studio\./);
+  assert.match(dashboard, /student-skill-card speaking[^>]*aria-label="Speaking Lab for HKDSE Paper 4\./);
   assert.ok(dashboard.indexOf("student-skill-card writing") < dashboard.indexOf("student-skill-card intensive-listening"));
   assert.ok(dashboard.indexOf("student-skill-card intensive-listening") < dashboard.indexOf("student-skill-card speaking"));
-  assert.ok(!dashboard.includes("DSE Speaking Lab"));
-  assert.ok(!dashboard.includes(">◎<"));
   const capsuleMarkup = dashboard.slice(dashboard.indexOf('<section class="student-skill-entries"'), dashboard.indexOf('<section class="student-workspace-confirm-overlay"'));
-  assert.ok(!/<strong>\s*(?:WRITING|INTENSIVE LISTENING|SPEAKING)\s*<\/strong>/.test(capsuleMarkup));
+  assert.match(capsuleMarkup, /student-skill-title">Writing Space</);
+  assert.match(capsuleMarkup, /student-skill-title">Listening Studio</);
+  assert.match(capsuleMarkup, /student-skill-title">Speaking Lab</);
+  assert.match(capsuleMarkup, /student-skill-badge">HKDSE Paper 4</);
+  assert.ok(!/data-glyph=|>写<|>听<|>说</.test(capsuleMarkup));
   assert.strictEqual((capsuleMarkup.match(/class="student-skill-icon"/g) || []).length, 3);
   assert.strictEqual((capsuleMarkup.match(/<svg/g) || []).length, 3);
   assert.match(dashboard, /id="student-workspace-confirm-overlay"/);

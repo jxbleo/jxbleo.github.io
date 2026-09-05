@@ -241,15 +241,19 @@ Navigation:
   motivational sentence; the former `THIS WEEK` progress surface is not
   rendered. Keep about 40px of visible air between the top tool bar and the
   hero. Directly below it, render exactly three independent full-width
-  learning-workspace cards in Writing, Intensive Listening, and Speaking order.
+  learning-workspace cards in Writing Space, Listening Studio, and Speaking Lab
+  order.
   Their outer edges align exactly with the welcome hero, with no shared dark or
   glass container around the group. Each card uses its own pale glass surface,
   a restrained blue, teal, or orange wash, a visible English title and purpose
-  sentence, plus a circular `写`, `听`, or `说` identifier. Phone layouts wrap
-  purpose copy naturally inside three equal-height cards instead of horizontally
-  scrolling it. The Speaking
-  title reads `SPEAKING · HKDSE PAPER 4`; its purpose and confirmation explicitly
-  identify HKDSE Paper 4 Group Interaction rather than generic speaking work.
+  sentence. A compact rounded-square notebook-and-pen, headphones-and-waveform,
+  or microphone icon occupies the former right-side `写`, `听`, or `说` position;
+  those Chinese glyphs are no longer rendered. Phone layouts preserve that
+  right-side icon position and wrap purpose copy naturally inside three
+  equal-height cards instead of horizontally scrolling it. Speaking Lab alone
+  adds a small `HKDSE Paper 4` capsule on the same line as its title; its purpose
+  and confirmation explicitly identify Group Interaction and Individual
+  Response rather than generic speaking work.
   Pointer-down immediately compresses the whole band. Reduced Motion removes
   positional motion. An ordinary click or tap opens a lightweight,
   focus-trapped confirmation dialog that repeats the chosen pen, headphones, or

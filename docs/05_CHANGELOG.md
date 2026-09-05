@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-06 — Dashboard learning-workspace identities
+
+- Renamed the three student Dashboard entrances to `Writing Space`, `Listening
+  Studio`, and `Speaking Lab`, with concise purpose copy covering grammar and
+  language, listening plus Shadowing, and DSE speaking feedback.
+- Replaced the large `写`, `听`, and `说` identifiers with restrained
+  rounded-square notebook-and-pen, headphones-and-waveform, and microphone
+  icons while preserving their existing right-side phone position.
+- Added a compact same-line `HKDSE Paper 4` capsule to Speaking Lab and kept the
+  complete card responsive at 320px and wider.
+
 ## 2026-09-06 — Sidebar title-edit mode
 
 - Removed the title pencil from the Writing toolbar so long titles can travel
@@ -58,7 +69,6 @@
 - Added smoothed full-screen quiet, suitable, too-loud, and microphone-signal
   states with matching plain-language guidance, while retaining delayed quality
   warnings to avoid reacting to brief pauses.
-
 ## 2026-09-04 — Centred Speaking dialogs on phones
 
 - Replaced the phone-only bottom-sheet treatment with one viewport-centred

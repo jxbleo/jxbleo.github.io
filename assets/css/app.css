@@ -2132,7 +2132,7 @@ html.teacher-modal-scroll-locked {
     --skill-focus: rgba(44, 114, 216, 0.28);
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 104px;
+    grid-template-columns: minmax(0, 1fr) 64px;
     align-items: center;
     gap: 24px;
     min-height: 154px;
@@ -2201,12 +2201,33 @@ html.teacher-modal-scroll-locked {
     color: #627078;
     line-height: 1.5;
 }
+.student-skill-title-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    white-space: nowrap;
+}
 .student-skill-title {
-    color: var(--skill-tone);
+    color: #1f2b2e;
     font-size: clamp(1.08rem, 1.6vw, 1.28rem);
-    font-weight: 820;
-    letter-spacing: 0.045em;
-    line-height: 1.12;
+    font-weight: 760;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+}
+.student-skill-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 9px;
+    border: 1px solid var(--skill-edge);
+    border-radius: 999px;
+    color: var(--skill-tone);
+    background: rgba(255, 255, 255, 0.56);
+    font-size: 0.62rem;
+    font-weight: 780;
+    letter-spacing: 0.025em;
+    line-height: 1;
 }
 .student-skill-sentence {
     display: block;
@@ -2218,29 +2239,28 @@ html.teacher-modal-scroll-locked {
     position: relative;
     display: grid;
     place-items: center;
-    width: 104px;
-    height: 104px;
+    width: 64px;
+    height: 64px;
     border: 1px solid var(--skill-edge);
-    border-radius: 50%;
+    border-radius: 19px;
     color: var(--skill-tone);
-    background: rgba(255, 255, 255, 0.48);
-    box-shadow: 0 14px 28px var(--skill-glow), inset 0 1px rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.57);
+    box-shadow: 0 10px 24px var(--skill-glow), inset 0 1px rgba(255, 255, 255, 0.92);
     transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1), color 220ms ease, background 220ms ease;
 }
-.student-skill-icon::before {
-    content: attr(data-glyph);
-    font-size: 3.7rem;
-    font-weight: 760;
-    letter-spacing: -0.08em;
-    line-height: 1;
-}
 .student-skill-card .student-skill-icon svg {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    -webkit-clip-path: inset(50%);
-    clip-path: inset(50%);
+    width: 31px;
+    height: 31px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.student-skill-card .student-skill-pen-solid,
+.student-workspace-confirm-icon .student-skill-pen-solid {
+    fill: currentColor;
+    stroke: none;
 }
 .student-workspace-confirm-icon svg {
     width: 32px;
@@ -2254,13 +2274,13 @@ html.teacher-modal-scroll-locked {
 .student-skill-card:hover .student-skill-icon,
 .student-skill-card:focus-visible .student-skill-icon {
     color: var(--skill-tone);
-    background: rgba(255, 255, 255, 0.64);
-    transform: translateX(-7px) scale(1.025);
+    background: rgba(255, 255, 255, 0.72);
+    transform: scale(1.04);
 }
 @media (max-width: 640px) {
     .student-skill-entries { gap: 12px; margin: 12px 0 24px; }
     .student-skill-card {
-        grid-template-columns: minmax(0, 1fr) 76px;
+        grid-template-columns: minmax(0, 1fr) 58px;
         gap: 12px;
         min-height: 154px;
         padding: 20px;
@@ -2268,12 +2288,24 @@ html.teacher-modal-scroll-locked {
     }
     .student-skill-copy { gap: 5px; }
     .student-skill-title { font-size: 1rem; }
+    .student-skill-title-row { gap: 7px; }
+    .student-skill-badge {
+        min-height: 22px;
+        padding: 0 7px;
+        font-size: 0.56rem;
+        letter-spacing: 0.01em;
+    }
     .student-skill-sentence {
         font-size: 0.8rem;
         line-height: 1.4;
     }
-    .student-skill-icon { width: 76px; height: 76px; }
-    .student-skill-icon::before { font-size: 2.8rem; }
+    .student-skill-icon { width: 58px; height: 58px; border-radius: 18px; }
+    .student-skill-card .student-skill-icon svg { width: 29px; height: 29px; }
+}
+@media (max-width: 360px) {
+    .student-skill-card { padding-inline: 17px; }
+    .student-skill-title { font-size: 0.96rem; }
+    .student-skill-badge { padding-inline: 6px; font-size: 0.53rem; }
 }
 @media (prefers-reduced-motion: reduce) {
     .student-skill-card,
