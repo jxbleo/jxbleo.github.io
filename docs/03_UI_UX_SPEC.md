@@ -315,20 +315,26 @@ Navigation:
 - the My Words notebook icon in the right-side utility group opens a compact
   quick-preview dialog rather than navigating immediately. The dialog shares
   the Calendar/Assignments width, glass material, backdrop, materialization,
-  page-scroll lock, and external `Close` capsule. Its header contains only a
-  44px green `+` action aligned to the upper-right; the former `My Words`, saved
-  total, and `Recently saved` labels are absent. Pressing `+` opens a compact
-  anchored choice menu for `Direct Input` and `Scan`. Direct Input reveals a
-  word-or-short-phrase field in the same anchored surface, saves immediately,
-  and refreshes the preview. Scan routes to `my-words.html?add=scan`, where the
-  complete authenticated Scan Words surface opens automatically. The dialog's
+  page-scroll lock, and external `Close` capsule. Its header contains only two
+  44px actions aligned to the upper-right: a green `+` and a separate camera
+  icon; the former `My Words`, saved total, and `Recently saved` labels are
+  absent. Pressing `+` directly opens a compact anchored manual-entry form with
+  two stacked fields: required word-or-short-phrase and an optional Context
+  sentence capped at 320 characters. Saving keeps the Context with that saved
+  example, refreshes the preview, and begins normal dictionary enrichment.
+  Pressing the camera opens the complete authenticated Scan Words flow as a
+  separate, large centred Dashboard modal above the preview; a dimmed/blurred
+  backdrop preserves its origin and it does not navigate into the My Words
+  workspace. Closing Scan Words returns to the still-open preview at the same
+  Dashboard position, while a successful batch refreshes its recent words
+  automatically. The dialog's
   independently scrollable body shows at most the
   seven most recently active words, each reduced to English, part of speech, a
   single-line Chinese meaning, and pronunciation. Its fixed footer contains no
   remaining-word count and provides one full-width `Open My Words` action to
   `my-words.html`. Search, add, edit, delete, export, sorting, Notes, and full
   dictionary detail remain exclusive to the dedicated workspace, apart from
-  this intentionally bounded direct-input action, so Dashboard never mounts a
+  this intentionally bounded manual-entry action, so Dashboard never mounts a
   second complete My Words runtime. Backdrop and Escape do not
   dismiss the preview; explicit Close restores focus and the exact prior page
   position

@@ -869,6 +869,47 @@ html.teacher-modal-scroll-locked {
     width: 44px;
     height: 44px;
 }
+.student-words-camera-button {
+    color: var(--accent-dark);
+    border: 1px solid rgba(19,118,109,0.16);
+    background: rgba(255,255,255,0.78);
+    box-shadow: 0 7px 18px rgba(20,54,47,0.09);
+}
+.student-words-camera-button:hover {
+    color: #fff;
+    border-color: transparent;
+    background: var(--accent-dark);
+}
+.student-words-camera-button[aria-disabled="true"] {
+    opacity: 0.45;
+    pointer-events: none;
+}
+.liquid-glass-dashboard .my-words-scan-overlay {
+    z-index: 2250;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+    background: rgba(17, 38, 34, 0.42);
+    -webkit-backdrop-filter: blur(12px) saturate(118%);
+    backdrop-filter: blur(12px) saturate(118%);
+}
+.liquid-glass-dashboard .my-words-scan-overlay[hidden] { display: none; }
+.liquid-glass-dashboard .my-words-scan-shell {
+    width: min(1120px, calc(100% - 12px));
+    height: min(900px, calc(100dvh - 36px));
+    min-height: 0;
+    margin: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    border-radius: 32px;
+    background:
+        radial-gradient(circle at 88% 2%, rgba(169, 225, 205, 0.58), transparent 31rem),
+        linear-gradient(145deg, #f7fbf8, #e8f4ee);
+    box-shadow: 0 28px 96px rgba(12, 36, 30, 0.3), 0 3px 14px rgba(12, 36, 30, 0.12);
+    scrollbar-gutter: stable;
+}
 #student-words-preview-add-trigger svg { transition: transform 180ms ease; }
 #student-words-preview-add-trigger[aria-expanded="true"] svg { transform: rotate(45deg); }
 .student-words-preview-add-menu {
@@ -876,8 +917,8 @@ html.teacher-modal-scroll-locked {
     z-index: 4;
     top: 61px;
     right: 18px;
-    width: min(292px, calc(100% - 36px));
-    padding: 8px;
+    width: min(360px, calc(100% - 36px));
+    padding: 14px;
     border: 1px solid rgba(255,255,255,0.9);
     border-radius: 18px;
     background: rgba(250,252,251,0.94);
@@ -888,70 +929,50 @@ html.teacher-modal-scroll-locked {
     animation: studentWordsAddMenuIn 180ms cubic-bezier(.22,1,.36,1) both;
 }
 .student-words-preview-add-menu[hidden] { display: none; }
-.student-words-preview-add-choices {
+.student-words-preview-add-form {
     display: grid;
-    gap: 4px;
+    gap: 11px;
 }
-.student-words-preview-add-choices > button,
-.student-words-preview-add-choices > a {
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
-    align-items: center;
-    gap: 10px;
-    min-height: 54px;
-    padding: 7px 10px;
-    border: 0;
-    border-radius: 13px;
-    color: var(--ink);
-    background: transparent;
-    font: inherit;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-}
-.student-words-preview-add-choices > button:hover,
-.student-words-preview-add-choices > a:hover {
-    background: rgba(19,118,109,0.09);
-}
-.student-words-preview-add-choices svg {
-    width: 22px;
-    height: 22px;
-    justify-self: center;
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.9;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.student-words-preview-add-choices span { display: grid; gap: 2px; }
-.student-words-preview-add-choices strong { font-size: 0.84rem; }
-.student-words-preview-add-choices small { color: var(--muted); font-size: 0.7rem; }
-.student-words-preview-add-form { padding: 7px; }
 .student-words-preview-add-form > label {
-    display: block;
-    margin: 0 2px 8px;
+    display: grid;
+    gap: 6px;
+}
+.student-words-preview-add-form > label > span {
     color: var(--muted);
     font-size: 0.72rem;
     font-weight: 760;
 }
-.student-words-preview-add-form > div {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 7px;
+.student-words-preview-add-form > label small {
+    margin-left: 4px;
+    font-size: 0.66rem;
+    font-weight: 650;
 }
-.student-words-preview-add-form input {
+.student-words-preview-add-form input,
+.student-words-preview-add-form textarea {
     min-width: 0;
-    min-height: 44px;
-    padding: 0 12px;
+    width: 100%;
+    padding: 11px 12px;
     border: 1px solid rgba(19,118,109,0.2);
     border-radius: 12px;
     color: var(--ink);
     background: rgba(255,255,255,0.9);
     font: inherit;
     font-size: 16px;
+    line-height: 1.35;
+}
+.student-words-preview-add-form input { min-height: 44px; }
+.student-words-preview-add-form textarea {
+    min-height: 76px;
+    resize: vertical;
+}
+.student-words-preview-add-form input:focus,
+.student-words-preview-add-form textarea:focus {
+    border-color: rgba(19,118,109,0.52);
+    box-shadow: 0 0 0 3px rgba(19,118,109,0.09);
+    outline: none;
 }
 .student-words-preview-add-form button {
-    min-width: 64px;
+    width: 100%;
     min-height: 44px;
     padding: 0 14px;
     border: 0;
@@ -966,7 +987,7 @@ html.teacher-modal-scroll-locked {
 .student-words-preview-add-form button:disabled { opacity: 0.56; cursor: default; }
 .student-words-preview-add-form p {
     min-height: 1.2em;
-    margin: 7px 2px 0;
+    margin: -4px 2px 0;
     color: var(--muted);
     font-size: 0.7rem;
     line-height: 1.3;
@@ -4098,9 +4119,8 @@ body:not(.teacher-page) .tab-button.active {
 .my-words-message .profile-actions { width: min(220px, 100%); }
 
 .student-words-dialog-icon:focus-visible,
-.student-words-preview-add-choices > button:focus-visible,
-.student-words-preview-add-choices > a:focus-visible,
 .student-words-preview-add-form input:focus-visible,
+.student-words-preview-add-form textarea:focus-visible,
 .student-words-preview-add-form button:focus-visible,
 .student-words-outside-close:focus-visible,
 .my-word-toggle:focus-visible,
@@ -4139,6 +4159,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-words-dialog-head,
     .student-words-dialog-footer,
     .student-words-preview-add-menu,
+    .liquid-glass-dashboard .my-words-scan-overlay,
     .student-words-outside-close,
     .student-calendar-dialog,
     .student-calendar-outside-close,

@@ -203,6 +203,7 @@
         say('');
         if (state.didCommit) window.dispatchEvent(new CustomEvent('mrcat:scan-committed'));
         state.didCommit = false;
+        window.dispatchEvent(new CustomEvent('mrcat:scan-closed'));
         if (state.lastFocus && state.lastFocus.focus) state.lastFocus.focus();
     }
 
@@ -1065,6 +1066,7 @@
     function open() {
         state.lastFocus = document.activeElement;
         state.didCommit = false;
+        window.dispatchEvent(new CustomEvent('mrcat:scan-opened'));
         overlay.hidden = false;
         lockPage();
         setPhase('choose');

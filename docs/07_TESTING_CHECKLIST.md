@@ -1728,16 +1728,21 @@ Check:
 - group metadata is stored
 - the Dashboard notebook opens a glass preview with no more than the seven most
   recent active words. Each row shows English, POS, a one-line Chinese meaning,
-  and pronunciation. Confirm the header contains only a top-right `+`, with no
-  `My Words`, total-word, or `Recently saved` fields, and the fixed footer shows
-  `Open My Words` without a remaining-word count
-- press the preview `+` and confirm its anchored menu offers only `Direct Input`
-  and `Scan`. Direct Input accepts one word or short phrase, validates and saves
-  it without leaving Dashboard, refreshes the recent list, and starts normal
-  dictionary enrichment. Scan enters `my-words.html`, removes the one-time
-  `add=scan` query, and immediately opens the full Scan Words surface
-- with the add menu open, click elsewhere in the preview and press Escape in
-  separate passes; both close only the add surface, restore the `+` state, and
+  and pronunciation. Confirm the header contains only a top-right `+` and camera
+  pair, with no `My Words`, total-word, or `Recently saved` fields, and the fixed
+  footer shows `Open My Words` without a remaining-word count
+- press the preview `+` and confirm it directly opens two stacked fields: a
+  required word/short phrase and an optional Context sentence. Saving with and
+  without Context must remain on Dashboard, refresh the recent list, start
+  normal dictionary enrichment, and retain the entered Context as the saved
+  example. The plus path must not show an intermediate choice menu
+- press the separate camera action and confirm the URL stays on Dashboard while
+  the full Scan Words flow opens as an independent centred modal above the My
+  Words preview, with the Dashboard dimmed and no page-like navigation. Close
+  it and confirm the preview is restored in place; complete a scan and confirm
+  the recent-word preview refreshes automatically
+- with manual entry open, click elsewhere in the preview and press Escape in
+  separate passes; both close only the entry surface, restore the `+` state, and
   leave the My Words preview open. Confirm 44px controls, visible keyboard focus,
   reduced-motion behavior, and an opaque fallback under Reduced Transparency
 - the preview shares the Dashboard modal width/material, external `Close`, and

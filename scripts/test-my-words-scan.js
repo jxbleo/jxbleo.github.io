@@ -87,14 +87,14 @@ assert(html.includes("data-scan-progress") && html.includes("data-scan-progress-
 assert(html.includes("Long-press") && html.includes("not next to each other"));
 assert(html.includes('data-scan-mode="crop"') && html.includes('data-scan-mode="mask"') && html.includes('data-scan-mode="erase"'));
 assert(html.includes("data-scan-preview") && html.includes("data-scan-page-prev"));
-assert(html.includes("assets/js/my-words-scan.js?v=20260905-1") && html.includes("assets/css/my-words-scan.css?v=20260905-1"));
+assert(html.includes("assets/js/my-words-scan.js?v=20260906-1") && html.includes("assets/css/my-words-scan.css?v=20260905-1"));
 
 assert(js.includes("getBoundingClientRect") && js.includes("destination-out"));
 assert(js.includes("cropHandles") && js.includes("exportProcessed") && js.includes("3000"));
 assert(js.includes("longPressMove") && js.includes("data-scan-finish-phrase"));
 assert(js.includes("flushCandidateSync") && js.includes("candidate_revision"));
 assert(js.includes("getPagePreview") && js.includes("removePage") && js.includes("retryPage"));
-assert(js.includes("state.didCommit") && js.includes("mrcat:scan-committed"));
+assert(js.includes("state.didCommit") && js.includes("mrcat:scan-opened") && js.includes("mrcat:scan-committed") && js.includes("mrcat:scan-closed"));
 assert(js.includes("focusTrap") && js.includes("window.scrollTo(0, state.scrollY)"));
 assert(js.includes("openPhotoChoice") && js.includes("pendingPhotoReplaceIndex") && js.includes("my-words-scan-photo-card"));
 assert(js.includes("renderScanProgress") && js.includes("showReviewReady") && js.includes("aria-valuenow"));

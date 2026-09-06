@@ -11,9 +11,10 @@
     <meta name="theme-color" content="#f4f8f5">
     <title>Dashboard | Mr. Cat Academy</title>
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260906-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260906-4">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260902-2">
+    <link rel="stylesheet" href="assets/css/my-words-scan.css?v=20260905-1">
     <link rel="prefetch" href="my-words.html" as="document">
     <link rel="prefetch" href="assets/css/my-words.css?v=20260808-1" as="style">
     <link rel="prefetch" href="assets/js/my-words.js?v=20260808-1" as="script">
@@ -191,27 +192,26 @@
             <div class="student-words-stack" role="dialog" aria-modal="true" aria-label="Recent saved words">
                 <section class="student-words-dialog">
                     <header class="student-words-dialog-head">
-                        <button class="student-words-dialog-icon" id="student-words-preview-add-trigger" type="button" aria-label="Add to My Words" aria-expanded="false" aria-controls="student-words-preview-add-menu">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"></path></svg>
-                        </button>
+                        <div class="student-words-dialog-actions">
+                            <button class="student-words-dialog-icon" id="student-words-preview-add-trigger" type="button" aria-label="Enter a word manually" aria-expanded="false" aria-controls="student-words-preview-add-menu">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"></path></svg>
+                            </button>
+                            <button class="student-words-dialog-icon student-words-camera-button" type="button" data-preview-scan data-open-scan aria-label="Scan words from photos">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6.5" width="18" height="13" rx="3"></rect><path d="m8 6.5 1.3-2h5.4l1.3 2"></path><circle cx="12" cy="13" r="3.2"></circle></svg>
+                            </button>
+                        </div>
                     </header>
                     <section class="student-words-preview-add-menu" id="student-words-preview-add-menu" aria-hidden="true" hidden inert>
-                        <div class="student-words-preview-add-choices" role="group" aria-label="Choose how to add words">
-                            <button type="button" data-preview-direct-input>
-                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 19.5h4l10.6-10.6a2.1 2.1 0 0 0-3-3L5 16.5l-1 3Z"></path><path d="m13.8 7.7 3 3"></path></svg>
-                                <span><strong>Direct Input</strong><small>Type a word or phrase</small></span>
-                            </button>
-                            <a href="my-words.html?add=scan" data-preview-scan>
-                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5a1 1 0 0 0-1 1v3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path><path d="M7 12h10"></path></svg>
-                                <span><strong>Scan</strong><small>Add from photos</small></span>
-                            </a>
-                        </div>
-                        <form class="student-words-preview-add-form" id="student-words-preview-add-form" hidden>
-                            <label for="student-words-preview-add-input">Word or short phrase</label>
-                            <div>
-                                <input id="student-words-preview-add-input" type="text" maxlength="120" autocomplete="off" placeholder="Type a word or short phrase">
-                                <button type="submit">Add</button>
-                            </div>
+                        <form class="student-words-preview-add-form" id="student-words-preview-add-form">
+                            <label for="student-words-preview-add-input">
+                                <span>Word or phrase</span>
+                                <input id="student-words-preview-add-input" type="text" maxlength="120" autocomplete="off" placeholder="Enter a word or short phrase" required>
+                            </label>
+                            <label for="student-words-preview-context-input">
+                                <span>Context <small>Optional</small></span>
+                                <textarea id="student-words-preview-context-input" maxlength="320" rows="3" placeholder="Enter the sentence containing this word"></textarea>
+                            </label>
+                            <button type="submit">Add to My Words</button>
                             <p id="student-words-preview-add-status" role="status" aria-live="polite"></p>
                         </form>
                     </section>
@@ -244,6 +244,136 @@
 
     </main>
 
+    <section id="my-words-scan-overlay" class="my-words-scan-overlay" hidden aria-labelledby="my-words-scan-title">
+        <div class="my-words-scan-shell" role="dialog" aria-modal="true">
+            <header class="my-words-scan-header">
+                <button type="button" class="my-words-scan-header-action is-back" data-scan-close aria-label="Close Scan Words">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path><path d="M8 12h11"></path></svg>
+                </button>
+                <div class="my-words-scan-title-group">
+                    <span>MY WORDS</span>
+                    <h1 id="my-words-scan-title">Scan Words</h1>
+                </div>
+                <button type="button" class="my-words-scan-header-action is-discard" data-scan-discard>Discard</button>
+            </header>
+            <div class="my-words-scan-status" id="my-words-scan-status" role="status" aria-live="polite"></div>
+            <section class="my-words-scan-phase my-words-scan-choose" data-scan-phase="choose">
+                <div class="my-words-scan-phase-heading">
+                    <span class="my-words-scan-step">1 · ADD PHOTOS</span>
+                    <h2>Bring in the words you found.</h2>
+                    <p>Take a photo or choose up to five pages. You can crop and cover anything you do not need before scanning.</p>
+                </div>
+                <div class="my-words-scan-photo-empty" data-scan-photo-empty>
+                    <button class="my-words-scan-photo-drop" type="button" data-scan-add-photo data-scan-drop>
+                        <span class="my-words-scan-photo-drop-icon">
+                            <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="3"></rect><path d="m8 6.5 1.3-2h5.4l1.3 2"></path><circle cx="12" cy="13" r="3.2"></circle></svg>
+                        </span>
+                        <strong>Add Photos</strong>
+                        <small>Take a new photo or choose from your library.</small>
+                        <em>On a computer, you can also drop photos here.</em>
+                    </button>
+                </div>
+                <div class="my-words-scan-pages" data-scan-pages hidden></div>
+                <input data-scan-camera type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="environment" hidden>
+                <input data-scan-library type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple hidden>
+                <div class="my-words-scan-choose-footer">
+                    <span data-scan-photo-count>0 of 5 photos</span>
+                    <button type="button" class="primary-button" data-scan-next disabled>Prepare Photos</button>
+                </div>
+            </section>
+            <section class="my-words-scan-phase" data-scan-phase="edit" hidden>
+                <div class="my-words-scan-phase-heading is-compact">
+                    <span class="my-words-scan-step">2 · PREPARE</span>
+                    <h2>Keep only what matters.</h2>
+                    <p>Crop the page, then use the white pen or eraser to tidy it before scanning.</p>
+                </div>
+                <div data-scan-editor></div>
+                <div class="my-words-scan-edit-actions" role="toolbar" aria-label="Photo editing tools">
+                    <div class="my-words-scan-page-nav">
+                        <button type="button" class="outline-button" data-scan-page-prev aria-label="Previous photo">‹</button>
+                        <span data-scan-page-label></span>
+                        <button type="button" class="outline-button" data-scan-page-next aria-label="Next photo">›</button>
+                    </div>
+                    <div class="my-words-scan-tool-group">
+                        <button type="button" class="outline-button" data-scan-mode="crop" aria-pressed="true">Crop</button>
+                        <button type="button" class="outline-button" data-scan-mode="mask" aria-pressed="false">White Pen</button>
+                        <button type="button" class="outline-button" data-scan-mode="erase" aria-pressed="false">Eraser</button>
+                    </div>
+                    <label class="my-words-scan-brush">Size <input data-scan-brush type="range" min="4" max="80" value="24"></label>
+                    <div class="my-words-scan-history-actions">
+                        <button type="button" class="outline-button" data-scan-undo>Undo</button>
+                        <button type="button" class="outline-button" data-scan-redo>Redo</button>
+                    </div>
+                    <button type="button" class="primary-button my-words-scan-run" data-scan-run>Scan Photos</button>
+                </div>
+            </section>
+            <section class="my-words-scan-phase" data-scan-phase="review" hidden>
+                <div class="my-words-scan-progress" data-scan-progress hidden>
+                    <div class="my-words-scan-progress-visual" aria-hidden="true">
+                        <div class="my-words-scan-progress-page">
+                            <i></i><i></i><i></i>
+                            <span></span>
+                        </div>
+                    </div>
+                    <span class="my-words-scan-progress-step" data-scan-progress-step>READING PHOTOS</span>
+                    <h2>Scanning your photos…</h2>
+                    <p>Finding English words and keeping the sentence around each one.</p>
+                    <div class="my-words-scan-progress-track" role="progressbar" aria-label="Photo scanning progress" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0" data-scan-progress-track>
+                        <span data-scan-progress-bar></span>
+                    </div>
+                    <small data-scan-progress-count role="status" aria-live="polite">Starting the scan…</small>
+                </div>
+                <div class="my-words-scan-phase-heading is-compact" data-scan-review-heading hidden>
+                    <span class="my-words-scan-step">3 · CHOOSE WORDS</span>
+                    <h2>Tap what you want to keep.</h2>
+                </div>
+                <div class="my-words-scan-ready-hint" data-scan-ready-hint role="status" hidden>
+                    <span class="my-words-scan-ready-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="m6.5 12.5 3.4 3.4L17.8 8"></path></svg>
+                    </span>
+                    <div>
+                        <strong>Scan complete</strong>
+                        <p><b>Tap</b> to add one word. <b>Long-press</b> a word to start a phrase, then tap any other words in the same sentence—even words that are not next to each other.</p>
+                    </div>
+                </div>
+                <div data-scan-review></div>
+                <div class="my-words-scan-phrase-actions" hidden>
+                    <span>Phrase mode · tap any words in this sentence</span>
+                    <button type="button" class="primary-button" data-scan-finish-phrase aria-label="Finish phrase">✓</button>
+                    <button type="button" class="outline-button" data-scan-cancel-phrase>Cancel</button>
+                </div>
+                <div class="my-words-scan-candidate-drawer" data-scan-drawer>
+                    <button type="button" data-scan-drawer-toggle aria-expanded="true"><span data-scan-selected-count>0</span> selected</button>
+                    <div data-scan-candidate-list></div>
+                    <button type="button" class="primary-button" data-scan-commit disabled>Add 0 items</button>
+                </div>
+            </section>
+        </div>
+        <div class="my-words-scan-photo-choice" data-scan-photo-choice hidden>
+            <div class="my-words-scan-photo-choice-scrim" data-scan-photo-choice-close></div>
+            <section class="my-words-scan-photo-choice-sheet" role="dialog" aria-modal="true" aria-labelledby="my-words-scan-photo-choice-title">
+                <strong id="my-words-scan-photo-choice-title">Add Photos</strong>
+                <div class="my-words-scan-photo-choice-actions">
+                    <button type="button" data-scan-photo-source="camera">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="3"></rect><path d="m8 6.5 1.3-2h5.4l1.3 2"></path><circle cx="12" cy="13" r="3.2"></circle></svg>
+                        Take Photo
+                    </button>
+                    <button type="button" data-scan-photo-source="library">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m5 17 4-4 3 3 2-2 5 4"></path></svg>
+                        Choose from Library
+                    </button>
+                </div>
+                <button class="my-words-scan-photo-choice-cancel" type="button" data-scan-photo-choice-close>Cancel</button>
+            </section>
+        </div>
+        <div class="my-words-scan-preview" data-scan-preview hidden>
+            <div role="dialog" aria-modal="true" aria-label="Processed photo preview">
+                <button type="button" class="outline-button" data-scan-preview-close>Close preview</button>
+                <img data-scan-preview-image alt="Processed scan photo">
+            </div>
+        </div>
+    </section>
+
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260815-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
@@ -251,7 +381,8 @@
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-    <script src="assets/js/dashboard.js?v=20260906-1"></script>
+    <script src="assets/js/dashboard.js?v=20260906-4"></script>
+    <script src="assets/js/my-words-scan.js?v=20260906-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

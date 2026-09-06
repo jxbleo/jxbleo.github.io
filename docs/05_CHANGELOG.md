@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-06 — Dashboard My Words direct add and Scan modal
+
+- Split the Dashboard My Words preview header into a direct manual-entry `+`
+  and a separate camera action, both with 44px touch targets.
+- Added a required word-or-phrase field plus an optional 320-character Context
+  sentence; saving retains the Context and starts normal dictionary enrichment.
+- Opened the shared Scan Words flow in an independent centred Dashboard modal
+  without navigating into My Words, restoring the preview on close and
+  refreshing it after successful scanned-word commits.
+
 ## 2026-09-06 — Discard empty Individual Response drafts
 
 - Deferred Individual Response database creation from question-open to the
