@@ -1561,3 +1561,13 @@ See [ADR 0006](adr/0006-tencent-soe-n-shadowing-assessment.md).
 Use ordinary HTML email plus a reusable HTTPS review page for the owner's WeChat email-notification workflow. The page has the existing three decisions, an optional note and explicit Submit. Do not depend on AMP/Outlook-only forms, parse freeform reply text, or introduce mailbox credentials or AI decision inference. Reuse teacher sessions, SMTP, recipient settings, outbox and timer; no new dependency is needed. The existing Teacher URL environment value supplies the review link origin/path and must be a configured HTTPS URL.
 
 The page requires teacher authentication even when opened from a forwarded email. It trades one link tap (and occasional sign-in) for broad client compatibility. Grading-rule edits and history use one transaction and a durable decision plus expiring execution lease, so network retries resume the same decision rather than duplicate or overwrite it.
+
+
+### 2026-09-06 — Daily Argue reminders reuse the current mail dispatcher
+
+Use Shanghai calendar dates rather than 24-hour offsets from submission, with
+11:30 as the daily threshold. Store one transactional request/day outbox event
+and marker, process 20 candidates per timer tick, and expire stale prior-day
+retries. This bounds work, survives delayed ticks, prevents same-day duplicate
+queueing, and avoids replaying accumulated reminders. Keep current SMTP and
+enabled inbox settings; no new dependency or infrastructure is introduced.

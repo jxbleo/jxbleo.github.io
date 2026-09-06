@@ -972,3 +972,5 @@ cp .qa-secrets.example .qa-secrets.local
 - Empty-worker execution and unauthenticated `AUTH_REQUIRED` behavior passed. Real-student photo/OCR/dictionary enrichment remains the post-static-publication smoke check.
 
 - 2026-09-06 — Owner-authorized Argue release `bdd483b0` deployed to Tencent COS and all four CloudBase functions. Static bytes and downloaded function hashes verified; original runtime/configuration retained, with only the existing email Teacher URL corrected to HTTPS. Live missing-locator lookup reached the new endpoint. Real new-Argue email and WeChat acceptance remain pending; management CLI invocation was not counted as an anonymous browser authorization test.
+
+- 2026-09-06 — Implemented and deployed next-day Shanghai 11:30 daily Argue reminders in the existing sender. New boundary/concurrency/multi-day/paging/resolution/retry/muted-inbox tests and existing Argue/attempt-email regressions passed; release verification passed. Online bundle hash and unchanged function configuration verified. Live server-time scheduling query succeeded with zero due reminders and no errors. The natural next-day 11:30 delivery is pending observation.

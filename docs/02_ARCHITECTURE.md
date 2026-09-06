@@ -1234,3 +1234,15 @@ Student `getDashboard.submitDispute` and `intensiveListening.submitSpellingDispu
 `argue-review.html` is one reusable authenticated page. `teacherAdmin.getDispute` returns one authorized question, current rule/revision, status and note without bootstrapping complete Teacher history. Existing same-origin login navigation retains its query. GET/open and radio selection have no decision side effects.
 
 `_shared/argue-resolution.js` is shared by both Teacher entry points through `teacherAdmin.resolveDispute`: a transaction claims the dispute and commits the chosen decision, grading key and unique history row. A ten-minute execution lease blocks concurrent processing. Historical projections run afterwards; successful completion publishes the resolution and student unread marker. On an error the lease is released; a crashed lease expires. Retrying resumes the saved decision and history rather than applying another key revision. Matching already-adjusted attempts replay assignment/STAR effects to recover a failure between their writes. This recovery is request-driven, not a new background grading worker.
+
+
+### Argue reminder scheduling
+
+`sendTeacherAttemptEmails` calls `_shared/argue-reminders.js` on the existing
+one-minute timer. After Shanghai 11:30 it queries pending requests created before
+today with a different/missing `email_reminder_day`, taking 20 per tick. A
+transaction rechecks eligibility, creates a deterministic request/day outbox event
+and advances the request marker together. Existing SMTP claims/retries and BCC
+recipient settings deliver it. Before sending, reload the current dispute; skip
+resolved/committed decisions and prior-day reminder events. This requires no new
+service, timer, collection, browser session or frontend change.

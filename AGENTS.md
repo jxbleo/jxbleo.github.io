@@ -1959,3 +1959,14 @@ but no IL session creates a synthetic attempt or includes typed words, answers,
 private audio URLs, or Argue data. Visitor, Teacher preview, and Parent Mode
 never create sessions. Production indexes, imports, timers, and deployment
 remain owner-gated.
+
+
+### Argue daily reminders
+
+Pending student Argue requests receive one private reminder per Shanghai calendar
+day, starting at 11:30 on the day after creation, until resolved. The existing
+one-minute email dispatcher queues bounded batches with a request/day idempotency
+key, and rechecks current request status before SMTP delivery. Teacher-page and
+email-entry decisions share the same stop condition. Keep original mail events
+immutable; expired prior-day reminder retries do not accumulate. Existing enabled
+teacher inbox settings also govern reminders.

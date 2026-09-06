@@ -7,6 +7,7 @@ const notifications = require("../_shared/attempt-email-notifications");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
 const argueNotifications = require("../_shared/argue-notifications");
+const argueReminders = require("../_shared/argue-reminders");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -325,13 +326,14 @@ async function attemptThreadForJob(job, cutoffAt) {
     .sort((left, right) => dateValue(left.submitted_at) - dateValue(right.submitted_at));
 }
 
-async function emailContext(claimed) {
+async function emailContext(claimed, now) {
   const jobs = claimed.jobs;
   const anchor = jobs[0];
   if (anchor.event_kind === argueNotifications.EVENT_KIND) {
     const context = await argueNotifications.loadContext(db, anchor.dispute_id);
     if (context.dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
-    return { ...context, argue: true, teacherUrl: text(process.env.TEACHER_ATTEMPT_EMAIL_TEACHER_URL) };
+    argueReminders.assertCurrentReminder(anchor, context.dispute, now);
+    return { ...context, argue: true, reminderDay: anchor.reminder_day || "", teacherUrl: text(process.env.TEACHER_ATTEMPT_EMAIL_TEACHER_URL) };
   }
   if (isIntensiveEvent(anchor)) {
     const [student, set] = await Promise.all([
@@ -436,7 +438,7 @@ function deliveryMessageId(claimed, config) {
 
 async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
   try {
-    const context = await emailContext(claimed);
+    const context = await emailContext(claimed, now);
     const rendered = context.argue ? argueNotifications.renderEmail(context) : context.intensive
       ? notifications.renderIntensiveListeningEmail(context)
       : notifications.renderAttemptEmail(context);
@@ -467,7 +469,7 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
     return { success: true, event_count: claimed.jobs.length };
   } catch (error) {
     if (claimed.jobs[0].event_kind === argueNotifications.EVENT_KIND &&
-        ["DISPUTE_NOT_AVAILABLE", "DISPUTE_ALREADY_RESOLVED"].includes(error.message)) {
+        ["DISPUTE_NOT_AVAILABLE", "DISPUTE_ALREADY_RESOLVED", "ARGUE_REMINDER_EXPIRED"].includes(error.message)) {
       for (const job of claimed.jobs) {
         await db.collection(EVENT_COLLECTION).doc(job._id).update({
           status: "skipped", skipped_at: now, skip_reason: error.message,
@@ -491,6 +493,13 @@ async function dispatch(now) {
   let argue_events_repaired = 0;
   try { argue_events_repaired = await argueNotifications.repairPendingEvents(db); }
   catch (_) { console.error("Argue email intent repair deferred"); }
+  let argue_reminders_queued = 0;
+  let argue_reminder_error = "";
+  try { argue_reminders_queued = await argueReminders.queueDailyReminders(db, now); }
+  catch (error) {
+    argue_reminder_error = text(error && error.code) || "ARGUE_REMINDER_SCHEDULING_FAILED";
+    console.error("Argue daily reminder scheduling deferred", { code: argue_reminder_error });
+  }
   const intensive_paused_sessions = await closeIdleIntensiveSessions(now) + await closeIdleShadowingSessions(now);
   const anchors = await dueEvents(now);
   const recipients = await enabledRecipients();
@@ -505,6 +514,8 @@ async function dispatch(now) {
     failed_batches: 0,
     intensive_paused_sessions,
     argue_events_repaired,
+    argue_reminders_queued,
+    argue_reminder_error,
   };
   if (!recipients.length) {
     for (const anchor of anchors) {
@@ -560,6 +571,7 @@ exports.main = async (event = {}) => {
 };
 
 module.exports._test = {
+  dispatch,
   authorizedTimerEvent,
   closeIdleIntensiveSessions,
   closeIdleShadowingSessions,

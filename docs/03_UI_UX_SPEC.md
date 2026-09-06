@@ -2970,3 +2970,11 @@ The email opens `argue-review.html?dispute=<id>`, a single mobile-friendly Teach
 No choice is selected by default. Submitting disables controls; success shows the saved decision/note without needing a second request. Resolved links are read-only. Stale-rule responses refresh the displayed current answers while retaining the note draft. A committed but unfinished decision is read-only and offers Continue processing; an active lease offers Refresh request. Anonymous users return through existing login; a student session sees a Teacher access message and Switch account instead of a redirect loop. Errors have visible retry/sign-in controls. Private question data and drafts are not persisted in browser storage.
 
 Mobile checks cover 390px width; real WeChat mail-link routing and session retention remain device acceptance tests. Email markup contains an ordinary HTTPS link, not an embedded form.
+
+
+### Argue reminder mail
+
+Daily unresolved Argue emails prefix the existing subject with `提醒处理 | ` and
+explain that daily reminders stop after processing. They preserve the original
+question context and exact same authenticated single-question review link. The
+three decisions and optional Teachers’ Note interface are unchanged.

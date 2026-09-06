@@ -1520,3 +1520,18 @@ owner-reviewed indexes.
 The existing `teacher_attempt_email_events` accepts `event_kind: student_argue`, a stable `argue-<sha256-prefix>` `event_id`, `dispute_id`, `thread_key: argue::<dispute_id>`, and `delivery_policy: argue_immediate`. No synthetic attempt is created. These rows contain identifiers/timing/delivery audit only, not answers, notes, rendered bodies or recipients. Resolved/unavailable requests use the existing skipped state with a bounded reason.
 
 Resolution adds `resolution_decision`, `resolution_note`, `resolution_teacher_uid`, `resolution_requested_at`, optional `resolution_history_id`, and the transient `resolution_token` / `resolution_started_at`. These fields durably record a committed choice while `status` remains pending until historical projections finish. A transaction creates one grading history document and changes the private key alongside that choice. `resolution_token` is an internal execution lease, never returned to the browser. The single-question response exposes only `resolution_decision`, `resolution_note`, `resolution_processing`, current answer and `review_revision` in addition to the ordinary authorized Teacher projection. A revision is a concurrency check, never authentication.
+
+
+### Daily Argue reminder fields
+
+`answer_disputes.email_reminder_day` is an optional Shanghai `YYYY-MM-DD`
+scheduling marker, written atomically with the day's private outbox event. It is
+not a teacher decision or proof of SMTP delivery.
+
+`teacher_attempt_email_events` reuses `event_kind: student_argue` and adds
+`delivery_policy: argue_daily_reminder` and `reminder_day: YYYY-MM-DD`. The event
+id is the stable original Argue event id plus `-reminder-<day>`. `due_at` is that
+day's Shanghai 11:30; `submitted_at` retains the original request date. Original
+and reminder events remain separate delivery audit rows. Prior-day pending retry
+events become skipped with `ARGUE_REMINDER_EXPIRED`; ordinary resolved/unavailable
+skips retain their existing reasons. All collections remain ADMINONLY.

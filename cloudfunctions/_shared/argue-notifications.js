@@ -120,10 +120,11 @@ function renderEmail(context) {
   const submitted = new Intl.DateTimeFormat("zh-CN", {
     timeZone: "Asia/Shanghai", dateStyle: "medium", timeStyle: "short",
   }).format(new Date(dispute.created_at));
-  const subject = `${studentName} | Argue | ${text(set.title)} | ${text(dispute.question_id)}`.replace(/[\r\n]/g, " ");
+  const reminder = Boolean(context.reminderDay);
+  const subject = `${reminder ? "提醒处理 | " : ""}${studentName} | Argue | ${text(set.title)} | ${text(dispute.question_id)}`.replace(/[\r\n]/g, " ");
   return {
     subject,
-    text: [subject, `${submitted} (Shanghai)`, ...fields.map(([label, value]) => `${label}: ${value}`),
+    text: [subject, ...(reminder ? ["这条 Argue 仍未处理，请选择处理方式并提交。处理后将停止每日提醒。"] : []), `${submitted} (Shanghai)`, ...fields.map(([label, value]) => `${label}: ${value}`),
       `处理这条 Argue: ${url}`, "Choose a decision and optionally add Teachers’ Note. Teacher sign-in required.",
       "Please use the button to submit your decision; replying to this email does not process the request."].join("\n\n"),
     html: '<!doctype html><html><body style="margin:0;background:#f4f8f5;color:#18332f;font:16px/1.6 Arial,sans-serif;">' +
@@ -131,6 +132,7 @@ function renderEmail(context) {
       '<p style="margin:0;color:#13766d;font-size:12px;font-weight:bold;letter-spacing:2px;">ARGUE</p>' +
       `<h2 style="margin:8px 0;">${escapeHtml(studentName)} · ${escapeHtml(set.title)}</h2>` +
       `<p style="color:#647b75;font-size:13px;">${escapeHtml(dispute.question_id)} · ${escapeHtml(submitted)} (Shanghai)</p>` +
+      (reminder ? '<p style="color:#13766d;font-weight:bold;">提醒处理：这条 Argue 仍未处理。处理后将停止每日提醒。</p>' : "") +
       fields.map(([label, value]) => `<div style="padding:14px;margin:12px 0;background:#f4f8f5;border-radius:12px;"><strong style="font-size:12px;color:#647b75;">${escapeHtml(label)}</strong><div style="white-space:pre-wrap;overflow-wrap:anywhere;">${escapeHtml(value)}</div></div>`).join("") +
       `<p style="text-align:center;margin-top:24px;"><a href="${escapeHtml(url)}" style="display:inline-block;background:#13766d;color:#fff;text-decoration:none;padding:13px 22px;border-radius:24px;font-weight:bold;">处理这条 Argue</a></p>` +
       '<p style="text-align:center;font-size:12px;color:#647b75;">选择处理方式，可选填 Teachers’ Note。需要教师登录。<br>请通过按钮提交，直接回复此邮件不会处理 Argue。</p></div></body></html>',

@@ -18,9 +18,11 @@ function database(seed = {}) {
   let sequence = 0;
   let queue = Promise.resolve();
   const matches = (row, query) => Object.entries(query || {}).every(([key, value]) =>
-    value && typeof value === "object" && "$lte" in value ? new Date(row[key]) <= value.$lte : row[key] === value);
+    value && typeof value === "object" && "$lte" in value ? new Date(row[key]) <= value.$lte
+      : value && typeof value === "object" && "$lt" in value ? new Date(row[key]) < value.$lt
+        : value && typeof value === "object" && "$neq" in value ? row[key] !== value.$neq : row[key] === value);
   const db = {
-    command: { lte: (value) => ({ $lte: value }) },
+    command: { lte: (value) => ({ $lte: value }), lt: (value) => ({ $lt: value }), neq: (value) => ({ $neq: value }) },
     failEvents: false,
     collection(name) {
       const rows = () => tables[name] || (tables[name] = []);
@@ -244,4 +246,5 @@ async function main() {
 
   console.log("Argue email/review tests passed: outbox recovery, SMTP routing, authentication, decisions, concurrency, retries and stale reviews.");
 }
-main().catch((error) => { console.error(error); process.exitCode = 1; });
+if (require.main === module) main().catch((error) => { console.error(error); process.exitCode = 1; });
+module.exports = { database, fixture, seed, loadFunction, teacher };

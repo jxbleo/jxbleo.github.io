@@ -1,5 +1,14 @@
 # Changelog
 
+
+## 2026-09-06 — Daily reminders for unresolved Argue requests
+
+- Starting the next Shanghai calendar day, send one “提醒处理” email per pending
+  student request at 11:30 each day until handled in either Teacher entry.
+- Reuse the existing timer/outbox/SMTP with transactional request/day queueing,
+  delivery-time status checks and expiration of stale reminder retries.
+- Preserve the approved question card and optional Teachers’ Note interface.
+
 ## 2026-09-06 — Independent Dashboard manual-word modal
 
 - Replaced the My Words preview's anchored manual-entry panel with a separate,

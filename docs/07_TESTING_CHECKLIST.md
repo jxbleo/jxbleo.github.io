@@ -2925,3 +2925,15 @@ motion, keyboard focus, and 1440px, 1024px, 768px, and 390px viewports.
 - Verify anonymous/student/disabled-teacher access fails server-side despite forged browser identity. Test each ordinary decision, empty and filled note, concurrent submits, stale review revision, regrade failure/resume, and preservation of the original attempt.
 - In browser QA, check mobile width, radio selection, optional Chinese note, replace confirmation/cancellation, read-only resolved cards, conflict note preservation and account-switch errors using synthetic data only.
 - After owner-authorized deployment, submit one dedicated QA student's new Argue. Confirm one email at an enabled teacher inbox on a timer tick. Open from the owner's actual WeChat mailbox notification, verify the site link opens, login returns to the exact question, submit one chosen decision, then verify Teacher Replies and the saved status. Open the email again: it must show the saved result and no Submit button. Real WeChat behavior cannot be inferred from desktop mobile viewport QA.
+
+
+### Argue daily reminders
+
+Run `npm run test:argue-reminders`, `npm run test:argue-emails`,
+`npm run test:attempt-emails` and release verification. Cover creation day, next
+Shanghai day 11:29:59/11:30:00, calendar/year/leap-day boundaries, repeated days,
+concurrent timers, >20 requests, outbox rollback/retry, resolved/committed
+decisions, resolution between queue and send, deleted students, cancelled
+assignments, muted/re-enabled inboxes, expired old retries and Listening Argues.
+For live acceptance observe the next natural 11:30 tick and the unresolved QA
+request; do not backdate genuine requests or resend resolved ones to force a test.

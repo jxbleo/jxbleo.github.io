@@ -1498,3 +1498,25 @@ anonymous browser authorization; anonymous/student/disabled-teacher rejection
 was covered by the local integration tests. Real email delivery and WeChat
 acceptance still require a new dedicated QA-student Argue. No real student
 request, answer-key change or test email was created by the rollout checks.
+
+
+### Argue daily reminder rollout (2026-09-06)
+
+Only `sendTeacherAttemptEmails` needs a new bundled deployment. Its shared
+reminder helper is included in that bundle; the producer functions and static
+review page do not change. Preserve the existing one-minute trigger, SMTP/env
+values and enabled recipients. There is no migration: pending older requests
+receive their daily marker lazily; historical original emails are not recreated.
+Package and verify the sender, then use a code-only update and compare downloaded
+code hashes and unchanged configuration. Query uses pending status, creation-date
+cutoff and missing/different reminder-day marker, bounded to 20 candidates.
+
+
+Deployed on 2026-09-06 at 22:09 Shanghai time as a code-only
+`sendTeacherAttemptEmails` update. Function verified Active; downloaded
+`index.js` SHA-256 is `40dcadccbda08b7c488eed03458c287ec26272eee60aa26d90c9a9bfd4a945bb`.
+Runtime, handler, timeout, memory, dependency-installation flag, environment,
+triggers, VPC, role and layers matched the preflight snapshot. An authorized
+server-time dispatcher invocation succeeded with no scheduling error, no due
+reminders and no failed batches. The next natural Shanghai 11:30 delivery remains
+the real-clock acceptance check; no request dates were changed for testing.
