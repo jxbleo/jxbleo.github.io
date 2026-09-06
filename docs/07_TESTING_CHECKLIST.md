@@ -2813,10 +2813,16 @@ Increased Contrast.
   rows, and the other Set remains collapsed. Collapse it again, then add a
   second Q1 attempt and confirm it remains a separate newest-first row within
   the same Set card after expansion.
-- Verify Part A cards contain no Candidate count or analysis-status pill. Check
-  the rotating processing ring, blue ready circle, red failed exclamation,
-  neutral not-uploaded ring, and the placeholder blue filled Practice star.
-  Reduced Motion must stop the processing rotation without hiding its state.
+- In Part A, load two Discussions from one Set and one from another. Confirm
+  exactly two Set cards render and both begin collapsed. Expand one and verify
+  its Discussion rows retain title, date, Candidate count and state icon. Open
+  one Discussion, reopen the drawer, and confirm only its Set auto-expands while
+  the current row is visibly highlighted and exposes `aria-current="page"`.
+  Unlinked legacy Discussions must remain available under `Other Discussions`.
+  Check the rotating processing ring, blue ready circle, red failed exclamation,
+  neutral not-uploaded ring, unread dot and placeholder blue filled Practice
+  star. No analysis-status pill should appear. Reduced Motion must stop the
+  processing rotation without hiding its state.
 - Verify `Newest first` is selected initially and orders by Discussion date
   descending, then formal upload time descending within one date. Switch to
   `Oldest first` and verify both comparisons reverse. Mixed processing, ready,

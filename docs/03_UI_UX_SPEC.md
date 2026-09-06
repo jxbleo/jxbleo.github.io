@@ -2616,10 +2616,17 @@ compact question rows, rotates the chevron, and updates `aria-expanded`; Q1 and
 Q5 from the same Set therefore stay together. When expanded, the question
 excerpt, response date, analysis state, and disclosure affordance remain
 visible. Multiple attempts remain separate rows and selectable. Part A has a
-quiet `Filter` select whose
+quiet `Filter` select and mirrors the same progressive-disclosure pattern: one
+compact Set card contains every Discussion from that Set and is collapsed by
+default. Its header shows year/source, Set number, topic, Discussion count,
+latest state and any unread-report dot. The currently open Discussion's Set
+expands automatically when the drawer opens, and the current row receives both
+a restrained blue highlight and `aria-current="page"`. Expanded rows retain the
+Discussion title, date, Candidate count and state symbol. Unlinked legacy
+records remain available in one `Other Discussions` group. The
 default `Newest first` ordering uses Discussion date and then upload sequence;
 `Oldest first` reverses it. Processing and ready items never bypass that order.
-Cards omit Candidate and analysis-status pills: a rotating ring means
+Rows use no analysis-status pills: a rotating ring means
 processing, a blue circle means report ready, a red exclamation mark means
 failed, a neutral ring means no uploaded report, and a blue filled star is
 reserved for a future completed Practice. Escape and the active mobile scrim

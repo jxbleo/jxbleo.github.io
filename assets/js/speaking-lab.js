@@ -92,6 +92,7 @@
     var voiceprintPointerId = null;
     var voiceprintProviderConfigured = true;
     var sidebarMode = 'part-a';
+    var expandedDiscussionSetIds = Object.create(null);
     var READ_TIMEOUT_MS = 20000;
     var MUTATION_TIMEOUT_MS = 90000;
     var FILE_UPLOAD_TIMEOUT_MS = 10 * 60 * 1000;
@@ -460,11 +461,14 @@
         var pending = item.invitation_pending === true || (item.participants || []).some(function (participant) { return participant.is_self && participant.invitation_status === 'pending'; });
         var voiceMatchNotice = (item.participants || []).some(function (participant) { return participant.is_self && participant.identity_notice_unread; });
         var state = discussionCardState(item);
+        var current = String(item.discussion_id || '') === String(selectedId || '');
+        var candidateCount = Number.isInteger(item.candidate_count) ? item.candidate_count : Number(item.participant_count || 0);
+        var candidateLabel = candidateCount > 0 ? ' · ' + candidateCount + ' ' + (candidateCount === 1 ? 'Candidate' : 'Candidates') : '';
         var meta = (pending ? '<span class="speaking-pill" data-tone="attention">Invitation</span>' : '') + (voiceMatchNotice ? '<span class="speaking-pill" data-tone="attention">Voice matched</span>' : '');
         var accessibleStatus = discussionCardStateLabel(state) + (item.report_unread ? ', new report' : '');
-        return '<button class="speaking-card' + (pending ? ' is-invitation' : '') + '" type="button" data-state="' + esc(state) + '" data-discussion-id="' + esc(item.discussion_id) + '" aria-label="' + esc((item.title || 'Untitled Discussion') + '. ' + accessibleStatus + '.') + '">' +
+        return '<button class="speaking-card' + (pending ? ' is-invitation' : '') + (current ? ' is-current' : '') + '" type="button" data-state="' + esc(state) + '" data-discussion-id="' + esc(item.discussion_id) + '"' + (current ? ' aria-current="page"' : '') + ' aria-label="' + esc((item.title || 'Untitled Discussion') + '. ' + candidateCount + ' ' + (candidateCount === 1 ? 'Candidate' : 'Candidates') + '. ' + accessibleStatus + '.') + '">' +
             '<span class="speaking-card-icon" aria-hidden="true">' + discussionCardIcon(state) + '</span>' +
-            '<span class="speaking-card-copy"><span class="speaking-card-title"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3>' + (item.report_unread ? '<span class="speaking-card-unread-dot" aria-hidden="true"></span>' : '') + '</span><span class="speaking-card-date">' + esc(formatDate(item.discussion_date)) + '</span></span>' +
+            '<span class="speaking-card-copy"><span class="speaking-card-title"><h3>' + esc(item.title || 'Untitled Discussion') + '</h3>' + (item.report_unread ? '<span class="speaking-card-unread-dot" aria-hidden="true"></span>' : '') + '</span><span class="speaking-card-date">' + esc(formatDate(item.discussion_date) + candidateLabel) + '</span></span>' +
             (meta ? '<span class="speaking-card-meta">' + meta + '</span>' : '') +
             '<svg class="speaking-card-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
@@ -484,6 +488,7 @@
         sidebarToggle.setAttribute('aria-label', sidebarToggleLabel(sidebar.classList.contains('is-open')));
     }
     function openSidebar() {
+        syncDiscussionSidebarSelection();
         sidebar.classList.add('is-open');
         sidebar.setAttribute('aria-hidden', 'false');
         sidebarToggle.setAttribute('aria-expanded', 'true');
@@ -577,13 +582,100 @@
             if (button) { button.disabled = false; button.querySelector('span').textContent = 'Start Discussion'; }
         });
     }
+    function discussionSetIdentity(item) {
+        var snapshot = item && item.set_snapshot || {};
+        var sourceKind = String(snapshot.source_kind || '').toLowerCase();
+        var source = sourceKind === 'pp' ? 'Past Paper' : sourceKind === 'mock' ? 'Mock' : '';
+        var yearAndSource = [snapshot.exam_year || '', source].filter(Boolean).join(' ');
+        var linkedSetId = String(item && item.set_id || '');
+        return {
+            key: linkedSetId || '__other_discussions__',
+            set_id: linkedSetId,
+            meta: [yearAndSource, snapshot.paper_version ? 'Set ' + snapshot.paper_version : ''].filter(Boolean).join(' · ') || (linkedSetId ? 'DSE Paper 4' : 'No linked Set'),
+            title: snapshot.title || (linkedSetId ? linkedSetId : 'Other Discussions')
+        };
+    }
+    function groupDiscussionsBySet(items) {
+        var groups = [];
+        var groupsById = Object.create(null);
+        (Array.isArray(items) ? items : []).forEach(function (item) {
+            var identity = discussionSetIdentity(item);
+            if (!groupsById[identity.key]) {
+                groupsById[identity.key] = {
+                    key: identity.key,
+                    set_id: identity.set_id,
+                    meta: identity.meta,
+                    title: identity.title,
+                    discussions: []
+                };
+                groups.push(groupsById[identity.key]);
+            }
+            groupsById[identity.key].discussions.push(item);
+        });
+        return groups;
+    }
+    function latestDiscussion(items) {
+        return (Array.isArray(items) ? items : []).reduce(function (latest, item) {
+            if (!latest) return item;
+            var latestDate = String(latest.discussion_date || '');
+            var itemDate = String(item.discussion_date || '');
+            if (itemDate !== latestDate) return itemDate > latestDate ? item : latest;
+            var latestTime = new Date(latest.recording_uploaded_at || latest.created_at || 0).getTime() || 0;
+            var itemTime = new Date(item.recording_uploaded_at || item.created_at || 0).getTime() || 0;
+            return itemTime > latestTime ? item : latest;
+        }, null);
+    }
+    function discussionSetGroup(group, index) {
+        var count = group.discussions.length;
+        var itemsId = 'speaking-discussion-set-items-' + String(index + 1);
+        var containsCurrent = group.discussions.some(function (item) { return String(item.discussion_id || '') === String(selectedId || ''); });
+        var expanded = containsCurrent || expandedDiscussionSetIds[group.key] === true;
+        var latest = latestDiscussion(group.discussions) || {};
+        var latestState = discussionCardState(latest);
+        var unread = group.discussions.some(function (item) { return item.report_unread === true; });
+        if (containsCurrent) expandedDiscussionSetIds[group.key] = true;
+        return '<section class="speaking-response-set-group speaking-discussion-set-group' + (containsCurrent ? ' has-current' : '') + '" data-discussion-set-id="' + esc(group.set_id) + '" data-discussion-set-key="' + esc(group.key) + '">' +
+            '<button class="speaking-response-set-header speaking-discussion-set-header" type="button" data-discussion-set-toggle data-discussion-set-key="' + esc(group.key) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '" aria-controls="' + itemsId + '" aria-label="' + esc(group.title + '. ' + count + ' ' + (count === 1 ? 'Discussion' : 'Discussions') + '. Latest: ' + discussionCardStateLabel(latestState) + (unread ? '. New report' : '')) + '"><span class="speaking-response-set-copy"><small>' + esc(group.meta) + '</small><span class="speaking-discussion-set-title"><strong>' + esc(group.title) + '</strong>' + (unread ? '<span class="speaking-card-unread-dot" aria-hidden="true"></span>' : '') + '</span></span><span class="speaking-response-set-summary"><span class="speaking-discussion-set-state" data-state="' + esc(latestState) + '" aria-hidden="true">' + discussionCardIcon(latestState) + '</span><span class="speaking-response-set-count">' + esc(count) + ' ' + (count === 1 ? 'discussion' : 'discussions') + '</span><svg class="speaking-response-set-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button>' +
+            '<div class="speaking-response-set-items speaking-discussion-set-items" id="' + itemsId + '"' + (expanded ? '' : ' hidden') + '>' + group.discussions.map(listCard).join('') + '</div></section>';
+    }
+    function syncDiscussionSidebarSelection() {
+        list.querySelectorAll('.speaking-discussion-set-group').forEach(function (group) { group.classList.remove('has-current'); });
+        list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
+            var current = String(button.getAttribute('data-discussion-id') || '') === String(selectedId || '');
+            button.classList.toggle('is-current', current);
+            if (current) button.setAttribute('aria-current', 'page');
+            else button.removeAttribute('aria-current');
+            if (!current) return;
+            var group = button.closest('.speaking-discussion-set-group');
+            if (!group) return;
+            group.classList.add('has-current');
+            var toggle = group.querySelector('[data-discussion-set-toggle]');
+            var items = toggle && document.getElementById(toggle.getAttribute('aria-controls'));
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'true');
+                expandedDiscussionSetIds[toggle.getAttribute('data-discussion-set-key')] = true;
+            }
+            if (items) items.hidden = false;
+        });
+    }
     function renderList(items) {
         updateSidebarUpdates(items);
         if (!items.length) { list.innerHTML = '<div class="speaking-detail-card speaking-empty-state"><div class="speaking-empty-icon" aria-hidden="true">◎</div><h2>Start your first Discussion</h2><p>Add the DSE task and record when the group is ready. Candidates and invitations are created from the audio.</p></div>'; return; }
-        list.innerHTML = items.map(listCard).join('');
-        list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
-            button.addEventListener('click', function () { if (!allowRecordingNavigation()) return; setSidebarMode('part-a'); closeSidebar(); openDiscussion(button.getAttribute('data-discussion-id')); });
+        list.innerHTML = groupDiscussionsBySet(items).map(discussionSetGroup).join('');
+        list.querySelectorAll('[data-discussion-set-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var items = document.getElementById(button.getAttribute('aria-controls'));
+                if (!items) return;
+                var expanded = button.getAttribute('aria-expanded') === 'true';
+                button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                items.hidden = expanded;
+                expandedDiscussionSetIds[button.getAttribute('data-discussion-set-key')] = !expanded;
+            });
         });
+        list.querySelectorAll('[data-discussion-id]').forEach(function (button) {
+            button.addEventListener('click', function () { if (!allowRecordingNavigation()) return; selectedId = button.getAttribute('data-discussion-id'); syncDiscussionSidebarSelection(); setSidebarMode('part-a'); closeSidebar(); openDiscussion(selectedId); });
+        });
+        syncDiscussionSidebarSelection();
     }
     function speakingSetLabel(set) {
         return set.display_label || [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking Set'].filter(Boolean).join(' · ');
@@ -1873,6 +1965,7 @@
     function openDiscussion(idValue) {
         if (recordingState !== 'idle') return Promise.resolve(null);
         selectedId = idValue;
+        syncDiscussionSidebarSelection();
         pollGeneration += 1;
         if (pollTimer) { window.clearTimeout(pollTimer); pollTimer = 0; }
         window.history.replaceState(null, '', 'speaking-lab.html?discussion=' + encodeURIComponent(idValue));

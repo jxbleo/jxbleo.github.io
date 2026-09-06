@@ -2141,10 +2141,14 @@ one `Part A` / `Part B` segmented control switches between Group Discussion and
 Individual Response cards. The drawer contains no `New · Choose a Set`,
 `Voiceprint`, or repeated `Your Work` text rows. Discussion and Response records
 live only in their selected drawer panel rather than being duplicated on the
-home surface. Part B groups every Individual Response by stable `set_id`: one
+home surface. Part A and Part B both group history by stable `set_id`. One Part
+A Set card retains every Group Discussion created from that Set; one Part B
 Set card retains all of that Set's question-scoped recordings, including Q1,
 Q5, or repeated attempts, and each contained row still opens its own response
-or report. Groups and rows retain the server's newest-first order. On phones,
+or report. Part A Set cards are collapsed by default, except that the Set
+containing the currently open Discussion expands automatically and highlights
+that Discussion row. Groups and rows retain the server's selected chronological
+order. On phones,
 the dimming scrim exists only while the drawer is
 actually open; a closed drawer must never blur or block the Set cards.
 `Start Discussion` creates the Set-backed Discussion immediately and enters it; there is no second New Session dialog. The server-backed audio date defaults to the current Shanghai date for device recording, while an existing file exposes an editable date beside its chooser. The target defaults to eight minutes.
@@ -2372,10 +2376,14 @@ and comment. Teacher edits affect future Sessions only; existing reports retain
 their snapshots. Voiceprint setup lives in the student sidebar.
 
 The Part A history drawer labels its two primary actions `Voiceprint` and
-`Start New`. Discussion cards omit Candidate counts and use one state symbol:
-a rotating ring while processing, a blue circle when the report is ready, a
-red exclamation mark after failure, and a reserved blue filled star after a
-future completed Practice. A compact Filter controls the entire list order.
+`Start New`. It renders one compact, collapsed Set summary per stable `set_id`;
+legacy records without a Set remain together under `Other Discussions`. The Set
+summary shows Set identity, topic, Discussion count, the latest Discussion's
+state symbol, and an unread dot when any contained report is new. Expanding it
+reveals each Discussion as a separate row with title, date, Candidate count and
+state symbol. A rotating ring means processing, a blue circle means the report
+is ready, a red exclamation mark means failure, and a reserved blue filled star
+means a future completed Practice. A compact Filter controls the entire list order.
 `Newest first` is the default and sorts by Discussion date, then by formal-audio
 upload time within the same date; `Oldest first` reverses both comparisons.
 Status never overrides the selected order.

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-06 — Collapsible Part A history groups
+
+- Matched Part A history to Part B's Set-first progressive disclosure: every
+  stable Set now appears once and contains all of its Group Discussions.
+- Kept Set groups collapsed by default while automatically expanding the group
+  that contains the current Discussion and highlighting that row accessibly.
+- Added compact Set-level count, latest-state and unread signals; expanded rows
+  retain title, date, Candidate count and the established Discussion state icon.
+- Preserved legacy unlinked Sessions under one `Other Discussions` group and
+  preserved the selected newest/oldest chronological ordering.
+
 ## 2026-09-06 — Keep current class rosters visible in Teacher View
 
 - Changed the Teacher View matrix to build student rows from current active,
@@ -22,7 +33,6 @@
 - Opened the shared Scan Words flow in an independent centred Dashboard modal
   without navigating into My Words, restoring the preview on close and
   refreshing it after successful scanned-word commits.
-
 ## 2026-09-06 — Discard empty Individual Response drafts
 
 - Deferred Individual Response database creation from question-open to the

@@ -86,6 +86,14 @@ function run() {
   assert.match(app, /class="speaking-response-row"[^>]*data-response-id/);
   assert.doesNotMatch(app, /speaking-card speaking-response-card/);
   assert.match(css, /\.speaking-response-set-group[\s\S]*\.speaking-response-row/);
+  assert.match(app, /function groupDiscussionsBySet\(items\)/);
+  assert.match(app, /class="speaking-response-set-group speaking-discussion-set-group/);
+  assert.match(app, /data-discussion-set-toggle[\s\S]*aria-expanded=/, "Part A Set groups must expose an accessible collapsed state");
+  assert.match(app, /group\.discussions\.map\(listCard\)/, "Part A Set groups must retain every Discussion as a separate row");
+  assert.match(app, /containsCurrent[\s\S]*expandedDiscussionSetIds/, "the current Discussion Set must auto-expand and remain open when revisited");
+  assert.match(app, /aria-current="page"/, "the current Discussion row must be identified accessibly");
+  assert.match(css, /\.speaking-discussion-set-group\.has-current/);
+  assert.match(css, /\.speaking-sidebar \.speaking-card\.is-current/);
   assert.match(app, /Past Paper/);
   assert.doesNotMatch(app, /speaking-set-overview-bar"><span class="speaking-set-card-badge/);
   assert.match(app, /speaking-set-overview-card/);
@@ -216,7 +224,7 @@ function run() {
   assert.match(app, /function discussionCardState\(item\)/);
   assert.match(app, /practice_status === 'completed'/);
   const listCardMarkup = app.slice(app.indexOf('function listCard(item)'), app.indexOf('function sidebarToggleLabel'));
-  assert.doesNotMatch(listCardMarkup, /candidateLabel|candidate_count|Candidates pending/);
+  assert.match(listCardMarkup, /candidateCount[\s\S]*candidate_count[\s\S]*Candidates/);
   assert.match(app, /Listen to the clip\. Is/);
   assert.match(app, /Auto-locked at 70%\+/);
   assert.match(app, /return loadList\(\);/);
@@ -402,8 +410,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260906-6/);
-  assert.match(page, /speaking-lab\.js\?v=20260906-7/);
+  assert.match(page, /speaking-lab\.css\?v=20260906-7/);
+  assert.match(page, /speaking-lab\.js\?v=20260906-8/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");
