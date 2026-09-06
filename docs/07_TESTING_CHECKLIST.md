@@ -1742,20 +1742,29 @@ Check:
   and pronunciation. Confirm the header contains only a top-right `+` and camera
   pair, with no `My Words`, total-word, or `Recently saved` fields, and the fixed
   footer shows `Open My Words` without a remaining-word count
-- press the preview `+` and confirm it directly opens two stacked fields: a
-  required word/short phrase and an optional Context sentence. Saving with and
-  without Context must remain on Dashboard, refresh the recent list, start
-  normal dictionary enrichment, and retain the entered Context as the saved
-  example. The plus path must not show an intermediate choice menu
+- press the preview `+` and confirm the large preview disappears while a smaller
+  independent centred modal opens with two stacked fields: a required word/short
+  phrase and an optional Context sentence. The large preview must remain absent
+  and unavailable until explicit Close or a successful save restores it at the
+  same position. Saving with and without Context must remain on Dashboard,
+  refresh the recent list, start normal dictionary enrichment, and retain the
+  entered Context as the saved example. The plus path must not show an
+  intermediate choice menu
 - press the separate camera action and confirm the URL stays on Dashboard while
   the full Scan Words flow opens as an independent centred modal above the My
   Words preview, with the Dashboard dimmed and no page-like navigation. Close
   it and confirm the preview is restored in place; complete a scan and confirm
   the recent-word preview refreshes automatically
-- with manual entry open, click elsewhere in the preview and press Escape in
-  separate passes; both close only the entry surface, restore the `+` state, and
-  leave the My Words preview open. Confirm 44px controls, visible keyboard focus,
-  reduced-motion behavior, and an opaque fallback under Reduced Transparency
+- with manual entry open, click outside the small modal and confirm it stays
+  open. Use its `Close` action, then repeat with Escape; both restore the large
+  My Words preview and `+` focus without dismissing the complete My Words
+  overlay. Confirm 44px controls, visible keyboard focus, reduced-motion
+  behavior, and an opaque fallback under Reduced Transparency
+- verify both directions use the Assignments task-entry motion language: the
+  outgoing layer recedes while the incoming layer rises and scales into place;
+  neither direction changes windows instantaneously. Under reduced motion, the
+  same swap should use a short opacity cross-fade without translation, scaling,
+  or blur
 - the preview shares the Dashboard modal width/material, external `Close`, and
   exact-position page lock. On a short phone only the seven-word body scrolls;
   the header, full-workspace action, and external Close remain available.

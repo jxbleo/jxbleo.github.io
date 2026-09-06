@@ -318,10 +318,19 @@ Navigation:
   page-scroll lock, and external `Close` capsule. Its header contains only two
   44px actions aligned to the upper-right: a green `+` and a separate camera
   icon; the former `My Words`, saved total, and `Recently saved` labels are
-  absent. Pressing `+` directly opens a compact anchored manual-entry form with
-  two stacked fields: required word-or-short-phrase and an optional Context
-  sentence capped at 320 characters. Saving keeps the Context with that saved
-  example, refreshes the preview, and begins normal dictionary enrichment.
+  absent. Pressing `+` temporarily replaces the large preview with an
+  independent compact centred modal. The small modal has two stacked fields:
+  required word-or-short-phrase and an optional Context sentence capped at 320
+  characters. The large preview remains hidden and unavailable until the small
+  modal's explicit `Close` action is used or saving succeeds; it then returns at
+  the same position. This replacement is a spatial transition rather than an
+  instant hide/show: the large preview recedes upward and slightly scales down
+  as the compact modal materializes with the same rise-and-scale language used
+  by the Assignments task-entry confirmation. Closing or saving reverses that
+  relationship so the compact modal recedes while the large preview returns;
+  reduced-motion users receive a short opacity cross-fade. Saving keeps the
+  Context with that saved example, refreshes the restored preview, and begins
+  normal dictionary enrichment.
   Pressing the camera opens the complete authenticated Scan Words flow as a
   separate, large centred Dashboard modal above the preview; a dimmed/blurred
   backdrop preserves its origin and it does not navigate into the My Words

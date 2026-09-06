@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-09-06 — Independent Dashboard manual-word modal
+
+- Replaced the My Words preview's anchored manual-entry panel with a separate,
+  compact centred modal for the word/phrase and optional Context fields.
+- Temporarily hides and disables the larger My Words preview while manual entry
+  is open, then restores it in place only after explicit Close or a successful
+  save.
+- Matched the Assignments list-to-task-confirmation motion language when
+  switching between the large Dashboard My Words preview and manual entry.
+  Both layers animate on departure and return instead of changing instantly,
+  with a short opacity-only fallback for reduced-motion preferences.
+
 ## 2026-09-06 — Student Library defaults to BBC 2026
 
 - Changed the Student Library's initial Practice category from `BBC2024` to

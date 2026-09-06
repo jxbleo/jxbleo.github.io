@@ -869,6 +869,83 @@ html.teacher-modal-scroll-locked {
     width: 44px;
     height: 44px;
 }
+.student-words-stack[hidden],
+.student-words-manual-layer[hidden] {
+    display: none;
+}
+.student-words-overlay > .student-words-stack,
+.student-words-overlay > .student-words-manual-layer {
+    grid-area: 1 / 1;
+}
+.student-words-overlay.is-layer-transitioning > .student-words-stack,
+.student-words-overlay.is-layer-transitioning > .student-words-manual-layer {
+    will-change: opacity, transform, filter;
+}
+.student-words-overlay > .student-words-stack {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    transition:
+        opacity 200ms cubic-bezier(.4, 0, .7, .2),
+        transform 300ms cubic-bezier(.2, .8, .2, 1),
+        filter 240ms ease;
+}
+.student-words-manual-layer {
+    display: grid;
+    grid-template-rows: minmax(0, auto) auto;
+    justify-items: stretch;
+    gap: 11px;
+    width: min(430px, 100%);
+    min-height: 0;
+    opacity: 0;
+    transform: translateY(18px) scale(.94);
+    filter: blur(6px);
+    pointer-events: none;
+    transition:
+        opacity 220ms cubic-bezier(.4, 0, .7, .2),
+        transform 360ms cubic-bezier(.18, .95, .26, 1.12),
+        filter 260ms ease;
+}
+.student-words-overlay.is-manual-open > .student-words-stack {
+    opacity: 0;
+    transform: translateY(-14px) scale(.965);
+    filter: blur(5px);
+    pointer-events: none;
+}
+.student-words-overlay.is-manual-open > .student-words-manual-layer {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    pointer-events: auto;
+}
+.student-words-manual-heading {
+    display: grid;
+    gap: 3px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+.student-words-manual-heading > span {
+    color: rgba(19,118,109,0.72);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.13em;
+}
+.student-words-manual-heading h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.28rem;
+    font-weight: 780;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+}
+.student-words-manual-close {
+    justify-self: center;
+    min-height: 44px;
+}
+.student-words-manual-close:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
 .student-words-camera-button {
     color: var(--accent-dark);
     border: 1px solid rgba(19,118,109,0.16);
@@ -913,20 +990,16 @@ html.teacher-modal-scroll-locked {
 #student-words-preview-add-trigger svg { transition: transform 180ms ease; }
 #student-words-preview-add-trigger[aria-expanded="true"] svg { transform: rotate(45deg); }
 .student-words-preview-add-menu {
-    position: absolute;
-    z-index: 4;
-    top: 61px;
-    right: 18px;
-    width: min(360px, calc(100% - 36px));
-    padding: 14px;
+    position: relative;
+    width: 100%;
+    padding: 24px;
     border: 1px solid rgba(255,255,255,0.9);
-    border-radius: 18px;
-    background: rgba(250,252,251,0.94);
-    box-shadow: 0 18px 48px rgba(20,54,47,0.22), 0 2px 8px rgba(20,54,47,0.08);
-    -webkit-backdrop-filter: blur(24px) saturate(155%);
-    backdrop-filter: blur(24px) saturate(155%);
-    transform-origin: top right;
-    animation: studentWordsAddMenuIn 180ms cubic-bezier(.22,1,.36,1) both;
+    border-radius: 26px;
+    background: rgba(250,252,251,0.97);
+    box-shadow: 0 24px 80px rgba(20,54,47,0.26), 0 3px 12px rgba(20,54,47,0.09);
+    -webkit-backdrop-filter: blur(30px) saturate(155%);
+    backdrop-filter: blur(30px) saturate(155%);
+    transform-origin: center;
 }
 .student-words-preview-add-menu[hidden] { display: none; }
 .student-words-preview-add-form {
@@ -991,10 +1064,6 @@ html.teacher-modal-scroll-locked {
     color: var(--muted);
     font-size: 0.7rem;
     line-height: 1.3;
-}
-@keyframes studentWordsAddMenuIn {
-    from { opacity: 0; transform: translateY(-5px) scale(.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .student-words-dialog-scroll {
     padding: 0 18px;
@@ -4132,6 +4201,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 
 @media (max-width: 380px) {
+    .student-words-preview-add-menu { padding: 20px 17px; }
     .my-word-primary-copy { gap: 5px; }
     .my-words-input-shell > span { display: none; }
 }
@@ -4150,7 +4220,12 @@ body:not(.teacher-page) .tab-button.active {
     .student-message-task { transition-duration: 1ms; }
 
     .student-calendar-day.is-selected { animation: none; }
-    .student-words-preview-add-menu { animation: none; }
+    .student-words-overlay > .student-words-stack,
+    .student-words-overlay > .student-words-manual-layer {
+        transform: none;
+        filter: none;
+        transition: opacity 120ms ease;
+    }
 }
 
 @media (prefers-reduced-transparency: reduce) {

@@ -50,6 +50,7 @@ async function main() {
   const root = path.resolve(__dirname, "..");
   const dashboardHtml = fs.readFileSync(path.join(root, "dashboard.html"), "utf8");
   const dashboardJs = fs.readFileSync(path.join(root, "assets/js/dashboard.js"), "utf8");
+  const dashboardCss = fs.readFileSync(path.join(root, "assets/css/app.css"), "utf8");
   const bbcHtml = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
   const personalVocabJs = fs.readFileSync(path.join(root, "assets/js/personal-vocab.js"), "utf8");
   const myWordsHtml = fs.readFileSync(path.join(root, "my-words.html"), "utf8");
@@ -67,6 +68,8 @@ async function main() {
   assert(dashboardHtml.includes('id="my-words-scan-overlay"'), "Dashboard must mount Scan Words as an independent overlay");
   assert(dashboardHtml.includes('assets/js/my-words-scan.js?v=20260906-1'), "Dashboard must load the shared scanner runtime");
   assert(dashboardHtml.includes('id="student-words-preview-context-input" maxlength="320"'), "manual entry must accept one optional bounded Context sentence");
+  assert(dashboardHtml.includes('id="student-words-manual-layer"') && dashboardHtml.includes('aria-hidden="true" hidden'), "manual entry must use an independent initially hidden modal layer");
+  assert(dashboardHtml.includes('id="student-words-manual-close"'), "the independent manual-entry modal must provide an explicit Close action");
   assert(!dashboardHtml.includes('data-preview-direct-input'), "the plus button must open manual entry directly without an intermediate choice menu");
   assert(!dashboardHtml.includes('id="student-words-title"'), "the preview must not retain the My Words heading");
   assert(!dashboardHtml.includes('id="student-words-count"'), "the preview must not retain the total-word field");
@@ -76,6 +79,13 @@ async function main() {
   assert(dashboardJs.includes("data-preview-speak"), "preview rows must provide pronunciation");
   assert(dashboardJs.includes("function saveWordsPreviewInput(event)"), "direct input must save from the Dashboard preview");
   assert(dashboardJs.includes("context: context"), "direct input must save the optional Context with the word");
+  assert(dashboardJs.includes("wordsOverlay.classList.toggle('is-manual-open', shouldOpen)"), "manual entry must animate between the large preview and compact modal");
+  assert(dashboardJs.includes("wordsPreviewStack.hidden = shouldOpen") && dashboardJs.includes("wordsPreviewManualLayer.hidden = !shouldOpen"), "the outgoing My Words layer must hide only after its transition finishes");
+  assert(dashboardJs.includes("event.key === 'Tab' && wordsPreviewManualLayer"), "the independent manual-entry modal must keep keyboard focus inside itself");
+  assert(!dashboardJs.includes("wordsOverlay.addEventListener('click'"), "clicking outside the manual-entry modal must not restore the large preview");
+  assert(dashboardCss.includes(".student-words-manual-layer[hidden]") && dashboardCss.includes("width: min(430px, 100%)"), "manual entry must render as a bounded independent modal");
+  assert(dashboardCss.includes(".student-words-overlay.is-manual-open > .student-words-stack") && dashboardCss.includes(".student-words-overlay.is-manual-open > .student-words-manual-layer"), "both My Words modal layers must animate through complementary states");
+  assert(dashboardCss.includes("translateY(18px) scale(.94)") && dashboardCss.includes("translateY(-14px) scale(.965)"), "the modal swap must reuse the task-entry rise-and-scale motion language");
   assert(myWordsJs.includes("requestedAddMode === 'scan'"), "legacy direct Scan links must still open from the complete My Words workspace");
   assert(dashboardJs.includes("window.addEventListener('mrcat:scan-committed'"), "Dashboard must refresh the preview after scanned words are committed");
   assert(dashboardJs.includes("window.location.hash === '#my-words'"), "legacy Dashboard My Words links must redirect");

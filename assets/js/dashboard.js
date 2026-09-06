@@ -343,6 +343,8 @@
         return true;
     }
     var wordsOverlay = document.getElementById('student-words-overlay');
+    var wordsPreviewStack = document.getElementById('student-words-preview-stack');
+    var wordsPreviewManualLayer = document.getElementById('student-words-manual-layer');
     var wordsScroll = document.getElementById('student-words-dialog-scroll');
     var wordsPreview = document.getElementById('student-words-preview');
     var wordsPreviewAddTrigger = document.getElementById('student-words-preview-add-trigger');
@@ -352,6 +354,8 @@
     var wordsPreviewAddInput = document.getElementById('student-words-preview-add-input');
     var wordsPreviewContextInput = document.getElementById('student-words-preview-context-input');
     var wordsPreviewAddStatus = document.getElementById('student-words-preview-add-status');
+    var wordsPreviewManualClose = document.getElementById('student-words-manual-close');
+    var wordsPreviewLayerTimer = null;
     var wordsSearchTrigger = document.getElementById('my-words-search-trigger');
     var wordsExportTrigger = document.getElementById('my-words-export-trigger');
     var wordsExportPanel = document.getElementById('my-words-export-panel');
@@ -4100,20 +4104,55 @@
         bindMyWordsPreviewActions();
     }
 
-    function setWordsPreviewAddOpen(open) {
-        if (!wordsPreviewAddTrigger || !wordsPreviewAddMenu) return;
+    function setWordsPreviewAddOpen(open, options) {
+        if (!wordsPreviewAddTrigger || !wordsPreviewAddMenu || !wordsPreviewStack || !wordsPreviewManualLayer) return;
+        options = options || {};
         var shouldOpen = open === true;
-        wordsPreviewAddMenu.hidden = !shouldOpen;
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var transitionDelay = options.immediate === true ? 0 : (reduceMotion ? 120 : 360);
+        if (wordsPreviewLayerTimer) {
+            window.clearTimeout(wordsPreviewLayerTimer);
+            wordsPreviewLayerTimer = null;
+        }
+        wordsPreviewStack.hidden = false;
+        wordsPreviewStack.setAttribute('aria-hidden', shouldOpen ? 'true' : 'false');
+        wordsPreviewManualLayer.hidden = false;
+        wordsPreviewManualLayer.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        wordsPreviewAddMenu.hidden = false;
         wordsPreviewAddMenu.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
         if (shouldOpen) wordsPreviewAddMenu.removeAttribute('inert');
         else wordsPreviewAddMenu.setAttribute('inert', '');
         wordsPreviewAddTrigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-        wordsPreviewAddTrigger.setAttribute('aria-label', shouldOpen ? 'Close manual word entry' : 'Enter a word manually');
-        if (!shouldOpen) {
-            if (wordsPreviewAddInput) wordsPreviewAddInput.value = '';
-            if (wordsPreviewContextInput) wordsPreviewContextInput.value = '';
-            if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = '';
+        wordsPreviewAddTrigger.setAttribute('aria-label', 'Enter a word manually');
+
+        function finishLayerTransition() {
+            wordsPreviewLayerTimer = null;
+            wordsOverlay.classList.remove('is-layer-transitioning');
+            wordsPreviewStack.hidden = shouldOpen;
+            wordsPreviewManualLayer.hidden = !shouldOpen;
+            wordsPreviewAddMenu.hidden = !shouldOpen;
+            if (!shouldOpen) {
+                if (wordsPreviewAddInput) wordsPreviewAddInput.value = '';
+                if (wordsPreviewContextInput) wordsPreviewContextInput.value = '';
+                if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = '';
+            }
         }
+
+        if (options.immediate === true) {
+            wordsOverlay.classList.toggle('is-manual-open', shouldOpen);
+            finishLayerTransition();
+            return;
+        }
+
+        wordsOverlay.classList.add('is-layer-transitioning');
+        window.requestAnimationFrame(function() {
+            wordsOverlay.classList.toggle('is-manual-open', shouldOpen);
+            if (!transitionDelay) {
+                finishLayerTransition();
+                return;
+            }
+            wordsPreviewLayerTimer = window.setTimeout(finishLayerTransition, transitionDelay);
+        });
     }
 
     function saveWordsPreviewInput(event) {
@@ -4132,6 +4171,7 @@
             submit.disabled = true;
             submit.textContent = 'Adding…';
         }
+        if (wordsPreviewManualClose) wordsPreviewManualClose.disabled = true;
         if (wordsPreviewAddStatus) wordsPreviewAddStatus.textContent = '';
         callStudentVocabulary({
             action: 'add',
@@ -4158,6 +4198,7 @@
                 submit.disabled = false;
                 submit.textContent = 'Add to My Words';
             }
+            if (wordsPreviewManualClose) wordsPreviewManualClose.disabled = false;
         });
     }
 
@@ -4199,7 +4240,7 @@
             wordsButton.setAttribute('aria-expanded', state.wordsPanelOpen ? 'true' : 'false');
         }
         if (!state.wordsPanelOpen) {
-            setWordsPreviewAddOpen(false);
+            setWordsPreviewAddOpen(false, { immediate: true });
             if (wasOpen) unlockStudentMessageBackground();
             return;
         }
@@ -5063,18 +5104,35 @@
         loadMyWordsPreview();
     });
     if (wordsPreviewAddForm) wordsPreviewAddForm.addEventListener('submit', saveWordsPreviewInput);
-    if (wordsOverlay) {
-        wordsOverlay.addEventListener('click', function(event) {
-            if (!wordsPreviewAddMenu || wordsPreviewAddMenu.hidden) return;
-            if (wordsPreviewAddMenu.contains(event.target) || wordsPreviewAddTrigger.contains(event.target)) return;
+    if (wordsPreviewManualClose) {
+        wordsPreviewManualClose.addEventListener('click', function() {
             setWordsPreviewAddOpen(false);
+            wordsPreviewAddTrigger.focus({ preventScroll: true });
         });
     }
     document.addEventListener('keydown', function(event) {
-        if (event.key !== 'Escape' || !wordsPreviewAddMenu || wordsPreviewAddMenu.hidden) return;
-        event.preventDefault();
-        setWordsPreviewAddOpen(false);
-        wordsPreviewAddTrigger.focus();
+        if (!wordsPreviewAddMenu || wordsPreviewAddMenu.hidden) return;
+        if (event.key === 'Tab' && wordsPreviewManualLayer) {
+            var manualFocusable = Array.prototype.slice.call(wordsPreviewManualLayer.querySelectorAll('input:not([disabled]), textarea:not([disabled]), button:not([disabled])')).filter(function(item) {
+                return item.offsetParent !== null;
+            });
+            if (!manualFocusable.length) return;
+            var firstManualControl = manualFocusable[0];
+            var lastManualControl = manualFocusable[manualFocusable.length - 1];
+            if (event.shiftKey && document.activeElement === firstManualControl) {
+                event.preventDefault();
+                lastManualControl.focus();
+            } else if (!event.shiftKey && document.activeElement === lastManualControl) {
+                event.preventDefault();
+                firstManualControl.focus();
+            }
+            return;
+        }
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            setWordsPreviewAddOpen(false);
+            wordsPreviewAddTrigger.focus();
+        }
     });
     var wordsClose = document.getElementById('student-words-close');
     if (wordsClose) {
