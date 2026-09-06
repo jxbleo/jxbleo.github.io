@@ -1305,8 +1305,12 @@ It should include:
   as separate matrix columns, even when they occur in the same week.
   Unclassed students appear in the `Class` menu by student name so a teacher can
   isolate one student's matrix rows without an `Individual` prefix.
-- the matrix renders every student matching the current filters; do not hide
-  later students behind a fixed first-page row cap
+- the matrix begins with every current active, complete student profile matching
+  the current Class filter, then fills cells from assignment/progress records that
+  match the Column and Date filters. Keep new or transferred class members with
+  no matching assignment as visible rows of `-` cells, use the profile's current
+  class instead of a stale progress snapshot, and do not hide later students
+  behind a fixed first-page row cap
 - the matrix student column shows only the student name, without Login ID or
   class, and sizes to the currently rendered names instead of using a wide fixed
   column. Comfortable density levels show the full saved name; the tightest

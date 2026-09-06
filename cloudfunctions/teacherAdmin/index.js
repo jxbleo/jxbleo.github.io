@@ -34,6 +34,35 @@ const LISTENING_MATERIAL_COLLECTION = "intensive_listening_materials";
 const LISTENING_DRAFT_COLLECTION = "listening_material_drafts";
 const LISTENING_HISTORY_COLLECTION = "listening_material_history";
 const LISTENING_ASSIGNMENT_TRACK_COLLECTION = "listening_assignment_tracks";
+const ATTEMPT_SUMMARY_FIELDS = {
+  attempt_id: true,
+  student_uid: true,
+  student_id_snapshot: true,
+  set_id: true,
+  assignment_id: true,
+  mode: true,
+  grading_version: true,
+  attempt_number: true,
+  adjusted_correct_count: true,
+  correct_count: true,
+  question_count: true,
+  adjusted_percentage: true,
+  percentage: true,
+  passing_percentage: true,
+  mastery_percentage: true,
+  mastery_enabled: true,
+  adjusted_passed: true,
+  passed: true,
+  adjusted_mastered: true,
+  mastered: true,
+  selected_group_count: true,
+  selected_group_ids: true,
+  submitted_at: true,
+  practice_context: true,
+  duration_seconds: true,
+  audio_started_at: true,
+  audio_to_submit_seconds: true,
+};
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -148,6 +177,7 @@ async function getAll(collection, options = {}) {
     let query = db.collection(collection);
     if (options.where) query = query.where(options.where);
     if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+    if (options.field) query = query.field(options.field);
     const result = await query.skip(offset).limit(pageSize).get();
     const rows = result.data || [];
     output.push(...rows);
@@ -163,6 +193,7 @@ async function getPage(collection, options = {}) {
   let query = db.collection(collection);
   if (options.where) query = query.where(options.where);
   if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+  if (options.field) query = query.field(options.field);
   const result = await query.skip(offset).limit(pageSize).get();
   return result.data || [];
 }
@@ -2825,7 +2856,7 @@ function buildSelfStudyProgressItem(studentUid, setId, attempts, student, set) {
 async function listProgress() {
   const [assignmentRows, attemptRows, studentRows, setRows, intensiveProgressRows] = await Promise.all([
     getAll("assignments"),
-    getAll("attempts"),
+    getAll("attempts", { field: ATTEMPT_SUMMARY_FIELDS }),
     getAll("students"),
     getAll("sets"),
     getAll("intensive_listening_progress").catch(() => []),
@@ -2927,7 +2958,7 @@ async function listProgress() {
 
 async function listAttempts() {
   const [attemptRows, studentRows] = await Promise.all([
-    getAll("attempts"),
+    getAll("attempts", { field: ATTEMPT_SUMMARY_FIELDS }),
     getAll("students"),
   ]);
   const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
@@ -2953,6 +2984,7 @@ async function listAttemptNotifications(event) {
       offset: cursor.attempt_offset,
       limit: NOTIFICATION_FEED_PAGE_SIZE + 1,
       orderBy: { field: "submitted_at", direction: "desc" },
+      field: ATTEMPT_SUMMARY_FIELDS,
     }),
     getPage("teacher_attempt_email_events", {
       offset: cursor.intensive_offset,
@@ -3030,7 +3062,7 @@ async function listAttemptThread(event) {
   const where = assignmentId
     ? { student_uid: studentUid, assignment_id: assignmentId }
     : { student_uid: studentUid, set_id: setId };
-  const attempts = (await getAll("attempts", { where }))
+  const attempts = (await getAll("attempts", { where, field: ATTEMPT_SUMMARY_FIELDS }))
     .filter((attempt) => assignmentId || !recordData(attempt).assignment_id)
     .sort((left, right) => attemptDateValue(left) - attemptDateValue(right));
   return {

@@ -550,6 +550,7 @@ flowchart TD
 - FINISHED 只在全局最高分严格提高时按 `best_improved_at` 向前移动；同分或低分重做不改排序
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
+- 教师 View 矩阵以当前 active、profile-complete 学生名单为行，再将作业和进度填入对应单元格；新入班或转班学生即使尚无匹配作业也必须立即出现在当前班级，空单元格显示 `-`。当前 profile 的班级覆盖历史作业中的 `class_group` 快照
 - 教师在 View 矩阵点击学生姓名，或从 Students 清单进入学生详情时，应打开该学生的月度完成日历；每一周显示为独立周带，日期、完成密度、STAR 和完成项目明细与学生 Dashboard 的进度语义一致，并包含该学生的自学记录
 - Students 清单只保留搜索、班级筛选、右上角新增入口和学生姓名，不在姓名下重复显示 Login ID、班级或 Active 状态。姓名搜索同时匹配中文名、英文名和兼容完整姓名。学生详情顶部使用一个同时显示中文名和英文名的身份胶囊，右侧只保留 STAR、Completed 和 Account 三个功能胶囊；Completed 显示完成数/总数。旧记录只有完整 `name` 时只按一条旧姓名显示并提示老师在 Account 中确认，绝不按字符或空格自动拆分。班级、Login ID、System 和账号操作只在点击 Account 后的独立弹窗中出现，详情底部不再保留 Account settings 展开区
 - 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment

@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-06 — Keep current class rosters visible in Teacher View
+
+- Changed the Teacher View matrix to build student rows from current active,
+  complete profiles before filling assignment/progress cells, so new and
+  transferred class members remain visible even without matching work.
+- Made current profile class data override stale progress snapshots and redraw
+  the matrix and Assign candidates immediately after a class update.
+- Projected summary-only attempt fields for Teacher progress, legacy attempt
+  lists, notification pages, and thread summaries instead of reading full
+  per-question answer payloads into routine matrix refreshes.
+- Added regression coverage for empty roster rows, class-transfer snapshots,
+  inactive-student exclusion, and summary-field projection.
+
 ## 2026-09-06 — Dashboard My Words direct add and Scan modal
 
 - Split the Dashboard My Words preview header into a direct manual-entry `+`

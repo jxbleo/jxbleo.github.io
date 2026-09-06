@@ -490,6 +490,10 @@ Teacher progress and student dashboard reads use paginated CloudBase reads for
 owned or relevant records instead of assuming the first page contains every
 assignment, attempt, set, student, dispute, or STAR. Teacher progress also uses
 linked attempts as a display fallback when an assignment summary is stale.
+The Teacher matrix outer-joins those progress records onto the current active
+student roster, so class changes and members without matching assignments remain
+visible immediately. Summary-only progress reads use a field projection for
+attempts and must not fetch full answers, question results, or explanations.
 
 ### Teacher Assignment
 

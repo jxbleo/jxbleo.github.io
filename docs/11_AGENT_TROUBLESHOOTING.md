@@ -76,6 +76,7 @@ Speaking Lab 不使用上述旧模式。`speakingAiWorker` 的函数级权限必
 | 学生删除后用相同 Login ID 重建仍报 `STUDENT_ID_EXISTS` | 线上 `teacherAdmin` 仍是旧版，已删除 profile 的 `student_id` 尚未归档释放；或 Authentication 中同名 end user 仍存在 | 部署最新版 `teacherAdmin`；检查 deleted profile 的 `deleted_student_id_snapshot` 与归档 `student_id`；再查 Authentication username |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id；是否部署了分页读取和 attempt 兜底版本 |
+| Assign 选择班级时能看到学生，但 Teacher View 对应班级没有该学生 | Assign 使用当前学生名单，而旧矩阵只从 assignment/progress 反推行；转班后旧进度还可能保留原 `class_group`，完整 attempt 扫描超时又会让前端沿用旧缓存 | 发布同一提交的 `teacher.js` 和 `teacherAdmin`；矩阵应先建立当前 active roster 行，再 outer-join 进度，并以当前 profile 班级覆盖旧快照；summary 查询只投影必要 attempt 字段 |
 | 学生同一词汇题先做 96%、后从另一入口做到 100%，学生或教师仍显示 96% | 旧逻辑按 `assignment_id` 隔离 best，或只更新了本次绑定的 assignment | 检查同一 `student_uid + set_id` 的 countable attempts；部署使用共享 Exercise Progress 汇总的 `submitAttempt`、`getDashboard`、`teacherAdmin`，无需改写 attempt 历史 |
 | 学生打开共享报告链接却能看到其他学生点评/明细 | 只在前端隐藏 `student_details`，或线上 `learningReports` 仍返回完整 report document | 直接检查学生身份下的函数响应；必须由 `learningReports.getReport` 服务端只投影该学生一条 detail。发布最新函数；不要用 CSS/JS 修补泄露 |
 | 报告链接显示 `REPORT_NOT_AVAILABLE` 或空报告 | 报告集合/索引未创建、报告尚为 preview、学生不在 membership snapshot，或线上函数版本不匹配 | 先查 `learning_reports` 的 class/period/status，再查 `class_memberships` 覆盖期和函数部署；不要把 preview 直接公开 |

@@ -79,6 +79,7 @@ const collections = {
 let nextId = 1;
 let currentUid = "teacher-uid";
 const collectionReadCounts = {};
+const collectionFieldSelections = {};
 
 const command = {
   in(values) {
@@ -97,9 +98,19 @@ function matches(record, where) {
   });
 }
 
+function projectedRecord(record, fields) {
+  if (!fields) return record;
+  const projected = {};
+  if (Object.prototype.hasOwnProperty.call(record, "_id")) projected._id = record._id;
+  Object.keys(fields).forEach((key) => {
+    if (fields[key] === true && Object.prototype.hasOwnProperty.call(record, key)) projected[key] = record[key];
+  });
+  return projected;
+}
+
 function collection(name) {
   const rows = collections[name] || (collections[name] = []);
-  const state = { where: null, offset: 0, limit: null, order: null };
+  const state = { where: null, offset: 0, limit: null, order: null, fields: null };
   const query = {
     where(where) {
       state.where = where;
@@ -117,6 +128,11 @@ function collection(name) {
       state.limit = limit;
       return query;
     },
+    field(fields) {
+      state.fields = fields;
+      collectionFieldSelections[name] = fields;
+      return query;
+    },
     async get() {
       collectionReadCounts[name] = Number(collectionReadCounts[name] || 0) + 1;
       let result = rows.filter((record) => matches(record, state.where));
@@ -129,7 +145,7 @@ function collection(name) {
         });
       }
       const end = state.limit == null ? undefined : state.offset + state.limit;
-      return { data: result.slice(state.offset, end) };
+      return { data: result.slice(state.offset, end).map((record) => projectedRecord(record, state.fields)) };
     },
     async count() {
       return { total: rows.filter((record) => matches(record, state.where)).length };
@@ -279,7 +295,11 @@ function teacherAssignmentEditHooks() {
       attemptHasDetail: attemptHasDetail,
       mergeAttemptDetail: mergeAttemptDetail,
       renderMatrixAttemptWrongRows: renderMatrixAttemptWrongRows,
-      selectAssignClassCandidates: selectAssignClassCandidates
+      selectAssignClassCandidates: selectAssignClassCandidates,
+      matrixStudentClass: matrixStudentClass,
+      matrixStudentMapForItems: matrixStudentMapForItems,
+      matrixClassOptions: matrixClassOptions,
+      renderAssignmentMatrix: renderAssignmentMatrix
     };
 })();`;
 
@@ -480,6 +500,73 @@ function testTeacherAssignClassAutoSelection() {
   assert.equal(hooks.state.selectedAssignStudentUids["student-c"], undefined);
   assert.equal(hooks.state.selectedAssignStudentUids["student-existing"], true);
   assert.equal(hooks.selectAssignClassCandidates(""), 0);
+}
+
+function testTeacherMatrixUsesCurrentRoster() {
+  const { hooks } = teacherAssignmentEditHooks();
+  hooks.state.students = [
+    {
+      auth_uid: "student-assigned",
+      student_id: "student-assigned-login",
+      name: "Assigned Student",
+      class_group: "S502",
+      role: "student",
+      active: true,
+      profile_complete: true,
+    },
+    {
+      auth_uid: "student-annie",
+      student_id: "student-annie-login",
+      name: "Annie",
+      class_group: "S502",
+      role: "student",
+      active: true,
+      profile_complete: true,
+    },
+    {
+      auth_uid: "student-disabled",
+      student_id: "student-disabled-login",
+      name: "Disabled Student",
+      class_group: "S502",
+      role: "student",
+      active: false,
+      profile_complete: true,
+    },
+  ];
+  hooks.state.matrixClassFilter = "S502";
+  const staleAssignment = {
+    assignment_id: "assignment-before-transfer",
+    assignment_batch_id: "batch-before-transfer",
+    student_uid: "student-assigned",
+    student_id: "student-assigned-login",
+    student_name: "Assigned Student",
+    class_group: "S401",
+    set_id: "TEST-SET",
+    due_at: new Date("2026-09-06T15:59:59.000Z"),
+    status: "to_do",
+  };
+  const disabledAssignment = {
+    assignment_id: "assignment-disabled",
+    student_uid: "student-disabled",
+    student_id: "student-disabled-login",
+    class_group: "S999",
+    set_id: "TEST-SET",
+    due_at: new Date("2026-09-06T15:59:59.000Z"),
+    status: "to_do",
+  };
+  assert.equal(hooks.matrixStudentClass(staleAssignment), "S502", "the current profile class must override a stale progress snapshot");
+  const studentMap = hooks.matrixStudentMapForItems([staleAssignment]);
+  assert(studentMap["student-assigned"]);
+  assert(studentMap["student-annie"], "an active class member without an assignment must still receive a matrix row");
+  assert.equal(Object.keys(studentMap["student-annie"].items).length, 0);
+  assert.equal(studentMap["student-disabled"], undefined, "disabled students must stay out of the active matrix");
+  const options = hooks.matrixClassOptions([staleAssignment, disabledAssignment]);
+  assert(options.classes.includes("S502"));
+  assert(!options.classes.includes("S401"), "a stale assignment class must not recreate the old class filter");
+  assert(!options.classes.includes("S999"), "a disabled student's old progress must not create an empty class filter");
+  const matrixHtml = hooks.renderAssignmentMatrix([staleAssignment]);
+  assert(matrixHtml.includes('title="Annie"'), "the rendered matrix must keep the empty Annie roster row");
+  assert(matrixHtml.includes('<span class="progress-matrix-cell empty">-</span>'));
 }
 
 function testTeacherAttemptChartBackendThresholds() {
@@ -1000,6 +1087,7 @@ function testAccountStarHistoryModel() {
 async function main() {
   testTeacherAssignmentEditDelegation();
   testTeacherAssignClassAutoSelection();
+  testTeacherMatrixUsesCurrentRoster();
   testTeacherAttemptChartBackendThresholds();
   testTeacherPhoneMatrixDensityIsolation();
   testDashboardScheduleModel();
@@ -1066,6 +1154,9 @@ async function main() {
   assert.equal(Object.prototype.hasOwnProperty.call(attemptSummary, "group_results"), false);
 
   const progressResult = await call("listProgress");
+  assert.equal(collectionFieldSelections.attempts.question_results, undefined,
+    "progress reads must not fetch full per-question answer payloads");
+  assert.equal(collectionFieldSelections.attempts.adjusted_percentage, true);
   const selfStudyProgress = progressResult.progress.find((item) =>
     item.source === "self_study" && item.set_id === "BBC-DEFAULT"
   );

@@ -5545,6 +5545,20 @@
         return String(item.student_uid || item.auth_uid || item.student_id || 'unknown');
     }
 
+    function matrixStudentProfile(item) {
+        var uid = item && (item.student_uid || item.auth_uid) || '';
+        var studentId = item && item.student_id || '';
+        return state.students.find(function(profile) {
+            return profile.auth_uid === uid || (studentId && profile.student_id === studentId);
+        }) || null;
+    }
+
+    function matrixRosterStudents() {
+        return studentRecords().filter(function(student) {
+            return student.active === true && student.profile_complete;
+        });
+    }
+
     function matrixSetKey(item) {
         if (isSelfStudyMatrixItem(item)) {
             return 'self-study::' + String(item.progress_id || item.set_id || 'unknown');
@@ -5575,27 +5589,18 @@
     }
 
     function matrixStudentClass(item) {
-        if (item.class_group) return String(item.class_group);
-        var uid = item.student_uid || item.auth_uid || '';
-        var student = state.students.find(function(profile) {
-            return profile.auth_uid === uid || profile.student_id === item.student_id;
-        });
-        return student && student.class_group ? String(student.class_group) : '';
+        var student = matrixStudentProfile(item);
+        if (student) return String(student.class_group || '');
+        return item && item.class_group ? String(item.class_group) : '';
     }
 
     function matrixStudentName(item) {
-        var uid = item.student_uid || item.auth_uid || '';
-        var student = state.students.find(function(profile) {
-            return profile.auth_uid === uid || profile.student_id === item.student_id;
-        });
+        var student = matrixStudentProfile(item);
         return (student && studentDisplayName(student)) || item.student_name || item.student_id || 'Student';
     }
 
     function matrixStudentId(item) {
-        var uid = item.student_uid || item.auth_uid || '';
-        var student = state.students.find(function(profile) {
-            return profile.auth_uid === uid || profile.student_id === item.student_id;
-        });
+        var student = matrixStudentProfile(item);
         return item.student_id || (student && student.student_id) || '';
     }
 
@@ -5606,7 +5611,21 @@
     function matrixClassOptions(items) {
         var classes = {};
         var individuals = {};
+        matrixRosterStudents().forEach(function(student) {
+            var className = String(student.class_group || '').trim();
+            if (className) {
+                classes[className] = true;
+                return;
+            }
+            var key = matrixStudentKey(student);
+            individuals[key] = {
+                value: matrixIndividualFilterValue(student),
+                label: studentDisplayName(student) || student.student_id || 'Student'
+            };
+        });
         items.forEach(function(item) {
+            var profile = matrixStudentProfile(item);
+            if (profile && (profile.active !== true || !profile.profile_complete)) return;
             var className = matrixStudentClass(item);
             if (className) {
                 classes[className] = true;
@@ -5654,6 +5673,46 @@
             return !matrixStudentClass(item) && matrixIndividualFilterValue(item) === filter;
         }
         return matrixStudentClass(item) === filter;
+    }
+
+    function matrixProfileMatchesClassFilter(student) {
+        var filter = state.matrixClassFilter || '';
+        if (!filter) return true;
+        var className = String(student && student.class_group || '');
+        if (filter.indexOf('individual:') === 0) {
+            return !className && matrixIndividualFilterValue(student) === filter;
+        }
+        return className === filter;
+    }
+
+    function matrixStudentMapForItems(items) {
+        var studentMap = {};
+        matrixRosterStudents().filter(matrixProfileMatchesClassFilter).forEach(function(student) {
+            var key = matrixStudentKey(student);
+            studentMap[key] = {
+                key: key,
+                name: studentDisplayName(student) || student.student_id || 'Student',
+                items: {}
+            };
+        });
+        items.forEach(function(item) {
+            var profile = matrixStudentProfile(item);
+            if (profile && (profile.active !== true || !profile.profile_complete)) return;
+            var studentKey = matrixStudentKey(item);
+            if (!studentMap[studentKey]) {
+                studentMap[studentKey] = {
+                    key: studentKey,
+                    name: matrixStudentName(item),
+                    items: {}
+                };
+            }
+            var setKey = matrixSetKey(item);
+            var current = studentMap[studentKey].items[setKey];
+            if (!current || new Date(matrixDateValue(item) || 0) > new Date(matrixDateValue(current) || 0)) {
+                studentMap[studentKey].items[setKey] = item;
+            }
+        });
+        return studentMap;
     }
 
     function renderMatrixDateSelect() {
@@ -6770,7 +6829,7 @@
             '</section>';
         }
         var setMap = {};
-        var studentMap = {};
+        var studentMap = matrixStudentMapForItems(matrixItems);
         matrixItems.forEach(function(item) {
             var setKey = matrixSetKey(item);
             var weekInfo = matrixWeekInfo(item);
@@ -6787,18 +6846,6 @@
                 setMap[setKey].date = Math.max(setMap[setKey].date, new Date(matrixDateValue(item) || 0).getTime());
             }
             setMap[setKey].items.push(item);
-            var studentKey = matrixStudentKey(item);
-            if (!studentMap[studentKey]) {
-                studentMap[studentKey] = {
-                    key: studentKey,
-                    name: item.student_name || item.student_id || 'Student',
-                    items: {}
-                };
-            }
-            var current = studentMap[studentKey].items[setKey];
-            if (!current || new Date(matrixDateValue(item) || 0) > new Date(matrixDateValue(current) || 0)) {
-                studentMap[studentKey].items[setKey] = item;
-            }
         });
         var allSets = Object.keys(setMap).map(function(key) { return setMap[key]; })
             .sort(function(a, b) { return b.date - a.date || a.title.localeCompare(b.title); });
@@ -8178,7 +8225,12 @@
         return teacherCall('updateStudent', Object.assign({ auth_uid: authUid }, update))
             .then(function() {
                 showMessage('Student updated.', 'success');
-                return refreshStudents().then(function() { return true; });
+                return refreshStudents().then(function() {
+                    loadCandidates();
+                    renderAssignmentOverview();
+                    writeTeacherWorkspaceCache();
+                    return true;
+                });
             }).catch(function(error) {
                 showMessage(error.message, 'error');
                 return false;

@@ -1360,6 +1360,15 @@ Check:
   including repeated assignments in the same week
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
+- Move an active student into a class while that student has no assignments.
+  Confirm the Assign picker and View matrix both show the student immediately;
+  View uses an empty `-` row until matching work exists. Repeat with an older
+  assignment carrying the previous `class_group` snapshot and confirm only the
+  current profile class appears. Disable the student and confirm the active
+  matrix row disappears without deleting assignment or attempt history.
+- Confirm Teacher progress and notification summary reads project only attempt
+  summary fields; full answers, per-question results, and explanations load only
+  through the authorized one-attempt detail request.
 - Clicking the matrix left student-name column opens an independent four-week
   progress modal with that student's Total, Done, and Avg summary; its Wxx
   labels, Mon-Sun squares, completion-density/STAR states, and selected day or
