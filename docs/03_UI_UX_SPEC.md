@@ -315,15 +315,20 @@ Navigation:
 - the My Words notebook icon in the right-side utility group opens a compact
   quick-preview dialog rather than navigating immediately. The dialog shares
   the Calendar/Assignments width, glass material, backdrop, materialization,
-  page-scroll lock, and external `Close` capsule. Its header contains only two
-  44px actions aligned to the upper-right: a green `+` and a separate camera
-  icon; the former `My Words`, saved total, and `Recently saved` labels are
-  absent. Pressing `+` temporarily replaces the large preview with an
-  independent compact centred modal. The small modal has two stacked fields:
-  required word-or-short-phrase and an optional Context sentence capped at 320
-  characters, with no eyebrow or repeated title above them. Its surface reuses
-  the same translucent glass material, border, blur, and depth as the other
-  Dashboard toolbar dialogs. The large preview remains hidden and unavailable until the small
+  page-scroll lock, and external `Close` capsule. Its header places two 44px
+  actions at the upper-left—a green `+` and a separate camera icon—and a compact
+  `See All` route to the complete workspace at the upper-right; the former
+  `My Words`, saved total, and `Recently saved` labels are absent. Pressing `+`
+  temporarily replaces the large preview with an independent compact centred
+  modal. The small modal follows the Change Password dialog: a centred green
+  `Add to My Words` title, two labelled blank single-line fields for the
+  required word-or-short-phrase and optional Context sentence capped at 320
+  characters, and a centred `Confirm` action. Input interiors contain no
+  placeholder copy. Opening focuses the dialog title rather than either field,
+  so touch devices do not summon the keyboard until the student taps an input.
+  Its surface reuses the same translucent glass material, border, blur, and
+  depth as Change Password and the other Dashboard toolbar dialogs. The large
+  preview remains hidden and unavailable until the small
   modal's explicit `Close` action is used or saving succeeds; it then returns at
   the same position. This replacement is a spatial transition rather than an
   instant hide/show: the large preview recedes upward and slightly scales down
@@ -346,10 +351,11 @@ Navigation:
   Dashboard position, while a successful batch refreshes its recent words
   automatically. The dialog's
   independently scrollable body shows at most the
-  seven most recently active words, each reduced to English, part of speech, a
-  single-line Chinese meaning, and pronunciation. Its fixed footer contains no
-  remaining-word count and provides one full-width `Open My Words` action to
-  `my-words.html`. Search, add, edit, delete, export, sorting, Notes, and full
+  nine most recently active words, each reduced to English, part of speech, a
+  single-line Chinese meaning, and pronunciation. There is no fixed footer, so
+  the independently scrolling recent-word list continues through the space it
+  formerly occupied; the header's `See All` route opens `my-words.html`. Search,
+  add, edit, delete, export, sorting, Notes, and full
   dictionary detail remain exclusive to the dedicated workspace, apart from
   this intentionally bounded manual-entry action, so Dashboard never mounts a
   second complete My Words runtime. Backdrop and Escape do not

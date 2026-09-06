@@ -850,9 +850,9 @@ html.teacher-modal-scroll-locked {
     transition-duration: 70ms;
 }
 
-/* Dashboard My Words is a bounded seven-word preview; the full workspace stays on my-words.html. */
+/* Dashboard My Words is a bounded nine-word preview; the full workspace stays on my-words.html. */
 .student-words-dialog {
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
     background: rgba(248,251,249,0.76);
     -webkit-backdrop-filter: blur(30px) saturate(160%);
     backdrop-filter: blur(30px) saturate(160%);
@@ -860,7 +860,7 @@ html.teacher-modal-scroll-locked {
 .student-words-dialog-head {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     min-height: 66px;
     padding: 11px 18px;
     background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.06));
@@ -934,6 +934,7 @@ html.teacher-modal-scroll-locked {
     border: 1px solid rgba(19,118,109,0.16);
     background: rgba(255,255,255,0.78);
     box-shadow: 0 7px 18px rgba(20,54,47,0.09);
+    text-decoration: none;
 }
 .student-words-camera-button:hover {
     color: #fff;
@@ -1099,9 +1100,22 @@ html.teacher-modal-scroll-locked {
     transform-origin: center;
 }
 .student-words-preview-add-menu[hidden] { display: none; }
+.student-words-manual-title-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.student-words-manual-title-row .eyebrow {
+    grid-column: 2;
+    margin: 0;
+    color: var(--accent-dark);
+    text-align: center;
+}
 .student-words-preview-add-form {
     display: grid;
-    gap: 11px;
+    gap: 10px;
 }
 .student-words-preview-add-form > label {
     display: grid;
@@ -1109,50 +1123,39 @@ html.teacher-modal-scroll-locked {
 }
 .student-words-preview-add-form > label > span {
     color: var(--muted);
-    font-size: 0.72rem;
-    font-weight: 760;
+    font-size: 0.82rem;
+    font-weight: 800;
 }
 .student-words-preview-add-form > label small {
     margin-left: 4px;
     font-size: 0.66rem;
     font-weight: 650;
 }
-.student-words-preview-add-form input,
-.student-words-preview-add-form textarea {
+.student-words-preview-add-form input {
     min-width: 0;
     width: 100%;
-    padding: 11px 12px;
-    border: 1px solid rgba(19,118,109,0.2);
+    min-height: 46px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
     border-radius: 12px;
     color: var(--ink);
-    background: rgba(255,255,255,0.9);
+    background: #fff;
     font: inherit;
     font-size: 16px;
     line-height: 1.35;
 }
-.student-words-preview-add-form input { min-height: 44px; }
-.student-words-preview-add-form textarea {
-    min-height: 76px;
-    resize: vertical;
-}
-.student-words-preview-add-form input:focus,
-.student-words-preview-add-form textarea:focus {
-    border-color: rgba(19,118,109,0.52);
-    box-shadow: 0 0 0 3px rgba(19,118,109,0.09);
+.student-words-preview-add-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(19,118,109,0.1);
     outline: none;
 }
-.student-words-preview-add-form button {
+.dialog-actions.student-words-manual-actions {
+    grid-template-columns: minmax(180px, 240px);
+    justify-content: center;
+    margin-top: 4px;
+}
+.student-words-manual-actions .primary-button {
     width: 100%;
-    min-height: 44px;
-    padding: 0 14px;
-    border: 0;
-    border-radius: 12px;
-    color: #fff;
-    background: var(--accent);
-    font: inherit;
-    font-size: 0.78rem;
-    font-weight: 820;
-    cursor: pointer;
 }
 .student-words-preview-add-form button:disabled { opacity: 0.56; cursor: default; }
 .student-words-preview-add-form p {
@@ -1162,8 +1165,12 @@ html.teacher-modal-scroll-locked {
     font-size: 0.7rem;
     line-height: 1.3;
 }
+.student-words-manual-close {
+    width: 132px;
+    min-width: 132px;
+}
 .student-words-dialog-scroll {
-    padding: 0 18px;
+    padding: 0 18px max(18px, env(safe-area-inset-bottom));
 }
 .student-words-preview,
 .student-words-preview-list {
@@ -1271,50 +1278,36 @@ html.teacher-modal-scroll-locked {
     font-size: 0.82rem;
     line-height: 1.45;
 }
-.student-words-dialog-footer {
-    position: relative;
-    display: grid;
-    gap: 9px;
-    padding: 14px 18px 18px;
-    background: rgba(248,251,249,0.88);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-    backdrop-filter: blur(20px) saturate(150%);
-}
-.student-words-dialog-footer::before {
-    position: absolute;
-    right: 0;
-    bottom: 100%;
-    left: 0;
-    height: 16px;
-    background: linear-gradient(180deg, transparent, rgba(248,251,249,0.82));
-    content: "";
-    pointer-events: none;
-}
 .student-words-open-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-height: 46px;
-    padding: 0 18px;
-    border-radius: 15px;
-    color: #fff;
-    background: var(--accent);
-    box-shadow: 0 10px 24px rgba(19,118,109,0.20);
-    font-size: 0.84rem;
+    gap: 5px;
+    min-height: 38px;
+    padding: 0 11px 0 13px;
+    border: 1px solid rgba(19,118,109,0.16);
+    border-radius: 999px;
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.68);
+    box-shadow: 0 7px 18px rgba(19,118,109,0.08);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    font-size: 0.76rem;
     font-weight: 850;
+    white-space: nowrap;
     text-decoration: none;
-    transition: transform 100ms ease-out, background 140ms ease-out;
+    transition: transform 100ms ease-out, color 140ms ease-out, background 140ms ease-out;
 }
 .student-words-open-button:hover {
-    background: var(--accent-dark);
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.92);
 }
 .student-words-open-button:active {
-    transform: scale(0.985);
+    transform: scale(0.96);
 }
 .student-words-open-button svg {
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
@@ -4332,7 +4325,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-account-dialog,
     .student-words-dialog,
     .student-words-dialog-head,
-    .student-words-dialog-footer,
+    .student-words-open-button,
     .student-words-preview-add-menu,
     .liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-shell,
     .liquid-glass-dashboard .my-words-scan-overlay,

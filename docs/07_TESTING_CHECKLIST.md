@@ -1737,14 +1737,19 @@ Check:
   original Quiz `started_at`, deadline, heartbeat timeout, submit grace period,
   device/tab ownership, selected questions, or locked assignment
 - group metadata is stored
-- the Dashboard notebook opens a glass preview with no more than the seven most
+- the Dashboard notebook opens a glass preview with no more than the nine most
   recent active words. Each row shows English, POS, a one-line Chinese meaning,
-  and pronunciation. Confirm the header contains only a top-right `+` and camera
-  pair, with no `My Words`, total-word, or `Recently saved` fields, and the fixed
-  footer shows `Open My Words` without a remaining-word count
+  and pronunciation. Confirm the header places the `+` and camera pair at the
+  upper-left and `See All` at the upper-right, with no `My Words`, total-word,
+  or `Recently saved` fields. Confirm there is no fixed footer and recent words
+  continue through the former footer space
 - press the preview `+` and confirm the large preview disappears while a smaller
-  independent centred modal opens with two stacked fields: a required word/short
-  phrase and an optional Context sentence. The large preview must remain absent
+  independent centred modal opens with a centred green `Add to My Words` title,
+  two labelled blank single-line fields (required word/short phrase and optional
+  Context), and a centred `Confirm` action. The input interiors contain no
+  placeholder text. On a phone, opening the modal must focus its dialog/title
+  without opening the software keyboard; tapping either input may then open it.
+  The large preview must remain absent
   and unavailable until explicit Close or a successful save restores it at the
   same position. Saving with and without Context must remain on Dashboard,
   refresh the recent list, start normal dictionary enrichment, and retain the
@@ -1771,15 +1776,15 @@ Check:
   neither direction changes windows instantaneously. Under reduced motion, the
   same swap should use a short opacity cross-fade without translation, scaling,
   or blur
-- verify the small manual-entry surface uses the same translucent glass
-  material as the other Dashboard toolbar dialogs and begins directly with the
-  Word or phrase field, without `MANUAL ENTRY` or a repeated heading
+- verify the small manual-entry surface matches Change Password's translucent
+  glass material, centred title geometry, single-line input treatment, centred
+  primary action and external Close capsule
 - the preview shares the Dashboard modal width/material, external `Close`, and
-  exact-position page lock. On a short phone only the seven-word body scrolls;
-  the header, full-workspace action, and external Close remain available.
+  exact-position page lock. On a short phone only the nine-word body scrolls;
+  the header and external Close remain available.
   Backdrop and Escape do not dismiss it, and explicit Close restores notebook
   focus
-- `Open My Words` enters `my-words.html`; legacy `dashboard.html#my-words`
+- header `See All` enters `my-words.html`; legacy `dashboard.html#my-words`
   redirects there, and Dashboard never mounts search, add, edit, delete, Notes,
   sorting, export, or a second complete personal-vocabulary runtime
 - throttle the first My Words data request and confirm the `My Words / Review`

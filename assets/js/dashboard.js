@@ -4090,13 +4090,13 @@
         var activeWords = sortedVocabItems(state.vocabItems || []).filter(function(word) {
             return (word.status || 'active') === 'active';
         });
-        var visibleWords = activeWords.slice(0, 7);
+        var visibleWords = activeWords.slice(0, 9);
         wordsPreview.setAttribute('aria-busy', 'false');
 
         if (!visibleWords.length) {
             wordsPreview.innerHTML = '<div class="student-words-preview-empty"><strong>Your notebook is ready.</strong><p>Select a word or short phrase in a learning page to save it here.</p></div>';
         } else {
-            wordsPreview.innerHTML = '<div class="student-words-preview-list" aria-label="Seven most recently saved words">' +
+            wordsPreview.innerHTML = '<div class="student-words-preview-list" aria-label="Nine most recently saved words">' +
                 visibleWords.map(myWordsPreviewItemHtml).join('') +
             '</div>';
         }
@@ -4196,7 +4196,7 @@
         }).finally(function() {
             if (submit) {
                 submit.disabled = false;
-                submit.textContent = 'Add to My Words';
+                submit.textContent = 'Confirm';
             }
             if (wordsPreviewManualClose) wordsPreviewManualClose.disabled = false;
         });
@@ -5080,7 +5080,7 @@
         wordsPreviewAddTrigger.addEventListener('click', function() {
             var open = wordsPreviewAddTrigger.getAttribute('aria-expanded') !== 'true';
             setWordsPreviewAddOpen(open);
-            if (open && wordsPreviewAddInput) wordsPreviewAddInput.focus();
+            if (open && wordsPreviewAddMenu) wordsPreviewAddMenu.focus({ preventScroll: true });
         });
     }
     if (wordsPreviewScan) {

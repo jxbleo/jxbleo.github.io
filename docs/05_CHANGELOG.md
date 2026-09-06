@@ -1,6 +1,18 @@
 # Changelog
 
 
+## 2026-09-07 — My Words preview header and manual entry
+
+- Moved the manual-add and camera actions to the upper-left of the Dashboard
+  My Words preview and moved the complete-workspace route to the upper-right.
+- Renamed that route from `Open My Words` to `See All`, removed the fixed
+  footer, and increased the bounded recent preview from seven to nine words.
+- Aligned manual entry with Change Password through a centred green
+  `Add to My Words` title, labelled blank single-line inputs and a centred
+  `Confirm` action.
+- Opening manual entry now focuses the dialog rather than an input, preventing
+  the touch keyboard from appearing until the student chooses a field.
+
 ## 2026-09-06 — Compact glass Dashboard photo intake
 
 - Matched the independent Dashboard Scan Words modal to the complete My Words
