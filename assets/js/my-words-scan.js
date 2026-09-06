@@ -31,6 +31,7 @@
     var preview = overlay.querySelector('[data-scan-preview]');
     var previewImage = overlay.querySelector('[data-scan-preview-image]');
     var phases = Array.prototype.slice.call(overlay.querySelectorAll('[data-scan-phase]'));
+    var isDashboardScan = overlay.classList.contains('dashboard-words-scan-overlay');
 
     var state = {
         phase: 'choose',
@@ -74,6 +75,8 @@
 
     function setPhase(name) {
         state.phase = name;
+        overlay.classList.toggle('is-choose-phase', name === 'choose');
+        shell.classList.toggle('is-choose-phase', name === 'choose');
         phases.forEach(function(phase) {
             phase.hidden = phase.dataset.scanPhase !== name;
         });
@@ -1071,14 +1074,15 @@
         lockPage();
         setPhase('choose');
         renderPages();
-        say('Checking Scan Words…');
-        overlay.querySelector('[data-scan-close]').focus();
+        say(isDashboardScan ? '' : 'Checking Scan Words…');
+        var initialFocus = isDashboardScan ? overlay.querySelector('[data-scan-discard]') : overlay.querySelector('[data-scan-close]');
+        if (initialFocus) initialFocus.focus();
         callScan({ action: 'getCapability' }).then(function(result) {
             if (!result.enabled) throw new Error('Scan Words is not available yet.');
             return callScan({ action: 'getCurrentScan' });
         }).then(function(result) {
             if (!result.scan) {
-                say('Choose up to five photos.');
+                say(isDashboardScan ? '' : 'Choose up to five photos.');
                 return;
             }
             hydrateScan(result.scan);

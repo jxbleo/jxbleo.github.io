@@ -66,10 +66,11 @@ async function main() {
   assert(dashboardHtml.includes('class="student-words-dialog-icon student-words-camera-button"'), "the preview header must expose a dedicated camera action");
   assert(dashboardHtml.includes('data-preview-scan data-open-scan'), "the camera action must open the scanner directly from Dashboard");
   assert(dashboardHtml.includes('id="my-words-scan-overlay"'), "Dashboard must mount Scan Words as an independent overlay");
-  assert(dashboardHtml.includes('assets/js/my-words-scan.js?v=20260906-1'), "Dashboard must load the shared scanner runtime");
+  assert(dashboardHtml.includes('assets/js/my-words-scan.js?v=20260906-2'), "Dashboard must load the shared scanner runtime");
   assert(dashboardHtml.includes('id="student-words-preview-context-input" maxlength="320"'), "manual entry must accept one optional bounded Context sentence");
   assert(dashboardHtml.includes('id="student-words-manual-layer"') && dashboardHtml.includes('aria-hidden="true" hidden'), "manual entry must use an independent initially hidden modal layer");
   assert(dashboardHtml.includes('id="student-words-manual-close"'), "the independent manual-entry modal must provide an explicit Close action");
+  assert(!dashboardHtml.includes('class="student-words-manual-heading"') && !dashboardHtml.includes('id="student-words-manual-title"'), "manual entry must begin directly with its fields without a redundant heading");
   assert(!dashboardHtml.includes('data-preview-direct-input'), "the plus button must open manual entry directly without an intermediate choice menu");
   assert(!dashboardHtml.includes('id="student-words-title"'), "the preview must not retain the My Words heading");
   assert(!dashboardHtml.includes('id="student-words-count"'), "the preview must not retain the total-word field");
@@ -86,6 +87,7 @@ async function main() {
   assert(dashboardCss.includes(".student-words-manual-layer[hidden]") && dashboardCss.includes("width: min(430px, 100%)"), "manual entry must render as a bounded independent modal");
   assert(dashboardCss.includes(".student-words-overlay.is-manual-open > .student-words-stack") && dashboardCss.includes(".student-words-overlay.is-manual-open > .student-words-manual-layer"), "both My Words modal layers must animate through complementary states");
   assert(dashboardCss.includes("translateY(18px) scale(.94)") && dashboardCss.includes("translateY(-14px) scale(.965)"), "the modal swap must reuse the task-entry rise-and-scale motion language");
+  assert(/\.student-words-preview-add-menu\s*\{[\s\S]*?background:\s*rgba\(248,251,249,0\.76\);/.test(dashboardCss), "manual entry must use the same translucent glass material as Dashboard toolbar dialogs");
   assert(myWordsJs.includes("requestedAddMode === 'scan'"), "legacy direct Scan links must still open from the complete My Words workspace");
   assert(dashboardJs.includes("window.addEventListener('mrcat:scan-committed'"), "Dashboard must refresh the preview after scanned words are committed");
   assert(dashboardJs.includes("window.location.hash === '#my-words'"), "legacy Dashboard My Words links must redirect");

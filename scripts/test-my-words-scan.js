@@ -70,6 +70,9 @@ assert.deepStrictEqual(schema.validateOutput(rawOcr), []);
 assert(schema.validateOutput({ blocks: [{ block_type: "bad", sentences: [] }] }).length > 0);
 
 const html = read("my-words.html");
+const dashboardHtml = read("dashboard.html");
+const dashboardJs = read("assets/js/dashboard.js");
+const appCss = read("assets/css/app.css");
 const js = read("assets/js/my-words-scan.js");
 const css = read("assets/css/my-words-scan.css");
 const myWordsJs = read("assets/js/my-words.js");
@@ -87,7 +90,13 @@ assert(html.includes("data-scan-progress") && html.includes("data-scan-progress-
 assert(html.includes("Long-press") && html.includes("not next to each other"));
 assert(html.includes('data-scan-mode="crop"') && html.includes('data-scan-mode="mask"') && html.includes('data-scan-mode="erase"'));
 assert(html.includes("data-scan-preview") && html.includes("data-scan-page-prev"));
-assert(html.includes("assets/js/my-words-scan.js?v=20260906-1") && html.includes("assets/css/my-words-scan.css?v=20260905-1"));
+assert(html.includes("assets/js/my-words-scan.js?v=20260906-2") && html.includes("assets/css/my-words-scan.css?v=20260905-1"));
+assert(dashboardHtml.includes("dashboard-words-scan-overlay") && dashboardHtml.includes("data-scan-next disabled>Upload</button>"));
+assert(!dashboardHtml.includes("Bring in the words you found.") && !dashboardHtml.includes("Prepare Photos"));
+assert(dashboardHtml.includes("Page") || js.includes("'Page '"));
+assert(dashboardJs.includes("is-scan-covered") && js.includes("isDashboardScan") && js.includes("is-choose-phase"));
+assert(appCss.includes("width: min(720px, 100%)") && appCss.includes("height: min(720px, 86dvh)"));
+assert(appCss.includes("dashboard-words-scan-overlay") && appCss.includes("blur(30px) saturate(160%)"));
 
 assert(js.includes("getBoundingClientRect") && js.includes("destination-out"));
 assert(js.includes("cropHandles") && js.includes("exportProcessed") && js.includes("3000"));

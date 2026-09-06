@@ -321,7 +321,9 @@ Navigation:
   absent. Pressing `+` temporarily replaces the large preview with an
   independent compact centred modal. The small modal has two stacked fields:
   required word-or-short-phrase and an optional Context sentence capped at 320
-  characters. The large preview remains hidden and unavailable until the small
+  characters, with no eyebrow or repeated title above them. Its surface reuses
+  the same translucent glass material, border, blur, and depth as the other
+  Dashboard toolbar dialogs. The large preview remains hidden and unavailable until the small
   modal's explicit `Close` action is used or saving succeeds; it then returns at
   the same position. This replacement is a spatial transition rather than an
   instant hide/show: the large preview recedes upward and slightly scales down
@@ -332,7 +334,13 @@ Navigation:
   Context with that saved example, refreshes the restored preview, and begins
   normal dictionary enrichment.
   Pressing the camera opens the complete authenticated Scan Words flow as a
-  separate, large centred Dashboard modal above the preview; a dimmed/blurred
+  separate centred Dashboard modal above the preview. Its glass surface is
+  exactly the same width and full-stack height as the preview plus its external
+  Close capsule, so it starts at the same top edge and covers that Close
+  position. The first step keeps only a top-right `Discard`, the existing Add
+  Photos/selected-photo card and its Page, remove, Replace, Add Photo and photo-
+  count controls, followed by one full-width `Upload` action; the former title,
+  instructional heading and header toolbar are absent. A dimmed/blurred
   backdrop preserves its origin and it does not navigate into the My Words
   workspace. Closing Scan Words returns to the still-open preview at the same
   Dashboard position, while a successful batch refreshes its recent words

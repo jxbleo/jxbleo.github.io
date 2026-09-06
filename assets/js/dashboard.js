@@ -5094,10 +5094,14 @@
         });
     }
     window.addEventListener('mrcat:scan-opened', function() {
-        if (wordsOverlay) wordsOverlay.inert = true;
+        if (!wordsOverlay) return;
+        wordsOverlay.inert = true;
+        wordsOverlay.classList.add('is-scan-covered');
     });
     window.addEventListener('mrcat:scan-closed', function() {
-        if (wordsOverlay) wordsOverlay.inert = false;
+        if (!wordsOverlay) return;
+        wordsOverlay.inert = false;
+        wordsOverlay.classList.remove('is-scan-covered');
     });
     window.addEventListener('mrcat:scan-committed', function() {
         if (!state.session || state.session.mode !== 'student' || !state.wordsPanelOpen) return;

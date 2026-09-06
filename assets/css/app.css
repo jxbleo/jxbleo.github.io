@@ -918,25 +918,8 @@ html.teacher-modal-scroll-locked {
     filter: blur(0);
     pointer-events: auto;
 }
-.student-words-manual-heading {
-    display: grid;
-    gap: 3px;
-    margin-bottom: 18px;
-    text-align: center;
-}
-.student-words-manual-heading > span {
-    color: rgba(19,118,109,0.72);
-    font-size: 0.62rem;
-    font-weight: 900;
-    letter-spacing: 0.13em;
-}
-.student-words-manual-heading h2 {
-    margin: 0;
-    color: var(--ink);
-    font-size: 1.28rem;
-    font-weight: 780;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
+.student-words-overlay.is-scan-covered > .student-words-stack {
+    visibility: hidden;
 }
 .student-words-manual-close {
     justify-self: center;
@@ -971,21 +954,135 @@ html.teacher-modal-scroll-locked {
     -webkit-backdrop-filter: blur(12px) saturate(118%);
     backdrop-filter: blur(12px) saturate(118%);
 }
-.liquid-glass-dashboard .my-words-scan-overlay[hidden] { display: none; }
-.liquid-glass-dashboard .my-words-scan-shell {
-    width: min(1120px, calc(100% - 12px));
-    height: min(900px, calc(100dvh - 36px));
+.liquid-glass-dashboard .my-words-scan-overlay[hidden] {
+    display: none;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-shell {
+    position: relative;
+    width: min(720px, 100%);
+    height: min(720px, 86vh);
+    height: min(720px, 86dvh);
     min-height: 0;
     margin: 0;
+    padding: 70px 18px 18px;
     overflow: auto;
     overscroll-behavior: contain;
     border: 1px solid rgba(255, 255, 255, 0.88);
-    border-radius: 32px;
+    border-radius: 26px;
     background:
-        radial-gradient(circle at 88% 2%, rgba(169, 225, 205, 0.58), transparent 31rem),
-        linear-gradient(145deg, #f7fbf8, #e8f4ee);
-    box-shadow: 0 28px 96px rgba(12, 36, 30, 0.3), 0 3px 14px rgba(12, 36, 30, 0.12);
+        radial-gradient(circle at 84% 0%, rgba(255,255,255,0.62), transparent 48%),
+        rgba(248,251,249,0.76);
+    box-shadow: 0 24px 80px rgba(20,54,47,0.24), 0 3px 12px rgba(20,54,47,0.08);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
     scrollbar-gutter: stable;
+    animation: practiceEntryPop 360ms cubic-bezier(.18, .95, .26, 1.12) both;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-shell.is-choose-phase {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    overflow: hidden;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-header {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    left: auto;
+    z-index: 20;
+    display: block;
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-header-action.is-back,
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-title-group {
+    display: none;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-header-action.is-discard {
+    min-height: 42px;
+    padding: 0 14px;
+    border-color: rgba(163,55,55,0.15);
+    background: rgba(255,255,255,0.58);
+    box-shadow: 0 7px 18px rgba(20,54,47,0.08);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-status {
+    min-height: 0;
+    margin: 0 112px 10px 0;
+    text-align: left;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-status:empty {
+    display: none;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay.is-choose-phase .my-words-scan-status:not(:empty) {
+    position: absolute;
+    top: 25px;
+    right: 112px;
+    left: 18px;
+    z-index: 19;
+    margin: 0;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-choose {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    animation: none;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-choose[hidden] {
+    display: none;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-empty,
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-pages,
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-card,
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-frame,
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-open {
+    height: 100%;
+    min-height: 0;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-drop {
+    height: 100%;
+    min-height: 0;
+    background: rgba(224,243,235,0.34);
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-card {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: rgba(237,244,241,0.6);
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-open img {
+    height: 100%;
+    min-height: 0;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-choose-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 8px;
+    margin: 0;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-choose-footer > span {
+    text-align: center;
+}
+.liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-choose-footer .primary-button {
+    width: 100%;
 }
 #student-words-preview-add-trigger svg { transition: transform 180ms ease; }
 #student-words-preview-add-trigger[aria-expanded="true"] svg { transform: rotate(45deg); }
@@ -993,12 +1090,12 @@ html.teacher-modal-scroll-locked {
     position: relative;
     width: 100%;
     padding: 24px;
-    border: 1px solid rgba(255,255,255,0.9);
+    border: 1px solid rgba(255,255,255,0.88);
     border-radius: 26px;
-    background: rgba(250,252,251,0.97);
-    box-shadow: 0 24px 80px rgba(20,54,47,0.26), 0 3px 12px rgba(20,54,47,0.09);
-    -webkit-backdrop-filter: blur(30px) saturate(155%);
-    backdrop-filter: blur(30px) saturate(155%);
+    background: rgba(248,251,249,0.76);
+    box-shadow: 0 24px 80px rgba(20,54,47,0.24), 0 3px 12px rgba(20,54,47,0.08);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
     transform-origin: center;
 }
 .student-words-preview-add-menu[hidden] { display: none; }
@@ -4226,6 +4323,9 @@ body:not(.teacher-page) .tab-button.active {
         filter: none;
         transition: opacity 120ms ease;
     }
+    .liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-shell {
+        animation: none;
+    }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -4234,6 +4334,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-words-dialog-head,
     .student-words-dialog-footer,
     .student-words-preview-add-menu,
+    .liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-shell,
     .liquid-glass-dashboard .my-words-scan-overlay,
     .student-words-outside-close,
     .student-calendar-dialog,
@@ -10949,6 +11050,24 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         height: min(700px, 84vh);
         height: min(700px, 84dvh);
         min-height: 0;
+    }
+    .liquid-glass-dashboard .dashboard-words-scan-overlay {
+        padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
+    }
+    .liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-shell {
+        width: 100%;
+        height: min(700px, 84vh);
+        height: min(700px, 84dvh);
+        padding: 66px 13px 13px;
+        border-radius: 25px;
+    }
+    .liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-header {
+        top: 12px;
+        right: 12px;
+    }
+    .liquid-glass-dashboard .dashboard-words-scan-overlay .my-words-scan-photo-drop {
+        padding: 20px 15px;
+        border-radius: 20px;
     }
     .student-words-dialog {
         width: 100%;

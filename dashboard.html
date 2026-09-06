@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#f4f8f5">
     <title>Dashboard | Mr. Cat Academy</title>
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260906-7">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260906-9">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260902-2">
     <link rel="stylesheet" href="assets/css/my-words-scan.css?v=20260905-1">
@@ -216,11 +216,7 @@
                 <button class="student-words-outside-close" id="student-words-close" type="button">Close</button>
             </div>
             <div class="student-words-manual-layer" id="student-words-manual-layer" aria-hidden="true" hidden>
-                <section class="student-words-preview-add-menu" id="student-words-preview-add-menu" role="dialog" aria-modal="true" aria-labelledby="student-words-manual-title" aria-hidden="true" hidden inert>
-                    <header class="student-words-manual-heading">
-                        <span>MANUAL ENTRY</span>
-                        <h2 id="student-words-manual-title">Add to My Words</h2>
-                    </header>
+                <section class="student-words-preview-add-menu" id="student-words-preview-add-menu" role="dialog" aria-modal="true" aria-label="Add a word manually" aria-hidden="true" hidden inert>
                     <form class="student-words-preview-add-form" id="student-words-preview-add-form">
                         <label for="student-words-preview-add-input">
                             <span>Word or phrase</span>
@@ -251,7 +247,7 @@
 
     </main>
 
-    <section id="my-words-scan-overlay" class="my-words-scan-overlay" hidden aria-labelledby="my-words-scan-title">
+    <section id="my-words-scan-overlay" class="my-words-scan-overlay dashboard-words-scan-overlay" hidden aria-labelledby="my-words-scan-title">
         <div class="my-words-scan-shell" role="dialog" aria-modal="true">
             <header class="my-words-scan-header">
                 <button type="button" class="my-words-scan-header-action is-back" data-scan-close aria-label="Close Scan Words">
@@ -265,11 +261,6 @@
             </header>
             <div class="my-words-scan-status" id="my-words-scan-status" role="status" aria-live="polite"></div>
             <section class="my-words-scan-phase my-words-scan-choose" data-scan-phase="choose">
-                <div class="my-words-scan-phase-heading">
-                    <span class="my-words-scan-step">1 · ADD PHOTOS</span>
-                    <h2>Bring in the words you found.</h2>
-                    <p>Take a photo or choose up to five pages. You can crop and cover anything you do not need before scanning.</p>
-                </div>
                 <div class="my-words-scan-photo-empty" data-scan-photo-empty>
                     <button class="my-words-scan-photo-drop" type="button" data-scan-add-photo data-scan-drop>
                         <span class="my-words-scan-photo-drop-icon">
@@ -285,7 +276,7 @@
                 <input data-scan-library type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple hidden>
                 <div class="my-words-scan-choose-footer">
                     <span data-scan-photo-count>0 of 5 photos</span>
-                    <button type="button" class="primary-button" data-scan-next disabled>Prepare Photos</button>
+                    <button type="button" class="primary-button" data-scan-next disabled>Upload</button>
                 </div>
             </section>
             <section class="my-words-scan-phase" data-scan-phase="edit" hidden>
@@ -388,8 +379,8 @@
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-    <script src="assets/js/dashboard.js?v=20260906-7"></script>
-    <script src="assets/js/my-words-scan.js?v=20260906-1"></script>
+    <script src="assets/js/dashboard.js?v=20260906-9"></script>
+    <script src="assets/js/my-words-scan.js?v=20260906-2"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

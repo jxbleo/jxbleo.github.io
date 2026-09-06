@@ -1,6 +1,16 @@
 # Changelog
 
 
+## 2026-09-06 — Compact glass Dashboard photo intake
+
+- Matched the independent Dashboard Scan Words modal to the complete My Words
+  preview stack footprint, including the former external Close-button area,
+  and reused the toolbar-dialog glass material.
+- Reduced the first photo step to its Add Photos/current-photo card, photo
+  count, top-right `Discard`, and full-width `Upload` action while preserving
+  Page, remove, Replace, Add Photo, multi-photo, crop, mask and OCR behavior.
+
+
 ## 2026-09-06 — Daily reminders for unresolved Argue requests
 
 - Starting the next Shanghai calendar day, send one “提醒处理” email per pending
@@ -11,6 +21,9 @@
 
 ## 2026-09-06 — Independent Dashboard manual-word modal
 
+- Simplified the manual-entry modal by removing its `MANUAL ENTRY` eyebrow and
+  repeated `Add to My Words` heading, and matched its translucent material to
+  the glass dialogs opened from the Dashboard toolbar.
 - Replaced the My Words preview's anchored manual-entry panel with a separate,
   compact centred modal for the word/phrase and optional Context fields.
 - Temporarily hides and disables the larger My Words preview while manual entry

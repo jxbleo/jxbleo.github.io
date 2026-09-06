@@ -1751,8 +1751,14 @@ Check:
   entered Context as the saved example. The plus path must not show an
   intermediate choice menu
 - press the separate camera action and confirm the URL stays on Dashboard while
-  the full Scan Words flow opens as an independent centred modal above the My
-  Words preview, with the Dashboard dimmed and no page-like navigation. Close
+  the full Scan Words flow opens as an independent centred glass modal above
+  the My Words preview. Its top edge and width must align with that preview,
+  while its bottom covers the preview's external Close position. The first
+  step shows only top-right `Discard`, the Add Photos/current-photo card, the
+  photo count and a full-width `Upload` action—no Scan Words title, step copy,
+  back button or header toolbar. After adding photos, confirm Page, remove,
+  Replace and Add Photo remain inside the card and the count advances through
+  five. The Dashboard stays dimmed with no page-like navigation. Close
   it and confirm the preview is restored in place; complete a scan and confirm
   the recent-word preview refreshes automatically
 - with manual entry open, click outside the small modal and confirm it stays
@@ -1765,6 +1771,9 @@ Check:
   neither direction changes windows instantaneously. Under reduced motion, the
   same swap should use a short opacity cross-fade without translation, scaling,
   or blur
+- verify the small manual-entry surface uses the same translucent glass
+  material as the other Dashboard toolbar dialogs and begins directly with the
+  Word or phrase field, without `MANUAL ENTRY` or a repeated heading
 - the preview shares the Dashboard modal width/material, external `Close`, and
   exact-position page lock. On a short phone only the seven-word body scrolls;
   the header, full-workspace action, and external Close remain available.
