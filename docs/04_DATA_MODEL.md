@@ -1418,6 +1418,11 @@ owner UID, Set/question snapshots, 65-second limit, private audio/report state,
 revision locators, and soft-delete fields. Shared audio/job/report rows contain
 exactly one of `discussion_id` or `response_session_id`. Index owner/created,
 Set/created, analysis/updated, visibility/revision, and cleanup fields.
+Opening a Part B question alone does not create this document. Creation is
+deferred until upload begins. A row is committed history when it has uploaded
+audio, a formal audio locator, an analysis job/status, or a report locator/body;
+the list API excludes an undeleted `not_uploaded` + `not_ready` row with none of
+those locators. Such empty rows may be soft-deleted without affecting an attempt.
 
 The canonical release holds 311 `speaking_sets`: 306 visible `source_kind: pp`
 records and five retained `source_kind: mock` records with

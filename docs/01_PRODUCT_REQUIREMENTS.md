@@ -2360,9 +2360,11 @@ text. The Context article omits its source/original-material note. Choose-a-Set
 result cards omit both the `DSE Paper 4` suffix and the redundant Context/Part
 A/Part B route labels.
 Starting Part A immediately creates and opens the Discussion from a frozen Set snapshot without a New Session dialog. Starting one
-Part B question opens a modal recorder over the unchanged Set detail and creates
-a separate private 65-second Individual Response owned by the authenticated
-student. The whole question card is the entry; there is no separate
+Part B question opens a local modal recorder over the unchanged Set detail; it
+does not create a database record. The authenticated student's separate private
+65-second Individual Response is created only when `Upload & analyse` begins.
+Closing, returning, or refreshing before upload discards the local draft, and
+purely empty legacy rows never appear in Part B history. The whole question card is the entry; there is no separate
 `Start Response` control or intermediate page. The final five seconds use a red time warning;
 PD remains not assessed and the ASR-error safeguard applies to every AI score
 and comment. Teacher edits affect future Sessions only; existing reports retain
@@ -2381,7 +2383,9 @@ Part B history groups every Individual Response attempt under its originating
 Set. Each Set appears as one collapsed summary by default, showing its identity,
 topic, and response count. Selecting that summary expands or collapses the
 individual question attempts; hidden questions do not consume sidebar space.
-Each attempt remains independently selectable after expansion.
+Each uploaded attempt remains independently selectable after expansion. A row
+without uploaded audio, an analysis job, or a report is not a student attempt
+and must be hidden or discarded.
 
 A ready report remains unread for each accepted VIP participant until that
 student successfully opens and renders it. Unread state is stored against the

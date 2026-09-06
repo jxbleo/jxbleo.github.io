@@ -1154,9 +1154,18 @@ renders safe IL summaries without grading-key or transcript reads.
 `speaking_individual_responses` collections. Set list/get actions return safe
 authorized projections; teacher mutations validate revision preconditions and
 stable child IDs. Discussion creation stores a frozen Context/Part A snapshot.
-Individual Response creation stores a frozen Set/question snapshot and reuses
-the private two-phase Storage, durable jobs, timer worker, model usage audit,
-and reports with exactly one Session locator per job.
+Opening an Individual Response question creates only a browser-memory draft.
+When the student selects `Upload & analyse`, the browser first creates the
+server Response with its frozen Set/question snapshot, then reuses the private
+two-phase Storage, durable jobs, timer worker, model usage audit, and reports
+with exactly one Session locator per job. Closing before upload therefore makes
+no write. The list boundary independently excludes rows without committed audio,
+an analysis job, or a report so interrupted pre-upload setup cannot create blank
+history cards.
+If an upload attempt created a Response before failing, dialog close calls the
+owner-only `discardEmptyIndividualResponse` action. Its transaction rechecks
+the Response plus related audio, job, and report collections; it soft-deletes
+only when every committed-work signal is still absent.
 
 The complete library uses a summary/detail boundary: list actions return only
 Set ID, source/year/version, title, revision and visibility; opening or editing

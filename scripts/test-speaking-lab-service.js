@@ -81,6 +81,11 @@ async function run() {
   assert.equal(speakingTest.hasExactlyOneSessionLocator({ response_session_id: "r1" }), true);
   assert.equal(speakingTest.hasExactlyOneSessionLocator({ discussion_id: "d1", response_session_id: "r1" }), false);
   assert.equal(speakingTest.hasExactlyOneSessionLocator({}), false);
+  assert.equal(speakingTest.individualResponseHasCommittedWork({ recording_status: "not_uploaded", analysis_status: "not_ready", formal_audio_asset_id: null }), false);
+  assert.equal(speakingTest.individualResponseHasCommittedWork({ recording_status: "uploaded", analysis_status: "not_ready", formal_audio_asset_id: "asset-1" }), true);
+  assert.equal(speakingTest.individualResponseHasCommittedWork({ recording_status: "not_uploaded", analysis_status: "queued", active_analysis_job_id: "job-1" }), true);
+  assert.equal(speakingTest.individualResponseHasCommittedWork({ recording_status: "uploaded", deleted_at: new Date() }), false);
+  assert.equal(typeof speakingTest.responseActions.discardEmptyIndividualResponse, "function");
   assert.doesNotMatch(source, /getUploadMetadata/, "the gateway must not return fragile request-scoped COS credentials");
   assert.match(source, /uploaded_file_id/);
   assert.deepEqual(speakingTest.uploadTargetView("speaking-lab/path.mp3"), {

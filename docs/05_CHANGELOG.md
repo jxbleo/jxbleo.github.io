@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-06 — Discard empty Individual Response drafts
+
+- Deferred Individual Response database creation from question-open to the
+  student's explicit `Upload & analyse` action.
+- Made closing an interrupted pre-upload session discard any server row created
+  during that upload attempt through a transactional empty-state recheck, while
+  preserving every uploaded recording and every response with related work.
+- Excluded legacy rows with no audio, analysis work, or report from student and
+  teacher history lists so blank Part B cards cannot return.
+
 ## 2026-09-06 — Collapsible Part B history groups
 
 - Kept Individual Response attempts grouped by Set while collapsing every Set

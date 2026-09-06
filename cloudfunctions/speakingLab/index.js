@@ -372,10 +372,20 @@ function responseView(actor, row, options = {}) {
   };
 }
 
+function individualResponseHasCommittedWork(row) {
+  if (!row || row.deleted_at) return false;
+  return row.recording_status === "uploaded"
+    || Boolean(row.formal_audio_asset_id)
+    || Boolean(row.active_analysis_job_id)
+    || Boolean(row.active_report_version)
+    || Boolean(row.report)
+    || !["", "not_ready"].includes(String(row.analysis_status || "not_ready"));
+}
+
 async function listIndividualResponses(actor, event) {
   const rows = await getMany(INDIVIDUAL_RESPONSES, lab.isTeacher(actor) ? {} : { student_uid: actor.auth_uid, deleted_at: null }, 500);
   const offset = Math.max(0, Number(event.offset || 0));
-  const eligible = rows.filter((row) => !row.deleted_at && (lab.isTeacher(actor) || String(row.student_uid) === String(actor.auth_uid))).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  const eligible = rows.filter((row) => individualResponseHasCommittedWork(row) && (lab.isTeacher(actor) || String(row.student_uid) === String(actor.auth_uid))).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
   const responses = eligible.slice(offset, offset + Math.min(50, Math.max(1, Number(event.page_size || 20)))).map((row) => responseView(actor, row));
   return { success: true, responses, next_offset: offset + responses.length < eligible.length ? offset + responses.length : null };
 }
@@ -507,6 +517,26 @@ async function deleteIndividualResponse(actor, event) {
   await db.collection(INDIVIDUAL_RESPONSES).doc(row._id || row.response_session_id).update({ deleted_at: deletedAt, updated_at: deletedAt });
   if (row.formal_audio_asset_id) await db.collection(ASSETS).doc(row.formal_audio_asset_id).update({ delete_after: new Date(deletedAt.getTime() + 7 * 24 * 60 * 60 * 1000), updated_at: deletedAt });
   return { success: true, deleted: true, response_session_id: row.response_session_id };
+}
+
+async function discardEmptyIndividualResponse(actor, event) {
+  const responseId = lab.text(event.response_session_id, 140);
+  let discarded = false;
+  await db.runTransaction(async (transaction) => {
+    const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: responseId }).limit(1).get();
+    const row = responseResult.data && responseResult.data[0];
+    if (!row || row.deleted_at) { discarded = true; return; }
+    if (String(row.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
+    if (individualResponseHasCommittedWork(row)) return;
+    const assetResult = await transaction.collection(ASSETS).where({ response_session_id: responseId }).limit(1).get();
+    const jobResult = await transaction.collection(JOBS).where({ response_session_id: responseId }).limit(1).get();
+    const reportResult = await transaction.collection(REPORTS).where({ response_session_id: responseId }).limit(1).get();
+    if ((assetResult.data && assetResult.data.length) || (jobResult.data && jobResult.data.length) || (reportResult.data && reportResult.data.length)) return;
+    const deletedAt = now();
+    await transaction.collection(INDIVIDUAL_RESPONSES).doc(row._id || row.response_session_id).update({ deleted_at: deletedAt, updated_at: deletedAt });
+    discarded = true;
+  });
+  return { success: true, discarded, response_session_id: responseId };
 }
 function uploadTargetView(cloudPath) {
   return { upload_mode: "cloudbase_js_sdk", cloud_path: cloudPath };
@@ -2128,6 +2158,7 @@ exports.main = async (event = {}) => {
     if (action === "startIndividualResponseAudioUpload") return await startIndividualResponseAudioUpload(actor, event);
     if (action === "finishIndividualResponseAudioUpload") return await finishIndividualResponseAudioUpload(actor, event);
     if (action === "startIndividualResponseAnalysis") return await startIndividualResponseAnalysis(actor, event);
+    if (action === "discardEmptyIndividualResponse") return await discardEmptyIndividualResponse(actor, event);
     if (action === "deleteIndividualResponse") return await deleteIndividualResponse(actor, event);
     if (action === "listDiscussions") return await listDiscussions(actor, event);
     if (action === "getDiscussion") return await getDiscussion(actor, event);
@@ -2172,8 +2203,8 @@ exports.main = async (event = {}) => {
 
 exports._test = {
   friendlyMessage, publicJob, participantView, discussionView, candidateTrackViews, shanghaiDate, automaticMatchOutputPath,
-  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator, compareDiscussionOrder,
+  replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator, individualResponseHasCommittedWork, compareDiscussionOrder,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, SPEAKING_SETS, INDIVIDUAL_RESPONSES, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
   setActions: { listSpeakingSets, getSpeakingSet, teacherListSpeakingSets, teacherGetSpeakingSet, teacherCreateSpeakingSet, teacherUpdateSpeakingSet, teacherSetSpeakingSetVisibility, teacherDeleteSpeakingSet },
-  responseActions: { listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, deleteIndividualResponse },
+  responseActions: { listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, discardEmptyIndividualResponse, deleteIndividualResponse },
 };

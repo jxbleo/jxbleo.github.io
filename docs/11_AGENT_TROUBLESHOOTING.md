@@ -1042,6 +1042,15 @@ unique `report_id` index. The uploaded audio and completed Tencent task remain
 usable; after the index migration, requeue the same failed job instead of
 asking the student to record again or creating another ASR task.
 
+If the Part B drawer shows `Not recorded` cards after a student only opened a
+question, inspect when `createIndividualResponse` runs. Question-open must build
+only an in-memory draft; the first server write belongs immediately before
+`startIndividualResponseAudioUpload` after the student selects
+`Upload & analyse`. The list API must also reject rows whose recording is
+`not_uploaded`, analysis is `not_ready`, and audio/job/report locators are all
+absent. Do not delete or hide a row with uploaded audio, a durable job, or any
+report locator while repairing legacy blanks.
+
 If a share is unavailable, treat missing, expired, and revoked tokens as the
 same `SHARE_NOT_AVAILABLE` outcome. Duplicate uploads/jobs should replay their
 stable operation ID; a stale lease or mapping revision must never publish.

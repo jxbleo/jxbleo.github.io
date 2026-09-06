@@ -1579,6 +1579,40 @@
         var record = document.getElementById('response-record');
         if (record) window.requestAnimationFrame(function () { record.focus(); });
     }
+    function individualResponseDraft(set, questionId) {
+        var questions = set && set.part_b && Array.isArray(set.part_b.questions) ? set.part_b.questions : [];
+        var question = questions.find(function (item) { return String(item.question_id || '') === String(questionId || ''); });
+        if (!question) return null;
+        var operation = 'response-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9);
+        return {
+            response_session_id: '',
+            client_draft: true,
+            set_id: set.set_id,
+            set_snapshot: {
+                display_label: speakingSetLabel(set),
+                source_kind: set.source_kind || '',
+                exam_year: set.exam_year || '',
+                paper_version: set.paper_version || '',
+                title: set.title || ''
+            },
+            question_snapshot: Object.assign({}, question),
+            title: (set.title || 'Individual Response') + ' · IR Q' + (question.order || ''),
+            response_date: shanghaiToday(),
+            duration_limit_seconds: 65,
+            recording_status: 'not_uploaded',
+            analysis_status: 'not_ready',
+            create_request: { set_id: set.set_id, question_id: question.question_id, operation_id: operation, response_date: shanghaiToday() }
+        };
+    }
+    function ensureIndividualResponseCreated(response) {
+        if (response && response.response_session_id) return Promise.resolve(response);
+        if (!response || !response.create_request) return Promise.reject(new Error('INDIVIDUAL_RESPONSE_NOT_FOUND'));
+        return call('createIndividualResponse', response.create_request).then(function (result) {
+            if (!result || !result.response || !result.response.response_session_id) throw new Error('INDIVIDUAL_RESPONSE_NOT_FOUND');
+            selectedResponse = result.response;
+            return result.response;
+        });
+    }
     function closeIndividualResponseDialog() {
         if (responseUploadInProgress) {
             var statusNode = document.getElementById('response-status');
@@ -1593,6 +1627,7 @@
             responseRecorder.onstop = null;
             try { responseRecorder.stop(); } catch (_error) {}
         }
+        var responseToDiscard = selectedResponse;
         stopResponseHardware();
         responseBlob = null;
         responseChunks = [];
@@ -1602,12 +1637,14 @@
         if (responseDialog.open && responseDialog.close) responseDialog.close();
         else responseDialog.removeAttribute('open');
         responseDialogContent.innerHTML = '';
-        loadIndividualResponses();
+        if (responseToDiscard && responseToDiscard.response_session_id && responseToDiscard.recording_status !== 'uploaded') {
+            call('discardEmptyIndividualResponse', { response_session_id: responseToDiscard.response_session_id }).catch(function () { /* The backend list also hides uncommitted empty Responses. */ }).finally(loadIndividualResponses);
+        } else loadIndividualResponses();
     }
     function startIndividualResponse(set, questionId, trigger) {
-        var operation = 'response-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9);
-        if (trigger) { trigger.disabled = true; trigger.setAttribute('aria-busy', 'true'); }
-        call('createIndividualResponse', { set_id: set.set_id, question_id: questionId, operation_id: operation, response_date: shanghaiToday() }).then(function (result) { renderIndividualResponseDialog(result.response); }).catch(function (error) { setStatus(friendlyError(error), true); }).finally(function () { if (trigger) { trigger.disabled = false; trigger.removeAttribute('aria-busy'); } });
+        var draft = individualResponseDraft(set, questionId);
+        if (!draft) { setStatus('That Individual Response question is no longer available.', true); return; }
+        renderIndividualResponseDialog(draft);
     }
     function finishResponseRecording() {
         if (!responseRecorder || responseRecorder.state === 'inactive') return;
@@ -1647,7 +1684,38 @@
             }).catch(function () { record.disabled = false; document.getElementById('response-status').textContent = 'Microphone access was denied. Choose an audio file instead.'; });
         });
         if (file) file.addEventListener('change', function () { var chosen = file.files && file.files[0]; file.value = ''; if (!chosen || (chosen.type && !/^audio\//i.test(chosen.type))) return; var objectUrl = URL.createObjectURL(chosen); var probe = document.createElement('audio'); probe.preload = 'metadata'; probe.onloadedmetadata = function () { URL.revokeObjectURL(objectUrl); var duration = Number(probe.duration); if (!Number.isFinite(duration) || duration <= 0 || duration > 65) { document.getElementById('response-status').textContent = 'Choose an audio file no longer than 65 seconds.'; return; } responseRecordedDurationSeconds = duration; responseBlob = chosen; responseUploadOperationId = ''; upload.disabled = false; upload.hidden = false; document.getElementById('response-status').textContent = chosen.name + ' is ready to upload.'; }; probe.onerror = function () { URL.revokeObjectURL(objectUrl); document.getElementById('response-status').textContent = 'This audio file duration could not be checked.'; }; probe.src = objectUrl; });
-        if (upload) upload.addEventListener('click', function () { if (!responseBlob) return; upload.disabled = true; responseUploadInProgress = true; var blob = responseBlob; var durationSeconds = Number.isFinite(Number(responseRecordedDurationSeconds)) ? Number(responseRecordedDurationSeconds) : undefined; var operation = responseUploadOperationId || ('response-upload-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9)); responseUploadOperationId = operation; document.getElementById('response-status').textContent = 'Uploading securely…'; call('startIndividualResponseAudioUpload', { response_session_id: response.response_session_id, operation_id: operation, mime_type: String(blob.type || 'audio/webm').split(';')[0], size_bytes: blob.size, duration_seconds: durationSeconds }).then(function (result) { return uploadWithTimeout(api.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) { return call('finishIndividualResponseAudioUpload', { response_session_id: response.response_session_id, operation_id: operation, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id, duration_seconds: durationSeconds }); }); }).then(function () { return call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }); }).then(function () { responseBlob = null; responseRecordedDurationSeconds = null; responseUploadOperationId = ''; if (responseDialog && responseDialog.open) return call('getIndividualResponse', { response_session_id: response.response_session_id }).then(function (result) { renderIndividualResponseDialog(result.response); loadIndividualResponses(); return result; }); return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { upload.disabled = false; document.getElementById('response-status').textContent = friendlyError(error); }).finally(function () { responseUploadInProgress = false; }); });
+        if (upload) upload.addEventListener('click', function () {
+            if (!responseBlob) return;
+            upload.disabled = true;
+            responseUploadInProgress = true;
+            var blob = responseBlob;
+            var activeResponse = response;
+            var durationSeconds = Number.isFinite(Number(responseRecordedDurationSeconds)) ? Number(responseRecordedDurationSeconds) : undefined;
+            var operation = responseUploadOperationId || ('response-upload-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9));
+            responseUploadOperationId = operation;
+            document.getElementById('response-status').textContent = 'Uploading securely…';
+            ensureIndividualResponseCreated(response).then(function (createdResponse) {
+                activeResponse = createdResponse;
+                return call('startIndividualResponseAudioUpload', { response_session_id: activeResponse.response_session_id, operation_id: operation, mime_type: String(blob.type || 'audio/webm').split(';')[0], size_bytes: blob.size, duration_seconds: durationSeconds });
+            }).then(function (result) {
+                return uploadWithTimeout(api.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) {
+                    return call('finishIndividualResponseAudioUpload', { response_session_id: activeResponse.response_session_id, operation_id: operation, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id, duration_seconds: durationSeconds });
+                });
+            }).then(function () {
+                activeResponse.recording_status = 'uploaded';
+                selectedResponse = activeResponse;
+                return call('startIndividualResponseAnalysis', { response_session_id: activeResponse.response_session_id, operation_id: 'analysis-' + activeResponse.response_session_id });
+            }).then(function () {
+                responseBlob = null;
+                responseRecordedDurationSeconds = null;
+                responseUploadOperationId = '';
+                if (responseDialog && responseDialog.open) return call('getIndividualResponse', { response_session_id: activeResponse.response_session_id }).then(function (result) { renderIndividualResponseDialog(result.response); loadIndividualResponses(); return result; });
+                return getIndividualResponseAndRender(activeResponse.response_session_id);
+            }).catch(function (error) {
+                upload.disabled = false;
+                document.getElementById('response-status').textContent = friendlyError(error);
+            }).finally(function () { responseUploadInProgress = false; });
+        });
     }
     function stopVoiceReferenceRecording() {
         if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop();

@@ -2634,7 +2634,9 @@ Context/Part A/Part B route row are omitted.
 New Session modal appears. Every Part B question is one full-width disclosure
 card with no nested `Start Response` action. Selecting it leaves the Set visible
 behind a modal recorder containing the question, 65-second timer and primary
-microphone control. The toolbar Back control is the only return action, so
+microphone control. The modal is a disposable local draft until the student
+selects `Upload & analyse`; closing it before upload leaves no Part B history
+row. The toolbar Back control is the only return action, so
 Discussion and processing cards do not repeat an inner `Discussions` button.
 Before a Discussion recording is uploaded, the destination is intentionally
 sparse: a small glass card contains only the three horizontal progress bars,

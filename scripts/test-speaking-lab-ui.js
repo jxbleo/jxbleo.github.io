@@ -113,7 +113,12 @@ function run() {
   assert.match(app, /setRecordButton\('Record again', false\)/, "students must be able to re-record before upload");
   assert.match(app, /duration > 65/, "existing Individual Response audio must respect the 65-second UI limit");
   assert.match(app, /function startIndividualResponse\(set, questionId, trigger\)/);
-  assert.match(app, /createIndividualResponse/);
+  const startResponseSource = app.slice(app.indexOf("function startIndividualResponse(set, questionId, trigger)"), app.indexOf("function finishResponseRecording()"));
+  assert.doesNotMatch(startResponseSource, /call\('createIndividualResponse'/, "opening a Part B question must remain a local draft");
+  assert.match(app, /function individualResponseDraft\(set, questionId\)/);
+  assert.match(app, /function ensureIndividualResponseCreated\(response\)/);
+  assert.match(app, /ensureIndividualResponseCreated\(response\)[\s\S]*call\('startIndividualResponseAudioUpload'/, "the server Response must be created only when upload begins");
+  assert.match(app, /responseToDiscard[\s\S]*call\('discardEmptyIndividualResponse'/, "a failed pre-upload server record must be safely discarded when its dialog closes");
   assert.match(app, /function renderIndividualResponseReport\(response\)/);
   assert.match(app, /id="response-retry-analysis"/);
   assert.match(app, /Retry it without uploading the audio again/);
@@ -398,7 +403,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260906-6/);
-  assert.match(page, /speaking-lab\.js\?v=20260906-6/);
+  assert.match(page, /speaking-lab\.js\?v=20260906-7/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

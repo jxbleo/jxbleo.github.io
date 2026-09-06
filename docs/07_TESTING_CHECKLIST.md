@@ -2772,6 +2772,13 @@ Increased Contrast.
   `Start Response` text. Selecting it must open the question-scoped recorder as
   a modal over the unchanged Set page; starting, stopping, re-recording,
   uploading and closing must not navigate to an intermediate workspace.
+- Open and close a Part B question without recording; repeat after recording but
+  before upload, then refresh the page. Confirm neither path creates a Part B
+  history row. Start a real upload and confirm exactly one row appears. Simulate
+  an upload-start failure, close the dialog, and confirm the uncommitted server
+  row is soft-deleted or filtered rather than shown as `Not recorded`. Repeat
+  with an audio asset, job, and report relation present in turn; the guarded
+  discard action must preserve the Response in every case.
 - Verify toolbar Back returns every selected Set, Discussion, Response, and
   Voiceprint surface to `Choose a Set`. From `Choose a Set`, Back must show the
   Dashboard confirmation; cancelling stays in Speaking Lab. Confirm the drawer
