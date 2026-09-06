@@ -2351,13 +2351,14 @@ Speaking Lab now begins with `Choose a Set`. Each teacher-managed Set has one
 immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part
 A `task` statement followed by its Group Discussion points, and stable Part B
 Individual Response question IDs. The selected-Set overview omits the redundant
-Context/Part A/Part B progress strip and all secondary metadata, leaving only
-the Set title. Context,
+Context/Part A/Part B progress strip and secondary source/type metadata, leaving
+the Set title plus one blue `year · Set number` identity line. Context,
 `Part A - Group Discussion`, and `Part B - Individual Response` use centred
-Context and Part A each provide compact minus/plus controls in the upper-right
+section labels and each provide compact minus/plus controls in the upper-right
 corner so students can independently choose small, medium, or large reading
-text. Part B keeps its existing question-card presentation without these
-controls.
+text. The Context article omits its source/original-material note. Choose-a-Set
+result cards omit both the `DSE Paper 4` suffix and the redundant Context/Part
+A/Part B route labels.
 Starting Part A immediately creates and opens the Discussion from a frozen Set snapshot without a New Session dialog. Starting one
 Part B question opens a modal recorder over the unchanged Set detail and creates
 a separate private 65-second Individual Response owned by the authenticated

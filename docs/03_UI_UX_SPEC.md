@@ -2613,16 +2613,20 @@ reserved for a future completed Practice. Escape and the active mobile scrim
 close the drawer.
 Each selected Set uses independent overview, Context, Part A, and Part B cards.
 The overview has no three-step section strip or inline Back button. Its first
-card contains only the Set title: the year/type/Set-number eyebrow, source note,
-duplicate PP badge, and empty badge row are not rendered. Context, `Part A - Group Discussion`, and
+card contains the Set title plus one blue `year · Set number` eyebrow; source
+type, source note, duplicate PP badge, and empty badge row are not rendered.
+Context, `Part A - Group Discussion`, and
 `Part B - Individual Response` use centred blue section labels without 01/A/B
 icon tiles. Part A shows the source `TASK`
 statement before `You may want to talk about:` and its four bullet points.
-Context and Part A place an equal-width minus/plus text-size control in the
-upper-right of their own card header. Each control changes only that card's
+Context, Part A, and Part B place an equal-width minus/plus text-size control in
+the upper-right of their own card header. Each control changes only that card's
 reading copy through small, medium, and large steps, disables the unavailable
 direction at either endpoint, and keeps the centred section label unobstructed.
-Part B does not show a text-size control.
+The Context body begins directly with the article; it never renders the
+source/original-material note. Choose-a-Set cards keep only their year/type
+leading tile, Set number, topic, and disclosure arrow; `DSE Paper 4` and the
+Context/Part A/Part B route row are omitted.
 `Start Discussion` creates and opens the Set-backed Discussion immediately; no
 New Session modal appears. Every Part B question is one full-width disclosure
 card with no nested `Start Response` action. Selecting it leaves the Set visible

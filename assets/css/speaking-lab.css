@@ -728,8 +728,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-set-card-copy { min-width: 0; }
 .speaking-set-card h3 { margin: 5px 0 9px; color: #20343d; font-size: clamp(1rem,2.2vw,1.16rem); line-height: 1.24; letter-spacing: -.025em; }
 .speaking-set-card-meta { color: #74838a; font-size: .67rem; font-weight: 730; letter-spacing: .035em; text-transform: uppercase; }
-.speaking-set-card-route { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; color: #687981; font-size: .66rem; font-weight: 650; }
-.speaking-set-card-route i { width: 3px; height: 3px; border-radius: 50%; background: rgba(77,99,110,.34); }
 .speaking-set-card-arrow { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; color: var(--sl-blue-deep); background: var(--sl-blue-soft); transition: transform 180ms cubic-bezier(.22,1,.36,1),background 180ms ease; }
 .speaking-set-card:hover .speaking-set-card-arrow { transform: translateX(2px); background: rgba(8,124,240,.15); }
 .speaking-set-card-arrow svg, .speaking-set-question-disclosure svg, .speaking-set-primary-action svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -768,7 +766,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-set-context[data-reading-size="small"] .speaking-set-context-body p { font-size: .76rem; }
 .speaking-set-context[data-reading-size="large"] .speaking-set-context-body p { font-size: 1rem; }
 .speaking-set-context-body p:last-child { margin-bottom: 0; }
-.speaking-set-source-line { color: #2b414a; }
 .speaking-set-task { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; margin: 0 0 18px; padding: 16px 17px; border: 1px solid rgba(8,124,240,.12); border-radius: 17px; color: #334a55; background: rgba(235,246,255,.66); font-size: .82rem; line-height: 1.58; }
 .speaking-set-task strong { color: var(--sl-blue-deep); font-size: .66rem; font-weight: 860; letter-spacing: .1em; text-transform: uppercase; }
 .speaking-set-instruction { margin: 0 0 10px; color: var(--sl-muted); font-size: .75rem; font-weight: 700; line-height: 1.5; }
@@ -776,6 +773,8 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-set-point { display: grid; grid-template-columns: 34px minmax(0,1fr); align-items: center; gap: 12px; min-height: 58px; padding: 11px 15px; border: 1px solid rgba(73,97,108,.08); border-radius: 17px; color: #40535c; background: rgba(248,251,251,.7); font-size: .8rem; line-height: 1.5; }
 .speaking-set-part-a[data-reading-size="small"] .speaking-set-task, .speaking-set-part-a[data-reading-size="small"] .speaking-set-instruction, .speaking-set-part-a[data-reading-size="small"] .speaking-set-point { font-size: .72rem; }
 .speaking-set-part-a[data-reading-size="large"] .speaking-set-task, .speaking-set-part-a[data-reading-size="large"] .speaking-set-instruction, .speaking-set-part-a[data-reading-size="large"] .speaking-set-point { font-size: .94rem; }
+.speaking-set-part-b[data-reading-size="small"] .speaking-set-instruction, .speaking-set-part-b[data-reading-size="small"] .speaking-set-question-text { font-size: .72rem; }
+.speaking-set-part-b[data-reading-size="large"] .speaking-set-instruction, .speaking-set-part-b[data-reading-size="large"] .speaking-set-question-text { font-size: .94rem; }
 .speaking-set-point-number, .speaking-set-question-number { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; color: #0a6fd4; background: rgba(8,124,240,.09); font-size: .66rem; font-weight: 850; }
 .speaking-set-primary-action { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(74,95,106,.09); }
 .speaking-set-primary-action .primary-button { min-width: 180px; gap: 9px; }
@@ -939,7 +938,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
     .speaking-set-card { grid-template-columns: 50px minmax(0,1fr); gap: 12px; padding: 15px; }
     .speaking-set-card-leading { width: 50px; height: 50px; border-radius: 15px; }
     .speaking-set-card-arrow { display: none; }
-    .speaking-set-card-route { gap: 5px; }
     .speaking-set-overview-bar { margin-bottom: 22px; }
     .speaking-set-section-head-with-controls { padding-top: 38px; padding-inline: 0; }
     .speaking-set-section-head:not(.speaking-set-section-head-centered), .speaking-response-question-card { grid-template-columns: 42px minmax(0,1fr); gap: 12px; }

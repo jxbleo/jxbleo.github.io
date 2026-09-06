@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-06 — Refine Speaking Set identity and reading controls
+
+- Restored one blue `year · Set number` identity line above the selected Set
+  title without restoring source/type notes or duplicate badges.
+- Extended the independent three-step text-size control to Part B and removed
+  the Context original-material/source note from student rendering.
+- Simplified Choose-a-Set cards by removing both `DSE Paper 4` and the redundant
+  Context/Part A/Part B route row.
+
 ## 2026-09-06 — Simplify Set identity and add reading-size controls
 
 - Reduced every selected Speaking Set overview card to its title by removing

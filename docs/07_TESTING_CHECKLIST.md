@@ -2757,13 +2757,17 @@ Increased Contrast.
 - Verify a selected Set appears in overview, Context, Part A, and Part B order;
   its overview has no three-step strip, its Context/Part labels are centred
   without 01/A/B tiles, and the Part A Task appears before the four bullet
-  points. The overview must show only the Set title, with no year/type/Set-number
-  eyebrow or source note. Confirm the section labels read `Part A - Group Discussion` and
+  points. The overview must show the Set title plus one blue `year · Set number`
+  eyebrow, with no source type or source note. Confirm the section labels read `Part A - Group Discussion` and
   `Part B - Individual Response`.
-- Verify the Context and Part A cards each show minus/plus controls at the
+- Verify the Context, Part A, and Part B cards each show minus/plus controls at the
   upper-right. Confirm the three text-size steps affect only the corresponding
-  card, endpoint buttons become disabled, the controls remain reachable at
-  320px width, and Part B has no size control.
+  card and its question text, endpoint buttons become disabled, and all controls
+  remain reachable at 320px width. Confirm the Context begins with the article
+  and does not show an original-material/source note.
+- Verify every Choose-a-Set result card omits the `DSE Paper 4` suffix and the
+  Context/Part A/Part B route row while retaining Set number, title, and a clear
+  disclosure affordance.
 - Verify each Part B question is one keyboard-accessible disclosure card with no
   `Start Response` text. Selecting it must open the question-scoped recorder as
   a modal over the unchanged Set page; starting, stopping, re-recording,

@@ -112,7 +112,7 @@
     var speakingSets = [];
     var speakingSetRenderLimit = 48;
     var selectedSpeakingSet = null;
-    var speakingSetReadingSizes = { context: 1, 'part-a': 1 };
+    var speakingSetReadingSizes = { context: 1, 'part-a': 1, 'part-b': 1 };
     var selectedResponse = null;
     var responseRecorder = null;
     var responseStream = null;
@@ -605,7 +605,7 @@
         var visible = filtered.slice(0, speakingSetRenderLimit);
         if (!visible.length) { target.innerHTML = '<p class="speaking-set-empty">No Speaking Sets match these filters.</p>'; }
         else target.innerHTML = visible.map(function (set) {
-            return '<button class="speaking-set-card" type="button" data-speaking-set-id="' + esc(set.set_id) + '"><span class="speaking-set-card-leading"><strong>' + esc(set.exam_year || 'DSE') + '</strong><small>' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</small></span><span class="speaking-set-card-copy"><span class="speaking-set-card-meta">' + esc(set.paper_version ? 'Set ' + set.paper_version + ' · DSE Paper 4' : 'DSE Paper 4') + '</span><h3>' + esc(set.title || 'Speaking Set') + '</h3><span class="speaking-set-card-route"><span>Context</span><i aria-hidden="true"></i><span>Part A</span><i aria-hidden="true"></i><span>Part B</span></span></span><span class="speaking-set-card-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button>';
+            return '<button class="speaking-set-card" type="button" data-speaking-set-id="' + esc(set.set_id) + '"><span class="speaking-set-card-leading"><strong>' + esc(set.exam_year || 'DSE') + '</strong><small>' + esc(String(set.source_kind || 'mock').toUpperCase()) + '</small></span><span class="speaking-set-card-copy"><span class="speaking-set-card-meta">' + esc(set.paper_version ? 'Set ' + set.paper_version : 'Speaking Set') + '</span><h3>' + esc(set.title || 'Speaking Set') + '</h3></span><span class="speaking-set-card-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button>';
         }).join('');
         target.querySelectorAll('[data-speaking-set-id]').forEach(function (button) {
             button.addEventListener('click', function () { if (allowRecordingNavigation()) openSpeakingSet(button.getAttribute('data-speaking-set-id')); });
@@ -705,13 +705,14 @@
         var context = set.context || {};
         var partA = set.part_a || {};
         var partB = set.part_b || {};
+        var setIdentity = [set.exam_year || '', set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · ');
         var points = (partA.discussion_points || []).map(function (point, index) { return '<li class="speaking-set-point"><span class="speaking-set-point-number">' + esc(index + 1) + '</span><span>' + esc(point.text) + '</span></li>'; }).join('');
         var questions = (partB.questions || []).map(function (question, index) { return '<li><button class="speaking-set-question" type="button" data-start-individual="' + esc(question.question_id) + '" aria-label="Open Individual Response question ' + esc(index + 1) + '"><span class="speaking-set-question-number">' + esc(index + 1) + '</span><span class="speaking-set-question-text">' + esc(question.text) + '</span><span class="speaking-set-question-disclosure" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button></li>'; }).join('');
         detail.innerHTML = '<article class="speaking-set-detail">' +
-            '<header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-copy"><h2>' + esc(set.title) + '</h2></div></header>' +
-            '<section class="speaking-set-context speaking-report-card" data-speaking-reading-section="context"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3>' + speakingSetTextSizeMarkup('context', 'Context') + '</header><div class="speaking-set-context-body">' + (context.source_line ? '<p class="speaking-set-source-line"><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
+            '<header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-copy">' + (setIdentity ? '<p class="eyebrow accent">' + esc(setIdentity) + '</p>' : '') + '<h2>' + esc(set.title) + '</h2></div></header>' +
+            '<section class="speaking-set-context speaking-report-card" data-speaking-reading-section="context"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3>' + speakingSetTextSizeMarkup('context', 'Context') + '</header><div class="speaking-set-context-body">' + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
             '<section class="speaking-set-part speaking-set-part-a speaking-report-card" data-speaking-reading-section="part-a"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">PART A - GROUP DISCUSSION</p>' + speakingSetTextSizeMarkup('part-a', 'Part A') + '</header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section>' +
-            '<section class="speaking-set-part speaking-set-part-b speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART B - INDIVIDUAL RESPONSE</p></header><p class="speaking-set-instruction">' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
+            '<section class="speaking-set-part speaking-set-part-b speaking-report-card" data-speaking-reading-section="part-b"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">PART B - INDIVIDUAL RESPONSE</p>' + speakingSetTextSizeMarkup('part-b', 'Part B') + '</header><p class="speaking-set-instruction">' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
         bindSpeakingSetTextSizeControls(detail);
         document.getElementById('start-set-discussion').addEventListener('click', function () { createDiscussionFromSet(set); });
         detail.querySelectorAll('[data-start-individual]').forEach(function (button) { button.addEventListener('click', function () { startIndividualResponse(set, button.getAttribute('data-start-individual'), button); }); });
@@ -732,7 +733,7 @@
         });
     }
     function bindSpeakingSetTextSizeControls(root) {
-        ['context', 'part-a'].forEach(applySpeakingSetTextSize);
+        ['context', 'part-a', 'part-b'].forEach(applySpeakingSetTextSize);
         root.querySelectorAll('[data-speaking-text-size]').forEach(function (button) {
             button.addEventListener('click', function () {
                 var section = button.getAttribute('data-speaking-text-size');
