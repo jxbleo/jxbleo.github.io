@@ -2598,7 +2598,12 @@ below, a compact
 two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
 Discussion cards and Part B shows only Individual Response cards. The drawer
 has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
-`Individual Responses` heading rows. Part A has a quiet `Filter` select whose
+`Individual Responses` heading rows. Part B renders one restrained grouped card
+per Set, headed by year/source, Set number, and topic. Its Individual Responses
+appear as compact question rows inside that card, so Q1 and Q5 from the same Set
+stay together; the question excerpt, response date, analysis state, and
+disclosure affordance remain visible. Multiple attempts remain separate rows
+and selectable. Part A has a quiet `Filter` select whose
 default `Newest first` ordering uses Discussion date and then upload sequence;
 `Oldest first` reverses it. Processing and ready items never bypass that order.
 Cards omit Candidate and analysis-status pills: a rotating ring means
@@ -2608,17 +2613,27 @@ reserved for a future completed Practice. Escape and the active mobile scrim
 close the drawer.
 Each selected Set uses independent overview, Context, Part A, and Part B cards.
 The overview has no three-step section strip or inline Back button. Its first
-line reads `YYYY Past Paper · Set X.X`; no duplicate PP badge or empty badge row
-is rendered. Context, `Part A - Group Discussion`, and
+card contains only the Set title: the year/type/Set-number eyebrow, source note,
+duplicate PP badge, and empty badge row are not rendered. Context, `Part A - Group Discussion`, and
 `Part B - Individual Response` use centred blue section labels without 01/A/B
 icon tiles. Part A shows the source `TASK`
 statement before `You may want to talk about:` and its four bullet points.
+Context and Part A place an equal-width minus/plus text-size control in the
+upper-right of their own card header. Each control changes only that card's
+reading copy through small, medium, and large steps, disables the unavailable
+direction at either endpoint, and keeps the centred section label unobstructed.
+Part B does not show a text-size control.
 `Start Discussion` creates and opens the Set-backed Discussion immediately; no
 New Session modal appears. Every Part B question is one full-width disclosure
 card with no nested `Start Response` action. Selecting it leaves the Set visible
 behind a modal recorder containing the question, 65-second timer and primary
 microphone control. The toolbar Back control is the only return action, so
 Discussion and processing cards do not repeat an inner `Discussions` button.
+Before a Discussion recording is uploaded, the destination is intentionally
+sparse: a small glass card contains only the three horizontal progress bars,
+and the unchanged `Record the Discussion` card follows it. No title/date hero,
+three-fact summary, inline Set prompt, or Candidate card appears between them;
+the toolbar title provides the necessary Session context.
 Student Candidate surfaces do not show `Invite VIP` or `Add Non-VIP`; automatic reusable-voiceprint matching and server Candidate detection drive identity. Voice References are not part of the normal Session flow. The browser holds a recording only in memory until upload and never writes audio to browser storage. A microphone denial always leaves the file-upload path available.
 After the one student-session check, initial data loads in the fixed order
 Voiceprint then Discussions so the CloudBase browser SDK does not initialize

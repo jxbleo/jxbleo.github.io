@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-06 — Simplify Set identity and add reading-size controls
+
+- Reduced every selected Speaking Set overview card to its title by removing
+  the secondary year/type/Set-number line and source note.
+- Added independent, accessible minus/plus text-size controls to Context and
+  Part A with three bounded reading sizes and clear disabled endpoints.
+- Kept Part B unchanged and protected the centred section labels on narrow
+  phone layouts.
+
 ## 2026-09-06 — Compact colored Dashboard workspace cards
 
 - Matched each workspace title to its blue, teal, or orange card identity and
@@ -40,6 +49,25 @@
   Dashboard.
 - Removed the preview's `My Words`, saved-total, `Recently saved`, and remaining
   `more words` fields while retaining the recent-word rows and `Open My Words`.
+
+## 2026-09-06 — Simplify the pre-recording Discussion surface
+
+- Reduced a newly created Discussion to one compact three-step progress card
+  followed by the existing recording/upload card.
+- Removed the duplicated title/date hero, status fact grid, prompt, and
+  pre-analysis Candidate section while preserving the complete recording,
+  review, and secure-upload flow.
+- Kept queued/processing and completed report surfaces unchanged.
+
+## 2026-09-06 — Group Part B history by Speaking Set
+
+- Replaced the flat Individual Response history with one compact card per
+  stable Speaking Set.
+- Kept Q1, Q5, and any repeated attempts as separate selectable rows inside the
+  matching Set card, preserving newest-first server order without overwriting
+  response history.
+- Added snapshot-based Set labels, question excerpts, dates, and analysis-state
+  cues while keeping the mobile drawer compact and accessible.
 
 ## 2026-09-06 — Reliable full-screen Group recording surface
 

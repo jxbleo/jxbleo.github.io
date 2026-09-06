@@ -2494,7 +2494,7 @@ Teacher report gates:
   whole group's performance, no audio/download control, and the seven-day
   expiry returned by the server.
 
-Click `Start Discussion` and verify one request creates and opens the Set-backed Discussion with no intermediate modal. Verify toolbar Back is the only return control, and no `Invite VIP` or `Add Non-VIP` appears. A not-yet-uploaded Discussion must show preparation/recording controls and an in-progress upload must show the secure-upload indicator. Put a prior date beside `Choose audio file` and verify reopening preserves it; starting on-device recording must reset the date to Shanghai today. Grant microphone permission and verify the viewport becomes the recording surface, Chinese TTS precedes five synchronized countdown beeps, the waveform reacts to voice level, and an eight-minute target enters a final five-second warning before automatic stop at 8:05. During every live state inspect the DOM and verify `#recording-live` is a direct `body` child rather than a descendant of the filtered `.speaking-detail-card`; on Review, Cancel, denied permission, recorder error, and Finish, verify the same node is restored without duplicate IDs or lost Finish-button behavior. At phone portrait, phone landscape, and tablet widths, verify every countdown number remains centred in the live viewport. Speak quietly, normally, and too close to the microphone long enough to cross the debounce period; verify the whole surface changes to amber, blue-green, and coral respectively, the status wording changes with it, and brief pauses do not cause rapid flicker. End or mute the input and verify the separate microphone-attention state. Repeat with Reduced Motion, denied microphone permission, manual early Finish, and a background/foreground cycle. After upload, those
+Click `Start Discussion` and verify one request creates and opens the Set-backed Discussion with no intermediate modal. Verify toolbar Back is the only return control, and no `Invite VIP` or `Add Non-VIP` appears. A not-yet-uploaded Discussion must show only one compact three-step progress card followed by `Record the Discussion`; assert that no title/date hero, Candidate/Recording/Analysis fact grid, Discussion prompt, or Candidate card is present. An in-progress upload must show the secure-upload indicator inside the retained recording card. Put a prior date beside `Choose audio file` and verify reopening preserves it; starting on-device recording must reset the date to Shanghai today. Grant microphone permission and verify the viewport becomes the recording surface, Chinese TTS precedes five synchronized countdown beeps, the waveform reacts to voice level, and an eight-minute target enters a final five-second warning before automatic stop at 8:05. During every live state inspect the DOM and verify `#recording-live` is a direct `body` child; on Review, Cancel, denied permission, recorder error, and Finish, verify the same node is restored without duplicate IDs or lost Finish-button behavior. At phone portrait, phone landscape, and tablet widths, verify every countdown number remains centred in the live viewport. Speak quietly, normally, and too close to the microphone long enough to cross the debounce period; verify the whole surface changes to amber, blue-green, and coral respectively, the status wording changes with it, and brief pauses do not cause rapid flicker. End or mute the input and verify the separate microphone-attention state. Repeat with Reduced Motion, denied microphone permission, manual early Finish, and a background/foreground cycle. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
 matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first
@@ -2633,7 +2633,7 @@ New Discussion; Part B must read `DSE Paper 4`, `Part B`, `Individual Response`,
 and `Coming soon` without starting a backend action.
 Confirm New Discussion contains no Student ID or Guest inputs, defaults its date
 to today in Shanghai, and defaults an empty duration to 480 seconds. Before
-analysis the detail must show one empty Candidates card. After transcription it
+analysis the detail must not show a Candidates card. After transcription it
 must show three-to-six Candidate tiles, automatic match percentages only where
 available, and identity/access rows under the same card. An unconfirmed VIP
 must remain a Speaker label in Candidate/report content.
@@ -2757,9 +2757,13 @@ Increased Contrast.
 - Verify a selected Set appears in overview, Context, Part A, and Part B order;
   its overview has no three-step strip, its Context/Part labels are centred
   without 01/A/B tiles, and the Part A Task appears before the four bullet
-  points. The overview must show `YYYY Past Paper · Set X.X` without a second PP
-  badge. Confirm the section labels read `Part A - Group Discussion` and
+  points. The overview must show only the Set title, with no year/type/Set-number
+  eyebrow or source note. Confirm the section labels read `Part A - Group Discussion` and
   `Part B - Individual Response`.
+- Verify the Context and Part A cards each show minus/plus controls at the
+  upper-right. Confirm the three text-size steps affect only the corresponding
+  card, endpoint buttons become disabled, the controls remain reachable at
+  320px width, and Part B has no size control.
 - Verify each Part B question is one keyboard-accessible disclosure card with no
   `Start Response` text. Selecting it must open the question-scoped recorder as
   a modal over the unchanged Set page; starting, stopping, re-recording,
@@ -2776,6 +2780,11 @@ Increased Contrast.
   the selected mode's existing cards may appear. Confirm `New · Choose a Set`,
   both `Your Work` headings, and the inactive mode's cards
   are absent.
+- In Part B, create or load Q1 and Q5 responses from the same Set plus one
+  response from a different Set. Confirm exactly two Set group cards render,
+  Q1 and Q5 remain separate selectable rows inside the first card, and neither
+  response is overwritten. Add a second Q1 attempt and confirm it remains a
+  separate newest-first row within the same Set card.
 - Verify Part A cards contain no Candidate count or analysis-status pill. Check
   the rotating processing ring, blue ready circle, red failed exclamation,
   neutral not-uploaded ring, and the placeholder blue filled Practice star.

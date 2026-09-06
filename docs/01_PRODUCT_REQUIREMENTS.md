@@ -2140,7 +2140,11 @@ one `Part A` / `Part B` segmented control switches between Group Discussion and
 Individual Response cards. The drawer contains no `New · Choose a Set`,
 `Voiceprint`, or repeated `Your Work` text rows. Discussion and Response records
 live only in their selected drawer panel rather than being duplicated on the
-home surface. On phones, the dimming scrim exists only while the drawer is
+home surface. Part B groups every Individual Response by stable `set_id`: one
+Set card retains all of that Set's question-scoped recordings, including Q1,
+Q5, or repeated attempts, and each contained row still opens its own response
+or report. Groups and rows retain the server's newest-first order. On phones,
+the dimming scrim exists only while the drawer is
 actually open; a closed drawer must never blur or block the Set cards.
 `Start Discussion` creates the Set-backed Discussion immediately and enters it; there is no second New Session dialog. The server-backed audio date defaults to the current Shanghai date for device recording, while an existing file exposes an editable date beside its chooser. The target defaults to eight minutes.
 Formal browser recording follows Ready, a full-screen opening cue, Recording, Review, then Uploading. After microphone permission, Chinese TTS announces the start, a visible and audible five-second countdown runs, and the live waveform follows microphone level. Recording has one Finish action and no Pause. At the selected target, a final five-second visible and audible warning begins and the recorder stops automatically at target plus five seconds (8:05 for an eight-minute Discussion). Review offers Play, Replace, or `Upload & analyse`. The local recording remains only in
@@ -2156,9 +2160,13 @@ integer 0–7 domains plus
 `Pronunciation & Delivery — Not assessed`.
 
 The student Discussion uses two visibly separate phases. Before the formal
-recording is accepted, the preparation surface contains the Set prompt,
-automatic Candidate matching guidance, and recording/upload controls with an explicit secure-upload
-state. It does not repeat the toolbar Back control with an inner `Discussions` button, and it does not expose `Invite VIP` or `Add Non-VIP`; reusable voiceprints and server Candidate detection drive identity. Once the formal recording is uploaded, those controls disappear and the
+recording is accepted, the preparation surface contains exactly one compact
+three-step progress card (`Prepare group`, `Record & analyse`, `Review report`)
+followed by the existing `Record the Discussion` card. It omits the duplicated
+Discussion title/date hero, Candidate/Recording/Analysis facts, Set prompt, and
+pre-analysis Candidate guidance. The recording card retains target duration,
+device recording, existing-file upload, Audio date, Review, and explicit secure-upload
+states. It does not repeat the toolbar Back control with an inner `Discussions` button, and it does not expose `Invite VIP` or `Add Non-VIP`; reusable voiceprints and server Candidate detection drive identity. Once the formal recording is uploaded, those controls disappear and the
 report surface takes over. Queued or processing reports show factual stage
 progress plus live Candidate matching. A ready report starts directly with its
 first card, without a redundant back control or ready-status label, and is
@@ -2343,10 +2351,13 @@ Speaking Lab now begins with `Choose a Set`. Each teacher-managed Set has one
 immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part
 A `task` statement followed by its Group Discussion points, and stable Part B
 Individual Response question IDs. The selected-Set overview omits the redundant
-Context/Part A/Part B progress strip and shows `YYYY Past Paper · Set X.X` in
-one leading line without a duplicate PP badge. Context,
+Context/Part A/Part B progress strip and all secondary metadata, leaving only
+the Set title. Context,
 `Part A - Group Discussion`, and `Part B - Individual Response` use centred
-blue labels without 01/A/B icon tiles.
+Context and Part A each provide compact minus/plus controls in the upper-right
+corner so students can independently choose small, medium, or large reading
+text. Part B keeps its existing question-card presentation without these
+controls.
 Starting Part A immediately creates and opens the Discussion from a frozen Set snapshot without a New Session dialog. Starting one
 Part B question opens a modal recorder over the unchanged Set detail and creates
 a separate private 65-second Individual Response owned by the authenticated

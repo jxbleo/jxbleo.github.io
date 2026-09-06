@@ -112,6 +112,7 @@
     var speakingSets = [];
     var speakingSetRenderLimit = 48;
     var selectedSpeakingSet = null;
+    var speakingSetReadingSizes = { context: 1, 'part-a': 1 };
     var selectedResponse = null;
     var responseRecorder = null;
     var responseStream = null;
@@ -630,15 +631,59 @@
             throw error;
         });
     }
+    function individualResponseState(response) {
+        if (response.analysis_status === 'ready') return { label: 'Report ready', tone: 'ready' };
+        if (response.analysis_status === 'failed') return { label: 'Retry analysis', tone: 'attention' };
+        if (response.recording_status === 'uploaded') return { label: 'Analysis in progress', tone: 'working' };
+        return { label: 'Not recorded', tone: 'quiet' };
+    }
+    function individualResponseSetMeta(response) {
+        var snapshot = response.set_snapshot || {};
+        var source = String(snapshot.source_kind || '').toLowerCase() === 'pp' ? 'Past Paper' : String(snapshot.source_kind || '').toLowerCase() === 'mock' ? 'Mock' : '';
+        var yearAndSource = [snapshot.exam_year || '', source].filter(Boolean).join(' ');
+        return [yearAndSource, snapshot.paper_version ? 'Set ' + snapshot.paper_version : ''].filter(Boolean).join(' · ') || 'DSE Paper 4';
+    }
+    function groupIndividualResponsesBySet(items) {
+        var groups = [];
+        var groupsById = Object.create(null);
+        (Array.isArray(items) ? items : []).forEach(function (response, index) {
+            var snapshot = response.set_snapshot || {};
+            var key = String(response.set_id || snapshot.display_label || snapshot.title || 'response-' + index);
+            if (!groupsById[key]) {
+                groupsById[key] = {
+                    set_id: response.set_id || '',
+                    meta: individualResponseSetMeta(response),
+                    title: snapshot.title || 'Individual Response Set',
+                    responses: []
+                };
+                groups.push(groupsById[key]);
+            }
+            groupsById[key].responses.push(response);
+        });
+        return groups;
+    }
+    function individualResponseRow(response) {
+        var question = response.question_snapshot || {};
+        var state = individualResponseState(response);
+        var questionNumber = question.order || '—';
+        var questionText = question.text || 'Individual Response question';
+        var date = formatDate(response.response_date || response.created_at);
+        return '<button class="speaking-response-row" type="button" data-response-id="' + esc(response.response_session_id) + '" aria-label="Question ' + esc(questionNumber) + '. ' + esc(state.label) + '. ' + esc(questionText) + '">' +
+            '<span class="speaking-response-row-number" aria-hidden="true">Q' + esc(questionNumber) + '</span>' +
+            '<span class="speaking-response-row-copy"><strong>' + esc(questionText) + '</strong><small><i data-tone="' + esc(state.tone) + '" aria-hidden="true"></i>' + esc(date) + ' · ' + esc(state.label) + '</small></span>' +
+            '<svg class="speaking-response-row-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
+    }
+    function individualResponseSetGroup(group) {
+        var count = group.responses.length;
+        return '<section class="speaking-response-set-group" data-response-set-id="' + esc(group.set_id) + '">' +
+            '<header class="speaking-response-set-header"><span><small>' + esc(group.meta) + '</small><strong>' + esc(group.title) + '</strong></span><span class="speaking-response-set-count">' + esc(count) + ' ' + (count === 1 ? 'response' : 'responses') + '</span></header>' +
+            '<div class="speaking-response-set-items">' + group.responses.map(individualResponseRow).join('') + '</div></section>';
+    }
     function renderIndividualResponseList(items) {
         var target = document.getElementById('speaking-response-list');
         if (!target) return;
-        var responses = Array.isArray(items) ? items : [];
-        target.innerHTML = responses.length ? responses.map(function (response) {
-            var question = response.question_snapshot || {};
-            var state = response.analysis_status === 'ready' ? 'Report ready' : response.analysis_status === 'failed' ? 'Retry analysis' : response.recording_status === 'uploaded' ? 'Analysis in progress' : 'Not recorded';
-            return '<button class="speaking-card speaking-response-card" type="button" data-response-id="' + esc(response.response_session_id) + '"><span><strong>' + esc(response.title || 'Individual Response') + '</strong><small>Q' + esc(question.order || '') + ' · ' + esc(state) + '</small></span><span class="speaking-pill" data-tone="' + (response.analysis_status === 'ready' ? 'ready' : response.analysis_status === 'failed' ? 'attention' : 'working') + '">' + esc(state) + '</span></button>';
-        }).join('') : '<p class="speaking-set-empty">No Individual Responses yet.</p>';
+        var groups = groupIndividualResponsesBySet(items);
+        target.innerHTML = groups.length ? groups.map(individualResponseSetGroup).join('') : '<p class="speaking-set-empty">No Individual Responses yet.</p>';
         target.querySelectorAll('[data-response-id]').forEach(function (button) { button.addEventListener('click', function () { if (!allowRecordingNavigation()) return; setSidebarMode('part-b'); closeSidebar(); selectedSpeakingSet = null; getIndividualResponseAndRender(button.getAttribute('data-response-id')); }); });
     }
     function loadIndividualResponses() {
@@ -663,13 +708,38 @@
         var points = (partA.discussion_points || []).map(function (point, index) { return '<li class="speaking-set-point"><span class="speaking-set-point-number">' + esc(index + 1) + '</span><span>' + esc(point.text) + '</span></li>'; }).join('');
         var questions = (partB.questions || []).map(function (question, index) { return '<li><button class="speaking-set-question" type="button" data-start-individual="' + esc(question.question_id) + '" aria-label="Open Individual Response question ' + esc(index + 1) + '"><span class="speaking-set-question-number">' + esc(index + 1) + '</span><span class="speaking-set-question-text">' + esc(question.text) + '</span><span class="speaking-set-question-disclosure" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button></li>'; }).join('');
         detail.innerHTML = '<article class="speaking-set-detail">' +
-            '<header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-copy"><p class="eyebrow accent">' + esc(speakingSetMetaLabel(set)) + '</p><h2>' + esc(set.title) + '</h2><p>' + esc(set.source_note || 'DSE English Paper 4 speaking practice') + '</p></div></header>' +
-            '<section class="speaking-set-context speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3></header><div class="speaking-set-context-body">' + (context.source_line ? '<p class="speaking-set-source-line"><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
-            '<section class="speaking-set-part speaking-set-part-a speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART A - GROUP DISCUSSION</p></header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section>' +
+            '<header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-copy"><h2>' + esc(set.title) + '</h2></div></header>' +
+            '<section class="speaking-set-context speaking-report-card" data-speaking-reading-section="context"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3>' + speakingSetTextSizeMarkup('context', 'Context') + '</header><div class="speaking-set-context-body">' + (context.source_line ? '<p class="speaking-set-source-line"><strong>' + esc(context.source_line) + '</strong></p>' : '') + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
+            '<section class="speaking-set-part speaking-set-part-a speaking-report-card" data-speaking-reading-section="part-a"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">PART A - GROUP DISCUSSION</p>' + speakingSetTextSizeMarkup('part-a', 'Part A') + '</header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section>' +
             '<section class="speaking-set-part speaking-set-part-b speaking-report-card"><header class="speaking-set-section-head speaking-set-section-head-centered"><p class="eyebrow accent">PART B - INDIVIDUAL RESPONSE</p></header><p class="speaking-set-instruction">' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
+        bindSpeakingSetTextSizeControls(detail);
         document.getElementById('start-set-discussion').addEventListener('click', function () { createDiscussionFromSet(set); });
         detail.querySelectorAll('[data-start-individual]').forEach(function (button) { button.addEventListener('click', function () { startIndividualResponse(set, button.getAttribute('data-start-individual'), button); }); });
         updateToolbar({ title: set.title, invitation: true });
+    }
+    function speakingSetTextSizeMarkup(section, label) {
+        return '<span class="speaking-set-text-size" role="group" aria-label="' + esc(label) + ' text size"><button type="button" data-speaking-text-size="' + esc(section) + '" data-speaking-text-size-step="-1" aria-label="Make ' + esc(label) + ' text smaller">−</button><button type="button" data-speaking-text-size="' + esc(section) + '" data-speaking-text-size-step="1" aria-label="Make ' + esc(label) + ' text larger">+</button></span>';
+    }
+    function applySpeakingSetTextSize(section) {
+        var card = detail.querySelector('[data-speaking-reading-section="' + section + '"]');
+        if (!card) return;
+        var size = Math.max(0, Math.min(2, Number(speakingSetReadingSizes[section] || 0)));
+        speakingSetReadingSizes[section] = size;
+        card.setAttribute('data-reading-size', ['small', 'medium', 'large'][size]);
+        card.querySelectorAll('[data-speaking-text-size="' + section + '"]').forEach(function (button) {
+            var step = Number(button.getAttribute('data-speaking-text-size-step'));
+            button.disabled = (size === 0 && step < 0) || (size === 2 && step > 0);
+        });
+    }
+    function bindSpeakingSetTextSizeControls(root) {
+        ['context', 'part-a'].forEach(applySpeakingSetTextSize);
+        root.querySelectorAll('[data-speaking-text-size]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var section = button.getAttribute('data-speaking-text-size');
+                speakingSetReadingSizes[section] = Number(speakingSetReadingSizes[section] || 0) + Number(button.getAttribute('data-speaking-text-size-step'));
+                applySpeakingSetTextSize(section);
+            });
+        });
     }
     function openSpeakingSet(setId) {
         return call('getSpeakingSet', { set_id: setId }).then(function (result) { renderSpeakingSetDetail(result.set); closeSidebar(); return result; }).catch(function (error) { setStatus(friendlyError(error), true); });
@@ -890,31 +960,7 @@
             '<div class="speaking-recording-state speaking-recording-live" id="recording-live" data-level="listening" data-recording-state="idle" hidden><div class="speaking-recording-live-content"><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-countdown" id="recording-countdown" aria-live="assertive" hidden>5</div><div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function (_value, index) { return '<i class="speaking-recording-wave-bar" style="--wave-index:' + index + '"></i>'; }).join('') + '</div><div class="speaking-recording-level" id="recording-level-indicator"><span class="speaking-recording-level-icon" aria-hidden="true"></span><strong id="recording-level-label" role="status" aria-live="polite">Listening for the group…</strong></div><div class="speaking-recording-time" id="recording-time">00:00 / ' + esc(String(Math.floor((Number(item.duration_seconds || 480) + 5) / 60)).padStart(2, '0') + ':' + String((Number(item.duration_seconds || 480) + 5) % 60).padStart(2, '0')) + '</div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-review" id="recording-review" hidden><div class="speaking-recording-ready-mark" aria-hidden="true">✓</div><h4>Recording ready</h4><p id="recording-review-copy">Listen once if you want to check it, then upload and start the analysis.</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="preview-recording">Play recording</button><button class="outline-button" type="button" id="replace-recording">Replace recording</button><button class="primary-button" type="button" id="upload-recording">Upload &amp; analyse</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-uploading" id="recording-uploading" hidden aria-live="polite" aria-busy="true"><span class="speaking-upload-spinner" aria-hidden="true"></span><h4>Uploading securely</h4><p>Keep this page open. Analysis will begin automatically.</p><div class="speaking-upload-progress-track" role="progressbar" aria-label="Secure upload in progress"><span></span></div></div></section>' : '';
-        var stage = item.analysis_status === 'queued' ? 'Preparing transcript and Candidates' : item.analysis_status === 'processing' ? 'Matching voices and analysing discussion' : '';
-        var analysis = item.recording_status === 'uploaded' && item.analysis_status !== 'ready' ? '<div class="speaking-analysis-action">' + (stage ? '<span class="speaking-pill speaking-stage">' + esc(stage) + '</span>' : '<button class="primary-button" type="button" id="start-analysis">' + (item.analysis_status === 'failed' ? 'Retry analysis' : 'Analyse Discussion') + '</button>') + '</div>' : '';
-        var reportMarkup = '';
-        var candidateTiles = (item.candidates || []).map(detectedCandidateMarkup).join('');
-        var candidateIntro = candidateTiles ? '<div class="speaking-candidate-grid">' + candidateTiles + '</div>' : '<div class="speaking-candidate-empty"><span aria-hidden="true">◎</span><p><strong>Candidates appear after transcription.</strong><br>Reusable voiceprints are checked automatically; unclear matches remain Speaker 1, Speaker 2, and so on.</p></div>';
-        var participantRows = (item.participants || []).map(function (participant) { return participantRow(participant, item); }).join('');
-        var candidateCountText = Number.isInteger(item.candidate_count) ? String(item.candidate_count) : 'Pending';
-        var candidatePill = Number.isInteger(item.candidate_count) ? item.candidate_count + ' detected' : 'Waiting for audio';
-        var voiceSearchWorking = ['queued', 'processing'].indexOf(item.voice_match_status) >= 0;
-        var voiceSearchButton = item.can_search_voice_matches ? '<button class="outline-button speaking-voice-search' + (voiceSearchWorking ? ' is-searching' : '') + '" type="button" id="search-voice-matches"' + (voiceSearchWorking ? ' disabled aria-busy="true"' : '') + '><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="m15 15 4.25 4.25M7.5 10.5h1.3l1.1-2.2 1.6 4.4 1.2-2.2h.8"></path></svg><span>' + (voiceSearchWorking ? 'Searching voices…' : 'Search voice matches') + '</span></button>' : '';
-        var voiceSearchNote = '';
-        if (voiceSearchWorking) voiceSearchNote = 'Checking the Candidate clips against currently registered voiceprints.';
-        else if (item.voice_match_status === 'failed') voiceSearchNote = 'The last voice search could not finish. You can try again.';
-        else if (item.voice_match_last_run_at && item.voice_match_safe_error_code) voiceSearchNote = 'Search completed, but automatic matching was temporarily unavailable.';
-        else if (item.voice_match_last_run_at && Number(item.voice_match_last_changed_count || 0) > 0) voiceSearchNote = Number(item.voice_match_last_changed_count) + ' voice match update' + (Number(item.voice_match_last_changed_count) === 1 ? '' : 's') + ' found. Matches at 70% or above are locked automatically; lower scores require the student to listen and confirm.';
-        else if (item.voice_match_last_run_at) voiceSearchNote = 'Search complete. No new reliable voice matches were found.';
-        var candidateHeaderActions = '<span class="speaking-candidate-header-actions">' + voiceSearchButton + '<span class="speaking-pill">' + esc(candidatePill) + '</span></span>';
-        var identityAccess = participantRows ? '<div class="speaking-identity-access"><h4>Identity &amp; access</h4><ul class="speaking-participants">' + participantRows + '</ul></div>' : '';
-        return '<article class="speaking-detail-card">' +
-            '<div class="speaking-detail-hero"><div class="speaking-detail-top">' +
-            '<div class="speaking-detail-title-row"><div><p class="eyebrow accent">DISCUSSION</p><h2>' + esc(item.title) + '</h2></div><p class="speaking-detail-date">' + esc(formatDate(item.discussion_date)) + '</p></div></div>' +
-            workflowMarkup(item) + '<div class="speaking-detail-grid"><dl><dt>Candidates</dt><dd>' + esc(candidateCountText) + '</dd></dl><dl><dt>Recording</dt><dd>' + esc(readableStatus(item.recording_status)) + '</dd></dl><dl><dt>Analysis</dt><dd>' + esc(readableStatus(item.analysis_status)) + '</dd></dl></div></div>' +
-            '<div class="speaking-detail-body"><section class="speaking-section-card speaking-prompt-card"><header><div><h3>Discussion prompt</h3><p>The DSE task your group should address.</p></div></header><p class="speaking-prompt-text">' + esc(item.prompt_text) + '</p></section>' +
-            '<section class="speaking-section-card speaking-candidates-card"><header><div><h3>Candidates</h3><p>Voiceprint matches at 70% or above are named and opened automatically. Lower scores stay anonymous until the matched VIP listens and confirms.</p></div>' + candidateHeaderActions + '</header>' + (voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(voiceSearchNote) + '</p>' : '') + candidateIntro + identityAccess + '</section>' +
-            recording + analysis + reportMarkup + '</div></article>';
+        return '<article class="speaking-session-setup"><section class="speaking-report-card speaking-session-progress-card">' + workflowMarkup(item) + '</section>' + recording + '</article>';
     }
     function bindReportInteractions(root) {
         var report = currentDiscussion && currentDiscussion.report;
