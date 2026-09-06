@@ -8,6 +8,7 @@ const notifications = require("../cloudfunctions/_shared/intensive-listening-not
 
 const root = path.resolve(__dirname, "..");
 const dashboard = fs.readFileSync(path.join(root, "dashboard.html"), "utf8");
+const dashboardCss = fs.readFileSync(path.join(root, "assets/css/app.css"), "utf8");
 const libraryHtml = fs.readFileSync(path.join(root, "intensive-listening-library.html"), "utf8");
 const libraryJs = fs.readFileSync(path.join(root, "assets/js/intensive-listening-library.js"), "utf8");
 const intensiveCss = fs.readFileSync(path.join(root, "assets/css/intensive-listening.css"), "utf8");
@@ -29,6 +30,8 @@ function testDashboardCapsules() {
   assert.ok(!/data-glyph=|>写<|>听<|>说</.test(capsuleMarkup));
   assert.strictEqual((capsuleMarkup.match(/class="student-skill-icon"/g) || []).length, 3);
   assert.strictEqual((capsuleMarkup.match(/<svg/g) || []).length, 3);
+  assert.match(dashboardCss, /\.student-skill-title \{[\s\S]*?color: var\(--skill-tone\);[\s\S]*?font-size: clamp\(1\.2rem, 1\.8vw, 1\.4rem\);/);
+  assert.match(dashboardCss, /@media \(max-width: 640px\) \{[\s\S]*?\.student-skill-card \{[\s\S]*?min-height: 112px;[\s\S]*?padding: 15px 18px;/);
   assert.match(dashboard, /id="student-workspace-confirm-overlay"/);
   assert.match(dashboardJs, /openWorkspaceConfirm\(workspaceCard\)/);
   assert.match(dashboardJs, /window\.location\.assign\(workspaceConfirmHref\)/);

@@ -54,10 +54,12 @@ Dashboard learning-workspace checks:
 - visible titles read `Writing Space`, `Listening Studio`, and `Speaking Lab`.
   Speaking Lab shows a small same-line `HKDSE Paper 4` capsule; its purpose and
   accessible/confirmation copy name Group Interaction and Individual Response;
-- the cards use separate blue, teal, and orange pale-glass washes with compact
+- the cards use separate blue, teal, and orange pale-glass washes; each larger
+  title uses the same theme color, and the card height hugs the copy without
+  excessive blank space while retaining a comfortable touch target. Compact
   rounded-square notebook-and-pen, headphones-and-waveform, and microphone
-  icons in the former right-side glyph position. No `写`, `听`, or `说` remains.
-  The confirmation still repeats the matching SVG;
+  icons stay in the former right-side glyph position. No `写`, `听`, or `说`
+  remains. The confirmation still repeats the matching SVG;
 - tablet and desktop show the complete purpose sentence. At 320/375/390/430px,
   all three cards keep equal heights and each purpose wraps naturally without
   clipping or page overflow;

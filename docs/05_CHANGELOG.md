@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-06 — Compact colored Dashboard workspace cards
+
+- Matched each workspace title to its blue, teal, or orange card identity and
+  increased the title size without changing the concise purpose copy.
+- Reduced desktop and phone card height and vertical padding while preserving
+  the right-side icons, the same-line Paper 4 capsule, and a comfortable tap
+  target at 320px and wider.
+
 ## 2026-09-06 — Dashboard learning-workspace identities
 
 - Renamed the three student Dashboard entrances to `Writing Space`, `Listening

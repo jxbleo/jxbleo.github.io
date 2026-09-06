@@ -245,8 +245,10 @@ Navigation:
   order.
   Their outer edges align exactly with the welcome hero, with no shared dark or
   glass container around the group. Each card uses its own pale glass surface,
-  a restrained blue, teal, or orange wash, a visible English title and purpose
-  sentence. A compact rounded-square notebook-and-pen, headphones-and-waveform,
+  a restrained blue, teal, or orange wash, a prominent English title in the
+  matching theme color, and a purpose sentence. Cards stay vertically compact
+  around their content instead of reserving large empty bands above and below.
+  A compact rounded-square notebook-and-pen, headphones-and-waveform,
   or microphone icon occupies the former right-side `写`, `听`, or `说` position;
   those Chinese glyphs are no longer rendered. Phone layouts preserve that
   right-side icon position and wrap purpose copy naturally inside three
