@@ -970,3 +970,5 @@ cp .qa-secrets.example .qa-secrets.local
 - Deployed `studentVocabulary`, `vocabularyScan`, and `vocabularyScanWorker`; enabled the private one-minute timer and the all-active-students feature switch.
 - Corrected CloudBase `getUserInfo()` sync/async compatibility found by the unauthenticated invoke smoke test, added a regression assertion, rebuilt, and redeployed the Scan gateway.
 - Empty-worker execution and unauthenticated `AUTH_REQUIRED` behavior passed. Real-student photo/OCR/dictionary enrichment remains the post-static-publication smoke check.
+
+- 2026-09-06 — Owner-authorized Argue release `bdd483b0` deployed to Tencent COS and all four CloudBase functions. Static bytes and downloaded function hashes verified; original runtime/configuration retained, with only the existing email Teacher URL corrected to HTTPS. Live missing-locator lookup reached the new endpoint. Real new-Argue email and WeChat acceptance remain pending; management CLI invocation was not counted as an anonymous browser authorization test.

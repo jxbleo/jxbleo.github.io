@@ -1480,3 +1480,21 @@ Local implementation and packaging do not authorize CloudBase/static publication
 5. New student disputes are eligible on the next existing timer tick; do not backfill historical requests. Run the dedicated QA-student / WeChat acceptance steps in `docs/07_TESTING_CHECKLIST.md`.
 
 Affected static files: `argue-review.html`, `assets/js/argue-review.js`, `assets/css/argue-review.css`, and `assets/js/config.public.js`. The existing public build includes this reusable root-level HTML file automatically. All answers and notes still load through authenticated CloudBase.
+
+
+Owner-authorized rollout completed on 2026-09-06 at 21:00 Shanghai time.
+Feature commit `bdd483b0` was published from a clean worktree based on `67d4e068`
+to preserve other already-published changes. Tencent COS workflow
+`34034235416` succeeded, and the HTTPS page plus three feature assets matched
+the release bytes. All four functions became `Active`; downloaded `index.js`
+and `package.json` hashes matched the scoped bundles. Runtime, handler, timeout,
+memory, original dependency-installation setting, environment, triggers, VPC,
+role and layers were checked after code deployment. The sole intended environment
+change was the existing Teacher URL to `https://mrcatenglish.com/teacher.html`.
+
+The online targeted lookup smoke check returned `DISPUTE_NOT_AVAILABLE` for a
+synthetic missing locator. This management-CLI invocation is not evidence of
+anonymous browser authorization; anonymous/student/disabled-teacher rejection
+was covered by the local integration tests. Real email delivery and WeChat
+acceptance still require a new dedicated QA-student Argue. No real student
+request, answer-key change or test email was created by the rollout checks.

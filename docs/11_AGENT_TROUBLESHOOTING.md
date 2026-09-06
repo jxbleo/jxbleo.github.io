@@ -1113,3 +1113,20 @@ result. Do not add `app_id`, `secret_id`, a TC3 session-token header, or a
 browser-side signature. Missing credentials must fail before upload; a scoring
 policy revision change after upload must delete or schedule deletion of the
 temporary file and release the student's take lock.
+
+
+### CloudBase CLI 3.7 code-only Argue rollout
+
+`fn code update` without a project configuration calls an interactive Inquirer
+menu even with `--yes`/`--json`; a piped subprocess may exit 0 without uploading
+and without JSON. Never interpret that exit status as deployment success. Use
+a temporary minimal `cloudbaserc.json` with a relative `functionRoot` and one
+explicit function entry per approved bundle. Run from that configuration's
+directory; avoid the known absolute `--dir` packaging issue.
+
+Preserve each function's own `InstallDependency` value from a private preflight
+snapshot. The values are not uniform across functions, and code update can
+change this flag. After activation, compare runtime, handler, timeout, memory,
+environment, triggers, VPC, role, layers and dependency installation settings;
+download the online bundle and compare `index.js` / `package.json` SHA-256.
+Keep SMTP values, timer tokens and signed code-download URLs out of logs and Git.
