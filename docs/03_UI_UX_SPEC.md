@@ -481,7 +481,9 @@ Frontend rule:
 - Practice Library sub-filters are `BBC2024`, `BBC2025`, `BBC2026`, `NGSL`,
   `NAWL`, `TK2`, `Oxford5000`, `DSE`, and `IELTS`. The old generic
   `Vocabulary`, `Grammar`, `Writing`, and `Grammar Lessons` sub-filters are not
-  shown in Library. NGSL, NAWL, and Oxford5000 Library task cards use
+  shown in Library. Student Library defaults to `BBC2026` on first entry and
+  whenever the learner switches from Exam back to Practice. NGSL, NAWL, and
+  Oxford5000 Library task cards use
   `vocabulary` as the eyebrow and show the source-specific word-number range in
   the top-right metadata. Teacher Assign type filters, Teacher View matrix type
   filters, and student assignment cards still identify vocabulary sets by

@@ -1017,6 +1017,8 @@ Check:
   `BBC2026`, `NGSL`, `NAWL`, `TK2`, `Oxford5000`, `DSE`, and `IELTS`, with no
   generic `Vocabulary`, `Grammar`, `Writing`, or `Grammar Lessons` choice;
   Teacher Library keeps its existing visible sub-filter row
+- entering Student Library initially selects `BBC2026`; after opening Exam and
+  switching back to Practice, `BBC2026` is selected again
 - switching Practice/Exam or using global Library search keeps the inline
   category title synchronized with the active category
 - Teacher Assign filters, Teacher View matrix type filters, and student

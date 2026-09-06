@@ -2769,7 +2769,7 @@
     }
 
     var libraryActiveTab = 'general';
-    var libraryActiveSubTab = '';
+    var libraryActiveSubTab = 'bbc-2026';
     var libraryCategoryMenuOpen = false;
     var libraryCatalog = null;
 
@@ -3291,7 +3291,7 @@
     function librarySwitchTab(tabId) {
         if (tabId === libraryActiveTab) return;
         libraryActiveTab = tabId;
-        libraryActiveSubTab = '';
+        libraryActiveSubTab = tabId === 'general' ? 'bbc-2026' : '';
         setLibraryCategoryMenuOpen(false, false);
         librarySyncTabButtons();
         libraryLoadTabContent(tabId);
