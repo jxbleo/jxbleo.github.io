@@ -42,6 +42,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-06 — Argue email release: owner-authorized publication of the scoped static entry and `getDashboard`, `intensiveListening`, `teacherAdmin`, `sendTeacherAttemptEmails` is pending. Verify the existing HTTPS Teacher URL setting, then test a dedicated QA-student request through the real WeChat mailbox notification. No real mail or cloud data was changed during local QA.
+
 - [ ] Baseline before Intensive Listening Library work: `npm run test:assignment-schedule`
       fails at `testDashboardScheduleModel` because the current DSE-overlapping
       dashboard fixture does not include `UPCOMING`; unrelated to this feature.
@@ -69,6 +71,8 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-06 — Implemented immediate Argue emails and authenticated single-question review. Passed the new integration suite (student producer → private outbox → mocked SMTP → teacher resolution → immutable original plus adjusted result), authorization/disabled-teacher checks, three decisions, Listening decisions, duplicate/concurrent calls, stale revisions and failure recovery. Existing attempt-email, login, quick-accept, Listening and global-progress tests passed; release verification passed. Browser QA at 390px confirmed no horizontal overflow, Chinese optional note, replacement confirmation/cancellation, read-only success, preserved conflict drafts and student-account blocking. Used only synthetic local data. Task-only backend packages were built under `/private/tmp/mrcat-argue-release-20260906/deploy-packages/` to exclude other tasks’ dirty changes; real WeChat acceptance remains open.
 
 ### 2026-08-30 — Student Dashboard Achievements
 

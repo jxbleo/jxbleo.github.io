@@ -1512,3 +1512,11 @@ revisions plus Shanghai `usage_day` and `billable_claimed` for quota enforcement
 participation row; the parent assignment has `assignment_kind: listening` and
 `required_listening_tracks`. All collections remain ADMINONLY and require
 owner-reviewed indexes.
+
+## Argue delivery and resolution fields (2026-09-06)
+
+`answer_disputes` remains ADMINONLY. New student rows use a deterministic `dispute-<sha256-prefix>` document ID derived from `dispute_id`, retain top-level fields, and add `email_notification_status: pending | queued`. Intent and dispute are saved together; the separate outbox write may recover later. Old rows without the marker are not backfilled.
+
+The existing `teacher_attempt_email_events` accepts `event_kind: student_argue`, a stable `argue-<sha256-prefix>` `event_id`, `dispute_id`, `thread_key: argue::<dispute_id>`, and `delivery_policy: argue_immediate`. No synthetic attempt is created. These rows contain identifiers/timing/delivery audit only, not answers, notes, rendered bodies or recipients. Resolved/unavailable requests use the existing skipped state with a bounded reason.
+
+Resolution adds `resolution_decision`, `resolution_note`, `resolution_teacher_uid`, `resolution_requested_at`, optional `resolution_history_id`, and the transient `resolution_token` / `resolution_started_at`. These fields durably record a committed choice while `status` remains pending until historical projections finish. A transaction creates one grading history document and changes the private key alongside that choice. `resolution_token` is an internal execution lease, never returned to the browser. The single-question response exposes only `resolution_decision`, `resolution_note`, `resolution_processing`, current answer and `review_revision` in addition to the ordinary authorized Teacher projection. A revision is a concurrency check, never authentication.

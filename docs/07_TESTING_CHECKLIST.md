@@ -2906,3 +2906,11 @@ single-take locking, server-timed complete-listen tokens, and
 Dictation/Shadowing selection, complete-play counting, microphone denial,
 record/upload failure, To Improve, teacher per-line timing/text editing, reduced
 motion, keyboard focus, and 1440px, 1024px, 768px, and 390px viewports.
+
+## Argue email / single-question review (2026-09-06)
+
+- Run `npm run test:argue-emails`, `npm run test:attempt-emails`, `npm run test:login-redirect`, `npm run test:teacher-quick-accept`, `npm run test:intensive-listening`, and `npm run test:global-progress`.
+- Validate new student requests create exactly one private event; a failed outbox write leaves a recoverable intent; a muted inbox is not backfilled; resolved/cancelled/deleted requests are not sent.
+- Verify anonymous/student/disabled-teacher access fails server-side despite forged browser identity. Test each ordinary decision, empty and filled note, concurrent submits, stale review revision, regrade failure/resume, and preservation of the original attempt.
+- In browser QA, check mobile width, radio selection, optional Chinese note, replace confirmation/cancellation, read-only resolved cards, conflict note preservation and account-switch errors using synthetic data only.
+- After owner-authorized deployment, submit one dedicated QA student's new Argue. Confirm one email at an enabled teacher inbox on a timer tick. Open from the owner's actual WeChat mailbox notification, verify the site link opens, login returns to the exact question, submit one chosen decision, then verify Teacher Replies and the saved status. Open the email again: it must show the saved result and no Submit button. Real WeChat behavior cannot be inferred from desktop mobile viewport QA.

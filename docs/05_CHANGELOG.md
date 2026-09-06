@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-06 — Argue emails and single-question Teacher review
+
+- Added immediate student Argue email events using the existing private outbox, SMTP and enabled teacher recipients, with recoverable enqueue intent.
+- Added an authenticated mobile review card with three ordinary decisions, optional Teachers’ Note, explicit submission and replace confirmation; Listening keeps its two existing decisions.
+- Added one-question teacher retrieval, stale-rule protection, transactional grading history and resumable decision processing for both Teacher entry points.
+- Added integration coverage for delivery, authorization, decisions, conflicts and retry recovery. Local implementation is complete; CloudBase/static publication and real WeChat acceptance remain owner-gated.
+
+
+
 ## 2026-09-06 — Collapsible Part A history groups
 
 - Matched Part A history to Part B's Set-first progressive disclosure: every

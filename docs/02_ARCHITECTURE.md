@@ -1226,3 +1226,11 @@ rejects a stale publish. Publishing replaces the one current material, writes a
 private immutable `listening_material_history` audit row, and changes only the
 affected Dictation/Shadowing revision unless shared media changed, in which case
 both revisions change. Students never select a version.
+
+## Argue email entry (2026-09-06)
+
+Student `getDashboard.submitDispute` and `intensiveListening.submitSpellingDispute` use `_shared/argue-notifications.js` to create a deterministic dispute document with a durable email intent, then best-effort enqueue one `student_argue` event in the existing ADMINONLY `teacher_attempt_email_events`. The existing dispatcher repairs up to 20 pending intents per tick and sends immediate, unbatched question emails through the existing teacher recipient/SMTP path. No inbound mailbox, public webhook, extra timer or service is introduced.
+
+`argue-review.html` is one reusable authenticated page. `teacherAdmin.getDispute` returns one authorized question, current rule/revision, status and note without bootstrapping complete Teacher history. Existing same-origin login navigation retains its query. GET/open and radio selection have no decision side effects.
+
+`_shared/argue-resolution.js` is shared by both Teacher entry points through `teacherAdmin.resolveDispute`: a transaction claims the dispute and commits the chosen decision, grading key and unique history row. A ten-minute execution lease blocks concurrent processing. Historical projections run afterwards; successful completion publishes the resolution and student unread marker. On an error the lease is released; a crashed lease expires. Retrying resumes the saved decision and history rather than applying another key revision. Matching already-adjusted attempts replay assignment/STAR effects to recover a failure between their writes. This recovery is request-driven, not a new background grading worker.

@@ -3,6 +3,8 @@ const CloudBaseManager = require("../_shared/cloudbase-user-manager");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
+const argueNotifications = require("../_shared/argue-notifications");
+const argueResolution = require("../_shared/argue-resolution");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const intensiveSpelling = require("../_shared/intensive-listening-spelling");
 const intensiveListeningService = require("../intensiveListening/service");
@@ -3419,18 +3421,7 @@ async function resolveIntensiveSpellingDispute(dispute, decision, teacher, teach
       now,
     })).policy_revision
     : Math.max(1, Number(material.policy_revision) || 1);
-  await db.collection("answer_disputes").doc(dispute._id).update({
-    status: decision === "keep" ? "rejected" : "approved",
-    decision,
-    teacher_note: teacherNote,
-    resolved_by_teacher_uid: teacher.auth_uid,
-    policy_revision_after: policyRevision,
-    student_seen: false,
-    student_seen_at: null,
-    resolved_at: now,
-    updated_at: now,
-  });
-  return { success: true, policy_revision: policyRevision };
+  return { policy_revision_after: policyRevision };
 }
 
 function normalizedDisputeStatus(dispute) {
@@ -3660,7 +3651,18 @@ async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, g
   const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
   const target = currentResults.find((item) => String(item.question_id) === dispute.question_id);
   if (!target) return null;
-  if (target.correct === true) return attempt;
+  if (target.correct === true) {
+    if (target.dispute_id === (dispute.dispute_id || dispute._id)) {
+      // A prior invocation may have stored the adjustment just before failing
+      // to project assignment / STAR effects. Replaying those effects is safe.
+      const count = currentResults.filter((item) => item.correct === true).length;
+      await applyAdjustedAttemptEffects(attempt, attempt, count,
+        Number(attempt.question_count || currentResults.length), effectivePercentage(attempt),
+        effectivePassed(attempt), attempt.adjusted_mastered === true || attempt.mastered === true, now);
+      return { ...attempt };
+    }
+    return attempt;
+  }
   if (normalized(target.submitted_answer) !== normalized(dispute.submitted_answer)) return null;
 
   target.correct = true;
@@ -4042,97 +4044,33 @@ async function backfillAssignmentDueWeeks(event, teacher) {
 }
 
 async function resolveDispute(event, teacher) {
-  const disputeId = text(event.dispute_id);
-  const decision = text(event.decision);
-  const teacherNote = text(event.teacher_note).slice(0, 1000);
-  if (!disputeId || !["keep", "add", "replace", "provide"].includes(decision)) {
-    throw new Error("DISPUTE_DECISION_REQUIRED");
-  }
-  const dispute = await getOne("answer_disputes", { dispute_id: disputeId });
-  if (!dispute) throw new Error("DISPUTE_NOT_FOUND");
-  if (dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
-  if (dispute.dispute_type === "intensive_spelling_exemption") {
-    return resolveIntensiveSpellingDispute(dispute, decision, teacher, teacherNote);
-  }
-
-  const now = new Date();
-  if (decision !== "keep") {
-    if (!text(dispute.submitted_answer)) throw new Error("EMPTY_ANSWER_NOT_ACCEPTABLE");
-    const gradingKey = await getOne("grading_keys", { set_id: dispute.set_id });
-    if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
-    const answers = { ...(gradingKey.answers || {}) };
-    const before = answers[dispute.question_id];
-    if (decision === "add") {
-      const accepted = answerList(before);
-      if (!accepted.some((item) => normalized(item) === normalized(dispute.submitted_answer))) {
-        accepted.push(dispute.submitted_answer);
-      }
-      answers[dispute.question_id] = accepted;
-    } else {
-      answers[dispute.question_id] = dispute.submitted_answer;
-    }
-    const newVersion = nextGradingVersion(gradingKey.grading_version);
-    const historyRecord = {
-      history_id: [dispute.set_id, dispute.question_id, Date.now()].join("::"),
-      set_id: dispute.set_id,
-      question_id: dispute.question_id,
-      dispute_id: disputeId,
-      decision,
-      answer_before: before == null ? null : before,
-      answer_after: answers[dispute.question_id],
-      grading_version_before: gradingKey.grading_version || "1",
-      grading_version_after: newVersion,
-      changed_by_teacher_uid: teacher.auth_uid,
-      changed_at: now,
-      auto_regrade_scope: "matching_historical_attempts",
-      applied: false,
-    };
-    const historyAdd = await db.collection("grading_key_history").add(historyRecord);
-    await db.collection("grading_keys").doc(gradingKey._id).update({
-      answers,
-      grading_version: newVersion,
-      updated_at: now,
-    });
-    if (historyAdd && historyAdd.id) {
-      await db.collection("grading_key_history").doc(historyAdd.id).update({
-        applied: true,
-        applied_at: now,
-      });
-    }
-    const regradeResult = await applyAcceptedAnswerToHistoricalAttempts(
-      dispute,
-      teacher,
-      now,
-      newVersion,
-      historyRecord.history_id
-    );
-    if (historyAdd && historyAdd.id) {
-      await db.collection("grading_key_history").doc(historyAdd.id).update({
-        auto_regrade_applied: true,
-        auto_regrade_applied_at: now,
-        auto_regrade_scanned_attempt_count: regradeResult.scanned_attempt_count,
-        auto_regrade_adjusted_attempt_count: regradeResult.adjusted_attempt_count,
-      });
-    }
-    dispute.grading_version_after = newVersion;
-    dispute.auto_regrade_scanned_attempt_count = regradeResult.scanned_attempt_count;
-    dispute.auto_regrade_adjusted_attempt_count = regradeResult.adjusted_attempt_count;
-  }
-
-  await db.collection("answer_disputes").doc(dispute._id).update({
-    status: decision === "keep" ? "rejected" : "approved",
-    decision,
-    teacher_note: teacherNote,
-    resolved_by_teacher_uid: teacher.auth_uid,
-    grading_version_after: dispute.grading_version_after || null,
-    auto_regrade_scanned_attempt_count: dispute.auto_regrade_scanned_attempt_count || 0,
-    auto_regrade_adjusted_attempt_count: dispute.auto_regrade_adjusted_attempt_count || 0,
-    student_seen: false,
-    student_seen_at: null,
-    resolved_at: now,
-    updated_at: now,
+  return argueResolution.resolve({
+    db, event, teacher,
+    regrade: applyAcceptedAnswerToHistoricalAttempts,
+    provideWord: resolveIntensiveSpellingDispute,
+    nextVersion: nextGradingVersion,
   });
-  return { success: true };
+}
+
+async function getDispute(event) {
+  const context = await argueNotifications.loadContext(db, text(event.dispute_id));
+  const { dispute, student, set, gradingKey } = context;
+  const source = dispute.dispute_type === "intensive_spelling_exemption"
+    ? await getOne("intensive_listening_materials", {
+      set_id: dispute.set_id, content_version: String(dispute.content_version || "1"),
+    }) : gradingKey;
+  const view = disputeTeacherView(dispute,
+    new Map([[dispute.student_uid, student]]), new Map([[dispute.set_id, set]]),
+    new Map([[dispute.set_id, gradingKey || {}]]));
+  return { success: true, dispute: {
+    ...view,
+    current_answer: gradingKey && gradingKey.answers && gradingKey.answers[dispute.question_id],
+    review_revision: argueResolution.revision(dispute, source),
+    resolution_decision: dispute.resolution_decision || null,
+    resolution_note: dispute.resolution_note || "",
+    resolution_processing: Boolean(dispute.resolution_token &&
+      new Date(dispute.resolution_started_at).getTime() > Date.now() - 10 * 60 * 1000),
+  } };
 }
 
 function randomStarRecordId(prefix) {
@@ -4727,6 +4665,7 @@ exports.main = async (event) => {
     if (action === "markActivityAttemptsReviewed") return await markActivityAttemptsReviewed(event, teacher);
     if (action === "markActivityAttemptsReadAll") return await markActivityAttemptsReadAll(teacher);
     if (action === "listDisputes") return await listDisputes();
+    if (action === "getDispute") return await getDispute(event);
     if (action === "listDisputePage") return await listDisputePage(event);
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "acceptAttemptAnswer") return await acceptAttemptAnswer(event, teacher);

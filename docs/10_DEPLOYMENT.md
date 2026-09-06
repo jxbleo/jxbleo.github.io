@@ -1468,3 +1468,15 @@ Shadowing scoring remains fail-closed: do not set
 `listening_shadowing_score_policy` until representative real-audio benchmarking
 has been reviewed by the owner and Tencent SOE-N access is confirmed. No
 provider credentials or paid evaluation request were added during rollout.
+
+## Argue email review release (2026-09-06)
+
+Local implementation and packaging do not authorize CloudBase/static publication. Release the scoped changes only; unrelated work may exist in the shared checkout.
+
+1. Run `npm run test:argue-emails` and the related email/login/Argue regressions in the testing checklist.
+2. Verify `sendTeacherAttemptEmails` has `TEACHER_ATTEMPT_EMAIL_TEACHER_URL` set to the existing site's full HTTPS Teacher URL. It was previously optional; Argue email buttons require it. Do not print SMTP credentials or timer tokens. Continue using existing recipient settings, SMTP and one-minute timer. No new collection or timer is needed; the new intent query filters one field on `answer_disputes`.
+3. Package with `npm run package:functions -- getDashboard intensiveListening teacherAdmin sendTeacherAttemptEmails`.
+4. Once the owner authorizes those exact deployments, publish the static shell/assets (the new entry initially fails closed against old backend code), deploy `teacherAdmin` and `sendTeacherAttemptEmails`, then deploy the two producers `getDashboard` and `intensiveListening`. This order prevents new emails linking to a missing static page or unavailable single-question endpoint.
+5. New student disputes are eligible on the next existing timer tick; do not backfill historical requests. Run the dedicated QA-student / WeChat acceptance steps in `docs/07_TESTING_CHECKLIST.md`.
+
+Affected static files: `argue-review.html`, `assets/js/argue-review.js`, `assets/css/argue-review.css`, and `assets/js/config.public.js`. The existing public build includes this reusable root-level HTML file automatically. All answers and notes still load through authenticated CloudBase.

@@ -1,0 +1,41 @@
+.argue-review-page { min-height: 100vh; }
+.argue-review-shell { width: min(100%, 720px); margin: 0 auto; padding: 24px 20px max(36px, env(safe-area-inset-bottom)); }
+.argue-review-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 30px; }
+.argue-back { color: var(--ink); text-decoration: none; font-weight: 700; padding: 10px 14px; border: 1px solid var(--line); border-radius: 24px; background: #fff; }
+.argue-review-shell h1 { margin: 8px 0; font-size: clamp(24px, 5vw, 34px); line-height: 1.25; overflow-wrap: anywhere; }
+#argue-identity { font-size: 13px; overflow-wrap: anywhere; text-align: right; }
+#argue-message { margin: 12px 0; font-size: 14px; }
+#argue-message:empty { display: none; }
+#argue-message[data-tone="error"] { color: var(--danger); }
+#argue-message[data-tone="success"] { color: var(--success); }
+.argue-review-shell .dispute-detail { background: #fff; padding: 22px; box-shadow: 0 12px 36px rgba(25,68,61,.06); }
+.argue-review-shell .dispute-question-text,
+.argue-review-shell .dispute-explanation,
+.argue-review-shell .dispute-reason { white-space: pre-wrap; line-height: 1.6; }
+.argue-review-shell .dispute-note { min-height: 100px; font: inherit; font-size: 16px; background: #fff; color: var(--ink); }
+.argue-choices { border: 0; padding: 0; margin: 24px 0 18px; display: grid; gap: 10px; }
+.argue-choices legend { margin-bottom: 10px; font-weight: 700; font-size: 13px; }
+.argue-choice { display: flex; gap: 12px; align-items: center; cursor: pointer; min-height: 52px; border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-weight: 600; font-size: 14px; }
+.argue-choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.argue-choice:has(input[value="replace"]:checked) { border-color: var(--danger); background: var(--danger-soft); }
+.argue-choice input { width: 18px; height: 18px; flex: 0 0 18px; margin: 0; accent-color: var(--accent); }
+.argue-note-label { display: block; margin: 12px 0 8px; font-weight: 700; font-size: 13px; }
+.argue-note-label span { color: var(--muted); font-weight: 400; }
+.argue-impact { font-size: 13px; line-height: 1.6; color: var(--muted); }
+.argue-submit { width: 100%; min-height: 48px; margin-top: 12px; border-radius: 14px; }
+.argue-replace-confirm { padding: 14px; border-radius: 12px; background: var(--danger-soft); color: var(--danger); }
+.argue-replace-confirm p { margin: 0 0 10px; font-size: 14px; }
+.argue-replace-confirm button { min-height: 44px; }
+.argue-result { margin-top: 20px; padding: 16px; background: var(--success-soft); border-radius: 12px; }
+.argue-result p { margin: 8px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.argue-review-shell button:focus-visible,
+.argue-review-shell a:focus-visible,
+.argue-review-shell input:focus-visible,
+.argue-review-shell textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+#argue-recovery { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.argue-review-page [hidden] { display: none !important; }
+@media (max-width: 440px) {
+    .argue-review-shell { padding: 16px 12px max(28px, env(safe-area-inset-bottom)); }
+    .argue-review-shell .dispute-detail { padding: 16px; }
+    .argue-review-shell .dispute-comparison { grid-template-columns: minmax(0,1fr); }
+}

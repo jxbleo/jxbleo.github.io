@@ -693,6 +693,16 @@ question must still render the student Argue entry point against that historical
 `attempt_id`; if the assignment has already recorded `answer_revealed: true`,
 history may also show a collapsed per-question `Explain` action.
 
+New student Argue requests also create recoverable private email intents. The
+existing teacher-email timer sends one immediate `student_argue` event per
+request. The email opens `argue-review.html?dispute=<id>`; the locator never
+bypasses active teacher authentication. The card supports three ordinary
+choices, optional Teachers’ Note and explicit Submit; Listening retains its
+keep/provide choices. Both entry points use the same transactional decision
+and grading-history boundary. Retry an unfinished decision without changing
+its saved choice or creating a second grading version. Do not parse ordinary
+email replies as decisions or backfill emails for historical disputes.
+
 ### Vocabulary
 
 Only Vocabulary `Quiz` mode can create a countable progress attempt. The

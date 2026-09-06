@@ -2951,3 +2951,11 @@ words, or word-state feedback.
 Teacher Listening uses the same restrained light/glass visual language as
 Writing and Speaking. Timing, speaker, practice mode, and transcript are edited
 in direct per-line controls; raw segment JSON is not the primary authoring UI.
+
+## Argue email review card (2026-09-06)
+
+The email opens `argue-review.html?dispute=<id>`, a single mobile-friendly Teacher card. It reuses the existing question, submitted/correct answer comparison, explanation and student-reason styles. Ordinary decisions are three labelled radio choices, followed by optional Teachers’ Note (maximum 1000 characters) and an explicit Submit button. Replace uses an inline confirmation with Confirm Replace / Cancel. Intensive spelling requests show only Keep / Approve Provided Word.
+
+No choice is selected by default. Submitting disables controls; success shows the saved decision/note without needing a second request. Resolved links are read-only. Stale-rule responses refresh the displayed current answers while retaining the note draft. A committed but unfinished decision is read-only and offers Continue processing; an active lease offers Refresh request. Anonymous users return through existing login; a student session sees a Teacher access message and Switch account instead of a redirect loop. Errors have visible retry/sign-in controls. Private question data and drafts are not persisted in browser storage.
+
+Mobile checks cover 390px width; real WeChat mail-link routing and session retention remain device acceptance tests. Email markup contains an ordinary HTTPS link, not an embedded form.

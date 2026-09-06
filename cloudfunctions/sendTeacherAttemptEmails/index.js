@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const notifications = require("../_shared/attempt-email-notifications");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
+const argueNotifications = require("../_shared/argue-notifications");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -327,6 +328,11 @@ async function attemptThreadForJob(job, cutoffAt) {
 async function emailContext(claimed) {
   const jobs = claimed.jobs;
   const anchor = jobs[0];
+  if (anchor.event_kind === argueNotifications.EVENT_KIND) {
+    const context = await argueNotifications.loadContext(db, anchor.dispute_id);
+    if (context.dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
+    return { ...context, argue: true, teacherUrl: text(process.env.TEACHER_ATTEMPT_EMAIL_TEACHER_URL) };
+  }
   if (isIntensiveEvent(anchor)) {
     const [student, set] = await Promise.all([
       getOne("students", { auth_uid: anchor.student_uid }),
@@ -431,7 +437,7 @@ function deliveryMessageId(claimed, config) {
 async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
   try {
     const context = await emailContext(claimed);
-    const rendered = context.intensive
+    const rendered = context.argue ? argueNotifications.renderEmail(context) : context.intensive
       ? notifications.renderIntensiveListeningEmail(context)
       : notifications.renderAttemptEmail(context);
     const mail = {
@@ -460,6 +466,16 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
     await finishJobs(claimed, result && result.messageId || mail.messageId, now);
     return { success: true, event_count: claimed.jobs.length };
   } catch (error) {
+    if (claimed.jobs[0].event_kind === argueNotifications.EVENT_KIND &&
+        ["DISPUTE_NOT_AVAILABLE", "DISPUTE_ALREADY_RESOLVED"].includes(error.message)) {
+      for (const job of claimed.jobs) {
+        await db.collection(EVENT_COLLECTION).doc(job._id).update({
+          status: "skipped", skipped_at: now, skip_reason: error.message,
+          processing_token: null, last_error: "", updated_at: now,
+        });
+      }
+      return { success: true, skipped: true, event_count: claimed.jobs.length };
+    }
     await failJobs(claimed, error, now);
     console.error("Teacher attempt email batch failed", {
       event_count: claimed.jobs.length,
@@ -471,6 +487,10 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
 
 async function dispatch(now) {
   const recovered = await recoverStaleClaims(now);
+  // Recovery is independent of ordinary attempt delivery, including during rollout.
+  let argue_events_repaired = 0;
+  try { argue_events_repaired = await argueNotifications.repairPendingEvents(db); }
+  catch (_) { console.error("Argue email intent repair deferred"); }
   const intensive_paused_sessions = await closeIdleIntensiveSessions(now) + await closeIdleShadowingSessions(now);
   const anchors = await dueEvents(now);
   const recipients = await enabledRecipients();
@@ -484,6 +504,7 @@ async function dispatch(now) {
     skipped_events: 0,
     failed_batches: 0,
     intensive_paused_sessions,
+    argue_events_repaired,
   };
   if (!recipients.length) {
     for (const anchor of anchors) {
@@ -502,7 +523,10 @@ async function dispatch(now) {
       const claimed = await claimEventBatch(anchor, now);
       if (!claimed || !claimed.jobs.length) continue;
       const result = await sendClaimedBatch(claimed, transporter, config, recipients, now);
-      if (result.success) {
+      if (result.skipped) {
+        summary.skipped_batches += 1;
+        summary.skipped_events += result.event_count;
+      } else if (result.success) {
         summary.sent_batches += 1;
         summary.sent_events += result.event_count;
       } else {

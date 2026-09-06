@@ -1,6 +1,7 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
+const argueNotifications = require("../_shared/argue-notifications");
 const { summarizeSelfStudyAttempts } = require("./self-study-completions");
 const { achievementWindow, buildAchievementCalendar } = require("./achievement-calendar");
 
@@ -443,7 +444,7 @@ async function submitDispute(student, event) {
 
   const now = new Date();
   const disputeId = [attemptId, questionId].join("::");
-  await db.collection("answer_disputes").add({
+  const saved = await argueNotifications.saveStudentDispute(db, {
     dispute_id: disputeId,
     student_uid: student.auth_uid,
     student_id_snapshot: student.student_id,
@@ -460,6 +461,7 @@ async function submitDispute(student, event) {
     created_at: now,
     updated_at: now,
   });
+  if (saved.already_exists) throw new Error("DISPUTE_ALREADY_EXISTS");
   return { success: true, dispute_id: disputeId };
 }
 

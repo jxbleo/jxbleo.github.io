@@ -2455,3 +2455,12 @@ unqualified lines appear in a To Improve queue. Shadowing never creates STARs,
 Argue requests, or teacher score overrides. Raw valid takes are private and
 cleaned by the owner-gated maintenance job within seven days; invalid takes are
 deleted immediately.
+
+## Argue 邮件与单题处理入口（2026-09-06）
+
+- 新的学生普通 Argue 和精听拼写豁免请求各生成一封立即到期的教师通知邮件；教师自己发起的纠错不发送。沿用个人中心启用邮箱、BCC 和一分钟发送任务。历史请求不自动补发。
+- 邮件展示该题上下文与“处理这条 Argue”链接。微信内点击后打开 `argue-review.html?dispute=<id>`；单题卡片需有效教师登录，登录后返回原请求。ID 只是定位符，不是授权凭证。
+- 普通请求提供 Keep Original Ruling / Add as Accepted Answer / Replace Correct Answer 三选一，下方是选填的 Teachers’ Note 和 Submit。替换还需明确确认；打开链接、选择单选项不会改分。
+- 精听保留原有 keep/provide 两种语义，不套用普通答案替换。教师决定仍通过共用后端处理，学生从既有 Teacher Replies 查看回复。
+- 处理时复查当前请求、学生删除状态、作业撤销状态及卡片读取的答案版本。并发只能提交一个决定；已提交决定在失败恢复时不可改为其他决定。重算失败可继续原决定，不重复增加答案版本。
+- 邮件故障不撤销学生已保存的 Argue；取消/删除/已经解决的请求在发信前跳过。普通邮件回复不会执行处理。

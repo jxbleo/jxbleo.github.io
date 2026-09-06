@@ -1479,7 +1479,7 @@ async function submitSpellingDispute(profile, event, material) {
     };
   }
   const now = new Date();
-  await db.collection(DISPUTES).add({
+  const saved = await require("../_shared/argue-notifications").saveStudentDispute(db, {
     dispute_id: disputeId,
     dispute_type: "intensive_spelling_exemption",
     requester_role: profile.role === "teacher" ? "teacher" : "student",
@@ -1507,7 +1507,7 @@ async function submitSpellingDispute(profile, event, material) {
     created_at: now,
     updated_at: now,
   });
-  return { success: true, dispute_id: disputeId, status: "pending" };
+  return { success: true, dispute_id: disputeId, status: "pending", already_exists: saved.already_exists };
 }
 
 function exportMaterial(profile, material) {
