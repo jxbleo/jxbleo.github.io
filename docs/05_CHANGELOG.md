@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-06 — Collapsible Part B history groups
+
+- Kept Individual Response attempts grouped by Set while collapsing every Set
+  by default to reduce sidebar density.
+- Made the full Set summary an accessible disclosure control with response
+  count, rotating chevron, immediate press feedback, and independently
+  expandable question rows.
+
 ## 2026-09-06 — Refine Speaking Set identity and reading controls
 
 - Restored one blue `year · Set number` identity line above the selected Set

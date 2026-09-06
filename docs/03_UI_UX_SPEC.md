@@ -2599,11 +2599,14 @@ two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
 Discussion cards and Part B shows only Individual Response cards. The drawer
 has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
 `Individual Responses` heading rows. Part B renders one restrained grouped card
-per Set, headed by year/source, Set number, and topic. Its Individual Responses
-appear as compact question rows inside that card, so Q1 and Q5 from the same Set
-stay together; the question excerpt, response date, analysis state, and
-disclosure affordance remain visible. Multiple attempts remain separate rows
-and selectable. Part A has a quiet `Filter` select whose
+per Set, headed by year/source, Set number, topic, response count, and a chevron.
+Every Set is collapsed by default so its Individual Response questions do not
+consume sidebar space. Selecting the full Set header expands or collapses its
+compact question rows, rotates the chevron, and updates `aria-expanded`; Q1 and
+Q5 from the same Set therefore stay together. When expanded, the question
+excerpt, response date, analysis state, and disclosure affordance remain
+visible. Multiple attempts remain separate rows and selectable. Part A has a
+quiet `Filter` select whose
 default `Newest first` ordering uses Discussion date and then upload sequence;
 `Oldest first` reverses it. Processing and ready items never bypass that order.
 Cards omit Candidate and analysis-status pills: a rotating ring means

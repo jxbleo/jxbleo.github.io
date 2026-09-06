@@ -673,17 +673,27 @@
             '<span class="speaking-response-row-copy"><strong>' + esc(questionText) + '</strong><small><i data-tone="' + esc(state.tone) + '" aria-hidden="true"></i>' + esc(date) + ' · ' + esc(state.label) + '</small></span>' +
             '<svg class="speaking-response-row-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
     }
-    function individualResponseSetGroup(group) {
+    function individualResponseSetGroup(group, index) {
         var count = group.responses.length;
+        var itemsId = 'speaking-response-set-items-' + String(index + 1);
         return '<section class="speaking-response-set-group" data-response-set-id="' + esc(group.set_id) + '">' +
-            '<header class="speaking-response-set-header"><span><small>' + esc(group.meta) + '</small><strong>' + esc(group.title) + '</strong></span><span class="speaking-response-set-count">' + esc(count) + ' ' + (count === 1 ? 'response' : 'responses') + '</span></header>' +
-            '<div class="speaking-response-set-items">' + group.responses.map(individualResponseRow).join('') + '</div></section>';
+            '<button class="speaking-response-set-header" type="button" data-response-set-toggle aria-expanded="false" aria-controls="' + itemsId + '"><span class="speaking-response-set-copy"><small>' + esc(group.meta) + '</small><strong>' + esc(group.title) + '</strong></span><span class="speaking-response-set-summary"><span class="speaking-response-set-count">' + esc(count) + ' ' + (count === 1 ? 'response' : 'responses') + '</span><svg class="speaking-response-set-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button>' +
+            '<div class="speaking-response-set-items" id="' + itemsId + '" hidden>' + group.responses.map(individualResponseRow).join('') + '</div></section>';
     }
     function renderIndividualResponseList(items) {
         var target = document.getElementById('speaking-response-list');
         if (!target) return;
         var groups = groupIndividualResponsesBySet(items);
         target.innerHTML = groups.length ? groups.map(individualResponseSetGroup).join('') : '<p class="speaking-set-empty">No Individual Responses yet.</p>';
+        target.querySelectorAll('[data-response-set-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var items = document.getElementById(button.getAttribute('aria-controls'));
+                if (!items) return;
+                var expanded = button.getAttribute('aria-expanded') === 'true';
+                button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                items.hidden = expanded;
+            });
+        });
         target.querySelectorAll('[data-response-id]').forEach(function (button) { button.addEventListener('click', function () { if (!allowRecordingNavigation()) return; setSidebarMode('part-b'); closeSidebar(); selectedSpeakingSet = null; getIndividualResponseAndRender(button.getAttribute('data-response-id')); }); });
     }
     function loadIndividualResponses() {

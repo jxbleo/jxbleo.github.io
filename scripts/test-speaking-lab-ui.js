@@ -79,6 +79,10 @@ function run() {
   assert.match(app, /response\.set_id \|\| snapshot\.display_label/);
   assert.match(app, /class="speaking-response-set-group"[\s\S]*class="speaking-response-set-items"/);
   assert.match(app, /group\.responses\.map\(individualResponseRow\)/);
+  assert.match(app, /data-response-set-toggle aria-expanded="false" aria-controls=/, "Part B Set groups must be collapsed by default");
+  assert.match(app, /class="speaking-response-set-items"[^>]*hidden/, "Part B question rows must be hidden until their Set is expanded");
+  assert.match(app, /button\.setAttribute\('aria-expanded',[\s\S]*items\.hidden = expanded/, "Part B Set headers must toggle their question rows accessibly");
+  assert.match(css, /\.speaking-response-set-header\[aria-expanded="true"\] \.speaking-response-set-chevron/);
   assert.match(app, /class="speaking-response-row"[^>]*data-response-id/);
   assert.doesNotMatch(app, /speaking-card speaking-response-card/);
   assert.match(css, /\.speaking-response-set-group[\s\S]*\.speaking-response-row/);
@@ -393,8 +397,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260906-5/);
-  assert.match(page, /speaking-lab\.js\?v=20260906-5/);
+  assert.match(page, /speaking-lab\.css\?v=20260906-6/);
+  assert.match(page, /speaking-lab\.js\?v=20260906-6/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

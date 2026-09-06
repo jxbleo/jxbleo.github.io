@@ -2377,6 +2377,12 @@ future completed Practice. A compact Filter controls the entire list order.
 upload time within the same date; `Oldest first` reverses both comparisons.
 Status never overrides the selected order.
 
+Part B history groups every Individual Response attempt under its originating
+Set. Each Set appears as one collapsed summary by default, showing its identity,
+topic, and response count. Selecting that summary expands or collapses the
+individual question attempts; hidden questions do not consume sidebar space.
+Each attempt remains independently selectable after expansion.
+
 A ready report remains unread for each accepted VIP participant until that
 student successfully opens and renders it. Unread state is stored against the
 active report version, so it follows the student across devices and becomes

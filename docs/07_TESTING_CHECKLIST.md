@@ -2786,9 +2786,12 @@ Increased Contrast.
   are absent.
 - In Part B, create or load Q1 and Q5 responses from the same Set plus one
   response from a different Set. Confirm exactly two Set group cards render,
-  Q1 and Q5 remain separate selectable rows inside the first card, and neither
-  response is overwritten. Add a second Q1 attempt and confirm it remains a
-  separate newest-first row within the same Set card.
+  both are collapsed by default, and no question row consumes space before its
+  Set header is selected. Expand the first Set and confirm `aria-expanded`
+  changes to true, its chevron rotates, Q1 and Q5 become separate selectable
+  rows, and the other Set remains collapsed. Collapse it again, then add a
+  second Q1 attempt and confirm it remains a separate newest-first row within
+  the same Set card after expansion.
 - Verify Part A cards contain no Candidate count or analysis-status pill. Check
   the rotating processing ring, blue ready circle, red failed exclamation,
   neutral not-uploaded ring, and the placeholder blue filled Practice star.
