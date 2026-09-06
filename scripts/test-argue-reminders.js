@@ -36,7 +36,7 @@ async function main() {
     const stopped = make({ status }); await send(stopped, [])(due);
     assert.equal(stopped.rows("teacher_attempt_email_events").length, 0);
   }
-  for (const patch of [{ requester_role: "teacher" }, { resolution_decision: "add" }, { created_at: due }]) {
+  for (const patch of [{ requester_role: "teacher" }, { created_at: due }]) {
     const ignored = make(patch); await send(ignored, [])(due);
     assert.equal(ignored.rows("teacher_attempt_email_events").length, 0);
   }
@@ -48,6 +48,10 @@ async function main() {
     assert.equal(unavailable.rows("teacher_attempt_email_events").length, 0);
     assert.equal(unavailable.rows("answer_disputes")[0].email_reminder_day, "2026-09-07");
   }
+  const unfinished = make({ resolution_decision: "add", resolution_note: "Saved before regrade failed", resolution_token: null });
+  const unfinishedMail = [];
+  await send(unfinished, unfinishedMail)(due);
+  assert.equal(unfinishedMail.length, 1, "a failed/incomplete regrade stays pending and must still be reminded");
   const queued = make(); const queuedMail = [];
   await reminders.queueDailyReminders(queued, due);
   await queued.collection("answer_disputes").doc("dispute-1").update({ status: "approved", decision: "add" });

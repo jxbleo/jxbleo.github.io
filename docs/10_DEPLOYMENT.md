@@ -1520,3 +1520,11 @@ triggers, VPC, role and layers matched the preflight snapshot. An authorized
 server-time dispatcher invocation succeeded with no scheduling error, no due
 reminders and no failed batches. The next natural Shanghai 11:30 delivery remains
 the real-clock acceptance check; no request dates were changed for testing.
+
+
+Final follow-up verified Active on 2026-09-06 at 23:26 Shanghai time: pending
+requests whose grading step failed remain eligible for daily reminders until
+resolution actually succeeds. Final downloaded `index.js` SHA-256 is
+`075ac8f6352dc0033cff6c400db93164d8b1d894383f0dd28fd789b56ab76ec5`.
+Configuration comparison and the live server-time scheduling query passed again;
+there were no due reminders or scheduling failures.

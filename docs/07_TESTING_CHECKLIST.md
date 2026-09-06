@@ -2932,8 +2932,7 @@ motion, keyboard focus, and 1440px, 1024px, 768px, and 390px viewports.
 Run `npm run test:argue-reminders`, `npm run test:argue-emails`,
 `npm run test:attempt-emails` and release verification. Cover creation day, next
 Shanghai day 11:29:59/11:30:00, calendar/year/leap-day boundaries, repeated days,
-concurrent timers, >20 requests, outbox rollback/retry, resolved/committed
-decisions, resolution between queue and send, deleted students, cancelled
+concurrent timers, >20 requests, outbox rollback/retry, resolved decisions, pending failed regrades, resolution between queue and send, deleted students, cancelled
 assignments, muted/re-enabled inboxes, expired old retries and Listening Argues.
 For live acceptance observe the next natural 11:30 tick and the unresolved QA
 request; do not backdate genuine requests or resend resolved ones to force a test.

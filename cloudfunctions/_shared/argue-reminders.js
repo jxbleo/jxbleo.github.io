@@ -30,7 +30,7 @@ async function queueDailyReminders(db, now, limit = 20) {
       if (!dispute || dispute.status !== "pending" || dispute.email_reminder_day === window.day ||
           !(new Date(dispute.created_at).getTime() > 0) || new Date(dispute.created_at) >= window.start) return false;
       const event = notifications.eventForDispute(dispute);
-      let available = Boolean(event && !dispute.resolution_decision);
+      let available = Boolean(event);
       if (available) {
         try { await notifications.loadContext(transaction, dispute.dispute_id); }
         catch (error) {
@@ -59,12 +59,11 @@ async function queueDailyReminders(db, now, limit = 20) {
   return queued;
 }
 
-function assertCurrentReminder(event, dispute, now) {
+function assertCurrentReminder(event, now) {
   if (event.delivery_policy !== REMINDER_POLICY) return;
   const window = reminderWindow(now);
   // A delayed SMTP retry from yesterday must not create a second reminder today.
   if (event.reminder_day !== window.day || !window.ready) throw new Error("ARGUE_REMINDER_EXPIRED");
-  if (dispute.resolution_decision) throw new Error("DISPUTE_ALREADY_RESOLVED");
 }
 
 module.exports = { REMINDER_POLICY, reminderWindow, queueDailyReminders, assertCurrentReminder };

@@ -332,7 +332,7 @@ async function emailContext(claimed, now) {
   if (anchor.event_kind === argueNotifications.EVENT_KIND) {
     const context = await argueNotifications.loadContext(db, anchor.dispute_id);
     if (context.dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
-    argueReminders.assertCurrentReminder(anchor, context.dispute, now);
+    argueReminders.assertCurrentReminder(anchor, now);
     return { ...context, argue: true, reminderDay: anchor.reminder_day || "", teacherUrl: text(process.env.TEACHER_ATTEMPT_EMAIL_TEACHER_URL) };
   }
   if (isIntensiveEvent(anchor)) {

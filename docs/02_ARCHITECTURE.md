@@ -1244,5 +1244,6 @@ today with a different/missing `email_reminder_day`, taking 20 per tick. A
 transaction rechecks eligibility, creates a deterministic request/day outbox event
 and advances the request marker together. Existing SMTP claims/retries and BCC
 recipient settings deliver it. Before sending, reload the current dispute; skip
-resolved/committed decisions and prior-day reminder events. This requires no new
+resolved decisions and prior-day reminder events; pending failed regrades remain
+reminder-eligible so the teacher can resume processing. This requires no new
 service, timer, collection, browser session or frontend change.
