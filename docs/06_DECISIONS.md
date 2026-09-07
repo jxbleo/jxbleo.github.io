@@ -1584,5 +1584,5 @@ the first as well as later flushes are capped by server-observed elapsed time,
 so retry races or a forged large first request cannot double-count a minute.
 Calendar, Teacher, and report surfaces receive only safe mode/material/minute
 summaries. No historical time is inferred from old progress records and no new
-runtime dependency is introduced. Production still requires owner-authorized
-creation/indexing of the new ADMINONLY activity collection.
+runtime dependency is introduced. The owner-authorized 2026-09-08 rollout created the ADMINONLY activity
+collection and its reviewed sparse/compound indexes without changing scoring policy.

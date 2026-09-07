@@ -976,3 +976,10 @@ cp .qa-secrets.example .qa-secrets.local
 - 2026-09-06 — Implemented and deployed next-day Shanghai 11:30 daily Argue reminders in the existing sender. New boundary/concurrency/multi-day/paging/resolution/retry/muted-inbox tests and existing Argue/attempt-email regressions passed; release verification passed. Online bundle hash and unchanged function configuration verified. Live server-time scheduling query succeeded with zero due reminders and no errors. The natural next-day 11:30 delivery is pending observation.
 
 - 2026-09-06 — Final daily-reminder check also covers saved decisions with failed/incomplete regrades: pending requests keep their reminders until resolution succeeds. All three relevant test suites passed again. Final sender bundle verified Active with matching downloaded hash, unchanged configuration, and a successful live scheduler query.
+
+### 2026-09-08 — Listening mode-first rollout
+
+- Owner-authorized CloudBase rollout created `learning_activity_sessions` as `ADMINONLY` with the reviewed sparse unique and compound indexes.
+- Deployed `intensiveListening`, `teacherAdmin`, `getDashboard`, `sendTeacherAttemptEmails`, and `learningReports`; all five reported Deployment completed and downloaded bundle hashes matched locally. Existing function configuration was preserved and Tencent Shadowing scoring remains disabled.
+- Unauthenticated function smoke checks failed closed as expected. Static GitHub publication and authenticated real-student microphone/effective-time acceptance remain to be completed in this release task.
+- Known baseline issue: `test:argue-emails` expects one event while current `origin/main` and this release both produce two; the dedicated Argue reminder test passes, and this Listening release does not alter that behavior.

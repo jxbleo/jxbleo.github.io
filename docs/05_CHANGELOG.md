@@ -3231,3 +3231,9 @@ the one permitted `rec_mode=1` binary WAV message.
   review also added a first-interaction server timing handshake, restored focus
   recovery without unpausing explicit waits, bound time sessions to the existing
   mode-specific notification thread, and kept zero activity labelled `0 min`.
+
+## 2026-09-08 — Listening mode-first backend rollout
+
+- Created and verified `learning_activity_sessions` as `ADMINONLY`, with one sparse unique session index and four reviewed compound indexes.
+- Deployed the five scoped Listening/time/report functions and verified downloaded online bundle hashes.
+- Preserved existing function configuration and kept Tencent Shadowing scoring fail-closed pending the separate real-audio benchmark and owner activation.

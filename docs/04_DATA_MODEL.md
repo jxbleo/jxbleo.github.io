@@ -1532,7 +1532,7 @@ provider evidence, IP or device fingerprints. A deterministic `kind: lease`
 row keyed from the authenticated student UID uses `active_session_id` (not the
 session row's unique `session_id`) to enforce one active accrual source.
 
-Required indexes for owner-reviewed creation are: unique `session_id`;
+Required indexes are: unique sparse `session_id` (lease rows intentionally omit this field);
 `student_uid + started_at DESC`; `student_uid + status + last_effective_at DESC`;
 `student_uid + activity_type + started_at DESC`; and
 `set_id + started_at DESC`.

@@ -2968,5 +2968,6 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   the first span batch, so a genuine first 60 seconds is neither counted from
   passive page-open time nor reduced to the transport-tolerance allowance.
 - Verify forged Intensive Listening assignment requests fail before writes and
-  teacher authoring edits one canonical Transcript & Units source; no production
-  collections, indexes, scoring configuration, or historical time are changed.
+  teacher authoring edits one canonical Transcript & Units source. Automated tests
+  must not mutate the production collection, indexes, scoring configuration, or
+  historical time.

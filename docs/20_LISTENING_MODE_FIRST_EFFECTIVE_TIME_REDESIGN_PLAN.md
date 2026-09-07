@@ -4,8 +4,9 @@
 
 - Product decisions: approved by the owner on 2026-09-07.
 - Implementation status: built by the delegated Luna Extra High agent and
-  reviewed/hardened by the primary agent locally on 2026-09-07; not yet
-  released.
+  reviewed/hardened by the primary agent locally on 2026-09-07. The owner-
+  authorized CloudBase collection/index and five-function rollout completed on
+  2026-09-08; static publication is tracked in the deployment record.
 - Predecessor: `docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md`.
 - This document supersedes the conflicting product and implementation rules in
   Plans 16 and 19. Those files remain historical records; do not silently edit
@@ -403,7 +404,7 @@ valid holder closes or supersedes the old lease; stale senders receive a benign
 
 Recommended indexes for owner review:
 
-1. unique `session_id`;
+1. unique sparse `session_id` (lease rows omit this field);
 2. `student_uid + started_at desc`;
 3. `student_uid + status + last_effective_at desc`;
 4. `student_uid + activity_type + started_at desc`;
@@ -1178,3 +1179,11 @@ Implementation is complete only when all statements are true:
   pass;
 - documentation is updated;
 - no deployment/push/provider enablement occurs without explicit owner approval.
+
+## 16. Production rollout record (2026-09-08)
+
+- Created `learning_activity_sessions` as `ADMINONLY`.
+- Verified the sparse unique session index and four reviewed compound indexes.
+- Deployed `intensiveListening`, `teacherAdmin`, `getDashboard`, `sendTeacherAttemptEmails`, and `learningReports`; all five online bundles matched local SHA-256 hashes.
+- Preserved function runtime/configuration and kept Tencent Shadowing scoring disabled.
+- Static publication and authenticated real-student microphone/effective-time acceptance are recorded separately in `docs/10_DEPLOYMENT.md` and `AGENT_TODO.md`.

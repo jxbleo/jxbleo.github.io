@@ -1469,23 +1469,24 @@ Shadowing scoring remains fail-closed: do not set
 has been reviewed by the owner and Tencent SOE-N access is confirmed. No
 provider credentials or paid evaluation request were added during rollout.
 
-### Listening mode-first/effective-time rollout (not yet published)
+### Listening mode-first/effective-time rollout (2026-09-08)
 
-The 2026-09-07 implementation does not itself authorize production mutation.
-Before publishing, create `learning_activity_sessions` as `ADMINONLY` and review
-these indexes: unique `session_id`; `student_uid + started_at DESC`;
+With explicit owner authorization, production now has
+`learning_activity_sessions` as `ADMINONLY` with these verified indexes: unique
+sparse `session_id`; `student_uid + started_at DESC`;
 `student_uid + status + last_effective_at DESC`;
 `student_uid + activity_type + started_at DESC`; and
 `set_id + started_at DESC`. Lease documents use `active_session_id`, so they do
 not collide with the unique session key. Do not infer or import time for existing
 Dictation progress.
 
-After the collection/index preflight and focused tests, package the scoped code
-for `intensiveListening`, `teacherAdmin`, `getDashboard`,
-`sendTeacherAttemptEmails`, and `learningReports`. Publish backend readers and
-writers before the cache-busted Listening static files. Preserve every existing
-function environment value, timeout, trigger and Tencent scoring policy; this
-release does not authorize enabling scoring or changing credentials. Smoke-test
+The scoped `intensiveListening`, `teacherAdmin`, `getDashboard`,
+`sendTeacherAttemptEmails`, and `learningReports` bundles were deployed before
+static publication. All five returned Deployment completed; downloaded
+`index.js` and `package.json` hashes matched the local release bundles. Existing
+runtime, handler, timeout, memory, dependency-installation, environment and
+trigger settings were preserved. Tencent Shadowing scoring remains disabled: no
+provider credential or score-policy change was made. Smoke-test
 with a dedicated student: Library preference, both mode resumes, >50% Dictation
 restore, one complete Shadowing listen, microphone denial/record/replay, 80-point
 auto-advance cancellation, 20-second idle, three-minute close, and calendar time.
