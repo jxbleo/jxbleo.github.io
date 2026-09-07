@@ -3237,3 +3237,4 @@ the one permitted `rec_mode=1` binary WAV message.
 - Created and verified `learning_activity_sessions` as `ADMINONLY`, with one sparse unique session index and four reviewed compound indexes.
 - Deployed the five scoped Listening/time/report functions and verified downloaded online bundle hashes.
 - Preserved existing function configuration and kept Tencent Shadowing scoring fail-closed pending the separate real-audio benchmark and owner activation.
+- Published commit `da54bd3a` through successful GitHub Pages and Tencent COS workflows, then verified the live COS ETags and content lengths for the Listening library, practice shell, learning-activity client, and Dashboard against the release files.

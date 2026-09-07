@@ -1486,7 +1486,13 @@ static publication. All five returned Deployment completed; downloaded
 `index.js` and `package.json` hashes matched the local release bundles. Existing
 runtime, handler, timeout, memory, dependency-installation, environment and
 trigger settings were preserved. Tencent Shadowing scoring remains disabled: no
-provider credential or score-policy change was made. Smoke-test
+provider credential or score-policy change was made.
+
+Commit `da54bd3a` was then published by successful GitHub Pages run
+`34143120451` and Tencent COS run `34143121737`. The live COS content lengths
+and single-part ETags for `intensive-listening-library.html`,
+`intensive-listening.html`, `assets/js/learning-activity.js`, and
+`dashboard.html` matched the release files exactly. Smoke-test
 with a dedicated student: Library preference, both mode resumes, >50% Dictation
 restore, one complete Shadowing listen, microphone denial/record/replay, 80-point
 auto-advance cancellation, 20-second idle, three-minute close, and calendar time.

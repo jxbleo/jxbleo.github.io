@@ -5,8 +5,8 @@
 - Product decisions: approved by the owner on 2026-09-07.
 - Implementation status: built by the delegated Luna Extra High agent and
   reviewed/hardened by the primary agent locally on 2026-09-07. The owner-
-  authorized CloudBase collection/index and five-function rollout completed on
-  2026-09-08; static publication is tracked in the deployment record.
+  authorized CloudBase collection/index, five-function, GitHub Pages, and
+  Tencent COS rollout completed on 2026-09-08.
 - Predecessor: `docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md`.
 - This document supersedes the conflicting product and implementation rules in
   Plans 16 and 19. Those files remain historical records; do not silently edit
@@ -1186,4 +1186,5 @@ Implementation is complete only when all statements are true:
 - Verified the sparse unique session index and four reviewed compound indexes.
 - Deployed `intensiveListening`, `teacherAdmin`, `getDashboard`, `sendTeacherAttemptEmails`, and `learningReports`; all five online bundles matched local SHA-256 hashes.
 - Preserved function runtime/configuration and kept Tencent Shadowing scoring disabled.
-- Static publication and authenticated real-student microphone/effective-time acceptance are recorded separately in `docs/10_DEPLOYMENT.md` and `AGENT_TODO.md`.
+- Published commit `da54bd3a` through successful GitHub Pages run `34143120451` and Tencent COS run `34143121737`; live COS ETags and content lengths for the critical Listening shell and shared activity files matched the release.
+- Authenticated real-student microphone/effective-time acceptance is recorded separately in `docs/10_DEPLOYMENT.md` and `AGENT_TODO.md`.

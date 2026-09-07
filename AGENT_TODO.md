@@ -981,5 +981,5 @@ cp .qa-secrets.example .qa-secrets.local
 
 - Owner-authorized CloudBase rollout created `learning_activity_sessions` as `ADMINONLY` with the reviewed sparse unique and compound indexes.
 - Deployed `intensiveListening`, `teacherAdmin`, `getDashboard`, `sendTeacherAttemptEmails`, and `learningReports`; all five reported Deployment completed and downloaded bundle hashes matched locally. Existing function configuration was preserved and Tencent Shadowing scoring remains disabled.
-- Unauthenticated function smoke checks failed closed as expected. Static GitHub publication and authenticated real-student microphone/effective-time acceptance remain to be completed in this release task.
+- Unauthenticated function smoke checks failed closed as expected. GitHub Pages run `34143120451` and Tencent COS run `34143121737` both published commit `da54bd3a`; live COS ETags and content lengths for the Listening library, practice shell, learning-activity client, and Dashboard matched the release files. Authenticated real-student microphone/effective-time acceptance remains pending.
 - Known baseline issue: `test:argue-emails` expects one event while current `origin/main` and this release both produce two; the dedicated Argue reminder test passes, and this Listening release does not alter that behavior.
