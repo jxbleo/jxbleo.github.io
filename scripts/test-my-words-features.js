@@ -69,7 +69,7 @@ async function main() {
   assert(dashboardHtml.indexOf('id="student-words-preview-add-trigger"') < dashboardHtml.indexOf('class="student-words-open-button"'), "add and camera actions must precede the top-right See All route");
   assert(dashboardHtml.includes('data-preview-scan data-open-scan'), "the camera action must open the scanner directly from Dashboard");
   assert(dashboardHtml.includes('id="my-words-scan-overlay"'), "Dashboard must mount Scan Words as an independent overlay");
-  assert(dashboardHtml.includes('assets/js/my-words-scan.js?v=20260906-2'), "Dashboard must load the shared scanner runtime");
+  assert(dashboardHtml.includes('assets/js/my-words-scan.js?v=20260907-1'), "Dashboard must load the shared scanner runtime");
   assert(dashboardHtml.includes('id="student-words-preview-context-input" type="text" maxlength="320"'), "manual entry must accept one optional bounded single-line Context sentence");
   assert(dashboardHtml.includes('id="student-words-manual-layer"') && dashboardHtml.includes('aria-hidden="true" hidden'), "manual entry must use an independent initially hidden modal layer");
   assert(dashboardHtml.includes('id="student-words-manual-close"'), "the independent manual-entry modal must provide an explicit Close action");

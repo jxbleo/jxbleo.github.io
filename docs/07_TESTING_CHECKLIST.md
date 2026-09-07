@@ -1760,7 +1760,7 @@ Check:
   the My Words preview. Its top edge and width must align with that preview,
   while its bottom covers the preview's external Close position. The first
   step shows only top-right `Discard`, the Add Photos/current-photo card, the
-  photo count and a full-width `Upload` action—no Scan Words title, step copy,
+  photo count and a full-width `Confirm` action that starts OCR immediately—no Scan Words title, step copy,
   back button or header toolbar. After adding photos, confirm Page, remove,
   Replace and Add Photo remain inside the card and the count advances through
   five. The Dashboard stays dimmed with no page-like navigation. Close
@@ -2897,26 +2897,27 @@ and `git diff --check`. Manual acceptance with a real student covers ordered
 five-page upload; the Writing-aligned `Add Photos` card; the bottom camera,
 library, and cancel choices; multi-select library intake; single-photo camera
 intake; large current-photo preview; previous/next, remove, replace, and
-add-photo controls; desktop drop; drag/move crop; adjustable white pen; true mask eraser;
-per-page undo/redo, processed-photo preview, refresh/cross-device candidate
+add-photo controls; desktop drop; direct Confirm-to-OCR transition with no
+Prepare/edit page; refresh/cross-device candidate
 replay, short-tap staging, non-adjacent phrase ordering, source-mark dismissal,
 uncertainty acknowledgement, partial page retry/removal, duplicate commit
 replay, interrupted upload recovery, discard/expiry/cleanup retry, and
 post-commit dictionary enrichment. Repeat the layout pass at desktop and 390px
 phone widths and confirm no console errors or horizontal overflow.
-During OCR, confirm the dedicated scanner surface replaces the empty Review,
-the progress bar and `x/y pages checked` values advance from server page states,
-and Review controls remain hidden. After one or more pages succeed, confirm the
-`Scan complete` guide explains tap-to-add and long-press phrase selection before
-the OCR text. With Reduced Motion enabled, the scan beam must stop while page
-progress and live status remain understandable.
+Immediately after Confirm, verify the dedicated `Thinking` indicator replaces
+photo intake, the progress bar advances from server page states, and Review
+controls remain hidden. With Reduced Motion enabled, the indicator is static
+while its label, page progress, and live status remain understandable. When OCR
+completes, confirm the surface begins with the selected-word area and then shows
+the scanned text without a Choose Words heading, success guide, page title,
+View photo, Remove page, or card chrome.
 Select at least 30 words from a long multi-page OCR result. Confirm the selected
-drawer reaches one fixed height after the first selection and never grows as
-more words are added; only its candidate list scrolls, while the count header and
-Add action stay visible. Verify compact words and one-line Contexts remain
-distinguishable, Remove works from the internal list, removing the final item
-returns the drawer to its compact empty height, and the count toggle collapses
-and restores the drawer without losing selections. Repeat at 390px and desktop.
+area remains fixed at the top and never grows past its compact cap. Verify several
+word-only chips share each row and wrap naturally, Context is not displayed, and
+only the chip area scrolls while the count and Add action stay visible. Tap one
+chip once and confirm it turns red with a corner `×`; tap it again and verify the
+glass Keep/Remove confirmation. Keep must preserve it, Remove must clear it and
+restore the source-token state. Repeat at 390px and desktop.
 ### Listening V2
 
 Run `npm run test:listening-shadowing`,

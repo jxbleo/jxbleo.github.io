@@ -2425,13 +2425,17 @@ Existing Discussion and Individual Response snapshots remain unchanged after
 an audited correction.
 ## Scan Words (V1)
 
-Active students may scan one to five locally cropped/masked photos from the
-full My Words workspace. Processed images and canonical OCR are private,
+Active students may scan one to five selected photos from the full My Words
+workspace or its Dashboard camera entry. Confirming the batch immediately starts
+OCR without a separate preparation/editing step. Images and canonical OCR are private,
 expire after seven days, and are removed after completion/discard. Students
 review clickable OCR tokens. A short tap immediately stages one word in the
-bottom drawer; a long press starts a same-sentence phrase in which only the
+fixed top selection area; a long press starts a same-sentence phrase in which only the
 explicitly tapped, potentially non-adjacent tokens belong to the phrase. The
-drawer remains editable until one batch Add action. Amber source-mark cues and
+selected items wrap as compact word-only chips and do not expose their stored
+Context sentence. The first chip tap arms removal with a red state and corner
+`×`; a second tap opens a confirmation before removal. The selection remains
+editable until one batch Add action. Amber source-mark cues and
 red OCR uncertainty are distinct from green saved selections; tapping a marked
 token dismisses its amber cue. Commit stores the bounded source sentence and
 then uses existing My Words dictionary enrichment, without asking the student

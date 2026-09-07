@@ -344,7 +344,8 @@ Navigation:
   Close capsule, so it starts at the same top edge and covers that Close
   position. The first step keeps only a top-right `Discard`, the existing Add
   Photos/selected-photo card and its Page, remove, Replace, Add Photo and photo-
-  count controls, followed by one full-width `Upload` action; the former title,
+  count controls, followed by one full-width `Confirm` action that begins OCR
+  immediately; the former title,
   instructional heading and header toolbar are absent. A dimmed/blurred
   backdrop preserves its origin and it does not navigate into the My Words
   workspace. Closing Scan Words returns to the still-open preview at the same
@@ -2921,7 +2922,10 @@ more control. Filters reset the visible batch and must remain one-column and
 full-width at phone breakpoints.
 ## Scan Words
 
-The full-screen flow has Choose photos, Prepare photos, and Review OCR phases.
+The full-screen flow has only Choose photos and Review OCR phases. Confirming
+the selected batch transitions immediately into OCR; there is no intermediate
+Prepare page, crop tool, white pen, eraser, brush-size control, or second Scan
+button.
 The Choose phase follows the established Writing photo intake pattern while
 using the My Words green palette: one large `Add Photos` card opens a bottom
 source sheet with `Take Photo`, `Choose from Library`, and `Cancel`. After
@@ -2929,35 +2933,29 @@ selection, one large current-photo preview replaces the empty card. It shows
 the page counter, previous/next controls, remove, replace, and add-photo actions;
 the student never has to decipher a thumbnail grid. The library path may add
 multiple photos, the camera path adds one, and the batch stops at five.
-It also supports desktop drop, five ordered pages, rectangular crop,
-drag handles and crop movement, white mask strokes, adjustable brush size, a
-true mask-only eraser, per-page undo/redo, processed-image preview, focus-safe
-modal scroll locking, reduced motion, and forced-colors affordances. OCR renders
+It also supports desktop drop, five ordered pages, focus-safe modal scroll
+locking, reduced motion, and forced-colors affordances. OCR renders
 as DOM text plus token buttons; amber mark cues and red uncertainty states are
 separate from green candidate states. Tapping an amber-marked token dismisses
 the cue while applying the normal selection. Short tap immediately stages a
-word in the bottom drawer; long press starts an explicit same-sentence phrase
+word in the fixed top selection area; long press starts an explicit same-sentence phrase
 composer, and only individually tapped tokens belong to that phrase even when
-they are non-adjacent. The drawer remains editable until `Add <n> items`, with
-failed candidates remaining removable and retryable.
+they are non-adjacent. The result surface removes the former Choose Words title,
+success guide, page headings, photo controls, and page cards so the OCR text is
+the primary content.
 
-After upload, Review first shows a dedicated scanning state instead of an empty
-OCR surface: an animated document scanner, determinate completed-page bar,
-`x/y pages checked`, and remaining-page text update from each poll. Reduced Motion
-keeps the same progress information without the moving scan beam. The word list,
-selection drawer, and Review heading remain hidden until every retained page is
-terminal. When at least one page succeeds, a green `Scan complete` guide appears
-above the OCR text and explains both gestures: tap adds one word; long-press starts
-a phrase, after which any individually tapped words in that same sentence—including
-non-adjacent words—join the phrase.
+Immediately after Confirm, Review shows a centred animated `Thinking` indicator,
+a determinate completed-page bar, and live page progress. Reduced Motion keeps
+the same label and progress information with a static indicator. OCR text and
+the selection area remain hidden until every retained page is terminal.
 
-The selected-candidate drawer must never grow with the candidate count. With at
-least one selection it uses a fixed compact viewport-height-capped frame; only
-the candidate list scrolls, so a long article remains visible and selectable.
-Candidate rows use a smaller word label, one-line Context preview, and compact
-Remove control. The count header and `Add <n> items` action remain fixed above
-and below the internal list. With zero selections the drawer contracts to its
-empty controls, and its existing header toggle can collapse or restore the list.
+The selected-candidate area stays sticky at the top of Review and never grows
+past its compact viewport-height cap. Word-only chips flow left to right and wrap
+onto additional rows; Context remains stored for commit but is not displayed.
+There is no Remove button. The first tap on a chip turns it red and reveals a
+small corner `×`; tapping that armed chip again opens a glass confirmation with
+Keep and Remove actions. The count and `Add <n> items` action remain fixed around
+the internally scrolling chip area so OCR text remains visible on long articles.
 ### Listening V2 interaction surface
 
 The visible product language is `Listening`. The ordinary Library keeps its

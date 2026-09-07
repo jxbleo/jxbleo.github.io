@@ -20,6 +20,7 @@
     --scan-accent-soft: #e0f3eb;
     --scan-line: rgba(19, 118, 109, .14);
     --scan-surface: rgba(251, 254, 252, .9);
+    --scan-sticky-top: 88px;
     position: fixed;
     inset: 0;
     z-index: 120;
@@ -36,6 +37,10 @@
 .my-words-scan-overlay *::before,
 .my-words-scan-overlay *::after {
     box-sizing: border-box;
+}
+
+.dashboard-words-scan-overlay {
+    --scan-sticky-top: 0px;
 }
 
 .my-words-scan-shell {
@@ -581,78 +586,33 @@
 }
 
 .my-words-scan-progress[hidden],
-.my-words-scan-ready-hint[hidden],
-.my-words-scan-phase-heading[hidden],
 .my-words-scan-candidate-drawer[hidden] {
     display: none;
 }
 
-.my-words-scan-progress-visual {
-    display: grid;
-    place-items: center;
-    width: 104px;
-    height: 104px;
-    margin-bottom: 19px;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, .92);
-    box-shadow: 0 16px 36px rgba(20, 72, 58, .13), inset 0 0 0 1px rgba(19, 118, 109, .08);
+.my-words-scan-thinking {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 22px;
 }
 
-.my-words-scan-progress-page {
-    position: relative;
-    display: grid;
-    align-content: center;
-    width: 55px;
-    height: 70px;
-    gap: 8px;
-    padding: 12px 9px;
-    overflow: hidden;
-    border: 2px solid rgba(19, 118, 109, .7);
-    border-radius: 9px;
-    background: #fafffc;
-    box-shadow: 0 7px 18px rgba(20, 72, 58, .1);
+.my-words-scan-thinking > span {
+    width: 42px;
+    height: 42px;
+    border: 4px solid rgba(19, 118, 109, .14);
+    border-top-color: var(--scan-accent);
+    border-radius: 50%;
+    box-shadow: 0 7px 18px rgba(20, 72, 58, .08);
+    animation: myWordsScanThinking .9s linear infinite;
 }
 
-.my-words-scan-progress-page i {
-    display: block;
-    height: 3px;
-    border-radius: 999px;
-    background: rgba(19, 118, 109, .26);
-}
-
-.my-words-scan-progress-page i:nth-child(2) {
-    width: 80%;
-}
-
-.my-words-scan-progress-page span {
-    position: absolute;
-    top: 7px;
-    left: 5px;
-    right: 5px;
-    height: 3px;
-    border-radius: 999px;
-    background: #20a48e;
-    box-shadow: 0 0 10px 3px rgba(32, 164, 142, .38);
-    animation: myWordsScanBeam 1.55s cubic-bezier(.45, 0, .55, 1) infinite alternate;
-}
-
-.my-words-scan-progress-step {
-    color: var(--scan-accent);
-    font-size: .66rem;
-    font-weight: 900;
-    letter-spacing: .1em;
-}
-
-.my-words-scan-progress h2 {
-    margin-top: 8px;
-}
-
-.my-words-scan-progress p {
-    max-width: 390px;
-    margin: 10px 0 22px;
-    color: var(--scan-muted);
-    font-size: .85rem;
-    line-height: 1.55;
+.my-words-scan-thinking strong {
+    color: var(--scan-ink);
+    font-size: 1.04rem;
+    font-weight: 850;
+    letter-spacing: -.015em;
 }
 
 .my-words-scan-progress-track {
@@ -680,83 +640,24 @@
     font-weight: 750;
 }
 
-.my-words-scan-ready-hint {
-    display: flex;
-    align-items: flex-start;
-    max-width: 720px;
-    gap: 12px;
-    margin: 0 auto 18px;
-    padding: 14px 16px;
-    border: 1px solid rgba(19, 118, 109, .16);
-    border-radius: 18px;
-    background: linear-gradient(135deg, rgba(224, 243, 235, .82), rgba(255, 255, 255, .88));
-    box-shadow: 0 10px 28px rgba(20, 72, 58, .07);
-}
-
-.my-words-scan-ready-icon {
-    display: grid;
-    place-items: center;
-    flex: 0 0 auto;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    color: #fff;
-    background: var(--scan-accent);
-    box-shadow: 0 7px 16px rgba(19, 118, 109, .2);
-}
-
-.my-words-scan-ready-icon svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.my-words-scan-ready-hint strong {
-    display: block;
-    margin-top: 1px;
-    color: var(--scan-ink);
-    font-size: .88rem;
-    font-weight: 900;
-}
-
-.my-words-scan-ready-hint p {
-    margin: 3px 0 0;
-    color: var(--scan-muted);
-    font-size: .78rem;
-    line-height: 1.5;
-}
-
-.my-words-scan-ready-hint b {
-    color: var(--scan-accent-dark);
-    font-weight: 900;
-}
-
 .my-words-scan-review-page {
-    margin: 14px 0;
-    padding: clamp(16px, 3vw, 23px);
-    border: 1px solid var(--scan-line);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, .88);
-    box-shadow: 0 10px 30px rgba(20, 72, 58, .06);
+    margin: 0;
+    padding: 12px 4px;
     line-height: 1.85;
 }
 
-.my-words-scan-review-page > header {
-    justify-content: space-between;
+.my-words-scan-review-page + .my-words-scan-review-page {
+    border-top: 1px solid rgba(19, 118, 109, .1);
 }
 
-.my-words-scan-review-page h3 {
-    margin: 0;
-    color: var(--scan-ink);
-    font-size: 1rem;
+.my-words-scan-page-note {
+    margin: 8px 0;
+    color: var(--scan-muted);
+    font-size: .82rem;
 }
 
 .my-words-scan-sentence {
-    margin: 12px 0;
+    margin: 8px 0;
 }
 
 .my-words-scan-token {
@@ -826,8 +727,7 @@
 }
 
 .my-words-scan-phrase-actions {
-    position: sticky;
-    bottom: 104px;
+    position: relative;
     z-index: 5;
     display: flex;
     align-items: center;
@@ -846,14 +746,14 @@
 
 .my-words-scan-candidate-drawer {
     position: sticky;
-    bottom: 10px;
-    z-index: 4;
+    top: var(--scan-sticky-top);
+    z-index: 8;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     width: 100%;
-    height: 176px;
-    height: clamp(142px, 22dvh, 176px);
-    max-height: calc(100dvh - 32px);
+    height: auto;
+    max-height: min(174px, 28dvh);
+    margin-bottom: 10px;
     padding: 9px;
     overflow: hidden;
     border: 1px solid var(--scan-line);
@@ -864,32 +764,26 @@
     -webkit-backdrop-filter: blur(20px) saturate(150%);
 }
 
-.my-words-scan-candidate-drawer.is-collapsed {
-    grid-template-rows: auto auto;
-    height: auto;
-}
-
 .my-words-scan-candidate-drawer.is-empty {
     grid-template-rows: auto 0 auto;
-    height: auto;
 }
 
-.my-words-scan-candidate-drawer > [data-scan-drawer-toggle] {
+.my-words-scan-candidate-title {
     min-height: 26px;
     padding: 2px 5px 5px;
-    border: 0;
-    background: transparent;
     color: var(--scan-accent-dark);
     font-size: .72rem;
     font-weight: 850;
     text-align: left;
-    cursor: pointer;
 }
 
 .my-words-scan-candidate-list {
-    display: grid;
+    display: flex;
+    align-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
     min-height: 0;
-    gap: 5px;
+    gap: 6px;
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -904,58 +798,154 @@
 }
 
 .my-words-scan-candidate {
-    display: flex;
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-height: 35px;
-    padding: 4px 5px 4px 8px;
-    border: 1px solid rgba(19, 118, 109, .08);
-    border-radius: 10px;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+    min-height: 34px;
+    padding: 6px 10px;
+    border: 1px solid rgba(19, 118, 109, .12);
+    border-radius: 999px;
+    color: var(--scan-ink);
     background: #f2f8f5;
+    font: inherit;
+    cursor: pointer;
+    transition: color 140ms ease, background 140ms ease, border-color 140ms ease, transform 90ms ease;
 }
 
 .my-words-scan-candidate.is-failed {
     background: #fff0ed;
 }
 
-.my-words-scan-candidate > div {
-    display: grid;
-    flex: 1;
-    gap: 0;
-    min-width: 0;
-}
-
 .my-words-scan-candidate strong {
     overflow: hidden;
-    color: var(--scan-ink);
-    font-size: .7rem;
+    color: inherit;
+    font-size: .72rem;
     font-weight: 850;
     line-height: 1.25;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.my-words-scan-candidate small {
-    overflow: hidden;
-    color: #5b726a;
-    font-size: .6rem;
-    line-height: 1.25;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.my-words-scan-candidate-remove-mark {
+    position: absolute;
+    top: -5px;
+    right: -3px;
+    display: grid;
+    place-items: center;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    color: #fff;
+    background: #bc3838;
+    box-shadow: 0 3px 8px rgba(119, 29, 29, .24);
+    font-size: .7rem;
+    font-weight: 900;
+    line-height: 1;
+    opacity: 0;
+    transform: scale(.65);
+    transition: opacity 120ms ease, transform 160ms cubic-bezier(.22, 1, .36, 1);
 }
 
-.my-words-scan-candidate > .outline-button {
-    flex: 0 0 auto;
-    min-height: 29px;
-    padding: 4px 8px;
-    border-radius: 9px;
-    font-size: .61rem;
+.my-words-scan-candidate.is-remove-armed {
+    border-color: rgba(188, 56, 56, .4);
+    color: #8e2525;
+    background: #ffe7e5;
+}
+
+.my-words-scan-candidate.is-remove-armed .my-words-scan-candidate-remove-mark {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .my-words-scan-candidate-drawer > [data-scan-commit] {
     min-height: 38px;
     padding-block: 7px;
     font-size: .72rem;
+}
+
+.my-words-scan-remove-confirm {
+    position: fixed;
+    inset: 0;
+    z-index: 160;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.my-words-scan-remove-confirm[hidden] {
+    display: none;
+}
+
+.my-words-scan-remove-confirm-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 31, 26, .36);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.my-words-scan-remove-confirm > section {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    width: min(360px, 100%);
+    padding: 25px 22px 20px;
+    border: 1px solid rgba(255, 255, 255, .82);
+    border-radius: 24px;
+    background: rgba(249, 252, 250, .92);
+    box-shadow: 0 24px 68px rgba(10, 42, 33, .28);
+    backdrop-filter: blur(28px) saturate(155%);
+    -webkit-backdrop-filter: blur(28px) saturate(155%);
+    text-align: center;
+    animation: myWordsScanRemoveConfirmIn 260ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.my-words-scan-remove-confirm > section > span {
+    color: #b13a3a;
+    font-size: .62rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+}
+
+.my-words-scan-remove-confirm strong {
+    margin-top: 7px;
+    color: var(--scan-ink);
+    font-size: 1.18rem;
+    letter-spacing: -.025em;
+}
+
+.my-words-scan-remove-confirm p {
+    max-width: 100%;
+    margin: 9px 0 20px;
+    overflow: hidden;
+    color: #8e2525;
+    font-size: .86rem;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.my-words-scan-remove-confirm > section > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 9px;
+}
+
+.my-words-scan-danger-button {
+    min-height: 44px;
+    padding: 10px 17px;
+    border: 1px solid #b73838;
+    border-radius: 14px;
+    color: #fff;
+    background: #b73838;
+    font: inherit;
+    font-size: .8rem;
+    font-weight: 850;
+    cursor: pointer;
 }
 
 .my-words-scan-preview {
@@ -1097,12 +1087,24 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes myWordsScanBeam {
-    from { transform: translateY(0); }
-    to { transform: translateY(52px); }
+@keyframes myWordsScanThinking {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes myWordsScanRemoveConfirmIn {
+    from { opacity: 0; transform: translateY(12px) scale(.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (max-width: 700px) {
+    .my-words-scan-overlay {
+        --scan-sticky-top: 72px;
+    }
+
+    .dashboard-words-scan-overlay {
+        --scan-sticky-top: 0px;
+    }
+
     .my-words-add-choices {
         flex-direction: column;
     }
@@ -1225,26 +1227,9 @@
         border-radius: 21px;
     }
 
-    .my-words-scan-progress-visual {
-        width: 92px;
-        height: 92px;
-        border-radius: 27px;
-    }
-
-    .my-words-scan-ready-hint {
-        gap: 10px;
-        padding: 13px;
-    }
-
-    .my-words-scan-review-page > header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
     .my-words-scan-candidate-drawer {
-        bottom: max(7px, env(safe-area-inset-bottom));
-        height: 150px;
-        height: clamp(138px, 19dvh, 158px);
+        top: var(--scan-sticky-top);
+        max-height: min(164px, 25dvh);
         padding: 7px;
     }
 
@@ -1259,7 +1244,8 @@
     .my-words-scan-header,
     .my-words-scan-edit-actions,
     .my-words-scan-candidate-drawer,
-    .my-words-scan-photo-choice-sheet {
+    .my-words-scan-photo-choice-sheet,
+    .my-words-scan-remove-confirm > section {
         background: #f9fcfa;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;

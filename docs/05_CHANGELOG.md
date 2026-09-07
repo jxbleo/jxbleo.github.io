@@ -1,6 +1,17 @@
 # Changelog
 
 
+## 2026-09-07 — Direct Scan Words review flow
+
+- Removed the separate photo-preparation step so the first-screen `Confirm`
+  action immediately begins upload and OCR with a visible `Thinking` indicator.
+- Reduced Review to a sticky top selected-word area followed by the OCR text,
+  removing page headings, photo actions, success instructions and inner cards.
+- Changed selected candidates to wrapping word-only chips without visible
+  Context or Remove buttons. A first tap arms a red `×` state and a second tap
+  opens an explicit glass removal confirmation.
+
+
 ## 2026-09-07 — My Words preview header and manual entry
 
 - Moved the manual-add and camera actions to the upper-left of the Dashboard

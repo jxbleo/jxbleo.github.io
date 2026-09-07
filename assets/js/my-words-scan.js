@@ -15,19 +15,17 @@
     var photoChoiceTitle = overlay.querySelector('#my-words-scan-photo-choice-title');
     var editorHost = overlay.querySelector('[data-scan-editor]');
     var reviewHost = overlay.querySelector('[data-scan-review]');
-    var reviewHeading = overlay.querySelector('[data-scan-review-heading]');
     var progressHost = overlay.querySelector('[data-scan-progress]');
-    var progressStep = overlay.querySelector('[data-scan-progress-step]');
     var progressTrack = overlay.querySelector('[data-scan-progress-track]');
     var progressBar = overlay.querySelector('[data-scan-progress-bar]');
     var progressCount = overlay.querySelector('[data-scan-progress-count]');
-    var readyHint = overlay.querySelector('[data-scan-ready-hint]');
     var drawer = overlay.querySelector('[data-scan-drawer]');
     var drawerHost = overlay.querySelector('[data-scan-candidate-list]');
     var countNode = overlay.querySelector('[data-scan-selected-count]');
     var commitButton = overlay.querySelector('[data-scan-commit]');
-    var drawerToggle = overlay.querySelector('[data-scan-drawer-toggle]');
     var phraseActions = overlay.querySelector('.my-words-scan-phrase-actions');
+    var removeConfirm = overlay.querySelector('[data-scan-remove-confirm]');
+    var removeName = overlay.querySelector('[data-scan-remove-name]');
     var preview = overlay.querySelector('[data-scan-preview]');
     var previewImage = overlay.querySelector('[data-scan-preview-image]');
     var phases = Array.prototype.slice.call(overlay.querySelectorAll('[data-scan-phase]'));
@@ -59,6 +57,9 @@
         photoChoiceReplaceIndex: null,
         pendingPhotoReplaceIndex: null,
         photoChoiceReturnFocus: null,
+        removeArmedKey: null,
+        pendingRemoval: null,
+        removeReturnFocus: null,
         lastFocus: null,
         scrollY: 0,
         bodyStyle: null
@@ -84,7 +85,7 @@
 
     function setBusy(busy) {
         state.busy = busy;
-        overlay.querySelectorAll('[data-scan-run], [data-scan-commit], [data-scan-discard], [data-scan-close]').forEach(function(button) {
+        overlay.querySelectorAll('[data-scan-next], [data-scan-commit], [data-scan-discard], [data-scan-close]').forEach(function(button) {
             button.disabled = busy;
         });
         if (!busy) renderDrawer();
@@ -148,11 +149,13 @@
         state.candidateRevision = 0;
         state.nextRevision = 0;
         state.commitOperation = null;
+        state.removeArmedKey = null;
+        state.pendingRemoval = null;
+        state.removeReturnFocus = null;
         phraseActions.hidden = true;
         drawerHost.hidden = false;
-        drawer.classList.remove('is-collapsed');
         drawer.classList.add('is-empty');
-        drawerToggle.setAttribute('aria-expanded', 'true');
+        if (removeConfirm) removeConfirm.hidden = true;
     }
 
     function closePreview() {
@@ -171,6 +174,44 @@
         if (restoreFocus !== false && focusTarget && focusTarget.isConnected && focusTarget.focus) {
             focusTarget.focus({ preventScroll: true });
         }
+    }
+
+    function closeCandidateRemoveConfirm(restoreFocus) {
+        if (!removeConfirm || removeConfirm.hidden) return;
+        var focusTarget = state.removeReturnFocus;
+        removeConfirm.hidden = true;
+        state.pendingRemoval = null;
+        state.removeReturnFocus = null;
+        shell.inert = false;
+        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && focusTarget.focus) {
+            focusTarget.focus({ preventScroll: true });
+        }
+    }
+
+    function cancelCandidateRemoval() {
+        closeCandidateRemoveConfirm(false);
+        state.removeArmedKey = null;
+        renderDrawer();
+    }
+
+    function openCandidateRemoveConfirm(spec, candidate, trigger) {
+        if (!removeConfirm) return;
+        state.pendingRemoval = spec;
+        state.removeReturnFocus = trigger;
+        removeName.textContent = candidate.text;
+        removeConfirm.hidden = false;
+        shell.inert = true;
+        window.requestAnimationFrame(function() {
+            var keep = removeConfirm.querySelector('[data-scan-remove-cancel]');
+            if (keep) keep.focus({ preventScroll: true });
+        });
+    }
+
+    function confirmCandidateRemoval() {
+        var spec = state.pendingRemoval;
+        closeCandidateRemoveConfirm(false);
+        state.removeArmedKey = null;
+        if (spec) removeCandidate(spec);
     }
 
     function openPhotoChoice(trigger, replaceIndex) {
@@ -198,6 +239,7 @@
         state.syncTimer = null;
         closePreview();
         closePhotoChoice(false);
+        closeCandidateRemoveConfirm(false);
         overlay.hidden = true;
         unlockPage();
         releaseLocalFiles();
@@ -600,7 +642,9 @@
     function upload() {
         if (!state.files.length || state.busy) return;
         setBusy(true);
-        say('Preparing your photos…');
+        setPhase('review');
+        renderScanProgress({ pages: state.files.map(function(_, index) { return { page_index: index, status: 'pending' }; }) });
+        say('');
         var prepared = state.preparedFiles ? Promise.resolve(state.preparedFiles) : Promise.all(state.files.map(exportProcessed));
         prepared.then(function(files) {
             state.preparedFiles = files;
@@ -627,8 +671,9 @@
             poll();
         }).catch(function(error) {
             setBusy(false);
-            say(error.message || 'The scan could not start. Your edited photos are still here; try again.');
-            setPhase('edit');
+            say(error.message || 'The scan could not start. Your photos are still here; try again.');
+            setPhase('choose');
+            renderPages();
         });
     }
 
@@ -643,23 +688,17 @@
         var total = Math.max(1, pages.length);
         var percentage = Math.round((complete / total) * 100);
         progressHost.hidden = false;
-        reviewHeading.hidden = true;
-        readyHint.hidden = true;
         drawer.hidden = true;
         reviewHost.textContent = '';
-        progressStep.textContent = 'SCANNING · ' + complete + '/' + total + (total === 1 ? ' PAGE CHECKED' : ' PAGES CHECKED');
         progressTrack.setAttribute('aria-valuemax', String(total));
         progressTrack.setAttribute('aria-valuenow', String(complete));
         progressBar.style.width = percentage + '%';
         var remaining = total - complete;
-        progressCount.textContent = remaining > 0 ? 'Scanning ' + remaining + ' remaining page' + (remaining === 1 ? '' : 's') + '…' : 'Finishing your scan…';
+        progressCount.textContent = remaining > 0 ? complete + ' of ' + total + ' page' + (total === 1 ? '' : 's') + ' ready' : 'Finishing your scan…';
     }
 
     function showReviewReady(scan) {
-        var succeeded = ((scan && scan.pages) || []).filter(function(page) { return page.status === 'succeeded'; }).length;
         progressHost.hidden = true;
-        reviewHeading.hidden = false;
-        readyHint.hidden = succeeded < 1;
         drawer.hidden = false;
     }
 
@@ -804,11 +843,14 @@
         }
         var spec = { page_id: button.dataset.pageId, sentence_id: button.dataset.sentenceId, token_ids: [button.dataset.tokenId] };
         var key = specKey(spec);
-        if (state.selected.has(key)) state.selected.delete(key);
-        else {
-            if (state.selected.size >= 100) { say('Add the current 100 items before selecting more.'); return; }
-            state.selected.set(key, spec);
+        if (state.selected.has(key)) {
+            state.removeArmedKey = key;
+            renderDrawer();
+            say('Tap the red item above to remove it.');
+            return;
         }
+        if (state.selected.size >= 100) { say('Add the current 100 items before selecting more.'); return; }
+        state.selected.set(key, spec);
         selectionChanged();
     }
 
@@ -937,37 +979,15 @@
         (scan.pages || []).filter(function(page) { return page.status !== 'deleted'; }).forEach(function(page) {
             var section = document.createElement('section');
             section.className = 'my-words-scan-review-page';
-            var header = document.createElement('header');
-            var heading = document.createElement('h3');
-            heading.textContent = 'Page ' + (Number(page.page_index) + 1);
-            var actions = document.createElement('div');
-            var view = document.createElement('button');
-            view.type = 'button';
-            view.className = 'outline-button';
-            view.textContent = 'View photo';
-            view.addEventListener('click', function() { viewPage(page); });
-            var remove = document.createElement('button');
-            remove.type = 'button';
-            remove.className = 'outline-button';
-            remove.textContent = 'Remove page';
-            remove.addEventListener('click', function() { removeReviewPage(page); });
-            actions.appendChild(view);
-            actions.appendChild(remove);
-            header.appendChild(heading);
-            header.appendChild(actions);
-            section.appendChild(header);
+            section.setAttribute('aria-label', 'Scanned text from page ' + (Number(page.page_index) + 1));
             if (page.status === 'failed') {
                 var failure = document.createElement('p');
-                failure.textContent = 'This page could not be read. Retry it or remove it.';
-                var retry = document.createElement('button');
-                retry.type = 'button';
-                retry.className = 'primary-button';
-                retry.textContent = 'Retry this page';
-                retry.addEventListener('click', function() { retryPage(page); });
+                failure.className = 'my-words-scan-page-note';
+                failure.textContent = 'This page could not be read.';
                 section.appendChild(failure);
-                section.appendChild(retry);
             } else if (!page.ocr || !page.ocr.has_english) {
                 var empty = document.createElement('p');
+                empty.className = 'my-words-scan-page-note';
                 empty.textContent = 'No English words found.';
                 section.appendChild(empty);
             } else {
@@ -997,6 +1017,7 @@
     }
 
     function removeCandidate(spec) {
+        state.removeArmedKey = null;
         state.selected.delete(specKey(spec));
         selectionChanged();
     }
@@ -1008,25 +1029,37 @@
         commitButton.textContent = 'Add ' + specs.length + ' item' + (specs.length === 1 ? '' : 's');
         commitButton.disabled = state.busy || specs.length < 1;
         drawerHost.textContent = '';
+        if (state.removeArmedKey && !state.selected.has(state.removeArmedKey)) state.removeArmedKey = null;
         specs.forEach(function(spec) {
             var candidate = candidateForSpec(spec);
-            var row = document.createElement('div');
+            var key = specKey(spec);
+            var row = document.createElement('button');
+            row.type = 'button';
             row.className = 'my-words-scan-candidate';
             if (candidate.status === 'failed') row.classList.add('is-failed');
-            var copy = document.createElement('div');
+            if (state.removeArmedKey === key) row.classList.add('is-remove-armed');
+            row.setAttribute('aria-label', state.removeArmedKey === key ? candidate.text + ', press again to remove' : candidate.text + ', press twice to remove');
             var text = document.createElement('strong');
             text.textContent = candidate.text;
-            var context = document.createElement('small');
-            context.textContent = candidate.context;
-            copy.appendChild(text);
-            copy.appendChild(context);
-            var remove = document.createElement('button');
-            remove.type = 'button';
-            remove.className = 'outline-button';
-            remove.textContent = candidate.status === 'failed' ? 'Remove / reselect' : 'Remove';
-            remove.addEventListener('click', function() { removeCandidate(spec); });
-            row.appendChild(copy);
-            row.appendChild(remove);
+            var removeMark = document.createElement('span');
+            removeMark.className = 'my-words-scan-candidate-remove-mark';
+            removeMark.setAttribute('aria-hidden', 'true');
+            removeMark.textContent = '×';
+            row.appendChild(text);
+            row.appendChild(removeMark);
+            row.addEventListener('click', function() {
+                if (state.removeArmedKey === key) {
+                    openCandidateRemoveConfirm(spec, candidate, row);
+                    return;
+                }
+                state.removeArmedKey = key;
+                overlay.querySelectorAll('.my-words-scan-candidate.is-remove-armed').forEach(function(item) {
+                    item.classList.remove('is-remove-armed');
+                    item.setAttribute('aria-label', item.querySelector('strong').textContent + ', press twice to remove');
+                });
+                row.classList.add('is-remove-armed');
+                row.setAttribute('aria-label', candidate.text + ', press again to remove');
+            });
             drawerHost.appendChild(row);
         });
     }
@@ -1135,7 +1168,7 @@
 
     function focusTrap(event) {
         if (overlay.hidden || event.key !== 'Tab') return;
-        var scope = !preview.hidden ? preview : (!photoChoice.hidden ? photoChoice : shell);
+        var scope = removeConfirm && !removeConfirm.hidden ? removeConfirm : (!preview.hidden ? preview : (!photoChoice.hidden ? photoChoice : shell));
         var focusable = Array.prototype.slice.call(scope.querySelectorAll('button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')).filter(function(item) { return !item.hidden && item.offsetParent !== null; });
         if (!focusable.length) return;
         var first = focusable[0];
@@ -1146,7 +1179,9 @@
 
     overlay.addEventListener('click', function(event) {
         var target = event.target;
-        if (target.closest('[data-scan-photo-source]')) {
+        if (target.closest('[data-scan-remove-confirm-action]')) confirmCandidateRemoval();
+        else if (target.closest('[data-scan-remove-cancel]')) cancelCandidateRemoval();
+        else if (target.closest('[data-scan-photo-source]')) {
             var source = target.closest('[data-scan-photo-source]').dataset.scanPhotoSource;
             state.pendingPhotoReplaceIndex = state.photoChoiceReplaceIndex;
             closePhotoChoice(false);
@@ -1157,8 +1192,7 @@
         else if (target.closest('[data-scan-add-photo]')) openPhotoChoice(target.closest('[data-scan-add-photo]'));
         else if (target.closest('[data-scan-close]')) close();
         else if (target.closest('[data-scan-discard]')) discard();
-        else if (target.closest('[data-scan-next]')) { state.activeEditor = 0; setPhase('edit'); renderEditor(); }
-        else if (target.closest('[data-scan-run]')) upload();
+        else if (target.closest('[data-scan-next]')) upload();
         else if (target.closest('[data-scan-undo]')) undo();
         else if (target.closest('[data-scan-redo]')) redo();
         else if (target.closest('[data-scan-page-prev]')) { state.activeEditor -= 1; renderEditor(); }
@@ -1166,11 +1200,6 @@
         else if (target.closest('[data-scan-mode]')) { state.editorMode = target.closest('[data-scan-mode]').dataset.scanMode; renderEditor(); }
         else if (target.closest('[data-scan-finish-phrase]')) finishPhrase();
         else if (target.closest('[data-scan-cancel-phrase]')) cancelPhrase();
-        else if (target.closest('[data-scan-drawer-toggle]')) {
-            drawerHost.hidden = !drawerHost.hidden;
-            drawer.classList.toggle('is-collapsed', drawerHost.hidden);
-            drawerToggle.setAttribute('aria-expanded', drawerHost.hidden ? 'false' : 'true');
-        }
         else if (target.closest('[data-scan-commit]')) commitCandidates();
         else if (target.closest('[data-scan-preview-close]')) closePreview();
     });
@@ -1208,7 +1237,8 @@
     document.addEventListener('keydown', function(event) {
         focusTrap(event);
         if (overlay.hidden || event.key !== 'Escape') return;
-        if (!preview.hidden) closePreview();
+        if (removeConfirm && !removeConfirm.hidden) cancelCandidateRemoval();
+        else if (!preview.hidden) closePreview();
         else if (state.photoChoiceOpen) closePhotoChoice();
         else if (state.phrase) cancelPhrase();
         else close();
