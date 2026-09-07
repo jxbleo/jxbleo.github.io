@@ -1469,6 +1469,29 @@ Shadowing scoring remains fail-closed: do not set
 has been reviewed by the owner and Tencent SOE-N access is confirmed. No
 provider credentials or paid evaluation request were added during rollout.
 
+### Listening mode-first/effective-time rollout (not yet published)
+
+The 2026-09-07 implementation does not itself authorize production mutation.
+Before publishing, create `learning_activity_sessions` as `ADMINONLY` and review
+these indexes: unique `session_id`; `student_uid + started_at DESC`;
+`student_uid + status + last_effective_at DESC`;
+`student_uid + activity_type + started_at DESC`; and
+`set_id + started_at DESC`. Lease documents use `active_session_id`, so they do
+not collide with the unique session key. Do not infer or import time for existing
+Dictation progress.
+
+After the collection/index preflight and focused tests, package the scoped code
+for `intensiveListening`, `teacherAdmin`, `getDashboard`,
+`sendTeacherAttemptEmails`, and `learningReports`. Publish backend readers and
+writers before the cache-busted Listening static files. Preserve every existing
+function environment value, timeout, trigger and Tencent scoring policy; this
+release does not authorize enabling scoring or changing credentials. Smoke-test
+with a dedicated student: Library preference, both mode resumes, >50% Dictation
+restore, one complete Shadowing listen, microphone denial/record/replay, 80-point
+auto-advance cancellation, 20-second idle, three-minute close, and calendar time.
+Rollback may restore prior static/functions but must retain the activity
+collection and accepted session rows as permanent learning history.
+
 ## Argue email review release (2026-09-06)
 
 Local implementation and packaging do not authorize CloudBase/static publication. Release the scoped changes only; unrelated work may exist in the shared checkout.

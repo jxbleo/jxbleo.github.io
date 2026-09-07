@@ -5,6 +5,7 @@
   var state = {
     setId: String(params.get('set') || '').trim(),
     assignmentId: String(params.get('assignment') || '').trim(),
+    mode: ['dictation', 'shadowing'].indexOf(String(params.get('mode') || '').toLowerCase()) >= 0 ? String(params.get('mode')).toLowerCase() : 'dictation',
     teacherMode: params.get('teacher') === '1',
     visitorMode: params.get('visitor') === '1' || localStorage.getItem('mrcat_visitor') === 'true',
     material: null,
@@ -29,7 +30,8 @@
     activityPending: '',
     dictationEnabled: true,
     shadowingEnabled: false,
-    shadowingCompleted: false
+    shadowingCompleted: false,
+    pendingMode: ''
   };
 
   function $(selector) { return document.querySelector(selector); }
@@ -44,11 +46,23 @@
     return unit && Array.isArray(unit.slots) && unit.slots.length === 0 ? 'skip' : 'dictation';
   }
   function isDictation(unit) { return unitMode(unit) === 'dictation'; }
+  function safeMode(value) { return ['dictation', 'shadowing'].indexOf(String(value || '').toLowerCase()) >= 0 ? String(value).toLowerCase() : 'dictation'; }
+  function modeLabel(mode) { return safeMode(mode) === 'shadowing' ? 'Shadowing' : 'Dictation'; }
   function isProvided(slot) { return String(slot && slot.spelling_requirement || 'required') === 'provided'; }
   function disputeKey(unitId, slotId) { return String(unitId) + '::' + String(slotId); }
   function currentUnit() { return state.material.units[state.currentIndex]; }
   function currentLocal() { return state.localUnits[currentUnit().unit_id]; }
   function currentServer() { return state.progress.unit_progress[currentUnit().unit_id] || {}; }
+  function dictationMedia() {
+    return state.material && state.material.media && state.material.media.kind === 'video'
+      ? $('#dictation-video')
+      : $('#audio');
+  }
+  function dictationMediaSource() {
+    var media = state.material && state.material.media || {};
+    if (media.kind === 'video') return String(media.src || media.video_src || '');
+    return String(state.material && (state.material.audio_src || media.audio_src || media.src) || '');
+  }
 
   function safeReturnUrl() {
     var fallback = state.teacherMode ? 'teacher.html' : 'intensive-listening-library.html';
@@ -60,10 +74,132 @@
     } catch (error) { return fallback; }
   }
 
+  function renderModeMenu() {
+    var trigger = $('#il-practice-mode-trigger');
+    var label = $('#il-practice-mode-label');
+    if (label) label.textContent = modeLabel(state.mode);
+    document.querySelectorAll('[data-practice-listening-mode]').forEach(function(button) {
+      var value = safeMode(button.getAttribute('data-practice-listening-mode'));
+      var enabled = value === 'dictation' ? state.dictationEnabled !== false : state.shadowingEnabled === true;
+      button.disabled = !enabled;
+      button.setAttribute('aria-checked', value === state.mode ? 'true' : 'false');
+    });
+    if (trigger) trigger.setAttribute('aria-label', 'Practice mode: ' + modeLabel(state.mode));
+  }
+  function configureLearningActivity() {
+    if (!window.MrCatLearningActivity || state.visitorMode || state.teacherMode || !state.material) return;
+    window.MrCatLearningActivity.configure({
+      activityType: 'listening', materialId: state.material.material_id || state.setId,
+      mode: state.mode, contentRevision: state.material.content_revision || state.material.content_version || '1',
+      accountKey: studentIdentity(),
+      send: function(payload) { return call(payload.action || 'recordLearningActivity', payload); }
+    });
+  }
+  function hasUncheckedDictation() {
+    if (state.mode !== 'dictation' || !state.material) return false;
+    return Object.keys(state.localUnits).some(function(unitId) {
+      var local = state.localUnits[unitId];
+      return local && local.dirty === true && local.entries.some(function(entry) { return String(entry || '').trim(); });
+    });
+  }
+  function closeModeSwitchModal() {
+    state.pendingMode = '';
+    $('#mode-switch-modal').hidden = true;
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) {
+      var unit = currentUnit();
+      window.MrCatLearningActivity.resume('interaction', unit && unit.unit_id);
+    }
+  }
+  function discardUncheckedDictation() {
+    if (!state.material || !state.progress) return;
+    state.material.units.forEach(function(unit) {
+      var local = state.localUnits[unit.unit_id];
+      if (!local || local.dirty !== true) return;
+      var serverUnit = state.progress.unit_progress[unit.unit_id] || {};
+      var replacement = emptyLocalUnit(unit, serverUnit);
+      if (Array.isArray(serverUnit.saved_entries) && serverUnit.saved_entries.length === unit.slots.length) {
+        replacement.entries = serverUnit.saved_entries.map(function(value) { return String(value || '').replace(/\s+/g, ''); });
+        replacement.marks = Array.isArray(serverUnit.saved_marks) && serverUnit.saved_marks.length === unit.slots.length
+          ? serverUnit.saved_marks.map(function(mark) { return mark ? 'correct' : 'incorrect'; })
+          : replacement.marks;
+      }
+      applyServerMarks(replacement, serverUnit);
+      state.localUnits[unit.unit_id] = replacement;
+    });
+    saveDraft();
+  }
+  function performModeSwitch(nextMode) {
+    nextMode = safeMode(nextMode);
+    if (nextMode === state.mode) { closeModeMenu(); return; }
+    if (nextMode === 'shadowing' && !state.shadowingEnabled) return;
+    if (nextMode === 'dictation' && !state.dictationEnabled) return;
+    pauseAudio('');
+    var previous = state.mode;
+    var switchMode = function() {
+      state.mode = nextMode;
+      renderModeMenu();
+      configureLearningActivity();
+      document.dispatchEvent(new CustomEvent('mrcat:listening-mode-change', { detail: { mode: nextMode, previous: previous } }));
+      closeModeMenu();
+    };
+    var pause = window.MrCatLearningActivity && window.MrCatLearningActivity.pause
+      ? window.MrCatLearningActivity.pause('mode-switch') : Promise.resolve();
+    Promise.resolve(pause).then(function() {
+      return state.teacherMode ? { success: true } : call('setModePreference', { mode: nextMode });
+    }).then(switchMode).catch(function(error) {
+      state.mode = previous; renderModeMenu();
+      var feedback = $('#feedback');
+      if (feedback) { feedback.className = 'il-feedback error'; feedback.textContent = error.message || 'Unable to change practice mode.'; }
+    });
+  }
+  function selectMode(nextMode) {
+    nextMode = safeMode(nextMode);
+    if (nextMode === state.mode) { closeModeMenu(); return; }
+    if (window.MrCatShadowingController && !window.MrCatShadowingController.canSwitchMode()) {
+      closeModeMenu();
+      window.MrCatShadowingController.explainSwitchBlock();
+      return;
+    }
+    if (hasUncheckedDictation()) {
+      state.pendingMode = nextMode;
+      closeModeMenu();
+      if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
+      $('#mode-switch-modal').hidden = false;
+      $('#mode-switch-cancel').focus();
+      return;
+    }
+    performModeSwitch(nextMode);
+  }
+  function closeModeMenu() {
+    var popover = $('#il-practice-mode-popover');
+    var trigger = $('#il-practice-mode-trigger');
+    var wasOpen = Boolean(popover && !popover.hidden);
+    if (popover) popover.hidden = true;
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    if (wasOpen && window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) {
+      var unit = currentUnit();
+      window.MrCatLearningActivity.resume('interaction', unit && unit.unit_id);
+    }
+  }
+  function toggleModeMenu() {
+    var popover = $('#il-practice-mode-popover');
+    var trigger = $('#il-practice-mode-trigger');
+    if (!popover || !trigger) return;
+    popover.hidden = !popover.hidden;
+    trigger.setAttribute('aria-expanded', popover.hidden ? 'false' : 'true');
+    if (!popover.hidden) {
+      pauseAudio('Paused · choose a mode or close the menu');
+      if (window.MrCatShadowingController) window.MrCatShadowingController.pauseForModal();
+      if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
+      var selected = popover.querySelector('[aria-checked="true"]');
+      if (selected) selected.focus();
+    }
+  }
+
   function studentIdentity() {
     try {
       var profile = JSON.parse(localStorage.getItem('mrcat_student_profile') || 'null');
-      return String(profile && profile.student_id || 'student');
+      return String(profile && (profile.auth_uid || profile.student_id) || 'student');
     } catch (error) { return 'student'; }
   }
   function draftKey() {
@@ -80,7 +216,8 @@
         marks: local.marks,
         answerVisible: local.answerVisible,
         answerText: local.answerVisible ? local.answerText : '',
-        answers: local.answerVisible ? local.answers : []
+        answers: local.answerVisible ? local.answers : [],
+        dirty: local.dirty === true
       };
     });
     try {
@@ -108,7 +245,7 @@
     return {
       entries: Array(slotCount).fill(''), marks: Array(slotCount).fill(''),
       answerVisible: false, answerText: '', answers: [], replayDelta: 0,
-      checks: Number(serverUnit && serverUnit.checks) || 0
+      checks: Number(serverUnit && serverUnit.checks) || 0, dirty: false
     };
   }
   function firstPlayableIndex() {
@@ -130,12 +267,22 @@
       var serverUnit = state.progress.unit_progress[unit.unit_id] || {};
       var local = emptyLocalUnit(unit, serverUnit);
       var saved = draft && draft.units[unit.unit_id];
-      if (saved && Array.isArray(saved.entries) && saved.entries.length === unit.slots.length) {
-        local.entries = saved.entries.map(function(value) { return String(value || '').replace(/\s+/g, ''); });
-        local.marks = Array.isArray(saved.marks) && saved.marks.length === unit.slots.length ? saved.marks : local.marks;
+      var persisted = saved && Array.isArray(saved.entries) && saved.entries.length === unit.slots.length
+        ? saved
+        : (Array.isArray(serverUnit.saved_entries) && serverUnit.saved_entries.length === unit.slots.length
+          ? { entries: serverUnit.saved_entries, marks: serverUnit.saved_marks }
+          : null);
+      if (persisted) {
+        local.entries = persisted.entries.map(function(value) { return String(value || '').replace(/\s+/g, ''); });
+        local.marks = Array.isArray(persisted.marks) && persisted.marks.length === unit.slots.length
+          ? persisted.marks.map(function(mark) { return mark === true || mark === 'correct' ? 'correct' : mark === false || mark === 'incorrect' ? 'incorrect' : ''; })
+          : local.marks;
+      }
+      if (saved && persisted === saved) {
         local.answerVisible = saved.answerVisible === true && (serverUnit.assisted === true || state.teacherMode);
         local.answerText = local.answerVisible ? String(saved.answerText || '') : '';
         local.answers = local.answerVisible && Array.isArray(saved.answers) ? saved.answers.map(String) : [];
+        local.dirty = saved.dirty === true;
       }
       applyServerMarks(local, serverUnit);
       unit.slots.forEach(function(slot, index) { if (isProvided(slot)) local.marks[index] = 'correct'; });
@@ -317,8 +464,10 @@
         var local = currentLocal();
         local.entries[index] = input.value.replace(/\s+/g, '');
         local.marks[index] = '';
+        local.dirty = true;
         input.value = local.entries[index];
         input.classList.remove('incorrect');
+        if (window.MrCatLearningActivity) window.MrCatLearningActivity.markInteraction('typing', currentUnit().unit_id);
         $('#feedback').className = 'il-feedback';
         $('#feedback').textContent = 'Keep listening. Enter checks the complete unit.';
         saveDraft();
@@ -437,19 +586,23 @@
   function checkUnit() {
     if (state.teacherMode || state.visitorMode || state.busy || !isDictation(currentUnit()) || currentServer().completed) return;
     var unit = currentUnit(); var local = currentLocal();
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('network').catch(function() {});
     setBusy(true, 'Checking this unit…');
     call('check', { unit_id: unit.unit_id, entries: local.entries, replay_delta: local.replayDelta }).then(function(result) {
       local.replayDelta = 0;
       local.marks = result.marks.map(function(mark) { return mark ? 'correct' : 'incorrect'; });
+      local.dirty = false;
       applyProgress(result.progress); setBusy(false);
       if (result.completed) {
         $('#feedback').className = 'il-feedback success';
         $('#feedback').textContent = 'Perfect. Moving to the next unit…';
         state.autoAdvancing = true;
+        if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('auto-advance').catch(function() {});
         renderUnit();
         window.setTimeout(function() { state.autoAdvancing = false; advanceUnit(); }, 650);
         return;
       }
+      if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       renderUnit();
       var firstWrong = result.marks.findIndex(function(mark, index) { return !mark && !isProvided(unit.slots[index]); });
       $('#feedback').className = 'il-feedback error';
@@ -459,6 +612,7 @@
       var firstWrongInput = document.querySelector('[data-slot-index="' + firstWrong + '"]');
       if (firstWrongInput) firstWrongInput.focus(); saveDraft();
     }).catch(function(error) {
+      if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       setBusy(false); $('#feedback').className = 'il-feedback error';
       $('#feedback').textContent = error.message + ' Your words are still here.';
     });
@@ -467,8 +621,10 @@
     if (state.visitorMode || state.busy || !isDictation(currentUnit())) return;
     if (currentLocal().answerVisible) { hideAnswer(); return; }
     var unit = currentUnit(); var local = currentLocal();
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('network').catch(function() {});
     setBusy(true, state.teacherMode ? 'Opening the reviewed answer…' : 'Checking whether the answer is available…');
     call('reveal', { unit_id: unit.unit_id, replay_delta: local.replayDelta }).then(function(result) {
+      if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       setBusy(false);
       if (!result.answer_available) {
         $('#feedback').className = 'il-feedback';
@@ -482,6 +638,7 @@
       $('#feedback').textContent = state.teacherMode ? 'Click a word to request a spelling exemption.' : 'Compare every position. Click a word if you think it should be provided.';
       renderUnit();
     }).catch(function(error) {
+      if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       setBusy(false); $('#feedback').className = 'il-feedback error'; $('#feedback').textContent = error.message;
     });
   }
@@ -504,7 +661,10 @@
     return startIndex;
   }
   function pauseAudio(message) {
-    $('#audio').pause(); state.playing = false; $('#replay-button').textContent = '▶';
+    var media = dictationMedia();
+    if (media) media.pause();
+    state.playing = false; $('#replay-button').textContent = '▶';
+    if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', false, currentUnit() && currentUnit().unit_id);
     if (message) $('#audio-status').textContent = message;
   }
   function finishPlayback() {
@@ -541,10 +701,11 @@
   }
   function replayUnit(countReplay) {
     if (!state.material || state.busy) return;
-    var audio = $('#audio'); var unit = currentUnit();
+    var audio = dictationMedia(); var unit = currentUnit();
     if (countReplay && isDictation(unit) && !state.teacherMode) {
       currentLocal().replayDelta += 1; renderProgress(); saveDraft();
     }
+    if (window.MrCatShadowingController) window.MrCatShadowingController.pauseForModal();
     pauseAudio('');
     // Each unit starts a fresh playhead window. Without resetting this
     // baseline, moving from a long unit back to an earlier timestamp could
@@ -555,8 +716,10 @@
     var endUnit = state.material.units[state.playbackEndIndex];
     try { audio.currentTime = Number(unit.start_seconds) || 0; } catch (error) { /* metadata settles before play */ }
     state.stopAt = state.visitorFullAudio ? Infinity : Number(endUnit.end_seconds) || 0;
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('audio', unit.unit_id);
     audio.play().then(function() {
       state.playing = true; $('#replay-button').textContent = 'Ⅱ'; $('#audio-status').textContent = 'Listening…';
+      if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit.unit_id);
     }).catch(function() {
       state.playing = false; $('#replay-button').textContent = '▶'; $('#audio-status').textContent = 'Press Replay to hear this unit';
     });
@@ -570,6 +733,7 @@
       window.clearInterval(timer); $('#start-button-label').textContent = 'Listen';
       window.setTimeout(function() {
         state.started = true; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
+        if (window.MrCatLearningActivity) window.MrCatLearningActivity.markInteraction('audio', currentUnit() && currentUnit().unit_id);
         renderUnit(); replayUnit(false);
       }, 380);
     }, 1000);
@@ -597,15 +761,15 @@
     if (state.shadowingEnabled && !state.shadowingCompleted) {
       $('#feedback').hidden = false;
       $('#feedback').className = 'il-feedback success';
-      $('#feedback').textContent = 'Dictation complete. Choose Shadowing above when you are ready.';
-      var chooser = document.getElementById('listening-track-chooser');
-      if (chooser) chooser.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      $('#feedback').textContent = 'Dictation complete. Use the mode menu above to continue with Shadowing.';
       return;
     }
     var progress = state.progress;
     $('#completion-percent').textContent = (Number(progress.percentage) || 0) + '%';
     $('#completion-summary').textContent = progress.independent_count + ' completed independently · ' + progress.assisted_count + ' completed with answer';
-    $('#completion-screen').hidden = false; clearDraft();
+    $('#completion-screen').hidden = false;
+    if (window.MrCatLearningActivity) window.MrCatLearningActivity.close('complete');
+    clearDraft();
   }
   function startTemporaryReplay() {
     if (state.busy || state.teacherMode) return;
@@ -645,12 +809,17 @@
     if (sentCopy) sentCopy.textContent = state.teacherMode ? 'This spelling exemption is now live.' : 'Thanks for your feedback.';
     $('#argue-submit').disabled = false;
     $('#argue-box').classList.remove('sent');
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
     $('#argue-modal').hidden = false; if (!existing) $('#argue-reason').focus();
   }
   function closeArgue() {
     $('#argue-modal').hidden = true;
     $('#argue-box').classList.remove('sent');
     state.selectedArgue = null;
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) {
+      var unit = currentUnit();
+      window.MrCatLearningActivity.resume('interaction', unit && unit.unit_id);
+    }
   }
   function submitArgue() {
     if (!state.selectedArgue || state.busy) return;
@@ -750,25 +919,40 @@
       state.dictationEnabled = Boolean(result.tracks && result.tracks.dictation && result.tracks.dictation.enabled);
       state.shadowingEnabled = Boolean(result.tracks && result.tracks.shadowing && result.tracks.shadowing.enabled);
       state.shadowingCompleted = Boolean(result.shadowing_progress && result.shadowing_progress.completed);
+      var requestedMode = String(params.get('mode') || '').toLowerCase();
+      var serverPreferredMode = safeMode(result.preferred_mode || state.mode);
+      state.mode = ['dictation', 'shadowing'].indexOf(requestedMode) >= 0
+        ? requestedMode
+        : serverPreferredMode;
+      if (state.mode === 'shadowing' && !state.shadowingEnabled) state.mode = 'dictation';
+      if (state.mode === 'dictation' && !state.dictationEnabled && state.shadowingEnabled) state.mode = 'shadowing';
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
-      $('.il-toolbar-title').textContent = state.material.title;
+      if (!state.teacherMode && !state.visitorMode && ['dictation', 'shadowing'].indexOf(requestedMode) >= 0 && requestedMode !== serverPreferredMode) {
+        call('setModePreference', { mode: requestedMode }).catch(function() { /* Practice remains usable; the next explicit switch retries. */ });
+      }
+      renderModeMenu();
       renderMaterialContext();
       $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
-      $('#audio').src = state.material.audio_src; hydrateLocalUnits(); renderProgress();
-      if (!state.dictationEnabled && state.shadowingEnabled) {
+      var dictationPlayer = dictationMedia();
+      dictationPlayer.src = dictationMediaSource();
+      $('#dictation-video').hidden = dictationPlayer !== $('#dictation-video');
+      hydrateLocalUnits(); renderProgress();
+      if (state.mode === 'shadowing' && state.shadowingEnabled) {
         state.started = true;
         $('#start-screen').hidden = true;
         $('#practice-shell').hidden = false;
         $('#practice-card').hidden = true;
+        document.dispatchEvent(new CustomEvent('mrcat:listening-mode-change', { detail: { mode: 'shadowing' } }));
+        configureLearningActivity();
         return;
       }
       if (state.visitorMode) {
         document.body.classList.add('il-visitor-mode');
+        $('#il-practice-mode-trigger').hidden = true;
         $('#header-progress').parentElement.hidden = true;
         $('.il-stats').hidden = true;
-        $('.il-toolbar-title').setAttribute('aria-label', 'Visitor · listen only · ' + state.material.title);
         $('#start-copy').textContent = 'Listen to the full programme. Dictation, answers, and saved progress require a student account.';
         $('#start-note').textContent = 'Visitor Mode plays public audio only and never loads answer data.';
         $('#previous-unit-button').hidden = true; $('#next-unit-button').hidden = true;
@@ -777,14 +961,14 @@
       }
       if (state.teacherMode) {
         state.started = true; $('#export-button').hidden = false; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
-        renderUnit(); $('#feedback').textContent = 'Teacher preview · replay the unit, then open Show Answer to mark a word.'; return;
+        renderUnit(); $('#feedback').textContent = 'Teacher preview · replay the unit, then open Show Answer to mark a word.'; configureLearningActivity(); return;
       }
       if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100 && !state.shadowingEnabled) {
         $('#start-screen').hidden = true; $('#completion-screen').hidden = false;
         $('#completion-percent').textContent = state.progress.best_percentage + '%';
         $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; return;
       }
-      renderUnit(); $('#start-button').disabled = false; $('#start-button-label').textContent = 'Start';
+      renderUnit(); $('#start-button').disabled = false; $('#start-button-label').textContent = 'Start'; configureLearningActivity();
     }).catch(function(error) {
       if (error.code === 'AUTH_REQUIRED' || /Please log in/i.test(error.message || '')) {
         window.location.replace('index.html?return=' + encodeURIComponent(window.location.href)); return;
@@ -794,6 +978,15 @@
   }
 
   $('#start-button').addEventListener('click', startRitual);
+  $('#il-practice-mode-trigger').addEventListener('click', toggleModeMenu);
+  document.querySelectorAll('[data-practice-listening-mode]').forEach(function(button) {
+    button.addEventListener('click', function() { selectMode(button.getAttribute('data-practice-listening-mode')); });
+  });
+  document.addEventListener('click', function(event) {
+    var menu = $('#il-practice-mode-popover');
+    var wrapper = document.querySelector('.il-practice-mode-menu');
+    if (menu && wrapper && !wrapper.contains(event.target)) closeModeMenu();
+  });
   $('#replay-button').addEventListener('click', function() { state.playing ? pauseAudio('Paused · press Replay to continue') : replayUnit(true); });
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);
@@ -804,10 +997,31 @@
   $('#export-button').addEventListener('click', exportLatest);
   document.addEventListener('mrcat:listening-shadowing-progress', function(event) {
     state.shadowingCompleted = Boolean(event.detail && event.detail.completed);
+    if (state.mode === 'shadowing' && event.detail && event.detail.percentage != null) {
+      var percentage = Number(event.detail.percentage) || 0;
+      $('#header-progress').value = percentage;
+      $('#header-progress-label').textContent = percentage + '%';
+    }
   });
-  $('#audio').addEventListener('timeupdate', function() {
+  document.addEventListener('mrcat:listening-mode-change', function(event) {
+    if (event.detail && event.detail.mode) {
+      state.mode = safeMode(event.detail.mode);
+      renderModeMenu();
+      if (state.mode === 'shadowing') {
+        pauseAudio('');
+        $('#practice-card').hidden = true;
+      } else {
+        $('#practice-card').hidden = false;
+        renderProgress();
+        renderUnit();
+      }
+    }
+  });
+  function onDictationTimeUpdate(event) {
     if (!state.playing) return;
-    var currentTime = Number($('#audio').currentTime) || 0;
+    var media = event.currentTarget;
+    if (media !== dictationMedia()) return;
+    var currentTime = Number(media.currentTime) || 0;
     if (!state.visitorMode && !state.teacherMode && state.started && currentTime > 0) {
       var changed = state.lastAudioTime == null || currentTime > state.lastAudioTime + 0.08;
       var due = Date.now() - state.lastActivitySentAt >= 30000;
@@ -818,22 +1032,66 @@
     }
     while (state.currentIndex < state.playbackEndIndex) {
       var next = state.material.units[state.currentIndex + 1];
-      if (!next || $('#audio').currentTime < Number(next.start_seconds || 0)) break;
+      if (!next || media.currentTime < Number(next.start_seconds || 0)) break;
       state.currentIndex += 1; renderUnit();
     }
-    if (Number.isFinite(state.stopAt) && $('#audio').currentTime >= state.stopAt) finishPlayback();
-  });
+    if (Number.isFinite(state.stopAt) && media.currentTime >= state.stopAt) finishPlayback();
+  }
+  $('#audio').addEventListener('timeupdate', onDictationTimeUpdate);
+  $('#dictation-video').addEventListener('timeupdate', onDictationTimeUpdate);
   $('#audio').addEventListener('ended', finishPlayback);
+  $('#dictation-video').addEventListener('ended', finishPlayback);
+  var lastPointerActivity = { x: null, y: null, at: 0 };
+  function markPageActivity() {
+    if (!state.started || state.teacherMode || state.visitorMode || !state.material || !window.MrCatLearningActivity) return;
+    var unit = currentUnit();
+    window.MrCatLearningActivity.markInteraction('interaction', unit && unit.unit_id);
+  }
+  document.addEventListener('pointerdown', markPageActivity);
+  document.addEventListener('touchstart', markPageActivity, { passive: true });
+  document.addEventListener('scroll', markPageActivity, { passive: true, capture: true });
+  document.addEventListener('pointermove', function(event) {
+    var now = Date.now();
+    var distance = lastPointerActivity.x == null ? 99 : Math.abs(event.clientX - lastPointerActivity.x) + Math.abs(event.clientY - lastPointerActivity.y);
+    if (distance < 12 || now - lastPointerActivity.at < 3000) return;
+    lastPointerActivity = { x: event.clientX, y: event.clientY, at: now };
+    markPageActivity();
+  }, { passive: true });
   // The native seek bar is intentionally not exposed. Unit navigation may
   // refresh an already-active session, but only a moving playhead can create
   // one. Ignoring the programmatic `currentTime` seek here prevents a
   // Start/Replay click from notifying the teacher before audio really moves.
   window.setInterval(refreshPolicy, 30000);
   window.addEventListener('focus', refreshPolicy);
-  $('#back-button').addEventListener('click', function() { pauseAudio(''); $('#leave-modal').hidden = false; $('#leave-cancel').focus(); });
-  $('#leave-cancel').addEventListener('click', function() { $('#leave-modal').hidden = true; });
-  $('#leave-confirm').addEventListener('click', function() { window.location.href = safeReturnUrl(); });
-  $('#leave-modal').addEventListener('click', function(event) { if (event.target === $('#leave-modal')) $('#leave-modal').hidden = true; });
+  $('#back-button').addEventListener('click', function() {
+    if (window.MrCatShadowingController && !window.MrCatShadowingController.canSwitchMode()) {
+      window.MrCatShadowingController.explainSwitchBlock();
+      return;
+    }
+    pauseAudio('');
+    var hasRecordings = window.MrCatShadowingController && window.MrCatShadowingController.hasReplayBlobs();
+    $('#leave-copy').textContent = hasRecordings
+      ? "Your practice progress is saved. Your recordings are not. If you leave now, you won't be able to replay them."
+      : 'Your saved progress is safe. You can continue from the next unfinished unit later.';
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
+    $('#leave-modal').hidden = false;
+    $('#leave-cancel').focus();
+  });
+  $('#leave-cancel').addEventListener('click', function() { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); });
+  $('#leave-confirm').addEventListener('click', function() {
+    if (window.MrCatShadowingController) window.MrCatShadowingController.revokeReplays();
+    if (window.MrCatLearningActivity) window.MrCatLearningActivity.close('close');
+    window.location.href = safeReturnUrl();
+  });
+  $('#leave-modal').addEventListener('click', function(event) { if (event.target === $('#leave-modal')) { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); } });
+  $('#mode-switch-cancel').addEventListener('click', closeModeSwitchModal);
+  $('#mode-switch-confirm').addEventListener('click', function() {
+    var nextMode = state.pendingMode;
+    $('#mode-switch-modal').hidden = true;
+    state.pendingMode = '';
+    if (nextMode) { discardUncheckedDictation(); performModeSwitch(nextMode); }
+  });
+  $('#mode-switch-modal').addEventListener('click', function(event) { if (event.target === $('#mode-switch-modal')) closeModeSwitchModal(); });
   $('#argue-close').addEventListener('click', closeArgue);
   $('#argue-cancel').addEventListener('click', closeArgue);
   $('#argue-sent-close').addEventListener('click', closeArgue);
@@ -841,7 +1099,8 @@
   $('#argue-modal').addEventListener('click', function(event) { if (event.target === $('#argue-modal')) closeArgue(); });
   document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape' && !$('#argue-modal').hidden) { closeArgue(); return; }
-    if (event.key === 'Escape' && !$('#leave-modal').hidden) $('#leave-modal').hidden = true;
+    if (event.key === 'Escape' && !$('#mode-switch-modal').hidden) { closeModeSwitchModal(); return; }
+    if (event.key === 'Escape' && !$('#leave-modal').hidden) { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); }
     if (event.key === 'Tab' && state.started && !state.busy && !event.target.classList.contains('il-word-slot')) {
       event.preventDefault(); replayUnit(true);
     }

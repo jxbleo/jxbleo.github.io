@@ -3032,6 +3032,7 @@
         }) : [];
         var libraryBook = prefix === 'library' ? currentLibraryBook(cambridgeBooks(libraryCategorySets)) : '';
         var sets = state.sets.filter(function(set) {
+            if (prefix === 'assign' && isIntensiveListeningSet(set)) return false;
             var matchesSection = !section || setFilterKey(set) === section;
             var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter;
             var matchesBook = prefix !== 'library' || !libraryBook || cambridgeBookId(set) === libraryBook;
@@ -3596,20 +3597,12 @@
     }
 
     function defaultAssignParamsForSet(set) {
-        var intensive = isIntensiveListeningSet(set);
-        var listeningTracks = [];
-        if (intensive) {
-            var availableTracks = set && set.listening_tracks || {};
-            if (availableTracks.dictation === true || Number(set && set.dictation_unit_count) > 0 || (!set.shadowing_segment_count && availableTracks.dictation !== false)) listeningTracks.push('dictation');
-            if (availableTracks.shadowing === true || Number(set && set.shadowing_segment_count) > 0) listeningTracks.push('shadowing');
-        }
         return {
             datePreset: 'this_week',
             week: assignDefaultDateValue(0),
             passingPercentage: formatPercentInput(defaultPassingForSet(set)),
             masteryEnabled: false,
-            masteryPercentage: '',
-            listeningTracks: listeningTracks
+            masteryPercentage: ''
         };
     }
 
@@ -3623,7 +3616,6 @@
         if (!params.week) params.week = assignDefaultDateValue(0);
         if (!params.datePreset) params.datePreset = 'this_week';
         if (!params.passingPercentage) params.passingPercentage = formatPercentInput(defaultPassingForSet(set));
-        if (!Array.isArray(params.listeningTracks)) params.listeningTracks = defaultAssignParamsForSet(set).listeningTracks;
         return params;
     }
 
@@ -3763,15 +3755,7 @@
     function renderAssignParamRow(set) {
         var setId = String(set && set.set_id || '');
         var params = assignParamForSet(set);
-        var intensive = isIntensiveListeningSet(set);
-        var trackControls = intensive ? '<div class="assign-listening-track-controls" role="group" aria-label="Listening tracks">' +
-            ['dictation', 'shadowing'].map(function(track) {
-                var available = track === 'dictation'
-                    ? (set.listening_tracks && set.listening_tracks.dictation === true || Number(set.dictation_unit_count) > 0 || !set.shadowing_segment_count)
-                    : (set.listening_tracks && set.listening_tracks.shadowing === true || Number(set.shadowing_segment_count) > 0);
-                if (!available) return '';
-                return '<label><input type="checkbox" data-set-id="' + escapeHtml(setId) + '" data-assign-param="listeningTracks" data-listening-track="' + track + '"' + (params.listeningTracks.indexOf(track) !== -1 ? ' checked' : '') + '><span>' + (track === 'dictation' ? 'Dictation' : 'Shadowing') + '</span></label>';
-            }).join('') + '</div>' : percentagePickerTriggerHtml(
+        var passingControl = percentagePickerTriggerHtml(
                 params.passingPercentage,
                 'Passing percentage',
                 'data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage"',
@@ -3784,7 +3768,7 @@
                 '<small>' + escapeHtml(setId) + '</small>' +
             '</div>' +
             '<div class="assign-params-cell date" role="cell">' + renderAssignDateControls(setId, params) + '</div>' +
-            '<div class="assign-params-cell passing" role="cell">' + trackControls +
+            '<div class="assign-params-cell passing" role="cell">' + passingControl +
             '</div>' +
             '<div class="assign-params-cell star" role="cell">' + renderAssignStarControls(setId, params, set) + '</div>' +
         '</div>';
@@ -3801,14 +3785,6 @@
                 ? formatPercentInput(defaultMasteryForSet(set))
                 : '';
             renderAssignParameterTable();
-            return;
-        }
-        if (key === 'listeningTracks') {
-            var track = control.getAttribute('data-listening-track');
-            params.listeningTracks = params.listeningTracks || [];
-            if (control.checked && params.listeningTracks.indexOf(track) === -1) params.listeningTracks.push(track);
-            if (!control.checked) params.listeningTracks = params.listeningTracks.filter(function(item) { return item !== track; });
-            updateAssignOptionsSummary();
             return;
         }
         params[key] = control.value;
@@ -3885,12 +3861,9 @@
         var options = sets.map(function(set) {
             var params = assignParamForSet(set);
             var label = set.title || set.set_id || 'Task';
+            if (isIntensiveListeningSet(set)) throw new Error('Listening practice is self-study and cannot be assigned.');
             var passing = validateAssignPercent(params.passingPercentage, label + ' Passing %', true);
-            var intensive = isIntensiveListeningSet(set);
-            if (intensive && (!params.listeningTracks || !params.listeningTracks.length)) {
-                throw new Error('Choose at least one Listening track for ' + label + '.');
-            }
-            var masteryEnabled = intensive ? false : params.masteryEnabled === true;
+            var masteryEnabled = params.masteryEnabled === true;
             var mastery = validateAssignPercent(params.masteryPercentage, label + ' Mastery %', masteryEnabled);
             if (masteryEnabled && Number(mastery) < Number(passing)) {
                 throw new Error(label + ' Mastery % must be at least the Passing %.');
@@ -3901,12 +3874,9 @@
                 set_id: set.set_id,
                 due_at: dueAt
             };
-            if (intensive) option.listening_tracks = params.listeningTracks.slice();
-            else {
-                option.passing_percentage = passing;
-                option.mastery_enabled = masteryEnabled;
-                if (masteryEnabled) option.mastery_percentage = mastery;
-            }
+            option.passing_percentage = passing;
+            option.mastery_enabled = masteryEnabled;
+            if (masteryEnabled) option.mastery_percentage = mastery;
             return option;
         });
         return {
@@ -4634,10 +4604,11 @@
             var context = item.practice_context === 'assignment' ? 'Assigned' : item.practice_context === 'review' ? 'Review' : 'Self study';
             return '<article class="intensive-notification-event">' +
                 '<div class="intensive-notification-event-head"><strong>' + escapeHtml(phase) + '</strong><span class="muted">' + escapeHtml(formatDateTime(item.occurred_at)) + '</span></div>' +
-                '<p class="muted">' + escapeHtml(context) + '</p>' +
+                '<p class="muted">Listening · ' + escapeHtml(item.practice_track === 'shadowing' ? 'Shadowing' : 'Dictation') + ' · ' + escapeHtml(context) + '</p>' +
                 '<div class="activity-session-summary"><strong>' + escapeHtml(formatPercent(item.completion_percentage)) + '</strong><span>Completion</span>' +
                 '<span>' + escapeHtml(Number(item.completed_unit_count) || 0) + ' units · ' + escapeHtml(Number(item.new_completed_unit_count) || 0) + ' new</span>' +
-                '<span>' + escapeHtml(Number(item.independent_unit_count) || 0) + ' independent · ' + escapeHtml(Number(item.assisted_unit_count) || 0) + ' with answers</span></div>' +
+                '<span>' + escapeHtml(Number(item.independent_unit_count) || 0) + ' independent · ' + escapeHtml(Number(item.assisted_unit_count) || 0) + ' with answers</span>' +
+                '<span>Effective time · ' + escapeHtml(item.effective_time_label || formatEffectiveLearningTime(item.effective_seconds)) + '</span></div>' +
                 '</article>';
         }).join('');
         return '<div class="progress-matrix-modal-backdrop notification-attempt-modal teacher-utility-modal" data-notification-intensive-close="backdrop">' +
@@ -4752,6 +4723,12 @@
         if (!minutes) return remainder + 's';
         if (!remainder) return minutes + 'm';
         return minutes + 'm ' + remainder + 's';
+    }
+
+    function formatEffectiveLearningTime(seconds) {
+        var total = Math.max(0, Math.floor(Number(seconds) || 0));
+        if (total < 60) return '<1 min';
+        return Math.max(1, Math.round(total / 60)) + ' min';
     }
 
     function formatAnswerText(value, fallback) {
@@ -7345,12 +7322,14 @@
         var name = studentDisplayName(student) || event.student_name || event.student_id || 'Student';
         var phase = event.session_phase === 'completed' ? 'completed' : event.session_phase === 'paused' ? 'paused' : 'started';
         var title = event.set_title || setTitleFor(event.set_id) || event.set_id || 'Intensive Listening';
+        var mode = event.practice_track === 'shadowing' ? 'Shadowing' : 'Dictation';
+        var effectiveTime = event.effective_time_label || formatEffectiveLearningTime(event.effective_seconds);
         return {
             type: 'intensive_listening',
             date: event.occurred_at || null,
             unread: events.some(isIntensiveReviewUnread),
             intensiveEvent: event,
-            label: name + ' ' + phase + ' Intensive Listening · ' + title,
+            label: name + ' ' + phase + ' Listening · ' + mode + ' · ' + title,
             score: event.completion_percentage,
             time: formatDateTime(event.occurred_at),
             intensive_event_id: intensiveEventId(event),
@@ -7358,6 +7337,8 @@
             assignment_id: event.assignment_id || '',
             set_id: event.set_id || '',
             session_phase: phase,
+            practice_track: event.practice_track || 'dictation',
+            effective_time_label: effectiveTime,
             practice_context: event.practice_context || 'self_study',
             attempt_count: events.length
         };
@@ -7397,7 +7378,7 @@
                 '<span class="activity-unread-dot"></span><span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong></span>' +
                 '<span class="activity-timing"><span class="activity-attempt-count">' + escapeHtml(item.session_phase) + '</span>' +
                 '<span class="activity-date">' + escapeHtml(item.time) + '</span></span>' +
-                '<span class="activity-score">' + escapeHtml(formatPercent(item.score)) + '</span></button>';
+                '<span class="activity-score">' + escapeHtml(item.effective_time_label || formatPercent(item.score)) + '</span></button>';
         }
         var attemptCount = Math.max(1, Number(item.attempt_count || 1));
         var attemptClass = attemptCount >= 3 ? ' many' : attemptCount === 2 ? ' repeat' : ' single';

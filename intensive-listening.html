@@ -9,20 +9,30 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260906-1">
-  <link rel="stylesheet" href="assets/css/listening-shadowing.css?v=20260905-2">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260907-3">
+  <link rel="stylesheet" href="assets/css/listening-shadowing.css?v=20260907-3">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
     <button class="il-back" id="back-button" type="button" aria-label="Back">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path></svg>
     </button>
-    <span class="il-toolbar-title">Listening</span>
-    <div class="il-header-progress">
+    <div class="il-header-progress" aria-label="Current mode progress">
       <progress id="header-progress" max="100" value="0"></progress>
       <strong id="header-progress-label">0%</strong>
     </div>
-    <div class="il-header-tools"><a class="il-linked-practice" id="linked-practice-header" href="#" hidden>Listening Practice</a><button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button></div>
+    <div class="il-header-tools">
+      <div class="il-practice-mode-menu">
+        <button class="il-practice-mode-trigger" id="il-practice-mode-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="il-practice-mode-popover">
+          <span id="il-practice-mode-label">Dictation</span><span aria-hidden="true">⌄</span>
+        </button>
+        <div class="il-practice-mode-popover" id="il-practice-mode-popover" role="menu" hidden>
+          <button type="button" role="menuitemradio" aria-checked="true" data-practice-listening-mode="dictation">Dictation</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-practice-listening-mode="shadowing">Shadowing</button>
+        </div>
+      </div>
+      <button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button>
+    </div>
   </header>
 
   <main class="il-shell" id="practice-shell" hidden>
@@ -31,24 +41,13 @@
         <span class="il-eyebrow" id="material-source">LISTEN · TYPE · CHECK</span>
         <h1 id="material-title">Loading…</h1>
         <p class="il-assignment-context" id="assignment-context" hidden></p>
+        <a class="il-linked-practice" id="linked-practice-header" href="#" hidden>Open Listening Practice</a>
       </div>
       <div class="il-stats" aria-label="Practice summary">
         <span><strong id="completed-count">0</strong><small>Completed</small></span>
         <span><strong id="independent-count">0</strong><small>Independent</small></span>
         <span><strong id="assisted-count">0</strong><small>With answer</small></span>
         <span><strong id="replay-count">0</strong><small>Replays</small></span>
-      </div>
-    </section>
-
-    <section class="listening-track-chooser" id="listening-track-chooser" hidden aria-labelledby="listening-track-title">
-      <div>
-        <span class="il-eyebrow">LISTENING WORKSPACE</span>
-        <h2 id="listening-track-title">Choose how you want to practise</h2>
-        <p>Every material keeps Dictation and Shadowing progress separate.</p>
-      </div>
-      <div class="listening-track-actions" role="group" aria-label="Listening tracks">
-        <button class="listening-track-button is-selected" type="button" data-listening-track="dictation" aria-pressed="true"><span>Dictation</span><small>Listen, type, check</small></button>
-        <button class="listening-track-button" type="button" data-listening-track="shadowing" aria-pressed="false"><span>Shadowing</span><small>Listen, record, improve</small></button>
       </div>
     </section>
 
@@ -61,6 +60,8 @@
         </div>
         <span class="il-unit-position" id="unit-position">1 / 1</span>
       </div>
+
+      <video class="il-source-video" id="dictation-video" preload="metadata" playsinline hidden></video>
 
       <div class="il-audio-row">
         <button class="il-replay" id="replay-button" type="button" aria-label="Replay this unit">▶</button>
@@ -136,6 +137,13 @@
     </div>
   </div>
 
+  <div class="il-leave-modal" id="mode-switch-modal" hidden>
+    <div class="il-leave-box" role="alertdialog" aria-modal="true" aria-labelledby="mode-switch-title" aria-describedby="mode-switch-copy">
+      <div><h2 id="mode-switch-title">Switch practice mode?</h2><p id="mode-switch-copy">Unchecked answers will not be saved.</p></div>
+      <footer><button id="mode-switch-cancel" type="button">Keep Practising</button><button id="mode-switch-confirm" type="button">Switch Mode</button></footer>
+    </div>
+  </div>
+
   <div class="il-leave-modal" id="argue-modal" hidden>
     <div class="il-argue-shell">
       <div class="il-argue-box" id="argue-box" role="dialog" aria-modal="true" aria-labelledby="argue-title">
@@ -159,10 +167,12 @@
   </div>
 
   <audio id="audio" preload="auto"></audio>
+  <audio id="shadowing-self-audio" preload="metadata"></audio>
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
-  <script src="assets/js/intensive-listening.js?v=20260905-1"></script>
-  <script src="assets/js/listening-shadowing.js?v=20260905-2"></script>
+  <script src="assets/js/learning-activity.js?v=20260907-3"></script>
+  <script src="assets/js/intensive-listening.js?v=20260907-3"></script>
+  <script src="assets/js/listening-shadowing.js?v=20260907-3"></script>
 </body>
 </html>

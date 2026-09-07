@@ -5,13 +5,19 @@ const soe = require("../cloudfunctions/intensiveListening/tencent-soe-n");
 
 const url = soe.buildSignedUrl({ appId: "app", secretId: "id", secretKey: "key", timestamp: 1700000000, expired: 1700000300, nonce: 7, voiceId: "voice", referenceText: "hello world", endpoint: soe.DEFAULT_ENDPOINT });
 assert.match(url, /server_engine_type=16k_en/);
-assert.match(url, /eval_mode=1/);
+assert.match(url, /eval_mode=2/);
 assert.match(url, /rec_mode=1/);
 assert.match(url, /voice_format=1/);
 assert.match(url, /text_mode=0/);
 assert.match(url, /secretid=id/);
 assert.match(url, /ref_text=hello%20world/);
 assert.match(url, /signature=/);
+const reference120Words = Array(120).fill("word").join(" ");
+const reference121Words = Array(121).fill("word").join(" ");
+assert.doesNotThrow(() => soe.buildSignedUrl({ appId: "app", secretId: "id", secretKey: "key", referenceText: reference120Words, endpoint: soe.DEFAULT_ENDPOINT }));
+soe.evaluate(Buffer.from("audio"), { enabled: true, appId: "app", secretId: "id", secretKey: "key", referenceText: reference121Words, endpoint: soe.DEFAULT_ENDPOINT })
+  .then(() => { throw new Error("121-word reference unexpectedly accepted"); })
+  .catch((error) => { assert.match(error.message, /SOE_REFERENCE_INVALID/); });
 assert.doesNotMatch(url, /app_id=|secret_id=|(?:[?&])sign=/);
 const parsed = new URL(url);
 const signature = parsed.searchParams.get("signature");

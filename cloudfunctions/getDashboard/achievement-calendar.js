@@ -1,5 +1,6 @@
 const SHANGHAI_TIME_ZONE = "Asia/Shanghai";
 const DAY_MS = 24 * 60 * 60 * 1000;
+const learningActivity = require("../_shared/learning-activity");
 
 function text(value, fallback = "") {
   const normalized = String(value == null ? "" : value).trim();
@@ -119,7 +120,7 @@ function writingTitle(composition) {
   return text(composition && (composition.title || composition.prompt_title), "Writing practice");
 }
 
-function buildAchievementCalendar({ attempts = [], sets = [], compositions = [], now = new Date() } = {}) {
+function buildAchievementCalendar({ attempts = [], sets = [], compositions = [], learningActivities = [], now = new Date() } = {}) {
   const window = achievementWindow(now);
   const setMap = new Map(sets.map((set) => [text(set && set.set_id), set]));
   const firstPassByKey = new Map();
@@ -171,6 +172,27 @@ function buildAchievementCalendar({ attempts = [], sets = [], compositions = [],
     });
   });
 
+  learningActivity.aggregateActivities(learningActivities).forEach((row) => {
+    if (row.effective_seconds < 60 || !row.date) return;
+    const set = setMap.get(text(row.set_id || row.material_id)) || setMap.get(text(row.material_id)) || {};
+    const setId = text(row.set_id || row.material_id);
+    const mode = ["dictation", "shadowing"].includes(row.mode) ? row.mode : "dictation";
+    items.push({
+      achievement_key: `listening:${row.date}:${mode}:${text(row.material_id || setId)}`,
+      date: row.date,
+      type: "listening",
+      set_id: setId,
+      mode,
+      title: exerciseTitle(set, { set_id: setId, resource_title: row.material_title || set.title }),
+      detail: `Listening · ${mode === "shadowing" ? "Shadowing" : "Dictation"}`,
+      result: learningActivity.formatEffectiveTime(row.effective_seconds),
+      effective_seconds: row.effective_seconds,
+      open_href: `intensive-listening.html?set=${encodeURIComponent(setId)}&mode=${encodeURIComponent(mode)}`,
+      percentage: null,
+      completed_at: row.date,
+    });
+  });
+
   const dayMap = new Map();
   items.forEach((item) => {
     if (!item.date || item.date < window.start_date || item.date > window.today_date) return;
@@ -185,6 +207,7 @@ function buildAchievementCalendar({ attempts = [], sets = [], compositions = [],
       achievement_key: item.achievement_key,
       type: item.type,
       set_id: item.set_id || null,
+      mode: item.mode || null,
       assignment_id: item.assignment_id || null,
       attempt_id: item.attempt_id || null,
       composition_id: item.composition_id || null,
@@ -192,6 +215,8 @@ function buildAchievementCalendar({ attempts = [], sets = [], compositions = [],
       detail: item.detail,
       result: item.result,
       percentage: item.percentage,
+      effective_seconds: item.effective_seconds == null ? null : item.effective_seconds,
+      open_href: item.open_href || null,
     })),
   }));
 

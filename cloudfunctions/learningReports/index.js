@@ -11,6 +11,7 @@ const QUERY_CHUNK_SIZE = 100;
 const CLASS_COLLECTION = "classes";
 const CLASS_MEMBERSHIP_COLLECTION = "class_memberships";
 const REPORT_COLLECTION = "learning_reports";
+const LEARNING_ACTIVITY_COLLECTION = "learning_activity_sessions";
 
 function text(value) {
   return reportRules.text(value);
@@ -136,18 +137,21 @@ async function reportInputs(classRecord) {
     where: { class_id: classRecord.class_id },
   })).map(recordData);
   const studentUids = memberships.map((membership) => membership.student_uid);
-  const [students, assignments, attempts, intensive_progress] = await Promise.all([
+  const [students, assignments, attempts, intensive_progress, learning_activity_sessions] = await Promise.all([
     getByFieldIn("students", "auth_uid", studentUids),
     getByFieldIn("assignments", "student_uid", studentUids),
     getByFieldIn("attempts", "student_uid", studentUids),
     // Older environments may not have this collection yet. Reports remain
     // usable for ordinary exercises until the owner completes the rollout.
     getByFieldIn("intensive_listening_progress", "student_uid", studentUids).catch(() => []),
+    // Effective-time sessions are additive report context. Keep the report
+    // usable while the new collection is absent during a staged rollout.
+    getByFieldIn(LEARNING_ACTIVITY_COLLECTION, "student_uid", studentUids).catch(() => []),
   ]);
-  const setIds = [...new Set(assignments.concat(attempts, intensive_progress)
-    .map((item) => text(item.set_id)).filter(Boolean))];
+  const setIds = [...new Set(assignments.concat(attempts, intensive_progress, learning_activity_sessions)
+    .map((item) => text(item.set_id || item.material_id)).filter(Boolean))];
   const sets = await getByFieldIn("sets", "set_id", setIds);
-  return { memberships, students, assignments, attempts, intensive_progress, sets };
+  return { memberships, students, assignments, attempts, intensive_progress, learning_activity_sessions, sets };
 }
 
 async function previousPublishedReport(classId, period) {

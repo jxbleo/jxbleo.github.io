@@ -74,7 +74,7 @@ function testDashboardIntegrationContract() {
   assert(frontend.includes("function finishedAssignments()"));
   assert(frontend.includes("function studentCalendarAchievementDays()"));
   assert(frontend.includes("action: 'getAchievementCalendar'"), "achievement dates must come from the server-derived calendar rather than browser inference");
-  assert(backend.includes("achievement_calendar: buildAchievementCalendar({ attempts, sets, compositions, now })"));
+  assert(backend.includes("achievement_calendar: buildAchievementCalendar({ attempts, sets, compositions, learningActivities, now })"));
   assert(frontend.includes("var finishedCount = (state.assignments || []).filter"));
 }
 

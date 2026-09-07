@@ -1495,23 +1495,47 @@ per material publication revision stores the teacher, timestamp, impact
 (`dictation|shadowing|both|metadata`), and bounded private before/after material
 snapshots. Students never query either authoring collection.
 
-`listening_shadowing_progress` is unique by student + material + Shadowing
-revision and stores per-segment complete-listen count, transcript reveal state,
-best product score/take, word states, qualified/assisted/independent flags, and
-bounded pending/completed server play tokens. Public projections omit private
-word states until that segment's transcript is revealed.
+`listening_shadowing_progress` is unique by student + material + shared content
+revision and stores the account reveal threshold snapshot plus per-segment
+complete-listen count, transcript reveal state, monotonic
+`best_score`/`best_take_id`, latest `latest_score`/`latest_take_id`/
+`latest_word_states`, qualified/assisted/independent flags, and bounded
+pending/completed server play tokens. Public projections omit private word
+states until that segment's transcript is revealed. The student profile stores
+only allowlisted `listening_mode_preference: dictation|shadowing` and
+`listening_transcript_reveal_threshold: 1|2|3|5|off` preferences.
 `listening_shadowing_takes` is immutable attempt
 history with owner/material/segment/revision hashes, idempotent `client_take_id`,
 private upload path and registered `file_id`, validation/provider status,
-product score, private word states, and delete-after timestamp. The same
+product score, private word states, and delete-after timestamp. A conclusive
+take sets `delete_after` immediately and records `audio_deleted_at` after direct
+private-file deletion; maintenance retries only when that deletion did not
+succeed. The same
 collection contains one non-attempt student lock document used only to enforce
 the single in-flight take invariant. `listening_shadowing_usage` records one
 billable provider boundary with stable take/reference/audio/policy/provider
 revisions plus Shanghai `usage_day` and `billable_claimed` for quota enforcement.
-`listening_assignment_tracks` stores one student/assignment/set/track
-participation row; the parent assignment has `assignment_kind: listening` and
-`required_listening_tracks`. All collections remain ADMINONLY and require
-owner-reviewed indexes.
+`listening_assignment_tracks` is retained only as a dormant compatibility
+collection from the earlier V2 rollout. New Intensive Listening work is
+self-study only and neither the browser nor server creates new assignment-track
+or parent Assignment rows. All collections remain ADMINONLY.
+
+`learning_activity_sessions` is a mixed-document ADMINONLY collection. Session
+rows use immutable `session_id`, authenticated `student_uid`, safe student ID
+snapshot, `activity_type: listening`, material/set ID, `practice_mode`, content
+revision, active/paused/closed status and server lifecycle timestamps. Accepted
+time is stored as integer `effective_seconds`, Shanghai `daily_seconds`, bounded
+unique `unit_ids`, monotonic `last_sequence`, bounded `accepted_windows`, bounded
+server `integrity_flags`, and optional `notification_session_id`. It never stores
+typed entries, transcript/reference text, pointer coordinates, audio/file IDs,
+provider evidence, IP or device fingerprints. A deterministic `kind: lease`
+row keyed from the authenticated student UID uses `active_session_id` (not the
+session row's unique `session_id`) to enforce one active accrual source.
+
+Required indexes for owner-reviewed creation are: unique `session_id`;
+`student_uid + started_at DESC`; `student_uid + status + last_effective_at DESC`;
+`student_uid + activity_type + started_at DESC`; and
+`set_id + started_at DESC`.
 
 ## Argue delivery and resolution fields (2026-09-06)
 

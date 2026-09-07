@@ -358,6 +358,26 @@
             (note ? '<em>' + escapeHtml(note) + '</em>' : '') + '</div>';
     }
 
+    function effectiveTimeLabel(value) {
+        var summary = value && typeof value === 'object' ? value : {};
+        if (summary.effective_time) return String(summary.effective_time);
+        var seconds = Math.max(0, Math.floor(Number(summary.effective_seconds) || 0));
+        if (!seconds) return '0 min';
+        return seconds < 60 ? '<1 min' : Math.max(1, Math.round(seconds / 60)) + ' min';
+    }
+
+    function listeningTimeSummaryHtml(detail) {
+        var summary = detail && detail.effective_learning_time || {};
+        var byMode = summary.by_mode || {};
+        var dictation = Math.max(0, Math.floor(Number(byMode.dictation) || 0));
+        var shadowing = Math.max(0, Math.floor(Number(byMode.shadowing) || 0));
+        return '<div class="reports-category-list reports-listening-time" aria-label="Effective Listening time">' +
+            '<div class="reports-category-item"><span>Effective Listening</span><strong>' + escapeHtml(effectiveTimeLabel(summary)) + '</strong></div>' +
+            '<div class="reports-category-item"><span>Dictation</span><strong>' + escapeHtml(!dictation ? '0 min' : dictation < 60 ? '<1 min' : Math.max(1, Math.round(dictation / 60)) + ' min') + '</strong></div>' +
+            '<div class="reports-category-item"><span>Shadowing</span><strong>' + escapeHtml(!shadowing ? '0 min' : shadowing < 60 ? '<1 min' : Math.max(1, Math.round(shadowing / 60)) + ' min') + '</strong></div>' +
+        '</div>';
+    }
+
     function detailSummaryHtml(detail) {
         var metrics = detailMetrics(detail);
         var categories = categoryRowsForDetail(detail);
@@ -366,6 +386,7 @@
             metricCard('Learning activity', metrics.actual, metrics.actual.expected !== null ? 'completed / planned' : 'recorded in this period') +
             metricCard('Self-study', metrics.selfStudy, 'does not affect rank') +
         '</div>' +
+        listeningTimeSummaryHtml(detail) +
         (categories.length ? '<div class="reports-category-list">' + categories.map(function(item) {
             return '<div class="reports-category-item"><span>' + escapeHtml(item.name) + '</span><strong>' + escapeHtml(item.value) + '</strong></div>';
         }).join('') + '</div>' : '');

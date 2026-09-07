@@ -9,14 +9,22 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening Library · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/app.css?v=20260827-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening-library.css?v=20260831-2">
+  <link rel="stylesheet" href="assets/css/intensive-listening-library.css?v=20260907-1">
 </head>
 <body class="intensive-listening-library-page">
   <header class="ill-header">
     <a class="ill-back" href="dashboard.html?view=resources" aria-label="Back to Dashboard">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path></svg>
     </a>
-    <strong class="ill-toolbar-title">Listening</strong>
+    <div class="ill-mode-menu">
+      <button class="ill-mode-trigger" id="ill-mode-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="ill-mode-popover">
+        <span id="ill-mode-label">Dictation</span><span class="ill-mode-chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="ill-mode-popover" id="ill-mode-popover" role="menu" hidden>
+        <button type="button" role="menuitemradio" aria-checked="true" data-listening-mode="dictation"><span class="ill-mode-check" aria-hidden="true">✓</span><span>Dictation</span></button>
+        <button type="button" role="menuitemradio" aria-checked="false" data-listening-mode="shadowing"><span class="ill-mode-check" aria-hidden="true">✓</span><span>Shadowing</span></button>
+      </div>
+    </div>
     <span class="ill-toolbar-spacer" aria-hidden="true"></span>
   </header>
 
@@ -25,7 +33,7 @@
       <div class="ill-intro-copy">
         <span class="ill-eyebrow">YOUR LISTENING LIBRARY</span>
         <h1 id="ill-title">Catch every word.</h1>
-        <p>Complete the transcript one sentence at a time. Your independent and assisted progress stays here.</p>
+        <p id="ill-mode-description">Listen, type, and check one canonical unit at a time.</p>
       </div>
       <div class="ill-controls" aria-label="Library controls">
         <label class="ill-search">
@@ -62,6 +70,6 @@
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
   <script src="assets/js/auth.js?v=20260815-2"></script>
   <script src="assets/js/login-navigation.js?v=20260815-1"></script>
-  <script src="assets/js/intensive-listening-library.js?v=20260905-1"></script>
+  <script src="assets/js/intensive-listening-library.js?v=20260907-1"></script>
 </body>
 </html>

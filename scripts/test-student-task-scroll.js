@@ -59,7 +59,7 @@ assert.match(
 );
 assert.doesNotMatch(appCss, /teacher-replies-pull-loader/);
 
-assert.match(dashboardHtml, /assets\/css\/app\.css\?v=20260902-1/);
-assert.match(dashboardHtml, /assets\/js\/dashboard\.js\?v=20260902-2/);
+assert.match(dashboardHtml, /assets\/css\/app\.css\?v=20260907-2/);
+assert.match(dashboardHtml, /assets\/js\/dashboard\.js\?v=20260907-3/);
 
 console.log('Student task-list scrolling regression checks passed.');

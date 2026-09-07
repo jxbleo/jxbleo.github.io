@@ -1,6 +1,7 @@
 "use strict";
 
 const exerciseProgress = require("./exercise-progress");
+const learningActivity = require("./learning-activity");
 
 // The report domain deliberately has no CloudBase dependency. Keeping period
 // math and snapshot projection here makes the security-sensitive functions
@@ -372,6 +373,35 @@ function activitySummary(attempts, setById) {
   };
 }
 
+function effectiveLearningTimeSummary(sessions, setById, periodStart, cutoffAt) {
+  const startKey = learningActivity.dayKey(periodStart);
+  const endKey = learningActivity.dayKey(cutoffAt);
+  const rows = learningActivity.aggregateActivities(sessions).filter((row) =>
+    row.date && (!startKey || row.date >= startKey) && (!endKey || row.date <= endKey)
+  );
+  const byMode = { dictation: 0, shadowing: 0 };
+  const items = rows.map((row) => {
+    const seconds = Math.max(0, Math.floor(Number(row.effective_seconds) || 0));
+    if (Object.hasOwn(byMode, row.mode)) byMode[row.mode] += seconds;
+    const set = setById.get(text(row.set_id || row.material_id)) || setById.get(text(row.material_id)) || {};
+    return {
+      date: row.date,
+      set_id: text(row.set_id || row.material_id),
+      title: text(set.title) || text(row.material_id || row.set_id),
+      mode: row.mode,
+      effective_seconds: seconds,
+      effective_time: learningActivity.formatEffectiveTime(seconds),
+    };
+  }).filter((item) => item.effective_seconds > 0);
+  const totalSeconds = items.reduce((sum, item) => sum + item.effective_seconds, 0);
+  return {
+    effective_seconds: totalSeconds,
+    effective_time: learningActivity.formatEffectiveTime(totalSeconds),
+    by_mode: byMode,
+    items,
+  };
+}
+
 function selfStudySummary(attempts, setById, intensiveProgressByStudentSet, periodStart, cutoffAt, assignedSetIds = new Set()) {
   const countable = (attempts || []).filter((attempt) => countableAttempt(attempt) && !attempt.assignment_id);
   const completedSetIds = new Set(countable.filter(effectivePassed).map((attempt) => text(attempt.set_id)).filter(Boolean));
@@ -595,6 +625,13 @@ function buildReportSnapshot(options = {}) {
         period.start_at,
         cutoffAt,
         assignedSetIdsByStudent.get(studentUid) || new Set()
+      ),
+      effective_learning_time: effectiveLearningTimeSummary(
+        (options.learning_activity_sessions || []).map(recordData)
+          .filter((session) => text(session.student_uid) === studentUid && session.kind === "session"),
+        setById,
+        period.start_at,
+        cutoffAt
       ),
       teacher_comment: note.teacher_comment || "",
       teacher_goals: note.teacher_goals || [],

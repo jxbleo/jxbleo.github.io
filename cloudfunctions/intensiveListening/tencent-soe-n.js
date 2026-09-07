@@ -8,7 +8,8 @@
 const crypto = require("crypto");
 
 const PROVIDER = "tencent_soe_n";
-const PROVIDER_REVISION = "soe-n-wss-v1";
+const PROVIDER_REVISION = "soe-n-wss-paragraph-v2";
+const MAX_REFERENCE_WORDS = 120;
 const DEFAULT_ENDPOINT = "wss://soe.cloud.tencent.com/soe/api/";
 
 function value(value) {
@@ -69,7 +70,10 @@ function buildSignedUrl(options = {}) {
     voice_id: value(options.voiceId || options.voice_id) || crypto.randomUUID(),
     secretid: secretId,
     server_engine_type: "16k_en",
-    eval_mode: 1,
+    // Paragraph mode is required for canonical Listening units. Sentence mode
+    // silently rejects longer reviewed units and cannot reuse the shared unit
+    // list across Dictation and Shadowing.
+    eval_mode: 2,
     rec_mode: 1,
     voice_format: 1,
     text_mode: 0,
@@ -161,7 +165,7 @@ function evaluate(audioBuffer, options = {}) {
   if (!config.appId || !config.secretId || !config.secretKey) return Promise.reject(Object.assign(new Error("SOE_NOT_CONFIGURED"), { category: "not_configured" }));
   const referenceText = value(options.referenceText || options.reference_text);
   const words = referenceText ? referenceText.split(/\s+/).filter(Boolean) : [];
-  if (!referenceText || words.length < 1 || words.length > 30) return Promise.reject(Object.assign(new Error("SOE_REFERENCE_INVALID"), { category: "invalid_reference" }));
+  if (!referenceText || words.length < 1 || words.length > MAX_REFERENCE_WORDS) return Promise.reject(Object.assign(new Error("SOE_REFERENCE_INVALID"), { category: "invalid_reference" }));
   const buffer = Buffer.isBuffer(audioBuffer) ? audioBuffer : Buffer.from(audioBuffer || []);
   if (!buffer.length) return Promise.reject(Object.assign(new Error("SOE_AUDIO_INVALID"), { category: "invalid_audio" }));
   let url;
@@ -250,6 +254,7 @@ function evaluate(audioBuffer, options = {}) {
 module.exports = {
   PROVIDER,
   PROVIDER_REVISION,
+  MAX_REFERENCE_WORDS,
   DEFAULT_ENDPOINT,
   assertEndpoint,
   sortedQuery,

@@ -588,6 +588,7 @@
     function achievementTypeLabel(type) {
         if (type === 'bbc') return 'BBC';
         if (type === 'vocabulary') return 'VOCABULARY';
+        if (type === 'listening') return 'LISTENING';
         if (type === 'writing') return 'WRITING';
         if (type === 'speaking') return 'SPEAKING';
         return 'ACHIEVEMENT';
@@ -1308,6 +1309,10 @@
 
     function studentCalendarAchievementHref(item) {
         if (!item) return '';
+        if (String(item.type || '').toLowerCase() === 'listening') {
+            var listeningHref = String(item.open_href || '').trim();
+            return /^intensive-listening\.html(?:\?|$)/i.test(listeningHref) ? listeningHref : '';
+        }
         if (String(item.type || '').toLowerCase() === 'writing') {
             var compositionId = String(item.composition_id || '').trim();
             return compositionId
@@ -1339,10 +1344,12 @@
         var title = item && item.title || 'Completed task';
         var result = item && item.result || 'COMPLETED';
         var href = studentCalendarAchievementHref(item);
-        var hideStatus = String(item && item.type || '').toLowerCase() === 'writing';
+        var itemType = String(item && item.type || '').toLowerCase();
+        var hideStatus = itemType === 'writing' || itemType === 'listening';
+        var entryStatus = itemType === 'listening' ? 'completed' : 'passed';
         return '<article class="student-message-task finished student-calendar-achievement"' +
             ' data-entry-kind="' + escapeHtml(type) + '" data-entry-title="' + escapeHtml(title) + '"' +
-            ' data-entry-status="passed" data-entry-best="' + escapeHtml(item && item.percentage != null ? item.percentage : '') + '"' +
+            ' data-entry-status="' + escapeHtml(entryStatus) + '" data-entry-best="' + escapeHtml(item && item.percentage != null ? item.percentage : '') + '"' +
             ' data-entry-locked="false" data-calendar-hide-status="' + (hideStatus ? 'true' : 'false') + '"' +
             (href ? ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Review before opening ' + escapeHtml(title) + '"' : '') + '>' +
             '<div class="student-message-task-main">' +

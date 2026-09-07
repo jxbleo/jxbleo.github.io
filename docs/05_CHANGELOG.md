@@ -3211,3 +3211,23 @@ the one permitted `rec_mode=1` binary WAV message.
   insets.
 - Cache-busted the Listening practice stylesheet and added a focused regression
   assertion for the mobile toolbar position.
+
+## 2026-09-07 — Listening mode-first and effective learning time foundation
+
+- Listening Library and practice now use a top-level Dictation/Shadowing mode
+  menu, with canonical shared units and independent mode progress.
+- Shadowing paragraph scoring uses EvalMode 2 with a 120-word reference limit;
+  self-study Listening no longer creates or accepts new Assignment records.
+- Added bounded, idempotent effective-time sessions with 20-second interaction
+  expiry, three-minute idle closure, Shanghai day buckets, safe calendar/report
+  minute summaries, and notification summaries without transcript or audio data.
+- Teacher Listening authoring now edits one Transcript & Units source and only
+  previews Shadowing from that source.
+- Review hardening made latest Shadowing feedback independent from monotonic
+  Best Score, added the three-second record countdown and per-unit browser replay,
+  removed cloud audio immediately after conclusive scoring, capped complete-listen
+  credit, added video Dictation playback, protected mode switching from shared-
+  player races, and transactionally deduplicated effective-time sequences. Final
+  review also added a first-interaction server timing handshake, restored focus
+  recovery without unpausing explicit waits, bound time sessions to the existing
+  mode-specific notification thread, and kept zero activity labelled `0 min`.

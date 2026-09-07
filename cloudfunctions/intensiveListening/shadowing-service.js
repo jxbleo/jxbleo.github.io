@@ -9,6 +9,7 @@
 const crypto = require("crypto");
 
 const PASS_LINE = 80;
+const MAX_REFERENCE_WORDS = 120;
 const TRACKS = ["dictation", "shadowing"];
 const MODES = ["dictation", "context_only", "shadowing", "skip"];
 
@@ -80,12 +81,14 @@ function normalizeSegment(segment, index, track) {
   const raw = segment || {};
   const segmentId = text(raw.segment_id || raw.unit_id) || `${track}_${String(index + 1).padStart(3, "0")}`;
   const sourceMode = normalizeMode(raw.practice_mode || raw.mode);
-  const mode = track === "shadowing"
-    ? (["shadowing", "context_only", "skip"].includes(sourceMode) ? sourceMode : "shadowing")
-    : sourceMode;
+  // `practice_mode` belongs to the canonical unit, not to a track. A
+  // dictation unit is therefore also a scored Shadowing unit; context-only
+  // and skip units remain playable but never enter either denominator.
+  const mode = sourceMode;
   const start = Number(raw.start_seconds == null ? raw.start : raw.start_seconds);
   const end = Number(raw.end_seconds == null ? raw.end : raw.end_seconds);
   const output = {
+    unit_id: segmentId,
     segment_id: segmentId,
     start_seconds: Number.isFinite(start) && start >= 0 ? start : 0,
     end_seconds: Number.isFinite(end) && end >= 0 ? end : 0,
@@ -129,6 +132,19 @@ function trackFromLegacy(material, track) {
   };
 }
 
+function canonicalUnitsFromMaterial(raw) {
+  if (Array.isArray(raw && raw.units) && raw.units.length) {
+    return raw.units.map((unit, index) => normalizeSegment(unit, index, "dictation"));
+  }
+  const dictation = raw && raw.tracks && raw.tracks.dictation;
+  if (dictation && Array.isArray(dictation.segments) && dictation.segments.length) {
+    // Schema 2 sometimes duplicated the same transcript under two different
+    // segment IDs. Dictation is the reviewed source of truth for migration.
+    return dictation.segments.map((unit, index) => normalizeSegment(unit, index, "dictation"));
+  }
+  return [];
+}
+
 function normalizeTrack(raw, track, material) {
   if (!raw || typeof raw !== "object") return trackFromLegacy(material, track);
   const sourceSegments = Array.isArray(raw.segments) ? raw.segments : [];
@@ -153,13 +169,26 @@ function normalizeMaterial(material) {
       src: text(raw.audio_src || raw.audioSrc || raw.media_src),
       mime_type: text(raw.mime_type || raw.mimeType),
     };
-  const tracks = {
-    dictation: normalizeTrack(explicitTracks ? raw.tracks.dictation : null, "dictation", raw),
-    shadowing: normalizeTrack(explicitTracks ? raw.tracks.shadowing : null, "shadowing", raw),
+  const canonicalUnits = canonicalUnitsFromMaterial(raw);
+  const sourceRevision = text(
+    raw.content_revision || raw.contentRevision || raw.transcript_revision ||
+      raw.transcriptRevision || raw.content_version || raw.contentVersion ||
+      (explicitTracks && raw.tracks.dictation && raw.tracks.dictation.revision)
+  ) || "1";
+  const canonicalTrack = {
+    enabled: canonicalUnits.some((unit) => normalizeMode(unit.practice_mode) === "dictation"),
+    revision: sourceRevision,
+    segments: canonicalUnits,
   };
-  if (!explicitTracks && raw.shadowing_enabled === false) tracks.shadowing.enabled = false;
+  const shadowingTrack = {
+    enabled: raw.shadowing_enabled !== false && canonicalUnits.some((unit) => normalizeMode(unit.practice_mode) === "dictation"),
+    revision: sourceRevision,
+    // Keep the same unit IDs, text, speaker, and timing in both modes.
+    segments: canonicalUnits.map((unit, index) => normalizeSegment(unit, index, "shadowing")),
+  };
+  const tracks = { dictation: canonicalTrack, shadowing: shadowingTrack };
   return {
-    schema_version: Number(raw.schema_version || raw.schemaVersion) >= 2 || explicitTracks ? 2 : 1,
+    schema_version: 3,
     material_id: text(raw.material_id || raw.materialId || raw.set_id),
     set_id: text(raw.set_id || raw.material_id || raw.materialId),
     title: text(raw.title) || "Listening",
@@ -168,12 +197,14 @@ function normalizeMaterial(material) {
     series_label: text(raw.series_label || raw.seriesLabel),
     published_on: text(raw.published_on || raw.publishedOn),
     media,
-    transcript_revision: text(raw.transcript_revision || raw.transcriptRevision || raw.content_version) || "1",
+    content_revision: sourceRevision,
+    transcript_revision: sourceRevision,
     linked_practice_set_id: text(raw.linked_practice_set_id || raw.linkedPracticeSetId) || null,
     publication_status: text(raw.publication_status || raw.publicationStatus) || (raw.visible === false ? "hidden" : "published"),
     published_at: raw.published_at || raw.publishedAt || null,
-    dictation_revision: tracks.dictation.revision,
-    shadowing_revision: tracks.shadowing.revision,
+    dictation_revision: sourceRevision,
+    shadowing_revision: sourceRevision,
+    units: canonicalUnits,
     tracks,
   };
 }
@@ -193,10 +224,28 @@ function trackSegments(material, track) {
 
 function trainingSegments(material, track) {
   return trackSegments(material, track).filter((segment) => (
-    track === "dictation"
-      ? normalizeMode(segment.practice_mode) === "dictation"
-      : normalizeMode(segment.practice_mode) === "shadowing"
+    normalizeMode(segment.practice_mode) === "dictation"
   ));
+}
+
+function validateCanonicalMaterial(material) {
+  const normalized = normalizeMaterial(material);
+  if (!normalized.units.length) throw new Error("MATERIAL_EMPTY");
+  let previousEnd = -1;
+  const scored = normalized.units.filter((unit) => normalizeMode(unit.practice_mode) === "dictation");
+  if (!scored.length) throw new Error("MATERIAL_NO_SCORED_UNITS");
+  normalized.units.forEach((unit) => {
+    if (!unit.unit_id || !unit.text && normalizeMode(unit.practice_mode) !== "skip") throw new Error("UNIT_TEXT_REQUIRED");
+    if (!Number.isFinite(unit.start_seconds) || !Number.isFinite(unit.end_seconds) || unit.end_seconds <= unit.start_seconds) throw new Error("UNIT_TIMING_INVALID");
+    if (unit.start_seconds < previousEnd) throw new Error("UNIT_TIMING_OVERLAP");
+    previousEnd = unit.end_seconds;
+    if (normalizeMode(unit.practice_mode) === "dictation") {
+      const words = referenceWords(unit);
+      if (words.length < 1 || words.length > MAX_REFERENCE_WORDS) throw new Error("REFERENCE_WORD_LIMIT");
+      if (!Array.isArray(unit.slots) || !unit.slots.length) throw new Error("DICTATION_SLOTS_REQUIRED");
+    }
+  });
+  return normalized;
 }
 
 function safeTrackMaterial(material) {
@@ -209,9 +258,28 @@ function safeTrackMaterial(material) {
     series_label: normalized.series_label,
     published_on: normalized.published_on,
     media: { ...normalized.media },
+    content_revision: normalized.content_revision,
     transcript_revision: normalized.transcript_revision,
+    units: normalized.units.map((unit) => ({
+      unit_id: unit.unit_id,
+      start_seconds: unit.start_seconds,
+      end_seconds: unit.end_seconds,
+      speaker: unit.speaker,
+      practice_mode: normalizeMode(unit.practice_mode),
+      slots: (unit.slots || []).map((slot) => ({
+        slot_id: slot.slot_id,
+        prefix: slot.prefix || "",
+        suffix: slot.suffix || "",
+        spelling_requirement: slot.spelling_requirement === "provided" ? "provided" : "required",
+        provided_text: slot.spelling_requirement === "provided" ? slot.answer || "" : "",
+      })),
+    })),
     linked_practice_set_id: normalized.linked_practice_set_id,
     schema_version: normalized.schema_version,
+    modes: {
+      dictation: { enabled: normalized.tracks.dictation.enabled },
+      shadowing: { enabled: normalized.tracks.shadowing.enabled },
+    },
     tracks: {},
   };
   TRACKS.forEach((track) => {
@@ -374,7 +442,9 @@ function createProgress(material, options = {}) {
       transcript_revealed: false,
       best_score: null,
       best_take_id: null,
-      best_word_states: [],
+      latest_score: null,
+      latest_take_id: null,
+      latest_word_states: [],
       qualified: false,
       assisted: false,
       independent: false,
@@ -418,15 +488,24 @@ function applyTake(progress, segmentId, result, now = new Date()) {
   const score = Math.max(0, Math.min(100, Math.round(Number(result && result.score) || 0)));
   const next = { ...current };
   const wasRevealed = current.transcript_revealed === true;
-  next.transcript_revealed = wasRevealed || result && result.transcript_revealed === true;
+  // A conclusive score always reveals the reviewed reference and its latest
+  // word-level feedback. Only the numeric best remains monotonic.
+  next.transcript_revealed = true;
+  next.latest_score = score;
+  next.latest_take_id = result && result.take_id || null;
+  next.latest_word_states = Array.isArray(result && result.word_states)
+    ? result.word_states.map((word) => ({ ...word }))
+    : [];
   if (current.best_score == null || score > Number(current.best_score)) {
     next.best_score = score;
     next.best_take_id = result && result.take_id || null;
-    next.best_word_states = Array.isArray(result && result.word_states) ? result.word_states.map((word) => ({ ...word })) : [];
+    next.best_word_states = Array.isArray(result && result.word_states)
+      ? result.word_states.map((word) => ({ ...word }))
+      : [];
   }
   next.qualified = next.qualified === true || score >= PASS_LINE;
-  next.assisted = next.assisted === true || (score >= PASS_LINE && next.transcript_revealed);
-  next.independent = next.independent === true || (score >= PASS_LINE && !next.transcript_revealed);
+  next.assisted = next.assisted === true || (score >= PASS_LINE && wasRevealed);
+  next.independent = next.independent === true || (score >= PASS_LINE && !wasRevealed);
   if (next.qualified) next.in_to_improve = false;
   next.updated_at = now;
   const states = { ...progress.segment_states, [segmentId]: next };
@@ -518,6 +597,7 @@ function validateWav(buffer, options = {}) {
 
 module.exports = {
   PASS_LINE,
+  MAX_REFERENCE_WORDS,
   TRACKS,
   MODES,
   normalizeMode,
@@ -529,6 +609,7 @@ module.exports = {
   enabledTracks,
   trackSegments,
   trainingSegments,
+  validateCanonicalMaterial,
   safeTrackMaterial,
   stableReferenceHash,
   matchTag,

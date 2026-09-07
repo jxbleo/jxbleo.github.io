@@ -1200,32 +1200,53 @@ vocabulary upsert; dictionary enrichment remains the existing post-save
 behavior.
 ### Listening V2 provider and track boundary
 
-The Listening V2 gateway keeps Dictation in the existing `intensiveListening`
-service and adds an additive track contract. `shadowing-service.js` owns pure
-normalization, stable reference-word IDs, word-state alignment, pass/cap scoring,
-progress monotonicity, WAV validation, and duplicate keys. `tencent-soe-n.js`
-is the only Tencent SOE-N signing/WebSocket adapter and is imported by the cloud
-function only; browser code cannot call a provider or receive credentials.
+The `intensiveListening` gateway owns one schema-v3 canonical unit list and two
+independent result projections. Schema 1/2 material is normalized at the service
+boundary; the next teacher publication stores canonical units once rather than
+maintaining divergent Dictation and Shadowing transcripts. The account-owned
+`listening_mode_preference` drives both dedicated Library and practice entry.
+`shadowing-service.js` owns pure normalization, stable reference-word IDs,
+latest-versus-best state, pass/cap scoring, WAV validation, and duplicate keys.
+`tencent-soe-n.js` is the only Tencent SOE-N signing/WebSocket adapter and is
+imported by the cloud function only; browser code cannot call a provider or
+receive credentials.
 Shadowing complete-listen credit uses a server-issued, segment-bound token with
 an earliest-completion time derived from the reviewed segment duration; a
 browser-generated timer cannot increment reveal progress. Takes use a reserve →
 private upload → register upload → finish flow, with a cancellation cleanup path
 for interrupted browser uploads, a transaction-owned single-active
 take lock per student, deterministic client idempotency, provider outcome
-categories, and usage rows claimed immediately before the outbound request.
+categories, dynamic source-duration limits, and usage rows claimed immediately
+before the outbound request.
 The Tencent adapter signs the documented host/path/appid plus sorted unescaped
-query, waits for the JSON handshake, sends one complete recording, and accepts
-only the final provider result. Product score uses Tencent `SuggestedScore` and
-applies the reviewed red-word pass cap. `listeningMaintenance` is a timer-token-
-gated cleanup boundary for expired takes and seven-day audio.
+query, waits for the JSON handshake, sends one complete WAV recording in
+paragraph EvalMode 2, and accepts only the final provider result. Product score
+uses Tencent `SuggestedScore` and applies the reviewed red-word pass cap. The
+browser retains latest per-unit replay Blobs only for the open material session;
+the cloud function deletes the private upload immediately after any conclusive
+result. `listeningMaintenance` retries only failed/interrupted cleanup.
 
 Teacher authoring uses a separate ADMINONLY `listening_material_drafts` record,
 so saving work never mutates or hides the current learner-visible material.
 Draft revisions reject stale multi-tab saves; the captured publication revision
 rejects a stale publish. Publishing replaces the one current material, writes a
 private immutable `listening_material_history` audit row, and changes only the
-affected Dictation/Shadowing revision unless shared media changed, in which case
-both revisions change. Students never select a version.
+single shared content revision whenever canonical media/unit semantics change;
+metadata-only changes may keep it. Both current result projections therefore
+recalculate together. Students never select a version.
+
+`assets/js/learning-activity.js` samples transcript-free eligible spans with a
+monotonic clock. The first real interaction performs a server start handshake,
+anchoring the observed-time window without counting passive page-open time. It
+then flushes bounded, account-scoped batches to
+`intensiveListening`; the server authenticates the learner/material, validates
+mode/reason/unit IDs, enforces one student activity lease, transactionally
+deduplicates monotonic sequences, caps claims to server-observed elapsed time,
+and splits accepted seconds at Shanghai midnight. Hidden/blur, explicit pause,
+mode switch and page exit release the lease. `sendTeacherAttemptEmails` closes
+orphaned active sessions after three minutes. Dashboard calendar and learning
+reports aggregate only safe daily seconds and never receive typed entries,
+transcript, word evidence, audio, or accepted-window audit details.
 
 ## Argue email entry (2026-09-06)
 

@@ -29,6 +29,20 @@
     }).join('');
   }
   function sourceTrack(source, track) {
+    if (source && Array.isArray(source.units) && source.units.length) {
+      return source.units.map(function(unit) {
+        return {
+          unit_id: unit.unitId || unit.unit_id,
+          segment_id: unit.unitId || unit.unit_id,
+          speaker: unit.speaker || '',
+          text: unit.text || '',
+          start_seconds: unit.startSeconds == null ? unit.start_seconds : unit.startSeconds,
+          end_seconds: unit.endSeconds == null ? unit.end_seconds : unit.endSeconds,
+          practice_mode: unit.practiceMode || unit.practice_mode || 'dictation',
+          slots: Array.isArray(unit.slots) ? unit.slots.map(function(slot) { return { slot_id: slot.slotId || slot.slot_id, prefix: slot.prefix || '', suffix: slot.suffix || '', answer: slot.answer || '', accepted_answers: slot.acceptedAnswers || slot.accepted_answers || [], spelling_requirement: slot.spellingRequirement || slot.spelling_requirement || 'required' }; }) : []
+        };
+      }).filter(function(unit) { return track === 'shadowing' ? unit.practice_mode !== 'skip' : true; });
+    }
     var tracks = source && source.tracks || {};
     var current = tracks[track] || {};
     return Array.isArray(current.segments) ? current.segments : [];
@@ -41,6 +55,12 @@
     var target = document.getElementById('teacher-listening-' + track + '-rows');
     var segments = state.tracks[track] || [];
     if (!segments.length) { target.innerHTML = '<div class="teacher-listening-track-empty">No lines yet. Add the first line when the timing is ready.</div>'; return; }
+    if (track === 'shadowing') {
+      target.innerHTML = segments.map(function(segment, index) {
+        return '<article class="teacher-listening-segment-row teacher-listening-preview-row"><header><span>' + String(index + 1).padStart(2, '0') + '</span><strong>' + escapeHtml(segment.speaker || 'Listening line') + '</strong><span class="teacher-listening-preview-badge">Derived from canonical unit</span></header><div class="teacher-listening-segment-fields"><span> ' + escapeHtml(Number(segment.start_seconds || 0).toFixed(2)) + '–' + escapeHtml(Number(segment.end_seconds || 0).toFixed(2)) + ' s</span><span>' + escapeHtml(segment.practice_mode || 'dictation') + '</span></div><p class="teacher-listening-preview-text">' + escapeHtml(segment.text || '') + '</p></article>';
+      }).join('');
+      return;
+    }
     target.innerHTML = segments.map(function(segment, index) {
       var mode = String(segment.practice_mode || (track === 'shadowing' ? 'shadowing' : 'dictation'));
       var slots = JSON.stringify(Array.isArray(segment.slots) ? segment.slots : [], null, 2);
@@ -109,6 +129,7 @@
   }
   function draft() {
     var id = String($('teacher-listening-id').value || '').trim();
+    var canonicalUnits = segmentsForDraft('dictation');
     return {
       material_id: id,
       title: String($('teacher-listening-title').value || '').trim(),
@@ -117,7 +138,10 @@
       audio_src: String($('teacher-listening-media').value || '').trim(),
       media: { kind: $('teacher-listening-media-kind').value === 'video' ? 'video' : 'audio', src: String($('teacher-listening-media').value || '').trim() },
       transcript_revision: String($('teacher-listening-revision').value || '1').trim(),
-      tracks: { dictation: { enabled: state.enabled.dictation, revision: '1', segments: segmentsForDraft('dictation') }, shadowing: { enabled: state.enabled.shadowing, revision: '1', segments: segmentsForDraft('shadowing') } }
+      content_revision: String($('teacher-listening-revision').value || '1').trim(),
+      units: canonicalUnits,
+      tracks: { dictation: { enabled: state.enabled.dictation, revision: '1', segments: canonicalUnits }, shadowing: { enabled: state.enabled.shadowing, revision: '1', segments: canonicalUnits.map(function(unit) { return Object.assign({}, unit, { slots: undefined }); }) } },
+      modes: { dictation: { enabled: state.enabled.dictation }, shadowing: { enabled: state.enabled.shadowing } }
     };
   }
   function showValidation(result) {

@@ -99,8 +99,8 @@ function safeCatalogItem(set, material, progress, assignment, linkedPractice, se
     ? normalizedTracks.tracks.dictation.segments.filter((item) => String(item.practice_mode || "dictation") === "dictation")
     : units.filter((unit) => String(unit && unit.practice_mode || "dictation") === "dictation");
   const shadowingSegments = normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.shadowing && Array.isArray(normalizedTracks.tracks.shadowing.segments)
-    ? normalizedTracks.tracks.shadowing.segments.filter((item) => String(item.practice_mode || "shadowing") === "shadowing")
-    : [];
+    ? normalizedTracks.tracks.shadowing.segments.filter((item) => String(item.practice_mode || "dictation") === "dictation")
+    : dictationSegments;
   const dictationUnitCount = dictationSegments.length;
   const sequenceUnitCount = units.length || dictationSegments.length || shadowingSegments.length;
   const safe = safeProgress(material, progress, service);
@@ -137,12 +137,21 @@ function safeCatalogItem(set, material, progress, assignment, linkedPractice, se
         updated_at: shadowingProgress && shadowingProgress.updated_at || null,
       },
     },
-    open_assignment: assignment ? {
-      assignment_id: text(assignment.assignment_id || assignment._id),
-      due_at: assignment.due_at || assignment.assigned_at || null,
-      completion_target: Number(assignment.passing_percentage == null ? 100 : assignment.passing_percentage),
-      status: text(assignment.status) || "to_do",
-    } : null,
+    modes: {
+      dictation: {
+        enabled: Boolean(normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.dictation && normalizedTracks.tracks.dictation.enabled),
+        completed_count: safe.completed_count,
+        segment_count: dictationSegments.length,
+        percentage: safe.percentage,
+      },
+      shadowing: {
+        enabled: Boolean(normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.shadowing && normalizedTracks.tracks.shadowing.enabled),
+        completed_count: Number(shadowingProgress && shadowingProgress.qualified_segment_count) || 0,
+        segment_count: shadowingSegments.length,
+        percentage: Number(shadowingProgress && shadowingProgress.percentage) || 0,
+        updated_at: shadowingProgress && shadowingProgress.updated_at || null,
+      },
+    },
   };
   // Never let a malformed linked practice row leak an unsafe destination.
   if (output.linked_practice && !output.linked_practice.href) output.linked_practice = null;
@@ -200,7 +209,7 @@ function sessionSummary(record = {}) {
   };
 }
 
-function buildSessionEvent({ student, material, record, sessionId, phase, occurredAt, startSummary, endSummary, targetPercentage, assignmentId, practiceContext, threadKey, practiceTrack }) {
+function buildSessionEvent({ student, material, record, sessionId, phase, occurredAt, startSummary, endSummary, targetPercentage, assignmentId, practiceContext, threadKey, practiceTrack, effectiveSeconds }) {
   const occurred = safeDate(occurredAt) || new Date();
   const start = startSummary || sessionSummary(record);
   const end = endSummary || sessionSummary(record);
@@ -228,6 +237,8 @@ function buildSessionEvent({ student, material, record, sessionId, phase, occurr
     session_started_at: startedAt,
     session_ended_at: final ? occurred : null,
     session_duration_seconds: final ? sessionDurationSeconds(startedAt, occurred) : null,
+    effective_seconds: Math.max(0, Math.floor(Number(effectiveSeconds == null ? record && record.effective_seconds : effectiveSeconds) || 0)),
+    effective_time_label: require("./learning-activity").formatEffectiveTime(effectiveSeconds == null ? record && record.effective_seconds : effectiveSeconds),
     start_percentage: start.percentage,
     completion_percentage: end.percentage,
     completed_unit_count: end.completed_unit_count,
@@ -274,6 +285,8 @@ function normalizeBellItem(event, student = {}) {
     independent_unit_count: Number(row.independent_unit_count) || 0,
     assisted_unit_count: Number(row.assisted_unit_count) || 0,
     new_completed_unit_count: Number(row.new_completed_unit_count) || 0,
+    effective_seconds: Math.max(0, Number(row.effective_seconds) || 0),
+    effective_time_label: text(row.effective_time_label) || require("./learning-activity").formatEffectiveTime(row.effective_seconds),
     target_percentage: Number(row.target_percentage == null ? 100 : row.target_percentage),
     target_met: row.target_met === true,
     unread: row.unread !== false,

@@ -49,8 +49,8 @@ assert.match(
   "achievement and active-day totals should share the lower summary"
 );
 assert.match(dashboardHtml, /student-achievements-panel[^>]*aria-label="Achievements"/, "the heading-free panel needs an accessible name");
-assert.ok(dashboardHtml.includes("assets/css/app.css?v=20260830-3"), "calendar interaction styles should be cache-busted");
-assert.ok(dashboardHtml.includes("assets/js/dashboard.js?v=20260902-1"), "calendar interaction logic should be cache-busted");
+assert.ok(dashboardHtml.includes("assets/css/app.css?v=20260907-2"), "calendar interaction styles should be cache-busted");
+assert.ok(dashboardHtml.includes("assets/js/dashboard.js?v=20260907-3"), "calendar interaction logic should be cache-busted");
 
 const achievementHref = vm.runInNewContext(`(${dashboardFunctionSource("studentCalendarAchievementHref")})`, {
   String,
@@ -120,13 +120,19 @@ const calendar = buildAchievementCalendar({
     { composition_id: "draft", status: "sentence_training", title: "Draft", completed_at: null },
     { composition_id: "essay", status: "completed", title: "My Community", completed_at: "2026-08-26T15:00:00Z" },
   ],
+  learningActivities: [
+    { material_id: "IL-2601", set_id: "IL-2601", practice_mode: "dictation", daily_seconds: { "2026-08-29": 45, "2026-08-30": 20 } },
+    { material_id: "IL-2601", set_id: "IL-2601", practice_mode: "dictation", daily_seconds: { "2026-08-29": 20 } },
+    { material_id: "IL-2601", set_id: "IL-2601", practice_mode: "shadowing", daily_seconds: { "2026-08-29": 61 } },
+  ],
 });
 
-assert.strictEqual(calendar.total_achievements, 3, "one BBC assignment, one self-study vocabulary set, and one corrected writing should count");
-assert.strictEqual(calendar.active_days, 2);
+assert.strictEqual(calendar.total_achievements, 5, "Listening time should add one row per qualifying day/material/mode");
+assert.strictEqual(calendar.active_days, 3);
 assert.deepStrictEqual(calendar.days.map((day) => [day.date, day.count]), [
   ["2026-08-25", 1],
   ["2026-08-26", 2],
+  ["2026-08-29", 2],
 ]);
 assert.strictEqual(calendar.days[0].items[0].result, "80% PASS", "the first qualifying attempt should define the day");
 assert.deepStrictEqual(
@@ -142,5 +148,9 @@ assert.strictEqual(calendar.days[1].items[0].assignment_id, null, "self-study na
 assert.strictEqual(calendar.days[1].items[0].set_id, "VOCAB-01");
 assert.strictEqual(calendar.days[1].items[1].composition_id, "essay", "writing achievements should reopen the owned composition");
 assert.deepStrictEqual(calendar.days[1].items.map((item) => item.type), ["vocabulary", "writing"]);
+assert.deepStrictEqual(calendar.days[2].items.map((item) => item.mode), ["dictation", "shadowing"]);
+assert.strictEqual(calendar.days[2].items[0].detail, "Listening · Dictation");
+assert.strictEqual(calendar.days[2].items[0].result, "1 min");
+assert.strictEqual(calendar.days[2].items[0].open_href, "intensive-listening.html?set=IL-2601&mode=dictation");
 
 console.log("Dashboard achievement calendar tests passed.");

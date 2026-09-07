@@ -2951,3 +2951,22 @@ concurrent timers, >20 requests, outbox rollback/retry, resolved decisions, pend
 assignments, muted/re-enabled inboxes, expired old retries and Listening Argues.
 For live acceptance observe the next natural 11:30 tick and the unresolved QA
 request; do not backdate genuine requests or resend resolved ones to force a test.
+
+## Listening mode-first and effective learning time (2026-09-07)
+
+- Run `npm run test:listening-activity`, `npm run test:listening-contracts`,
+  `npm run test:listening-shadowing`, `npm run test:listening-shadowing-provider`,
+  `npm run test:listening-authoring`, and `npm run test:learning-reports`.
+- Verify the Library mode menu defaults to Dictation, practice has one shared
+  mode toolbar, Shadowing uses canonical unit IDs/timing, and no Listening
+  Assignment affordance is rendered.
+- Verify effective time stops after 20 seconds without interaction, pauses on
+  hidden/blurred pages, excludes Thinking/auto-advance, closes stale sessions at
+  three minutes, splits Shanghai midnight correctly, and renders calendar/report
+  time as safe minutes without PASS/Completed labels.
+- Verify the first eligible interaction sends the server start handshake before
+  the first span batch, so a genuine first 60 seconds is neither counted from
+  passive page-open time nor reduced to the transport-tolerance allowance.
+- Verify forged Intensive Listening assignment requests fail before writes and
+  teacher authoring edits one canonical Transcript & Units source; no production
+  collections, indexes, scoring configuration, or historical time are changed.

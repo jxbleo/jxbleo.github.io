@@ -32,9 +32,12 @@ function wav(seconds = 1, value = 5000) {
 }
 
 const normalized = shadowing.normalizeMaterial(material());
-assert.strictEqual(normalized.schema_version, 2);
+assert.strictEqual(normalized.schema_version, 3);
 assert.strictEqual(shadowing.normalizeMode("listen_only"), "context_only");
-assert.deepStrictEqual(shadowing.trainingSegments(normalized, "shadowing").map((item) => item.segment_id), ["s-1"]);
+assert.deepStrictEqual(shadowing.trainingSegments(normalized, "shadowing").map((item) => item.segment_id), ["d-1"]);
+assert.deepStrictEqual(normalized.tracks.dictation.segments.map((item) => item.segment_id), normalized.tracks.shadowing.segments.map((item) => item.segment_id));
+assert.strictEqual(normalized.tracks.shadowing.segments[0].start_seconds, normalized.tracks.dictation.segments[0].start_seconds);
+assert.strictEqual(normalized.content_revision, "2026-09-05");
 const safe = shadowing.safeTrackMaterial(material());
 assert.strictEqual(safe.tracks.shadowing.segments[0].text, undefined, "pre-reveal Shadowing must not carry transcript text");
 assert.strictEqual(safe.tracks.dictation.segments[0].slots[0].provided_text, "", "required Dictation answers stay private");
@@ -48,10 +51,14 @@ assert.throws(() => shadowing.scoreFromEvidence({ ...evidence, suggested_score: 
 assert.throws(() => shadowing.scoreFromEvidence({ pron_accuracy: 80 }, policy), /SHADOWING_SCORE_MISSING/);
 
 let progress = shadowing.createProgress(normalized, { student_uid: "student-1" });
-progress = shadowing.applyTake(progress, "s-1", { take_id: "take-1", score: 92, word_states: [{ word_id: "w1", state: "normal" }] });
-progress = shadowing.applyTake(progress, "s-1", { take_id: "take-2", score: 60, word_states: [{ word_id: "w1", state: "red" }] });
-assert.strictEqual(progress.segment_states["s-1"].best_score, 92, "best score is monotonic");
-assert.strictEqual(progress.segment_states["s-1"].qualified, true);
+progress = shadowing.applyTake(progress, "d-1", { take_id: "take-1", score: 92, word_states: [{ word_id: "w1", state: "normal" }] });
+progress = shadowing.applyTake(progress, "d-1", { take_id: "take-2", score: 60, word_states: [{ word_id: "w1", state: "red" }] });
+assert.strictEqual(progress.segment_states["d-1"].best_score, 92, "best score is monotonic");
+assert.strictEqual(progress.segment_states["d-1"].latest_score, 60, "latest score follows the latest valid take");
+assert.strictEqual(progress.segment_states["d-1"].latest_take_id, "take-2");
+assert.strictEqual(progress.segment_states["d-1"].latest_word_states[0].state, "red", "word colours follow the latest valid take");
+assert.strictEqual(progress.segment_states["d-1"].transcript_revealed, true, "a conclusive score reveals the reviewed script");
+assert.strictEqual(progress.segment_states["d-1"].qualified, true);
 assert.strictEqual(shadowing.progressSummary(progress).completed, true);
 assert.strictEqual(shadowing.toImproveQueue(progress, shadowing.trainingSegments(normalized, "shadowing")).length, 0);
 
@@ -70,6 +77,9 @@ delete require.cache[require.resolve("../cloudfunctions/intensiveListening/index
 const gateway = require("../cloudfunctions/intensiveListening/index").__test;
 Module._load = originalLoad;
 const hiddenProgress = gateway.safeShadowingProgress({ segment_count: 1, segment_states: { "s-1": { transcript_revealed: false, best_score: 81, best_word_states: [{ word_id: "rw_001", state: "red" }] } } });
+assert.strictEqual(hiddenProgress.segment_states["s-1"].latest_score, 81, "legacy best values migrate into the latest-score response");
+assert.strictEqual(gateway.shadowingMaxDurationSeconds({ start_seconds: 0, end_seconds: 10 }), 21);
+assert.strictEqual(gateway.shadowingMaxDurationSeconds({ start_seconds: 0, end_seconds: 200 }), 300);
 assert.deepStrictEqual(hiddenProgress.segment_states["s-1"].best_word_states, [], "pre-reveal progress must not leak word states");
 assert.deepStrictEqual(gateway.safeShadowingResult({ take_id: "take", product_score: 81, word_states: [{ word_id: "rw_001", state: "red" }] }, false).word_states, [], "pre-reveal take result must not leak word states");
 assert.strictEqual(gateway.safeShadowingProgress({ segment_count: 1, segment_states: { "s-1": { transcript_revealed: true, best_word_states: [{ word_id: "rw_001", state: "yellow" }] } } }).segment_states["s-1"].best_word_states[0].state, "yellow");

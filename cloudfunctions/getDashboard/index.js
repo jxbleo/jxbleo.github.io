@@ -715,7 +715,7 @@ async function dashboardBootstrap(student) {
 async function getAchievementCalendar(student) {
   const now = new Date();
   const window = achievementWindow(now);
-  const [attempts, compositions] = await Promise.all([
+  const [attempts, compositions, learningActivities] = await Promise.all([
     getAll("attempts", {
       where: {
         student_uid: student.auth_uid,
@@ -723,11 +723,22 @@ async function getAchievementCalendar(student) {
       },
     }),
     getAll("writing_compositions", { where: { student_uid: student.auth_uid } }),
+    getAll("learning_activity_sessions", {
+      where: {
+        student_uid: student.auth_uid,
+        kind: "session",
+        started_at: _.gte(window.query_start),
+      },
+    }).catch((error) => {
+      const message = String(error && (error.message || error.code) || "").toLowerCase();
+      if (message.includes("not exist") || message.includes("not found") || message.includes("collection")) return [];
+      throw error;
+    }),
   ]);
-  const sets = await getSetsByIds(attempts.map((attempt) => attempt.set_id));
+  const sets = await getSetsByIds(attempts.map((attempt) => attempt.set_id).concat(learningActivities.map((row) => row.set_id || row.material_id)));
   return {
     success: true,
-    achievement_calendar: buildAchievementCalendar({ attempts, sets, compositions, now }),
+    achievement_calendar: buildAchievementCalendar({ attempts, sets, compositions, learningActivities, now }),
   };
 }
 

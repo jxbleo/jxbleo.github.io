@@ -20,6 +20,7 @@ const CLAIM_TIMEOUT_MS = 10 * 60 * 1000;
 const INTENSIVE_PROGRESS = "intensive_listening_progress";
 const SHADOWING_PROGRESS = "listening_shadowing_progress";
 const INTENSIVE_MATERIALS = "intensive_listening_materials";
+const LEARNING_ACTIVITY = "learning_activity_sessions";
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -310,6 +311,62 @@ async function closeIdleShadowingSessions(now) {
   return closed;
 }
 
+async function closeIdleLearningActivities(now) {
+  let rows;
+  try { rows = await getAll(LEARNING_ACTIVITY, { kind: "session", status: "active" }); }
+  catch (_) { return 0; }
+  const expired = rows.filter((row) => dateValue(row.last_received_at) > 0 && dateValue(row.last_received_at) + intensiveNotifications.THREE_MINUTES_MS <= now.getTime());
+  if (!expired.length) return 0;
+  const materials = new Map((await getAll(INTENSIVE_MATERIALS)).map((row) => [text(row.set_id || row.material_id), row]));
+  let closed = 0;
+  for (const row of expired) {
+    const material = materials.get(text(row.set_id || row.material_id));
+    if (!material) continue;
+    let current = null;
+    try {
+      await db.runTransaction(async (transaction) => {
+        const result = await transaction.collection(LEARNING_ACTIVITY).where({ session_id: text(row.session_id), student_uid: text(row.student_uid), kind: "session" }).limit(1).get();
+        const latest = result.data && result.data[0] ? recordData(result.data[0]) : null;
+        if (!latest || latest.status !== "active" || dateValue(latest.last_received_at) + intensiveNotifications.THREE_MINUTES_MS > now.getTime()) return;
+        current = latest;
+        await transaction.collection(LEARNING_ACTIVITY).doc(latest._id || latest.session_id).update({ status: "closed", closed_at: now, close_reason: "idle", updated_at: now });
+      });
+    } catch (_) { continue; }
+    if (!current || !current.notification_session_id) continue;
+    const student = await getOne("students", { auth_uid: text(current.student_uid) });
+    if (!student) continue;
+    const progressCollection = current.practice_mode === "shadowing" ? SHADOWING_PROGRESS : INTENSIVE_PROGRESS;
+    const progress = await getOne(progressCollection, {
+      student_uid: text(current.student_uid),
+      set_id: text(current.set_id || current.material_id),
+    }) || {};
+    const endSummary = {
+      percentage: Number(progress.notification_latest_percentage) || Number(progress.percentage) || 0,
+      completed_unit_count: Number(progress.notification_latest_completed_count)
+        || Number(current.practice_mode === "shadowing" ? progress.qualified_segment_count : progress.completed_unit_count) || 0,
+      independent_unit_count: Number(progress.notification_latest_independent_count) || Number(progress.independent_unit_count) || 0,
+      assisted_unit_count: Number(progress.notification_latest_assisted_count) || Number(progress.assisted_unit_count) || 0,
+    };
+    try {
+      await createIntensiveEvent(intensiveNotifications.buildSessionEvent({
+        student, material, record: { ...progress, notification_session_started_at: progress.notification_session_started_at || current.started_at, effective_seconds: current.effective_seconds },
+        sessionId: current.notification_session_id, phase: "paused", occurredAt: now,
+        startSummary: {
+          percentage: Number(progress.notification_start_percentage) || 0,
+          completed_unit_count: Number(progress.notification_start_completed_count) || 0,
+        },
+        endSummary,
+        targetPercentage: 100, assignmentId: null, practiceContext: "self_study",
+        practiceTrack: current.practice_mode, effectiveSeconds: current.effective_seconds,
+      }));
+      closed += 1;
+    } catch (error) {
+      if (!String(error && error.message || "").toLowerCase().includes("exist")) throw error;
+    }
+  }
+  return closed;
+}
+
 async function assignmentForJob(job) {
   if (!job.assignment_id) return null;
   return await getOne("assignments", { assignment_id: job.assignment_id })
@@ -500,7 +557,12 @@ async function dispatch(now) {
     argue_reminder_error = text(error && error.code) || "ARGUE_REMINDER_SCHEDULING_FAILED";
     console.error("Argue daily reminder scheduling deferred", { code: argue_reminder_error });
   }
-  const intensive_paused_sessions = await closeIdleIntensiveSessions(now) + await closeIdleShadowingSessions(now);
+  // Close the accepted-time session first. It writes the shared deterministic
+  // Paused event with effective_seconds; the legacy progress closers then sync
+  // their state and harmlessly reuse that same event ID.
+  const intensive_paused_sessions = await closeIdleLearningActivities(now)
+    + await closeIdleIntensiveSessions(now)
+    + await closeIdleShadowingSessions(now);
   const anchors = await dueEvents(now);
   const recipients = await enabledRecipients();
   const summary = {

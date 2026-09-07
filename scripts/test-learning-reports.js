@@ -184,6 +184,38 @@ function testMonthlyLateCompletionUsesReportCutoff() {
     "the month report counts a due-month task passed later before month end");
 }
 
+function testEffectiveLearningTimeProjection() {
+  const fixture = snapshotFixture();
+  fixture.sets.push({ set_id: "IL-BBC-TIME", title: "Listening time", section_id: "intensive-listening" });
+  const snapshot = reports.buildReportSnapshot({
+    ...fixture,
+    class_id: "class-a",
+    cutoff_at: fixture.period.end_at,
+    learning_activity_sessions: [{
+      kind: "session",
+      student_uid: "alice",
+      material_id: "IL-BBC-TIME",
+      set_id: "IL-BBC-TIME",
+      practice_mode: "dictation",
+      daily_seconds: { "2026-07-28": 65, "2026-07-29": 120 },
+    }, {
+      kind: "session",
+      student_uid: "alice",
+      material_id: "IL-BBC-TIME",
+      set_id: "IL-BBC-TIME",
+      practice_mode: "shadowing",
+      daily_seconds: { "2026-07-28": 90 },
+    }],
+  });
+  const alice = snapshot.student_details.find((detail) => detail.student_uid === "alice");
+  assert.equal(alice.effective_learning_time.effective_seconds, 275);
+  assert.equal(alice.effective_learning_time.by_mode.dictation, 185);
+  assert.equal(alice.effective_learning_time.by_mode.shadowing, 90);
+  assert.equal(alice.effective_learning_time.items.length, 3);
+  assert.equal(alice.effective_learning_time.items[0].title, "Listening time");
+  assert.equal(Object.hasOwn(alice.effective_learning_time.items[0], "student_uid"), false);
+}
+
 function testIntensiveListeningProgressProjection() {
   const period = reports.periodForDate("weekly", new Date("2026-08-05T04:00:00.000Z"));
   const completedAt = new Date("2026-08-04T02:00:00.000Z");
@@ -415,6 +447,7 @@ async function main() {
   testShanghaiPeriods();
   testSnapshotRules();
   testMonthlyLateCompletionUsesReportCutoff();
+  testEffectiveLearningTimeProjection();
   testIntensiveListeningProgressProjection();
   testReportCloseUiContract();
   await testVisitorStaysOnBlankReportPage();

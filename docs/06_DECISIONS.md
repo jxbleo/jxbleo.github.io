@@ -1545,8 +1545,11 @@ material identity. This preserves existing Dictation progress while preventing
 new Shadowing scoring rules from leaking into old assignment/status semantics.
 Shadowing scoring is fail-closed behind an approved system policy and a single
 server Tencent SOE-N adapter. The browser uploads only to a server-reserved
-private path; raw valid audio carries a seven-day cleanup deadline, invalid audio
-is removed, and ambiguous provider outcomes are terminal rather than retried.
+private path; conclusive outcomes trigger immediate private-file deletion and
+only failed/interrupted cleanup remains eligible for maintenance retry. Browser
+replay is an in-memory per-unit Blob for the open material session and is never
+the server recording. Ambiguous provider outcomes are terminal rather than
+retried.
 The provider's documented `SuggestedScore` is the sentence total; the product
 does not synthesize another total from metrics whose scales may vary by mode.
 Exact word duplicates are reused only within the same student, and a server
@@ -1571,3 +1574,15 @@ and marker, process 20 candidates per timer tick, and expire stale prior-day
 retries. This bounds work, survives delayed ticks, prevents same-day duplicate
 queueing, and avoids replaying accumulated reminders. Keep current SMTP and
 enabled inbox settings; no new dependency or infrastructure is introduced.
+
+### 2026-09-07 — Effective time is a server-accepted activity projection
+
+Listening time is recorded as bounded client spans, then authenticated and
+lease-checked by `intensiveListening`; the server owns accepted totals and
+Shanghai day splitting. Per-session sequence acceptance is transactional and
+the first as well as later flushes are capped by server-observed elapsed time,
+so retry races or a forged large first request cannot double-count a minute.
+Calendar, Teacher, and report surfaces receive only safe mode/material/minute
+summaries. No historical time is inferred from old progress records and no new
+runtime dependency is introduced. Production still requires owner-authorized
+creation/indexing of the new ADMINONLY activity collection.

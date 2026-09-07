@@ -314,6 +314,13 @@ All collections use `ADMINONLY`:
 - `class_memberships`: time-bounded student-to-class history
 - `learning_reports`: preview and immutable published learning-report snapshots
 - `parent_view_sessions`: hashed Parent Mode sessions and anti-enumeration login guards
+- `intensive_listening_materials`, `intensive_listening_progress`,
+  `listening_shadowing_progress`, `listening_shadowing_takes`, and
+  `listening_shadowing_usage`: private canonical Listening content and
+  independent Dictation/Shadowing result history
+- `learning_activity_sessions`: permanent server-accepted Listening effective
+  time plus deterministic per-student lease rows; never stores answers,
+  transcripts, audio, provider evidence, or pointer coordinates
 
 Read exact schemas in `docs/04_DATA_MODEL.md` and current code before adding
 fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
@@ -1944,21 +1951,19 @@ metadata, never transcript text, timing, slots, answers, or drafts. Existing
 BBC and IELTS links remain direct entry points, and a material has at most one
 authorized linked comprehension exercise.
 
-Intensive Listening Completion counts only dictation units. Assignments always
-use a server-enforced 100% Completion target by default and
-`mastery_enabled: false`; they never earn STAR. Material replacement uses a
-new internal compatibility generation, starts current progress at zero, and
-never regresses a previously finished assignment or deletes old private audit
-rows.
+Listening is self-study only: it is hidden from Assign and rejected by the
+server, creates no assignment or STAR, and keeps Dictation and Shadowing result
+progress independent. Both modes use one teacher-reviewed canonical unit list;
+material replacement recalculates current completion against the new content
+revision while retaining historical effective learning time and audit rows.
 
-The first real audio playhead movement starts one server-owned learning
-session. Activity rolls a three-minute deadline; idle and target closure write
-idempotent Started/Paused/Completed rows to the private teacher-attempt-email
-outbox. The existing timer and mixed Teacher bell may consume those summaries,
-but no IL session creates a synthetic attempt or includes typed words, answers,
-private audio URLs, or Argue data. Visitor, Teacher preview, and Parent Mode
-never create sessions. Production indexes, imports, timers, and deployment
-remain owner-gated.
+The first eligible interaction starts one server-owned learning session. A
+20-second interaction window bounds effective time and three inactive minutes
+close the session. Accepted seconds are idempotent, lease-checked, split by
+Shanghai day, and may be summarized in the calendar, reports, Teacher bell and
+email. No session creates a synthetic attempt or includes typed words, answers,
+transcript/reference text, private audio URLs, provider evidence, or pointer
+coordinates. Visitor, Teacher preview, and Parent Mode never create sessions.
 
 
 ### Argue daily reminders

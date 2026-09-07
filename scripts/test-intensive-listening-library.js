@@ -86,6 +86,8 @@ function testSafeCatalogAndSessions() {
   assert.strictEqual(item.source_label, "BBC");
   assert.strictEqual(item.dictation_unit_count, 1);
   assert.ok(!("units" in item) && !("answers" in item) && !("audio_src" in item) && !("slots" in item));
+  assert.ok(!("open_assignment" in item), "Listening catalog must not project assignment state");
+  assert.strictEqual(item.modes.shadowing.segment_count, 1, "Shadowing derives its count from canonical Dictation units");
   assert.strictEqual(notifications.sessionEventId("ils_abc", "started"), "ils_abc::started");
   assert.strictEqual(notifications.sessionEventId("ils_abc", "paused"), "ils_abc::final");
   assert.strictEqual(notifications.sessionDeadline(new Date("2026-08-27T00:00:00Z")).getTime(), new Date("2026-08-27T00:03:00Z").getTime());
@@ -141,8 +143,8 @@ function testSafeCatalogAndSessions() {
 
 function testLibraryHelpers() {
   const elements = {};
-  ["intensive-listening-library", "ill-material-list", "ill-continue-list", "ill-continue-section", "ill-state", "ill-count", "ill-source-filters", "ill-search", "ill-sort"].forEach((id) => {
-    elements[id] = { hidden: false, value: "", textContent: "", innerHTML: "", className: "", addEventListener() {} };
+  ["intensive-listening-library", "ill-material-list", "ill-continue-list", "ill-continue-section", "ill-state", "ill-count", "ill-source-filters", "ill-search", "ill-sort", "ill-mode-trigger", "ill-mode-popover", "ill-mode-label", "ill-mode-description"].forEach((id) => {
+    elements[id] = { hidden: id === "ill-mode-popover", value: "", textContent: "", innerHTML: "", className: "", dataset: {}, addEventListener() {}, setAttribute() {}, querySelector() { return null; } };
   });
   const context = {
     window: {
@@ -151,7 +153,7 @@ function testLibraryHelpers() {
       MrCatCloud: { callAuthenticatedFunction: () => Promise.resolve({ success: true, materials: [] }) },
       MrCatLoginNavigation: { loginHref: () => "index.html" },
     },
-    document: { getElementById: (id) => elements[id], },
+    document: { getElementById: (id) => elements[id], querySelectorAll: () => [], addEventListener() {} },
     URL,
     URLSearchParams,
     Number,
@@ -163,7 +165,11 @@ function testLibraryHelpers() {
   const helpers = context.window.__MRCAT_INTENSIVE_LIBRARY_TEST__;
   assert.strictEqual(helpers.actionLabel({ progress: { percentage: 0 } }), "Start");
   assert.strictEqual(helpers.actionLabel({ progress: { percentage: 25 } }), "Continue");
-  assert.strictEqual(helpers.actionLabel({ progress: { percentage: 100 } }), "Review");
+  assert.strictEqual(helpers.actionLabel({ progress: { percentage: 100 } }), "Completed");
+  assert.strictEqual(helpers.safeMode("invalid"), "");
+  assert.strictEqual(helpers.safeMode("shadowing"), "shadowing");
+  assert.strictEqual(helpers.progressFor({ modes: { shadowing: { completed_count: 2, segment_count: 4, percentage: 50 } } }, "shadowing").completed, 2);
+  assert.match(helpers.card({ set_id: "IL-BBC-260813", title: "A safe lesson", modes: { dictation: { enabled: true, completed_count: 0, segment_count: 2, percentage: 0 } } }), /mode="dictation"/);
   assert.ok(helpers.matches({ title: "BBC Lists", source_label: "BBC", set_id: "IL-BBC-260813" }, "", "lists"));
   assert.ok(helpers.matches({ title: "IELTS Transport", source_label: "IELTS", set_id: "IL-C7-T1-S1" }, "", "transport"));
   assert.ok(helpers.materialHref({ set_id: "IL-BBC-260813", href: "intensive-listening.html?set=IL-BBC-260813" }).includes("return="));

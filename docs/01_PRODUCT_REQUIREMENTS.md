@@ -2447,18 +2447,55 @@ feature switch applies to every active student rather than a cohort.
 ### Listening V2: Dictation and Shadowing
 
 Listening is one material surface with explicit Dictation and Shadowing tracks.
-Existing Intensive Listening URLs remain valid and are Dictation-compatible;
-legacy `listen_only` segments normalize to `context_only` at the service
-boundary. Shadowing is line-based: each segment requires a complete audible play
-before a private recording can be scored, uses the approved server-side Tencent
-SOE-N adapter, and qualifies at an integer score of 80 or above. A red word caps
-the product score at 79; a yellow word may still qualify. Transcript text and
-reference words stay server-only until the student's configured reveal threshold
-(1/2/3/5 complete listens, default 3, or off). Best scores are monotonic and
-unqualified lines appear in a To Improve queue. Shadowing never creates STARs,
-Argue requests, or teacher score overrides. Raw valid takes are private and
-cleaned by the owner-gated maintenance job within seven days; invalid takes are
-deleted immediately.
+The dedicated Listening Library and practice toolbar use a top-level mode menu;
+the selected mode has highest priority and every subsequently opened material
+uses it without an intermediate chooser. Existing contextual BBC/IELTS buttons
+retain the label `Intensive Listening`. Existing URLs remain compatible and
+default invalid/missing preferences to Dictation. Practice toolbar geometry is
+Back / current-mode result progress / mode switch.
+
+Both modes use one teacher-reviewed canonical unit list, timing, speaker and
+text, but keep independent result progress and resume at the first unfinished
+or unqualified unit. A canonical content update recalculates both current result
+scopes while permanently retaining historical effective learning time.
+Intensive Listening is self-study only: it is hidden from Assign and rejected
+by the server; ordinary BBC/IELTS comprehension exercises remain assignable.
+
+Dictation completes a unit only at 100%. A checked result strictly above 50%
+persists that checked entry/mark snapshot, including wrong words; a result at or
+below 50% never erases the last qualifying snapshot. Unchecked edits remain
+local and trigger a warning before mode switch. `Show Answer` becomes `Hide`,
+and focusing a word slot hides the answer. Argue exists only in Dictation.
+
+Shadowing requires a server-verified 90% audible listen before listen credit,
+then records one unit at a time and scores through server-side Tencent SOE-N
+paragraph EvalMode 2. A unit contains at most 120 reference words and qualifies
+at integer product score 80. A red/missing/misread word caps the score at 79;
+yellow may still qualify. Latest valid Attempt owns current word feedback and
+session replay, while Best Score is monotonic. Transcript reveal preference is
+account-wide (1/2/3/5 complete listens, default 3, or off); manual Show Script
+is always available and every conclusive score reveals word feedback. Shadowing
+never creates STARs, Argue requests, or teacher score overrides.
+
+Recording starts after a visible three-second countdown. Video material plays
+muted picture during the take. Student recording may end early; the safety cap
+is source duration × 1.8 + 3 seconds, never above 300 seconds, and long outside
+silence is trimmed locally. `Thinking` is the only scoring wait label. A
+qualified current take shows a cancellable 1.5-second depletion indicator before
+advancing. Browser replay keeps only the latest Blob per practised unit during
+the open-material session and warns on exit; it is destroyed on exit/reload.
+Private server upload objects are deleted immediately after every conclusive
+provider result, with bounded maintenance retry only when deletion fails.
+
+Completion remains result-based. Effective learning time is a separate,
+permanent server-accepted total in seconds. It counts visible/focused playback,
+typing, recording/countdown, replay and active feedback review, pauses after 20
+seconds without qualifying activity, pauses immediately on hidden/blur, and
+excludes permission, network, `Thinking`, menus/modals and auto-advance waits.
+Three inactive minutes closes the session. The achievement calendar lights a
+Shanghai day at 60 accepted seconds and shows only formatted time at the right;
+reports may aggregate the same safe material/mode totals. Time never completes
+work, affects rank, or earns STAR.
 
 ## Argue 邮件与单题处理入口（2026-09-06）
 

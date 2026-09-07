@@ -28,6 +28,7 @@ function run() {
   assert.strictEqual(first.effective, true);
   assert.strictEqual(first.state.checks, 1);
   assert.deepStrictEqual(first.marks, [false, false, false, false]);
+  assert.deepStrictEqual(first.state.saved_entries, [], "a unit at or below 50% does not create a resumable server draft");
 
   const unchanged = service.gradeUnit(unit(), ["", "", "", ""], first.state, "student:unit");
   assert.strictEqual(unchanged.effective, false);
@@ -37,6 +38,8 @@ function run() {
   assert.strictEqual(partlyCorrect.effective, true);
   assert.strictEqual(partlyCorrect.state.checks, 2);
   assert.deepStrictEqual(partlyCorrect.marks, [true, false, true, true]);
+  assert.deepStrictEqual(partlyCorrect.state.saved_entries, ["it's", "x", "good", "boy"], "a unit above 50% keeps the latest checked entries");
+  assert.deepStrictEqual(partlyCorrect.state.saved_marks, [true, false, true, true]);
 
   const completed = service.gradeUnit(unit(), ["wrong", "a", "wrong", "wrong"], partlyCorrect.state, "student:unit");
   assert.strictEqual(completed.state.completed, true, "previously correct positions stay locked");
@@ -71,6 +74,7 @@ function run() {
   assert.strictEqual(revealedProgress.assisted_count, 0);
   assert.deepStrictEqual(revealedProgress.unit_progress["unit-01"].correct_positions, [true, false, true, true]);
   assert.strictEqual(revealedProgress.unit_progress["unit-01"].correct_positions_reliable, true);
+  assert.deepStrictEqual(revealedProgress.unit_progress["unit-01"].saved_entries, ["it's", "x", "good", "boy"]);
   const completedAfterReveal = service.gradeUnit(unit(), ["wrong", "a", "wrong", "wrong"], revealed.state, "student:unit");
   assert.strictEqual(completedAfterReveal.state.completed, true);
   assert.strictEqual(completedAfterReveal.state.assisted, true, "completion after reveal remains assisted");
@@ -123,8 +127,8 @@ function run() {
   assert.strictEqual(mixedPublic.units[2].slots[1].provided_text, "a", "provided words may be displayed");
   assert.strictEqual(service.progressSummary(mixedMaterial, { "unit-01": providedGrade.state }).percentage, 100);
   const exported = service.sourceMaterial(mixedMaterial);
-  assert.deepStrictEqual(exported.segments[2].providedWordPositions, [2]);
-  assert.strictEqual(exported.segments[0].practiceMode, "skip");
+  assert.deepStrictEqual(exported.units[2].providedWordPositions, [2]);
+  assert.strictEqual(exported.units[0].practiceMode, "skip");
 
   const root = path.resolve(__dirname, "..");
   const metadataDir = path.join(root, "content/intensive-listening");
