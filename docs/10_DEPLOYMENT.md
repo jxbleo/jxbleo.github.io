@@ -1558,3 +1558,22 @@ resolution actually succeeds. Final downloaded `index.js` SHA-256 is
 `075ac8f6352dc0033cff6c400db93164d8b1d894383f0dd28fd789b56ab76ec5`.
 Configuration comparison and the live server-time scheduling query passed again;
 there were no due reminders or scheduling failures.
+
+### Shadowing listen-entry hotfix rollout (2026-09-08)
+
+Owner-authorized hotfix commit `93de707c` was published after the focused
+Listening suites, release verification, static build, syntax checks, and
+`git diff --check` passed. Code-only updates of `intensiveListening` and
+`teacherAdmin` both reported Deployment completed; the existing function
+configuration was preserved. This rollout did not enable Tencent Shadowing
+scoring or change any provider credential, score policy, collection, index, or
+timer.
+
+Tencent COS run `34209743876` and GitHub Pages run `34209743564` both
+succeeded. The production COS ETags and content lengths for
+`intensive-listening.html` and the cache-bumped
+`assets/js/listening-shadowing.js?v=20260908-1` matched the release files. The
+remaining acceptance step is an authenticated student-device check of Listen,
+microphone permission, recording, and replay. Do not treat function-update
+success as proof that provider scoring is enabled; it remains deliberately
+fail-closed until its separate rollout is authorized.

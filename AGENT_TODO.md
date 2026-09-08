@@ -983,3 +983,22 @@ cp .qa-secrets.example .qa-secrets.local
 - Deployed `intensiveListening`, `teacherAdmin`, `getDashboard`, `sendTeacherAttemptEmails`, and `learningReports`; all five reported Deployment completed and downloaded bundle hashes matched locally. Existing function configuration was preserved and Tencent Shadowing scoring remains disabled.
 - Unauthenticated function smoke checks failed closed as expected. GitHub Pages run `34143120451` and Tencent COS run `34143121737` both published commit `da54bd3a`; live COS ETags and content lengths for the Listening library, practice shell, learning-activity client, and Dashboard matched the release files. Authenticated real-student microphone/effective-time acceptance remains pending.
 - Known baseline issue: `test:argue-emails` expects one event while current `origin/main` and this release both produce two; the dedicated Argue reminder test passes, and this Listening release does not alter that behavior.
+
+### 2026-09-08 — Shadowing listen-entry production hotfix
+
+- Fixed the first-unit `SHADOWING_SEGMENT_NOT_FOUND` failure by returning and
+  selecting only scoreable Dictation units for Shadowing; Skip/context rows no
+  longer enter the learner queue.
+- Kept the recording action visibly named `Record take` while disabled, split
+  backend/media/autoplay failures into accurate messages, and allowed the next
+  Listen tap to reuse an issued playback token after browser autoplay denial.
+- Accepted ordered overlapping transcript timestamps while continuing to reject
+  reverse unit order and invalid individual time bounds, preserving compatibility
+  with the existing BBC material.
+- Focused Listening tests, release verification, static build, syntax checks,
+  and diff checks passed. Commit `93de707c` was pushed to `main`; code-only
+  `intensiveListening` and `teacherAdmin` deployments completed. Tencent COS run
+  `34209743876` and GitHub Pages run `34209743564` succeeded, and production COS
+  bytes for the practice shell and Shadowing client matched the release.
+- Authenticated student-device Listen/record/replay remains the final manual
+  acceptance check. Tencent Shadowing scoring remains disabled.
