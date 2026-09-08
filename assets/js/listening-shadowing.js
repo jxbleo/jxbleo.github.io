@@ -164,7 +164,7 @@
       var counting = state.countdownTimer && state.current && state.current.segment_id === segment.segment_id;
       var listenDisabled = state.recording !== null || Boolean(state.countdownTimer) || state.submitting;
       var recordDisabled = state.teacherMode || state.submitting || (!state.recording && !counting && (!mediaReady || count < 1));
-      var recordLabel = state.teacherMode ? 'Student recording only' : !mediaReady ? 'Recording unavailable' : state.recording ? 'Stop recording' : counting ? 'Cancel · ' + state.countdownValue : count < 1 ? 'Listen first' : qualified ? 'Record to improve' : 'Record take';
+      var recordLabel = state.teacherMode ? 'Student recording only' : !mediaReady ? 'Record unavailable' : state.recording ? 'Stop recording' : counting ? 'Cancel · ' + state.countdownValue : qualified ? 'Record again' : 'Record take';
       var replayAvailable = Boolean(state.replayUrls[segment.segment_id] || state.failedBlobs[segment.segment_id]);
       var retryAvailable = Boolean(state.failedBlobs[segment.segment_id] && state.failedBlobs[segment.segment_id].retryable) && !state.submitting;
       var replayingSelf = Boolean(selfAudio && !selfAudio.paused && state.replaySegmentId === segment.segment_id);
@@ -246,7 +246,9 @@
       var tracks = result.tracks || {};
       var shadowEnabled = Boolean(tracks.shadowing && tracks.shadowing.enabled);
       state.progress = result.shadowing_progress || { percentage: 0, segment_states: {}, segment_count: 0 };
-      state.segments = Array.isArray(result.shadowing_segments) ? result.shadowing_segments : [];
+      state.segments = Array.isArray(result.shadowing_segments)
+        ? result.shadowing_segments.filter(function(segment) { return segment && segment.practice_mode === 'dictation'; })
+        : [];
       var dictationEnabled = Boolean(tracks.dictation && tracks.dictation.enabled);
       if (!shadowEnabled || !state.segments.length) return;
       var requestedMode = String(params.get('mode') || result.preferred_mode || '').toLowerCase();
@@ -292,23 +294,40 @@
       }).catch(function() { setStatus('Press Listen again to start playback.', 'error'); });
       return;
     }
-    functionCall('startListen', { segment_id: segment.segment_id }).then(function(result) {
+    function playIssuedListen() {
       var media = mediaElement();
       state.current = segment;
       state.stopAt = seconds(segment.end_seconds);
-      state.activePlayToken = result.play_token;
       media.src = mediaSource();
       media.muted = false;
       video.hidden = media !== video;
       media.currentTime = seconds(segment.start_seconds);
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('audio', segment.segment_id);
       if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, segment.segment_id);
-      return Promise.resolve(media.play());
-    }).then(function() { setStatus('Listening to line ' + (state.segments.indexOf(segment) + 1) + '…'); }).catch(function() {
+      return Promise.resolve(media.play()).then(function() {
+        setStatus('Listening to line ' + (state.segments.indexOf(segment) + 1) + '…');
+      }).catch(function(error) {
+        if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', false, segment.segment_id);
+        if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', segment.segment_id);
+        if (error && error.name === 'NotAllowedError') {
+          setStatus('Tap Listen again to play this line.', 'error');
+          return;
+        }
+        state.activePlayToken = '';
+        setStatus('This audio could not be played. Check your connection and try again.', 'error');
+      });
+    }
+    if (state.activePlayToken && state.current && state.current.segment_id === segment.segment_id) {
+      playIssuedListen();
+      return;
+    }
+    functionCall('startListen', { segment_id: segment.segment_id }).then(function(result) {
+      state.activePlayToken = result.play_token;
+      return playIssuedListen();
+    }).catch(function(error) {
       state.activePlayToken = '';
-      if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', false, segment.segment_id);
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', segment.segment_id);
-      setStatus('Press Listen again to start audio.', 'error');
+      setStatus(error && error.message || 'This line is unavailable. Please try again.', 'error');
     });
   }
   function completeListen() {

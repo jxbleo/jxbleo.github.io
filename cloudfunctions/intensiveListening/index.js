@@ -314,7 +314,10 @@ async function saveShadowingProgress(student, material, progress) {
 
 function shadowingTrackResponse(material, progress, revealAll = false) {
   const normalized = shadowing.normalizeMaterial(material);
-  const segments = shadowing.trackSegments(normalized, "shadowing");
+  // The learner Shadowing surface contains scored practice lines only. Context
+  // and skip units remain canonical material but are not accepted by the
+  // listen/take endpoints, so returning them here would create dead controls.
+  const segments = shadowing.trainingSegments(normalized, "shadowing");
   const states = progress && progress.segment_states || {};
   return segments.map((segment) => {
     const state = states[segment.segment_id] || {};

@@ -44,6 +44,9 @@ assert.strictEqual(legacyNormalized.content_revision, "legacy-r4");
 
 const longText = Array(121).fill("word").join(" ");
 assert.throws(() => shadowing.validateCanonicalMaterial({ ...canonical, units: [unit("too-long", longText, 0, 20)] }), /REFERENCE_WORD_LIMIT/);
+const overlapping = { ...canonical, units: [unit("overlap-1", "First line.", 0, 2), unit("overlap-2", "Second line.", 1.5, 3)] };
+assert.doesNotThrow(() => shadowing.validateCanonicalMaterial(overlapping), "ordered ASR units may overlap without disabling learning activity");
+assert.throws(() => shadowing.validateCanonicalMaterial({ ...canonical, units: [unit("later", "Later.", 2, 3), unit("earlier", "Earlier.", 1, 2.5)] }), /UNIT_TIMING_ORDER/);
 
 const midnight = activity.splitSeconds(new Date("2026-09-07T15:59:59Z"), new Date("2026-09-07T16:00:01Z"));
 assert.deepStrictEqual(midnight.map((part) => [part.date, part.seconds]), [["2026-09-07", 1], ["2026-09-08", 1]]);
@@ -72,6 +75,9 @@ assert.match(shadowingClient, /Student recording only/, "teacher Shadowing previ
 assert.match(shadowingClient, /Stop Replay/);
 assert.match(shadowingClient, /pause\('permission'\)/, "microphone permission wait must not accrue learning time");
 assert.match(shadowingClient, /pause\('auto-advance'\)/, "auto-advance wait must not accrue learning time");
+assert.match(shadowingClient, /shadowing_segments\.filter\(function\(segment\)/, "the browser defensively filters stale non-training bootstrap rows");
+assert.doesNotMatch(shadowingClient, /Press Listen again to start audio\./, "backend failures must not masquerade as an autoplay prompt");
+assert.match(shadowingClient, /Record take/, "the recording control stays explicitly named before it unlocks");
 assert.match(shadowingCss, /\.shadowing-word-state\.normal \{ color: inherit; background: transparent; \}/);
 assert.match(shadowingCss, /\.shadowing-word-state\.yellow[^\n]*border-bottom: 2px dotted/);
 assert.match(shadowingCss, /\.shadowing-word-state\.red[^\n]*border-bottom: 2px solid/);

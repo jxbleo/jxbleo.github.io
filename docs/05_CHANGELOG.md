@@ -3238,3 +3238,9 @@ the one permitted `rec_mode=1` binary WAV message.
 - Deployed the five scoped Listening/time/report functions and verified downloaded online bundle hashes.
 - Preserved existing function configuration and kept Tencent Shadowing scoring fail-closed pending the separate real-audio benchmark and owner activation.
 - Published commit `da54bd3a` through successful GitHub Pages and Tencent COS workflows, then verified the live COS ETags and content lengths for the Listening library, practice shell, learning-activity client, and Dashboard against the release files.
+
+## 2026-09-08 — Shadowing Listen hotfix
+
+- Removed canonical `skip`/`context_only` rows from the learner Shadowing projection and added a browser-side defensive filter, preventing the first BBC ident row from producing `SHADOWING_SEGMENT_NOT_FOUND`.
+- Kept the disabled microphone action explicitly labelled `Record take`; separated backend, media/network, and autoplay feedback while retaining a direct-tap autoplay retry.
+- Permitted source-ordered ASR timestamp overlap so existing BBC material can start effective-time sessions without weakening individual-bound or reverse-order validation.

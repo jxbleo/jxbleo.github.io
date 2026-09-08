@@ -2477,6 +2477,13 @@ account-wide (1/2/3/5 complete listens, default 3, or off); manual Show Script
 is always available and every conclusive score reveals word feedback. Shadowing
 never creates STARs, Argue requests, or teacher score overrides.
 
+The learner Shadowing queue contains only canonical `dictation` units because
+those are the units accepted by complete-listen and recording endpoints.
+Canonical `skip` and `context_only` rows remain available to Dictation/material
+authoring but never render as dead Shadowing practice cards. Ordered unit time
+ranges may overlap at reviewed ASR or speaker hand-offs; each practice unit is
+still clipped to its own start/end bounds.
+
 Recording starts after a visible three-second countdown. Video material plays
 muted picture during the take. Student recording may end early; the safety cap
 is source duration × 1.8 + 3 seconds, never above 300 seconds, and long outside

@@ -2971,3 +2971,12 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   teacher authoring edits one canonical Transcript & Units source. Automated tests
   must not mutate the production collection, indexes, scoring configuration, or
   historical time.
+- Seed a canonical sequence beginning with `skip`, followed by `context_only`
+  and `dictation`. Verify the learner Shadowing pager starts on the scored
+  `dictation` unit, Listen earns one complete-listen credit, and the disabled
+  microphone control is still visibly named `Record take` before it unlocks.
+- Verify a backend listen error is shown as its real safe message, a media/network
+  failure is not described as an autoplay block, and a genuine `NotAllowedError`
+  can be retried by a direct second tap without requesting another token.
+- Verify ordered overlapping unit ranges pass canonical validation and effective-
+  time startup, while reverse start-time order and invalid individual bounds fail.

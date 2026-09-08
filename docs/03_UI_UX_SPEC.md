@@ -2988,6 +2988,13 @@ preserve 44px touch targets, respect reduced motion/transparency/contrast and
 safe areas, and collapse to one column on narrow layouts. Pre-reveal cards never
 contain transcript, reference words, or word-state feedback.
 
+Only scored `dictation` units appear in the learner Shadowing pager. The disabled
+microphone action remains visibly named `Record take` before the first complete
+listen rather than disguising itself as another Listen action. A backend segment
+error, media/network failure, and browser autoplay block use distinct status
+copy; an autoplay retry reuses the already-issued listen token and performs the
+second `play()` directly from the student's tap.
+
 Dictation preserves one-word slots and keyboard behaviour. Checked results over
 50% may restore both correct and wrong slot state on another device; unchecked
 edits warn on mode switch. While the answer is visible, both answer controls say

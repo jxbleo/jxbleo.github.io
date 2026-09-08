@@ -231,14 +231,17 @@ function trainingSegments(material, track) {
 function validateCanonicalMaterial(material) {
   const normalized = normalizeMaterial(material);
   if (!normalized.units.length) throw new Error("MATERIAL_EMPTY");
-  let previousEnd = -1;
+  let previousStart = -1;
   const scored = normalized.units.filter((unit) => normalizeMode(unit.practice_mode) === "dictation");
   if (!scored.length) throw new Error("MATERIAL_NO_SCORED_UNITS");
   normalized.units.forEach((unit) => {
     if (!unit.unit_id || !unit.text && normalizeMode(unit.practice_mode) !== "skip") throw new Error("UNIT_TEXT_REQUIRED");
     if (!Number.isFinite(unit.start_seconds) || !Number.isFinite(unit.end_seconds) || unit.end_seconds <= unit.start_seconds) throw new Error("UNIT_TIMING_INVALID");
-    if (unit.start_seconds < previousEnd) throw new Error("UNIT_TIMING_OVERLAP");
-    previousEnd = unit.end_seconds;
+    // Reviewed ASR units may intentionally overlap at a speaker hand-off. The
+    // player clips each unit to its own bounds, so only reverse source order is
+    // invalid; overlap itself must not disable practice or effective-time logs.
+    if (unit.start_seconds < previousStart) throw new Error("UNIT_TIMING_ORDER");
+    previousStart = unit.start_seconds;
     if (normalizeMode(unit.practice_mode) === "dictation") {
       const words = referenceWords(unit);
       if (words.length < 1 || words.length > MAX_REFERENCE_WORDS) throw new Error("REFERENCE_WORD_LIMIT");

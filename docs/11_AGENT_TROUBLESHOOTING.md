@@ -1105,6 +1105,19 @@ paths, transcript/reference words, credentials, or provider bodies. An
 past `delete_after`, run the owner-gated maintenance worker and preserve its
 locator until deletion succeeds.
 
+### Shadowing Listen says to tap again before any audio plays
+
+Do not assume this is an autoplay problem. Check the `intensiveListening` log for
+the exact safe code first. The learner response and browser list must both contain
+only scored `dictation` segments; returning canonical `skip` or `context_only`
+rows makes the browser send an ID that `startListen` correctly rejects as
+`SHADOWING_SEGMENT_NOT_FOUND`. Keep backend-call errors separate from
+`HTMLMediaElement.play()` errors. Only `NotAllowedError` should ask for a direct
+second tap, and that tap should reuse the issued token. Existing BBC timestamps
+may overlap in increasing source order; reject invalid per-unit bounds or reverse
+start order, not ordinary ASR overlap, or effective-time startup will fail with a
+misleading material-validation error.
+
 Tencent SOE-N WebSocket signing is not the same as TC3 API signing. Use the
 lower-case documented query names, sign the unescaped sorted parameter string
 with HMAC-SHA1 against `soe.cloud.tencent.com/soe/api/<appid>?`, wait for the

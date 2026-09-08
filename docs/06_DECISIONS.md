@@ -1586,3 +1586,13 @@ Calendar, Teacher, and report surfaces receive only safe mode/material/minute
 summaries. No historical time is inferred from old progress records and no new
 runtime dependency is introduced. The owner-authorized 2026-09-08 rollout created the ADMINONLY activity
 collection and its reviewed sparse/compound indexes without changing scoring policy.
+
+### 2026-09-08 — Shadowing projects only scored units and permits ordered overlap
+
+Keep `skip` and `context_only` rows in the one canonical teacher-reviewed source,
+but never return them as learner Shadowing cards because the listen and take
+endpoints intentionally accept only scored `dictation` units. Enforce this at
+both server projection and browser hydration boundaries. Timestamp ranges may
+overlap while their start times remain in source order: ASR and speaker hand-off
+boundaries are not reliably disjoint, and every practice player already clips
+to the selected unit's own start/end interval.

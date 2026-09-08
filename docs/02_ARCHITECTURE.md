@@ -1218,6 +1218,11 @@ for interrupted browser uploads, a transaction-owned single-active
 take lock per student, deterministic client idempotency, provider outcome
 categories, dynamic source-duration limits, and usage rows claimed immediately
 before the outbound request.
+The learner `shadowing_segments` projection uses the service's scored training
+segments rather than the complete canonical sequence; the browser repeats that
+filter defensively for stale cached responses. Canonical validation permits
+ordered overlapping time ranges because playback clips every unit independently,
+but still rejects reverse source order and invalid per-unit bounds.
 The Tencent adapter signs the documented host/path/appid plus sorted unescaped
 query, waits for the JSON handshake, sends one complete WAV recording in
 paragraph EvalMode 2, and accepts only the final provider result. Product score

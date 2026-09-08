@@ -76,6 +76,15 @@ Module._load = function(request, parent, isMain) {
 delete require.cache[require.resolve("../cloudfunctions/intensiveListening/index")];
 const gateway = require("../cloudfunctions/intensiveListening/index").__test;
 Module._load = originalLoad;
+const practiceOnly = gateway.shadowingTrackResponse({
+  ...material(),
+  units: [
+    { unit_id: "skip-1", text: "BBC ident.", start_seconds: 0, end_seconds: 1, practice_mode: "skip", slots: [] },
+    { unit_id: "context-1", text: "Context only.", start_seconds: 1, end_seconds: 2, practice_mode: "context_only", slots: [] },
+    { unit_id: "practice-1", text: "Practise this.", start_seconds: 2, end_seconds: 4, practice_mode: "dictation", slots: [{ slot_id: "practice-w1", answer: "Practise" }] },
+  ],
+}, { segment_states: {} }, false);
+assert.deepStrictEqual(practiceOnly.map((segment) => segment.segment_id), ["practice-1"], "learner Shadowing must not render dead skip/context controls");
 const hiddenProgress = gateway.safeShadowingProgress({ segment_count: 1, segment_states: { "s-1": { transcript_revealed: false, best_score: 81, best_word_states: [{ word_id: "rw_001", state: "red" }] } } });
 assert.strictEqual(hiddenProgress.segment_states["s-1"].latest_score, 81, "legacy best values migrate into the latest-score response");
 assert.strictEqual(gateway.shadowingMaxDurationSeconds({ start_seconds: 0, end_seconds: 10 }), 21);
