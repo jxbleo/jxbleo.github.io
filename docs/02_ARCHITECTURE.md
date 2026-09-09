@@ -1057,7 +1057,7 @@ the current student session, and `finishAudioUpload` accepts the returned
 CloudBase file ID only when it resolves to that exact path. The gateway then
 checks actual Storage metadata and byte size before publishing the uploaded
 asset. Arbitrary browser-supplied file IDs, paths, or claimed sizes never become
-authoritative. Set-backed `createDiscussion` is the only student Start boundary; the browser does not stage a second New Session form. Before formal upload, authenticated `updateDiscussionDate` and `updateDiscussionDuration` mutate only the authorized draft Discussion so an existing audio file can retain its real date while device recording remains Shanghai-today.
+authoritative. Set-backed `createDiscussion` is the only student Start boundary; the browser does not stage a second New Session form. An active teacher may use the same action from the Teacher Speaking recording card. That path freezes the selected Set snapshot but creates no synthetic teacher participant, so the Discussion begins with `participant_count: 0` and later derives its roster from server Candidate detection, reusable-voiceprint matching, and teacher mapping. Before formal upload, authenticated `updateDiscussionDate` and `updateDiscussionDuration` mutate only the authorized draft Discussion so an existing audio file can retain its real date while device recording remains Shanghai-today.
 
 The environment-level function ACL sets `speakingAiWorker.invoke` to `false`,
 which blocks browser SDK calls while leaving CloudBase timer triggers intact.

@@ -1,6 +1,19 @@
 # Changelog
 
 
+## 2026-09-09 — Two-card Teacher Speaking entry
+
+- Reduced the Teacher Speaking entrance to `Upload or record` and `View existing
+  reports`, with the topic selector, file choice, and on-device recorder kept in
+  the first card.
+- Reused the private two-phase upload and durable analysis pipeline for
+  teacher-created, roster-free Discussions; the teacher is not added as a
+  synthetic Candidate.
+- Removed Set management and global Student-ID voiceprint setup from the
+  entrance while retaining participant voiceprint controls inside report
+  rosters.
+
+
 ## 2026-09-07 — Direct Scan Words review flow
 
 - Removed the separate photo-preparation step so the first-screen `Confirm`

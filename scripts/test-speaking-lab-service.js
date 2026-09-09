@@ -23,6 +23,11 @@ async function run() {
   assert.match(source, /SPEAKING_SET_IN_USE/);
   assert.match(source, /visible_to_students !== true/);
   assert.match(source, /setSnapshot = lab\.buildGroupDiscussionSnapshot/);
+  assert.match(source, /const studentCreator = lab\.isActiveStudent\(actor\)/);
+  assert.match(source, /const teacherCreator = lab\.isTeacher\(actor\)/);
+  assert.match(source, /participant_count: studentCreator \? 1 : 0/, "teacher-created Discussions begin without a synthetic participant");
+  assert.match(source, /const participant = studentCreator \? \{/);
+  assert.match(source, /if \(participant\) await transaction\.collection\(PARTICIPANTS\)/);
   assert.match(source, /responseSnapshot = lab\.buildIndividualResponseSnapshot/);
   assert.match(source, /job_type: "individual_response_analysis"/);
   assert.match(source, /options\.includeReport \? \{ report: row\.report \|\| null \} : \{\}/, "Individual Response lists must not include full reports");

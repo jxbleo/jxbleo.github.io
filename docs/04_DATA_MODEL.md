@@ -1273,6 +1273,11 @@ Response. Do not recreate the former unique
 `null + response-r1` and rejects the second report as a duplicate.
 
 New `speaking_discussions.candidate_count` is nullable until transcription.
+An active teacher may create a Set-backed Discussion whose `creator_uid` is the
+teacher UID and whose initial `participant_count` is `0`; no teacher row is
+inserted into `speaking_participants`. Candidate detection and accepted
+voiceprint matches add the real participant rows later, using the existing
+top-level schema and audit fields.
 `speaking_discussions.formal_audio_uploaded_at` records the successful formal
 upload time and is the same-date history tie-breaker; title, voice mapping, and
 other `updated_at` changes must not reorder the list. Each accepted VIP

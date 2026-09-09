@@ -2520,6 +2520,17 @@ ellipsis instead.
 
 Teacher report gates:
 
+- open Teacher Speaking and confirm exactly two primary cards are visible: the
+  first contains the topic selector plus Upload and Start recording, while the
+  second opens existing result reports; confirm the old Reports/Sets tabs, Set
+  editor, and global Student-ID voiceprint form are absent;
+- choose a topic and test an existing audio file, microphone permission, denied
+  microphone fallback, manual Finish, Record again, Discard, and the 08:05
+  automatic stop; verify the audio stays in memory until the private two-phase
+  upload begins and that a failed analysis can retry without another upload;
+- confirm a teacher-created Discussion stores no teacher participant, begins at
+  participant count zero, and remains readable while automatic voice matching
+  or later teacher mapping identifies the real Candidates;
 - seed or mock more than 50 Discussions and verify Teacher Speaking follows
   every `next_offset`, lists each Discussion once, and marks ready rows as
   `Full report ready` with a `View report` action;

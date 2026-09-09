@@ -137,7 +137,8 @@ function run() {
   assert.match(deployWorkflowSource, /test ! -e dist\/content\/speaking/, "deployment fails if private Speaking Set source enters dist");
   assert.match(serviceSource, /speakingSetSummaryView/, "Set lists return metadata summaries instead of 306 complete Contexts");
   assert.match(frontendSource, /speakingSetRenderLimit = 48/, "student Set cards render in bounded batches");
-  assert.match(teacherSource, /teacherGetSpeakingSet/, "teacher editing fetches one complete Set on demand");
+  assert.match(teacherSource, /teacherListSpeakingSets/, "the teacher recording card loads safe Set summaries for its topic picker");
+  assert.match(teacherSource, /function renderTopicOptions\(rows\)/, "the teacher topic picker renders the Set summary list");
   assert.match(rawImportSource, /allow-unaudited-overwrite/, "raw recall generation cannot silently replace the audited library");
   assert.match(auditMergeSource, /every canonical record needs exactly one audited replacement/, "audited regeneration requires complete year evidence");
   console.log("Speaking Set library contracts passed: 306 PP visible, five historical MOCK Sets hidden.");

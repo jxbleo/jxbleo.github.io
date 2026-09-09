@@ -2738,10 +2738,17 @@ pointer cancellation discards the sample, and Reduced Motion retains state
 changes without animated arrival. A ready voiceprint is automatic matching
 support, never identity proof.
 
-Teacher Speaking is a separate workspace view that follows backend pagination
-until every Discussion is listed. A ready row is labelled `Full report ready`
-and opens one complete teacher report rather than a summary-only view. The
-report begins with group performance and then shows every Candidate's four
+Teacher Speaking is a separate, two-card workspace. The first card is `Upload
+or record`: one topic selector precedes the equal upload-file and start-recording
+actions, and the same card expands in place for microphone, ready, secure-upload,
+and retry-analysis states. A recording in browser memory must be finished or
+discarded before leaving this card. The second card is `View existing reports`;
+it shows the current ready/preparing count and opens the report list. Set editing
+and global Student-ID Voiceprint Setup do not appear on this entrance.
+
+The report list follows backend pagination until every Discussion is listed. A
+ready row is labelled `Full report ready` and opens one complete teacher report
+rather than a summary-only view. The report begins with group performance and then shows every Candidate's four
 dimensions, strengths, priority actions, language suggestions, turn-by-turn CS
 and IO coaching, and one collapsed complete transcript. Identity mapping stays
 in a separate collapsed teacher-only card so it does not interrupt report
@@ -2756,9 +2763,8 @@ name keeps that Candidate's selected analysis but replaces the real name with
 its safe Speaker label. The created link opens the existing private external
 report and expires after seven days.
 
-Its Voiceprint Setup accepts an exact VIP Student ID and records on the current
-teacher device. Every Discussion roster row also provides Record/Update
-Voiceprint, including a Non-VIP row labelled `Name not verified`; teacher
+Every Discussion roster row provides Record/Update Voiceprint on the current
+teacher device, including a Non-VIP row labelled `Name not verified`; teacher
 enrolment requires confirmation that the person is present and agrees. The same
 single recorder is reused so two microphones cannot be active simultaneously.
 An active teacher target visibly shows `Active · Revision n` plus its latest

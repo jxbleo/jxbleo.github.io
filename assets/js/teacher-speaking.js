@@ -3,21 +3,48 @@
 
     var panel = document.getElementById('view-speaking');
     if (!panel || !window.MrCatCloud || !window.MrCatAuth) return;
+    var home = document.getElementById('teacher-speaking-home');
+    var resultsPanel = document.getElementById('teacher-speaking-results');
     var list = document.getElementById('teacher-speaking-list');
     var detail = document.getElementById('teacher-speaking-detail');
     var message = document.getElementById('teacher-speaking-message');
     var voiceprintTargetPanel = document.getElementById('teacher-voiceprint-target');
+    var topicSelect = document.getElementById('teacher-speaking-topic');
+    var audioFileInput = document.getElementById('teacher-speaking-audio-file');
+    var audioFileButton = document.getElementById('teacher-speaking-file-button');
+    var recordButton = document.getElementById('teacher-speaking-record');
+    var capturePanel = document.getElementById('teacher-speaking-capture');
+    var captureTitle = document.getElementById('teacher-speaking-capture-title');
+    var captureTime = document.getElementById('teacher-speaking-capture-time');
+    var captureMessage = document.getElementById('teacher-speaking-capture-message');
+    var captureDot = document.getElementById('teacher-speaking-record-dot');
+    var discardButton = document.getElementById('teacher-speaking-discard');
+    var uploadButton = document.getElementById('teacher-speaking-upload');
+    var reportCount = document.getElementById('teacher-speaking-report-count');
     var selected = '';
     var voiceprintTarget = null;
     var voiceprintLocator = null;
     var voiceprintController = null;
     var voiceprintSaving = false;
-    var speakingSetsPanel = document.getElementById('teacher-speaking-sets');
-    var speakingSetList = document.getElementById('teacher-speaking-set-list');
-    var speakingSetEditor = document.getElementById('teacher-speaking-set-editor');
     var speakingSets = [];
-    var speakingSetDetails = {};
-    var speakingSetRenderLimit = 50;
+    var discussions = [];
+    var loadInFlight = null;
+    var captureState = 'idle';
+    var recordingStream = null;
+    var recordingDevice = null;
+    var recordingTimer = 0;
+    var recordingStartedAt = 0;
+    var recordingChunks = [];
+    var discardActiveRecording = false;
+    var localRecording = null;
+    var localRecordingName = '';
+    var draftCreateOperationId = '';
+    var draftUploadOperationId = '';
+    var draftDiscussionId = '';
+    var pendingAnalysisDiscussionId = '';
+    var TEACHER_RECORDING_TARGET_SECONDS = 8 * 60;
+    var TEACHER_RECORDING_STOP_SECONDS = TEACHER_RECORDING_TARGET_SECONDS + 5;
+    var FILE_UPLOAD_TIMEOUT_MS = 10 * 60 * 1000;
 
     function esc(value) {
         return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
@@ -158,83 +185,279 @@
             return result.next_offset != null ? loadDiscussionPages(result.next_offset, rows) : rows;
         });
     }
-    function speakingSetLabel(set) { return set.display_label || [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking Set'].filter(Boolean).join(' · '); }
-    function speakingSetMetaLabel(set) { return [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · '); }
-    function renderTeacherSetResults() {
-        var query = String(document.getElementById('teacher-speaking-set-search').value || '').trim().toLowerCase();
-        var year = document.getElementById('teacher-speaking-set-year').value;
-        var source = document.getElementById('teacher-speaking-set-source').value;
-        var visibility = document.getElementById('teacher-speaking-set-visibility').value;
-        var filtered = speakingSets.filter(function (set) {
-            var haystack = [set.exam_year, set.paper_version, set.title, set.display_label].join(' ').toLowerCase();
-            var shown = set.visible_to_students !== false;
-            return (!query || haystack.indexOf(query) !== -1) && (!year || String(set.exam_year) === year) && (!source || set.source_kind === source) && (!visibility || (visibility === 'shown' ? shown : !shown));
+    function speakingSetLabel(set) {
+        return set.display_label || [String(set.exam_year || ''), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking topic'].filter(Boolean).join(' · ');
+    }
+    function shanghaiToday() {
+        try {
+            return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+        } catch (_error) {
+            return new Date().toISOString().slice(0, 10);
+        }
+    }
+    function elapsedLabel(seconds) {
+        var value = Math.max(0, Math.floor(Number(seconds || 0)));
+        return String(Math.floor(value / 60)).padStart(2, '0') + ':' + String(value % 60).padStart(2, '0');
+    }
+    function stopRecordingHardware() {
+        if (recordingTimer) window.clearInterval(recordingTimer);
+        recordingTimer = 0;
+        if (recordingStream) recordingStream.getTracks().forEach(function (track) { track.stop(); });
+        recordingStream = null;
+        recordingStartedAt = 0;
+    }
+    function setCaptureState(nextState, copy) {
+        captureState = nextState;
+        var active = ['requesting', 'recording', 'stopping', 'uploading'].indexOf(nextState) !== -1;
+        capturePanel.hidden = nextState === 'idle';
+        captureDot.hidden = nextState !== 'recording';
+        topicSelect.disabled = active || Boolean(draftDiscussionId);
+        audioFileInput.disabled = active;
+        audioFileButton.disabled = active;
+        recordButton.disabled = ['requesting', 'stopping', 'uploading'].indexOf(nextState) !== -1;
+        recordButton.textContent = nextState === 'recording' ? 'Finish recording' : (localRecording ? 'Record again' : 'Start recording');
+        discardButton.hidden = nextState === 'requesting' || nextState === 'stopping' || nextState === 'uploading';
+        uploadButton.hidden = ['requesting', 'recording', 'stopping'].indexOf(nextState) !== -1;
+        uploadButton.disabled = nextState === 'uploading' || (nextState !== 'analysis_retry' && !localRecording);
+        uploadButton.textContent = nextState === 'analysis_retry' ? 'Retry analysis' : 'Upload & analyse';
+        discardButton.textContent = nextState === 'analysis_retry' ? 'View reports' : (nextState === 'recording' ? 'Cancel recording' : 'Discard');
+        if (nextState === 'requesting') captureTitle.textContent = 'Connecting microphone…';
+        if (nextState === 'recording') captureTitle.textContent = 'Recording';
+        if (nextState === 'stopping') captureTitle.textContent = 'Finishing recording…';
+        if (nextState === 'ready') captureTitle.textContent = 'Recording ready';
+        if (nextState === 'uploading') captureTitle.textContent = 'Uploading securely…';
+        if (nextState === 'analysis_retry') captureTitle.textContent = 'Recording uploaded';
+        if (copy != null) captureMessage.textContent = copy;
+        document.getElementById('teacher-speaking-open-results').disabled = active || nextState === 'ready';
+    }
+    function clearLocalRecording() {
+        localRecording = null;
+        localRecordingName = '';
+        recordingChunks = [];
+        draftUploadOperationId = '';
+        captureTime.textContent = '00:00';
+    }
+    function resetTeacherDraft() {
+        stopRecordingHardware();
+        clearLocalRecording();
+        draftCreateOperationId = '';
+        draftDiscussionId = '';
+        pendingAnalysisDiscussionId = '';
+        setCaptureState('idle', '');
+        topicSelect.disabled = false;
+    }
+    function normaliseAudioMime(blob) {
+        var mime = String(blob && blob.type || '').split(';')[0].toLowerCase();
+        if (/^audio\/(webm|mp4|mpeg|wav|x-m4a|aac)$/.test(mime)) return mime;
+        var name = String(blob && blob.name || '').toLowerCase();
+        if (/\.mp3$/.test(name)) return 'audio/mpeg';
+        if (/\.m4a$/.test(name)) return 'audio/x-m4a';
+        if (/\.wav$/.test(name)) return 'audio/wav';
+        if (/\.aac$/.test(name)) return 'audio/aac';
+        if (/\.mp4$/.test(name)) return 'audio/mp4';
+        return 'audio/webm';
+    }
+    function prepareAudioFile(file) {
+        if (!file) return;
+        if ((file.type && !/^audio\//i.test(file.type)) || file.size < 1 || file.size > 120 * 1024 * 1024) {
+            setMessage('Choose a supported audio file no larger than 120 MB.', true);
+            return;
+        }
+        clearLocalRecording();
+        localRecording = file;
+        localRecordingName = file.name || 'Selected audio';
+        captureTime.textContent = 'Audio file';
+        setCaptureState('ready', localRecordingName + ' is ready to upload.');
+        setMessage('');
+    }
+    function stopTeacherRecording(cancel) {
+        if (!recordingDevice || recordingDevice.state === 'inactive') return;
+        discardActiveRecording = Boolean(cancel);
+        setCaptureState('stopping', cancel ? 'Cancelling this recording…' : 'Preparing the recording…');
+        try { if (recordingDevice.requestData) recordingDevice.requestData(); } catch (_error) {}
+        try { recordingDevice.stop(); } catch (_error) { stopRecordingHardware(); resetTeacherDraft(); }
+    }
+    function startTeacherRecording() {
+        if (captureState === 'recording') { stopTeacherRecording(false); return; }
+        if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+            setMessage('Recording is unavailable in this browser. Upload an audio file instead.', true);
+            return;
+        }
+        clearLocalRecording();
+        setCaptureState('requesting', 'Allow microphone access to begin.');
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+            recordingStream = stream;
+            recordingChunks = [];
+            discardActiveRecording = false;
+            var preferred = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(function (mime) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime); });
+            recordingDevice = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
+            recordingDevice.ondataavailable = function (event) { if (event.data && event.data.size) recordingChunks.push(event.data); };
+            recordingDevice.onerror = function () { stopRecordingHardware(); recordingDevice = null; clearLocalRecording(); setCaptureState('idle', ''); setMessage('The microphone recording stopped unexpectedly. Try again or upload an audio file.', true); };
+            recordingDevice.onstop = function () {
+                var mime = recordingDevice && recordingDevice.mimeType || 'audio/webm';
+                var blob = new Blob(recordingChunks, { type: mime });
+                var cancelled = discardActiveRecording;
+                recordingDevice = null;
+                stopRecordingHardware();
+                recordingChunks = [];
+                discardActiveRecording = false;
+                if (cancelled || !blob.size) {
+                    clearLocalRecording();
+                    setCaptureState('idle', '');
+                    if (!cancelled) setMessage('No audio was captured. Check the microphone and try again.', true);
+                    return;
+                }
+                localRecording = blob;
+                localRecordingName = 'Recorded on this device';
+                setCaptureState('ready', 'Your recording is ready to upload.');
+            };
+            recordingDevice.start(1000);
+            recordingStartedAt = performance.now();
+            captureTime.textContent = '00:00';
+            setCaptureState('recording', 'Speak naturally. The recording stops automatically at 08:05.');
+            recordingTimer = window.setInterval(function () {
+                var elapsed = Math.max(0, (performance.now() - recordingStartedAt) / 1000);
+                captureTime.textContent = elapsedLabel(elapsed);
+                if (elapsed >= TEACHER_RECORDING_STOP_SECONDS) stopTeacherRecording(false);
+            }, 250);
+        }).catch(function () {
+            stopRecordingHardware();
+            recordingDevice = null;
+            setCaptureState('idle', '');
+            setMessage('Microphone access was not allowed. You can still upload an audio file.', true);
         });
-        var visible = filtered.slice(0, speakingSetRenderLimit);
-        speakingSetList.innerHTML = visible.map(function (set) {
-            return '<article class="teacher-speaking-set-row"><div><small>' + esc(speakingSetMetaLabel(set)) + '</small><h3>' + esc(set.title) + '</h3><small>Revision ' + esc(set.content_revision || 1) + ' · ' + (set.visible_to_students ? 'Shown to students' : 'Hidden from students') + '</small></div><button class="outline-button" type="button" data-speaking-set-edit="' + esc(set.set_id) + '">Edit</button><button class="outline-button" type="button" data-speaking-set-preview="' + esc(set.set_id) + '">Preview</button><button class="danger-button" type="button" data-speaking-set-delete="' + esc(set.set_id) + '">Delete</button></article>';
-        }).join('') || '<div class="speaking-detail-card">No Speaking Sets match these filters.</div>';
-        speakingSetList.querySelectorAll('[data-speaking-set-edit]').forEach(function (button) { button.addEventListener('click', function () { openSpeakingSetEditor(button.getAttribute('data-speaking-set-edit')); }); });
-        speakingSetList.querySelectorAll('[data-speaking-set-preview]').forEach(function (button) { button.addEventListener('click', function () { openSpeakingSetEditor(button.getAttribute('data-speaking-set-preview'), true); }); });
-        speakingSetList.querySelectorAll('[data-speaking-set-delete]').forEach(function (button) { button.addEventListener('click', function () { if (!window.confirm('Delete this Set? Historical Sessions prevent deletion.')) return; button.disabled = true; call('teacherDeleteSpeakingSet', { set_id: button.getAttribute('data-speaking-set-delete') }).then(loadSets).catch(function (error) { setMessage(error.message || 'This Set could not be deleted.', true); button.disabled = false; }); }); });
-        var more = document.getElementById('teacher-speaking-set-more');
-        more.hidden = visible.length >= filtered.length;
-        more.textContent = 'Show more · ' + String(filtered.length - visible.length) + ' remaining';
     }
-    function renderTeacherSetList(rows) {
-        speakingSets = Array.isArray(rows) ? rows : [];
-        speakingSetRenderLimit = 50;
-        var yearInput = document.getElementById('teacher-speaking-set-year');
-        var selectedYear = yearInput.value;
-        var years = Array.from(new Set(speakingSets.map(function (set) { return String(set.exam_year || ''); }).filter(Boolean))).sort(function (a, b) { return Number(b) - Number(a); });
-        yearInput.innerHTML = '<option value="">All years</option>' + years.map(function (value) { return '<option value="' + esc(value) + '">' + esc(value) + '</option>'; }).join('');
-        if (years.indexOf(selectedYear) !== -1) yearInput.value = selectedYear;
-        renderTeacherSetResults();
+    function uploadWithTimeout(request) {
+        var timer;
+        var timeout = new Promise(function (_resolve, reject) {
+            timer = window.setTimeout(function () { reject(new Error('The upload took too long. Your recording is still ready to retry.')); }, FILE_UPLOAD_TIMEOUT_MS);
+        });
+        return Promise.race([request, timeout]).finally(function () { if (timer) window.clearTimeout(timer); });
     }
-    function editorRowMarkup(kind, row, index) {
-        var isPoint = kind === 'point';
-        var id = row[isPoint ? 'point_id' : 'question_id'];
-        return '<div class="teacher-speaking-set-editor-row" data-editor-row="' + esc(kind) + '" data-' + (isPoint ? 'point' : 'question') + '-id="' + esc(id) + '"><input value="' + esc(id) + '" aria-label="Stable ' + esc(kind) + ' ID" readonly><textarea data-editor-text aria-label="' + esc(kind) + ' text">' + esc(row.text || '') + '</textarea><span class="teacher-speaking-editor-row-actions"><button type="button" class="outline-button" data-row-up="' + esc(kind) + '"' + (index === 0 ? ' disabled' : '') + '>↑</button><button type="button" class="outline-button" data-row-down="' + esc(kind) + '">↓</button><button type="button" class="outline-button" data-row-remove="' + esc(kind) + '">Remove</button></span></div>';
+    function ensureDraftDiscussion() {
+        if (draftDiscussionId) return Promise.resolve(draftDiscussionId);
+        if (!topicSelect.value) return Promise.reject(new Error('Choose a Speaking topic first.'));
+        draftCreateOperationId = draftCreateOperationId || ('teacher-discussion-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9));
+        return call('createDiscussion', {
+            set_id: topicSelect.value,
+            discussion_date: shanghaiToday(),
+            duration_seconds: TEACHER_RECORDING_TARGET_SECONDS,
+            operation_id: draftCreateOperationId
+        }).then(function (result) {
+            draftDiscussionId = result.discussion.discussion_id;
+            topicSelect.disabled = true;
+            return draftDiscussionId;
+        });
     }
-    function editorMarkup(set, preview) {
-        var context = set && set.context || { source_line: '', title: '', body: [''] };
-        var partA = set && set.part_a || { instruction: 'You may want to talk about:', discussion_points: [] };
-        var partB = set && set.part_b || { instruction: 'The examiner will ask you one or more questions based on Part A. You will have up to 1 minute to respond.', questions: [] };
-        return '<div class="teacher-speaking-set-editor-grid"><label>Set ID<input id="teacher-set-id" value="' + esc(set && set.set_id || '') + '" required' + (set ? ' readonly' : '') + '></label><label>Source kind<select id="teacher-set-source"><option value="mock"' + (!set || set.source_kind === 'mock' ? ' selected' : '') + '>MOCK</option><option value="pp"' + (set && set.source_kind === 'pp' ? ' selected' : '') + '>PP</option></select></label><label>Exam year<input id="teacher-set-year" type="number" min="2000" max="2100" value="' + esc(set && set.exam_year || '') + '" required></label><label>Paper version<input id="teacher-set-version" placeholder="e.g. 1.1" value="' + esc(set && set.paper_version || '') + '"></label><label>Title<input id="teacher-set-title" maxlength="160" value="' + esc(set && set.title || '') + '" required></label><label>Source note<textarea id="teacher-set-source-note">' + esc(set && set.source_note || '') + '</textarea></label></div><h3>Context</h3><label>Source line<input id="teacher-set-source-line" value="' + esc(context.source_line || '') + '"></label><label>Context title<input id="teacher-set-context-title" value="' + esc(context.title || '') + '" required></label><div class="teacher-speaking-set-editor-list" id="teacher-set-context-body">' + (context.body || ['']).map(function (paragraph) { return '<label>Paragraph<textarea data-context-paragraph>' + esc(paragraph) + '</textarea></label>'; }).join('') + '</div><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-add-paragraph">Add paragraph</button></div><h3>Part A · Group Discussion</h3><label>Task<textarea id="teacher-set-part-a-task" maxlength="1600">' + esc(partA.task || '') + '</textarea></label><label>Instruction<input id="teacher-set-part-a-instruction" value="' + esc(partA.instruction || '') + '"></label><div class="teacher-speaking-set-editor-list" id="teacher-set-points">' + (partA.discussion_points || []).map(function (row, index) { return editorRowMarkup('point', row, index); }).join('') + '</div><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-add-point">Add discussion point</button></div><h3>Part B · Individual Response</h3><label>Instruction<input id="teacher-set-part-b-instruction" value="' + esc(partB.instruction || '') + '"></label><div class="teacher-speaking-set-editor-list" id="teacher-set-questions">' + (partB.questions || []).map(function (row, index) { return editorRowMarkup('question', row, index); }).join('') + '</div><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-add-question">Add question</button></div><label><input type="checkbox" id="teacher-set-visible"' + (!set || set.visible_to_students !== false ? ' checked' : '') + '> Show to students</label><div class="teacher-speaking-set-editor-actions"><button type="button" class="outline-button" id="teacher-set-editor-close">Close</button>' + (preview ? '' : '<button type="button" class="primary-button" id="teacher-set-editor-save">Save Set</button>') + '</div>';
+    function finishTeacherAnalysis(discussionId) {
+        setCaptureState('uploading', 'The recording is safe. Starting the result analysis…');
+        return call('startAnalysis', { discussion_id: discussionId, operation_id: 'analysis-' + discussionId }).then(function () {
+            resetTeacherDraft();
+            setMessage('Recording uploaded. The result report is being prepared.');
+            return refreshDiscussionList().then(showResults);
+        }).catch(function (error) {
+            clearLocalRecording();
+            pendingAnalysisDiscussionId = discussionId;
+            setCaptureState('analysis_retry', (error.message || 'The analysis could not start.') + ' Retry without uploading the audio again.');
+            throw error;
+        });
     }
-    function bindEditor(set, preview) {
-        var nextPointSequence = Math.max(1, Number(set && set.next_point_sequence) || 1);
-        var nextQuestionSequence = Math.max(1, Number(set && set.next_question_sequence) || 1);
-        var move = function (kind, direction, row) { var listEl = document.getElementById(kind === 'point' ? 'teacher-set-points' : 'teacher-set-questions'); var rows = Array.prototype.slice.call(listEl.querySelectorAll('[data-editor-row]')); var index = rows.indexOf(row); var next = index + direction; if (next < 0 || next >= rows.length) return; if (direction < 0) listEl.insertBefore(row, rows[next]); else listEl.insertBefore(rows[next], row); bindEditorButtons(); };
-        function bindEditorButtons() { speakingSetEditor.querySelectorAll('[data-row-up]').forEach(function (button) { button.onclick = function () { move(button.getAttribute('data-row-up'), -1, button.closest('[data-editor-row]')); }; }); speakingSetEditor.querySelectorAll('[data-row-down]').forEach(function (button) { button.onclick = function () { move(button.getAttribute('data-row-down'), 1, button.closest('[data-editor-row]')); }; }); speakingSetEditor.querySelectorAll('[data-row-remove]').forEach(function (button) { button.onclick = function () { var row = button.closest('[data-editor-row]'); row.remove(); }; }); }
-        bindEditorButtons();
-        document.getElementById('teacher-set-add-paragraph').onclick = function () { var label = document.createElement('label'); label.innerHTML = 'Paragraph<textarea data-context-paragraph></textarea>'; document.getElementById('teacher-set-context-body').appendChild(label); };
-        document.getElementById('teacher-set-add-point').onclick = function () { var id = 'pa_' + String(nextPointSequence++).padStart(2, '0'); var index = document.querySelectorAll('#teacher-set-points [data-editor-row]').length; document.getElementById('teacher-set-points').insertAdjacentHTML('beforeend', editorRowMarkup('point', { point_id: id, text: '' }, index)); bindEditorButtons(); };
-        document.getElementById('teacher-set-add-question').onclick = function () { var id = 'ir_' + String(nextQuestionSequence++).padStart(2, '0'); var index = document.querySelectorAll('#teacher-set-questions [data-editor-row]').length; document.getElementById('teacher-set-questions').insertAdjacentHTML('beforeend', editorRowMarkup('question', { question_id: id, text: '' }, index)); bindEditorButtons(); };
-        document.getElementById('teacher-set-editor-close').onclick = function () { speakingSetEditor.hidden = true; };
-        var save = document.getElementById('teacher-set-editor-save'); if (save) save.onclick = function () { var rows = function (id, key) { return Array.prototype.slice.call(document.querySelectorAll('#' + id + ' [data-editor-row]')).map(function (row, index) { return { [key]: row.getAttribute('data-' + (key === 'point_id' ? 'point' : 'question') + '-id'), order: index + 1, text: row.querySelector('[data-editor-text]').value }; }); }; var payload = { set_id: document.getElementById('teacher-set-id').value, source_kind: document.getElementById('teacher-set-source').value, exam_year: Number(document.getElementById('teacher-set-year').value), paper_version: document.getElementById('teacher-set-version').value, title: document.getElementById('teacher-set-title').value, source_note: document.getElementById('teacher-set-source-note').value, context: { source_line: document.getElementById('teacher-set-source-line').value, title: document.getElementById('teacher-set-context-title').value, body: Array.prototype.slice.call(document.querySelectorAll('[data-context-paragraph]')).map(function (input) { return input.value; }) }, part_a: { task: document.getElementById('teacher-set-part-a-task').value, instruction: document.getElementById('teacher-set-part-a-instruction').value, discussion_points: rows('teacher-set-points', 'point_id') }, part_b: { instruction: document.getElementById('teacher-set-part-b-instruction').value, questions: rows('teacher-set-questions', 'question_id') }, visible_to_students: document.getElementById('teacher-set-visible').checked }; save.disabled = true; var action = set ? 'teacherUpdateSpeakingSet' : 'teacherCreateSpeakingSet'; var data = set ? { set_id: set.set_id, expected_content_revision: Number(set.content_revision || 1), set: payload } : { set: payload }; call(action, data).then(function () { setMessage('Speaking Set saved.'); speakingSetEditor.hidden = true; return loadSets(); }).catch(function (error) { setMessage(error.message || 'Could not save Speaking Set.', true); }).finally(function () { save.disabled = false; }); };
-        if (preview) speakingSetEditor.querySelectorAll('input,textarea,select,button:not(#teacher-set-editor-close)').forEach(function (control) { control.disabled = true; });
-    }
-    function renderSpeakingSetEditor(set, preview) { speakingSetEditor.hidden = false; speakingSetEditor.innerHTML = '<p class="eyebrow accent">' + (preview ? 'PREVIEW' : set ? 'EDIT SET' : 'CREATE SET') + '</p><h2>' + esc(preview ? speakingSetLabel(set) : set ? 'Edit Speaking Set' : 'Create Speaking Set') + '</h2>' + editorMarkup(set, preview); bindEditor(set, preview); }
-    function openSpeakingSetEditor(setId, preview) {
-        if (!setId) { renderSpeakingSetEditor(null, false); return Promise.resolve(); }
-        var summary = speakingSets.find(function (item) { return item.set_id === setId; });
-        speakingSetEditor.hidden = false;
-        speakingSetEditor.innerHTML = '<p class="eyebrow accent">' + (preview ? 'PREVIEW' : 'EDIT SET') + '</p><h2>' + esc(summary ? speakingSetLabel(summary) : 'Speaking Set') + '</h2><p>Loading Set content…</p>';
-        var request = speakingSetDetails[setId] ? Promise.resolve({ set: speakingSetDetails[setId] }) : call('teacherGetSpeakingSet', { set_id: setId });
-        return request.then(function (result) { speakingSetDetails[setId] = result.set; renderSpeakingSetEditor(result.set, preview); }).catch(function (error) { speakingSetEditor.innerHTML = '<p class="eyebrow accent">SET UNAVAILABLE</p><h2>Could not load this Set</h2><p>' + esc(error.message || 'Please try again.') + '</p>'; });
-    }
-    function loadSets() { return call('teacherListSpeakingSets').then(function (result) { speakingSetDetails = {}; renderTeacherSetList(result.sets || []); return result; }); }
-    function load() {
-        return loadDiscussionPages(0, []).then(function (discussions) {
-            list.innerHTML = discussions.map(function (item) {
-                var status = item.analysis_status === 'ready' ? 'Full report ready' : item.analysis_status;
-                return '<button class="speaking-card" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span><strong>' + esc(item.title) + '</strong><small>' + esc(item.discussion_date || 'No date') + ' · ' + esc(item.participant_count) + ' participants · ' + esc(status) + '</small></span><span class="speaking-pill" data-tone="' + (item.analysis_status === 'ready' ? 'ready' : 'working') + '">' + (item.analysis_status === 'ready' ? 'View report' : 'Open') + '</span></button>';
-            }).join('') || '<div class="speaking-detail-card">No Discussions yet.</div>';
-            list.querySelectorAll('[data-speaking-teacher-id]').forEach(function (button) {
-                button.addEventListener('click', function () { open(button.getAttribute('data-speaking-teacher-id')); });
+    function uploadTeacherRecording() {
+        if (captureState === 'analysis_retry' && pendingAnalysisDiscussionId) {
+            finishTeacherAnalysis(pendingAnalysisDiscussionId).catch(function () {});
+            return;
+        }
+        if (!localRecording || captureState !== 'ready') return;
+        var blob = localRecording;
+        var mime = normaliseAudioMime(blob);
+        draftUploadOperationId = draftUploadOperationId || ('teacher-upload-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9));
+        setCaptureState('uploading', 'Creating a private upload for this recording…');
+        ensureDraftDiscussion().then(function (discussionId) {
+            return call('startAudioUpload', { discussion_id: discussionId, operation_id: draftUploadOperationId, mime_type: mime, size_bytes: blob.size }).then(function (result) {
+                if (result.status === 'uploaded') return { discussionId: discussionId, assetId: result.asset_id, uploadedFileId: null };
+                captureMessage.textContent = 'Uploading the recording securely…';
+                return uploadWithTimeout(window.MrCatCloud.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) {
+                    return { discussionId: discussionId, assetId: result.asset_id, uploadedFileId: uploaded.file_id };
+                });
             });
+        }).then(function (upload) {
+            if (!upload.uploadedFileId) return upload;
+            captureMessage.textContent = 'Verifying the private upload…';
+            return call('finishAudioUpload', { discussion_id: upload.discussionId, operation_id: draftUploadOperationId, asset_id: upload.assetId, uploaded_file_id: upload.uploadedFileId }).then(function () { return upload; });
+        }).then(function (upload) {
+            clearLocalRecording();
+            return finishTeacherAnalysis(upload.discussionId);
+        }).catch(function (error) {
+            if (captureState !== 'analysis_retry') setCaptureState(localRecording ? 'ready' : 'idle', localRecording ? (error.message || 'The upload could not finish.') + ' Your recording is still ready to retry.' : '');
+            setMessage(error.message || 'The recording could not be uploaded.', true);
         });
+    }
+    function discardTeacherRecording() {
+        if (captureState === 'recording') { stopTeacherRecording(true); return; }
+        if (captureState === 'analysis_retry') { showResults(); return; }
+        if (!draftDiscussionId) { resetTeacherDraft(); return; }
+        if (!window.confirm('Discard this recording draft and remove its empty report record?')) return;
+        discardButton.disabled = true;
+        call('deleteDiscussion', { discussion_id: draftDiscussionId }).then(function () {
+            resetTeacherDraft();
+            return refreshDiscussionList();
+        }).catch(function (error) {
+            setMessage(error.message || 'The draft could not be discarded.', true);
+        }).finally(function () { discardButton.disabled = false; });
+    }
+    function renderTopicOptions(rows) {
+        speakingSets = Array.isArray(rows) ? rows : [];
+        var previous = topicSelect.value;
+        topicSelect.innerHTML = '<option value="">Choose a topic…</option>' + speakingSets.map(function (set) {
+            return '<option value="' + esc(set.set_id) + '">' + esc(speakingSetLabel(set) + (set.visible_to_students === false ? ' · Hidden' : '')) + '</option>';
+        }).join('');
+        if (speakingSets.some(function (set) { return set.set_id === previous; })) topicSelect.value = previous;
+        topicSelect.disabled = !speakingSets.length || Boolean(draftDiscussionId) || ['requesting', 'recording', 'stopping', 'uploading'].indexOf(captureState) !== -1;
+    }
+    function renderDiscussionList(rows) {
+        discussions = Array.isArray(rows) ? rows : [];
+        var ready = discussions.filter(function (item) { return item.analysis_status === 'ready'; }).length;
+        var working = discussions.filter(function (item) { return ['queued', 'processing'].indexOf(item.analysis_status) !== -1; }).length;
+        reportCount.textContent = ready ? ready + ' ready' + (working ? ' · ' + working + ' preparing' : '') : (working ? working + ' preparing' : 'No reports yet');
+        list.innerHTML = discussions.map(function (item) {
+            var status = item.analysis_status === 'ready' ? 'Full report ready' : (['queued', 'processing'].indexOf(item.analysis_status) !== -1 ? 'Preparing report' : item.analysis_status === 'failed' ? 'Analysis interrupted' : 'Recording not analysed');
+            var participants = Number(item.participant_count || 0);
+            return '<button class="speaking-card" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span><strong>' + esc(item.title) + '</strong><small>' + esc(item.discussion_date || 'No date') + ' · ' + esc(participants) + ' matched participant' + (participants === 1 ? '' : 's') + ' · ' + esc(status) + '</small></span><span class="speaking-pill" data-tone="' + (item.analysis_status === 'ready' ? 'ready' : 'working') + '">' + (item.analysis_status === 'ready' ? 'View report' : 'Open') + '</span></button>';
+        }).join('') || '<div class="speaking-detail-card">No result reports yet. Start with the recording card.</div>';
+        list.querySelectorAll('[data-speaking-teacher-id]').forEach(function (button) {
+            button.addEventListener('click', function () { open(button.getAttribute('data-speaking-teacher-id')); });
+        });
+    }
+    function refreshDiscussionList() {
+        return loadDiscussionPages(0, []).then(function (rows) { renderDiscussionList(rows); return rows; });
+    }
+    function showHome() {
+        home.hidden = false;
+        resultsPanel.hidden = true;
+        detail.hidden = true;
+        voiceprintTargetPanel.hidden = true;
+        selected = '';
+    }
+    function showResults() {
+        if (['requesting', 'recording', 'stopping', 'uploading', 'ready'].indexOf(captureState) !== -1) {
+            setMessage('Finish this recording or discard it before opening reports.', true);
+            return;
+        }
+        home.hidden = true;
+        resultsPanel.hidden = false;
+        detail.hidden = true;
+        voiceprintTargetPanel.hidden = true;
+        selected = '';
+        setMessage('');
+    }
+    function load() {
+        if (loadInFlight) return loadInFlight;
+        loadInFlight = call('teacherListSpeakingSets').then(function (result) {
+            renderTopicOptions(result.sets || []);
+            return refreshDiscussionList();
+        }).finally(function () { loadInFlight = null; });
+        return loadInFlight;
     }
     function timeLabel(value) {
         var seconds = Math.max(0, Math.floor(Number(value || 0) / 1000));
@@ -301,6 +524,10 @@
     }
     function open(id) {
         selected = id;
+        home.hidden = true;
+        resultsPanel.hidden = true;
+        voiceprintTargetPanel.hidden = true;
+        detail.hidden = true;
         return call('getDiscussion', { discussion_id: id }).then(function (result) {
             var item = result.discussion;
             var speakerKeys = (item.report && item.report.transcript || []).map(function (line) { return line.speaker_key; }).filter(function (key, index, all) { return key && all.indexOf(key) === index; });
@@ -331,11 +558,12 @@
             detail.innerHTML = '<div class="teacher-speaking-report-workspace"><section class="speaking-report-card teacher-speaking-session-card"><div><button class="outline-button" type="button" id="teacher-speaking-back">← Discussions</button><p class="eyebrow accent">TEACHER SPEAKING REPORT</p><h2>' + esc(item.title) + '</h2><p>' + esc(item.recording_status) + ' · ' + esc(item.analysis_status) + ' · ' + esc(item.participant_count) + ' participants</p></div><button class="danger-button" type="button" id="teacher-speaking-delete">Delete Discussion</button></section><details class="speaking-report-card teacher-speaking-roster-card"><summary><span><strong>Roster &amp; voice mapping</strong><small>Teacher-only identity and voiceprint controls</small></span><span class="speaking-pill">' + esc(item.participant_count) + ' participants</span></summary><div class="teacher-speaking-roster-body"><p>Only Candidate Speaker tracks from the server report can be assigned.</p><ul class="speaking-participants">' + roster + '</ul>' + disputeHistory + '<div class="speaking-detail-actions"><button class="primary-button" type="button" id="teacher-speaking-save-mapping">Save voice mapping</button></div></div></details>' + reportMarkup(item.report, shareBuilder) + '</div>';
             bindDetail(item);
         }).catch(function (error) {
+            showResults();
             setMessage(error.message || 'Could not load Discussion.', true);
         });
     }
     function bindDetail(item) {
-        document.getElementById('teacher-speaking-back').addEventListener('click', function () { detail.hidden = true; });
+        document.getElementById('teacher-speaking-back').addEventListener('click', showResults);
         document.getElementById('teacher-speaking-save-mapping').addEventListener('click', function () {
             var pairs = Array.prototype.slice.call(detail.querySelectorAll('[data-mapping-participant]')).map(function (select) {
                 return { participant_id: select.getAttribute('data-mapping-participant'), speaker_key: select.value };
@@ -397,46 +625,49 @@
         });
         document.getElementById('teacher-speaking-delete').addEventListener('click', function () {
             if (!window.confirm('Delete this Discussion, its private audio, and its share links?')) return;
-            call('deleteDiscussion', { discussion_id: selected }).then(load).then(function () { detail.hidden = true; }).catch(function (error) { setMessage(error.message || 'Could not delete Discussion.', true); });
+            var deletingId = selected;
+            call('deleteDiscussion', { discussion_id: deletingId }).then(function () {
+                if (deletingId === draftDiscussionId) resetTeacherDraft();
+                return refreshDiscussionList();
+            }).then(showResults).catch(function (error) { setMessage(error.message || 'Could not delete Discussion.', true); });
         });
     }
 
     document.addEventListener('click', function (event) {
         var tab = event.target.closest && event.target.closest('[data-view="speaking"]');
-        if (tab) load().catch(function (error) { setMessage(error.message || 'Speaking Lab is unavailable.', true); });
+        if (tab) {
+            showHome();
+            load().catch(function (error) { setMessage(error.message || 'Speaking Lab is unavailable.', true); });
+        }
     });
-    panel.querySelectorAll('[data-speaking-workspace]').forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            panel.querySelectorAll('[data-speaking-workspace]').forEach(function (item) { item.classList.toggle('is-active', item === tab); });
-            var sets = tab.getAttribute('data-speaking-workspace') === 'sets';
-            speakingSetsPanel.hidden = !sets;
-            list.hidden = sets;
-            detail.hidden = sets || !selected;
-            if (sets) loadSets().catch(function (error) { setMessage(error.message || 'Could not load Speaking Sets.', true); });
-        });
+    document.getElementById('teacher-speaking-open-results').addEventListener('click', showResults);
+    document.getElementById('teacher-speaking-results-back').addEventListener('click', showHome);
+    recordButton.addEventListener('click', startTeacherRecording);
+    audioFileButton.addEventListener('click', function () {
+        if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
+        audioFileInput.click();
     });
-    document.getElementById('teacher-speaking-create-set').addEventListener('click', function () { openSpeakingSetEditor('', false); });
-    ['teacher-speaking-set-search', 'teacher-speaking-set-year', 'teacher-speaking-set-source', 'teacher-speaking-set-visibility'].forEach(function (id) {
-        var control = document.getElementById(id);
-        control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', function () { speakingSetRenderLimit = 50; renderTeacherSetResults(); });
+    audioFileInput.addEventListener('change', function () {
+        var file = audioFileInput.files && audioFileInput.files[0];
+        audioFileInput.value = '';
+        if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
+        prepareAudioFile(file);
     });
-    document.getElementById('teacher-speaking-set-more').addEventListener('click', function () { speakingSetRenderLimit += 50; renderTeacherSetResults(); });
-    document.getElementById('teacher-voiceprint-find').addEventListener('click', function () {
-        var studentId = document.getElementById('teacher-voiceprint-student-id').value.trim();
-        if (!studentId) { setMessage('Enter a Student ID first.', true); return; }
-        var button = document.getElementById('teacher-voiceprint-find');
-        var locator = { student_id: studentId };
-        button.disabled = true;
-        call('teacherGetVoiceprintTarget', locator).then(function (result) {
-            renderVoiceprintTarget(result, locator);
-            setMessage('Ask the student to read the passage on this device.');
-        }).catch(function (error) {
-            setMessage(error.message || 'Student not found.', true);
-        }).finally(function () { button.disabled = false; });
+    uploadButton.addEventListener('click', uploadTeacherRecording);
+    discardButton.addEventListener('click', discardTeacherRecording);
+    topicSelect.addEventListener('change', function () { if (topicSelect.value) setMessage(''); });
+    window.addEventListener('pagehide', function () {
+        cancelVoiceprintRecorder();
+        if (recordingDevice && recordingDevice.state !== 'inactive') {
+            discardActiveRecording = true;
+            try { recordingDevice.stop(); } catch (_error) {}
+        }
+        stopRecordingHardware();
     });
-    document.getElementById('teacher-voiceprint-student-id').addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { event.preventDefault(); document.getElementById('teacher-voiceprint-find').click(); }
+    window.addEventListener('beforeunload', function (event) {
+        if (!localRecording && captureState !== 'recording' && captureState !== 'uploading') return;
+        event.preventDefault();
+        event.returnValue = '';
     });
-    window.addEventListener('pagehide', cancelVoiceprintRecorder);
     window.MrCatTeacherSpeaking = { load: load, open: open };
 })(window);

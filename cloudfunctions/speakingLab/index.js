@@ -865,12 +865,14 @@ function internalReportView(actor, report, participants) {
   };
 }
 async function createDiscussion(actor, event) {
-  if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
+  const studentCreator = lab.isActiveStudent(actor);
+  const teacherCreator = lab.isTeacher(actor);
+  if (!studentCreator && !teacherCreator) throw new Error("DISCUSSION_ACCESS_DENIED");
   let set = null;
   let setSnapshot = null;
   if (event.set_id) {
     set = await getSpeakingSetById(event.set_id);
-    if (set.visible_to_students !== true) throw new Error("SPEAKING_SET_NOT_VISIBLE");
+    if (studentCreator && set.visible_to_students !== true) throw new Error("SPEAKING_SET_NOT_VISIBLE");
     setSnapshot = lab.buildGroupDiscussionSnapshot(set);
   }
   const title = lab.normalizeWhitespace(event.title || (set && `${set.title} · ${shanghaiDate()}`), MAX_TITLE);
@@ -892,25 +894,25 @@ async function createDiscussion(actor, event) {
     prompt_text: prompt, prompt_source: "typed", prompt_version: "dse-speaking-prompt-v1",
     session_type: "group_discussion",
     ...(set ? { set_id: set.set_id, set_content_revision: Number(set.content_revision || 1), set_snapshot: setSnapshot, prompt_source: "speaking_set" } : {}),
-    participant_count: 1, candidate_count: null, duration_seconds: lab.normalizeDurationSeconds(event.duration_seconds, 4), roster_status: "draft",
+    participant_count: studentCreator ? 1 : 0, candidate_count: null, duration_seconds: lab.normalizeDurationSeconds(event.duration_seconds, 4), roster_status: "draft",
     recording_status: "missing", analysis_status: "not_ready", active_analysis_job_id: null, active_report_version: null,
     formal_audio_asset_id: null, created_at: created, updated_at: created, deleted_at: null,
     duration_source: Number.isFinite(Number(event.duration_seconds)) ? "manual" : "default",
     discussion_revision: 1, mapping_revision: 0, report_projection_revision: 0,
     operation_id: operationId,
   };
-  const participant = {
+  const participant = studentCreator ? {
     participant_id: id("participant"), discussion_id: discussionId, participant_kind: "vip", student_uid: actor.auth_uid,
     student_id_snapshot: lab.text(actor.student_id, 120), display_name_snapshot: lab.normalizeWhitespace(actor.english_name || actor.name || "", 160),
     invitation_status: "accepted", invited_at: created, responded_at: created, added_by_uid: actor.auth_uid, identity_status: "unmatched", mapping_revision: 0,
     voice_reference_status: "missing", created_at: created, updated_at: created,
-  };
+  } : null;
   try {
     await db.runTransaction(async (transaction) => {
       const collision = await transaction.collection(DISCUSSIONS).where({ discussion_id: discussionId }).limit(1).get();
       if (collision.data && collision.data[0]) throw new Error("DISCUSSION_ALREADY_EXISTS");
       await transaction.collection(DISCUSSIONS).doc(discussionId).create(discussion);
-      await transaction.collection(PARTICIPANTS).doc(participant.participant_id).create(participant);
+      if (participant) await transaction.collection(PARTICIPANTS).doc(participant.participant_id).create(participant);
     });
   } catch (error) {
     const concurrent = await getOne(DISCUSSIONS, { discussion_id: discussionId, creator_uid: actor.auth_uid });
@@ -918,7 +920,7 @@ async function createDiscussion(actor, event) {
     const concurrentParticipants = sortParticipants(await getMany(PARTICIPANTS, { discussion_id: discussionId }, 20));
     return { success: true, idempotent_replay: true, discussion: discussionView(actor, concurrent, concurrentParticipants) };
   }
-  return { success: true, discussion: discussionView(actor, discussion, [participant]) };
+  return { success: true, discussion: discussionView(actor, discussion, participant ? [participant] : []) };
 }
 async function addParticipant(actor, event, kind) {
   const rows = await authorizedDiscussion(actor, event.discussion_id, true);

@@ -1357,6 +1357,12 @@ upload success followed by `LimitExceeded.CodeUnzip` is a failed release.
 
 The immersive recording release adds authenticated `updateDiscussionDate`; deploy the rebuilt `speakingLab` gateway before publishing the cache-busted Speaking assets or existing-file date changes will fail closed. No collection, index, permission, secret, timer, or data migration changes are required.
 
+The two-card Teacher Speaking release also requires the rebuilt `speakingLab`
+gateway before `teacher.html`, `teacher-speaking.js`, and `speaking-lab.css` are
+published, because the first card creates a Set-backed Discussion as an active
+teacher. This is an authorization-path change only: it creates no collection,
+index, permission, secret, timer, or data migration requirement.
+
 The student formal-audio uploader uses the authenticated CloudBase browser SDK:
 `startAudioUpload` returns a reserved private `cloud_path`, the SDK returns the
 uploaded CloudBase file ID, and `finishAudioUpload` performs exact-path and

@@ -2288,9 +2288,18 @@ name selection and redact hidden names everywhere. Raw share tokens are
 returned once, stored only as SHA-256 hashes, expire after seven days, and
 snapshots are revoked when mapping/report/privacy state changes.
 
-Teacher Speaking must expose every Discussion available to the teacher, loading
-additional backend pages until the complete list is represented. Opening a
-ready Discussion shows the complete group report: group summary, strengths,
+Teacher Speaking opens with exactly two primary cards. `Upload or record`
+contains the Speaking Set topic selector plus separate existing-audio and
+on-device recording actions; it creates a teacher-owned, roster-free Discussion,
+uploads audio through the existing private two-phase path, and starts the same
+durable analysis flow. `View existing reports` opens every Discussion available
+to the teacher, loading additional backend pages until the complete list is
+represented and retaining queued, processing, failed, and ready states. Set
+editing and Student-ID voiceprint setup are not entrance destinations. A
+teacher may still record or update a participant voiceprint from that
+participant's teacher-only report roster.
+
+Opening a ready Discussion shows the complete group report: group summary, strengths,
 priorities and flow; every Candidate's CS, IO, VL and fixed-unassessed PD
 analysis; every Candidate's turn-by-turn coaching; and the full teacher-visible
 transcript. The report itself contains a `Share group report` action. A Teacher
