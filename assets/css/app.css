@@ -6406,6 +6406,39 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.68rem;
     font-weight: 760;
 }
+.assign-choice-copy small.assign-choice-progress-meta {
+    display: grid;
+    gap: 6px;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+}
+.assign-choice-base-meta {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.assign-choice-student-progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.assign-choice-student-progress > span {
+    display: inline-flex;
+    gap: 3px;
+    align-items: baseline;
+    padding: 3px 6px;
+    border-radius: 999px;
+    color: #745d21;
+    background: rgba(224, 172, 54, 0.14);
+    font-size: 0.64rem;
+    line-height: 1.25;
+}
+.assign-choice-student-progress b {
+    color: inherit;
+    font-weight: 900;
+}
 .simple-assign-flow .candidate-grid {
     grid-template-columns: 1fr;
     max-height: min(480px, 54vh);

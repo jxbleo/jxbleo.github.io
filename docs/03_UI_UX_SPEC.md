@@ -1181,6 +1181,10 @@ Teacher can:
   existing assignment state for the selected counterpart: open `in_progress`
   pairs are colored and disabled; completed/mastered history is colored but
   remains selectable for reassignment
+- after a class roster is selected, each colored Work row uses its small
+  metadata area to show only every selected student's name and current Best
+  Score percentage, using `0%` when there is no score. It does not add status
+  labels such as Finished, Tried, Assigned, Best, or Not assigned
 - set task parameters in a bottom Assign matrix, one selected Work item per row:
   required due week, passing percentage, and whether that task can earn STAR
 - assign the selected work to the selected students

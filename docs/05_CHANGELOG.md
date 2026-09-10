@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-10 — Class percentages in Teacher Assign
+
+- Expanded colored prior-assignment Work rows to show each selected student's
+  name and score percentage only, using `0%` when no score is available.
+- Kept assignment eligibility, grading, and reassignment behavior unchanged.
+
 ## 2026-09-10 — Circular Speaking recording timers
 
 - Replaced the elapsed text timers in Group Discussion and Individual Response

@@ -3082,7 +3082,7 @@
                         (disabled ? ' disabled' : '') + '>' +
                     '<span class="assign-choice-mark" aria-hidden="true"></span>' +
                     '<span class="assign-choice-copy"><strong>' + escapeHtml(teacherEditionTitle(set)) + '</strong>' +
-                        '<small>' + escapeHtml(meta) + '</small></span>' +
+                        renderAssignWorkMeta(set, status, meta) + '</span>' +
                 '</label>';
             }).join('') : '<div class="empty-card compact-empty"><strong>No matching work</strong>Try another search or column.</div>';
             list.querySelectorAll('.assign-set-checkbox').forEach(function(checkbox) {
@@ -3238,6 +3238,20 @@
             return { label: 'Completed · can reassign', css: 'starred', disabled: false };
         }
         return { label: 'Available', css: 'available', disabled: false };
+    }
+
+    function renderAssignWorkMeta(set, status, baseMeta) {
+        var showStudentPercentages = status && ['progress', 'starred', 'completed'].indexOf(status.css) !== -1;
+        var students = showStudentPercentages ? selectedCandidateRecords() : [];
+        if (!students.length) return '<small>' + escapeHtml(baseMeta) + '</small>';
+        return '<small class="assign-choice-progress-meta">' +
+            '<span class="assign-choice-base-meta">' + escapeHtml(baseMeta) + '</span>' +
+            '<span class="assign-choice-student-progress">' + students.map(function(student) {
+                var best = studentSetBestPercentage(student.auth_uid, set.set_id);
+                return '<span><b>' + escapeHtml(studentDisplayName(student) || student.student_id || student.auth_uid) +
+                    '</b> ' + escapeHtml(formatPercent(best == null ? 0 : best)) + '</span>';
+            }).join('') + '</span>' +
+        '</small>';
     }
 
     function removeSelectedAssignItem(kind, id) {
