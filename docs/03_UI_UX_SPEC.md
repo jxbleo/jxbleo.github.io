@@ -1184,11 +1184,12 @@ Teacher can:
 - place the Students summary card before Work: Students is left and Work is
   right on desktop, while Students is above Work on mobile
 - after students from a class or an individual student are selected, every Work
-  row shows its `set_id` first, followed by every selected student's display
-  name and completed percentage. A selected student who has not completed that
-  set shows `0%`, even if they have partial attempt progress. If one or more
-  selected students have completed the set, color the Work row yellow. Do not
-  show a completed-student count or generic assignment-state label
+  row shows its `set_id` followed on the same line by every selected student's
+  display name and completed percentage; the line wraps only when horizontal
+  space is insufficient. A selected student who has not completed that set
+  shows `0%`, even if they have partial attempt progress. If one or more selected
+  students have completed the set, color the Work row yellow. Do not show a
+  completed-student count or generic assignment-state label
 - set task parameters in a bottom Assign matrix, one selected Work item per row:
   required due week, passing percentage, and whether that task can earn STAR
 - assign the selected work to the selected students

@@ -6407,22 +6407,24 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 760;
 }
 .assign-choice-copy small.assign-choice-progress-meta {
-    display: grid;
-    gap: 6px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 6px;
     overflow: visible;
     text-overflow: clip;
     white-space: normal;
 }
 .assign-choice-base-meta {
     display: block;
+    flex: 0 0 auto;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .assign-choice-student-progress {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+    display: contents;
 }
 .assign-choice-student-progress > span {
     display: inline-flex;

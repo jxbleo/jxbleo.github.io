@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-11 — Inline Teacher Assign percentages
+
+- Kept the Set ID and selected-student percentage chips on the same Work-row
+  metadata line, allowing wrapping only when the available width is exhausted.
+
 ## 2026-09-10 — Direct Show Answer with interruptible close
 
 - Removed the three-effective-check unlock requirement and its visible counter

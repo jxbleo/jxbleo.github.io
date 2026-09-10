@@ -509,8 +509,11 @@ function testAssignWorkCardsShowSelectedStudentCompletionPercentages() {
   const { hooks } = teacherAssignmentEditHooks();
   const teacherSource = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
   const teacherHtml = fs.readFileSync(path.resolve(__dirname, "../teacher.html"), "utf8");
+  const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
   assert(teacherSource.includes("hasCompletedStudent ? 'starred' : status.css"));
   assert(teacherHtml.indexOf('id="assign-students-card"') < teacherHtml.indexOf('id="assign-sets-card"'));
+  assert(/\.assign-choice-copy small\.assign-choice-progress-meta\s*\{[^}]*display:\s*flex;/s.test(appCss));
+  assert(/\.assign-choice-student-progress\s*\{[^}]*display:\s*contents;/s.test(appCss));
   const set = {
     set_id: "CLASS-PROGRESS-SET",
     title: "Class progress set",

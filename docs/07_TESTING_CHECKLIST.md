@@ -1083,9 +1083,10 @@ Check:
   Class Assign, while completed/mastered pairs stay colored and selectable
 - the Assign summary places Students left of Work on desktop and above Work on
   mobile
-- every Work row shows its Set ID first, then every selected student's name and
-  completed percentage; students who have not completed the set display `0%`
-  even after a partial attempt, and no aggregate completed-student count appears
+- every Work row shows its Set ID and selected-student percentage chips on the
+  same line, wrapping only when space is insufficient; students who have not
+  completed the set display `0%` even after a partial attempt, and no aggregate
+  completed-student count appears
 - after selecting a class roster or an individual student, a set completed by
   one or more selected students turns yellow; a set with no completed student
   keeps its normal availability color while still listing all selected students
