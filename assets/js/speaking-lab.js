@@ -56,6 +56,7 @@
     var recordingPreviewAudio = null;
     var recordingPreviewUrl = '';
     var recordingTargetNoticeShown = false;
+    var recordingMinuteCuePlayed = false;
     var recordingCountdownTimer = 0;
     var recordingSpeech = null;
     var recordingLiveOrigin = null;
@@ -1058,9 +1059,10 @@
         if (item.recording_status === 'uploaded') return item.analysis_status === 'ready' && item.report ? reportReadyMarkup(item) : reportProcessingMarkup(item);
         var canRecord = item.recording_status !== 'uploaded';
         var targetMinutes = Math.max(3, Math.min(30, Number(item.duration_seconds || 480) / 60));
+        var recordingStopSeconds = Math.round(targetMinutes * 60) + 5;
         var recording = canRecord ? '<section class="speaking-section-card speaking-recording-card" data-recording-state="idle"><header><div><h3>Record the Discussion</h3><p>Record here or choose one audio file. Nothing is uploaded until you confirm.</p></div><span class="speaking-pill" id="recording-target-pill">Target ' + esc(targetMinutes % 1 ? targetMinutes.toFixed(1) : targetMinutes) + ' min</span></header>' +
             '<div class="speaking-recording-state" id="recording-ready"><div class="speaking-recording-settings"><label>Target length<div class="speaking-duration-field"><input id="recording-duration" type="number" min="3" max="30" step="0.5" value="' + esc(targetMinutes) + '" inputmode="decimal"><span>minutes</span></div></label></div><div class="speaking-recording-choice"><button class="primary-button" type="button" id="record-now">Record on this device</button><label class="outline-button speaking-file-button" id="audio-file-label">Choose audio file<input type="file" accept="audio/*" hidden id="audio-file"></label><label class="speaking-audio-date"><span>Audio date</span><input id="recording-date" type="date" value="' + esc(item.discussion_date || shanghaiToday()) + '"></label></div><p class="speaking-recording-note">Device recordings use today. For an existing audio file, choose the date it was recorded.</p><p class="speaking-quality-warning" id="recording-message" role="status" aria-live="polite"></p></div>' +
-            '<div class="speaking-recording-state speaking-recording-live" id="recording-live" data-level="listening" data-recording-state="idle" hidden><div class="speaking-recording-live-content"><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-countdown" id="recording-countdown" aria-live="assertive" hidden>5</div><div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function (_value, index) { return '<i class="speaking-recording-wave-bar" style="--wave-index:' + index + '"></i>'; }).join('') + '</div><div class="speaking-recording-level" id="recording-level-indicator"><span class="speaking-recording-level-icon" aria-hidden="true"></span><strong id="recording-level-label" role="status" aria-live="polite">Listening for the group…</strong></div><div class="speaking-recording-time" id="recording-time">00:00 / ' + esc(String(Math.floor((Number(item.duration_seconds || 480) + 5) / 60)).padStart(2, '0') + ':' + String((Number(item.duration_seconds || 480) + 5) % 60).padStart(2, '0')) + '</div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div></div>' +
+            '<div class="speaking-recording-state speaking-recording-live" id="recording-live" data-level="listening" data-recording-state="idle" hidden><div class="speaking-recording-live-content"><div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div><div class="speaking-recording-countdown" id="recording-countdown" aria-live="assertive" hidden>5</div>' + circularTimerMarkup('recording-time', 'Group Discussion time remaining', recordingStopSeconds, 'speaking-recording-time') + '<div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function (_value, index) { return '<i class="speaking-recording-wave-bar" style="--wave-index:' + index + '"></i>'; }).join('') + '</div><div class="speaking-recording-level" id="recording-level-indicator"><span class="speaking-recording-level-icon" aria-hidden="true"></span><strong id="recording-level-label" role="status" aria-live="polite">Listening for the group…</strong></div><p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite">Keep this page open and the screen awake.</p><button class="danger-button speaking-finish-recording" type="button" id="stop-recording">Finish recording</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-review" id="recording-review" hidden><div class="speaking-recording-ready-mark" aria-hidden="true">✓</div><h4>Recording ready</h4><p id="recording-review-copy">Listen once if you want to check it, then upload and start the analysis.</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="preview-recording">Play recording</button><button class="outline-button" type="button" id="replace-recording">Replace recording</button><button class="primary-button" type="button" id="upload-recording">Upload &amp; analyse</button></div></div>' +
             '<div class="speaking-recording-state speaking-recording-uploading" id="recording-uploading" hidden aria-live="polite" aria-busy="true"><span class="speaking-upload-spinner" aria-hidden="true"></span><h4>Uploading securely</h4><p>Keep this page open. Analysis will begin automatically.</p><div class="speaking-upload-progress-track" role="progressbar" aria-label="Secure upload in progress"><span></span></div></div></section>' : '';
         return '<article class="speaking-session-setup"><section class="speaking-report-card speaking-session-progress-card">' + workflowMarkup(item) + '</section>' + recording + '</article>';
@@ -1145,12 +1147,29 @@
     function invitationMarkup(invitation) {
         return '<form method="dialog"><div class="speaking-dialog-head"><p class="eyebrow accent">DISCUSSION INVITATION</p><h2 id="invitation-dialog-title">' + esc(invitation.title) + '</h2><p>' + esc(formatDate(invitation.discussion_date)) + ' · Invited by ' + esc(invitation.inviter_name || 'your teacher or group') + '</p></div><ul class="speaking-participants">' + (invitation.participants || []).map(function (participant) { var name = participant.display_name || 'Participant'; return '<li class="speaking-participant"><span class="speaking-participant-identity"><span class="speaking-avatar" aria-hidden="true">' + esc(initials(name)) + '</span><span><strong>' + esc(name) + '</strong><small>' + esc(participant.kind === 'guest' ? 'Guest participant · Name not verified' : readableStatus(participant.invitation_status)) + '</small></span></span></li>'; }).join('') + '</ul><div class="speaking-dialog-actions"><button class="primary-button" type="button" id="accept-invitation">Accept</button><button class="outline-button" type="button" id="decline-invitation">Decline</button><button class="outline-button" value="cancel">Close</button></div></form>';
     }
-    function elapsedText() {
-        var seconds = Math.max(0, Math.floor((performance.now() - recordingStartedAt) / 1000));
-        var elapsed = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
-        var stopAt = recordingTargetSeconds + 5;
-        var target = String(Math.floor(stopAt / 60)).padStart(2, '0') + ':' + String(stopAt % 60).padStart(2, '0');
-        return elapsed + ' / ' + target;
+    function timerClockText(seconds) {
+        var value = Math.max(0, Math.ceil(Number(seconds || 0)));
+        return String(Math.floor(value / 60)).padStart(2, '0') + ':' + String(value % 60).padStart(2, '0');
+    }
+    function circularTimerMarkup(id, label, totalSeconds, className) {
+        var total = Math.max(1, Math.round(Number(totalSeconds || 1)));
+        var timerText = timerClockText(total);
+        return '<div class="speaking-circular-timer ' + esc(className || '') + '" id="' + esc(id) + '" role="timer" data-phase="standard" data-timer-label="' + esc(label) + '" aria-label="' + esc(label + ': ' + timerText + ' remaining') + '"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="speaking-circular-timer-track" cx="60" cy="60" r="52" pathLength="100"></circle><circle class="speaking-circular-timer-progress" cx="60" cy="60" r="52" pathLength="100" style="stroke-dashoffset:100"></circle></svg><span class="speaking-circular-timer-copy"><strong data-timer-value>' + esc(timerText) + '</strong><small>remaining</small></span></div>';
+    }
+    function updateCircularTimer(timer, elapsedSeconds, totalSeconds, minuteWarningSeconds) {
+        if (!timer) return Math.max(0, Math.ceil(Number(totalSeconds || 0)));
+        var total = Math.max(1, Number(totalSeconds || 1));
+        var elapsed = Math.max(0, Math.min(total, Number(elapsedSeconds || 0)));
+        var remaining = Math.max(0, Math.ceil(total - elapsed));
+        var progress = Math.max(0, Math.min(1, elapsed / total));
+        var progressRing = timer.querySelector('.speaking-circular-timer-progress');
+        var value = timer.querySelector('[data-timer-value]');
+        var timerText = timerClockText(remaining);
+        if (progressRing) progressRing.style.strokeDashoffset = (100 - progress * 100).toFixed(3);
+        if (value) value.textContent = timerText;
+        timer.setAttribute('aria-label', (timer.getAttribute('data-timer-label') || 'Time remaining') + ': ' + timerText + ' remaining');
+        timer.setAttribute('data-phase', remaining <= 5 ? 'final' : minuteWarningSeconds && remaining <= minuteWarningSeconds ? 'minute' : 'standard');
+        return remaining;
     }
     function recordingElapsedSeconds() {
         return recordingStartedAt ? Math.max(0, (performance.now() - recordingStartedAt) / 1000) : 0;
@@ -1208,7 +1227,7 @@
         var liveStatus = document.getElementById('recording-live-status');
         if (liveStatus) liveStatus.textContent = nextState === 'requesting' ? 'Starting microphone…' : nextState === 'countdown' ? 'Get ready' : nextState === 'ending' ? 'Discussion ending' : nextState === 'stopping' ? 'Finishing recording…' : 'Recording';
         var countdown = document.getElementById('recording-countdown');
-        if (countdown) countdown.hidden = ['countdown', 'ending'].indexOf(nextState) < 0;
+        if (countdown) countdown.hidden = nextState !== 'countdown';
         var liveTimer = document.getElementById('recording-time');
         if (liveTimer) liveTimer.hidden = nextState === 'countdown';
         var finish = document.getElementById('stop-recording');
@@ -1279,6 +1298,7 @@
         recordingUploadOperationId = '';
         recordingStartedAt = 0;
         recordingTargetNoticeShown = false;
+        recordingMinuteCuePlayed = false;
         setRecordingState('idle');
     }
     function allowRecordingNavigation() {
@@ -1367,6 +1387,25 @@
             oscillator.connect(gain).connect(qualityContext.destination);
             oscillator.start(startsAt);
             oscillator.stop(startsAt + 0.18);
+        } catch (error) {}
+    }
+    function playRecordingMinuteCue() {
+        if (!qualityContext || !qualityContext.createOscillator || !qualityContext.createGain) return;
+        try {
+            var startsAt = qualityContext.currentTime + 0.015;
+            [0, 0.19, 0.38, 0.57].forEach(function (offset, index) {
+                var oscillator = qualityContext.createOscillator();
+                var gain = qualityContext.createGain();
+                var toneStart = startsAt + offset;
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(index === 3 ? 784 : 659, toneStart);
+                gain.gain.setValueAtTime(0.0001, toneStart);
+                gain.gain.exponentialRampToValueAtTime(0.14, toneStart + 0.012);
+                gain.gain.exponentialRampToValueAtTime(0.0001, toneStart + 0.12);
+                oscillator.connect(gain).connect(qualityContext.destination);
+                oscillator.start(toneStart);
+                oscillator.stop(toneStart + 0.14);
+            });
         } catch (error) {}
     }
     function speakRecordingCue(text) {
@@ -1575,18 +1614,21 @@
                 catch (error) { recordingStartFailure('This browser could not begin recording. Choose an audio file instead.'); return; }
                 recordingStartedAt = performance.now();
                 recordingTargetNoticeShown = false;
+                recordingMinuteCuePlayed = false;
                 setRecordingState('recording');
                 showQualityWarning('Discussion in progress · keep this screen awake.');
                 var timer = document.getElementById('recording-time');
-                if (timer) timer.textContent = elapsedText();
+                updateCircularTimer(timer, 0, recordingTargetSeconds + 5, 65);
                 recordingTimer = window.setInterval(function () {
-                    if (timer) timer.textContent = elapsedText();
                     var elapsed = recordingElapsedSeconds();
+                    var remaining = updateCircularTimer(timer, elapsed, recordingTargetSeconds + 5, 65);
+                    if (!recordingMinuteCuePlayed && remaining <= 65) {
+                        recordingMinuteCuePlayed = true;
+                        playRecordingMinuteCue();
+                        showQualityWarning('One minute remaining.');
+                    }
                     if (elapsed >= recordingTargetSeconds) {
-                        var remaining = Math.max(0, Math.ceil(recordingTargetSeconds + 5 - elapsed));
                         if (recordingState === 'recording') setRecordingState('ending');
-                        var countdown = document.getElementById('recording-countdown');
-                        if (countdown) countdown.textContent = String(remaining);
                         if (remaining > 0 && recordingTargetNoticeShown !== remaining) {
                             recordingTargetNoticeShown = remaining;
                             playRecordingBeep(remaining <= 2);
@@ -1620,7 +1662,6 @@
         });
     }
     function responseElapsedSeconds() { return responseStartedAt ? Math.max(0, (performance.now() - responseStartedAt) / 1000) : 0; }
-    function responseTimeText(seconds) { var value = Math.max(0, Math.floor(Number(seconds || 0))); var minutes = Math.floor(value / 60); var remainder = value % 60; return String(minutes).padStart(2, '0') + ':' + String(remainder).padStart(2, '0') + ' / 01:05'; }
     function stopResponseHardware() {
         if (responseTimer) window.clearInterval(responseTimer);
         responseTimer = 0;
@@ -1646,7 +1687,7 @@
         var question = response.question_snapshot || {};
         var stateTone = reportReady ? 'ready' : analysisFailed ? 'attention' : 'working';
         var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
-        var responseBody = reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card speaking-response-recorder-card"><div class="speaking-response-timer" id="response-timer">00:00 / 01:05</div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response, or upload an audio file up to 65 seconds.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-record">Start recording</button><label class="outline-button speaking-file-button">Upload existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="outline-button" type="button" id="response-upload" disabled>Upload and analyse</button></div><p class="speaking-response-upload-note" id="response-upload-note"></p></section>';
+        var responseBody = reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card speaking-response-recorder-card">' + circularTimerMarkup('response-timer', 'Individual Response time remaining', 65, 'speaking-response-timer') + '<p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response, or upload an audio file up to 65 seconds.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-record">Start recording</button><label class="outline-button speaking-file-button">Upload existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="outline-button" type="button" id="response-upload" disabled>Upload and analyse</button></div><p class="speaking-response-upload-note" id="response-upload-note"></p></section>';
         detail.innerHTML = '<article class="speaking-response-workspace"><header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have up to 65 seconds.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>' + responseBody + '</article>';
         updateToolbar({ title: 'Individual Response', invitation: true });
         var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
@@ -1655,7 +1696,7 @@
     }
     function getIndividualResponseAndRender(responseId) { return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) { renderIndividualResponseWorkspace(result.response); return result; }).catch(function (error) { setStatus(friendlyError(error), true); }); }
     function responseDialogRecorderMarkup() {
-        return '<div class="speaking-response-dialog-recorder"><div class="speaking-response-timer" id="response-timer">00:00 / 01:05</div><button class="speaking-response-microphone" type="button" id="response-record" aria-describedby="response-status"><span class="speaking-response-microphone-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="11" y="5" width="10" height="15" rx="5"/><path d="M7.5 16.5a8.5 8.5 0 0 0 17 0M16 25v3M12 28h8"/></svg></span><span class="speaking-response-microphone-label" data-response-record-label>Tap to record</span></button><p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response of up to 65 seconds.</p><label class="speaking-response-dialog-file">Choose existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Upload &amp; analyse</button></div>';
+        return '<div class="speaking-response-dialog-recorder">' + circularTimerMarkup('response-timer', 'Individual Response time remaining', 65, 'speaking-response-timer') + '<button class="speaking-response-microphone" type="button" id="response-record" aria-describedby="response-status"><span class="speaking-response-microphone-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="11" y="5" width="10" height="15" rx="5"/><path d="M7.5 16.5a8.5 8.5 0 0 0 17 0M16 25v3M12 28h8"/></svg></span><span class="speaking-response-microphone-label" data-response-record-label>Tap to record</span></button><p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response of up to 65 seconds.</p><label class="speaking-response-dialog-file">Choose existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Upload &amp; analyse</button></div>';
     }
     function renderIndividualResponseDialog(response) {
         selectedResponse = response;
@@ -1763,6 +1804,7 @@
             responseUploadOperationId = '';
             responseRecordedDurationSeconds = null;
             if (upload) upload.disabled = true;
+            updateCircularTimer(document.getElementById('response-timer'), 0, 65, 0);
             navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
                 responseStream = stream; responseChunks = []; responseStartedAt = performance.now(); responseRecordedDurationSeconds = null;
                 var preferred = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(function (mime) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime); });
@@ -1770,7 +1812,7 @@
                 responseRecorder.ondataavailable = function (event) { if (event.data && event.data.size) responseChunks.push(event.data); };
                 responseRecorder.onstop = function () { var mimeType = responseRecorder.mimeType || 'audio/webm'; responseBlob = new Blob(responseChunks, { type: mimeType }); stopResponseHardware(); responseStartedAt = 0; record.disabled = false; setRecordButton('Record again', false); if (responseBlob.size) { upload.disabled = false; upload.hidden = false; document.getElementById('response-status').textContent = 'Recording ready. Record again or upload it for analysis.'; } };
                 responseRecorder.start(250);
-                responseTimer = window.setInterval(function () { var seconds = responseElapsedSeconds(); var timer = document.getElementById('response-timer'); if (timer) { timer.textContent = responseTimeText(seconds); timer.classList.toggle('is-warning', seconds >= 60); } var status = document.getElementById('response-status'); if (status && seconds >= 60 && seconds < 65) status.textContent = 'Time is almost over.'; if (seconds >= 65) finishResponseRecording(); }, 100);
+                responseTimer = window.setInterval(function () { var seconds = responseElapsedSeconds(); var remaining = updateCircularTimer(document.getElementById('response-timer'), seconds, 65, 0); var status = document.getElementById('response-status'); if (status && remaining <= 5 && remaining > 0) status.textContent = 'Time is almost over.'; if (remaining <= 0) finishResponseRecording(); }, 100);
                 setRecordButton('Stop recording', true);
                 record.disabled = false;
             }).catch(function () { record.disabled = false; document.getElementById('response-status').textContent = 'Microphone access was denied. Choose an audio file instead.'; });

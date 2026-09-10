@@ -2676,7 +2676,7 @@ Context/Part A/Part B route row are omitted.
 `Start Discussion` creates and opens the Set-backed Discussion immediately; no
 New Session modal appears. Every Part B question is one full-width disclosure
 card with no nested `Start Response` action. Selecting it leaves the Set visible
-behind a modal recorder containing the question, 65-second timer and primary
+behind a modal recorder containing the question, circular 65-second remaining-time indicator and primary
 microphone control. The modal is a disposable local draft until the student
 selects `Upload & analyse`; closing it before upload leaves no Part B history
 row. The toolbar Back control is the only return action, so
@@ -2692,7 +2692,7 @@ Voiceprint then Discussions so the CloudBase browser SDK does not initialize
 two temporary-credential requests concurrently. Read requests leave the
 loading state with a refresh-and-retry message after 20 seconds; recording and
 other mutating actions retain a longer 90-second response window.
-Formal recording uses mutually exclusive Ready, Requesting, Countdown, Recording, Ending, Review, and Uploading states. Ready shows target length, `Record on this device`, `Choose audio file`, and an Audio date to the file chooser right; device recording resets that date to today. After microphone permission, the whole viewport becomes the recording surface, Chinese TTS announces a five-second start, five visible numbers and synchronized beeps count down, and a microphone-level waveform stays live through the Discussion. Recording keeps one `Finish recording` button and no Pause. At target time the full-screen surface enters a five-second audible/visible Ending warning and stops automatically at target plus five seconds; an eight-minute target therefore ends at 8:05.
+Formal recording uses mutually exclusive Ready, Requesting, Countdown, Recording, Ending, Review, and Uploading states. Ready shows target length, `Record on this device`, `Choose audio file`, and an Audio date to the file chooser right; device recording resets that date to today. After microphone permission, the whole viewport becomes the recording surface, Chinese TTS announces a five-second start, five visible numbers and synchronized beeps count down, and a microphone-level waveform stays live through the Discussion. Once capture starts, an SVG circular progress ring advances clockwise around a tabular digital remaining-time value; the ring is the same stable geometry on phone, tablet, and desktop. When exactly 65 seconds remain, it enters an amber final-minute state and one four-note cue plays. Recording keeps one `Finish recording` button and no Pause. At target time the full-screen surface enters a red five-second audible/visible Ending warning and stops automatically at target plus five seconds; an eight-minute target therefore counts down from 8:05 and ends at 0:00.
 The full-screen recorder uses a light, restrained ambient surface rather than a
 dark camera-style view. The countdown is fixed to the live viewport centre so
 browser toolbar and safe-area differences cannot move it upward. Once recording
@@ -2913,8 +2913,8 @@ ordered surfaces: overview, Context, Part A, and Part B. Context copy has a
 quiet reading measure, while the two practice cards keep their action beside
 the content it affects. Individual Response uses separate overview, question,
 recorder/progress, and report cards instead of one enclosing panel.
-The Individual Response recorder displays `00:00 / 01:05`, turns red from
-`01:00`, stops at `01:05`, supports one checked audio upload, prevents accidental
+The Individual Response recorder uses the same circular progress component, counts down from
+`01:05` to `00:00`, turns red for its final five seconds, stops at zero, supports one checked audio upload, prevents accidental
 navigation during recording/upload, and preserves audio for analysis retry.
 On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware,
 viewport-centred cards. Cards reduce to one readable column, action buttons become

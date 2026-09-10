@@ -114,9 +114,9 @@ function run() {
   assert.match(app, /data-reading-size[^\n]*small[^\n]*medium[^\n]*large/);
   assert.match(css, /\.speaking-set-part-b\[data-reading-size="small"\][\s\S]*\.speaking-set-part-b\[data-reading-size="large"\]/);
   assert.match(app, /speaking-response-question-card/);
-  assert.match(app, /responseTimeText[\s\S]*01:05/);
-  assert.match(app, /seconds >= 60/);
-  assert.match(app, /seconds >= 65/);
+  assert.match(app, /circularTimerMarkup\('response-timer', 'Individual Response time remaining', 65, 'speaking-response-timer'\)/);
+  assert.match(app, /updateCircularTimer\(document\.getElementById\('response-timer'\), seconds, 65, 0\)/);
+  assert.match(app, /remaining <= 5[\s\S]*remaining <= 0/);
   assert.match(app, /setRecordButton\('Stop recording', true\);\s*record\.disabled = false/, "students must be able to stop before 65 seconds");
   assert.match(app, /setRecordButton\('Record again', false\)/, "students must be able to re-record before upload");
   assert.match(app, /duration > 65/, "existing Individual Response audio must respect the 65-second UI limit");
@@ -189,6 +189,10 @@ function run() {
   assert.match(app, /activeRecorder\.start\(1000\)/);
   assert.match(app, /runOpeningCountdown\(captureGeneration\)/);
   assert.match(app, /SpeechSynthesisUtterance[\s\S]*讨论将在五秒钟后开始[\s\S]*可以开始讨论了/);
+  assert.match(app, /circularTimerMarkup\('recording-time', 'Group Discussion time remaining', recordingStopSeconds, 'speaking-recording-time'\)/);
+  assert.match(app, /updateCircularTimer\(timer, elapsed, recordingTargetSeconds \+ 5, 65\)/);
+  assert.match(app, /!recordingMinuteCuePlayed && remaining <= 65[\s\S]*playRecordingMinuteCue\(\)/, "the final-minute cue must play once when 65 seconds remain");
+  assert.match(app, /\[0, 0\.19, 0\.38, 0\.57\][\s\S]*oscillator\.start\(toneStart\)/, "the final-minute cue must contain four scheduled notes");
   assert.match(app, /recordingTargetSeconds \+ 5[\s\S]*activeRecorder\.stop/);
   assert.match(app, /speaking-recording-wave-bar[\s\S]*updateRecordingWaveform/);
   assert.match(app, /data-level="listening"[\s\S]*recording-level-label/);
@@ -336,6 +340,10 @@ function run() {
   assert.match(css, /speaking-recording-live\[data-level="good"\]/);
   assert.match(css, /speaking-recording-live\[data-level="high"\]/);
   assert.match(css, /speaking-recording-countdown[^}]*position:\s*fixed[^}]*top:\s*50%[^}]*left:\s*50%/);
+  assert.match(css, /\.speaking-circular-timer-progress[^}]*stroke-dasharray:\s*100/);
+  assert.match(css, /speaking-circular-timer\[data-phase="minute"\]/);
+  assert.match(css, /speaking-circular-timer\[data-phase="final"\]/);
+  assert.match(css, /prefers-reduced-motion:[\s\S]*speaking-circular-timer-progress[^}]*transition:\s*none/);
   assert.match(css, /speaking-recording-review/);
   assert.match(css, /speaking-recording-uploading/);
   assert.match(css, /speaking-recording-flow-active/);
@@ -422,8 +430,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260906-7/);
-  assert.match(page, /speaking-lab\.js\?v=20260906-8/);
+  assert.match(page, /speaking-lab\.css\?v=20260910-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260910-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

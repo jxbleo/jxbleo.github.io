@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-10 — Circular Speaking recording timers
+
+- Replaced the elapsed text timers in Group Discussion and Individual Response
+  with one shared SVG circular progress component centred on digital remaining
+  time.
+- Added a one-shot four-note Group Discussion cue at exactly 65 seconds
+  remaining, plus amber final-minute and red final-five-second ring states.
+- Preserved the existing Group Discussion target-plus-five stop boundary and
+  the Individual Response 65-second hard limit, with Reduced Motion support.
 
 ## 2026-09-09 — Two-card Teacher Speaking entry
 
