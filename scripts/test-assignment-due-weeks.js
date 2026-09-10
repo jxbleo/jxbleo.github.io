@@ -301,6 +301,7 @@ function teacherAssignmentEditHooks() {
       matrixClassOptions: matrixClassOptions,
       renderAssignmentMatrix: renderAssignmentMatrix,
       availabilityStatus: availabilityStatus,
+      assignStudentCompletionRows: assignStudentCompletionRows,
       renderAssignWorkMeta: renderAssignWorkMeta
     };
 })();`;
@@ -504,8 +505,12 @@ function testTeacherAssignClassAutoSelection() {
   assert.equal(hooks.selectAssignClassCandidates(""), 0);
 }
 
-function testAssignWorkCardsShowOnlyStudentPercentages() {
+function testAssignWorkCardsShowSelectedStudentCompletionPercentages() {
   const { hooks } = teacherAssignmentEditHooks();
+  const teacherSource = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
+  const teacherHtml = fs.readFileSync(path.resolve(__dirname, "../teacher.html"), "utf8");
+  assert(teacherSource.includes("hasCompletedStudent ? 'starred' : status.css"));
+  assert(teacherHtml.indexOf('id="assign-students-card"') < teacherHtml.indexOf('id="assign-sets-card"'));
   const set = {
     set_id: "CLASS-PROGRESS-SET",
     title: "Class progress set",
@@ -529,25 +534,22 @@ function testAssignWorkCardsShowOnlyStudentPercentages() {
   ];
   hooks.state.progressItems = [];
 
-  const html = hooks.renderAssignWorkMeta(
-    set,
-    hooks.availabilityStatus("completed"),
-    "CLASS-PROGRESS-SET · Completed · can reassign"
-  );
+  var rows = hooks.assignStudentCompletionRows(set);
+  assert.equal(rows.filter((item) => item.completed).length, 1);
+  const html = hooks.renderAssignWorkMeta(set, rows);
+  assert(html.includes("CLASS-PROGRESS-SET"));
   assert(html.includes("Amy</b> 96%"));
-  assert(html.includes("Ben</b> 55%"));
+  assert(html.includes("Ben</b> 0%"), "an incomplete attempted set must display 0%, not its partial score");
   assert(html.includes("Cara</b> 0%"));
-  assert(!html.includes("Finished · Best"));
-  assert(!html.includes("Tried · Best"));
-  assert(!html.includes("Assigned · Not tried"));
-  assert(!html.includes("Not assigned</span>"));
+  assert(!html.includes("student completed"));
+  assert.equal(hooks.renderAssignWorkMeta(set, []), '<small>CLASS-PROGRESS-SET</small>');
 
-  const availableHtml = hooks.renderAssignWorkMeta(
-    set,
-    hooks.availabilityStatus("available"),
-    "CLASS-PROGRESS-SET"
-  );
-  assert(!availableHtml.includes("Amy"), "available task rows should keep compact metadata");
+  hooks.state.progressItems = [
+    { student_uid: "tried-uid", set_id: set.set_id, status: "mastered", best_percentage: 55 },
+  ];
+  rows = hooks.assignStudentCompletionRows(set);
+  assert.equal(rows.filter((item) => item.completed).length, 2);
+  assert(hooks.renderAssignWorkMeta(set, rows).includes("Ben</b> 55%"));
 }
 
 function testTeacherMatrixUsesCurrentRoster() {
@@ -1135,7 +1137,7 @@ function testAccountStarHistoryModel() {
 async function main() {
   testTeacherAssignmentEditDelegation();
   testTeacherAssignClassAutoSelection();
-  testAssignWorkCardsShowOnlyStudentPercentages();
+  testAssignWorkCardsShowSelectedStudentCompletionPercentages();
   testTeacherMatrixUsesCurrentRoster();
   testTeacherAttemptChartBackendThresholds();
   testTeacherPhoneMatrixDensityIsolation();

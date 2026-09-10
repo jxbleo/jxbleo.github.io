@@ -1081,9 +1081,15 @@ Check:
   choosing `All` does not bulk-select the complete school
 - Assign marks open `in_progress` student/work pairs as mergeable for a complete
   Class Assign, while completed/mastered pairs stay colored and selectable
-- after selecting a class roster, colored Work rows list every selected student
-  as name plus percentage only, using `0%` when no score exists; no Finished,
-  Best, Tried, Assigned, or Not assigned text appears
+- the Assign summary places Students left of Work on desktop and above Work on
+  mobile
+- every Work row shows its Set ID first, then every selected student's name and
+  completed percentage; students who have not completed the set display `0%`
+  even after a partial attempt, and no aggregate completed-student count appears
+- after selecting a class roster or an individual student, a set completed by
+  one or more selected students turns yellow; a set with no completed student
+  keeps its normal availability color while still listing all selected students
+  at `0%`
 - every selected task previews Not started, Existing progress, and Already
   finished counts with student details before confirmation
 - Assign selected Work and Students render one row per item, each with a small

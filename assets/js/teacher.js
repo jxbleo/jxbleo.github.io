@@ -3070,19 +3070,19 @@
         if (list) {
             list.innerHTML = sets.length ? sets.map(function(set) {
                 var status = availabilityStatus(workAvailabilityForSet(set));
+                var studentProgress = assignStudentCompletionRows(set);
+                var hasCompletedStudent = studentProgress.some(function(item) { return item.completed; });
                 var disabled = status.disabled;
                 var selected = state.selectedAssignSetIds[set.set_id] === true && !disabled;
-                var baseMeta = [set.set_id, set.course || set.type || set.section || ''].filter(Boolean).join(' · ');
-                var meta = [baseMeta, status.label === 'Available' ? '' : status.label].filter(Boolean).join(' · ');
                 return '<label class="assign-choice-card' + (selected ? ' selected' : '') +
-                    ' ' + escapeHtml(status.css) +
+                    ' ' + escapeHtml(hasCompletedStudent ? 'starred' : status.css) +
                     (disabled ? ' disabled' : '') + '">' +
                     '<input class="assign-set-checkbox" type="checkbox" value="' + escapeHtml(set.set_id) + '"' +
                         (selected ? ' checked' : '') +
                         (disabled ? ' disabled' : '') + '>' +
                     '<span class="assign-choice-mark" aria-hidden="true"></span>' +
                     '<span class="assign-choice-copy"><strong>' + escapeHtml(teacherEditionTitle(set)) + '</strong>' +
-                        renderAssignWorkMeta(set, status, meta) + '</span>' +
+                        renderAssignWorkMeta(set, studentProgress) + '</span>' +
                 '</label>';
             }).join('') : '<div class="empty-card compact-empty"><strong>No matching work</strong>Try another search or column.</div>';
             list.querySelectorAll('.assign-set-checkbox').forEach(function(checkbox) {
@@ -3240,16 +3240,34 @@
         return { label: 'Available', css: 'available', disabled: false };
     }
 
-    function renderAssignWorkMeta(set, status, baseMeta) {
-        var showStudentPercentages = status && ['progress', 'starred', 'completed'].indexOf(status.css) !== -1;
-        var students = showStudentPercentages ? selectedCandidateRecords() : [];
-        if (!students.length) return '<small>' + escapeHtml(baseMeta) + '</small>';
+    function assignStudentCompletionRows(set) {
+        var setId = String(set && set.set_id || '');
+        return selectedCandidateRecords().map(function(student) {
+            var completedItems = (state.progressItems || []).concat(state.assignments || []).filter(function(item) {
+                return String(item.student_uid || '') === String(student.auth_uid || '') &&
+                    String(item.set_id || '') === setId &&
+                    ['done', 'passed', 'mastered'].indexOf(String(item.status || '')) !== -1;
+            });
+            var completedPercentages = completedItems.map(function(item) {
+                return numericPercent(item.best_percentage);
+            }).filter(function(value) { return value != null; });
+            return {
+                student: student,
+                completed: completedItems.length > 0,
+                percentage: completedPercentages.length ? Math.max.apply(Math, completedPercentages) : 0
+            };
+        });
+    }
+
+    function renderAssignWorkMeta(set, studentProgress) {
+        var students = Array.isArray(studentProgress) ? studentProgress : [];
+        if (!students.length) return '<small>' + escapeHtml(String(set && set.set_id || '')) + '</small>';
         return '<small class="assign-choice-progress-meta">' +
-            '<span class="assign-choice-base-meta">' + escapeHtml(baseMeta) + '</span>' +
-            '<span class="assign-choice-student-progress">' + students.map(function(student) {
-                var best = studentSetBestPercentage(student.auth_uid, set.set_id);
+            '<span class="assign-choice-base-meta">' + escapeHtml(String(set && set.set_id || '')) + '</span>' +
+            '<span class="assign-choice-student-progress">' + students.map(function(item) {
+                var student = item.student || {};
                 return '<span><b>' + escapeHtml(studentDisplayName(student) || student.student_id || student.auth_uid) +
-                    '</b> ' + escapeHtml(formatPercent(best == null ? 0 : best)) + '</span>';
+                    '</b> ' + escapeHtml(formatPercent(item.completed ? item.percentage : 0)) + '</span>';
             }).join('') + '</span>' +
         '</small>';
     }

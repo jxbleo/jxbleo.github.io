@@ -11,10 +11,14 @@
 - Removed restored answer text from local drafts and fixed the immediate-close
   bug caused by render-time autofocus entering the old slot focus handler.
 
-## 2026-09-10 — Class percentages in Teacher Assign
+## 2026-09-11 — Student completion percentages in Teacher Assign
 
-- Expanded colored prior-assignment Work rows to show each selected student's
-  name and score percentage only, using `0%` when no score is available.
+- Changed each Work row's secondary text to its Set ID followed by every
+  selected student's name and completed percentage. Students without a
+  completed result show `0%`; the aggregate completed-student count is omitted.
+- Kept the yellow completion treatment when at least one selected student has
+  completed the Set.
+- Reordered the Assign summaries to Students then Work on desktop and mobile.
 - Kept assignment eligibility, grading, and reassignment behavior unchanged.
 
 ## 2026-09-10 — Circular Speaking recording timers

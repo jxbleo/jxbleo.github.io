@@ -1181,17 +1181,21 @@ Teacher can:
   existing assignment state for the selected counterpart: open `in_progress`
   pairs are colored and disabled; completed/mastered history is colored but
   remains selectable for reassignment
-- after a class roster is selected, each colored Work row uses its small
-  metadata area to show only every selected student's name and current Best
-  Score percentage, using `0%` when there is no score. It does not add status
-  labels such as Finished, Tried, Assigned, Best, or Not assigned
+- place the Students summary card before Work: Students is left and Work is
+  right on desktop, while Students is above Work on mobile
+- after students from a class or an individual student are selected, every Work
+  row shows its `set_id` first, followed by every selected student's display
+  name and completed percentage. A selected student who has not completed that
+  set shows `0%`, even if they have partial attempt progress. If one or more
+  selected students have completed the set, color the Work row yellow. Do not
+  show a completed-student count or generic assignment-state label
 - set task parameters in a bottom Assign matrix, one selected Work item per row:
   required due week, passing percentage, and whether that task can earn STAR
 - assign the selected work to the selected students
 
 The Assign surface should stay visually minimal: the default Assign tab shows
-the `Work` and `Students` summary surfaces side by side on desktop and stacked
-on mobile, followed by the existing task-parameters matrix and the Assign
+the `Students` and `Work` summary surfaces side by side on desktop and stacked
+in that order on mobile, followed by the existing task-parameters matrix and the Assign
 action. This is the hybrid layout: search, filters, and candidate lists remain
 in their existing standalone picker dialogs, whose design and behavior are
 preserved. There are no visible multi-step accordions or legend. Empty
