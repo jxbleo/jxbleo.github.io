@@ -163,6 +163,7 @@
     var studentLibraryCategoryPopover = document.getElementById('student-sub-tab-bar');
     var accountPanel = document.getElementById('student-account-panel');
     var logoutConfirmOverlay = document.getElementById('logout-confirm-overlay');
+    var logoutPending = false;
     var calendarOverlay = document.getElementById('student-calendar-overlay');
     var calendarContent = document.getElementById('student-calendar-content');
     var calendarScroll = document.getElementById('student-calendar-scroll');
@@ -1621,6 +1622,15 @@
 
     function setLogoutConfirmOpen(open, closeAccount) {
         if (!logoutConfirmOverlay) return;
+        if (logoutPending) return;
+        logoutConfirmOverlay.removeAttribute('aria-busy');
+        var submitButton = document.getElementById('logout-confirm-submit');
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Log out';
+        }
+        var message = document.getElementById('logout-confirm-message');
+        if (message) message.textContent = 'Your progress is saved. You can sign in again anytime.';
         logoutConfirmOverlay.hidden = open !== true;
         if (open === true) {
             if (accountPanel) accountPanel.hidden = true;
@@ -5005,10 +5015,24 @@
     if (logoutConfirmCancel) logoutConfirmCancel.addEventListener('click', function() { setLogoutConfirmOpen(false, false); });
     if (logoutConfirmSubmit) {
         logoutConfirmSubmit.addEventListener('click', function() {
+            if (logoutPending) return;
+            logoutPending = true;
             logoutConfirmSubmit.disabled = true;
+            if (logoutConfirmCancel) logoutConfirmCancel.disabled = true;
             logoutConfirmSubmit.textContent = 'Logging out...';
             logoutConfirmOverlay.setAttribute('aria-busy', 'true');
-            window.MrCatAuth.logout();
+            Promise.resolve().then(function() {
+                return window.MrCatAuth.logout();
+            }).catch(function(error) {
+                var message = document.getElementById('logout-confirm-message');
+                if (message) message.textContent = error && error.message || 'Unable to log out. Please try again.';
+            }).finally(function() {
+                logoutPending = false;
+                logoutConfirmSubmit.disabled = false;
+                if (logoutConfirmCancel) logoutConfirmCancel.disabled = false;
+                logoutConfirmSubmit.textContent = 'Log out';
+                logoutConfirmOverlay.removeAttribute('aria-busy');
+            });
         });
     }
     if (messageButton) {

@@ -32,6 +32,17 @@ API fallback.
 
 ## 1. Current Test Reality
 
+Student logout regression: run `npm run test:logout` and
+`npm run test:login-redirect`. The logout suite executes the actual shared auth
+code and Dashboard modal handlers with controlled promises/timers. Cover SDK
+success, rejection, synchronous exceptions, fulfilled `{ error }`, seven-second
+timeouts, blocked/unavailable/silent IndexedDB, denied identity-storage access,
+double clicks, retry, Cancel/reopen, and late SDK completion without navigation.
+On a real phone after publication, confirm normal logout reaches Sign in; under
+network failure, the dialog must recover to a readable error and usable controls
+within seven seconds of active execution. Browser suspension may defer timers
+until the page resumes. Confirm successful logout does not auto-sign back in.
+
 There is no full automated test suite yet.
 
 Current verification uses:

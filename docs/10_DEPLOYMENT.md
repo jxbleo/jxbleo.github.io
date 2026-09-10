@@ -19,6 +19,12 @@ without explicit owner approval.
 
 ## 2. Deployment Has Three Tracks
 
+The mobile logout recovery fix is a static-only release: publish the updated
+`auth.js`, Dashboard/My Words/Reports handlers, and HTML asset-version changes
+together. It requires no CloudBase function deployment, migration, or secrets.
+Run `npm run test:logout` and `npm run test:login-redirect` before publication;
+verify normal and failed logout on an actual phone after publication.
+
 | Track | What changes | Typical owner action |
 | --- | --- | --- |
 | Static site | HTML, CSS, JS, public data, audio | push/publish static files |

@@ -880,7 +880,9 @@
     });
 
     logoutButton.addEventListener('click', function() {
-        window.MrCatAuth.logout();
+        window.MrCatAuth.logout().catch(function(error) {
+            setFeedback(error.message || 'Unable to log out. Please try again.', 'error');
+        });
     });
 
     reportsContent.addEventListener('click', handleContentClick);

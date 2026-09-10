@@ -13,6 +13,18 @@
 
 ## 2. Main Pages
 
+### Student logout recovery
+
+The Student Dashboard confirmation disables both actions while signing out.
+CloudBase sign-out has a seven-second UI deadline. A rejected call, synchronous
+exception, SDK `{ error }` result, or timeout keeps the dialog visible with a
+retry message and restores both buttons. Cancel/reopen resets the message.
+Repeated clicks share one operation; an SDK response arriving after a timeout
+cannot navigate unexpectedly. Successful sign-out clears local identity, allows
+at most one additional second for dashboard cache deletion, and replaces the
+current history entry with `index.html`. Cache/storage failures must not trap an
+already signed-out student. My Words and Reports also show shared logout errors.
+
 ### Student Dashboard Achievements
 
 The first student card keeps the time-aware greeting and motivational sentence

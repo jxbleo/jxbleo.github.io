@@ -1495,7 +1495,11 @@
         document.addEventListener('submit', handleDetailSubmit);
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });
         var logoutButton = document.getElementById('my-words-logout');
-        if (logoutButton) logoutButton.addEventListener('click', window.MrCatAuth.logout);
+        if (logoutButton) logoutButton.addEventListener('click', function() {
+            window.MrCatAuth.logout().catch(function(error) {
+                setFeedback(error.message || 'Unable to log out. Please try again.');
+            });
+        });
         document.addEventListener('keydown', function(event) {
             if (event.key !== 'Escape') return;
             if (state.mobileDetailOpen) return;

@@ -54,6 +54,7 @@ Speaking Lab 不使用上述旧模式。`speakingAiWorker` 的函数级权限必
 
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
+| 学生 Logout 一直显示 `Logging out...` | 旧 `auth.js` 无限等待 SDK/IndexedDB，Dashboard 不处理异常；SDK 2.32 也可能成功返回 Promise 但在结果 `error` 中报告失败 | 发布带 `20260911-1` 版本的 shared auth 和 Dashboard。登出最多等待七秒，失败恢复按钮；成功后的缓存清理最多等一秒。先跑 `npm run test:logout`，再在手机检查正常退出、弱网超时、取消重开。不要吞掉登出失败后强制跳转，否则登录页可能恢复旧会话 |
 | 学生提交成功但教师邮箱没有新通知 | outbox 集合/索引未创建、`submitAttempt` 或 dispatcher 未部署、Cron/token/SMTP 未配置、教师个人中心没有启用邮箱，或事件正在 7 分钟 BBC 窗口内 | 先确认个人中心地址为 `Receiving notifications`，再查 `teacher_attempt_email_events` 是否有该 `attempt_id` 及其 `status`/`due_at`/`last_error`/`skip_reason`；用精确 event ID 查函数日志，不输出答案或 SMTP 值 |
 | 邮件事件显示 `sent`，但 QQ 和 iCloud 都没有收到 | 旧 dispatcher 只保存本地生成的 Message-ID，无法证明 SMTP 是否接受收件人；CloudBase 实例或出网链路也可能出现瞬时异常 | 查 `smtp_accepted_count`、`smtp_rejected_count`、`smtp_response_code` 和 `smtp_response` 中的 provider queue ID。若没有这些字段，先部署带 SMTP 回执审计的 dispatcher；不要把本地生成的 `provider_message_id` 当成投递凭证 |
 | Vocabulary 邮件重复或第二封没有第 1 次记录 | 同一 `event_id` 被重复插入、dispatcher 未事务认领、线程 key/cutoff 规则漂移，或线上仍是旧函数 | 确认事件文档 ID 等于 `attempt_id`、状态只走 pending/processing/sent、第二封 cutoff 为第二次 `submitted_at`，并部署同一源码打包的三个函数 |

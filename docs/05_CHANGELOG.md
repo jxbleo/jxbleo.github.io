@@ -22,6 +22,16 @@
 - Added linked Year / Set selectors, with all years available by default.
 - Styled Upload and renamed the device action to Record on this device.
 
+## 2026-09-10 — Recoverable student logout
+
+- Bounded CloudBase logout and dashboard-cache cleanup so an unresolved SDK or
+  storage operation cannot leave the Student dialog indefinitely busy.
+- Treat SDK `{ error }` responses as failures, preserve identity until sign-out
+  succeeds, restore retry/cancel controls on failure, and use history replacement
+  after success. Concurrent logout calls share the pending SDK operation.
+- Added executable logout fault-injection tests and refreshed shared auth asset
+  versions. Static frontend release only; no backend or collection changes.
+
 ## 2026-09-10 — Direct Show Answer with interruptible close
 
 - Removed the three-effective-check unlock requirement and its visible counter
