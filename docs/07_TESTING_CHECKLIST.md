@@ -265,8 +265,11 @@ Intensive Listening checks:
   practice first;
 - Student Library contains no Intensive subtab, section, or standalone material
   card;
-- unchanged wrong checks do not advance the reveal gate, correct positions lock,
-  and reveal requires three effective checks;
+- unchanged wrong checks do not advance the effective-check count, correct
+  positions lock, and Show Answer is available before any check;
+- opening Show Answer blocks Word Slot input, fills its bottom progress bar, and
+  closes at five seconds without interaction; a pointer press anywhere in the
+  answer layer pauses the progress and keeps it open until explicit Close;
 - Show Answer records assisted completion without changing wrong or blank Word
   Slots to green; independently correct positions stay green, and legacy
   assisted all-green progress renders unknown positions neutrally;

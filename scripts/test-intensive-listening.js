@@ -45,9 +45,10 @@ function run() {
   assert.strictEqual(completed.state.completed, true, "previously correct positions stay locked");
   assert.deepStrictEqual(completed.marks, [true, true, true, true]);
 
-  assert.strictEqual(service.revealUnit(unit(), first.state).allowed, false);
-  const threeChecks = { ...partlyCorrect.state, checks: 3 };
-  const revealed = service.revealUnit(unit(), threeChecks);
+  const immediateReveal = service.revealUnit(unit(), null);
+  assert.strictEqual(immediateReveal.allowed, true, "Show Answer is available before any checks");
+  assert.strictEqual(immediateReveal.state.checks, 0, "revealing does not synthesize a check");
+  const revealed = service.revealUnit(unit(), partlyCorrect.state);
   assert.strictEqual(revealed.allowed, true);
   assert.strictEqual(revealed.state.assisted, true);
   assert.strictEqual(revealed.state.reveal_position_version, 2);
@@ -163,6 +164,10 @@ function run() {
   assert.ok(intensiveRuntime.includes("visitor-full-audio"), "visitor runtime creates one listen-only full-audio unit");
   assert.ok(intensiveRuntime.includes("Visitor Mode is listening-only"), "visitor runtime explains the answer lock");
   assert.ok(intensiveRuntime.includes("state.visitorFullAudio ? Infinity"), "visitor playback is not clipped to a private segment boundary");
+  assert.ok(intensiveRuntime.includes("window.setTimeout(function() { hideAnswer('timeout'); }, 5000)"), "answer modal auto-closes after five seconds");
+  assert.ok(intensiveRuntime.includes("function pauseAnswerAutoClose()"), "answer auto-close can be interrupted");
+  assert.ok(intensiveRuntime.includes("$('#answer-panel').addEventListener('pointerdown', pauseAnswerAutoClose, true)"), "any answer-overlay pointer press pauses auto-close");
+  assert.ok(intensiveRuntime.includes("!local.answerVisible"), "answer render must not immediately focus a blocked word slot");
 
   const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
   assert.ok(intensivePage.includes('id="previous-unit-button"'));
@@ -172,6 +177,9 @@ function run() {
   assert.ok(intensivePage.includes('class="il-argue-heart"'));
   assert.ok(intensivePage.includes('<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>'));
   assert.ok(intensivePage.includes('id="argue-sent-close"'));
+  assert.ok(intensivePage.includes('id="answer-progress"'));
+  assert.ok(intensivePage.includes('Closes automatically in 5 seconds. Click anywhere to keep it open.'));
+  assert.strictEqual(intensivePage.includes('id="check-count"'), false, "the three-check unlock counter is removed from the UI");
   assert.ok(intensiveRuntime.includes("$('#argue-box').classList.add('sent')"));
 
   const teacherRuntime = fs.readFileSync(path.join(root, "assets/js/teacher.js"), "utf8");

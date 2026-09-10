@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-10 — Direct Show Answer with interruptible close
+
+- Removed the three-effective-check unlock requirement and its visible counter
+  so Dictation can open `Show Answer` immediately from the lower-right action.
+- Replaced the inline answer area with an input-blocking modal that closes after
+  five seconds while a bottom progress bar fills.
+- Made any pointer press inside the full-screen answer layer pause the countdown;
+  the learner must then choose `Close` before returning to Word Slots.
+- Removed restored answer text from local drafts and fixed the immediate-close
+  bug caused by render-time autofocus entering the old slot focus handler.
+
 ## 2026-09-10 — Class percentages in Teacher Assign
 
 - Expanded colored prior-assignment Work rows to show each selected student's

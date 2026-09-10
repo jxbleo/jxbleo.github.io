@@ -31,7 +31,9 @@
     dictationEnabled: true,
     shadowingEnabled: false,
     shadowingCompleted: false,
-    pendingMode: ''
+    pendingMode: '',
+    answerAutoCloseTimer: 0,
+    answerAutoClosePaused: false
   };
 
   function $(selector) { return document.querySelector(selector); }
@@ -214,9 +216,6 @@
       units[unitId] = {
         entries: local.entries,
         marks: local.marks,
-        answerVisible: local.answerVisible,
-        answerText: local.answerVisible ? local.answerText : '',
-        answers: local.answerVisible ? local.answers : [],
         dirty: local.dirty === true
       };
     });
@@ -278,12 +277,7 @@
           ? persisted.marks.map(function(mark) { return mark === true || mark === 'correct' ? 'correct' : mark === false || mark === 'incorrect' ? 'incorrect' : ''; })
           : local.marks;
       }
-      if (saved && persisted === saved) {
-        local.answerVisible = saved.answerVisible === true && (serverUnit.assisted === true || state.teacherMode);
-        local.answerText = local.answerVisible ? String(saved.answerText || '') : '';
-        local.answers = local.answerVisible && Array.isArray(saved.answers) ? saved.answers.map(String) : [];
-        local.dirty = saved.dirty === true;
-      }
+      if (saved && persisted === saved) local.dirty = saved.dirty === true;
       applyServerMarks(local, serverUnit);
       unit.slots.forEach(function(slot, index) { if (isProvided(slot)) local.marks[index] = 'correct'; });
       local.checks = Number(serverUnit.checks) || 0;
@@ -454,11 +448,6 @@
 
   function bindSlots() {
     document.querySelectorAll('.il-word-slot').forEach(function(input) {
-      input.addEventListener('focus', function() {
-        if (!currentLocal().answerVisible) return;
-        var slotIndex = Number(input.dataset.slotIndex);
-        hideAnswer(slotIndex);
-      });
       input.addEventListener('input', function() {
         var index = Number(input.dataset.slotIndex);
         var local = currentLocal();
@@ -560,15 +549,14 @@
         '<input class="il-word-slot ' + escapeHtml(local.marks[index] || '') + '" data-slot-index="' + index + '" aria-label="Word ' + (index + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false" value="' + escapeHtml(local.entries[index]) + '" ' + (disabled ? 'disabled' : local.answerVisible ? 'readonly' : '') + '>' +
         '<span class="il-punctuation">' + escapeHtml(slot.suffix || '') + '</span></span>';
     }).join('');
-    $('#check-count').textContent = state.teacherMode ? 'TEACHER PREVIEW' : Math.min(Number(server.checks) || 0, 3) + ' / 3 checks';
-    $('#continue-button').textContent = 'Hide';
+    $('#continue-button').textContent = 'Close';
     $('#check-button').hidden = state.teacherMode;
     $('#check-button').disabled = state.busy || server.completed === true;
     $('#answer-button').disabled = state.busy;
     $('#answer-button').textContent = local.answerVisible ? 'Hide' : 'Show Answer';
     renderAnswerTokens();
     bindSlots();
-    if (state.started && !state.teacherMode && !state.playing) window.setTimeout(function() {
+    if (state.started && !state.teacherMode && !state.playing && !local.answerVisible) window.setTimeout(function() {
       var first = $('#word-slots .il-word-slot:not(:disabled)'); if (first) first.focus();
     }, 0);
     saveDraft();
@@ -621,14 +609,15 @@
     if (state.visitorMode || state.busy || !isDictation(currentUnit())) return;
     if (currentLocal().answerVisible) { hideAnswer(); return; }
     var unit = currentUnit(); var local = currentLocal();
+    pauseAudio('Paused · reviewing answer');
     if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('network').catch(function() {});
     setBusy(true, state.teacherMode ? 'Opening the reviewed answer…' : 'Checking whether the answer is available…');
     call('reveal', { unit_id: unit.unit_id, replay_delta: local.replayDelta }).then(function(result) {
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       setBusy(false);
       if (!result.answer_available) {
-        $('#feedback').className = 'il-feedback';
-        $('#feedback').textContent = result.remaining_checks === 1 ? 'Try harder — one more effective check.' : 'Try harder — ' + result.remaining_checks + ' more effective checks.';
+        $('#feedback').className = 'il-feedback error';
+        $('#feedback').textContent = 'The answer is temporarily unavailable. Please try again.';
         return;
       }
       local.replayDelta = 0; local.answerVisible = true; local.answerText = result.answer_text;
@@ -637,24 +626,65 @@
       $('#feedback').className = 'il-feedback';
       $('#feedback').textContent = state.teacherMode ? 'Click a word to request a spelling exemption.' : 'Compare every position. Click a word if you think it should be provided.';
       renderUnit();
+      startAnswerAutoClose();
     }).catch(function(error) {
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       setBusy(false); $('#feedback').className = 'il-feedback error'; $('#feedback').textContent = error.message;
     });
   }
-  function hideAnswer(focusIndex) {
+  function setAnswerModalBackgroundBlocked(blocked) {
+    var practiceShell = $('#practice-shell');
+    var header = $('.il-header');
+    if (practiceShell) practiceShell.inert = blocked;
+    if (header) header.inert = blocked;
+    document.body.classList.toggle('il-answer-open', blocked);
+  }
+  function stopAnswerAutoClose() {
+    if (state.answerAutoCloseTimer) window.clearTimeout(state.answerAutoCloseTimer);
+    state.answerAutoCloseTimer = 0;
+  }
+  function pauseAnswerAutoClose() {
+    var panel = $('#answer-panel');
+    if (!panel || panel.hidden || state.answerAutoClosePaused) return;
+    state.answerAutoClosePaused = true;
+    stopAnswerAutoClose();
+    panel.classList.add('is-paused');
+    $('#answer-timer-copy').textContent = 'Auto-close paused. Close the answer before typing.';
+  }
+  function startAnswerAutoClose() {
+    var panel = $('#answer-panel');
+    if (!panel) return;
+    stopAnswerAutoClose();
+    state.answerAutoClosePaused = false;
+    panel.hidden = false;
+    panel.classList.remove('is-counting', 'is-paused');
+    $('#answer-timer-copy').textContent = 'Closes automatically in 5 seconds. Click anywhere to keep it open.';
+    setAnswerModalBackgroundBlocked(true);
+    void $('#answer-progress').offsetWidth;
+    panel.classList.add('is-counting');
+    state.answerAutoCloseTimer = window.setTimeout(function() { hideAnswer('timeout'); }, 5000);
+    window.requestAnimationFrame(function() {
+      if (!panel.hidden) $('#continue-button').focus();
+    });
+  }
+  function hideAnswer(reason) {
     var local = currentLocal();
     if (!local || !local.answerVisible) return;
+    stopAnswerAutoClose();
+    state.answerAutoClosePaused = false;
     local.answerVisible = false;
     local.answerText = '';
     local.answers = [];
+    var panel = $('#answer-panel');
+    panel.classList.remove('is-counting', 'is-paused');
+    panel.hidden = true;
+    setAnswerModalBackgroundBlocked(false);
     renderUnit();
     $('#feedback').className = 'il-feedback';
-    $('#feedback').textContent = 'Answer hidden. Finish the current line from memory.';
-    if (Number.isInteger(focusIndex)) window.setTimeout(function() {
-      var target = document.querySelector('[data-slot-index="' + focusIndex + '"]:not(:disabled)');
-      if (target) target.focus();
-    }, 0);
+    $('#feedback').textContent = reason === 'timeout'
+      ? 'Answer closed after 5 seconds. Finish the current line from memory.'
+      : 'Answer closed. Finish the current line from memory.';
+    window.setTimeout(function() { if ($('#answer-panel').hidden) $('#answer-button').focus(); }, 0);
   }
 
   function nextPlaybackEndIndex(startIndex) {
@@ -810,12 +840,14 @@
     $('#argue-submit').disabled = false;
     $('#argue-box').classList.remove('sent');
     if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
+    $('#answer-panel').inert = true;
     $('#argue-modal').hidden = false; if (!existing) $('#argue-reason').focus();
   }
   function closeArgue() {
     $('#argue-modal').hidden = true;
     $('#argue-box').classList.remove('sent');
     state.selectedArgue = null;
+    $('#answer-panel').inert = false;
     if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) {
       var unit = currentUnit();
       window.MrCatLearningActivity.resume('interaction', unit && unit.unit_id);
@@ -991,6 +1023,7 @@
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);
   $('#continue-button').addEventListener('click', function() { hideAnswer(); });
+  $('#answer-panel').addEventListener('pointerdown', pauseAnswerAutoClose, true);
   $('#previous-unit-button').addEventListener('click', function() { moveToUnit(-1); });
   $('#next-unit-button').addEventListener('click', function() { moveToUnit(1); });
   $('#restart-button').addEventListener('click', startTemporaryReplay);
@@ -1098,6 +1131,10 @@
   $('#argue-submit').addEventListener('click', submitArgue);
   $('#argue-modal').addEventListener('click', function(event) { if (event.target === $('#argue-modal')) closeArgue(); });
   document.addEventListener('keydown', function(event) {
+    if (state.material && state.progress && currentLocal() && currentLocal().answerVisible && !$('#answer-panel').hidden && $('#argue-modal').hidden) {
+      if (event.key === 'Escape') { event.preventDefault(); hideAnswer(); }
+      return;
+    }
     if (event.key === 'Escape' && !$('#argue-modal').hidden) { closeArgue(); return; }
     if (event.key === 'Escape' && !$('#mode-switch-modal').hidden) { closeModeSwitchModal(); return; }
     if (event.key === 'Escape' && !$('#leave-modal').hidden) { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); }

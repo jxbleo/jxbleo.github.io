@@ -208,9 +208,12 @@ Do not reopen these decisions during implementation.
 1. Preserve current fixed-position, case-insensitive word-slot grading.
 2. Preserve Provided Words and spelling Argue.
 3. Shadowing never has Argue.
-4. Student `Show Answer` changes to `Hide` while the answer is visible.
+4. Student `Show Answer` is available without a prior-check gate and opens a
+   blocking answer modal.
 5. Revealing the Dictation answer does not complete or advance the Segment.
-6. Clicking or focusing any fillable word slot hides the answer immediately.
+6. The modal closes automatically after five seconds while its bottom progress
+   bar fills. Any click pauses the close; explicit Close is then required before
+   a fillable word slot can be used.
 7. After revealing, the learner must finish the current Segment before normal
    automatic progression. The completed Segment remains marked assisted.
 8. Teacher preview can reveal immediately and approve a Provided Word in place.
@@ -547,9 +550,9 @@ verbatim. Listening's accent remains a subdued teal/blue-green.
 - Reduce the current oversized hero/stats treatment. The material title, mode,
   Segment position, compact progress, media control, word slots, feedback, and
   actions should fit as one focused task hierarchy.
-- `Show Answer`/`Hide` is a toggle in the same position.
-- When answer hides due to word-slot focus, keep focus in the selected slot and
-  announce `Answer hidden` through the status region.
+- Place `Show Answer` at the lower right without a visible attempt counter.
+- Keep Word Slots blocked while the answer modal is open. Auto-close after five
+  seconds, or pause on the first click and require explicit Close.
 - Teacher-only export and preview tools remain visually secondary.
 
 ### 7.6 Shadowing work surface
@@ -1308,7 +1311,7 @@ Follow this order. Keep the site runnable after each milestone.
 - Add V2 material normalizer and pure Track helpers.
 - Rename visible UI to Listening.
 - Preserve old URLs and existing Dictation tests.
-- Correct Dictation Show Answer/Hide behavior.
+- Add direct Dictation Show Answer with interruptible five-second auto-close.
 - Update direct BBC/IELTS label to Listening.
 
 Gate:
@@ -1446,7 +1449,8 @@ Test all of these:
 - explicit Dictation-only/Shadowing-only/both materials;
 - BBC and IELTS one Listening entry, no Track display in ordinary Library;
 - stand-alone Listening-only material from Dashboard catalog;
-- Dictation Show Answer -> Hide -> slot focus hides -> must finish Segment;
+- Dictation direct Show Answer -> five-second auto-close or click-to-pause ->
+  explicit Close -> must finish Segment;
 - teacher immediate reveal and Provided Word approval;
 - audio listen then record;
 - video silent dubbing with muted source audio;

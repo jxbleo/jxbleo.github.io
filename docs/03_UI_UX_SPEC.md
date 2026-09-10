@@ -1627,8 +1627,8 @@ Shared rules:
 - Provided Words render inline in green instead of as inputs. Keyboard movement
   skips them and server checking excludes them.
 - After Show Answer, each required answer token is clickable for a Spelling
-  Exemption Argue. Teacher preview may reveal immediately; student reveal retains
-  the three-effective-check gate. In Teacher Argue, these requests use a distinct
+  Exemption Argue. Teacher preview and student practice may both reveal immediately;
+  no attempt threshold is shown or enforced. In Teacher Argue, these requests use a distinct
   green Intensive Listening card instead of the generic answer-comparison card.
   It foregrounds the target word, highlights it in the sentence, shows the
   speaker/unit/time context, and offers a bounded sentence-audio preview. Its only
@@ -1646,12 +1646,13 @@ Shared rules:
   the same animated heart, `Sent to teacher.` / `Thanks for your feedback.`
   confirmation, and external Close capsule as the BBC question-level Argue flow.
 - `Tab` replays the current unit. Correct slots lock green; incorrect slots
-  remain editable red. The server reveals answers only after three effective
-  checks and keeps independent/assisted completion counts separate.
+  remain editable red. The server reveals answers immediately on explicit request
+  and keeps independent/assisted completion counts separate.
 - Show Answer does not complete or advance the unit. While the reviewed text is
-  visible, the lower action reads `Hide`; the top control also toggles to
-  `Hide`. Focusing any writable Word Slot hides and clears the browser's answer
-  copy before accepting input. The learner must finish the current line
+  visible, it blocks all Word Slot input and shows a five-second progress bar at
+  the bottom. Without interaction, the answer closes when the bar completes.
+  A click anywhere in the answer layer pauses the bar and cancels auto-close;
+  the learner must then use `Close` before Word Slot input is restored. The learner must finish the current line
   correctly; that later completion is recorded as assisted. Independently
   correct slots stay green, while wrong or blank entries remain red or neutral.
   Historical assisted states that cannot prove per-slot correctness render

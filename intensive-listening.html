@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260907-3">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260910-1">
   <link rel="stylesheet" href="assets/css/listening-shadowing.css?v=20260907-3">
 </head>
 <body data-practice-nav="manual">
@@ -78,15 +78,8 @@
       <div class="il-feedback" id="feedback" role="status" aria-live="polite">Listen once, then type one word in each slot.</div>
 
       <div class="il-actions">
-        <button class="il-answer" id="answer-button" type="button">Show Answer</button>
-        <span class="il-check-count" id="check-count">0 / 3 checks</span>
         <button class="il-check" id="check-button" type="button">Check · Enter</button>
-      </div>
-
-      <div class="il-answer-panel" id="answer-panel" hidden>
-        <span class="il-eyebrow">ANSWER</span>
-        <div class="il-answer-tokens" id="answer-tokens"></div>
-        <button class="il-continue" id="continue-button" type="button">Continue</button>
+        <button class="il-answer" id="answer-button" type="button">Show Answer</button>
       </div>
     </section>
 
@@ -105,6 +98,16 @@
       <p class="shadowing-status" id="shadowing-status" role="status" aria-live="polite"></p>
     </section>
   </main>
+
+  <div class="il-answer-modal" id="answer-panel" hidden>
+    <div class="il-answer-dialog" role="dialog" aria-modal="true" aria-labelledby="answer-title" aria-describedby="answer-timer-copy">
+      <span class="il-eyebrow" id="answer-title">ANSWER</span>
+      <p class="il-answer-timer-copy" id="answer-timer-copy">Closes automatically in 5 seconds. Click anywhere to keep it open.</p>
+      <div class="il-answer-tokens" id="answer-tokens"></div>
+      <button class="il-continue" id="continue-button" type="button">Close</button>
+      <div class="il-answer-progress" id="answer-progress" aria-hidden="true"><span></span></div>
+    </div>
+  </div>
 
   <section class="il-start-screen" id="start-screen">
     <div class="il-start-card">
@@ -172,7 +175,7 @@
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
   <script src="assets/js/learning-activity.js?v=20260907-3"></script>
-  <script src="assets/js/intensive-listening.js?v=20260907-3"></script>
+  <script src="assets/js/intensive-listening.js?v=20260910-1"></script>
   <script src="assets/js/listening-shadowing.js?v=20260908-1"></script>
 </body>
 </html>

@@ -105,8 +105,9 @@ Practice toolbar:
 - Unchecked text cannot be scored or server-saved. Switching modes with
   unchecked text displays `Unchecked answers will not be saved.` and offers
   `Keep Practising` / `Switch Mode`.
-- `Show Answer` becomes `Hide` while open. Focusing any answer slot hides the
-  answer immediately.
+- `Show Answer` is immediately available and opens a blocking answer modal. It
+  auto-closes with a five-second bottom progress bar; any click pauses the close
+  until the learner explicitly closes it.
 - Only Dictation supports student Argue.
 
 ### 2.5 Shadowing progress and feedback
@@ -990,7 +991,8 @@ Extend existing focused scripts or add narrowly named scripts. At minimum test:
 - correct slot merge is monotonic;
 - wrong qualifying draft remains editable;
 - unchecked mode switch warning;
-- answer opens as Hide and slot focus hides it;
+- answer opens directly, auto-closes after five seconds, and any click pauses it
+  until explicit Close;
 - Argue remains Dictation-only.
 
 ### Shadowing

@@ -145,9 +145,6 @@ function gradeUnit(unit, entries, previousValue, context, replayDelta = 0) {
 function revealUnit(unit, previousValue, replayDelta = 0) {
   const slots = Array.isArray(unit && unit.slots) ? unit.slots : [];
   const previous = normalizedStateForUnit(previousValue, unit);
-  if (previous.checks < 3) {
-    return { allowed: false, remaining: 3 - previous.checks, state: previous };
-  }
   return {
     allowed: true,
     remaining: 0,

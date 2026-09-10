@@ -1924,9 +1924,6 @@ async function revealAnswer(student, event, set, material) {
   const unit = findUnit(material, event.unit_id);
   const unitStates = record.unit_states && typeof record.unit_states === "object" ? { ...record.unit_states } : {};
   const result = service.revealUnit(unit, unitStates[unit.unit_id], event.replay_delta);
-  if (!result.allowed) {
-    return { success: true, answer_available: false, remaining_checks: result.remaining };
-  }
   unitStates[unit.unit_id] = result.state;
   const saved = await saveSessionRecord(student, material, record, unitStates, replayMode);
   if (!replayMode) await syncAssignments(student, set, saved.best_percentage, new Date());
