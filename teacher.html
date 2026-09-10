@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260909-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260910-1">
     <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260905-2">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
@@ -375,16 +375,16 @@
 
                 <section class="dashboard-view" id="view-speaking" hidden>
                     <section class="speaking-lab-main teacher-speaking-main">
-                        <div class="speaking-lab-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1>Speaking</h1><p>Start one recording, or open an existing result report.</p></div></div>
                         <section class="teacher-speaking-home" id="teacher-speaking-home" aria-label="Speaking actions">
                             <article class="teacher-speaking-entry-card teacher-speaking-record-card">
-                                <span class="teacher-speaking-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 0 0 7 0v-5A3.5 3.5 0 0 0 12 3Z"></path><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6"></path></svg></span>
-                                <div class="teacher-speaking-entry-copy"><p class="eyebrow accent">NEW RECORDING</p><h2>Upload or record</h2><p>Choose the Speaking topic, then use an existing audio file or record on this device.</p></div>
-                                <label class="teacher-speaking-topic-field" for="teacher-speaking-topic"><span>Topic</span><select id="teacher-speaking-topic"><option value="">Loading topics…</option></select></label>
+                                <div class="teacher-speaking-filters">
+                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-year"><span>Year</span><select id="teacher-speaking-year"><option value="">All years</option></select></label>
+                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-topic"><span>Set</span><select id="teacher-speaking-topic"><option value="">Loading sets…</option></select></label>
+                                </div>
                                 <div class="teacher-speaking-entry-actions">
-                                    <button class="outline-button teacher-speaking-file-button" id="teacher-speaking-file-button" type="button">Upload a recording</button>
+                                    <button class="outline-button teacher-speaking-file-button" id="teacher-speaking-file-button" type="button">Upload</button>
                                     <input id="teacher-speaking-audio-file" type="file" accept="audio/*" hidden>
-                                    <button class="primary-button" id="teacher-speaking-record" type="button">Start recording</button>
+                                    <button class="primary-button" id="teacher-speaking-record" type="button">Record on this device</button>
                                 </div>
                                 <div class="teacher-speaking-capture" id="teacher-speaking-capture" hidden>
                                     <div class="teacher-speaking-capture-status"><span class="teacher-speaking-record-dot" id="teacher-speaking-record-dot" hidden></span><strong id="teacher-speaking-capture-title">Recording ready</strong><span id="teacher-speaking-capture-time">00:00</span></div>
@@ -394,7 +394,7 @@
                             </article>
                             <button class="teacher-speaking-entry-card teacher-speaking-results-card" id="teacher-speaking-open-results" type="button">
                                 <span class="teacher-speaking-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 3.5h9l3 3v14H6z"></path><path d="M15 3.5v4h3M9 11h6M9 14.5h6M9 18h4"></path></svg></span>
-                                <span class="teacher-speaking-entry-copy"><span class="eyebrow accent">RESULT REPORTS</span><strong>View existing reports</strong><small>Open completed reports and check analyses that are still being prepared.</small></span>
+                                <span class="teacher-speaking-entry-copy"><strong>View existing reports</strong></span>
                                 <span class="teacher-speaking-report-count" id="teacher-speaking-report-count">Loading…</span>
                                 <span class="teacher-speaking-entry-arrow" aria-hidden="true">&#8594;</span>
                             </button>
@@ -485,14 +485,14 @@
     </section>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260909-1"></script>
+    <script src="assets/js/config.public.js?v=20260910-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260810-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher.js?v=20260911-1"></script>
     <script src="assets/js/teacher-listening.js?v=20260907-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/teacher-speaking.js?v=20260909-1"></script>
+    <script src="assets/js/teacher-speaking.js?v=20260910-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

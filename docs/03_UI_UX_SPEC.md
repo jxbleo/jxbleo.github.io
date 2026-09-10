@@ -2759,9 +2759,15 @@ pointer cancellation discards the sample, and Reduced Motion retains state
 changes without animated arrival. A ready voiceprint is automatic matching
 support, never identity proof.
 
-Teacher Speaking is a separate, two-card workspace. The first card is `Upload
-or record`: one topic selector precedes the equal upload-file and start-recording
-actions, and the same card expands in place for microphone, ready, secure-upload,
+Teacher Speaking opens directly to two cards with no workspace heading, page
+title, introductory copy, or recording-card title. The first card starts with
+`Year` on the left and `Set` on the right in one row, including on phones.
+`All years` is the default: Set retains the full year-labelled topic list.
+Choosing a Year restricts Set to that year and clears an incompatible selection;
+clearing Year restores all Sets. Both filters lock during capture/upload or
+when a Discussion draft already exists. Below them, `Upload` and
+`Record on this device` use matching rounded controls; the native file input
+stays hidden. The same card expands in place for microphone, ready, secure-upload,
 and retry-analysis states. A recording in browser memory must be finished or
 discarded before leaving this card. The second card is `View existing reports`;
 it shows the current ready/preparing count and opens the report list. Set editing

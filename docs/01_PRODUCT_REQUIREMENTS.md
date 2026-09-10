@@ -2298,9 +2298,10 @@ name selection and redact hidden names everywhere. Raw share tokens are
 returned once, stored only as SHA-256 hashes, expire after seven days, and
 snapshots are revoked when mapping/report/privacy state changes.
 
-Teacher Speaking opens with exactly two primary cards. `Upload or record`
-contains the Speaking Set topic selector plus separate existing-audio and
-on-device recording actions; it creates a teacher-owned, roster-free Discussion,
+Teacher Speaking opens with exactly two primary cards and no introductory
+heading. The first contains side-by-side Year and Set selectors: an unset Year
+shows Sets from every year, while a selected Year limits the Set choices.
+`Upload` and `Record on this device` are the two recording entry actions; it creates a teacher-owned, roster-free Discussion,
 uploads audio through the existing private two-phase path, and starts the same
 durable analysis flow. `View existing reports` opens every Discussion available
 to the teacher, loading additional backend pages until the complete list is

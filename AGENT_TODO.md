@@ -72,6 +72,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-11 — Teacher Speaking compact entrance: scoped Year/Set filters, Upload styling and recording label release. UI/Set contracts, runtime filtering/recording lock, desktop and 375px browser preview passed. Owner authorized static publication; no backend deployment is needed.
+
 - 2026-09-06 — Implemented immediate Argue emails and authenticated single-question review. Passed the new integration suite (student producer → private outbox → mocked SMTP → teacher resolution → immutable original plus adjusted result), authorization/disabled-teacher checks, three decisions, Listening decisions, duplicate/concurrent calls, stale revisions and failure recovery. Existing attempt-email, login, quick-accept, Listening and global-progress tests passed; release verification passed. Browser QA at 390px confirmed no horizontal overflow, Chinese optional note, replacement confirmation/cancellation, read-only success, preserved conflict drafts and student-account blocking. Used only synthetic local data. Task-only backend packages were built under `/private/tmp/mrcat-argue-release-20260906/deploy-packages/` to exclude other tasks’ dirty changes; real WeChat acceptance remains open.
 
 ### 2026-08-30 — Student Dashboard Achievements

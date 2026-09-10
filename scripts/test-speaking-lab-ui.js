@@ -25,7 +25,7 @@ function run() {
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260909-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260910-1/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
@@ -135,8 +135,8 @@ function run() {
   assert.match(teacherPage, /id="teacher-speaking-home"/);
   assert.equal((teacherPage.match(/class="teacher-speaking-entry-card/g) || []).length, 2, "Teacher Speaking must open with exactly two cards");
   assert.match(teacherPage, /id="teacher-speaking-topic"/);
-  assert.match(teacherPage, /id="teacher-speaking-file-button"[^>]*type="button"[^>]*>Upload a recording/);
-  assert.match(teacherPage, /id="teacher-speaking-record"[^>]*>Start recording/);
+  assert.match(teacherPage, /id="teacher-speaking-file-button"[^>]*type="button"[^>]*>Upload<\/button>/);
+  assert.match(teacherPage, /id="teacher-speaking-record"[^>]*>Record on this device<\/button>/);
   assert.match(teacherPage, /id="teacher-speaking-open-results"/);
   assert.match(teacherPage, /id="teacher-speaking-results" hidden/);
   assert.doesNotMatch(teacherPage, /data-speaking-workspace|id="teacher-speaking-sets"|teacher-voiceprint-student-id/);
@@ -267,8 +267,8 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260909-1/);
-  assert.match(teacherPage, /teacher-speaking\.js\?v=20260909-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260910-1/);
+  assert.match(teacherPage, /teacher-speaking\.js\?v=20260910-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);

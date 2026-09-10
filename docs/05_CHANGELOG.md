@@ -16,6 +16,12 @@
 - Kept the Set ID and selected-student percentage chips on the same Work-row
   metadata line, allowing wrapping only when the available width is exhausted.
 
+## 2026-09-11 — Simplified Teacher Speaking entrance
+
+- Removed introductory headings and recording-card copy; retained two cards.
+- Added linked Year / Set selectors, with all years available by default.
+- Styled Upload and renamed the device action to Record on this device.
+
 ## 2026-09-10 — Direct Show Answer with interruptible close
 
 - Removed the three-effective-check unlock requirement and its visible counter

@@ -10,6 +10,7 @@
     var message = document.getElementById('teacher-speaking-message');
     var voiceprintTargetPanel = document.getElementById('teacher-voiceprint-target');
     var topicSelect = document.getElementById('teacher-speaking-topic');
+    var yearSelect = document.getElementById('teacher-speaking-year');
     var audioFileInput = document.getElementById('teacher-speaking-audio-file');
     var audioFileButton = document.getElementById('teacher-speaking-file-button');
     var recordButton = document.getElementById('teacher-speaking-record');
@@ -212,10 +213,11 @@
         capturePanel.hidden = nextState === 'idle';
         captureDot.hidden = nextState !== 'recording';
         topicSelect.disabled = active || Boolean(draftDiscussionId);
+        yearSelect.disabled = topicSelect.disabled;
         audioFileInput.disabled = active;
         audioFileButton.disabled = active;
         recordButton.disabled = ['requesting', 'stopping', 'uploading'].indexOf(nextState) !== -1;
-        recordButton.textContent = nextState === 'recording' ? 'Finish recording' : (localRecording ? 'Record again' : 'Start recording');
+        recordButton.textContent = nextState === 'recording' ? 'Finish recording' : (localRecording ? 'Record again' : 'Record on this device');
         discardButton.hidden = nextState === 'requesting' || nextState === 'stopping' || nextState === 'uploading';
         uploadButton.hidden = ['requesting', 'recording', 'stopping'].indexOf(nextState) !== -1;
         uploadButton.disabled = nextState === 'uploading' || (nextState !== 'analysis_retry' && !localRecording);
@@ -347,6 +349,7 @@
         }).then(function (result) {
             draftDiscussionId = result.discussion.discussion_id;
             topicSelect.disabled = true;
+            yearSelect.disabled = true;
             return draftDiscussionId;
         });
     }
@@ -408,12 +411,21 @@
     }
     function renderTopicOptions(rows) {
         speakingSets = Array.isArray(rows) ? rows : [];
+        var previousYear = yearSelect.value;
+        var years = speakingSets.map(function (set) { return String(set.exam_year || ''); }).filter(function (year, index, all) { return year && all.indexOf(year) === index; }).sort(function (a, b) { return Number(b) - Number(a); });
+        yearSelect.innerHTML = '<option value="">All years</option>' + years.map(function (year) { return '<option value="' + esc(year) + '">' + esc(year) + '</option>'; }).join('');
+        if (years.indexOf(previousYear) !== -1) yearSelect.value = previousYear;
+        renderFilteredTopicOptions();
+    }
+    function renderFilteredTopicOptions() {
         var previous = topicSelect.value;
-        topicSelect.innerHTML = '<option value="">Choose a topic…</option>' + speakingSets.map(function (set) {
+        var filtered = speakingSets.filter(function (set) { return !yearSelect.value || String(set.exam_year || '') === yearSelect.value; });
+        topicSelect.innerHTML = '<option value="">Choose a set…</option>' + filtered.map(function (set) {
             return '<option value="' + esc(set.set_id) + '">' + esc(speakingSetLabel(set) + (set.visible_to_students === false ? ' · Hidden' : '')) + '</option>';
         }).join('');
-        if (speakingSets.some(function (set) { return set.set_id === previous; })) topicSelect.value = previous;
-        topicSelect.disabled = !speakingSets.length || Boolean(draftDiscussionId) || ['requesting', 'recording', 'stopping', 'uploading'].indexOf(captureState) !== -1;
+        if (filtered.some(function (set) { return set.set_id === previous; })) topicSelect.value = previous;
+        yearSelect.disabled = !speakingSets.length || Boolean(draftDiscussionId) || ['requesting', 'recording', 'stopping', 'uploading'].indexOf(captureState) !== -1;
+        topicSelect.disabled = yearSelect.disabled || !filtered.length;
     }
     function renderDiscussionList(rows) {
         discussions = Array.isArray(rows) ? rows : [];
@@ -656,6 +668,7 @@
     uploadButton.addEventListener('click', uploadTeacherRecording);
     discardButton.addEventListener('click', discardTeacherRecording);
     topicSelect.addEventListener('change', function () { if (topicSelect.value) setMessage(''); });
+    yearSelect.addEventListener('change', function () { renderFilteredTopicOptions(); setMessage(''); });
     window.addEventListener('pagehide', function () {
         cancelVoiceprintRecorder();
         if (recordingDevice && recordingDevice.state !== 'inactive') {
