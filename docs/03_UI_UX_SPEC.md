@@ -1604,14 +1604,20 @@ Shared rules:
   switches immediately to the adjacent source segment, and plays it once.
   Dictation, Listen Only, and Skip segments all occupy a visible navigation
   position. The unavailable direction is disabled at the material boundaries.
+  Its far-right `Keys` button opens a compact settings dialog where Replay,
+  Next word, and Check may be reassigned among Tab, Space, and Enter. Choosing
+  an occupied key swaps the two actions; Save applies immediately and persists
+  on that browser. The modal keeps ordinary key handling suspended until it is
+  closed.
 - The active unit reveals its expected word count as one equal-width Word Slot
   per reviewed word. Slot width must not reveal the expected word's character
   count. Sentence punctuation—including commas, periods, question marks,
   exclamation marks, colons, semicolons, and dashes—is visible in its reviewed
   position outside the slots and is not typed or graded. Apostrophes and hyphens
   inside a word remain part of that Word Slot's required answer.
-- Typing fills the focused Word Slot. `Space` advances to the next slot, and
-  `Enter` checks the complete active unit.
+- Typing fills the focused Word Slot. By default, `Space` advances to the next
+  slot, `Enter` checks the complete active unit, and `Tab` replays; the saved
+  `Keys` mapping replaces those defaults on desktop.
 - Checking is deterministic and positional: each slot is compared only with its
   corresponding reviewed word. Correct slots turn green and incorrect slots turn
   red; comparison ignores letter case but otherwise requires the reviewed word,
@@ -1650,9 +1656,14 @@ Shared rules:
 - After a new Intensive Listening Argue submits successfully, its dialog uses
   the same animated heart, `Sent to teacher.` / `Thanks for your feedback.`
   confirmation, and external Close capsule as the BBC question-level Argue flow.
-- `Tab` replays the current unit. Correct slots lock green; incorrect slots
+- The configured Replay key replays the current unit. Correct slots lock green; incorrect slots
   remain editable red. The server reveals answers immediately on explicit request
   and keeps independent/assisted completion counts separate.
+- The material heading keeps the four summary category names but omits their
+  numeric values. A linked exercise is labelled `Comprehension Practice` and
+  opens only after the learner confirms the transition. The audio row contains
+  no fixed key legend, the feedback row is absent until a real status exists,
+  and the primary action reads only `Check`.
 - Show Answer does not complete or advance the unit. While the reviewed text is
   visible, it blocks all Word Slot input and shows a five-second progress bar at
   the bottom. Without interaction, the answer closes when the bar completes.

@@ -1,6 +1,8 @@
 (function(window, document) {
   'use strict';
 
+  var SHORTCUT_STORAGE_KEY = 'mrcat:intensive-listening:keys:v1';
+  var DEFAULT_SHORTCUTS = { replay: 'Tab', advance: 'Space', check: 'Enter' };
   var params = new URLSearchParams(window.location.search);
   var state = {
     setId: String(params.get('set') || '').trim(),
@@ -32,11 +34,107 @@
     shadowingEnabled: false,
     shadowingCompleted: false,
     pendingMode: '',
+    pendingComprehensionHref: '',
+    shortcuts: readShortcuts(),
+    shortcutDraft: null,
+    modalReturnFocus: null,
     answerAutoCloseTimer: 0,
     answerAutoClosePaused: false
   };
 
   function $(selector) { return document.querySelector(selector); }
+  function showFeedback(message, tone) {
+    var feedback = $('#feedback');
+    if (!feedback) return;
+    feedback.className = 'il-feedback' + (tone ? ' ' + tone : '');
+    feedback.textContent = String(message || '');
+    feedback.hidden = !message;
+  }
+  function normalizeShortcutKey(key) {
+    if (key === ' ' || key === 'Spacebar' || key === 'Space') return 'Space';
+    return key;
+  }
+  function validShortcuts(value) {
+    if (!value || typeof value !== 'object') return false;
+    var keys = ['replay', 'advance', 'check'].map(function(action) { return normalizeShortcutKey(value[action]); });
+    return keys.every(function(key) { return ['Tab', 'Space', 'Enter'].indexOf(key) >= 0; }) && new Set(keys).size === keys.length;
+  }
+  function readShortcuts() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(SHORTCUT_STORAGE_KEY) || 'null');
+      if (validShortcuts(saved)) return { replay: normalizeShortcutKey(saved.replay), advance: normalizeShortcutKey(saved.advance), check: normalizeShortcutKey(saved.check) };
+    } catch (error) { /* Fall back to the predictable defaults. */ }
+    return Object.assign({}, DEFAULT_SHORTCUTS);
+  }
+  function matchesShortcut(event, action) {
+    return normalizeShortcutKey(event.key) === state.shortcuts[action];
+  }
+  function renderShortcutSummary() {
+    var button = $('#shortcuts-button');
+    if (!button) return;
+    button.title = 'Replay: ' + state.shortcuts.replay + ' · Next word: ' + state.shortcuts.advance + ' · Check: ' + state.shortcuts.check;
+    button.setAttribute('aria-label', 'Keys. ' + button.title);
+  }
+  function restoreAudioStatusAfterModal() {
+    if (!state.material || state.playing || !currentUnit()) return;
+    $('#audio-status').textContent = isDictation(currentUnit()) ? 'Press Replay to hear this unit' : 'Press Replay to hear this part';
+  }
+  function openShortcuts() {
+    if (!state.material || state.visitorMode || state.mode !== 'dictation') return;
+    state.modalReturnFocus = document.activeElement;
+    state.shortcutDraft = Object.assign({}, state.shortcuts);
+    document.querySelectorAll('[data-shortcut-action]').forEach(function(select) {
+      select.value = state.shortcutDraft[select.dataset.shortcutAction];
+    });
+    pauseAudio('Paused · editing keys');
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
+    $('#shortcuts-modal').hidden = false;
+    $('#shortcut-replay').focus();
+  }
+  function closeShortcuts() {
+    $('#shortcuts-modal').hidden = true;
+    state.shortcutDraft = null;
+    restoreAudioStatusAfterModal();
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id);
+    if (state.modalReturnFocus && state.modalReturnFocus.focus) state.modalReturnFocus.focus();
+    state.modalReturnFocus = null;
+  }
+  function swapShortcutSelection(select) {
+    if (!state.shortcutDraft) return;
+    var action = select.dataset.shortcutAction;
+    var previous = state.shortcutDraft[action];
+    var next = select.value;
+    var otherAction = Object.keys(state.shortcutDraft).find(function(candidate) { return candidate !== action && state.shortcutDraft[candidate] === next; });
+    state.shortcutDraft[action] = next;
+    if (otherAction) {
+      state.shortcutDraft[otherAction] = previous;
+      $('[data-shortcut-action="' + otherAction + '"]').value = previous;
+    }
+  }
+  function saveShortcuts() {
+    if (!validShortcuts(state.shortcutDraft)) return;
+    state.shortcuts = Object.assign({}, state.shortcutDraft);
+    try { localStorage.setItem(SHORTCUT_STORAGE_KEY, JSON.stringify(state.shortcuts)); } catch (error) { /* Active settings still work for this page. */ }
+    renderShortcutSummary();
+    closeShortcuts();
+  }
+  function openComprehension(href, source) {
+    if (!href) return;
+    state.pendingComprehensionHref = href;
+    state.modalReturnFocus = source || document.activeElement;
+    pauseAudio('Paused');
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
+    $('#comprehension-modal').hidden = false;
+    $('#comprehension-cancel').focus();
+  }
+  function closeComprehension() {
+    $('#comprehension-modal').hidden = true;
+    state.pendingComprehensionHref = '';
+    restoreAudioStatusAfterModal();
+    if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id);
+    if (state.modalReturnFocus && state.modalReturnFocus.focus) state.modalReturnFocus.focus();
+    state.modalReturnFocus = null;
+  }
   function escapeHtml(value) {
     return String(value == null ? '' : value).replace(/[&<>'"]/g, function(character) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character];
@@ -150,8 +248,7 @@
       return state.teacherMode ? { success: true } : call('setModePreference', { mode: nextMode });
     }).then(switchMode).catch(function(error) {
       state.mode = previous; renderModeMenu();
-      var feedback = $('#feedback');
-      if (feedback) { feedback.className = 'il-feedback error'; feedback.textContent = error.message || 'Unable to change practice mode.'; }
+      showFeedback(error.message || 'Unable to change practice mode.', 'error');
     });
   }
   function selectMode(nextMode) {
@@ -403,8 +500,9 @@
     var finish = $('#completion-finish');
     if (linked) {
       headerLink.href = linked;
+      headerLink.textContent = 'Comprehension Practice';
       headerLink.hidden = false;
-      if (finish) { finish.href = linked; finish.textContent = 'Continue to Listening Practice'; }
+      if (finish) { finish.href = linked; finish.textContent = 'Comprehension Practice'; }
     } else {
       headerLink.hidden = true;
       if (finish) { finish.href = safeReturnUrl(); finish.textContent = 'Back to Listening'; }
@@ -438,14 +536,30 @@
     var percentage = Number(progress.percentage) || 0;
     $('#header-progress').value = percentage;
     $('#header-progress-label').textContent = percentage + '%';
-    $('#completed-count').textContent = Number(progress.completed_count) || 0;
-    $('#independent-count').textContent = Number(progress.independent_count) || 0;
-    $('#assisted-count').textContent = Number(progress.assisted_count) || 0;
-    $('#replay-count').textContent = Number(progress.replay_count || 0) + Object.keys(state.localUnits).reduce(function(sum, unitId) {
-      return sum + (Number(state.localUnits[unitId].replayDelta) || 0);
-    }, 0);
   }
 
+  function handlePracticeShortcut(event, input) {
+    if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return false;
+    if (matchesShortcut(event, 'advance')) {
+      event.preventDefault();
+      var slots = Array.from(document.querySelectorAll('.il-word-slot:not(:disabled)'));
+      var currentIndex = input ? Number(input.dataset.slotIndex) : -1;
+      var next = slots.find(function(candidate) { return Number(candidate.dataset.slotIndex) > currentIndex; });
+      if (next) next.focus();
+      return true;
+    }
+    if (matchesShortcut(event, 'replay')) {
+      event.preventDefault();
+      replayUnit(true);
+      return true;
+    }
+    if (matchesShortcut(event, 'check')) {
+      event.preventDefault();
+      checkUnit();
+      return true;
+    }
+    return false;
+  }
   function bindSlots() {
     document.querySelectorAll('.il-word-slot').forEach(function(input) {
       input.addEventListener('input', function() {
@@ -457,23 +571,11 @@
         input.value = local.entries[index];
         input.classList.remove('incorrect');
         if (window.MrCatLearningActivity) window.MrCatLearningActivity.markInteraction('typing', currentUnit().unit_id);
-        $('#feedback').className = 'il-feedback';
-        $('#feedback').textContent = 'Keep listening. Enter checks the complete unit.';
+        showFeedback('');
         saveDraft();
       });
       input.addEventListener('keydown', function(event) {
-        if (event.key === ' ') {
-          event.preventDefault();
-          var index = Number(input.dataset.slotIndex);
-          var next = Array.from(document.querySelectorAll('.il-word-slot:not(:disabled)')).find(function(candidate) {
-            return Number(candidate.dataset.slotIndex) > index;
-          });
-          if (next) next.focus();
-        } else if (event.key === 'Tab') {
-          event.preventDefault(); replayUnit(true);
-        } else if (event.key === 'Enter') {
-          event.preventDefault(); checkUnit();
-        }
+        handlePracticeShortcut(event, input);
       });
     });
   }
@@ -520,13 +622,15 @@
     $('#unit-position').textContent = state.visitorMode
       ? 'LISTEN ONLY'
       : mode === 'dictation' ? position + ' / ' + state.material.unit_count : 'LISTEN';
+    $('#shortcuts-button').hidden = state.visitorMode || mode !== 'dictation';
+    renderShortcutSummary();
     updateUnitNavigation();
     $('#time-range').textContent = state.visitorFullAudio ? 'Full audio' : formatTime(unit.start_seconds) + ' – ' + formatTime(unit.end_seconds);
     $('#practice-card').dataset.mode = mode;
     var passiveListening = state.visitorMode || mode !== 'dictation';
     $('#listen-only-panel').hidden = !passiveListening;
     $('#word-slots').hidden = passiveListening;
-    $('#feedback').hidden = passiveListening;
+    $('#feedback').hidden = passiveListening || !$('#feedback').textContent.trim();
     $('#practice-card .il-actions').hidden = passiveListening;
     $('#answer-panel').hidden = passiveListening || !local.answerVisible;
     if (passiveListening) {
@@ -569,7 +673,7 @@
       $('#check-button').disabled = busy || state.teacherMode || currentServer().completed === true;
       $('#answer-button').disabled = busy;
     }
-    if (message) { $('#feedback').className = 'il-feedback'; $('#feedback').textContent = message; }
+    if (message) showFeedback(message);
   }
   function checkUnit() {
     if (state.teacherMode || state.visitorMode || state.busy || !isDictation(currentUnit()) || currentServer().completed) return;
@@ -582,8 +686,7 @@
       local.dirty = false;
       applyProgress(result.progress); setBusy(false);
       if (result.completed) {
-        $('#feedback').className = 'il-feedback success';
-        $('#feedback').textContent = 'Perfect. Moving to the next unit…';
+        showFeedback('Perfect. Moving to the next unit…', 'success');
         state.autoAdvancing = true;
         if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('auto-advance').catch(function() {});
         renderUnit();
@@ -593,16 +696,14 @@
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       renderUnit();
       var firstWrong = result.marks.findIndex(function(mark, index) { return !mark && !isProvided(unit.slots[index]); });
-      $('#feedback').className = 'il-feedback error';
-      $('#feedback').textContent = result.effective_check
+      showFeedback(result.effective_check
         ? result.marks.filter(function(mark, index) { return !mark && !isProvided(unit.slots[index]); }).length + ' word slots need another listen.'
-        : 'Change at least one incorrect word before checking again.';
+        : 'Change at least one incorrect word before checking again.', 'error');
       var firstWrongInput = document.querySelector('[data-slot-index="' + firstWrong + '"]');
       if (firstWrongInput) firstWrongInput.focus(); saveDraft();
     }).catch(function(error) {
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
-      setBusy(false); $('#feedback').className = 'il-feedback error';
-      $('#feedback').textContent = error.message + ' Your words are still here.';
+      setBusy(false); showFeedback(error.message + ' Your words are still here.', 'error');
     });
   }
   function showAnswer() {
@@ -616,20 +717,18 @@
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
       setBusy(false);
       if (!result.answer_available) {
-        $('#feedback').className = 'il-feedback error';
-        $('#feedback').textContent = 'The answer is temporarily unavailable. Please try again.';
+        showFeedback('The answer is temporarily unavailable. Please try again.', 'error');
         return;
       }
       local.replayDelta = 0; local.answerVisible = true; local.answerText = result.answer_text;
       local.answers = Array.isArray(result.answers) ? result.answers.map(String) : [];
       if (result.progress) applyProgress(result.progress);
-      $('#feedback').className = 'il-feedback';
-      $('#feedback').textContent = state.teacherMode ? 'Click a word to request a spelling exemption.' : 'Compare every position. Click a word if you think it should be provided.';
+      showFeedback(state.teacherMode ? 'Click a word to request a spelling exemption.' : 'Compare every position. Click a word if you think it should be provided.');
       renderUnit();
       startAnswerAutoClose();
     }).catch(function(error) {
       if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('review', unit.unit_id);
-      setBusy(false); $('#feedback').className = 'il-feedback error'; $('#feedback').textContent = error.message;
+      setBusy(false); showFeedback(error.message, 'error');
     });
   }
   function setAnswerModalBackgroundBlocked(blocked) {
@@ -680,10 +779,9 @@
     panel.hidden = true;
     setAnswerModalBackgroundBlocked(false);
     renderUnit();
-    $('#feedback').className = 'il-feedback';
-    $('#feedback').textContent = reason === 'timeout'
+    showFeedback(reason === 'timeout'
       ? 'Answer closed after 5 seconds. Finish the current line from memory.'
-      : 'Answer closed. Finish the current line from memory.';
+      : 'Answer closed. Finish the current line from memory.');
     window.setTimeout(function() { if ($('#answer-panel').hidden) $('#answer-button').focus(); }, 0);
   }
 
@@ -713,8 +811,7 @@
   function advanceUnit() {
     if (state.currentIndex >= state.material.units.length - 1) { finishSession(); return; }
     state.currentIndex += 1;
-    $('#feedback').className = 'il-feedback';
-    $('#feedback').textContent = isDictation(currentUnit()) ? 'Listen once, then type one word in each slot.' : '';
+    showFeedback('');
     renderUnit(); replayUnit(false);
   }
   function moveToUnit(offset) {
@@ -723,8 +820,7 @@
     if (targetIndex < 0) return;
     pauseAudio('');
     state.currentIndex = targetIndex;
-    $('#feedback').className = 'il-feedback';
-    $('#feedback').textContent = isDictation(currentUnit()) ? 'Listen once, then type one word in each slot.' : '';
+    showFeedback('');
     renderUnit();
     activity('navigation');
     replayUnit(false);
@@ -773,8 +869,7 @@
     if (state.teacherMode) { window.location.href = safeReturnUrl(); return; }
     if (state.visitorMode) {
       state.currentIndex = firstPlayableIndex();
-      $('#feedback').className = 'il-feedback';
-      $('#feedback').textContent = 'Listening complete. Replay any sentence, or return when you are ready.';
+      showFeedback('Listening complete. Replay any sentence, or return when you are ready.');
       renderUnit();
       return;
     }
@@ -783,15 +878,12 @@
     });
     if (firstIncomplete >= 0) {
       state.currentIndex = firstIncomplete;
-      $('#feedback').className = 'il-feedback';
-      $('#feedback').textContent = 'This unit still needs your answer.';
+      showFeedback('This unit still needs your answer.');
       renderUnit(); replayUnit(false);
       return;
     }
     if (state.shadowingEnabled && !state.shadowingCompleted) {
-      $('#feedback').hidden = false;
-      $('#feedback').className = 'il-feedback success';
-      $('#feedback').textContent = 'Dictation complete. Use the mode menu above to continue with Shadowing.';
+      showFeedback('Dictation complete. Use the mode menu above to continue with Shadowing.', 'success');
       return;
     }
     var progress = state.progress;
@@ -894,7 +986,7 @@
     }).catch(function(error) {
       button.disabled = false; button.textContent = 'Export failed';
       window.setTimeout(function() { button.textContent = 'Export Latest JSON'; }, 1800);
-      $('#feedback').hidden = false; $('#feedback').className = 'il-feedback error'; $('#feedback').textContent = error.message;
+      showFeedback(error.message, 'error');
     });
   }
   function refreshPolicy() {
@@ -993,7 +1085,7 @@
       }
       if (state.teacherMode) {
         state.started = true; $('#export-button').hidden = false; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
-        renderUnit(); $('#feedback').textContent = 'Teacher preview · replay the unit, then open Show Answer to mark a word.'; configureLearningActivity(); return;
+        renderUnit(); showFeedback('Teacher preview · replay the unit, then open Show Answer to mark a word.'); configureLearningActivity(); return;
       }
       if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100 && !state.shadowingEnabled) {
         $('#start-screen').hidden = true; $('#completion-screen').hidden = false;
@@ -1024,6 +1116,26 @@
   $('#answer-button').addEventListener('click', showAnswer);
   $('#continue-button').addEventListener('click', function() { hideAnswer(); });
   $('#answer-panel').addEventListener('pointerdown', pauseAnswerAutoClose, true);
+  $('#shortcuts-button').addEventListener('click', openShortcuts);
+  document.querySelectorAll('[data-shortcut-action]').forEach(function(select) {
+    select.addEventListener('change', function() { swapShortcutSelection(select); });
+  });
+  $('#shortcuts-cancel').addEventListener('click', closeShortcuts);
+  $('#shortcuts-save').addEventListener('click', saveShortcuts);
+  $('#shortcuts-modal').addEventListener('click', function(event) { if (event.target === $('#shortcuts-modal')) closeShortcuts(); });
+  document.querySelectorAll('[data-comprehension-link]').forEach(function(link) {
+    link.addEventListener('click', function(event) {
+      if (!linkedHref(state.linkedPractice, window.location.href)) return;
+      event.preventDefault();
+      openComprehension(link.href, link);
+    });
+  });
+  $('#comprehension-cancel').addEventListener('click', closeComprehension);
+  $('#comprehension-confirm').addEventListener('click', function() {
+    var href = state.pendingComprehensionHref;
+    if (href) window.location.href = href;
+  });
+  $('#comprehension-modal').addEventListener('click', function(event) { if (event.target === $('#comprehension-modal')) closeComprehension(); });
   $('#previous-unit-button').addEventListener('click', function() { moveToUnit(-1); });
   $('#next-unit-button').addEventListener('click', function() { moveToUnit(1); });
   $('#restart-button').addEventListener('click', startTemporaryReplay);
@@ -1136,11 +1248,12 @@
       return;
     }
     if (event.key === 'Escape' && !$('#argue-modal').hidden) { closeArgue(); return; }
+    if (event.key === 'Escape' && !$('#shortcuts-modal').hidden) { closeShortcuts(); return; }
+    if (event.key === 'Escape' && !$('#comprehension-modal').hidden) { closeComprehension(); return; }
     if (event.key === 'Escape' && !$('#mode-switch-modal').hidden) { closeModeSwitchModal(); return; }
     if (event.key === 'Escape' && !$('#leave-modal').hidden) { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); }
-    if (event.key === 'Tab' && state.started && !state.busy && !event.target.classList.contains('il-word-slot')) {
-      event.preventDefault(); replayUnit(true);
-    }
+    if (!$('#argue-modal').hidden || !$('#shortcuts-modal').hidden || !$('#comprehension-modal').hidden || !$('#mode-switch-modal').hidden || !$('#leave-modal').hidden) return;
+    if (state.started && !state.busy && state.mode === 'dictation' && !event.target.classList.contains('il-word-slot')) handlePracticeShortcut(event, null);
   });
 
   window.__MRCAT_INTENSIVE_LISTENING_TEST__ = { escapeHtml: escapeHtml, formatTime: formatTime, unitMode: unitMode };

@@ -267,6 +267,14 @@ Intensive Listening checks:
   card;
 - unchanged wrong checks do not advance the effective-check count, correct
   positions lock, and Show Answer is available before any check;
+- the material heading shows the four summary names without numeric values;
+  its linked action reads `Comprehension Practice` and requires confirmation
+  before navigation;
+- the audio row has no fixed shortcut legend, the initial feedback row is
+  absent, and the primary button reads only `Check`;
+- `Keys` appears at the far right of the Dictation Unit row; changing one of
+  Replay, Next word, or Check swaps any occupied Tab/Space/Enter assignment,
+  Save applies it immediately, and a reload on the same browser preserves it;
 - opening Show Answer blocks Word Slot input, fills its bottom progress bar, and
   closes at five seconds without interaction; a pointer press anywhere in the
   answer layer pauses the progress and keeps it open until explicit Close;

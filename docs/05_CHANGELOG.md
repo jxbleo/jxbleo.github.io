@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-11 — Simpler Intensive Listening controls
+
+- Removed the four numeric values from the material summary while keeping its
+  four category names, removed the fixed key legend and initial instruction
+  row, and shortened the primary action to `Check`.
+- Renamed the linked exercise action to `Comprehension Practice` and added an
+  explicit confirmation before navigation.
+- Added a Unit-row `Keys` dialog that swaps Replay, Next word, and Check among
+  Tab, Space, and Enter, persists the selection in the current browser, and
+  applies it immediately on desktop.
+
 ## 2026-09-11 — Inline Teacher Assign percentages
 
 - Kept the Set ID and selected-student percentage chips on the same Work-row

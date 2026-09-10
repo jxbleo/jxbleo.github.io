@@ -168,6 +168,10 @@ function run() {
   assert.ok(intensiveRuntime.includes("function pauseAnswerAutoClose()"), "answer auto-close can be interrupted");
   assert.ok(intensiveRuntime.includes("$('#answer-panel').addEventListener('pointerdown', pauseAnswerAutoClose, true)"), "any answer-overlay pointer press pauses auto-close");
   assert.ok(intensiveRuntime.includes("!local.answerVisible"), "answer render must not immediately focus a blocked word slot");
+  assert.ok(intensiveRuntime.includes("mrcat:intensive-listening:keys:v1"), "desktop shortcut choices persist on this browser");
+  assert.ok(intensiveRuntime.includes("function swapShortcutSelection(select)"), "selecting an occupied shortcut swaps actions");
+  assert.ok(intensiveRuntime.includes("handlePracticeShortcut(event, input)"), "word slots use the configured shortcut mapping");
+  assert.ok(intensiveRuntime.includes("openComprehension(link.href, link)"), "linked comprehension requires the confirmation flow");
 
   const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
   assert.ok(intensivePage.includes('id="previous-unit-button"'));
@@ -179,6 +183,20 @@ function run() {
   assert.ok(intensivePage.includes('id="argue-sent-close"'));
   assert.ok(intensivePage.includes('id="answer-progress"'));
   assert.ok(intensivePage.includes('Closes automatically in 5 seconds. Click anywhere to keep it open.'));
+  assert.ok(intensivePage.includes('>Comprehension Practice</a>'));
+  assert.ok(intensivePage.includes('id="comprehension-modal"'));
+  assert.ok(intensivePage.includes('id="shortcuts-button"'));
+  assert.ok(intensivePage.includes('id="shortcut-replay"'));
+  assert.ok(intensivePage.includes('id="shortcut-advance"'));
+  assert.ok(intensivePage.includes('id="shortcut-check"'));
+  assert.ok(intensivePage.includes('<div class="il-feedback" id="feedback" role="status" aria-live="polite" hidden></div>'));
+  assert.ok(intensivePage.includes('<button class="il-check" id="check-button" type="button">Check</button>'));
+  assert.strictEqual(intensivePage.includes('Tab replays · Space moves forward · Enter checks'), false, "the fixed shortcut legend is removed");
+  assert.strictEqual(intensivePage.includes('Listen once, then type one word in each slot.'), false, "the persistent bottom instruction is removed");
+  assert.strictEqual(intensivePage.includes('Check · Enter'), false, "the Check button contains only its action label");
+  ['completed-count', 'independent-count', 'assisted-count', 'replay-count'].forEach((id) => {
+    assert.strictEqual(intensivePage.includes(`id="${id}"`), false, `summary number ${id} is removed`);
+  });
   assert.strictEqual(intensivePage.includes('id="check-count"'), false, "the three-check unlock counter is removed from the UI");
   assert.ok(intensiveRuntime.includes("$('#argue-box').classList.add('sent')"));
 

@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260910-1">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260911-1">
   <link rel="stylesheet" href="assets/css/listening-shadowing.css?v=20260907-3">
 </head>
 <body data-practice-nav="manual">
@@ -41,13 +41,13 @@
         <span class="il-eyebrow" id="material-source">LISTEN · TYPE · CHECK</span>
         <h1 id="material-title">Loading…</h1>
         <p class="il-assignment-context" id="assignment-context" hidden></p>
-        <a class="il-linked-practice" id="linked-practice-header" href="#" hidden>Open Listening Practice</a>
+        <a class="il-linked-practice" id="linked-practice-header" href="#" data-comprehension-link hidden>Comprehension Practice</a>
       </div>
       <div class="il-stats" aria-label="Practice summary">
-        <span><strong id="completed-count">0</strong><small>Completed</small></span>
-        <span><strong id="independent-count">0</strong><small>Independent</small></span>
-        <span><strong id="assisted-count">0</strong><small>With answer</small></span>
-        <span><strong id="replay-count">0</strong><small>Replays</small></span>
+        <span>Completed</span>
+        <span>Independent</span>
+        <span>With answer</span>
+        <span>Replays</span>
       </div>
     </section>
 
@@ -58,14 +58,17 @@
           <div class="il-unit-identity"><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label"></span></div>
           <button class="il-unit-step" id="next-unit-button" type="button" aria-label="Next sentence" title="Next sentence">→</button>
         </div>
-        <span class="il-unit-position" id="unit-position">1 / 1</span>
+        <div class="il-unit-tools">
+          <span class="il-unit-position" id="unit-position">1 / 1</span>
+          <button class="il-shortcuts-button" id="shortcuts-button" type="button" aria-haspopup="dialog" aria-controls="shortcuts-modal">Keys</button>
+        </div>
       </div>
 
       <video class="il-source-video" id="dictation-video" preload="metadata" playsinline hidden></video>
 
       <div class="il-audio-row">
         <button class="il-replay" id="replay-button" type="button" aria-label="Replay this unit">▶</button>
-        <div><strong id="audio-status">Ready when you are</strong><span>Tab replays · Space moves forward · Enter checks</span><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
+        <div><strong id="audio-status">Ready when you are</strong><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
         <span class="il-time-range" id="time-range"></span>
       </div>
 
@@ -75,10 +78,10 @@
         <input class="il-passive-input" type="text" value="No typing needed for this sentence." aria-label="No typing needed for this sentence" disabled>
       </div>
       <div class="il-word-slots" id="word-slots" aria-label="Transcription word slots"></div>
-      <div class="il-feedback" id="feedback" role="status" aria-live="polite">Listen once, then type one word in each slot.</div>
+      <div class="il-feedback" id="feedback" role="status" aria-live="polite" hidden></div>
 
       <div class="il-actions">
-        <button class="il-check" id="check-button" type="button">Check · Enter</button>
+        <button class="il-check" id="check-button" type="button">Check</button>
         <button class="il-answer" id="answer-button" type="button">Show Answer</button>
       </div>
     </section>
@@ -126,7 +129,7 @@
       <h1>Listening finished.</h1>
       <p id="completion-summary"></p>
       <div class="il-completion-actions">
-        <a class="il-finish" id="completion-finish" href="intensive-listening-library.html">Back to Listening</a>
+        <a class="il-finish" id="completion-finish" href="intensive-listening-library.html" data-comprehension-link>Back to Listening</a>
         <button class="il-restart" id="restart-button" type="button">Clear &amp; Start Again</button>
       </div>
       <span class="il-restart-note">A new run is temporary. Your 100% best record stays locked.</span>
@@ -144,6 +147,28 @@
     <div class="il-leave-box" role="alertdialog" aria-modal="true" aria-labelledby="mode-switch-title" aria-describedby="mode-switch-copy">
       <div><h2 id="mode-switch-title">Switch practice mode?</h2><p id="mode-switch-copy">Unchecked answers will not be saved.</p></div>
       <footer><button id="mode-switch-cancel" type="button">Keep Practising</button><button id="mode-switch-confirm" type="button">Switch Mode</button></footer>
+    </div>
+  </div>
+
+  <div class="il-leave-modal" id="shortcuts-modal" hidden>
+    <div class="il-leave-box il-shortcuts-box" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title" aria-describedby="shortcuts-copy">
+      <div>
+        <h2 id="shortcuts-title">Keys</h2>
+        <p id="shortcuts-copy">Choose one key for each action. Selecting a key already in use swaps the two actions.</p>
+        <div class="il-shortcut-list">
+          <label><span>Replay</span><select id="shortcut-replay" data-shortcut-action="replay"><option value="Tab">Tab</option><option value="Space">Space</option><option value="Enter">Enter</option></select></label>
+          <label><span>Next word</span><select id="shortcut-advance" data-shortcut-action="advance"><option value="Tab">Tab</option><option value="Space">Space</option><option value="Enter">Enter</option></select></label>
+          <label><span>Check</span><select id="shortcut-check" data-shortcut-action="check"><option value="Tab">Tab</option><option value="Space">Space</option><option value="Enter">Enter</option></select></label>
+        </div>
+      </div>
+      <footer><button id="shortcuts-cancel" type="button">Cancel</button><button id="shortcuts-save" type="button">Save</button></footer>
+    </div>
+  </div>
+
+  <div class="il-leave-modal" id="comprehension-modal" hidden>
+    <div class="il-leave-box" role="alertdialog" aria-modal="true" aria-labelledby="comprehension-title" aria-describedby="comprehension-copy">
+      <div><h2 id="comprehension-title">Open Comprehension Practice?</h2><p id="comprehension-copy">Your listening progress is saved. Continue to the comprehension questions?</p></div>
+      <footer><button id="comprehension-cancel" type="button">Stay Here</button><button id="comprehension-confirm" type="button">Continue</button></footer>
     </div>
   </div>
 
@@ -175,7 +200,7 @@
   <script src="assets/js/config.public.js?v=20260815-1"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
   <script src="assets/js/learning-activity.js?v=20260907-3"></script>
-  <script src="assets/js/intensive-listening.js?v=20260910-1"></script>
+  <script src="assets/js/intensive-listening.js?v=20260911-1"></script>
   <script src="assets/js/listening-shadowing.js?v=20260908-1"></script>
 </body>
 </html>
