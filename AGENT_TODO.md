@@ -72,6 +72,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-11 — Approved Vocabulary result layout A implemented: title/mode badges, canonical selected Practice Set numbers, Quiz Set count, no extra question-count metadata, and Practice completion-only copy. Vocabulary/versioning and session tests, release verification, static build, direct runtime rendering checks (shuffled/single Set, Quiz statuses, escaped title, Close), and browser visual/Close QA passed. Scoped static publication authorized by owner; no CloudBase deployment required.
+
 - 2026-09-11 — Speaking Safari controls: Choose audio/Record share light rounded surfaces with SVG folder/microphone icons; native selects retain menus but use explicit height and one SVG chevron. Actual macOS Safari full-Teacher-shell preview verified; UI/Set contracts, recording-state icon preservation, release verification and static build passed. Owner authorized scoped static push; no CloudBase deployment required.
 
 - 2026-09-11 — Teacher Speaking compact entrance: scoped Year/Set filters, Upload styling and recording label release. UI/Set contracts, runtime filtering/recording lock, desktop and 375px browser preview passed. Owner authorized static publication; no backend deployment is needed.

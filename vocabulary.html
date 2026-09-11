@@ -1837,6 +1837,12 @@
             animation: resultPop 420ms ease-out both;
         }
 
+        .result-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px; margin: 16px 0 14px; }
+        .result-label { min-width: 0; max-width: 100%; overflow-wrap: anywhere; padding: 6px 10px; border: 1px solid #e8edf0; border-radius: 8px; background: var(--soft); font-size: 12px; font-weight: 700; }
+        .result-mode { color: var(--accent); background: #e6f5f1; border-color: #d2e9e2; }
+        .result-mode.is-practice { color: #9a5b10; background: #fff3df; border-color: #f5e3c5; }
+        .result-sets { margin: 8px 0 16px; color: #506b60; font-size: 13px; font-weight: 600; line-height: 1.7; }
+
         .result-emoji { font-size: 3rem; }
         .result-card h2 { margin: 8px 0; }
         .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
@@ -3007,12 +3013,36 @@
             } catch (e) {}
         }
 
+        function resultSetSummary() {
+            var selectedIds = activeTestGroups.map(function(group) { return String(group.id); });
+            var count = selectedIds.length;
+            if (!count) return '';
+            if (activeTestMode === 'practice') {
+                // Match the original picker order, not the shuffled exercise order.
+                var numbers = (unitData && unitData.quizGroups || []).map(function(group, index) {
+                    return selectedIds.indexOf(String(group.id)) !== -1 ? index + 1 : null;
+                }).filter(function(number) { return number !== null; });
+                if (numbers.length === count) {
+                    return (count === 1 ? 'Set ' : 'Sets ') + numbers.join(', ');
+                }
+            }
+            return count + (count === 1 ? ' Set' : ' Sets');
+        }
+
         function showResultOverlay(response) {
-            var state = response.mastered ? 'mastered' : response.passed ? 'passed' : 'failed';
-            var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
-            var emoji = response.mastered ? '⭐' : response.passed ? '🎉' : '😅';
+            var isPractice = activeTestMode === 'practice';
+            var state = isPractice ? 'passed' : response.mastered ? 'mastered' : response.passed ? 'passed' : 'failed';
+            var status = isPractice ? 'Practice Complete' : response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
+            var emoji = isPractice ? '🎉' : response.mastered ? '⭐' : response.passed ? '🎉' : '😅';
             var score = response.correct_count + ' / ' + response.question_count;
-            var copy = response.mastered ? 'Mastered! This task moved to your Mastered list.' :
+            var title = unitData && (unitData.title || unitData.id) || setId || 'Vocabulary';
+            var sets = resultSetSummary();
+            var context = '<div class="result-meta"><span class="result-label">' + escapeHtml(title) + '</span>' +
+                '<span class="result-label result-mode' + (isPractice ? ' is-practice' : '') + '">' +
+                (isPractice ? 'Practice' : 'Quiz') + '</span></div>' +
+                (sets ? '<p class="result-sets">' + escapeHtml(sets) + '</p>' : '');
+            var copy = isPractice ? 'Practice finished. Keep up the good work!' :
+                response.mastered ? 'Excellent work. You mastered this vocabulary set.' :
                 response.passed ? 'You passed. Keep trying if you want to master it.' :
                 'Close this result to review your mistakes and explanations.';
             var actions = '<button class="btn btn-primary" type="button" data-result-action="close">Close</button>';
@@ -3020,7 +3050,7 @@
             overlay.className = 'result-overlay';
             overlay.innerHTML =
                 '<div class="result-card"><div class="result-emoji">' + emoji + '</div><h2>' + status + '</h2>' +
-                '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
+                context + '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
                 actions + '</div></div>';
             document.body.appendChild(overlay);
             playResultSound(state);

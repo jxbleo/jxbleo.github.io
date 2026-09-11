@@ -3039,3 +3039,13 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   can be retried by a direct second tap without requesting another token.
 - Verify ordered overlapping unit ranges pass canonical validation and effective-
   time startup, while reverse start-time order and invalid individual bounds fail.
+
+### Vocabulary result context (2026-09-11)
+
+- Submit timed Practice after selecting non-adjacent Sets (1, 3, 5): the result
+  must show the vocabulary title, Practice badge and `Sets 1, 3, 5`, even if
+  active group order differs. One selected Set uses `Set 3`.
+- Practice, including a perfect score, says `Practice Complete` without STAR
+  or assignment-completion claims. Quiz uses the server result state and only
+  the selected Set count. Both keep the correct/total score and omit separate
+  Questions metadata. Check long-title wrapping and the single Close action.

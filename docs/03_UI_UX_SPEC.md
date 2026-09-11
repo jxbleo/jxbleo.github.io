@@ -1994,6 +1994,14 @@ Shared rules:
   ask again. The visible button label is `Submit`, and the bottom Submit button
   uses the same gold glowing treatment as the Cloze-mode numbered capsules.
 - The Vocabulary Test result modal has one action only: `Close`.
+- The result dialog uses the approved compact-label layout (A): vocabulary
+  title and `Practice` / `Quiz` badges below the status, followed by Sets and
+  the existing correct/total score. Practice lists the exact selected picker
+  numbers in canonical order (for example `Sets 1, 3, 5`); Quiz displays only
+  the count (`5 Sets`). Neither mode adds question-count metadata. Completed
+  Practice uses `Practice Complete` and completion-only encouragement, without
+  suggesting assignment completion or STAR mastery. Quiz preserves server
+  Passed/Mastered/Not Passed states. Labels wrap within the card.
 - When the Vocabulary result modal appears, it uses the same two result sounds
   as BBC: the low descending sound for not passed, and one bright rising sound
   shared by Passed and Mastered. Timed Practice uses the same score-based sound
