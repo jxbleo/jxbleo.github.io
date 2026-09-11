@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260910-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260911-speaking-controls-1">
     <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260905-2">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
@@ -378,13 +378,13 @@
                         <section class="teacher-speaking-home" id="teacher-speaking-home" aria-label="Speaking actions">
                             <article class="teacher-speaking-entry-card teacher-speaking-record-card">
                                 <div class="teacher-speaking-filters">
-                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-year"><span>Year</span><select id="teacher-speaking-year"><option value="">All years</option></select></label>
-                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-topic"><span>Set</span><select id="teacher-speaking-topic"><option value="">Loading sets…</option></select></label>
+                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-year"><span>Year</span><span class="teacher-speaking-select"><select id="teacher-speaking-year"><option value="">All years</option></select><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></span></label>
+                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-topic"><span>Set</span><span class="teacher-speaking-select"><select id="teacher-speaking-topic"><option value="">Loading sets…</option></select><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></span></label>
                                 </div>
                                 <div class="teacher-speaking-entry-actions">
-                                    <button class="outline-button teacher-speaking-file-button" id="teacher-speaking-file-button" type="button">Upload</button>
+                                    <button class="outline-button teacher-speaking-file-button" id="teacher-speaking-file-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path><path d="M3 10h18"></path></svg><span>Choose audio</span></button>
                                     <input id="teacher-speaking-audio-file" type="file" accept="audio/*" hidden>
-                                    <button class="primary-button" id="teacher-speaking-record" type="button">Record on this device</button>
+                                    <button class="teacher-speaking-record-button" id="teacher-speaking-record" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"></path></svg><span id="teacher-speaking-record-label">Record</span></button>
                                 </div>
                                 <div class="teacher-speaking-capture" id="teacher-speaking-capture" hidden>
                                     <div class="teacher-speaking-capture-status"><span class="teacher-speaking-record-dot" id="teacher-speaking-record-dot" hidden></span><strong id="teacher-speaking-capture-title">Recording ready</strong><span id="teacher-speaking-capture-time">00:00</span></div>
@@ -485,14 +485,14 @@
     </section>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260910-1"></script>
+    <script src="assets/js/config.public.js?v=20260911-speaking-controls-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260911-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher.js?v=20260911-1"></script>
     <script src="assets/js/teacher-listening.js?v=20260907-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/teacher-speaking.js?v=20260910-1"></script>
+    <script src="assets/js/teacher-speaking.js?v=20260911-speaking-controls-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

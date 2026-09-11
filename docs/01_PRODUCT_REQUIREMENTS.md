@@ -2301,7 +2301,7 @@ snapshots are revoked when mapping/report/privacy state changes.
 Teacher Speaking opens with exactly two primary cards and no introductory
 heading. The first contains side-by-side Year and Set selectors: an unset Year
 shows Sets from every year, while a selected Year limits the Set choices.
-`Upload` and `Record on this device` are the two recording entry actions; it creates a teacher-owned, roster-free Discussion,
+`Choose audio` and `Record` are the two recording entry actions; it creates a teacher-owned, roster-free Discussion,
 uploads audio through the existing private two-phase path, and starts the same
 durable analysis flow. `View existing reports` opens every Discussion available
 to the teacher, loading additional backend pages until the complete list is

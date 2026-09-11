@@ -2777,9 +2777,14 @@ title, introductory copy, or recording-card title. The first card starts with
 `All years` is the default: Set retains the full year-labelled topic list.
 Choosing a Year restricts Set to that year and clears an incompatible selection;
 clearing Year restores all Sets. Both filters lock during capture/upload or
-when a Discussion draft already exists. Below them, `Upload` and
-`Record on this device` use matching rounded controls; the native file input
-stays hidden. The same card expands in place for microphone, ready, secure-upload,
+when a Discussion draft already exists. The select controls use an explicit
+50px height, suppress native browser appearance, and show one non-interactive
+SVG down chevron; opening them retains native platform selection and keyboard
+behavior. Below them, `Choose audio` (folder icon) and `Record` (microphone icon)
+share the same light glass surface, 15px corners, height, and typography. Only
+the microphone uses the blue accent; Record does not inherit the Teacher shell
+primary-button gradient. Status changes update the label without removing the
+icon. The native file input stays hidden. The same card expands in place for microphone, ready, secure-upload,
 and retry-analysis states. A recording in browser memory must be finished or
 discarded before leaving this card. The second card is `View existing reports`;
 it shows the current ready/preparing count and opens the report list. Set editing

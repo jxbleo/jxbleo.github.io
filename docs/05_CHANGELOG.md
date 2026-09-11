@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-11 — Consistent Speaking controls in Safari
+
+- Unified Choose audio and Record as light rounded buttons with folder and
+  microphone icons; recording status changes preserve the icon.
+- Replaced native select chrome with equal-height controls and a single SVG
+  down chevron while retaining native picker interaction.
+- Versioned the teacher assets to avoid reusing the old Safari styles.
+
 ## 2026-09-11 — Simpler Intensive Listening controls
 
 - Removed the four numeric values from the material summary while keeping its

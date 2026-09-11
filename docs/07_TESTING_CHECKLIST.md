@@ -2553,12 +2553,14 @@ ellipsis instead.
 Teacher report gates:
 
 - open Teacher Speaking and confirm exactly two primary cards are visible: the
-  first contains Year and Set on the same row plus styled Upload and Record on
-  this device buttons, while the second opens existing result reports; confirm
+  first contains Year and Set on the same row plus matching Choose audio and
+  Record buttons with folder/microphone icons, while the second opens existing result reports; confirm
   no workspace heading, introductory text, or native file button appears;
 - verify All years shows every Set, selecting a Year restricts Set choices,
   incompatible Set selections clear, and clearing Year restores all Sets;
   confirm filters remain side by side on phones and lock during recording/upload;
+  verify macOS Safari and mobile show equal-height controls with a single custom
+  down chevron, and Finish recording / Record again / Record retain the icon;
 - confirm the old Reports/Sets tabs, Set
   editor, and global Student-ID voiceprint form are absent;
 - choose a topic and test an existing audio file, microphone permission, denied

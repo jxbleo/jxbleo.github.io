@@ -1144,3 +1144,15 @@ change this flag. After activation, compare runtime, handler, timeout, memory,
 environment, triggers, VPC, role, layers and dependency installation settings;
 download the online bundle and compare `index.js` / `package.json` SHA-256.
 Keep SMTP values, timer tokens and signed code-download URLs out of logs and Git.
+
+### Teacher Speaking Safari controls (2026-09-11)
+
+If new Speaking labels appear with a rectangular Choose audio button or tiny
+stacked Year/Set fields, compare with Safari View → Reload Page From Origin.
+This reproduced a mixed new-HTML/old-CSS cache state; ordinary reload did not
+refresh it. Bump the actual Teacher asset URLs when changing these controls.
+Even with fresh CSS, native Safari select appearance may retain compact system
+chrome; use explicit height plus appearance:none/-webkit-appearance:none and a
+non-interactive SVG chevron. Test within the real Teacher shell: its primary
+button selector adds a blue gradient, so an isolated Speaking-only preview
+does not prove the entrance buttons match.

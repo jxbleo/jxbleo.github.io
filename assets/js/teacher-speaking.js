@@ -14,6 +14,7 @@
     var audioFileInput = document.getElementById('teacher-speaking-audio-file');
     var audioFileButton = document.getElementById('teacher-speaking-file-button');
     var recordButton = document.getElementById('teacher-speaking-record');
+    var recordLabel = document.getElementById('teacher-speaking-record-label');
     var capturePanel = document.getElementById('teacher-speaking-capture');
     var captureTitle = document.getElementById('teacher-speaking-capture-title');
     var captureTime = document.getElementById('teacher-speaking-capture-time');
@@ -217,7 +218,7 @@
         audioFileInput.disabled = active;
         audioFileButton.disabled = active;
         recordButton.disabled = ['requesting', 'stopping', 'uploading'].indexOf(nextState) !== -1;
-        recordButton.textContent = nextState === 'recording' ? 'Finish recording' : (localRecording ? 'Record again' : 'Record on this device');
+        recordLabel.textContent = nextState === 'recording' ? 'Finish recording' : (localRecording ? 'Record again' : 'Record');
         discardButton.hidden = nextState === 'requesting' || nextState === 'stopping' || nextState === 'uploading';
         uploadButton.hidden = ['requesting', 'recording', 'stopping'].indexOf(nextState) !== -1;
         uploadButton.disabled = nextState === 'uploading' || (nextState !== 'analysis_retry' && !localRecording);
