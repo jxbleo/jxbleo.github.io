@@ -25,7 +25,7 @@ function run() {
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260911-speaking-controls-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260911-speaking-search-1/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
@@ -142,6 +142,24 @@ function run() {
   assert.doesNotMatch(teacherPage, /data-speaking-workspace|id="teacher-speaking-sets"|teacher-voiceprint-student-id/);
   assert.match(teacher, /teacherListSpeakingSets/);
   assert.match(teacher, /function renderTopicOptions\(rows\)/);
+  const matchSetsSource = teacher.slice(teacher.indexOf('function matchingSpeakingSets('), teacher.indexOf('function renderFilteredTopicOptions('));
+  const matchSets = new Function(matchSetsSource + '; return matchingSpeakingSets;')();
+  const searchRows = [
+    { set_id: 'DSE-2026-1.1', exam_year: 2026, paper_version: '1.1', title: 'Food and Health' },
+    { set_id: 'DSE-2025-2.1', exam_year: 2025, paper_version: '2.1', title: 'Healthy Cities' },
+    { set_id: 'DSE-2026-3.1', exam_year: 2026, paper_version: '3.1', title: 'City Life' }
+  ];
+  assert.deepStrictEqual(matchSets(searchRows, '', ''), searchRows);
+  assert.deepStrictEqual(matchSets(searchRows, '', 'HEALTH'), searchRows.slice(0, 2));
+  assert.deepStrictEqual(matchSets(searchRows, '2026', 'health'), [searchRows[0]]);
+  assert.deepStrictEqual(matchSets(searchRows, '', '２０２６ １.１ food'), [searchRows[0]]);
+  assert.deepStrictEqual(matchSets(searchRows, '', 'set 1.1'), [searchRows[0]]);
+  assert.deepStrictEqual(matchSets(searchRows, '2025', '2026'), []);
+  assert.deepStrictEqual(matchSets(searchRows, '', 'unknown'), []);
+  assert.match(teacherPage, /<dialog[^>]*id="teacher-speaking-set-picker"[^>]*data-teacher-modal/);
+  assert.match(teacherPage, /id="teacher-speaking-set-search"[^>]*role="combobox"/);
+  assert.match(teacher, /setPicker\.showModal\(\)/);
+  assert.match(teacher, /setPicker\.setAttribute\('aria-modal',/);
   assert.match(teacher, /MediaRecorder/);
   assert.match(teacher, /getUserMedia/);
   assert.match(teacher, /call\('createDiscussion'/);
@@ -267,8 +285,8 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260911-speaking-controls-1/);
-  assert.match(teacherPage, /teacher-speaking\.js\?v=20260911-speaking-controls-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260911-speaking-search-1/);
+  assert.match(teacherPage, /teacher-speaking\.js\?v=20260911-speaking-search-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);

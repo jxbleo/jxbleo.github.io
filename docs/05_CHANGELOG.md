@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-11 — Search inside Teacher Speaking Set selection
+
+- Added name/year/Set-number search directly inside the Set chooser, scoped
+  to Year, with keyboard navigation and a selected-result checkmark.
+- Desktop uses an anchored panel; phones use a centred modal with background
+  scroll locking. The two-card entrance remains compact.
+
 ## 2026-09-11 — Consistent Speaking controls in Safari
 
 - Unified Choose audio and Record as light rounded buttons with folder and

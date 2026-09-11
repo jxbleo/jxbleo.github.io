@@ -2556,6 +2556,15 @@ Teacher report gates:
   first contains Year and Set on the same row plus matching Choose audio and
   Record buttons with folder/microphone icons, while the second opens existing result reports; confirm
   no workspace heading, introductory text, or native file button appears;
+- verify Set opens an anchored searchable list on desktop and a centred modal
+  at phone widths; input matches names, years, and Set numbers, including
+  case-insensitive/full-width input and multiple words; a missing match shows
+  a helpful empty state;
+- verify Arrow Up/Down and Enter choose a result, Escape/close/outside click
+  dismiss, focus returns appropriately, and reopening marks the selection;
+- verify phone modal background stays fixed, internal results scroll, and
+  close restores the previous page position; check keyboard-visible viewport
+  and desktop/phone breakpoint changes;
 - verify All years shows every Set, selecting a Year restricts Set choices,
   incompatible Set selections clear, and clearing Year restores all Sets;
   confirm filters remain side by side on phones and lock during recording/upload;

@@ -11,6 +11,16 @@
     var voiceprintTargetPanel = document.getElementById('teacher-voiceprint-target');
     var topicSelect = document.getElementById('teacher-speaking-topic');
     var yearSelect = document.getElementById('teacher-speaking-year');
+    var topicLabel = document.getElementById('teacher-speaking-topic-label');
+    var setPicker = document.getElementById('teacher-speaking-set-picker');
+    var setSearch = document.getElementById('teacher-speaking-set-search');
+    var setOptions = document.getElementById('teacher-speaking-set-options');
+    var setCount = document.getElementById('teacher-speaking-set-count');
+    var setScope = document.getElementById('teacher-speaking-set-scope');
+    var setClose = document.getElementById('teacher-speaking-set-close');
+    var setPickerRows = [];
+    var setActiveIndex = -1;
+    var setPickerModal = false;
     var audioFileInput = document.getElementById('teacher-speaking-audio-file');
     var audioFileButton = document.getElementById('teacher-speaking-file-button');
     var recordButton = document.getElementById('teacher-speaking-record');
@@ -209,6 +219,7 @@
         recordingStartedAt = 0;
     }
     function setCaptureState(nextState, copy) {
+        closeSetPicker(false);
         captureState = nextState;
         var active = ['requesting', 'recording', 'stopping', 'uploading'].indexOf(nextState) !== -1;
         capturePanel.hidden = nextState === 'idle';
@@ -418,15 +429,113 @@
         if (years.indexOf(previousYear) !== -1) yearSelect.value = previousYear;
         renderFilteredTopicOptions();
     }
+    function matchingSpeakingSets(rows, year, query) {
+        var terms = String(query || '').normalize('NFKC').toLowerCase().trim().split(/\s+/).filter(Boolean);
+        return rows.filter(function (set) {
+            if (year && String(set.exam_year || '') !== String(year)) return false;
+            var text = [set.title, set.display_label, set.set_id, set.exam_year, set.paper_version ? 'Set ' + set.paper_version : '', set.source_kind].filter(function (part) { return part != null; }).join(' ').normalize('NFKC').toLowerCase();
+            return terms.every(function (term) { return text.indexOf(term) !== -1; });
+        });
+    }
     function renderFilteredTopicOptions() {
-        var previous = topicSelect.value;
-        var filtered = speakingSets.filter(function (set) { return !yearSelect.value || String(set.exam_year || '') === yearSelect.value; });
-        topicSelect.innerHTML = '<option value="">Choose a set…</option>' + filtered.map(function (set) {
-            return '<option value="' + esc(set.set_id) + '">' + esc(speakingSetLabel(set) + (set.visible_to_students === false ? ' · Hidden' : '')) + '</option>';
-        }).join('');
-        if (filtered.some(function (set) { return set.set_id === previous; })) topicSelect.value = previous;
+        var filtered = matchingSpeakingSets(speakingSets, yearSelect.value, '');
+        var selectedSet = filtered.find(function (set) { return set.set_id === topicSelect.value; });
+        if (!selectedSet) topicSelect.value = '';
+        topicLabel.textContent = selectedSet ? speakingSetLabel(selectedSet) : (filtered.length ? 'Choose…' : 'No sets available');
+        topicSelect.title = selectedSet ? speakingSetLabel(selectedSet) : '';
         yearSelect.disabled = !speakingSets.length || Boolean(draftDiscussionId) || ['requesting', 'recording', 'stopping', 'uploading'].indexOf(captureState) !== -1;
         topicSelect.disabled = yearSelect.disabled || !filtered.length;
+        if (!setPicker.hidden) {
+            if (topicSelect.disabled) closeSetPicker();
+            else renderSetSearchResults();
+        }
+    }
+    function setActiveOption(index, scroll) {
+        setActiveIndex = index >= 0 && index < setPickerRows.length ? index : -1;
+        setOptions.querySelectorAll('[data-set-index]').forEach(function (option, position) {
+            option.classList.toggle('is-active', position === setActiveIndex);
+        });
+        var active = setActiveIndex >= 0 ? document.getElementById('teacher-speaking-option-' + setActiveIndex) : null;
+        if (active) {
+            setSearch.setAttribute('aria-activedescendant', active.id);
+            if (scroll) active.scrollIntoView({ block: 'nearest' });
+        } else setSearch.removeAttribute('aria-activedescendant');
+    }
+    function renderSetSearchResults() {
+        setPickerRows = matchingSpeakingSets(speakingSets, yearSelect.value, setSearch.value);
+        setScope.textContent = yearSelect.value || 'All years';
+        setCount.textContent = setPickerRows.length ? setPickerRows.length + (setPickerRows.length === 1 ? ' set' : ' sets') : 'No sets found';
+        setOptions.innerHTML = setPickerRows.map(function (set, index) {
+            var meta = [set.exam_year, set.paper_version ? 'Set ' + set.paper_version : '', set.visible_to_students === false ? 'Hidden' : ''].filter(Boolean).join(' · ');
+            return '<div class="teacher-speaking-set-option" id="teacher-speaking-option-' + index + '" role="option" aria-selected="' + (set.set_id === topicSelect.value ? 'true' : 'false') + '" data-set-index="' + index + '"><span><small>' + esc(meta) + '</small><strong>' + esc(set.title || speakingSetLabel(set)) + '</strong></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg></div>';
+        }).join('') || '<p class="teacher-speaking-set-empty">Try another name or set number.</p>';
+        setOptions.scrollTop = 0;
+        var selectedIndex = setPickerRows.findIndex(function (set) { return set.set_id === topicSelect.value; });
+        setActiveOption(selectedIndex >= 0 ? selectedIndex : 0, false);
+    }
+    function positionSetPicker() {
+        if (setPicker.hidden) return;
+        var mobile = window.matchMedia('(max-width: 760px)').matches;
+        if (mobile !== setPickerModal) { closeSetPicker(); return; }
+        var viewport = window.visualViewport;
+        var width = viewport ? viewport.width : window.innerWidth;
+        var height = viewport ? viewport.height : window.innerHeight;
+        var offsetTop = viewport ? viewport.offsetTop : 0;
+        var offsetLeft = viewport ? viewport.offsetLeft : 0;
+        var rect = topicSelect.getBoundingClientRect();
+        var pickerWidth = Math.min(mobile ? 440 : Math.max(340, rect.width), width - 32);
+        var pickerHeight = Math.min(mobile ? 520 : 420, height - 32);
+        var top;
+        var left;
+        if (mobile) {
+            top = offsetTop + (height - pickerHeight) / 2;
+            left = offsetLeft + (width - pickerWidth) / 2;
+        } else {
+            var below = height + offsetTop - rect.bottom - 24;
+            var above = rect.top - offsetTop - 24;
+            var openBelow = below >= Math.min(260, pickerHeight) || below >= above;
+            pickerHeight = Math.max(120, Math.min(pickerHeight, openBelow ? below : above));
+            top = openBelow ? rect.bottom + 8 : rect.top - pickerHeight - 8;
+            top = Math.max(offsetTop + 16, top);
+            left = Math.max(offsetLeft + 16, Math.min(rect.left, offsetLeft + width - pickerWidth - 16));
+        }
+        setPicker.style.width = pickerWidth + 'px';
+        setPicker.style.height = pickerHeight + 'px';
+        setPicker.style.left = left + 'px';
+        setPicker.style.top = top + 'px';
+    }
+    function openSetPicker() {
+        if (topicSelect.disabled) return;
+        if (!setPicker.hidden) { closeSetPicker(); return; }
+        setPickerModal = window.matchMedia('(max-width: 760px)').matches;
+        setPicker.setAttribute('aria-modal', setPickerModal ? 'true' : 'false');
+        setPicker.hidden = false;
+        setSearch.value = '';
+        renderSetSearchResults();
+        positionSetPicker();
+        if (setPickerModal) setPicker.showModal();
+        else setPicker.show();
+        topicSelect.setAttribute('aria-expanded', 'true');
+        setSearch.setAttribute('aria-expanded', 'true');
+        setSearch.focus({ preventScroll: true });
+        setActiveOption(setActiveIndex, true);
+    }
+    function closeSetPicker(restoreFocus) {
+        if (setPicker.hidden) return;
+        setPicker.hidden = true;
+        setPicker.close();
+        topicSelect.setAttribute('aria-expanded', 'false');
+        setSearch.setAttribute('aria-expanded', 'false');
+        setSearch.removeAttribute('aria-activedescendant');
+        if (restoreFocus !== false) topicSelect.focus({ preventScroll: true });
+    }
+    function chooseSetResult(index) {
+        var set = setPickerRows[index];
+        if (!set || topicSelect.disabled) return;
+        topicSelect.value = set.set_id;
+        closeSetPicker();
+        renderFilteredTopicOptions();
+        setMessage('');
     }
     function renderDiscussionList(rows) {
         discussions = Array.isArray(rows) ? rows : [];
@@ -446,6 +555,7 @@
         return loadDiscussionPages(0, []).then(function (rows) { renderDiscussionList(rows); return rows; });
     }
     function showHome() {
+        closeSetPicker(false);
         home.hidden = false;
         resultsPanel.hidden = true;
         detail.hidden = true;
@@ -453,6 +563,7 @@
         selected = '';
     }
     function showResults() {
+        closeSetPicker(false);
         if (['requesting', 'recording', 'stopping', 'uploading', 'ready'].indexOf(captureState) !== -1) {
             setMessage('Finish this recording or discard it before opening reports.', true);
             return;
@@ -668,9 +779,49 @@
     });
     uploadButton.addEventListener('click', uploadTeacherRecording);
     discardButton.addEventListener('click', discardTeacherRecording);
-    topicSelect.addEventListener('change', function () { if (topicSelect.value) setMessage(''); });
+    topicSelect.addEventListener('click', openSetPicker);
+    setClose.addEventListener('click', function () { closeSetPicker(); });
+    setSearch.addEventListener('input', renderSetSearchResults);
+    setSearch.addEventListener('keydown', function (event) {
+        if (event.isComposing) return;
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            var next = setActiveIndex + (event.key === 'ArrowDown' ? 1 : -1);
+            setActiveOption(Math.max(0, Math.min(setPickerRows.length - 1, next)), true);
+        } else if (event.key === 'Enter') {
+            event.preventDefault();
+            chooseSetResult(setActiveIndex);
+        }
+    });
+    setOptions.addEventListener('click', function (event) {
+        var option = event.target.closest('[data-set-index]');
+        if (option) chooseSetResult(Number(option.getAttribute('data-set-index')));
+    });
+    setPicker.addEventListener('cancel', function (event) { event.preventDefault(); closeSetPicker(); });
+    setPicker.addEventListener('click', function (event) {
+        if (!setPickerModal || event.target !== setPicker) return;
+        var rect = setPicker.getBoundingClientRect();
+        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeSetPicker();
+    });
+    document.addEventListener('keydown', function (event) {
+        if (!setPicker.hidden && event.key === 'Escape') { event.preventDefault(); closeSetPicker(); }
+    });
+    document.addEventListener('pointerdown', function (event) {
+        if (!setPicker.hidden && !setPickerModal && !setPicker.contains(event.target) && !topicSelect.contains(event.target)) closeSetPicker(false);
+    });
+    document.addEventListener('focusin', function (event) {
+        if (!setPicker.hidden && !setPickerModal && !setPicker.contains(event.target) && !topicSelect.contains(event.target)) closeSetPicker(false);
+    });
+    window.addEventListener('resize', positionSetPicker);
+    window.addEventListener('scroll', positionSetPicker, { passive: true });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', positionSetPicker);
+        window.visualViewport.addEventListener('scroll', positionSetPicker);
+    }
+    new MutationObserver(function () { if (panel.hidden) closeSetPicker(false); }).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
     yearSelect.addEventListener('change', function () { renderFilteredTopicOptions(); setMessage(''); });
     window.addEventListener('pagehide', function () {
+        closeSetPicker(false);
         cancelVoiceprintRecorder();
         if (recordingDevice && recordingDevice.state !== 'inactive') {
             discardActiveRecording = true;

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
-    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260911-speaking-controls-1">
+    <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260911-speaking-search-1">
     <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260905-2">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
@@ -379,7 +379,7 @@
                             <article class="teacher-speaking-entry-card teacher-speaking-record-card">
                                 <div class="teacher-speaking-filters">
                                     <label class="teacher-speaking-topic-field" for="teacher-speaking-year"><span>Year</span><span class="teacher-speaking-select"><select id="teacher-speaking-year"><option value="">All years</option></select><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></span></label>
-                                    <label class="teacher-speaking-topic-field" for="teacher-speaking-topic"><span>Set</span><span class="teacher-speaking-select"><select id="teacher-speaking-topic"><option value="">Loading sets…</option></select><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></span></label>
+                                    <div class="teacher-speaking-topic-field"><span id="teacher-speaking-set-label">Set</span><button class="teacher-speaking-set-trigger" id="teacher-speaking-topic" type="button" value="" aria-haspopup="dialog" aria-expanded="false" aria-controls="teacher-speaking-set-picker" aria-labelledby="teacher-speaking-set-label teacher-speaking-topic-label" disabled><svg class="teacher-speaking-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><span id="teacher-speaking-topic-label">Loading sets…</span><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></button></div>
                                 </div>
                                 <div class="teacher-speaking-entry-actions">
                                     <button class="outline-button teacher-speaking-file-button" id="teacher-speaking-file-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path><path d="M3 10h18"></path></svg><span>Choose audio</span></button>
@@ -417,6 +417,13 @@
     </main>
 
     <div id="teacher-modal-root"></div>
+
+    <dialog id="teacher-speaking-set-picker" class="teacher-speaking-set-picker" data-teacher-modal role="dialog" aria-modal="false" aria-label="Choose a Speaking Set" hidden>
+        <div class="teacher-speaking-set-picker-head"><span id="teacher-speaking-set-scope">All years</span><button id="teacher-speaking-set-close" class="teacher-speaking-set-close" type="button" aria-label="Close Set search"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 12"></path></svg></button></div>
+        <div class="teacher-speaking-set-search-field"><svg class="teacher-speaking-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="teacher-speaking-set-search" type="search" role="combobox" aria-label="Search Sets" aria-autocomplete="list" aria-expanded="false" aria-controls="teacher-speaking-set-options" placeholder="Search by name or set number" enterkeyhint="done" autocomplete="off" spellcheck="false"></div>
+        <p id="teacher-speaking-set-count" class="teacher-speaking-set-count" role="status" aria-live="polite"></p>
+        <div id="teacher-speaking-set-options" class="teacher-speaking-set-options" role="listbox" aria-label="Speaking Sets"></div>
+    </dialog>
 
     <section class="logout-confirm-overlay" id="teacher-logout-confirm-overlay" data-teacher-modal hidden>
         <div class="logout-confirm-stack">
@@ -485,14 +492,14 @@
     </section>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260911-speaking-controls-1"></script>
+    <script src="assets/js/config.public.js?v=20260911-speaking-search-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260911-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher.js?v=20260911-1"></script>
     <script src="assets/js/teacher-listening.js?v=20260907-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
-    <script src="assets/js/teacher-speaking.js?v=20260911-speaking-controls-1"></script>
+    <script src="assets/js/teacher-speaking.js?v=20260911-speaking-search-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

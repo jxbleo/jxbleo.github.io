@@ -1006,3 +1006,5 @@ cp .qa-secrets.example .qa-secrets.local
   bytes for the practice shell and Shadowing client matched the release.
 - Authenticated student-device Listen/record/replay remains the final manual
   acceptance check. Tencent Shadowing scoring remains disabled.
+
+- 2026-09-11 — Teacher Speaking Set search: implemented integrated title/year/Set-number search, Year scoping, keyboard selection, desktop panel and centred phone modal. macOS Safari selection/focus and 375px browser modal/scroll-lock checks passed; UI/Set contracts and static verification/build passed. Owner-authorized scoped static publication pending; no backend changes.

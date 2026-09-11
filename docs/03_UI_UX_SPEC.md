@@ -2777,11 +2777,19 @@ title, introductory copy, or recording-card title. The first card starts with
 `All years` is the default: Set retains the full year-labelled topic list.
 Choosing a Year restricts Set to that year and clears an incompatible selection;
 clearing Year restores all Sets. Both filters lock during capture/upload or
-when a Discussion draft already exists. The select controls use an explicit
-50px height, suppress native browser appearance, and show one non-interactive
-SVG down chevron; opening them retains native platform selection and keyboard
-behavior. Below them, `Choose audio` (folder icon) and `Record` (microphone icon)
-share the same light glass surface, 15px corners, height, and typography. Only
+when a Discussion draft already exists. Both controls are 50px tall with one SVG
+chevron. Year retains its native selection menu. Set adds a leading magnifier
+and opens a searchable list: an anchored panel below the control on desktop
+(or above when space is limited), and a centred modal on phones. The modal
+uses the shared Teacher background-scroll lock and restores focus on close.
+Search matches title, year, and Set identifier/number, ignoring case and
+normalizing full-width characters; every word must match within the current
+Year scope. Results show year, Set number, title, and the current selection.
+Arrow keys move the active result; Enter selects; Escape dismisses. Empty
+results offer a short hint. Phone positioning follows the visible viewport
+when the keyboard opens. No separate search button or extra home row is added. Below them, `Choose audio` (folder icon) and `Record` (microphone icon)
+sit side by side below the filters, sharing the same light glass surface, 15px
+corners, height, and typography. Only
 the microphone uses the blue accent; Record does not inherit the Teacher shell
 primary-button gradient. Status changes update the label without removing the
 icon. The native file input stays hidden. The same card expands in place for microphone, ready, secure-upload,
