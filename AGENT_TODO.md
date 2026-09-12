@@ -42,6 +42,19 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
+  lookup grid rows no longer absorb spare viewport height; phone Account cards
+  use one column with full-width fields and 44px controls. Account re-render
+  preserves scroll and active name/class/system drafts, focus and selection.
+  Passed student-account lifecycle, teacher quick-accept, release verification,
+  JS/CSS syntax and diff checks; a synthetic render check
+  also passed Edit/Cancel scroll, delayed-refresh drafts/focus and Class Customize.
+  CUA browser connection timed out, so 320–760px visual QA and iPhone keyboard
+  acceptance remain pending. Owner authorized the scoped static release; no CloudBase changes.
+  Release-worktree student-task-scroll fails on its hard-coded Dashboard JS
+  cache version (20260907-3); reproduced the identical failure on unchanged
+  parent aec23e79. No Dashboard or test edits are included in this release.
+
 - 2026-09-12 — Writing sentence Argue: owner-authorized `writingTutor`, `teacherAdmin`, `getDashboard`, and `sendTeacherAttemptEmails` code updates are Active and downloaded code matches the tested packages; cloud configuration is unchanged. Matching static publication follows. Dedicated QA-student real-email acceptance remains for the owner; local QA sent no real email.
 
 - 2026-09-12 — Multi-group voiceprints: local implementation and regression tests pass. The owner authorized deployment of `speakingLab` and publication of the scoped Student/Teacher frontend assets; `speakingLab` was deployed and its downloaded ZIP exactly matches the tested package; existing cloud configuration is unchanged. Static publication is in progress. Verify the next intended registration creates a second group and old IDs still match; no live voiceprints were created, updated or deleted during this task.

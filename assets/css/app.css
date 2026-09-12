@@ -5636,6 +5636,9 @@ body:not(.teacher-page) .tab-button.active {
     overscroll-behavior-x: none;
     touch-action: pan-y pinch-zoom;
     display: grid;
+    /* Utility dialogs fill the viewport; their content rows must not stretch. */
+    grid-template-rows: max-content max-content max-content;
+    align-content: start;
     gap: 14px;
     padding: 18px;
     border: 1px solid rgba(255,255,255,0.82);
@@ -5737,6 +5740,7 @@ body:not(.teacher-page) .tab-button.active {
 .student-lookup-head .eyebrow { margin: 0; }
 .student-lookup-actions {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: 8px;
 }
@@ -5834,11 +5838,32 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-account-detail-body {
     min-width: 0;
+    min-height: 0;
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 18px 20px 24px;
     touch-action: pan-y pinch-zoom;
+}
+.student-account-detail-dialog .student-metric-detail-head {
+    padding-inline: 64px;
+    overflow-wrap: anywhere;
+}
+.student-account-detail-body .student-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+}
+.student-account-name-item,
+.student-account-tutor-item {
+    grid-column: 1 / -1;
+}
+.student-account-detail-body .student-info-editor > * {
+    min-width: 0;
+}
+.student-account-detail-body .student-info-editor input,
+.student-account-detail-body .student-info-editor select {
+    width: 100%;
+    max-width: 100%;
 }
 .student-metric-section { display: grid; gap: 9px; }
 .student-metric-section + .student-metric-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
@@ -11367,24 +11392,52 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         padding: 24px 18px 18px;
         border-radius: 18px;
     }
-    .student-lookup-modal {
-        align-items: end;
-        padding: 12px;
-    }
-    .student-lookup-stage {
-        width: 100%;
-        max-height: calc(100vh - 24px);
-        max-height: calc(100dvh - 24px);
-        gap: 8px;
-    }
     .student-lookup-dialog {
-        max-height: calc(100vh - 76px);
-        max-height: calc(100dvh - 76px);
-        border-radius: 18px;
+        padding: 14px;
+    }
+    .student-lookup-head {
+        top: -14px;
+        gap: 10px;
+        margin: -14px -14px 0;
+        padding: 14px;
     }
     .student-lookup-head .student-lookup-searchbar {
-        grid-template-columns: minmax(0, 1fr) 112px;
+        grid-template-columns: minmax(0, 1fr);
         gap: 6px;
+    }
+    .student-lookup-head .student-lookup-searchbar input,
+    .student-lookup-class-filter {
+        min-height: 44px;
+        font-size: 16px;
+    }
+    .student-account-detail-body {
+        padding: 14px;
+    }
+    .student-account-detail-body .student-info-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .student-account-detail-body .student-info-editor,
+    .student-account-detail-body .student-info-editor.student-name-editor {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .student-account-detail-body .student-info-editor > :is(label, span, input, select),
+    .student-account-tutor-item .student-info-editor > button {
+        grid-column: 1 / -1;
+    }
+    .student-account-detail-body .student-info-editor input,
+    .student-account-detail-body .student-info-editor select,
+    .student-account-detail-body .student-info-editor button {
+        min-height: 44px;
+    }
+    .student-account-detail-body .student-info-editor input,
+    .student-account-detail-body .student-info-editor select {
+        font-size: 16px;
+    }
+    .student-account-detail-dialog .student-metric-detail-head {
+        padding-inline: 60px;
+    }
+    .student-account-detail-dialog .student-metric-detail-head h2 {
+        font-size: 1rem;
     }
     .student-search-actions { grid-template-columns: 1fr; }
     .student-mode-buttons {
@@ -11403,7 +11456,13 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     }
     .student-identity-capsule { justify-content: flex-start; }
     .student-summary-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .student-summary-capsule { gap: 5px; padding-right: 6px; padding-left: 6px; }
+    .student-summary-capsule {
+        flex-direction: column;
+        gap: 5px;
+        padding-right: 6px;
+        padding-left: 6px;
+        text-align: center;
+    }
     .student-summary-capsule svg { width: 19px; height: 19px; }
     .student-summary-capsule strong { font-size: 0.82rem; }
     .student-summary-capsule small { font-size: 0.54rem; }

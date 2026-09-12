@@ -2055,6 +2055,17 @@
             return;
         }
         var existing = document.getElementById('student-account-detail-modal');
+        var existingBody = existing && existing.querySelector('.student-account-detail-body');
+        var accountScrollTop = existingBody ? existingBody.scrollTop : 0;
+        // Usage refreshes also render this dialog; keep the active editor's draft.
+        var existingEditor = existing && existing.querySelector('[data-student-info-editor="' + state.studentInfoEdit + '"]');
+        var editorDraft = existingEditor ? Array.from(existingEditor.querySelectorAll('input, select')).map(function(input) {
+            return { name: input.name, value: input.value, hidden: input.hidden };
+        }) : [];
+        var focusedInput = existingEditor && existingEditor.contains(document.activeElement) ? document.activeElement : null;
+        var focusedName = focusedInput && focusedInput.name;
+        var selectionStart = focusedInput && focusedInput.selectionStart;
+        var selectionEnd = focusedInput && focusedInput.selectionEnd;
         if (existing) existing.remove();
         var nameEditing = state.studentInfoEdit === 'name';
         var classEditing = state.studentInfoEdit === 'class';
@@ -2077,7 +2088,7 @@
                 '</header>' +
                 '<div class="student-account-detail-body">' +
                     '<div class="student-info-grid">' +
-                        '<div class="student-info-item">' +
+                        '<div class="student-info-item student-account-name-item">' +
                             '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Chinese / English name</span><strong>' + escapeHtml(displayName || 'Not set') + '</strong></button>' +
                             (nameEditing ? '<form class="student-info-editor student-name-editor" data-student-info-editor="name">' +
                                 '<label>Chinese name<input type="text" name="chinese_name" value="' + escapeHtml(chineseName) + '" placeholder="Chinese name"></label>' +
@@ -2099,7 +2110,7 @@
                                 '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
                             '</form>' : '') +
                         '</div>' +
-                        '<div class="student-info-item"><span>AI Tutor</span>' + writingTutorStudentSettingsHtml(student) + '</div>' +
+                        '<div class="student-info-item student-account-tutor-item"><span>AI Tutor</span>' + writingTutorStudentSettingsHtml(student) + '</div>' +
                     '</div>' +
                     '<div class="student-account-actions">' +
                         '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
@@ -2109,6 +2120,23 @@
             '</div>' +
         '</div>';
         teacherModalRoot.appendChild(modal);
+        var currentEditor = modal.querySelector('[data-student-info-editor="' + state.studentInfoEdit + '"]');
+        if (currentEditor) {
+            editorDraft.forEach(function(draft) {
+                var input = currentEditor.elements.namedItem(draft.name);
+                if (!input) return;
+                input.value = draft.value;
+                input.hidden = draft.hidden;
+            });
+            var currentFocus = focusedName && currentEditor.elements.namedItem(focusedName);
+            if (currentFocus) {
+                currentFocus.focus({ preventScroll: true });
+                if (typeof selectionStart === 'number' && typeof currentFocus.setSelectionRange === 'function') {
+                    currentFocus.setSelectionRange(selectionStart, selectionEnd);
+                }
+            }
+        }
+        modal.querySelector('.student-account-detail-body').scrollTop = accountScrollTop;
         var lookup = document.getElementById('student-lookup-panel');
         if (lookup) lookup.hidden = true;
         modal.addEventListener('click', function(event) {

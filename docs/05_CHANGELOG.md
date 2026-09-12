@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-12 — Teacher student dialogs on phones
+
+- Prevented the viewport-height lookup shell from stretching its toolbar and
+  empty list anchor. Removed superseded phone sizing rules and made search,
+  summary capsules and Account editors fit narrow screens.
+- Account uses full-width phone cards, larger editor controls and persistent
+  scroll/drafts during re-render. Updated Teacher asset cache versions.
+- Static frontend change only; no backend deployment or data migration.
+
 ## 2026-09-12 — Writing sentence Argue
 
 Added student raised-hand requests, teacher email Approve/Reject links, unlimited

@@ -1535,6 +1535,19 @@ Teacher Show Answers:
 
 ### Student Detail
 
+The lookup dialog keeps its toolbar, floating-list anchor and detail rows at
+content height, even inside the shared viewport-height utility shell. Spare
+height stays below the detail rather than stretching the toolbar or inserting a
+blank band above Info/Progress. On phones (up to 760px), search and class filter
+stack beside the utility icons; summary capsules stack their icon above text.
+
+Account Settings uses one full-width card per row on phones. Name and AI Tutor
+also span the full grid on desktop. Phone editor fields occupy a full row, with
+Save/Cancel paired below; inputs/selects use 16px text and editor controls have a
+44px minimum height. Its header reserves space for Back and wraps long names.
+Re-rendering Account preserves its body scroll and the active name/class/system
+editor's draft, focus and text selection during asynchronous usage refreshes.
+
 Student detail should show:
 
 - name, Login ID, class, curriculum track

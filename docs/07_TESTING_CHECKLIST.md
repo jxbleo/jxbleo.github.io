@@ -1295,6 +1295,18 @@ Check:
   Confirm, and closing Create student by its close control, backdrop, or Escape
   restores the same Student lookup modal. The modal's internal `+` opens
   create-student, and View no longer shows student info/progress below the matrix
+- At 320, 375, 390, 430 and 760px viewport widths, open Student lookup with no
+  selected student, open/filter/scroll its floating list, select a student, then
+  return to search. The toolbar and list anchor must not stretch vertically;
+  Info/Progress starts directly below them and the external Close remains usable.
+  Verify the same states on desktop and after reducing viewport height.
+- On those phone widths, Account cards must stay single-column, including name,
+  Login ID, Class, System and AI Tutor. Open each editor and Class Customize;
+  fields and Save/Cancel must remain inside the card without horizontal clipping.
+  Scroll down before Edit/Cancel and confirm the dialog does not jump to the top
+  (clamping at the new bottom is allowed). During delayed usage refresh, typed
+  name/class/system drafts and input focus must survive. Check an actual iPhone
+  with its keyboard open for input zoom, internal scrolling and Back access.
 - Teacher View `By student` expands a student into a history list with best
   percentage fixed on the far right, and clicking a task opens the same
   independent detail modal as the top matrix
