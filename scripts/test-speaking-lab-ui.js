@@ -225,7 +225,7 @@ function run() {
   assert.doesNotMatch(recorder, /id="pause-recording"/);
   assert.match(recorder, /createAnalyser/);
   assert.match(recorder, /-45|0\.98/);
-  assert.match(recorder, /beep\(false, 2\)/);
+  // Minute-cue count, duration and spacing are exercised by test-speaking-recorder.js.
   assert.match(recorder, /current.tick !== lastTick/);
   assert.match(css, /is-ending[\s\S]*#ff6259/);
   assert.match(css, /speaking-final-seconds-pulse 1s/);

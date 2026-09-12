@@ -3060,8 +3060,10 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   with a single compact Finish button and no horizontal overflow. The final
   five seconds use red digits/ring, a one-second gentle pulse, and one beep per
   second; Reduced Motion retains red without flashing.
-- One minute before the chosen target, sound one 0.36-second cue. Verify it
-  does not repeat; the final warning still auto-stops at target plus five.
+- One minute before the chosen target, reset the ring to full and sound three
+  0.36-second cues with 0.19-second gaps. Verify the sequence does not repeat;
+  digits continue from 01:00 and the ring is half full at 00:30. Check 3-, 8-,
+  8.5- and 30-minute targets. The final warning still auto-stops at target plus five.
 - Cancel while mic permission or English speech is pending, then start again;
   no previous callback may start a take. Verify device failure and input loss.
 - Retry a failed upload with its original audio/operation ID. Replace that audio

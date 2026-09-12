@@ -72,6 +72,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-12 — Speaking final-minute release: reset the shared Student/Teacher
+  ring at 60 seconds and sound the existing reminder three times with short
+  gaps. Recorder/Speaking suites, release verification, static build and
+  publication-helper tests passed. Updated product/UI docs and cache versions.
+  Owner authorized scoped static publication; no CloudBase changes required.
+  Real-device speaker playback remains a manual smoke check.
+
 - 2026-09-12 — Shared Speaking recorder static release: Teacher/Student use the
   same settings, large ring/waveform, English opening, compact Finish, longer
   minute cue, and red pulsing final five seconds with synchronized beeps.

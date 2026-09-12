@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-12 — Speaking final-minute countdown
+
+- Student and Teacher progress rings restart at full with 60 seconds remaining,
+  then drain over that minute while the timer digits remain continuous.
+- The existing 0.36-second reminder now sounds three times, with short gaps,
+  once per recording. The final five-second warning and auto-stop are unchanged.
+- Updated regression checks, product/UI docs and page cache versions.
+  No backend or data changes are required.
+
 ## 2026-09-12 — Shared Speaking recording experience
 
 - Teacher and Student now share target selection, recording, local playback,

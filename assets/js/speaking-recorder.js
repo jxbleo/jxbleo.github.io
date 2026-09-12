@@ -21,8 +21,9 @@
     function timeline(elapsed, target) {
         var ending = elapsed >= target;
         var remaining = Math.max(0, (ending ? target + 5 : target) - elapsed);
-        return { ending: ending, remaining: remaining, fraction: remaining / (ending ? 5 : target),
-            tick: ending ? Math.ceil(remaining) : null, minute: !ending && remaining <= 60, finished: elapsed >= target + 5 };
+        var minute = !ending && remaining <= 60;
+        return { ending: ending, remaining: remaining, fraction: remaining / (ending ? 5 : minute ? 60 : target),
+            tick: ending ? Math.ceil(remaining) : null, minute: minute, finished: elapsed >= target + 5 };
     }
     function liveMarkup() {
         return '<dialog class="speaking-recording-state speaking-recording-live" id="recording-live" hidden role="dialog" aria-modal="true" aria-label="Discussion recording">' +
@@ -154,11 +155,11 @@
                 if (audioContext.state === 'suspended') audioContext.resume().catch(function () {});
             } catch (_error) { audioContext = null; }
         }
-        function beep(urgent, multiplier) {
+        function beep(urgent, multiplier, delay) {
             if (!audioContext) return;
             multiplier = multiplier || 1;
             try {
-                var oscillator = audioContext.createOscillator(), gain = audioContext.createGain(), at = audioContext.currentTime;
+                var oscillator = audioContext.createOscillator(), gain = audioContext.createGain(), at = audioContext.currentTime + (delay || 0);
                 oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(urgent ? 1046 : 784, at);
                 gain.gain.setValueAtTime(0.0001, at);
@@ -260,7 +261,10 @@
                 } else {
                     node('recording-time').textContent = timeText(current.remaining);
                     node('recording-dial').classList.toggle('is-minute', current.minute);
-                    if (current.minute && !minutePlayed) { minutePlayed = true; beep(false, 2); }
+                    if (current.minute && !minutePlayed) {
+                        minutePlayed = true;
+                        for (var cue = 0; cue < 3; cue += 1) beep(false, 2, cue * 0.55);
+                    }
                 }
                 paintRing(current.fraction);
             }

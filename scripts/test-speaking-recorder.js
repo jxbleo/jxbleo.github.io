@@ -85,6 +85,12 @@ async function run() {
   assert.equal(f.lib.normaliseTarget(2), 180);
   assert.equal(f.lib.normaliseTarget(2000), 1800);
   assert.equal(f.lib.timeline(120, 180).minute, true);
+  for (const target of [180, 480, 510, 1800]) {
+    assert.equal(f.lib.timeline(target - 61, target).fraction, 61 / target);
+    assert.equal(f.lib.timeline(target - 60, target).fraction, 1, 'last minute restarts at a full ring');
+    assert.equal(f.lib.timeline(target - 30, target).fraction, .5);
+    assert.equal(f.lib.timeline(target - 1, target).fraction, 1 / 60);
+  }
   assert.equal(f.lib.timeline(180, 180).tick, 5);
   assert.equal(f.lib.timeline(184, 180).tick, 1);
   assert.equal(f.lib.timeline(185, 180).finished, true);
@@ -102,15 +108,24 @@ async function run() {
   assert.equal(f.audioEvents.length, 5, 'five opening beeps');
   assert.equal(f.nodes['recording-time'].textContent, '03:00');
   await f.advance(120000);
-  const minute = f.audioEvents.at(-1);
-  assert(Math.abs(minute.stop - minute.start - .36) < 1e-8, 'one-minute cue lasts twice the normal 0.18 seconds');
-  assert.equal(f.audioEvents.length, 6);
-  await f.advance(59999); assert.equal(f.audioEvents.length, 6, 'one-minute cue only once');
+  const minuteCues = f.audioEvents.slice(5);
+  assert.equal(minuteCues.length, 3, 'one-minute warning schedules exactly three sounds');
+  minuteCues.forEach((cue, index) => {
+    assert(Math.abs(cue.stop - cue.start - .36) < 1e-8, 'each cue retains its double duration');
+    assert.equal(cue.frequency, 784);
+    assert(Math.abs(cue.start - minuteCues[0].start - index * .55) < 1e-8, 'cues have short non-overlapping gaps');
+  });
+  assert.equal(f.nodes['recording-time'].textContent, '01:00');
+  assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0');
+  await f.advance(30000);
+  assert.equal(f.nodes['recording-time'].textContent, '00:30');
+  assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0.5');
+  await f.advance(29999); assert.equal(f.audioEvents.length, 8, 'three-cue warning does not repeat');
   await f.advance(1); assert.equal(f.controller.snapshot().state, 'ending');
   assert(f.nodes['recording-dial'].classList.contains('is-ending'));
   assert.equal(f.nodes['recording-countdown'].textContent, '5');
   await f.advance(4000);
-  assert.equal(f.audioEvents.length, 11, 'five final beeps, one per second');
+  assert.equal(f.audioEvents.length, 13, 'five final beeps, one per second');
   assert.equal(f.nodes['recording-countdown'].textContent, '1');
   assert.equal(f.audioEvents.at(-1).frequency, 1046);
   await f.advance(1000);
