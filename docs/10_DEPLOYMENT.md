@@ -1653,3 +1653,14 @@ reported Active; downloaded `index.js` and `package.json` SHA-256 values matched
 the release packages, and the complete configuration snapshot was unchanged.
 The static release follows this verified backend rollout. Real mailbox/student
 acceptance remains the owner's manual test.
+
+### IR V2 coaching release (2026-09-12)
+
+Package speakingLab and speakingAiWorker using the standard bundled packager.
+The gateway owns the new IR prompt and report validation; package the worker
+alongside it because it imports shared Speaking policy. Publish the matching
+cache-busted Speaking frontend after backend deployment. No environment,
+collection, index, timer, or permission changes are needed. New analyses use
+V2; ready historical reports are not regenerated. An explicit old output-token
+override should not be lowered; the existing 16000 default remains sufficient
+for the bounded three-sample output.

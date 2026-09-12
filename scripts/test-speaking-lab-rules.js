@@ -58,7 +58,7 @@ function run() {
     ideas_organisation: { score: 4, commentary_zh: "有例子", evidence_segment_ids: [] },
     vocabulary_language_patterns: { score: 5, commentary_zh: "用字準確", evidence_segment_ids: [] },
     pronunciation_delivery: { status: "scored", score: 7 },
-  }, strengths: ["clear"], priority_actions: ["develop"], language_suggestions: ["try"], sample_response_en: "I would support it." }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "I agree" }]);
+  }, strengths: ["clear"], priority_actions: ["develop"], language_suggestions: ["try"], sample_response_en: "I would support it." }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "I agree" }], { reportVersion: "dse-individual-response-v1" });
   assert.equal(individualReport.domains.pronunciation_delivery.status, "not_assessed");
   assert.equal(Object.prototype.hasOwnProperty.call(individualReport, "total_score"), false);
   const redactedIndividualReport = lab.canonicalizeIndividualResponseReport({ summary_zh: "Alex should expand this point", domains: {
@@ -66,7 +66,7 @@ function run() {
     ideas_organisation: { score: 4, commentary_zh: "有例子", evidence_segment_ids: [] },
     vocabulary_language_patterns: { score: 5, commentary_zh: "用字準確", evidence_segment_ids: [] },
     pronunciation_delivery: { status: "scored", score: 7 },
-  }, strengths: ["Alex is clear"], priority_actions: ["develop"], language_suggestions: ["try"], sample_response_en: "Alex would support it." }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "Alex agrees" }], { redactNames: ["Alex", "student-01"] });
+  }, strengths: ["Alex is clear"], priority_actions: ["develop"], language_suggestions: ["try"], sample_response_en: "Alex would support it." }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "Alex agrees" }], { reportVersion: "dse-individual-response-v1", redactNames: ["Alex", "student-01"] });
   assert.doesNotMatch(JSON.stringify(redactedIndividualReport), /Alex/);
   assert.throws(() => lab.canonicalizeIndividualResponseReport({ summary_zh: "x", domains: {
     communication_strategies: { score: 5, commentary_zh: "x", evidence_segment_ids: ["missing"] },

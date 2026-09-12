@@ -1419,6 +1419,14 @@ answers, slots, or private audio URLs.
 
 ## Speaking Set Library additions
 
+IR dse_analysis/report payloads use dse-individual-response-v2 for new reports.
+New fields: basis_status (grounded|insufficient), student_viewpoint_zh,
+socratic_questions[4] (focus, student_idea_zh, evidence_segment_ids, question_zh,
+hint_zh), sample_responses[3] (title_zh, student_idea_zh, evidence_segment_ids,
+response_en, explanation_zh). Grounded coaching requires nonempty evidence IDs
+from that same response transcript. Legacy sample_response_en is V1-only.
+No new collection, index, access grant or history migration is introduced.
+
 Add ADMINONLY `speaking_sets` with unique `set_id`, source/year/version/title,
 Context paragraphs, `part_a.task`, ordered Part A points, ordered Part B questions,
 `content_revision`, `visible_to_students`, monotonic `next_point_sequence` and

@@ -1189,6 +1189,13 @@ renders safe IL summaries without grading-key or transcript reads.
 
 ### Speaking Set and Individual Response flow
 
+IR analysis now supplies the frozen question, frozen Context, and canonical
+transcript as untrusted model input. The shared policy canonicalizes V2 coaching:
+four ordered Socratic questions, three bounded distinct English samples, evidence
+IDs, and a grounded/insufficient viewpoint status. Publication uses the existing
+private report/session transaction and durable retry path. Historical V1 report
+reads bypass new generation validation and retain their legacy sample field.
+
 `speakingLab` is the only browser gateway for the ADMINONLY `speaking_sets` and
 `speaking_individual_responses` collections. Set list/get actions return safe
 authorized projections; teacher mutations validate revision preconditions and

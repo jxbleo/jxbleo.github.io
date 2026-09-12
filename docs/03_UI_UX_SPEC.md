@@ -3139,3 +3139,13 @@ The modal traps focus and locks background scroll. Visible-page polling updates
 resolved cards while retaining unrelated drafts, textarea selection and card
 position. Email links preselect Approve or Reject on the existing authenticated
 review card; only Submit saves the decision.
+
+### IR development coaching (2026-09-12)
+
+Below the existing IR score analysis, Develop Your Ideas shows the student's
+viewpoint and four numbered questions with independently expandable thinking
+hints. Three Sample Responses uses native keyboard-accessible disclosures;
+the first is initially open. Each contains the original idea anchor, the full
+English response, and a Traditional Chinese content/language explanation.
+Long content wraps within the existing single-column mobile report. V1 reports
+retain the earlier single sample, without empty V2 headings.

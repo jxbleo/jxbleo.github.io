@@ -3146,3 +3146,16 @@ request; Approve turns the sentence green and eventually completes the revised
 text. Other unsent rewrites and focus must survive automatic refresh. Check
 390px/desktop layouts, keyboard close and no background scroll. Use synthetic
 local data; actual CloudBase/SMTP acceptance requires the authorized rollout.
+
+### IR V2 coaching
+
+- Run node scripts/test-speaking-ir-coaching.js and npm run test:speaking-lab.
+- Reject missing/duplicate questions or samples, invalid evidence, blank
+  explanations, unsupported basis status, and out-of-bounds sample lengths.
+- Confirm V1 saved reports still render; insufficient evidence shows its notice.
+- On phone and desktop, open/close all three samples and thinking hints.
+- For a real IR, check each question traces to what the student actually said,
+  each sample answers the exact question and preserves that position, the three
+  development routes differ, and every explanation addresses content AND language.
+- Samples must not invent personal experiences, statistics, facts or official
+  grades; doubtful ASR text must not become a claimed student error.

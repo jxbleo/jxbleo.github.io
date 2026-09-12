@@ -2145,6 +2145,20 @@ review remains available.
 
 ## DSE Speaking Lab V1 (local implementation boundary)
 
+New Individual Response V2 reports develop the student's own position through
+four Traditional Chinese Socratic questions (reason, example, qualification,
+implication), followed by exactly three complete English sample responses.
+Every question and sample records its specific student-idea anchor and valid
+transcript evidence. Samples preserve the student's stance, demonstrate distinct
+developments, and target 5**-level content and natural spoken language without
+claiming an official grade. Aim for 110–140 words; the server accepts 90–170.
+Each sample explains both its content and language improvements in Traditional
+Chinese. Unrecoverable viewpoints are explicitly marked insufficient, with
+conditional question-based examples rather than invented student opinions.
+The ASR safeguard and unassessed PD rule apply throughout. Generated improvements
+do not affect scores for the original answer. Existing ready reports remain
+immutable and readable; this change does not backfill them.
+
 Speaking Lab covers DSE English Language Paper 4 Part A Group Discussion and
 question-scoped Part B Individual Response. The compact top toolbar has a
 contextual Back control at left, no student-name chip, and a history control at

@@ -453,8 +453,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260912-speaking-colors-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260912-voiceprint-success-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260912-ir-coaching-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260912-ir-coaching-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

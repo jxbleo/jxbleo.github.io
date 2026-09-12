@@ -44,7 +44,7 @@ const SPEAKING_SET_PART_A_MAX = 12;
 const SPEAKING_SET_PART_B_MAX = 20;
 const INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS = 65;
 const INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS = 3;
-const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v1";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v2";
 
 function text(value, limit = 2000) {
   return String(value == null ? "" : value).normalize("NFKC").trim().slice(0, limit);
@@ -1011,9 +1011,41 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
     strengths: cleanTextList(report.strengths, 12, 240),
     priority_actions: cleanTextList(report.priority_actions, 12, 240),
     language_suggestions: cleanTextList(report.language_suggestions, 12, 480),
-    sample_response_en: text(report.sample_response_en, 1600).replace(/[<>]/g, ""),
     transcript: (Array.isArray(segments) ? segments : []).map((segment) => ({ segment_id: String(segment.segment_id || ""), start_ms: Number(segment.start_ms || 0), end_ms: Number(segment.end_ms || 0), text: text(segment.text, 2000) })),
   };
+  if (output.report_version === "dse-individual-response-v1") {
+    output.sample_response_en = text(report.sample_response_en, 1600).replace(/[<>]/g, "");
+  } else {
+    const invalid = () => { throw new Error("INDIVIDUAL_RESPONSE_COACHING_INVALID"); };
+    const requiredText = (value, limit) => {
+      if (typeof value !== "string" || !value.trim() || value.length > limit) return invalid();
+      const cleaned = value.trim().replace(/[<>]/g, "");
+      if (!cleaned) return invalid();
+      return cleaned;
+    };
+    if (!["grounded", "insufficient"].includes(report.basis_status)) invalid();
+    output.basis_status = report.basis_status;
+    output.student_viewpoint_zh = requiredText(report.student_viewpoint_zh, 800);
+    const evidence = (value) => {
+      if (!Array.isArray(value) || (output.basis_status === "grounded" && !value.length) || value.some((id) => typeof id !== "string" || !validIds.has(id)) || new Set(value).size !== value.length) return invalid();
+      return value.slice();
+    };
+    const focuses = ["reason", "example", "qualification", "implication"];
+    if (!Array.isArray(report.socratic_questions) || report.socratic_questions.length !== 4 || !Array.isArray(report.sample_responses) || report.sample_responses.length !== 3) invalid();
+    output.socratic_questions = report.socratic_questions.map((item, index) => {
+      if (!item || item.focus !== focuses[index]) return invalid();
+      return { focus: item.focus, student_idea_zh: requiredText(item.student_idea_zh, 600), evidence_segment_ids: evidence(item.evidence_segment_ids), question_zh: requiredText(item.question_zh, 600), hint_zh: requiredText(item.hint_zh, 600) };
+    });
+    output.sample_responses = report.sample_responses.map((item) => {
+      if (!item || typeof item !== "object") return invalid();
+      const response = requiredText(item.response_en, 3000);
+      const words = response.split(/\s+/).filter(Boolean).length;
+      if (words < 90 || words > 170) invalid();
+      return { title_zh: requiredText(item.title_zh, 160), student_idea_zh: requiredText(item.student_idea_zh, 600), evidence_segment_ids: evidence(item.evidence_segment_ids), response_en: response, explanation_zh: requiredText(item.explanation_zh, 1400) };
+    });
+    const unique = (values) => new Set(values.map((value) => normalizeWhitespace(value, 4000).toLowerCase())).size === values.length;
+    if (!unique(output.socratic_questions.map((item) => item.question_zh)) || !unique(output.sample_responses.map((item) => item.response_en))) invalid();
+  }
   return options.redactNames ? redactExactNames(output, options.redactNames) : output;
 }
 

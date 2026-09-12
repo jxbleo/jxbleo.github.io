@@ -3401,3 +3401,12 @@ the one permitted `rec_mode=1` binary WAV message.
 - Removed canonical `skip`/`context_only` rows from the learner Shadowing projection and added a browser-side defensive filter, preventing the first BBC ident row from producing `SHADOWING_SEGMENT_NOT_FOUND`.
 - Kept the disabled microphone action explicitly labelled `Record take`; separated backend, media/network, and autoplay feedback while retaining a direct-tap autoplay retry.
 - Permitted source-ordered ASR timestamp overlap so existing BBC material can start effective-time sessions without weakening individual-bound or reverse-order validation.
+
+### 2026-09-12 — IR Socratic development and three samples
+
+Added evidence-linked, four-step Socratic coaching and three student-viewpoint
+English samples with Traditional Chinese content/language explanations.
+Versioned prompt/schema, bounded server validation, legacy-compatible student
+rendering and mobile disclosures. Existing reports and original scores remain
+unchanged. Synthetic contract tests validate structure, evidence, redaction,
+length, duplicates and safe rendering; real model quality needs an IR trial.

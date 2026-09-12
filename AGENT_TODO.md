@@ -55,6 +55,13 @@ cp .qa-secrets.example .qa-secrets.local
   cache version (20260907-3); reproduced the identical failure on unchanged
   parent aec23e79. No Dashboard or test edits are included in this release.
 
+- 2026-09-12 — IR V2 coaching: implementation adds four evidence-linked Socratic
+  questions and three distinct-development samples with content/language notes.
+  Full Speaking regression, static build/release verification and both function
+  packages pass. Browser disclosures work; 390px viewport has no horizontal
+  overflow. Backend and static publication are pending; verify real-model quality
+  after deployment. No existing student reports were regenerated.
+
 - 2026-09-12 — Writing sentence Argue: owner-authorized `writingTutor`, `teacherAdmin`, `getDashboard`, and `sendTeacherAttemptEmails` code updates are Active and downloaded code matches the tested packages; cloud configuration is unchanged. Matching static publication follows. Dedicated QA-student real-email acceptance remains for the owner; local QA sent no real email.
 
 - 2026-09-12 — Multi-group voiceprints: local implementation and regression tests pass. The owner authorized deployment of `speakingLab` and publication of the scoped Student/Teacher frontend assets; `speakingLab` was deployed and its downloaded ZIP exactly matches the tested package; existing cloud configuration is unchanged. Static publication is in progress. Verify the next intended registration creates a second group and old IDs still match; no live voiceprints were created, updated or deleted during this task.

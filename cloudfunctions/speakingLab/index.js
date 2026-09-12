@@ -1604,7 +1604,7 @@ async function processIndividualResponseQueuedJob(claimed) {
   const callIndex = await reserveProviderCall(claimed, "model_call_count");
   let output;
   try {
-    const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
+    const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
     output = { report: result.output, usage: result.usage, request_id: result.request_id };
     await saveProviderUsage(claimed, "individual_analysis", callIndex, model.name, { model: model.model, protocol: model.protocol, request_id: result.request_id, usage: result.usage });
   } catch (error) {
