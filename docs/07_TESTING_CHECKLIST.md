@@ -3159,3 +3159,7 @@ local data; actual CloudBase/SMTP acceptance requires the authorized rollout.
   development routes differ, and every explanation addresses content AND language.
 - Samples must not invent personal experiences, statistics, facts or official
   grades; doubtful ASR text must not become a claimed student error.
+- Refresh safety: stale audio/source report or deleted responses cannot publish;
+  failures retain the ready report. Confirm the saved old report, transcript and
+  assessment are byte-equivalent after normalization; only coaching and version
+  metadata change. Validate a one-report pilot before the date-scoped batch.

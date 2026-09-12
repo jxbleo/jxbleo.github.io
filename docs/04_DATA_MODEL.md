@@ -1425,7 +1425,15 @@ socratic_questions[4] (focus, student_idea_zh, evidence_segment_ids, question_zh
 hint_zh), sample_responses[3] (title_zh, student_idea_zh, evidence_segment_ids,
 response_en, explanation_zh). Grounded coaching requires nonempty evidence IDs
 from that same response transcript. Legacy sample_response_en is V1-only.
-No new collection, index, access grant or history migration is introduced.
+No new collection, index or access grant is introduced. Owner-authorized coaching
+refresh jobs retain the same IR job type plus `refresh_kind: ir-coaching-v2`,
+`source_report_id` and `source_report_version`. The operator's brief `preparing`
+state is not dispatchable until the response is conditionally attached. Refresh
+report IDs/versions are distinct from the original audio-revision report and
+include `previous_report_id` and `assessment_preserved: true`. Original reports
+remain immutable; the response's report pointer/cache changes atomically only
+after success. Scores and prior assessment are copied verbatim. A failed refresh
+does not turn an already-ready response into a failed page.
 
 Add ADMINONLY `speaking_sets` with unique `set_id`, source/year/version/title,
 Context paragraphs, `part_a.task`, ordered Part A points, ordered Part B questions,

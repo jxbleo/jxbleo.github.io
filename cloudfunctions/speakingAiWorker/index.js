@@ -5,6 +5,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
+const irRefresh = require("../_shared/speaking-ir-refresh");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -65,7 +66,7 @@ async function failExhausted(now) {
       if (job.job_type === "individual_response_analysis") {
         const responseResult = await db.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: job.response_session_id }).limit(1).get();
         const response = responseResult.data && responseResult.data[0];
-        if (response && String(response.active_analysis_job_id || "") === String(job.job_id)) await db.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ analysis_status: "failed", updated_at: now });
+        if (response && String(response.active_analysis_job_id || "") === String(job.job_id)) await db.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ analysis_status: irRefresh.failureStatus(job, response), updated_at: now });
         count += 1;
         continue;
       }

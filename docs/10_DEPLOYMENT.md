@@ -1661,6 +1661,21 @@ The gateway owns the new IR prompt and report validation; package the worker
 alongside it because it imports shared Speaking policy. Publish the matching
 cache-busted Speaking frontend after backend deployment. No environment,
 collection, index, timer, or permission changes are needed. New analyses use
-V2; ready historical reports are not regenerated. An explicit old output-token
+V2; ready historical reports are not automatically regenerated. An explicit old output-token
 override should not be lowered; the existing 16000 default remains sufficient
 for the bounded three-sample output.
+
+The owner separately authorized the 2026-09-06 through 2026-09-12 Shanghai-date
+IR coaching refresh. `scripts/refresh-speaking-ir-coaching.js` plans against
+`response_date`, stores an exclusive mode-0600 original-session/report manifest
+inside ignored `.cloudbase-private`, and requires a separate apply action.
+Run a one-report pilot before applying the remaining manifest. The private queue
+uses `refresh_kind: ir-coaching-v2` and begins at analysis, reusing the original
+transcript; no ASR call or Group Discussion update occurs. The gateway generates
+a distinct report ID/version and preserves summary, scores, strengths, actions,
+and language feedback. Source report/revision and active job are rechecked before
+atomic publication. Failed refreshes leave the old report ready. `status`
+verifies source immutability, transcript/assessment equality, and the four/three
+coaching counts; `retry` permits at most three operator attempts, never superseded
+work. Keep private manifests and results outside Git. Code-only function updates
+must preserve cloud configuration and be verified by downloaded code hashes.

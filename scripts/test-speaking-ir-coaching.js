@@ -83,3 +83,23 @@ assert.match(context.renderIndividualResponseDevelopment(insufficient), /未能�
 const hostile = fixture(); hostile.sample_responses[0].response_en = '<img src=x onerror="alert(1)">';
 assert.doesNotMatch(context.renderIndividualResponseDevelopment(hostile), /<img/);
 console.log("Speaking IR coaching contracts passed.");
+
+const refresh = require("../cloudfunctions/_shared/speaking-ir-refresh");
+const operator = require("./refresh-speaking-ir-coaching");
+const sourceReport = { report_id: "old", report_version: "response-r1", session_type: "individual_response", response_session_id: "s1", status: "ready", dse_analysis: legacy, transcript: { segments } };
+const response = { response_session_id: "s1", report_id: "old", active_report_version: "response-r1", active_audio_revision: 1, report: legacy, analysis_status: "ready" };
+const refreshJob = { refresh_kind: refresh.REFRESH_KIND, stage: "analysis", source_report_id: "old", source_report_version: "response-r1", response_revision: 1 };
+refresh.assertSource(refreshJob, response, sourceReport);
+for (const changed of [{ report_id: "new" }, { active_audio_revision: 2 }, { active_report_version: "new" }]) assert.throws(() => refresh.assertSource(refreshJob, { ...response, ...changed }, sourceReport), /SUPERSEDED/);
+assert.throws(() => refresh.assertSource(refreshJob, response, { ...sourceReport, response_session_id: "someone-else" }), /SUPERSEDED/);
+assert.throws(() => refresh.assertSource({ ...refreshJob, stage: "transcription" }, response, sourceReport), /SUPERSEDED/);
+const upgraded = refresh.preserveAssessment(legacy, { ...report, domains: {}, summary_zh: "changed" });
+assert.deepStrictEqual(upgraded.domains, legacy.domains);
+assert.equal(upgraded.summary_zh, legacy.summary_zh);
+assert.equal(upgraded.socratic_questions.length, 4);
+assert.equal(refresh.failureStatus(refreshJob, response), "ready");
+assert.equal(refresh.failureStatus({}, response), "failed");
+assert.equal(operator.scopeMatches(response, response), true);
+assert.equal(operator.scopeMatches({ ...response, deleted_at: "now" }, response), false);
+assert.deepStrictEqual(operator.normalize({ n: { $numberInt: "1" }, d: { $date: { $numberLong: "0" } } }), { n: 1, d: "1970-01-01T00:00:00.000Z" });
+console.log("Speaking IR refresh safety contracts passed.");

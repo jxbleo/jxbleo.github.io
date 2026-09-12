@@ -5,6 +5,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const lab = require("../_shared/speaking-lab");
+const irRefresh = require("../_shared/speaking-ir-refresh");
 const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
 const voiceprintLibrary = require("../_shared/speaking-voiceprint-library");
 const clipProvider = require("../_shared/tencent-ci-audio");
@@ -496,7 +497,7 @@ async function startIndividualResponseAnalysis(actor, event) {
   const existing = await getOne(JOBS, { job_id: jobId });
   if (existing && ["queued", "processing", "succeeded"].includes(existing.status)) return { success: true, idempotent_replay: true, job: publicJob(existing) };
   const created = now();
-  const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: "dse-individual-response-prompts-v1", schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-v1", created_at: created, updated_at: created, finished_at: null };
+  const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-v1", created_at: created, updated_at: created, finished_at: null };
   await db.runTransaction(async (transaction) => {
     const currentResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: row.response_session_id }).limit(1).get();
     const current = currentResult.data && currentResult.data[0];
@@ -1544,6 +1545,10 @@ async function processVoiceRematch(claimed, discussion, asset) {
 }
 
 function individualResponseReportIdentity(job) {
+  if (irRefresh.isRefresh(job)) return {
+    report_id: stable("speaking_ir_coaching_report", job.response_session_id, job.source_report_id),
+    report_version: `${job.source_report_version}-coaching-v2`,
+  };
   return {
     report_id: stable("speaking_individual_response_report", job.response_session_id, String(job.response_revision || 1)),
     report_version: `response-r${Math.max(1, Number(job.response_revision || 1))}`,
@@ -1565,6 +1570,8 @@ function canonicalIndividualTranscript(output) {
 async function processIndividualResponseQueuedJob(claimed) {
   const response = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: claimed.response_session_id, deleted_at: null });
   if (!response || String(response.active_analysis_job_id || "") !== String(claimed.job_id) || Number(response.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+  const sourceReport = irRefresh.isRefresh(claimed) ? await getOne(REPORTS, { report_id: claimed.source_report_id, response_session_id: response.response_session_id }) : null;
+  irRefresh.assertSource(claimed, response, sourceReport);
   const asset = await getOne(ASSETS, { asset_id: claimed.formal_audio_asset_id, response_session_id: claimed.response_session_id, asset_kind: "individual_response", status: "uploaded" });
   if (!asset) throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
   if (claimed.stage === "audio_quality") {
@@ -1597,7 +1604,7 @@ async function processIndividualResponseQueuedJob(claimed) {
   const currentJob = await getOne(JOBS, { job_id: claimed.job_id });
   const responseReportIdentity = individualResponseReportIdentity(claimed);
   const processingReport = await getOne(REPORTS, { report_id: responseReportIdentity.report_id, response_session_id: response.response_session_id, status: "processing" });
-  const transcript = claimed.transcript || processingReport && processingReport.transcript || currentJob && currentJob.transcript;
+  const transcript = sourceReport ? sourceReport.transcript : claimed.transcript || processingReport && processingReport.transcript || currentJob && currentJob.transcript;
   if (!transcript || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
   const question = response.question_snapshot && response.question_snapshot.text || "";
   const model = createModelProvider();
@@ -1611,16 +1618,19 @@ async function processIndividualResponseQueuedJob(claimed) {
     await saveProviderUsage(claimed, "individual_analysis", callIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, request_id: error && error.requestId, response_diagnostics: error && error.responseDiagnostics, usage: {} });
     throw error;
   }
-  const analysis = lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
+  const generatedAnalysis = lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
+  const analysis = sourceReport ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
   const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-v1", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
+  if (sourceReport) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true });
   await db.runTransaction(async (transaction) => {
     const currentJobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
     const latestJob = currentJobResult.data && currentJobResult.data[0];
     const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: response.response_session_id }).limit(1).get();
     const latestResponse = responseResult.data && responseResult.data[0];
     if (!latestJob || latestJob.status !== "processing" || !secretMatches(latestJob.lease_token, claimed.lease_token) || !latestResponse || latestResponse.deleted_at || String(latestResponse.active_analysis_job_id || "") !== String(claimed.job_id) || Number(latestResponse.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    irRefresh.assertSource(claimed, latestResponse, sourceReport);
     const existingReportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
     if (existingReportResult.data && existingReportResult.data[0]) await transaction.collection(REPORTS).doc(existingReportResult.data[0]._id || identity.report_id).update(reportRow);
     else await transaction.collection(REPORTS).doc(identity.report_id).create(reportRow);
@@ -1762,7 +1772,7 @@ async function processQueuedJob(event) {
       if (currentJob.job_type === "individual_response_analysis") {
         const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: currentJob.response_session_id }).limit(1).get();
         const response = responseResult.data && responseResult.data[0];
-        if (response && String(response.active_analysis_job_id || "") === String(currentJob.job_id)) await transaction.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ analysis_status: "failed", updated_at: failedAt });
+        if (response && String(response.active_analysis_job_id || "") === String(currentJob.job_id)) await transaction.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ analysis_status: irRefresh.failureStatus(currentJob, response), updated_at: failedAt });
         return;
       }
       const activeJobField = currentJob.job_type === "voice_rematch" ? "active_voice_match_job_id" : "active_analysis_job_id";

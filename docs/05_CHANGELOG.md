@@ -3410,3 +3410,6 @@ Versioned prompt/schema, bounded server validation, legacy-compatible student
 rendering and mobile disclosures. Existing reports and original scores remain
 unchanged. Synthetic contract tests validate structure, evidence, redaction,
 length, duplicates and safe rendering; real model quality needs an IR trial.
+The separately authorized seven-day refresh adds private backup/plan/apply/status
+operations, reuses transcripts without ASR, retains original assessment fields,
+publishes a separate coaching revision, and leaves old reports visible on failure.
