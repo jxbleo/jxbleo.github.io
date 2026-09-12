@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-09-12 — Shared voiceprint success UI
+
+The Student and Teacher adapters invoke assets/js/voiceprint-success.js only after a successful save API response. assets/css/voiceprint-success.css provides the shared appearance. Teacher reuses its modal stack scroll lock; Student restores its prior scroll styles/position. No backend or data changes.
+
 > This document explains how Mr. Cat Academy is built and why the pieces are arranged this way.
 > Update it when architecture, deployment shape, directory structure, backend boundaries, or major dependencies change.
 

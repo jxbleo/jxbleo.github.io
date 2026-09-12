@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-09-12 — Voiceprint success confirmation
+
+Verify successful first enrolment and replacement open one dialog, while pending/rejected saves do not. Verify Done/Escape, repeat opening, focus and scroll restoration, Teacher stacked modal lock, and 390px layout. A Teacher refresh failure after save must still retain success.
+
 ## 2026-09-12 — Multi-group voiceprint regression
 
 Run `npm run test:speaking-lab` (includes

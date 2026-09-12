@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-09-12 — Voiceprint save confirmation
+
+After the server confirms either a new or replacement voiceprint was saved, Student and Teacher show the same independent success dialog. Recording completion alone and failed saves never show success.
+
 > 本文档是给人看的，也给未来 Agent 用来理解产品意图。
 > 它记录“这个系统到底要做什么、为什么这么做、核心数据怎么流动、后端规则是什么”。
 > 它不同于 `AGENTS.md`：`AGENTS.md` 是 Agent 的操作契约；本文档是产品和架构需求的校对版。

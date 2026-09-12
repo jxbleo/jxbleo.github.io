@@ -314,7 +314,7 @@
         recordButton.disabled = true;
         recordButton.classList.add('is-processing');
         document.getElementById('voiceprint-message').textContent = 'Saving your reusable voiceprint…';
-        call('saveMyVoiceprint', {
+        return call('saveMyVoiceprint', {
             operation_id: 'voiceprint-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
             consent_confirmed: true,
             audio_base64: result.base64
@@ -324,6 +324,7 @@
             confirmButton.hidden = true;
             document.getElementById('voiceprint-time').textContent = voiceprintTime(0);
             document.getElementById('voiceprint-message').textContent = 'Voiceprint saved. Hold the microphone again whenever you want to update it.';
+            window.MrCatVoiceprintSuccess.show({ returnFocus: function () { return document.getElementById('voiceprint-record'); } });
         }).catch(function (error) {
             document.getElementById('voiceprint-message').textContent = friendlyError(error);
             confirmButton.disabled = false;

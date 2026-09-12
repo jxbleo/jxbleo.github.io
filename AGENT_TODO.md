@@ -74,6 +74,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-12 — Approved Voiceprint success popup integrated into Student and Teacher confirmed-save paths. Shared native dialog preserves the approved glass/checkmark/Done design, restores focus/scroll, and cooperates with Teacher modal stacking. Full Speaking suite and browser checks (Student/Teacher, Done/Escape, repeated opening, stacked locks, 390px layout) passed. Owner authorized static publication; no cloud function or biometric-data changes.
+
 - 2026-09-12 — Approved Speaking colours release: white recording surface,
   48 rainbow microphone bars, no timing caption and pale coral final minute.
   Shared Student/Teacher CSS/JS and cache versions updated. Speaking suite,

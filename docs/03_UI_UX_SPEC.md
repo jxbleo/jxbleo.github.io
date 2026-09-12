@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-09-12 — Voiceprint success dialog
+
+Use the approved Vocabulary-result-inspired centered layout with Speaking glass, a green checkmark, “Voiceprint recorded”, “Your voiceprint has been saved successfully.” and one blue Done button. Done and Escape dismiss it; background scrolling is locked and focus returns to the current recording control. Respect reduced motion and small screens.
+
 ## 2026-09-12 — Voiceprint registration availability
 
 Entering Student Voiceprint temporarily disables the microphone while the

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-12 — Voiceprint success confirmation
+
+Added the owner-approved standalone success popup to Student and Teacher voiceprint registration/replacement. Teacher refresh failures after a successful save retain success and request a panel refresh, preventing misleading save-failure feedback. Static release only.
+
 ## 2026-09-12 — Approved Speaking recorder colours
 
 - Applied the reviewed white/rainbow preview to the shared Student/Teacher

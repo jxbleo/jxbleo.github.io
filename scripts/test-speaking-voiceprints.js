@@ -170,6 +170,7 @@ async function run() {
   assert.match(teacherUi, /enrollment_revision/);
   assert.match(teacherUi, /voiceprintUpdatedAt/);
   await require("./test-speaking-voiceprint-groups")();
+  await require("./test-voiceprint-success")();
   console.log("Speaking Lab Tencent voiceprint contracts passed.");
 }
 

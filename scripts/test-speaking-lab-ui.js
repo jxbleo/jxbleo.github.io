@@ -290,7 +290,7 @@ function run() {
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=20260912-speaking-colors-1/);
-  assert.match(teacherPage, /teacher-speaking\.js\?v=20260912-voiceprint-groups-1/);
+  assert.match(teacherPage, /teacher-speaking\.js\?v=20260912-voiceprint-success-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
@@ -454,7 +454,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260912-speaking-colors-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260912-voiceprint-groups-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260912-voiceprint-success-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

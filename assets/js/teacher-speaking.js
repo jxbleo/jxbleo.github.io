@@ -124,14 +124,17 @@
         document.getElementById('teacher-voiceprint-stop').disabled = true;
         var remove = document.getElementById('teacher-voiceprint-remove'); if (remove) remove.disabled = true;
         document.getElementById('teacher-voiceprint-status').textContent = 'Saving the reusable voiceprint with Tencent…';
-        call('teacherSaveVoiceprint', Object.assign({}, voiceprintLocator, {
+        return call('teacherSaveVoiceprint', Object.assign({}, voiceprintLocator, {
             operation_id: 'teacher-voiceprint-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
             consent_confirmed: true,
             audio_base64: result.base64
         })).then(function () {
             setMessage('Reusable voiceprint saved.');
-            return reloadVoiceprintTarget();
-        }).then(function () { if (selected) return open(selected); }).catch(function (error) {
+            window.MrCatVoiceprintSuccess.show({ returnFocus: function () { return document.getElementById('teacher-voiceprint-record'); } });
+            return reloadVoiceprintTarget().then(function () { if (selected) return open(selected); }).catch(function () {
+                setMessage('Voiceprint saved. Reopen the voiceprint panel to refresh its details.');
+            });
+        }).catch(function (error) {
             document.getElementById('teacher-voiceprint-status').textContent = error.message || 'Could not save this voiceprint.';
             document.getElementById('teacher-voiceprint-record').disabled = false;
             var remove = document.getElementById('teacher-voiceprint-remove'); if (remove) remove.disabled = false;
