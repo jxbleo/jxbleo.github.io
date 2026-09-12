@@ -2598,3 +2598,7 @@ work, affects rank, or earns STAR.
 - 邮件沿用启用的教师邮箱，提供 Approve / Reject 链接；打开后需教师登录并明确 Submit。请求编号和 URL 中的决定不构成处理授权。
 - Approve 直接计为该学生当前作文的正确句；最后一个必改句通过后全文完成。教师批准优先于后续 AI，已保存 AI 点评仍保留。旧稿、已替换的分析不接受旧请求批准。
 - 页面可见时每 15 秒检查待处理请求，恢复焦点时也刷新。原页面保持输入草稿和卡片位置。Teacher Replies 保留历次处理结果并返回对应作文，不显示 AI 参考改写。
+
+### Individual Response capture and submission (2026-09-13)
+
+Each question opens the approved compact Set/year/title and Qn dialog. A three-second audible red countdown precedes capture; it does not consume response time or enter the recording. Capture lasts up to 60 seconds plus a final five-second warning. Both countdowns end with a higher, longer tone. Completion shows Finished; Submit explicitly uploads and starts analysis. Upload Files remains the alternative for a checked audio file of at most 65 seconds. No automatic submission or backend schema change is introduced.

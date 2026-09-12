@@ -1095,3 +1095,9 @@ cp .qa-secrets.example .qa-secrets.local
   acceptance check. Tencent Shadowing scoring remains disabled.
 
 - 2026-09-11 — Teacher Speaking Set search: implemented integrated title/year/Set-number search, Year scoping, keyboard selection, desktop panel and centred phone modal. macOS Safari selection/focus and 375px browser modal/scroll-lock checks passed; UI/Set contracts and static verification/build passed. Owner-authorized scoped static publication pending; no backend changes.
+
+### 2026-09-13 — Individual Response recorder release
+
+- Implemented the owner-approved preview in Speaking Lab: Set heading, Qn, central mic, 3-second opening and 60+5-second response, final-tone emphasis, Finished and manual Submit.
+- Added behavioural checks for capture timing, cue schedule, cancellation, late permission, denial, manual submission, file limit and retry; updated UI contracts and product/UI/test docs.
+- Frontend-only; no production backend mutation or migration required. Behavioural recorder tests, full Speaking Lab regression suite, release verification and static build passed. Browser fixture using production markup/CSS/binding verified central 3/2/1 and Finished/Submit; hardware and live backend upload were not exercised. Static publication pending.

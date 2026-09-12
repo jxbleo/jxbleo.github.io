@@ -3017,9 +3017,22 @@ ordered surfaces: overview, Context, Part A, and Part B. Context copy has a
 quiet reading measure, while the two practice cards keep their action beside
 the content it affects. Individual Response uses separate overview, question,
 recorder/progress, and report cards instead of one enclosing panel.
-The Individual Response recorder uses the same circular progress component, counts down from
-`01:05` to `00:00`, turns red for its final five seconds, stops at zero, supports one checked audio upload, prevents accidental
-navigation during recording/upload, and preserves audio for analysis retry.
+The Individual Response question dialog shows `year · Set version · title` above
+`Qn: question`. The microphone and small `Tap to Record` label sit inside a
+circular countdown ring; the `01:00` clock sits below it without a Remaining
+caption. There is no instructional paragraph or bottom Done action; a top-right
+close icon dismisses the dialog. `Upload Files` selects one audio file (up to
+65 seconds). After microphone permission, a red pulsing 3/2/1 appears inside the
+ring, with one tone per second; capture starts only after those three seconds.
+A full 60-second response follows. The final five seconds hide the ring, pulse
+red, and sound once per second. Each countdown's final tone is higher and longer
+(1320 Hz / 0.4 seconds versus 880 Hz / 0.18 seconds). Reduced Motion keeps red
+without pulsing. At 65 captured seconds the recorder stops, shows `Finished`,
+and replaces Upload Files with `Submit`. Only an explicit Submit uploads and
+starts analysis; completion never auto-uploads. Clicking the Finished microphone
+can replace the unsubmitted recording after confirmation. Errors remain visible,
+failed uploads retain the local audio for retry, and closing/navigation cancels
+pending microphone permission, countdown timers, scheduled cues and capture.
 On phones, Set rows remain touch surfaces and dialogs remain safe-area-aware,
 viewport-centred cards. Cards reduce to one readable column, action buttons become
 full-width where necessary, and decorative movement becomes a cross-fade under

@@ -100,6 +100,11 @@
     var responseBlob = null;
     var responseUploadOperationId = '';
     var responseUploadInProgress = false;
+    var responseCaptureState = 'idle';
+    var responseCaptureGeneration = 0;
+    var responseDeadline = 0;
+    var responseCueContext = null;
+    var responseCueNodes = [];
 
     function finishInitialLoading() {
         document.documentElement.classList.remove('speaking-direct-entry');
@@ -508,7 +513,7 @@
         var voiceprintMain = document.getElementById('speaking-voiceprint-main');
         var insideSpeakingContent = Boolean(selectedId || selectedSpeakingSet || selectedResponse || !detail.hidden || (voiceprintMain && !voiceprintMain.hidden));
         if (insideSpeakingContent) {
-            if (responseRecorder && responseRecorder.state !== 'inactive') {
+            if (responseCaptureActive()) {
                 setStatus('Finish the Individual Response recording before leaving this page.', true);
                 return;
             }
@@ -1195,7 +1200,7 @@
             setStatus('Please wait for the Individual Response upload to finish.', true);
             return false;
         }
-        if (responseRecorder && responseRecorder.state !== 'inactive') {
+        if (responseCaptureActive()) {
             setStatus('Finish the Individual Response recording before leaving this page.', true);
             return false;
         }
@@ -1242,12 +1247,49 @@
         });
     }
     function responseElapsedSeconds() { return responseStartedAt ? Math.max(0, (performance.now() - responseStartedAt) / 1000) : 0; }
+    function responseCaptureActive() { return ['requesting', 'countdown', 'recording', 'stopping'].indexOf(responseCaptureState) >= 0; }
+    function cancelResponseCues() {
+        responseCueNodes.forEach(function (cue) { try { cue.oscillator.stop(); } catch (_error) {} cue.oscillator.disconnect(); cue.gain.disconnect(); });
+        responseCueNodes = [];
+    }
+    function prepareResponseCueAudio() {
+        var AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtor) return;
+        try {
+            if (!responseCueContext || responseCueContext.state === 'closed') responseCueContext = new AudioCtor();
+            if (responseCueContext.state === 'suspended') responseCueContext.resume().catch(function () {});
+        } catch (_error) { responseCueContext = null; }
+    }
+    function scheduleResponseCues(seconds, generation) {
+        if (!responseCueContext || responseCueContext.state !== 'running') return;
+        var baseTime = responseCueContext.currentTime;
+        seconds.forEach(function (second, index) {
+            if (generation !== responseCaptureGeneration) return;
+            var last = index === seconds.length - 1;
+            var length = last ? 0.4 : 0.18;
+            try {
+                var oscillator = responseCueContext.createOscillator(), gain = responseCueContext.createGain();
+                var at = baseTime + second;
+                oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(last ? 1320 : 880, at);
+                gain.gain.setValueAtTime(0, at); gain.gain.linearRampToValueAtTime(0.14, at + 0.012); gain.gain.exponentialRampToValueAtTime(0.001, at + length - 0.02);
+                oscillator.connect(gain); gain.connect(responseCueContext.destination);
+                oscillator.start(at); oscillator.stop(at + length);
+                responseCueNodes.push({ oscillator: oscillator, gain: gain });
+            } catch (_error) { /* A unavailable audio output must not prevent recording. */ }
+        });
+    }
     function stopResponseHardware() {
+        responseCaptureGeneration += 1;
+        responseCaptureState = 'idle';
         if (responseTimer) window.clearInterval(responseTimer);
-        responseTimer = 0;
-        if (responseStream) responseStream.getTracks().forEach(function (track) { track.stop(); });
-        responseStream = null;
-        responseRecorder = null;
+        if (responseDeadline) window.clearTimeout(responseDeadline);
+        responseTimer = 0; responseDeadline = 0;
+        cancelResponseCues();
+        var device = responseRecorder; responseRecorder = null;
+        if (device) { device.ondataavailable = null; device.onstop = null; device.onerror = null; if (device.state !== 'inactive') { try { device.stop(); } catch (_error) {} } }
+        var input = responseStream; responseStream = null;
+        if (input) input.getTracks().forEach(function (track) { track.stop(); });
+        if (responseCueContext) { var context = responseCueContext; responseCueContext = null; context.close().catch(function () {}); }
     }
     function renderIndividualResponseDevelopment(report) {
         var questions = Array.isArray(report.socratic_questions) ? report.socratic_questions : [];
@@ -1277,7 +1319,7 @@
         var question = response.question_snapshot || {};
         var stateTone = reportReady ? 'ready' : analysisFailed ? 'attention' : 'working';
         var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
-        var responseBody = reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card speaking-response-recorder-card">' + circularTimerMarkup('response-timer', 'Individual Response time remaining', 65, 'speaking-response-timer') + '<p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response, or upload an audio file up to 65 seconds.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-record">Start recording</button><label class="outline-button speaking-file-button">Upload existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="outline-button" type="button" id="response-upload" disabled>Upload and analyse</button></div><p class="speaking-response-upload-note" id="response-upload-note"></p></section>';
+        var responseBody = reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card speaking-response-recorder-card">' + responseDialogRecorderMarkup() + '</section>';
         detail.innerHTML = '<article class="speaking-response-workspace"><header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have up to 65 seconds.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>' + responseBody + '</article>';
         updateToolbar({ title: 'Individual Response', invitation: true });
         var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
@@ -1286,7 +1328,11 @@
     }
     function getIndividualResponseAndRender(responseId) { return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) { renderIndividualResponseWorkspace(result.response); return result; }).catch(function (error) { setStatus(friendlyError(error), true); }); }
     function responseDialogRecorderMarkup() {
-        return '<div class="speaking-response-dialog-recorder">' + circularTimerMarkup('response-timer', 'Individual Response time remaining', 65, 'speaking-response-timer') + '<button class="speaking-response-microphone" type="button" id="response-record" aria-describedby="response-status"><span class="speaking-response-microphone-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="11" y="5" width="10" height="15" rx="5"/><path d="M7.5 16.5a8.5 8.5 0 0 0 17 0M16 25v3M12 28h8"/></svg></span><span class="speaking-response-microphone-label" data-response-record-label>Tap to record</span></button><p class="speaking-response-status" id="response-status" role="status" aria-live="polite">Record one uninterrupted response of up to 65 seconds.</p><label class="speaking-response-dialog-file">Choose existing audio<input type="file" id="response-file" accept="audio/*" hidden></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Upload &amp; analyse</button></div>';
+        return '<div class="speaking-response-dialog-recorder" id="response-recorder" data-state="idle"><div class="speaking-response-dial"><svg class="speaking-response-ring" viewBox="0 0 222 222" aria-hidden="true"><circle class="speaking-response-ring-track" cx="111" cy="111" r="106"/><circle class="speaking-response-ring-progress" id="response-ring-progress" cx="111" cy="111" r="106" pathLength="1"/></svg><button class="speaking-response-microphone" type="button" id="response-record" aria-label="Tap to Record"><svg class="speaking-response-mic-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7.5 16a8.5 8.5 0 0 0 17 0M16 24.5V28M12 28h8"/></svg><span class="speaking-response-stop-icon" aria-hidden="true"></span><svg class="speaking-response-finished-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m7 16 6 6L25 10"/></svg><span class="speaking-response-opening-digit" id="response-opening-digit" aria-live="polite">3</span><span class="speaking-response-microphone-label" data-response-record-label>Tap to Record</span></button></div><div class="speaking-response-clock" id="response-timer" role="timer" aria-label="Time left">01:00</div><div class="speaking-response-footer"><label class="speaking-response-dialog-file" id="response-file-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m-3.5 3.5L10 3l3.5 3.5M4 12v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>Upload Files<input type="file" id="response-file" accept="audio/*" class="speaking-response-file-input" aria-label="Upload Files"></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Submit</button></div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite"></p></div>';
+    }
+    function responseSetHeading(response) {
+        var snapshot = response.set_snapshot || {};
+        return [snapshot.exam_year, snapshot.paper_version ? 'Set ' + snapshot.paper_version : '', snapshot.title].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
     }
     function renderIndividualResponseDialog(response) {
         selectedResponse = response;
@@ -1294,7 +1340,7 @@
         var uploaded = response.recording_status === 'uploaded';
         var reportReady = response.analysis_status === 'ready';
         var body = uploaded ? '<div class="speaking-response-dialog-state"><span class="speaking-upload-spinner" aria-hidden="true"></span><h3>' + (reportReady ? 'Your report is ready.' : 'Preparing your private analysis…') + '</h3><p>' + (reportReady ? 'Open Part B in the sidebar whenever you want to review it.' : 'You can close this window and return later. Your recording is safe.') + '</p></div>' : responseDialogRecorderMarkup();
-        responseDialogContent.innerHTML = '<div class="speaking-response-dialog-header"><p class="eyebrow accent">PART B - INDIVIDUAL RESPONSE</p><h2 id="individual-response-dialog-title">Question ' + esc(question.order || '') + '</h2></div><p class="speaking-response-dialog-question">' + esc(question.text || '') + '</p>' + body + '<div class="speaking-dialog-actions"><button class="outline-button" type="button" id="individual-response-dialog-close">Done</button></div>';
+        responseDialogContent.innerHTML = '<button class="speaking-response-close" type="button" id="individual-response-dialog-close" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button><div class="speaking-response-dialog-header"><p class="eyebrow accent">' + esc(responseSetHeading(response)) + '</p></div><h2 class="speaking-response-dialog-question" id="individual-response-dialog-title"><span>Q' + esc(question.order || '') + ':</span> ' + esc(question.text || '') + '</h2>' + body;
         document.getElementById('individual-response-dialog-close').addEventListener('click', closeIndividualResponseDialog);
         if (!uploaded) bindIndividualResponseRecording(response);
         if (typeof responseDialog.showModal === 'function' && !responseDialog.open) responseDialog.showModal();
@@ -1342,10 +1388,10 @@
             if (statusNode) statusNode.textContent = 'Wait until the secure upload finishes.';
             return;
         }
-        var recording = responseRecorder && responseRecorder.state !== 'inactive';
+        var recording = responseCaptureActive();
         if (recording && !window.confirm('Discard this Individual Response recording?')) return;
         if (responseBlob && !window.confirm('Discard this Individual Response recording?')) return;
-        if (recording) {
+        if (recording && responseRecorder) {
             responseRecorder.ondataavailable = null;
             responseRecorder.onstop = null;
             try { responseRecorder.stop(); } catch (_error) {}
@@ -1371,45 +1417,130 @@
     }
     function finishResponseRecording() {
         if (!responseRecorder || responseRecorder.state === 'inactive') return;
-        responseRecordedDurationSeconds = responseElapsedSeconds();
+        responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
+        responseCaptureState = 'stopping';
         try { responseRecorder.stop(); } catch (_error) { stopResponseHardware(); }
     }
     function bindIndividualResponseRecording(response) {
         var record = document.getElementById('response-record');
         var file = document.getElementById('response-file');
         var upload = document.getElementById('response-upload');
-        function setRecordButton(label, isRecording) {
+        var surface = document.getElementById('response-recorder');
+        var timer = document.getElementById('response-timer');
+        var ring = document.getElementById('response-ring-progress');
+        var digit = document.getElementById('response-opening-digit');
+        var fileLabel = document.getElementById('response-file-label');
+        var status = document.getElementById('response-status');
+        function setRecordButton(label, state) {
             if (!record) return;
-            var labelNode = record.querySelector('[data-response-record-label]');
-            if (labelNode) labelNode.textContent = label;
-            else record.textContent = label;
-            record.classList.toggle('is-recording', Boolean(isRecording));
-            record.setAttribute('aria-label', label);
+            record.querySelector('[data-response-record-label]').textContent = label;
+            record.setAttribute('aria-label', state === 'finished' ? 'Finished. Record again' : label);
+            surface.setAttribute('data-state', state);
+        }
+        function readyToSubmit() {
+            record.disabled = false;
+            setRecordButton('Finished', 'finished');
+            file.disabled = false; fileLabel.hidden = true;
+            upload.disabled = false; upload.hidden = false;
+            status.textContent = '';
+        }
+        function recordingFailure(message) {
+            stopResponseHardware();
+            responseBlob = null; responseChunks = []; responseStartedAt = 0;
+            record.disabled = false; file.disabled = false; fileLabel.hidden = false;
+            upload.disabled = true; upload.hidden = true;
+            timer.textContent = '01:00'; ring.style.strokeDashoffset = '0';
+            setRecordButton('Tap to Record', 'idle'); status.textContent = message;
         }
         if (record) record.addEventListener('click', function () {
-            if (responseRecorder && responseRecorder.state !== 'inactive') { finishResponseRecording(); return; }
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { document.getElementById('response-status').textContent = 'Recording is unavailable here. Choose an audio file instead.'; return; }
-            record.disabled = true;
-            responseBlob = null;
-            responseUploadOperationId = '';
-            responseRecordedDurationSeconds = null;
-            if (upload) upload.disabled = true;
-            updateCircularTimer(document.getElementById('response-timer'), 0, 65, 0);
+            if (responseUploadInProgress || responseCaptureState === 'stopping') return;
+            if (responseCaptureState === 'countdown' || responseCaptureState === 'requesting') { recordingFailure(''); return; }
+            if (responseCaptureState === 'recording') { finishResponseRecording(); return; }
+            if (responseBlob && !window.confirm('Replace this recording before submitting?')) return;
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { status.textContent = 'Recording is unavailable here. Use Upload Files instead.'; return; }
+            stopResponseHardware();
+            prepareResponseCueAudio();
+            var generation = responseCaptureGeneration;
+            responseCaptureState = 'requesting';
+            record.disabled = true; file.disabled = true;
+            responseBlob = null; responseChunks = []; responseStartedAt = 0;
+            responseUploadOperationId = ''; responseRecordedDurationSeconds = null;
+            upload.disabled = true; upload.hidden = true; fileLabel.hidden = false;
+            timer.textContent = '01:00'; ring.style.strokeDashoffset = '0'; status.textContent = '';
+            setRecordButton('Connecting…', 'requesting');
             navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-                responseStream = stream; responseChunks = []; responseStartedAt = performance.now(); responseRecordedDurationSeconds = null;
+                if (generation !== responseCaptureGeneration || !record.isConnected) { stream.getTracks().forEach(function (track) { track.stop(); }); return; }
+                responseStream = stream;
                 var preferred = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(function (mime) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime); });
-                responseRecorder = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
-                responseRecorder.ondataavailable = function (event) { if (event.data && event.data.size) responseChunks.push(event.data); };
-                responseRecorder.onstop = function () { var mimeType = responseRecorder.mimeType || 'audio/webm'; responseBlob = new Blob(responseChunks, { type: mimeType }); stopResponseHardware(); responseStartedAt = 0; record.disabled = false; setRecordButton('Record again', false); if (responseBlob.size) { upload.disabled = false; upload.hidden = false; document.getElementById('response-status').textContent = 'Recording ready. Record again or upload it for analysis.'; } };
-                responseRecorder.start(250);
-                responseTimer = window.setInterval(function () { var seconds = responseElapsedSeconds(); var remaining = updateCircularTimer(document.getElementById('response-timer'), seconds, 65, 0); var status = document.getElementById('response-status'); if (status && remaining <= 5 && remaining > 0) status.textContent = 'Time is almost over.'; if (remaining <= 0) finishResponseRecording(); }, 100);
-                setRecordButton('Stop recording', true);
-                record.disabled = false;
-            }).catch(function () { record.disabled = false; document.getElementById('response-status').textContent = 'Microphone access was denied. Choose an audio file instead.'; });
+                var device = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
+                responseRecorder = device;
+                device.ondataavailable = function (event) { if (generation === responseCaptureGeneration && event.data && event.data.size) responseChunks.push(event.data); };
+                device.onerror = function () { if (generation === responseCaptureGeneration) recordingFailure('Recording was interrupted. Please try again or use Upload Files.'); };
+                device.onstop = function () {
+                    if (generation !== responseCaptureGeneration) return;
+                    responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
+                    responseBlob = new Blob(responseChunks, { type: device.mimeType || 'audio/webm' });
+                    stopResponseHardware(); responseStartedAt = 0; responseChunks = [];
+                    if (!responseBlob.size) { recordingFailure('No audio was captured. Please try again.'); return; }
+                    timer.textContent = '00:00'; ring.style.strokeDashoffset = '1';
+                    readyToSubmit();
+                };
+                stream.getTracks().forEach(function (track) { track.addEventListener('ended', function () {
+                    if (generation !== responseCaptureGeneration) return;
+                    if (responseCaptureState === 'recording') finishResponseRecording();
+                    else if (responseCaptureState !== 'stopping') recordingFailure('The microphone disconnected. Please try again.');
+                }); });
+                var openingStartedAt = performance.now();
+                responseCaptureState = 'countdown'; record.disabled = false;
+                setRecordButton('Cancel countdown', 'countdown'); digit.textContent = '3';
+                scheduleResponseCues([0, 1, 2], generation);
+                function tick() {
+                    if (generation !== responseCaptureGeneration) return;
+                    if (responseCaptureState === 'countdown') {
+                        var openingElapsed = (performance.now() - openingStartedAt) / 1000;
+                        if (openingElapsed < 3) { digit.textContent = String(3 - Math.floor(openingElapsed)); return; }
+                        try { device.start(250); } catch (_error) { recordingFailure('This browser could not begin recording. Use Upload Files instead.'); return; }
+                        responseStartedAt = performance.now(); responseCaptureState = 'recording';
+                        setRecordButton('Tap to Stop', 'recording');
+                        scheduleResponseCues([60, 61, 62, 63, 64], generation);
+                        responseDeadline = window.setTimeout(finishResponseRecording, 65000);
+                    }
+                    if (responseCaptureState !== 'recording') return;
+                    var seconds = responseElapsedSeconds();
+                    if (seconds >= 65) { finishResponseRecording(); return; }
+                    surface.setAttribute('data-state', seconds >= 60 ? 'ending' : 'recording');
+                    timer.textContent = timerClockText(seconds >= 60 ? 65 - seconds : 60 - seconds);
+                    ring.style.strokeDashoffset = String(Math.min(1, seconds / 60));
+                }
+                responseTimer = window.setInterval(tick, 50);
+            }).catch(function (error) {
+                if (generation !== responseCaptureGeneration) return;
+                var denied = error && (error.name === 'NotAllowedError' || error.name === 'SecurityError');
+                recordingFailure(denied ? 'Microphone access was denied. Use Upload Files instead.' : 'The microphone could not start. Please try again or use Upload Files.');
+            });
         });
-        if (file) file.addEventListener('change', function () { var chosen = file.files && file.files[0]; file.value = ''; if (!chosen || (chosen.type && !/^audio\//i.test(chosen.type))) return; var objectUrl = URL.createObjectURL(chosen); var probe = document.createElement('audio'); probe.preload = 'metadata'; probe.onloadedmetadata = function () { URL.revokeObjectURL(objectUrl); var duration = Number(probe.duration); if (!Number.isFinite(duration) || duration <= 0 || duration > 65) { document.getElementById('response-status').textContent = 'Choose an audio file no longer than 65 seconds.'; return; } responseRecordedDurationSeconds = duration; responseBlob = chosen; responseUploadOperationId = ''; upload.disabled = false; upload.hidden = false; document.getElementById('response-status').textContent = chosen.name + ' is ready to upload.'; }; probe.onerror = function () { URL.revokeObjectURL(objectUrl); document.getElementById('response-status').textContent = 'This audio file duration could not be checked.'; }; probe.src = objectUrl; });
+        if (file) file.addEventListener('change', function () {
+            if (responseCaptureActive() || responseUploadInProgress) return;
+            var chosen = file.files && file.files[0]; file.value = '';
+            if (!chosen || (chosen.type && !/^audio\//i.test(chosen.type))) return;
+            var generation = responseCaptureGeneration;
+            var objectUrl = URL.createObjectURL(chosen), probe = document.createElement('audio');
+            file.disabled = true; record.disabled = true; probe.preload = 'metadata';
+            probe.onloadedmetadata = function () {
+                URL.revokeObjectURL(objectUrl);
+                if (generation !== responseCaptureGeneration || !record.isConnected) return;
+                file.disabled = false; record.disabled = false;
+                var duration = Number(probe.duration);
+                if (!Number.isFinite(duration) || duration <= 0 || duration > 65) { status.textContent = 'Choose an audio file no longer than 65 seconds.'; return; }
+                responseRecordedDurationSeconds = duration; responseBlob = chosen; responseUploadOperationId = '';
+                readyToSubmit(); timer.textContent = timerClockText(duration);
+            };
+            probe.onerror = function () { URL.revokeObjectURL(objectUrl); if (generation !== responseCaptureGeneration || !record.isConnected) return; file.disabled = false; record.disabled = false; status.textContent = 'This audio file duration could not be checked.'; };
+            probe.src = objectUrl;
+        });
         if (upload) upload.addEventListener('click', function () {
-            if (!responseBlob) return;
+            if (!responseBlob || responseUploadInProgress || responseCaptureActive()) return;
+            record.disabled = true; file.disabled = true;
             upload.disabled = true;
             responseUploadInProgress = true;
             var blob = responseBlob;
@@ -1438,7 +1569,7 @@
             }).catch(function (error) {
                 upload.disabled = false;
                 document.getElementById('response-status').textContent = friendlyError(error);
-            }).finally(function () { responseUploadInProgress = false; });
+            }).finally(function () { responseUploadInProgress = false; if (record.isConnected) record.disabled = false; if (file.isConnected) file.disabled = false; });
         });
     }
     function stopVoiceReferenceRecording() {
@@ -1719,7 +1850,7 @@
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
     document.addEventListener('visibilitychange', function () { if (document.hidden || recordingState !== 'idle' || voiceprintPressActive || voiceprintSaving || voiceprintPendingResult) return; if (selectedId) openDiscussion(selectedId); else loadList(); });
-    window.addEventListener('beforeunload', function (event) { if (!recordingLocksPage() && !recordingNeedsDiscardConfirmation() && !responseUploadInProgress && !(responseRecorder && responseRecorder.state !== 'inactive') && !responseBlob && !voiceprintPressActive && !voiceprintController && !voiceprintPendingResult && !voiceprintSaving) return; event.preventDefault(); event.returnValue = ''; });
+    window.addEventListener('beforeunload', function (event) { if (!recordingLocksPage() && !recordingNeedsDiscardConfirmation() && !responseUploadInProgress && !(responseCaptureActive()) && !responseBlob && !voiceprintPressActive && !voiceprintController && !voiceprintPendingResult && !voiceprintSaving) return; event.preventDefault(); event.returnValue = ''; });
     window.addEventListener('pagehide', function () { if (formalRecorder) { formalRecorder.discard(); formalRecorder.destroy(); formalRecorder = null; } });
     window.addEventListener('pageshow', function (event) { if (event.persisted) closeSidebar(); });
 

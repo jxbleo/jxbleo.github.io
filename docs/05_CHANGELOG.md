@@ -3413,3 +3413,10 @@ length, duplicates and safe rendering; real model quality needs an IR trial.
 The separately authorized seven-day refresh adds private backup/plan/apply/status
 operations, reuses transcripts without ASR, retains original assessment fields,
 publishes a separate coaching revision, and leaves old reports visible on failure.
+
+### 2026-09-13 — Individual Response recording dialog
+
+- Applied the owner-reviewed compact question, central microphone/ring and lower clock layout.
+- Added a three-second pre-recording countdown, a 60-second response and five-second ring-free final warning, with a distinct final tone in each sequence.
+- Finished exposes manual Submit; file input is Upload Files. Pending permission/cues are cancelled on dismissal and failed uploads remain retryable.
+- Frontend-only release; no CloudBase deployment or data migration.

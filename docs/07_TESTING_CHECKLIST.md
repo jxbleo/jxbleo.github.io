@@ -3166,3 +3166,7 @@ local data; actual CloudBase/SMTP acceptance requires the authorized rollout.
   failures retain the ready report. Confirm the saved old report, transcript and
   assessment are byte-equivalent after normalization; only coaching and version
   metadata change. Validate a one-report pilot before the date-scoped batch.
+
+### Individual Response recording dialog
+
+Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:speaking-lab`). Verify 3/2/1 precedes MediaRecorder.start, then exactly 60+5 seconds of capture, eight total cues with distinct final tones, and no upload until Submit. Check early stop, cancel during countdown, late permission after close, denial, microphone loss, 65-second file limit, repeated Submit and failed-upload retry. Visually check the centred microphone, clock outside ring, hidden ring in final warning, Finished/Submit, phone layout and steady red under Reduced Motion.
