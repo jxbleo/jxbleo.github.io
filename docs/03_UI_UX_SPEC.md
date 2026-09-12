@@ -2272,7 +2272,12 @@ Important mobile rules:
   Clicking the same icon again, the phone scrim, or `Escape`
   closes it and restores focus to the trigger. Opening the drawer locks background
   scrolling without losing the previous page position.
-- OCR confirmation is a deliberately sparse editing card. Its top row contains
+- OCR confirmation is a deliberately sparse editing card with
+  a live manuscript-only word count at the bottom right of the yellow paper,
+  outside the editable text. Typing, paste, deletion, first-line extraction and
+  Undo refresh `N words` / `1 word` using the Draft/Revised counting rule without
+  replacing the editor or moving its caret. Title and Prompt are excluded;
+  prompt OCR has no manuscript count. The top row contains
   the right-aligned persistent `Compare with Image` toggle. For manuscript OCR,
   a compact `Title (Optional)` field follows with `Use First Line`; the action
   moves the first non-empty line out of the manuscript and exposes a quiet `Undo`

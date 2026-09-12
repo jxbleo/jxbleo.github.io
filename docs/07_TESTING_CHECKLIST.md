@@ -1,5 +1,12 @@
 # 07 Testing Checklist
 
+## 2026-09-12 — OCR manuscript word count
+
+Verify the initial OCR text count, typing/paste/delete, empty text (`0 words`),
+single word, multi-paragraph text, Use first line and Undo. Title edits must not
+change the count; prompt OCR must not show it. Confirm counting preserves editor
+focus/caret and agrees with Draft/Revised. Run `npm run test:writing-tutor`.
+
 ## 2026-09-12 — Voiceprint success confirmation
 
 Verify successful first enrolment and replacement open one dialog, while pending/rejected saves do not. Verify Done/Escape, repeat opening, focus and scroll restoration, Teacher stacked modal lock, and 390px layout. A Teacher refresh failure after save must still retain success.

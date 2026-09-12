@@ -283,6 +283,14 @@
         };
     }
 
+    function updateOcrWordCount() {
+        var counter = document.getElementById('ocr-word-count');
+        if (!counter || state.scanTarget !== 'writing') return;
+        var count = manuscriptWordCount(ocrEditorText(document.getElementById('ocr-text')));
+        counter.textContent = count + (count === 1 ? ' word' : ' words');
+        counter.setAttribute('aria-label', 'Draft word count: ' + count);
+    }
+
     function ocrRegionAcknowledgements() {
         return Array.prototype.slice.call(document.querySelectorAll('[data-ocr-region-index].is-acknowledged')).map(function(region) {
             return region.getAttribute('data-ocr-region-index');
@@ -359,6 +367,7 @@
         input.value = state.title;
         editor.innerHTML = ocrEditorHtml(extracted.remaining, state.ocr && state.ocr.uncertain_spans);
         syncOcrRegionsWithEditor();
+        updateOcrWordCount();
         updateOcrTitleUndoUi('');
     }
 
@@ -373,6 +382,7 @@
         input.value = snapshot.title;
         editor.innerHTML = snapshot.editorHtml;
         restoreOcrRegionAcknowledgements(snapshot.acknowledgedRegions);
+        updateOcrWordCount();
         state.ocrTitleUndo = null;
         updateOcrTitleUndoUi('');
     }
@@ -2416,8 +2426,10 @@
             : '';
         stage.innerHTML = '<div class="ocr-review-shell"><section class="surface surface-pad ocr-review-surface">' +
             '<div class="ocr-layout" id="ocr-layout"><section class="ocr-photo" aria-label="' + imageLabel + '">' + state.photoUrls.map(function(url, index) { return '<figure class="ocr-photo-page" data-ocr-page-index="' + index + '"><div class="ocr-photo-layer"><img src="' + escapeHtml(url) + '" alt="Uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '" data-open-photo-viewer="source" data-photo-index="' + index + '" role="button" tabindex="0" aria-label="Enlarge uploaded ' + (state.scanTarget === 'prompt' ? 'prompt' : 'composition') + ' page ' + (index + 1) + '"><svg class="ocr-photo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" role="group" aria-label="Unclear handwriting locations">' + ocrRegionSvg(index) + '</svg></div><figcaption class="sr-only">Uploaded page ' + (index + 1) + '</figcaption></figure>'; }).join('') + '</section>' +
-            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div></section></div></section>' +
+            '<section class="ocr-editor">' + titleControl + '<div id="ocr-text" class="ocr-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable OCR text" spellcheck="true">' + ocrEditorHtml(reviewText, state.ocr && state.ocr.uncertain_spans) + '</div>' +
+            (state.scanTarget === 'writing' ? '<p id="ocr-word-count" class="manuscript-word-count" role="status" aria-live="polite" aria-atomic="true"></p>' : '') + '</section></div></section>' +
             '<div class="form-actions ocr-review-actions"><button class="primary-button" type="button" data-confirm-ocr data-disable-when-busy>Confirm</button></div></div>';
+        updateOcrWordCount();
         scheduleStageViewportReset();
     }
 
@@ -4215,6 +4227,7 @@
             clearChangedOcrMarks(editor);
             state.ocrReviewText = ocrEditorText(editor);
             if (state.scanTarget === 'writing') state.confirmedText = state.ocrReviewText;
+            updateOcrWordCount();
             clearOcrTitleUndo();
         }
     });

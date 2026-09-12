@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-12 — Live OCR manuscript word count
+
+Added a quiet bottom-right word count to manuscript OCR confirmation. It updates
+on editing, first-line title extraction and Undo using the Draft/Revised rule.
+Title and prompt text are excluded. Static-only release; no extra AI calls.
+
 ## 2026-09-12 — Voiceprint success confirmation
 
 Added the owner-approved standalone success popup to Student and Teacher voiceprint registration/replacement. Teacher refresh failures after a successful save retain success and request a panel refresh, preventing misleading save-failure feedback. Static release only.
