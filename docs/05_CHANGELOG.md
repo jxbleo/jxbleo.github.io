@@ -3429,3 +3429,7 @@ publishes a separate coaching revision, and leaves old reports visible on failur
 - Added a three-second pre-recording countdown, a 60-second response and five-second ring-free final warning, with a distinct final tone in each sequence.
 - Finished exposes manual Submit; file input is Upload Files. Pending permission/cues are cancelled on dismissal and failed uploads remain retryable.
 - Frontend-only release; no CloudBase deployment or data migration.
+
+### 2026-09-13 — Individual Response interruption label
+
+Manual interruption now shows Start Over; automatic completion remains Finished. Submit still uploads explicitly, and restarting replaces the entire recording.

@@ -1101,3 +1101,5 @@ cp .qa-secrets.example .qa-secrets.local
 - Implemented the owner-approved preview in Speaking Lab: Set heading, Qn, central mic, 3-second opening and 60+5-second response, final-tone emphasis, Finished and manual Submit.
 - Added behavioural checks for capture timing, cue schedule, cancellation, late permission, denial, manual submission, file limit and retry; updated UI contracts and product/UI/test docs.
 - Frontend-only; no production backend mutation or migration required. Behavioural recorder tests, full Speaking Lab regression suite, release verification and static build passed. Browser fixture using production markup/CSS/binding verified central 3/2/1 and Finished/Submit; hardware and live backend upload were not exercised. Static publication pending.
+
+- 2026-09-13: Manual Individual Response stop/cancel now displays Start Over; automatic completion retains Finished. Updated preview, UI spec and behavioural label check.

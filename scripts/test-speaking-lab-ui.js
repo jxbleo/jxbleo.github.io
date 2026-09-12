@@ -116,7 +116,7 @@ function run() {
   assert.match(css, /\.speaking-set-part-b\[data-reading-size="small"\][\s\S]*\.speaking-set-part-b\[data-reading-size="large"\]/);
   assert.match(app, /speaking-response-question-card/);
   assert.match(app, /response-opening-digit/);
-  assert.match(app, /setRecordButton\('Finished', 'finished'\)/);
+  assert.match(app, /setRecordButton\(stoppedEarly \? 'Start Over' : 'Finished', 'finished'\)/);
   assert.match(app, /setRecordButton\('Tap to Stop', 'recording'\)/);
   assert.match(app, /scheduleResponseCues\(\[0, 1, 2\]/);
   assert.match(app, /scheduleResponseCues\(\[60, 61, 62, 63, 64\]/);
@@ -455,8 +455,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260913-response-recorder-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-response-recorder-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260913-response-recorder-2/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-response-recorder-2/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

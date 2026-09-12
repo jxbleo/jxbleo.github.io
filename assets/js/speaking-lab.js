@@ -1425,6 +1425,7 @@
         var record = document.getElementById('response-record');
         var file = document.getElementById('response-file');
         var upload = document.getElementById('response-upload');
+        var stoppedEarly = false;
         var surface = document.getElementById('response-recorder');
         var timer = document.getElementById('response-timer');
         var ring = document.getElementById('response-ring-progress');
@@ -1434,12 +1435,12 @@
         function setRecordButton(label, state) {
             if (!record) return;
             record.querySelector('[data-response-record-label]').textContent = label;
-            record.setAttribute('aria-label', state === 'finished' ? 'Finished. Record again' : label);
+            record.setAttribute('aria-label', state === 'finished' && label === 'Finished' ? 'Finished. Record again' : label);
             surface.setAttribute('data-state', state);
         }
         function readyToSubmit() {
             record.disabled = false;
-            setRecordButton('Finished', 'finished');
+            setRecordButton(stoppedEarly ? 'Start Over' : 'Finished', 'finished');
             file.disabled = false; fileLabel.hidden = true;
             upload.disabled = false; upload.hidden = false;
             status.textContent = '';
@@ -1454,12 +1455,13 @@
         }
         if (record) record.addEventListener('click', function () {
             if (responseUploadInProgress || responseCaptureState === 'stopping') return;
-            if (responseCaptureState === 'countdown' || responseCaptureState === 'requesting') { recordingFailure(''); return; }
-            if (responseCaptureState === 'recording') { finishResponseRecording(); return; }
+            if (responseCaptureState === 'countdown' || responseCaptureState === 'requesting') { recordingFailure(''); setRecordButton('Start Over', 'idle'); return; }
+            if (responseCaptureState === 'recording') { stoppedEarly = true; finishResponseRecording(); return; }
             if (responseBlob && !window.confirm('Replace this recording before submitting?')) return;
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { status.textContent = 'Recording is unavailable here. Use Upload Files instead.'; return; }
             stopResponseHardware();
             prepareResponseCueAudio();
+            stoppedEarly = false;
             var generation = responseCaptureGeneration;
             responseCaptureState = 'requesting';
             record.disabled = true; file.disabled = true;
@@ -1533,7 +1535,7 @@
                 var duration = Number(probe.duration);
                 if (!Number.isFinite(duration) || duration <= 0 || duration > 65) { status.textContent = 'Choose an audio file no longer than 65 seconds.'; return; }
                 responseRecordedDurationSeconds = duration; responseBlob = chosen; responseUploadOperationId = '';
-                readyToSubmit(); timer.textContent = timerClockText(duration);
+                stoppedEarly = false; readyToSubmit(); timer.textContent = timerClockText(duration);
             };
             probe.onerror = function () { URL.revokeObjectURL(objectUrl); if (generation !== responseCaptureGeneration || !record.isConnected) return; file.disabled = false; record.disabled = false; status.textContent = 'This audio file duration could not be checked.'; };
             probe.src = objectUrl;
