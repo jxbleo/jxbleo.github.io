@@ -1745,3 +1745,17 @@ Quality review also requires preserving the distinction between wishing for a
 friend to share an activity and a confirmed absence of such friends. Prompt
 `2026-09-13.1` explicitly retains insufficient personal-fact evidence and labels
 hypothetical circumstances outside the sample speech; new actions stay conditional.
+
+Final verification on Sep 13: `manifest-refined-validation-repair.json` reached
+61/61 succeeded, zero pending/failed active refreshes. All source reports,
+transcripts and original assessment fields are unchanged, and active response
+caches match their canonical reports. All 244 questions and 183 samples passed
+canonical validation; sample length range 95–163 words. The eleven resumed
+reports record `qwen3.8-max`. The real pilot ledger shows Plus HTTP 403
+`insufficient_quota` followed by Max HTTP 200 in the same job. The final repaired
+report explicitly retains insufficient personal-fact evidence rather than
+converting a wish into a confirmed absence of friends. Both manifests and final
+private results were backed up under the owner project's existing
+`.cloudbase-private/ir-coaching-refresh-20260912` directory. Latest speakingLab
+ZIPs are in `deploy-packages/speakingLab.zip` and
+`deploy-packages/ir-coaching-20260912/speakingLab.zip` in that project.

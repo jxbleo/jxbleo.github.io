@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-09-13 — IR refresh completed and verified
+
+- Completed all 61 ready IR reports in the frozen Sep 6–12 scope. The eleven
+  reports pending after the Plus quota stop all completed using `qwen3.8-max`.
+- Verified 244 questions and 183 samples (95–163 words), exact original
+  assessments/transcripts, unchanged source reports and matching active caches.
+- Strengthened the IR JSON contract and personal-fact uncertainty instructions
+  after one grades-only output. Its exhausted job remains recorded; a new
+  changed-prompt repair operation completed it without resetting old attempts.
+- Deployed/verified speakingLab; retained free-only settings and all runtime
+  configuration. No Part A backfill, ASR replay or frontend change was required.
+
 ## 2026-09-13 — Speaking free-quota model fallback
 
 - Added explicit ordered fallback for verified Qwen free-tier-only stops;
