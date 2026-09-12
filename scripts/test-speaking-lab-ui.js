@@ -56,8 +56,8 @@ function run() {
   assert.doesNotMatch(page, /NEW SESSION|id="discussion-dialog"/);
   assert.doesNotMatch(page, /discussion-vip-ids|discussion-guests/);
   assert.match(page, /voiceprint-recorder\.js\?v=/);
-  assert.match(page, /id="speaking-set-library"[\s\S]*Choose a Set/);
-  assert.match(page, /speaking-set-library-symbol/);
+  assert.match(page, /id="speaking-set-library"[\s\S]*Speaking Sets/);
+  assert.doesNotMatch(page, /speaking-set-library-heading|speaking-set-library-symbol/);
   assert.doesNotMatch(page, /id="my-voiceprint-card"/);
   assert.match(page, /id="speaking-voiceprint-main"[\s\S]*Read this passage aloud\.[\s\S]*id="voiceprint-consent"[\s\S]*id="voiceprint-record"[\s\S]*id="voiceprint-confirm"/);
   assert.doesNotMatch(page, /id="voiceprint-dialog"|id="voiceprint-stop"|id="voiceprint-close"|id="voiceprint-delete"/);
@@ -410,7 +410,6 @@ function run() {
   assert.match(css, /speaking-sidebar-panel\[hidden\][^}]*display:\s*none !important/);
   assert.match(css, /speaking-voiceprint-hold[^}]*touch-action:\s*none/);
   assert.match(css, /speaking-voiceprint-main\.has-voiceprint \.speaking-voiceprint-update-badge/);
-  assert.match(css, /speaking-set-library-heading[^}]*grid-template-columns/);
   assert.match(css, /speaking-set-library\[hidden\][^}]*display:\s*none !important/);
   assert.match(css, /speaking-set-list \.speaking-set-card[^}]*speaking-set-materialize/);
   assert.match(css, /speaking-set-detail[^}]*display:\s*grid/);
@@ -453,7 +452,7 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260912-ir-coaching-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260913-speaking-compact-1/);
   assert.match(page, /speaking-lab\.js\?v=20260912-ir-coaching-1/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);

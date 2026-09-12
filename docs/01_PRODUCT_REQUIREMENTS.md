@@ -2414,7 +2414,8 @@ answers are returned only by the authorized practice flow.
 
 ### DSE Paper 4 Speaking Set Library
 
-Speaking Lab now begins with `Choose a Set`. Each teacher-managed Set has one
+Speaking Lab begins with a searchable, filterable Set library without an
+introductory card. Each teacher-managed Set has one
 immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part
 A `task` statement followed by its Group Discussion points, and stable Part B
 Individual Response question IDs. The selected-Set overview omits the redundant

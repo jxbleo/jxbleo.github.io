@@ -106,6 +106,19 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-12 — Compact Speaking Set library release
+
+- Removed the decorative Choose a Set card; Search, Year, and Source share one
+  44px row on desktop and phones. Set cards use content height, 10–12px vertical
+  padding, and 10px list gaps. Updated cache versions and matching UI/docs.
+- Ported only these changes onto current main, preserving newer Speaking
+  recording, reading-size, and grouped-history behavior. Local fixture visual
+  QA covered desktop, 320px, and 390px widths. Static-only owner-authorized
+  release; no CloudBase deployment or data change is required.
+- Release checks passed: `npm run test:speaking-lab`,
+  `npm run test:github-publish`, `npm run verify:release`,
+  `npm run build:static`, and `git diff --check`.
+
 - 2026-09-12 — Assign score preview: hide scores for wholly unattempted selections, retain recorded zero and mixed-selection rows, and prefer explicit English names. Updated Teacher assets/cache versions, UI spec and regression checklist. Assignment regression, release verification, static build and publisher checks cover this scoped release. Owner authorized static publication; no CloudBase changes are required.
 
 - 2026-09-12 — Writing Argue local QA: raised-hand controls on wrong cards, last-checked-text dialog, repeated Reject/request, teacher Approve/Reject links, automatic approved sentence/completion updates, private reply projection and late-worker protection implemented. Writing, Argue mail/reminder, attempt-mail, self-study, login-redirect and task-scroll regressions passed; release verification, syntax/diff checks and four function packages passed. Desktop and 390px browser QA used an in-memory synthetic backend, including repeat request and final-sentence completion. Preserved unrelated shared-worktree edits. Product, architecture, UI, data, test, deployment and agent guidance updated.

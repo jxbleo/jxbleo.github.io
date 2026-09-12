@@ -3003,13 +3003,16 @@ horizontal page overflow.
 
 ### Set-first Speaking home and Part B recorder
 
-The student Speaking home shows `Choose a Set`; Voiceprint is available only
+The student Speaking home opens directly to the Set filters and list, with no
+`Choose a Set` introduction card; Voiceprint is available only
 from the left sidebar's microphone icon. A selected Set renders Context, Part A points with
 `Start Discussion`, and each Part B question with its own `Start Response`.
 The Set-first journey uses one vertical Apple-style card flow rather than a
-single container around nested rows. The first card establishes the DSE Paper 4
-context; each Set is a separate pressable card with year/source identity,
-three-step route, and anchored chevron. A selected Set becomes four vertically
+single container around nested rows. Search, All years, and All Sets stay in
+one row in that order, including on phones; Search takes the remaining width.
+Controls are 44px tall. Each Set is a compact, content-height pressable card
+with 10–12px vertical padding, 10px gaps between cards, year/source identity,
+and an anchored chevron. A selected Set becomes four vertically
 ordered surfaces: overview, Context, Part A, and Part B. Context copy has a
 quiet reading measure, while the two practice cards keep their action beside
 the content it affects. Individual Response uses separate overview, question,

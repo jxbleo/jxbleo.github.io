@@ -2903,6 +2903,9 @@ Increased Contrast.
 - Verify Part B uses the circular countdown from 01:05, turns red with five seconds remaining, stops at 00:00, rejects longer files, blocks
   accidental navigation, and retries failed analysis without another upload.
 - Verify students mutate only owned responses; teachers can list/read all.
+- Verify the home has no Choose a Set introduction card. At desktop and phone
+  widths, Search, All years, and All Sets share one row without horizontal page
+  overflow. Cards use compact vertical padding and grow for wrapped titles.
 - Verify the Set library is a vertical sequence of independent cards rather
   than one enclosing panel, and that every card has visible press feedback,
   keyboard focus, and an unambiguous disclosure arrow.
