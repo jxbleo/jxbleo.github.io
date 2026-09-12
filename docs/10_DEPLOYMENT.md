@@ -1618,3 +1618,38 @@ Publish the cache-busted `speaking-lab.html`, `teacher.html`, common
 The common script loads before either role adapter. This release uses existing
 Discussion date/duration and upload actions; no new backend function, collection,
 index, permission, provider configuration, or migration is required.
+
+### Writing sentence Argue rollout (2026-09-12; owner authorized)
+
+After owner authorization, deploy matching bundles for `writingTutor`,
+`teacherAdmin`, `getDashboard`, and `sendTeacherAttemptEmails`, then publish
+the cache-busted `ai-tutor.html`, `argue-review.html`, `teacher.html`,
+`dashboard.html` and their changed JS/CSS/config assets. No new collection,
+index, environment variable, timer or secret is needed. Existing enabled
+teacher recipients and HTTPS `TEACHER_ATTEMPT_EMAIL_TEACHER_URL` are required.
+`writingAiWorker` needs no code change: it dispatches into `writingTutor`.
+Local packaging: `npm run package:functions -- writingTutor teacherAdmin
+getDashboard sendTeacherAttemptEmails`. Do not deploy only the static UI: the
+new submit action and Writing-specific approval transaction must be live first.
+Online acceptance should use a dedicated QA student, receive the real email,
+Reject and re-request the same sentence, then Approve and confirm completion.
+Local QA used synthetic data and sent no real teacher email.
+
+
+Owner authorized the four-function/static rollout on 2026-09-12. The release
+uses latest `main`, retaining the live OCR counter and Teacher class selection.
+Preflight confirmed the cloud Writing quota-fallback patch was not yet in
+GitHub: its provider code and nonbillable usage summary are retained and
+reconciled into source here. Rebuilding the pre-feature Writing bundle with
+these existing changes matched the downloaded live bundle byte-for-byte.
+The Dashboard and email baseline bundles also matched. Teacher baseline differs
+only by a bundled Listening reveal-check guard in an unused helper; Teacher
+imports material authoring helpers, not `revealUnit`. No Listening function
+will be deployed. Existing per-function InstallDependency flags, runtime,
+environment and trigger configuration are preserved.
+
+The owner-authorized code-only update completed for all four functions. Each
+reported Active; downloaded `index.js` and `package.json` SHA-256 values matched
+the release packages, and the complete configuration snapshot was unchanged.
+The static release follows this verified backend rollout. Real mailbox/student
+acceptance remains the owner's manual test.

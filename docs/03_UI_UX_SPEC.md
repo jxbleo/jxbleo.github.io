@@ -3108,3 +3108,16 @@ Daily unresolved Argue emails prefix the existing subject with `提醒处理 | `
 explain that daily reminders stop after processing. They preserve the original
 question context and exact same authenticated single-question review link. The
 three decisions and optional Teachers’ Note interface are unchanged.
+
+### Writing Argue controls (2026-09-12)
+
+The incorrect sentence card's top-right actions pair the existing status icon
+with a 36px raised-hand button on both card faces. Correct/read-only sentences
+have no request button. The button is independent of the flip hit target and
+has an accessible Argue/status name. A modal shows the exact last checked
+sentence, optional reason, latest teacher reply, Close and Submit/Request again.
+Pending requests show a dot and a waiting view without a second submit action.
+The modal traps focus and locks background scroll. Visible-page polling updates
+resolved cards while retaining unrelated drafts, textarea selection and card
+position. Email links preselect Approve or Reject on the existing authenticated
+review card; only Submit saves the decision.

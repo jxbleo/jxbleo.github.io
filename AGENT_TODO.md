@@ -42,6 +42,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-12 — Writing sentence Argue: owner-authorized `writingTutor`, `teacherAdmin`, `getDashboard`, and `sendTeacherAttemptEmails` code updates are Active and downloaded code matches the tested packages; cloud configuration is unchanged. Matching static publication follows. Dedicated QA-student real-email acceptance remains for the owner; local QA sent no real email.
+
 - 2026-09-12 — Multi-group voiceprints: local implementation and regression tests pass. The owner authorized deployment of `speakingLab` and publication of the scoped Student/Teacher frontend assets; `speakingLab` was deployed and its downloaded ZIP exactly matches the tested package; existing cloud configuration is unchanged. Static publication is in progress. Verify the next intended registration creates a second group and old IDs still match; no live voiceprints were created, updated or deleted during this task.
 
 - 2026-09-06 — Argue email release: owner-authorized publication of the scoped static entry and `getDashboard`, `intensiveListening`, `teacherAdmin`, `sendTeacherAttemptEmails` is pending. Verify the existing HTTPS Teacher URL setting, then test a dedicated QA-student request through the real WeChat mailbox notification. No real mail or cloud data was changed during local QA.
@@ -73,6 +75,8 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-12 — Writing Argue local QA: raised-hand controls on wrong cards, last-checked-text dialog, repeated Reject/request, teacher Approve/Reject links, automatic approved sentence/completion updates, private reply projection and late-worker protection implemented. Writing, Argue mail/reminder, attempt-mail, self-study, login-redirect and task-scroll regressions passed; release verification, syntax/diff checks and four function packages passed. Desktop and 390px browser QA used an in-memory synthetic backend, including repeat request and final-sentence completion. Preserved unrelated shared-worktree edits. Product, architecture, UI, data, test, deployment and agent guidance updated.
 
 - 2026-09-12: Added live manuscript OCR word count using the existing
   Draft/Revised rule, including editing and title extraction/Undo updates.

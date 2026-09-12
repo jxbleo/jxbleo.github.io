@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-12 — Writing sentence Argue
+
+Added student raised-hand requests, teacher email Approve/Reject links, unlimited
+re-requests after rejection, and transactional per-composition approvals that
+advance completion and survive late AI results. Reused private Argue delivery,
+reminders and reply history; added focused regression coverage. The owner
+authorized publication, and all four matching cloud functions are deployed and
+verified with their existing configuration preserved.
+
+
 ## 2026-09-12 — Live OCR manuscript word count
 
 Added a quiet bottom-right word count to manuscript OCR confirmation. It updates

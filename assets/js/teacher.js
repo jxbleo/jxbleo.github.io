@@ -543,7 +543,7 @@
     function loadQuestionTextForRecords(records) {
         var setIds = {};
         (records || []).forEach(function(record) {
-            if (record.set_id) setIds[record.set_id] = true;
+            if (record.set_id && record.dispute_type !== 'writing_sentence') setIds[record.set_id] = true;
         });
         var keys = Object.keys(setIds);
         if (!keys.length) return Promise.resolve();
@@ -8001,6 +8001,12 @@
     }
 
     function renderDisputeDetail(item) {
+        if (item.dispute_type === 'writing_sentence') {
+            return '<article class="dispute-detail"><p class="dispute-question-text">' + escapeHtml(item.question_text_snapshot) + '</p>' +
+                '<p>' + escapeHtml(item.student_reason || '') + '</p><p>' + escapeHtml(item.teacher_note || '') + '</p>' +
+                '<a class="primary-button" href="argue-review.html?dispute=' + encodeURIComponent(item.dispute_id) + '">' +
+                (item.status === 'pending' ? 'Approve / Reject' : 'View decision') + '</a></article>';
+        }
         if (item.dispute_type === 'intensive_spelling_exemption') return renderIntensiveSpellingDispute(item);
         var pending = item.status === 'pending';
         var questionText = getQuestionText(item);

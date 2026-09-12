@@ -3110,3 +3110,18 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   recording modal layers close and restores the prior scroll position.
 - Local browser QA uses synthetic audio and stubbed APIs only. Real-device
   microphone/speaker playback and CloudBase upload remain deployment smoke checks.
+
+### Writing sentence Argue (2026-09-12)
+
+Run `npm run test:writing-argue` (also included in `test:writing-tutor`),
+`test:argue-emails`, `test:argue-reminders`, `test:attempt-emails`, and the
+Dashboard reply regressions. Test ownership/forged identity, stale text/review,
+idempotent duplicate requests, repeated Reject/request cycles, one-shot
+concurrent teacher decisions, metadata-only outbox and enqueue repair, last
+sentence completion, late AI rejection, and completion while AI is running.
+Browser QA: correct cards lack the hand; both faces of wrong cards open Argue
+without flipping; modal text is the last checked sentence; Reject allows a new
+request; Approve turns the sentence green and eventually completes the revised
+text. Other unsent rewrites and focus must survive automatic refresh. Check
+390px/desktop layouts, keyboard close and no background scroll. Use synthetic
+local data; actual CloudBase/SMTP acceptance requires the authorized rollout.

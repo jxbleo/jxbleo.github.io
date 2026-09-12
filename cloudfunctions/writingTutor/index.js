@@ -12,6 +12,7 @@ const {
   PROMPT_VERSION, ocrPrompt, ocrLocationPrompt, revisionScanPrompt, standardizedPrompt, languagePrompt, rewritePrompt,
 } = require("./prompts");
 const { callStructuredModel } = require("./model-provider");
+const writingDisputes = require("../_shared/writing-disputes");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -89,10 +90,12 @@ function stableId(prefix, ...parts) {
 function summarizeModelUsage(attempts) {
   const rows = Array.isArray(attempts) ? attempts : [];
   const sum = (field) => rows.reduce((total, row) => total + (Number.isInteger(row && row[field]) ? row[field] : 0), 0);
+  const nonbillable = (row) => row && row.outcome === "quota_exhausted";
   return {
     call_count: rows.length,
     recorded_call_count: rows.filter((row) => row && row.usage_status === "recorded").length,
-    missing_call_count: rows.filter((row) => !row || row.usage_status !== "recorded").length,
+    nonbillable_call_count: rows.filter(nonbillable).length,
+    missing_call_count: rows.filter((row) => (!row || row.usage_status !== "recorded") && !nonbillable(row)).length,
     input_tokens: sum("input_tokens"),
     output_tokens: sum("output_tokens"),
     total_tokens: sum("total_tokens"),
@@ -419,6 +422,8 @@ function compositionView(composition) {
     language_review: composition.language_review || null,
     rewrite_results: composition.rewrite_results || null,
     rewrite_check_pending: Boolean(composition.pending_rewrite_check),
+    writing_sentence_disputes: composition.writing_sentence_disputes || {},
+    writing_review_scope: composition.language_review ? writingDisputes.scope(composition) : null,
     pending_rewrite_items: pendingRewriteItems,
     replacement_pending: Boolean(composition.pending_replacement),
     pending_upload: pendingUpload,
@@ -2039,6 +2044,7 @@ async function enqueueReviewJob(student, composition, prepared, event, mode, usa
       const current = compositionResult.data && compositionResult.data[0];
       if (!current) throw new Error("COMPOSITION_NOT_FOUND");
       const currentCandidate = reviewCandidate(current);
+      if (current.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
       if (Number(currentCandidate.revision || 1) !== Number(job.composition_revision || 1)) {
         throw new Error("COMPOSITION_REVISION_CHANGED");
       }
@@ -2371,6 +2377,15 @@ async function performReviewJob(student, job) {
     }
     if (!usageRow) throw new Error("AI_USAGE_RESERVATION_LOST");
     const persistenceUpdate = { ...update };
+    if (job.review_mode === "general_language") {
+      const projected = { ...current, ...update };
+      const approved = writingDisputes.applyApprovals(projected, {});
+      if (approved.results.length) {
+        persistenceUpdate.rewrite_results = approved;
+        persistenceUpdate.status = approved.passed ? "completed" : "sentence_training";
+        persistenceUpdate.completed_at = approved.passed ? current.completed_at || now : null;
+      }
+    }
     const currentCandidate = reviewCandidate(current);
     const currentTitleIsStudent = titleSource(current) === "student";
     const candidateTitleIsStudent = titleSource(currentCandidate) === "student";
@@ -2556,6 +2571,7 @@ async function enqueueRewriteJob(student, composition, event, items) {
       if (!current.language_review || !Array.isArray(current.language_review.sentences)) {
         throw new Error("LANGUAGE_REVIEW_REQUIRED");
       }
+      if (current.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
       if (current.active_job_id && current.active_job_id !== jobId) {
         const priorResult = await transaction.collection(JOBS).where({
           job_id: current.active_job_id, student_uid: student.auth_uid,
@@ -2686,12 +2702,13 @@ async function performRewriteJob(student, job) {
       outcome = "superseded";
       return;
     }
+    const protectedRecord = writingDisputes.applyApprovals(current, record);
     await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
-      rewrite_results: record,
+      rewrite_results: protectedRecord,
       pending_rewrite_check: null,
       active_job: succeededJob,
-      status: passed ? "completed" : "sentence_training",
-      completed_at: passed ? now : null,
+      status: protectedRecord.passed ? "completed" : "sentence_training",
+      completed_at: protectedRecord.passed ? current.completed_at || now : null,
       updated_at: now,
     }, ["rewrite_results", "pending_rewrite_check", "active_job"]));
     await transaction.collection(JOBS).doc(currentJob._id).update({
@@ -2808,6 +2825,8 @@ async function getProfile(student) {
 
 function friendlyMessage(code) {
   const messages = {
+    WRITING_SENTENCE_NOT_INCORRECT: "This sentence is already correct. Refresh your writing to see the latest result.",
+    DISPUTE_REVIEW_CHANGED: "This sentence was checked again or the writing changed. Refresh your writing before requesting Argue.",
     AUTH_REQUIRED: "Please sign in first.", STUDENT_NOT_LINKED: "This student account is not linked.",
     COMPOSITION_NOT_FOUND: "This writing record could not be found.", COMPOSITION_READ_ONLY: "Completed writing is read-only. Use it as a new composition to continue.",
     COMPOSITION_NOT_DRAFT: "This writing has already entered review and can no longer be discarded as a draft.",
@@ -2854,6 +2873,7 @@ exports.main = async (event = {}) => {
     if (action === "updateCompositionTitle") return await updateCompositionTitle(student, event);
     if (action === "evaluate") return await evaluate(student, event);
     if (action === "submitRewrites") return await submitRewrites(student, event);
+    if (action === "submitSentenceDispute") return await writingDisputes.submit({ db, student, event });
     if (action === "confirmRevisionScanImport") return await confirmRevisionScanImport(student, event);
     if (action === "getProfile") return await getProfile(student);
     throw new Error("UNKNOWN_ACTION");

@@ -9,7 +9,7 @@
     var switchAccount = document.getElementById('argue-switch');
     var current = null;
     var busy = false;
-    var labels = { keep: 'Keep Original Ruling', add: 'Add as Accepted Answer', replace: 'Replace Correct Answer', provide: 'Approve Provided Word' };
+    var labels = { keep: 'Keep Original Ruling', add: 'Add as Accepted Answer', replace: 'Replace Correct Answer', provide: 'Approve Provided Word', approve: 'Approve', reject: 'Reject' };
     var errors = {
         DISPUTE_NOT_AVAILABLE: 'This request is no longer available.',
         DISPUTE_ALREADY_RESOLVED: 'This Argue has already been processed. The saved result is shown below.',
@@ -53,10 +53,11 @@
     function render(item, draft) {
         current = item;
         var intensive = item.dispute_type === 'intensive_spelling_exemption';
+        var writing = item.dispute_type === 'writing_sentence';
         var pending = item.status === 'pending';
         var committed = item.resolution_decision;
-        var decisions = intensive ? ['keep', 'provide'] : ['keep', 'add', 'replace'];
-        var selected = committed || draft && draft.decision || '';
+        var decisions = writing ? ['approve', 'reject'] : intensive ? ['keep', 'provide'] : ['keep', 'add', 'replace'];
+        var selected = committed || draft && draft.decision || (writing ? new URLSearchParams(window.location.search).get('decision') : '') || '';
         var note = committed ? item.resolution_note : draft && draft.note || '';
         var date = new Date(item.created_at);
         document.getElementById('argue-title').textContent = item.set_title || item.set_id;
@@ -67,7 +68,7 @@
             '</small></div><span class="badge dispute-status">' + escapeHtml(pending ? 'Pending' : item.status === 'approved' ? 'Approved' : 'Rejected') + '</span></div>' +
             '<p class="dispute-question-text" id="argue-question">' + escapeHtml(item.question_text_snapshot || 'Question text is unavailable.') + '</p>' +
             '<div class="dispute-comparison"><div><span>' + (intensive ? 'Requested Provided Word' : 'Submitted answer') + '</span><strong>' + escapeHtml(answer(item.submitted_answer)) + '</strong></div>' +
-            (!intensive ? '<div><span>Correct answer snapshot</span><strong>' + escapeHtml(answer(item.answer_snapshot)) + '</strong></div>' : '') + '</div>' +
+            (!intensive ? '<div><span>' + (writing ? 'AI suggested revision' : 'Correct answer snapshot') + '</span><strong>' + escapeHtml(answer(item.answer_snapshot)) + '</strong></div>' : '') + '</div>' +
             (!intensive && item.current_answer != null && answer(item.current_answer) !== answer(item.answer_snapshot)
                 ? '<p class="dispute-explanation"><strong>Current accepted answers</strong>' + escapeHtml(answer(item.current_answer)) + '</p>' : '') +
             (!intensive ? '<p class="dispute-explanation"><strong>Explanation</strong>' + escapeHtml(item.explanation || item.explanation_snapshot || 'No explanation is stored for this question.') + '</p>' : '') +
@@ -78,7 +79,8 @@
                 }).join('') + '</fieldset>' +
                 '<label class="argue-note-label" for="argue-note">Teachers’ Note <span>(optional)</span></label>' +
                 '<textarea class="dispute-note" id="argue-note" maxlength="1000" placeholder="Add a note for the student…"' + (committed ? ' readonly' : '') + '>' + escapeHtml(note) + '</textarea>' +
-                '<p class="argue-impact">' + (committed ? 'The decision is saved. Continue to finish applying it.' : intensive
+                '<p class="argue-impact">' + (committed ? 'The decision is saved. Continue to finish applying it.' : writing
+                    ? 'Approve counts this sentence as correct for this student’s composition. Reject leaves it incorrect; the student may request Argue again.' : intensive
                     ? 'Approval makes this a Provided Word for all students.'
                     : 'Add and Replace update the answer rule for this question and improve matching historical results.') + '</p>' +
                 '<div class="argue-replace-confirm" id="argue-replace-confirm" hidden><p>Replace the correct answer for future submissions? The previous rule will remain in history.</p><button class="danger-button" id="argue-confirm" type="button">Confirm Replace</button> <button class="outline-button" id="argue-cancel" type="button">Cancel</button></div>' +
@@ -128,7 +130,7 @@
         status('Processing…');
         call('resolveDispute', { decision: draft.decision, teacher_note: draft.note, expected_revision: current.review_revision }).then(function() {
             // Do not depend on a second network request to display the saved result.
-            render(Object.assign({}, current, { status: draft.decision === 'keep' ? 'rejected' : 'approved', decision: draft.decision, teacher_note: draft.note.trim() }));
+            render(Object.assign({}, current, { status: ['keep', 'reject'].indexOf(draft.decision) >= 0 ? 'rejected' : 'approved', decision: draft.decision, teacher_note: draft.note.trim() }));
             recovery.hidden = true;
             status('✓ Argue processed. The student can now see your reply.', 'success');
         }).catch(function(error) {

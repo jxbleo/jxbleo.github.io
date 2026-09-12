@@ -5,6 +5,7 @@ const exerciseProgress = require("../_shared/exercise-progress");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
 const argueNotifications = require("../_shared/argue-notifications");
 const argueResolution = require("../_shared/argue-resolution");
+const writingDisputes = require("../_shared/writing-disputes");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const intensiveSpelling = require("../_shared/intensive-listening-spelling");
 const intensiveListeningService = require("../intensiveListening/service");
@@ -3271,7 +3272,7 @@ function disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap) {
     student_id: student.student_id || dispute.student_id_snapshot || "",
     student_name: student.name || dispute.student_name_snapshot || "",
     set_id: dispute.set_id,
-    set_title: set.title || dispute.set_id,
+    set_title: set.title || dispute.set_title_snapshot || dispute.set_id,
     attempt_id: dispute.attempt_id,
     assignment_id: dispute.assignment_id || null,
     question_id: dispute.question_id,
@@ -3948,6 +3949,8 @@ async function backfillAssignmentDueWeeks(event, teacher) {
 }
 
 async function resolveDispute(event, teacher) {
+  const dispute = await getOne("answer_disputes", { dispute_id: text(event.dispute_id) });
+  if (dispute && dispute.dispute_type === writingDisputes.TYPE) return writingDisputes.resolve({ db, event, teacher });
   return argueResolution.resolve({
     db, event, teacher,
     regrade: applyAcceptedAnswerToHistoricalAttempts,
@@ -3969,7 +3972,7 @@ async function getDispute(event) {
   return { success: true, dispute: {
     ...view,
     current_answer: gradingKey && gradingKey.answers && gradingKey.answers[dispute.question_id],
-    review_revision: argueResolution.revision(dispute, source),
+    review_revision: dispute.dispute_type === writingDisputes.TYPE ? writingDisputes.scope(context.composition) : argueResolution.revision(dispute, source),
     resolution_decision: dispute.resolution_decision || null,
     resolution_note: dispute.resolution_note || "",
     resolution_processing: Boolean(dispute.resolution_token &&

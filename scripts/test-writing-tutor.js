@@ -1849,7 +1849,7 @@ check("Token summaries count repair calls and missing usage without inventing to
     { usage_status: "missing", input_tokens: null, output_tokens: null, total_tokens: null },
   ]);
   assert.deepStrictEqual(summary, {
-    call_count: 3, recorded_call_count: 2, missing_call_count: 1,
+    call_count: 3, recorded_call_count: 2, missing_call_count: 1, nonbillable_call_count: 0,
     input_tokens: 220, output_tokens: 22, total_tokens: 242,
     cached_input_tokens: 20, reasoning_output_tokens: 5,
   });
@@ -2459,9 +2459,9 @@ check("rewrite checks preserve every feedback round before replacing the current
   const performSource = functionSource(backend, "performRewriteJob", "submitRewrites");
   requireEvery(performSource, [
     "appendRewriteFeedbackHistory", "feedback_history", "check_round",
-    "previousRecord", "enrichedResults", "rewrite_results: record",
+    "previousRecord", "enrichedResults", "rewrite_results: protectedRecord", "writingDisputes.applyApprovals(current, record)",
   ], "durable rewrite feedback history");
-  assert(performSource.indexOf("appendRewriteFeedbackHistory") < performSource.indexOf("rewrite_results: record"),
+  assert(performSource.indexOf("appendRewriteFeedbackHistory") < performSource.indexOf("rewrite_results: protectedRecord"),
     "the new feedback round must be assembled before the whole rewrite result is published");
 });
 

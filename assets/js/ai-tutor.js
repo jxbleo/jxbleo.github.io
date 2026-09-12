@@ -3346,6 +3346,129 @@
         return '<button class="sentence-capsule is-' + status + (index === state.activeSentence ? ' is-active' : '') + '" type="button" data-sentence-index="' + index + '" data-sentence-id="' + escapeHtml(id) + '" style="' + sentenceColorStyle(index) + '" aria-pressed="' + (index === state.activeSentence) + '"' + (index === state.activeSentence ? ' aria-current="true"' : '') + ' aria-label="第 ' + (index + 1) + ' 句' + capsuleStatus + '"><span aria-hidden="true">' + (index + 1) + '</span></button>';
     }
 
+    var sentenceArgueDialog = null;
+    var sentenceArgueRefreshing = false;
+
+    function sentenceArgueSummary(id) {
+        var item = state.current && state.current.writing_sentence_disputes && state.current.writing_sentence_disputes[id];
+        return item && item.review_scope === state.current.writing_review_scope ? item : null;
+    }
+
+    function sentenceArgueButton(id, accepted) {
+        if (state.readOnly || accepted) return '';
+        var item = sentenceArgueSummary(id);
+        var label = item && item.status === 'pending' ? 'Argue · 等待教师处理' : item && item.status === 'rejected' ? 'Argue · 可再次请求' : 'Argue · 请求教师复核';
+        return '<button class="sentence-argue-button" type="button" data-sentence-argue="' + escapeHtml(id) + '" aria-label="' + label + '" title="' + label + '">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-3a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-12 5l-5-6a1.5 1.5 0 0 1 2-2l3 3"/></svg>' +
+            (item && item.status === 'pending' ? '<span class="sentence-argue-dot" aria-hidden="true"></span>' : '') + '</button>';
+    }
+
+    function updateSentenceArgueComposition(composition) {
+        if (!composition || compositionId(composition) !== compositionId(state.current)) return;
+        var focused = document.activeElement;
+        var focusedId = focused && focused.id;
+        var selection = focused && focused.tagName === 'TEXTAREA' ? [focused.selectionStart, focused.selectionEnd] : null;
+        state.current = composition;
+        state.review = composition.language_review || state.review;
+        setStatus('');
+        safeArray(composition.rewrite_results && composition.rewrite_results.results).forEach(function(item) {
+            state.rewriteResults[item.sentence_id] = item;
+            if (item.accepted) state.rewriteFace[item.sentence_id] = true;
+        });
+        clearAcceptedRewriteDrafts(safeArray(composition.rewrite_results && composition.rewrite_results.results).filter(function(item) { return item.accepted; }), compositionStatus(composition) === 'completed');
+        if (compositionStatus(composition) === 'completed') state.manuscriptView = 'revised';
+        syncCurrentSummary();
+        renderLanguage();
+        var restored = focusedId && document.getElementById(focusedId);
+        if (restored) {
+            restored.focus({ preventScroll: true });
+            if (selection && restored.setSelectionRange) restored.setSelectionRange(selection[0], selection[1]);
+        }
+    }
+
+    function refreshSentenceArgues() {
+        if (sentenceArgueRefreshing || state.busy || document.hidden || !state.current ||
+            !document.querySelector('[data-sentence-card]') || sentenceArgueDialog && sentenceArgueDialog.open) return;
+        var summaries = state.current.writing_sentence_disputes || {};
+        if (!Object.keys(summaries).some(function(id) { var item = sentenceArgueSummary(id); return item && item.status === 'pending'; })) return;
+        var id = compositionId(state.current);
+        var before = JSON.stringify(summaries);
+        sentenceArgueRefreshing = true;
+        writingCall('getComposition', { composition_id: id }).then(function(result) {
+            if (state.busy || compositionId(state.current) !== id || !document.querySelector('[data-sentence-card]') ||
+                sentenceArgueDialog && sentenceArgueDialog.open) return;
+            if (result.composition && JSON.stringify(result.composition.writing_sentence_disputes || {}) !== before) {
+                updateSentenceArgueComposition(result.composition);
+            }
+        }).catch(function() {}).finally(function() { sentenceArgueRefreshing = false; });
+    }
+    window.setInterval(refreshSentenceArgues, 15000);
+    window.addEventListener('focus', refreshSentenceArgues);
+    document.addEventListener('visibilitychange', refreshSentenceArgues);
+
+    function openSentenceArgue(id, trigger) {
+        if (state.busy || state.readOnly) return;
+        var sentence = safeArray(state.review && state.review.sentences).find(function(item) { return sentenceId(item) === id; });
+        var result = state.rewriteResults[id];
+        if (!sentence || !rewriteRequired(sentence) || result && result.accepted) return;
+        var summary = sentenceArgueSummary(id);
+        var pending = summary && summary.status === 'pending';
+        var submitted = firstText(result && result.student_rewrite, sentence.original);
+        var currentId = compositionId(state.current);
+        var reviewScope = state.current.writing_review_scope;
+        var submitting = false;
+        if (!sentenceArgueDialog) {
+            sentenceArgueDialog = document.createElement('dialog');
+            sentenceArgueDialog.className = 'writing-argue-dialog';
+            sentenceArgueDialog.setAttribute('aria-labelledby', 'writing-argue-title');
+            document.body.appendChild(sentenceArgueDialog);
+        }
+        sentenceArgueDialog.innerHTML = '<h2 id="writing-argue-title">Argue</h2><p class="section-hint">请求教师复核最近一次被判错的句子。尚未提交的改写不会发送。</p>' +
+            '<p class="writing-argue-sentence">' + escapeHtml(submitted) + '</p>' +
+            (summary ? '<p>' + (pending ? '等待教师处理' : summary.status === 'rejected' ? '教师已拒绝，可再次请求。' : '教师已批准') + '</p>' +
+                (summary.teacher_note ? '<p class="writing-argue-sentence">' + escapeHtml(summary.teacher_note) + '</p>' : '') : '') +
+            (!pending ? '<label for="writing-argue-reason">申诉理由（可选）</label><textarea id="writing-argue-reason" maxlength="1000" rows="3"></textarea>' : '') +
+            '<p data-argue-message role="status"></p><div class="form-actions"><button type="button" class="secondary-button" data-close-writing-argue>关闭</button>' +
+            (!pending ? '<button type="button" class="primary-button" data-send-writing-argue>' + (summary ? '再次请求 Argue' : '提交 Argue') + '</button>' : '') + '</div>';
+        var oldOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        sentenceArgueDialog.onclose = function() {
+            document.body.style.overflow = oldOverflow;
+            if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+            refreshSentenceArgues();
+        };
+        sentenceArgueDialog.oncancel = function(event) { if (submitting) event.preventDefault(); };
+        sentenceArgueDialog.querySelector('[data-close-writing-argue]').onclick = function() { sentenceArgueDialog.close(); };
+        var send = sentenceArgueDialog.querySelector('[data-send-writing-argue]');
+        if (send) send.onclick = function() {
+            if (submitting) return;
+            submitting = true;
+            send.disabled = true;
+            sentenceArgueDialog.querySelector('[data-close-writing-argue]').disabled = true;
+            sentenceArgueDialog.querySelector('textarea').readOnly = true;
+            var reason = sentenceArgueDialog.querySelector('textarea').value;
+            var fingerprint = JSON.stringify([currentId, id, reviewScope, summary && summary.dispute_id, reason]);
+            writingCall('submitSentenceDispute', { composition_id: currentId, sentence_id: id,
+                operation_id: logicalOperationId('sentence-argue', fingerprint), review_scope: reviewScope,
+                submitted_answer: submitted, student_reason: reason }).then(function(response) {
+                clearLogicalOperation('sentence-argue');
+                if (compositionId(state.current) !== currentId) return;
+                state.current.writing_sentence_disputes = state.current.writing_sentence_disputes || {};
+                state.current.writing_sentence_disputes[id] = { dispute_id: response.dispute_id, review_scope: reviewScope, status: 'pending' };
+                sentenceArgueDialog.close();
+                renderLanguage();
+                setStatus('Argue 已提交，等待教师处理。');
+            }).catch(function(error) {
+                submitting = false;
+                send.disabled = false;
+                sentenceArgueDialog.querySelector('[data-close-writing-argue]').disabled = false;
+                sentenceArgueDialog.querySelector('textarea').readOnly = false;
+                sentenceArgueDialog.querySelector('[data-argue-message]').textContent = error.message || '提交失败，请重试。';
+            });
+        };
+        sentenceArgueDialog.showModal();
+    }
+
     function sentenceCardHtml(sentence, index) {
         var id = sentenceId(sentence, index);
         var required = rewriteRequired(sentence);
@@ -3358,7 +3481,7 @@
         var sentenceNumber = '<span class="sentence-row-number" aria-hidden="true">' + (index + 1) + '</span>';
         var revisionState = sentenceVisualStatus(sentence, index);
         var sentenceMeta = '<div class="sentence-card-meta">' + sentenceNumber +
-            sentenceStatusIconHtml(revisionState, id, false) + '</div>';
+            '<span class="sentence-card-actions">' + sentenceArgueButton(id, accepted) + sentenceStatusIconHtml(revisionState, id, false) + '</span></div>';
         if (!required) {
             return cardStart +
                 '<div class="sentence-flip-card"><div class="sentence-card-inner sentence-card-inner-static">' +
@@ -4385,6 +4508,7 @@
                 if (selectedVersion) selectedVersion.focus({ preventScroll: true });
             });
         }
+        else if (button.matches('[data-sentence-argue]')) openSentenceArgue(button.getAttribute('data-sentence-argue'), button);
         else if (button.matches('[data-revision-skin]')) toggleRevisionSkin();
         else if (button.matches('[data-revision-font-step]')) adjustRevisionTextLevel(Number(button.getAttribute('data-revision-font-step')));
         else if (button.matches('[data-cue-effective-sentence]')) {

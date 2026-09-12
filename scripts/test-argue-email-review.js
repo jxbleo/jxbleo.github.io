@@ -8,7 +8,9 @@ const vm = require("vm");
 const { createRequire } = require("module");
 const notifications = require("../cloudfunctions/_shared/argue-notifications");
 const resolution = require("../cloudfunctions/_shared/argue-resolution");
-const now = new Date("2026-09-06T06:00:00Z");
+// Immediate-email fixtures must be created today; older fixtures also become
+// eligible for the separately tested daily reminder dispatcher.
+const now = new Date();
 const clone = (value) => structuredClone(value);
 
 // Serial, rollback-capable transactions let the tests exercise duplicate calls

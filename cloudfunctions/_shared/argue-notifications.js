@@ -91,7 +91,10 @@ async function loadContext(db, disputeId) {
   ]);
   if (!student || student.deleted || student.deleted_at || student.delete_pending ||
       (assignment && assignment.status === "cancelled")) throw new Error("DISPUTE_NOT_AVAILABLE");
-  return { dispute, student, set: set || { title: dispute.set_id }, gradingKey, assignment };
+  const composition = dispute.dispute_type === "writing_sentence"
+    ? await one(db, "writing_compositions", { composition_id: dispute.composition_id, student_uid: dispute.student_uid }) : null;
+  if (dispute.dispute_type === "writing_sentence" && !composition) throw new Error("DISPUTE_NOT_AVAILABLE");
+  return { dispute, student, set: set || { title: dispute.set_title_snapshot || dispute.set_id }, gradingKey, assignment, composition };
 }
 
 function reviewUrl(teacherUrl, disputeId) {
@@ -107,16 +110,21 @@ function renderEmail(context) {
   const { dispute, student, set } = context;
   const studentName = text(student.chinese_name) + text(student.english_name) || text(student.name || student.student_id);
   const intensive = dispute.dispute_type === "intensive_spelling_exemption";
+  const writing = dispute.dispute_type === "writing_sentence";
   const fields = [
     ["Question", dispute.question_text_snapshot || "Open the request to view this question."],
     [intensive ? "Requested Provided Word" : "Submitted answer", answerText(dispute.submitted_answer)],
     ...(!intensive ? [
-      ["Correct answer snapshot", answerText(dispute.answer_snapshot)],
-      ["Explanation", dispute.explanation_snapshot || (context.gradingKey && context.gradingKey.explanations || {})[dispute.question_id] || "—"],
+      [writing ? "AI suggested revision" : "Correct answer snapshot", answerText(dispute.answer_snapshot)],
+      [writing ? "AI feedback" : "Explanation", dispute.explanation_snapshot || (context.gradingKey && context.gradingKey.explanations || {})[dispute.question_id] || "—"],
     ] : []),
     ["Student’s Argue", dispute.student_reason || "No note provided."],
   ];
   const url = reviewUrl(context.teacherUrl, dispute.dispute_id);
+  const choices = writing ? ["approve", "reject"].map((decision) => {
+    const target = new URL(url); target.searchParams.set("decision", decision);
+    return { label: decision === "approve" ? "Approve" : "Reject", url: target.href };
+  }) : [{ label: "处理这条 Argue", url }];
   const submitted = new Intl.DateTimeFormat("zh-CN", {
     timeZone: "Asia/Shanghai", dateStyle: "medium", timeStyle: "short",
   }).format(new Date(dispute.created_at));
@@ -125,7 +133,7 @@ function renderEmail(context) {
   return {
     subject,
     text: [subject, ...(reminder ? ["这条 Argue 仍未处理，请选择处理方式并提交。处理后将停止每日提醒。"] : []), `${submitted} (Shanghai)`, ...fields.map(([label, value]) => `${label}: ${value}`),
-      `处理这条 Argue: ${url}`, "Choose a decision and optionally add Teachers’ Note. Teacher sign-in required.",
+      ...choices.map((choice) => `${choice.label}: ${choice.url}`), "Choose a decision and optionally add Teachers’ Note. Teacher sign-in required.",
       "Please use the button to submit your decision; replying to this email does not process the request."].join("\n\n"),
     html: '<!doctype html><html><body style="margin:0;background:#f4f8f5;color:#18332f;font:16px/1.6 Arial,sans-serif;">' +
       '<div style="max-width:620px;margin:24px auto;padding:24px;background:#fff;border:1px solid #dce8e3;border-radius:18px;">' +
@@ -134,9 +142,9 @@ function renderEmail(context) {
       `<p style="color:#647b75;font-size:13px;">${escapeHtml(dispute.question_id)} · ${escapeHtml(submitted)} (Shanghai)</p>` +
       (reminder ? '<p style="color:#13766d;font-weight:bold;">提醒处理：这条 Argue 仍未处理。处理后将停止每日提醒。</p>' : "") +
       fields.map(([label, value]) => `<div style="padding:14px;margin:12px 0;background:#f4f8f5;border-radius:12px;"><strong style="font-size:12px;color:#647b75;">${escapeHtml(label)}</strong><div style="white-space:pre-wrap;overflow-wrap:anywhere;">${escapeHtml(value)}</div></div>`).join("") +
-      `<p style="text-align:center;margin-top:24px;"><a href="${escapeHtml(url)}" style="display:inline-block;background:#13766d;color:#fff;text-decoration:none;padding:13px 22px;border-radius:24px;font-weight:bold;">处理这条 Argue</a></p>` +
+      '<p style="text-align:center;margin-top:24px;">' + choices.map((choice) => `<a href="${escapeHtml(choice.url)}" style="display:inline-block;background:#13766d;color:#fff;text-decoration:none;padding:13px 22px;margin:4px;border-radius:24px;font-weight:bold;">${choice.label}</a>`).join(" ") + '</p>' +
       '<p style="text-align:center;font-size:12px;color:#647b75;">选择处理方式，可选填 Teachers’ Note。需要教师登录。<br>请通过按钮提交，直接回复此邮件不会处理 Argue。</p></div></body></html>',
   };
 }
 
-module.exports = { EVENT_KIND, eventForDispute, saveStudentDispute, repairPendingEvents, loadContext, reviewUrl, renderEmail };
+module.exports = { EVENT_KIND, eventForDispute, enqueue, saveStudentDispute, repairPendingEvents, loadContext, reviewUrl, renderEmail };

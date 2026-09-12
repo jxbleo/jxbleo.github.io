@@ -1017,6 +1017,7 @@
     }
 
     function hrefForTeacherReply(reply) {
+        if (reply.dispute_type === 'writing_sentence' && reply.composition_id) return 'ai-tutor.html?composition=' + encodeURIComponent(reply.composition_id);
         var assignment = assignmentForReply(reply);
         var set = assignment && assignment.set || {
             set_id: reply.set_id,
@@ -2026,7 +2027,7 @@
                 '</div>' +
             '</div>' +
             '<div class="teacher-reply-flow">' +
-                '<div class="teacher-reply-answer"><b>Expected</b><span>' + escapeHtml(expected) + '</span></div>' +
+                (reply.dispute_type === 'writing_sentence' ? '' : '<div class="teacher-reply-answer"><b>Expected</b><span>' + escapeHtml(expected) + '</span></div>') +
                 '<div class="teacher-reply-answer submitted">' +
                     '<b>Submitted</b>' +
                     '<span>' + escapeHtml(submitted) + '</span>' +

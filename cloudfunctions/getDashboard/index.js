@@ -345,14 +345,16 @@ function filterDisputesForStudent(items, student) {
 function disputeReplyView(item, set) {
   return {
     dispute_id: item.dispute_id || item._id,
+    dispute_type: item.dispute_type || "answer_acceptance",
+    composition_id: item.dispute_type === "writing_sentence" ? item.composition_id : null,
     set_id: item.set_id,
-    set_title: set && set.title || item.set_id,
+    set_title: set && set.title || item.set_title_snapshot || item.set_id,
     attempt_id: item.attempt_id || null,
     assignment_id: item.assignment_id || null,
     question_id: item.question_id,
     question_text: item.question_text_snapshot || "",
     submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
-    answer_snapshot: item.answer_snapshot == null ? null : item.answer_snapshot,
+    answer_snapshot: item.dispute_type === "writing_sentence" || item.answer_snapshot == null ? null : item.answer_snapshot,
     student_reason: item.student_reason || "",
     status: item.status || "pending",
     decision: item.decision || null,

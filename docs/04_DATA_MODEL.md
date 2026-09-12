@@ -1569,3 +1569,30 @@ day's Shanghai 11:30; `submitted_at` retains the original request date. Original
 and reminder events remain separate delivery audit rows. Prior-day pending retry
 events become skipped with `ARGUE_REMINDER_EXPIRED`; ordinary resolved/unavailable
 skips retain their existing reasons. All collections remain ADMINONLY.
+
+### Writing sentence Argue fields (2026-09-12)
+
+Existing ADMINONLY `answer_disputes` accepts `dispute_type: writing_sentence`.
+It stores `composition_id`, `composition_revision`, a SHA-256 `review_scope` of
+revision + language review, `question_id` (sentence ID), original sentence, last
+checked submitted text, AI reference/feedback snapshots, optional reason and
+`set_title_snapshot`. Compatibility `set_id` is the composition locator;
+`attempt_id` and `assignment_id` are null. Each new logical request gets a
+create-only stable UID/composition/sentence/operation hash ID. Rejected requests
+remain immutable decision history while a new operation can request again.
+Existing email intent, status, decision, teacher note/UID, reply-unread and date
+fields are reused. Decisions are `approve|reject`.
+
+`writing_compositions.writing_sentence_disputes` maps sentence IDs to only the
+latest request's ID, review scope, status, dates and teacher note.
+`writing_sentence_approvals` maps IDs to approved original/submitted text,
+composition revision, dispute ID, teacher UID and approval time.
+`rewrite_results.results` projects `accepted: true`, `teacher_approved: true`
+and `dispute_id`; its existing AI feedback history is retained. Approved text
+is applied only when revision and original sentence match. All required
+results accepted sets `passed`, `status: completed` and `completed_at`.
+Completion clears active-job and pending-handoff pointers, retaining private job
+audit rows and normal photo cleanup. No assignment, attempt or STAR is created.
+The browser receives the latest-request map and `writing_review_scope`, never
+the internal approval audit map. Dashboard Writing replies suppress
+`answer_snapshot` so the teacher-only reference revision stays hidden.

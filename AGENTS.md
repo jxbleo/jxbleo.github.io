@@ -1987,3 +1987,21 @@ key, and rechecks current request status before SMTP delivery. Teacher-page and
 email-entry decisions share the same stop condition. Keep original mail events
 immutable; expired prior-day reminder retries do not accumulate. Existing enabled
 teacher inbox settings also govern reminders.
+
+### Writing sentence Argue (2026-09-12)
+
+Writing is an exception to the ordinary one-dispute-per-attempt rule. The
+student may request teacher review of a currently incorrect sentence, including
+the initial judgment or latest persisted rewrite. Store each resolved/repeated
+request separately in ADMINONLY `answer_disputes` with
+`dispute_type: writing_sentence`; deduplicate transport retries and one current
+pending request, but never impose a lifetime retry limit after rejection.
+Approve/Reject run only behind active teacher authentication. Approval applies
+to that student's composition/revision/sentence, never grading keys or other
+students. Preserve AI feedback history and apply teacher approvals inside AI
+publication transactions. Full approval completes the composition and detaches
+redundant active jobs so retries cannot reopen it. Replaced manuscripts/reviews
+cannot be approved through old requests. Reuse the existing Argue email outbox,
+reminders and authenticated review page; email links preselect a decision but
+never mutate on GET. Student Teacher Replies must not expose Writing reference
+revisions. No new collection, timer, provider or secret is required.

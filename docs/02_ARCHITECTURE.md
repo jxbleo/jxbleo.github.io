@@ -1308,3 +1308,17 @@ recipient settings deliver it. Before sending, reload the current dispute; skip
 resolved decisions and prior-day reminder events; pending failed regrades remain
 reminder-eligible so the teacher can resume processing. This requires no new
 service, timer, collection, browser session or frontend change.
+
+### Writing sentence disputes (2026-09-12)
+
+`writingTutor.submitSentenceDispute` derives the active student and delegates to
+`_shared/writing-disputes.js`. One transaction stores the private request plus
+the composition's latest per-sentence request pointer; an email intent on that
+request survives enqueue failure. The existing Argue dispatcher and reminder
+timer load private context and deliver teacher-only review links.
+`teacherAdmin.resolveDispute` routes Writing to a transaction that commits the
+decision, approval and completion projection together. AI publication reapplies
+current teacher approvals inside its own transaction; full completion detaches
+the current AI job and pending handoffs. Review/rewrite enqueue rejects a
+concurrently completed composition. `getDashboard` returns the student's reply
+history with a composition locator and no Writing reference-answer snapshot.

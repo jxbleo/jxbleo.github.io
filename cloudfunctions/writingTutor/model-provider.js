@@ -26,6 +26,16 @@ function providerConfig(vision) {
   const apiUrl = text(process.env[`${prefix}_API_URL`] || process.env[`${fallbackPrefix}_API_URL`], 1000);
   const providerModel = text(process.env[`${prefix}_MODEL`], 200);
   let model = providerModel || text(process.env[`${fallbackPrefix}_MODEL`], 200);
+  const quotaFallbackSource = vision
+    ? ""
+    : text(
+      process.env.WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS
+        || process.env.WRITING_AI_TEXT_QUOTA_FALLBACK_MODEL,
+      1000,
+    );
+  const quotaFallbackModels = [...new Set(
+    quotaFallbackSource.split(",").map((value) => text(value, 200)).filter(Boolean),
+  )].slice(0, 8);
   const qwenCompatible = /(?:dashscope|\.maas\.)[^/]*aliyuncs\.com/i.test(apiUrl)
     || /dashscope/i.test(apiUrl);
   if (vision && !providerModel && qwenCompatible && model === "qwen3.7-plus") {
@@ -41,7 +51,13 @@ function providerConfig(vision) {
     throw new Error("WRITING_AI_PROTOCOL_INVALID");
   }
   if (!['url', 'base64'].includes(imageTransport)) throw new Error("WRITING_AI_IMAGE_TRANSPORT_INVALID");
-  return { protocol, apiKey, apiUrl, model, imageTransport, maxOutputTokens, qwenCompatible };
+  if (quotaFallbackModels.includes(model)) {
+    throw new Error("WRITING_AI_QUOTA_FALLBACK_INVALID");
+  }
+  return {
+    protocol, apiKey, apiUrl, model, quotaFallbackModels,
+    imageTransport, maxOutputTokens, qwenCompatible,
+  };
 }
 
 function validateAgainstSchema(value, schema, path = "$") {
@@ -262,6 +278,17 @@ function attachProviderTelemetry(error, attempts) {
   return error;
 }
 
+function providerErrorCode(payload) {
+  return text(
+    payload && (payload.code || payload.error && payload.error.code),
+    200,
+  );
+}
+
+function isFreeTierQuotaExhausted(error) {
+  return text(error && error.providerCode, 200) === "AllocationQuota.FreeTierOnly";
+}
+
 async function imageContent(url, transport) {
   if (transport === "url") return { type: "image_url", image_url: { url } };
   const response = await fetch(url);
@@ -333,10 +360,19 @@ async function callOnce(config, options, correction) {
     clearTimeout(timeout);
   }
   if (!response.ok) {
-    // Do not log the provider response body: some vendors may echo request data.
-    console.error("writingTutor AI HTTP", response.status);
-    throw attachProviderTelemetry(new Error(`WRITING_AI_HTTP_${response.status}`), [
-      providerAttempt(config, null, response.status, "http_error", response.headers.get("x-request-id")),
+    // Extract only the bounded provider code. Never log or persist the response
+    // body because some vendors may echo request data in their error payload.
+    let errorPayload = null;
+    try { errorPayload = await response.json(); } catch (_error) {}
+    const code = providerErrorCode(errorPayload);
+    const error = new Error(`WRITING_AI_HTTP_${response.status}`);
+    error.providerCode = code || null;
+    throw attachProviderTelemetry(error, [
+      providerAttempt(
+        config, null, response.status,
+        code === "AllocationQuota.FreeTierOnly" ? "quota_exhausted" : "http_error",
+        response.headers.get("x-request-id"),
+      ),
     ]);
   }
   let payload;
@@ -369,24 +405,12 @@ async function callOnce(config, options, correction) {
   }
 }
 
-async function callStructuredModel(options) {
-  const normalized = { ...options, images: Array.isArray(options.images) ? options.images : [] };
-  const config = providerConfig(Boolean(options.vision));
-  const providerMetadata = (structuralRepairUsed) => {
-    let providerHost = "configured-provider";
-    try { providerHost = new URL(config.apiUrl).hostname; } catch (_error) {}
-    return {
-      protocol: config.protocol,
-      model: config.model,
-      provider_host: providerHost,
-      structural_repair_used: structuralRepairUsed,
-    };
-  };
+async function callModelWithStructuralRepair(config, normalized) {
   const attempts = [];
   try {
     const first = await callOnce(config, normalized, "");
     attempts.push(...first.telemetry.attempts);
-    return { data: first.data, metadata: providerMetadata(false), telemetry: { attempts } };
+    return { data: first.data, attempts, structuralRepairUsed: false };
   } catch (error) {
     attempts.push(...(error && error.providerTelemetry && error.providerTelemetry.attempts || []));
     if (config.protocol !== "chat_json_object" || error.message !== "WRITING_AI_SCHEMA_RESPONSE_INVALID") {
@@ -395,11 +419,7 @@ async function callStructuredModel(options) {
     try {
       const repaired = await callOnce(config, normalized, text(error.validationMessage, 1200));
       attempts.push(...repaired.telemetry.attempts);
-      return {
-        data: repaired.data,
-        metadata: providerMetadata(true),
-        telemetry: { attempts },
-      };
+      return { data: repaired.data, attempts, structuralRepairUsed: true };
     } catch (repairError) {
       attempts.push(...(repairError && repairError.providerTelemetry && repairError.providerTelemetry.attempts || []));
       throw attachProviderTelemetry(repairError, attempts);
@@ -407,10 +427,55 @@ async function callStructuredModel(options) {
   }
 }
 
+async function callStructuredModel(options) {
+  const normalized = { ...options, images: Array.isArray(options.images) ? options.images : [] };
+  const config = providerConfig(Boolean(options.vision));
+  const providerMetadata = (activeConfig, structuralRepairUsed, modelIndex) => {
+    let providerHost = "configured-provider";
+    try { providerHost = new URL(activeConfig.apiUrl).hostname; } catch (_error) {}
+    return {
+      protocol: activeConfig.protocol,
+      model: activeConfig.model,
+      provider_host: providerHost,
+      structural_repair_used: structuralRepairUsed,
+      quota_fallback_used: modelIndex > 0,
+      primary_model: config.model,
+      quota_fallback_model: modelIndex > 0 ? activeConfig.model : null,
+      quota_fallback_models: config.quotaFallbackModels,
+      quota_fallback_index: modelIndex > 0 ? modelIndex - 1 : null,
+    };
+  };
+  const modelConfigs = [
+    config,
+    ...config.quotaFallbackModels.map((model) => ({ ...config, model, quotaFallbackModels: [] })),
+  ];
+  const attempts = [];
+  for (let modelIndex = 0; modelIndex < modelConfigs.length; modelIndex += 1) {
+    const activeConfig = modelConfigs[modelIndex];
+    try {
+      const result = await callModelWithStructuralRepair(activeConfig, normalized);
+      attempts.push(...result.attempts);
+      return {
+        data: result.data,
+        metadata: providerMetadata(activeConfig, result.structuralRepairUsed, modelIndex),
+        telemetry: { attempts },
+      };
+    } catch (error) {
+      attempts.push(...(error && error.providerTelemetry && error.providerTelemetry.attempts || []));
+      const hasNextModel = modelIndex + 1 < modelConfigs.length;
+      if (!hasNextModel || !isFreeTierQuotaExhausted(error)) {
+        throw attachProviderTelemetry(error, attempts);
+      }
+    }
+  }
+  throw new Error("WRITING_AI_UNAVAILABLE");
+}
+
 module.exports = {
   callStructuredModel,
   _test: {
     validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig,
     normalizeOcrPages, normalizeTimeoutMs, normalizeProviderUsage,
+    providerErrorCode, isFreeTierQuotaExhausted,
   },
 };
