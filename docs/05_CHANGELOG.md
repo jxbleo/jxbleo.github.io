@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-12 — Approved Speaking recorder colours
+
+- Applied the reviewed white/rainbow preview to the shared Student/Teacher
+  recorder, with pale coral during the final minute and no timing captions.
+- Rainbow bars retain real microphone input. Preserved the 60-second ring reset,
+  three reminder sounds and final-five-second auto-stop. Updated cache versions.
+
 ## 2026-09-12 — Voiceprint capacity across multiple groups
 
 - New enrolments automatically use available 20-ID Tencent groups; existing IDs

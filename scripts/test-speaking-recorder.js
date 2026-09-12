@@ -95,6 +95,7 @@ async function run() {
   assert.equal(f.lib.timeline(184, 180).tick, 1);
   assert.equal(f.lib.timeline(185, 180).finished, true);
   assert.equal(f.lib.timeText(60), '01:00');
+  assert(!f.nodes['recording-caption'], 'recorder has no visible remaining/last-minute caption');
   f.controller.start(); f.controller.start(); await f.flush();
   assert.equal(f.counts().requestCount, 1, 'double taps must not open a second mic');
   assert.equal(f.counts().starts, 0, 'do not record the opening cue');
@@ -116,6 +117,7 @@ async function run() {
     assert(Math.abs(cue.start - minuteCues[0].start - index * .55) < 1e-8, 'cues have short non-overlapping gaps');
   });
   assert.equal(f.nodes['recording-time'].textContent, '01:00');
+  assert(f.nodes['recording-live'].classList.contains('is-minute'), 'whole live surface enters last-minute colours');
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0');
   await f.advance(30000);
   assert.equal(f.nodes['recording-time'].textContent, '00:30');
@@ -123,6 +125,8 @@ async function run() {
   await f.advance(29999); assert.equal(f.audioEvents.length, 8, 'three-cue warning does not repeat');
   await f.advance(1); assert.equal(f.controller.snapshot().state, 'ending');
   assert(f.nodes['recording-dial'].classList.contains('is-ending'));
+  assert(f.nodes['recording-live'].classList.contains('is-ending'));
+  assert(!f.nodes['recording-live'].classList.contains('is-minute'));
   assert.equal(f.nodes['recording-countdown'].textContent, '5');
   await f.advance(4000);
   assert.equal(f.audioEvents.length, 13, 'five final beeps, one per second');
@@ -133,6 +137,7 @@ async function run() {
   assert(f.controller.snapshot().blob.size > 0);
   assert(f.track.stopped);
   assert(!f.nodes['recording-live'].open);
+  assert(!f.nodes['recording-live'].classList.contains('is-ending'), 'ending colour clears when leaving the take');
   const saved = f.controller.snapshot();
   f.nodes['upload-recording'].fire('click'); f.nodes['upload-recording'].fire('click');
   assert.equal(f.counts().uploadCount, 1, 'upload double taps are ignored');

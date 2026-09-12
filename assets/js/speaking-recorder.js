@@ -29,9 +29,12 @@
         return '<dialog class="speaking-recording-state speaking-recording-live" id="recording-live" hidden role="dialog" aria-modal="true" aria-label="Discussion recording">' +
             '<div class="speaking-recording-live-label"><span aria-hidden="true"></span><strong id="recording-live-status">Recording</strong></div>' +
             '<div class="speaking-recording-live-content"><div class="speaking-recording-dial" id="recording-dial">' +
-            '<svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="recording-ring-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#91d9f2"/><stop offset="1" stop-color="#5ccdb6"/></linearGradient></defs><circle class="speaking-recording-ring-inner" cx="100" cy="100" r="92"/><circle class="speaking-recording-ring-track" cx="100" cy="100" r="97"/><circle class="speaking-recording-ring-progress" id="recording-ring-progress" cx="100" cy="100" r="97" pathLength="1" stroke-dasharray="1"/></svg>' +
-            '<div class="speaking-recording-dial-center"><div class="speaking-recording-countdown" id="recording-countdown" role="timer" aria-label="Countdown" hidden>5</div><div class="speaking-recording-time" id="recording-time" role="timer" aria-label="Time remaining">08:00</div><div class="speaking-recording-caption" id="recording-caption">Remaining</div>' +
-            '<div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 36 }, function () { return '<i class="speaking-recording-wave-bar"></i>'; }).join('') + '</div></div></div>' +
+            '<svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="recording-ring-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7ecddd"/><stop offset="1" stop-color="#62bfae"/></linearGradient></defs><circle class="speaking-recording-ring-inner" cx="100" cy="100" r="92"/><circle class="speaking-recording-ring-track" cx="100" cy="100" r="97"/><circle class="speaking-recording-ring-progress" id="recording-ring-progress" cx="100" cy="100" r="97" pathLength="1" stroke-dasharray="1"/></svg>' +
+            '<div class="speaking-recording-dial-center"><div class="speaking-recording-countdown" id="recording-countdown" role="timer" aria-label="Countdown" hidden>5</div><div class="speaking-recording-time" id="recording-time" role="timer" aria-label="Time remaining">08:00</div>' +
+            '<div class="speaking-recording-waveform" id="recording-waveform" aria-hidden="true">' + Array.from({ length: 48 }, function (_, index) {
+                var colors = ['#f26769', '#f59b50', '#e3bd39', '#8dc653', '#44bba0', '#42bbd4', '#5c95e8', '#8079da', '#b675d5'];
+                return '<i class="speaking-recording-wave-bar" style="--wave-color:' + colors[Math.floor(index / 48 * colors.length)] + '"></i>';
+            }).join('') + '</div></div></div>' +
             '<button class="speaking-finish-recording" id="stop-recording" type="button">Finish</button></div>' +
             '<p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite"></p></dialog>';
     }
@@ -75,10 +78,13 @@
             node('recording-time').hidden = next === 'countdown' || next === 'ending';
             node('recording-waveform').hidden = next !== 'recording';
             node('recording-live-status').textContent = { requesting: 'Starting microphone', countdown: 'Get ready', recording: 'Recording', ending: 'Finishing', stopping: 'Finishing recording' }[next] || 'Recording';
-            node('recording-caption').textContent = next === 'countdown' ? 'Starting in' : next === 'ending' ? 'Finishing in' : 'Remaining';
             node('recording-dial').classList.toggle('is-countdown', next === 'countdown' || next === 'ending');
             node('recording-dial').classList.toggle('is-ending', next === 'ending');
-            if (next !== 'recording') node('recording-dial').classList.remove('is-minute');
+            node('recording-live').classList.toggle('is-ending', next === 'ending');
+            if (next !== 'recording') {
+                node('recording-dial').classList.remove('is-minute');
+                node('recording-live').classList.remove('is-minute');
+            }
             node('stop-recording').textContent = 'Finish';
             node('stop-recording').disabled = next === 'stopping';
             node('preview-recording').hidden = next === 'analysis_retry';
@@ -261,6 +267,7 @@
                 } else {
                     node('recording-time').textContent = timeText(current.remaining);
                     node('recording-dial').classList.toggle('is-minute', current.minute);
+                    node('recording-live').classList.toggle('is-minute', current.minute);
                     if (current.minute && !minutePlayed) {
                         minutePlayed = true;
                         for (var cue = 0; cue < 3; cue += 1) beep(false, 2, cue * 0.55);

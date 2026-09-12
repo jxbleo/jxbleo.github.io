@@ -1063,39 +1063,41 @@ body.speaking-recording-locked { overflow: hidden; overscroll-behavior: none; }
 .speaking-audio-date { display: grid; grid-template-rows: auto 1fr; gap: 4px; min-width: 0; color: var(--sl-muted); font-size: .62rem; font-weight: 760; letter-spacing: .035em; text-transform: uppercase; }
 .speaking-audio-date input { width: 100%; min-height: 36px; padding: 0 10px; border: 1px solid rgba(74,95,106,.16); border-radius: 12px; color: var(--sl-ink); background: rgba(255,255,255,.78); font: inherit; font-size: .73rem; font-weight: 680; letter-spacing: 0; text-transform: none; }
 /* Shared student/teacher recorder; native dialog avoids filtered ancestors clipping fixed content. */
-.speaking-recording-live { position:fixed; inset:0; z-index:1200; display:flex; width:100vw; max-width:none; height:100dvh; max-height:none; min-height:100svh; margin:0; padding:72px 16px max(28px,env(safe-area-inset-bottom)); align-items:center; justify-content:center; overflow:hidden; border:0; border-radius:0; color:#f3f9fc; background:radial-gradient(ellipse at 50% 44%,#153b4b 0%,#0c2533 43%,#081923 85%); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; box-sizing:border-box; }
-.speaking-recording-live::backdrop { background:#081923; }
+.speaking-recording-live { position:fixed; inset:0; z-index:1200; display:flex; width:100vw; max-width:none; height:100dvh; max-height:none; min-height:100svh; margin:0; padding:72px 16px max(28px,env(safe-area-inset-bottom)); align-items:center; justify-content:center; overflow:hidden; border:0; border-radius:0; color:#243440; background:#fff; transition:background-color 900ms ease; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; box-sizing:border-box; }
+.speaking-recording-live::backdrop { background:#fff; }
 .speaking-recording-live * { box-sizing:border-box; }
 .speaking-recording-live-content { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(18px,3dvh,30px); width:100%; }
-.speaking-recording-live .speaking-recording-live-label { position:absolute; top:max(26px,env(safe-area-inset-top)); left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; color:#b4c9d4; font-size:11px; font-weight:600; letter-spacing:.17em; text-transform:uppercase; white-space:nowrap; }
+.speaking-recording-live .speaking-recording-live-label { position:absolute; top:max(26px,env(safe-area-inset-top)); left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; color:#73808a; font-size:11px; font-weight:600; letter-spacing:.17em; text-transform:uppercase; white-space:nowrap; }
 .speaking-recording-live-label strong { font-weight:600; }
-.speaking-recording-live .speaking-recording-live-label span { width:7px; height:7px; background:#ff817b; box-shadow:0 0 0 4px #ff817b12; animation:none; }
+.speaking-recording-live .speaking-recording-live-label span { width:7px; height:7px; border-radius:50%; background:#ed7871; box-shadow:0 0 0 4px #ed78710b; animation:none; }
 .speaking-recording-dial { --diameter:min(86vw,74dvh,840px); position:relative; width:var(--diameter); height:var(--diameter); flex:0 0 auto; container-type:inline-size; }
 .speaking-recording-dial svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; transform:rotate(-90deg); }
-.speaking-recording-ring-inner { fill:none; stroke:#ceeaff07; stroke-width:.2; }
-.speaking-recording-ring-track { fill:none; stroke:#d9efff10; stroke-width:3; }
-.speaking-recording-ring-progress { fill:none; stroke:url(#recording-ring-gradient); stroke-width:3; stroke-linecap:round; filter:drop-shadow(0 0 5px #65c9e135); }
+.speaking-recording-ring-inner { fill:none; stroke:#f4f6f7; stroke-width:.3; }
+.speaking-recording-ring-track { fill:none; stroke:#edf1f3; stroke-width:3; transition:stroke 900ms ease; }
+.speaking-recording-ring-progress { fill:none; stroke:url(#recording-ring-gradient); stroke-width:3; stroke-linecap:round;  }
 .speaking-recording-dial-center { position:absolute; inset:16%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
-.speaking-recording-live .speaking-recording-time, .speaking-recording-live .speaking-recording-countdown { margin:0 0 0 -.04em; padding:0; color:#f3f9fc; font-size:22cqw; font-weight:300; line-height:1.08; letter-spacing:-.065em; font-variant-numeric:tabular-nums; white-space:nowrap; text-shadow:none; }
+.speaking-recording-live .speaking-recording-time, .speaking-recording-live .speaking-recording-countdown { margin:0 0 0 -.04em; padding:0; color:#263b48; font-size:22cqw; font-weight:300; line-height:1.08; letter-spacing:-.065em; font-variant-numeric:tabular-nums; white-space:nowrap; text-shadow:none; transition:color 700ms ease; }
 .speaking-recording-live .speaking-recording-countdown { font-size:38cqw; font-weight:280; }
 .speaking-recording-live [hidden] { display:none !important; }
-.speaking-recording-caption { margin:3cqw 0 0; color:#8baab9; font-size:2.2cqw; font-weight:550; letter-spacing:.2em; line-height:1.5; text-transform:uppercase; white-space:nowrap; }
-.is-countdown .speaking-recording-caption { margin-top:4cqw; }
-.speaking-recording-waveform { display:flex; height:9cqw; width:43cqw; gap:1cqw; align-items:center; justify-content:center; margin:6cqw 0 0; }
-.speaking-recording-wave-bar { width:.62cqw; height:100%; border-radius:9px; background:linear-gradient(#94dcf1,#58c5b4); transform:scaleY(.15); opacity:.78; transition:transform 80ms linear; will-change:transform; }
-.speaking-recording-live button.speaking-finish-recording { appearance:none; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:0; min-height:44px; margin:0; padding:10px 22px; border:1px solid #f8adab23; border-radius:999px; font:550 15px/22px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.005em; color:#ffd6d2; background:#bd555448; box-shadow:0 3px 12px #00000012; cursor:pointer; transition:background .16s,transform .12s; }
-.speaking-recording-live button.speaking-finish-recording:hover { background:#b95c5b66; }
+.speaking-recording-waveform { display:flex; height:9cqw; width:45cqw; gap:.48cqw; align-items:center; justify-content:center; margin:6cqw 0 0; }
+.speaking-recording-wave-bar { width:.48cqw; max-width:.65cqw; flex:1; height:100%; border-radius:9px; background:var(--wave-color,#44bba0); transform:scaleY(.15); opacity:.88; transition:transform 80ms linear; will-change:transform; }
+.speaking-recording-live button.speaking-finish-recording { appearance:none; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:0; min-height:44px; margin:0; padding:10px 22px; border:1px solid #e4e9ed; border-radius:999px; font:550 15px/22px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:.005em; color:#5f6e78; background:#fff; box-shadow:0 3px 12px #243b4805; cursor:pointer; transition:background .16s,transform .12s; }
+.speaking-recording-live button.speaking-finish-recording:hover { background:#f7f9fa; }
 .speaking-recording-live button.speaking-finish-recording:active { transform:scale(.96); }
-.speaking-recording-live button.speaking-finish-recording:focus-visible { outline:2px solid #9bdcff; outline-offset:5px; }
-.speaking-recording-live .speaking-quality-warning { position:absolute; left:16px; right:16px; bottom:max(5px,env(safe-area-inset-bottom)); min-height:0; margin:0; color:#d4e2e9; font-size:12px; line-height:1.35; text-align:center; }
+.speaking-recording-live button.speaking-finish-recording:focus-visible { outline:2px solid #5c92e5; outline-offset:5px; }
+.speaking-recording-live .speaking-quality-warning { position:absolute; left:16px; right:16px; bottom:max(5px,env(safe-area-inset-bottom)); min-height:0; margin:0; color:#a74d43; font-size:12px; line-height:1.35; text-align:center; }
 .speaking-recording-live .speaking-quality-warning:empty { display:none; }
-.is-minute .speaking-recording-caption { color:#e0bc83; }
-.is-minute .speaking-recording-ring-progress { stroke:#eac38b; }
-.is-ending .speaking-recording-ring-track { stroke:#ff62592b; }
-.is-ending .speaking-recording-ring-progress { stroke:#ff6259; filter:drop-shadow(0 0 6px #ff625955); animation:speaking-final-seconds-pulse 1s ease-in-out infinite; }
-.speaking-recording-live .is-ending .speaking-recording-countdown { color:#ff756d; animation:speaking-final-seconds-pulse 1s ease-in-out infinite; }
-.is-ending .speaking-recording-caption { color:#ffaca5; }
+.is-minute .speaking-recording-ring-progress { stroke:#e9948a; }
+.is-ending .speaking-recording-ring-track { stroke:#f0c8c2; }
+.is-ending .speaking-recording-ring-progress { stroke:#de6b60; animation:speaking-final-seconds-pulse 1s ease-in-out infinite; }
+.speaking-recording-live .is-ending .speaking-recording-countdown { color:#c9574e; animation:speaking-final-seconds-pulse 1s ease-in-out infinite; }
 @keyframes speaking-final-seconds-pulse { 0%,100% { opacity:1; } 50% { opacity:.48; } }
+.speaking-recording-live.is-minute { background:#fff0ee; }
+.speaking-recording-live.is-ending { background:#ffe6e2; }
+.is-minute .speaking-recording-ring-track { stroke:#f5d9d5; }
+.is-minute .speaking-recording-ring-inner { stroke:#f9e3df; }
+.speaking-recording-live.is-minute .speaking-recording-time { color:#78443f; }
+.speaking-recording-live.is-minute button.speaking-finish-recording { border-color:#edc8c1; color:#a7655c; background:#ffffff80; }
 /* Identical preparation/review controls in either host page. */
 body .speaking-recording-card .primary-button { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:0 17px; border:1px solid rgba(8,124,240,.16); border-radius:13px; color:#fff; background:linear-gradient(135deg,#148cff,#0062d4); font-size:.82rem; font-weight:740; }
 body .speaking-recording-card .outline-button { display:inline-flex; align-items:center; justify-content:center; width:auto; min-height:42px; padding:0 14px; border:1px solid rgba(76,96,107,.16); border-radius:13px; color:#25343b; background:rgba(255,255,255,.66); box-shadow:0 4px 13px rgba(45,67,78,.05),inset 0 1px 0 rgba(255,255,255,.8); font-size:.82rem; font-weight:740; }
@@ -1105,8 +1107,8 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .teacher-speaking-recorder-back { display:inline-flex; min-height:42px; align-items:center; justify-content:center; margin-bottom:20px; padding:0 15px; border:1px solid rgba(76,96,107,.16); border-radius:13px; color:#25343b; background:rgba(255,255,255,.66); font-size:.82rem; font-weight:650; }
 .teacher-speaking-recorder-back[hidden] { display:none !important; }
 @media(max-width:760px) { .speaking-recording-choice { grid-template-columns:1fr 1fr; } .speaking-audio-date { grid-column:2; } }
-@media(max-width:520px) { .speaking-recording-choice { grid-template-columns:1fr; } .speaking-audio-date { grid-column:auto; } .speaking-recording-dial { --diameter:min(94vw,69dvh); } .speaking-recording-live-content { gap:32px; } .speaking-recording-live { padding-top:80px; } .speaking-recording-caption { font-size:2.7cqw; } .speaking-recording-live .speaking-recording-live-label { left:24px; transform:none; font-size:10px; } .speaking-recording-live button.speaking-finish-recording { font-size:14px; padding:9px 20px; } }
+@media(max-width:520px) { .speaking-recording-choice { grid-template-columns:1fr; } .speaking-audio-date { grid-column:auto; } .speaking-recording-dial { --diameter:min(94vw,69dvh); } .speaking-recording-live-content { gap:32px; } .speaking-recording-live { padding-top:80px; } .speaking-recording-live .speaking-recording-live-label { left:24px; transform:none; font-size:10px; } .speaking-recording-live button.speaking-finish-recording { font-size:14px; padding:9px 20px; } }
 @media(max-height:500px) and (orientation:landscape) { .speaking-recording-live { padding:42px 14px 14px; } .speaking-recording-live-content { gap:10px; } .speaking-recording-dial { --diameter:min(70vw,69dvh); } .speaking-recording-live .speaking-recording-live-label { top:14px; } .speaking-recording-live button.speaking-finish-recording { min-height:36px; padding:6px 18px; font-size:13px; } }
-@media(prefers-reduced-motion:reduce) { .speaking-circular-timer-progress { transition:none; } .is-ending .speaking-recording-ring-progress, .speaking-recording-live .is-ending .speaking-recording-countdown { animation:none; } .speaking-recording-wave-bar { transition-duration:180ms; will-change:auto; } }
-@media(prefers-reduced-transparency:reduce) { .speaking-recording-live { background:#102b3b; } }
-@media(prefers-contrast:more) { .speaking-recording-ring-track { stroke:#7895a2; } .speaking-recording-caption { color:#c0d6e2; } .speaking-recording-live button.speaking-finish-recording { border-color:#f8adab; } }
+@media(prefers-reduced-motion:reduce) { .speaking-circular-timer-progress, .speaking-recording-live, .speaking-recording-ring-track, .speaking-recording-live .speaking-recording-time { transition:none; } .is-ending .speaking-recording-ring-progress, .speaking-recording-live .is-ending .speaking-recording-countdown { animation:none; } .speaking-recording-wave-bar { transition-duration:180ms; will-change:auto; } }
+@media(prefers-reduced-transparency:reduce) { .speaking-recording-live.is-minute button.speaking-finish-recording { background:#fff; } }
+@media(prefers-contrast:more) { .speaking-recording-ring-track { stroke:#7895a2; } .speaking-recording-live button.speaking-finish-recording { border-color:#97665f; } }

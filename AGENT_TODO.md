@@ -74,6 +74,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-12 — Approved Speaking colours release: white recording surface,
+  48 rainbow microphone bars, no timing caption and pale coral final minute.
+  Shared Student/Teacher CSS/JS and cache versions updated. Speaking suite,
+  release verification, static build and publisher tests passed. Existing
+  component visual QA covered normal/minute/ending states. Owner authorized
+  scoped static publication; no CloudBase changes are required.
+
 - 2026-09-12 — Voiceprint release isolation: No backend/production writes were performed. Clean-source release subset based on `cc40c7f3` also passed voiceprint, UI, service and rule tests and was packaged separately, preserving published sidebar/reading changes.
 
 - 2026-09-12 — Fixed the single-group 20-voiceprint bottleneck locally: automatic allocation, definite-full race rollover, account-capacity preflight, preserved replacement groups, and complete cross-group matching. `npm run test:speaking-lab`, `npm run verify:release`, `git diff --check`, and packaging of `speakingLab` / `speakingAiWorker` passed. Provider/concurrency and UI-state checks use mocks; no authenticated live recording test or deployment was performed.

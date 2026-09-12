@@ -3074,6 +3074,11 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
 
 ### Shared Speaking recorder regression (2026-09-12)
 
+- Verify white normal recording, 48 rainbow microphone bars, no Remaining /
+  Last minute caption, pale coral at 60 seconds, and a stronger pale coral
+  final-five-second state. Starting another take must restore the white surface.
+  Check narrow-phone and desktop layouts, Reduced Motion and Reduced Transparency.
+
 - Run `npm run test:speaking-lab`, which includes the deterministic recorder
   clock/audio/microphone tests in `scripts/test-speaking-recorder.js`.
 - In both Teacher and Student, verify the same target control (3–30 minutes,
