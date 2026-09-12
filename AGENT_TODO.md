@@ -106,6 +106,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13: Implemented approved bright-gold E crown with original English-name engraving in Vocabulary Quiz Mastered. Browser QA used actual result functions/styles with fictional local data: long/special/empty names, Close and Practice Sets verified. Profile guard checks, release verification and static build passed. UX/changelog/checklist updated; static publication authorized, no CloudBase changes.
+
 ### 2026-09-12 — Compact Speaking Set library release
 
 - Removed the decorative Choose a Set card; Search, Year, and Source share one

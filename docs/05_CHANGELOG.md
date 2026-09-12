@@ -3437,3 +3437,10 @@ Manual interruption now shows Start Over; automatic completion remains Finished.
 ### 2026-09-13 — Keep Individual Response open after picker cancellation
 
 The question dialog ignores bubbling file-input cancel events, so cancelling Upload Files no longer dismisses the question or clears its local draft. The normal dialog Escape and Close routes are preserved.
+
+## 2026-09-13 — Vocabulary personalized Mastered crown
+
+- Replaced the Quiz Mastered star with the approved bright-gold E crown,
+  including decorative stars and dynamically fitted English-name engraving.
+- Kept existing Practice/Quiz context and server grading/STAR behavior.
+- Static frontend release only; no CloudBase deployment or data changes.
