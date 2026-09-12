@@ -2157,7 +2157,13 @@ Chinese. Unrecoverable viewpoints are explicitly marked insufficient, with
 conditional question-based examples rather than invented student opinions.
 The ASR safeguard and unassessed PD rule apply throughout. Generated improvements
 do not affect scores for the original answer. Existing ready reports remain
-immutable and readable; this change does not backfill them.
+immutable and readable; ordinary deployment does not backfill them. The owner
+separately authorized a 2026-09-06–2026-09-12 Shanghai response-date refresh of
+ready IR reports. It adds coaching in a new revision, preserving the original
+transcript, scores and assessment, and switches the active report only after
+successful generation. Part A reports are excluded. An incomplete supporting
+fragment does not establish the student's position on the exact question: mark
+that case insufficient and label added assumptions outside the sample speech.
 
 Speaking Lab covers DSE English Language Paper 4 Part A Group Discussion and
 question-scoped Part B Individual Response. The compact top toolbar has a

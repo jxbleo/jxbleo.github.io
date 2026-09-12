@@ -1041,6 +1041,7 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
       const response = requiredText(item.response_en, 3000);
       const words = response.split(/\s+/).filter(Boolean).length;
       if (words < 90 || words > 170) invalid();
+      if (/\b(?:as I (?:suggested|mentioned)|my (?:initial|original) (?:thought|point|answer))\b/i.test(response)) invalid();
       return { title_zh: requiredText(item.title_zh, 160), student_idea_zh: requiredText(item.student_idea_zh, 600), evidence_segment_ids: evidence(item.evidence_segment_ids), response_en: response, explanation_zh: requiredText(item.explanation_zh, 1400) };
     });
     const unique = (values) => new Set(values.map((value) => normalizeWhitespace(value, 4000).toLowerCase())).size === values.length;

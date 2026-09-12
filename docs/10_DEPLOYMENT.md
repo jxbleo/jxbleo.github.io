@@ -1679,3 +1679,30 @@ verifies source immutability, transcript/assessment equality, and the four/three
 coaching counts; `retry` permits at most three operator attempts, never superseded
 work. Keep private manifests and results outside Git. Code-only function updates
 must preserve cloud configuration and be verified by downloaded code hashes.
+
+The live pilot exposed two additional boundaries. CloudBase SDK nested updates
+merge objects, so the response report cache uses `replaceFields(..., ["report"])`
+to avoid retaining V1 `sample_response_en`. The operator's scoped `repair-cache`
+permits removal only of that exact leftover after validating the canonical
+report, source transcript and prior assessment. The pilot also led to prompt
+revision `2026-09-12.3`: unfinished positions are insufficient, new assumptions
+are labelled, and samples cannot refer to the student's earlier answer.
+`refine-pilot` creates a separate manifest/report lineage for the first response;
+it does not overwrite the original manifest or any prior report. The other
+60 approved responses retain their original scope and source snapshots.
+
+Rollout verified on Sep 12/13: both functions Active, downloaded bundles exact;
+all original configuration fields match except expected code metadata. Static
+COS run `34702210726` succeeded and live Speaking HTML/JS/CSS bytes match.
+The fixed Sep 6–12 date scope contains 61 ready IR reports plus one original
+failed record with no ready report. 50 upgrades completed; every source report,
+transcript, original assessment and new response cache passed comparison. Their
+200 questions and 150 samples passed canonical validation (95–163 words/sample).
+Eleven remaining jobs stopped after bounded attempts with HTTP 403
+`insufficient_quota`. A minimal no-student-data health check confirmed the error
+message: free quota exhausted; add funds or disable use-free-tier-only to continue.
+No billing setting was changed. The owner must restore/authorize paid availability
+before resuming those exact pending jobs. Private backups/results live under
+the main project's `.cloudbase-private/ir-coaching-refresh-20260912`; the release
+worktree also retains complete deployment/config diagnostics. No Part A history
+or formal audio was reprocessed or deleted.

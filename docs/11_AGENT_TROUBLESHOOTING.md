@@ -1,5 +1,32 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-09-12 — Speaking code deployment and IR refresh operator
+
+- CloudBase CLI 3.7 `fn code update` from a two-file bundle without project
+  configuration asks `Update with current config`. In non-interactive pipes it
+  can exit 0 without updating code. Use the visible terminal confirmation and
+  always verify downloaded bytes and function ModTime/Active state.
+- The inferred Node configuration can change `InstallDependency` to `TRUE`
+  during a code-only update. Snapshot the original flag, explicitly preserve or
+  restore it, and compare runtime, environment, role, timer and access settings.
+- RunCommands writes require canonical BSON dates for this environment:
+  `{ "$date": { "$numberLong": "<milliseconds>" } }`. The tested relaxed ISO
+  date form was rejected with `InvalidParameter` before any row was written.
+  The coaching operator stores failed-command diagnostics privately and never
+  prints student report bodies or dispatch capabilities.
+- A CloudBase SDK update of `{ report: analysis }` recursively merges fields.
+  IR V1-to-V2 upgrades must use the existing `replaceFields` helper so the
+  obsolete single sample does not survive alongside the new three samples.
+  A successful job alone is insufficient: compare the response cache with its
+  canonical report, and compare preserved assessment/transcript with the backup.
+- The Sep 12/13 backfill reached 50/61 ready reports before Aliyun returned
+  HTTP 403 `insufficient_quota`. A minimal health request confirmed "Free quota
+  exhausted" and the use-free-tier-only stop. The model-limit API still showed
+  ample throughput allowance, so a generic quota code alone does not establish
+  TPM throttling. Stop retries and obtain owner approval for any billing-mode
+  change. Current IR safe errors map 401/403 to `SPEAKING_PROVIDER_NOT_CONFIGURED`;
+  consult the provider code/message to distinguish a quota stop from bad keys.
+
 > 这份文档是给人和 Agent 快速排障用的。
 > 它不替代 `docs/01_PRODUCT_REQUIREMENTS.md`，也不替代 `AGENTS.md`。
 > 它专门记录：做过什么技术变更、哪些问题反复出现、以后看到类似现象应先查哪里。

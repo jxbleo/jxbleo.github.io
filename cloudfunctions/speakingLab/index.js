@@ -1635,7 +1635,7 @@ async function processIndividualResponseQueuedJob(claimed) {
     if (existingReportResult.data && existingReportResult.data[0]) await transaction.collection(REPORTS).doc(existingReportResult.data[0]._id || identity.report_id).update(reportRow);
     else await transaction.collection(REPORTS).doc(identity.report_id).create(reportRow);
     await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
-    await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt });
+    await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update(replaceFields({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt }, ["report"]));
   });
   return { success: true, status: "succeeded", stage: "publishing", job_id: claimed.job_id };
 }

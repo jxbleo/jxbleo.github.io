@@ -59,8 +59,18 @@ cp .qa-secrets.example .qa-secrets.local
   questions and three distinct-development samples with content/language notes.
   Full Speaking regression, static build/release verification and both function
   packages pass. Browser disclosures work; 390px viewport has no horizontal
-  overflow. Backend and static publication are pending; verify real-model quality
-  after deployment. No existing student reports were regenerated.
+  overflow. Both cloud functions are Active with exact downloaded-code matches
+  and original configuration retained. Frontend COS run 34702210726 succeeded;
+  live HTML/JS/CSS bytes match. The authorized Sep 6–12 refresh scanned 62 IR
+  records: 61 ready reports and one pre-existing failed/no-report record.
+  50 reports are upgraded and verified (200 questions, 150 samples, 95–163 words);
+  11 retain their original reports because the model returned HTTP 403,
+  insufficient_quota, explicitly free quota exhausted/use-free-tier-only.
+  No paid-mode switch, top-up or account configuration change was performed.
+  Resume only after the owner restores/authorizes model availability. Private
+  original/refined manifests and verified results are backed up under the main
+  project's .cloudbase-private/ir-coaching-refresh-20260912. Part A, audio,
+  voiceprints, original reports and original assessment fields were untouched.
 
 - 2026-09-12 — Writing sentence Argue: owner-authorized `writingTutor`, `teacherAdmin`, `getDashboard`, and `sendTeacherAttemptEmails` code updates are Active and downloaded code matches the tested packages; cloud configuration is unchanged. Matching static publication follows. Dedicated QA-student real-email acceptance remains for the owner; local QA sent no real email.
 

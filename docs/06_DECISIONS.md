@@ -1,5 +1,16 @@
 # 06 Decisions
 
+## 2026-09-12: Upgrade IR coaching without retrospective regrading
+
+The owner authorized a one-time seven-day IR upgrade. Generate new coaching
+against the saved question/context and transcript, but copy the prior assessment
+verbatim into a separate report revision. Do not rerun ASR, change original
+scores, mutate old reports, or block reading while enrichment runs. A private
+operator creates idempotent, source-revision-bound jobs; no new public migration
+endpoint or authentication exception is introduced. Compare the source report
+and active audio again inside publication's transaction to reject concurrent
+student replacement. No new dependency, service or collection is needed.
+
 ## 2026-09-12: Allocate Tencent voiceprints across bounded groups
 
 The verified incident was 20 active profiles in one Tencent group. Tencent
