@@ -3441,3 +3441,10 @@ The question dialog ignores bubbling file-input cancel events, so cancelling Upl
 ### 2026-09-13 — Manual stop shows recorded duration
 
 After Tap to Stop, Individual Response shows the actual captured duration in green with a sec recorded caption and a centred Tap to Start Over label without a checkmark. Duration freezes at the stop action; automatic Finished and manual Submit behavior remain.
+
+## 2026-09-13 — Vocabulary personalized Mastered crown
+
+- Replaced the Quiz Mastered star with the approved bright-gold E crown,
+  including decorative stars and dynamically fitted English-name engraving.
+- Kept existing Practice/Quiz context and server grading/STAR behavior.
+- Static frontend release only; no CloudBase deployment or data changes.

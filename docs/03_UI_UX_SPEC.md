@@ -2027,6 +2027,13 @@ Shared rules:
   ask again. The visible button label is `Submit`, and the bottom Submit button
   uses the same gold glowing treatment as the Cloze-mode numbered capsules.
 - The Vocabulary Test result modal has one action only: `Close`.
+- Vocabulary Quiz Mastered uses the approved E crown: bright yellow gold, two
+  decorative stars, and a wide gold nameplate with dark engraved English text.
+  The crown is 180px wide; names fit the plate without truncation. Read only the
+  matching current student profile's explicit `english_name`; missing names,
+  visitor mode, and teacher preview leave the plate blank. Never split legacy
+  `name` or use the Login ID as an engraving. Practice/Passed/Not Passed retain
+  their existing illustrations. The taller result card scrolls on short screens.
 - The result dialog uses the approved compact-label layout (A): vocabulary
   title and `Practice` / `Quiz` badges below the status, followed by Sets and
   the existing correct/total score. Practice lists the exact selected picker

@@ -3185,3 +3185,11 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
 - Individual Response Upload Files: cancel or dismiss the native picker without selecting, repeat several times, and re-select the same file. The question dialog and draft remain open. Escape on the dialog itself and its Close button retain normal guarded dismissal.
 
 - Stop Individual Response after a partial response: verify green captured seconds plus sec recorded, centred Tap to Start Over, no checkmark, and Submit availability. Exclude opening countdown and asynchronous recorder finalization from duration. Restart restores the normal countdown; automatic completion still shows Finished.
+
+## Vocabulary personalized Mastered crown (2026-09-13)
+
+- Quiz Mastered shows the bright E crown with the current student English name.
+- Check short, long, hyphenated and markup-like names; text stays inside the
+  nameplate and never becomes HTML. Missing/mismatched profiles leave it blank.
+- Practice, Passed and Not Passed retain their existing result graphics and
+  Sets metadata. Close remains reachable on short screens.
