@@ -1051,6 +1051,16 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone { color: #3a9272; background: #edf7f2; }
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone-label { color: #398568; font-size: 13px; }
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-clock { color: #6c7872; }
+
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-ring { visibility: hidden; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-mic-icon,
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-stop-icon,
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-finished-icon { display: none; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone { gap: 0; background: #edf7f2; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone-label { color: #398568; font-size: 13px; text-align: center; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock { display: inline-flex; align-items: baseline; gap: 7px; color: #398568; font-size: 32px; font-weight: 600; letter-spacing: -.4px; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock small { font-size: 12px; font-weight: 500; letter-spacing: 0; }
+
 @media(max-width:480px) {
     .speaking-response-dialog-body { padding: 38px 24px 28px; }
     .speaking-response-dialog-question { padding: 17px 18px; font-size: 17px; margin-top: 22px; }

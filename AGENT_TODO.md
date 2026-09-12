@@ -1107,3 +1107,7 @@ cp .qa-secrets.example .qa-secrets.local
 - 2026-09-13: Fixed Individual Response dialog closing when Upload Files is cancelled. Its cancel handler now ignores descendant input events; genuine dialog Escape still follows guarded close. Added regression checks for repeated picker cancellation and dialog-originated cancel; updated UI/testing/troubleshooting docs.
 
 - Verification: recorder/UI tests and release verification passed. Browser fixture with the production listener kept the dialog open after three bubbling file-input cancel events; dialog-originated Escape still closed it. Native OS picker interaction was not automated.
+
+- 2026-09-13: Individual Response manual stop uses its own stopped presentation: green actual seconds with sec recorded, centred Tap to Start Over, and no checkmark. Added tests for displayed duration, finalization delay exclusion and restart reset. Preview synced.
+
+- Verification: recorder/UI regression checks and release verification passed. Browser fixture using production markup/CSS/binding showed a centred text-only restart control, green recorded duration and Submit after manual stop. Synthetic capture only; no real microphone/backend submission used.

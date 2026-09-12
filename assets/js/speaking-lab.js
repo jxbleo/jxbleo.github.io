@@ -1440,7 +1440,12 @@
         }
         function readyToSubmit() {
             record.disabled = false;
-            setRecordButton(stoppedEarly ? 'Start Over' : 'Finished', 'finished');
+            setRecordButton(stoppedEarly ? 'Tap to Start Over' : 'Finished', stoppedEarly ? 'stopped' : 'finished');
+            if (stoppedEarly) {
+                var durationText = Number(responseRecordedDurationSeconds || 0).toFixed(1);
+                timer.innerHTML = '<span>' + durationText + '</span><small>sec recorded</small>';
+                timer.setAttribute('aria-label', 'Recorded duration: ' + durationText + ' seconds');
+            }
             file.disabled = false; fileLabel.hidden = true;
             upload.disabled = false; upload.hidden = false;
             status.textContent = '';
@@ -1450,7 +1455,7 @@
             responseBlob = null; responseChunks = []; responseStartedAt = 0;
             record.disabled = false; file.disabled = false; fileLabel.hidden = false;
             upload.disabled = true; upload.hidden = true;
-            timer.textContent = '01:00'; ring.style.strokeDashoffset = '0';
+            timer.textContent = '01:00'; timer.setAttribute('aria-label', 'Time left'); ring.style.strokeDashoffset = '0';
             setRecordButton('Tap to Record', 'idle'); status.textContent = message;
         }
         if (record) record.addEventListener('click', function () {
@@ -1468,7 +1473,7 @@
             responseBlob = null; responseChunks = []; responseStartedAt = 0;
             responseUploadOperationId = ''; responseRecordedDurationSeconds = null;
             upload.disabled = true; upload.hidden = true; fileLabel.hidden = false;
-            timer.textContent = '01:00'; ring.style.strokeDashoffset = '0'; status.textContent = '';
+            timer.textContent = '01:00'; timer.setAttribute('aria-label', 'Time left'); ring.style.strokeDashoffset = '0'; status.textContent = '';
             setRecordButton('Connecting…', 'requesting');
             navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
                 if (generation !== responseCaptureGeneration || !record.isConnected) { stream.getTracks().forEach(function (track) { track.stop(); }); return; }
@@ -1480,7 +1485,7 @@
                 device.onerror = function () { if (generation === responseCaptureGeneration) recordingFailure('Recording was interrupted. Please try again or use Upload Files.'); };
                 device.onstop = function () {
                     if (generation !== responseCaptureGeneration) return;
-                    responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
+                    if (!Number.isFinite(responseRecordedDurationSeconds)) responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
                     responseBlob = new Blob(responseChunks, { type: device.mimeType || 'audio/webm' });
                     stopResponseHardware(); responseStartedAt = 0; responseChunks = [];
                     if (!responseBlob.size) { recordingFailure('No audio was captured. Please try again.'); return; }

@@ -3029,7 +3029,7 @@ red, and sound once per second. Each countdown's final tone is higher and longer
 (1320 Hz / 0.4 seconds versus 880 Hz / 0.18 seconds). Reduced Motion keeps red
 without pulsing. At 65 captured seconds the recorder stops, shows `Finished`,
 and replaces Upload Files with `Submit`. Only an explicit Submit uploads and
-starts analysis; completion never auto-uploads. Manual interruption shows `Start Over`; automatic completion keeps `Finished`.
+starts analysis; completion never auto-uploads. Manual interruption shows only centred `Tap to Start Over` inside the circle, without a checkmark or microphone icon. The lower clock becomes green recorded duration (for example `12.4 sec recorded`), with smaller digits and a small unit caption. Duration freezes at the Stop action and excludes the three-second opening and recorder finalization delay. Automatic completion keeps `Finished`.
 Clicking either microphone control can replace the unsubmitted recording after confirmation. Errors remain visible,
 failed uploads retain the local audio for retry, and closing/navigation cancels
 pending microphone permission, countdown timers, scheduled cues and capture.

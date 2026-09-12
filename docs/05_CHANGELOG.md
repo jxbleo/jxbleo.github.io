@@ -3437,3 +3437,7 @@ Manual interruption now shows Start Over; automatic completion remains Finished.
 ### 2026-09-13 — Keep Individual Response open after picker cancellation
 
 The question dialog ignores bubbling file-input cancel events, so cancelling Upload Files no longer dismisses the question or clears its local draft. The normal dialog Escape and Close routes are preserved.
+
+### 2026-09-13 — Manual stop shows recorded duration
+
+After Tap to Stop, Individual Response shows the actual captured duration in green with a sec recorded caption and a centred Tap to Start Over label without a checkmark. Duration freezes at the stop action; automatic Finished and manual Submit behavior remain.
