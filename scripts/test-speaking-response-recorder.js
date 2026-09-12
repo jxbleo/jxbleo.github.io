@@ -70,6 +70,16 @@ function harness(options = {}) {
   return { context, node, devices, tracks, cues, calls, timers, advance, click: () => node('response-record').handlers.click(), resolvePermission: () => resolvePermission(stream) };
 }
 async function run() {
+  let cancelHandler, closed = 0, prevented = 0;
+  const dialog = { addEventListener(type, handler) { assert.equal(type, 'cancel'); cancelHandler = handler; } };
+  const cancelSource = source.match(/    responseDialog\.addEventListener\('cancel', function \(event\) \{[\s\S]*?\n    \}\);/)[0];
+  vm.runInNewContext(cancelSource, { responseDialog: dialog, closeIndividualResponseDialog() { closed++; } });
+  for (let i = 0; i < 3; i++) cancelHandler({ target: { type: 'file' }, preventDefault() { prevented++; } });
+  assert.equal(closed, 0, 'file picker cancellation must never close the response dialog');
+  assert.equal(prevented, 0, 'descendant cancellation does not belong to the dialog handler');
+  cancelHandler({ target: dialog, preventDefault() { prevented++; } });
+  assert.equal(closed, 1, 'explicit dialog Escape still follows the existing close/discard guard');
+  assert.equal(prevented, 1);
   const h = harness(); h.click(); await flush();
   assert.equal(h.devices[0].state, 'inactive', 'opening countdown must not be recorded');
   assert.equal(h.node('response-opening-digit').textContent, '3');
@@ -94,7 +104,7 @@ async function run() {
   const broken = harness(); broken.click(); await flush(); broken.advance(4000); broken.devices[0].onerror(); assert.equal(broken.context.responseBlob,null); assert(broken.tracks[0].stopped); assert.equal(broken.node('response-record').disabled,false);
   const file = harness(); file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=66; file.node('probe').onloadedmetadata(); assert.equal(file.context.responseBlob,null); assert.match(file.node('response-status').textContent,/65 seconds/);
   file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=12; file.node('probe').onloadedmetadata(); assert.equal(file.node('response-upload').hidden,false); assert.equal(file.context.responseRecordedDurationSeconds,12); assert.deepEqual(file.calls,[]);
-  console.log('Individual Response recorder passed: opening/ending timing and cues, manual Submit, double-submit guard, early stop, cancellation, late permission, denial, file limit and upload retry.');
+  console.log('Individual Response recorder passed: opening/ending timing and cues, manual Submit, double-submit guard, early stop, cancellation, late permission, denial, file limit, upload retry and file-picker cancel isolation.');
 }
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });
 module.exports = { harness, extract };

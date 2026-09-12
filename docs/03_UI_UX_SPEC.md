@@ -3165,3 +3165,5 @@ the first is initially open. Each contains the original idea anchor, the full
 English response, and a Traditional Chinese content/language explanation.
 Long content wraps within the existing single-column mobile report. V1 reports
 retain the earlier single sample, without empty V2 headings.
+
+Cancelling the Individual Response system file picker leaves its question dialog open and preserves the current recording/draft. Only a cancel event originating on the dialog itself enters the existing Escape/discard handler; descendant file-input cancel events do not close the parent.

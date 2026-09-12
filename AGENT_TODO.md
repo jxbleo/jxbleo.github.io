@@ -1103,3 +1103,7 @@ cp .qa-secrets.example .qa-secrets.local
 - Frontend-only; no production backend mutation or migration required. Behavioural recorder tests, full Speaking Lab regression suite, release verification and static build passed. Browser fixture using production markup/CSS/binding verified central 3/2/1 and Finished/Submit; hardware and live backend upload were not exercised. Static publication pending.
 
 - 2026-09-13: Manual Individual Response stop/cancel now displays Start Over; automatic completion retains Finished. Updated preview, UI spec and behavioural label check.
+
+- 2026-09-13: Fixed Individual Response dialog closing when Upload Files is cancelled. Its cancel handler now ignores descendant input events; genuine dialog Escape still follows guarded close. Added regression checks for repeated picker cancellation and dialog-originated cancel; updated UI/testing/troubleshooting docs.
+
+- Verification: recorder/UI tests and release verification passed. Browser fixture with the production listener kept the dialog open after three bubbling file-input cancel events; dialog-originated Escape still closed it. Native OS picker interaction was not automated.

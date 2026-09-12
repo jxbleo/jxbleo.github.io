@@ -3433,3 +3433,7 @@ publishes a separate coaching revision, and leaves old reports visible on failur
 ### 2026-09-13 — Individual Response interruption label
 
 Manual interruption now shows Start Over; automatic completion remains Finished. Submit still uploads explicitly, and restarting replaces the entire recording.
+
+### 2026-09-13 — Keep Individual Response open after picker cancellation
+
+The question dialog ignores bubbling file-input cancel events, so cancelling Upload Files no longer dismisses the question or clears its local draft. The normal dialog Escape and Close routes are preserved.

@@ -1205,3 +1205,7 @@ chrome; use explicit height plus appearance:none/-webkit-appearance:none and a
 non-interactive SVG chevron. Test within the real Teacher shell: its primary
 button selector adds a blue gradient, so an isolated Speaking-only preview
 does not prove the entrance buttons match.
+
+### File-picker cancellation can bubble into a dialog
+
+A file input emits a bubbling `cancel` event when its system picker is dismissed (including unchanged selection). An ancestor dialog cancel listener must check `event.target === dialog` before invoking its close/discard flow. Without that check, cancelling Upload Files also closes the Individual Response question. Preserve the normal dialog-originated Escape handler; do not reopen a discarded dialog after the fact.

@@ -1784,6 +1784,9 @@
         else transcriptionDialog.removeAttribute('open');
     });
     responseDialog.addEventListener('cancel', function (event) {
+        // File inputs emit a bubbling cancel event when their picker is dismissed.
+        // Only the dialog's own cancel event represents a request to close it.
+        if (event.target !== responseDialog) return;
         event.preventDefault();
         closeIndividualResponseDialog();
     });
