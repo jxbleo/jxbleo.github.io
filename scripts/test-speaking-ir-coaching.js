@@ -103,6 +103,16 @@ assert.equal(refresh.failureStatus(refreshJob, response), "ready");
 assert.equal(refresh.failureStatus({}, response), "failed");
 assert.equal(operator.scopeMatches(response, response), true);
 assert.equal(operator.scopeMatches({ ...response, deleted_at: "now" }, response), false);
+const retryResponse = { ...response, active_analysis_job_id: "job" };
+const retryItem = { response: retryResponse, source: sourceReport, job_id: "job" };
+const quotaJob = { ...refreshJob, status: "failed", attempt_count: 3, max_attempts: 5, safe_error_code: "SPEAKING_PROVIDER_NOT_CONFIGURED" };
+assert.equal(operator.canRetry(quotaJob, retryResponse, retryItem), false);
+assert.equal(operator.canRetry(quotaJob, retryResponse, retryItem, true), true);
+for (const changes of [{ status: "succeeded" }, { attempt_count: 5 }, { max_attempts: 3 }, { safe_error_code: "SPEAKING_JOB_SUPERSEDED" }, { safe_error_code: "SPEAKING_AI_SCHEMA_INVALID" }, { refresh_kind: null }, { source_report_id: "other" }]) {
+  assert.equal(operator.canRetry({ ...quotaJob, ...changes }, retryResponse, retryItem, true), false);
+}
+assert.equal(operator.canRetry(quotaJob, { ...retryResponse, active_analysis_job_id: "other" }, retryItem, true), false);
+assert.equal(operator.canRetry(quotaJob, { ...retryResponse, deleted_at: "now" }, retryItem, true), false);
 assert.deepStrictEqual(operator.normalize({ n: { $numberInt: "1" }, d: { $date: { $numberLong: "0" } } }), { n: 1, d: "1970-01-01T00:00:00.000Z" });
 console.log("Speaking IR refresh safety contracts passed.");
 const gatewaySource = fs.readFileSync(path.join(__dirname, "../cloudfunctions/speakingLab/index.js"), "utf8");

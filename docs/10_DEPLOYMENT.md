@@ -1701,8 +1701,26 @@ transcript, original assessment and new response cache passed comparison. Their
 Eleven remaining jobs stopped after bounded attempts with HTTP 403
 `insufficient_quota`. A minimal no-student-data health check confirmed the error
 message: free quota exhausted; add funds or disable use-free-tier-only to continue.
-No billing setting was changed. The owner must restore/authorize paid availability
-before resuming those exact pending jobs. Private backups/results live under
+No billing setting was changed. This primary-model stop did not establish that
+paid mode was required; Speaking lacked Writing's fallback. Restore free-model
+availability before resuming those exact jobs. Private backups/results live under
 the main project's `.cloudbase-private/ir-coaching-refresh-20260912`; the release
 worktree also retains complete deployment/config diagnostics. No Part A history
 or formal audio was reprocessed or deleted.
+
+### Speaking free-quota fallback (2026-09-13)
+
+Owner authorized deployment and resumption of the remaining 11 IR refreshes,
+retaining free-only protection. Add speakingLab environment variable
+`SPEAKING_AI_TEXT_QUOTA_FALLBACK_MODELS=qwen3.8-max,qwen3.8-max-0902`; preserve
+the primary `qwen3.7-plus` and all other environment/runtime values. No new key,
+collection, index, frontend or worker change is required. Package/deploy only
+speakingLab, verify Active cloud code against the ZIP and compare saved config.
+Do not disable any provider free-only stop for this rollout.
+
+`resume-quota <existing private manifest> <limit>` resumes only failed coaching
+jobs with the known quota/config error, unchanged source, active binding and
+attempts below their existing maximum (hard ceiling five). It never resets
+attempts or touches completed jobs. Start with limit 1 and verify the published
+sample/actual model, then resume the bounded remainder. Keep the Sep 6–12 scope
+and original reports; do not generate a new date-range manifest.

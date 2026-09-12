@@ -1419,6 +1419,12 @@ answers, slots, or private audio URLs.
 
 ## Speaking Set Library additions
 
+Speaking text usage rows additionally retain private `provider_code`,
+`primary_model`, and zero-based `quota_fallback_index` (0 means primary). Every
+physical request uses its own existing call-index/event ID. New IR reports have
+private `model_metadata` with actual/primary model and `quota_fallback_used`.
+Public projections and authorization are unchanged; no new collection is needed.
+
 IR dse_analysis/report payloads use dse-individual-response-v2 for new reports.
 New fields: basis_status (grounded|insufficient), student_viewpoint_zh,
 socratic_questions[4] (focus, student_idea_zh, evidence_segment_ids, question_zh,

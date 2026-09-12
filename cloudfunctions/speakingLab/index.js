@@ -1428,6 +1428,9 @@ function providerUsageEvent(job, stage, callIndex, provider, metadata = {}) {
     outcome: metadata.outcome === "failed" ? "failed" : "completed",
     safe_error_code: lab.text(metadata.safe_error_code, 120) || null,
     http_status: metadata.http_status != null && Number.isInteger(Number(metadata.http_status)) ? Number(metadata.http_status) : null,
+    provider_code: lab.text(metadata.provider_code, 200) || null,
+    primary_model: lab.text(metadata.primary_model, 200) || null,
+    quota_fallback_index: numeric(metadata.quota_fallback_index),
     response_finish_reason: lab.text(metadata.response_diagnostics && metadata.response_diagnostics.finish_reason, 80) || null,
     response_content_length: numeric(metadata.response_diagnostics && metadata.response_diagnostics.content_length),
     response_content_shape: lab.text(metadata.response_diagnostics && metadata.response_diagnostics.content_shape, 40) || null,
@@ -1460,6 +1463,12 @@ async function saveProviderUsage(job, stage, callIndex, provider, metadata) {
     console.error("speakingLab usage ledger failed", job.job_id, stage, error && error.message);
     return false;
   }
+}
+function createAuditedModelProvider(job, stage) {
+  return createModelProvider({
+    beforeAttempt: () => reserveProviderCall(job, "model_call_count"),
+    afterAttempt: (metadata, callIndex) => saveProviderUsage(job, stage, callIndex, "openai_compatible", metadata),
+  });
 }
 function canonicalTranscript(output) {
   const tracksWithEligibility = output.speaker_tracks.map((track) => ({
@@ -1607,22 +1616,15 @@ async function processIndividualResponseQueuedJob(claimed) {
   const transcript = sourceReport ? sourceReport.transcript : claimed.transcript || processingReport && processingReport.transcript || currentJob && currentJob.transcript;
   if (!transcript || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
   const question = response.question_snapshot && response.question_snapshot.text || "";
-  const model = createModelProvider();
-  const callIndex = await reserveProviderCall(claimed, "model_call_count");
-  let output;
-  try {
-    const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
-    output = { report: result.output, usage: result.usage, request_id: result.request_id };
-    await saveProviderUsage(claimed, "individual_analysis", callIndex, model.name, { model: model.model, protocol: model.protocol, request_id: result.request_id, usage: result.usage });
-  } catch (error) {
-    await saveProviderUsage(claimed, "individual_analysis", callIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, request_id: error && error.requestId, response_diagnostics: error && error.responseDiagnostics, usage: {} });
-    throw error;
-  }
+  const model = createAuditedModelProvider(claimed, "individual_analysis");
+  const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
+  const output = { report: result.output };
   const generatedAnalysis = lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
   const analysis = sourceReport ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
   const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-v1", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
+  reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname };
   if (sourceReport) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true });
   await db.runTransaction(async (transaction) => {
     const currentJobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
@@ -1731,19 +1733,11 @@ async function processQueuedJob(event) {
       const candidateKeys = Array.isArray(transcript.candidate_speaker_keys) ? transcript.candidate_speaker_keys : [];
       const nonCandidateKeys = Array.isArray(transcript.non_candidate_speaker_keys) ? transcript.non_candidate_speaker_keys : [];
       const speakingTurns = lab.canonicalSpeakingTurns(transcript.segments, candidateKeys);
-      const model = createModelProvider();
-      const modelCallIndex = await reserveProviderCall(claimed, "model_call_count");
-      let result;
-      try {
-        result = await model.callStructuredModel({
+      const model = createAuditedModelProvider(claimed, "dse_analysis");
+      const result = await model.callStructuredModel({
           system_prompt: dseAnalysisPrompt(),
           user_prompt: dseAnalysisUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, speakingTurns, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
         });
-      } catch (error) {
-        await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, outcome: "failed", safe_error_code: error && error.code, http_status: error && error.httpStatus, request_id: error && error.requestId, response_diagnostics: error && error.responseDiagnostics, usage: {} });
-        throw error;
-      }
-      await saveProviderUsage(claimed, "dse_analysis", modelCallIndex, model.name, { model: model.model, protocol: model.protocol, request_id: result.request_id, usage: result.usage });
       const analysis = lab.canonicalizeReport(result.output, transcript.speaker_tracks.map((track) => track.speaker_key), transcript.segments, { reportVersion: identity.report_version, candidateSpeakerKeys: candidateKeys, nonCandidateKeys });
       const finishedAt = now();
       await db.runTransaction(async (transaction) => {
@@ -1754,7 +1748,7 @@ async function processQueuedJob(event) {
         const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
         const currentReport = reportResult.data && reportResult.data[0];
         if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1) || !currentReport || currentReport.status !== "processing") throw new Error("SPEAKING_JOB_SUPERSEDED");
-        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", stage: "published", ...replaceFields({ dse_analysis: analysis, model_metadata: { provider: model.name, model: model.model, protocol: model.protocol, hostname: model.hostname, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", stage: "published", ...replaceFields({ dse_analysis: analysis, model_metadata: { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ analysis_status: "ready", active_report_version: identity.report_version, updated_at: finishedAt });
       });

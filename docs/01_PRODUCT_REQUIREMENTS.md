@@ -2145,6 +2145,12 @@ review remains available.
 
 ## DSE Speaking Lab V1 (local implementation boundary)
 
+Speaking text analysis may use an explicitly configured ordered model fallback
+only when the provider positively identifies a free-tier-only quota stop. Keep
+free-only protection enabled; deployment must not enable paid usage. Other
+errors never switch models; exhausting the chain stops safely. This covers new
+Part A and Part B analyses, not automatic historical report regeneration.
+
 New Individual Response V2 reports develop the student's own position through
 four Traditional Chinese Socratic questions (reason, example, qualification,
 implication), followed by exactly three complete English sample responses.

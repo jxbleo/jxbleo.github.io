@@ -90,7 +90,15 @@ function apply(manifest, limit) {
   }
   console.log(JSON.stringify({ queued, unchanged, superseded }));
 }
-function status(manifest, retry, repairCache = false) {
+function canRetry(job, row, item, quotaResume = false) {
+  if (!job || job.status !== "failed" || job.stage !== "analysis" || job.refresh_kind !== refresh.REFRESH_KIND || job.source_report_id !== item.source.report_id
+      || !scopeMatches(row, item.response) || row.active_analysis_job_id !== item.job_id) return false;
+  const ceiling = Math.min(quotaResume ? 5 : 3, Number(job.max_attempts) || 5);
+  if (!Number.isInteger(job.attempt_count) || job.attempt_count >= ceiling || job.attempt_count < 0) return false;
+  if (quotaResume) return ["SPEAKING_PROVIDER_NOT_CONFIGURED", "SPEAKING_AI_FREE_QUOTA_EXHAUSTED"].includes(job.safe_error_code);
+  return job.safe_error_code !== "SPEAKING_JOB_SUPERSEDED";
+}
+function status(manifest, retry, repairCache = false, quotaResumeLimit = 0) {
   const counts = {}, errors = {}, records = [];
   const jobs = queryMany(J, "job_id", manifest.items.map((item) => item.job_id));
   const responses = queryMany(S, "response_session_id", manifest.items.map((item) => item.response.response_session_id));
@@ -124,7 +132,10 @@ function status(manifest, retry, repairCache = false) {
       const reason = job.safe_error_code || "unknown";
       errors[reason] = (errors[reason] || 0) + 1;
       assert.equal(row.analysis_status, "ready", "Refresh failure hid previous report");
-      if (retry && job.attempt_count < 3 && reason !== "SPEAKING_JOB_SUPERSEDED" && scopeMatches(row, item.response) && row.active_analysis_job_id === item.job_id) {
+      const quotaResume = quotaResumeLimit > 0;
+      if ((retry || quotaResume) && (!quotaResume || (counts.retried || 0) < quotaResumeLimit) && canRetry(job, row, item, quotaResume)) {
+        assert.deepStrictEqual(reports.get(item.source.report_id), item.source, "Original report was changed");
+        assert.deepStrictEqual(row.report, item.source.dse_analysis, "Original assessment cache was changed");
         update(J, { _id: job._id, status: "failed", attempt_count: job.attempt_count }, { status: "queued", lease_token: null, lease_until: null, next_retry_at: stamp(), finished_at: null, updated_at: stamp() });
         counts.retried = (counts.retried || 0) + 1;
       }
@@ -154,12 +165,14 @@ function main(argv) {
     console.log(JSON.stringify({ refinedManifest: nextFile, total: manifest.items.length })); return;
   }
   if (mode === "apply") { const limit = Number(args[0] || 1); assert(Number.isInteger(limit) && limit > 0 && limit <= 1000); return apply(manifest, limit); }
-  if (mode === "status" || mode === "retry" || mode === "repair-cache") {
-    const records = status(manifest, mode === "retry", mode === "repair-cache");
+  if (mode === "status" || mode === "retry" || mode === "repair-cache" || mode === "resume-quota") {
+    const resumeLimit = mode === "resume-quota" ? Number(args[0] || 1) : 0;
+    if (mode === "resume-quota") assert(Number.isInteger(resumeLimit) && resumeLimit > 0 && resumeLimit <= 1000, "Explicit bounded resume limit required");
+    const records = status(manifest, mode === "retry", mode === "repair-cache", resumeLimit);
     if (args[0] === "save") privateSave(file.replace(/\.json$/, "") + `-results-${Date.now()}.json`, records);
     return;
   }
-  throw new Error("Use plan <private manifest> <from> <to>, apply <manifest> <limit>, status <manifest> [save], or retry <manifest>");
+  throw new Error("Use plan <private manifest> <from> <to>, apply <manifest> <limit>, status <manifest> [save], retry <manifest>, or resume-quota <manifest> <limit>");
 }
 if (require.main === module) { try { main(process.argv.slice(2)); } catch (error) {
   if (error.code === "ERR_ASSERTION") {
@@ -169,4 +182,4 @@ if (require.main === module) { try { main(process.argv.slice(2)); } catch (error
   } else console.error(error.message);
   process.exitCode = 1;
 } }
-module.exports = { normalize, scopeMatches, eligible, jobId };
+module.exports = { normalize, scopeMatches, eligible, jobId, canRetry };

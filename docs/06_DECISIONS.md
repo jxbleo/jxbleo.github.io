@@ -1,5 +1,13 @@
 # 06 Decisions
 
+## 2026-09-13: Independent, free-stop-only Speaking model fallback
+
+Do not enable paid usage to recover an exhausted primary model. Speaking needs
+an explicit ordered chain, independent of Writing. Support the verified Maas
+403 wrapper only with both unambiguous free-only message markers. Other errors
+remain failures. Keep one deadline, existing lease boundaries and per-request
+metadata-only audit. No new dependency/service or frontend redesign is needed.
+
 ## 2026-09-12: Upgrade IR coaching without retrospective regrading
 
 The owner authorized a one-time seven-day IR upgrade. Generate new coaching

@@ -1,5 +1,14 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-09-13 — Speaking did not inherit Writing's quota fallback
+
+Writing had `qwen3.8-max,qwen3.8-max-0902` configured; Speaking only called
+`qwen3.7-plus`. A primary quota stop is not a reason to enable paid mode.
+Speaking now has its own optional chain, per-attempt audit and strict detection.
+The Maas `insufficient_quota` wrapper requires both free-quota-exhausted and
+use-free-tier-only message markers; code alone is insufficient. Ordinary
+401/403, 429, 5xx, network and schema failures never switch models.
+
 ## 2026-09-12 — Speaking code deployment and IR refresh operator
 
 - CloudBase CLI 3.7 `fn code update` from a two-file bundle without project

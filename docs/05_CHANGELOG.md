@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-13 — Speaking free-quota model fallback
+
+- Added explicit ordered fallback for verified Qwen free-tier-only stops;
+  preserved paid-mode protection, request leases and bounded timeout.
+- Record each physical request and the actual report model. Part A and IR use
+  the same adapter; existing report content is unchanged.
+- Added safe quota-resume mode for the original eleven failed IR refresh jobs,
+  preserving attempt counters and all original assessments.
+
 ## 2026-09-12 — Teacher student dialogs on phones
 
 - Prevented the viewport-height lookup shell from stretching its toolbar and

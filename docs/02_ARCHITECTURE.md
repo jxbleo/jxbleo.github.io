@@ -1057,6 +1057,13 @@ No local audio persistence or new browser-to-provider route is introduced.
 
 ## Speaking Lab backend boundary
 
+Speaking has its own optional quota-fallback chain; Writing config is not
+inherited. Every physical attempt reserves a lease-checked call index and writes
+safe usage metadata. The entire chain shares one timeout budget. Only Qwen HTTP
+403 with `AllocationQuota.FreeTierOnly`, or `insufficient_quota` plus explicit
+free-quota-exhausted AND use-free-tier-only message markers, can advance.
+Messages are inspected in memory, never persisted. Reports identify the actual model.
+
 `speakingLab` is the authenticated gateway for Discussion, invitation, Guest,
 private two-phase audio upload, identity confirmation/remapping, and snapshot
 creation. Its only pre-profile action is `getSharedReport`, reached through a

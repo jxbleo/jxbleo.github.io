@@ -9,6 +9,7 @@ class SpeakingModelError extends Error {
     this.providerCode = options.providerCode || null;
     this.requestId = options.requestId || null;
     this.responseDiagnostics = options.responseDiagnostics || null;
+    this.freeTierExhausted = options.freeTierExhausted === true;
   }
 }
 
@@ -34,6 +35,8 @@ function configuration(env = process.env) {
     || /dashscope/i.test(url.toString());
   const maxOutputTokens = Math.min(16000, Math.max(1000, Number(env.SPEAKING_AI_TEXT_MAX_OUTPUT_TOKENS) || 16000));
   const timeoutMs = Math.min(300000, Math.max(5000, Number(env.SPEAKING_AI_TIMEOUT_MS) || 180000));
+  const quotaFallbackModels = [...new Set(text(env.SPEAKING_AI_TEXT_QUOTA_FALLBACK_MODELS || env.SPEAKING_AI_TEXT_QUOTA_FALLBACK_MODEL, 1000).split(",").map((value) => value.trim()).filter(Boolean))];
+  if (quotaFallbackModels.length > 8 || quotaFallbackModels.includes(text(env.SPEAKING_AI_TEXT_MODEL, 200))) throw new SpeakingModelError();
   return {
     apiKey: text(env.SPEAKING_AI_TEXT_API_KEY, 4000),
     url: url.toString(),
@@ -43,6 +46,7 @@ function configuration(env = process.env) {
     qwenCompatible,
     maxOutputTokens,
     timeoutMs,
+    quotaFallbackModels,
   };
 }
 
@@ -87,8 +91,19 @@ function normalizedUsage(value) {
   };
 }
 
-async function callStructuredModel(input = {}, options = {}) {
-  const config = options.config || configuration(options.env || process.env);
+function isFreeTierQuotaExhausted(status, body, config) {
+  if (!config.qwenCompatible || status !== 403) return false;
+  const code = text(body && body.error && (body.error.code || body.error.type), 200);
+  if (code === "AllocationQuota.FreeTierOnly") return true;
+  // The workspace Maas gateway wraps the same stop as insufficient_quota.
+  // Inspect the bounded message in memory only; generic quota/balance errors,
+  // throttling and authentication failures must never trigger model switching.
+  const message = text(body && body.error && body.error.message, 2000);
+  return code === "insufficient_quota" && /\bfree quota exhausted\b/i.test(message)
+    && /\buse[ -]free[ -]tier[ -]only\b/i.test(message);
+}
+
+async function callOnce(input, options, config) {
   const payload = {
     model: config.model,
     messages: [
@@ -125,7 +140,8 @@ async function callStructuredModel(input = {}, options = {}) {
   if (!response.ok || body && body.error) {
     const providerCode = text(body && body.error && (body.error.code || body.error.type), 200);
     const code = response.status === 401 || response.status === 403 ? "SPEAKING_PROVIDER_NOT_CONFIGURED" : (response.status === 408 || response.status === 429 || response.status >= 500 ? "SPEAKING_AI_TIMEOUT" : "SPEAKING_AI_FAILED");
-    throw new SpeakingModelError(code, { httpStatus: response.status, providerCode, requestId });
+    const freeTierExhausted = isFreeTierQuotaExhausted(response.status, body, config);
+    throw new SpeakingModelError(freeTierExhausted ? "SPEAKING_AI_FREE_QUOTA_EXHAUSTED" : code, { httpStatus: response.status, providerCode, requestId, freeTierExhausted });
   }
   const choice = body && Array.isArray(body.choices) && body.choices[0];
   const rawContent = contentText(choice && choice.message && choice.message.content);
@@ -150,10 +166,35 @@ async function callStructuredModel(input = {}, options = {}) {
   };
 }
 
+async function callStructuredModel(input = {}, options = {}) {
+  const config = options.config || configuration(options.env || process.env);
+  const models = [config.model, ...(config.quotaFallbackModels || [])];
+  // One shared deadline, not a fresh full timeout for every fallback model.
+  const deadline = Date.now() + config.timeoutMs;
+  for (let index = 0; index < models.length; index += 1) {
+    if (Date.now() >= deadline) throw new SpeakingModelError("SPEAKING_AI_TIMEOUT");
+    const metadata = { model: models[index], primary_model: config.model, protocol: config.protocol, quota_fallback_index: index };
+    // The server rechecks its durable-job lease before EVERY physical request.
+    const callIndex = options.beforeAttempt ? await options.beforeAttempt(metadata) : null;
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) throw new SpeakingModelError("SPEAKING_AI_TIMEOUT");
+    let result;
+    try {
+      result = await callOnce(input, options, { ...config, model: models[index], timeoutMs: remaining });
+    } catch (error) {
+      if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "failed", safe_error_code: error.code, provider_code: error.providerCode, http_status: error.httpStatus, request_id: error.requestId, response_diagnostics: error.responseDiagnostics, usage: {} }, callIndex);
+      if (error.freeTierExhausted && index + 1 < models.length) continue;
+      throw error;
+    }
+    if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "completed", http_status: 200, request_id: result.request_id, usage: result.usage }, callIndex);
+    return { ...result, ...metadata, quota_fallback_used: index > 0 };
+  }
+}
+
 module.exports = {
   SpeakingModelError,
   createModelProvider,
   providerConfigStatus,
   callStructuredModel,
-  _test: { configuration, contentText, parseJsonContent, normalizedUsage },
+  _test: { configuration, contentText, parseJsonContent, normalizedUsage, isFreeTierQuotaExhausted },
 };

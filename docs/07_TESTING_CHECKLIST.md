@@ -1,5 +1,16 @@
 # 07 Testing Checklist
 
+## 2026-09-13 — Speaking quota fallback
+
+Run `npm run test:speaking-lab`: verify primary success, exact and wrapped free
+quota stops, ordered fallback and full exhaustion; no switch for auth, generic
+balance/quota, rate limits, network and schema errors. Confirm one deadline,
+lease-check/usage event per physical request, actual-model reporting and no raw
+provider messages in audit. Resume contracts must reject completed/superseded
+jobs, changed reports/audio, non-quota failures and exhausted attempt budgets.
+Live gate: unchanged free-only switches, one successful pending IR pilot, then
+exact-manifest completion with original reports/transcripts/scores unchanged.
+
 ## 2026-09-12 — Assign score preview
 
 Run `npm run test:assignment-schedule`. Verify selected students with no results
