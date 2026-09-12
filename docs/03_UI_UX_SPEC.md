@@ -1210,9 +1210,14 @@ Teacher can:
   remains selectable for reassignment
 - place the Students summary card before Work: Students is left and Work is
   right on desktop, while Students is above Work on mobile
-- after students from a class or an individual student are selected, every Work
-  row shows its `set_id` followed on the same line by every selected student's
-  display name and completed percentage; the line wraps only when horizontal
+- after students from a class or an individual student are selected, a Work row
+  shows only its `set_id` when none of the selected students has attempted or
+  completed that set. An assigned but unattempted set also hides student scores;
+  a recorded zero score counts as attempted. Once any selected student has
+  attempted the set, show every selected student's English name and completed
+  percentage after `set_id`; fall back to the existing display name/Login ID
+  when no explicit English name exists, without splitting legacy names.
+  The line wraps only when horizontal
   space is insufficient. A selected student who has not completed that set
   shows `0%`, even if they have partial attempt progress. If one or more selected
   students have completed the set, color the Work row yellow. Do not show a

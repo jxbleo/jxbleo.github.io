@@ -3254,6 +3254,7 @@
             return {
                 student: student,
                 completed: completedItems.length > 0,
+                attempted: completedItems.length > 0 || studentSetBestPercentage(student.auth_uid, setId) != null,
                 percentage: completedPercentages.length ? Math.max.apply(Math, completedPercentages) : 0
             };
         });
@@ -3261,12 +3262,14 @@
 
     function renderAssignWorkMeta(set, studentProgress) {
         var students = Array.isArray(studentProgress) ? studentProgress : [];
-        if (!students.length) return '<small>' + escapeHtml(String(set && set.set_id || '')) + '</small>';
+        if (!students.some(function(item) { return item.attempted; })) {
+            return '<small>' + escapeHtml(String(set && set.set_id || '')) + '</small>';
+        }
         return '<small class="assign-choice-progress-meta">' +
             '<span class="assign-choice-base-meta">' + escapeHtml(String(set && set.set_id || '')) + '</span>' +
             '<span class="assign-choice-student-progress">' + students.map(function(item) {
                 var student = item.student || {};
-                return '<span><b>' + escapeHtml(studentDisplayName(student) || student.student_id || student.auth_uid) +
+                return '<span><b>' + escapeHtml(studentEnglishName(student) || studentDisplayName(student) || student.student_id || student.auth_uid) +
                     '</b> ' + escapeHtml(formatPercent(item.completed ? item.percentage : 0)) + '</span>';
             }).join('') + '</span>' +
         '</small>';

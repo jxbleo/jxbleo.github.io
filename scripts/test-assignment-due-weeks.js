@@ -521,14 +521,16 @@ function testAssignWorkCardsShowSelectedStudentCompletionPercentages() {
   };
   hooks.state.sets = [set];
   hooks.state.candidates = [
-    { auth_uid: "finished-uid", student_id: "finished", name: "Amy", active: true, profile_complete: true },
+    { auth_uid: "finished-uid", student_id: "finished", name: "小明Amy", chinese_name: "小明", english_name: " Amy ", active: true, profile_complete: true },
     { auth_uid: "tried-uid", student_id: "tried", name: "Ben", active: true, profile_complete: true },
     { auth_uid: "waiting-uid", student_id: "waiting", name: "Cara", active: true, profile_complete: true },
+    { auth_uid: "available-uid", student_id: "available", name: "Dan", active: true, profile_complete: true },
   ];
   hooks.state.selectedAssignStudentUids = {
     "finished-uid": true,
     "tried-uid": true,
     "waiting-uid": true,
+    "available-uid": true,
   };
   hooks.state.assignments = [
     { student_uid: "finished-uid", set_id: set.set_id, status: "passed", best_percentage: 96 },
@@ -542,8 +544,10 @@ function testAssignWorkCardsShowSelectedStudentCompletionPercentages() {
   const html = hooks.renderAssignWorkMeta(set, rows);
   assert(html.includes("CLASS-PROGRESS-SET"));
   assert(html.includes("Amy</b> 96%"));
+  assert(!html.includes("小明"), "score labels should use the explicit English name only");
   assert(html.includes("Ben</b> 0%"), "an incomplete attempted set must display 0%, not its partial score");
   assert(html.includes("Cara</b> 0%"));
+  assert(html.includes("Dan</b> 0%"));
   assert(!html.includes("student completed"));
   assert.equal(hooks.renderAssignWorkMeta(set, []), '<small>CLASS-PROGRESS-SET</small>');
 
@@ -553,6 +557,18 @@ function testAssignWorkCardsShowSelectedStudentCompletionPercentages() {
   rows = hooks.assignStudentCompletionRows(set);
   assert.equal(rows.filter((item) => item.completed).length, 2);
   assert(hooks.renderAssignWorkMeta(set, rows).includes("Ben</b> 55%"));
+
+  hooks.state.selectedAssignStudentUids = { "waiting-uid": true, "available-uid": true };
+  assert.equal(hooks.renderAssignWorkMeta(set, hooks.assignStudentCompletionRows(set)),
+    '<small>CLASS-PROGRESS-SET</small>', "unattempted selections hide scores even when assigned or other students have results");
+  hooks.state.progressItems = [
+    { student_uid: "waiting-uid", set_id: "ANOTHER-SET", status: "passed", best_percentage: 90 },
+  ];
+  assert.equal(hooks.renderAssignWorkMeta(set, hooks.assignStudentCompletionRows(set)), '<small>CLASS-PROGRESS-SET</small>');
+  hooks.state.progressItems.push({ student_uid: "waiting-uid", set_id: set.set_id, status: "to_do", best_percentage: 0 });
+  const zeroHtml = hooks.renderAssignWorkMeta(set, hooks.assignStudentCompletionRows(set));
+  assert(zeroHtml.includes("Cara</b> 0%"), "a recorded zero must keep the score section visible");
+  assert(zeroHtml.includes("Dan</b> 0%"), "mixed selections retain every selected student");
 }
 
 function testTeacherMatrixUsesCurrentRoster() {

@@ -76,6 +76,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-12 — Assign score preview: hide scores for wholly unattempted selections, retain recorded zero and mixed-selection rows, and prefer explicit English names. Updated Teacher assets/cache versions, UI spec and regression checklist. Assignment regression, release verification, static build and publisher checks cover this scoped release. Owner authorized static publication; no CloudBase changes are required.
+
 - 2026-09-12 — Writing Argue local QA: raised-hand controls on wrong cards, last-checked-text dialog, repeated Reject/request, teacher Approve/Reject links, automatic approved sentence/completion updates, private reply projection and late-worker protection implemented. Writing, Argue mail/reminder, attempt-mail, self-study, login-redirect and task-scroll regressions passed; release verification, syntax/diff checks and four function packages passed. Desktop and 390px browser QA used an in-memory synthetic backend, including repeat request and final-sentence completion. Preserved unrelated shared-worktree edits. Product, architecture, UI, data, test, deployment and agent guidance updated.
 
 - 2026-09-12: Added live manuscript OCR word count using the existing

@@ -1,5 +1,14 @@
 # 07 Testing Checklist
 
+## 2026-09-12 — Assign score preview
+
+Run `npm run test:assignment-schedule`. Verify selected students with no results
+hide the Work score line, including assigned-but-unattempted work. Results for
+other students/sets must not reveal it; a recorded 0% must reveal it. Mixed
+selections retain all selected students and current completion percentages.
+Explicit English names replace combined names; missing English names retain
+the existing display-name fallback.
+
 ## 2026-09-12 — OCR manuscript word count
 
 Verify the initial OCR text count, typing/paste/delete, empty text (`0 words`),
