@@ -11,6 +11,12 @@ jobs, changed reports/audio, non-quota failures and exhausted attempt budgets.
 Live gate: unchanged free-only switches, one successful pending IR pilot, then
 exact-manifest completion with original reports/transcripts/scores unchanged.
 
+The IR user prompt must spell out the complete V2 JSON shape and forbid
+grades-only/legacy output even for indirect or short answers. Keep all existing
+coaching evidence/count/length validation. A repair manifest must preserve the
+exhausted job, require a different prompt version and select exactly one failed
+validation job, leaving sixty completed identities untouched.
+
 ## 2026-09-12 — Assign score preview
 
 Run `npm run test:assignment-schedule`. Verify selected students with no results

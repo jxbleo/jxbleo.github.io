@@ -6,6 +6,10 @@ const vm = require("vm");
 const path = require("path");
 const lab = require("../cloudfunctions/_shared/speaking-lab");
 const prompts = require("../cloudfunctions/speakingLab/prompts");
+assert.match(prompts.individualResponseUserPrompt({}), /OUTPUT CONTRACT/);
+assert.match(prompts.individualResponseUserPrompt({}), /grades-only or legacy answer is invalid/);
+assert.match(prompts.individualResponseUserPrompt({}), /Never silently omit coaching/);
+assert.match(prompts.individualResponseAnalysisPrompt(), /PERSONAL-FACT BOUNDARY/);
 const schemas = require("../cloudfunctions/speakingLab/schemas");
 
 // Synthetic contract input, not a model-quality benchmark or a student record.
@@ -108,6 +112,11 @@ const retryItem = { response: retryResponse, source: sourceReport, job_id: "job"
 const quotaJob = { ...refreshJob, status: "failed", attempt_count: 3, max_attempts: 5, safe_error_code: "SPEAKING_PROVIDER_NOT_CONFIGURED" };
 assert.equal(operator.canRetry(quotaJob, retryResponse, retryItem), false);
 assert.equal(operator.canRetry(quotaJob, retryResponse, retryItem, true), true);
+const validationJob = { ...quotaJob, attempt_count: 4, safe_error_code: "INDIVIDUAL_RESPONSE_COACHING_INVALID" };
+assert.equal(operator.canRetry(validationJob, retryResponse, retryItem, false, true), true);
+assert.equal(operator.canRetry(validationJob, retryResponse, retryItem, true), false);
+assert.equal(operator.canRetry({ ...validationJob, attempt_count: 5 }, retryResponse, retryItem, false, true), false);
+assert.equal(operator.canRetry(quotaJob, retryResponse, retryItem, false, true), false);
 for (const changes of [{ status: "succeeded" }, { attempt_count: 5 }, { max_attempts: 3 }, { safe_error_code: "SPEAKING_JOB_SUPERSEDED" }, { safe_error_code: "SPEAKING_AI_SCHEMA_INVALID" }, { refresh_kind: null }, { source_report_id: "other" }]) {
   assert.equal(operator.canRetry({ ...quotaJob, ...changes }, retryResponse, retryItem, true), false);
 }

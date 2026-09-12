@@ -69,8 +69,10 @@ function plan(file, from, to) {
 }
 function apply(manifest, limit) {
   let queued = 0, unchanged = 0, superseded = 0;
+  const existingJobs = queryMany(J, "job_id", manifest.items.map(item => item.job_id));
   for (const item of manifest.items) {
     if (queued >= limit) break;
+    if (existingJobs.get(item.job_id)?.status === "succeeded") { unchanged++; continue; }
     const old = item.response;
     const current = query(S, { response_session_id: old.response_session_id })[0];
     const priorJob = query(J, { job_id: item.job_id })[0];
@@ -82,6 +84,7 @@ function apply(manifest, limit) {
     const time = stamp();
     update(J, { _id: item.job_id }, { job_id: item.job_id, operation_id: item.job_id, job_type: "individual_response_analysis", refresh_kind: refresh.REFRESH_KIND, source_report_id: old.report_id, source_report_version: old.active_report_version, response_session_id: old.response_session_id, response_revision: old.active_audio_revision, formal_audio_asset_id: old.formal_audio_asset_id, status: "preparing", stage: "analysis", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: time, created_at: time, updated_at: time, finished_at: null, safe_error_code: null, prompt_version: "dse-individual-response-prompts-2026-09-12.2", schema_version: "dse-individual-response-v2", rubric_version: "dse-individual-response-v1" }, true);
     update(J, { _id: item.job_id, status: "preparing" }, { prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION });
+    if (item.repair_of_job_id) update(J, { _id: item.job_id, status: "preparing" }, { repair_of_job_id: item.repair_of_job_id });
     update(S, { _id: old._id, deleted_at: null, report_id: old.report_id, active_report_version: old.active_report_version, active_audio_revision: old.active_audio_revision, active_analysis_job_id: old.active_analysis_job_id, analysis_status: "ready" }, { active_analysis_job_id: item.job_id, updated_at: time });
     const attached = query(S, { _id: old._id })[0];
     if (attached.active_analysis_job_id === item.job_id) {
@@ -90,15 +93,16 @@ function apply(manifest, limit) {
   }
   console.log(JSON.stringify({ queued, unchanged, superseded }));
 }
-function canRetry(job, row, item, quotaResume = false) {
+function canRetry(job, row, item, quotaResume = false, validationRetry = false) {
   if (!job || job.status !== "failed" || job.stage !== "analysis" || job.refresh_kind !== refresh.REFRESH_KIND || job.source_report_id !== item.source.report_id
       || !scopeMatches(row, item.response) || row.active_analysis_job_id !== item.job_id) return false;
-  const ceiling = Math.min(quotaResume ? 5 : 3, Number(job.max_attempts) || 5);
+  const ceiling = Math.min(quotaResume || validationRetry ? 5 : 3, Number(job.max_attempts) || 5);
   if (!Number.isInteger(job.attempt_count) || job.attempt_count >= ceiling || job.attempt_count < 0) return false;
   if (quotaResume) return ["SPEAKING_PROVIDER_NOT_CONFIGURED", "SPEAKING_AI_FREE_QUOTA_EXHAUSTED"].includes(job.safe_error_code);
+  if (validationRetry) return job.safe_error_code === "INDIVIDUAL_RESPONSE_COACHING_INVALID";
   return job.safe_error_code !== "SPEAKING_JOB_SUPERSEDED";
 }
-function status(manifest, retry, repairCache = false, quotaResumeLimit = 0) {
+function status(manifest, retry, repairCache = false, quotaResumeLimit = 0, validationRetry = false) {
   const counts = {}, errors = {}, records = [];
   const jobs = queryMany(J, "job_id", manifest.items.map((item) => item.job_id));
   const responses = queryMany(S, "response_session_id", manifest.items.map((item) => item.response.response_session_id));
@@ -132,8 +136,9 @@ function status(manifest, retry, repairCache = false, quotaResumeLimit = 0) {
       const reason = job.safe_error_code || "unknown";
       errors[reason] = (errors[reason] || 0) + 1;
       assert.equal(row.analysis_status, "ready", "Refresh failure hid previous report");
-      const quotaResume = quotaResumeLimit > 0;
-      if ((retry || quotaResume) && (!quotaResume || (counts.retried || 0) < quotaResumeLimit) && canRetry(job, row, item, quotaResume)) {
+      const boundedResume = quotaResumeLimit > 0;
+      const quotaResume = boundedResume && !validationRetry;
+      if ((retry || boundedResume) && (!boundedResume || (counts.retried || 0) < quotaResumeLimit) && canRetry(job, row, item, quotaResume, validationRetry)) {
         assert.deepStrictEqual(reports.get(item.source.report_id), item.source, "Original report was changed");
         assert.deepStrictEqual(row.report, item.source.dse_analysis, "Original assessment cache was changed");
         update(J, { _id: job._id, status: "failed", attempt_count: job.attempt_count }, { status: "queued", lease_token: null, lease_until: null, next_retry_at: stamp(), finished_at: null, updated_at: stamp() });
@@ -151,6 +156,29 @@ function main(argv) {
   if (mode === "plan") return plan(file, args[0], args[1]);
   const manifest = JSON.parse(fs.readFileSync(file, "utf8"));
   assert.equal(manifest.environment, ENV);
+  if (mode === "replan-validation") {
+    // A materially corrected prompt gets a new audited operation; never reset
+    // or overwrite the exhausted job, and never silently renew the same prompt.
+    const jobs = queryMany(J, "job_id", manifest.items.map(item => item.job_id));
+    const items = [], repaired = [];
+    for (const item of manifest.items) {
+      const job = jobs.get(item.job_id);
+      if (!job || job.status !== "failed" || job.safe_error_code !== "INDIVIDUAL_RESPONSE_COACHING_INVALID") { items.push(item); continue; }
+      assert.equal(job.refresh_kind, refresh.REFRESH_KIND);
+      assert.equal(job.source_report_id, item.source.report_id);
+      assert(job.attempt_count >= 5 && job.prompt_version !== INDIVIDUAL_RESPONSE_PROMPT_VERSION, "A new validated prompt is required; do not bypass retry limits");
+      const row = query(S, { response_session_id: item.response.response_session_id })[0];
+      assert(scopeMatches(row, item.response) && row.active_analysis_job_id === item.job_id);
+      assert.deepStrictEqual(query(R, { report_id: item.source.report_id })[0], item.source);
+      assert.deepStrictEqual(row.report, item.source.dse_analysis);
+      items.push({ ...item, response: row, repair_of_job_id: item.job_id, job_id: stable("speaking_ir_format_repair_job", item.job_id, INDIVIDUAL_RESPONSE_PROMPT_VERSION) });
+      repaired.push(item.job_id);
+    }
+    assert.equal(repaired.length, 1, "This recovery is authorized for exactly the one remaining report");
+    const nextFile = file.replace(/\.json$/, "-validation-repair.json");
+    privateSave(nextFile, { ...manifest, previous_manifest: path.basename(file), repair_prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, repair_failed_job_ids: repaired, items });
+    console.log(JSON.stringify({ repairManifest: nextFile, repaired: repaired.length, unchanged: items.length - repaired.length })); return;
+  }
   if (mode === "refine-pilot") {
     // Preserve both previous manifests/reports. Only the already-tested first
     // response is refined; all other scope entries remain exactly as approved.
@@ -165,14 +193,15 @@ function main(argv) {
     console.log(JSON.stringify({ refinedManifest: nextFile, total: manifest.items.length })); return;
   }
   if (mode === "apply") { const limit = Number(args[0] || 1); assert(Number.isInteger(limit) && limit > 0 && limit <= 1000); return apply(manifest, limit); }
-  if (mode === "status" || mode === "retry" || mode === "repair-cache" || mode === "resume-quota") {
-    const resumeLimit = mode === "resume-quota" ? Number(args[0] || 1) : 0;
-    if (mode === "resume-quota") assert(Number.isInteger(resumeLimit) && resumeLimit > 0 && resumeLimit <= 1000, "Explicit bounded resume limit required");
-    const records = status(manifest, mode === "retry", mode === "repair-cache", resumeLimit);
+  if (["status", "retry", "repair-cache", "resume-quota", "retry-validation"].includes(mode)) {
+    const boundedResume = ["resume-quota", "retry-validation"].includes(mode);
+    const resumeLimit = boundedResume ? Number(args[0] || 1) : 0;
+    if (boundedResume) assert(Number.isInteger(resumeLimit) && resumeLimit > 0 && resumeLimit <= 1000, "Explicit bounded resume limit required");
+    const records = status(manifest, mode === "retry", mode === "repair-cache", resumeLimit, mode === "retry-validation");
     if (args[0] === "save") privateSave(file.replace(/\.json$/, "") + `-results-${Date.now()}.json`, records);
     return;
   }
-  throw new Error("Use plan <private manifest> <from> <to>, apply <manifest> <limit>, status <manifest> [save], retry <manifest>, or resume-quota <manifest> <limit>");
+  throw new Error("Use plan <private manifest> <from> <to>, apply <manifest> <limit>, status <manifest> [save], retry <manifest>, resume-quota <manifest> <limit>, or retry-validation <manifest> <limit>");
 }
 if (require.main === module) { try { main(process.argv.slice(2)); } catch (error) {
   if (error.code === "ERR_ASSERTION") {

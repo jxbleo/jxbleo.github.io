@@ -1724,3 +1724,24 @@ attempts below their existing maximum (hard ceiling five). It never resets
 attempts or touches completed jobs. Start with limit 1 and verify the published
 sample/actual model, then resume the bounded remainder. Keep the Sep 6–12 scope
 and original reports; do not generate a new date-range manifest.
+
+If a resumed result fails the existing coaching validator, the explicit bounded
+`retry-validation <manifest> <limit>` mode permits that exact error only, under
+the same unchanged-source and five-attempt ceiling. It never relaxes report
+validation or resets the job's attempt counter. Other failure classes cannot use
+this mode. Normal `retry` retains its conservative three-attempt ceiling.
+
+The final one-report validation failure reproduced a grades-only object with
+the entire V2 coaching section absent. Prompt `2026-09-13.1` adds an explicit
+complete JSON shape, including insufficient-evidence cases; validation is not
+weakened. After a successful provider pilot and deployment, the narrowly scoped
+`replan-validation` operator can write a new exclusive manifest for exactly one
+exhausted validation job under a different prompt revision. The old failed job
+and its attempt count remain unchanged. The new normal job records
+`repair_of_job_id`; all other sixty manifest items retain their exact identities.
+Do not use this as a retry-budget reset or renew the same prompt revision.
+
+Quality review also requires preserving the distinction between wishing for a
+friend to share an activity and a confirmed absence of such friends. Prompt
+`2026-09-13.1` explicitly retains insufficient personal-fact evidence and labels
+hypothetical circumstances outside the sample speech; new actions stay conditional.

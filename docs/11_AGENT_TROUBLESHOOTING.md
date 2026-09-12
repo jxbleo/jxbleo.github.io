@@ -9,6 +9,12 @@ The Maas `insufficient_quota` wrapper requires both free-quota-exhausted and
 use-free-tier-only message markers; code alone is insufficient. Ordinary
 401/403, 429, 5xx, network and schema failures never switch models.
 
+One IR repeatedly returned valid original-grade fields but no `basis_status`,
+viewpoint, questions or samples. Field-shape-only diagnostics distinguished this
+from quota failure. An explicit V2 JSON shape in prompt `2026-09-13.1` corrects
+that ambiguity without loosening validation. Preserve the exhausted operation;
+only a separately verified changed-prompt repair may receive a new audit ID.
+
 ## 2026-09-12 — Speaking code deployment and IR refresh operator
 
 - CloudBase CLI 3.7 `fn code update` from a two-file bundle without project

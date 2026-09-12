@@ -1425,6 +1425,11 @@ physical request uses its own existing call-index/event ID. New IR reports have
 private `model_metadata` with actual/primary model and `quota_fallback_used`.
 Public projections and authorization are unchanged; no new collection is needed.
 
+A separately validated prompt correction may use a new, explicitly scoped IR
+repair operation with `repair_of_job_id` referencing an exhausted failed job.
+The failed row/counters are immutable in that recovery; source report/audio
+bindings and the ordinary publication transaction remain authoritative.
+
 IR dse_analysis/report payloads use dse-individual-response-v2 for new reports.
 New fields: basis_status (grounded|insufficient), student_viewpoint_zh,
 socratic_questions[4] (focus, student_idea_zh, evidence_segment_ids, question_zh,
