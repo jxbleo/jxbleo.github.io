@@ -25,13 +25,11 @@
     var audioFileButton = document.getElementById('teacher-speaking-file-button');
     var recordButton = document.getElementById('teacher-speaking-record');
     var recordLabel = document.getElementById('teacher-speaking-record-label');
-    var capturePanel = document.getElementById('teacher-speaking-capture');
-    var captureTitle = document.getElementById('teacher-speaking-capture-title');
-    var captureTime = document.getElementById('teacher-speaking-capture-time');
-    var captureMessage = document.getElementById('teacher-speaking-capture-message');
-    var captureDot = document.getElementById('teacher-speaking-record-dot');
-    var discardButton = document.getElementById('teacher-speaking-discard');
-    var uploadButton = document.getElementById('teacher-speaking-upload');
+    var recorderDialog = document.getElementById('teacher-speaking-recorder-dialog');
+    var recorderHost = document.getElementById('teacher-speaking-recorder-host');
+    var discardButton = document.getElementById('teacher-speaking-recorder-close');
+    var teacherRecorder = null;
+    var captureMessage = null;
     var reportCount = document.getElementById('teacher-speaking-report-count');
     var selected = '';
     var voiceprintTarget = null;
@@ -42,20 +40,12 @@
     var discussions = [];
     var loadInFlight = null;
     var captureState = 'idle';
-    var recordingStream = null;
-    var recordingDevice = null;
-    var recordingTimer = 0;
-    var recordingStartedAt = 0;
-    var recordingChunks = [];
-    var discardActiveRecording = false;
     var localRecording = null;
-    var localRecordingName = '';
+    var teacherAudioOperationId = '';
     var draftCreateOperationId = '';
     var draftUploadOperationId = '';
     var draftDiscussionId = '';
     var pendingAnalysisDiscussionId = '';
-    var TEACHER_RECORDING_TARGET_SECONDS = 8 * 60;
-    var TEACHER_RECORDING_STOP_SECONDS = TEACHER_RECORDING_TARGET_SECONDS + 5;
     var FILE_UPLOAD_TIMEOUT_MS = 10 * 60 * 1000;
 
     function esc(value) {
@@ -207,58 +197,48 @@
             return new Date().toISOString().slice(0, 10);
         }
     }
-    function elapsedLabel(seconds) {
-        var value = Math.max(0, Math.floor(Number(seconds || 0)));
-        return String(Math.floor(value / 60)).padStart(2, '0') + ':' + String(value % 60).padStart(2, '0');
-    }
-    function stopRecordingHardware() {
-        if (recordingTimer) window.clearInterval(recordingTimer);
-        recordingTimer = 0;
-        if (recordingStream) recordingStream.getTracks().forEach(function (track) { track.stop(); });
-        recordingStream = null;
-        recordingStartedAt = 0;
-    }
-    function setCaptureState(nextState, copy) {
-        closeSetPicker(false);
-        captureState = nextState;
-        var active = ['requesting', 'recording', 'stopping', 'uploading'].indexOf(nextState) !== -1;
-        capturePanel.hidden = nextState === 'idle';
-        captureDot.hidden = nextState !== 'recording';
-        topicSelect.disabled = active || Boolean(draftDiscussionId);
+    function syncTeacherCapture(snapshot) {
+        captureState = snapshot.state === 'review' ? 'ready' : snapshot.state;
+        localRecording = snapshot.blob;
+        if (teacherAudioOperationId !== snapshot.operationId) {
+            teacherAudioOperationId = snapshot.operationId;
+            draftUploadOperationId = '';
+        }
+        var active = teacherCaptureLocked();
+        topicSelect.disabled = !speakingSets.length || active || Boolean(draftDiscussionId);
         yearSelect.disabled = topicSelect.disabled;
-        audioFileInput.disabled = active;
         audioFileButton.disabled = active;
-        recordButton.disabled = ['requesting', 'stopping', 'uploading'].indexOf(nextState) !== -1;
-        recordLabel.textContent = nextState === 'recording' ? 'Finish recording' : (localRecording ? 'Record again' : 'Record');
-        discardButton.hidden = nextState === 'requesting' || nextState === 'stopping' || nextState === 'uploading';
-        uploadButton.hidden = ['requesting', 'recording', 'stopping'].indexOf(nextState) !== -1;
-        uploadButton.disabled = nextState === 'uploading' || (nextState !== 'analysis_retry' && !localRecording);
-        uploadButton.textContent = nextState === 'analysis_retry' ? 'Retry analysis' : 'Upload & analyse';
-        discardButton.textContent = nextState === 'analysis_retry' ? 'View reports' : (nextState === 'recording' ? 'Cancel recording' : 'Discard');
-        if (nextState === 'requesting') captureTitle.textContent = 'Connecting microphone…';
-        if (nextState === 'recording') captureTitle.textContent = 'Recording';
-        if (nextState === 'stopping') captureTitle.textContent = 'Finishing recording…';
-        if (nextState === 'ready') captureTitle.textContent = 'Recording ready';
-        if (nextState === 'uploading') captureTitle.textContent = 'Uploading securely…';
-        if (nextState === 'analysis_retry') captureTitle.textContent = 'Recording uploaded';
-        if (copy != null) captureMessage.textContent = copy;
-        document.getElementById('teacher-speaking-open-results').disabled = active || nextState === 'ready';
+        recordButton.disabled = active;
+        recordLabel.textContent = localRecording ? 'Review recording' : 'Record';
+        discardButton.hidden = active;
+        discardButton.textContent = captureState === 'analysis_retry' ? 'View reports' : 'Back';
+        recorderDialog.classList.toggle('is-capturing', ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(captureState) !== -1);
+        document.getElementById('teacher-speaking-open-results').disabled = active || captureState === 'ready';
+    }
+    function teacherCaptureLocked() { return ['requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(captureState) !== -1; }
+    function setCaptureState(nextState, copy) {
+        teacherRecorder.setState(nextState === 'ready' ? 'review' : nextState, copy);
     }
     function clearLocalRecording() {
+        teacherRecorder.clear();
         localRecording = null;
-        localRecordingName = '';
-        recordingChunks = [];
         draftUploadOperationId = '';
-        captureTime.textContent = '00:00';
     }
     function resetTeacherDraft() {
-        stopRecordingHardware();
         clearLocalRecording();
         draftCreateOperationId = '';
         draftDiscussionId = '';
         pendingAnalysisDiscussionId = '';
         setCaptureState('idle', '');
         topicSelect.disabled = false;
+        yearSelect.disabled = false;
+        if (recorderDialog.open) recorderDialog.close();
+    }
+    function openTeacherRecorder() {
+        if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return false; }
+        closeSetPicker(false);
+        if (!recorderDialog.open) { recorderDialog.hidden = false; recorderDialog.showModal(); }
+        return true;
     }
     function normaliseAudioMime(blob) {
         var mime = String(blob && blob.type || '').split(';')[0].toLowerCase();
@@ -272,75 +252,8 @@
         return 'audio/webm';
     }
     function prepareAudioFile(file) {
-        if (!file) return;
-        if ((file.type && !/^audio\//i.test(file.type)) || file.size < 1 || file.size > 120 * 1024 * 1024) {
-            setMessage('Choose a supported audio file no larger than 120 MB.', true);
-            return;
-        }
-        clearLocalRecording();
-        localRecording = file;
-        localRecordingName = file.name || 'Selected audio';
-        captureTime.textContent = 'Audio file';
-        setCaptureState('ready', localRecordingName + ' is ready to upload.');
-        setMessage('');
-    }
-    function stopTeacherRecording(cancel) {
-        if (!recordingDevice || recordingDevice.state === 'inactive') return;
-        discardActiveRecording = Boolean(cancel);
-        setCaptureState('stopping', cancel ? 'Cancelling this recording…' : 'Preparing the recording…');
-        try { if (recordingDevice.requestData) recordingDevice.requestData(); } catch (_error) {}
-        try { recordingDevice.stop(); } catch (_error) { stopRecordingHardware(); resetTeacherDraft(); }
-    }
-    function startTeacherRecording() {
-        if (captureState === 'recording') { stopTeacherRecording(false); return; }
-        if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
-            setMessage('Recording is unavailable in this browser. Upload an audio file instead.', true);
-            return;
-        }
-        clearLocalRecording();
-        setCaptureState('requesting', 'Allow microphone access to begin.');
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-            recordingStream = stream;
-            recordingChunks = [];
-            discardActiveRecording = false;
-            var preferred = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(function (mime) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime); });
-            recordingDevice = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
-            recordingDevice.ondataavailable = function (event) { if (event.data && event.data.size) recordingChunks.push(event.data); };
-            recordingDevice.onerror = function () { stopRecordingHardware(); recordingDevice = null; clearLocalRecording(); setCaptureState('idle', ''); setMessage('The microphone recording stopped unexpectedly. Try again or upload an audio file.', true); };
-            recordingDevice.onstop = function () {
-                var mime = recordingDevice && recordingDevice.mimeType || 'audio/webm';
-                var blob = new Blob(recordingChunks, { type: mime });
-                var cancelled = discardActiveRecording;
-                recordingDevice = null;
-                stopRecordingHardware();
-                recordingChunks = [];
-                discardActiveRecording = false;
-                if (cancelled || !blob.size) {
-                    clearLocalRecording();
-                    setCaptureState('idle', '');
-                    if (!cancelled) setMessage('No audio was captured. Check the microphone and try again.', true);
-                    return;
-                }
-                localRecording = blob;
-                localRecordingName = 'Recorded on this device';
-                setCaptureState('ready', 'Your recording is ready to upload.');
-            };
-            recordingDevice.start(1000);
-            recordingStartedAt = performance.now();
-            captureTime.textContent = '00:00';
-            setCaptureState('recording', 'Speak naturally. The recording stops automatically at 08:05.');
-            recordingTimer = window.setInterval(function () {
-                var elapsed = Math.max(0, (performance.now() - recordingStartedAt) / 1000);
-                captureTime.textContent = elapsedLabel(elapsed);
-                if (elapsed >= TEACHER_RECORDING_STOP_SECONDS) stopTeacherRecording(false);
-            }, 250);
-        }).catch(function () {
-            stopRecordingHardware();
-            recordingDevice = null;
-            setCaptureState('idle', '');
-            setMessage('Microphone access was not allowed. You can still upload an audio file.', true);
-        });
+        if (!file || !openTeacherRecorder()) return;
+        teacherRecorder.prepareFile(file);
     }
     function uploadWithTimeout(request) {
         var timer;
@@ -350,13 +263,16 @@
         return Promise.race([request, timeout]).finally(function () { if (timer) window.clearTimeout(timer); });
     }
     function ensureDraftDiscussion() {
-        if (draftDiscussionId) return Promise.resolve(draftDiscussionId);
+        var recording = teacherRecorder.snapshot();
+        if (draftDiscussionId) return call('updateDiscussionDate', { discussion_id: draftDiscussionId, discussion_date: recording.date }).then(function () {
+            return call('updateDiscussionDuration', { discussion_id: draftDiscussionId, duration_seconds: recording.targetSeconds });
+        }).then(function () { return draftDiscussionId; });
         if (!topicSelect.value) return Promise.reject(new Error('Choose a Speaking topic first.'));
         draftCreateOperationId = draftCreateOperationId || ('teacher-discussion-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9));
         return call('createDiscussion', {
             set_id: topicSelect.value,
-            discussion_date: shanghaiToday(),
-            duration_seconds: TEACHER_RECORDING_TARGET_SECONDS,
+            discussion_date: recording.date,
+            duration_seconds: recording.targetSeconds,
             operation_id: draftCreateOperationId
         }).then(function (result) {
             draftDiscussionId = result.discussion.discussion_id;
@@ -409,8 +325,9 @@
         });
     }
     function discardTeacherRecording() {
-        if (captureState === 'recording') { stopTeacherRecording(true); return; }
-        if (captureState === 'analysis_retry') { showResults(); return; }
+        if (teacherCaptureLocked()) return;
+        if (captureState === 'analysis_retry') { recorderDialog.close(); showResults(); return; }
+        if (localRecording && !window.confirm('Discard this recording and leave?')) return;
         if (!draftDiscussionId) { resetTeacherDraft(); return; }
         if (!window.confirm('Discard this recording draft and remove its empty report record?')) return;
         discardButton.disabled = true;
@@ -443,7 +360,7 @@
         if (!selectedSet) topicSelect.value = '';
         topicLabel.textContent = selectedSet ? speakingSetLabel(selectedSet) : (filtered.length ? 'Choose…' : 'No sets available');
         topicSelect.title = selectedSet ? speakingSetLabel(selectedSet) : '';
-        yearSelect.disabled = !speakingSets.length || Boolean(draftDiscussionId) || ['requesting', 'recording', 'stopping', 'uploading'].indexOf(captureState) !== -1;
+        yearSelect.disabled = !speakingSets.length || Boolean(draftDiscussionId) || teacherCaptureLocked();
         topicSelect.disabled = yearSelect.disabled || !filtered.length;
         if (!setPicker.hidden) {
             if (topicSelect.disabled) closeSetPicker();
@@ -564,7 +481,7 @@
     }
     function showResults() {
         closeSetPicker(false);
-        if (['requesting', 'recording', 'stopping', 'uploading', 'ready'].indexOf(captureState) !== -1) {
+        if (teacherCaptureLocked() || captureState === 'ready') {
             setMessage('Finish this recording or discard it before opening reports.', true);
             return;
         }
@@ -766,10 +683,20 @@
     });
     document.getElementById('teacher-speaking-open-results').addEventListener('click', showResults);
     document.getElementById('teacher-speaking-results-back').addEventListener('click', showHome);
-    recordButton.addEventListener('click', startTeacherRecording);
+    recorderHost.innerHTML = window.MrCatSpeakingRecorder.markup({ targetSeconds: 480, date: shanghaiToday() });
+    teacherRecorder = window.MrCatSpeakingRecorder.create(recorderHost.querySelector('.speaking-recording-card'), {
+        onStateChange: syncTeacherCapture,
+        onUpload: uploadTeacherRecording,
+        canStart: function () { return Boolean(topicSelect.value); }
+    });
+    captureMessage = recorderHost.querySelector('#recording-uploading p');
+    recorderDialog.addEventListener('close', function () { if (!recorderDialog.open) recorderDialog.hidden = true; });
+    recorderDialog.addEventListener('cancel', function (event) { event.preventDefault(); discardTeacherRecording(); });
+    recordButton.addEventListener('click', openTeacherRecorder);
     audioFileButton.addEventListener('click', function () {
         if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
-        audioFileInput.click();
+        if (!openTeacherRecorder()) return;
+        if (captureState === 'idle') recorderHost.querySelector('#audio-file').click();
     });
     audioFileInput.addEventListener('change', function () {
         var file = audioFileInput.files && audioFileInput.files[0];
@@ -777,7 +704,6 @@
         if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
         prepareAudioFile(file);
     });
-    uploadButton.addEventListener('click', uploadTeacherRecording);
     discardButton.addEventListener('click', discardTeacherRecording);
     topicSelect.addEventListener('click', openSetPicker);
     setClose.addEventListener('click', function () { closeSetPicker(); });
@@ -823,14 +749,11 @@
     window.addEventListener('pagehide', function () {
         closeSetPicker(false);
         cancelVoiceprintRecorder();
-        if (recordingDevice && recordingDevice.state !== 'inactive') {
-            discardActiveRecording = true;
-            try { recordingDevice.stop(); } catch (_error) {}
-        }
-        stopRecordingHardware();
+        if (teacherRecorder) teacherRecorder.discard();
+        if (recorderDialog.open) recorderDialog.close();
     });
     window.addEventListener('beforeunload', function (event) {
-        if (!localRecording && captureState !== 'recording' && captureState !== 'uploading') return;
+        if (!localRecording && !teacherCaptureLocked()) return;
         event.preventDefault();
         event.returnValue = '';
     });

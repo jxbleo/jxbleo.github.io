@@ -1,5 +1,15 @@
 # 06 Decisions
 
+## 2026-09-12: Share the Part A recorder across Teacher and Student
+
+Use one vanilla JavaScript recorder component for markup, capture, timing,
+English cues, waveform, and review. Role adapters keep their existing upload
+contracts. This prevents the two independent interfaces from drifting apart.
+Use a native dialog for the live surface to avoid fixed-position clipping by
+filtered ancestors and to confine keyboard focus; the Teacher preparation
+dialog follows the existing modal scroll-lock mechanism. No new dependency
+or backend service is required.
+
 ## 2026-08-31: Writing sentence identity is quote-aware and server-owned
 
 Decision:

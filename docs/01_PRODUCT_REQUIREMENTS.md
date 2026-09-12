@@ -2162,7 +2162,7 @@ order. On phones,
 the dimming scrim exists only while the drawer is
 actually open; a closed drawer must never blur or block the Set cards.
 `Start Discussion` creates the Set-backed Discussion immediately and enters it; there is no second New Session dialog. The server-backed audio date defaults to the current Shanghai date for device recording, while an existing file exposes an editable date beside its chooser. The target defaults to eight minutes.
-Formal browser recording follows Ready, a full-screen opening cue, Recording, Review, then Uploading. After microphone permission, Chinese TTS announces the start, a visible and audible five-second countdown runs, and the live waveform follows microphone level. During recording, one circular progress ring advances around the digital remaining-time value. At exactly 65 seconds remaining, Group Discussion plays one four-note cue and changes the ring to its final-minute warning colour. Recording has one Finish action and no Pause. At the selected target, a final five-second visible and audible warning begins and the recorder stops automatically at target plus five seconds (8:05 for an eight-minute Discussion). Review offers Play, Replace, or `Upload & analyse`. The local recording remains only in
+Formal browser recording follows Ready, a full-screen opening cue, Recording, Review, then Uploading. After microphone permission, Chinese TTS announces the start, a visible and audible five-second countdown runs, and the live waveform follows microphone level. During recording, one circular progress ring advances around the digital remaining-time value. At exactly 65 seconds remaining, Group Discussion plays one four-note cue and changes the ring to its final-minute warning colour. Recording has one Finish action and no Pause. At the selected target, a final five-second warning turns the ring and digit red with a gentle once-per-second opacity pulse, and sounds one beep at each displayed second (the last is more prominent). Reduced Motion retains red without pulsing. The recorder stops automatically at target plus five seconds (8:05 for an eight-minute Discussion). Review offers Play, Replace, or `Upload & analyse`. The local recording remains only in
 memory until confirmation, cannot be duplicated by repeated taps or displaced
 by a background/foreground refresh, and starts analysis automatically only
 after the private upload has been verified.
@@ -2301,7 +2301,7 @@ snapshots are revoked when mapping/report/privacy state changes.
 Teacher Speaking opens with exactly two primary cards and no introductory
 heading. The first contains side-by-side Year and Set selectors: an unset Year
 shows Sets from every year, while a selected Year limits the Set choices.
-`Choose audio` and `Record` are the two recording entry actions; it creates a teacher-owned, roster-free Discussion,
+`Choose audio` and `Record` open the shared preparation/recording workspace, including target length, audio date, local playback, replacement, and upload. Its native modal locks the Teacher background and preserves a local recording until upload or explicit discard. Upload creates a teacher-owned, roster-free Discussion,
 uploads audio through the existing private two-phase path, and starts the same
 durable analysis flow. `View existing reports` opens every Discussion available
 to the teacher, loading additional backend pages until the complete list is

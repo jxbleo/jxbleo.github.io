@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-12 — Shared Speaking recording experience
+
+- Teacher and Student now share target selection, recording, local playback,
+  replacement, and upload-state UI through one dependency-free component.
+- Added the approved large progress ring, English-only opening, compact Finish,
+  a double-length one-minute cue, and red pulsing final digits/ring with five beeps.
+- Preserved private upload/analysis boundaries and target-plus-five auto-stop;
+  cancelled microphone requests and failed-upload retries retain safe lifecycles.
+- Static assets are versioned together. No backend deployment or data migration
+  is part of this change.
+
 ## 2026-09-11 — Search inside Teacher Speaking Set selection
 
 - Added name/year/Set-number search directly inside the Set chooser, scoped

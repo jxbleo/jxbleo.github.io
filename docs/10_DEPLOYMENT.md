@@ -1589,3 +1589,11 @@ remaining acceptance step is an authenticated student-device check of Listen,
 microphone permission, recording, and replay. Do not treat function-update
 success as proof that provider scoring is enabled; it remains deliberately
 fail-closed until its separate rollout is authorized.
+
+### Shared Speaking recorder static release (2026-09-12)
+
+Publish the cache-busted `speaking-lab.html`, `teacher.html`, common
+`speaking-recorder.js`, both role adapters, and `speaking-lab.css` together.
+The common script loads before either role adapter. This release uses existing
+Discussion date/duration and upload actions; no new backend function, collection,
+index, permission, provider configuration, or migration is required.

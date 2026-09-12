@@ -1039,6 +1039,18 @@ provider `usage` is incomplete, or persistence reported failure. `sendWritingTut
 health alert through the existing teacher-recipient/SMTP timer. Legacy jobs without the telemetry version are
 ignored so rollout does not create false historical alerts.
 
+## Speaking Lab shared browser recorder
+
+`assets/js/speaking-recorder.js` owns the common Part A recorder markup,
+MediaRecorder lifecycle, microphone analyser, English opening cue, circular
+countdown, minute/final cues, file selection, preview URL cleanup, and local
+retry state. Both `speaking-lab.js` and `teacher-speaking.js` instantiate it;
+role-specific adapters retain authenticated discussion creation, upload,
+analysis, and navigation. The live surface uses a native dialog in the top
+layer so translucent/filtered page ancestors cannot clip the viewport. Teacher
+preparation uses the existing `data-teacher-modal` background-lock contract.
+No local audio persistence or new browser-to-provider route is introduced.
+
 ## Speaking Lab backend boundary
 
 `speakingLab` is the authenticated gateway for Discussion, invitation, Guest,

@@ -2592,7 +2592,7 @@ Teacher report gates:
   whole group's performance, no audio/download control, and the seven-day
   expiry returned by the server.
 
-Click `Start Discussion` and verify one request creates and opens the Set-backed Discussion with no intermediate modal. Verify toolbar Back is the only return control, and no `Invite VIP` or `Add Non-VIP` appears. A not-yet-uploaded Discussion must show only one compact three-step progress card followed by `Record the Discussion`; assert that no title/date hero, Candidate/Recording/Analysis fact grid, Discussion prompt, or Candidate card is present. An in-progress upload must show the secure-upload indicator inside the retained recording card. Put a prior date beside `Choose audio file` and verify reopening preserves it; starting on-device recording must reset the date to Shanghai today. Grant microphone permission and verify the viewport becomes the recording surface, Chinese TTS precedes five synchronized countdown beeps, the waveform reacts to voice level, and an eight-minute target shows a circular remaining-time ring counting from 8:05 to 0:00. Confirm the ring enters its amber state and plays exactly one four-note cue as the displayed value becomes 01:05, then enters its red final-five-second state before automatic stop at 0:00. During every live state inspect the DOM and verify `#recording-live` is a direct `body` child; on Review, Cancel, denied permission, recorder error, and Finish, verify the same node is restored without duplicate IDs or lost Finish-button behavior. At phone portrait, phone landscape, and tablet widths, verify every countdown number and the circular recording timer remain centred in the live viewport. Speak quietly, normally, and too close to the microphone long enough to cross the debounce period; verify the whole surface changes to amber, blue-green, and coral respectively, the status wording changes with it, and brief pauses do not cause rapid flicker. End or mute the input and verify the separate microphone-attention state. Repeat with Reduced Motion, denied microphone permission, manual early Finish, and a background/foreground cycle. After upload, those
+Click `Start Discussion` and verify one request creates and opens the Set-backed Discussion with no intermediate modal. Verify toolbar Back is the only return control, and no `Invite VIP` or `Add Non-VIP` appears. A not-yet-uploaded Discussion must show only one compact three-step progress card followed by `Record the Discussion`; assert that no title/date hero, Candidate/Recording/Analysis fact grid, Discussion prompt, or Candidate card is present. An in-progress upload must show the secure-upload indicator inside the retained recording card. Put a prior date beside `Choose audio file` and verify reopening preserves it; starting on-device recording must reset the date to Shanghai today. Grant microphone permission and verify the viewport becomes the recording surface, English TTS (“The discussion will begin in five seconds.”) precedes five synchronized countdown beeps, the waveform reacts to voice level, and an eight-minute target shows a circular remaining-time ring counting from 8:05 to 0:00. Confirm the ring enters its amber state and plays exactly one four-note cue as the displayed value becomes 01:05, then enters its red final-five-second state before automatic stop at 0:00. During every live state inspect the DOM and verify `#recording-live` is a direct `body` child; on Review, Cancel, denied permission, recorder error, and Finish, verify the same node is restored without duplicate IDs or lost Finish-button behavior. At phone portrait, phone landscape, and tablet widths, verify every countdown number and the circular recording timer remain centred in the live viewport. Speak quietly, normally, and too close to the microphone long enough to cross the debounce period; verify the whole surface changes to amber, blue-green, and coral respectively, the status wording changes with it, and brief pauses do not cause rapid flicker. End or mute the input and verify the separate microphone-attention state. Repeat with Reduced Motion, denied microphone permission, manual early Finish, and a background/foreground cycle. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
 matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first
@@ -3049,3 +3049,24 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   or assignment-completion claims. Quiz uses the server result state and only
   the selected Set count. Both keep the correct/total score and omit separate
   Questions metadata. Check long-title wrapping and the single Close action.
+
+### Shared Speaking recorder regression (2026-09-12)
+
+- Run `npm run test:speaking-lab`, which includes the deterministic recorder
+  clock/audio/microphone tests in `scripts/test-speaking-recorder.js`.
+- In both Teacher and Student, verify the same target control (3–30 minutes,
+  default 8, half-minute steps), file date, local Play/Replace and Upload states.
+- At desktop 1280×720 and phone 390×844, the timer must remain inside the ring,
+  with a single compact Finish button and no horizontal overflow. The final
+  five seconds use red digits/ring, a one-second gentle pulse, and one beep per
+  second; Reduced Motion retains red without flashing.
+- One minute before the chosen target, sound one 0.36-second cue. Verify it
+  does not repeat; the final warning still auto-stops at target plus five.
+- Cancel while mic permission or English speech is pending, then start again;
+  no previous callback may start a take. Verify device failure and input loss.
+- Retry a failed upload with its original audio/operation ID. Replace that audio
+  and verify the Teacher adapter reserves a fresh upload operation. Analysis-only
+  retry must not re-upload. Verify the Teacher background stays locked until all
+  recording modal layers close and restores the prior scroll position.
+- Local browser QA uses synthetic audio and stubbed APIs only. Real-device
+  microphone/speaker playback and CloudBase upload remain deployment smoke checks.

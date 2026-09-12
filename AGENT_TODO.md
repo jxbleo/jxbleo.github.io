@@ -72,6 +72,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-12 — Shared Speaking recorder static release: Teacher/Student use the
+  same settings, large ring/waveform, English opening, compact Finish, longer
+  minute cue, and red pulsing final five seconds with synchronized beeps.
+  Scoped changes merged onto the latest main; no backend deployment required.
+  Deterministic recorder/adapter checks and release/build checks cover the
+  release. Desktop/phone fixture QA passed; real microphone/upload smoke checks
+  remain device-dependent.
+
 - 2026-09-11 — Approved Vocabulary result layout A implemented: title/mode badges, canonical selected Practice Set numbers, Quiz Set count, no extra question-count metadata, and Practice completion-only copy. Vocabulary/versioning and session tests, release verification, static build, direct runtime rendering checks (shuffled/single Set, Quiz statuses, escaped title, Close), and browser visual/Close QA passed. Scoped static publication authorized by owner; no CloudBase deployment required.
 
 - 2026-09-11 — Speaking Safari controls: Choose audio/Record share light rounded surfaces with SVG folder/microphone icons; native selects retain menus but use explicit height and one SVG chevron. Actual macOS Safari full-Teacher-shell preview verified; UI/Set contracts, recording-state icon preservation, release verification and static build passed. Owner authorized scoped static push; no CloudBase deployment required.
