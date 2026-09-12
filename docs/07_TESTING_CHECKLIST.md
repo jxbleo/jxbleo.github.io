@@ -1,5 +1,26 @@
 # 07 Testing Checklist
 
+## 2026-09-12 — Multi-group voiceprint regression
+
+Run `npm run test:speaking-lab` (includes
+`scripts/test-speaking-voiceprint-groups.js`). Verify the 21st enrolment rolls
+over, 25 simultaneous registrants cannot exceed 20/group, old/free groups are
+reused, unrelated groups remain untouched, account-full creation fails before
+provider enrolment, and account-full replacement keeps the old ID/group.
+Definite capacity races retry at most three times; uncertain timeouts never
+retry automatically. Losing duplicate-subject writes delete only their new ID;
+pending deletions cannot be overwritten.
+
+Verify the global best may come from a later group, all 50 groups can be queried,
+only two requests run concurrently, and a failed/malformed/timed-out group
+prevents use of partial matches. Keep current score-70 / one-to-one behavior.
+Check Student/Teacher preflight messages and disabled recording state, and
+ensure reopening retries availability without changing existing layouts.
+
+After owner-authorized deployment, use an intended new student enrolment to
+verify a second group and successful cross-group identification. Do not create
+synthetic production biometric records for testing.
+
 > Manual and lightweight automated checks for this project.
 > Update it when flows, data model, deployment, or testing tools change.
 
@@ -2643,8 +2664,9 @@ Candidates, and Voiceprint dialogs. Each must remain bottom-aligned with equal
 12px left/right insets and no browser-default 38px gap on only the right.
 Roster-free contracts must select up to six sustained Candidates without any
 participant rows, exclude a brief incidental voice, choose only an
-uninterrupted 8–20 second voiceprint excerpt, reject scores below 70 and
-runner-up margins below 10, and enforce one VIP per Speaker Track. The CI mock
+uninterrupted 8–20 second voiceprint excerpt, automatically confirm scores of
+at least 70, keep lower-score proposals pending confirmation, and enforce one
+VIP per Speaker Track. The current rule has no runner-up-margin gate. The CI mock
 must lock WAV/PCM/16 kHz/mono/start/duration XML, COS q-sign authentication,
 session-token forwarding, durable create/poll behavior, and private derived
 CloudBase file IDs.
@@ -2654,7 +2676,7 @@ accepted VIP Participant or teacher, enqueue one idempotent
 `analysis_status`, the active report version, transcript, DSE scores, and turn
 reviews unchanged. Refresh/reopen and the one-minute worker must resume the
 same job. A second click while queued/processing must replay the active job.
-Completion may add only a non-conflicting >=70 / margin >=10 one-to-one match;
+Completion automatically confirms only a non-conflicting >=70 one-to-one match;
 confirmed, disputed, conflicting, and teacher-locked mappings remain unchanged.
 Terminal job state must omit CI provider job IDs, derived file IDs, student
 UIDs, and voiceprint locators. A real mapping change invalidates existing

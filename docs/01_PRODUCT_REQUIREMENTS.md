@@ -2257,14 +2257,26 @@ confirmation button; only then is the WAV sent through the existing private
 save action. An account with an active voiceprint uses a visibly distinct
 update state on the same microphone control.
 
+New voiceprints automatically use available Tencent groups of at most 20 IDs,
+within the published 1,000-ID account limit. Existing voiceprints retain their
+provider IDs and groups; no re-enrolment or class migration is required. Opening
+Voiceprint checks registration availability before recording. Account capacity
+blocks new registrations but does not block updates to an existing ID. A
+concurrent last-slot refusal automatically tries another group; uncertain
+provider timeouts are never automatically replayed as a new enrolment.
+
 Normal Session setup does not ask any participant to record a new Voice
 Reference. After diarization, the server selects one uninterrupted 8–20 second
 turn per Candidate where available, converts it privately to Tencent's 16 kHz
 mono WAV input, and runs 1:N identification against active VIP Reusable
-Voiceprints. A match is proposed only when its score is at least 70 and leads
-the next result by at least 10 points. Matching is one-to-one: one VIP cannot be
-assigned to two Speaker Tracks. A reliable new match creates a pending
-invitation automatically; the creator's own match is accepted for access.
+Voiceprints across every group containing an eligible active VIP. All group
+results must succeed before selecting the global best. The current identity
+rule automatically confirms a best score of at least 70, without a separate
+runner-up-margin gate; a lower-score proposal requires confirmation. Matching
+is one-to-one: one VIP cannot be
+assigned to two Speaker Tracks. A >=70 match is automatically confirmed and
+accepted for access. Lower-score proposals create a pending invitation unless
+the matched student is the creator or is already an accepted participant.
 Every other result stays under its Speaker label. Missing voiceprints, short
 turns, ambiguity, conversion failure, or provider failure must never stop DSE
 analysis.

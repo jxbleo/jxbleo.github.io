@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-12 — Voiceprint capacity across multiple groups
+
+- New enrolments automatically use available 20-ID Tencent groups; existing IDs
+  remain in their original groups and can still be updated at account capacity.
+- Added recording-entry capacity checks, bounded retry for definite full-group
+  races, and complete cross-group matching with bounded concurrency/timeouts.
+- Preserved current score-70 / one-to-one identity behavior; corrected older
+  documentation that still described a removed ten-point margin gate.
+- No database migration or new dependency. Local tests/package verification
+  precede owner-authorized backend deployment and versioned static publication.
+
 ## 2026-09-12 — Speaking final-minute countdown
 
 - Student and Teacher progress rings restart at full with 60 seconds remaining,

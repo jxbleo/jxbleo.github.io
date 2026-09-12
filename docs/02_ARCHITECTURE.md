@@ -1117,8 +1117,8 @@ The durable stage after canonicalization is `voice_matching`.
 COS/CI transcode job for the best uninterrupted 8–20 second Candidate turn,
 producing a temporary WAV/PCM 16 kHz mono object. The next worker lease polls
 that job, downloads the private result in the function, sends it to Tencent
-VoicePrintGroupVerify, applies score 70 / runner-up margin 10 / one-to-one
-rules, creates pending VIP invitations for accepted proposals, and deletes the
+VoicePrintGroupVerify across the groups of eligible active VIPs, applies the
+current score-70 / one-to-one rules (lower scores require confirmation), and deletes the
 derived clip. No ffmpeg or new runtime dependency is used. Any missing clip,
 voiceprint, permission, or provider response becomes an unmatched Speaker and
 the worker continues to `dse_analysis`.
@@ -1145,13 +1145,32 @@ marker disappears only when no projected pending invitations remain.
 
 `cloudfunctions/_shared/tencent-asr-voiceprint.js` implements Tencent Cloud API
 3.0 signing with Node's built-in `crypto`/`fetch` and exposes enrol, update,
-delete, 1:1 verify, and 1:N group-identify calls. It accepts only validated
+delete, count, group-list, 1:1 verify, and 1:N group-identify calls. It accepts only validated
 16 kHz, 16-bit, mono WAV data between 8 and 30 seconds. Credentials come only
 from the CloudBase runtime. The enrolment WAV travels in one authenticated
 request and is never written to CloudBase Storage, a queue row, a database row,
 or a log. VIP subjects use `vip:<auth_uid>`; Guest subjects use
 `guest:<participant_id>`. Jobs snapshot only internal voiceprint profile IDs and
 revisions, never Tencent provider IDs, names, audio, or embeddings.
+
+`cloudfunctions/_shared/speaking-voiceprint-library.js` coordinates capacity and
+identification. It preserves the configured legacy group and adds deterministic
+letter-suffixed groups as needed. Database occupancy only orders candidates;
+Tencent count results and atomic enrolment refusals enforce the limits. Only a
+definite full-group refusal permits automatic rollover (at most three enrolment
+attempts and eight candidate checks). Other errors fail closed without
+replaying an uncertain registration. No allocation collection, new dependency,
+or provider call inside a database transaction is introduced.
+
+Voiceprint profiles are read in 100-row pages; only the corresponding active
+student UIDs are loaded, in bounded batches. Each Candidate queries all relevant
+groups, with two calls in flight, a five-second per-call bound, a 20-second
+Candidate budget and a 120-second matching-phase budget. Any failed or incomplete
+search discards that Candidate's partial results and preserves its anonymous
+Speaker fallback; DSE analysis continues. Registration preflight returns only
+availability and safe copy, never account counts, group names or provider IDs.
+Student startup avoids the provider preflight; entering Voiceprint requests it
+explicitly. Teacher Voiceprint target reads perform the same preflight.
 
 ### Intensive Listening Library and sessions
 

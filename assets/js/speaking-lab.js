@@ -64,6 +64,9 @@
     var voiceprintPressToken = 0;
     var voiceprintPointerId = null;
     var voiceprintProviderConfigured = true;
+    var voiceprintRegistrationAvailable = true;
+    var voiceprintRegistrationMessage = '';
+    var voiceprintLoadGeneration = 0;
     var sidebarMode = 'part-a';
     var expandedDiscussionSetIds = Object.create(null);
     var READ_TIMEOUT_MS = 20000;
@@ -262,16 +265,25 @@
     function renderMyVoiceprint(result) {
         voiceprintTarget = result && result.target || null;
         voiceprintProviderConfigured = Boolean(result && result.provider_configured !== false);
+        voiceprintRegistrationAvailable = !(result && result.registration && result.registration.available === false);
+        voiceprintRegistrationMessage = result && result.registration && result.registration.message || '';
         var active = Boolean(voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active');
         var main = document.getElementById('speaking-voiceprint-main');
         var button = document.getElementById('voiceprint-record');
         if (main) main.classList.toggle('has-voiceprint', active);
-        if (button) button.disabled = !voiceprintProviderConfigured;
+        if (button) button.disabled = !voiceprintProviderConfigured || !voiceprintRegistrationAvailable;
         document.getElementById('voiceprint-record-label').textContent = active ? 'Hold to update' : 'Hold to record';
         if (voiceprintTarget && voiceprintTarget.passage) document.getElementById('voiceprint-passage').textContent = voiceprintTarget.passage;
     }
-    function loadMyVoiceprint() {
-        return call('getMyVoiceprint').then(function (result) { renderMyVoiceprint(result); return result; }).catch(function (error) {
+    function loadMyVoiceprint(checkCapacity) {
+        var generation = ++voiceprintLoadGeneration;
+        return call('getMyVoiceprint', checkCapacity ? { check_capacity: true } : {}).then(function (result) {
+            if (generation !== voiceprintLoadGeneration) return null;
+            renderMyVoiceprint(result);
+            if (checkCapacity) document.getElementById('voiceprint-message').textContent = voiceprintRegistrationMessage || (voiceprintProviderConfigured ? 'Hold the microphone for at least 10 seconds. Release when you finish.' : 'Voiceprint registration is temporarily unavailable.');
+            return result;
+        }).catch(function (error) {
+            if (generation !== voiceprintLoadGeneration) return;
             voiceprintProviderConfigured = false;
             document.getElementById('voiceprint-record').disabled = true;
             document.getElementById('voiceprint-message').textContent = friendlyError(error);
@@ -286,12 +298,12 @@
         voiceprintPointerId = null;
         var recordButton = document.getElementById('voiceprint-record');
         var active = Boolean(voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active');
-        recordButton.disabled = !voiceprintProviderConfigured;
+        recordButton.disabled = !voiceprintProviderConfigured || !voiceprintRegistrationAvailable;
         recordButton.classList.remove('is-recording', 'is-valid', 'is-processing');
         document.getElementById('voiceprint-record-label').textContent = active ? 'Hold to update' : 'Hold to record';
         document.getElementById('voiceprint-time').textContent = voiceprintTime(0);
         document.getElementById('voiceprint-confirm').hidden = true;
-        if (!options || !options.keepMessage) document.getElementById('voiceprint-message').textContent = voiceprintProviderConfigured ? 'Hold the microphone for at least 10 seconds. Release when you finish.' : 'Voiceprint registration is temporarily unavailable.';
+        if (!options || !options.keepMessage) document.getElementById('voiceprint-message').textContent = voiceprintRegistrationMessage || (voiceprintProviderConfigured ? 'Hold the microphone for at least 10 seconds. Release when you finish.' : 'Voiceprint registration is temporarily unavailable.');
     }
     function saveVoiceprintRecording(result) {
         if (!result || !result.base64 || voiceprintSaving) return;
@@ -319,7 +331,7 @@
             voiceprintSaving = false;
             voiceprintController = null;
             recordButton.classList.remove('is-processing');
-            recordButton.disabled = !voiceprintProviderConfigured;
+            recordButton.disabled = !voiceprintProviderConfigured || !voiceprintRegistrationAvailable;
         });
     }
     function voiceprintRecordingReady(result, token) {
@@ -330,7 +342,7 @@
         var recordButton = document.getElementById('voiceprint-record');
         var active = Boolean(voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active');
         recordButton.classList.remove('is-recording', 'is-valid', 'is-processing');
-        recordButton.disabled = !voiceprintProviderConfigured;
+        recordButton.disabled = !voiceprintProviderConfigured || !voiceprintRegistrationAvailable;
         document.getElementById('voiceprint-record-label').textContent = active ? 'Hold to record another update' : 'Hold to record again';
         document.getElementById('voiceprint-time').textContent = voiceprintTime(Number(result.duration_ms || 0) / 1000);
         document.getElementById('voiceprint-message').textContent = 'Recording ready. Confirm below to upload this voiceprint.';
@@ -342,11 +354,11 @@
         voiceprintPressActive = false;
         var recordButton = document.getElementById('voiceprint-record');
         recordButton.classList.remove('is-recording', 'is-valid', 'is-processing');
-        recordButton.disabled = !voiceprintProviderConfigured;
+        recordButton.disabled = !voiceprintProviderConfigured || !voiceprintRegistrationAvailable;
         document.getElementById('voiceprint-message').textContent = friendlyError(error);
     }
     function startMyVoiceprintRecording(event) {
-        if (voiceprintSaving || voiceprintController || voiceprintPressActive || !voiceprintProviderConfigured) return;
+        if (voiceprintSaving || voiceprintController || voiceprintPressActive || !voiceprintProviderConfigured || !voiceprintRegistrationAvailable) return;
         if (!document.getElementById('voiceprint-consent').checked) {
             document.getElementById('voiceprint-message').textContent = 'Confirm consent before recording a reusable voiceprint.';
             return;
@@ -392,7 +404,7 @@
         var token = voiceprintPressToken;
         var recordButton = document.getElementById('voiceprint-record');
         recordButton.classList.remove('is-recording', 'is-valid');
-        recordButton.disabled = !voiceprintProviderConfigured;
+        recordButton.disabled = !voiceprintProviderConfigured || !voiceprintRegistrationAvailable;
         if (!voiceprintController) {
             voiceprintPressToken += 1;
             document.getElementById('voiceprint-record-label').textContent = 'Hold to record';
@@ -842,8 +854,11 @@
         var active = voiceprintTarget && voiceprintTarget.voiceprint && voiceprintTarget.voiceprint.status === 'active';
         main.classList.toggle('has-voiceprint', Boolean(active));
         document.getElementById('voiceprint-consent').checked = false;
+        voiceprintRegistrationAvailable = false;
+        voiceprintRegistrationMessage = 'Checking voiceprint availability…';
         resetVoiceprintPage();
         updateToolbar({ title: 'Voiceprint', invitation: true });
+        loadMyVoiceprint(true);
     }
     function hideSpeakingHomeCards() {
         var library = document.getElementById('speaking-set-library');

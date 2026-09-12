@@ -1,5 +1,16 @@
 # 03 UI / UX Spec
 
+## 2026-09-12 — Voiceprint registration availability
+
+Entering Student Voiceprint temporarily disables the microphone while the
+authenticated backend checks availability. Show a short safe explanation before
+recording if the account is full or the check is unavailable. Reopening the
+workspace retries the check; ordinary Speaking startup does not query Tencent
+capacity. Teacher Voiceprint targets use the same preflight. Existing registered
+users may still record replacements at full account capacity. The interface
+never displays internal group names, provider IDs or another user's information.
+Automatic group rollover is invisible to the student.
+
 > This document records how the product should feel and behave.
 > Update it when page structure, interaction rules, status labels, or major UI behavior changes.
 

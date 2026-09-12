@@ -1317,7 +1317,12 @@ private `provider_voiceprint_id` and `provider_group_id`; `status` (`active`,
 `delete_pending`, or `deleted`); passage/sample metadata; monotonic
 `enrollment_revision`; consent source; enrolling/deleting actor UIDs; provider
 request ID; stable last operation ID; and timestamps. A deleted row clears the
-provider locator but preserves lifecycle metadata.
+provider locator but preserves lifecycle metadata. `provider_group_id` is
+per-profile storage routing: legacy IDs retain their existing group and new
+registrations may use automatically allocated letter-suffixed groups. Updating
+a profile never rewrites its group to the current default. A `delete_pending`
+profile must finish cleanup before re-enrolment, so its original provider ID
+cannot be orphaned by replacement. No new collection, field or index is required.
 
 `speaking_voiceprint_events` fields are top-level: unique `event_id`;
 `operation_id`; voiceprint profile/subject/scope locators; `event_type`

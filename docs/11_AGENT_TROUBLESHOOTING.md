@@ -27,6 +27,18 @@
 `max_completion_tokens`，接口可能忽略它并使用较短默认值，造成四人报告 JSON
 在结尾被截断，同样表现为 `SPEAKING_AI_SCHEMA_INVALID`。
 
+### Speaking 注册提示声纹容量已满
+
+2026-09-12 只读核实：腾讯总数 20、分组数 1；数据库也有 20 条有效 VIP 声纹，
+全部在 `mrcat_speaking`。报错为 `VOICEPRINT_CAPACITY_REACHED`，对应腾讯
+`LimitExceeded.VoicePrintFull`。这是每组 20 条的限制；AppID 总量限制为 1,000 条。
+先用 `VoicePrintCount` / `VoicePrintGroupList` 只读核对数量，不要让学生反复重录。
+多分组版本保留已有 ID，以空位优先、新组续接处理新注册；识别必须同时覆盖已有
+各组，不能仅修改默认 GroupId。账号已满仍允许更新已有 ID。
+`VOICEPRINT_BUSY` 表示并发分配达到有界重试上限或该声纹正在删除，可稍后重试。
+网络超时可能已经注册成功，因此代码不能直接跨组重发这种不确定结果；如有孤立
+provider ID，先核对私有审计，清理仍需明确授权。
+
 ### Speaking 声纹录音合格但腾讯仍提示无法保存
 
 先查 `speakingLab` 的安全错误码。如果腾讯返回

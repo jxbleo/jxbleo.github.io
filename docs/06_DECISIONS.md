@@ -1,5 +1,29 @@
 # 06 Decisions
 
+## 2026-09-12: Allocate Tencent voiceprints across bounded groups
+
+The verified incident was 20 active profiles in one Tencent group. Tencent
+publishes limits of 20 IDs/group and 1,000 IDs/AppID. Use deterministic extra
+groups and complete cross-group search instead of requiring all existing
+students to re-enrol or relying on an unconfirmed quota increase.
+
+Keep Tencent as the authority for capacity. Database occupancy is a selection
+hint; the provider atomically refuses a racing last slot, which permits bounded
+rollover. Never retry a timed-out enrolment automatically. This avoids a new
+reservation collection and preserves existing transactional profile/event writes.
+A full account blocks creation, not replacement.
+
+Search each eligible group with TopN 20, merge before applying existing identity
+rules, and discard incomplete searches. Two concurrent calls and bounded
+Candidate/stage budgets limit latency; at larger populations, more group calls
+mean more provider usage and potentially more anonymous fallbacks during an
+outage. Capacity upgrades beyond published limits remain a Tencent support
+decision. No new dependency, service or credential is introduced.
+
+Sources: [registration limits](https://cloud.tencent.com/document/product/1093/94483),
+[group verification](https://cloud.tencent.com/document/product/1093/107668),
+[count API](https://cloud.tencent.com/document/api/1093/96061).
+
 ## 2026-09-12: Share the Part A recorder across Teacher and Student
 
 Use one vanilla JavaScript recorder component for markup, capture, timing,

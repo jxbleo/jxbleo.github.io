@@ -131,6 +131,21 @@ async function run() {
   assert.deepEqual(identified.matches.map((item) => item.voiceprintId), ["vp-one", "vp-two"]);
   await voiceprints.remove({ voiceprintId: "vp-new" }, options);
   assert.deepEqual(calls.map((call) => call.action), ["VoicePrintEnroll", "VoicePrintUpdate", "VoicePrintVerify", "VoicePrintGroupVerify", "VoicePrintDelete"]);
+  const capacityCalls = [];
+  const capacityOptions = { ...options, fetch: async (_url, request) => {
+    const action = request.headers["X-TC-Action"];
+    const body = JSON.parse(request.body);
+    capacityCalls.push({ action, body });
+    return { ok: true, status: 200, text: async () => JSON.stringify({ Response: { Data: action === "VoicePrintGroupList" ? { Total: 1, GroupIds: ["mrcat_test_group"] } : { Total: 20 }, RequestId: "capacity-request" } }) };
+  } };
+  assert.equal((await voiceprints.count({}, capacityOptions)).total, 20);
+  assert.equal((await voiceprints.count({ group: "mrcat_test_group" }, capacityOptions)).total, 20);
+  assert.deepEqual((await voiceprints.listGroups(capacityOptions)).groups, ["mrcat_test_group"]);
+  assert.deepEqual(capacityCalls.map((entry) => entry.body), [{ CountMod: 0 }, { CountMod: 1, GroupId: "mrcat_test_group" }, {}]);
+  const invalidOptions = { ...options, fetch: async () => ({ ok: true, status: 200, text: async () => JSON.stringify({ Response: { Data: {} } }) }) };
+  await assert.rejects(voiceprints.count({}, invalidOptions), { code: "VOICEPRINT_PROVIDER_INVALID_RESPONSE" });
+  await assert.rejects(voiceprints.listGroups(invalidOptions), { code: "VOICEPRINT_PROVIDER_INVALID_RESPONSE" });
+  await assert.rejects(voiceprints.identify({ audioBase64: wavBase64() }, invalidOptions), { code: "VOICEPRINT_PROVIDER_INVALID_RESPONSE" });
 
   assert.equal(service.voiceprintSubjectKey({ participant_kind: "vip", student_uid: "student-uid" }), "vip:student-uid");
   assert.equal(service.voiceprintSubjectKey({ participant_kind: "guest", participant_id: "guest-row" }), "guest:guest-row");
@@ -154,6 +169,7 @@ async function run() {
   assert.match(teacherUi, /Active · Revision /);
   assert.match(teacherUi, /enrollment_revision/);
   assert.match(teacherUi, /voiceprintUpdatedAt/);
+  await require("./test-speaking-voiceprint-groups")();
   console.log("Speaking Lab Tencent voiceprint contracts passed.");
 }
 

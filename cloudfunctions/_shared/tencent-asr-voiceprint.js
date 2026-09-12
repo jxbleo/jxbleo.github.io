@@ -277,7 +277,10 @@ async function identify({ audioBase64, topN = 6, group } = {}, options = {}) {
     GroupId: group || groupId(options.env || process.env),
     TopN: Math.min(1000, Math.max(1, Math.round(Number(topN) || 1))),
   }, options);
-  const tops = result && result.Data && Array.isArray(result.Data.VerifyTops) ? result.Data.VerifyTops : [];
+  const tops = result && result.Data && result.Data.VerifyTops;
+  if (!Array.isArray(tops) || tops.some((item) => !item || !text(item.VoicePrintId, 200) || item.Score == null || item.Score === "" || !Number.isFinite(Number(item.Score)) || Number(item.Score) < 0 || Number(item.Score) > 100)) {
+    throw new TencentVoiceprintError("VOICEPRINT_PROVIDER_INVALID_RESPONSE");
+  }
   return {
     matches: tops.map((item) => ({
       voiceprintId: text(item && item.VoicePrintId, 200),
@@ -286,6 +289,22 @@ async function identify({ audioBase64, topN = 6, group } = {}, options = {}) {
     durationMs: audio.durationMs,
     requestId: text(result && result.RequestId, 200),
   };
+}
+
+async function count({ group } = {}, options = {}) {
+  const result = await request("VoicePrintCount", group ? { CountMod: 1, GroupId: group } : { CountMod: 0 }, options);
+  const total = result && result.Data && result.Data.Total;
+  if (!Number.isInteger(total) || total < 0) throw new TencentVoiceprintError("VOICEPRINT_PROVIDER_INVALID_RESPONSE");
+  return { total, requestId: text(result.RequestId, 200) };
+}
+
+async function listGroups(options = {}) {
+  const result = await request("VoicePrintGroupList", {}, options);
+  const data = result && result.Data;
+  if (!data || !Array.isArray(data.GroupIds) || !Number.isInteger(data.Total) || data.Total !== data.GroupIds.length || data.GroupIds.some((group) => typeof group !== "string" || !group || group.length > 128)) {
+    throw new TencentVoiceprintError("VOICEPRINT_PROVIDER_INVALID_RESPONSE");
+  }
+  return { groups: [...new Set(data.GroupIds)], requestId: text(result.RequestId, 200) };
 }
 
 function configured(source = process.env) {
@@ -311,5 +330,7 @@ module.exports = {
   remove,
   verify,
   identify,
+  count,
+  listGroups,
   _test: { credentials, endpoint, region, speakerNick, wavInfo, decodeBase64 },
 };

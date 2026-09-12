@@ -1,5 +1,26 @@
 # 10 Deployment
 
+## 2026-09-12 — Multi-group voiceprint rollout
+
+Local preparation: `npm run test:speaking-lab`, `npm run verify:release`, then
+`npm run package:functions -- speakingLab speakingAiWorker`. No collection,
+index, data migration or new secret is needed. Preserve
+`SPEAKING_TENCENT_VOICEPRINT_GROUP_ID=mrcat_speaking`; it is the legacy group
+and naming base, not a switch to a replacement group.
+
+With explicit owner authorization, deploy the tested `speakingLab` bundle
+(and its paired `speakingAiWorker` package if publishing both); preserve existing
+function configuration/ACLs and timers. Verify the runtime role already permits
+`VoicePrintCount` and `VoicePrintGroupList` as well as existing voiceprint APIs.
+Publish the versioned `speaking-lab.html`, `teacher.html`,
+`assets/js/speaking-lab.js` and `assets/js/teacher-speaking.js` afterward. Review
+shared-worktree changes before publishing; package creation is not deployment.
+
+Smoke-check an old voiceprint replacement, the next intended new registration,
+and identification across both groups. Existing IDs must remain unchanged.
+After the first extra group exists, rolling back to single-group matching would
+miss new students; retain multi-group matching during any rollback.
+
 > This document explains how to deploy the static site, CloudBase functions,
 > and CloudBase data. Update it when environment settings, function packaging,
 > deployment order, or manual verification steps change.

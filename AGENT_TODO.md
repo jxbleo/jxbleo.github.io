@@ -42,6 +42,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-12 — Multi-group voiceprints: local implementation and regression tests pass. The owner authorized deployment of `speakingLab` and publication of the scoped Student/Teacher frontend assets; `speakingLab` was deployed and its downloaded ZIP exactly matches the tested package; existing cloud configuration is unchanged. Static publication is in progress. Verify the next intended registration creates a second group and old IDs still match; no live voiceprints were created, updated or deleted during this task.
+
 - 2026-09-06 — Argue email release: owner-authorized publication of the scoped static entry and `getDashboard`, `intensiveListening`, `teacherAdmin`, `sendTeacherAttemptEmails` is pending. Verify the existing HTTPS Teacher URL setting, then test a dedicated QA-student request through the real WeChat mailbox notification. No real mail or cloud data was changed during local QA.
 
 - [ ] Baseline before Intensive Listening Library work: `npm run test:assignment-schedule`
@@ -71,6 +73,10 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-12 — Voiceprint release isolation: No backend/production writes were performed. Clean-source release subset based on `cc40c7f3` also passed voiceprint, UI, service and rule tests and was packaged separately, preserving published sidebar/reading changes.
+
+- 2026-09-12 — Fixed the single-group 20-voiceprint bottleneck locally: automatic allocation, definite-full race rollover, account-capacity preflight, preserved replacement groups, and complete cross-group matching. `npm run test:speaking-lab`, `npm run verify:release`, `git diff --check`, and packaging of `speakingLab` / `speakingAiWorker` passed. Provider/concurrency and UI-state checks use mocks; no authenticated live recording test or deployment was performed.
 
 - 2026-09-12 — Speaking final-minute release: reset the shared Student/Teacher
   ring at 60 seconds and sound the existing reminder three times with short

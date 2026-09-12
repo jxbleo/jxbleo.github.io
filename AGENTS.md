@@ -1942,6 +1942,18 @@ accepts only the exact `Timer` event for `speaking-ai-worker-minute`; do not mak
 the worker client-callable or replace this boundary with a browser-visible token.
 `docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`.
 
+### Speaking voiceprint capacity invariants
+
+Keep each existing Tencent voiceprint ID and its stored group unchanged during
+replacement. New registrations may automatically allocate extra 20-ID groups
+within Tencent's 1,000-ID account limit. Group names are private storage routing,
+never class or ownership keys. Only a definite provider capacity refusal permits
+bounded automatic rollover; do not replay uncertain enrolment timeouts. Search
+all eligible active-VIP groups before applying the existing score-70 and
+one-to-one identity rules. Partial group results must never grant identity or
+access. Recording-entry preflight exposes only safe availability, not counts or
+provider locators. No new collection or student re-enrolment is needed.
+
 ### Intensive Listening Library invariants
 
 Intensive Listening is a dedicated authenticated student library, not an

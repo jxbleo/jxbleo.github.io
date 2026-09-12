@@ -6,6 +6,7 @@ const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const lab = require("../_shared/speaking-lab");
 const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
+const voiceprintLibrary = require("../_shared/speaking-voiceprint-library");
 const clipProvider = require("../_shared/tencent-ci-audio");
 const { createSpeechProvider } = require("./speech-provider");
 const { createModelProvider } = require("./model-provider");
@@ -592,8 +593,12 @@ async function deleteDerivedClip(fileId) {
   catch (error) { console.error("speakingLab derived clip cleanup failed", error && error.message); }
 }
 async function activeVipVoiceprintIndex() {
-  const profiles = await getMany(VOICEPRINTS, { subject_kind: "vip", status: "active" }, 1000);
-  const students = await getMany("students", { role: "student", active: true }, 1000);
+  const profiles = await voiceprintProfiles({ subject_kind: "vip", status: "active" });
+  const students = [];
+  const uids = [...new Set(profiles.map((profile) => profile.student_uid).filter(Boolean))];
+  for (let offset = 0; offset < uids.length; offset += 100) {
+    students.push(...await getMany("students", { role: "student", active: true, auth_uid: db.command.in(uids.slice(offset, offset + 100)) }, 100));
+  }
   const studentByUid = new Map(students.filter((student) => student.auth_uid).map((student) => [String(student.auth_uid), student]));
   const byProviderId = new Map();
   profiles.forEach((profile) => {
@@ -601,6 +606,17 @@ async function activeVipVoiceprintIndex() {
     if (student && profile.provider_voiceprint_id) byProviderId.set(String(profile.provider_voiceprint_id), { profile, student });
   });
   return byProviderId;
+}
+async function voiceprintProfiles(where) {
+  const profiles = [];
+  for (let offset = 0; offset <= voiceprintLibrary.ACCOUNT_CAPACITY; offset += 100) {
+    const result = await db.collection(VOICEPRINTS).where(where).orderBy("_id", "asc").skip(offset).limit(100).get();
+    const page = result.data || [];
+    profiles.push(...page);
+    if (profiles.length > voiceprintLibrary.ACCOUNT_CAPACITY) throw new Error("VOICEPRINT_PROVIDER_INVALID_RESPONSE");
+    if (page.length < 100) return profiles;
+  }
+  return profiles;
 }
 async function applyAutomaticVoiceMatches(job, matchingResults, voiceprintIndex) {
   const matches = (Array.isArray(matchingResults) ? matchingResults : []).filter((item) => ["matched", "review_required"].includes(item.status) && item.student_uid);
@@ -743,6 +759,8 @@ async function finishAutomaticVoiceMatching(claimed, asset, report, stateOverrid
   if (pending) return { complete: false, voice_matching: { ...state, status: "processing", excerpt_jobs: updatedJobs } };
   const voiceprintIndex = await activeVipVoiceprintIndex();
   const rawResults = [];
+  const groups = voiceprintLibrary.groupsForProfiles([...voiceprintIndex.values()].map((entry) => entry.profile));
+  const matchingDeadline = Date.now() + 120000;
   for (const job of updatedJobs) {
     if (job.status !== "ready") {
       rawResults.push({ speaker_key: job.speaker_key, matches: [], fallback_reason: job.safe_reason_code || "CLIP_UNAVAILABLE" });
@@ -753,7 +771,7 @@ async function finishAutomaticVoiceMatching(claimed, asset, report, stateOverrid
       const downloaded = await app.downloadFile({ fileID: job.output_file_id });
       const buffer = downloaded && downloaded.fileContent;
       if (!Buffer.isBuffer(buffer)) throw new Error("SPEAKING_CLIP_PROVIDER_INVALID_RESPONSE");
-      const identified = await voiceprintProvider.identify({ audioBase64: buffer.toString("base64"), topN: Math.min(100, Math.max(10, voiceprintIndex.size)) });
+      const identified = await voiceprintLibrary.identifyAcrossGroups({ audioBase64: buffer.toString("base64"), groups }, { deadlineAt: Math.min(matchingDeadline, Date.now() + 20000) });
       rawResults.push({
         speaker_key: job.speaker_key,
         matches: identified.matches.map((match) => {
@@ -1899,16 +1917,22 @@ async function teacherVoiceprintSubject(actor, event) {
   };
 }
 
-async function getMyVoiceprint(actor) {
+async function getMyVoiceprint(actor, event = {}) {
   const subject = ownVoiceprintSubject(actor);
-  const profile = await voiceprintForSubject(subject.subject_key);
-  return { success: true, target: publicVoiceprintTarget(subject, profile), provider_configured: voiceprintProvider.configured() };
+  const profile = await getOne(VOICEPRINTS, { subject_key: subject.subject_key });
+  return { success: true, target: publicVoiceprintTarget(subject, profile), provider_configured: voiceprintProvider.configured(),
+    ...(event.check_capacity === true ? { registration: await voiceprintRegistrationView(profile) } : {}) };
 }
 
 async function teacherGetVoiceprintTarget(actor, event) {
   const subject = await teacherVoiceprintSubject(actor, event);
-  const profile = await voiceprintForSubject(subject.subject_key);
-  return { success: true, target: publicVoiceprintTarget(subject, profile), provider_configured: voiceprintProvider.configured() };
+  const profile = await getOne(VOICEPRINTS, { subject_key: subject.subject_key });
+  return { success: true, target: publicVoiceprintTarget(subject, profile), provider_configured: voiceprintProvider.configured(), registration: await voiceprintRegistrationView(profile) };
+}
+
+async function voiceprintRegistrationView(profile) {
+  const registration = await voiceprintLibrary.registrationAvailability(profile);
+  return { available: registration.available, code: registration.code, message: registration.code ? friendlyMessage(registration.code) : null };
 }
 
 async function appendVoiceprintEvent(transaction, values) {
@@ -1928,15 +1952,17 @@ async function saveVoiceprint(actor, event, teacherMode) {
     if (replayProfile) return { success: true, idempotent_replay: true, target: publicVoiceprintTarget(subject, replayProfile) };
   }
   const audio = voiceprintProvider.validateWavBase64(event.audio_base64);
-  const providerGroupId = voiceprintProvider.groupId();
   const existing = await getOne(VOICEPRINTS, { subject_key: subject.subject_key });
+  if (existing && existing.status === "delete_pending") throw new Error("VOICEPRINT_BUSY");
   const profileId = existing && existing.voiceprint_profile_id || stable("speaking_voiceprint", subject.subject_key);
   const updating = Boolean(existing && existing.status === "active" && existing.provider_voiceprint_id);
   let providerResult;
+  let providerGroupId = existing && existing.provider_group_id || voiceprintProvider.groupId();
   try {
     providerResult = updating
       ? await voiceprintProvider.update({ audioBase64: audio.base64, voiceprintId: existing.provider_voiceprint_id, subjectKey: subject.subject_key })
-      : await voiceprintProvider.enroll({ audioBase64: audio.base64, subjectKey: subject.subject_key, group: providerGroupId });
+      : await voiceprintLibrary.enrollAvailable({ audioBase64: audio.base64, subjectKey: subject.subject_key, profiles: await voiceprintProfiles({ status: db.command.in(["active", "delete_pending"]) }) });
+    if (!updating) providerGroupId = providerResult.groupId;
   } catch (error) {
     throw new Error(error && error.code || "VOICEPRINT_PROVIDER_FAILED");
   }
@@ -2119,6 +2145,7 @@ async function deleteDiscussion(actor, event) {
 }
 function friendlyMessage(code) {
   const messages = {
+    VOICEPRINT_BUSY: "Voiceprint registration is busy. Please try again shortly.",
     AUTH_REQUIRED: "Please sign in first.", STUDENT_REQUIRED: "This action is for students.", TEACHER_REQUIRED: "Teacher access is required.",
     DISCUSSION_NOT_FOUND: "This Discussion is no longer available.", DISCUSSION_ACCESS_DENIED: "You do not have access to this Discussion.", DISCUSSION_TITLE_REQUIRED: "Enter a Discussion title.",
     ROSTER_FROZEN: "The participant list is already frozen.", PARTICIPANT_LIMIT_REACHED: "A Discussion can have up to six participants.", DSE_REQUIRES_THREE_TO_SIX: "A DSE report requires three to six listed participants. Two participants do not generate a report.",
@@ -2128,7 +2155,7 @@ function friendlyMessage(code) {
     IDEMPOTENCY_KEY_REUSED: "That upload request was already used for a different file. Start a new upload.", VOICE_REFERENCE_LOCKED: "This Voice Reference is locked. Ask a teacher to reopen it.",
     SPEAKING_VOICEPRINT_NOT_CONFIGURED: "Tencent voiceprint registration is not configured yet.", VOICEPRINT_CONSENT_REQUIRED: "Confirm consent before registering this reusable voiceprint.",
     VOICEPRINT_AUDIO_INVALID: "Record the voiceprint with this page for a clear 16 kHz mono WAV sample.", VOICEPRINT_AUDIO_DURATION_INVALID: "The voiceprint sample must be between 8 and 30 seconds.", VOICEPRINT_NO_HUMAN_VOICE: "Tencent could not find enough clear speech. Move closer and record again.",
-    VOICEPRINT_CAPACITY_REACHED: "The Tencent voiceprint library has reached its current capacity.", VOICEPRINT_PROVIDER_UNAVAILABLE: "Tencent voiceprint service is temporarily unavailable. Please try again.", VOICEPRINT_PROVIDER_INVALID_RESPONSE: "Tencent returned an invalid voiceprint response. Please try again.", VOICEPRINT_PROVIDER_FAILED: "Tencent could not save this voiceprint. Please record again.", VOICEPRINT_NOT_FOUND: "This voiceprint no longer exists at Tencent. Record it again.", VOICEPRINT_STALE: "This voiceprint changed in another session. Refresh before trying again.",
+    VOICEPRINT_CAPACITY_REACHED: "Voiceprint registration has reached the account capacity. Please contact your teacher.", VOICEPRINT_PROVIDER_UNAVAILABLE: "Tencent voiceprint service is temporarily unavailable. Please try again.", VOICEPRINT_PROVIDER_INVALID_RESPONSE: "Tencent returned an invalid voiceprint response. Please try again.", VOICEPRINT_PROVIDER_FAILED: "Tencent could not save this voiceprint. Please record again.", VOICEPRINT_NOT_FOUND: "This voiceprint no longer exists at Tencent. Record it again.", VOICEPRINT_STALE: "This voiceprint changed in another session. Refresh before trying again.",
     SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_ASR_UNAVAILABLE: "Speech transcription is temporarily unavailable. Please retry.", SPEAKING_ASR_FAILED: "Tencent could not transcribe this recording. Please check the audio and retry.",
     SPEAKING_ASR_INVALID_RESPONSE: "Tencent returned an incomplete transcript. Please retry.", SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE: "The recording could not be scored reliably. Its available transcript was preserved.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
     SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", SPEAKING_AUDIO_TOO_LONG: "Individual Response audio must be no longer than 65 seconds.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
@@ -2164,7 +2191,7 @@ exports.main = async (event = {}) => {
     if (action === "deleteIndividualResponse") return await deleteIndividualResponse(actor, event);
     if (action === "listDiscussions") return await listDiscussions(actor, event);
     if (action === "getDiscussion") return await getDiscussion(actor, event);
-    if (action === "getMyVoiceprint") return await getMyVoiceprint(actor);
+    if (action === "getMyVoiceprint") return await getMyVoiceprint(actor, event);
     if (action === "saveMyVoiceprint") return await saveVoiceprint(actor, event, false);
     if (action === "deleteMyVoiceprint") return await deleteVoiceprint(actor, event, false);
     if (action === "teacherGetVoiceprintTarget") return await teacherGetVoiceprintTarget(actor, event);
