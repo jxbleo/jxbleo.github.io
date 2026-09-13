@@ -1,5 +1,15 @@
 # 03 UI / UX Spec
 
+## Unified IR report headings (2026-09-14)
+
+All three report cards share the same blue 12px/700 title text, heading padding
+and pale-blue band. All right-side native selectors use the first card's
+11px/500 system font, grey-blue #496574 text, 30px height, border/background
+and chevron. Keep the measured width fitted to the selected text.
+The first title joins frozen metadata with hyphens and no added spaces:
+Y2026-Set3.1-Q1. Preserve decimal Set versions and original letter case;
+do not substitute the current year for the Set's exam year.
+
 ## IR green/gold feedback and full dimension names (2026-09-14)
 
 The Analysis selector shows Ideas & Organisation or Vocabulary & Language

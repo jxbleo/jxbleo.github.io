@@ -1,5 +1,13 @@
 # 07 Testing Checklist
 
+## IR report heading consistency (2026-09-14)
+
+Check all three blue titles have equal computed font size/weight and all
+selectors share font family, size, weight, colour and control height on desktop
+and phone. Verify Y/year-Set/version-Q/order with hyphens, no inserted spaces,
+and preserved decimal versions. Check long full-name selection still fits,
+resizes correctly and introduces no horizontal overflow.
+
 ## IR constructive feedback panels (2026-09-14)
 
 Verify both dimensions show green What works and gold How to improve with

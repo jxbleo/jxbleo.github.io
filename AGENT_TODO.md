@@ -106,6 +106,18 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Unified IR report title bars (local only)
+
+- Shared title/selector CSS across all three cards. Blue titles are 12px/700;
+  selectors use the first card's grey-blue 11px/500 system font, 30px height,
+  matching surface and chevron. Measurements use the same typography/padding.
+- First title renders Y2026-Set3.1-Q1-style metadata, retaining decimal versions.
+  Updated renderer fixture, asset versions, UI/changelog/testing docs and preview.
+- Speaking suite passed. Browser computed-style checks confirm all three
+  heading/selector styles match, equal 55px title bars at 390px and no overflow
+  with the long VL name. No backend/prompt changes or deployment this turn.
+
+
 ### 2026-09-14 — IR constructive feedback panels (local only)
 
 - Added pale-green What works and pale-gold How to improve panels per IO/VL,

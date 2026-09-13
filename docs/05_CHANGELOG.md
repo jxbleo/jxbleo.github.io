@@ -1,5 +1,12 @@
 # Changelog
 
+## Consistent IR report title bars (2026-09-14)
+
+Unified three blue card titles at 12px and all right-side selectors to the
+first card's grey-blue 11px font and 30px control. First-card metadata now
+uses Y2026-Set3.1-Q1-style hyphens, preserving decimal Set numbers.
+Frontend-only follow-up; preview refreshed, no production publication.
+
 ## IR feedback focused on improvement (2026-09-14)
 
 Added green What works and gold How to improve panels to both IO and VL.

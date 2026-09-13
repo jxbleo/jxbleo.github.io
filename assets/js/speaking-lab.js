@@ -1586,7 +1586,7 @@
         var report = response.report || {};
         var snapshot = response.set_snapshot || {};
         var question = response.question_snapshot || {};
-        var setLabel = [snapshot.exam_year ? 'Y' + snapshot.exam_year : '', snapshot.paper_version ? 'Set ' + snapshot.paper_version : '', question.order ? 'Q' + question.order : ''].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
+        var setLabel = [snapshot.exam_year ? 'Y' + snapshot.exam_year : '', snapshot.paper_version ? 'Set' + snapshot.paper_version : '', question.order ? 'Q' + question.order : ''].filter(Boolean).join('-') || snapshot.display_label || response.set_id || 'Individual Response';
         var transcript = (Array.isArray(report.transcript) ? report.transcript : []).map(function (line) { return String(line.text || '').trim(); }).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
         var wordCount = (transcript.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) || []).length;
         var waitingLabel = response.analysis_status === 'ready' && response.report ? 'Ready' : response.recording_status === 'uploading' ? 'Uploading…' : response.analysis_status === 'failed' || response.analysis_status === 'not_ready' ? 'Waiting to retry' : 'Preparing…';
@@ -1613,7 +1613,7 @@
             var measure = picker.parentElement.querySelector('.speaking-ir-card-picker-measure');
             if (!measure) return;
             measure.textContent = picker.options[picker.selectedIndex] ? picker.options[picker.selectedIndex].text : '';
-            picker.style.width = Math.ceil(measure.getBoundingClientRect().width + 39) + 'px';
+            picker.style.width = Math.ceil(measure.getBoundingClientRect().width + 34) + 'px';
         });
     }
     window.addEventListener('resize', sizeIndividualResponseCardPickers);
