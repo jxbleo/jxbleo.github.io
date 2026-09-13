@@ -420,7 +420,7 @@ Navigation:
   right-side icon position and wrap purpose copy naturally inside three
   equal-height cards instead of horizontally scrolling it. Speaking Lab alone
   adds a small `HKDSE Paper 4` capsule on the same line as its title; its purpose
-  and confirmation explicitly identify Group Interaction and Individual
+  and confirmation explicitly identify Group Discussion and Individual
   Response rather than generic speaking work.
   Pointer-down immediately compresses the whole band. Reduced Motion removes
   positional motion. An ordinary click or tap opens a lightweight,

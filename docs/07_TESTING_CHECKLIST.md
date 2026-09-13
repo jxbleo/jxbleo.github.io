@@ -279,7 +279,7 @@ Dashboard learning-workspace checks:
   shared outer container;
 - visible titles read `Writing Space`, `Listening Studio`, and `Speaking Lab`.
   Speaking Lab shows a small same-line `HKDSE Paper 4` capsule; its purpose and
-  accessible/confirmation copy name Group Interaction and Individual Response;
+  accessible/confirmation copy name Group Discussion and Individual Response;
 - the cards use separate blue, teal, and orange pale-glass washes; each larger
   title uses the same theme color, and the card height hugs the copy without
   excessive blank space while retaining a comfortable touch target. Compact
