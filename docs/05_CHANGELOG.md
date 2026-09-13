@@ -1,5 +1,12 @@
 # Changelog
 
+## Compact Analysis selection and feedback (2026-09-14)
+
+Restored IO/VL abbreviations in the Analysis selector and removed the standalone
+short assessment sentence above green/gold feedback. Preserved dimension names,
+scores, per-point advice and legacy commentary inside the gold panel. Frontend
+only; no backend/prompt changes or publication.
+
 ## Consistent IR report title bars (2026-09-14)
 
 Unified three blue card titles at 12px and all right-side selectors to the

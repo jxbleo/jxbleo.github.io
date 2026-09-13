@@ -1378,13 +1378,12 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .speaking-report-card.speaking-ir-titled-card { padding: 0; overflow: hidden; }
 .speaking-ir-card-body { padding: 24px; }
 .speaking-ir-domain + .speaking-ir-domain { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--sl-hairline); }
-.speaking-ir-domain-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.speaking-ir-domain-heading { margin-bottom: 20px; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
 .speaking-ir-domain-heading h3 { display: grid; gap: 5px; margin: 0; }
 .speaking-ir-domain-heading h3 b { color: var(--sl-blue-deep); font-size: 17px; }
 .speaking-ir-domain-heading h3 span { color: var(--sl-muted); font-size: 12px; font-weight: 500; }
 .speaking-ir-domain-score { color: var(--sl-blue-deep); font-size: 27px; font-weight: 650; }
 .speaking-ir-domain-score small { margin-left: 3px; color: var(--sl-muted); font-size: 12px; font-weight: 500; }
-.speaking-ir-domain-rationale { margin: 18px 0; color: #344850; font-size: 14px; line-height: 1.8; }
 .speaking-ir-domain-feedback { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
 .speaking-ir-domain-feedback > section > h3 { margin: 0 0 14px; color: #526771; font-size: 12px; font-weight: 650; }
 .speaking-ir-feedback-list { display: grid; gap: 20px; padding: 0; margin: 0; list-style: none; }

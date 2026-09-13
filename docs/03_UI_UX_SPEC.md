@@ -1,5 +1,15 @@
 # 03 UI / UX Spec
 
+## IR concise Analysis body (2026-09-14)
+
+The Analysis selector again shows IO and VL abbreviations in the shared
+11px grey-blue style. Keep the full dimension name and score in the body,
+then go directly to the green/gold panels with a 20px gap. Do not render a
+separate commentary_zh sentence between the heading and panels. All feedback
+belongs inside the coloured panels. Legacy reports without structured points
+may show their saved commentary inside gold, explicitly marked 舊版評語;
+do not invent strengths or refer to a removed comment above.
+
 ## Unified IR report headings (2026-09-14)
 
 All three report cards share the same blue 12px/700 title text, heading padding

@@ -106,6 +106,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Concise IR Analysis (local only)
+
+- Restored grey-blue IO/VL select labels and removed the standalone short
+  commentary. Dimension name/score now lead directly to green/gold feedback.
+  Legacy-only commentary stays inside gold with an archival label.
+- Updated JS/CSS/cache references and UI/changelog/test docs. No backend,
+  prompts, stored reports or production changes. Preview refreshed on 8815.
+- Speaking suite, release verification, static build and diff checks passed.
+  Browser verified both abbreviated choices and no standalone summary text.
+
+
 ### 2026-09-14 — Unified IR report title bars (local only)
 
 - Shared title/selector CSS across all three cards. Blue titles are 12px/700;

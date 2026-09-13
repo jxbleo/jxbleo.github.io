@@ -1,5 +1,13 @@
 # 07 Testing Checklist
 
+## IR concise Analysis body (2026-09-14)
+
+Switch both IO and VL: verify abbreviated select labels, full dimension name
+and score followed directly by coloured feedback panels. The standalone short
+comment must be absent. Check legacy commentary appears only inside gold with
+its archival label; no dangling reference to a comment above. Preserve mobile
+stacking, landscape columns and the unified title/select styles.
+
 ## IR report heading consistency (2026-09-14)
 
 Check all three blue titles have equal computed font size/weight and all
