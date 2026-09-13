@@ -108,6 +108,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 - 2026-09-13: Discussion pre-recording Back restores its original Set, focus and scroll position; recorder/host regression covers ready, pending permission, countdown, Escape and stale callbacks. Static-only fix.
 
+- 2026-09-13: Removed the duplicate Speaking Set overview card and moved its year/Set identity into the article's blue heading. Preserved prompts, font controls and recording actions; added title fallback and regression assertions. Speaking contracts, release verification and static build pass; browser checks at 390px and 1024px pass. Product/UX/changelog/checklist updated. No backend or data changes; owner authorized static publication.
+
 - 2026-09-13: Confirmed live getCurrentStudent bundle omits english_name, causing blank Vocabulary crown names. Prepared explicit name projection and independent authenticated refresh for old caches. Regression tests cover backend-to-cache-to-render flow, empty/renamed names, identity races, closed overlays and failed refresh; vocabulary and release checks pass. Built getCurrentStudent.zip. Owner authorized rollout. getCurrentStudent is Active/Available with unchanged configuration; downloaded index.js/package.json match the deployment bundle byte for byte. Static frontend is verified and ready for publication.
 
 - 2026-09-13: Implemented approved bright-gold E crown with original English-name engraving in Vocabulary Quiz Mastered. Browser QA used actual result functions/styles with fictional local data: long/special/empty names, Close and Practice Sets verified. Profile guard checks, release verification and static build passed. UX/changelog/checklist updated; static publication authorized, no CloudBase changes.

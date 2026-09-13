@@ -69,7 +69,7 @@ function run() {
   assert.doesNotMatch(app, /id="speaking-set-back"|id="response-back"/);
   assert.match(app, /function hideSpeakingHomeCards\(\)[\s\S]*speaking-set-library[\s\S]*speaking-voiceprint-main/);
   assert.match(app, /function openDiscussion[\s\S]*then\(function \(result\) \{\s*if \(generation !== pollGeneration \|\| selectedId !== idValue\) return null;\s*hideSpeakingHomeCards\(\)/, "only the current Discussion may render and hide home cards");
-  assert.match(app, /CONTEXT/);
+  assert.match(app, /speaking-set-context-head/);
   assert.match(app, /PART A - GROUP DISCUSSION/);
   assert.match(app, /PART B - INDIVIDUAL RESPONSE/);
   assert.doesNotMatch(app, /Start Response/);
@@ -97,11 +97,15 @@ function run() {
   assert.match(css, /\.speaking-sidebar \.speaking-card\.is-current/);
   assert.match(app, /Past Paper/);
   assert.doesNotMatch(app, /speaking-set-overview-bar"><span class="speaking-set-card-badge/);
-  assert.match(app, /speaking-set-overview-card/);
+  assert.doesNotMatch(app, /speaking-set-overview-card/);
   assert.match(app, /speaking-set-section-head/);
   const selectedSetMarkupStart = app.indexOf('function renderSpeakingSetDetail(set)');
   const selectedSetMarkup = app.slice(selectedSetMarkupStart, app.indexOf("document.getElementById('start-set-discussion')", selectedSetMarkupStart));
-  assert.match(selectedSetMarkup, /speaking-set-overview-copy[\s\S]*setIdentity[\s\S]*<h2>/);
+  assert.match(selectedSetMarkup, /speaking-set-context-head[\s\S]*esc\(setIdentity \|\| set\.display_label \|\| 'Set'\)[\s\S]*<h2/);
+  assert.doesNotMatch(selectedSetMarkup, />CONTEXT<|speaking-set-overview-copy/, "the article must lead the page without a duplicate overview or Context label");
+  assert.strictEqual((selectedSetMarkup.match(/<section class=/g) || []).length, 3, "selected Sets contain exactly Context, Part A and Part B cards");
+  assert.match(selectedSetMarkup, /context\.title \|\| set\.title/, "missing article titles fall back to the Set title");
+  assert.match(css, /\.speaking-set-context-head \{ text-align: left;/);
   assert.match(selectedSetMarkup, /set\.exam_year[\s\S]*'Set ' \+ set\.paper_version/, "the selected Set overview must identify its year and Set number");
   assert.doesNotMatch(selectedSetMarkup, /set\.source_note|speakingSetMetaLabel\(set\)/, "the selected Set overview must not restore source/type copy");
   assert.doesNotMatch(selectedSetMarkup, /context\.source_line|speaking-set-source-line/, "the Context card must omit the source/original-material line");
@@ -464,8 +468,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260913-ir-fullpage-3sec-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-discussion-back-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260913-speaking-set-context-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-speaking-set-context-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

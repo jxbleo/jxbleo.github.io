@@ -2441,11 +2441,12 @@ Speaking Lab begins with a searchable, filterable Set library without an
 introductory card. Each teacher-managed Set has one
 immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part
 A `task` statement followed by its Group Discussion points, and stable Part B
-Individual Response question IDs. The selected-Set overview omits the redundant
-Context/Part A/Part B progress strip and secondary source/type metadata, leaving
-the Set title plus one blue `year · Set number` identity line. Context,
-`Part A - Group Discussion`, and `Part B - Individual Response` use centred
-section labels and each provide compact minus/plus controls in the upper-right
+Individual Response question IDs. Selected Sets omit the standalone overview
+card. The Context article is first, with a blue left-aligned `year · Set number`
+identity line instead of the Context label, followed by the article title (or Set
+title fallback) and unchanged paragraphs. `Part A - Group Discussion` and
+`Part B - Individual Response` retain the latest left-aligned section labels.
+All three labels share a row with compact minus/plus controls in the upper-right
 corner so students can independently choose small, medium, or large reading
 text. The Context article omits its source/original-material note. Choose-a-Set
 result cards omit both the `DSE Paper 4` suffix and the redundant Context/Part

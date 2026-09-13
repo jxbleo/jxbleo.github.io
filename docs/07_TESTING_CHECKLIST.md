@@ -13,6 +13,12 @@ Verify question entry fills the viewport, enlarged circle and timer fit desktop/
 
 Run test-speaking-response-recorder.js and test-speaking-response-focus.js. Verify focus persists from opening through the final five seconds, restores on completion/cancel/error/early stop, and does not change capture or cue deadlines. In the browser, check native dialog and backdrop transitions, hidden controls are not focusable, the stop square is centred, and the clock stays visible during capture. Check narrow-phone and desktop rendering and unchanged explicit Submit after recovery.
 
+## 2026-09-13 — Article-first Speaking Sets
+
+Check exactly three selected-Set cards: article, Part A, Part B. No standalone
+overview or literal Context heading. Verify year/version, title fallback, escaped
+content, all three font controls, and unchanged recording entry handlers.
+Inspect narrow/mobile and desktop layouts for overflow and aligned labels.
 
 ## 2026-09-13 — Speaking waiting game
 

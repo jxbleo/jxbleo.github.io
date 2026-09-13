@@ -31,6 +31,12 @@ Applied the approved preview: slow surrounding-content fade across the complete 
   colour response outside the arc. The final warning retains a static full ring.
 - Preserve the final-minute cue, file fallback, review and explicit upload in
   Student and Teacher. No backend deployment or data migration is required.
+## 2026-09-13 — Article-first Speaking Set pages
+
+- Removed the duplicate selected-Set overview card; the Context article now
+  opens the page with a blue, left-aligned year and Set number.
+- Kept all article content, Part A/Part B prompts, font controls and recording
+  actions. Frontend only; no report, cloud function or source-data changes.
 
 ## 2026-09-13 — Manage Speaking and Writing text models together
 

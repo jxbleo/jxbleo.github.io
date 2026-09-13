@@ -13,6 +13,13 @@ The IR native dialog now fills the viewport with no floating-card border, shadow
 
 The native IR dialog preserves its dimensions and recorder position while the card surface, border, shadow, question, Set label, Close and footer fade out over 680 ms. Its backdrop becomes an opaque quiet light surface, suppressing underlying page and microphone-colour decoration throughout opening, recording and ending. The clock fades out for opening only and returns for the 60-second recording; the stop label is removed from layout so the square stays at the circle centre. After all five final warning seconds, surroundings restore in 220 ms. Hidden surrounding controls are inert and excluded from accessibility navigation. Cancel, errors and early stop restore them too. Reduced Motion uses 100 ms transitions and retains existing non-pulsing countdowns.
 
+## 2026-09-13 — Article-first Speaking Set detail
+
+Remove the selected Set's duplicate overview card. The article is the first
+card and its blue upper-left label is `year · Set number`, replacing Context.
+Preserve the article title (fall back to Set title), paragraphs, font controls,
+Part A/Part B cards and entry actions. Missing year/version uses the safe display
+label or Set; do not invent metadata. Report and library layouts are unchanged.
 
 ## 2026-09-13 — Crown name cache repair
 

@@ -841,6 +841,7 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-set-section-head { display: grid; grid-template-columns: 50px minmax(0,1fr); align-items: start; gap: 16px; margin-bottom: 22px; }
 .speaking-set-section-head .eyebrow { margin: 1px 0 5px; color: var(--sl-blue-deep); font-size: .59rem; }
 .speaking-set-section-head h3 { margin: 0; color: #223740; font-size: clamp(1.14rem,2.8vw,1.5rem); line-height: 1.18; letter-spacing: -.03em; }
+.speaking-set-context-head h2 { margin: 0; color: #223740; font-size: clamp(1.14rem,2.8vw,1.5rem); line-height: 1.18; letter-spacing: -.03em; }
 .speaking-set-section-head p:not(.eyebrow) { margin: 7px 0 0; color: var(--sl-muted); font-size: .76rem; line-height: 1.5; }
 .speaking-set-section-head-centered { display: block; margin-bottom: 22px; text-align: center; }
 .speaking-set-section-head-centered .eyebrow { margin: 0; color: var(--sl-blue-deep); font-size: .62rem; letter-spacing: .105em; }
@@ -849,6 +850,7 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-set-section-head-with-controls > .eyebrow { grid-column: 1; grid-row: 1; min-width: 0; }
 .speaking-set-section-head-with-controls > .speaking-set-context-title { grid-column: 1 / -1; grid-row: 2; margin-top: 0; text-align: center; }
 .speaking-set-section-head-with-controls > .speaking-set-text-size { position: static; grid-column: 2; grid-row: 1; }
+.speaking-set-context-head { text-align: left; padding-left: 0; }
 .speaking-set-text-size { position: absolute; top: -8px; right: 0; display: grid; grid-template-columns: repeat(2,32px); gap: 2px; padding: 3px; border: 1px solid rgba(74,95,106,.10); border-radius: 12px; background: rgba(238,243,244,.72); box-shadow: inset 0 1px 2px rgba(45,67,78,.04); }
 .speaking-set-text-size button { display: grid; width: 32px; height: 32px; place-items: center; padding: 0; border: 0; border-radius: 9px; color: #176143; background: rgba(255,255,255,.82); box-shadow: 0 2px 7px rgba(44,65,75,.055),inset 0 1px 0 #fff; font: 760 1rem/1 system-ui,sans-serif; cursor: pointer; transition: transform 100ms ease-out,background 160ms ease,color 160ms ease; }
 .speaking-set-text-size button:hover, .speaking-set-text-size button:focus-visible { background: #fff; outline: 2px solid rgba(8,124,240,.24); outline-offset: 1px; }
