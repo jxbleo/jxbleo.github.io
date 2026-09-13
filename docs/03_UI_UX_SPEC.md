@@ -1,5 +1,18 @@
 # 03 UI / UX Spec
 
+## IR green/gold feedback and full dimension names (2026-09-14)
+
+The Analysis selector shows Ideas & Organisation or Vocabulary & Language
+Patterns in full. Measure the selected label to fit its native select rather
+than leaving space for the longest option. Preserve keyboard/mobile selection
+and a right-aligned control; narrow headers may wrap to retain the full name.
+Each domain contains two rounded panels: pale-green What works and pale-gold
+How to improve. Gold holds brief context plus more prominent Try this steps
+and a highlighted English example. Colour is reinforced by explicit headings.
+Phone portrait (up to 767 CSS px) stacks green above gold; landscape phones,
+landscape iPads and desktop show equal side-by-side columns. Text wraps within
+each panel without horizontal overflow. Existing scores/history remain intact.
+
 ## IR report card selectors (2026-09-14)
 
 Analysis has a compact native IO/VL selector at the upper right of its blue

@@ -106,6 +106,21 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — IR constructive feedback panels (local only)
+
+- Added pale-green What works and pale-gold How to improve panels per IO/VL,
+  portrait-phone stacking and landscape-phone/iPad columns. Native Analysis
+  select displays full names and sizes to the selected label.
+- Part B prompt 2026-09-14.2 emphasises actionable headings, short evidenced
+  gaps, exact improvement steps, reasons and English demonstrations. Preserved
+  schema, original scoring, ASR/grounding rules and provider configuration.
+- Updated Speaking JS/CSS/cache references, prompt, product/UI/data/changelog/
+  deployment/test docs. Complete Speaking tests passed; actual-code synthetic
+  browser fixture verified colours, orientation and select width changes.
+- Kept isolated codex/ir-report-history worktree and preview on port 8815.
+  No production deployment, analysis replay or root-workspace edits.
+
+
 ### 2026-09-14 — IR card selectors (local only)
 
 - Added compact header selectors for Analysis IO/VL and Exemplar 1/2/3;

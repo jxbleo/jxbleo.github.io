@@ -2,6 +2,10 @@
 
 ## IR report v3 rollout (prepared 2026-09-14; not deployed)
 
+Include the latest Part B prompt 2026-09-14.2 with constructive improvement
+coaching and the green/gold panel UI in this release. No schema migration is
+needed for this prompt refinement; old reports are not regenerated.
+
 Run Speaking and waiting-runner tests, release verification and static build.
 With owner authorization, package/deploy speakingLab (including its shared
 validator, Part B prompt and schema), then publish versioned speaking-lab

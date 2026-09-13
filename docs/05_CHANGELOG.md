@@ -1,5 +1,15 @@
 # Changelog
 
+## IR feedback focused on improvement (2026-09-14)
+
+Added green What works and gold How to improve panels to both IO and VL.
+Portrait phones stack the panels; landscape phones/iPads show two columns.
+Analysis now displays full dimension names in a select sized to its selected
+text. Part B prompt 2026-09-14.2 requires constructive action headings,
+brief evidenced gaps, specific improvement steps and demonstrated English
+examples. The schema, scoring scale, provider identity and old reports are
+unchanged. Prepared locally; no deployment or report regeneration performed.
+
 ## Compact Individual Response card selectors (2026-09-14)
 
 Added upper-right native selectors to Analysis (IO/VL) and 5** Exemplars

@@ -1,5 +1,18 @@
 # 07 Testing Checklist
 
+## IR constructive feedback panels (2026-09-14)
+
+Verify both dimensions show green What works and gold How to improve with
+text headings, not colour alone. The gold panel must make actionable steps and
+the matching English example prominent. Check full select labels and width
+shrink/growth when switching IO/VL. Check portrait phone stacking and landscape
+phone/iPad side-by-side panel rectangles, no horizontal overflow, native
+keyboard selection and history defaults. Run Speaking tests, release checks
+and static build. A future authorized live analysis should explain what/where/
+why to improve rather than only naming faults, while retaining exact evidence,
+ASR caution, original scores and personal-fact limits; synthetic fixtures
+verify layout/contracts only, not real model quality.
+
 ## IR report selectors (2026-09-14)
 
 Verify default IO and Exemplar 1; switch IO/VL and all available exemplar

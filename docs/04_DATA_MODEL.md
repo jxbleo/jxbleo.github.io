@@ -3,7 +3,7 @@
 ## Individual Response v3 (2026-09-14)
 
 New Part B reports use schema/report_version dse-individual-response-v3,
-prompt dse-individual-response-prompts-2026-09-14.1 and rubric
+prompt dse-individual-response-prompts-2026-09-14.2 and rubric
 `dse-individual-response-io-vl-v2`. domains contains only ideas_organisation
 and vocabulary_language_patterns. Both require integer score 0–7,
 commentary_zh (nonempty, max 1200), evidence_segment_ids and strengths/weaknesses.

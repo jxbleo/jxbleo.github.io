@@ -1,5 +1,13 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## IR constructive feedback panels (2026-09-14)
+
+Each selected IO/VL assessment has What works on pale green and How to improve
+on pale gold. Improvements are the main teaching content: explain the supported
+gap briefly, then give tailored steps, where to apply them, why they help and a
+usable English example. Do not judge the learner or manufacture faults.
+Score only the original response; preserve evidence and ASR safeguards.
+
 ## Individual Response report while processing (2026-09-14)
 
 Explicit Submit immediately enters the report workspace, before secure upload
