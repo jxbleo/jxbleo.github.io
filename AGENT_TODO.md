@@ -106,6 +106,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13: Both Speaking audio pickers now read Upload Files and use approved option 03 (Lucide file-music). Verified the actual button markup/styles at 390 px; full Speaking regression suite, release verification and static build passed. UI/changelog/testing/decision docs and icon license included. No owner action beyond refreshing; static-only release.
+
 ### 2026-09-13 — Centered Speaking Recording and stable IR phone spacing
 
 - Changed Speaking CSS/JS, shared Discussion recorder, both host cache versions, UI spec, changelog and testing checklist in isolated `codex/speaking-center-recording`; preserved the shared dirty checkout.

@@ -1,5 +1,9 @@
 # Changelog
 
+## Speaking upload label and icon (2026-09-13)
+
+Unify Group Discussion and IR audio-picker labels as Upload Files and replace their tray-arrow icon with the approved audio-file/music-note icon.
+
 ## 2026-09-13 — Consistent Speaking capture feedback
 
 Implemented the approved IR phone spacing in production CSS and replaced central stop squares with blinking red-dot Recording labels in IR and the shared student/teacher Discussion recorder. Countdown, early stop, final-minute warnings, saved state, wake lock and explicit Submit remain intact.

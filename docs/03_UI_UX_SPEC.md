@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Speaking upload label and icon (2026-09-13)
+
+Group Discussion and Individual Response both label their existing-audio picker Upload Files and use approved option 03, a folded audio-file outline with a music note. Preserve each surface’s existing button colour, sizing and file-selection behaviour.
+
 ## Speaking recording screen awake (2026-09-13)
 
 IR and Discussion automatically request screen-awake protection from their opening countdown through audio capture/finalization. Ready, file upload, review and analysis do not keep the display on. Returning to the foreground during capture requests a fresh lock. Existing recording controls and layout are unchanged.

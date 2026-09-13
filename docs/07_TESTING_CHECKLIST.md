@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Speaking upload label and icon (2026-09-13)
+
+Verify both recording entry screens show Upload Files with the approved audio-file/music-note icon, including phone widths. File selection, picker cancellation and explicit Submit retain their existing behaviour.
+
 ## Speaking recording screen awake (2026-09-13)
 
 Run test-screen-wake-lock.js and both recorder suites: normal start/finish, cancellation, failure, destruction, unsupported API, rejection, system release, hidden/visible transitions and late-grant/restart races. Confirm script order on student/teacher pages. On physical mobile Safari/Chrome, set a short auto-lock timeout, keep each recording page in front beyond that interval, and confirm the screen remains awake; verify normal auto-lock returns after stopping and foregrounding an ongoing take reacquires. Low-power/unsupported cases must not break recording.
