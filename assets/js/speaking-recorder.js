@@ -34,9 +34,9 @@
             '<div class="speaking-recording-live-content"><div class="speaking-recording-dial" id="recording-dial">' +
             '<svg class="speaking-recording-outer-wave" viewBox="-20 -20 240 240" aria-hidden="true"><defs><linearGradient id="recording-outer-spectrum" x1="0" y1="0.25" x2="1" y2="0.75"><stop stop-color="#ee8180"/><stop offset=".14" stop-color="#f3ac70"/><stop offset=".28" stop-color="#d8bd65"/><stop offset=".42" stop-color="#9bc96e"/><stop offset=".57" stop-color="#5cbba4"/><stop offset=".71" stop-color="#6abbd0"/><stop offset=".85" stop-color="#799ddc"/><stop offset="1" stop-color="#9b8acb"/></linearGradient></defs><path id="recording-outer-glow" class="speaking-recording-outer-wave-glow"/><path id="recording-outer-fill" class="speaking-recording-outer-wave-fill"/><path id="recording-outer-line" class="speaking-recording-outer-wave-line"/></svg>' +
             '<svg class="speaking-recording-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="recording-ring-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7ecddd"/><stop offset="1" stop-color="#62bfae"/></linearGradient></defs><circle class="speaking-recording-ring-track" cx="100" cy="100" r="97"/><circle class="speaking-recording-ring-progress" id="recording-ring-progress" cx="100" cy="100" r="97" pathLength="1" stroke-dasharray="1"/></svg>' +
-            '<button class="speaking-recording-dial-center" id="stop-recording" type="button" aria-label="Start three-second countdown"><span class="speaking-recording-countdown" id="recording-countdown" role="timer" aria-label="Countdown" hidden>3</span><span class="speaking-recording-time" id="recording-time" role="timer" aria-label="Time remaining">08:00</span><span class="speaking-recording-start-hint" id="recording-start-hint">Tap to Start</span></button>' +
-            '<button class="speaking-duration-adjust" id="recording-adjust-duration" type="button" aria-haspopup="dialog" aria-label="Adjust discussion time"><span id="recording-duration-label">8 min</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button></div></div>' +
-            '<div class="speaking-recording-footer"><button class="speaking-recording-upload-option" id="recording-upload-option" type="button">Upload</button><input type="file" accept="audio/*" id="live-audio-file" hidden>' +
+            '<button class="speaking-recording-dial-center" id="stop-recording" type="button" aria-label="Start three-second countdown"><span class="speaking-recording-mic-icon" id="recording-mic-icon" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7.5 16a8.5 8.5 0 0 0 17 0M16 24.5V28M12 28h8"/></svg></span><span class="speaking-recording-stop-icon" id="recording-stop-icon" aria-hidden="true" hidden></span><span class="speaking-recording-finished-icon" id="recording-finished-icon" aria-hidden="true" hidden><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m7 16 6 6L25 10"/></svg></span><span class="speaking-recording-countdown" id="recording-countdown" role="timer" aria-label="Countdown" hidden>3</span><span class="speaking-recording-time" id="recording-time" role="timer" aria-label="Time remaining">08:00</span><span class="speaking-recording-start-hint" id="recording-start-hint">Tap to Start</span></button>' +
+            '</div><div class="speaking-recording-clock-slot"><button class="speaking-duration-adjust" id="recording-adjust-duration" type="button" aria-haspopup="dialog" aria-label="Adjust discussion time"><span id="recording-duration-label">08:00</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button><span class="speaking-recording-clock" id="recording-clock" role="timer" aria-label="Time remaining" hidden>08:00</span></div></div>' +
+            '<div class="speaking-recording-footer"><button class="speaking-recording-upload-option" id="recording-upload-option" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m-3.5 3.5L10 3l3.5 3.5M4 12v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg><span>Upload</span></button><input type="file" accept="audio/*" id="live-audio-file" hidden>' +
             '<div class="speaking-recording-state speaking-recording-review" id="recording-review" hidden><button class="primary-button" type="button" id="upload-recording">Submit</button><div class="speaking-recording-review-tools"><button type="button" id="preview-recording">Play recording</button><button type="button" id="replace-recording">Record again</button></div><label class="speaking-audio-date" id="recording-file-date" hidden><span>Audio date</span><input id="recording-date" type="date" value="' + esc(date || shanghaiToday()) + '"></label><p id="recording-review-copy" role="status"></p></div>' +
             '<div class="speaking-recording-state speaking-recording-uploading" id="recording-uploading" hidden aria-live="polite" aria-busy="true"><span class="speaking-upload-spinner" aria-hidden="true"></span><p>Uploading securely…</p></div></div>' +
             '<p class="speaking-quality-warning" id="quality-warning" role="status" aria-live="polite"></p></dialog>' +
@@ -79,14 +79,18 @@
             node('recording-review').hidden = next !== 'review' && next !== 'analysis_retry';
             node('recording-uploading').hidden = next !== 'uploading';
             node('recording-countdown').hidden = next !== 'countdown' && next !== 'ending';
-            node('recording-time').hidden = next === 'ready' || next === 'countdown' || next === 'ending';
+            node('recording-time').hidden = true;
+            node('recording-mic-icon').hidden = next !== 'ready' && next !== 'requesting';
+            node('recording-stop-icon').hidden = next !== 'recording';
+            node('recording-finished-icon').hidden = ['review', 'analysis_retry', 'uploading'].indexOf(next) < 0;
+            node('recording-clock').hidden = ['recording', 'stopping', 'review', 'analysis_retry', 'uploading'].indexOf(next) < 0;
             node('recording-adjust-duration').hidden = next !== 'ready';
             node('recording-start-hint').hidden = next !== 'ready';
             node('recording-back').hidden = ['ready', 'requesting', 'countdown', 'review'].indexOf(next) < 0;
             node('recording-upload-option').hidden = next !== 'ready';
             node('recording-file-date').hidden = next !== 'review' || !fileSelected;
             node('recording-live').classList.toggle('is-review', next === 'review' || next === 'analysis_retry');
-            if (next === 'review') { paintRing(1); node('recording-time').textContent = fileSelected ? '✓' : timeText(recordedSeconds); node('recording-time').setAttribute('aria-label', fileSelected ? 'Audio ready' : 'Recorded duration'); }
+            if (next === 'review') { paintRing(1); node('recording-clock').textContent = fileSelected ? '' : timeText(recordedSeconds); node('recording-clock').setAttribute('aria-label', fileSelected ? 'Audio ready' : 'Recorded duration'); }
             node('recording-live').classList.toggle('is-ready', next === 'ready');
             node('recording-live').classList.toggle('is-opening', next === 'countdown');
             node('recording-live').classList.toggle('is-recording', next === 'recording');
@@ -123,9 +127,9 @@
             target = normaliseTarget(Number(node('recording-duration').value || 8) * 60);
             node('recording-duration').value = String(target / 60);
             node('recording-target-pill').textContent = 'Target ' + (target / 60) + ' min';
-            node('recording-duration-label').textContent = (target / 60) + ' min';
+            node('recording-duration-label').textContent = timeText(target);
             node('recording-adjust-duration').setAttribute('aria-label', 'Adjust discussion time, ' + (target / 60) + ' minutes');
-            if (state === 'idle' || state === 'ready') node('recording-time').textContent = timeText(target);
+            if (state === 'idle' || state === 'ready') node('recording-clock').textContent = timeText(target);
             return target;
         }
         function stopPreview() {
@@ -286,6 +290,10 @@
                     if (state !== 'ending') { setState('ending', ''); cancelCues(); scheduleCountdownCues(); }
                     node('recording-countdown').textContent = String(current.tick);
                 } else {
+                    node('recording-time').hidden = !current.minute;
+                    node('recording-stop-icon').hidden = current.minute;
+                    node('recording-clock').hidden = current.minute;
+                    node('recording-clock').textContent = timeText(current.remaining);
                     node('recording-time').textContent = current.minute ? String(Math.ceil(current.remaining)).padStart(2, '0') : timeText(current.remaining);
                     node('recording-time').setAttribute('aria-label', current.minute ? 'Seconds remaining: ' + Math.ceil(current.remaining) : 'Time remaining');
                     node('recording-dial').classList.toggle('is-minute', current.minute);
@@ -308,7 +316,7 @@
             node('recording-date').value = shanghaiToday();
             if (options.onDateChange) options.onDateChange(node('recording-date').value);
             if (options.onTargetChange) options.onTargetChange(target);
-            message(''); warning(''); paintRing(1); node('recording-time').textContent = timeText(target);
+            message(''); warning(''); paintRing(1); node('recording-clock').textContent = timeText(target); node('recording-clock').setAttribute('aria-label', 'Time remaining');
             setState('requesting');
             var captureGeneration = ++generation;
             ensureAudioContext();

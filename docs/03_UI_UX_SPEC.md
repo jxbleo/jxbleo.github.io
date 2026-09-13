@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Discussion IR-style controls (2026-09-13)
+
+Group Discussion ready uses the IR microphone and Tap to Start in the circle. A large mm:ss time below it opens the existing duration wheel; its glyph width is roughly 80% of the circle. The Upload button beneath the time uses the IR upload icon. Normal capture shows only a centred rounded stop square inside and mm:ss below. At the final minute, hide the external time and stop square and show 60–01 inside; retain the reserved clock space to avoid shifting the circle. Opening/ending cues remain inside. Finished takes show a check in the circle with their duration and Submit below.
+
 ## Discussion final-minute seconds (2026-09-13)
 
 During the final minute of Group Discussion capture, use two-digit seconds 60 → 01 instead of mm:ss; enlarge the digits from 28cqw to 40cqw. Earlier minutes, the separate three-second ending reminder and completed recording duration retain their existing formatting.

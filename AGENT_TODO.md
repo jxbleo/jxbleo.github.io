@@ -106,6 +106,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13: Discussion microphone/stop controls now match IR; adjustable large clock and icon Upload below circle, with final-minute seconds exclusively inside. Recorder state regression and local synthetic browser QA; no backend change.
+
 - 2026-09-13 — IR question stays visible during recording: removed Set/year
   header and Q-number prefix; preserved the question in the fade/accessibility
   boundary. Saved recording now uses two lines: Recording saved / Tap to start

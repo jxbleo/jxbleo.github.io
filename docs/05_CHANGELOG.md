@@ -1,5 +1,9 @@
 # Changelog
 
+## Discussion IR-style controls (2026-09-13)
+
+Align Group Discussion centre controls and Upload icon with IR. Move adjustable ready time and ordinary countdown below the circle, show the stop square centrally, and bring only the last-minute seconds back inside. Preserve duration picker, real-input outer wave, cue timing, return-to-Set and explicit Submit.
+
 ## Discussion final-minute seconds (2026-09-13)
 
 Group Discussion now displays enlarged two-digit seconds during its final minute. Recording length, alerts, submission and Individual Response are unchanged.

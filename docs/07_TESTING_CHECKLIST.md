@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Discussion IR-style controls (2026-09-13)
+
+Verify microphone + Tap to Start, large external mm:ss and Upload icon in ready; click the external time to use the wheel. During normal capture verify the stop square is centred and only external time is visible. At 60 seconds verify only internal two-digit seconds and no external number/stop icon. Confirm opening, ending, early stop, review, file selection, retry and mobile layout retain their existing behavior.
+
 ## Discussion final-minute seconds (2026-09-13)
 
 Check the Group Discussion transition from 01:01 to large 60, then 59, 09 and 01. Preserve the full-ring final-minute restart, existing minute cue, three-second ending reminder and mm:ss recorded-duration review.

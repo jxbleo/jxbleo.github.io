@@ -113,6 +113,9 @@ async function run() {
   assert(f.nodes['recording-live'].open);
   assert(f.nodes['recording-time'].hidden);
   assert(!f.nodes['recording-adjust-duration'].hidden);
+  assert(!f.nodes['recording-mic-icon'].hidden);
+  assert.equal(f.nodes['recording-duration-label'].textContent, '03:00');
+  assert(f.nodes['recording-stop-icon'].hidden);
   assert(f.controller.locked(), 'ready dialog blocks host navigation/rerender');
   assert.equal(f.nodes['recording-live-status'].textContent, '');
   assert(!f.nodes['recording-upload-option'].hidden);
@@ -127,12 +130,16 @@ async function run() {
   assert(Math.abs(f.audioEvents[2].stop - f.audioEvents[2].start - .4) < 1e-8);
   await f.advance(2999); assert.equal(f.counts().starts, 0, 'opening does not consume discussion time');
   await f.advance(1); assert.equal(f.counts().starts, 1);
-  assert.equal(f.nodes['recording-time'].textContent, '03:00');
-  assert(!f.nodes['recording-time'].hidden);
+  assert.equal(f.nodes['recording-clock'].textContent, '03:00');
+  assert(!f.nodes['recording-clock'].hidden);
+  assert(f.nodes['recording-time'].hidden);
+  assert(f.nodes['recording-mic-icon'].hidden);
+  assert(!f.nodes['recording-stop-icon'].hidden);
   f.drawFrame();
   assert(f.nodes['recording-outer-line'].getAttribute('d').startsWith('M'), 'real samples feed the outer wave');
   await f.advance(119000);
-  assert.equal(f.nodes['recording-time'].textContent, '01:01');
+  assert.equal(f.nodes['recording-clock'].textContent, '01:01');
+  assert(f.nodes['recording-time'].hidden);
   await f.advance(1000);
   const minuteCues = f.audioEvents.slice(3);
   assert.equal(minuteCues.length, 3);
@@ -142,6 +149,9 @@ async function run() {
     assert(Math.abs(cue.start - minuteCues[0].start - index * .55) < 1e-8);
   });
   assert.equal(f.nodes['recording-time'].textContent, '60');
+  assert(!f.nodes['recording-time'].hidden);
+  assert(f.nodes['recording-clock'].hidden);
+  assert(f.nodes['recording-stop-icon'].hidden);
   assert(f.nodes['recording-live'].classList.contains('is-minute'));
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0');
   await f.advance(1000);
@@ -170,7 +180,10 @@ async function run() {
   assert(f.controller.snapshot().blob.size > 0); assert(f.track.stopped);
   assert(f.nodes['recording-live'].open, 'finished recording stays in the circle surface');
   assert.equal(f.nodes['upload-recording'].textContent, 'Submit');
-  assert.equal(f.nodes['recording-time'].textContent, '03:03');
+  assert.equal(f.nodes['recording-clock'].textContent, '03:03');
+  assert(!f.nodes['recording-clock'].hidden);
+  assert(!f.nodes['recording-finished-icon'].hidden);
+  assert(f.nodes['recording-time'].hidden);
   assert(f.nodes['recording-upload-option'].hidden);
   const saved = f.controller.snapshot();
   f.nodes['upload-recording'].fire('click'); f.nodes['upload-recording'].fire('click');
@@ -278,7 +291,7 @@ async function run() {
   imported.controller.destroy();
   const early = fixture(); early.begin(); await early.advance(83000); early.controller.finish(); await early.flush(); await early.advance(0);
   assert.equal(early.controller.snapshot().state, 'review'); assert(early.nodes['recording-live'].open);
-  assert.equal(early.nodes['recording-time'].textContent, '01:20'); assert.equal(early.counts().uploadCount, 0);
+  assert.equal(early.nodes['recording-clock'].textContent, '01:20'); assert.equal(early.counts().uploadCount, 0);
   early.controller.destroy();
 
   const wheel = fixture(); wheel.controller.start(); wheel.nodes['recording-adjust-duration'].fire('click'); wheel.drawFrame();
@@ -288,7 +301,7 @@ async function run() {
   wheel.nodes['recording-duration-wheel'].fire('scroll'); assert.equal(wheel.wheelEvents.length, 1, 'no repeated tick on same value');
   wheel.nodes['recording-duration-done'].fire('click');
   assert.equal(wheel.controller.snapshot().targetSeconds, 480);
-  assert.equal(wheel.nodes['recording-duration-label'].textContent, '8 min');
+  assert.equal(wheel.nodes['recording-duration-label'].textContent, '08:00');
   assert.equal(wheel.counts().requestCount, 0, 'time selection cannot start recording');
   wheel.nodes['recording-adjust-duration'].fire('click'); wheel.drawFrame();
   wheel.nodes['recording-duration-wheel'].scrollTo({top: 14 * 44});
