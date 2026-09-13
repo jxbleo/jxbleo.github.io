@@ -1,5 +1,9 @@
 # Changelog
 
+## Discussion recording spacing and indicator (2026-09-13)
+
+Lower the Group Discussion Recording indicator, continuously pulse its red dot during capture, and increase spacing between the circle and external time. Keep compact-height and reduced-motion variants.
+
 ## Discussion IR-style controls (2026-09-13)
 
 Align Group Discussion centre controls and Upload icon with IR. Move adjustable ready time and ordinary countdown below the circle, show the stop square centrally, and bring only the last-minute seconds back inside. Preserve duration picker, real-input outer wave, cue timing, return-to-Set and explicit Submit.

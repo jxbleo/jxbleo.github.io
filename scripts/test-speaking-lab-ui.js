@@ -178,7 +178,7 @@ function run() {
   assert.match(app, /MrCatSpeakingRecorder.create/);
   const discussionCss = read('assets/css/speaking-discussion-recorder.css');
   for (const html of [page, teacherPage]) {
-    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=20260913-discussion-ir-layout-1/);
+    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=20260913-discussion-spacing-1/);
   }
   assert.match(discussionCss, /is-ending \.speaking-recording-ring-progress \{ display:none/);
   assert.match(discussionCss, /font:300 28cqw/);

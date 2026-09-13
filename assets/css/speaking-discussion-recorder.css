@@ -68,9 +68,11 @@ body .speaking-discussion-start .speaking-discussion-start-icon svg { width:27px
 #recording-live .speaking-recording-dial { --diameter:min(76vw,55dvh,620px); flex:none; }
 #recording-live .speaking-recording-live-content { flex:none; }
 #recording-live.is-ready .speaking-recording-live-label { visibility:hidden; }
-#recording-live .speaking-recording-live-label { font-size:16px; gap:12px; letter-spacing:.09em; }
+#recording-live .speaking-recording-live-label { top:max(44px,calc(env(safe-area-inset-top) + 16px)); font-size:16px; gap:12px; letter-spacing:.09em; }
 #recording-live .speaking-recording-live-label span { width:12px; height:12px; box-shadow:0 0 0 5px #ed787115; }
 #recording-live:not(.is-recording) .speaking-recording-live-label span { display:none; }
+#recording-live.is-recording .speaking-recording-live-label span { animation:speaking-discussion-recording-blink 1.3s ease-in-out infinite; }
+@keyframes speaking-discussion-recording-blink { 0%,100% { opacity:1; } 50% { opacity:.25; } }
 #recording-live .speaking-recording-footer { flex:none; width:min(400px,100%); min-height:128px; text-align:center; }
 #recording-live .speaking-recording-review,#recording-live .speaking-recording-uploading { margin:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
 #recording-live #recording-upload-option,#recording-live #upload-recording { display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:148px; min-height:48px; margin:0; padding:10px 30px; border:1px solid #d6e8df; border-radius:999px; color:#43846c; background:#f2f8f5; box-shadow:none; font:600 16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; cursor:pointer; touch-action:manipulation; }
@@ -91,8 +93,8 @@ body .speaking-discussion-start .speaking-discussion-start-icon svg { width:27px
 body.speaking-recording-flow-active { overflow:hidden; overscroll-behavior:none; }
 
 /* IR-style centre controls, with the main clock below the circle. */
-#recording-live { --diameter:min(76vw,49dvh,580px); padding-bottom:max(28px,env(safe-area-inset-bottom)); gap:16px; }
-#recording-live .speaking-recording-live-content { width:var(--diameter); container-type:inline-size; gap:12px; }
+#recording-live { --diameter:min(76vw,49dvh,580px); padding-top:112px; padding-bottom:max(28px,env(safe-area-inset-bottom)); gap:16px; }
+#recording-live .speaking-recording-live-content { width:var(--diameter); container-type:inline-size; gap:clamp(28px,4dvh,40px); }
 #recording-live .speaking-recording-dial { --diameter:inherit; }
 #recording-live .speaking-recording-mic-icon,#recording-live .speaking-recording-finished-icon { display:block; width:22cqw; height:22cqw; color:#698b7c; }
 #recording-live .speaking-recording-mic-icon svg,#recording-live .speaking-recording-finished-icon svg { position:static; width:100%; height:100%; transform:none; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
@@ -107,4 +109,6 @@ body.speaking-recording-flow-active { overflow:hidden; overscroll-behavior:none;
 #recording-live #recording-upload-option { gap:9px; }
 #recording-live #recording-upload-option svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
 @media(max-width:600px) { #recording-live { --diameter:min(80vw,49dvh,580px); } }
-@media(max-height:500px) { #recording-live { --diameter:min(60vw,43dvh); padding-top:48px; padding-bottom:12px; gap:8px; } #recording-live .speaking-recording-live-content { gap:8px; } #recording-live .speaking-recording-footer { min-height:64px; } }
+@media(max-height:500px) { #recording-live { --diameter:min(60vw,43dvh); padding-top:48px; padding-bottom:12px; gap:8px; } #recording-live .speaking-recording-live-label { top:max(26px,env(safe-area-inset-top)); } #recording-live .speaking-recording-live-content { gap:18px; } #recording-live .speaking-recording-footer { min-height:64px; } }
+
+@media(prefers-reduced-motion:reduce) { #recording-live.is-recording .speaking-recording-live-label span { animation:none; opacity:1; } }

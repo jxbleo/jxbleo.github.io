@@ -106,6 +106,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13: Lowered the Discussion Recording indicator, enabled a 1.3 s red-dot opacity pulse, and increased external-clock spacing with compact-height/reduced-motion variants. Desktop and 390 px synthetic-capture browser QA and Speaking regression tests passed; UI/changelog/testing docs updated. Static-only release; no backend changes.
+
 - 2026-09-13 — IR indicator and completion refinement: moved Recording into a
   reserved row between question and circle; only the dot blinks (Reduced Motion
   stays steady). Every saved take shows only Tap to start over in the circle

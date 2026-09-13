@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Discussion recording spacing and indicator (2026-09-13)
+
+Check desktop and phone ready/capture layouts: the Recording indicator sits lower, its dot continuously varies opacity, and the external clock has clear space below the circle. Verify the blink is active only during recording and steady with reduced motion; preserve final-minute seconds and Submit.
+
 ## Discussion IR-style controls (2026-09-13)
 
 Verify microphone + Tap to Start, large external mm:ss and Upload icon in ready; click the external time to use the wheel. During normal capture verify the stop square is centred and only external time is visible. At 60 seconds verify only internal two-digit seconds and no external number/stop icon. Confirm opening, ending, early stop, review, file selection, retry and mobile layout retain their existing behavior.
