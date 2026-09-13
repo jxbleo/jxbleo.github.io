@@ -62,6 +62,21 @@ for (const change of invalidChanges) {
   const r = fixture(); change(r);
   assert.throws(() => lab.canonicalizeIndividualResponseReport(r, segments), /INDIVIDUAL_RESPONSE_COACHING_INVALID/);
 }
+// Recover only complete, unambiguous misplaced coaching, without relaxing content checks.
+const misplaced = fixture();
+for (const key of ["basis_status", "student_viewpoint_zh", "socratic_questions", "sample_responses"]) {
+  misplaced.domains[key] = misplaced[key]; delete misplaced[key];
+}
+assert.deepStrictEqual(lab.canonicalizeIndividualResponseReport(misplaced, segments), report);
+for (const change of [
+  r => { r.basis_status = "grounded"; },
+  r => { delete r.domains.basis_status; },
+  r => { r.domains.sample_responses[0].response_en = "Too short."; },
+  r => { r.domains.socratic_questions[0].evidence_segment_ids = ["foreign"]; },
+]) {
+  const changed = JSON.parse(JSON.stringify(misplaced)); change(changed);
+  assert.throws(() => lab.canonicalizeIndividualResponseReport(changed, segments), /COACHING_INVALID/);
+}
 const insufficient = fixture();
 insufficient.basis_status = "insufficient";
 insufficient.student_viewpoint_zh = "錄音未能可靠呈現立場。";

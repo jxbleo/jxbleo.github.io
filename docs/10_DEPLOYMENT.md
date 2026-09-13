@@ -19,21 +19,29 @@ locators/hashes, not old report backups. This operation overwrites assessments
 and must not use the older coaching-only operator, which preserves old scores.
 Publish the committed static assets through the existing main/COS workflow.
 
-## IR report v3 rollout (prepared 2026-09-14; not deployed)
+Release 53e8297b was published by successful GitHub Actions run 34774845997;
+production HTML/JS/CSS exactly match the release files. Both functions are Active
+and their deployed code hashes match the packaged bundles, with configuration
+unchanged. The nonunique ir_question_history_desc index is present.
+
+## IR report v3 rollout (deployed 2026-09-14)
 
 Include the latest Part B prompt 2026-09-14.2 with constructive improvement
 coaching and the green/gold panel UI in this release. No schema migration is
-needed for this prompt refinement; old reports are not regenerated.
+needed for this prompt refinement. The later owner-authorized overwrite above
+supersedes the original no-replay plan for Sep 8–14 only.
 
 Run Speaking and waiting-runner tests, release verification and static build.
 With owner authorization, package/deploy speakingLab (including its shared
 validator, Part B prompt and schema), then publish versioned speaking-lab
 HTML/JS/CSS, speaking-waiting.js, teacher CSS reference and public appVersion.
 The prior report-history change also requires its documented composite-index
-verification/provisioning before release. Worker code, model identity/fallback,
-Writing prompts, permissions and historical reports require no change or replay.
+verification/provisioning before release. This release also updates the worker
+bundle for the shared overwrite job contract. Model identity/fallback, Writing
+prompts and permissions remain unchanged.
 Check one future authorized IR submission: immediate question card/game,
-manual View results and new IO/VL feedback. Historical reports retain scores.
+manual View results and new IO/VL feedback. Reports outside the authorized
+seven-day scope retain their prior scores.
 Do not claim production readiness from synthetic UI/contract tests alone.
 
 ## 2026-09-13 — Speaking waiting game (static only)

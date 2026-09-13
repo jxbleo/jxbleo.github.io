@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+- IR reanalysis: recover a complete misplaced coaching block only; reject mixed
+  root/nested fields, partial blocks, foreign evidence and short samples. Verify
+  published equality with the publisher's student-name redaction inputs.
+
 ## IR complete report overwrite (2026-09-14)
 
 Run test-speaking-ir-overwrite.js through the complete Speaking suite. Assert

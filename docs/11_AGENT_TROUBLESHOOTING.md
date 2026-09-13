@@ -1,5 +1,16 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## IR model output nesting during reanalysis (2026-09-14)
+
+A live diagnostic found a complete coaching block inside `domains` instead of
+at the report root. This caused `INDIVIDUAL_RESPONSE_COACHING_INVALID` despite
+usable content. Canonicalization now relocates only all four expected coaching
+fields together when none exists at root; mixed, partial or conflicting shapes
+still fail. All evidence, score, length and sample-distinctness checks remain.
+The operator must canonicalize with the same student-name redaction inputs as
+the publisher before comparing stored reports; otherwise valid redacted
+transcripts can incorrectly fail deep equality. No prompt/model change is needed.
+
 ## 2026-09-13 — Refresh lost the selected Speaking Set
 
 Set selection existed only in `selectedSpeakingSet`; unlike Discussion/IR,

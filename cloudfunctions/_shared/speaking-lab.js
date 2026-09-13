@@ -986,6 +986,14 @@ function individualResponseTimingState(seconds) {
 
 function canonicalizeIndividualResponseReport(report, segments = [], options = {}) {
   if (!report || typeof report !== "object" || Array.isArray(report)) throw new Error("INDIVIDUAL_RESPONSE_REPORT_INVALID");
+  // Some providers put the complete coaching block one level too deep. Move
+  // only this unambiguous shape; every value still passes the validator below.
+  const coachingKeys = ["basis_status", "student_viewpoint_zh", "socratic_questions", "sample_responses"];
+  const owns = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+  if (report.domains && typeof report.domains === "object" && coachingKeys.some((key) => owns(report.domains, key))) {
+    if (coachingKeys.some((key) => owns(report, key)) || !coachingKeys.every((key) => owns(report.domains, key))) throw new Error("INDIVIDUAL_RESPONSE_COACHING_INVALID");
+    report = { ...report, ...Object.fromEntries(coachingKeys.map((key) => [key, report.domains[key]])) };
+  }
   const validIds = new Set((Array.isArray(segments) ? segments : []).map((row) => String(row.segment_id || "")));
   const domains = report.domains && typeof report.domains === "object" ? report.domains : {};
   const canonical = {};
