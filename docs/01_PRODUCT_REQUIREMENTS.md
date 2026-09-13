@@ -2441,6 +2441,10 @@ answers are returned only by the authorized practice flow.
 
 ### DSE Paper 4 Speaking Set Library
 
+The selected Set has a stable `?set=` URL. Refresh restores its latest authorized
+content without returning to the library or creating any recording Session.
+Loading shows only the initial spinner; unavailable content offers a retry.
+
 Speaking Lab begins with a searchable, filterable Set library without an
 introductory card. Each teacher-managed Set has one
 immutable `set_id`, PP/MOCK source metadata, a Context article, a distinct Part

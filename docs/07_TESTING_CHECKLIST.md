@@ -16,6 +16,13 @@ Verify the red dot and `Recording` appear only after the opening 3/2/1 and actua
 
 Check automatic completion shows `Recording saved` and `Tap to start over` on two centred lines in the circle and `Your recording was successful.` below, with no numeric clock. Stop early at single- and double-digit durations: digits and `sec recorded` form one centred row with balanced type at desktop, phone and short-screen sizes. Repeat recording, cancel and microphone failure must restore the normal timer and accessible timer role. Submit remains explicit.
 
+## 2026-09-13 — Set refresh route
+
+Open a library Set, verify its URL, refresh and retain that Set with one initial
+loader. Check direct links, updated server content, missing Set/retry, leaving
+during a pending fetch, Back to library, and Voiceprint clearing the old route.
+Do not create a Discussion/IR or start microphone capture merely by restoring.
+
 ## Discussion Back regression (2026-09-13)
 
 From a scrolled Set card, open Start and use Back: the same Set and scroll position return, with focus on Start and no analysis workspace. Repeat while permission is pending, during the opening countdown, and with Escape. Late permission must stop tracks without recording/uploading. History and Teacher entry keep their existing return route.

@@ -8,6 +8,12 @@ Group Discussion now displays enlarged two-digit seconds during its final minute
 
 Unify Group Discussion ready/review/upload in the large circle page. Simplify ready/picker text, enlarge recording status, increase live outer-wave response, add Upload before capture and Submit after capture/file selection. Preserve return-to-Set, opening/ending tones, file/date validation and explicit submission; retain accepted audio for analysis-only retry. Static-only release, no CloudBase deployment.
 
+## 2026-09-13 — Restore the selected Speaking Set after refresh
+
+- Added stable Set URLs and direct startup restoration with one initial loader.
+- Failed reads remain retryable; leaving clears the route and invalidates late
+  reads. No new session, recording, report mutation or backend deployment.
+
 ## Discussion pre-recording Back fix (2026-09-13)
 
 Remember the Set entry and scroll position; return directly to the task card when leaving before recording. Invalidate pending microphone/cue work before restoring the page. No backend deployment or history deletion.

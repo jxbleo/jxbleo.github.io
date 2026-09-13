@@ -52,6 +52,7 @@
     var pollGeneration = 0;
     var speakingWaiting = null;
     var selectedResponseId = new URLSearchParams(window.location.search).get('response') || '';
+    var initialSetId = new URLSearchParams(window.location.search).get('set') || '';
     var voiceRecorder = null;
     var voiceStream = null;
     var voiceTimer = 0;
@@ -814,6 +815,7 @@
         stopSpeakingWaiting();
         selectedId = ''; selectedResponseId = '';
         selectedSpeakingSet = set;
+        window.history.replaceState(null, '', 'speaking-lab.html?set=' + encodeURIComponent(set.set_id));
         selectedResponse = null;
         var library = document.getElementById('speaking-set-library');
         if (library) library.hidden = true;
@@ -863,7 +865,23 @@
     function openSpeakingSet(setId) {
         stopSpeakingWaiting();
         var generation = pollGeneration;
-        return call('getSpeakingSet', { set_id: setId }).then(function (result) { if (generation !== pollGeneration) return null; renderSpeakingSetDetail(result.set); closeSidebar(); return result; }).catch(function (error) { if (generation === pollGeneration) setStatus(friendlyError(error), true); });
+        selectedId = ''; selectedResponseId = ''; selectedResponse = null; selectedSpeakingSet = null;
+        window.history.replaceState(null, '', 'speaking-lab.html?set=' + encodeURIComponent(setId));
+        hideSpeakingHomeCards();
+        detail.hidden = false;
+        document.body.classList.add('speaking-detail-open');
+        detail.innerHTML = '<div class="speaking-upload-spinner" role="status" aria-label="Loading Set"></div>';
+        setStatus('');
+        return call('getSpeakingSet', { set_id: setId }).then(function (result) {
+            if (generation !== pollGeneration) return null;
+            if (!result.set || result.set.set_id !== setId) throw new Error('This Set is unavailable.');
+            renderSpeakingSetDetail(result.set); closeSidebar(); return result;
+        }).catch(function (error) {
+            if (generation !== pollGeneration) return null;
+            detail.innerHTML = '<section class="speaking-report-card"><p role="alert">' + esc(friendlyError(error)) + '</p><button class="outline-button" id="retry-speaking-set" type="button">Try again</button></section>';
+            document.getElementById('retry-speaking-set').addEventListener('click', function () { openSpeakingSet(setId); });
+            return null;
+        });
     }
     function returnToSpeakingSetLibrary() {
         if (!allowRecordingNavigation()) return;
@@ -883,6 +901,8 @@
         if (!allowRecordingNavigation()) return;
         stopSpeakingWaiting();
         selectedId = ''; selectedResponseId = ''; selectedResponse = null;
+        selectedSpeakingSet = null;
+        window.history.replaceState(null, '', 'speaking-lab.html');
         document.getElementById('speaking-set-library').hidden = true;
         detail.hidden = true;
         var main = document.getElementById('speaking-voiceprint-main');
@@ -2134,6 +2154,12 @@
                     loadMyVoiceprint().then(function () { return loadSpeakingSets(); }).then(function () { return loadSidebarLists(); }).catch(function () { /* The open report remains usable if supplementary navigation data is unavailable. */ });
                 }, 0);
                 return null;
+            });
+        }
+        if (initialSetId) {
+            return openSpeakingSet(initialSetId).then(function () {
+                finishInitialLoading();
+                window.setTimeout(function () { loadMyVoiceprint().then(loadSpeakingSets).then(loadSidebarLists).catch(function () {}); }, 0);
             });
         }
         // Legacy startup contract retained: loadMyVoiceprint().then(function () { return loadList(); });

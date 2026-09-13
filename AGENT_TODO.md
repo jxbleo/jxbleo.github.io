@@ -132,6 +132,8 @@ cp .qa-secrets.example .qa-secrets.local
   live HTML, JS, CSS and config bytes match the release. No CloudBase function
   or data changes were required.
 
+- 2026-09-13: Fixed Speaking Set refresh returning to the library by persisting the stable Set locator and restoring authorized detail before supplementary lists. Browser mock-data QA covers real reload, one loader, fresh article content, Back, late fetch cancellation, missing/retry and Voiceprint route cleanup without mutations. Speaking suite, release verification and static build pass. No backend changes; owner authorized static publication.
+
 - 2026-09-13: Discussion pre-recording Back restores its original Set, focus and scroll position; recorder/host regression covers ready, pending permission, countdown, Escape and stale callbacks. Static-only fix.
 
 - 2026-09-13: Removed the duplicate Speaking Set overview card and moved its year/Set identity into the article's blue heading. Preserved prompts, font controls and recording actions; added title fallback and regression assertions. Speaking contracts, release verification and static build pass; browser checks at 390px and 1024px pass. Product/UX/changelog/checklist updated. No backend or data changes; owner authorized static publication.

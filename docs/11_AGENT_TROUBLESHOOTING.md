@@ -1,5 +1,12 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-09-13 — Refresh lost the selected Speaking Set
+
+Set selection existed only in `selectedSpeakingSet`; unlike Discussion/IR,
+neither the URL nor startup encoded it. Use the stable `?set=` locator and fetch
+current authorized detail on startup. Preserve generation guards so late reads
+cannot reopen a Set after navigation. No local content cache or backend change.
+
 ## 2026-09-13 — Blank Vocabulary crown name
 
 The initial crown relied on `mrcat_student_profile.english_name`, but the live

@@ -16,6 +16,14 @@ After the three-second opening countdown, successful capture start shows a stead
 
 After successful automatic completion, keep the checkmark and show two centred lines inside the circle: `Recording saved` then `Tap to start over`. Replace the lower timer with the centred green message `Your recording was successful.` and announce it as a status. Manual Stop keeps `Tap to Start Over`; show the frozen duration as one centred baseline-aligned row, with 20px digits and a 16px `sec recorded` caption. Both result states use a full-width centred feedback area and normal letter spacing, including on short screens. Keep manual Submit and all existing recording/upload behavior.
 
+## 2026-09-13 — Set refresh restoration
+
+Opening a Set writes its stable ID to `speaking-lab.html?set=<id>`. Refresh
+loads that authorized Set directly under the existing single initial spinner,
+without painting the library first. Failed/unavailable reads keep the Set route
+and show Retry; Back/Start New clears it. Voiceprint clears the old Set route.
+Discussion and IR locators retain priority and their existing report behavior.
+
 ## Discussion return before recording (2026-09-13)
 
 When opened from a Set, the Discussion recorder Back button and Escape restore that exact Set and its previous page scroll position before capture begins, including permission-pending and opening-countdown states. Do not expose the intermediate Prepare Group / Record and Analysis / Review Report workspace. Ordinary history/Teacher recorder entry retains its existing return destination.

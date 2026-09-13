@@ -22,7 +22,10 @@ function run() {
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
   assert.match(dashboard, /speaking-lab\.html\?v=20260901-1/);
-  assert.match(page, /entry\.get\('discussion'\)\|\|entry\.get\('response'\)[\s\S]*speaking-direct-entry/);
+  assert.match(page, /entry\.get\('discussion'\)\|\|entry\.get\('response'\)\|\|entry\.get\('set'\)[\s\S]*speaking-direct-entry/);
+  assert.match(app, /initialSetId = new URLSearchParams\(window\.location\.search\)\.get\('set'\)/);
+  assert.match(app, /if \(initialSetId\) \{[\s\S]*openSpeakingSet\(initialSetId\)[\s\S]*finishInitialLoading\(\)/);
+  assert.match(app, /speaking-lab\.html\?set=' \+ encodeURIComponent\(set\.set_id\)/);
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
@@ -469,7 +472,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260913-ir-question-saved-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-ir-question-saved-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-speaking-set-refresh-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

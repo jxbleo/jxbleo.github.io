@@ -1220,6 +1220,11 @@ renders safe IL summaries without grading-key or transcript reads.
 
 ### Speaking Set and Individual Response flow
 
+The browser persists selected-Set navigation as an encoded stable `?set=` locator,
+not a content snapshot. Startup restores it through authenticated `getSpeakingSet`
+before loading supplementary navigation lists. Existing generation guards discard
+late reads after navigation; library/Voiceprint navigation clears the Set route.
+
 IR analysis now supplies the frozen question, frozen Context, and canonical
 transcript as untrusted model input. The shared policy canonicalizes V2 coaching:
 four ordered Socratic questions, three bounded distinct English samples, evidence
