@@ -1,5 +1,16 @@
 # 07 Testing Checklist
 
+## 2026-09-13 — Compact IR report cards
+
+- Run `npm run test:speaking-lab`. Ready IR workspaces must contain one merged
+  Set/question/date card, followed by Transcriptions, Your Analysis and a separate
+  development card when coaching exists. No Session Details or duplicate header.
+- Expand Transcriptions using touch and keyboard: one continuous paragraph,
+  adjacent word count; check empty text, contractions, hyphens and escaped HTML.
+- Check narrow mobile and desktop widths, long questions, all four score cards,
+  preserved summary/actions, legacy sample and absent-coaching reports. Processing
+  and failed recording screens and Group Discussion rendering remain unchanged.
+
 ## 2026-09-13 — Speaking quota fallback
 
 Run `npm run test:speaking-lab`: verify primary success, exact and wrapped free

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-13 — Compact IR report layout
+
+- Merged ready IR Set/question information and recording date; removed redundant
+  overview and Session Details. Moved continuous, word-counted Transcriptions
+  directly below the question card. Separated Develop Your Ideas from assessment.
+- Frontend only; saved reports, assessment prompts and Group Discussion unchanged.
+
 ## 2026-09-13 — IR refresh completed and verified
 
 - Completed all 61 ready IR reports in the frozen Sep 6–12 scope. The eleven

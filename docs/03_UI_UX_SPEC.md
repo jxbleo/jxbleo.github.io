@@ -3022,8 +3022,18 @@ with 10–12px vertical padding, 10px gaps between cards, year/source identity,
 and an anchored chevron. A selected Set becomes four vertically
 ordered surfaces: overview, Context, Part A, and Part B. Context copy has a
 quiet reading measure, while the two practice cards keep their action beside
-the content it affects. Individual Response uses separate overview, question,
-recorder/progress, and report cards instead of one enclosing panel.
+the content it affects. Unfinished Individual Responses use separate overview,
+question, and recorder/progress cards. Completed IR reports instead start with
+one merged card: blue year/Set identity, Set title, Q number and question, then
+the original recording date aligned bottom-right. There is no separate Session
+Details card. Directly below it, a native expandable `Transcriptions` card shows
+the word count beside its heading and joins all ASR segments into one continuous
+paragraph. English contractions and hyphenated compounds count as one word;
+punctuation does not count. `Your Analysis` retains all four dimensions, summary,
+Strengths, Priority actions and Language suggestions. `Develop Your Ideas` and
+its samples occupy a separate following card; legacy single samples remain
+available, and absent coaching does not create an empty card. This is a display
+change only: saved reports, segment timing and Group Discussion remain unchanged.
 The Individual Response question dialog shows `year · Set version · title` above
 `Qn: question`. The microphone and small `Tap to Record` label sit inside a
 circular countdown ring; the `01:00` clock sits below it without a Remaining
