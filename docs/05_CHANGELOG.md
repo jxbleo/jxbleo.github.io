@@ -1,5 +1,9 @@
 # Changelog
 
+## Speaking recording screen awake (2026-09-13)
+
+Add a shared native Screen Wake Lock controller for IR and Group Discussion, with foreground recovery, cleanup and late-request guards. Unsupported or denied requests leave recording usable. No backend changes.
+
 ## Discussion recording spacing and indicator (2026-09-13)
 
 Lower the Group Discussion Recording indicator, continuously pulse its red dot during capture, and increase spacing between the circle and external time. Keep compact-height and reduced-motion variants.

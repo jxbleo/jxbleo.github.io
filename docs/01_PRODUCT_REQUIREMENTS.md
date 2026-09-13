@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Speaking recording screen awake (2026-09-13)
+
+While IR or Group Discussion is counting down or capturing audio (including its ending reminder and recorder finalization), request a screen wake lock on supported browsers. Release on completion, cancellation, failure or page exit, and reacquire when a still-active capture returns to the foreground. This is best-effort browser functionality: low power, browser policy, unsupported browsers and manual locking can override it; recording must not fail when a lock is unavailable.
+
 ## Discussion continuous recorder (2026-09-13)
 
 Group Discussion keeps one full-page circle across ready, opening, capture, review and secure submission. Ready offers Upload for an existing audio file; selection does not submit. Early or automatic stop shows Submit beneath the circle with optional playback/re-recording. Explicit submission enters the existing analysis waiting game after upload. An accepted upload with failed analysis/page loading retries analysis without re-uploading audio.

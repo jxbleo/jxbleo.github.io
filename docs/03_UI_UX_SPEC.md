@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Speaking recording screen awake (2026-09-13)
+
+IR and Discussion automatically request screen-awake protection from their opening countdown through audio capture/finalization. Ready, file upload, review and analysis do not keep the display on. Returning to the foreground during capture requests a fresh lock. Existing recording controls and layout are unchanged.
+
 ## Discussion recording spacing and indicator (2026-09-13)
 
 The Group Discussion Recording indicator sits 18 px lower (44 px from the top on regular screens) and its red dot continuously fades between 100% and 25% opacity every 1.3 seconds during capture. Reduced-motion mode keeps a steady red dot. The main stack has 112 px top padding to keep the outer wave clear of the lowered indicator. The circle-to-clock gap is 28–40 px, with an 18 px gap on short screens; preserve the clock slot during the final minute.

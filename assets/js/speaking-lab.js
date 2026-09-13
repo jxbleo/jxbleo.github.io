@@ -103,6 +103,7 @@
     var responseBlob = null;
     var responseUploadOperationId = '';
     var responseUploadInProgress = false;
+    var responseWakeLock = window.MrCatScreenWakeLock.create();
     var responseCaptureState = 'idle';
     var responseCaptureGeneration = 0;
     var responseDeadline = 0;
@@ -1446,6 +1447,7 @@
         if (indicator) indicator.hidden = !recording;
     }
     function stopResponseHardware() {
+        responseWakeLock.setActive(false);
         setResponseRecordingIndicator(false);
         setResponseSurroundingsHidden(false);
         if (responseFocus) responseFocus.stop(false);
@@ -1704,7 +1706,7 @@
                     else if (responseCaptureState !== 'stopping') recordingFailure('The microphone disconnected. Please try again.');
                 }); });
                 var openingStartedAt = performance.now();
-                responseCaptureState = 'countdown'; record.disabled = false;
+                responseCaptureState = 'countdown'; responseWakeLock.setActive(true); record.disabled = false;
                 setRecordButton('Cancel countdown', 'countdown'); digit.textContent = '3';
                 scheduleResponseCues([0, 1, 2], generation);
                 function tick() {

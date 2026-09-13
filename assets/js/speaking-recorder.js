@@ -61,6 +61,7 @@
         var audioContext = null, analyser = null, frame = 0, cueNodes = [], wheelTickBuffer = null;
         var wheelSoundEnabled = false, wheelIndex = 10, lastWaveAt = 0, waveLevels = Array(40).fill(0);
         var previewAudio = null, previewUrl = '', qualityIssue = '', badSince = 0, recoverySince = 0;
+        var wakeLock = window.MrCatScreenWakeLock.create();
         var destroyed = false, previousFocus = null, returnToOrigin = null;
         function node(id) { return root.querySelector('#' + id); }
         function snapshot() { return { state: state, blob: blob, operationId: operationId, targetSeconds: target, date: node('recording-date').value }; }
@@ -71,6 +72,7 @@
         function setState(next, copy) {
             var wasLive = !node('recording-live').hidden;
             state = next;
+            wakeLock.setActive(['countdown', 'recording', 'ending', 'stopping'].indexOf(next) >= 0);
             root.setAttribute('data-recording-state', next);
             node('recording-ready').hidden = next !== 'idle';
             node('recording-live').hidden = ['ready', 'requesting', 'countdown', 'recording', 'ending', 'stopping', 'review', 'analysis_retry', 'uploading'].indexOf(next) < 0;
@@ -144,6 +146,7 @@
             cueNodes = [];
         }
         function stopHardware() {
+            wakeLock.setActive(false);
             if (timer) window.clearInterval(timer);
             timer = 0;
             cancelCues();
@@ -472,7 +475,7 @@
         return { start: openReady, finish: finishRecording, discard: discard, prepareFile: prepareFile, stopPreview: stopPreview,
             snapshot: snapshot, locked: locked, target: currentTarget, setState: setState,
             clear: function () { discard(); },
-            destroy: function () { if (node('recording-live').open) node('recording-live').close(); destroyed = true; generation += 1; stopHardware(); stopPreview(); wheelSoundEnabled = false; if (node('recording-duration-dialog').open) node('recording-duration-dialog').close(); if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true }); } };
+            destroy: function () { if (node('recording-live').open) node('recording-live').close(); destroyed = true; wakeLock.destroy(); generation += 1; stopHardware(); stopPreview(); wheelSoundEnabled = false; if (node('recording-duration-dialog').open) node('recording-duration-dialog').close(); if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true }); } };
     }
     window.MrCatSpeakingRecorder = { markup: markup, create: create, normaliseTarget: normaliseTarget, timeline: timeline, timeText: timeText };
 })(window);

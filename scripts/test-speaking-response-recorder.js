@@ -44,6 +44,7 @@ function harness(options = {}) {
     navigator: { mediaDevices: { getUserMedia: () => options.pending ? new Promise(resolve => { resolvePermission = resolve; }) : options.denied ? Promise.reject({ name: 'NotAllowedError' }) : Promise.resolve(stream) } },
     URL: { createObjectURL: () => 'blob:fixture', revokeObjectURL() {} },
     responseRecorder: null, responseStream: null, responseChunks: [], responseStartedAt: 0, responseRecordedDurationSeconds: null, responseTimer: 0, responseBlob: null, responseUploadOperationId: '', responseUploadInProgress: false,
+    responseWakeLock: { active: false, setActive(value) { this.active = value; } },
     responseCaptureState: 'idle', responseCaptureGeneration: 0, responseDeadline: 0, responseCueContext: null, responseCueNodes: [],
     responseFocus: { start(input, audio) { assert.strictEqual(input, stream); assert(audio); focusEvents.push('start'); }, stop(immediate) { focusEvents.push(immediate ? 'clear' : 'stop'); } }, selectedResponse: null, responseDialog: { open: false, classList: { toggle(name, value) { node('dialog').attrs[name] = value; } }, querySelectorAll: selector => { assert(!selector.includes('.speaking-response-dialog-question'), 'question stays accessible during capture'); return [node('surroundings')]; } }, esc: value => String(value),
     friendlyError: error => error.message,
@@ -80,7 +81,7 @@ async function run() {
   cancelHandler({ target: dialog, preventDefault() { prevented++; } });
   assert.equal(closed, 1, 'explicit dialog Escape still follows the existing close/discard guard');
   assert.equal(prevented, 1);
-  const h = harness(); h.click(); await flush();
+  const h = harness(); assert.equal(h.context.responseWakeLock.active, false); h.click(); await flush(); assert.equal(h.context.responseWakeLock.active, true);
   assert.equal(h.node('response-recording-indicator').hidden, true, 'opening countdown must not claim recording');
   assert.equal(h.devices[0].state, 'inactive', 'opening countdown must not be recorded');
   assert(!h.focusEvents.includes('start'), 'voice decoration must not start before capture');
@@ -91,7 +92,7 @@ async function run() {
   assert.equal(h.node('response-recording-indicator').hidden, false, 'capture start shows Recording');
   assert.equal(h.focusEvents.filter(event => event === 'start').length, 1, 'decoration starts once with the recording stream');
   assert.equal(h.node('dialog').attrs['is-response-focused'], true); assert.equal(h.node('surroundings').inert, true);
-  h.advance(60000); assert.equal(h.node('response-recorder').attrs['data-state'], 'ending'); assert.equal(h.node('response-timer').textContent, '00:03');
+  h.advance(60000); assert.equal(h.context.responseWakeLock.active, true, 'IR ending reminder retains screen lock'); assert.equal(h.node('response-recorder').attrs['data-state'], 'ending'); assert.equal(h.node('response-timer').textContent, '00:03');
   assert.equal(h.node('response-recording-indicator').hidden, false, 'ending warning still captures audio');
   assert.equal(h.node('dialog').attrs['is-response-focused'], true, 'keep focus through final three seconds');
   h.advance(3000); assert.equal(h.devices[0].stopped - h.devices[0].started, 63000); assert.equal(h.node('label').textContent, 'Tap to start over');
@@ -100,7 +101,7 @@ async function run() {
   assert.equal(h.node('response-timer').textContent, 'Your recording was successfully saved.');
   assert.equal(h.node('dialog').attrs['is-response-focused'], false); assert.equal(h.node('surroundings').inert, false);
   assert.equal(h.node('surroundings').attrs['aria-hidden'], undefined);
-  assert.equal(h.context.responseRecordedDurationSeconds, 63); assert.equal(h.node('response-upload').hidden, false);
+  assert.equal(h.context.responseWakeLock.active, false); assert.equal(h.context.responseRecordedDurationSeconds, 63); assert.equal(h.node('response-upload').hidden, false);
   assert.equal(h.context.responseBlob.size > 0, true); assert(h.tracks[0].stopped); assert.equal(h.timers.size, 0);
   assert.deepEqual(h.calls, [], 'completion must never automatically create/upload/analyse');
   assert.equal(h.cues.length, 6); assert.deepEqual(h.cues.map(c=>c.hz), [880,880,1320,880,880,1320]);
@@ -118,6 +119,7 @@ async function run() {
   assert.equal(broken.node('response-recording-indicator').hidden,true,'microphone failure hides Recording');
   const file = harness(); file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=66; file.node('probe').onloadedmetadata(); assert.equal(file.context.responseBlob,null); assert.match(file.node('response-status').textContent,/65 seconds/);
   file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=12; file.node('probe').onloadedmetadata(); assert.equal(file.node('response-upload').hidden,false); assert.equal(file.context.responseRecordedDurationSeconds,12); assert.deepEqual(file.calls,[]);
+  for (const run of [pending, cancelled, denied, retry, lost, broken, file]) assert.equal(run.context.responseWakeLock.active, false, 'capture cleanup releases wake lock');
   console.log('Individual Response recorder passed: opening/ending timing and cues, manual Submit, double-submit guard, early stop, cancellation, late permission, denial, file limit, upload retry and file-picker cancel isolation.');
 }
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });

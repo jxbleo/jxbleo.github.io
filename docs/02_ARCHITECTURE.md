@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## Shared Speaking screen wake lock (2026-09-13)
+
+assets/js/screen-wake-lock.js provides MrCatScreenWakeLock.create(), loaded before speaking-recorder.js on student and teacher pages. Discussion owns one controller per recorder and IR owns one controller in speaking-lab.js. Capture cleanup releases it; Discussion destruction also prevents future acquisition. Active-only visibility listeners and request generations release late grants after cancellation, backgrounding or replacement without leaking locks. No CloudBase dependency.
+
 ## 2026-09-13 — Shared Group Discussion circle recorder
 
 Student and Teacher reuse `assets/js/speaking-recorder.js` with the scoped

@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Speaking recording screen awake (2026-09-13)
+
+Run test-screen-wake-lock.js and both recorder suites: normal start/finish, cancellation, failure, destruction, unsupported API, rejection, system release, hidden/visible transitions and late-grant/restart races. Confirm script order on student/teacher pages. On physical mobile Safari/Chrome, set a short auto-lock timeout, keep each recording page in front beyond that interval, and confirm the screen remains awake; verify normal auto-lock returns after stopping and foregrounding an ongoing take reacquires. Low-power/unsupported cases must not break recording.
+
 ## Discussion recording spacing and indicator (2026-09-13)
 
 Check desktop and phone ready/capture layouts: the Recording indicator sits lower, its dot continuously varies opacity, and the external clock has clear space below the circle. Verify the blink is active only during recording and steady with reduced motion; preserve final-minute seconds and Submit.

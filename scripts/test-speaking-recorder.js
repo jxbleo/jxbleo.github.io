@@ -23,6 +23,7 @@ function fixture(options = {}) {
     close() { this.open = false; }
     querySelector() { return this.paragraph ||= new Element('paragraph'); }
   }
+  const wakeLock = { active: false, setActive(value) { this.active = value; }, destroy() { this.active = false; } };
   const document = { activeElement: new Element('initial-focus') };
   function schedule(fn, delay, repeat = false) { const id = nextId++; timers.set(id, { fn, due: now + delay, delay, repeat }); return id; }
   const track = { stopped: false, readyState: 'live', muted: false, events: {}, stop() { this.stopped = true; this.readyState = 'ended'; }, addEventListener(type, fn) { this.events[type] = fn; } };
@@ -49,6 +50,7 @@ function fixture(options = {}) {
   }
   const navigator = { mediaDevices: { getUserMedia() { requestCount++; if (options.denied) return Promise.reject({ name: 'NotAllowedError' }); if (options.pendingMic) return new Promise(resolve => { micResolve = resolve; }); return Promise.resolve(stream); } } };
   const window = {
+    MrCatScreenWakeLock: { create: () => wakeLock },
     MediaRecorder: Recorder, AudioContext: options.noAudioContext ? undefined : AudioContext,
     setTimeout: (fn, ms) => schedule(fn, ms), clearTimeout: id => timers.delete(id),
     setInterval: (fn, ms) => schedule(fn, ms, true), clearInterval: id => timers.delete(id),
@@ -82,7 +84,7 @@ function fixture(options = {}) {
     }
     now = end; await flush();
   }
-  return { lib, controller, nodes, track, states, speeches, audioEvents, wheelEvents, advance, flush, timers,
+  return { wakeLock, lib, controller, nodes, track, states, speeches, audioEvents, wheelEvents, advance, flush, timers,
     begin() { controller.start(); nodes['stop-recording'].fire('click'); },
     setLevel(value) { sampleLevel = value; },
     drawFrame() { const pending = [...frames]; frames.clear(); pending.forEach(([,fn]) => fn(now)); },
@@ -108,7 +110,7 @@ async function run() {
   assert.equal(f.lib.timeText(60), '01:00');
   assert(!f.nodes['recording-waveform'], 'no inner waveform');
   f.controller.start(); f.controller.start();
-  assert.equal(f.controller.snapshot().state, 'ready');
+  assert.equal(f.controller.snapshot().state, 'ready'); assert.equal(f.wakeLock.active, false);
   assert.equal(f.counts().requestCount, 0, 'entry must not acquire microphone or start recording');
   assert(f.nodes['recording-live'].open);
   assert(f.nodes['recording-time'].hidden);
@@ -124,7 +126,7 @@ async function run() {
   assert.equal(f.counts().requestCount, 1, 'double tap while permission is pending is ignored');
   assert.equal(f.counts().starts, 0);
   assert.equal(f.speeches.length, 0, 'no old five-second speech before the approved three cues');
-  assert.equal(f.controller.snapshot().state, 'countdown');
+  assert.equal(f.controller.snapshot().state, 'countdown'); assert.equal(f.wakeLock.active, true);
   assert(f.nodes['recording-start-hint'].hidden);
   assert.deepEqual(f.audioEvents.map(cue => cue.frequency), [880,880,1320], 'same pitches as IR');
   assert(Math.abs(f.audioEvents[2].stop - f.audioEvents[2].start - .4) < 1e-8);
@@ -167,7 +169,7 @@ async function run() {
   await f.advance(999); assert.equal(f.audioEvents.length, 6, 'minute warning does not repeat');
   const lastProgress = f.nodes['recording-ring-progress'].style.strokeDashoffset;
   await f.advance(1);
-  assert.equal(f.controller.snapshot().state, 'ending');
+  assert.equal(f.controller.snapshot().state, 'ending'); assert.equal(f.wakeLock.active, true);
   assert(f.nodes['recording-live'].classList.contains('is-ending'));
   assert.equal(f.nodes['recording-countdown'].textContent, '3');
   assert.deepEqual(f.audioEvents.slice(6).map(cue => cue.frequency), [880,880,1320]);
@@ -176,7 +178,7 @@ async function run() {
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, lastProgress, 'ending does not advance ring progress');
   await f.advance(999); assert.equal(f.controller.snapshot().state, 'ending');
   await f.advance(1);
-  assert.equal(f.controller.snapshot().state, 'review');
+  assert.equal(f.controller.snapshot().state, 'review'); assert.equal(f.wakeLock.active, false);
   assert(f.controller.snapshot().blob.size > 0); assert(f.track.stopped);
   assert(f.nodes['recording-live'].open, 'finished recording stays in the circle surface');
   assert.equal(f.nodes['upload-recording'].textContent, 'Submit');

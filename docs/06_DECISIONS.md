@@ -1,5 +1,9 @@
 # 06 Decisions
 
+## Native screen wake lock for Speaking (2026-09-13)
+
+Use the browser Screen Wake Lock API with independent capture controllers and no new dependency, hidden-video workaround or device-setting changes. Acquire only during countdown/capture and release through existing hardware cleanup. Respect system revocation without an immediate retry loop; retry on foreground visibility. The browser can reject or revoke locks for power or policy reasons, and manually locking the device cannot be prevented. Reference: https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API
+
 ## 2026-09-13: Shared game, Speaking-specific status adapter
 
 Reuse the existing Writing runner and CSS unchanged instead of forking the game
