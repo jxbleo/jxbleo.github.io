@@ -1169,3 +1169,16 @@ cp .qa-secrets.example .qa-secrets.local
   checks. Local native-dialog browser QA used synthetic audio at desktop and
   390 px phone width; confirmed persistent focus and final-warning recovery.
 - User authorized static publication. No CloudBase resource or data changes.
+
+
+### 2026-09-13 — Full-page IR and three-second endings
+
+- Shipped the approved full-page IR layout with enlarged question, ring,
+  microphone and timer, maintaining the existing focus and capture interactions.
+- IR now records 60 + 3 seconds with three final tones; Group Discussion retains
+  target + 3. Existing imported audio and historical 65-second takes remain valid.
+- Complete Speaking tests, release verification, static build and whitespace
+  checks passed. Synthetic-audio browser QA verified desktop, 390 px phone,
+  final 00:03 warning and restored Finished/Submit state. No real mic or upload.
+- Product/UI/testing docs and changelog updated. Owner authorized publication;
+  no CloudBase deployment or database changes are needed.

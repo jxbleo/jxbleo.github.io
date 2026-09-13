@@ -1462,7 +1462,7 @@
         var stateTone = reportReady ? 'ready' : analysisFailed ? 'attention' : 'working';
         var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
         var responseBody = reportReady ? renderIndividualResponseReport(response) : ready ? window.MrCatSpeakingWaiting.markup() : '<section class="speaking-report-card speaking-response-recorder-card">' + responseDialogRecorderMarkup() + '</section>';
-        detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? '' : '<header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have up to 65 seconds.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>') + responseBody + '</article>';
+        detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? '' : '<header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have 60 seconds plus a three-second ending reminder.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>') + responseBody + '</article>';
         updateToolbar({ title: 'Individual Response', invitation: true });
         if (ready && !reportReady) startSpeakingWaiting('response', response);
         var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
@@ -1502,7 +1502,7 @@
         var uploaded = response.recording_status === 'uploaded';
         var reportReady = response.analysis_status === 'ready';
         var body = uploaded ? '<div class="speaking-response-dialog-state"><span class="speaking-upload-spinner" aria-hidden="true"></span><h3>' + (reportReady ? 'Your report is ready.' : 'Preparing your private analysis…') + '</h3><p>' + (reportReady ? 'Open Part B in the sidebar whenever you want to review it.' : 'You can close this window and return later. Your recording is safe.') + '</p></div>' : responseDialogRecorderMarkup();
-        responseDialogContent.innerHTML = '<button class="speaking-response-close" type="button" id="individual-response-dialog-close" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button><div class="speaking-response-dialog-header"><p class="eyebrow accent">' + esc(responseSetHeading(response)) + '</p></div><h2 class="speaking-response-dialog-question" id="individual-response-dialog-title"><span>Q' + esc(question.order || '') + ':</span> ' + esc(question.text || '') + '</h2>' + body;
+        responseDialogContent.innerHTML = '<button class="speaking-response-close" type="button" id="individual-response-dialog-close" aria-label="Back to questions"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><div class="speaking-response-dialog-header"><p class="eyebrow accent">' + esc(responseSetHeading(response)) + '</p></div><h2 class="speaking-response-dialog-question" id="individual-response-dialog-title"><span>Q' + esc(question.order || '') + ':</span> ' + esc(question.text || '') + '</h2>' + body;
         document.getElementById('individual-response-dialog-close').addEventListener('click', closeIndividualResponseDialog);
         if (!uploaded) bindIndividualResponseRecording(response);
         if (!responseFocus) responseFocus = createResponseFocus(responseDialog);
@@ -1584,7 +1584,7 @@
     }
     function finishResponseRecording() {
         if (!responseRecorder || responseRecorder.state === 'inactive') return;
-        responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
+        responseRecordedDurationSeconds = Math.min(63, responseElapsedSeconds());
         responseCaptureState = 'stopping';
         setResponseSurroundingsHidden(false);
         if (responseFocus) responseFocus.stop(false);
@@ -1656,7 +1656,7 @@
                 device.onerror = function () { if (generation === responseCaptureGeneration) recordingFailure('Recording was interrupted. Please try again or use Upload Files.'); };
                 device.onstop = function () {
                     if (generation !== responseCaptureGeneration) return;
-                    if (!Number.isFinite(responseRecordedDurationSeconds)) responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
+                    if (!Number.isFinite(responseRecordedDurationSeconds)) responseRecordedDurationSeconds = Math.min(63, responseElapsedSeconds());
                     responseBlob = new Blob(responseChunks, { type: device.mimeType || 'audio/webm' });
                     stopResponseHardware(); responseStartedAt = 0; responseChunks = [];
                     if (!responseBlob.size) { recordingFailure('No audio was captured. Please try again.'); return; }
@@ -1681,14 +1681,14 @@
                         responseStartedAt = performance.now(); responseCaptureState = 'recording';
                         if (responseFocus) responseFocus.start(stream, responseCueContext);
                         setRecordButton('Tap to Stop', 'recording');
-                        scheduleResponseCues([60, 61, 62, 63, 64], generation);
-                        responseDeadline = window.setTimeout(finishResponseRecording, 65000);
+                        scheduleResponseCues([60, 61, 62], generation);
+                        responseDeadline = window.setTimeout(finishResponseRecording, 63000);
                     }
                     if (responseCaptureState !== 'recording') return;
                     var seconds = responseElapsedSeconds();
-                    if (seconds >= 65) { finishResponseRecording(); return; }
+                    if (seconds >= 63) { finishResponseRecording(); return; }
                     surface.setAttribute('data-state', seconds >= 60 ? 'ending' : 'recording');
-                    timer.textContent = timerClockText(seconds >= 60 ? 65 - seconds : 60 - seconds);
+                    timer.textContent = timerClockText(seconds >= 60 ? 63 - seconds : 60 - seconds);
                     ring.style.strokeDashoffset = String(Math.min(1, seconds / 60));
                 }
                 responseTimer = window.setInterval(tick, 50);

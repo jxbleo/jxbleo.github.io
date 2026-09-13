@@ -1,5 +1,10 @@
 # Changelog
 
+## Full-page IR and shared three-second ending reminders (2026-09-13)
+
+Implemented the owner-approved full-page IR preview with enlarged content and circle. Reduced IR ending cues from five to three (63-second device take); retained Discussion target-plus-three behavior, all capture/review interactions and full-capture fading. No backend deployment or migration.
+
+
 ## IR approved full-capture fade (2026-09-13)
 
 Applied the approved preview: slow surrounding-content fade across the complete 3 + 60 + 5-second flow, centred stop square, then fast restoration. Preserved private recording, existing tones, cancellation, file fallback and manual submission.

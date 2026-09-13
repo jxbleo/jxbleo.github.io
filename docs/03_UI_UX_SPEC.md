@@ -1,5 +1,10 @@
 # 03 UI / UX Spec
 
+## Current full-page IR and three-second endings (2026-09-13)
+
+The IR native dialog now fills the viewport with no floating-card border, shadow, scrim or outer margin. Back at the top left returns to the Set; larger Set metadata and question occupy the top. The circle uses min(56dvh, 80vw, 620px), with a smaller short-screen rule; microphone, central stop square and opening digit scale with it. The larger clock remains below the circle. Keep 680 ms surrounding fade, stationary recording geometry, 220 ms restoration and Reduced Motion support. IR capture is 60 + 3 seconds with three final cues; Discussion also ends with three seconds. No automatic submission is added.
+
+
 ## IR full-capture fade (2026-09-13)
 
 The native IR dialog preserves its dimensions and recorder position while the card surface, border, shadow, question, Set label, Close and footer fade out over 680 ms. Its backdrop becomes an opaque quiet light surface, suppressing underlying page and microphone-colour decoration throughout opening, recording and ending. The clock fades out for opening only and returns for the 60-second recording; the stop label is removed from layout so the square stays at the circle centre. After all five final warning seconds, surroundings restore in 220 ms. Hidden surrounding controls are inert and excluded from accessibility navigation. Cancel, errors and early stop restore them too. Reduced Motion uses 100 ms transitions and retains existing non-pulsing countdowns.

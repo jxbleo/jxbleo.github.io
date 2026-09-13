@@ -1,5 +1,10 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Current IR full-page recording (2026-09-13)
+
+Selecting a Part B question opens the approved full-viewport IR page with a larger responsive circle, question, microphone and timer. It retains the native focus/scroll boundary without presenting a floating card. Opening remains three seconds before capture. The 60-second response is followed by exactly three ending seconds, stopping at 63 seconds of recorded audio. The surroundings remain faded throughout and restore after the final three-second cue. Group Discussion already uses a three-second ending warning and keeps that behavior. Existing uploaded audio compatibility (up to 65 seconds), historical records, manual Submit, backend schemas and grading remain unchanged.
+
+
 ## IR capture focus (2026-09-13)
 
 After microphone permission, the three-second preparation cue fades the surrounding interface over 680 ms. The question, Set heading, Close, upload controls and page background stay hidden throughout 60 seconds of capture and the final five-second reminder. Only the stationary circular recorder and its countdown remain visible. The stop square is centred; its hidden label occupies no space. Normal completion, early stop, cancellation and failure restore the surroundings in 220 ms (100 ms with Reduced Motion). Audio capture, cue timing and explicit Submit remain unchanged.

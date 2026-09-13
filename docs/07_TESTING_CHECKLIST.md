@@ -1,5 +1,10 @@
 # 07 Testing Checklist
 
+## Full-page IR release checks (2026-09-13)
+
+Verify question entry fills the viewport, enlarged circle and timer fit desktop/phone, Back returns to the Set, and the stop square remains centred. Verify 3 opening cues before capture, 60 normal seconds, then 3 ending cues and automatic stop at 63 seconds; surroundings restore only after that ending (or cancel/error/early stop). Discussion must still stop at target + 3. Preserve manual Submit, stable retry and existing 65-second imported-file compatibility. Run the complete Speaking suite and static-release checks.
+
+
 ## IR fade regression (2026-09-13)
 
 Run test-speaking-response-recorder.js and test-speaking-response-focus.js. Verify focus persists from opening through the final five seconds, restores on completion/cancel/error/early stop, and does not change capture or cue deadlines. In the browser, check native dialog and backdrop transitions, hidden controls are not focusable, the stop square is centred, and the clock stays visible during capture. Check narrow-phone and desktop rendering and unchanged explicit Submit after recovery.

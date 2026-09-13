@@ -1227,3 +1227,38 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
     #individual-response-dialog .speaking-response-status,
     #individual-response-dialog .speaking-response-clock { transition-duration: 100ms !important; }
 }
+
+
+/* Full-page IR: approved large-circle layout, retaining the native focus boundary. */
+#individual-response-dialog { width:100vw; max-width:none; height:100dvh; max-height:none; margin:0; border:0; border-radius:0; background:#fff; box-shadow:none; }
+#individual-response-dialog .speaking-response-dialog-body { width:100%; min-height:620px; height:100dvh; padding:24px clamp(20px,4vw,64px); display:flex; flex-direction:column; align-items:center; }
+#individual-response-dialog .speaking-response-dialog-header { width:100%; padding-inline:50px; }
+#individual-response-dialog .speaking-response-dialog-header .eyebrow { font-size:clamp(12px,1.2vw,16px); font-weight:650; line-height:1.7; }
+#individual-response-dialog .speaking-response-close { left:24px; right:auto; top:20px; width:44px; height:44px; border:1px solid #e8e5ef; background:#faf9fc; }
+#individual-response-dialog .speaking-response-close svg { width:20px; height:20px; }
+#individual-response-dialog .speaking-response-dialog-question { flex:none; width:min(100%,900px); margin:16px 0 0; padding:16px 24px; font-size:clamp(18px,2vw,25px); text-align:center; border-radius:22px; line-height:1.5; }
+#individual-response-dialog .speaking-response-dialog-recorder { width:100%; flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; align-items:center; margin-top:18px; }
+#individual-response-dialog .speaking-response-dial { --dial-size:min(56dvh,80vw,620px); width:var(--dial-size); height:var(--dial-size); flex:none; container-type:inline-size; }
+#individual-response-dialog .speaking-response-ring circle { stroke-width:2.8; }
+#individual-response-dialog .speaking-response-microphone { width:87%; height:87%; gap:5cqw; }
+#individual-response-dialog .speaking-response-mic-icon,#individual-response-dialog .speaking-response-finished-icon { width:22cqw; height:22cqw; }
+#individual-response-dialog .speaking-response-microphone-label { font-size:clamp(13px,3.8cqw,20px); }
+#individual-response-dialog .speaking-response-stop-icon { width:13cqw; height:13cqw; border-radius:3cqw; }
+#individual-response-dialog .speaking-response-opening-digit { font-size:36cqw; letter-spacing:-.04em; }
+#individual-response-dialog .speaking-response-clock { margin-top:12px; font-size:clamp(48px,7dvh,70px); font-weight:450; line-height:1.08; letter-spacing:-.035em; }
+#individual-response-dialog .speaking-response-footer { margin-top:16px; flex:none; }
+#individual-response-dialog .speaking-response-dialog-file,#individual-response-dialog .speaking-response-dialog-upload { height:48px; min-width:160px; font-size:15px; gap:10px; }
+#individual-response-dialog .speaking-response-dialog-file svg { width:19px; height:19px; }
+@media(max-width:600px) {
+    #individual-response-dialog .speaking-response-dialog-body { padding:22px 20px 24px; }
+    #individual-response-dialog .speaking-response-dialog-header { padding-inline:36px; }
+    #individual-response-dialog .speaking-response-close { left:12px; top:14px; width:36px; height:36px; }
+    #individual-response-dialog .speaking-response-dialog-question { margin-top:18px; padding:16px 18px; }
+    #individual-response-dialog .speaking-response-dialog-recorder { margin-top:16px; }
+}
+@media(max-height:650px) {
+    #individual-response-dialog .speaking-response-dial { --dial-size:min(48dvh,76vw,620px); }
+    #individual-response-dialog .speaking-response-dialog-body { min-height:570px; }
+    #individual-response-dialog .speaking-response-dialog-question { padding-block:12px; }
+    #individual-response-dialog .speaking-response-clock { font-size:46px; }
+}
