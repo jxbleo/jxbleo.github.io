@@ -164,6 +164,59 @@ async function run() {
   f.nodes['replace-recording'].fire('click'); assert.equal(f.controller.snapshot().blob, null);
   assert.equal(f.controller.snapshot().state, 'idle'); f.controller.destroy();
 
+  for (const phase of ['ready', 'requesting', 'countdown']) {
+    const back = fixture({ pendingMic: phase === 'requesting' });
+    let returns = 0;
+    back.controller.start({ onBack() {
+      returns++;
+      assert.equal(back.controller.snapshot().state, 'idle', 'restore only after recorder unlocks');
+      assert(!back.nodes['recording-live'].open);
+    } });
+    if (phase !== 'ready') { back.nodes['stop-recording'].fire('click'); await back.flush(); }
+    assert.equal(back.controller.snapshot().state, phase);
+    back.nodes['recording-back'].fire('click');
+    back.nodes['recording-back'].fire('click');
+    if (phase === 'requesting') back.resolveMic();
+    await back.advance(4000);
+    assert.equal(returns, 1, 'Back restores the entry once');
+    assert.equal(back.counts().starts, 0, 'late permission/countdown cannot start a discarded take');
+    assert.equal(back.counts().uploadCount, 0);
+    if (phase !== 'ready') assert(back.track.stopped);
+    back.controller.start(); back.nodes['recording-live'].fire('cancel');
+    assert.equal(returns, 1, 'ordinary recording entry never inherits the Set return callback');
+    back.controller.destroy();
+  }
+  const escape = fixture(); let escapeReturns = 0;
+  escape.controller.start({ onBack() { escapeReturns++; } });
+  escape.nodes['recording-live'].fire('cancel');
+  assert.equal(escapeReturns, 1, 'Escape follows the same Set return route');
+  escape.controller.destroy();
+
+  // Exercise the real Set-entry host function as well as the shared recorder.
+  const app = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/speaking-lab.js'), 'utf8');
+  const createFromSet = app.slice(app.indexOf('    function createDiscussionFromSet('), app.indexOf('    function discussionSetIdentity('));
+  const set = { set_id: 'set-fixture', title: 'Fixture task' };
+  let entry, restoredSet, restoredUrl, restoredScroll, focused = false, destroyed = false;
+  const hostRecorder = { start(value) { entry = value; }, destroy() { destroyed = true; } };
+  const button = { querySelector: () => ({}), focus(options) { focused = options.preventScroll; } };
+  const host = {
+    window: { scrollX: 0, scrollY: 740, location: { href: 'https://example.test/speaking-lab.html' },
+      history: { replaceState(_state, _title, url) { restoredUrl = url; } }, scrollTo(value) { restoredScroll = value; } },
+    document: { getElementById: () => button }, formalRecorder: hostRecorder,
+    allowRecordingNavigation: () => true, closeSidebar() {}, setStatus() {}, shanghaiToday: () => '2026-09-13',
+    call: async () => ({ discussion: { discussion_id: 'new-discussion' } }),
+    openDiscussion: async () => ({ discussion_id: 'new-discussion' }), loadSidebarLists() {},
+    renderSpeakingSetDetail(value) { restoredSet = value; host.selectedId = ''; }, syncDiscussionSidebarSelection() {}
+  };
+  vm.createContext(host); vm.runInContext(createFromSet, host);
+  await host.createDiscussionFromSet(set);
+  assert.equal(restoredSet, undefined, 'entry opens the recorder first');
+  entry.onBack();
+  assert.equal(restoredSet, set, 'Back restores the exact original Set without fetching a report');
+  assert.equal(host.formalRecorder, null); assert(destroyed); assert(focused);
+  assert.equal(restoredUrl, host.window.location.href);
+  assert.equal(restoredScroll.top, 740); assert.equal(restoredScroll.behavior, 'instant');
+
   const wheel = fixture(); wheel.controller.start(); wheel.nodes['recording-adjust-duration'].fire('click'); wheel.drawFrame();
   assert.equal(wheel.wheelEvents.length, 0, 'opening the wheel is silent');
   wheel.nodes['recording-duration-wheel'].scrollTo({top: 10 * 44});

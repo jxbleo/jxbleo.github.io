@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Discussion return before recording (2026-09-13)
+
+When opened from a Set, the Discussion recorder Back button and Escape restore that exact Set and its previous page scroll position before capture begins, including permission-pending and opening-countdown states. Do not expose the intermediate Prepare Group / Record and Analysis / Review Report workspace. Ordinary history/Teacher recorder entry retains its existing return destination.
+
 ## Current full-page IR and three-second endings (2026-09-13)
 
 The IR native dialog now fills the viewport with no floating-card border, shadow, scrim or outer margin. Back at the top left returns to the Set; larger Set metadata and question occupy the top. The circle uses min(56dvh, 80vw, 620px), with a smaller short-screen rule; microphone, central stop square and opening digit scale with it. The larger clock remains below the circle. Keep 680 ms surrounding fade, stationary recording geometry, 220 ms restoration and Reduced Motion support. IR capture is 60 + 3 seconds with three final cues; Discussion also ends with three seconds. No automatic submission is added.

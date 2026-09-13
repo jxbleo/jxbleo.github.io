@@ -59,7 +59,7 @@
         var audioContext = null, analyser = null, frame = 0, cueNodes = [], wheelTickBuffer = null;
         var wheelSoundEnabled = false, wheelIndex = 10, lastWaveAt = 0, waveLevels = Array(40).fill(0);
         var previewAudio = null, previewUrl = '', qualityIssue = '', badSince = 0, recoverySince = 0;
-        var destroyed = false, previousFocus = null;
+        var destroyed = false, previousFocus = null, returnToOrigin = null;
         function node(id) { return root.querySelector('#' + id); }
         function snapshot() { return { state: state, blob: blob, operationId: operationId, targetSeconds: target, date: node('recording-date').value }; }
         function locked() { return ['ready', 'requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(state) !== -1; }
@@ -358,9 +358,18 @@
             }
             previewAudio.play().then(function () { node('preview-recording').textContent = 'Pause preview'; }).catch(function () { stopPreview(); node('recording-review-copy').textContent = 'This browser could not play the preview. You can replace the recording or upload it.'; });
         }
-        function openReady() {
+        function openReady(entry) {
             if (state !== 'idle' || destroyed) return;
+            returnToOrigin = entry && typeof entry.onBack === 'function' ? entry.onBack : null;
+            node('recording-back').setAttribute('aria-label', returnToOrigin ? 'Back to Set task' : 'Back to recording and file options');
             currentTarget(); paintRing(1); setState('ready', '');
+        }
+        function backBeforeRecording() {
+            if (['ready', 'requesting', 'countdown'].indexOf(state) < 0) return;
+            var restore = returnToOrigin;
+            returnToOrigin = null;
+            discard();
+            if (restore) restore();
         }
         function prepareWheelAudio() {
             try {
@@ -426,9 +435,11 @@
         node('recording-duration-dialog').addEventListener('cancel', function (event) { if (event.target !== node('recording-duration-dialog')) return; event.preventDefault(); closePicker(); });
         node('recording-live').addEventListener('cancel', function (event) {
             if (event.target !== node('recording-live')) return;
-            event.preventDefault(); if (state === 'ready') discard(); else if (state === 'countdown' || state === 'requesting') finishRecording();
+            event.preventDefault();
+            if (returnToOrigin || state === 'ready') backBeforeRecording();
+            else if (state === 'countdown' || state === 'requesting') finishRecording();
         });
-        node('recording-back').addEventListener('click', function () { if (['ready', 'requesting', 'countdown'].indexOf(state) >= 0) discard(); });
+        node('recording-back').addEventListener('click', backBeforeRecording);
         node('record-now').addEventListener('click', openReady);
         node('stop-recording').addEventListener('click', function () { if (state === 'ready') startRecording(); else finishRecording(); });
         node('recording-duration').addEventListener('change', function () { currentTarget(); });

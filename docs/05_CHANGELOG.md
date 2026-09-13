@@ -1,5 +1,9 @@
 # Changelog
 
+## Discussion pre-recording Back fix (2026-09-13)
+
+Remember the Set entry and scroll position; return directly to the task card when leaving before recording. Invalidate pending microphone/cue work before restoring the page. No backend deployment or history deletion.
+
 ## Full-page IR and shared three-second ending reminders (2026-09-13)
 
 Implemented the owner-approved full-page IR preview with enlarged content and circle. Reduced IR ending cues from five to three (63-second device take); retained Discussion target-plus-three behavior, all capture/review interactions and full-capture fading. No backend deployment or migration.

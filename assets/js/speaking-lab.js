@@ -560,6 +560,7 @@
         if (!allowRecordingNavigation()) return;
         closeSidebar();
         if (!set || !set.set_id) return;
+        var origin = { x: window.scrollX, y: window.scrollY, url: window.location.href };
         var button = document.getElementById('start-set-discussion');
         if (button) { button.disabled = true; button.querySelector('[data-discussion-start-label]').textContent = 'Starting…'; }
         setStatus('Creating your Discussion…');
@@ -573,7 +574,21 @@
             selectedId = result.discussion.discussion_id;
             selectedSpeakingSet = null;
             return openDiscussion(selectedId).then(function (discussion) {
-                if (discussion && formalRecorder) formalRecorder.start();
+                if (discussion && formalRecorder) {
+                    var recorder = formalRecorder;
+                    recorder.start({ onBack: function () {
+                        if (formalRecorder !== recorder || selectedId !== result.discussion.discussion_id) return;
+                        recorder.destroy();
+                        formalRecorder = null;
+                        renderSpeakingSetDetail(set);
+                        window.history.replaceState(null, '', origin.url);
+                        syncDiscussionSidebarSelection();
+                        setStatus('');
+                        var startButton = document.getElementById('start-set-discussion');
+                        if (startButton) startButton.focus({ preventScroll: true });
+                        window.scrollTo({ left: origin.x, top: origin.y, behavior: 'instant' });
+                    } });
+                }
                 loadSidebarLists();
                 return discussion;
             });

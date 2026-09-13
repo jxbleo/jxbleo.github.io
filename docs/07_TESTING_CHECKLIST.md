@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Discussion Back regression (2026-09-13)
+
+From a scrolled Set card, open Start and use Back: the same Set and scroll position return, with focus on Start and no analysis workspace. Repeat while permission is pending, during the opening countdown, and with Escape. Late permission must stop tracks without recording/uploading. History and Teacher entry keep their existing return route.
+
 ## Full-page IR release checks (2026-09-13)
 
 Verify question entry fills the viewport, enlarged circle and timer fit desktop/phone, Back returns to the Set, and the stop square remains centred. Verify 3 opening cues before capture, 60 normal seconds, then 3 ending cues and automatic stop at 63 seconds; surroundings restore only after that ending (or cancel/error/early stop). Discussion must still stop at target + 3. Preserve manual Submit, stable retry and existing 65-second imported-file compatibility. Run the complete Speaking suite and static-release checks.
