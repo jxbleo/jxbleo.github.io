@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Discussion final-minute seconds (2026-09-13)
+
+Check the Group Discussion transition from 01:01 to large 60, then 59, 09 and 01. Preserve the full-ring final-minute restart, existing minute cue, three-second ending reminder and mm:ss recorded-duration review.
+
 ## Discussion continuous surface regression (2026-09-13)
 
 Verify ready has Upload and no Ready label; duration picker shows the wheel and action buttons only. Recording has a larger dot/label and real outer wave. Both early and timed completion stay in the same circle with Submit; choosing or cancelling a file never auto-uploads. Invalid/oversize files leave ready usable. Upload/date selection, playback, re-record, Back/Escape, 3-second cues, upload failure, analysis-only retry and transition to the waiting game must preserve audio and avoid the legacy stage workspace. Check desktop and phone fit and reduced motion.

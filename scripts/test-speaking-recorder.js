@@ -131,7 +131,9 @@ async function run() {
   assert(!f.nodes['recording-time'].hidden);
   f.drawFrame();
   assert(f.nodes['recording-outer-line'].getAttribute('d').startsWith('M'), 'real samples feed the outer wave');
-  await f.advance(120000);
+  await f.advance(119000);
+  assert.equal(f.nodes['recording-time'].textContent, '01:01');
+  await f.advance(1000);
   const minuteCues = f.audioEvents.slice(3);
   assert.equal(minuteCues.length, 3);
   minuteCues.forEach((cue, index) => {
@@ -139,13 +141,20 @@ async function run() {
     assert.equal(cue.frequency, 784);
     assert(Math.abs(cue.start - minuteCues[0].start - index * .55) < 1e-8);
   });
-  assert.equal(f.nodes['recording-time'].textContent, '01:00');
+  assert.equal(f.nodes['recording-time'].textContent, '60');
   assert(f.nodes['recording-live'].classList.contains('is-minute'));
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0');
-  await f.advance(30000);
-  assert.equal(f.nodes['recording-time'].textContent, '00:30');
+  await f.advance(1000);
+  assert.equal(f.nodes['recording-time'].textContent, '59');
+  await f.advance(29000);
+  assert.equal(f.nodes['recording-time'].textContent, '30');
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0.5');
-  await f.advance(29999); assert.equal(f.audioEvents.length, 6, 'minute warning does not repeat');
+  await f.advance(21000);
+  assert.equal(f.nodes['recording-time'].textContent, '09');
+  await f.advance(8000);
+  assert.equal(f.nodes['recording-time'].textContent, '01', 'last-minute seconds keep two digits');
+  assert.equal(f.nodes['recording-time'].getAttribute('aria-label'), 'Seconds remaining: 1');
+  await f.advance(999); assert.equal(f.audioEvents.length, 6, 'minute warning does not repeat');
   const lastProgress = f.nodes['recording-ring-progress'].style.strokeDashoffset;
   await f.advance(1);
   assert.equal(f.controller.snapshot().state, 'ending');

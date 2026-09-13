@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Discussion final-minute seconds (2026-09-13)
+
+During the final minute of Group Discussion capture, use two-digit seconds 60 → 01 instead of mm:ss; enlarge the digits from 28cqw to 40cqw. Earlier minutes, the separate three-second ending reminder and completed recording duration retain their existing formatting.
+
 ## Discussion circle Upload and Submit (2026-09-13)
 
 Remove the ready label and both visible duration-picker headings; keep accessible labels. Enlarge the recording dot and label. Update the real-input outer colour wave at up to 60 fps with faster attack and greater quiet-speech sensitivity, a small noise floor and restrained reduced-motion rendering. Keep the circle page open on early stop, expiry, file selection, upload and retry; Upload changes to Submit under the circle. Review shows captured duration (a check for imported audio), optional Play/Record again, and imported-file date. Do not reveal the legacy three-stage workspace during this flow.

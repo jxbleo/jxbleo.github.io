@@ -114,6 +114,8 @@ cp .qa-secrets.example .qa-secrets.local
   static build and diff checks passed. Browser connection remains unavailable;
   device visual QA pending. Owner-authorized static publication; no backend change.
 
+- 2026-09-13: Discussion final minute uses larger 60–01 seconds; boundary tests cover 01:01 → 60 → 59 → 09 → 01, final three cues and mm:ss review. Static-only update.
+
 - 2026-09-13: Continuous Discussion circle: Upload → capture/file → Submit → waiting game; larger recording indicator, minimal picker and more responsive real-input outer wave. Recorder/host lifecycle tests and local synthetic browser capture; no physical microphone or production audio used.
 
 - 2026-09-13 — Individual Response recording feedback and live indicator:

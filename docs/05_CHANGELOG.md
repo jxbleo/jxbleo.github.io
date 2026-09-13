@@ -1,5 +1,9 @@
 # Changelog
 
+## Discussion final-minute seconds (2026-09-13)
+
+Group Discussion now displays enlarged two-digit seconds during its final minute. Recording length, alerts, submission and Individual Response are unchanged.
+
 ## Discussion continuous capture and submission (2026-09-13)
 
 Unify Group Discussion ready/review/upload in the large circle page. Simplify ready/picker text, enlarge recording status, increase live outer-wave response, add Upload before capture and Submit after capture/file selection. Preserve return-to-Set, opening/ending tones, file/date validation and explicit submission; retain accepted audio for analysis-only retry. Static-only release, no CloudBase deployment.

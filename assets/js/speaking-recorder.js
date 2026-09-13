@@ -286,7 +286,8 @@
                     if (state !== 'ending') { setState('ending', ''); cancelCues(); scheduleCountdownCues(); }
                     node('recording-countdown').textContent = String(current.tick);
                 } else {
-                    node('recording-time').textContent = timeText(current.remaining);
+                    node('recording-time').textContent = current.minute ? String(Math.ceil(current.remaining)).padStart(2, '0') : timeText(current.remaining);
+                    node('recording-time').setAttribute('aria-label', current.minute ? 'Seconds remaining: ' + Math.ceil(current.remaining) : 'Time remaining');
                     node('recording-dial').classList.toggle('is-minute', current.minute);
                     node('recording-live').classList.toggle('is-minute', current.minute);
                     if (current.minute && !minutePlayed) {

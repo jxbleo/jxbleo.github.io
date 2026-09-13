@@ -33,7 +33,7 @@ body .speaking-discussion-start .speaking-discussion-start-icon svg { width:27px
 #recording-live.is-opening .speaking-recording-ring-progress { stroke:#dc514c; }
 #recording-live.is-opening .speaking-recording-live-label,#recording-live.is-ending .speaking-recording-live-label { visibility:hidden; }
 #recording-live.is-minute,#recording-live.is-ending { background:#fff0ee; }
-#recording-live.is-minute .speaking-recording-time { color:#78443f; }
+#recording-live.is-minute .speaking-recording-time { color:#78443f; font-size:40cqw; }
 #recording-live.is-minute .speaking-recording-ring-progress { stroke:#e9948a; }
 #recording-live.is-minute .speaking-recording-ring-track { stroke:#f5d9d5; }
 #recording-live.is-ending .speaking-recording-ring-track { stroke:#e8b1ab; }
