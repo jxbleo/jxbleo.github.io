@@ -4,6 +4,12 @@
 
 Verify ready has Upload and no Ready label; duration picker shows the wheel and action buttons only. Recording has a larger dot/label and real outer wave. Both early and timed completion stay in the same circle with Submit; choosing or cancelling a file never auto-uploads. Invalid/oversize files leave ready usable. Upload/date selection, playback, re-record, Back/Escape, 3-second cues, upload failure, analysis-only retry and transition to the waiting game must preserve audio and avoid the legacy stage workspace. Check desktop and phone fit and reduced motion.
 
+## Individual Response completion feedback (2026-09-13)
+
+Verify the red dot and `Recording` appear only after the opening 3/2/1 and actual capture start. Both remain steady through the final warning; Stop (including delayed finalization), automatic completion, cancellation and microphone error hide the indicator. Check top safe-area placement and stable circle/timer geometry on desktop and phone.
+
+Check automatic completion shows `Finished` in the circle and `Your recording was successful.` below, with no numeric clock. Stop early at single- and double-digit durations: digits and `sec recorded` form one centred row with balanced type at desktop, phone and short-screen sizes. Repeat recording, cancel and microphone failure must restore the normal timer and accessible timer role. Submit remains explicit.
+
 ## Discussion Back regression (2026-09-13)
 
 From a scrolled Set card, open Start and use Back: the same Set and scroll position return, with focus on Start and no analysis workspace. Repeat while permission is pending, during the opening countdown, and with Escape. Late permission must stop tracks without recording/uploading. History and Teacher entry keep their existing return route.

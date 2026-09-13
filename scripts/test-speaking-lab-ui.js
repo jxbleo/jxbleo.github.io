@@ -468,8 +468,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260913-speaking-set-context-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-discussion-submit-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260913-ir-recording-feedback-2/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-ir-recording-feedback-2/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

@@ -1421,7 +1421,12 @@
             else element.removeAttribute('aria-hidden');
         });
     }
+    function setResponseRecordingIndicator(recording) {
+        var indicator = document.getElementById('response-recording-indicator');
+        if (indicator) indicator.hidden = !recording;
+    }
     function stopResponseHardware() {
+        setResponseRecordingIndicator(false);
         setResponseSurroundingsHidden(false);
         if (responseFocus) responseFocus.stop(false);
         responseCaptureGeneration += 1;
@@ -1494,7 +1499,7 @@
         }).catch(function (error) { if (generation === pollGeneration) setStatus(friendlyError(error), true); });
     }
     function responseDialogRecorderMarkup() {
-        return '<div class="speaking-response-dialog-recorder" id="response-recorder" data-state="idle"><div class="speaking-response-dial"><svg class="speaking-response-ring" viewBox="0 0 222 222" aria-hidden="true"><circle class="speaking-response-ring-track" cx="111" cy="111" r="106"/><circle class="speaking-response-ring-progress" id="response-ring-progress" cx="111" cy="111" r="106" pathLength="1"/></svg><button class="speaking-response-microphone" type="button" id="response-record" aria-label="Tap to Record"><svg class="speaking-response-mic-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7.5 16a8.5 8.5 0 0 0 17 0M16 24.5V28M12 28h8"/></svg><span class="speaking-response-stop-icon" aria-hidden="true"></span><svg class="speaking-response-finished-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m7 16 6 6L25 10"/></svg><span class="speaking-response-opening-digit" id="response-opening-digit" aria-live="polite">3</span><span class="speaking-response-microphone-label" data-response-record-label>Tap to Record</span></button></div><div class="speaking-response-clock" id="response-timer" role="timer" aria-label="Time left">01:00</div><div class="speaking-response-footer"><label class="speaking-response-dialog-file" id="response-file-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m-3.5 3.5L10 3l3.5 3.5M4 12v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>Upload Files<input type="file" id="response-file" accept="audio/*" class="speaking-response-file-input" aria-label="Upload Files"></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Submit</button></div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite"></p></div>';
+        return '<div class="speaking-response-dialog-recorder" id="response-recorder" data-state="idle"><div class="speaking-response-recording-indicator" id="response-recording-indicator" role="status" hidden><span class="speaking-response-recording-dot" aria-hidden="true"></span><span>Recording</span></div><div class="speaking-response-dial"><svg class="speaking-response-ring" viewBox="0 0 222 222" aria-hidden="true"><circle class="speaking-response-ring-track" cx="111" cy="111" r="106"/><circle class="speaking-response-ring-progress" id="response-ring-progress" cx="111" cy="111" r="106" pathLength="1"/></svg><button class="speaking-response-microphone" type="button" id="response-record" aria-label="Tap to Record"><svg class="speaking-response-mic-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7.5 16a8.5 8.5 0 0 0 17 0M16 24.5V28M12 28h8"/></svg><span class="speaking-response-stop-icon" aria-hidden="true"></span><svg class="speaking-response-finished-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m7 16 6 6L25 10"/></svg><span class="speaking-response-opening-digit" id="response-opening-digit" aria-live="polite">3</span><span class="speaking-response-microphone-label" data-response-record-label>Tap to Record</span></button></div><div class="speaking-response-clock" id="response-timer" role="timer" aria-label="Time left">01:00</div><div class="speaking-response-footer"><label class="speaking-response-dialog-file" id="response-file-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m-3.5 3.5L10 3l3.5 3.5M4 12v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>Upload Files<input type="file" id="response-file" accept="audio/*" class="speaking-response-file-input" aria-label="Upload Files"></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Submit</button></div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite"></p></div>';
     }
     function responseSetHeading(response) {
         var snapshot = response.set_snapshot || {};
@@ -1600,6 +1605,7 @@
         if (!responseRecorder || responseRecorder.state === 'inactive') return;
         responseRecordedDurationSeconds = Math.min(63, responseElapsedSeconds());
         responseCaptureState = 'stopping';
+        setResponseRecordingIndicator(false);
         setResponseSurroundingsHidden(false);
         if (responseFocus) responseFocus.stop(false);
         try { responseRecorder.stop(); } catch (_error) { stopResponseHardware(); }
@@ -1620,8 +1626,10 @@
             record.querySelector('[data-response-record-label]').textContent = label;
             record.setAttribute('aria-label', state === 'finished' && label === 'Finished' ? 'Finished. Record again' : label);
             surface.setAttribute('data-state', state);
+            setResponseRecordingIndicator(state === 'recording' || state === 'ending');
             setResponseSurroundingsHidden(state === 'countdown' || state === 'recording' || state === 'ending');
             timer.setAttribute('aria-hidden', state === 'countdown' ? 'true' : 'false');
+            timer.setAttribute('role', state === 'finished' || state === 'stopped' ? 'status' : 'timer');
         }
         function readyToSubmit() {
             record.disabled = false;
@@ -1630,6 +1638,9 @@
                 var durationText = Number(responseRecordedDurationSeconds || 0).toFixed(1);
                 timer.innerHTML = '<span>' + durationText + '</span><small>sec recorded</small>';
                 timer.setAttribute('aria-label', 'Recorded duration: ' + durationText + ' seconds');
+            } else {
+                timer.textContent = 'Your recording was successful.';
+                timer.setAttribute('aria-label', 'Your recording was successful.');
             }
             file.disabled = false; fileLabel.hidden = true;
             upload.disabled = false; upload.hidden = false;

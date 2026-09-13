@@ -4,6 +4,12 @@
 
 Remove the ready label and both visible duration-picker headings; keep accessible labels. Enlarge the recording dot and label. Update the real-input outer colour wave at up to 60 fps with faster attack and greater quiet-speech sensitivity, a small noise floor and restrained reduced-motion rendering. Keep the circle page open on early stop, expiry, file selection, upload and retry; Upload changes to Submit under the circle. Review shows captured duration (a check for imported audio), optional Play/Record again, and imported-file date. Do not reveal the legacy three-stage workspace during this flow.
 
+## Individual Response recording feedback (2026-09-13)
+
+After the three-second opening countdown, successful capture start shows a steady red dot and `Recording` at the top centre above the circle. The indicator remains visible during the final three-second warning while capture continues, and hides immediately on Stop, cancellation, completion or microphone failure. It is absent during permission and opening countdown, does not pulse, and does not move the circle or timer.
+
+After successful automatic completion, keep the checkmark and `Finished` inside the circle. Replace the lower timer with the centred green message `Your recording was successful.` and announce it as a status. Manual Stop keeps `Tap to Start Over`; show the frozen duration as one centred baseline-aligned row, with 20px digits and a 16px `sec recorded` caption. Both result states use a full-width centred feedback area and normal letter spacing, including on short screens. Keep manual Submit and all existing recording/upload behavior.
+
 ## Discussion return before recording (2026-09-13)
 
 When opened from a Set, the Discussion recorder Back button and Escape restore that exact Set and its previous page scroll position before capture begins, including permission-pending and opening-countdown states. Do not expose the intermediate Prepare Group / Record and Analysis / Review Report workspace. Ordinary history/Teacher recorder entry retains its existing return destination.

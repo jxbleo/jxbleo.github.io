@@ -108,6 +108,18 @@ cp .qa-secrets.example .qa-secrets.local
 
 - 2026-09-13: Continuous Discussion circle: Upload → capture/file → Submit → waiting game; larger recording indicator, minimal picker and more responsive real-input outer wave. Recorder/host lifecycle tests and local synthetic browser capture; no physical microphone or production audio used.
 
+- 2026-09-13 — Individual Response recording feedback and live indicator:
+  automatic completion keeps Finished and replaces the lower digits with
+  `Your recording was successful.`; early Stop uses a centred 20px/16px
+  duration/caption row, including short screens. A steady red dot + Recording
+  appears at top centre after the three-second opening and hides immediately
+  on Stop, completion or error; the final warning retains it while capturing.
+  Updated Speaking JS/CSS, HTML/config cache versions, UI spec, manual checklist
+  and existing regressions. Full Speaking suite (using existing workspace
+  dependencies), release verification, JS syntax, build and diff checks passed.
+  CUA inventory timed out; device visual QA remains pending. Owner authorized
+  static publication; no CloudBase function or data changes are required.
+
 - 2026-09-13: Discussion pre-recording Back restores its original Set, focus and scroll position; recorder/host regression covers ready, pending permission, countdown, Escape and stale callbacks. Static-only fix.
 
 - 2026-09-13: Removed the duplicate Speaking Set overview card and moved its year/Set identity into the article's blue heading. Preserved prompts, font controls and recording actions; added title fallback and regression assertions. Speaking contracts, release verification and static build pass; browser checks at 390px and 1024px pass. Product/UX/changelog/checklist updated. No backend or data changes; owner authorized static publication.

@@ -1071,7 +1071,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-finished-icon { display: block; }
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone { color: #3a9272; background: #edf7f2; }
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone-label { color: #398568; font-size: 13px; }
-.speaking-response-dialog-recorder[data-state="finished"] .speaking-response-clock { color: #6c7872; }
 
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-ring { visibility: hidden; }
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-stop-icon,
@@ -1079,8 +1078,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-mic-icon { display: block; }
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone { gap: 16px; color: #398568; background: #edf7f2; }
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone-label { color: #398568; font-size: 13px; text-align: center; }
-.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock { display: inline-flex; align-items: baseline; gap: 7px; color: #398568; font-size: 32px; font-weight: 600; letter-spacing: -.4px; }
-.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock small { font-size: 12px; font-weight: 500; letter-spacing: 0; }
 
 @media(max-width:480px) {
     .speaking-response-dialog-body { padding: 38px 24px 28px; }
@@ -1248,6 +1245,10 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog .speaking-response-stop-icon { width:13cqw; height:13cqw; border-radius:3cqw; }
 #individual-response-dialog .speaking-response-opening-digit { font-size:36cqw; letter-spacing:-.04em; }
 #individual-response-dialog .speaking-response-clock { margin-top:12px; font-size:clamp(48px,7dvh,70px); font-weight:450; line-height:1.08; letter-spacing:-.035em; }
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-clock { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; min-height:54px; color:#398568; font-size:16px; font-weight:500; line-height:1.5; letter-spacing:0; text-align:center; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock { align-items:baseline; padding-block:12px; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock > span { font-size:20px; font-weight:600; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock small { font-size:16px; font-weight:500; }
 #individual-response-dialog .speaking-response-footer { margin-top:16px; flex:none; }
 #individual-response-dialog .speaking-response-dialog-file,#individual-response-dialog .speaking-response-dialog-upload { height:48px; min-width:160px; font-size:15px; gap:10px; }
 #individual-response-dialog .speaking-response-dialog-file svg { width:19px; height:19px; }
@@ -1264,3 +1265,8 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
     #individual-response-dialog .speaking-response-dialog-question { padding-block:12px; }
     #individual-response-dialog .speaking-response-clock { font-size:46px; }
 }
+
+/* A steady capture indicator stays above the circle without shifting the recorder. */
+#individual-response-dialog .speaking-response-recording-indicator { position:fixed; top:max(24px,calc(env(safe-area-inset-top,0px) + 12px)); left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; gap:8px; margin:0; color:#b43b38; font-size:15px; font-weight:600; line-height:24px; letter-spacing:.01em; pointer-events:none; }
+#individual-response-dialog .speaking-response-recording-indicator[hidden] { display:none; }
+#individual-response-dialog .speaking-response-recording-dot { flex:none; width:8px; height:8px; border-radius:50%; background:#d8423e; }
