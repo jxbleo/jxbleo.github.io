@@ -23,6 +23,13 @@ Release 53e8297b was published by successful GitHub Actions run 34774845997;
 production HTML/JS/CSS exactly match the release files. Both functions are Active
 and their deployed code hashes match the packaged bundles, with configuration
 unchanged. The nonunique ir_question_history_desc index is present.
+The parser follow-up b6ca0898 and workflow 34776140294 also succeeded. Final
+speakingLab bundle SHA-256 is
+0bbae0ddc6d21868ecbe4b25ac9c4c093712328a0ba1602a85d4725e5c88d2f6;
+speakingAiWorker remains
+b75ede0d046b9d3791366cc3d229d58857547abfbd77865225508e21c66f96b8.
+The private final audit verified 64 replacements. One originally failed short
+recording has completed ASR with no text and remains failed; it was not graded.
 
 ## IR report v3 rollout (deployed 2026-09-14)
 

@@ -7,6 +7,9 @@ at the report root. This caused `INDIVIDUAL_RESPONSE_COACHING_INVALID` despite
 usable content. Canonicalization now relocates only all four expected coaching
 fields together when none exists at root; mixed, partial or conflicting shapes
 still fail. All evidence, score, length and sample-distinctness checks remain.
+A completed Tencent ASR task can also return no ResultDetail and empty text.
+For the scoped 4.522688-second recording, retrying the same completed task does
+not recover speech. Keep it failed rather than inventing a transcript or score.
 The operator must canonicalize with the same student-name redaction inputs as
 the publisher before comparing stored reports; otherwise valid redacted
 transcripts can incorrectly fail deep equality. No prompt/model change is needed.

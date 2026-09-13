@@ -106,7 +106,7 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
-### 2026-09-14 — Authorized IR release and overwrite (in progress)
+### 2026-09-14 — Authorized IR release and overwrite (deployed; 64 verified, one unscorable)
 
 - Owner authorized deploying the complete approved report changes and replacing
   recent reports in place. Exact Shanghai-date scope Sep 8–14 has 65 uploaded
@@ -114,8 +114,22 @@ cp .qa-secrets.example .qa-secrets.local
 - Merged current origin/main homepage wording before release. Both baseline
   function bundles match live bytes. Added same-ID atomic overwrite behavior,
   a private bounded operator and tests for score replacement and source races.
-- Full Speaking suite, packaging and release checks passed. Deployment and
-  per-report completion are being verified; no student data enters Git.
+- Frontend release 53e8297b and parser fix b6ca0898 are on main; COS workflow
+  runs 34774845997 and 34776140294 succeeded. Production HTML/JS/CSS match the
+  release. Both functions are Active with unchanged configuration; the history
+  index is verified. Full Speaking suite, packaging and release checks passed.
+- All 64 responses with transcripts now have verified v3 IO/VL reports, new
+  assessments and feedback replacing the prior current report IDs. Original
+  transcript hashes, report creation timestamps, links and response caches
+  were checked; no old report versions were created by this operation.
+- One previously failed uploaded recording is 4.522688 seconds long. Tencent
+  ASR completed with no recognized text/segments, so no reliable report can be
+  generated. It remains failed; no speech or scores were invented.
+- Diagnosed misplaced model coaching fields and fixed their unambiguous
+  normalization before strict validation; also aligned operator verification
+  with publisher name redaction. Bounded retries retained attempt counters.
+  Private scope/status evidence stays in .cloudbase-private; no student content
+  or credentials entered Git.
 
 
 ### 2026-09-14 — Concise IR Analysis (local only)

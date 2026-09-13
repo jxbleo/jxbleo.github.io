@@ -11,6 +11,13 @@ Matched both live function bundles to origin/main before deployment. Packaging,
 Speaking/overwrite tests and release checks passed. Rollout results are recorded
 in AGENT_TODO.md and the private operator status, without student content in Git.
 
+Deployment is complete. All 64 transcript-bearing responses were successfully
+regenerated and verified in place under v3, with only IO/VL and new coaching.
+The remaining 4.522688-second recording was already failed and returned no ASR
+text; it remains unscorable. Both production functions retain their configuration,
+and live static assets match the approved release. A follow-up parser correction
+accepts a complete misplaced coaching block only before full strict validation.
+
 ## Compact Analysis selection and feedback (2026-09-14)
 
 Restored IO/VL abbreviations in the Analysis selector and removed the standalone
