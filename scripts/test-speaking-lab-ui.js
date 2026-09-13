@@ -129,7 +129,7 @@ function run() {
   assert.match(app, /scheduleResponseCues\(\[60, 61, 62\]/);
   assert.match(app, /responseDeadline = window.setTimeout\(finishResponseRecording, 63000\)/);
   assert.match(app, />Submit<\/button>/);
-  assert.match(app, /Your recording was successfully saved/);
+  assert.match(app, /Your recording was successfully saved\./);
   assert.match(app, /duration > 65/, "existing Individual Response audio must respect the 65-second UI limit");
   assert.match(app, /function startIndividualResponse\(set, questionId, trigger\)/);
   const startResponseSource = app.slice(app.indexOf("function startIndividualResponse(set, questionId, trigger)"), app.indexOf("function finishResponseRecording()"));
@@ -471,8 +471,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260913-ir-indicator-saved-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-ir-indicator-saved-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260913-ir-saved-mic-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-ir-saved-mic-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

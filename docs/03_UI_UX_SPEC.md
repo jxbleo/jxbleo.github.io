@@ -20,7 +20,7 @@ Remove the ready label and both visible duration-picker headings; keep accessibl
 
 The question heading contains only question text, without year, Set metadata or a Q-number prefix, and stays visible and accessible during opening, recording and ending. The recording indicator occupies a reserved centred row between the question and the circular progress display; hiding it does not move the circle. After the opening three seconds, a blinking red dot and steady `Recording` label show actual capture. The dot alternates full/dim opacity every 0.6 seconds; Reduced Motion keeps it steady. Hide the indicator immediately on Stop, completion or error, and during permission/countdown.
 
-Both automatic completion and manual Stop show only `Tap to start over` inside the circle, without microphone/checkmark icons or another label. The lower field reads `Your recording was successfully saved`, centred in green, with no duration digits. Duration remains frozen and retained internally for submission. Keep explicit Submit and the existing recording replacement confirmation; this message does not mean the recording has already uploaded.
+Both automatic completion and manual Stop show a centred microphone icon with `Tap to start over` directly beneath it inside the circle. The whole circle remains the restart button; there is no checkmark or extra saved heading. The lower field reads `Your recording was successfully saved.`, centred in green, with no duration digits. Duration remains frozen and retained internally for submission. Keep explicit Submit and the existing recording replacement confirmation; this message does not mean the recording has already uploaded.
 
 ## 2026-09-13 — Set refresh restoration
 

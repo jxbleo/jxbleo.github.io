@@ -106,6 +106,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13 — IR saved-state polish: restored the microphone above Tap to
+  start over for manual and automatic stops; added the final English period
+  to the visible and accessible success message. Checkmark remains hidden and
+  the existing circle button still owns restart. Full Speaking suite, release
+  verification, JS syntax, static build and diff checks passed. Browser visual
+  QA remains unavailable from prior connection failures. Static-only release.
+
 - 2026-09-13: Lowered the Discussion Recording indicator, enabled a 1.3 s red-dot opacity pulse, and increased external-clock spacing with compact-height/reduced-motion variants. Desktop and 390 px synthetic-capture browser QA and Speaking regression tests passed; UI/changelog/testing docs updated. Static-only release; no backend changes.
 
 - 2026-09-13 — IR indicator and completion refinement: moved Recording into a

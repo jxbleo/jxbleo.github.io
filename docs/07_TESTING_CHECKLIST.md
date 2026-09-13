@@ -20,7 +20,7 @@ Verify ready has Upload and no Ready label; duration picker shows the wheel and 
 
 Verify question-only heading remains visible and accessible throughout recording. The red dot and Recording row must sit between the question and circle at desktop, phone and short-screen sizes, and reserve its space while hidden. Check the dot flashes during actual capture, including the ending warning, while the label stays steady; Reduced Motion uses a steady dot. Permission, opening countdown, Stop, completion and errors hide the indicator without shifting the circle.
 
-For manual Stop and automatic completion, check the circle contains only `Tap to start over` and no microphone/checkmark/saved heading. The lower field reads `Your recording was successfully saved`. Retain the frozen audio duration, manual Submit, upload retries and existing replacement confirmation. Re-recording restores the normal timer and indicator lifecycle.
+For manual Stop and automatic completion, check the circle contains a centred microphone icon with `Tap to start over` beneath it, and no checkmark or saved heading. The lower field reads `Your recording was successfully saved.` including the final English period. Retain the frozen audio duration, manual Submit, upload retries and existing replacement confirmation. Re-recording restores the normal timer and indicator lifecycle.
 
 ## 2026-09-13 — Set refresh route
 

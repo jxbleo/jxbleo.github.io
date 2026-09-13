@@ -1650,8 +1650,8 @@
         function readyToSubmit() {
             record.disabled = false;
             setRecordButton('Tap to start over', stoppedEarly ? 'stopped' : 'finished');
-            timer.textContent = 'Your recording was successfully saved';
-            timer.setAttribute('aria-label', 'Your recording was successfully saved');
+            timer.textContent = 'Your recording was successfully saved.';
+            timer.setAttribute('aria-label', 'Your recording was successfully saved.');
             file.disabled = false; fileLabel.hidden = true;
             upload.disabled = false; upload.hidden = false;
             status.textContent = '';
