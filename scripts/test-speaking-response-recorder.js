@@ -11,7 +11,7 @@ function extract(name) {
   const next = source.indexOf('\n    function ', start + 1);
   return source.slice(start, next < 0 ? undefined : next);
 }
-const functions = ['timerClockText', 'responseElapsedSeconds', 'responseCaptureActive', 'cancelResponseCues', 'prepareResponseCueAudio', 'scheduleResponseCues', 'stopResponseHardware', 'finishResponseRecording', 'bindIndividualResponseRecording', 'responseDialogRecorderMarkup', 'responseSetHeading'];
+const functions = ['timerClockText', 'responseElapsedSeconds', 'responseCaptureActive', 'cancelResponseCues', 'prepareResponseCueAudio', 'scheduleResponseCues', 'setResponseSurroundingsHidden', 'stopResponseHardware', 'finishResponseRecording', 'bindIndividualResponseRecording', 'responseDialogRecorderMarkup', 'responseSetHeading'];
 const flush = () => new Promise(setImmediate);
 function harness(options = {}) {
   let now = 1000, sequence = 0, resolvePermission;
@@ -21,7 +21,7 @@ function harness(options = {}) {
   function node(id) {
     if (elements[id]) return elements[id];
     return elements[id] = { isConnected: true, textContent: '', hidden: false, disabled: false, style: {}, attrs: {}, handlers: {}, files: [],
-      querySelector() { return node('label'); }, setAttribute(key, value) { this.attrs[key] = value; },
+      removeAttribute(key) { delete this.attrs[key]; }, querySelector() { return node('label'); }, setAttribute(key, value) { this.attrs[key] = value; },
       addEventListener(type, fn) { this.handlers[type] = fn; } };
   }
   class Recorder {
@@ -45,7 +45,7 @@ function harness(options = {}) {
     URL: { createObjectURL: () => 'blob:fixture', revokeObjectURL() {} },
     responseRecorder: null, responseStream: null, responseChunks: [], responseStartedAt: 0, responseRecordedDurationSeconds: null, responseTimer: 0, responseBlob: null, responseUploadOperationId: '', responseUploadInProgress: false,
     responseCaptureState: 'idle', responseCaptureGeneration: 0, responseDeadline: 0, responseCueContext: null, responseCueNodes: [],
-    responseFocus: { start(input, audio) { assert.strictEqual(input, stream); assert(audio); focusEvents.push('start'); }, stop(immediate) { focusEvents.push(immediate ? 'clear' : 'stop'); } }, selectedResponse: null, responseDialog: { open: false }, esc: value => String(value),
+    responseFocus: { start(input, audio) { assert.strictEqual(input, stream); assert(audio); focusEvents.push('start'); }, stop(immediate) { focusEvents.push(immediate ? 'clear' : 'stop'); } }, selectedResponse: null, responseDialog: { open: false, classList: { toggle(name, value) { node('dialog').attrs[name] = value; } }, querySelectorAll: () => [node('surroundings')] }, esc: value => String(value),
     friendlyError: error => error.message,
     ensureIndividualResponseCreated: response => { calls.push('create'); return Promise.resolve(response); },
     call: (action, payload) => { calls.push(action); if (options.uploadFails && action === 'startIndividualResponseAudioUpload') return Promise.reject(new Error('Upload failed')); return Promise.resolve({ upload: { cloud_path: 'private/test' }, asset_id: 'asset' }); },
@@ -88,9 +88,13 @@ async function run() {
   h.advance(1000); assert.equal(h.node('response-opening-digit').textContent, '1');
   h.advance(1000); assert.equal(h.devices[0].state, 'recording'); assert.equal(h.node('response-timer').textContent, '01:00');
   assert.equal(h.focusEvents.filter(event => event === 'start').length, 1, 'decoration starts once with the recording stream');
+  assert.equal(h.node('dialog').attrs['is-response-focused'], true); assert.equal(h.node('surroundings').inert, true);
   h.advance(60000); assert.equal(h.node('response-recorder').attrs['data-state'], 'ending'); assert.equal(h.node('response-timer').textContent, '00:05');
+  assert.equal(h.node('dialog').attrs['is-response-focused'], true, 'keep focus through final five seconds');
   h.advance(5000); assert.equal(h.devices[0].stopped - h.devices[0].started, 65000); assert.equal(h.node('label').textContent, 'Finished');
   assert.equal(h.focusEvents.at(-1), 'stop');
+  assert.equal(h.node('dialog').attrs['is-response-focused'], false); assert.equal(h.node('surroundings').inert, false);
+  assert.equal(h.node('surroundings').attrs['aria-hidden'], undefined);
   assert.equal(h.context.responseRecordedDurationSeconds, 65); assert.equal(h.node('response-upload').hidden, false);
   assert.equal(h.context.responseBlob.size > 0, true); assert(h.tracks[0].stopped); assert.equal(h.timers.size, 0);
   assert.deepEqual(h.calls, [], 'completion must never automatically create/upload/analyse');
@@ -101,11 +105,11 @@ async function run() {
   assert.equal(h.context.responseBlob, null);
   const delayed = harness({delayedStop:true}); delayed.click(); await flush(); delayed.advance(5350); delayed.click(); delayed.advance(500); assert.equal(delayed.context.responseRecordedDurationSeconds,2.35,'duration freezes at stop, excluding recorder finalization delay'); assert.equal(delayed.node('response-timer').innerHTML,'<span>2.4</span><small>sec recorded</small>'); delayed.click(); await flush(); assert.equal(delayed.node('response-timer').textContent,'01:00'); assert.equal(delayed.node('response-timer').attrs['aria-label'],'Time left'); delayed.advance(3000); assert.equal(delayed.context.responseCaptureState,'recording');
   const pending = harness({pending:true}); pending.click(); vm.runInContext('stopResponseHardware()',pending.context); pending.resolvePermission(); await flush(); assert(pending.tracks[0].stopped); assert.equal(pending.devices.length,0);
-  const cancelled = harness(); cancelled.click(); await flush(); cancelled.advance(1000); cancelled.click(); cancelled.advance(70000); assert.equal(cancelled.devices[0].started,undefined); assert(cancelled.tracks[0].stopped); assert.equal(cancelled.timers.size,0); assert(cancelled.cues.every(c=>c.cancelled));
+  const cancelled = harness(); cancelled.click(); await flush(); cancelled.advance(1000); cancelled.click(); cancelled.advance(70000); assert.equal(cancelled.devices[0].started,undefined); assert(cancelled.tracks[0].stopped); assert.equal(cancelled.timers.size,0); assert.equal(cancelled.node('dialog').attrs['is-response-focused'],false); assert(cancelled.cues.every(c=>c.cancelled));
   const denied = harness({denied:true}); denied.click(); await flush(); assert.equal(denied.node('response-record').disabled,false); assert.equal(denied.node('response-file').disabled,false); assert.match(denied.node('response-status').textContent,/denied/);
   const retry = harness({uploadFails:true}); retry.click(); await flush(); retry.advance(5000); retry.click(); assert.equal(retry.node('label').textContent,'Tap to Start Over'); assert.equal(retry.context.responseRecordedDurationSeconds,2); assert.equal(retry.node('response-recorder').attrs['data-state'],'stopped'); assert.equal(retry.node('response-timer').innerHTML,'<span>2.0</span><small>sec recorded</small>'); assert.equal(retry.node('response-timer').attrs['aria-label'],'Recorded duration: 2.0 seconds'); retry.node('response-upload').handlers.click(); await flush(); assert(retry.context.responseBlob); assert.equal(retry.node('response-upload').disabled,false); assert.equal(retry.node('response-record').disabled,false);
   const lost = harness(); lost.click(); await flush(); lost.advance(4000); lost.tracks[0].listeners.ended(); assert.equal(lost.node('label').textContent,'Finished'); assert(lost.context.responseBlob); assert.equal(lost.timers.size,0);
-  const broken = harness(); broken.click(); await flush(); broken.advance(4000); broken.devices[0].onerror(); assert.equal(broken.context.responseBlob,null); assert(broken.tracks[0].stopped); assert.equal(broken.node('response-record').disabled,false);
+  const broken = harness(); broken.click(); await flush(); broken.advance(4000); broken.devices[0].onerror(); assert.equal(broken.context.responseBlob,null); assert.equal(broken.node('dialog').attrs['is-response-focused'],false); assert(broken.tracks[0].stopped); assert.equal(broken.node('response-record').disabled,false);
   const file = harness(); file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=66; file.node('probe').onloadedmetadata(); assert.equal(file.context.responseBlob,null); assert.match(file.node('response-status').textContent,/65 seconds/);
   file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=12; file.node('probe').onloadedmetadata(); assert.equal(file.node('response-upload').hidden,false); assert.equal(file.context.responseRecordedDurationSeconds,12); assert.deepEqual(file.calls,[]);
   console.log('Individual Response recorder passed: opening/ending timing and cues, manual Submit, double-submit guard, early stop, cancellation, late permission, denial, file limit, upload retry and file-picker cancel isolation.');

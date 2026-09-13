@@ -1,5 +1,10 @@
 # 07 Testing Checklist
 
+## IR fade regression (2026-09-13)
+
+Run test-speaking-response-recorder.js and test-speaking-response-focus.js. Verify focus persists from opening through the final five seconds, restores on completion/cancel/error/early stop, and does not change capture or cue deadlines. In the browser, check native dialog and backdrop transitions, hidden controls are not focusable, the stop square is centred, and the clock stays visible during capture. Check narrow-phone and desktop rendering and unchanged explicit Submit after recovery.
+
+
 ## 2026-09-13 — Speaking waiting game
 
 Run `npm run test:speaking-lab` and `npm run test:waiting-runner`. Test queued,

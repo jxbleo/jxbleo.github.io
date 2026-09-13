@@ -1156,3 +1156,16 @@ cp .qa-secrets.example .qa-secrets.local
   build and whitespace checks passed. Updated UI spec and changelog.
 - Owner requested terminal publication commands instead of agent deployment.
   This release includes the preceding approved Group Discussion recorder work.
+
+
+### 2026-09-13 — Approved IR full-capture fade
+
+- Integrated the approved temporary preview into the existing native IR dialog:
+  680 ms surrounding fade for the entire 3 + 60 + 5-second sequence, centred stop
+  square, visible capture clock, and 220 ms restoration. Hidden controls are inert.
+- Completion, cancellation, early finish and recording errors restore the surface;
+  existing microphone ownership, cue scheduling and explicit Submit are preserved.
+- Passed the complete Speaking suite, release verification, static build and diff
+  checks. Local native-dialog browser QA used synthetic audio at desktop and
+  390 px phone width; confirmed persistent focus and final-warning recovery.
+- User authorized static publication. No CloudBase resource or data changes.

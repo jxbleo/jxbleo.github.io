@@ -1,5 +1,10 @@
 # Changelog
 
+## IR approved full-capture fade (2026-09-13)
+
+Applied the approved preview: slow surrounding-content fade across the complete 3 + 60 + 5-second flow, centred stop square, then fast restoration. Preserved private recording, existing tones, cancellation, file fallback and manual submission.
+
+
 ## 2026-09-13 — Speaking Set heading alignment
 
 - Centre the first card's blue year/Set identity. Put Context, Part A and Part B

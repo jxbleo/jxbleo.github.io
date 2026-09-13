@@ -1,5 +1,10 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## IR capture focus (2026-09-13)
+
+After microphone permission, the three-second preparation cue fades the surrounding interface over 680 ms. The question, Set heading, Close, upload controls and page background stay hidden throughout 60 seconds of capture and the final five-second reminder. Only the stationary circular recorder and its countdown remain visible. The stop square is centred; its hidden label occupies no space. Normal completion, early stop, cancellation and failure restore the surroundings in 220 ms (100 ms with Reduced Motion). Audio capture, cue timing and explicit Submit remain unchanged.
+
+
 ## 2026-09-13 — Speaking 自动等待与游戏
 
 Part A 和 Part B 上传后复用 Writing 的 Mr. Cat Runner 和 Uploaded → Finished

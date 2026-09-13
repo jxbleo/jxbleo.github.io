@@ -1398,7 +1398,17 @@
             } catch (_error) { /* A unavailable audio output must not prevent recording. */ }
         });
     }
+    function setResponseSurroundingsHidden(hidden) {
+        // Preserve geometry throughout capture; only the surrounding surfaces fade.
+        responseDialog.classList.toggle('is-response-focused', hidden);
+        responseDialog.querySelectorAll('.speaking-response-close, .speaking-response-dialog-header, .speaking-response-dialog-question, .speaking-response-footer, .speaking-response-status').forEach(function (element) {
+            element.inert = hidden;
+            if (hidden) element.setAttribute('aria-hidden', 'true');
+            else element.removeAttribute('aria-hidden');
+        });
+    }
     function stopResponseHardware() {
+        setResponseSurroundingsHidden(false);
         if (responseFocus) responseFocus.stop(false);
         responseCaptureGeneration += 1;
         responseCaptureState = 'idle';
@@ -1576,6 +1586,7 @@
         if (!responseRecorder || responseRecorder.state === 'inactive') return;
         responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
         responseCaptureState = 'stopping';
+        setResponseSurroundingsHidden(false);
         if (responseFocus) responseFocus.stop(false);
         try { responseRecorder.stop(); } catch (_error) { stopResponseHardware(); }
     }
@@ -1595,6 +1606,8 @@
             record.querySelector('[data-response-record-label]').textContent = label;
             record.setAttribute('aria-label', state === 'finished' && label === 'Finished' ? 'Finished. Record again' : label);
             surface.setAttribute('data-state', state);
+            setResponseSurroundingsHidden(state === 'countdown' || state === 'recording' || state === 'ending');
+            timer.setAttribute('aria-hidden', state === 'countdown' ? 'true' : 'false');
         }
         function readyToSubmit() {
             record.disabled = false;

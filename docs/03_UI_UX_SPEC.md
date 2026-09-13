@@ -1,5 +1,10 @@
 # 03 UI / UX Spec
 
+## IR full-capture fade (2026-09-13)
+
+The native IR dialog preserves its dimensions and recorder position while the card surface, border, shadow, question, Set label, Close and footer fade out over 680 ms. Its backdrop becomes an opaque quiet light surface, suppressing underlying page and microphone-colour decoration throughout opening, recording and ending. The clock fades out for opening only and returns for the 60-second recording; the stop label is removed from layout so the square stays at the circle centre. After all five final warning seconds, surroundings restore in 220 ms. Hidden surrounding controls are inert and excluded from accessibility navigation. Cancel, errors and early stop restore them too. Reduced Motion uses 100 ms transitions and retains existing non-pulsing countdowns.
+
+
 ## 2026-09-13 — Crown name cache repair
 
 Vocabulary Mastered displays the cached explicit English name immediately and

@@ -1193,3 +1193,37 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 }
 #individual-response-dialog { box-shadow: 0 36px 110px #0007,0 0 0 1px #ffffff12; }
 @media (prefers-reduced-transparency: reduce) { #individual-response-dialog::backdrop { background-color: #171c25; -webkit-backdrop-filter: none; backdrop-filter: none; } }
+
+
+/* Approved IR focus: slow withdrawal, fast restoration, stable dial geometry. */
+#individual-response-dialog {
+    background: #fdfcfe;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+    transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+#individual-response-dialog::backdrop { transition: background-color 220ms ease; }
+#individual-response-dialog .speaking-response-close,
+#individual-response-dialog .speaking-response-dialog-header,
+#individual-response-dialog .speaking-response-dialog-question,
+#individual-response-dialog .speaking-response-footer,
+#individual-response-dialog .speaking-response-status { opacity: 1; transition: opacity 220ms ease; }
+#individual-response-dialog.is-response-focused { background-color: transparent; border-color: transparent; box-shadow: none; transition-duration: 680ms; }
+#individual-response-dialog.is-response-focused::backdrop { background-color: #f8f8fb; background-image: none; transition-duration: 680ms; }
+#individual-response-dialog.is-response-focused .speaking-response-close,
+#individual-response-dialog.is-response-focused .speaking-response-dialog-header,
+#individual-response-dialog.is-response-focused .speaking-response-dialog-question,
+#individual-response-dialog.is-response-focused .speaking-response-footer,
+#individual-response-dialog.is-response-focused .speaking-response-status { opacity: 0; pointer-events: none; transition: opacity 680ms cubic-bezier(.2,.65,.3,1); }
+.speaking-response-dialog-recorder[data-state="recording"] .speaking-response-microphone-label,
+.speaking-response-dialog-recorder[data-state="ending"] .speaking-response-microphone-label { display: none; }
+#individual-response-dialog .speaking-response-clock { transition: opacity 220ms ease; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="countdown"] .speaking-response-clock { visibility: visible; opacity: 0; transition-duration: 680ms; }
+@media (prefers-reduced-motion: reduce) {
+    #individual-response-dialog, #individual-response-dialog::backdrop,
+    #individual-response-dialog .speaking-response-close,
+    #individual-response-dialog .speaking-response-dialog-header,
+    #individual-response-dialog .speaking-response-dialog-question,
+    #individual-response-dialog .speaking-response-footer,
+    #individual-response-dialog .speaking-response-status,
+    #individual-response-dialog .speaking-response-clock { transition-duration: 100ms !important; }
+}
