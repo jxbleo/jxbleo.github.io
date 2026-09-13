@@ -6,9 +6,11 @@ Verify ready has Upload and no Ready label; duration picker shows the wheel and 
 
 ## Individual Response completion feedback (2026-09-13)
 
+Verify the top shows the question only, with no year/Set header or Q-number prefix. It remains visible and accessible during countdown, capture and ending, without overlapping the Recording indicator. Verify both saved-state lines fit the circle on phones and tapping still follows the existing replacement confirmation.
+
 Verify the red dot and `Recording` appear only after the opening 3/2/1 and actual capture start. Both remain steady through the final warning; Stop (including delayed finalization), automatic completion, cancellation and microphone error hide the indicator. Check top safe-area placement and stable circle/timer geometry on desktop and phone.
 
-Check automatic completion shows `Finished` in the circle and `Your recording was successful.` below, with no numeric clock. Stop early at single- and double-digit durations: digits and `sec recorded` form one centred row with balanced type at desktop, phone and short-screen sizes. Repeat recording, cancel and microphone failure must restore the normal timer and accessible timer role. Submit remains explicit.
+Check automatic completion shows `Recording saved` and `Tap to start over` on two centred lines in the circle and `Your recording was successful.` below, with no numeric clock. Stop early at single- and double-digit durations: digits and `sec recorded` form one centred row with balanced type at desktop, phone and short-screen sizes. Repeat recording, cancel and microphone failure must restore the normal timer and accessible timer role. Submit remains explicit.
 
 ## Discussion Back regression (2026-09-13)
 

@@ -11,7 +11,7 @@ function extract(name) {
   const next = source.indexOf('\n    function ', start + 1);
   return source.slice(start, next < 0 ? undefined : next);
 }
-const functions = ['timerClockText', 'responseElapsedSeconds', 'responseCaptureActive', 'cancelResponseCues', 'prepareResponseCueAudio', 'scheduleResponseCues', 'setResponseSurroundingsHidden', 'setResponseRecordingIndicator', 'stopResponseHardware', 'finishResponseRecording', 'bindIndividualResponseRecording', 'responseDialogRecorderMarkup', 'responseSetHeading'];
+const functions = ['timerClockText', 'responseElapsedSeconds', 'responseCaptureActive', 'cancelResponseCues', 'prepareResponseCueAudio', 'scheduleResponseCues', 'setResponseSurroundingsHidden', 'setResponseRecordingIndicator', 'stopResponseHardware', 'finishResponseRecording', 'bindIndividualResponseRecording', 'responseDialogRecorderMarkup'];
 const flush = () => new Promise(setImmediate);
 function harness(options = {}) {
   let now = 1000, sequence = 0, resolvePermission;
@@ -45,7 +45,7 @@ function harness(options = {}) {
     URL: { createObjectURL: () => 'blob:fixture', revokeObjectURL() {} },
     responseRecorder: null, responseStream: null, responseChunks: [], responseStartedAt: 0, responseRecordedDurationSeconds: null, responseTimer: 0, responseBlob: null, responseUploadOperationId: '', responseUploadInProgress: false,
     responseCaptureState: 'idle', responseCaptureGeneration: 0, responseDeadline: 0, responseCueContext: null, responseCueNodes: [],
-    responseFocus: { start(input, audio) { assert.strictEqual(input, stream); assert(audio); focusEvents.push('start'); }, stop(immediate) { focusEvents.push(immediate ? 'clear' : 'stop'); } }, selectedResponse: null, responseDialog: { open: false, classList: { toggle(name, value) { node('dialog').attrs[name] = value; } }, querySelectorAll: () => [node('surroundings')] }, esc: value => String(value),
+    responseFocus: { start(input, audio) { assert.strictEqual(input, stream); assert(audio); focusEvents.push('start'); }, stop(immediate) { focusEvents.push(immediate ? 'clear' : 'stop'); } }, selectedResponse: null, responseDialog: { open: false, classList: { toggle(name, value) { node('dialog').attrs[name] = value; } }, querySelectorAll: selector => { assert(!selector.includes('.speaking-response-dialog-question'), 'question stays accessible during capture'); return [node('surroundings')]; } }, esc: value => String(value),
     friendlyError: error => error.message,
     ensureIndividualResponseCreated: response => { calls.push('create'); return Promise.resolve(response); },
     call: (action, payload) => { calls.push(action); if (options.uploadFails && action === 'startIndividualResponseAudioUpload') return Promise.reject(new Error('Upload failed')); return Promise.resolve({ upload: { cloud_path: 'private/test' }, asset_id: 'asset' }); },
@@ -94,7 +94,7 @@ async function run() {
   h.advance(60000); assert.equal(h.node('response-recorder').attrs['data-state'], 'ending'); assert.equal(h.node('response-timer').textContent, '00:03');
   assert.equal(h.node('response-recording-indicator').hidden, false, 'ending warning still captures audio');
   assert.equal(h.node('dialog').attrs['is-response-focused'], true, 'keep focus through final three seconds');
-  h.advance(3000); assert.equal(h.devices[0].stopped - h.devices[0].started, 63000); assert.equal(h.node('label').textContent, 'Finished');
+  h.advance(3000); assert.equal(h.devices[0].stopped - h.devices[0].started, 63000); assert.equal(h.node('label').innerHTML, '<span>Recording saved</span><small>Tap to start over</small>');
   assert.equal(h.focusEvents.at(-1), 'stop');
   assert.equal(h.node('response-recording-indicator').hidden, true);
   assert.equal(h.node('response-timer').textContent, 'Your recording was successful.');
@@ -113,7 +113,7 @@ async function run() {
   const cancelled = harness(); cancelled.click(); await flush(); cancelled.advance(1000); cancelled.click(); cancelled.advance(70000); assert.equal(cancelled.devices[0].started,undefined); assert(cancelled.tracks[0].stopped); assert.equal(cancelled.timers.size,0); assert.equal(cancelled.node('dialog').attrs['is-response-focused'],false); assert(cancelled.cues.every(c=>c.cancelled));
   const denied = harness({denied:true}); denied.click(); await flush(); assert.equal(denied.node('response-record').disabled,false); assert.equal(denied.node('response-file').disabled,false); assert.match(denied.node('response-status').textContent,/denied/);
   const retry = harness({uploadFails:true}); retry.click(); await flush(); retry.advance(5000); retry.click(); assert.equal(retry.node('label').textContent,'Tap to Start Over'); assert.equal(retry.context.responseRecordedDurationSeconds,2); assert.equal(retry.node('response-recorder').attrs['data-state'],'stopped'); assert.equal(retry.node('response-timer').innerHTML,'<span>2.0</span><small>sec recorded</small>'); assert.equal(retry.node('response-timer').attrs['aria-label'],'Recorded duration: 2.0 seconds'); retry.node('response-upload').handlers.click(); await flush(); assert(retry.context.responseBlob); assert.equal(retry.node('response-upload').disabled,false); assert.equal(retry.node('response-record').disabled,false);
-  const lost = harness(); lost.click(); await flush(); lost.advance(4000); lost.tracks[0].listeners.ended(); assert.equal(lost.node('label').textContent,'Finished'); assert(lost.context.responseBlob); assert.equal(lost.timers.size,0);
+  const lost = harness(); lost.click(); await flush(); lost.advance(4000); lost.tracks[0].listeners.ended(); assert.equal(lost.node('label').innerHTML,'<span>Recording saved</span><small>Tap to start over</small>'); assert(lost.context.responseBlob); assert.equal(lost.timers.size,0);
   const broken = harness(); broken.click(); await flush(); broken.advance(4000); broken.devices[0].onerror(); assert.equal(broken.context.responseBlob,null); assert.equal(broken.node('dialog').attrs['is-response-focused'],false); assert(broken.tracks[0].stopped); assert.equal(broken.node('response-record').disabled,false);
   assert.equal(broken.node('response-recording-indicator').hidden,true,'microphone failure hides Recording');
   const file = harness(); file.node('response-file').files=[{type:'audio/mp4',name:'sample.m4a'}]; file.node('response-file').handlers.change(); file.node('probe').duration=66; file.node('probe').onloadedmetadata(); assert.equal(file.context.responseBlob,null); assert.match(file.node('response-status').textContent,/65 seconds/);

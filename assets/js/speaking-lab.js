@@ -1415,7 +1415,7 @@
     function setResponseSurroundingsHidden(hidden) {
         // Preserve geometry throughout capture; only the surrounding surfaces fade.
         responseDialog.classList.toggle('is-response-focused', hidden);
-        responseDialog.querySelectorAll('.speaking-response-close, .speaking-response-dialog-header, .speaking-response-dialog-question, .speaking-response-footer, .speaking-response-status').forEach(function (element) {
+        responseDialog.querySelectorAll('.speaking-response-close, .speaking-response-footer, .speaking-response-status').forEach(function (element) {
             element.inert = hidden;
             if (hidden) element.setAttribute('aria-hidden', 'true');
             else element.removeAttribute('aria-hidden');
@@ -1501,10 +1501,6 @@
     function responseDialogRecorderMarkup() {
         return '<div class="speaking-response-dialog-recorder" id="response-recorder" data-state="idle"><div class="speaking-response-recording-indicator" id="response-recording-indicator" role="status" hidden><span class="speaking-response-recording-dot" aria-hidden="true"></span><span>Recording</span></div><div class="speaking-response-dial"><svg class="speaking-response-ring" viewBox="0 0 222 222" aria-hidden="true"><circle class="speaking-response-ring-track" cx="111" cy="111" r="106"/><circle class="speaking-response-ring-progress" id="response-ring-progress" cx="111" cy="111" r="106" pathLength="1"/></svg><button class="speaking-response-microphone" type="button" id="response-record" aria-label="Tap to Record"><svg class="speaking-response-mic-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7.5 16a8.5 8.5 0 0 0 17 0M16 24.5V28M12 28h8"/></svg><span class="speaking-response-stop-icon" aria-hidden="true"></span><svg class="speaking-response-finished-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m7 16 6 6L25 10"/></svg><span class="speaking-response-opening-digit" id="response-opening-digit" aria-live="polite">3</span><span class="speaking-response-microphone-label" data-response-record-label>Tap to Record</span></button></div><div class="speaking-response-clock" id="response-timer" role="timer" aria-label="Time left">01:00</div><div class="speaking-response-footer"><label class="speaking-response-dialog-file" id="response-file-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m-3.5 3.5L10 3l3.5 3.5M4 12v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>Upload Files<input type="file" id="response-file" accept="audio/*" class="speaking-response-file-input" aria-label="Upload Files"></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Submit</button></div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite"></p></div>';
     }
-    function responseSetHeading(response) {
-        var snapshot = response.set_snapshot || {};
-        return [snapshot.exam_year, snapshot.paper_version ? 'Set ' + snapshot.paper_version : '', snapshot.title].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
-    }
     function renderIndividualResponseDialog(response) {
         if (response.recording_status === 'uploaded') {
             stopSpeakingWaiting();
@@ -1521,7 +1517,7 @@
         var uploaded = response.recording_status === 'uploaded';
         var reportReady = response.analysis_status === 'ready';
         var body = uploaded ? '<div class="speaking-response-dialog-state"><span class="speaking-upload-spinner" aria-hidden="true"></span><h3>' + (reportReady ? 'Your report is ready.' : 'Preparing your private analysis…') + '</h3><p>' + (reportReady ? 'Open Part B in the sidebar whenever you want to review it.' : 'You can close this window and return later. Your recording is safe.') + '</p></div>' : responseDialogRecorderMarkup();
-        responseDialogContent.innerHTML = '<button class="speaking-response-close" type="button" id="individual-response-dialog-close" aria-label="Back to questions"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><div class="speaking-response-dialog-header"><p class="eyebrow accent">' + esc(responseSetHeading(response)) + '</p></div><h2 class="speaking-response-dialog-question" id="individual-response-dialog-title"><span>Q' + esc(question.order || '') + ':</span> ' + esc(question.text || '') + '</h2>' + body;
+        responseDialogContent.innerHTML = '<button class="speaking-response-close" type="button" id="individual-response-dialog-close" aria-label="Back to questions"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><h2 class="speaking-response-dialog-question" id="individual-response-dialog-title">' + esc(question.text || '') + '</h2>' + body;
         document.getElementById('individual-response-dialog-close').addEventListener('click', closeIndividualResponseDialog);
         if (!uploaded) bindIndividualResponseRecording(response);
         if (!responseFocus) responseFocus = createResponseFocus(responseDialog);
@@ -1624,7 +1620,8 @@
         function setRecordButton(label, state) {
             if (!record) return;
             record.querySelector('[data-response-record-label]').textContent = label;
-            record.setAttribute('aria-label', state === 'finished' && label === 'Finished' ? 'Finished. Record again' : label);
+            if (state === 'finished') record.querySelector('[data-response-record-label]').innerHTML = '<span>Recording saved</span><small>Tap to start over</small>';
+            record.setAttribute('aria-label', state === 'finished' ? 'Recording saved. Tap to start over' : label);
             surface.setAttribute('data-state', state);
             setResponseRecordingIndicator(state === 'recording' || state === 'ending');
             setResponseSurroundingsHidden(state === 'countdown' || state === 'recording' || state === 'ending');
@@ -1633,7 +1630,7 @@
         }
         function readyToSubmit() {
             record.disabled = false;
-            setRecordButton(stoppedEarly ? 'Tap to Start Over' : 'Finished', stoppedEarly ? 'stopped' : 'finished');
+            setRecordButton(stoppedEarly ? 'Tap to Start Over' : 'Recording saved', stoppedEarly ? 'stopped' : 'finished');
             if (stoppedEarly) {
                 var durationText = Number(responseRecordedDurationSeconds || 0).toFixed(1);
                 timer.innerHTML = '<span>' + durationText + '</span><small>sec recorded</small>';

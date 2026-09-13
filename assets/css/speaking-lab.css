@@ -1210,7 +1210,6 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog.is-response-focused::backdrop { background-color: #f8f8fb; background-image: none; transition-duration: 680ms; }
 #individual-response-dialog.is-response-focused .speaking-response-close,
 #individual-response-dialog.is-response-focused .speaking-response-dialog-header,
-#individual-response-dialog.is-response-focused .speaking-response-dialog-question,
 #individual-response-dialog.is-response-focused .speaking-response-footer,
 #individual-response-dialog.is-response-focused .speaking-response-status { opacity: 0; pointer-events: none; transition: opacity 680ms cubic-bezier(.2,.65,.3,1); }
 .speaking-response-dialog-recorder[data-state="recording"] .speaking-response-microphone-label,
@@ -1270,3 +1269,9 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog .speaking-response-recording-indicator { position:fixed; top:max(24px,calc(env(safe-area-inset-top,0px) + 12px)); left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; gap:8px; margin:0; color:#b43b38; font-size:15px; font-weight:600; line-height:24px; letter-spacing:.01em; pointer-events:none; }
 #individual-response-dialog .speaking-response-recording-indicator[hidden] { display:none; }
 #individual-response-dialog .speaking-response-recording-dot { flex:none; width:8px; height:8px; border-radius:50%; background:#d8423e; }
+
+/* Keep the question readable throughout capture; reserve the top row for Back/Recording. */
+#individual-response-dialog .speaking-response-dialog-body { padding-top:max(64px,calc(env(safe-area-inset-top,0px) + 52px)); }
+#individual-response-dialog .speaking-response-dialog-question { margin-top:0; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone-label { display:flex; flex-direction:column; align-items:center; gap:4px; line-height:1.4; text-align:center; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone-label small { font-size:.78em; font-weight:500; }

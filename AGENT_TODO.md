@@ -106,6 +106,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13 — IR question stays visible during recording: removed Set/year
+  header and Q-number prefix; preserved the question in the fade/accessibility
+  boundary. Saved recording now uses two lines: Recording saved / Tap to start
+  over. Reserved top indicator space; retained replacement confirmation and
+  existing success/duration feedback. Full Speaking suite, release verification,
+  static build and diff checks passed. Browser connection remains unavailable;
+  device visual QA pending. Owner-authorized static publication; no backend change.
+
 - 2026-09-13: Continuous Discussion circle: Upload → capture/file → Submit → waiting game; larger recording indicator, minimal picker and more responsive real-input outer wave. Recorder/host lifecycle tests and local synthetic browser capture; no physical microphone or production audio used.
 
 - 2026-09-13 — Individual Response recording feedback and live indicator:
@@ -118,7 +126,9 @@ cp .qa-secrets.example .qa-secrets.local
   and existing regressions. Full Speaking suite (using existing workspace
   dependencies), release verification, JS syntax, build and diff checks passed.
   CUA inventory timed out; device visual QA remains pending. Owner authorized
-  static publication; no CloudBase function or data changes are required.
+  static publication; release bc274184 is live. COS run 34756134636 succeeded;
+  live HTML, JS, CSS and config bytes match the release. No CloudBase function
+  or data changes were required.
 
 - 2026-09-13: Discussion pre-recording Back restores its original Set, focus and scroll position; recorder/host regression covers ready, pending permission, countdown, Escape and stale callbacks. Static-only fix.
 

@@ -6,9 +6,11 @@ Remove the ready label and both visible duration-picker headings; keep accessibl
 
 ## Individual Response recording feedback (2026-09-13)
 
+The top question heading contains the question text only, without year, Set metadata or a Q-number prefix. It remains visible and accessible throughout opening and recording. Reserve a fixed-height top row for Back and the recording indicator, keeping the question clear of both.
+
 After the three-second opening countdown, successful capture start shows a steady red dot and `Recording` at the top centre above the circle. The indicator remains visible during the final three-second warning while capture continues, and hides immediately on Stop, cancellation, completion or microphone failure. It is absent during permission and opening countdown, does not pulse, and does not move the circle or timer.
 
-After successful automatic completion, keep the checkmark and `Finished` inside the circle. Replace the lower timer with the centred green message `Your recording was successful.` and announce it as a status. Manual Stop keeps `Tap to Start Over`; show the frozen duration as one centred baseline-aligned row, with 20px digits and a 16px `sec recorded` caption. Both result states use a full-width centred feedback area and normal letter spacing, including on short screens. Keep manual Submit and all existing recording/upload behavior.
+After successful automatic completion, keep the checkmark and show two centred lines inside the circle: `Recording saved` then `Tap to start over`. Replace the lower timer with the centred green message `Your recording was successful.` and announce it as a status. Manual Stop keeps `Tap to Start Over`; show the frozen duration as one centred baseline-aligned row, with 20px digits and a 16px `sec recorded` caption. Both result states use a full-width centred feedback area and normal letter spacing, including on short screens. Keep manual Submit and all existing recording/upload behavior.
 
 ## Discussion return before recording (2026-09-13)
 
@@ -16,12 +18,12 @@ When opened from a Set, the Discussion recorder Back button and Escape restore t
 
 ## Current full-page IR and three-second endings (2026-09-13)
 
-The IR native dialog now fills the viewport with no floating-card border, shadow, scrim or outer margin. Back at the top left returns to the Set; larger Set metadata and question occupy the top. The circle uses min(56dvh, 80vw, 620px), with a smaller short-screen rule; microphone, central stop square and opening digit scale with it. The larger clock remains below the circle. Keep 680 ms surrounding fade, stationary recording geometry, 220 ms restoration and Reduced Motion support. IR capture is 60 + 3 seconds with three final cues; Discussion also ends with three seconds. No automatic submission is added.
+The IR native dialog now fills the viewport with no floating-card border, shadow, scrim or outer margin. Back at the top left returns to the Set; only the question appears above the recorder, without year, Set metadata, title duplication or a Q-number prefix. The circle uses min(56dvh, 80vw, 620px), with a smaller short-screen rule; microphone, central stop square and opening digit scale with it. The larger clock remains below the circle. Keep 680 ms surrounding fade, stationary recording geometry, 220 ms restoration and Reduced Motion support. IR capture is 60 + 3 seconds with three final cues; Discussion also ends with three seconds. No automatic submission is added.
 
 
 ## IR full-capture fade (2026-09-13)
 
-The native IR dialog preserves its dimensions and recorder position while the card surface, border, shadow, question, Set label, Close and footer fade out over 680 ms. Its backdrop becomes an opaque quiet light surface, suppressing underlying page and microphone-colour decoration throughout opening, recording and ending. The clock fades out for opening only and returns for the 60-second recording; the stop label is removed from layout so the square stays at the circle centre. After all five final warning seconds, surroundings restore in 220 ms. Hidden surrounding controls are inert and excluded from accessibility navigation. Cancel, errors and early stop restore them too. Reduced Motion uses 100 ms transitions and retains existing non-pulsing countdowns.
+The native IR dialog preserves its dimensions and recorder position while the card surface, border, shadow, Close and footer fade out over 680 ms. The question remains visible and accessible during opening, capture and ending; no Set label is rendered. Its backdrop becomes an opaque quiet light surface, suppressing underlying page and microphone-colour decoration throughout opening, recording and ending. The clock fades out for opening only and returns for the 60-second recording; the stop label is removed from layout so the square stays at the circle centre. After all five final warning seconds, surroundings restore in 220 ms. Hidden surrounding controls are inert and excluded from accessibility navigation. Cancel, errors and early stop restore them too. Reduced Motion uses 100 ms transitions and retains existing non-pulsing countdowns.
 
 ## 2026-09-13 — Article-first Speaking Set detail
 
