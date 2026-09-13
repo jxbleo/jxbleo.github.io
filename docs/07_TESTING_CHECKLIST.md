@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## IR ending reminder (2026-09-13)
+
+Verify central 3/2/1 at 60/61/62 seconds, recording remains active through 62.999 seconds, and automatic stop happens at 63 seconds. Check the hidden external timer does not duplicate announcements, the central Recording indicator does not overlap the digit, and early stop/saved/restart remain correct.
+
 ## Speaking upload label and icon (2026-09-13)
 
 Verify both recording entry screens show Upload Files with the approved audio-file/music-note icon, including phone widths. File selection, picker cancellation and explicit Submit retain their existing behaviour.

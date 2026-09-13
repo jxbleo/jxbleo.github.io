@@ -1725,8 +1725,12 @@
                     if (responseCaptureState !== 'recording') return;
                     var seconds = responseElapsedSeconds();
                     if (seconds >= 63) { finishResponseRecording(); return; }
-                    surface.setAttribute('data-state', seconds >= 60 ? 'ending' : 'recording');
-                    timer.textContent = timerClockText(seconds >= 60 ? 63 - seconds : 60 - seconds);
+                    var ending = seconds >= 60;
+                    surface.setAttribute('data-state', ending ? 'ending' : 'recording');
+                    // The last three seconds are still part of this same recording.
+                    if (ending) digit.textContent = String(Math.ceil(63 - seconds));
+                    timer.setAttribute('aria-hidden', ending ? 'true' : 'false');
+                    timer.textContent = timerClockText(ending ? 63 - seconds : 60 - seconds);
                     ring.style.strokeDashoffset = String(Math.min(1, seconds / 60));
                 }
                 responseTimer = window.setInterval(tick, 50);

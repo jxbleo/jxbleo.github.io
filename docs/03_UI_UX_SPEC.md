@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Individual Response central ending reminder (2026-09-13)
+
+After the 60-second response, show large red 3 → 2 → 1 in the same central digit slot as the opening countdown. Keep the faint circular track and tinted center, with a small blinking Recording indicator above the digit inside the circle. Hide the duplicate external clock visually and from accessibility while retaining its space. The same MediaRecorder continues uninterrupted until 63 seconds; opening countdown remains unrecorded. Stop is still available during the warning.
+
 ## Speaking upload label and icon (2026-09-13)
 
 Group Discussion and Individual Response both label their existing-audio picker Upload Files and use approved option 03, a folded audio-file outline with a music note. Preserve each surface’s existing button colour, sizing and file-selection behaviour.

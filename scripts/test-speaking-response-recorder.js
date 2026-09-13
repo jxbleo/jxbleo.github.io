@@ -95,7 +95,13 @@ async function run() {
   h.advance(60000); assert.equal(h.context.responseWakeLock.active, true, 'IR ending reminder retains screen lock'); assert.equal(h.node('response-recorder').attrs['data-state'], 'ending'); assert.equal(h.node('response-timer').textContent, '00:03');
   assert.equal(h.node('response-recording-indicator').hidden, false, 'ending warning still captures audio');
   assert.equal(h.node('dialog').attrs['is-response-focused'], true, 'keep focus through final three seconds');
-  h.advance(3000); assert.equal(h.devices[0].stopped - h.devices[0].started, 63000); assert.equal(h.node('label').textContent, 'Tap to start over');
+  assert.equal(h.node('response-timer').attrs['aria-hidden'], 'true', 'external duplicate countdown is hidden');
+  assert.equal(h.node('response-opening-digit').textContent, '3');
+  assert.equal(h.devices[0].state, 'recording', 'final reminder must not stop capture at 60 seconds');
+  h.advance(1000); assert.equal(h.node('response-opening-digit').textContent, '2'); assert.equal(h.devices[0].state, 'recording');
+  h.advance(1000); assert.equal(h.node('response-opening-digit').textContent, '1'); assert.equal(h.devices[0].state, 'recording');
+  h.advance(999); assert.equal(h.devices[0].state, 'recording', 'capture includes the entire last second');
+  h.advance(1); assert.equal(h.devices[0].stopped - h.devices[0].started, 63000); assert.equal(h.node('label').textContent, 'Tap to start over');
   assert.equal(h.focusEvents.at(-1), 'stop');
   assert.equal(h.node('response-recording-indicator').hidden, true);
   assert.equal(h.node('response-timer').textContent, 'Your recording was successfully saved.');

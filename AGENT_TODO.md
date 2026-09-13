@@ -106,6 +106,12 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-13 — IR final three seconds inside the circle
+
+- Reused the opening digit for final 3/2/1; retained small Recording above it, hid the duplicate external clock without moving the stack, and kept capture active through all 63 seconds. Updated UI/changelog/test docs and cache versions; preserved the newer Upload Files icon release.
+- Full Speaking suite and release verification passed. Lifecycle tests assert active recording at 60/61/62/62.999 seconds and stop at 63. Browser fixture using production markup/CSS at 375×667 confirmed centered digit, hidden external clock, and 20 px separation from Recording. No real audio/backend submissions in this visual QA.
+- Static publication pending; no backend changes.
+
 - 2026-09-13: Both Speaking audio pickers now read Upload Files and use approved option 03 (Lucide file-music). Verified the actual button markup/styles at 390 px; full Speaking regression suite, release verification and static build passed. UI/changelog/testing/decision docs and icon license included. No owner action beyond refreshing; static-only release.
 
 ### 2026-09-13 — Centered Speaking Recording and stable IR phone spacing

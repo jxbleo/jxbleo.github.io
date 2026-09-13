@@ -1,5 +1,9 @@
 # Changelog
 
+## IR central final three-second reminder (2026-09-13)
+
+Moved the final three-second warning from the lower clock into the circle, matching the opening countdown. Capture continues throughout all three warning seconds, with a smaller Recording indicator above the number and the same explicit Submit afterward.
+
 ## Speaking upload label and icon (2026-09-13)
 
 Unify Group Discussion and IR audio-picker labels as Upload Files and replace their tray-arrow icon with the approved audio-file/music-note icon.

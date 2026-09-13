@@ -1297,3 +1297,12 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog .speaking-response-clock{margin-top:16px;min-height:48px;font-size:44px}
 #individual-response-dialog .speaking-response-footer{margin-top:20px}
 }
+
+/* Final 3–2–1 stays in the circle while the same audio take continues. */
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-microphone { position:relative; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-opening-digit { display:block; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-recording-indicator { position:absolute; top:8%; font-size:clamp(14px,5cqw,18px); min-height:24px; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-clock { visibility:hidden; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-ring { visibility:visible; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-ring-track { stroke:#f7deda; }
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-ring-progress { visibility:hidden; }
