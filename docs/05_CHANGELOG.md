@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-13 — Speaking Set heading alignment
+
+- Centre the first card's blue year/Set identity. Put Context, Part A and Part B
+  labels left and their minus/plus controls right on one row at phone and desktop
+  widths; retain the Context article title on its own centred row.
+- Prepared with the approved circle recorder for owner-run static publication.
+
 ## 2026-09-13 — Group Discussion approved circle recorder
 
 - Replace the Part A entry with a centred microphone and Start; open directly

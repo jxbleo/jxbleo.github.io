@@ -2762,10 +2762,13 @@ Context, `Part A - Group Discussion`, and
 `Part B - Individual Response` use centred blue section labels without 01/A/B
 icon tiles. Part A shows the source `TASK`
 statement before `You may want to talk about:` and its four bullet points.
-Context, Part A, and Part B place an equal-width minus/plus text-size control in
-the upper-right of their own card header. Each control changes only that card's
-reading copy through small, medium, and large steps, disables the unavailable
-direction at either endpoint, and keeps the centred section label unobstructed.
+The first card centres its blue year and Set identity above the topic title.
+Context, Part A - Group Discussion, and Part B - Individual Response each place
+their section label on the left and an equal-width minus/plus text-size control
+on the right of the same header row, including on phones. The Context article
+title sits centred on the next row. Each control changes only that card's
+reading copy through small, medium, and large steps and disables the unavailable
+direction at either endpoint.
 The Context body begins directly with the article; it never renders the
 source/original-material note. Choose-a-Set cards keep only their year/type
 leading tile, Set number, topic, and disclosure arrow; `DSE Paper 4` and the

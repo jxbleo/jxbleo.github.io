@@ -1145,3 +1145,14 @@ cp .qa-secrets.example .qa-secrets.local
 - Updated product, architecture, UI, changelog and regression documentation.
   No backend or production data changes. Real-device acoustic/permission quality
   remains device-dependent; synthetic browser QA did not access a physical mic.
+
+
+### 2026-09-13 — Speaking Set headings, owner-run release
+
+- Centred the first card's year/Set eyebrow. Context, Part A and Part B now
+  share a left-label/right-controls row; Context's article title stays below.
+- Verified all four cards at desktop and 390 px phone width with production
+  markup/CSS and synthetic content. UI contracts, release verification, static
+  build and whitespace checks passed. Updated UI spec and changelog.
+- Owner requested terminal publication commands instead of agent deployment.
+  This release includes the preceding approved Group Discussion recorder work.
