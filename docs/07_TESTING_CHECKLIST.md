@@ -14,11 +14,9 @@ Verify ready has Upload and no Ready label; duration picker shows the wheel and 
 
 ## Individual Response completion feedback (2026-09-13)
 
-Verify the top shows the question only, with no year/Set header or Q-number prefix. It remains visible and accessible during countdown, capture and ending, without overlapping the Recording indicator. Verify both saved-state lines fit the circle on phones and tapping still follows the existing replacement confirmation.
+Verify question-only heading remains visible and accessible throughout recording. The red dot and Recording row must sit between the question and circle at desktop, phone and short-screen sizes, and reserve its space while hidden. Check the dot flashes during actual capture, including the ending warning, while the label stays steady; Reduced Motion uses a steady dot. Permission, opening countdown, Stop, completion and errors hide the indicator without shifting the circle.
 
-Verify the red dot and `Recording` appear only after the opening 3/2/1 and actual capture start. Both remain steady through the final warning; Stop (including delayed finalization), automatic completion, cancellation and microphone error hide the indicator. Check top safe-area placement and stable circle/timer geometry on desktop and phone.
-
-Check automatic completion shows `Recording saved` and `Tap to start over` on two centred lines in the circle and `Your recording was successful.` below, with no numeric clock. Stop early at single- and double-digit durations: digits and `sec recorded` form one centred row with balanced type at desktop, phone and short-screen sizes. Repeat recording, cancel and microphone failure must restore the normal timer and accessible timer role. Submit remains explicit.
+For manual Stop and automatic completion, check the circle contains only `Tap to start over` and no microphone/checkmark/saved heading. The lower field reads `Your recording was successfully saved`. Retain the frozen audio duration, manual Submit, upload retries and existing replacement confirmation. Re-recording restores the normal timer and indicator lifecycle.
 
 ## 2026-09-13 — Set refresh route
 

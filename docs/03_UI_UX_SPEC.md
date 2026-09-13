@@ -14,11 +14,9 @@ Remove the ready label and both visible duration-picker headings; keep accessibl
 
 ## Individual Response recording feedback (2026-09-13)
 
-The top question heading contains the question text only, without year, Set metadata or a Q-number prefix. It remains visible and accessible throughout opening and recording. Reserve a fixed-height top row for Back and the recording indicator, keeping the question clear of both.
+The question heading contains only question text, without year, Set metadata or a Q-number prefix, and stays visible and accessible during opening, recording and ending. The recording indicator occupies a reserved centred row between the question and the circular progress display; hiding it does not move the circle. After the opening three seconds, a blinking red dot and steady `Recording` label show actual capture. The dot alternates full/dim opacity every 0.6 seconds; Reduced Motion keeps it steady. Hide the indicator immediately on Stop, completion or error, and during permission/countdown.
 
-After the three-second opening countdown, successful capture start shows a steady red dot and `Recording` at the top centre above the circle. The indicator remains visible during the final three-second warning while capture continues, and hides immediately on Stop, cancellation, completion or microphone failure. It is absent during permission and opening countdown, does not pulse, and does not move the circle or timer.
-
-After successful automatic completion, keep the checkmark and show two centred lines inside the circle: `Recording saved` then `Tap to start over`. Replace the lower timer with the centred green message `Your recording was successful.` and announce it as a status. Manual Stop keeps `Tap to Start Over`; show the frozen duration as one centred baseline-aligned row, with 20px digits and a 16px `sec recorded` caption. Both result states use a full-width centred feedback area and normal letter spacing, including on short screens. Keep manual Submit and all existing recording/upload behavior.
+Both automatic completion and manual Stop show only `Tap to start over` inside the circle, without microphone/checkmark icons or another label. The lower field reads `Your recording was successfully saved`, centred in green, with no duration digits. Duration remains frozen and retained internally for submission. Keep explicit Submit and the existing recording replacement confirmation; this message does not mean the recording has already uploaded.
 
 ## 2026-09-13 — Set refresh restoration
 

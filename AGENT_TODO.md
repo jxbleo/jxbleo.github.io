@@ -106,6 +106,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13 — IR indicator and completion refinement: moved Recording into a
+  reserved row between question and circle; only the dot blinks (Reduced Motion
+  stays steady). Every saved take shows only Tap to start over in the circle
+  and Your recording was successfully saved below; retained duration internally,
+  explicit Submit and replacement confirmation. Full Speaking suite, release
+  verification, JS syntax, static build and diff checks passed. Browser visual
+  QA remains unavailable from the prior connection failures. Static-only release.
+
 - 2026-09-13: Discussion microphone/stop controls now match IR; adjustable large clock and icon Upload below circle, with final-minute seconds exclusively inside. Recorder state regression and local synthetic browser QA; no backend change.
 
 - 2026-09-13 — IR question stays visible during recording: removed Set/year

@@ -1640,8 +1640,7 @@
         function setRecordButton(label, state) {
             if (!record) return;
             record.querySelector('[data-response-record-label]').textContent = label;
-            if (state === 'finished') record.querySelector('[data-response-record-label]').innerHTML = '<span>Recording saved</span><small>Tap to start over</small>';
-            record.setAttribute('aria-label', state === 'finished' ? 'Recording saved. Tap to start over' : label);
+            record.setAttribute('aria-label', label);
             surface.setAttribute('data-state', state);
             setResponseRecordingIndicator(state === 'recording' || state === 'ending');
             setResponseSurroundingsHidden(state === 'countdown' || state === 'recording' || state === 'ending');
@@ -1650,15 +1649,9 @@
         }
         function readyToSubmit() {
             record.disabled = false;
-            setRecordButton(stoppedEarly ? 'Tap to Start Over' : 'Recording saved', stoppedEarly ? 'stopped' : 'finished');
-            if (stoppedEarly) {
-                var durationText = Number(responseRecordedDurationSeconds || 0).toFixed(1);
-                timer.innerHTML = '<span>' + durationText + '</span><small>sec recorded</small>';
-                timer.setAttribute('aria-label', 'Recorded duration: ' + durationText + ' seconds');
-            } else {
-                timer.textContent = 'Your recording was successful.';
-                timer.setAttribute('aria-label', 'Your recording was successful.');
-            }
+            setRecordButton('Tap to start over', stoppedEarly ? 'stopped' : 'finished');
+            timer.textContent = 'Your recording was successfully saved';
+            timer.setAttribute('aria-label', 'Your recording was successfully saved');
             file.disabled = false; fileLabel.hidden = true;
             upload.disabled = false; upload.hidden = false;
             status.textContent = '';

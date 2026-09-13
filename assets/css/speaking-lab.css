@@ -1245,9 +1245,6 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog .speaking-response-opening-digit { font-size:36cqw; letter-spacing:-.04em; }
 #individual-response-dialog .speaking-response-clock { margin-top:12px; font-size:clamp(48px,7dvh,70px); font-weight:450; line-height:1.08; letter-spacing:-.035em; }
 #individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-clock { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; min-height:54px; color:#398568; font-size:16px; font-weight:500; line-height:1.5; letter-spacing:0; text-align:center; }
-#individual-response-dialog .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock { align-items:baseline; padding-block:12px; }
-#individual-response-dialog .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock > span { font-size:20px; font-weight:600; }
-#individual-response-dialog .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock small { font-size:16px; font-weight:500; }
 #individual-response-dialog .speaking-response-footer { margin-top:16px; flex:none; }
 #individual-response-dialog .speaking-response-dialog-file,#individual-response-dialog .speaking-response-dialog-upload { height:48px; min-width:160px; font-size:15px; gap:10px; }
 #individual-response-dialog .speaking-response-dialog-file svg { width:19px; height:19px; }
@@ -1265,13 +1262,17 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
     #individual-response-dialog .speaking-response-clock { font-size:46px; }
 }
 
-/* A steady capture indicator stays above the circle without shifting the recorder. */
-#individual-response-dialog .speaking-response-recording-indicator { position:fixed; top:max(24px,calc(env(safe-area-inset-top,0px) + 12px)); left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; gap:8px; margin:0; color:#b43b38; font-size:15px; font-weight:600; line-height:24px; letter-spacing:.01em; pointer-events:none; }
-#individual-response-dialog .speaking-response-recording-indicator[hidden] { display:none; }
+/* Reserve an indicator row between the question and circle so capture never shifts the dial. */
+#individual-response-dialog .speaking-response-recording-indicator { flex:none; display:flex; align-items:center; justify-content:center; gap:8px; min-height:24px; margin:0 0 16px; color:#b43b38; font-size:15px; font-weight:600; line-height:24px; letter-spacing:.01em; pointer-events:none; }
+#individual-response-dialog .speaking-response-recording-indicator[hidden] { display:flex; visibility:hidden; }
 #individual-response-dialog .speaking-response-recording-dot { flex:none; width:8px; height:8px; border-radius:50%; background:#d8423e; }
 
-/* Keep the question readable throughout capture; reserve the top row for Back/Recording. */
+/* Keep the question readable throughout capture; reserve the top row for Back. */
 #individual-response-dialog .speaking-response-dialog-body { padding-top:max(64px,calc(env(safe-area-inset-top,0px) + 52px)); }
 #individual-response-dialog .speaking-response-dialog-question { margin-top:0; }
-#individual-response-dialog .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone-label { display:flex; flex-direction:column; align-items:center; gap:4px; line-height:1.4; text-align:center; }
-#individual-response-dialog .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-microphone-label small { font-size:.78em; font-weight:500; }
+
+#individual-response-dialog .speaking-response-recording-indicator:not([hidden]) .speaking-response-recording-dot { animation:speaking-response-recording-blink 1.2s step-end infinite; }
+@keyframes speaking-response-recording-blink { 0%,49% { opacity:1; } 50%,100% { opacity:.18; } }
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) :is(.speaking-response-mic-icon,.speaking-response-finished-icon,.speaking-response-stop-icon) { display:none; }
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-microphone-label { line-height:1.4; text-align:center; }
+@media(prefers-reduced-motion:reduce) { #individual-response-dialog .speaking-response-recording-indicator:not([hidden]) .speaking-response-recording-dot { animation:none; opacity:1; } }
