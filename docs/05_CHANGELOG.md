@@ -1,5 +1,16 @@
 # Changelog
 
+## Authorized IR report release and seven-day overwrite (2026-09-14)
+
+Owner requested publication of the approved IR report interface and full
+regeneration with replacement of old reports. Scoped Shanghai dates Sep 8–14:
+65 uploaded responses (62 ready, 3 previously failed); 64 reuse transcripts and
+one requires transcription. Added private overwrite jobs and atomic replacement
+with source-race checks; legacy coaching refresh still preserves assessment.
+Matched both live function bundles to origin/main before deployment. Packaging,
+Speaking/overwrite tests and release checks passed. Rollout results are recorded
+in AGENT_TODO.md and the private operator status, without student content in Git.
+
 ## Compact Analysis selection and feedback (2026-09-14)
 
 Restored IO/VL abbreviations in the Analysis selector and removed the standalone

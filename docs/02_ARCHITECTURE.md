@@ -1,5 +1,19 @@
 # 02 Architecture
 
+## Scoped IR overwrite jobs (2026-09-14)
+
+The private operator scripts/regenerate-speaking-ir-reports.js plans an explicit
+Shanghai response_date range, then attaches bounded individual_response_analysis
+jobs by compare-and-set. Jobs with an existing transcript use the private
+ir-analysis-overwrite-v3 kind and begin at analysis; a previously failed response
+without any report follows the normal audio-quality/transcription pipeline.
+No new public action or browser-provided regrade authority is added.
+The gateway validates source report/job/audio/pointer bindings before processing
+and inside the publishing transaction. It replaces dse_analysis, transcript,
+model metadata and the response cache as whole objects, avoiding legacy nested
+fields. The worker shares overwrite-aware failure policy and must ship with the
+gateway. Ready reports remain usable until a validated replacement commits.
+
 ## IR submission shell and IO/VL analysis (2026-09-14)
 
 The Submit handler renders a local snapshot immediately, then executes the

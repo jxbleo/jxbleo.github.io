@@ -1,5 +1,17 @@
 # 07 Testing Checklist
 
+## IR complete report overwrite (2026-09-14)
+
+Run test-speaking-ir-overwrite.js through the complete Speaking suite. Assert
+same report ID, replaced IO/VL scores (no retained CS), whole-object cache writes,
+creation-date/transcript preservation and unchanged coaching-only behavior.
+Reject altered source jobs, pointers/audio revisions, races at transaction time
+and invalid AI output before any report writes. A failed attempt must retain the
+old ready report. Test a failed response with a processing transcript as source.
+Live operator status must validate all scoped report/cache pairs canonically,
+transcript hashes, prompt/schema versions and result job pointers. Do not treat
+queued jobs or a successful function deployment as completed regeneration.
+
 ## IR concise Analysis body (2026-09-14)
 
 Switch both IO and VL: verify abbreviated select labels, full dimension name

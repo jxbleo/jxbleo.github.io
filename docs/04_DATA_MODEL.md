@@ -1,5 +1,20 @@
 # 04 Data Model
 
+## IR overwrite metadata (2026-09-14)
+
+Private reanalysis jobs may use refresh_kind ir-analysis-overwrite-v3 with
+source_report_id, source_report_version, source_job_id, expected_report_id,
+expected_report_version and expected_active_job_id. Audio revision and asset ID
+remain required. The manifest stores locators, dates and transcript hashes,
+not copies of old assessment content. Publication keeps the same report_id and
+internal report_version locator while updating schema_version/report.report_version
+to v3, prompt_version, job_id, updated_at and regenerated_at. Preserve created_at
+and clear the old previous_report_id link; assessment_preserved is false.
+The canonical assessment and session cache are replaced atomically, not merged.
+No new collection or permission change; this owner-approved operation is the
+exception to historical score preservation. Original audio and response records
+remain intact; coaching-only refresh semantics are unchanged.
+
 ## Individual Response v3 (2026-09-14)
 
 New Part B reports use schema/report_version dse-individual-response-v3,

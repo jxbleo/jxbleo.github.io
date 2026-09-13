@@ -106,6 +106,18 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Authorized IR release and overwrite (in progress)
+
+- Owner authorized deploying the complete approved report changes and replacing
+  recent reports in place. Exact Shanghai-date scope Sep 8–14 has 65 uploaded
+  IRs: 62 ready and 3 failed; 64 transcripts reused, one needs transcription.
+- Merged current origin/main homepage wording before release. Both baseline
+  function bundles match live bytes. Added same-ID atomic overwrite behavior,
+  a private bounded operator and tests for score replacement and source races.
+- Full Speaking suite, packaging and release checks passed. Deployment and
+  per-report completion are being verified; no student data enters Git.
+
+
 ### 2026-09-14 — Concise IR Analysis (local only)
 
 - Restored grey-blue IO/VL select labels and removed the standalone short

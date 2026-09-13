@@ -1584,6 +1584,7 @@ async function processVoiceRematch(claimed, discussion, asset) {
 }
 
 function individualResponseReportIdentity(job) {
+  if (irRefresh.isOverwrite(job)) return { report_id: job.source_report_id, report_version: job.source_report_version };
   if (irRefresh.isRefresh(job)) return {
     report_id: stable("speaking_ir_coaching_report", job.response_session_id, job.source_report_id),
     report_version: `${job.source_report_version}-coaching-v2`,
@@ -1650,12 +1651,17 @@ async function processIndividualResponseQueuedJob(claimed) {
   const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
   const output = { report: result.output };
   const generatedAnalysis = lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
-  const analysis = sourceReport ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
+  const analysis = sourceReport && !irRefresh.isOverwrite(claimed) ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
   const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
   reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname };
-  if (sourceReport) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true, rubric_version: sourceReport.rubric_version || "dse-individual-response-v1" });
+  if (sourceReport && !irRefresh.isOverwrite(claimed)) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true, rubric_version: sourceReport.rubric_version || "dse-individual-response-v1" });
+  if (irRefresh.isOverwrite(claimed)) Object.assign(reportRow, {
+    created_at: sourceReport.created_at || finishedAt,
+    refresh_kind: irRefresh.OVERWRITE_KIND, assessment_preserved: false,
+    previous_report_id: db.command.remove(), regenerated_at: finishedAt,
+  });
   await db.runTransaction(async (transaction) => {
     const currentJobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
     const latestJob = currentJobResult.data && currentJobResult.data[0];
@@ -1664,7 +1670,9 @@ async function processIndividualResponseQueuedJob(claimed) {
     if (!latestJob || latestJob.status !== "processing" || !secretMatches(latestJob.lease_token, claimed.lease_token) || !latestResponse || latestResponse.deleted_at || String(latestResponse.active_analysis_job_id || "") !== String(claimed.job_id) || Number(latestResponse.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) throw new Error("SPEAKING_JOB_SUPERSEDED");
     irRefresh.assertSource(claimed, latestResponse, sourceReport);
     const existingReportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
-    if (existingReportResult.data && existingReportResult.data[0]) await transaction.collection(REPORTS).doc(existingReportResult.data[0]._id || identity.report_id).update(reportRow);
+    const existingReport = existingReportResult.data && existingReportResult.data[0];
+    if (irRefresh.isOverwrite(claimed)) irRefresh.assertSource(claimed, latestResponse, existingReport);
+    if (existingReport) await transaction.collection(REPORTS).doc(existingReport._id || identity.report_id).update(replaceFields(reportRow, ["dse_analysis", "transcript", "model_metadata"]));
     else await transaction.collection(REPORTS).doc(identity.report_id).create(reportRow);
     await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
     await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update(replaceFields({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt }, ["report"]));

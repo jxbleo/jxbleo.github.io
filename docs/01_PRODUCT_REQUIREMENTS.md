@@ -1,5 +1,15 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Owner-authorized IR report replacement (2026-09-14)
+
+An explicit owner reanalysis may replace an existing Individual Response report
+with fresh IO/VL scores and complete current-prompt feedback. This is separate
+from the older coaching-only refresh that preserves scores. Overwrite the same
+report ID only after complete output validation; retain the recording, transcript,
+response identity, recording date and original report creation date. Do not
+create a preserved report version for this operation. Normal student retries
+remain separate response sessions. Invalid output must not erase a usable report.
+
 ## IR constructive feedback panels (2026-09-14)
 
 Each selected IO/VL assessment has What works on pale green and How to improve

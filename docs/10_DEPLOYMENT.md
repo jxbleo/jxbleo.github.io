@@ -1,5 +1,24 @@
 # 10 Deployment
 
+## Authorized IR overwrite rollout (2026-09-14)
+
+Owner authorization covers the approved frontend, speakingLab and speakingAiWorker
+code updates, the report-history index and complete report replacement for the
+seven Shanghai calendar days Sep 8–14 inclusive. Preserve existing function
+configuration, billing switches, model identity/fallback, roles and triggers.
+Before deployment, baseline origin/main bundles must match downloaded live code;
+after deployment, both new code hashes and unchanged configuration must match.
+
+Use scripts/regenerate-speaking-ir-reports.js with an ignored private manifest:
+plan <manifest> 2026-09-08 2026-09-14; apply <manifest> 1 for a pilot; status
+<manifest> validates published results. Only after the pilot succeeds apply
+remaining bounded batches, then status until every target is verified.
+Explicit retry <manifest> <limit> preserves attempt counters and the five-attempt
+ceiling; it must not reset exhausted or superseded jobs. The manifest contains
+locators/hashes, not old report backups. This operation overwrites assessments
+and must not use the older coaching-only operator, which preserves old scores.
+Publish the committed static assets through the existing main/COS workflow.
+
 ## IR report v3 rollout (prepared 2026-09-14; not deployed)
 
 Include the latest Part B prompt 2026-09-14.2 with constructive improvement
