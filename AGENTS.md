@@ -4,6 +4,24 @@ This file is the operating contract for any coding agent working in this
 repository. Read it before editing code, importing content, changing CloudBase
 data, or deploying functions.
 
+## Shared Speaking and Writing text models (owner rule, 2026-09-13)
+
+Speaking and Writing are one text-model configuration scope. Unless the owner
+explicitly asks to separate them, every text-model change applies to both
+`speakingLab` and `writingTutor`, including their ordered quota fallback list.
+The canonical policy is `scripts/text-model-policy.json`: currently
+`qwen3.8-max` first, then `qwen3.8-max-0902`. Do not leave either text
+provider on Plus, and never place the primary model in its fallback list.
+
+Use `node scripts/configure-text-models.js` for a safe paired dry run,
+`--apply` only with owner authorization, and `--check` to verify both live
+functions. Never report completion after checking only one function. Preserve
+OCR, speech recognition, voiceprints, credentials, provider protocols, output
+limits, free-only billing switches, jobs and historical reports. This rule
+unifies text-model identity and fallback order, not the two tasks' prompts or
+schemas. If a cloud update is interrupted, run `--check` before rerunning
+`--apply`; the two CloudBase function updates are not an atomic transaction.
+
 ## 1. Project Intent
 
 Mr. Cat Academy is a static learning website with a CloudBase backend. The

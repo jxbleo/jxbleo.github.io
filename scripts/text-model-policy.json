@@ -1,0 +1,4 @@
+{
+  "primary_model": "qwen3.8-max",
+  "quota_fallback_models": ["qwen3.8-max-0902"]
+}

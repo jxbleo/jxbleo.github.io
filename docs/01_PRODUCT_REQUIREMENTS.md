@@ -2608,3 +2608,7 @@ work, affects rank, or earns STAR.
 ### Individual Response capture and submission (2026-09-13)
 
 Each question opens the approved compact Set/year/title and Qn dialog. A three-second audible red countdown precedes capture; it does not consume response time or enter the recording. Capture lasts up to 60 seconds plus a final five-second warning. Both countdowns end with a higher, longer tone. Completion shows Finished; Submit explicitly uploads and starts analysis. Upload Files remains the alternative for a checked audio file of at most 65 seconds. No automatic submission or backend schema change is introduced.
+
+### Shared Speaking/Writing text-model policy (2026-09-13)
+
+口语与写作是同一个文本模型配置范围。除非老师明确要求分开，今后更换文本模型时必须同时更新两者的首选和备用顺序：当前均为 `qwen3.8-max → qwen3.8-max-0902`，不再先调用 Plus。以 `scripts/text-model-policy.json` 为唯一操作配置，通过配对脚本应用并回读两边；不能只改写作后宣称完成。图片 OCR、ASR、声纹、题型提示词和输出结构仍各自独立，保留免费额度用完即停及现有失败边界。

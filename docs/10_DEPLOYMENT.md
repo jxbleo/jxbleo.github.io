@@ -1759,3 +1759,30 @@ private results were backed up under the owner project's existing
 `.cloudbase-private/ir-coaching-refresh-20260912` directory. Latest speakingLab
 ZIPs are in `deploy-packages/speakingLab.zip` and
 `deploy-packages/ir-coaching-20260912/speakingLab.zip` in that project.
+
+### Paired text-model configuration (2026-09-13; current owner policy)
+
+This policy supersedes the earlier Plus-first Writing and Speaking rollout
+examples. Both `writingTutor.WRITING_AI_TEXT_MODEL` and
+`speakingLab.SPEAKING_AI_TEXT_MODEL` must be `qwen3.8-max`; both matching
+`*_TEXT_QUOTA_FALLBACK_MODELS` values must be `qwen3.8-max-0902`.
+
+Edit only `scripts/text-model-policy.json` for the desired paired model chain.
+Run `node scripts/configure-text-models.js` to inspect a safe dry run, then
+owner-authorized `node scripts/configure-text-models.js --apply`. Finish with
+`node scripts/configure-text-models.js --check`; it fails on either side's drift.
+The script uses the existing CloudBase CLI login and manager SDK, reads both
+functions before writes, merges only the text model fields, checks concurrent
+configuration changes, and verifies the full environment and unrelated runtime
+settings after applying. It never prints or persists credentials or full
+environments. Refresh expired CLI credentials with an ordinary read-only CLI
+command before retrying. A failed/interrupted apply may have changed one side;
+run `--check` before reapplying. Repeated apply skips already-matching functions.
+
+The live adapters already support their ordered fallback and actual model
+metadata. This rollout changes function environment configuration only; no
+function-code upload, static assets, collections, worker timers, historical
+regrading, OCR/ASR/voiceprint providers or billing switches change. Keep Writing's
+legacy shared `WRITING_AI_MODEL` intact because implicit OCR may still use it;
+the explicit text model overrides it. This legacy value is not the active text
+model. Models must retain their existing provider free-only stop settings.

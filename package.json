@@ -49,7 +49,11 @@
     "test:listening-shadowing": "node scripts/test-listening-shadowing.js",
     "test:listening-shadowing-provider": "node scripts/test-listening-shadowing-provider.js",
     "test:listening-authoring": "node scripts/test-listening-authoring.js",
-    "test:teacheradmin-package": "node scripts/test-teacheradmin-package.js"
+    "test:teacheradmin-package": "node scripts/test-teacheradmin-package.js",
+    "models:plan": "node scripts/configure-text-models.js",
+    "models:apply": "node scripts/configure-text-models.js --apply",
+    "models:check": "node scripts/configure-text-models.js --check",
+    "test:text-model-policy": "node scripts/test-text-model-policy.js"
   },
   "devDependencies": {
     "@cloudbase/manager-node": "5.5.2",

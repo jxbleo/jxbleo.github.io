@@ -1,4 +1,21 @@
 # Changelog
+## 2026-09-13 — Manage Speaking and Writing text models together
+
+- The owner's standing rule is recorded prominently in AGENTS.md: all future
+  text-model changes include both Speaking and Writing unless explicitly split.
+- Added one non-secret model policy plus a paired owner-only configuration
+  script with dry-run, apply and drift-check modes. Both live functions now use
+  qwen3.8-max first, with qwen3.8-max-0902 as the ordered quota fallback.
+- Cloud readback confirmed Speaking Active after its configuration update;
+  downloaded code still matches the pre-change bundle and all other saved
+  environment/runtime settings are preserved. Writing already matched the
+  shared policy and needed no mutation. No cloud function-code upload or
+  historical report recomputation was required.
+- Added focused tests for both adapters, dry-run, drift detection, idempotence,
+  secret/config preservation and read/concurrency guards. Speaking service,
+  Speaking quota fallback and Writing quota fallback contracts also passed.
+  Product, architecture, decision, testing and deployment docs are updated.
+
 
 ## 2026-09-13 — Compact IR report layout
 

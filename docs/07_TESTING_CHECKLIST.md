@@ -3220,3 +3220,9 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
   nameplate and never becomes HTML. Missing/mismatched profiles leave it blank.
 - Practice, Passed and Not Passed retain their existing result graphics and
   Sets metadata. Close remains reachable on short screens.
+
+### Shared text-model release verification (2026-09-13)
+
+- Run `node scripts/test-text-model-policy.js`: both adapters select the same policy; dry-run never writes; apply preserves secrets, OCR and unrelated runtime values; read failure or concurrent edits prevent writes; repeated apply is idempotent; either side's drift fails check.
+- Run `node scripts/test-speaking-model-quota-fallback.js` and `node scripts/test-writing-model-quota-fallback.js` for the existing quota/error boundaries.
+- After owner-authorized apply, run `node scripts/configure-text-models.js --check` against both Active functions. A one-sided configuration read is not sufficient.

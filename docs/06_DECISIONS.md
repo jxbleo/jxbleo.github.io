@@ -1649,3 +1649,7 @@ both server projection and browser hydration boundaries. Timestamp ranges may
 overlap while their start times remain in source order: ASR and speaker hand-off
 boundaries are not reliably disjoint, and every practice player already clips
 to the selected unit's own start/end interval.
+
+### 2026-09-13 — Manage Speaking and Writing model identity together
+
+The owner considers both tasks one text-model scope. Use a shared, non-secret policy JSON and one owner-only paired configuration script instead of independent ad hoc updates. Preserve runtime adapter differences and existing credentials. CloudBase does not atomically update two functions, so preflight both, preserve unrelated fields, verify both after apply and detect drift on reruns. Reuse the existing manager SDK; no new dependency or service.

@@ -1336,3 +1336,7 @@ current teacher approvals inside its own transaction; full completion detaches
 the current AI job and pending handoffs. Review/rewrite enqueue rejects a
 concurrently completed composition. `getDashboard` returns the student's reply
 history with a composition locator and no Writing reference-answer snapshot.
+
+### Paired text-model operations (2026-09-13)
+
+Speaking and Writing keep independent runtime adapters, schemas and credentials, but their primary model and ordered quota fallbacks are managed together from `scripts/text-model-policy.json`. The owner-only `scripts/configure-text-models.js` reads/merges/verifies both CloudBase environments; it is not a browser or timer endpoint and creates no new runtime service.
