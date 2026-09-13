@@ -1632,3 +1632,21 @@ audit rows and normal photo cleanup. No assignment, attempt or STAR is created.
 The browser receives the latest-request map and `writing_review_scope`, never
 the internal approval audit map. Dashboard Writing replies suppress
 `answer_snapshot` so the teacher-only reference revision stays hidden.
+
+### Individual Response history query (2026-09-14)
+
+No collection, recording, report or scoring schema migration is required.
+The authorized anchor supplies `student_uid`, `set_id` and
+`question_snapshot.question_id`; client owner/question filters are ignored.
+Ready history filters `deleted_at: null, analysis_status: ready`, uses
+`created_at DESC, _id DESC`, and seeks with `{created_at, id}` cursors while
+retaining the same authorization scope on every page. Provision/verify a
+non-unique composite index in `speaking_individual_responses` for
+`student_uid ASC, set_id ASC, question_snapshot.question_id ASC, deleted_at ASC,
+analysis_status ASC, created_at DESC, _id DESC` before rollout.
+
+Historical `response_date` is a day, and `created_at` is Session creation at
+submission, not a retained microphone-start timestamp. Date labels preserve the
+stored response day and append the Shanghai creation clock only when it falls
+on that same day. Older day-only/backdated records show their date without an
+invented recording time. Missing response dates fall back to creation time.

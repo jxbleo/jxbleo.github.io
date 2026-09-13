@@ -3283,3 +3283,22 @@ stopping disconnects the analyser and gently fades the colour away. Closing,
 page exit and errors clean up resources. No additional microphone request,
 playback, upload, backend data, preview copy or demo controls are added.
 Reduced Motion keeps smaller colour changes without expansion or displacement.
+
+### Individual Response approved report card (2026-09-14)
+
+Keep the current white glass cards, backdrop and analysis/development styles.
+Move the Set title into the existing auto-scrolling toolbar. The first card has
+an edge-to-edge pale blue title band: `Y2024 · Set 2 · Q3` at left and a small
+native date select at right. The 30px-high control uses same-font hidden text
+measurement on selection, resize and font readiness; 34px total inset includes
+the arrow, borders and text padding. It grows for an older year and shrinks again
+for current-year labels, including in Safari without `field-sizing` support.
+
+Use `14 Sep 16:42` (current Shanghai year) or `14 Sep 2025 16:42` (other years).
+Full-year labels remain available in option titles. Keep one row on typical
+375px phones; very narrow screens may wrap the selector rightward below metadata.
+Question text stays in the white body. A hairline separates the single-line
+`Your answer · 83 words` disclosure at the bottom: blue semibold label, grey
+word count and small chevron. No duplicate date below it. It is closed initially
+and whenever another report is chosen. Opening it expands inside the first card.
+Keep keyboard-native selection, visible focus and an inline retry on read errors.

@@ -1373,3 +1373,16 @@ history with a composition locator and no Writing reference-answer snapshot.
 ### Paired text-model operations (2026-09-13)
 
 Speaking and Writing keep independent runtime adapters, schemas and credentials, but their primary model and ordered quota fallbacks are managed together from `scripts/text-model-policy.json`. The owner-only `scripts/configure-text-models.js` reads/merges/verifies both CloudBase environments; it is not a browser or timer endpoint and creates no new runtime service.
+
+### Individual Response history reader (2026-09-14)
+
+`listIndividualResponseHistory` authorizes an anchor `response_session_id`, then
+derives its owner, Set and stable question ID server-side. It queries only ready,
+non-deleted Sessions, orders by `created_at DESC, _id DESC`, and uses a keyset
+cursor across pages of at most 50. The projection contains only Session ID,
+`response_date` and `created_at`; reports, snapshots and audio are not listed.
+The browser reads pages sequentially outside the sidebar's capped legacy list.
+It then loads exactly one selected report with `getIndividualResponse`.
+Navigation/request guards discard stale replies. During loading/failure the
+previous date and previous report remain together, with a local retry action.
+No persistent browser report cache is introduced.

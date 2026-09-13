@@ -3326,3 +3326,18 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
 - At phone widths and short viewports, confirm question → circle → clock → Upload/Submit remains in order, with 32/20/24 px gaps (24/16/20 px below 700 px height), no horizontal overflow, and vertical scrolling for long questions.
 - IR and student/teacher Discussion show one blinking red dot + Recording inside the stop control only during capture. Verify opening, early stop, final warning, microphone failure, saved/restart, and Reduced Motion.
 - Discussion final-minute seconds and ending digits remain readable below Recording; preserve audio cues, duration and explicit submission.
+
+### Individual Response history acceptance (2026-09-14)
+
+- Run `npm run test:speaking-lab`, including `test-speaking-ir-history.js`.
+- Verify current-year/older-year labels and Shanghai New Year boundaries; no
+  invented clock for day-only/backdated rows, and invalid dates fail gracefully.
+- Verify owner/question isolation, teacher anchor scope, deleted/non-ready
+  exclusion and more than 500 records with equal creation timestamps across pages.
+- Verify initial newest selection, sequential pagination, old/new report switching,
+  navigation during delayed reads, retry after failure and matching date/content.
+- Check compact select width grows and shrinks, including at 375px and very narrow
+  widths; no horizontal page overflow. Your answer starts collapsed, remains one
+  line with its word count and opens within the first card. Test keyboard focus.
+- Keep existing transcript, analysis, examples, recorder and Group Discussion
+  contracts passing. Live backend/index smoke testing follows owner-approved deploy.

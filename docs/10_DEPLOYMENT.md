@@ -1794,3 +1794,16 @@ regrading, OCR/ASR/voiceprint providers or billing switches change. Keep Writing
 legacy shared `WRITING_AI_MODEL` intact because implicit OCR may still use it;
 the explicit text model overrides it. This legacy value is not the active text
 model. Models must retain their existing provider free-only stop settings.
+
+### Individual Response report history rollout (prepared 2026-09-14)
+
+The report redesign includes a new read-only `speakingLab` action,
+`listIndividualResponseHistory`. Verify/provision the composite index specified
+in `docs/04_DATA_MODEL.md`, then deploy the updated gateway before publishing the
+cache-busted static assets. No worker deployment, stored-report rewrite or
+model/environment changes are required. This implementation turn only edits and
+verifies local code; index creation, function deployment and static publication
+have not been executed. After owner authorization, smoke-test two ready reports
+for one student/question and an unauthorized anchor; confirm date selection
+loads distinct saved content. A missing gateway action leaves the current report
+readable and displays a history retry rather than silently claiming no history.

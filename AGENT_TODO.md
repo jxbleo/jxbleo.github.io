@@ -106,6 +106,26 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Approved Individual Response report history (local only)
+
+- Implemented in isolated worktree `/private/tmp/mrcat-ir-report-history`, branch
+  `codex/ir-report-history`, based on published `6b2abc53`; unrelated root changes
+  remain untouched. Pale blue Y/year/Set/Q header, Set-title toolbar, measured
+  date select and collapsed blue Your answer now use production renderers/CSS.
+- New read-only history action derives owner and stable question from an
+  authorized anchor, returns slim pages and preserves saved reports. Browser
+  selects the latest and switches whole reports with stale-read/error handling.
+- Verified Speaking suite, release verification, diff whitespace and local browser
+  using synthetic reports; at 375px and 300px no horizontal overflow. Actual
+  date control grows from 108px (current year) to 139px (older year), then shrinks.
+  Disclosure expand/collapse and distinct scores/word counts verified.
+- Added automated year/Shanghai-time, 605-row keyset pagination, ownership,
+  equal-timestamp, initial latest, delayed navigation and failure checks.
+- No production resources changed. Later rollout needs owner-authorized index
+  verification/provisioning and speakingLab gateway deployment before static
+  publication; see docs/10_DEPLOYMENT.md. No worker/model/report migration needed.
+
+
 ### 2026-09-13 — Approved IR dark capture, green saved state and ending A
 
 - Applied the approved temporary preview to production IR-only CSS: dark native dialog/backdrop through capture; green question/circle/thick check/feedback and text-only solid-green Submit for automatic and manual stops; stationary final 3/2/1 crossfade with an independent red dot. Updated UI/changelog/test docs and host cache versions. Preserved all capture/submit code, latest audio-file icon and Group Discussion.

@@ -392,6 +392,36 @@ async function listIndividualResponses(actor, event) {
   return { success: true, responses, next_offset: offset + responses.length < eligible.length ? offset + responses.length : null };
 }
 
+// The anchor supplies ownership and stable question identity; browser filters never do.
+async function listIndividualResponseHistory(actor, event) {
+  const anchor = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140) });
+  if (!anchor || anchor.deleted_at) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  responseView(actor, anchor);
+  const questionId = anchor.question_snapshot && anchor.question_snapshot.question_id;
+  const summary = (row) => ({ response_session_id: row.response_session_id, response_date: row.response_date || null, created_at: row.created_at || null });
+  if (!questionId || !anchor.set_id) return { success: true, responses: anchor.analysis_status === "ready" ? [summary(anchor)] : [], next_cursor: null };
+  const scope = { student_uid: anchor.student_uid, set_id: anchor.set_id, "question_snapshot.question_id": questionId, deleted_at: null, analysis_status: "ready" };
+  let where = scope;
+  if (event.cursor) {
+    const date = new Date(event.cursor.created_at);
+    const rowId = lab.text(event.cursor.id, 160);
+    if (!rowId || !event.cursor.created_at || !Number.isFinite(date.getTime())) throw new Error("INDIVIDUAL_RESPONSE_CURSOR_INVALID");
+    where = db.command.and([scope, db.command.or([
+      { created_at: db.command.lt(date) },
+      { created_at: db.command.eq(date), _id: db.command.lt(rowId) },
+    ])]);
+  }
+  const pageSize = Math.min(50, Math.max(1, Math.floor(Number(event.page_size) || 50)));
+  const result = await db.collection(INDIVIDUAL_RESPONSES).where(where)
+    .orderBy("created_at", "desc").orderBy("_id", "desc")
+    .field({ _id: true, response_session_id: true, response_date: true, created_at: true })
+    .limit(pageSize + 1).get();
+  const rows = result.data || [];
+  const page = rows.slice(0, pageSize);
+  const last = page[page.length - 1];
+  return { success: true, responses: page.map(summary), next_cursor: rows.length > pageSize ? { created_at: last.created_at, id: last._id } : null };
+}
+
 async function getIndividualResponse(actor, event) {
   const row = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140) });
   if (!row || row.deleted_at) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
@@ -2186,6 +2216,7 @@ exports.main = async (event = {}) => {
     if (action === "teacherSetSpeakingSetVisibility") return await teacherSetSpeakingSetVisibility(actor, event);
     if (action === "teacherDeleteSpeakingSet") return await teacherDeleteSpeakingSet(actor, event);
     if (action === "listIndividualResponses") return await listIndividualResponses(actor, event);
+    if (action === "listIndividualResponseHistory") return await listIndividualResponseHistory(actor, event);
     if (action === "getIndividualResponse") return await getIndividualResponse(actor, event);
     if (action === "createIndividualResponse") return await createIndividualResponse(actor, event);
     if (action === "startIndividualResponseAudioUpload") return await startIndividualResponseAudioUpload(actor, event);
@@ -2239,5 +2270,5 @@ exports._test = {
   replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator, individualResponseHasCommittedWork, compareDiscussionOrder,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, SPEAKING_SETS, INDIVIDUAL_RESPONSES, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
   setActions: { listSpeakingSets, getSpeakingSet, teacherListSpeakingSets, teacherGetSpeakingSet, teacherCreateSpeakingSet, teacherUpdateSpeakingSet, teacherSetSpeakingSetVisibility, teacherDeleteSpeakingSet },
-  responseActions: { listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, discardEmptyIndividualResponse, deleteIndividualResponse },
+  responseActions: { listIndividualResponseHistory, listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, discardEmptyIndividualResponse, deleteIndividualResponse },
 };

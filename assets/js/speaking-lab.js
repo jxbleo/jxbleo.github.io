@@ -84,6 +84,7 @@
         listSpeakingSets: true,
         getSpeakingSet: true,
         listIndividualResponses: true,
+        listIndividualResponseHistory: true,
         getIndividualResponse: true
     };
     var sidebarUpdateCount = 0;
@@ -95,6 +96,8 @@
     var selectedSpeakingSet = null;
     var speakingSetReadingSizes = { context: 1, 'part-a': 1, 'part-b': 1 };
     var selectedResponse = null;
+    var responseReportHistory = null;
+    var responseReportSwitch = 0;
     var responseRecorder = null;
     var responseStream = null;
     var responseChunks = [];
@@ -1464,6 +1467,109 @@
         if (input) input.getTracks().forEach(function (track) { track.stop(); });
         if (responseCueContext) { var context = responseCueContext; responseCueContext = null; context.close().catch(function () {}); }
     }
+    function individualResponseDateLabel(response, currentDate, fullYear) {
+        // Historical captures have a day plus Session creation time, not an audio timestamp.
+        var created = response.created_at ? new Date(response.created_at) : null;
+        var validCreated = created && Number.isFinite(created.getTime());
+        var day = /^\d{4}-\d{2}-\d{2}$/.test(response.response_date || '') ? response.response_date : '';
+        var date = day ? new Date(day + 'T00:00:00+08:00') : validCreated ? created : null;
+        if (!date || !Number.isFinite(date.getTime())) return 'Date unavailable';
+        var parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Shanghai', year: 'numeric', month: 'short', day: 'numeric' }).formatToParts(date);
+        function part(type) { return parts.find(function (p) { return p.type === type; }).value; }
+        var year = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Shanghai', year: 'numeric' }).format(currentDate || new Date());
+        var label = part('day') + ' ' + part('month') + (fullYear || part('year') !== year ? ' ' + part('year') : '');
+        // A backdated uploaded file must not pretend the upload clock was its capture time.
+        var createdParts = validCreated ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(created) : [];
+        var createdDay = ['year', 'month', 'day'].map(function (key) { var p = createdParts.find(function (item) { return item.type === key; }); return p ? p.value : ''; }).join('-');
+        var sameDay = validCreated && (!day || createdDay === day);
+        if (sameDay) label += ' ' + new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(created);
+        return label;
+    }
+    function responseHistoryOptions(response) {
+        var rows = responseReportHistory && responseReportHistory.items || [];
+        if (!rows.some(function (row) { return row.response_session_id === response.response_session_id; })) rows = [response].concat(rows);
+        return rows.map(function (row) {
+            return '<option value="' + esc(row.response_session_id) + '"' + (row.response_session_id === response.response_session_id ? ' selected' : '') + ' title="' + esc(individualResponseDateLabel(row, null, true)) + '">' + esc(individualResponseDateLabel(row)) + '</option>';
+        }).join('');
+    }
+    function sizeResponseHistoryPicker() {
+        var picker = document.getElementById('response-history-date');
+        var measure = document.getElementById('response-history-measure');
+        if (!picker || !measure) return;
+        measure.textContent = picker.options[picker.selectedIndex] ? picker.options[picker.selectedIndex].text : '';
+        // A same-font DOM measurement also works in Safari without field-sizing support.
+        picker.style.width = Math.ceil(measure.getBoundingClientRect().width + 34) + 'px';
+    }
+    window.addEventListener('resize', sizeResponseHistoryPicker);
+    function responseHistoryNotice(message, retry) {
+        var node = document.getElementById('response-history-notice');
+        if (!node) return;
+        node.hidden = !message;
+        node.innerHTML = esc(message) + (retry ? ' <button type="button" id="response-history-retry">Try again</button>' : '');
+        var button = document.getElementById('response-history-retry');
+        if (button) button.addEventListener('click', retry);
+    }
+    function switchIndividualResponseReport(responseId) {
+        var previous = selectedResponse;
+        var history = responseReportHistory;
+        var generation = pollGeneration;
+        var request = ++responseReportSwitch;
+        var picker = document.getElementById('response-history-date');
+        if (!previous || !history || !history.items.some(function (row) { return row.response_session_id === responseId; })) return Promise.resolve();
+        if (picker) { picker.value = previous.response_session_id; picker.disabled = true; }
+        responseHistoryNotice('Loading report…');
+        function active() { return generation === pollGeneration && request === responseReportSwitch && responseReportHistory === history && selectedResponseId === previous.response_session_id; }
+        return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) {
+            if (!active()) return;
+            if (!result.response || result.response.response_session_id !== responseId || result.response.analysis_status !== 'ready' || !result.response.report) throw new Error('This report is not available. Please try again.');
+            selectedResponseId = responseId;
+            window.history.replaceState(null, '', 'speaking-lab.html?response=' + encodeURIComponent(responseId));
+            renderIndividualResponseWorkspace(result.response);
+            var nextPicker = document.getElementById('response-history-date');
+            if (nextPicker) nextPicker.focus({ preventScroll: true });
+        }).catch(function (error) {
+            if (!active()) return;
+            if (picker) picker.disabled = false;
+            responseHistoryNotice(friendlyError(error), function () { switchIndividualResponseReport(responseId); });
+        });
+    }
+    function bindIndividualResponseHistory(response) {
+        var picker = document.getElementById('response-history-date');
+        if (!picker) return;
+        picker.addEventListener('change', function () { switchIndividualResponseReport(picker.value); });
+        sizeResponseHistoryPicker();
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeResponseHistoryPicker);
+        if (responseReportHistory) return;
+        var history = { items: [response], anchor: response.response_session_id };
+        responseReportHistory = history;
+        var generation = pollGeneration;
+        function active() { return generation === pollGeneration && responseReportHistory === history && selectedResponseId === response.response_session_id; }
+        function load() {
+            var items = [];
+            picker.disabled = true;
+            responseHistoryNotice('');
+            function page(cursor) {
+                return call('listIndividualResponseHistory', { response_session_id: history.anchor, page_size: 50, cursor: cursor || null }).then(function (result) {
+                    if (!active()) return;
+                    (result.responses || []).forEach(function (row) { if (!items.some(function (item) { return item.response_session_id === row.response_session_id; })) items.push(row); });
+                    if (result.next_cursor) return page(result.next_cursor);
+                    history.items = items;
+                    if (!items.some(function (row) { return row.response_session_id === response.response_session_id; })) history.items.push(response);
+                    picker.innerHTML = responseHistoryOptions(response);
+                    picker.disabled = false;
+                    sizeResponseHistoryPicker();
+                    if (items.length && items[0].response_session_id !== response.response_session_id) return switchIndividualResponseReport(items[0].response_session_id);
+                });
+            }
+            return page(null).catch(function (error) {
+                if (!active()) return;
+                picker.disabled = false;
+                responseHistoryNotice('Recording history could not be loaded.', load);
+            });
+        }
+        load();
+    }
+
     function renderIndividualResponseDevelopment(report) {
         var questions = Array.isArray(report.socratic_questions) ? report.socratic_questions : [];
         var samples = Array.isArray(report.sample_responses) ? report.sample_responses : [];
@@ -1479,17 +1585,18 @@
         var domains = report.domains || {};
         var snapshot = response.set_snapshot || {};
         var question = response.question_snapshot || {};
-        var setLabel = [snapshot.exam_year, snapshot.paper_version ? 'Set ' + snapshot.paper_version : ''].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
+        var setLabel = [snapshot.exam_year ? 'Y' + snapshot.exam_year : '', snapshot.paper_version ? 'Set ' + snapshot.paper_version : '', question.order ? 'Q' + question.order : ''].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
         // ASR segments are timing boundaries, not separate turns in a solo answer.
         var transcript = (Array.isArray(report.transcript) ? report.transcript : []).map(function (line) { return String(line.text || '').trim(); }).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
         var wordCount = (transcript.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) || []).length;
         var development = renderIndividualResponseDevelopment(report);
         function scoreCard(key, label) { var domain = domains[key] || {}; return '<article class="speaking-score-card"><div class="speaking-score-head"><span><b>' + esc(label.split(' · ')[0]) + '</b>' + esc(label.split(' · ')[1] || '') + '</span><strong>' + esc(domain.score == null ? '—' : domain.score) + '<small>/7</small></strong></div><p>' + esc(domain.commentary_zh || '') + '</p></article>'; }
         return '<section class="speaking-response-report">' +
-            '<header class="speaking-report-card speaking-ir-session-card"><p class="eyebrow accent">' + esc(setLabel) + '</p><h2>' + esc(snapshot.title || response.title || 'Individual Response') + '</h2><div class="speaking-ir-session-question"><span class="eyebrow accent">' + esc(question.order ? 'Q' + question.order : 'Question') + '</span><p>' + esc(question.text || '') + '</p></div><p class="speaking-ir-session-date"><span class="sr-only">Recording date: </span>' + esc(formatDate(response.response_date)) + '</p></header>' +
-            '<details class="speaking-report-card speaking-transcript speaking-ir-transcriptions"><summary><strong>Transcriptions</strong><span class="speaking-ir-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</span></summary><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p></details>' +
+            '<header class="speaking-report-card speaking-ir-session-card"><div class="speaking-ir-session-heading"><h2 class="eyebrow">' + esc(setLabel) + '</h2><label class="speaking-ir-date-picker"><span class="sr-only">Recording date</span><span class="speaking-ir-date-measure" id="response-history-measure" aria-hidden="true"></span><select id="response-history-date" aria-controls="response-report-content response-answer">' + responseHistoryOptions(response) + '</select></label></div><p class="speaking-ir-session-question">' + esc(question.text || '') + '</p><p id="response-history-notice" class="speaking-ir-history-notice" role="status" hidden></p>' +
+            '<details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</span><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p></details></header>' +
+            '<div id="response-report-content" class="speaking-response-report">' +
             '<section class="speaking-report-card speaking-ir-analysis-card"><p class="eyebrow accent">YOUR ANALYSIS</p><div class="speaking-score-grid speaking-score-grid-four">' + scoreCard('communication_strategies', 'CS · Communication Strategies') + scoreCard('ideas_organisation', 'IO · Ideas & Organisation') + scoreCard('vocabulary_language_patterns', 'VL · Vocabulary & Language Pattern') + '<article class="speaking-score-card speaking-score-card-pd"><div class="speaking-score-head"><span><b>PD</b>Pronunciation &amp; Delivery</span><strong>—</strong></div><p>Not assessed · 暂不评论</p></article></div><p>' + esc(report.summary_zh || '') + '</p><div class="speaking-coaching-grid">' + reportList('Strengths', report.strengths) + reportList('Priority actions', report.priority_actions) + reportList('Language suggestions', report.language_suggestions) + '</div></section>' +
-            (development ? '<section class="speaking-report-card speaking-ir-development-card">' + development + '</section>' : '') + '</section>';
+            (development ? '<section class="speaking-report-card speaking-ir-development-card">' + development + '</section>' : '') + '</div></section>';
     }
     function renderIndividualResponseWorkspace(response) {
         selectedResponse = response;
@@ -1505,7 +1612,8 @@
         var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
         var responseBody = reportReady ? renderIndividualResponseReport(response) : ready ? window.MrCatSpeakingWaiting.markup() : '<section class="speaking-report-card speaking-response-recorder-card">' + responseDialogRecorderMarkup() + '</section>';
         detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? '' : '<header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have 60 seconds plus a three-second ending reminder.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>') + responseBody + '</article>';
-        updateToolbar({ title: 'Individual Response', invitation: true });
+        updateToolbar({ title: reportReady ? (response.set_snapshot || {}).title || 'Individual Response' : 'Individual Response', invitation: true });
+        if (reportReady) bindIndividualResponseHistory(response);
         if (ready && !reportReady) startSpeakingWaiting('response', response);
         var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
         var retry = document.getElementById('response-retry-analysis'); if (retry) retry.addEventListener('click', function () { retry.disabled = true; call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }).then(function () { return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { retry.disabled = false; setStatus(friendlyError(error), true); }); });
@@ -1908,6 +2016,8 @@
         }).catch(function () { /* The report remains unread on the server and will reappear safely. */ });
     }
     function stopSpeakingWaiting() {
+        responseReportHistory = null;
+        responseReportSwitch += 1;
         pollGeneration += 1;
         if (pollTimer) window.clearTimeout(pollTimer);
         pollTimer = 0;

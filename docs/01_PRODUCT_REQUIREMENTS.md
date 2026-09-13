@@ -2642,3 +2642,21 @@ Each question opens the approved compact Set/year/title and Qn dialog. A three-s
 ### Shared Speaking/Writing text-model policy (2026-09-13)
 
 口语与写作是同一个文本模型配置范围。除非老师明确要求分开，今后更换文本模型时必须同时更新两者的首选和备用顺序：当前均为 `qwen3.8-max → qwen3.8-max-0902`，不再先调用 Plus。以 `scripts/text-model-policy.json` 为唯一操作配置，通过配对脚本应用并回读两边；不能只改写作后宣称完成。图片 OCR、ASR、声纹、题型提示词和输出结构仍各自独立，保留免费额度用完即停及现有失败边界。
+
+### Individual Response report history (2026-09-14)
+
+A completed Part B report uses the frozen Set title in the existing scrolling
+toolbar. Its first white card has a pale blue header with `Y<year> · Set <n> ·
+Q<n>` and a compact recording-date select at the right. Beneath the question,
+`Your answer · <word count> words` is one blue/grey disclosure row, closed by
+default; opening it reveals this response's saved transcript in the same card.
+Analysis and development retain their existing content and styling.
+
+The select lists ready reports for this student and stable Set/question only,
+newest Session first, and defaults to the latest ready report on entry. Choosing
+a date replaces the entire report and its frozen question snapshot. Reports are
+never averaged, combined, regraded or overwritten. Unsubmitted restarts and
+processing/failed responses do not appear in this report-only selector.
+Dates use English months and Shanghai time: `14 Sep 16:42` in the current year,
+`14 Sep 2025 16:42` outside it. The selected label determines the control width;
+the longest option must not leave a large gap beside shorter labels.

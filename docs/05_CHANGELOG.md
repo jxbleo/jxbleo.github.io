@@ -3594,3 +3594,14 @@ After Tap to Stop, Individual Response shows the actual captured duration in gre
 - Restored a green microphone above Tap to Start Over while keeping actual
   captured seconds and explicit Submit. Added focused lifecycle regressions and
   updated the UI specification/testing checklist. No backend change is required.
+
+## 2026-09-14 — Individual Response report and date selector (local implementation)
+
+- Implement the approved pale-blue first-card header, Y/year/Set/Q metadata,
+  compact adaptive date select and Set-title scrolling toolbar.
+- Merge the blue `Your answer` disclosure and word count into the first card;
+  preserve existing analysis and development styles and historical report content.
+- Add authorized, metadata-only, paginated same-question report history and
+  whole-report switching with stale-read/error protection.
+- Add date, selection, access and 605-record pagination coverage. No production
+  deployment, schema migration, grading change or report regeneration performed.

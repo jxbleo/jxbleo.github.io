@@ -1930,7 +1930,8 @@ short so future agents can avoid repeating the same first-pass mistakes.
 
 ### DSE Speaking Lab invariants
 
-Speaking Lab is limited to DSE Paper 4 Part A Group Interaction. Keep its
+Speaking Lab covers DSE Paper 4 Part A Group Interaction and question-scoped
+Part B Individual Response. Keep its
 Discussion, participant, private audio, durable-job, report, identity-event,
 share, usage, reusable-voiceprint, and voiceprint-event collections
 `ADMINONLY`; derive every access decision from the authenticated UID and active
@@ -2023,3 +2024,11 @@ cannot be approved through old requests. Reuse the existing Argue email outbox,
 reminders and authenticated review page; email links preselect a decision but
 never mutate on GET. Student Teacher Replies must not expose Writing reference
 revisions. No new collection, timer, provider or secret is required.
+
+### Individual Response report history (2026-09-14)
+
+`listIndividualResponseHistory` derives owner/Set/question scope from an authorized
+Session anchor; never use client-provided identity or display titles as filters.
+Keep history summaries metadata-only and keyset-paginated beyond the legacy
+sidebar cap. Each selection reads one authorized saved report. Preserve frozen
+snapshots, grading and audio; unsubmitted restarts are not report history.
