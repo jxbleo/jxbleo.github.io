@@ -202,7 +202,7 @@
         }
     }
     function syncTeacherCapture(snapshot) {
-        captureState = snapshot.state === 'review' ? 'ready' : snapshot.state;
+        captureState = snapshot.state === 'review' ? 'ready' : snapshot.state === 'ready' ? 'preparing' : snapshot.state;
         localRecording = snapshot.blob;
         if (teacherAudioOperationId !== snapshot.operationId) {
             teacherAudioOperationId = snapshot.operationId;
@@ -216,10 +216,10 @@
         recordLabel.textContent = localRecording ? 'Review recording' : 'Record';
         discardButton.hidden = active;
         discardButton.textContent = captureState === 'analysis_retry' ? 'View reports' : 'Back';
-        recorderDialog.classList.toggle('is-capturing', ['requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(captureState) !== -1);
+        recorderDialog.classList.toggle('is-capturing', ['preparing', 'requesting', 'countdown', 'recording', 'ending', 'stopping'].indexOf(captureState) !== -1);
         document.getElementById('teacher-speaking-open-results').disabled = active || captureState === 'ready';
     }
-    function teacherCaptureLocked() { return ['requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(captureState) !== -1; }
+    function teacherCaptureLocked() { return ['preparing', 'requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(captureState) !== -1; }
     function setCaptureState(nextState, copy) {
         teacherRecorder.setState(nextState === 'ready' ? 'review' : nextState, copy);
     }
@@ -696,7 +696,7 @@
     captureMessage = recorderHost.querySelector('#recording-uploading p');
     recorderDialog.addEventListener('close', function () { if (!recorderDialog.open) recorderDialog.hidden = true; });
     recorderDialog.addEventListener('cancel', function (event) { event.preventDefault(); discardTeacherRecording(); });
-    recordButton.addEventListener('click', openTeacherRecorder);
+    recordButton.addEventListener('click', function () { if (openTeacherRecorder()) teacherRecorder.start(); });
     audioFileButton.addEventListener('click', function () {
         if (!topicSelect.value) { setMessage('Choose a Speaking topic first.', true); topicSelect.focus(); return; }
         if (!openTeacherRecorder()) return;

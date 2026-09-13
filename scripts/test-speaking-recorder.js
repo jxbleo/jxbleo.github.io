@@ -6,15 +6,17 @@ const vm = require('node:vm');
 const source = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/speaking-recorder.js'), 'utf8');
 function fixture(options = {}) {
   let now = 0, nextId = 1, requestCount = 0, starts = 0, uploadCount = 0, micResolve;
-  const timers = new Map(), audioEvents = [], speeches = [], states = [];
+  const timers = new Map(), frames = new Map(), audioEvents = [], wheelEvents = [], speeches = [], states = [];
   const classes = () => ({ values: new Set(), toggle(name, on) { if (on) this.values.add(name); else this.values.delete(name); }, remove(...names) { names.forEach(name => this.values.delete(name)); }, contains(name) { return this.values.has(name); } });
   class Element {
-    constructor(id) { this.id = id; this.hidden = false; this.value = ''; this.style = {}; this.classList = classes(); this.events = {}; this.open = false; this.isConnected = true; }
+    constructor(id) { this.id = id; this.hidden = false; this.value = ''; this.style = {}; this.classList = classes(); this.events = {}; this.open = false; this.isConnected = true; this.scrollTop = 0; }
     addEventListener(type, handler) { (this.events[type] ||= []).push(handler); }
     removeEventListener(type, handler) { this.events[type] = (this.events[type] || []).filter(row => row !== handler); }
-    fire(type, extra = {}) { for (const handler of this.events[type] || []) handler({ preventDefault() {}, ...extra }); }
+    fire(type, extra = {}) { if (type === 'click' && this.disabled) return; for (const handler of this.events[type] || []) handler({ target: this, preventDefault() {}, ...extra }); }
     setAttribute(key, value) { this[key] = value; }
     removeAttribute(key) { delete this[key]; }
+    getAttribute(key) { return this[key]; }
+    scrollTo({top}) { this.scrollTop = top; this.fire('scroll'); }
     focus() { document.activeElement = this; }
     showModal() { assert(!this.open); this.open = true; }
     close() { this.open = false; }
@@ -32,12 +34,15 @@ function fixture(options = {}) {
     stop() { if (this.state === 'inactive') return; this.state = 'inactive'; schedule(() => { this.ondataavailable?.({ data: new Blob(['audio']) }); this.onstop?.(); }, 0); }
   }
   class AudioContext {
-    constructor() { this.state = 'running'; this.destination = {}; }
+    constructor() { this.state = 'running'; this.destination = {}; this.sampleRate = 48000; }
     get currentTime() { return now / 1000; }
     resume() { return Promise.resolve(); }
     close() { this.state = 'closed'; return Promise.resolve(); }
-    createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
-    createOscillator() { const event = {}; audioEvents.push(event); return { frequency: { setValueAtTime(value) { event.frequency = value; } }, connect(gain) { return gain; }, disconnect() {}, start(value) { event.start = value; }, stop(value) { event.stop = value; } }; }
+    createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {}, linearRampToValueAtTime() {} }, connect(next) { return next; }, disconnect() {} }; }
+    createOscillator() { const event = {}; audioEvents.push(event); return { frequency: { setValueAtTime(value) { event.frequency = value; } }, connect(gain) { return gain; }, disconnect() {}, start(value) { event.start = value; }, stop(value) { if (value != null) event.stop = value; else event.cancelled = true; } }; }
+    createBuffer(_, size) { return { getChannelData: () => new Float32Array(size) }; }
+    createBufferSource() { return { connect(next) { return next; }, start() { wheelEvents.push(now); }, disconnect() {} }; }
+    createBiquadFilter() { return { frequency: {}, Q: {}, connect(next) { return next; }, disconnect() {} }; }
     createAnalyser() { return { fftSize: 2048, getFloatTimeDomainData(samples) { samples.fill(.03); } }; }
     createMediaStreamSource() { return { connect() {} }; }
   }
@@ -46,7 +51,7 @@ function fixture(options = {}) {
     MediaRecorder: Recorder, AudioContext: options.noAudioContext ? undefined : AudioContext,
     setTimeout: (fn, ms) => schedule(fn, ms), clearTimeout: id => timers.delete(id),
     setInterval: (fn, ms) => schedule(fn, ms, true), clearInterval: id => timers.delete(id),
-    requestAnimationFrame: () => nextId++, cancelAnimationFrame() {}, matchMedia: () => ({ matches: false }), confirm: () => true,
+    requestAnimationFrame: fn => { const id = nextId++; frames.set(id, fn); return id; }, cancelAnimationFrame: id => frames.delete(id), matchMedia: () => ({ matches: false }), confirm: () => true,
     SpeechSynthesisUtterance: function (text) { this.text = text; },
     speechSynthesis: { getVoices: () => [{ lang: 'zh-CN' }, { lang: 'en-GB' }], speak(speech) { speeches.push(speech); schedule(() => speech.onend(), 1000); }, cancel() {} },
     Audio: class { constructor() { this.paused = true; } addEventListener() {} play() { this.paused = false; return Promise.resolve(); } pause() { this.paused = true; } removeAttribute() {} load() {} }
@@ -58,7 +63,9 @@ function fixture(options = {}) {
     element.hidden = /\bhidden\b/.test(match[0]);
     element.value = /\bvalue="([^"]*)"/.exec(match[0])?.[1] || '';
   }
-  const root = new Element('root'); root.querySelector = selector => nodes[selector.slice(1)]; root.querySelectorAll = () => Array.from({ length: 36 }, () => new Element('bar'));
+  const root = new Element('root'); root.querySelector = selector => nodes[selector.slice(1)];
+  const rows = Array.from({ length: 55 }, (_, index) => { const row = new Element('duration-' + index); row.setAttribute('data-duration-index', String(index)); return row; });
+  root.querySelectorAll = selector => selector === '[data-duration-index]' ? rows : [];
   const controller = lib.create(root, { onStateChange: snapshot => states.push(snapshot.state), onUpload: () => { uploadCount++; controller.setState('uploading'); } });
   async function flush() { for (let i = 0; i < 6; i++) await Promise.resolve(); }
   async function advance(ms) {
@@ -74,7 +81,9 @@ function fixture(options = {}) {
     }
     now = end; await flush();
   }
-  return { lib, controller, nodes, track, states, speeches, audioEvents, advance, flush, timers,
+  return { lib, controller, nodes, track, states, speeches, audioEvents, wheelEvents, advance, flush, timers,
+    begin() { controller.start(); nodes['stop-recording'].fire('click'); },
+    drawFrame() { const pending = [...frames]; frames.clear(); pending.forEach(([,fn]) => fn(now)); },
     resolveMic() { micResolve(stream); }, counts: () => ({ requestCount, starts, uploadCount }) };
 }
 async function run() {
@@ -91,90 +100,109 @@ async function run() {
     assert.equal(f.lib.timeline(target - 30, target).fraction, .5);
     assert.equal(f.lib.timeline(target - 1, target).fraction, 1 / 60);
   }
-  assert.equal(f.lib.timeline(180, 180).tick, 5);
-  assert.equal(f.lib.timeline(184, 180).tick, 1);
-  assert.equal(f.lib.timeline(185, 180).finished, true);
+  assert.equal(f.lib.timeline(180, 180).tick, 3);
+  assert.equal(f.lib.timeline(182, 180).tick, 1);
+  assert.equal(f.lib.timeline(183, 180).finished, true);
   assert.equal(f.lib.timeText(60), '01:00');
-  assert(!f.nodes['recording-caption'], 'recorder has no visible remaining/last-minute caption');
-  f.controller.start(); f.controller.start(); await f.flush();
-  assert.equal(f.counts().requestCount, 1, 'double taps must not open a second mic');
-  assert.equal(f.counts().starts, 0, 'do not record the opening cue');
-  assert.equal(f.speeches[0].text, 'The discussion will begin in five seconds.');
-  assert.equal(f.speeches[0].lang, 'en-GB');
-  assert.equal(f.speeches[0].voice.lang, 'en-GB');
-  await f.advance(1000);
+  assert(!f.nodes['recording-waveform'], 'no inner waveform');
+  f.controller.start(); f.controller.start();
+  assert.equal(f.controller.snapshot().state, 'ready');
+  assert.equal(f.counts().requestCount, 0, 'entry must not acquire microphone or start recording');
+  assert(f.nodes['recording-live'].open);
+  assert(f.nodes['recording-time'].hidden);
+  assert(!f.nodes['recording-adjust-duration'].hidden);
+  assert(f.controller.locked(), 'ready dialog blocks host navigation/rerender');
+  f.nodes['stop-recording'].fire('click'); f.nodes['stop-recording'].fire('click'); await f.flush();
+  assert.equal(f.counts().requestCount, 1, 'double tap while permission is pending is ignored');
+  assert.equal(f.counts().starts, 0);
+  assert.equal(f.speeches.length, 0, 'no old five-second speech before the approved three cues');
   assert.equal(f.controller.snapshot().state, 'countdown');
-  await f.advance(4999); assert.equal(f.counts().starts, 0);
+  assert(f.nodes['recording-start-hint'].hidden);
+  assert.deepEqual(f.audioEvents.map(cue => cue.frequency), [880,880,1320], 'same pitches as IR');
+  assert(Math.abs(f.audioEvents[2].stop - f.audioEvents[2].start - .4) < 1e-8);
+  await f.advance(2999); assert.equal(f.counts().starts, 0, 'opening does not consume discussion time');
   await f.advance(1); assert.equal(f.counts().starts, 1);
-  assert.equal(f.audioEvents.length, 5, 'five opening beeps');
   assert.equal(f.nodes['recording-time'].textContent, '03:00');
+  assert(!f.nodes['recording-time'].hidden);
+  f.drawFrame();
+  assert(f.nodes['recording-outer-line'].getAttribute('d').startsWith('M'), 'real samples feed the outer wave');
   await f.advance(120000);
-  const minuteCues = f.audioEvents.slice(5);
-  assert.equal(minuteCues.length, 3, 'one-minute warning schedules exactly three sounds');
+  const minuteCues = f.audioEvents.slice(3);
+  assert.equal(minuteCues.length, 3);
   minuteCues.forEach((cue, index) => {
-    assert(Math.abs(cue.stop - cue.start - .36) < 1e-8, 'each cue retains its double duration');
+    assert(Math.abs(cue.stop - cue.start - .36) < 1e-8);
     assert.equal(cue.frequency, 784);
-    assert(Math.abs(cue.start - minuteCues[0].start - index * .55) < 1e-8, 'cues have short non-overlapping gaps');
+    assert(Math.abs(cue.start - minuteCues[0].start - index * .55) < 1e-8);
   });
   assert.equal(f.nodes['recording-time'].textContent, '01:00');
-  assert(f.nodes['recording-live'].classList.contains('is-minute'), 'whole live surface enters last-minute colours');
+  assert(f.nodes['recording-live'].classList.contains('is-minute'));
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0');
   await f.advance(30000);
   assert.equal(f.nodes['recording-time'].textContent, '00:30');
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0.5');
-  await f.advance(29999); assert.equal(f.audioEvents.length, 8, 'three-cue warning does not repeat');
-  await f.advance(1); assert.equal(f.controller.snapshot().state, 'ending');
-  assert(f.nodes['recording-dial'].classList.contains('is-ending'));
+  await f.advance(29999); assert.equal(f.audioEvents.length, 6, 'minute warning does not repeat');
+  const lastProgress = f.nodes['recording-ring-progress'].style.strokeDashoffset;
+  await f.advance(1);
+  assert.equal(f.controller.snapshot().state, 'ending');
   assert(f.nodes['recording-live'].classList.contains('is-ending'));
-  assert(!f.nodes['recording-live'].classList.contains('is-minute'));
-  assert.equal(f.nodes['recording-countdown'].textContent, '5');
-  await f.advance(4000);
-  assert.equal(f.audioEvents.length, 13, 'five final beeps, one per second');
+  assert.equal(f.nodes['recording-countdown'].textContent, '3');
+  assert.deepEqual(f.audioEvents.slice(6).map(cue => cue.frequency), [880,880,1320]);
+  await f.advance(2000);
   assert.equal(f.nodes['recording-countdown'].textContent, '1');
-  assert.equal(f.audioEvents.at(-1).frequency, 1046);
-  await f.advance(1000);
+  assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, lastProgress, 'ending does not advance ring progress');
+  await f.advance(999); assert.equal(f.controller.snapshot().state, 'ending');
+  await f.advance(1);
   assert.equal(f.controller.snapshot().state, 'review');
-  assert(f.controller.snapshot().blob.size > 0);
-  assert(f.track.stopped);
+  assert(f.controller.snapshot().blob.size > 0); assert(f.track.stopped);
   assert(!f.nodes['recording-live'].open);
-  assert(!f.nodes['recording-live'].classList.contains('is-ending'), 'ending colour clears when leaving the take');
   const saved = f.controller.snapshot();
   f.nodes['upload-recording'].fire('click'); f.nodes['upload-recording'].fire('click');
-  assert.equal(f.counts().uploadCount, 1, 'upload double taps are ignored');
+  assert.equal(f.counts().uploadCount, 1);
   f.controller.setState('review', 'Upload failed. Please retry.');
   assert.equal(f.controller.snapshot().blob, saved.blob);
-  assert.equal(f.controller.snapshot().operationId, saved.operationId, 'retry must reuse the same audio operation');
+  assert.equal(f.controller.snapshot().operationId, saved.operationId);
   f.nodes['replace-recording'].fire('click'); assert.equal(f.controller.snapshot().blob, null);
-  assert.equal(f.controller.snapshot().state, 'idle');
-  f.controller.destroy();
-  const pending = fixture({ pendingMic: true });
-  pending.controller.start(); pending.controller.finish(); pending.resolveMic(); await pending.flush();
-  assert(pending.track.stopped, 'late permission must release its microphone');
-  assert.equal(pending.counts().starts, 0); assert.equal(pending.controller.snapshot().state, 'idle');
-  const cancel = fixture(); cancel.controller.start(); await cancel.flush(); cancel.controller.finish(); await cancel.advance(7000);
-  assert.equal(cancel.counts().starts, 0, 'cancelled speech/countdown must never start recording');
-  assert.equal(cancel.controller.snapshot().state, 'idle');
+  assert.equal(f.controller.snapshot().state, 'idle'); f.controller.destroy();
+
+  const wheel = fixture(); wheel.controller.start(); wheel.nodes['recording-adjust-duration'].fire('click'); wheel.drawFrame();
+  assert.equal(wheel.wheelEvents.length, 0, 'opening the wheel is silent');
+  wheel.nodes['recording-duration-wheel'].scrollTo({top: 10 * 44});
+  assert.equal(wheel.wheelEvents.length, 1);
+  wheel.nodes['recording-duration-wheel'].fire('scroll'); assert.equal(wheel.wheelEvents.length, 1, 'no repeated tick on same value');
+  wheel.nodes['recording-duration-done'].fire('click');
+  assert.equal(wheel.controller.snapshot().targetSeconds, 480);
+  assert.equal(wheel.nodes['recording-duration-label'].textContent, '8 min');
+  assert.equal(wheel.counts().requestCount, 0, 'time selection cannot start recording');
+  wheel.nodes['recording-adjust-duration'].fire('click'); wheel.drawFrame();
+  wheel.nodes['recording-duration-wheel'].scrollTo({top: 14 * 44});
+  wheel.nodes['recording-duration-dialog'].fire('cancel');
+  assert.equal(wheel.controller.snapshot().targetSeconds, 480, 'Escape cancels the tentative wheel value');
+  wheel.nodes['recording-duration-wheel'].scrollTo({top: 15 * 44});
+  assert.equal(wheel.wheelEvents.length, 2, 'closed picker cannot emit ticks');
+  wheel.nodes['recording-live'].fire('cancel'); assert.equal(wheel.controller.snapshot().state, 'idle');
+  wheel.controller.destroy();
+
+  const pending = fixture({ pendingMic: true }); pending.begin(); pending.controller.finish(); pending.resolveMic(); await pending.flush();
+  assert(pending.track.stopped); assert.equal(pending.counts().starts, 0); assert.equal(pending.controller.snapshot().state, 'ready');
+  pending.controller.destroy();
+  const cancel = fixture(); cancel.begin(); await cancel.flush(); cancel.controller.finish(); await cancel.advance(4000);
+  assert.equal(cancel.counts().starts, 0, 'cancelled countdown cannot start recording');
+  assert.equal(cancel.controller.snapshot().state, 'ready'); assert(cancel.audioEvents.every(cue => cue.cancelled)); cancel.controller.destroy();
   for (const option of [{ denied: true }, { constructorFailure: true }]) {
-    const failed = fixture(option); failed.controller.start(); await failed.flush();
-    assert.equal(failed.controller.snapshot().state, 'idle');
-    assert(failed.nodes['recording-message'].textContent.length > 10);
-    failed.controller.destroy();
+    const failed = fixture(option); failed.begin(); await failed.flush();
+    assert.equal(failed.controller.snapshot().state, 'ready'); assert(failed.nodes['quality-warning'].textContent.length > 10);
+    failed.nodes['recording-back'].fire('click'); assert.equal(failed.controller.snapshot().state, 'idle', 'Back restores file upload after recording failure'); failed.controller.destroy();
   }
-  const restart = fixture();
-  restart.controller.start(); await restart.flush(); await restart.advance(500);
-  restart.controller.finish(); restart.controller.start(); await restart.flush();
-  await restart.advance(500); // the cancelled first utterance emits its late onend
-  assert.equal(restart.audioEvents.length, 0, 'stale speech callbacks must not start the new countdown');
-  await restart.advance(5500); assert.equal(restart.counts().starts, 1);
-  restart.controller.discard();
-  const noAudio = fixture({ noAudioContext: true }); noAudio.controller.start(); await noAudio.advance(6000);
-  assert.equal(noAudio.controller.snapshot().state, 'recording', 'recording still works without waveform/audio APIs');
+  const restart = fixture(); restart.begin(); await restart.flush(); await restart.advance(500);
+  restart.controller.finish(); restart.begin(); await restart.advance(2999); assert.equal(restart.counts().starts, 0);
+  await restart.advance(1); assert.equal(restart.counts().starts, 1); restart.controller.discard();
+  const noAudio = fixture({ noAudioContext: true }); noAudio.begin(); await noAudio.advance(3000);
+  assert.equal(noAudio.controller.snapshot().state, 'recording');
   noAudio.controller.finish(); await noAudio.advance(0); assert.equal(noAudio.controller.snapshot().state, 'review');
   const file = fixture(); const audioFile = new Blob(['file'], { type: 'audio/mp4' });
   file.controller.prepareFile(audioFile); assert.equal(file.controller.snapshot().date, '2026-09-01');
-  file.controller.setState('analysis_retry', 'Retry analysis');
-  assert.equal(file.nodes['upload-recording'].textContent, 'Retry analysis');
+  file.controller.setState('analysis_retry', 'Retry analysis'); assert.equal(file.nodes['upload-recording'].textContent, 'Retry analysis');
   assert(file.nodes['replace-recording'].hidden); file.controller.destroy();
-  console.log('Speaking recorder: English opening, countdown timing, minute cue, final red state/beeps, auto-stop, cancellation, file dates and retry lifecycle passed.');
+  console.log('Speaking recorder: ready entry, wheel sounds, three-second cues, real outer wave, minute reminder, auto-stop, permission/cancellation, files and retry lifecycle passed.');
 }
 run().catch(error => { console.error(error); process.exitCode = 1; });

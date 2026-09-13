@@ -561,7 +561,7 @@
         closeSidebar();
         if (!set || !set.set_id) return;
         var button = document.getElementById('start-set-discussion');
-        if (button) { button.disabled = true; button.querySelector('span').textContent = 'Starting…'; }
+        if (button) { button.disabled = true; button.querySelector('[data-discussion-start-label]').textContent = 'Starting…'; }
         setStatus('Creating your Discussion…');
         return call('createDiscussion', {
             operation_id: 'create-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9),
@@ -572,10 +572,14 @@
         }).then(function (result) {
             selectedId = result.discussion.discussion_id;
             selectedSpeakingSet = null;
-            return loadList();
+            return openDiscussion(selectedId).then(function (discussion) {
+                if (discussion && formalRecorder) formalRecorder.start();
+                loadSidebarLists();
+                return discussion;
+            });
         }).catch(function (error) {
             setStatus(friendlyError(error), true);
-            if (button) { button.disabled = false; button.querySelector('span').textContent = 'Start Discussion'; }
+            if (button) { button.disabled = false; button.querySelector('[data-discussion-start-label]').textContent = 'Start'; }
         });
     }
     function discussionSetIdentity(item) {
@@ -811,7 +815,7 @@
         detail.innerHTML = '<article class="speaking-set-detail">' +
             '<header class="speaking-set-overview-card speaking-report-card"><div class="speaking-set-overview-copy">' + (setIdentity ? '<p class="eyebrow accent">' + esc(setIdentity) + '</p>' : '') + '<h2>' + esc(set.title) + '</h2></div></header>' +
             '<section class="speaking-set-context speaking-report-card" data-speaking-reading-section="context"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">CONTEXT</p><h3 class="speaking-set-context-title">' + esc(context.title || '') + '</h3>' + speakingSetTextSizeMarkup('context', 'Context') + '</header><div class="speaking-set-context-body">' + (context.body || []).map(function (paragraph) { return '<p>' + esc(paragraph) + '</p>'; }).join('') + '</div></section>' +
-            '<section class="speaking-set-part speaking-set-part-a speaking-report-card" data-speaking-reading-section="part-a"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">PART A - GROUP DISCUSSION</p>' + speakingSetTextSizeMarkup('part-a', 'Part A') + '</header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="primary-button" id="start-set-discussion" type="button"><span>Start Discussion</span><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></button></div></section>' +
+            '<section class="speaking-set-part speaking-set-part-a speaking-report-card" data-speaking-reading-section="part-a"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">PART A - GROUP DISCUSSION</p>' + speakingSetTextSizeMarkup('part-a', 'Part A') + '</header>' + (partA.task ? '<p class="speaking-set-task"><strong>Task</strong><span>' + esc(partA.task) + '</span></p>' : '') + '<p class="speaking-set-instruction">' + esc(partA.instruction || 'You may want to talk about:') + '</p><ol class="speaking-set-points">' + points + '</ol><div class="speaking-detail-actions speaking-set-primary-action"><button class="speaking-discussion-start" id="start-set-discussion" type="button"><span class="speaking-discussion-start-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7 16a9 9 0 0 0 18 0M16 25v4M12 29h8"/></svg></span><span data-discussion-start-label>Start</span></button></div></section>' +
             '<section class="speaking-set-part speaking-set-part-b speaking-report-card" data-speaking-reading-section="part-b"><header class="speaking-set-section-head speaking-set-section-head-centered speaking-set-section-head-with-controls"><p class="eyebrow accent">PART B - INDIVIDUAL RESPONSE</p>' + speakingSetTextSizeMarkup('part-b', 'Part B') + '</header><p class="speaking-set-instruction">' + esc(partB.instruction || '') + '</p><ol class="speaking-set-questions">' + questions + '</ol></section></article>';
         bindSpeakingSetTextSizeControls(detail);
         document.getElementById('start-set-discussion').addEventListener('click', function () { createDiscussionFromSet(set); });
@@ -1173,7 +1177,7 @@
         return remaining;
     }
     function recordingLocksPage() {
-        return ['requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(recordingState) >= 0;
+        return ['ready', 'requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(recordingState) >= 0;
     }
     function recordingNeedsDiscardConfirmation() { return recordingState === 'review'; }
     function syncRecordingState(snapshot) {

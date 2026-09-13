@@ -1128,3 +1128,20 @@ cp .qa-secrets.example .qa-secrets.local
   checks capture colour, stop display and Submit restoring scroll position.
 - UI specification, changelog and testing checklist updated. No CloudBase
   function, permission, data migration or provider changes are involved.
+
+
+### 2026-09-13 — Group Discussion circle recorder release
+
+- Implemented the owner-approved temporary preview: centred microphone Start,
+  Ready duration selector and Tap to Start, half-minute wheel ticks, three-second
+  opening and ending cues, larger digits, and real microphone colour outside
+  the progress arc. Ending retains a complete static ring.
+- Student and Teacher use the same recorder and scoped CSS. Retained file/date
+  fallback, final-minute reminder, local review and stable explicit upload retry.
+- Passed `npm run test:speaking-lab`, `npm run verify:release`,
+  `npm run build:static` and `git diff --check`. Browser QA at 1280×720 and
+  390×844 verified Ready, wheel selection, opening, outer colour response,
+  final static ring and automatic Review with synthetic audio; no page errors.
+- Updated product, architecture, UI, changelog and regression documentation.
+  No backend or production data changes. Real-device acoustic/permission quality
+  remains device-dependent; synthetic browser QA did not access a physical mic.

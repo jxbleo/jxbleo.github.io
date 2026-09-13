@@ -1,5 +1,18 @@
 # 02 Architecture
 
+## 2026-09-13 — Shared Group Discussion circle recorder
+
+Student and Teacher reuse `assets/js/speaking-recorder.js` with the scoped
+`assets/css/speaking-discussion-recorder.css`. Its native Ready dialog opens
+without microphone access; the circle starts permission and a three-second
+opening cue. A second native dialog owns the scroll-snap duration wheel and
+local Web Audio detent sounds. A real microphone analyser drives only the outer
+SVG contour. Target-plus-three timing, cue cancellation, stale permission
+suppression, local review and stable upload retry remain controller-owned.
+Teacher maps the new pre-capture Ready state to `preparing`, distinct from its
+existing `ready` review state. No provider, database, storage or backend change.
+
+
 ## 2026-09-13 — Speaking waiting controller
 
 `assets/js/speaking-waiting.js` owns one mounted runner, bounded status-read loop,

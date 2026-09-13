@@ -169,6 +169,14 @@ function run() {
   assert.match(teacher, /setPicker\.setAttribute\('aria-modal',/);
   assert.match(teacher, /MrCatSpeakingRecorder.create/);
   assert.match(app, /MrCatSpeakingRecorder.create/);
+  const discussionCss = read('assets/css/speaking-discussion-recorder.css');
+  for (const html of [page, teacherPage]) {
+    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=20260913-discussion-ring-1/);
+  }
+  assert.match(discussionCss, /is-ending \.speaking-recording-ring-progress \{ display:none/);
+  assert.match(discussionCss, /font:300 28cqw/);
+  assert.match(recorder, /Tap to Start/);
+  assert.match(recorder, /previous !== wheelIndex\) playWheelTick/);
   assert.match(page, /speaking-recorder\.js\?v=/);
   assert.match(teacherPage, /speaking-recorder\.js\?v=/);
   assert.match(teacher, /call\('createDiscussion'/);
@@ -205,18 +213,19 @@ function run() {
   assert.match(app, /getUserMedia/);
   assert.match(recorder, /data-recording-state="idle"/);
   assert.match(recorder, /Record on this device/);
-  assert.match(recorder, /id="stop-recording"[^>]*>Finish</);
+  assert.match(recorder, /id="stop-recording"[^>]*aria-label="Start three-second countdown"/);
   assert.match(recorder, /Recording ready/);
   assert.match(recorder, /Upload &amp; analyse/);
   assert.match(app, /function setRecordingState\(nextState\)/);
-  assert.match(recorder, /state === 'requesting' \|\| state === 'countdown'\) \{ discard\(\)/);
+  assert.match(recorder, /state === 'requesting' \|\| state === 'countdown'\) \{ generation \+= 1; stopHardware\(\)/);
   assert.match(recorder, /device.start\(1000\)/);
-  assert.match(recorder, /The discussion will begin in five seconds\./);
-  assert.match(recorder, /speech.lang = 'en-GB'/);
+  assert.match(recorder, /OPENING_SECONDS = 3, ENDING_SECONDS = 3/);
+  assert.match(recorder, /last \? 1320 : 880/);
   assert.doesNotMatch(recorder, /[\u3400-\u9fff]/);
-  assert.match(recorder, /elapsed >= target \+ 5/);
+  assert.match(recorder, /elapsed >= target \+ ENDING_SECONDS/);
   assert.match(recorder, /current.finished\) \{ stopTake/);
-  assert.match(recorder, /speaking-recording-wave-bar/);
+  assert.match(recorder, /speaking-recording-outer-wave/);
+  assert.doesNotMatch(recorder, /speaking-recording-wave-bar/);
   assert.match(recorder, /getFloatTimeDomainData/);
   assert.match(recorder, /Audio date[\s\S]*id="recording-date"/);
   assert.match(recorder, /device.onerror/);
@@ -229,7 +238,7 @@ function run() {
   assert.match(recorder, /createAnalyser/);
   assert.match(recorder, /-45|0\.98/);
   // Minute-cue count, duration and spacing are exercised by test-speaking-recorder.js.
-  assert.match(recorder, /current.tick !== lastTick/);
+  assert.match(recorder, /state !== 'ending'[\s\S]*scheduleCountdownCues\(\)/);
   assert.match(css, /is-ending[\s\S]*#de6b60/);
   assert.match(css, /speaking-final-seconds-pulse 1s/);
   assert.match(css, /prefers-reduced-motion[\s\S]*is-ending[\s\S]*animation:none/);
@@ -293,7 +302,7 @@ function run() {
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=20260912-speaking-colors-1/);
-  assert.match(teacherPage, /teacher-speaking\.js\?v=20260912-voiceprint-success-1/);
+  assert.match(teacherPage, /teacher-speaking\.js\?v=20260913-discussion-ring-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
@@ -456,7 +465,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260913-response-focus-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-response-focus-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-discussion-ring-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

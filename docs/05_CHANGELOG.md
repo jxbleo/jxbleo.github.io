@@ -1,4 +1,16 @@
 # Changelog
+
+## 2026-09-13 — Group Discussion approved circle recorder
+
+- Replace the Part A entry with a centred microphone and Start; open directly
+  into the large duration circle and Tap to Start.
+- Add a half-minute scroll wheel with mechanical detent sounds; start microphone
+  access only on the circle tap. Opening and ending now use three-second IR cues.
+- Enlarge timer digits, remove inner waveform/captions, and move real microphone
+  colour response outside the arc. The final warning retains a static full ring.
+- Preserve the final-minute cue, file fallback, review and explicit upload in
+  Student and Teacher. No backend deployment or data migration is required.
+
 ## 2026-09-13 — Manage Speaking and Writing text models together
 
 - The owner's standing rule is recorded prominently in AGENTS.md: all future

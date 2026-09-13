@@ -2632,7 +2632,7 @@ cover participant/duration boundaries, server-UID access, Guest collisions,
 one-to-one mapping and stale confirmation, Candidate/non-Candidate exclusion,
 strict evidence and 0–7 report canonicalization, forced non-assessment of
 pronunciation, Student/Teacher redaction, per-snapshot aliases, token hashing,
-idempotency/lease projections, and forbidden queue content. Static tests cover direct Set-backed Discussion creation without a New Session dialog, removal of duplicate card Back and manual Invite/Add controls, Audio date persistence, full-screen TTS/countdown/waveform recording, target-plus-five automatic stop, student recording fallback, no browser audio persistence, noindex external page, no audio/download controls, teacher name selection, and reduced motion.
+idempotency/lease projections, and forbidden queue content. Static tests cover direct Set-backed Discussion creation without a New Session dialog, removal of duplicate card Back and manual Invite/Add controls, Audio date persistence, full-screen three-second countdown/outer-wave recording, target-plus-three automatic stop, student recording fallback, no browser audio persistence, noindex external page, no audio/download controls, teacher name selection, and reduced motion.
 They also lock the student hierarchy classes, native hidden-state override,
 single-focus detail mode, structured report score grid, mobile bottom-sheet
 breakpoint, reduced-transparency fallback, and increased-contrast fallback.
@@ -2692,7 +2692,7 @@ Teacher report gates:
   whole group's performance, no audio/download control, and the seven-day
   expiry returned by the server.
 
-Click `Start Discussion` and verify one request creates and opens the Set-backed Discussion with no intermediate modal. Verify toolbar Back is the only return control, and no `Invite VIP` or `Add Non-VIP` appears. A not-yet-uploaded Discussion must show only one compact three-step progress card followed by `Record the Discussion`; assert that no title/date hero, Candidate/Recording/Analysis fact grid, Discussion prompt, or Candidate card is present. An in-progress upload must show the secure-upload indicator inside the retained recording card. Put a prior date beside `Choose audio file` and verify reopening preserves it; starting on-device recording must reset the date to Shanghai today. Grant microphone permission and verify the viewport becomes the recording surface, English TTS (“The discussion will begin in five seconds.”) precedes five synchronized countdown beeps, the waveform reacts to voice level, and an eight-minute target shows a circular remaining-time ring counting from 8:05 to 0:00. Confirm the ring enters its amber state and plays exactly one four-note cue as the displayed value becomes 01:05, then enters its red final-five-second state before automatic stop at 0:00. During every live state inspect the DOM and verify `#recording-live` is a direct `body` child; on Review, Cancel, denied permission, recorder error, and Finish, verify the same node is restored without duplicate IDs or lost Finish-button behavior. At phone portrait, phone landscape, and tablet widths, verify every countdown number and the circular recording timer remain centred in the live viewport. Speak quietly, normally, and too close to the microphone long enough to cross the debounce period; verify the whole surface changes to amber, blue-green, and coral respectively, the status wording changes with it, and brief pauses do not cause rapid flicker. End or mute the input and verify the separate microphone-attention state. Repeat with Reduced Motion, denied microphone permission, manual early Finish, and a background/foreground cycle. After upload, those
+Click the centred microphone `Start` and verify one Set-backed Discussion opens directly into Ready without requesting microphone permission. The circle shows only the large duration selector above centre and Tap to Start. Test half-minute wheel detents, sound on changed selection only, keyboard arrows/Home/End, and Cancel retaining the old target. Start capture and verify IR-style 3/2/1 precedes MediaRecorder.start, with no speech or extra caption. Normal recording shows large digits inside the ring and microphone colour response only outside it. At 01:00 the ring resets to full and drains continuously, with one three-note 0.36-second reminder. The final 3/2/1 uses a static full ring, red pulsing digits and three synchronized tones, then stops at target plus three seconds. Inspect native dialog top-layer rendering and focus return; no node reparenting or duplicate IDs. Check phone portrait/landscape, desktop, Reduced Motion, permission denial and Back to file options, early finish, input loss and foreground recovery. Quiet/clipped input should show a debounced warning. After upload, those
 controls disappear: queued/processing states show stage progress and Candidate
 matching, while a ready report shows the three primary cards in order, with no
 redundant back control, `Report ready` label, or Report/Ready fact. The first
@@ -3154,27 +3154,21 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
   the selected Set count. Both keep the correct/total score and omit separate
   Questions metadata. Check long-title wrapping and the single Close action.
 
-### Shared Speaking recorder regression (2026-09-12)
+### Shared Speaking recorder regression (2026-09-13)
 
-- Verify white normal recording, 48 rainbow microphone bars, no Remaining /
-  Last minute caption, pale coral at 60 seconds, and a stronger pale coral
-  final-five-second state. Starting another take must restore the white surface.
-  Check narrow-phone and desktop layouts, Reduced Motion and Reduced Transparency.
-
-- Run `npm run test:speaking-lab`, which includes the deterministic recorder
-  clock/audio/microphone tests in `scripts/test-speaking-recorder.js`.
-- In both Teacher and Student, verify the same target control (3–30 minutes,
-  default 8, half-minute steps), file date, local Play/Replace and Upload states.
-- At desktop 1280×720 and phone 390×844, the timer must remain inside the ring,
-  with a single compact Finish button and no horizontal overflow. The final
-  five seconds use red digits/ring, a one-second gentle pulse, and one beep per
-  second; Reduced Motion retains red without flashing.
-- One minute before the chosen target, reset the ring to full and sound three
-  0.36-second cues with 0.19-second gaps. Verify the sequence does not repeat;
-  digits continue from 01:00 and the ring is half full at 00:30. Check 3-, 8-,
-  8.5- and 30-minute targets. The final warning still auto-stops at target plus five.
-- Cancel while mic permission or English speech is pending, then start again;
-  no previous callback may start a take. Verify device failure and input loss.
+- Run `npm run test:speaking-lab`, including the deterministic clock, audio,
+  microphone, wheel, cancellation and retry tests in `test-speaking-recorder.js`.
+- In Teacher and Student, verify Ready opens before microphone permission,
+  3–30 minute half-step selection, file date, local Play/Replace and Upload.
+- At desktop 1280×720 and phone 390×844, check 28cqw digits, no overflow,
+  outer microphone colour response and no inner waveform. Three-second opening
+  and ending use IR tones; Ending has a complete static ring. Reduced Motion
+  retains red without flashing and removes outer contour movement.
+- At 01:00 reset the ring to full with three 0.36-second cues and 0.19-second
+  gaps. Check continuous digits and half ring at 00:30 for 3-, 8-, 8.5- and
+  30-minute targets. Auto-stop is target plus three seconds.
+- Cancel during permission or opening, restart, and verify no previous callback
+  starts a take. Verify device failure, input loss and file fallback.
 - Retry a failed upload with its original audio/operation ID. Replace that audio
   and verify the Teacher adapter reserves a fresh upload operation. Analysis-only
   retry must not re-upload. Verify the Teacher background stays locked until all

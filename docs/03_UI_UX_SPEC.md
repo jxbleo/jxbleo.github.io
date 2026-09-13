@@ -2770,8 +2770,8 @@ The Context body begins directly with the article; it never renders the
 source/original-material note. Choose-a-Set cards keep only their year/type
 leading tile, Set number, topic, and disclosure arrow; `DSE Paper 4` and the
 Context/Part A/Part B route row are omitted.
-`Start Discussion` creates and opens the Set-backed Discussion immediately; no
-New Session modal appears. Every Part B question is one full-width disclosure
+The centred microphone `Start` creates the Set-backed Discussion and opens its
+Ready circle immediately; no New Session modal appears. Every Part B question is one full-width disclosure
 card with no nested `Start Response` action. Selecting it leaves the Set visible
 behind a modal recorder containing the question, circular 65-second remaining-time indicator and primary
 microphone control. The modal is a disposable local draft until the student
@@ -2789,25 +2789,14 @@ Voiceprint then Discussions so the CloudBase browser SDK does not initialize
 two temporary-credential requests concurrently. Read requests leave the
 loading state with a refresh-and-retry message after 20 seconds; recording and
 other mutating actions retain a longer 90-second response window.
-Formal recording uses mutually exclusive Ready, Requesting, Countdown, Recording, Ending, Review, and Uploading states. Ready shows target length, `Record on this device`, `Choose audio file`, and an Audio date to the file chooser right; device recording resets that date to today. Student and Teacher use `speaking-recorder.js` for this entire flow, including the 3–30 minute target picker (default 8, half-minute steps), file selection, playback, and replacement. After microphone permission, a native full-viewport dialog presents the English announcement “The discussion will begin in five seconds.”, followed by five visible numbers and synchronized beeps before capture begins. A large circular progress display wraps the remaining time and live microphone waveform. The ring uses up to 74% of viewport height on desktop, and nearly the available width on phones; text scales relative to its diameter. Below it is only a compact `Finish` button. Normal recording has no extra instruction line; a microphone-quality error may appear at the bottom. At one minute remaining before the selected target, the progress ring resets to full and drains over the remaining 60 seconds while the displayed countdown stays continuous. The reminder sounds three times, each lasting 0.36 seconds, with 0.19-second gaps and unchanged pitch and volume. This three-sound reminder runs once per recording. At target time the full-screen surface enters a five-second Ending warning: ring and digit turn red and pulse once per second between full and 48% opacity, while one beep accompanies each displayed second. Reduced Motion disables the pulse while retaining red. It stops automatically at target plus five seconds; an eight-minute target counts down from 08:00, followed by the separate five-second Ending warning.
+The centred Part A microphone button labelled `Start` creates and opens the Set-backed Discussion directly in a full-screen Ready dialog. Ready contains one large `8 min` selector above centre and `Tap to Start` below it. The selector opens a scroll-snap wheel covering 3–30 minutes in half-minute steps; each new detent sounds a short mechanical tick, while opening or remaining on the same value is silent. Cancel preserves the previous target. Microphone access begins only when the user taps the circle to start. Back retains access to file upload and Audio date; device capture resets the date to Shanghai today.
 
-The live recorder uses a white background, dark timer digits, a soft teal progress ring and a 48-bar rainbow waveform driven by the actual microphone signal. No Remaining or Last minute caption is displayed. At 60 seconds remaining the surface transitions to pale coral (#fff0ee), the timer and ring use warm red tones, and the rainbow waveform stays visible. The final five-second warning uses a slightly stronger pale coral background (#ffe6e2); the existing red pulse and five beeps remain. Reduced Motion disables background transitions and the final pulse; Reduced Transparency never restores the former dark background.
+After microphone permission, a red pulsing 3/2/1 countdown uses the same two short tones and higher, longer final tone as Individual Response, without TTS or instruction captions. MediaRecorder starts after that countdown. During recording, the teal progress circle contains only large remaining-time digits; the rainbow microphone response is outside the arc, with no internal waveform or time caption. The outer contour follows real microphone samples with smoothing. Tapping the circle finishes, retaining the existing early-finish confirmation. At one minute remaining, the ring resets to full and drains over 60 seconds; the pale coral warning surface and three 0.36-second reminders with 0.19-second gaps remain. At target time, a separate 3/2/1 warning uses red pulsing digits and the same opening tones, with a complete static coral ring and no progress or outer wave. Capture stops at target plus three seconds (8:03 for eight minutes). Reduced Motion retains steady red and a static outer contour.
 
-The full-screen recorder uses a light, restrained ambient surface rather than a
-dark camera-style view. The countdown is fixed to the live viewport centre so
-browser toolbar and safe-area differences cannot move it upward. Once recording
-starts, the waveform and a text status communicate input level together: warm
-amber means the group is too quiet, blue-green means the level is suitable,
-soft coral means it is too loud, and a muted warning surface means the
-microphone signal needs attention. State changes are smoothed and held briefly
-to avoid flashes during natural pauses; colour is never the only cue.
-While any live recording state is active, the recorder surface is temporarily
-mounted directly under `body`, outside the filtered and clipped Discussion
-cards. Review, cancellation, permission failure, recorder failure, and normal
-completion restore it to its original DOM position before another render. This
-portal boundary is required for consistent full-viewport rendering in Safari
-and other browsers that treat filtered ancestors as fixed-position containing
-blocks.
+Review offers Play, Replace, and explicit `Upload & analyse`. Audio remains in memory until confirmation; no automatic upload or browser persistence is added. Repeated taps and background/foreground changes cannot replace the local take. Analysis starts only after verified private upload, retaining the stable operation ID on retry.
+
+Student and Teacher share `speaking-recorder.js` and `speaking-discussion-recorder.css`. The native full-viewport dialog uses the browser top layer to escape filtered ancestors and trap focus without reparenting DOM. Opening and Ending have no Get ready, Tap to Cancel, or Time Remaining captions. Desktop ring diameter is capped at 680 px and 65 dvh; on phones it uses up to 82 vw and 58 dvh. Remaining-time digits are 28% of ring width. Permission failure returns to Ready with a readable warning and Back to file options. Input-loss, clipping and low-level warnings remain debounced text at the bottom; they do not replace the approved timer palette. Reduced Motion removes the countdown pulse and movement, and Reduced Transparency removes backdrop blur.
+
 Review shows only `Play recording`, `Replace recording`, and the primary
 `Upload & analyse` action. Uploading locks navigation and shows one factual
 secure-upload state; a successful upload automatically starts analysis.
