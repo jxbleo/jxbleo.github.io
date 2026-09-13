@@ -1815,7 +1815,8 @@
         }).catch(function () { setStatus('Microphone access was denied. Choose an audio file instead.', true); });
     }
     function uploadPreparedRecording() {
-        if (recordingState !== 'review' || !recordingBlob) return;
+        if ((recordingState !== 'review' || !recordingBlob) && recordingState !== 'analysis_retry') return;
+        var retryAnalysis = recordingState === 'analysis_retry';
         var discussionId = selectedId;
         var blob = recordingBlob;
         var operationId = recordingUploadOperationId || ('speaking-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10));
@@ -1824,18 +1825,17 @@
         persistRecordingTarget();
         setRecordingState('uploading');
         setStatus('Uploading audio securely…');
-        var uploadCompleted = false;
-        uploadBlob(blob, 'formal', null, operationId).then(function () {
+        var uploadCompleted = retryAnalysis;
+        (retryAnalysis ? Promise.resolve() : uploadBlob(blob, 'formal', null, operationId)).then(function () {
             uploadCompleted = true;
             setStatus('Audio uploaded. Starting analysis…');
             return call('startAnalysis', { discussion_id: discussionId, operation_id: 'analysis-' + discussionId });
         }).then(function () {
-            formalRecorder.clear();
-            return openDiscussion(discussionId);
-        }).then(function () { setStatus('Audio uploaded. Analysis has started.'); }).catch(function (error) {
+            return openDiscussion(discussionId, true);
+        }).then(function (result) { if (!result) throw new Error('The analysis page could not load. Please retry.'); setStatus('Audio uploaded. Analysis has started.'); }).catch(function (error) {
             if (uploadCompleted) {
-                formalRecorder.clear();
-                openDiscussion(discussionId).then(function () { setStatus('Audio uploaded, but analysis did not start. ' + friendlyError(error), true); });
+                setRecordingState('analysis_retry');
+                document.getElementById('recording-review-copy').textContent = friendlyError(error) + ' Your audio is saved. Retry to open the analysis.';
                 return;
             }
             setRecordingState('review');
@@ -1916,8 +1916,8 @@
             }
         });
     }
-    function openDiscussion(idValue) {
-        if (recordingState !== 'idle') return Promise.resolve(null);
+    function openDiscussion(idValue, afterUpload) {
+        if (recordingState !== 'idle' && !(afterUpload && recordingState === 'uploading')) return Promise.resolve(null);
         stopSpeakingWaiting();
         selectedResponseId = ''; selectedResponse = null;
         selectedId = idValue;
@@ -1929,6 +1929,7 @@
         return call('getDiscussion', { discussion_id: idValue }).then(function (result) {
             if (generation !== pollGeneration || selectedId !== idValue) return null;
             hideSpeakingHomeCards();
+            if (afterUpload && formalRecorder) formalRecorder.clear();
             if (result.invitation) {
                 updateToolbar({ title: result.invitation.title, invitation: true });
                 document.body.classList.remove('speaking-detail-open');
@@ -1971,7 +1972,7 @@
         }).catch(function (error) {
             if (generation !== pollGeneration) return null;
             setStatus(friendlyError(error), true);
-            if (document.documentElement.classList.contains('speaking-direct-entry')) {
+            if (!afterUpload && document.documentElement.classList.contains('speaking-direct-entry')) {
                 document.body.classList.add('speaking-detail-open');
                 detail.hidden = false;
                 detail.innerHTML = '<article class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><h3>This Discussion could not be opened.</h3><p>' + esc(friendlyError(error)) + '</p><div class="speaking-detail-actions"><button class="outline-button" type="button" id="close-discussion">Return to Speaking Lab</button></div></article>';

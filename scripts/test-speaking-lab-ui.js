@@ -175,7 +175,7 @@ function run() {
   assert.match(app, /MrCatSpeakingRecorder.create/);
   const discussionCss = read('assets/css/speaking-discussion-recorder.css');
   for (const html of [page, teacherPage]) {
-    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=20260913-discussion-ring-1/);
+    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=20260913-discussion-submit-1/);
   }
   assert.match(discussionCss, /is-ending \.speaking-recording-ring-progress \{ display:none/);
   assert.match(discussionCss, /font:300 28cqw/);
@@ -218,8 +218,8 @@ function run() {
   assert.match(recorder, /data-recording-state="idle"/);
   assert.match(recorder, /Record on this device/);
   assert.match(recorder, /id="stop-recording"[^>]*aria-label="Start three-second countdown"/);
-  assert.match(recorder, /Recording ready/);
-  assert.match(recorder, /Upload &amp; analyse/);
+  assert.match(recorder, /review: 'Finished'/);
+  assert.match(recorder, />Submit<\/button>/);
   assert.match(app, /function setRecordingState\(nextState\)/);
   assert.match(recorder, /state === 'requesting' \|\| state === 'countdown'\) \{ generation \+= 1; stopHardware\(\)/);
   assert.match(recorder, /device.start\(1000\)/);
@@ -357,7 +357,7 @@ function run() {
   assert.match(app, /if \(selectedId\) \{[\s\S]*openDiscussion\(selectedId\)\.then\(function \(\) \{[\s\S]*finishInitialLoading\(\)[\s\S]*loadMyVoiceprint\(\)[\s\S]*loadSpeakingSets\(\)[\s\S]*loadSidebarLists\(\)/);
   assert.match(css, /html\.speaking-direct-entry \.speaking-initial-loading[^}]*display:\s*grid/);
   assert.match(css, /html\.speaking-direct-entry \.speaking-set-library[\s\S]*display:\s*none !important/);
-  assert.match(recorder, /speaking-upload-progress-track/);
+  assert.match(recorder, /speaking-recording-uploading[\s\S]*speaking-upload-spinner/);
   const readyMarkup = app.slice(app.indexOf("function reportReadyMarkup(item)"), app.indexOf("function reportProcessingMarkup(item)"));
   assert.doesNotMatch(readyMarkup, /speaking-report-nav|Report ready|close-discussion|candidateIntro/);
   assert.doesNotMatch(readyMarkup, /<dt>Report<\/dt>|<dd>Ready<\/dd>/);
@@ -469,7 +469,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260913-speaking-set-context-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-speaking-set-context-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-discussion-submit-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

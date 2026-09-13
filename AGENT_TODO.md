@@ -106,6 +106,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-13: Continuous Discussion circle: Upload → capture/file → Submit → waiting game; larger recording indicator, minimal picker and more responsive real-input outer wave. Recorder/host lifecycle tests and local synthetic browser capture; no physical microphone or production audio used.
+
 - 2026-09-13: Discussion pre-recording Back restores its original Set, focus and scroll position; recorder/host regression covers ready, pending permission, countdown, Escape and stale callbacks. Static-only fix.
 
 - 2026-09-13: Removed the duplicate Speaking Set overview card and moved its year/Set identity into the article's blue heading. Preserved prompts, font controls and recording actions; added title fallback and regression assertions. Speaking contracts, release verification and static build pass; browser checks at 390px and 1024px pass. Product/UX/changelog/checklist updated. No backend or data changes; owner authorized static publication.

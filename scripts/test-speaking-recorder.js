@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/speaking-recorder.js'), 'utf8');
 function fixture(options = {}) {
+  let sampleLevel = .03;
   let now = 0, nextId = 1, requestCount = 0, starts = 0, uploadCount = 0, micResolve;
   const timers = new Map(), frames = new Map(), audioEvents = [], wheelEvents = [], speeches = [], states = [];
   const classes = () => ({ values: new Set(), toggle(name, on) { if (on) this.values.add(name); else this.values.delete(name); }, remove(...names) { names.forEach(name => this.values.delete(name)); }, contains(name) { return this.values.has(name); } });
@@ -43,7 +44,7 @@ function fixture(options = {}) {
     createBuffer(_, size) { return { getChannelData: () => new Float32Array(size) }; }
     createBufferSource() { return { connect(next) { return next; }, start() { wheelEvents.push(now); }, disconnect() {} }; }
     createBiquadFilter() { return { frequency: {}, Q: {}, connect(next) { return next; }, disconnect() {} }; }
-    createAnalyser() { return { fftSize: 2048, getFloatTimeDomainData(samples) { samples.fill(.03); } }; }
+    createAnalyser() { return { fftSize: 2048, getFloatTimeDomainData(samples) { samples.fill(sampleLevel); } }; }
     createMediaStreamSource() { return { connect() {} }; }
   }
   const navigator = { mediaDevices: { getUserMedia() { requestCount++; if (options.denied) return Promise.reject({ name: 'NotAllowedError' }); if (options.pendingMic) return new Promise(resolve => { micResolve = resolve; }); return Promise.resolve(stream); } } };
@@ -83,6 +84,7 @@ function fixture(options = {}) {
   }
   return { lib, controller, nodes, track, states, speeches, audioEvents, wheelEvents, advance, flush, timers,
     begin() { controller.start(); nodes['stop-recording'].fire('click'); },
+    setLevel(value) { sampleLevel = value; },
     drawFrame() { const pending = [...frames]; frames.clear(); pending.forEach(([,fn]) => fn(now)); },
     resolveMic() { micResolve(stream); }, counts: () => ({ requestCount, starts, uploadCount }) };
 }
@@ -112,6 +114,9 @@ async function run() {
   assert(f.nodes['recording-time'].hidden);
   assert(!f.nodes['recording-adjust-duration'].hidden);
   assert(f.controller.locked(), 'ready dialog blocks host navigation/rerender');
+  assert.equal(f.nodes['recording-live-status'].textContent, '');
+  assert(!f.nodes['recording-upload-option'].hidden);
+  assert(!f.nodes['recording-duration-title']); assert(!f.nodes['recording-wheel-help']);
   f.nodes['stop-recording'].fire('click'); f.nodes['stop-recording'].fire('click'); await f.flush();
   assert.equal(f.counts().requestCount, 1, 'double tap while permission is pending is ignored');
   assert.equal(f.counts().starts, 0);
@@ -154,7 +159,10 @@ async function run() {
   await f.advance(1);
   assert.equal(f.controller.snapshot().state, 'review');
   assert(f.controller.snapshot().blob.size > 0); assert(f.track.stopped);
-  assert(!f.nodes['recording-live'].open);
+  assert(f.nodes['recording-live'].open, 'finished recording stays in the circle surface');
+  assert.equal(f.nodes['upload-recording'].textContent, 'Submit');
+  assert.equal(f.nodes['recording-time'].textContent, '03:03');
+  assert(f.nodes['recording-upload-option'].hidden);
   const saved = f.controller.snapshot();
   f.nodes['upload-recording'].fire('click'); f.nodes['upload-recording'].fire('click');
   assert.equal(f.counts().uploadCount, 1);
@@ -162,7 +170,7 @@ async function run() {
   assert.equal(f.controller.snapshot().blob, saved.blob);
   assert.equal(f.controller.snapshot().operationId, saved.operationId);
   f.nodes['replace-recording'].fire('click'); assert.equal(f.controller.snapshot().blob, null);
-  assert.equal(f.controller.snapshot().state, 'idle'); f.controller.destroy();
+  assert.equal(f.controller.snapshot().state, 'ready'); f.controller.destroy();
 
   for (const phase of ['ready', 'requesting', 'countdown']) {
     const back = fixture({ pendingMic: phase === 'requesting' });
@@ -217,6 +225,53 @@ async function run() {
   assert.equal(restoredUrl, host.window.location.href);
   assert.equal(restoredScroll.top, 740); assert.equal(restoredScroll.behavior, 'instant');
 
+  const uploadSource = app.slice(app.indexOf('    function uploadPreparedRecording('), app.indexOf('    function bindRecording('));
+  function uploadHost(failure) {
+    let uploads = 0, analyses = 0, opened = 0;
+    const state = { recordingState: 'review', recordingBlob: new Blob(['audio']), recordingUploadOperationId: 'stable-upload', selectedId: 'discussion',
+      document: { getElementById: () => ({}) }, stopRecordingPreview() {}, persistRecordingTarget() {}, setStatus() {},
+      setRecordingState(next) { state.recordingState = next; }, friendlyError: error => error.message,
+      uploadBlob: async () => { uploads++; if (failure === 'upload') throw Error('network'); },
+      call: async () => { analyses++; if (failure === 'analysis') { failure = null; throw Error('analysis'); } },
+      openDiscussion: async (_id, afterUpload) => { assert.equal(afterUpload, true); assert.equal(state.recordingState, 'uploading', 'keep circle open until next page is ready'); opened++; return {}; }
+    };
+    vm.createContext(state); vm.runInContext(uploadSource, state);
+    return { state, counts: () => ({ uploads, analyses, opened }), async submit() { state.uploadPreparedRecording(); for (let i=0;i<20;i++) await Promise.resolve(); } };
+  }
+  const submitted = uploadHost(); await submitted.submit();
+  assert.deepEqual(submitted.counts(), { uploads: 1, analyses: 1, opened: 1 });
+  const uploadFailure = uploadHost('upload'); await uploadFailure.submit();
+  assert.equal(uploadFailure.state.recordingState, 'review'); assert(uploadFailure.state.recordingBlob.size);
+  assert.equal(uploadFailure.state.recordingUploadOperationId, 'stable-upload');
+  const analysisFailure = uploadHost('analysis'); await analysisFailure.submit();
+  assert.equal(analysisFailure.state.recordingState, 'analysis_retry'); await analysisFailure.submit();
+  assert.deepEqual(analysisFailure.counts(), { uploads: 1, analyses: 2, opened: 1 }, 'analysis retry never uploads accepted audio twice');
+
+  const quiet = fixture(); quiet.setLevel(.01); quiet.begin(); await quiet.advance(3000); quiet.drawFrame();
+  const waveRadius = () => Number(/^M([0-9.]+)/.exec(quiet.nodes['recording-outer-line'].getAttribute('d'))[1]) - 100;
+  assert(waveRadius() > 102.5, 'quiet speech expands the outer arc on its first frame');
+  quiet.setLevel(0);
+  for (let i=0;i<24;i++) { await quiet.advance(17); quiet.drawFrame(); }
+  assert(waveRadius() < 101.3, 'silence smoothly settles back instead of continuing decorative motion');
+  quiet.controller.destroy();
+
+  const imported = fixture(); imported.controller.start();
+  imported.controller.prepareFile(null);
+  assert.equal(imported.controller.snapshot().state, 'ready', 'cancelling file picker keeps ready surface');
+  imported.controller.prepareFile({ type: 'text/plain', size: 12 });
+  assert.equal(imported.controller.snapshot().state, 'ready');
+  imported.controller.prepareFile(new Blob(['audio'], { type: 'audio/wav' }));
+  assert(imported.nodes['recording-live'].open); assert(!imported.nodes['recording-file-date'].hidden);
+  assert.equal(imported.nodes['upload-recording'].textContent, 'Submit');
+  assert.equal(imported.counts().uploadCount, 0, 'Upload selects only; Submit is required');
+  imported.nodes['upload-recording'].fire('click');
+  assert.equal(imported.counts().uploadCount, 1); assert(imported.nodes['recording-live'].open);
+  imported.controller.destroy();
+  const early = fixture(); early.begin(); await early.advance(83000); early.controller.finish(); await early.flush(); await early.advance(0);
+  assert.equal(early.controller.snapshot().state, 'review'); assert(early.nodes['recording-live'].open);
+  assert.equal(early.nodes['recording-time'].textContent, '01:20'); assert.equal(early.counts().uploadCount, 0);
+  early.controller.destroy();
+
   const wheel = fixture(); wheel.controller.start(); wheel.nodes['recording-adjust-duration'].fire('click'); wheel.drawFrame();
   assert.equal(wheel.wheelEvents.length, 0, 'opening the wheel is silent');
   wheel.nodes['recording-duration-wheel'].scrollTo({top: 10 * 44});
@@ -254,7 +309,7 @@ async function run() {
   noAudio.controller.finish(); await noAudio.advance(0); assert.equal(noAudio.controller.snapshot().state, 'review');
   const file = fixture(); const audioFile = new Blob(['file'], { type: 'audio/mp4' });
   file.controller.prepareFile(audioFile); assert.equal(file.controller.snapshot().date, '2026-09-01');
-  file.controller.setState('analysis_retry', 'Retry analysis'); assert.equal(file.nodes['upload-recording'].textContent, 'Retry analysis');
+  file.controller.setState('analysis_retry', 'Retry analysis'); assert.equal(file.nodes['upload-recording'].textContent, 'Retry');
   assert(file.nodes['replace-recording'].hidden); file.controller.destroy();
   console.log('Speaking recorder: ready entry, wheel sounds, three-second cues, real outer wave, minute reminder, auto-stop, permission/cancellation, files and retry lifecycle passed.');
 }

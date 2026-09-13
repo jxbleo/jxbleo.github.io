@@ -66,3 +66,30 @@ body .speaking-discussion-start .speaking-discussion-start-icon svg { width:27px
 @media(max-height:500px) and (orientation:landscape) { #recording-live { padding:52px 16px 16px; } #recording-live .speaking-recording-dial { --diameter:64dvh; } }
 @media(prefers-reduced-motion:reduce) { #recording-live,#recording-live *,#recording-duration-dialog *, .speaking-discussion-start-icon { transition:none !important; } #recording-live.is-opening .speaking-recording-dial,#recording-live.is-ending .speaking-recording-countdown { animation:none; } }
 @media(prefers-reduced-transparency:reduce) { #recording-duration-dialog::backdrop { -webkit-backdrop-filter:none; backdrop-filter:none; background:#18363c60; } }
+
+/* One continuous surface from ready through submission. */
+#recording-live { flex-direction:column; gap:24px; overflow-y:auto; }
+#recording-live .speaking-recording-dial { --diameter:min(76vw,55dvh,620px); flex:none; }
+#recording-live .speaking-recording-live-content { flex:none; }
+#recording-live.is-ready .speaking-recording-live-label { visibility:hidden; }
+#recording-live .speaking-recording-live-label { font-size:16px; gap:12px; letter-spacing:.09em; }
+#recording-live .speaking-recording-live-label span { width:12px; height:12px; box-shadow:0 0 0 5px #ed787115; }
+#recording-live:not(.is-recording) .speaking-recording-live-label span { display:none; }
+#recording-live .speaking-recording-footer { flex:none; width:min(400px,100%); min-height:128px; text-align:center; }
+#recording-live .speaking-recording-review,#recording-live .speaking-recording-uploading { margin:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+#recording-live #recording-upload-option,#recording-live #upload-recording { display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:148px; min-height:48px; margin:0; padding:10px 30px; border:1px solid #d6e8df; border-radius:999px; color:#43846c; background:#f2f8f5; box-shadow:none; font:600 16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; cursor:pointer; touch-action:manipulation; }
+#recording-live #upload-recording { color:#fff; background:#388c6d; border-color:#388c6d; }
+#recording-live #recording-upload-option:active,#recording-live #upload-recording:active { transform:scale(.97); }
+#recording-live .speaking-recording-review-tools { display:flex; justify-content:center; gap:22px; margin-top:14px; }
+#recording-live .speaking-recording-review-tools button { width:auto; min-height:32px; margin:0; padding:2px 0; border:0; background:transparent; box-shadow:none; color:#789087; font:500 12px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+#recording-live .speaking-recording-review > p { margin:8px auto 0; max-width:360px; overflow-wrap:anywhere; }
+#recording-live .speaking-recording-review > p:empty { display:none; }
+#recording-live .speaking-audio-date { justify-content:center; margin:10px auto 0; font-size:12px; }
+#recording-live .speaking-audio-date input { width:auto; min-height:32px; padding:4px 10px; font-size:12px; }
+#recording-live .speaking-recording-dial-center:disabled { opacity:1; cursor:default; background:transparent; }
+#recording-live.is-review .speaking-recording-time { color:#43846c; }
+#recording-live #quality-warning { max-width:calc(100% - 40px); bottom:12px; }
+@media(max-width:600px) { #recording-live .speaking-recording-dial { --diameter:min(80vw,51dvh); } }
+@media(max-height:500px) { #recording-live { padding:52px 16px 16px; gap:12px; } #recording-live .speaking-recording-dial { --diameter:min(60vw,40dvh); } #recording-live .speaking-recording-footer { min-height:94px; } }
+
+body.speaking-recording-flow-active { overflow:hidden; overscroll-behavior:none; }

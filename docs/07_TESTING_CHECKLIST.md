@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Discussion continuous surface regression (2026-09-13)
+
+Verify ready has Upload and no Ready label; duration picker shows the wheel and action buttons only. Recording has a larger dot/label and real outer wave. Both early and timed completion stay in the same circle with Submit; choosing or cancelling a file never auto-uploads. Invalid/oversize files leave ready usable. Upload/date selection, playback, re-record, Back/Escape, 3-second cues, upload failure, analysis-only retry and transition to the waiting game must preserve audio and avoid the legacy stage workspace. Check desktop and phone fit and reduced motion.
+
 ## Discussion Back regression (2026-09-13)
 
 From a scrolled Set card, open Start and use Back: the same Set and scroll position return, with focus on Start and no analysis workspace. Repeat while permission is pending, during the opening countdown, and with Escape. Late permission must stop tracks without recording/uploading. History and Teacher entry keep their existing return route.

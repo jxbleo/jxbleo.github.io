@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## Discussion circle Upload and Submit (2026-09-13)
+
+Remove the ready label and both visible duration-picker headings; keep accessible labels. Enlarge the recording dot and label. Update the real-input outer colour wave at up to 60 fps with faster attack and greater quiet-speech sensitivity, a small noise floor and restrained reduced-motion rendering. Keep the circle page open on early stop, expiry, file selection, upload and retry; Upload changes to Submit under the circle. Review shows captured duration (a check for imported audio), optional Play/Record again, and imported-file date. Do not reveal the legacy three-stage workspace during this flow.
+
 ## Discussion return before recording (2026-09-13)
 
 When opened from a Set, the Discussion recorder Back button and Escape restore that exact Set and its previous page scroll position before capture begins, including permission-pending and opening-countdown states. Do not expose the intermediate Prepare Group / Record and Analysis / Review Report workspace. Ordinary history/Teacher recorder entry retains its existing return destination.

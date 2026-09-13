@@ -1,5 +1,9 @@
 # Changelog
 
+## Discussion continuous capture and submission (2026-09-13)
+
+Unify Group Discussion ready/review/upload in the large circle page. Simplify ready/picker text, enlarge recording status, increase live outer-wave response, add Upload before capture and Submit after capture/file selection. Preserve return-to-Set, opening/ending tones, file/date validation and explicit submission; retain accepted audio for analysis-only retry. Static-only release, no CloudBase deployment.
+
 ## Discussion pre-recording Back fix (2026-09-13)
 
 Remember the Set entry and scroll position; return directly to the task card when leaving before recording. Invalidate pending microphone/cue work before restoring the page. No backend deployment or history deletion.

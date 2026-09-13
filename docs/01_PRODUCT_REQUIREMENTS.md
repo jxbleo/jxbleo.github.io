@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Discussion continuous recorder (2026-09-13)
+
+Group Discussion keeps one full-page circle across ready, opening, capture, review and secure submission. Ready offers Upload for an existing audio file; selection does not submit. Early or automatic stop shows Submit beneath the circle with optional playback/re-recording. Explicit submission enters the existing analysis waiting game after upload. An accepted upload with failed analysis/page loading retries analysis without re-uploading audio.
+
 ## Current IR full-page recording (2026-09-13)
 
 Selecting a Part B question opens the approved full-viewport IR page with a larger responsive circle, question, microphone and timer. It retains the native focus/scroll boundary without presenting a floating card. Opening remains three seconds before capture. The 60-second response is followed by exactly three ending seconds, stopping at 63 seconds of recorded audio. The surroundings remain faded throughout and restore after the final three-second cue. Group Discussion already uses a three-second ending warning and keeps that behavior. Existing uploaded audio compatibility (up to 65 seconds), historical records, manual Submit, backend schemas and grading remain unchanged.
