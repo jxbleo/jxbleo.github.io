@@ -1,5 +1,13 @@
 # 10 Deployment
 
+## 2026-09-13 — Speaking waiting game (static only)
+
+Publish Speaking HTML, its versioned runtime, new `speaking-waiting.js`, and public
+config together. Existing `ai-waiting-runner.js/css` are reused unchanged. Run both
+Speaking and waiting-runner suites, release verification and static build. No
+function deployment, cloud setting, data migration or paid analysis replay is
+required. After authorized publication verify both task kinds finish automatically.
+
 ## 2026-09-12 — Multi-group voiceprint rollout
 
 Local preparation: `npm run test:speaking-lab`, `npm run verify:release`, then

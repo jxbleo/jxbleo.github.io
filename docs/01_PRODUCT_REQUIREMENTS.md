@@ -1,5 +1,15 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-09-13 — Speaking 自动等待与游戏
+
+Part A 和 Part B 上传后复用 Writing 的 Mr. Cat Runner 和 Uploaded → Finished
+进度、完成冻结效果。状态检查不重建游戏，前台每 3 秒、后台每 10 秒；网络错误
+自动退避重试，恢复网络/返回前台立即查询。必须拿到 ready 且完整 report 才算完成；
+冻结后约 1.8 秒自动打开报告（减少动态效果时直接打开），也可立即点击 View Report。
+离开或切换任务取消旧页面监听，旧请求不得跳回旧报告。真正失败显示手动 Retry analysis，
+不自动重复计费分析。IR 上传后关闭录音弹窗进入等待主页，刷新 response 链接仍回到同一份任务。
+无需修改评分、报告数据、权限或云函数。Writing 自身的手动查看结果流程保持原样。
+
 ## 2026-09-12 — Voiceprint save confirmation
 
 After the server confirms either a new or replacement voiceprint was saved, Student and Teacher show the same independent success dialog. Recording completion alone and failed saves never show success.

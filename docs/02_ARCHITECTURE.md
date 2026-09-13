@@ -1,5 +1,16 @@
 # 02 Architecture
 
+## 2026-09-13 — Speaking waiting controller
+
+`assets/js/speaking-waiting.js` owns one mounted runner, bounded status-read loop,
+foreground/online wakeups and ready/failure transitions for either Speaking kind.
+It reuses `ai-waiting-runner.js` and `ai-waiting-runner.css` unchanged. The Speaking
+page supplies authenticated getDiscussion/getIndividualResponse adapters and an
+explicit retry action. Navigation generation plus captured session ID prevents
+late cross-session rendering. Ready requires a report payload, then freezes and
+opens exactly once. Legacy voice-only polling is retained only outside the game.
+No new dependency, provider, collection or backend deployment.
+
 ## 2026-09-12 — Shared voiceprint success UI
 
 The Student and Teacher adapters invoke assets/js/voiceprint-success.js only after a successful save API response. assets/css/voiceprint-success.css provides the shared appearance. Teacher reuses its modal stack scroll lock; Student restores its prior scroll styles/position. No backend or data changes.

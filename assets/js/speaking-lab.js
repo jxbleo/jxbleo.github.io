@@ -50,6 +50,8 @@
     var VOICE_REFERENCE_PASSAGE = 'Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.';
     var pollTimer = 0;
     var pollGeneration = 0;
+    var speakingWaiting = null;
+    var selectedResponseId = new URLSearchParams(window.location.search).get('response') || '';
     var voiceRecorder = null;
     var voiceStream = null;
     var voiceTimer = 0;
@@ -536,6 +538,8 @@
     }
     function returnToSpeakingHome() {
         if (!allowRecordingNavigation()) return;
+        stopSpeakingWaiting();
+        selectedResponseId = '';
         document.body.classList.remove('speaking-detail-open');
         detail.hidden = true;
         document.getElementById('speaking-set-library').hidden = false;
@@ -787,6 +791,8 @@
         });
     }
     function renderSpeakingSetDetail(set) {
+        stopSpeakingWaiting();
+        selectedId = ''; selectedResponseId = '';
         selectedSpeakingSet = set;
         selectedResponse = null;
         var library = document.getElementById('speaking-set-library');
@@ -836,10 +842,14 @@
         });
     }
     function openSpeakingSet(setId) {
-        return call('getSpeakingSet', { set_id: setId }).then(function (result) { renderSpeakingSetDetail(result.set); closeSidebar(); return result; }).catch(function (error) { setStatus(friendlyError(error), true); });
+        stopSpeakingWaiting();
+        var generation = pollGeneration;
+        return call('getSpeakingSet', { set_id: setId }).then(function (result) { if (generation !== pollGeneration) return null; renderSpeakingSetDetail(result.set); closeSidebar(); return result; }).catch(function (error) { if (generation === pollGeneration) setStatus(friendlyError(error), true); });
     }
     function returnToSpeakingSetLibrary() {
         if (!allowRecordingNavigation()) return;
+        stopSpeakingWaiting();
+        selectedId = ''; selectedResponseId = '';
         selectedSpeakingSet = null;
         selectedResponse = null;
         stopResponseHardware();
@@ -852,6 +862,8 @@
     }
     function renderVoiceprintMain() {
         if (!allowRecordingNavigation()) return;
+        stopSpeakingWaiting();
+        selectedId = ''; selectedResponseId = ''; selectedResponse = null;
         document.getElementById('speaking-set-library').hidden = true;
         detail.hidden = true;
         var main = document.getElementById('speaking-voiceprint-main');
@@ -1043,6 +1055,7 @@
         var controls = candidateControls(item);
         var working = ['queued', 'processing'].indexOf(item.analysis_status) >= 0;
         var failed = item.analysis_status === 'failed';
+        if (working || failed || item.analysis_status === 'ready') return '<article class="speaking-detail-card speaking-report-phase speaking-report-processing"><div class="speaking-report-layout">' + window.MrCatSpeakingWaiting.markup() + '<section class="speaking-report-card speaking-processing-candidates"><header class="speaking-report-card-header"><div><p class="eyebrow accent">CANDIDATE MATCHING</p><h2>Candidates</h2></div><div class="speaking-report-card-actions">' + controls.voiceSearchButton + '<span class="speaking-pill">' + esc(controls.candidatePill) + '</span></div></header>' + (controls.voiceSearchNote ? '<p class="speaking-voice-search-note" role="status">' + esc(controls.voiceSearchNote) + '</p>' : '') + controls.candidateIntro + controls.identityAccess + '<button class="outline-button" type="button" id="view-discussion-prompt">View Set task</button></section></div></article>';
         var stageTitle = item.analysis_status === 'queued' ? 'Your report is in the queue' : item.analysis_status === 'processing' ? 'AI is building your report' : failed ? 'The report needs another try' : 'Your recording is ready for analysis';
         var stageCopy = item.analysis_status === 'queued' ? 'The recording is secure. Speaking Lab will begin transcription as soon as the analysis worker is available.' : item.analysis_status === 'processing' ? 'Speaking Lab is transcribing the Discussion, detecting Candidates, checking voiceprints, and preparing personal coaching.' : failed ? 'Your recording is still here. Retry the analysis without uploading it again.' : 'Start the analysis to create the DSE report.';
         var action = working ? '<span class="speaking-pill speaking-stage" aria-live="polite">' + esc(item.analysis_status === 'queued' ? 'Waiting for analysis worker' : 'Transcribing · matching · coaching') + '</span>' : '<button class="primary-button" type="button" id="start-analysis">' + (failed ? 'Retry analysis' : 'Analyse Discussion') + '</button>';
@@ -1330,14 +1343,24 @@
         var question = response.question_snapshot || {};
         var stateTone = reportReady ? 'ready' : analysisFailed ? 'attention' : 'working';
         var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
-        var responseBody = reportReady ? renderIndividualResponseReport(response) : analysisFailed ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-response-state-symbol" aria-hidden="true">!</span><p class="eyebrow accent">ANALYSIS INTERRUPTED</p><h3>Your recording is still safe.</h3><p>The last analysis could not finish. Retry it without uploading the audio again.</p><div class="speaking-detail-actions"><button class="primary-button" type="button" id="response-retry-analysis">Retry analysis</button><button class="outline-button" type="button" id="response-refresh">Refresh</button></div></section>' : ready ? '<section class="speaking-report-card speaking-response-state-card"><span class="speaking-upload-spinner" aria-hidden="true"></span><p class="eyebrow accent">REPORT PROGRESS</p><h3>Preparing your private analysis…</h3><p>The transcript and report are processed securely. You can leave and return later.</p><button class="outline-button" type="button" id="response-refresh">Refresh</button></section>' : '<section class="speaking-report-card speaking-response-recorder-card">' + responseDialogRecorderMarkup() + '</section>';
+        var responseBody = reportReady ? renderIndividualResponseReport(response) : ready ? window.MrCatSpeakingWaiting.markup() : '<section class="speaking-report-card speaking-response-recorder-card">' + responseDialogRecorderMarkup() + '</section>';
         detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? '' : '<header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have up to 65 seconds.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>') + responseBody + '</article>';
         updateToolbar({ title: 'Individual Response', invitation: true });
+        if (ready && !reportReady) startSpeakingWaiting('response', response);
         var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
         var retry = document.getElementById('response-retry-analysis'); if (retry) retry.addEventListener('click', function () { retry.disabled = true; call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }).then(function () { return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { retry.disabled = false; setStatus(friendlyError(error), true); }); });
         if (!ready && !reportReady) bindIndividualResponseRecording(response);
     }
-    function getIndividualResponseAndRender(responseId) { return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) { renderIndividualResponseWorkspace(result.response); return result; }).catch(function (error) { setStatus(friendlyError(error), true); }); }
+    function getIndividualResponseAndRender(responseId) {
+        stopSpeakingWaiting();
+        selectedId = ''; selectedResponseId = responseId; selectedSpeakingSet = null;
+        var generation = pollGeneration;
+        window.history.replaceState(null, '', 'speaking-lab.html?response=' + encodeURIComponent(responseId));
+        return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) {
+            if (generation !== pollGeneration || selectedResponseId !== responseId) return null;
+            renderIndividualResponseWorkspace(result.response); return result;
+        }).catch(function (error) { if (generation === pollGeneration) setStatus(friendlyError(error), true); });
+    }
     function responseDialogRecorderMarkup() {
         return '<div class="speaking-response-dialog-recorder" id="response-recorder" data-state="idle"><div class="speaking-response-dial"><svg class="speaking-response-ring" viewBox="0 0 222 222" aria-hidden="true"><circle class="speaking-response-ring-track" cx="111" cy="111" r="106"/><circle class="speaking-response-ring-progress" id="response-ring-progress" cx="111" cy="111" r="106" pathLength="1"/></svg><button class="speaking-response-microphone" type="button" id="response-record" aria-label="Tap to Record"><svg class="speaking-response-mic-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="11" y="4" width="10" height="16" rx="5"/><path d="M7.5 16a8.5 8.5 0 0 0 17 0M16 24.5V28M12 28h8"/></svg><span class="speaking-response-stop-icon" aria-hidden="true"></span><svg class="speaking-response-finished-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m7 16 6 6L25 10"/></svg><span class="speaking-response-opening-digit" id="response-opening-digit" aria-live="polite">3</span><span class="speaking-response-microphone-label" data-response-record-label>Tap to Record</span></button></div><div class="speaking-response-clock" id="response-timer" role="timer" aria-label="Time left">01:00</div><div class="speaking-response-footer"><label class="speaking-response-dialog-file" id="response-file-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m-3.5 3.5L10 3l3.5 3.5M4 12v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>Upload Files<input type="file" id="response-file" accept="audio/*" class="speaking-response-file-input" aria-label="Upload Files"></label><button class="primary-button speaking-response-dialog-upload" type="button" id="response-upload" disabled hidden>Submit</button></div><p class="speaking-response-status" id="response-status" role="status" aria-live="polite"></p></div>';
     }
@@ -1346,6 +1369,15 @@
         return [snapshot.exam_year, snapshot.paper_version ? 'Set ' + snapshot.paper_version : '', snapshot.title].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
     }
     function renderIndividualResponseDialog(response) {
+        if (response.recording_status === 'uploaded') {
+            stopSpeakingWaiting();
+            selectedId = ''; selectedResponseId = response.response_session_id; selectedSpeakingSet = null;
+            window.history.replaceState(null, '', 'speaking-lab.html?response=' + encodeURIComponent(selectedResponseId));
+            if (responseDialog.open) responseDialog.close();
+            renderIndividualResponseWorkspace(response);
+            return;
+        }
+        stopSpeakingWaiting();
         selectedResponse = response;
         var question = response.question_snapshot || {};
         var uploaded = response.recording_status === 'uploaded';
@@ -1704,8 +1736,47 @@
             if (result) renderList(result.discussions || []);
         }).catch(function () { /* The report remains unread on the server and will reappear safely. */ });
     }
+    function stopSpeakingWaiting() {
+        pollGeneration += 1;
+        if (pollTimer) window.clearTimeout(pollTimer);
+        pollTimer = 0;
+        if (speakingWaiting) speakingWaiting.destroy();
+        speakingWaiting = null;
+    }
+    function startSpeakingWaiting(kind, item) {
+        if (!item || item.recording_status !== 'uploaded' || (item.analysis_status === 'ready' && item.report)) return;
+        if (!detail.querySelector('.speaking-waiting-experience')) return;
+        if (speakingWaiting) speakingWaiting.destroy();
+        var generation = pollGeneration;
+        var response = kind === 'response';
+        var id = response ? item.response_session_id : item.discussion_id;
+        var field = response ? 'response_session_id' : 'discussion_id';
+        var args = {}; args[field] = id;
+        speakingWaiting = window.MrCatSpeakingWaiting.mount(detail, {
+            initial: item,
+            isActive: function () { return generation === pollGeneration && !detail.hidden && (response ? selectedResponseId === id : selectedId === id); },
+            request: function () { return call(response ? 'getIndividualResponse' : 'getDiscussion', args).then(function (result) { var next = response ? result.response : result.discussion; if (!next || next[field] !== id) { var error = new Error('Session unavailable'); error.code = 'NOT_FOUND'; throw error; } return next; }); },
+            retry: function () { return call(response ? 'startIndividualResponseAnalysis' : 'startAnalysis', Object.assign({ operation_id: 'analysis-' + id }, args)); },
+            onSnapshot: function (next) {
+                if (response) {
+                    selectedResponse = next;
+                    var badge = detail.querySelector('.speaking-response-overview-card .speaking-pill');
+                    if (badge) { badge.textContent = next.analysis_status === 'ready' && next.report ? 'Report ready' : next.analysis_status === 'failed' ? 'Analysis needs retry' : 'Analysis in progress'; badge.setAttribute('data-tone', next.analysis_status === 'ready' && next.report ? 'ready' : 'working'); }
+                } else currentDiscussion = next;
+            },
+            onReady: function (next) {
+                if (generation !== pollGeneration) return;
+                speakingWaiting = null;
+                if (response) renderIndividualResponseWorkspace(next);
+                else { detail.innerHTML = detailMarkup(next); updateToolbar(next); bindInvitationActions(); bindRecording(); acknowledgeIdentityNotice(next); acknowledgeReportViewed(next); schedulePoll(next, generation); }
+                loadSidebarLists();
+            }
+        });
+    }
     function openDiscussion(idValue) {
         if (recordingState !== 'idle') return Promise.resolve(null);
+        stopSpeakingWaiting();
+        selectedResponseId = ''; selectedResponse = null;
         selectedId = idValue;
         syncDiscussionSidebarSelection();
         pollGeneration += 1;
@@ -1713,6 +1784,7 @@
         window.history.replaceState(null, '', 'speaking-lab.html?discussion=' + encodeURIComponent(idValue));
         var generation = pollGeneration;
         return call('getDiscussion', { discussion_id: idValue }).then(function (result) {
+            if (generation !== pollGeneration || selectedId !== idValue) return null;
             hideSpeakingHomeCards();
             if (result.invitation) {
                 updateToolbar({ title: result.invitation.title, invitation: true });
@@ -1746,6 +1818,7 @@
                 updateToolbar(result.discussion);
                 bindInvitationActions();
                 bindRecording();
+                startSpeakingWaiting('discussion', result.discussion);
                 acknowledgeIdentityNotice(result.discussion);
                 acknowledgeReportViewed(result.discussion);
             }
@@ -1753,6 +1826,7 @@
             schedulePoll(result.discussion, generation);
             return result.discussion || result.invitation || true;
         }).catch(function (error) {
+            if (generation !== pollGeneration) return null;
             setStatus(friendlyError(error), true);
             if (document.documentElement.classList.contains('speaking-direct-entry')) {
                 document.body.classList.add('speaking-detail-open');
@@ -1763,6 +1837,7 @@
         });
     }
     function schedulePoll(item, generation) {
+        if (speakingWaiting) return;
         var analysisWorking = item && ['queued', 'processing'].includes(item.analysis_status);
         var voiceSearchWorking = item && ['queued', 'processing'].includes(item.voice_match_status);
         if (!item || (!analysisWorking && !voiceSearchWorking) || generation !== pollGeneration) return;
@@ -1771,7 +1846,7 @@
             if (generation !== pollGeneration || !selectedId) return;
             call('getDiscussion', { discussion_id: selectedId }).then(function (result) {
                 if (generation !== pollGeneration) return;
-                detail.innerHTML = detailMarkup(result.discussion); updateToolbar(result.discussion); bindInvitationActions(); bindRecording(); acknowledgeReportViewed(result.discussion); schedulePoll(result.discussion, generation);
+                detail.innerHTML = detailMarkup(result.discussion); updateToolbar(result.discussion); bindInvitationActions(); bindRecording(); startSpeakingWaiting('discussion', result.discussion); acknowledgeReportViewed(result.discussion); schedulePoll(result.discussion, generation);
             }).catch(function () { schedulePoll(item, generation); });
         }, delay);
     }
@@ -1870,10 +1945,17 @@
     });
     document.addEventListener('click', function (event) { if (event.target && event.target.id === 'close-discussion') returnToSpeakingHome(); });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && sidebar.classList.contains('is-open')) closeSidebar({ restoreFocus: true }); });
-    document.addEventListener('visibilitychange', function () { if (document.hidden || recordingState !== 'idle' || voiceprintPressActive || voiceprintSaving || voiceprintPendingResult) return; if (selectedId) openDiscussion(selectedId); else loadList(); });
+    function resumeSpeakingPage() {
+        if (document.hidden || recordingState !== 'idle' || responseCaptureActive() || responseUploadInProgress || (responseDialog && responseDialog.open) || voiceprintPressActive || voiceprintSaving || voiceprintPendingResult) return;
+        if (speakingWaiting) return; // The mounted controller owns foreground/online wakeups.
+        if (selectedResponseId) getIndividualResponseAndRender(selectedResponseId);
+        else if (selectedId) openDiscussion(selectedId);
+    }
+    document.addEventListener('visibilitychange', resumeSpeakingPage);
+    window.addEventListener('online', resumeSpeakingPage);
     window.addEventListener('beforeunload', function (event) { if (!recordingLocksPage() && !recordingNeedsDiscardConfirmation() && !responseUploadInProgress && !(responseCaptureActive()) && !responseBlob && !voiceprintPressActive && !voiceprintController && !voiceprintPendingResult && !voiceprintSaving) return; event.preventDefault(); event.returnValue = ''; });
     window.addEventListener('pagehide', function () { if (formalRecorder) { formalRecorder.discard(); formalRecorder.destroy(); formalRecorder = null; } });
-    window.addEventListener('pageshow', function (event) { if (event.persisted) closeSidebar(); });
+    window.addEventListener('pageshow', function (event) { if (event.persisted) { closeSidebar(); resumeSpeakingPage(); } });
 
     if (typeof window.ResizeObserver === 'function') {
         new window.ResizeObserver(scheduleToolbarTitleMeasure).observe(toolbarTitleWindow);
@@ -1886,6 +1968,12 @@
 
     auth.getSession().then(function (session) {
         if (!session || session.mode !== 'student') { window.location.replace('index.html?return=speaking-lab.html'); return null; }
+        if (selectedResponseId) {
+            return getIndividualResponseAndRender(selectedResponseId).then(function () {
+                finishInitialLoading();
+                window.setTimeout(function () { loadMyVoiceprint().then(loadSpeakingSets).then(loadSidebarLists).catch(function () {}); }, 0);
+            });
+        }
         if (selectedId) {
             return openDiscussion(selectedId).then(function () {
                 finishInitialLoading();
@@ -1898,5 +1986,5 @@
         // Legacy startup contract retained: loadMyVoiceprint().then(function () { return loadList(); });
         return loadMyVoiceprint().then(function () { return loadSpeakingSets(); }).then(function () { return loadList(); });
     }).catch(function () { finishInitialLoading(); window.location.replace('index.html?return=speaking-lab.html'); });
-    window.addEventListener('pagehide', function () { discardLocalRecording(); stopResponseHardware(); responseBlob = null; voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; voiceprintPendingResult = null; voiceprintPressActive = false; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); if (pollTimer) window.clearTimeout(pollTimer); });
+    window.addEventListener('pagehide', function () { stopSpeakingWaiting(); discardLocalRecording(); stopResponseHardware(); responseBlob = null; voiceDiscard = true; stopVoiceReferenceRecording(); if (voiceprintController) voiceprintController.cancel(); voiceprintController = null; voiceprintPendingResult = null; voiceprintPressActive = false; if (voiceStream) voiceStream.getTracks().forEach(function (track) { track.stop(); }); if (voiceTimer) window.clearInterval(voiceTimer); });
 })(window);

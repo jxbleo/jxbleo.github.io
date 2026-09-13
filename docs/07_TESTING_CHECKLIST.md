@@ -1,5 +1,14 @@
 # 07 Testing Checklist
 
+## 2026-09-13 — Speaking waiting game
+
+Run `npm run test:speaking-lab` and `npm run test:waiting-runner`. Test queued,
+processing, ready-with-report, ready-without-payload, failure/explicit retry,
+offline recovery, hung reads, rapid focus events, leave/switch mid-request and
+unsupported canvas. No overlapping logical polls, game remounts, repeated result
+opening or stale-session navigation. Check IR post-upload dialog handoff and
+`?response=` refresh; verify both mobile/desktop game sizing and reduced motion.
+
 ## 2026-09-13 — Compact IR report cards
 
 - Run `npm run test:speaking-lab`. Ready IR workspaces must contain one merged

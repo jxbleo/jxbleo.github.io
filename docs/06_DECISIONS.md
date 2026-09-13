@@ -1,5 +1,14 @@
 # 06 Decisions
 
+## 2026-09-13: Shared game, Speaking-specific status adapter
+
+Reuse the existing Writing runner and CSS unchanged instead of forking the game
+or loading the entire Writing runtime into Speaking. A small Speaking controller
+owns status reads for both Part A/B. Explicit failed-analysis retries remain the
+only mutations; status checks never restart inference. The owner requested
+automatic result arrival: preserve the same ice transition for 1.8 seconds before
+opening, unlike Writing's existing manual result button. No new dependency.
+
 ## 2026-09-13: Independent, free-stop-only Speaking model fallback
 
 Do not enable paid usage to recover an exhausted primary model. Speaking needs

@@ -17,6 +17,14 @@
   Product, architecture, decision, testing and deployment docs are updated.
 
 
+## 2026-09-13 — Speaking game waiting and automatic report arrival
+
+- Both Speaking upload flows reuse Writing's runner/ice visuals. Stable canvas,
+  bounded status reads, recovery wakeups and exactly-once automatic report opening.
+- IR no longer stays in an unpolled uploaded dialog; direct response routes survive
+  refresh. Old async reads cannot overwrite a different session or the Set library.
+- Frontend only; no report regeneration, backend or Writing workflow change.
+
 ## 2026-09-13 — Compact IR report layout
 
 - Merged ready IR Set/question information and recording date; removed redundant

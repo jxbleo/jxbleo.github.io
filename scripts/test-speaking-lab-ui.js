@@ -22,7 +22,7 @@ function run() {
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
   assert.match(dashboard, /speaking-lab\.html\?v=20260901-1/);
-  assert.match(page, /new URLSearchParams\(location\.search\)\.get\('discussion'\)[\s\S]*speaking-direct-entry/);
+  assert.match(page, /entry\.get\('discussion'\)\|\|entry\.get\('response'\)[\s\S]*speaking-direct-entry/);
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
@@ -68,7 +68,7 @@ function run() {
   assert.doesNotMatch(app, /class="speaking-set-flow"/);
   assert.doesNotMatch(app, /id="speaking-set-back"|id="response-back"/);
   assert.match(app, /function hideSpeakingHomeCards\(\)[\s\S]*speaking-set-library[\s\S]*speaking-voiceprint-main/);
-  assert.match(app, /getDiscussion[\s\S]*then\(function \(result\) \{\s*hideSpeakingHomeCards\(\)/, "opening a Discussion must remove Choose a Set and Voiceprint from the report workspace");
+  assert.match(app, /function openDiscussion[\s\S]*then\(function \(result\) \{\s*if \(generation !== pollGeneration \|\| selectedId !== idValue\) return null;\s*hideSpeakingHomeCards\(\)/, "only the current Discussion may render and hide home cards");
   assert.match(app, /CONTEXT/);
   assert.match(app, /PART A - GROUP DISCUSSION/);
   assert.match(app, /PART B - INDIVIDUAL RESPONSE/);
@@ -132,8 +132,8 @@ function run() {
   assert.match(app, /ensureIndividualResponseCreated\(response\)[\s\S]*call\('startIndividualResponseAudioUpload'/, "the server Response must be created only when upload begins");
   assert.match(app, /responseToDiscard[\s\S]*call\('discardEmptyIndividualResponse'/, "a failed pre-upload server record must be safely discarded when its dialog closes");
   assert.match(app, /function renderIndividualResponseReport\(response\)/);
-  assert.match(app, /id="response-retry-analysis"/);
-  assert.match(app, /Retry it without uploading the audio again/);
+  assert.match(fs.readFileSync(path.join(__dirname, '../assets/js/speaking-waiting.js'), 'utf8'), /data-retry-waiting/);
+  assert.match(fs.readFileSync(path.join(__dirname, '../assets/js/speaking-waiting.js'), 'utf8'), /Retry without uploading again/);
   assert.match(app, /Not assessed · 暂不评论/);
   assert.match(app, /function esc\(value\)/);
   assert.match(teacherPage, /id="teacher-speaking-home"/);
@@ -222,7 +222,7 @@ function run() {
   assert.match(recorder, /device.onerror/);
   assert.match(app, /recordingState !== 'idle'/);
   assert.match(app, /beforeunload/);
-  assert.match(app, /visibilitychange[\s\S]*recordingState !== 'idle'/);
+  assert.match(app, /function resumeSpeakingPage\(\)[\s\S]*recordingState !== 'idle'[\s\S]*addEventListener\('visibilitychange', resumeSpeakingPage\)/);
   assert.match(app, /uploadBlob\(blob, 'formal', null, operationId\)/);
   assert.match(app, /call\('startAnalysis', \{ discussion_id: discussionId/);
   assert.doesNotMatch(recorder, /id="pause-recording"/);
@@ -455,8 +455,13 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260913-ir-report-cards-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260913-ir-report-cards-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260913-speaking-waiting-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260913-speaking-waiting-1/);
+  assert.match(page, /ai-waiting-runner\.js/);
+  assert.match(page, /speaking-waiting\.js/);
+  assert.match(app, /startSpeakingWaiting\('response', response\)/);
+  assert.match(app, /startSpeakingWaiting\('discussion', result\.discussion\)/);
+  assert.match(app, /if \(speakingWaiting\) return;/);
   assert.match(report, /speaking-report\.css\?v=20260830-1/);
   assert.match(report, /speaking-report\.js\?v=20260830-1/);
   console.log("Speaking Lab UI contracts passed.");

@@ -105,13 +105,15 @@ assert.doesNotMatch(context.renderIndividualResponseReport({ report: { transcrip
 context.document = { getElementById: (id) => id.startsWith('speaking-') ? {} : null, body: { classList: { add() {} } } };
 context.detail = {};
 context.updateToolbar = () => {};
+context.window = { MrCatSpeakingWaiting: { markup: () => '<section class="speaking-waiting-experience"></section>' } };
+context.startSpeakingWaiting = () => {};
 vm.runInContext(source.slice(end, source.indexOf('    function getIndividualResponseAndRender(', end)), context);
 context.renderIndividualResponseWorkspace({ ...reportResponse, recording_status: 'uploaded', analysis_status: 'ready' });
 assert.doesNotMatch(context.detail.innerHTML, /speaking-response-overview-card|speaking-response-question-card|SESSION DETAILS/);
 assert.equal((context.detail.innerHTML.match(/speaking-ir-session-card/g) || []).length, 1);
 context.renderIndividualResponseWorkspace({ recording_status: 'uploaded', analysis_status: 'processing' });
 assert.match(context.detail.innerHTML, /speaking-response-question-card/);
-assert.match(context.detail.innerHTML, /Preparing your private analysis/);
+assert.match(context.detail.innerHTML, /speaking-waiting-experience/);
 assert.match(context.renderIndividualResponseDevelopment(legacy), /A saved legacy answer/);
 assert.match(context.renderIndividualResponseDevelopment(insufficient), /未能從錄音可靠判斷/);
 const hostile = fixture(); hostile.sample_responses[0].response_en = '<img src=x onerror="alert(1)">';

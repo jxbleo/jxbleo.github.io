@@ -11,6 +11,16 @@ independently when Mastered opens. Do not split mixed legacy names or alter
 stored student profiles as a workaround. Deploy the backend projection and
 matching frontend together; no student data migration is required.
 
+## 2026-09-13 — Speaking spinner outlives the report
+
+IR workspace and uploaded recorder dialog had no status loop. The global
+visibility handler only understood discussion IDs, so returning to an IR could
+reload the library or a stale Discussion. Group polling replaced all markup on
+every read and its initial navigation read lacked a generation guard. The shared
+Speaking waiting controller now preserves canvas, polls both session types with
+timeouts/backoff and foreground/network wakeups, and validates the captured
+session plus generation before rendering. A ready status without report payload
+must keep checking; only a complete ready result freezes and opens the report.
 
 ## 2026-09-13 — Speaking did not inherit Writing's quota fallback
 

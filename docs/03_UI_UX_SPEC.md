@@ -3020,6 +3020,15 @@ horizontal page overflow.
 
 ### Set-first Speaking home and Part B recorder
 
+Both uploaded Speaking task kinds now use the same Writing runner and
+Uploaded → Finished component. Poll updates never recreate the canvas. Finishing
+pauses input, shows the existing ice overlay and a View Report button, then opens
+the report after 1.8 seconds (immediately with Reduced Motion). No percentage is
+invented. IR upload closes its recorder dialog and opens the main waiting view;
+`?response=<id>` restores it on refresh. Group Candidates controls remain below
+the waiting game. Failure shows an explicit retry, while transient read failures
+show recoverable status text without discarding the game or recording.
+
 The student Speaking home opens directly to the Set filters and list, with no
 `Choose a Set` introduction card; Voiceprint is available only
 from the left sidebar's microphone icon. A selected Set renders Context, Part A points with
