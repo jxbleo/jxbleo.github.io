@@ -7,6 +7,16 @@
   directly below the question card. Separated Develop Your Ideas from assessment.
 - Frontend only; saved reports, assessment prompts and Group Discussion unchanged.
 
+## 2026-09-13 — Fix missing names on Vocabulary crowns
+
+- Add authoritative Chinese/English name fields to the authenticated current
+  student response; the previous response omitted them from login caches.
+- Refresh the current student's name after Mastered opens, preserving successful
+  submission and safely handling old caches, failures and account changes.
+- Requires getCurrentStudent code deployment plus the static vocabulary page;
+  no grading, STAR, assignment or stored student-profile changes.
+
+
 ## 2026-09-13 — IR refresh completed and verified
 
 - Completed all 61 ready IR reports in the frozen Sep 6–12 scope. The eleven

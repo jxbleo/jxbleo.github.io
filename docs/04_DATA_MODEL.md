@@ -1,5 +1,14 @@
 # 04 Data Model
 
+## 2026-09-13 — Current-student name projection
+
+`getCurrentStudent.student` returns the existing authoritative `chinese_name`
+and `english_name` strings alongside compatibility `name`. Absent or non-string
+parts become empty strings; never split legacy `name`. These are fields from
+the caller's own active profile, selected using the authenticated UID. There is
+no new collection, schema migration or client-supplied ownership authority.
+
+
 > This document describes current backend and runtime data structures.
 > Update it when fields, collections, statuses, ownership rules, or data flow changes.
 

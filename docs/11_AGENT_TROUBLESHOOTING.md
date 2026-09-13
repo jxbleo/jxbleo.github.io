@@ -1,5 +1,17 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-09-13 — Blank Vocabulary crown name
+
+The initial crown relied on `mrcat_student_profile.english_name`, but the live
+getCurrentStudent bundle omitted both separate name fields. Logging in again
+therefore still wrote a name-only cache. Verify API projections end to end;
+manual browser fixtures containing english_name cannot detect this mismatch.
+Repair getCurrentStudent's explicit name projection and refresh that profile
+independently when Mastered opens. Do not split mixed legacy names or alter
+stored student profiles as a workaround. Deploy the backend projection and
+matching frontend together; no student data migration is required.
+
+
 ## 2026-09-13 — Speaking did not inherit Writing's quota fallback
 
 Writing had `qwen3.8-max,qwen3.8-max-0902` configured; Speaking only called

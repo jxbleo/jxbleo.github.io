@@ -106,6 +106,8 @@ exports.main = async (event = {}) => {
       student: {
         student_id: student.student_id,
         name: student.name,
+        chinese_name: typeof student.chinese_name === "string" ? student.chinese_name.trim() : "",
+        english_name: typeof student.english_name === "string" ? student.english_name.trim() : "",
         class_group: student.class_group || "",
         curriculum_track: student.curriculum_track || "",
         must_change_password: student.must_change_password === true,

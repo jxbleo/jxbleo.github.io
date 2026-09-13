@@ -11,6 +11,16 @@
   preserved summary/actions, legacy sample and absent-coaching reports. Processing
   and failed recording screens and Group Discussion rendering remain unchanged.
 
+## 2026-09-13 — Crown profile regression
+
+Run `node scripts/test-crown-profile.js`. Cover the actual getCurrentStudent
+projection feeding a legacy name-only cache, a renamed/removed English name,
+missing profile, auth rejection, teacher/visitor, other-account response,
+identity change during refresh, network failure and blocked storage. Verify
+fresh text appears in the already-open crown after asynchronous refresh and a
+closed result remains closed. Never make a second submission to fetch a name.
+
+
 ## 2026-09-13 — Speaking quota fallback
 
 Run `npm run test:speaking-lab`: verify primary success, exact and wrapped free

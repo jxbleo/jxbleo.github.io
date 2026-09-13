@@ -1,5 +1,15 @@
 # 03 UI / UX Spec
 
+## 2026-09-13 — Crown name cache repair
+
+Vocabulary Mastered displays the cached explicit English name immediately and
+then refreshes the authenticated current-student profile independently of the
+successful submission. Apply and cache a returned name only while the same
+student identity remains active. Missing names stay blank; network/storage
+failure must not fail or replay an attempt. Closing the result prevents a late
+profile response from changing its detached crown.
+
+
 ## 2026-09-12 — Voiceprint success dialog
 
 Use the approved Vocabulary-result-inspired centered layout with Speaking glass, a green checkmark, “Voiceprint recorded”, “Your voiceprint has been saved successfully.” and one blue Done button. Done and Escape dismiss it; background scrolling is locked and focus returns to the current recording control. Respect reduced motion and small screens.

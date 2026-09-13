@@ -3033,14 +3033,37 @@
             return count + (count === 1 ? ' Set' : ' Sets');
         }
 
-        function masteryCrownName() {
+        function masteryCrownStudentId() {
             if (teacherMode) return '';
             try {
                 if (localStorage.getItem('mrcat_visitor') === 'true' || params.get('visitor') === '1') return '';
+                return currentUserId();
+            } catch (error) { return ''; }
+        }
+
+        function masteryCrownName() {
+            var studentId = masteryCrownStudentId();
+            if (!studentId) return '';
+            try {
                 var profile = JSON.parse(localStorage.getItem('mrcat_student_profile') || 'null');
-                if (!profile || profile.student_id !== currentUserId() || typeof profile.english_name !== 'string') return '';
+                if (!profile || profile.student_id !== studentId || typeof profile.english_name !== 'string') return '';
                 return profile.english_name.trim();
             } catch (error) { return ''; }
+        }
+
+        function refreshMasteryCrownName() {
+            var studentId = masteryCrownStudentId();
+            if (!studentId || !window.MrCatCloud) return Promise.resolve(null);
+            // Profile refresh is independent of the already-successful submission.
+            return Promise.resolve().then(function() {
+                return window.MrCatCloud.callAuthenticatedFunction('getCurrentStudent');
+            }).then(function(result) {
+                var profile = result && result.success && result.student;
+                if (masteryCrownStudentId() !== studentId || !profile || profile.student_id !== studentId ||
+                    profile.role === 'teacher' || typeof profile.english_name !== 'string') return null;
+                try { localStorage.setItem('mrcat_student_profile', JSON.stringify(profile)); } catch (error) {}
+                return profile.english_name.trim();
+            }).catch(function() { return null; });
         }
 
         function addMasteryCrown(overlay) {
@@ -3052,16 +3075,22 @@
                 '<text x="500" y="633" font-size="112" fill="#fff0c0" transform="translate(0,2)"></text>' +
                 '<text x="500" y="633" font-size="112" fill="#70410d"></text></g></svg>';
             var svg = icon.querySelector('svg');
-            svg.setAttribute('aria-label', name ? 'Mastery crown for ' + name : 'Mastery crown');
             var texts = svg.querySelectorAll('text');
-            texts.forEach(function(text) { text.textContent = name; });
+            function renderName(value) {
+                svg.setAttribute('aria-label', value ? 'Mastery crown for ' + value : 'Mastery crown');
+                texts.forEach(function(text) { text.textContent = value; });
+                fitName();
+            }
             function fitName() {
                 texts.forEach(function(text) { text.setAttribute('font-size', '112'); });
                 var width = texts[1].getComputedTextLength();
                 if (width > 720) texts.forEach(function(text) { text.setAttribute('font-size', String(112 * 720 / width)); });
             }
-            fitName();
+            renderName(name);
             if (document.fonts) document.fonts.ready.then(function() { if (svg.isConnected) fitName(); });
+            refreshMasteryCrownName().then(function(freshName) {
+                if (svg.isConnected && freshName !== null) renderName(freshName);
+            });
         }
 
         function showResultOverlay(response) {
@@ -3088,8 +3117,8 @@
                 context + '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
                 actions + '</div></div>';
             document.body.appendChild(overlay);
-            if (!isPractice && response.mastered) addMasteryCrown(overlay);
             playResultSound(state);
+            if (!isPractice && response.mastered) addMasteryCrown(overlay);
             overlay.addEventListener('click', function(event) {
                 var action = event.target && event.target.getAttribute('data-result-action');
                 if (action === 'close') overlay.remove();
