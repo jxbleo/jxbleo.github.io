@@ -29,7 +29,7 @@ function run() {
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-report-history-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-analysis-v3-1/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
@@ -121,7 +121,7 @@ function run() {
   assert.match(app, /function bindSpeakingSetTextSizeControls\(root\)/);
   assert.match(app, /data-reading-size[^\n]*small[^\n]*medium[^\n]*large/);
   assert.match(css, /\.speaking-set-part-b\[data-reading-size="small"\][\s\S]*\.speaking-set-part-b\[data-reading-size="large"\]/);
-  assert.match(app, /speaking-response-question-card/);
+  assert.match(app, /renderIndividualResponseSession/);
   assert.match(app, /response-opening-digit/);
   assert.match(app, /setRecordButton\('Tap to start over', stoppedEarly \? 'stopped' : 'finished'\)/);
   assert.match(app, /setRecordButton\('Tap to Stop', 'recording'\)/);
@@ -141,7 +141,8 @@ function run() {
   assert.match(app, /function renderIndividualResponseReport\(response\)/);
   assert.match(fs.readFileSync(path.join(__dirname, '../assets/js/speaking-waiting.js'), 'utf8'), /data-retry-waiting/);
   assert.match(fs.readFileSync(path.join(__dirname, '../assets/js/speaking-waiting.js'), 'utf8'), /Retry without uploading again/);
-  assert.match(app, /Not assessed · 暂不评论/);
+  assert.match(app, /renderIndividualResponseDomain\('ideas_organisation'/);
+  assert.match(app, /renderIndividualResponseDomain\('vocabulary_language_patterns'/);
   assert.match(app, /function esc\(value\)/);
   assert.match(teacherPage, /id="teacher-speaking-home"/);
   assert.equal((teacherPage.match(/class="teacher-speaking-entry-card/g) || []).length, 2, "Teacher Speaking must open with exactly two cards");
@@ -308,7 +309,7 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-report-history-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-analysis-v3-1/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=20260913-discussion-ring-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
@@ -322,7 +323,7 @@ function run() {
   assert.match(app, /studentShareMarkup\(currentDiscussion\)|Task ·/);
   assert.match(app, /YOUR ANALYSIS|Communication Strategies|Ideas &amp; Organisation|Vocabulary &amp; Language Pattern/);
   assert.match(app, /data-report-domain|speaking-domain-panel|dimensionCoachingMarkup/);
-  assert.match(app, /Pronunciation &amp; Delivery[\s\S]*Not assessed · 暂不评论/);
+  assert.match(app, /pronunciation_delivery/, "Group Discussion retains its PD projection");
   assert.match(app, /TURN-BY-TURN REVIEW|CS · Communication Strategies|IO · Ideas &amp; Organisation/);
   assert.match(app, /data-turn-index|speaking-turn-context|turnReviewPanelMarkup/);
   [app, teacher, reportJs].forEach(function (source) {
@@ -471,8 +472,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260914-ir-report-history-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260914-ir-report-history-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260914-ir-analysis-v3-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260914-ir-analysis-v3-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

@@ -1,5 +1,22 @@
 # 02 Architecture
 
+## IR submission shell and IO/VL analysis (2026-09-14)
+
+The Submit handler renders a local snapshot immediately, then executes the
+existing idempotent create/upload/finish/start-analysis chain. Its pending ID
+is replaced by the server response ID without replacing the mounted runner.
+Before upload commits, an interrupted upload retains the in-memory audio and
+operation ID for explicit retry. After commit, retry starts analysis only.
+Navigation generations guard late UI writes. No audio persistence is added.
+
+The shared waiting adapter accepts upload snapshots and manualResult for IR;
+it does not poll until upload is complete. Polling replaces only the pending
+question header and freezes on ready+report. View results alone opens the IR
+analysis; foreground refresh cannot bypass this choice. Group behavior stays
+automatic. The gateway's Part B prompt, validator and schema produce v3 IO/VL
+reports; provider identity/fallback, Writing prompts and Group rubric are unchanged.
+No new runtime dependency or worker code is required.
+
 ## Shared Speaking screen wake lock (2026-09-13)
 
 assets/js/screen-wake-lock.js provides MrCatScreenWakeLock.create(), loaded before speaking-recorder.js on student and teacher pages. Discussion owns one controller per recorder and IR owns one controller in speaking-lab.js. Capture cleanup releases it; Discussion destruction also prevents future acquisition. Active-only visibility listeners and request generations release late grants after cancellation, backgrounding or replacement without leaking locks. No CloudBase dependency.

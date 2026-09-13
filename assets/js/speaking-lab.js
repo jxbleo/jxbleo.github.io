@@ -107,6 +107,7 @@
     var responseBlob = null;
     var responseUploadOperationId = '';
     var responseUploadInProgress = false;
+    var responseSubmissionRetry = null;
     var responseWakeLock = window.MrCatScreenWakeLock.create();
     var responseCaptureState = 'idle';
     var responseCaptureGeneration = 0;
@@ -1580,23 +1581,38 @@
             return '<details class="speaking-ir-sample"' + (index === 0 ? ' open' : '') + '><summary><span>Sample ' + (index + 1) + '</span> ' + esc(item.title_zh || '') + '</summary><p class="speaking-ir-anchor">' + esc(item.student_idea_zh || '') + '</p><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p><div class="speaking-ir-explanation"><h3>內容與語言提升</h3><p>' + esc(item.explanation_zh || '') + '</p></div></details>';
         }).join('') + '</div></section>';
     }
-    function renderIndividualResponseReport(response) {
+    function renderIndividualResponseSession(response, pending) {
         var report = response.report || {};
-        var domains = report.domains || {};
         var snapshot = response.set_snapshot || {};
         var question = response.question_snapshot || {};
         var setLabel = [snapshot.exam_year ? 'Y' + snapshot.exam_year : '', snapshot.paper_version ? 'Set ' + snapshot.paper_version : '', question.order ? 'Q' + question.order : ''].filter(Boolean).join(' · ') || snapshot.display_label || response.set_id || 'Individual Response';
-        // ASR segments are timing boundaries, not separate turns in a solo answer.
         var transcript = (Array.isArray(report.transcript) ? report.transcript : []).map(function (line) { return String(line.text || '').trim(); }).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
         var wordCount = (transcript.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) || []).length;
+        var waitingLabel = response.analysis_status === 'ready' && response.report ? 'Ready' : response.recording_status === 'uploading' ? 'Uploading…' : response.analysis_status === 'failed' || response.analysis_status === 'not_ready' ? 'Waiting to retry' : 'Preparing…';
+        var answer = pending ? '<div class="speaking-ir-answer is-pending" role="status"><div class="speaking-ir-answer-pending"><strong>Your answer</strong><span class="speaking-ir-word-count">' + waitingLabel + '</span></div></div>' : '<details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</span><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p></details>';
+        return '<header class="speaking-report-card speaking-ir-session-card"><div class="speaking-ir-session-heading"><h2 class="eyebrow">' + esc(setLabel) + '</h2><label class="speaking-ir-date-picker"><span class="sr-only">Recording date</span><span class="speaking-ir-date-measure" id="response-history-measure" aria-hidden="true"></span><select id="response-history-date" aria-controls="response-report-content"' + (pending ? ' disabled' : '') + '>' + (pending ? '<option>' + esc(individualResponseDateLabel(response)) + '</option>' : responseHistoryOptions(response)) + '</select></label></div><p class="speaking-ir-session-question">' + esc(question.text || '') + '</p><p id="response-history-notice" class="speaking-ir-history-notice" role="status" hidden></p>' + answer + '</header>';
+    }
+    function renderIndividualResponseDomain(key, label, report) {
+        var domain = (report.domains || {})[key] || {};
+        function points(items, weakness) {
+            if (!Array.isArray(items) || !items.length) return '<p class="speaking-ir-feedback-empty">' + (Array.isArray(items) ? '本次可用證據不足，未列出可可靠確認的' + (weakness ? '弱項' : '強項') + '。' : '此舊版報告未包含分項' + (weakness ? '弱項' : '強項') + '；請參考上方原有評語。') + '</p>';
+            return '<ul class="speaking-ir-feedback-list">' + items.map(function (item) {
+                return '<li><h4>' + esc(item.point_zh) + '</h4><p>' + esc(item.explanation_zh) + '</p>' + (weakness ? '<p class="speaking-ir-improvement"><b>How to improve</b> ' + esc(item.improvement_zh) + '</p><blockquote lang="en">' + esc(item.example_en) + '</blockquote>' : '') + '</li>';
+            }).join('') + '</ul>';
+        }
+        return '<section class="speaking-ir-domain"><div class="speaking-ir-domain-heading"><h3><b>' + esc(label[0]) + '</b><span>' + esc(label[1]) + '</span></h3><strong class="speaking-ir-domain-score">' + esc(domain.score == null ? '—' : domain.score) + (domain.score == null ? '' : '<small>/7</small>') + '</strong></div><p class="speaking-ir-domain-rationale">' + esc(domain.commentary_zh || 'No assessment available.') + '</p><div class="speaking-ir-domain-feedback"><section><h3>Strengths</h3>' + points(domain.strengths, false) + '</section><section><h3>Weaknesses</h3>' + points(domain.weaknesses, true) + '</section></div></section>';
+    }
+    function renderIndividualResponseReport(response) {
+        var report = response.report || {};
         var development = renderIndividualResponseDevelopment(report);
-        function scoreCard(key, label) { var domain = domains[key] || {}; return '<article class="speaking-score-card"><div class="speaking-score-head"><span><b>' + esc(label.split(' · ')[0]) + '</b>' + esc(label.split(' · ')[1] || '') + '</span><strong>' + esc(domain.score == null ? '—' : domain.score) + '<small>/7</small></strong></div><p>' + esc(domain.commentary_zh || '') + '</p></article>'; }
-        return '<section class="speaking-response-report">' +
-            '<header class="speaking-report-card speaking-ir-session-card"><div class="speaking-ir-session-heading"><h2 class="eyebrow">' + esc(setLabel) + '</h2><label class="speaking-ir-date-picker"><span class="sr-only">Recording date</span><span class="speaking-ir-date-measure" id="response-history-measure" aria-hidden="true"></span><select id="response-history-date" aria-controls="response-report-content response-answer">' + responseHistoryOptions(response) + '</select></label></div><p class="speaking-ir-session-question">' + esc(question.text || '') + '</p><p id="response-history-notice" class="speaking-ir-history-notice" role="status" hidden></p>' +
-            '<details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</span><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p></details></header>' +
-            '<div id="response-report-content" class="speaking-response-report">' +
-            '<section class="speaking-report-card speaking-ir-analysis-card"><p class="eyebrow accent">YOUR ANALYSIS</p><div class="speaking-score-grid speaking-score-grid-four">' + scoreCard('communication_strategies', 'CS · Communication Strategies') + scoreCard('ideas_organisation', 'IO · Ideas & Organisation') + scoreCard('vocabulary_language_patterns', 'VL · Vocabulary & Language Pattern') + '<article class="speaking-score-card speaking-score-card-pd"><div class="speaking-score-head"><span><b>PD</b>Pronunciation &amp; Delivery</span><strong>—</strong></div><p>Not assessed · 暂不评论</p></article></div><p>' + esc(report.summary_zh || '') + '</p><div class="speaking-coaching-grid">' + reportList('Strengths', report.strengths) + reportList('Priority actions', report.priority_actions) + reportList('Language suggestions', report.language_suggestions) + '</div></section>' +
-            (development ? '<section class="speaking-report-card speaking-ir-development-card">' + development + '</section>' : '') + '</div></section>';
+        return '<section class="speaking-response-report">' + renderIndividualResponseSession(response, false) + '<div id="response-report-content" class="speaking-response-report">' +
+            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2></header><div class="speaking-ir-card-body">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language'], report) + '</div></section>' +
+            (development ? '<section class="speaking-report-card speaking-ir-development-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>5** Exemplars</h2></header><div class="speaking-ir-card-body">' + development + '</div></section>' : '') + '</div></section>';
+    }
+    function updateIndividualResponsePendingHeader(response) {
+        var header = detail.querySelector('.speaking-ir-session-card');
+        if (header) header.outerHTML = renderIndividualResponseSession(response, true);
+        sizeResponseHistoryPicker();
     }
     function renderIndividualResponseWorkspace(response) {
         selectedResponse = response;
@@ -1604,20 +1620,31 @@
         document.getElementById('speaking-voiceprint-main').hidden = true;
         detail.hidden = false;
         document.body.classList.add('speaking-detail-open');
-        var ready = response.recording_status === 'uploaded';
         var reportReady = response.analysis_status === 'ready' && response.report;
-        var analysisFailed = response.analysis_status === 'failed';
-        var question = response.question_snapshot || {};
-        var stateTone = reportReady ? 'ready' : analysisFailed ? 'attention' : 'working';
-        var stateLabel = reportReady ? 'Report ready' : analysisFailed ? 'Analysis needs retry' : (ready ? 'Analysis in progress' : 'Not uploaded');
-        var responseBody = reportReady ? renderIndividualResponseReport(response) : ready ? window.MrCatSpeakingWaiting.markup() : '<section class="speaking-report-card speaking-response-recorder-card">' + responseDialogRecorderMarkup() + '</section>';
-        detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? '' : '<header class="speaking-response-overview-card speaking-report-card"><div class="speaking-set-overview-bar"><span class="speaking-pill" data-tone="' + stateTone + '">' + esc(stateLabel) + '</span></div><p class="eyebrow accent">PART B · INDIVIDUAL RESPONSE</p><h2>' + esc(response.title || 'Individual Response') + '</h2><p>One focused answer. You have 60 seconds plus a three-second ending reminder.</p></header><section class="speaking-response-question-card speaking-report-card"><span class="speaking-set-section-symbol speaking-set-section-symbol-purple" aria-hidden="true">' + esc(question.order || '?') + '</span><div><p class="eyebrow accent">YOUR QUESTION</p><p class="speaking-response-question">' + esc(question.text || '') + '</p></div></section>') + responseBody + '</article>';
-        updateToolbar({ title: reportReady ? (response.set_snapshot || {}).title || 'Individual Response' : 'Individual Response', invitation: true });
+        detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? renderIndividualResponseReport(response) : '<section class="speaking-response-report">' + renderIndividualResponseSession(response, true) + '<div id="response-report-content">' + window.MrCatSpeakingWaiting.markup({ manualResult: true }) + '</div></section>') + '</article>';
+        updateToolbar({ title: (response.set_snapshot || {}).title || 'Individual Response', invitation: true });
         if (reportReady) bindIndividualResponseHistory(response);
-        if (ready && !reportReady) startSpeakingWaiting('response', response);
-        var refresh = document.getElementById('response-refresh'); if (refresh) refresh.addEventListener('click', function () { getIndividualResponseAndRender(response.response_session_id); });
-        var retry = document.getElementById('response-retry-analysis'); if (retry) retry.addEventListener('click', function () { retry.disabled = true; call('startIndividualResponseAnalysis', { response_session_id: response.response_session_id, operation_id: 'analysis-' + response.response_session_id }).then(function () { return getIndividualResponseAndRender(response.response_session_id); }).catch(function (error) { retry.disabled = false; setStatus(friendlyError(error), true); }); });
-        if (!ready && !reportReady) bindIndividualResponseRecording(response);
+        else { sizeResponseHistoryPicker(); startSpeakingWaiting('response', response); }
+    }
+    function enterIndividualResponseSubmission(response) {
+        stopSpeakingWaiting();
+        var view = Object.assign({}, response, { created_at: response.created_at || new Date().toISOString(), recording_status: 'uploading', analysis_status: 'uploading' });
+        if (!view.response_session_id) view.response_session_id = 'pending-' + Date.now().toString(36);
+        if (responseDialog && responseDialog.open && responseDialog.close) responseDialog.close();
+        releaseResponseFocus();
+        if (responseDialogContent) responseDialogContent.innerHTML = '';
+        selectedId = ''; selectedResponseId = view.response_session_id; selectedSpeakingSet = null;
+        renderIndividualResponseWorkspace(view);
+        return { view: view, generation: pollGeneration };
+    }
+    function updateIndividualResponseSubmission(submission, changes) {
+        if (pollGeneration !== submission.generation || selectedResponseId !== submission.view.response_session_id) return;
+        Object.assign(submission.view, changes);
+        selectedResponseId = submission.view.response_session_id;
+        selectedResponse = submission.view;
+        if (!selectedResponseId.startsWith('pending-')) window.history.replaceState(null, '', 'speaking-lab.html?response=' + encodeURIComponent(selectedResponseId));
+        updateIndividualResponsePendingHeader(submission.view);
+        if (speakingWaiting) speakingWaiting.updateSnapshot(submission.view);
     }
     function getIndividualResponseAndRender(responseId) {
         stopSpeakingWaiting();
@@ -1877,28 +1904,33 @@
             var durationSeconds = Number.isFinite(Number(responseRecordedDurationSeconds)) ? Number(responseRecordedDurationSeconds) : undefined;
             var operation = responseUploadOperationId || ('response-upload-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 9));
             responseUploadOperationId = operation;
-            document.getElementById('response-status').textContent = 'Uploading securely…';
-            ensureIndividualResponseCreated(response).then(function (createdResponse) {
-                activeResponse = createdResponse;
-                return call('startIndividualResponseAudioUpload', { response_session_id: activeResponse.response_session_id, operation_id: operation, mime_type: String(blob.type || 'audio/webm').split(';')[0], size_bytes: blob.size, duration_seconds: durationSeconds });
-            }).then(function (result) {
-                return uploadWithTimeout(api.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) {
-                    return call('finishIndividualResponseAudioUpload', { response_session_id: activeResponse.response_session_id, operation_id: operation, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id, duration_seconds: durationSeconds });
-                });
-            }).then(function () {
-                activeResponse.recording_status = 'uploaded';
-                selectedResponse = activeResponse;
-                return call('startIndividualResponseAnalysis', { response_session_id: activeResponse.response_session_id, operation_id: 'analysis-' + activeResponse.response_session_id });
-            }).then(function () {
-                responseBlob = null;
-                responseRecordedDurationSeconds = null;
-                responseUploadOperationId = '';
-                if (responseDialog && responseDialog.open) return call('getIndividualResponse', { response_session_id: activeResponse.response_session_id }).then(function (result) { renderIndividualResponseDialog(result.response); loadIndividualResponses(); return result; });
-                return getIndividualResponseAndRender(activeResponse.response_session_id);
-            }).catch(function (error) {
-                upload.disabled = false;
-                document.getElementById('response-status').textContent = friendlyError(error);
-            }).finally(function () { responseUploadInProgress = false; if (record.isConnected) record.disabled = false; if (file.isConnected) file.disabled = false; });
+            var submission = enterIndividualResponseSubmission(activeResponse);
+            function send() {
+                responseUploadInProgress = true;
+                updateIndividualResponseSubmission(submission, { recording_status: 'uploading', analysis_status: 'uploading' });
+                return ensureIndividualResponseCreated(activeResponse).then(function (createdResponse) {
+                    activeResponse = createdResponse;
+                    updateIndividualResponseSubmission(submission, Object.assign({}, createdResponse, { recording_status: 'uploading', analysis_status: 'uploading' }));
+                    return call('startIndividualResponseAudioUpload', { response_session_id: activeResponse.response_session_id, operation_id: operation, mime_type: String(blob.type || 'audio/webm').split(';')[0], size_bytes: blob.size, duration_seconds: durationSeconds });
+                }).then(function (result) {
+                    return uploadWithTimeout(api.uploadCloudFile(result.upload.cloud_path, blob)).then(function (uploaded) {
+                        return call('finishIndividualResponseAudioUpload', { response_session_id: activeResponse.response_session_id, operation_id: operation, asset_id: result.asset_id, uploaded_file_id: uploaded.file_id, duration_seconds: durationSeconds });
+                    });
+                }).then(function () {
+                    activeResponse.recording_status = 'uploaded';
+                    responseBlob = null; responseRecordedDurationSeconds = null; responseUploadOperationId = '';
+                    return call('startIndividualResponseAnalysis', { response_session_id: activeResponse.response_session_id, operation_id: 'analysis-' + activeResponse.response_session_id });
+                }).then(function () {
+                    responseSubmissionRetry = null;
+                    updateIndividualResponseSubmission(submission, { recording_status: 'uploaded', analysis_status: 'queued' });
+                    loadIndividualResponses();
+                }).catch(function (error) {
+                    updateIndividualResponseSubmission(submission, { recording_status: activeResponse.recording_status === 'uploaded' ? 'uploaded' : 'upload_failed', analysis_status: activeResponse.recording_status === 'uploaded' ? 'not_ready' : 'failed' });
+                    throw error;
+                }).finally(function () { responseUploadInProgress = false; });
+            }
+            responseSubmissionRetry = function () { return responseUploadInProgress ? Promise.resolve() : send(); };
+            send().catch(function () { /* The waiting card exposes the appropriate upload/analysis retry. */ });
         });
     }
     function stopVoiceReferenceRecording() {
@@ -2016,6 +2048,7 @@
         }).catch(function () { /* The report remains unread on the server and will reappear safely. */ });
     }
     function stopSpeakingWaiting() {
+        responseSubmissionRetry = null;
         responseReportHistory = null;
         responseReportSwitch += 1;
         pollGeneration += 1;
@@ -2025,7 +2058,8 @@
         speakingWaiting = null;
     }
     function startSpeakingWaiting(kind, item) {
-        if (!item || item.recording_status !== 'uploaded' || (item.analysis_status === 'ready' && item.report)) return;
+        if (kind !== 'response' && item && item.recording_status !== 'uploaded') return;
+        if (!item || (item.analysis_status === 'ready' && item.report)) return;
         if (!detail.querySelector('.speaking-waiting-experience')) return;
         if (speakingWaiting) speakingWaiting.destroy();
         var generation = pollGeneration;
@@ -2035,14 +2069,15 @@
         var args = {}; args[field] = id;
         speakingWaiting = window.MrCatSpeakingWaiting.mount(detail, {
             initial: item,
-            isActive: function () { return generation === pollGeneration && !detail.hidden && (response ? selectedResponseId === id : selectedId === id); },
-            request: function () { return call(response ? 'getIndividualResponse' : 'getDiscussion', args).then(function (result) { var next = response ? result.response : result.discussion; if (!next || next[field] !== id) { var error = new Error('Session unavailable'); error.code = 'NOT_FOUND'; throw error; } return next; }); },
-            retry: function () { return call(response ? 'startIndividualResponseAnalysis' : 'startAnalysis', Object.assign({ operation_id: 'analysis-' + id }, args)); },
+            manualResult: response,
+            isActive: function () { return generation === pollGeneration && !detail.hidden && (response ? selectedResponseId === item.response_session_id : selectedId === id); },
+            request: function () { if (response) { id = item.response_session_id; args[field] = id; } return call(response ? 'getIndividualResponse' : 'getDiscussion', args).then(function (result) { var next = response ? result.response : result.discussion; if (!next || next[field] !== id) { var error = new Error('Session unavailable'); error.code = 'NOT_FOUND'; throw error; } return next; }); },
+            retry: function () { if (response && item.recording_status !== 'uploaded' && responseSubmissionRetry) return responseSubmissionRetry(); if (response) { id = item.response_session_id; args[field] = id; } return call(response ? 'startIndividualResponseAnalysis' : 'startAnalysis', Object.assign({ operation_id: 'analysis-' + id }, args)); },
             onSnapshot: function (next) {
                 if (response) {
+                    Object.assign(item, next);
                     selectedResponse = next;
-                    var badge = detail.querySelector('.speaking-response-overview-card .speaking-pill');
-                    if (badge) { badge.textContent = next.analysis_status === 'ready' && next.report ? 'Report ready' : next.analysis_status === 'failed' ? 'Analysis needs retry' : 'Analysis in progress'; badge.setAttribute('data-tone', next.analysis_status === 'ready' && next.report ? 'ready' : 'working'); }
+                    updateIndividualResponsePendingHeader(next);
                 } else currentDiscussion = next;
             },
             onReady: function (next) {

@@ -1371,3 +1371,30 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog.is-response-focused { transition-duration:280ms; }
 #individual-response-dialog.is-response-focused::backdrop { background:#15151c; transition-duration:280ms; }
 @media(prefers-reduced-motion:reduce) { #individual-response-dialog.is-response-focused,#individual-response-dialog.is-response-focused::backdrop { transition-duration:100ms; } }
+
+/* Individual Response: stable submission header and two-domain assessment. */
+.speaking-ir-answer-pending { display: flex; align-items: center; gap: 9px; min-height: 48px; padding: 13px 24px; }
+.speaking-ir-answer-pending strong { color: var(--sl-blue-deep); font-size: 12px; font-weight: 650; }
+.speaking-report-card.speaking-ir-titled-card { padding: 0; overflow: hidden; }
+.speaking-ir-card-title { padding: 17px 24px; background: rgba(8,124,240,.065); border-bottom: 1px solid rgba(8,124,240,.08); }
+.speaking-ir-card-title h2 { margin: 0; color: var(--sl-blue-deep); font-size: 14px; font-weight: 700; letter-spacing: .01em; }
+.speaking-ir-card-body { padding: 24px; }
+.speaking-ir-domain + .speaking-ir-domain { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--sl-hairline); }
+.speaking-ir-domain-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.speaking-ir-domain-heading h3 { display: grid; gap: 5px; margin: 0; }
+.speaking-ir-domain-heading h3 b { color: var(--sl-blue-deep); font-size: 17px; }
+.speaking-ir-domain-heading h3 span { color: var(--sl-muted); font-size: 12px; font-weight: 500; }
+.speaking-ir-domain-score { color: var(--sl-blue-deep); font-size: 27px; font-weight: 650; }
+.speaking-ir-domain-score small { margin-left: 3px; color: var(--sl-muted); font-size: 12px; font-weight: 500; }
+.speaking-ir-domain-rationale { margin: 18px 0; color: #344850; font-size: 14px; line-height: 1.8; }
+.speaking-ir-domain-feedback { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.speaking-ir-domain-feedback > section > h3 { margin: 0 0 14px; color: #526771; font-size: 12px; font-weight: 650; }
+.speaking-ir-feedback-list { display: grid; gap: 20px; padding: 0; margin: 0; list-style: none; }
+.speaking-ir-feedback-list h4 { margin: 0 0 6px; color: #293e49; font-size: 14px; line-height: 1.6; }
+.speaking-ir-feedback-list p, .speaking-ir-feedback-empty { margin: 0; color: #52636b; font-size: 13px; line-height: 1.85; overflow-wrap: anywhere; }
+.speaking-ir-feedback-list .speaking-ir-improvement { margin-top: 10px; }
+.speaking-ir-improvement b { display: block; color: var(--sl-blue-deep); font-size: 11px; }
+.speaking-ir-feedback-list blockquote { margin: 10px 0 0; padding: 0 0 0 12px; border-left: 2px solid rgba(8,124,240,.25); color: #344850; font-size: 14px; line-height: 1.75; overflow-wrap: anywhere; }
+.speaking-ir-card-body > .speaking-ir-development:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+@media (max-width: 620px) { .speaking-ir-domain-feedback { grid-template-columns: 1fr; gap: 22px; } }
+@media (max-width: 540px) { .speaking-ir-answer-pending { padding: 13px 16px; } .speaking-ir-card-title { padding: 16px; } .speaking-ir-card-body { padding: 20px 16px; } }

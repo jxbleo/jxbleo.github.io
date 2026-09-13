@@ -44,7 +44,7 @@ const SPEAKING_SET_PART_A_MAX = 12;
 const SPEAKING_SET_PART_B_MAX = 20;
 const INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS = 65;
 const INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS = 3;
-const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v2";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v3";
 
 function text(value, limit = 2000) {
   return String(value == null ? "" : value).normalize("NFKC").trim().slice(0, limit);
@@ -989,28 +989,47 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
   const validIds = new Set((Array.isArray(segments) ? segments : []).map((row) => String(row.segment_id || "")));
   const domains = report.domains && typeof report.domains === "object" ? report.domains : {};
   const canonical = {};
+  const version = options.reportVersion || INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION;
+  const legacy = ["dse-individual-response-v1", "dse-individual-response-v2"].includes(version);
+  const requiredFeedbackText = (value, max) => {
+    if (typeof value !== "string" || !value.trim() || value.length > max) throw new Error("INDIVIDUAL_RESPONSE_FEEDBACK_INVALID");
+    const clean = value.trim().replace(/[<>]/g, "");
+    if (!clean) throw new Error("INDIVIDUAL_RESPONSE_FEEDBACK_INVALID");
+    return clean;
+  };
+  const feedback = (items, weakness) => {
+    if (!Array.isArray(items) || items.length > 4) throw new Error("INDIVIDUAL_RESPONSE_FEEDBACK_INVALID");
+    return items.map((item) => {
+      if (!item || typeof item !== "object") throw new Error("INDIVIDUAL_RESPONSE_FEEDBACK_INVALID");
+      const ids = item.evidence_segment_ids;
+      if (!Array.isArray(ids) || !ids.length || ids.length > 12 || new Set(ids).size !== ids.length || ids.some((id) => typeof id !== "string" || !validIds.has(id))) throw new Error("SPEAKING_AI_EVIDENCE_INVALID");
+      const row = { point_zh: requiredFeedbackText(item.point_zh, 240), explanation_zh: requiredFeedbackText(item.explanation_zh, 1000), evidence_segment_ids: ids.slice() };
+      if (weakness) Object.assign(row, { improvement_zh: requiredFeedbackText(item.improvement_zh, 1000), example_en: requiredFeedbackText(item.example_en, 1000) });
+      return row;
+    });
+  };
   const domainMap = {
-    communication_strategies: "communication_strategies",
+    ...(legacy ? { communication_strategies: "communication_strategies" } : {}),
     ideas_organisation: "ideas_organisation",
     vocabulary_language_patterns: "vocabulary_language_patterns",
   };
   Object.entries(domainMap).forEach(([key, sourceKey]) => {
     const domain = domains[sourceKey];
     if (!domain || typeof domain !== "object" || Array.isArray(domain)) throw new Error("INDIVIDUAL_RESPONSE_DOMAIN_INVALID");
-    const score = Number(domain.score);
+    const score = legacy ? Number(domain.score) : domain.score;
     if (!Number.isInteger(score) || score < 0 || score > 7) throw new Error("SPEAKING_AI_SCORE_INVALID");
+    if (!legacy && (!Array.isArray(domain.evidence_segment_ids) || domain.evidence_segment_ids.length > 12 || domain.evidence_segment_ids.some((id) => typeof id !== "string"))) throw new Error("SPEAKING_AI_EVIDENCE_INVALID");
     const evidence = Array.isArray(domain.evidence_segment_ids) ? domain.evidence_segment_ids.map(String) : [];
     if (new Set(evidence).size !== evidence.length || evidence.some((id) => !validIds.has(id))) throw new Error("SPEAKING_AI_EVIDENCE_INVALID");
-    canonical[key] = { score, commentary_zh: safeCommentary(domain.commentary_zh), evidence_segment_ids: evidence };
+    canonical[key] = { score, commentary_zh: legacy ? safeCommentary(domain.commentary_zh) : requiredFeedbackText(domain.commentary_zh, 1200), evidence_segment_ids: evidence };
+    if (!legacy) Object.assign(canonical[key], { strengths: feedback(domain.strengths, false), weaknesses: feedback(domain.weaknesses, true) });
   });
   const cleanTextList = (value, limit, itemLimit) => (Array.isArray(value) ? value : []).map((item) => text(item, itemLimit).replace(/[<>]/g, "")).filter(Boolean).slice(0, limit);
   const output = {
     report_version: text(options.reportVersion || INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, 80),
     summary_zh: safeCommentary(report.summary_zh),
-    domains: { ...canonical, pronunciation_delivery: { status: "not_assessed" } },
-    strengths: cleanTextList(report.strengths, 12, 240),
-    priority_actions: cleanTextList(report.priority_actions, 12, 240),
-    language_suggestions: cleanTextList(report.language_suggestions, 12, 480),
+    domains: legacy ? { ...canonical, pronunciation_delivery: { status: "not_assessed" } } : canonical,
+    ...(legacy ? { strengths: cleanTextList(report.strengths, 12, 240), priority_actions: cleanTextList(report.priority_actions, 12, 240), language_suggestions: cleanTextList(report.language_suggestions, 12, 480) } : {}),
     transcript: (Array.isArray(segments) ? segments : []).map((segment) => ({ segment_id: String(segment.segment_id || ""), start_ms: Number(segment.start_ms || 0), end_ms: Number(segment.end_ms || 0), text: text(segment.text, 2000) })),
   };
   if (output.report_version === "dse-individual-response-v1") {

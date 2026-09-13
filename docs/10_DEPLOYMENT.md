@@ -1,12 +1,26 @@
 # 10 Deployment
 
+## IR report v3 rollout (prepared 2026-09-14; not deployed)
+
+Run Speaking and waiting-runner tests, release verification and static build.
+With owner authorization, package/deploy speakingLab (including its shared
+validator, Part B prompt and schema), then publish versioned speaking-lab
+HTML/JS/CSS, speaking-waiting.js, teacher CSS reference and public appVersion.
+The prior report-history change also requires its documented composite-index
+verification/provisioning before release. Worker code, model identity/fallback,
+Writing prompts, permissions and historical reports require no change or replay.
+Check one future authorized IR submission: immediate question card/game,
+manual View results and new IO/VL feedback. Historical reports retain scores.
+Do not claim production readiness from synthetic UI/contract tests alone.
+
 ## 2026-09-13 — Speaking waiting game (static only)
 
 Publish Speaking HTML, its versioned runtime, new `speaking-waiting.js`, and public
 config together. Existing `ai-waiting-runner.js/css` are reused unchanged. Run both
 Speaking and waiting-runner suites, release verification and static build. No
 function deployment, cloud setting, data migration or paid analysis replay is
-required. After authorized publication verify both task kinds finish automatically.
+required for that static-only release. The 2026-09-14 IR update above now needs
+a gateway deployment and manual View results; Group still finishes automatically.
 
 ## 2026-09-12 — Multi-group voiceprint rollout
 

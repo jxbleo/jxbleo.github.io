@@ -24,7 +24,7 @@ function setup(options={}) {
     const initial={analysis_status:'queued',recording_status:'uploaded',...options.initial};
     let impl=options.request||(()=>Promise.resolve(initial));
     vm.runInNewContext(source,{window,document,Promise,Date:{now:()=>now}});
-    const controller=window.MrCatSpeakingWaiting.mount({querySelector:()=>card},{initial,isActive:()=>active,request:()=>{requests++;return impl();},retry:options.retry||(()=>Promise.resolve()),onReady:()=>{opened++;}});
+    const controller=window.MrCatSpeakingWaiting.mount({querySelector:()=>card},{initial,manualResult:!!options.manualResult,isActive:()=>active,request:()=>{requests++;return impl();},retry:options.retry||(()=>Promise.resolve()),onReady:()=>{opened++;}});
     async function advance(ms){const end=now+ms;while(true){const entry=[...timers].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!entry)break;now=entry[1].at;timers.delete(entry[0]);entry[1].fn();await flush();}now=end;await flush();}
     return {controller,card,nodes,window,document,runner,timers,advance,setRequest:f=>{impl=f;},leave:()=>{active=false;controller.destroy();},get requests(){return requests;},get opened(){return opened;},get mounts(){return mounts;},get destroyed(){return destroyed;}};
 }
@@ -54,5 +54,19 @@ function setup(options={}) {
     const fallback=setup({noRunner:true,reduced:true,request:()=>Promise.resolve({analysis_status:'ready',report:{}})});await flush();await fallback.advance(0);assert.equal(fallback.opened,1,'game support cannot block reports');
     const hidden=setup();await flush();hidden.document.hidden=true;await hidden.advance(3000);assert.equal(hidden.requests,2);await hidden.advance(9000);assert.equal(hidden.requests,2);hidden.document.hidden=false;hidden.document.emit('visibilitychange');await flush();assert.equal(hidden.requests,3);hidden.leave();
     const denied=setup({request:()=>Promise.reject(Object.assign(new Error('denied'),{code:'FORBIDDEN'}))});await flush();assert(denied.nodes.get('[data-retry-waiting]').parentElement.hidden);await denied.advance(30000);assert.equal(denied.requests,1);denied.leave();
-    console.log('Speaking waiting: both task adapters use one stable game, bounded non-overlapping reads, foreground/network recovery, failed retry, stale disposal, timeout recovery, ready freeze and exactly-once automatic result opening.');
+    for(const reduced of [false,true]) {
+        const manual=setup({manualResult:true,reduced,request:()=>Promise.resolve({analysis_status:'ready',report:{}})});await flush();
+        assert(manual.runner.paused);assert(!manual.nodes.get('[data-view-waiting-result]').parentElement.hidden);
+        await manual.advance(60000);manual.window.emit('focus');manual.window.emit('online');await flush();assert.equal(manual.opened,0);
+        manual.nodes.get('[data-view-waiting-result]').emit('click');manual.nodes.get('[data-view-waiting-result]').emit('click');assert.equal(manual.opened,1);assert.equal(manual.destroyed,1);
+    }
+    const uploading=setup({manualResult:true,initial:{recording_status:'uploading',analysis_status:'uploading'}});await flush();await uploading.advance(6000);
+    assert.equal(uploading.requests,0);assert(!uploading.runner.paused);assert.match(uploading.nodes.get('.ai-waiting-progress').innerHTML,/Uploading/);
+    uploading.controller.updateSnapshot({recording_status:'upload_failed',analysis_status:'failed'});assert(uploading.runner.paused);assert.equal(uploading.nodes.get('[data-retry-waiting]').textContent,'Retry upload');
+    uploading.window.emit('focus');uploading.window.emit('online');await flush();await uploading.advance(60000);
+    assert.equal(uploading.requests,0,'failed local upload must not query a pending/uncommitted session on wake');
+    assert.equal(uploading.nodes.get('[data-retry-waiting]').textContent,'Retry upload');
+    assert(!uploading.nodes.get('[data-retry-waiting]').parentElement.hidden);
+    uploading.controller.updateSnapshot({recording_status:'uploaded',analysis_status:'queued'});assert(!uploading.runner.paused);assert.equal(uploading.mounts,1);uploading.leave();
+    console.log('Speaking waiting: both task adapters use one stable game, bounded non-overlapping reads, foreground/network recovery, failed retry, stale disposal, timeout recovery, ready freeze, manual IR reveal and exactly-once Group automatic opening.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

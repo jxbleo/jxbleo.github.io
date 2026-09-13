@@ -1,7 +1,7 @@
 "use strict";
 
 const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v4";
-const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v2";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v3";
 
 const DOMAIN_SCHEMA = {
   type: "object",
@@ -89,25 +89,36 @@ const SPEAKING_REPORT_SCHEMA = {
   },
 };
 
+const IR_STRENGTH_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["point_zh", "explanation_zh", "evidence_segment_ids"],
+  properties: { point_zh: { type: "string", minLength: 1, maxLength: 240 }, explanation_zh: { type: "string", minLength: 1, maxLength: 1000 }, evidence_segment_ids: { type: "array", minItems: 1, maxItems: 12, uniqueItems: true, items: { type: "string" } } },
+};
+const IR_WEAKNESS_SCHEMA = {
+  ...IR_STRENGTH_SCHEMA,
+  required: [...IR_STRENGTH_SCHEMA.required, "improvement_zh", "example_en"],
+  properties: { ...IR_STRENGTH_SCHEMA.properties, improvement_zh: { type: "string", minLength: 1, maxLength: 1000 }, example_en: { type: "string", minLength: 1, maxLength: 1000 } },
+};
+const IR_DOMAIN_SCHEMA = {
+  ...DOMAIN_SCHEMA,
+  required: [...DOMAIN_SCHEMA.required, "strengths", "weaknesses"],
+  properties: { ...DOMAIN_SCHEMA.properties, commentary_zh: { type: "string", minLength: 1, maxLength: 1200 }, strengths: { type: "array", maxItems: 4, items: IR_STRENGTH_SCHEMA }, weaknesses: { type: "array", maxItems: 4, items: IR_WEAKNESS_SCHEMA } },
+};
+
 const INDIVIDUAL_RESPONSE_REPORT_SCHEMA = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   type: "object", additionalProperties: false,
-  required: ["summary_zh", "domains", "strengths", "priority_actions", "language_suggestions", "basis_status", "student_viewpoint_zh", "socratic_questions", "sample_responses"],
+  required: ["summary_zh", "domains", "basis_status", "student_viewpoint_zh", "socratic_questions", "sample_responses"],
   properties: {
     summary_zh: { type: "string", maxLength: 1200 },
     domains: {
       type: "object", additionalProperties: false,
-      required: ["communication_strategies", "ideas_organisation", "vocabulary_language_patterns", "pronunciation_delivery"],
+      required: ["ideas_organisation", "vocabulary_language_patterns"],
       properties: {
-        communication_strategies: DOMAIN_SCHEMA,
-        ideas_organisation: DOMAIN_SCHEMA,
-        vocabulary_language_patterns: DOMAIN_SCHEMA,
-        pronunciation_delivery: { type: "object", additionalProperties: false, required: ["status"], properties: { status: { const: "not_assessed" } } },
+        ideas_organisation: IR_DOMAIN_SCHEMA,
+        vocabulary_language_patterns: IR_DOMAIN_SCHEMA,
       },
     },
-    strengths: { type: "array", items: { type: "string", maxLength: 240 }, maxItems: 12 },
-    priority_actions: { type: "array", items: { type: "string", maxLength: 240 }, maxItems: 12 },
-    language_suggestions: { type: "array", items: { type: "string", maxLength: 480 }, maxItems: 12 },
     basis_status: { enum: ["grounded", "insufficient"] },
     student_viewpoint_zh: { type: "string", minLength: 1, maxLength: 800 },
     socratic_questions: {

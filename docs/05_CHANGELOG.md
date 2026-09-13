@@ -1,5 +1,16 @@
 # Changelog
 
+## Individual Response immediate report shell and IO/VL feedback (2026-09-14)
+
+Submit now opens the full question card and waiting game immediately. Upload
+retry preserves local audio; committed audio retries analysis alone. A ready
+IR report freezes the game until View results, with no automatic reveal.
+Analysis and 5** Exemplars use pale-blue title bands. New Part B prompts/schema
+produce only IO and VL, with detailed evidence-backed strengths, weaknesses,
+improvements and English examples. Historical assessments are preserved.
+Implemented locally; gateway deployment plus the prior history index verification
+must precede static publication. No production changes or analysis replay.
+
 ## Approved IR dark recording and green saved state (2026-09-13)
 
 Applied the reviewed charcoal capture theme, pale-green question and thick checkmark completion, text-only deep-green Submit, and a stationary label-to-digit ending transition with an independent live red dot. Manual stops match automatic completion. Recording remains active for the full final three seconds; capture, upload and confirmation logic are unchanged.

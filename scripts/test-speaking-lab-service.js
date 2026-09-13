@@ -124,7 +124,7 @@ async function run() {
   assert.equal(model._test.normalizedUsage({}).total_tokens, null);
 
   assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-08-30\./);
-  assert.equal(schemas.DOMAIN_SCHEMA.required.includes("strengths"), false, "Part B must keep its existing domain contract");
+  assert.equal(schemas.DOMAIN_SCHEMA.required.includes("strengths"), false, "the shared legacy domain base stays unchanged; Part B V3 extends it separately");
   ["strengths", "priority_actions", "language_suggestions"].forEach((field) => {
     assert.equal(schemas.GROUP_DOMAIN_SCHEMA.required.includes(field), true, `Group Discussion domains must require ${field}`);
   });

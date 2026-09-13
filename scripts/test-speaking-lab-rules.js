@@ -72,7 +72,7 @@ function run() {
     communication_strategies: { score: 5, commentary_zh: "x", evidence_segment_ids: ["missing"] },
     ideas_organisation: { score: 4, commentary_zh: "x", evidence_segment_ids: [] },
     vocabulary_language_patterns: { score: 5, commentary_zh: "x", evidence_segment_ids: [] },
-  }, strengths: [], priority_actions: [], language_suggestions: [], sample_response_en: "x" }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "x" }]), /SPEAKING_AI_EVIDENCE_INVALID/);
+  }, strengths: [], priority_actions: [], language_suggestions: [], sample_response_en: "x" }, [{ segment_id: "seg_0001", start_ms: 0, end_ms: 1000, text: "x" }], { reportVersion: "dse-individual-response-v1" }), /SPEAKING_AI_EVIDENCE_INVALID/);
 
   // 1-2 participant-count boundaries. Two participants never produce a report.
   [2, 3, 4, 5, 6, 7].forEach((count) => {

@@ -1,5 +1,25 @@
 # 04 Data Model
 
+## Individual Response v3 (2026-09-14)
+
+New Part B reports use schema/report_version dse-individual-response-v3,
+prompt dse-individual-response-prompts-2026-09-14.1 and rubric
+`dse-individual-response-io-vl-v2`. domains contains only ideas_organisation
+and vocabulary_language_patterns. Both require integer score 0–7,
+commentary_zh (nonempty, max 1200), evidence_segment_ids and strengths/weaknesses.
+Each list has 0–4 evidence-supported points, with point_zh (max 240),
+explanation_zh (max 1000) and 1–12 unique IDs from that same transcript.
+Weaknesses additionally require improvement_zh and example_en (each max 1000).
+No global strengths/priority_actions/language_suggestions, CS or PD are generated.
+Existing four Socratic questions, three exemplars and grounding rules remain.
+
+Legacy v1/v2 validation and stored reports remain readable without migration or
+regrading. An explicitly authorized coaching-only refresh still preserves the
+source assessment and rubric label (assessment_preserved marks this exception).
+UI-only uploading/upload_failed states and provisional pending IDs are never
+written as server report/recording statuses. Existing authenticated ownership,
+audio, immutable history and analysis-job boundaries are unchanged.
+
 ## 2026-09-13 — Current-student name projection
 
 `getCurrentStudent.student` returns the existing authoritative `chinese_name`
@@ -1439,7 +1459,8 @@ repair operation with `repair_of_job_id` referencing an exhausted failed job.
 The failed row/counters are immutable in that recovery; source report/audio
 bindings and the ordinary publication transaction remain authoritative.
 
-IR dse_analysis/report payloads use dse-individual-response-v2 for new reports.
+IR coaching was introduced with dse-individual-response-v2; new reports now use
+v3 as described above.
 New fields: basis_status (grounded|insufficient), student_viewpoint_zh,
 socratic_questions[4] (focus, student_idea_zh, evidence_segment_ids, question_zh,
 hint_zh), sample_responses[3] (title_zh, student_idea_zh, evidence_segment_ids,

@@ -527,7 +527,7 @@ async function startIndividualResponseAnalysis(actor, event) {
   const existing = await getOne(JOBS, { job_id: jobId });
   if (existing && ["queued", "processing", "succeeded"].includes(existing.status)) return { success: true, idempotent_replay: true, job: publicJob(existing) };
   const created = now();
-  const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-v1", created_at: created, updated_at: created, finished_at: null };
+  const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-io-vl-v2", created_at: created, updated_at: created, finished_at: null };
   await db.runTransaction(async (transaction) => {
     const currentResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: row.response_session_id }).limit(1).get();
     const current = currentResult.data && currentResult.data[0];
@@ -1634,7 +1634,7 @@ async function processIndividualResponseQueuedJob(claimed) {
     if (Number(transcript.duration_ms || 0) > (lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) * 1000) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
     const transcriptIdentity = individualResponseReportIdentity(claimed);
     const existingTranscriptReport = await getOne(REPORTS, { report_id: transcriptIdentity.report_id });
-    const transcriptRow = { ...transcriptIdentity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-v1", status: "processing", transcript, updated_at: now() };
+    const transcriptRow = { ...transcriptIdentity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "processing", transcript, updated_at: now() };
     if (existingTranscriptReport) await db.collection(REPORTS).doc(existingTranscriptReport._id || transcriptIdentity.report_id).update(transcriptRow);
     else await db.collection(REPORTS).doc(transcriptIdentity.report_id).create({ ...transcriptRow, created_at: now() });
     await db.collection(JOBS).doc(claimed._id || claimed.job_id).update({ stage: "analysis", transcript_metadata: { segment_count: transcript.segments.length, duration_ms: transcript.duration_ms }, updated_at: now() });
@@ -1653,9 +1653,9 @@ async function processIndividualResponseQueuedJob(claimed) {
   const analysis = sourceReport ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
-  const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-v1", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
+  const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
   reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname };
-  if (sourceReport) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true });
+  if (sourceReport) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true, rubric_version: sourceReport.rubric_version || "dse-individual-response-v1" });
   await db.runTransaction(async (transaction) => {
     const currentJobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
     const latestJob = currentJobResult.data && currentJobResult.data[0];

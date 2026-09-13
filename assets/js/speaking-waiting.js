@@ -2,23 +2,24 @@
     'use strict';
 
     // Reuse Writing's actual runner and material/ice styles; never simulate AI progress.
-    function stages(state) {
-        return ['Uploaded', 'Finished'].map(function (label, index) {
-            var done = index === 0 || state === 'ready';
+    function stages(state, uploadPending) {
+        return [uploadPending ? 'Uploading' : 'Uploaded', 'Finished'].map(function (label, index) {
+            var done = (index === 0 && !uploadPending) || state === 'ready';
             var status = state === 'failed' ? (index ? 'is-interrupted' : 'is-interrupted-complete') : done ? 'is-complete' : 'is-upcoming';
             var connector = index ? '' : '<span class="ai-waiting-connector ' + (state === 'ready' ? 'is-complete' : state === 'failed' ? 'is-interrupted' : 'is-transmitting') + '" aria-hidden="true"><span class="ai-waiting-connector-track"></span><span class="ai-waiting-connector-label"' + (state === 'failed' ? '' : ' hidden') + '>Interrupted</span></span>';
             return '<li class="ai-waiting-stage ' + status + '"><span class="ai-waiting-stage-node" aria-hidden="true"><svg class="ai-waiting-stage-check" viewBox="0 0 20 20"><path d="M4.5 10.2 8.2 14l7.4-8"></path></svg></span><span class="ai-waiting-stage-label">' + label + '</span>' + connector + '</li>';
         }).join('');
     }
 
-    function markup() {
+    function markup(options) {
+        options = options || {};
         return '<section class="ai-waiting-experience speaking-waiting-experience" aria-label="Speaking report progress">' +
             '<ol class="ai-waiting-progress" role="status" aria-live="polite">' + stages('queued') + '</ol>' +
             '<div class="ai-waiting-interruption" role="alert" hidden><strong>Analysis interrupted</strong><p>Your recording is safe. Retry without uploading again.</p></div>' +
             '<div class="runner-shell" aria-label="Mr. Cat Runner waiting activity"><div class="runner-canvas-frame"><p class="runner-score" aria-live="polite">Score 0</p><canvas class="runner-canvas" tabindex="0" role="img" aria-label="Interactive Mr. Cat Runner waiting game."></canvas></div></div>' +
             '<p class="ai-waiting-status" data-speaking-wait-status role="status">Your recording is saved. Checking for your report automatically…</p>' +
             '<div class="ai-waiting-retry-action" hidden><button class="primary-button" type="button" data-retry-waiting>Retry analysis</button></div>' +
-            '<div class="ai-waiting-ready-action" hidden><button class="primary-button" type="button" data-view-waiting-result>View Report</button></div></section>';
+            '<div class="ai-waiting-ready-action" hidden><button class="primary-button" type="button" data-view-waiting-result>' + (options.manualResult ? 'View results' : 'View Report') + '</button></div></section>';
     }
 
     function mount(root, config) {
@@ -30,7 +31,7 @@
         var view = card.querySelector('[data-view-waiting-result]');
         var runner = null, timer = 0, deadline = 0, finishTimer = 0;
         var destroyed = false, inFlight = false, wakePending = false, retrying = false, opened = false;
-        var failures = 0, state = '', result = null, audio = null;
+        var failures = 0, state = '', result = null, audio = null, uploadPending = false;
         var started = Date.now();
 
         function active() { return !destroyed && config.isActive(); }
@@ -45,14 +46,14 @@
         function update(next) {
             if (state === next) return;
             state = next;
-            card.querySelector('.ai-waiting-progress').innerHTML = stages(next);
+            card.querySelector('.ai-waiting-progress').innerHTML = stages(next, uploadPending);
             card.classList.toggle('is-ready', next === 'ready');
             card.classList.toggle('is-ready-announced', next === 'ready');
             card.classList.toggle('is-interrupted', next === 'failed');
             card.querySelector('.ai-waiting-interruption').hidden = next !== 'failed';
             retry.parentElement.hidden = next !== 'failed';
             view.parentElement.hidden = next !== 'ready';
-            if (runner) { runner.setTaskState(next === 'processing' ? 'analysing' : next); if (next === 'ready' || next === 'failed') runner.pause(); else if (!document.hidden) runner.resume(); }
+            if (runner) { runner.setTaskState(next === 'processing' ? 'analysing' : next === 'uploading' ? 'queued' : next); if (next === 'ready' || next === 'failed') runner.pause(); else if (!document.hidden) runner.resume(); }
             canvas.setAttribute('aria-disabled', String(next === 'ready' || next === 'failed'));
             canvas.setAttribute('tabindex', next === 'ready' || next === 'failed' ? '-1' : '0');
             if (next === 'ready') canvas.setAttribute('aria-label', 'Mr. Cat Runner paused. Your report is ready.');
@@ -67,18 +68,23 @@
         function accept(item) {
             if (!active()) return;
             if (!item) throw new Error('Missing report status');
+            uploadPending = item.recording_status === 'uploading' || item.recording_status === 'upload_failed';
             if (config.onSnapshot) config.onSnapshot(item);
             if (item.analysis_status === 'ready' && item.report) {
                 result = item; update('ready'); sound('ready');
-                status.textContent = 'Your report is ready. Opening automatically…';
+                status.textContent = config.manualResult ? 'Your report is ready. Select View results when you are ready.' : 'Your report is ready. Opening automatically…';
                 var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                finishTimer = window.setTimeout(openResult, reduced ? 0 : 1800);
+                if (!config.manualResult) finishTimer = window.setTimeout(openResult, reduced ? 0 : 1800);
+            } else if (item.recording_status === 'uploading') {
+                update('uploading');
+                status.textContent = 'Uploading your recording securely…';
             } else if (item.analysis_status === 'failed' || item.analysis_status === 'not_ready') {
                 update('failed');
                 var notStarted = item.analysis_status === 'not_ready';
-                card.querySelector('.ai-waiting-interruption strong').textContent = notStarted ? 'Analysis has not started' : 'Analysis interrupted';
-                retry.textContent = notStarted ? 'Start analysis' : 'Retry analysis';
-                status.textContent = notStarted ? 'Your recording is saved. Start the analysis when you are ready.' : 'Your recording is safe. You can retry the analysis.';
+                card.querySelector('.ai-waiting-interruption strong').textContent = uploadPending ? 'Upload interrupted' : notStarted ? 'Analysis has not started' : 'Analysis interrupted';
+                card.querySelector('.ai-waiting-interruption p').textContent = uploadPending ? 'Keep this page open and retry the upload.' : 'Your recording is safe. Retry without uploading again.';
+                retry.textContent = uploadPending ? 'Retry upload' : notStarted ? 'Start analysis' : 'Retry analysis';
+                status.textContent = uploadPending ? 'Your recording has not finished uploading. Retry before leaving this page.' : notStarted ? 'Your recording is saved. Start the analysis when you are ready.' : 'Your recording is safe. You can retry the analysis.';
             } else {
                 update(item.analysis_status === 'processing' ? 'processing' : 'queued');
                 status.textContent = Date.now() - started > 90000 ? 'This is taking longer than usual. We are still checking automatically; your recording is safe.' : 'Your recording is saved. Checking for your report automatically…';
@@ -86,11 +92,11 @@
         }
         function schedule() {
             window.clearTimeout(timer);
-            if (!active() || state === 'ready' || state === 'failed') return;
+            if (!active() || state === 'ready' || state === 'failed' || state === 'uploading') return;
             timer = window.setTimeout(poll, failures ? Math.min(30000, 3000 * Math.pow(2, failures)) : document.hidden ? 10000 : 3000);
         }
         function poll() {
-            if (!active() || state === 'ready' || retrying) return;
+            if (!active() || state === 'ready' || state === 'uploading' || (state === 'failed' && uploadPending) || retrying) return;
             window.clearTimeout(timer);
             if (inFlight) { wakePending = true; return; }
             inFlight = true;
@@ -116,7 +122,7 @@
         function retryAnalysis() {
             if (!active() || retrying || state !== 'failed') return;
             retrying = true; retry.disabled = true;
-            Promise.resolve().then(config.retry).then(function () { if (active()) { failures = 0; update('queued'); } }).catch(function () { if (active()) status.textContent = 'The retry could not start. Your recording is safe; please try again.'; }).finally(function () { retrying = false; retry.disabled = false; if (active() && state !== 'failed') poll(); });
+            Promise.resolve().then(config.retry).then(function () { if (active()) { failures = 0; if (state === 'failed') update('queued'); } }).catch(function () { if (active()) status.textContent = uploadPending ? 'Upload retry failed. Keep this page open and try again.' : 'The retry could not start. Your recording is safe; please try again.'; }).finally(function () { retrying = false; retry.disabled = false; if (active() && state !== 'failed') poll(); });
         }
         function destroy() {
             if (destroyed) return;
@@ -135,8 +141,8 @@
         document.addEventListener('visibilitychange', wake);
         ['focus', 'online', 'pageshow'].forEach(function (event) { window.addEventListener(event, wake); });
         accept(config.initial);
-        if (state !== 'ready' && state !== 'failed') poll();
-        return { destroy: destroy, wake: wake };
+        if (state !== 'ready' && state !== 'failed' && state !== 'uploading') poll();
+        return { destroy: destroy, wake: wake, updateSnapshot: function (item) { accept(item); schedule(); } };
     }
     window.MrCatSpeakingWaiting = { markup: markup, mount: mount };
 })(window, document);

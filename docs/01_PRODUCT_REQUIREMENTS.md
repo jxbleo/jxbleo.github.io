@@ -1,5 +1,24 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Individual Response report while processing (2026-09-14)
+
+Explicit Submit immediately enters the report workspace, before secure upload
+or AI feedback completes. Show the frozen Set title in the toolbar, Y/year/Set/Q,
+compact recording-date control, question and blue Your answer row immediately.
+Keep the approved white surfaces and pale-blue heading. Replace word count with
+Uploading… / Preparing… while pending; do not invent a transcript or feedback.
+Below this card show only the existing waiting game. A ready report freezes the
+game until the student selects View results, including with Reduced Motion.
+Group Discussion retains its automatic ready transition.
+
+New Individual Response analyses score only IO (Ideas & Organisation) and VL
+(Vocabulary & Language), each 0–7, with detailed transcript-grounded strengths
+and weaknesses, practical improvements and English examples. Do not assess CS
+or pronunciation/delivery for this task. The second card is Analysis. The third
+card is 5** Exemplars, retaining four guided questions and three sample answers;
+5** is a learning target, not an official grade. Existing reports and scores are
+preserved; absent legacy per-domain feedback is identified rather than invented.
+
 ## Speaking recording screen awake (2026-09-13)
 
 While IR or Group Discussion is counting down or capturing audio (including its ending reminder and recorder finalization), request a screen wake lock on supported browsers. Release on completion, cancellation, failure or page exit, and reacquire when a still-active capture returns to the foreground. This is best-effort browser functionality: low power, browser policy, unsupported browsers and manual locking can override it; recording must not fail when a lock is unavailable.
@@ -23,7 +42,8 @@ After microphone permission, the three-second preparation cue fades the surround
 Part A 和 Part B 上传后复用 Writing 的 Mr. Cat Runner 和 Uploaded → Finished
 进度、完成冻结效果。状态检查不重建游戏，前台每 3 秒、后台每 10 秒；网络错误
 自动退避重试，恢复网络/返回前台立即查询。必须拿到 ready 且完整 report 才算完成；
-冻结后约 1.8 秒自动打开报告（减少动态效果时直接打开），也可立即点击 View Report。
+Group Discussion 冻结后约 1.8 秒自动打开报告（减少动态效果时直接打开）；
+IR 已于 2026-09-14 改为只在点击 View results 后打开。
 离开或切换任务取消旧页面监听，旧请求不得跳回旧报告。真正失败显示手动 Retry analysis，
 不自动重复计费分析。IR 上传后关闭录音弹窗进入等待主页，刷新 response 链接仍回到同一份任务。
 无需修改评分、报告数据、权限或云函数。Writing 自身的手动查看结果流程保持原样。

@@ -106,6 +106,28 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — IR immediate waiting report and IO/VL (local only)
+
+- Continued in isolated codex/ir-report-history worktree; no root edits or
+  production operations. Added immediate Submit report shell, stable waiting
+  game, upload/analysis retry distinction and manual View results.
+- Part B v3 prompt/schema/validator score only IO and VL, with detailed evidence,
+  strengths, weaknesses and actionable examples. Blue Analysis / 5** Exemplars
+  headers preserve the approved first card, history and collapsed Your answer.
+- Updated product, architecture, UI, data model, changelog, test and deployment
+  docs. Updated static cache references. Tests cover new/legacy schemas, upload
+  retry/double-submit, manual ready state and unchanged Group transitions.
+- Browser fixture uses actual renderer/submission/waiting code plus real runner,
+  with synthetic data only. Verified immediate header, continuous game,
+  Preparing… to Ready, no auto-reveal and click-to-results. Phone layout and
+  answer collapse checked; no real microphone, upload or paid AI calls.
+- Passed the complete Speaking suite, waiting-runner contracts, release
+  verification, static build and diff checks. Failed-upload foreground/online
+  recovery retains Retry upload without querying an uncommitted session.
+- Production rollout still requires authorized gateway deployment, the prior
+  history index verification and static publication; no report regeneration.
+
+
 ### 2026-09-14 — Approved Individual Response report history (local only)
 
 - Implemented in isolated worktree `/private/tmp/mrcat-ir-report-history`, branch

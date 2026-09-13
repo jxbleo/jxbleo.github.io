@@ -1,5 +1,27 @@
 # 07 Testing Checklist
 
+## Individual Response Submit-to-report flow and v3 (2026-09-14)
+
+- Click Submit with an in-memory recording: before the first API resolves, show
+  toolbar Set title, Y/year/Set/Q, date, question, Your answer / Uploading… and
+  one playable runner. No score, analysis or exemplar card is visible.
+- Complete upload: switch to Preparing… without replacing/resetting the runner.
+  Upload failure retains audio and uses the same operation on Retry upload;
+  once committed, failed analysis starts again without re-uploading audio.
+- Poll ready+report: freeze the game and show View results. Leave it for over a
+  minute and trigger focus/online; it must not open automatically, including
+  Reduced Motion. Click once to reveal the complete report. Retest Group's
+  existing automatic transition, stale requests and navigation cleanup.
+- Confirm only IO/VL scores, each with detailed strengths/weaknesses, and all
+  three cards' pale-blue title bands. Your answer starts collapsed with actual
+  word count. Test current/past-year dates, history switches and phone overflow.
+- Reject v3 missing point fields, out-of-range/non-integer scores and foreign,
+  missing or duplicate per-point evidence IDs. Keep legacy validation, transcript
+  grounding, four questions, three distinct samples and name redaction tests.
+- Run test:speaking-lab, test:waiting-runner, verify:release, build:static and
+  git diff --check. Synthetic fixtures verify interaction/schema, not live AI
+  feedback quality; inspect a future authorized live response after deployment.
+
 ## Approved IR palette and ending motion (2026-09-13)
 
 Check opening/capture/ending use the dark palette; ready/error/cancel restore the light palette. Automatic finish and early stop both show a green question, visible green circle and thick checkmark, green success sentence with period, and text-only green Submit. In final 3/2/1, Recording fades out at the center without moving other elements; the circle does not pulse, and only the live dot blinks. Reduced Motion keeps the digit static and dot steady. Confirm the red dot disappears immediately on Stop even when audio finalization is delayed. Preserve the 63-second capture and explicit Submit/replacement confirmation. Test a phone and short viewport for overflow.

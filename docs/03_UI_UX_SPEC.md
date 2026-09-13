@@ -1,5 +1,22 @@
 # 03 UI / UX Spec
 
+## IR pending report and titled feedback cards (2026-09-14)
+
+Submit closes the recorder and immediately shows the Set-title toolbar and full
+first card, including Y/year/Set/Q, question and compact date. The date control
+is disabled while waiting. The blue Your answer row stays single-line with
+Uploading…, Preparing…, Waiting to retry or Ready instead of a word count.
+Only the existing game follows this card until View results is selected.
+Ready freezes the game indefinitely; this also applies with Reduced Motion.
+
+The revealed second card has the first card's pale-blue header, titled Analysis.
+It contains exactly IO and VL, each with name, 0–7 score, rationale, Strengths
+and Weaknesses. Each weakness includes How to improve and an English example.
+Strength/weakness columns stack on phones. The third card repeats the header
+style with 5** Exemplars and keeps the guided questions and sample disclosures.
+The first card then restores the collapsed Your answer row and actual word
+count. All report data changes together when a different date is selected.
+
 ## Approved IR dark capture and green completion (2026-09-13)
 
 Opening countdown, capture and ending use a deep charcoal page, charcoal question surface, light text, lavender recording ring and coral live indicator/digits. Ready remains white/light purple. Automatic completion and manual Stop restore white with a pale green question, green circle/check/feedback, and a solid deep-green, white-text Submit pill with no icon. The completed circle keeps Tap to start over and the existing replace-recording confirmation. Errors/cancel return to the ready palette. Colour rules are scoped to the IR native dialog, including its backdrop; Group Discussion is unchanged by this approval.
@@ -3082,8 +3099,8 @@ horizontal page overflow.
 
 Both uploaded Speaking task kinds now use the same Writing runner and
 Uploaded → Finished component. Poll updates never recreate the canvas. Finishing
-pauses input, shows the existing ice overlay and a View Report button, then opens
-the report after 1.8 seconds (immediately with Reduced Motion). No percentage is
+pauses input and shows the existing ice overlay. Group opens after 1.8 seconds
+(immediately with Reduced Motion); IR now requires View results. No percentage is
 invented. IR upload closes its recorder dialog and opens the main waiting view;
 `?response=<id>` restores it on refresh. Group Candidates controls remain below
 the waiting game. Failure shows an explicit retry, while transient read failures
