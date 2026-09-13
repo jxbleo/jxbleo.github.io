@@ -3359,7 +3359,11 @@
         var item = sentenceArgueSummary(id);
         var label = item && item.status === 'pending' ? 'Argue · 等待教师处理' : item && item.status === 'rejected' ? 'Argue · 可再次请求' : 'Argue · 请求教师复核';
         return '<button class="sentence-argue-button" type="button" data-sentence-argue="' + escapeHtml(id) + '" aria-label="' + label + '" title="' + label + '">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-3a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-12 5l-5-6a1.5 1.5 0 0 1 2-2l3 3"/></svg>' +
+            '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+            '<path d="M28 47V26c0-4 3-7 7-7s7 3 7 7v23"/>' +
+            '<path d="M42 45V20c0-4 3-7 7-7s7 3 7 7v27"/>' +
+            '<path d="M56 47V25c0-4 3-7 7-7s7 3 7 7v31"/>' +
+            '<path d="M70 56V39c0-4 3-7 7-7s7 3 7 7v27c0 18-12 29-29 29H45c-10 0-18-4-24-12L12 70c-3-4-2-9 2-12s9-2 12 2l7 8"/></svg>' +
             (item && item.status === 'pending' ? '<span class="sentence-argue-dot" aria-hidden="true"></span>' : '') + '</button>';
     }
 

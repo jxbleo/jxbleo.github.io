@@ -2539,9 +2539,10 @@ Important mobile rules:
   color so the student's sentence remains visually primary. Its placeholder reads
   `Rewrite this sentence in your own words.` Remove the explanatory
   sentence under the `Sentence Revision` heading. In editable mode, place one compact
-  44px camera-only Scan Revisions button immediately to the left of the trailing
-  `Submit` button in the bottom action row. Its visible surface contains only the
-  existing camera SVG, while `aria-label` and `title` preserve its accessible name.
+  44px camera-only Scan Revisions button at the left of the bottom action row.
+  On tablet and desktop (above 760px), center `Submit` in the full toolbar using
+  equal-width side columns, including when the camera is absent. The camera button
+  contains only the existing camera SVG, while `aria-label` and `title` preserve its accessible name.
   Keep both controls on one row on phone, with Submit taking the remaining width.
 - If Submit finds any required sentence without an accepted result or a draft, turn every
   revision-required card to its `Your Attempt` face and scroll the first unfinished card
@@ -3182,7 +3183,10 @@ three decisions and optional Teachers’ Note interface are unchanged.
 ### Writing Argue controls (2026-09-12)
 
 The incorrect sentence card's top-right actions pair the existing status icon
-with a 36px raised-hand button on both card faces. Correct/read-only sentences
+with a 25px raised-hand button on both card faces, matching the status icon's
+25px box. The hand uses BBC's outlined hand artwork, warm cream background and
+brown stroke, with a 17px SVG and a compact 5px pending dot (2026-09-13).
+Correct/read-only sentences
 have no request button. The button is independent of the flip hit target and
 has an accessible Argue/status name. A modal shows the exact last checked
 sentence, optional reason, latest teacher reply, Close and Submit/Request again.

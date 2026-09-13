@@ -3182,6 +3182,15 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
 - Local browser QA uses synthetic audio and stubbed APIs only. Real-device
   microphone/speaker playback and CloudBase upload remain deployment smoke checks.
 
+### Writing revision footer alignment (2026-09-13)
+
+- At iPad and desktop widths (768px, 820px and 1280px), confirm the bottom
+  Submit button is centered in the full toolbar and the camera sits at its left
+  padded edge. Hiding the camera must not shift Submit.
+- At phone width (390px), retain the single row with the camera on the left
+  and Submit filling the remaining width; verify both actions still open their
+  existing flows.
+
 ### Writing sentence Argue (2026-09-12)
 
 Run `npm run test:writing-argue` (also included in `test:writing-tutor`),

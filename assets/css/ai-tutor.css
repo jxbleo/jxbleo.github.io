@@ -471,10 +471,12 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .original-sentence { margin: 0 0 18px; font: 1.18rem/1.65 ui-serif, Georgia, serif; overflow-wrap: anywhere; }
 .sentence-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
 .sentence-card-actions { display: flex; align-items: center; gap: 10px; }
-.sentence-argue-button { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-height: 36px; padding: 6px; border: 1px solid currentColor; border-radius: 50%; color: #13766d; background: rgba(255,255,255,.7); cursor: pointer; }
-.sentence-argue-button svg { width: 22px; height: 22px; }
-.sentence-argue-button:focus-visible { outline: 3px solid #13766d; outline-offset: 3px; }
-.sentence-argue-dot { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #d17a13; top: 0; right: 0; }
+.sentence-argue-button { position: relative; display: inline-grid; place-items: center; flex: 0 0 25px; width: 25px; height: 25px; min-height: 25px; padding: 0; border: 1px solid #e2c8b0; border-radius: 50%; color: #9a5a2a; background: #fff6ed; box-shadow: 0 8px 18px rgba(122,67,26,.12); cursor: pointer; }
+.sentence-argue-button svg { display: block; width: 17px; height: 17px; overflow: visible; }
+.sentence-argue-button svg path { fill: none; stroke: currentColor; stroke-width: 5.8; stroke-linecap: round; stroke-linejoin: round; }
+.sentence-argue-button:hover { background: #fde8d0; color: #7a431a; }
+.sentence-argue-button:focus-visible { outline: 3px solid #9a5a2a; outline-offset: 3px; }
+.sentence-argue-dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #d17a13; top: 0; right: 0; }
 .writing-argue-dialog { width: min(480px, calc(100vw - 32px)); max-height: 80dvh; overflow: auto; box-sizing: border-box; padding: 24px; border: 1px solid #cbded5; border-radius: 24px; background: #f5faf7; color: #18332f; box-shadow: 0 24px 80px #18332f33; }
 .writing-argue-dialog::backdrop { background: #18332f55; }
 .writing-argue-dialog h2 { margin-top: 0; }
@@ -523,7 +525,9 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
 .rewrite-area { display: grid; gap: 8px; }
 .rewrite-area label { color: var(--ai-muted); font-size: .72rem; font-weight: 760; }
 .rewrite-input { min-height: 92px; padding: 12px 13px; resize: vertical; line-height: 1.55; }
-.batch-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin: 0; padding: 18px clamp(18px,3.5vw,34px); border-top: 1px solid var(--ai-line); background: rgba(245,250,248,.72); }
+.batch-actions { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: center; gap: 12px; margin: 0; padding: 18px clamp(18px,3.5vw,34px); border-top: 1px solid var(--ai-line); background: rgba(245,250,248,.72); }
+.batch-actions .scan-revision-trigger { grid-column: 1; grid-row: 1; justify-self: start; }
+.batch-actions .primary-button { grid-column: 2; grid-row: 1; justify-self: center; }
 .language-card-footer { padding: 18px clamp(18px,3.5vw,34px); border-top: 1px solid var(--ai-line); }
 .completion-card { padding: clamp(26px,5vw,64px); text-align: center; }
 .completion-icon { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 24px; color: #fff; background: var(--ai-success); box-shadow: 0 14px 30px rgba(39,123,82,.2); }
@@ -689,7 +693,7 @@ button:disabled { cursor: not-allowed; opacity: .55; transform: none !important;
     .revision-scan-candidate { padding: 14px; }
     .revision-scan-actions { align-items: stretch; flex-direction: column; }
     .revision-scan-actions > button { width: 100%; }
-    .batch-actions { align-items: center; flex-direction: row; }
+    .batch-actions { display: flex; align-items: center; flex-direction: row; }
     .batch-actions .primary-button { flex: 1 1 auto; width: auto; }
 }
 

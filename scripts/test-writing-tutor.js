@@ -1136,8 +1136,11 @@ check("Sentence Revision numbers every row and ends with one Submit action", () 
     "the editable footer must expose exactly the concise Submit action");
   assert(!/未完成的句子|全部完成，提交检查|再次提交检查|icon\('arrow'\)/.test(renderSource),
     "the footer must remove the old hint, dynamic labels, and arrow icon");
-  assert(/\.batch-actions\s*\{[^}]*justify-content\s*:\s*flex-end/is.test(styles),
-    "the lone desktop Submit action must align to the trailing edge");
+  assert(/\.batch-actions\s*\{[^}]*grid-template-columns\s*:\s*minmax\(0,1fr\) auto minmax\(0,1fr\)/is.test(styles)
+      && /\.batch-actions \.primary-button\s*\{[^}]*grid-column\s*:\s*2[^}]*justify-self\s*:\s*center/is.test(styles),
+    "tablet and desktop Submit must stay centered in the full footer with or without the camera");
+  assert(/\.batch-actions \.scan-revision-trigger\s*\{[^}]*grid-column\s*:\s*1[^}]*justify-self\s*:\s*start/is.test(styles),
+    "tablet and desktop camera must align to the footer's left edge");
   assert(/\.sentence-row-number\s*\{[^}]*(?:display\s*:\s*inline-block)[^}]*border\s*:\s*0[^}]*border-radius\s*:\s*0[^}]*background\s*:\s*transparent/is.test(styles),
     "sentence rows must use the BBC worksheet-style plain sequence number rather than a capsule");
   assert(/\.sentence-card-meta\s*\{[^}]*display\s*:\s*flex/is.test(styles)
