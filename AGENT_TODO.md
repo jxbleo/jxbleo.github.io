@@ -106,6 +106,19 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — IR card selectors (local only)
+
+- Added compact header selectors for Analysis IO/VL and Exemplar 1/2/3;
+  first options selected by default, with independent native selection and
+  only the chosen panels visible. Samples precede retained shared guidance.
+- Updated Speaking JS/CSS, cache references and the renderer test harness;
+  UI, changelog and testing docs updated. No backend/prompt changes this turn.
+- Complete Speaking suite passed. Browser checks used the actual renderer and
+  binding code: default IO/1, independent VL/3 switching, real sample headings,
+  compact phone controls and no runtime errors. Preview kept on port 8815.
+- Remains in isolated codex/ir-report-history worktree; no publication.
+
+
 ### 2026-09-14 — IR immediate waiting report and IO/VL (local only)
 
 - Continued in isolated codex/ir-report-history worktree; no root edits or

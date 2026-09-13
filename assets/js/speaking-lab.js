@@ -1575,11 +1575,12 @@
         var questions = Array.isArray(report.socratic_questions) ? report.socratic_questions : [];
         var samples = Array.isArray(report.sample_responses) ? report.sample_responses : [];
         if (!questions.length && !samples.length) return report.sample_response_en ? '<div class="speaking-response-sample"><p class="eyebrow accent">SAMPLE IMPROVED RESPONSE</p><p>' + esc(report.sample_response_en) + '</p></div>' : '';
-        return '<section class="speaking-ir-development"><p class="eyebrow accent">DEVELOP YOUR IDEAS</p><p>' + esc(report.student_viewpoint_zh || '') + '</p>' + (report.basis_status === 'insufficient' ? '<p class="speaking-ir-note">未能從錄音可靠判斷你的立場；以下為根據題目提供的假設示範。</p>' : '') + '<ol class="speaking-ir-questions">' + questions.map(function (item) {
+        var guidance = '<section class="speaking-ir-development"><p class="eyebrow accent">DEVELOP YOUR IDEAS</p><p>' + esc(report.student_viewpoint_zh || '') + '</p>' + (report.basis_status === 'insufficient' ? '<p class="speaking-ir-note">未能從錄音可靠判斷你的立場；以下為根據題目提供的假設示範。</p>' : '') + '<ol class="speaking-ir-questions">' + questions.map(function (item) {
             return '<li><p class="speaking-ir-anchor">' + esc(item.student_idea_zh || '') + '</p><h3>' + esc(item.question_zh || '') + '</h3><details><summary>思考提示</summary><p>' + esc(item.hint_zh || '') + '</p></details></li>';
-        }).join('') + '</ol></section><section class="speaking-ir-development"><p class="eyebrow accent">3 SAMPLE RESPONSES</p><p class="speaking-ir-note">以 5** 水平為學習目標的示範；並非官方評級或分數保證。</p><div class="speaking-ir-samples">' + samples.map(function (item, index) {
-            return '<details class="speaking-ir-sample"' + (index === 0 ? ' open' : '') + '><summary><span>Sample ' + (index + 1) + '</span> ' + esc(item.title_zh || '') + '</summary><p class="speaking-ir-anchor">' + esc(item.student_idea_zh || '') + '</p><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p><div class="speaking-ir-explanation"><h3>內容與語言提升</h3><p>' + esc(item.explanation_zh || '') + '</p></div></details>';
-        }).join('') + '</div></section>';
+        }).join('') + '</ol></section>';
+        return '<section class="speaking-ir-development"><p class="speaking-ir-note">以 5** 水平為學習目標的示範；並非官方評級或分數保證。</p><div class="speaking-ir-samples">' + samples.map(function (item, index) {
+            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><h3 class="speaking-ir-exemplar-heading">' + esc(item.title_zh || ('Exemplar ' + (index + 1))) + '</h3><p class="speaking-ir-anchor">' + esc(item.student_idea_zh || '') + '</p><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p><div class="speaking-ir-explanation"><h3>內容與語言提升</h3><p>' + esc(item.explanation_zh || '') + '</p></div></article>';
+        }).join('') + '</div></section>' + guidance;
     }
     function renderIndividualResponseSession(response, pending) {
         var report = response.report || {};
@@ -1602,12 +1603,29 @@
         }
         return '<section class="speaking-ir-domain"><div class="speaking-ir-domain-heading"><h3><b>' + esc(label[0]) + '</b><span>' + esc(label[1]) + '</span></h3><strong class="speaking-ir-domain-score">' + esc(domain.score == null ? '—' : domain.score) + (domain.score == null ? '' : '<small>/7</small>') + '</strong></div><p class="speaking-ir-domain-rationale">' + esc(domain.commentary_zh || 'No assessment available.') + '</p><div class="speaking-ir-domain-feedback"><section><h3>Strengths</h3>' + points(domain.strengths, false) + '</section><section><h3>Weaknesses</h3>' + points(domain.weaknesses, true) + '</section></div></section>';
     }
+    function individualResponseCardPicker(group, label, options) {
+        return '<label class="speaking-ir-card-picker"><span class="sr-only">' + esc(label) + '</span><select data-ir-select="' + group + '" aria-controls="response-' + group + '-panels"' + (options.length < 2 ? ' disabled' : '') + '>' + options.map(function (option) {
+            return '<option value="' + esc(option.value) + '">' + esc(option.label) + '</option>';
+        }).join('') + '</select></label>';
+    }
+    function bindIndividualResponseCardPickers() {
+        detail.querySelectorAll('[data-ir-select]').forEach(function (picker) {
+            picker.addEventListener('change', function () {
+                var group = picker.getAttribute('data-ir-select');
+                detail.querySelectorAll('[data-ir-panel="' + group + '"]').forEach(function (panel) {
+                    panel.hidden = panel.getAttribute('data-ir-value') !== picker.value;
+                });
+            });
+        });
+    }
     function renderIndividualResponseReport(response) {
         var report = response.report || {};
         var development = renderIndividualResponseDevelopment(report);
+        var samples = Array.isArray(report.sample_responses) && report.sample_responses.length ? report.sample_responses : report.sample_response_en ? [{}] : [];
+        var samplePicker = samples.length ? individualResponseCardPicker('exemplar', 'Exemplar', samples.map(function (_item, index) { return { value: String(index), label: 'Exemplar ' + (index + 1) }; })) : '';
         return '<section class="speaking-response-report">' + renderIndividualResponseSession(response, false) + '<div id="response-report-content" class="speaking-response-report">' +
-            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2></header><div class="speaking-ir-card-body">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language'], report) + '</div></section>' +
-            (development ? '<section class="speaking-report-card speaking-ir-development-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>5** Exemplars</h2></header><div class="speaking-ir-card-body">' + development + '</div></section>' : '') + '</div></section>';
+            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2>' + individualResponseCardPicker('analysis', 'Analysis dimension', [{ value: 'io', label: 'IO' }, { value: 'vl', label: 'VL' }]) + '</header><div class="speaking-ir-card-body" id="response-analysis-panels"><div data-ir-panel="analysis" data-ir-value="io">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + '</div><div data-ir-panel="analysis" data-ir-value="vl" hidden>' + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language'], report) + '</div>' + '</div></section>' +
+            (development ? '<section class="speaking-report-card speaking-ir-development-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>5** Exemplars</h2>' + samplePicker + '</header><div class="speaking-ir-card-body" id="response-exemplar-panels">' + development + '</div></section>' : '') + '</div></section>';
     }
     function updateIndividualResponsePendingHeader(response) {
         var header = detail.querySelector('.speaking-ir-session-card');
@@ -1623,7 +1641,7 @@
         var reportReady = response.analysis_status === 'ready' && response.report;
         detail.innerHTML = '<article class="speaking-response-workspace">' + (reportReady ? renderIndividualResponseReport(response) : '<section class="speaking-response-report">' + renderIndividualResponseSession(response, true) + '<div id="response-report-content">' + window.MrCatSpeakingWaiting.markup({ manualResult: true }) + '</div></section>') + '</article>';
         updateToolbar({ title: (response.set_snapshot || {}).title || 'Individual Response', invitation: true });
-        if (reportReady) bindIndividualResponseHistory(response);
+        if (reportReady) { bindIndividualResponseHistory(response); bindIndividualResponseCardPickers(); }
         else { sizeResponseHistoryPicker(); startSpeakingWaiting('response', response); }
     }
     function enterIndividualResponseSubmission(response) {

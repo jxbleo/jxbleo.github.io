@@ -1,7 +1,7 @@
 window.MRCAT_CONFIG = Object.freeze({
     cloudbaseEnvId: 'mrcat-dev-d9gwy2v1icdfdf597',
     region: 'ap-shanghai',
-    appVersion: '20260914-ir-analysis-v3-1',
+    appVersion: '20260914-ir-card-filters-1',
     defaultPassingPercentage: 50,
     defaultFeedbackPolicy: 'always',
     doneRangeDays: 7

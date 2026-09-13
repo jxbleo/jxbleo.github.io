@@ -1,5 +1,17 @@
 # 03 UI / UX Spec
 
+## IR report card selectors (2026-09-14)
+
+Analysis has a compact native IO/VL selector at the upper right of its blue
+heading; IO is selected initially. Only the chosen domain is visible. The
+5** Exemplars header has Exemplar 1/2/3; show only the selected full sample,
+its grounding note and improvement explanation. Exemplar 1 is the default.
+Place the sample before the retained shared Develop your ideas guidance.
+Selectors switch independently without fetching, rerendering the page or
+resetting other disclosures. Selecting another recording resets both defaults.
+Only available samples are selectable; a single legacy sample has a disabled
+Exemplar 1 control. Native selects preserve keyboard/mobile interaction.
+
 ## IR pending report and titled feedback cards (2026-09-14)
 
 Submit closes the recorder and immediately shows the Set-title toolbar and full
@@ -13,7 +25,7 @@ The revealed second card has the first card's pale-blue header, titled Analysis.
 It contains exactly IO and VL, each with name, 0–7 score, rationale, Strengths
 and Weaknesses. Each weakness includes How to improve and an English example.
 Strength/weakness columns stack on phones. The third card repeats the header
-style with 5** Exemplars and keeps the guided questions and sample disclosures.
+style with 5** Exemplars and keeps the guided questions and selectable samples.
 The first card then restores the collapsed Your answer row and actual word
 count. All report data changes together when a different date is selected.
 

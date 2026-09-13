@@ -116,6 +116,7 @@ context.document = { getElementById: (id) => id.startsWith('speaking-') ? {} : n
 context.detail = {};
 let toolbarItem; context.updateToolbar = item => { toolbarItem = item; };
 context.bindIndividualResponseHistory = () => {};
+context.bindIndividualResponseCardPickers = () => {};
 context.sizeResponseHistoryPicker = () => {};
 context.window = { MrCatSpeakingWaiting: { markup: () => '<section class="speaking-waiting-experience"></section>' } };
 context.startSpeakingWaiting = () => {};

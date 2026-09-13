@@ -1,5 +1,14 @@
 # Changelog
 
+## Compact Individual Response card selectors (2026-09-14)
+
+Added upper-right native selectors to Analysis (IO/VL) and 5** Exemplars
+(Exemplar 1/2/3). Each card shows one selected view, defaulting to its first
+option. Put the selected exemplar before shared guided questions. Kept blue
+headers, compact controls, independent selections and historical-report support.
+Frontend-only follow-up to the prepared report release; no additional backend,
+prompt or data changes. Not published.
+
 ## Individual Response immediate report shell and IO/VL feedback (2026-09-14)
 
 Submit now opens the full question card and waiting game immediately. Upload

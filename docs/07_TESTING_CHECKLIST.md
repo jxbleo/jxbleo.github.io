@@ -1,5 +1,16 @@
 # 07 Testing Checklist
 
+## IR report selectors (2026-09-14)
+
+Verify default IO and Exemplar 1; switch IO/VL and all available exemplar
+options using keyboard/native selects. Only the chosen panel should be visible
+or exposed to accessibility. Switching either card must preserve the other
+selection and Your answer disclosure; switching recording history resets both
+card selectors. A single legacy exemplar must not offer nonexistent samples.
+At phone width, both select controls sit compactly beside their titles without
+horizontal overflow. Check selected sample text, anchor and explanation switch
+together, with common guided questions preserved below.
+
 ## Individual Response Submit-to-report flow and v3 (2026-09-14)
 
 - Click Submit with an in-memory recording: before the first API resolves, show
