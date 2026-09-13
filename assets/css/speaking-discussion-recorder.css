@@ -112,3 +112,10 @@ body.speaking-recording-flow-active { overflow:hidden; overscroll-behavior:none;
 @media(max-height:500px) { #recording-live { --diameter:min(60vw,43dvh); padding-top:48px; padding-bottom:12px; gap:8px; } #recording-live .speaking-recording-live-label { top:max(26px,env(safe-area-inset-top)); } #recording-live .speaking-recording-live-content { gap:18px; } #recording-live .speaking-recording-footer { min-height:64px; } }
 
 @media(prefers-reduced-motion:reduce) { #recording-live.is-recording .speaking-recording-live-label span { animation:none; opacity:1; } }
+
+/* The live capture indicator replaces the central stop square in both hosts. */
+#recording-live.is-recording .speaking-recording-live-label { visibility:hidden; }
+#recording-live .speaking-recording-center-indicator { display:flex; align-items:center; justify-content:center; flex:none; gap:10px; color:#a7403d; font-size:clamp(20px,7cqw,26px); font-weight:600; line-height:1.3; letter-spacing:-.02em; white-space:nowrap; pointer-events:none; }
+#recording-live .speaking-recording-center-dot { width:9px; height:9px; flex:none; border-radius:50%; background:#d8423e; animation:speaking-response-recording-blink 1.2s step-end infinite; }
+#recording-live:is(.is-minute,.is-ending) .speaking-recording-center-indicator { position:absolute; top:0; }
+@media(prefers-reduced-motion:reduce) { #recording-live .speaking-recording-center-dot { animation:none; opacity:1; } }

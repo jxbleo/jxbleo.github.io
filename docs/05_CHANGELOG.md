@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-13 — Consistent Speaking capture feedback
+
+Implemented the approved IR phone spacing in production CSS and replaced central stop squares with blinking red-dot Recording labels in IR and the shared student/teacher Discussion recorder. Countdown, early stop, final-minute warnings, saved state, wake lock and explicit Submit remain intact.
+
 ## Speaking recording screen awake (2026-09-13)
 
 Add a shared native Screen Wake Lock controller for IR and Group Discussion, with foreground recovery, cleanup and late-request guards. Unsupported or denied requests leave recording usable. No backend changes.

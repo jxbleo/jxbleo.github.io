@@ -106,6 +106,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-13 — Centered Speaking Recording and stable IR phone spacing
+
+- Changed Speaking CSS/JS, shared Discussion recorder, both host cache versions, UI spec, changelog and testing checklist in isolated `codex/speaking-center-recording`; preserved the shared dirty checkout.
+- IR uses the reviewed top-aligned stack with responsive explicit gaps. IR and student/teacher Discussion show blinking Recording inside the stop control; final-minute/ending digits remain readable.
+- Verified full Speaking suite (using existing root node_modules), release checks, and production markup/CSS in native-dialog fixtures at 390×844 and 375×667. IR saved mic/message/Submit fit with no horizontal overflow; Group label centered within 0.01 px and separated from warning digits by over 30 px. This browser pass used simulated states, not microphone capture or backend submissions.
+- Static publication pending; no backend/data changes.
+
 - 2026-09-13 — IR saved-state polish: restored the microphone above Tap to
   start over for manual and automatic stops; added the final English period
   to the visible and accessible success message. Checkmark remains hidden and

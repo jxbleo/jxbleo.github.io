@@ -3308,3 +3308,9 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
 - Verify background/foreground, permission denial, countdown cancellation,
   microphone loss and repeated open/close without accumulating listeners,
   animation frames or microphone streams. Preview demo controls never ship.
+
+## Speaking centered capture and IR spacing (2026-09-13)
+
+- At phone widths and short viewports, confirm question → circle → clock → Upload/Submit remains in order, with 32/20/24 px gaps (24/16/20 px below 700 px height), no horizontal overflow, and vertical scrolling for long questions.
+- IR and student/teacher Discussion show one blinking red dot + Recording inside the stop control only during capture. Verify opening, early stop, final warning, microphone failure, saved/restart, and Reduced Motion.
+- Discussion final-minute seconds and ending digits remain readable below Recording; preserve audio cues, duration and explicit submission.

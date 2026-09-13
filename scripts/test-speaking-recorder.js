@@ -117,7 +117,7 @@ async function run() {
   assert(!f.nodes['recording-adjust-duration'].hidden);
   assert(!f.nodes['recording-mic-icon'].hidden);
   assert.equal(f.nodes['recording-duration-label'].textContent, '03:00');
-  assert(f.nodes['recording-stop-icon'].hidden);
+  assert(f.nodes['recording-center-indicator'].hidden);
   assert(f.controller.locked(), 'ready dialog blocks host navigation/rerender');
   assert.equal(f.nodes['recording-live-status'].textContent, '');
   assert(!f.nodes['recording-upload-option'].hidden);
@@ -136,7 +136,7 @@ async function run() {
   assert(!f.nodes['recording-clock'].hidden);
   assert(f.nodes['recording-time'].hidden);
   assert(f.nodes['recording-mic-icon'].hidden);
-  assert(!f.nodes['recording-stop-icon'].hidden);
+  assert(!f.nodes['recording-center-indicator'].hidden);
   f.drawFrame();
   assert(f.nodes['recording-outer-line'].getAttribute('d').startsWith('M'), 'real samples feed the outer wave');
   await f.advance(119000);
@@ -153,7 +153,7 @@ async function run() {
   assert.equal(f.nodes['recording-time'].textContent, '60');
   assert(!f.nodes['recording-time'].hidden);
   assert(f.nodes['recording-clock'].hidden);
-  assert(f.nodes['recording-stop-icon'].hidden);
+  assert(!f.nodes['recording-center-indicator'].hidden, 'Recording remains visible beside the final-minute countdown');
   assert(f.nodes['recording-live'].classList.contains('is-minute'));
   assert.equal(f.nodes['recording-ring-progress'].style.strokeDashoffset, '0');
   await f.advance(1000);
