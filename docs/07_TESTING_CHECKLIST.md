@@ -3229,7 +3229,7 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
 
 - Individual Response Upload Files: cancel or dismiss the native picker without selecting, repeat several times, and re-select the same file. The question dialog and draft remain open. Escape on the dialog itself and its Close button retain normal guarded dismissal.
 
-- Stop Individual Response after a partial response: verify green captured seconds plus sec recorded, centred Tap to Start Over, no checkmark, and Submit availability. Exclude opening countdown and asynchronous recorder finalization from duration. Restart restores the normal countdown; automatic completion still shows Finished.
+- Stop Individual Response after a partial response: verify green captured seconds plus sec recorded, a green microphone above centred Tap to Start Over, no checkmark, and Submit availability. Exclude opening countdown and asynchronous recorder finalization from duration. Restart restores the normal countdown; automatic completion still shows Finished.
 
 ## Vocabulary personalized Mastered crown (2026-09-13)
 
@@ -3244,3 +3244,20 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
 - Run `node scripts/test-text-model-policy.js`: both adapters select the same policy; dry-run never writes; apply preserves secrets, OCR and unrelated runtime values; read failure or concurrent edits prevent writes; repeated apply is idempotent; either side's drift fails check.
 - Run `node scripts/test-speaking-model-quota-fallback.js` and `node scripts/test-writing-model-quota-fallback.js` for the existing quota/error boundaries.
 - After owner-authorized apply, run `node scripts/configure-text-models.js --check` against both Active functions. A one-sided configuration read is not sufficient.
+
+
+### Individual Response focused-session regression (2026-09-13)
+
+- Run `node scripts/test-speaking-response-focus.js` and the recorder/UI checks.
+  Cover silence versus increasing real sample amplitudes, no speaker connection,
+  analyser setup/read failure, stop/close cleanup and Reduced Motion.
+- Open an IR question after scrolling: wheel/trackpad/touch over the dark
+  backdrop must not move the page; a short viewport must still scroll the dialog.
+  Close and successful Submit restore the exact saved page position. Reopen and
+  cancel Upload Files: the dialog stays open and the lock remains active.
+- Speak quietly then loudly: violet/blue-green colour changes with the input,
+  after the opening countdown only. Stop: colour fades, green microphone and
+  Tap to Start Over appear above green captured duration. Submit stays explicit.
+- Verify background/foreground, permission denial, countdown cancellation,
+  microphone loss and repeated open/close without accumulating listeners,
+  animation frames or microphone streams. Preview demo controls never ship.

@@ -3502,3 +3502,14 @@ After Tap to Stop, Individual Response shows the actual captured duration in gre
   including decorative stars and dynamically fitted English-name engraving.
 - Kept existing Practice/Quiz context and server grading/STAR behavior.
 - Static frontend release only; no CloudBase deployment or data changes.
+
+
+## 2026-09-13 — Focused Individual Response recording
+
+- Published the approved dark blurred question-dialog backdrop and background
+  scroll lock, restoring position on close and the Submit-to-analysis transition.
+- Added violet/blue-green ambient colour driven locally by the existing recording
+  stream, with silence gating, smooth settling and Reduced Motion support.
+- Restored a green microphone above Tap to Start Over while keeping actual
+  captured seconds and explicit Submit. Added focused lifecycle regressions and
+  updated the UI specification/testing checklist. No backend change is required.

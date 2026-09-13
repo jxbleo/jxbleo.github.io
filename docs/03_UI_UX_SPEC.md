@@ -3066,7 +3066,7 @@ red, and sound once per second. Each countdown's final tone is higher and longer
 (1320 Hz / 0.4 seconds versus 880 Hz / 0.18 seconds). Reduced Motion keeps red
 without pulsing. At 65 captured seconds the recorder stops, shows `Finished`,
 and replaces Upload Files with `Submit`. Only an explicit Submit uploads and
-starts analysis; completion never auto-uploads. Manual interruption shows only centred `Tap to Start Over` inside the circle, without a checkmark or microphone icon. The lower clock becomes green recorded duration (for example `12.4 sec recorded`), with smaller digits and a small unit caption. Duration freezes at the Stop action and excludes the three-second opening and recorder finalization delay. Automatic completion keeps `Finished`.
+starts analysis; completion never auto-uploads. Manual interruption shows a green microphone above centred `Tap to Start Over` inside the circle, without a checkmark. The lower clock becomes green recorded duration (for example `12.4 sec recorded`), with smaller digits and a small unit caption. Duration freezes at the Stop action and excludes the three-second opening and recorder finalization delay. Automatic completion keeps `Finished`.
 Clicking either microphone control can replace the unsubmitted recording after confirmation. Errors remain visible,
 failed uploads retain the local audio for retry, and closing/navigation cancels
 pending microphone permission, countdown timers, scheduled cues and capture.
@@ -3207,3 +3207,20 @@ Long content wraps within the existing single-column mobile report. V1 reports
 retain the earlier single sample, without empty V2 headings.
 
 Cancelling the Individual Response system file picker leaves its question dialog open and preserves the current recording/draft. Only a cancel event originating on the dialog itself enters the existing Escape/discard handler; descendant file-input cancel events do not close the parent.
+
+
+### Individual Response focused session (2026-09-13)
+
+The question dialog uses the approved deep charcoal backdrop (82% opacity,
+10px blur) with violet and blue-green ambient colour at its edges. Opening locks
+background wheel, trackpad and touch scrolling while retaining dialog scrolling.
+Close and the successful Submit transition restore the original page position
+and previous inline styles. The file picker cancel event must keep the dialog
+open and the background locked.
+
+Colour responds only during capture to the existing microphone stream's local
+RMS level and low/high frequency energy. Silence settles to the dark backdrop;
+stopping disconnects the analyser and gently fades the colour away. Closing,
+page exit and errors clean up resources. No additional microphone request,
+playback, upload, backend data, preview copy or demo controls are added.
+Reduced Motion keeps smaller colour changes without expansion or displacement.

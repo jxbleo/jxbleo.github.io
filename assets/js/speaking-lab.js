@@ -107,6 +107,7 @@
     var responseDeadline = 0;
     var responseCueContext = null;
     var responseCueNodes = [];
+    var responseFocus = null;
 
     function finishInitialLoading() {
         document.documentElement.classList.remove('speaking-direct-entry');
@@ -1259,6 +1260,108 @@
             });
         });
     }
+    function createResponseFocus(dialog) {
+        var pageLock = null, source = null, analyser = null, samples = null, spectrum = null;
+        var frame = 0, lastTime = 0, level = 0, bass = 0, air = 0, voiceRule = null;
+        var reducedMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+        function saveStyle(element, names) {
+            return names.map(function (name) { return [name, element.style.getPropertyValue(name), element.style.getPropertyPriority(name)]; });
+        }
+        function restoreStyle(element, values) {
+            values.forEach(function (value) { if (value[1]) element.style.setProperty(value[0], value[1], value[2]); else element.style.removeProperty(value[0]); });
+        }
+        function blockBackgroundGesture(event) {
+            if (dialog.open && (event.target === dialog || !dialog.contains(event.target))) event.preventDefault();
+        }
+        function lock() {
+            if (pageLock) return;
+            var root = document.documentElement, body = document.body;
+            var gutter = Math.max(0, window.innerWidth - root.clientWidth);
+            var padding = parseFloat(window.getComputedStyle(body).paddingRight) || 0;
+            pageLock = { x: window.scrollX, y: window.scrollY,
+                body: saveStyle(body, ['position', 'top', 'left', 'width', 'overflow', 'padding-right']),
+                root: saveStyle(root, ['overflow', 'overscroll-behavior', 'scroll-behavior']) };
+            body.style.setProperty('position', 'fixed');
+            body.style.setProperty('top', -pageLock.y + 'px'); body.style.setProperty('left', -pageLock.x + 'px');
+            body.style.setProperty('width', '100%'); body.style.setProperty('overflow', 'hidden');
+            if (gutter) body.style.setProperty('padding-right', padding + gutter + 'px');
+            root.style.setProperty('overflow', 'hidden'); root.style.setProperty('overscroll-behavior', 'none');
+            root.style.setProperty('scroll-behavior', 'auto');
+            document.addEventListener('wheel', blockBackgroundGesture, { passive: false });
+            document.addEventListener('touchmove', blockBackgroundGesture, { passive: false });
+        }
+        function unlock() {
+            if (!pageLock) return;
+            var previous = pageLock; pageLock = null;
+            document.removeEventListener('wheel', blockBackgroundGesture);
+            document.removeEventListener('touchmove', blockBackgroundGesture);
+            restoreStyle(document.body, previous.body);
+            // Restore the exact position before reinstating a possible smooth-scroll preference.
+            window.scrollTo(previous.x, previous.y);
+            restoreStyle(document.documentElement, previous.root);
+        }
+        function paint() {
+            if (!voiceRule) return;
+            var strength = reducedMotion.matches ? 0.45 : 1;
+            voiceRule.setProperty('--response-voice', String(level * 0.7 * strength));
+            voiceRule.setProperty('--response-bass', String(bass * 0.45 * strength));
+            voiceRule.setProperty('--response-air', String((level * 0.35 + air * 0.35) * strength));
+            voiceRule.setProperty('--response-spread', String(reducedMotion.matches ? 1 : 1 + level * 0.48));
+            voiceRule.setProperty('--response-rise', (reducedMotion.matches ? 50 : 53 - bass * 14) + '%');
+        }
+        function tick(now) {
+            frame = 0;
+            var dt = Math.min(0.05, (now - (lastTime || now - 16)) / 1000); lastTime = now;
+            var loudness = 0, low = 0, high = 0;
+            if (analyser && dialog.open) {
+                try {
+                    analyser.getFloatTimeDomainData(samples);
+                    var sum = 0;
+                    for (var i = 0; i < samples.length; i += 1) sum += samples[i] * samples[i];
+                    loudness = Math.min(1, Math.max(0, (Math.sqrt(sum / samples.length) - 0.007) * 10));
+                    analyser.getByteFrequencyData(spectrum);
+                    for (var j = 2; j < 28; j += 1) low += spectrum[j];
+                    for (var k = 28; k < 140; k += 1) high += spectrum[k];
+                    low = Math.min(1, loudness * low / (26 * 190)); high = Math.min(1, loudness * high / (112 * 130));
+                } catch (_error) { stop(false); }
+            }
+            function smooth(current, target) { return current + (target - current) * (1 - Math.exp(-dt / (target > current ? 0.09 : 0.42))); }
+            level = smooth(level, loudness); bass = smooth(bass, low); air = smooth(air, high);
+            paint();
+            if (analyser || level > 0.001) frame = window.requestAnimationFrame(tick);
+            else { level = bass = air = lastTime = 0; paint(); }
+        }
+        function stop(immediate) {
+            if (source) { try { source.disconnect(); } catch (_error) {} }
+            if (analyser) { try { analyser.disconnect(); } catch (_error) {} }
+            source = analyser = samples = spectrum = null;
+            if (immediate) {
+                if (frame) window.cancelAnimationFrame(frame);
+                frame = lastTime = level = bass = air = 0; paint();
+            }
+        }
+        function start(stream, context) {
+            if (!dialog.open || !context || !context.createMediaStreamSource || !context.createAnalyser) return;
+            stop(false);
+            try {
+                if (!voiceRule) {
+                    // ::backdrop does not inherit variables from its dialog. Set them on its own rule.
+                    var style = document.createElement('style');
+                    style.textContent = '#individual-response-dialog::backdrop {}';
+                    document.head.appendChild(style); voiceRule = style.sheet.cssRules[0].style;
+                }
+                analyser = context.createAnalyser(); analyser.fftSize = 1024; analyser.smoothingTimeConstant = 0.7;
+                samples = new Float32Array(analyser.fftSize); spectrum = new Uint8Array(analyser.frequencyBinCount);
+                source = context.createMediaStreamSource(stream); source.connect(analyser);
+                // No destination connection: microphone input must never play through the speakers.
+                if (!frame) frame = window.requestAnimationFrame(tick);
+            } catch (_error) { stop(true); /* Optional decoration must never interrupt capture. */ }
+        }
+        return { lock: lock, unlock: unlock, start: start, stop: stop };
+    }
+    function releaseResponseFocus() {
+        if (responseFocus) { responseFocus.stop(true); responseFocus.unlock(); }
+    }
     function responseElapsedSeconds() { return responseStartedAt ? Math.max(0, (performance.now() - responseStartedAt) / 1000) : 0; }
     function responseCaptureActive() { return ['requesting', 'countdown', 'recording', 'stopping'].indexOf(responseCaptureState) >= 0; }
     function cancelResponseCues() {
@@ -1292,6 +1395,7 @@
         });
     }
     function stopResponseHardware() {
+        if (responseFocus) responseFocus.stop(false);
         responseCaptureGeneration += 1;
         responseCaptureState = 'idle';
         if (responseTimer) window.clearInterval(responseTimer);
@@ -1374,6 +1478,7 @@
             selectedId = ''; selectedResponseId = response.response_session_id; selectedSpeakingSet = null;
             window.history.replaceState(null, '', 'speaking-lab.html?response=' + encodeURIComponent(selectedResponseId));
             if (responseDialog.open) responseDialog.close();
+            releaseResponseFocus();
             renderIndividualResponseWorkspace(response);
             return;
         }
@@ -1386,8 +1491,12 @@
         responseDialogContent.innerHTML = '<button class="speaking-response-close" type="button" id="individual-response-dialog-close" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button><div class="speaking-response-dialog-header"><p class="eyebrow accent">' + esc(responseSetHeading(response)) + '</p></div><h2 class="speaking-response-dialog-question" id="individual-response-dialog-title"><span>Q' + esc(question.order || '') + ':</span> ' + esc(question.text || '') + '</h2>' + body;
         document.getElementById('individual-response-dialog-close').addEventListener('click', closeIndividualResponseDialog);
         if (!uploaded) bindIndividualResponseRecording(response);
-        if (typeof responseDialog.showModal === 'function' && !responseDialog.open) responseDialog.showModal();
-        else if (!responseDialog.open) responseDialog.setAttribute('open', '');
+        if (!responseFocus) responseFocus = createResponseFocus(responseDialog);
+        responseFocus.lock();
+        try {
+            if (typeof responseDialog.showModal === 'function' && !responseDialog.open) responseDialog.showModal();
+            else if (!responseDialog.open) responseDialog.setAttribute('open', '');
+        } catch (error) { releaseResponseFocus(); throw error; }
         var record = document.getElementById('response-record');
         if (record) window.requestAnimationFrame(function () { record.focus(); });
     }
@@ -1448,6 +1557,7 @@
         selectedResponse = null;
         if (responseDialog.open && responseDialog.close) responseDialog.close();
         else responseDialog.removeAttribute('open');
+        releaseResponseFocus();
         responseDialogContent.innerHTML = '';
         if (responseToDiscard && responseToDiscard.response_session_id && responseToDiscard.recording_status !== 'uploaded') {
             call('discardEmptyIndividualResponse', { response_session_id: responseToDiscard.response_session_id }).catch(function () { /* The backend list also hides uncommitted empty Responses. */ }).finally(loadIndividualResponses);
@@ -1462,6 +1572,7 @@
         if (!responseRecorder || responseRecorder.state === 'inactive') return;
         responseRecordedDurationSeconds = Math.min(65, responseElapsedSeconds());
         responseCaptureState = 'stopping';
+        if (responseFocus) responseFocus.stop(false);
         try { responseRecorder.stop(); } catch (_error) { stopResponseHardware(); }
     }
     function bindIndividualResponseRecording(response) {
@@ -1551,6 +1662,7 @@
                         if (openingElapsed < 3) { digit.textContent = String(3 - Math.floor(openingElapsed)); return; }
                         try { device.start(250); } catch (_error) { recordingFailure('This browser could not begin recording. Use Upload Files instead.'); return; }
                         responseStartedAt = performance.now(); responseCaptureState = 'recording';
+                        if (responseFocus) responseFocus.start(stream, responseCueContext);
                         setRecordButton('Tap to Stop', 'recording');
                         scheduleResponseCues([60, 61, 62, 63, 64], generation);
                         responseDeadline = window.setTimeout(finishResponseRecording, 65000);
@@ -1874,6 +1986,7 @@
         if (transcriptionDialog.open && transcriptionDialog.close) transcriptionDialog.close();
         else transcriptionDialog.removeAttribute('open');
     });
+    responseDialog.addEventListener('close', function () { if (!responseDialog.open) releaseResponseFocus(); });
     responseDialog.addEventListener('cancel', function (event) {
         // File inputs emit a bubbling cancel event when their picker is dismissed.
         // Only the dialog's own cancel event represents a request to close it.

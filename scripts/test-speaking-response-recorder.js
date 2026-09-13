@@ -15,7 +15,7 @@ const functions = ['timerClockText', 'responseElapsedSeconds', 'responseCaptureA
 const flush = () => new Promise(setImmediate);
 function harness(options = {}) {
   let now = 1000, sequence = 0, resolvePermission;
-  const timers = new Map(), elements = {}, tracks = [], devices = [], cues = [], calls = [];
+  const timers = new Map(), elements = {}, tracks = [], devices = [], cues = [], calls = [], focusEvents = [];
   const stream = { getTracks: () => tracks };
   tracks.push({ stopped: false, listeners: {}, stop() { this.stopped = true; }, addEventListener(type, fn) { this.listeners[type] = fn; } });
   function node(id) {
@@ -45,7 +45,7 @@ function harness(options = {}) {
     URL: { createObjectURL: () => 'blob:fixture', revokeObjectURL() {} },
     responseRecorder: null, responseStream: null, responseChunks: [], responseStartedAt: 0, responseRecordedDurationSeconds: null, responseTimer: 0, responseBlob: null, responseUploadOperationId: '', responseUploadInProgress: false,
     responseCaptureState: 'idle', responseCaptureGeneration: 0, responseDeadline: 0, responseCueContext: null, responseCueNodes: [],
-    selectedResponse: null, responseDialog: { open: false }, esc: value => String(value),
+    responseFocus: { start(input, audio) { assert.strictEqual(input, stream); assert(audio); focusEvents.push('start'); }, stop(immediate) { focusEvents.push(immediate ? 'clear' : 'stop'); } }, selectedResponse: null, responseDialog: { open: false }, esc: value => String(value),
     friendlyError: error => error.message,
     ensureIndividualResponseCreated: response => { calls.push('create'); return Promise.resolve(response); },
     call: (action, payload) => { calls.push(action); if (options.uploadFails && action === 'startIndividualResponseAudioUpload') return Promise.reject(new Error('Upload failed')); return Promise.resolve({ upload: { cloud_path: 'private/test' }, asset_id: 'asset' }); },
@@ -67,7 +67,7 @@ function harness(options = {}) {
     }
     now = end;
   }
-  return { context, node, devices, tracks, cues, calls, timers, advance, click: () => node('response-record').handlers.click(), resolvePermission: () => resolvePermission(stream) };
+  return { context, node, devices, tracks, cues, calls, focusEvents, timers, advance, click: () => node('response-record').handlers.click(), resolvePermission: () => resolvePermission(stream) };
 }
 async function run() {
   let cancelHandler, closed = 0, prevented = 0;
@@ -82,12 +82,15 @@ async function run() {
   assert.equal(prevented, 1);
   const h = harness(); h.click(); await flush();
   assert.equal(h.devices[0].state, 'inactive', 'opening countdown must not be recorded');
+  assert(!h.focusEvents.includes('start'), 'voice decoration must not start before capture');
   assert.equal(h.node('response-opening-digit').textContent, '3');
   h.advance(1000); assert.equal(h.node('response-opening-digit').textContent, '2');
   h.advance(1000); assert.equal(h.node('response-opening-digit').textContent, '1');
   h.advance(1000); assert.equal(h.devices[0].state, 'recording'); assert.equal(h.node('response-timer').textContent, '01:00');
+  assert.equal(h.focusEvents.filter(event => event === 'start').length, 1, 'decoration starts once with the recording stream');
   h.advance(60000); assert.equal(h.node('response-recorder').attrs['data-state'], 'ending'); assert.equal(h.node('response-timer').textContent, '00:05');
   h.advance(5000); assert.equal(h.devices[0].stopped - h.devices[0].started, 65000); assert.equal(h.node('label').textContent, 'Finished');
+  assert.equal(h.focusEvents.at(-1), 'stop');
   assert.equal(h.context.responseRecordedDurationSeconds, 65); assert.equal(h.node('response-upload').hidden, false);
   assert.equal(h.context.responseBlob.size > 0, true); assert(h.tracks[0].stopped); assert.equal(h.timers.size, 0);
   assert.deepEqual(h.calls, [], 'completion must never automatically create/upload/analyse');

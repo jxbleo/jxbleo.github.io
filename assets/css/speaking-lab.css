@@ -1069,10 +1069,10 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-response-dialog-recorder[data-state="finished"] .speaking-response-clock { color: #6c7872; }
 
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-ring { visibility: hidden; }
-.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-mic-icon,
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-stop-icon,
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-finished-icon { display: none; }
-.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone { gap: 0; background: #edf7f2; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-mic-icon { display: block; }
+.speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone { gap: 16px; color: #398568; background: #edf7f2; }
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-microphone-label { color: #398568; font-size: 13px; text-align: center; }
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock { display: inline-flex; align-items: baseline; gap: 7px; color: #398568; font-size: 32px; font-weight: 600; letter-spacing: -.4px; }
 .speaking-response-dialog-recorder[data-state="stopped"] .speaking-response-clock small { font-size: 12px; font-weight: 500; letter-spacing: 0; }
@@ -1181,3 +1181,13 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 @media(prefers-reduced-motion:reduce) { .speaking-circular-timer-progress, .speaking-recording-live, .speaking-recording-ring-track, .speaking-recording-live .speaking-recording-time { transition:none; } .is-ending .speaking-recording-ring-progress, .speaking-recording-live .is-ending .speaking-recording-countdown { animation:none; } .speaking-recording-wave-bar { transition-duration:180ms; will-change:auto; } }
 @media(prefers-reduced-transparency:reduce) { .speaking-recording-live.is-minute button.speaking-finish-recording { background:#fff; } }
 @media(prefers-contrast:more) { .speaking-recording-ring-track { stroke:#7895a2; } .speaking-recording-live button.speaking-finish-recording { border-color:#97665f; } }
+
+/* Individual Response focused capture: variables belong directly to the backdrop. */
+#individual-response-dialog::backdrop {
+    --response-voice: 0; --response-bass: 0; --response-air: 0; --response-spread: 1; --response-rise: 50%;
+    background-color: rgba(10,14,23,.82);
+    background-image: radial-gradient(ellipse calc(38vw * var(--response-spread)) 64vh at 6% var(--response-rise),rgba(118,86,208,var(--response-voice)) 0%,rgba(104,74,189,calc(var(--response-voice) * .4)) 40%,transparent 74%),radial-gradient(ellipse calc(37vw * var(--response-spread)) 60vh at 97% 56%,rgba(51,156,171,var(--response-air)) 0%,rgba(45,112,170,calc(var(--response-air) * .45)) 42%,transparent 76%),radial-gradient(ellipse 66vw 35vh at 49% 105%,rgba(94,85,187,var(--response-bass)),transparent 74%);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+#individual-response-dialog { box-shadow: 0 36px 110px #0007,0 0 0 1px #ffffff12; }
+@media (prefers-reduced-transparency: reduce) { #individual-response-dialog::backdrop { background-color: #171c25; -webkit-backdrop-filter: none; backdrop-filter: none; } }

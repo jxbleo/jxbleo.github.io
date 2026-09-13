@@ -1115,3 +1115,16 @@ cp .qa-secrets.example .qa-secrets.local
 - 2026-09-13: Individual Response manual stop uses its own stopped presentation: green actual seconds with sec recorded, centred Tap to Start Over, and no checkmark. Added tests for displayed duration, finalization delay exclusion and restart reset. Preview synced.
 
 - Verification: recorder/UI regression checks and release verification passed. Browser fixture using production markup/CSS/binding showed a centred text-only restart control, green recorded duration and Submit after manual stop. Synthetic capture only; no real microphone/backend submission used.
+
+
+### 2026-09-13 — IR focused-session static release
+- Owner approved the dark backdrop, background scroll lock, microphone-reactive
+  colour and green restart microphone. Implemented in speaking-lab JS/CSS;
+  cache version 20260913-response-focus-1. Temporary demo controls are excluded.
+- Preserves shared capture, countdown timing, Submit, file-picker cancellation
+  isolation and the latest analysis waiting-page transition.
+- Tests: response-focus sample/scroll/lifecycle tests, recorder and UI contracts;
+  browser QA uses actual recorder/controller code with synthetic local Web Audio,
+  checks capture colour, stop display and Submit restoring scroll position.
+- UI specification, changelog and testing checklist updated. No CloudBase
+  function, permission, data migration or provider changes are involved.
