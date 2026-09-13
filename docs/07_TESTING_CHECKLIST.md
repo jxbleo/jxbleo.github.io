@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## Approved IR palette and ending motion (2026-09-13)
+
+Check opening/capture/ending use the dark palette; ready/error/cancel restore the light palette. Automatic finish and early stop both show a green question, visible green circle and thick checkmark, green success sentence with period, and text-only green Submit. In final 3/2/1, Recording fades out at the center without moving other elements; the circle does not pulse, and only the live dot blinks. Reduced Motion keeps the digit static and dot steady. Confirm the red dot disappears immediately on Stop even when audio finalization is delayed. Preserve the 63-second capture and explicit Submit/replacement confirmation. Test a phone and short viewport for overflow.
+
 ## IR ending reminder (2026-09-13)
 
 Verify central 3/2/1 at 60/61/62 seconds, recording remains active through 62.999 seconds, and automatic stop happens at 63 seconds. Check the hidden external timer does not duplicate announcements, the central Recording indicator does not overlap the digit, and early stop/saved/restart remain correct.

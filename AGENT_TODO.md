@@ -106,6 +106,12 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-13 — Approved IR dark capture, green saved state and ending A
+
+- Applied the approved temporary preview to production IR-only CSS: dark native dialog/backdrop through capture; green question/circle/thick check/feedback and text-only solid-green Submit for automatic and manual stops; stationary final 3/2/1 crossfade with an independent red dot. Updated UI/changelog/test docs and host cache versions. Preserved all capture/submit code, latest audio-file icon and Group Discussion.
+- Full Speaking suite and release verification passed. Production markup/CSS native-dialog browser fixture at 390×844 and 375×667 verified dark surface/backdrop, 0→1 label/digit visibility, no dial animation, Stop immediately removing the pseudo-dot, both saved states using the check instead of mic, no Submit icon, and no horizontal overflow. Reduced Motion overrides retained. Browser QA simulated states; no microphone/backend submissions.
+- Static publication pending; no backend or owner action required.
+
 ### 2026-09-13 — IR final three seconds inside the circle
 
 - Reused the opening digit for final 3/2/1; retained small Recording above it, hid the duplicate external clock without moving the stack, and kept capture active through all 63 seconds. Updated UI/changelog/test docs and cache versions; preserved the newer Upload Files icon release.

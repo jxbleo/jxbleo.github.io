@@ -1,5 +1,9 @@
 # Changelog
 
+## Approved IR dark recording and green saved state (2026-09-13)
+
+Applied the reviewed charcoal capture theme, pale-green question and thick checkmark completion, text-only deep-green Submit, and a stationary label-to-digit ending transition with an independent live red dot. Manual stops match automatic completion. Recording remains active for the full final three seconds; capture, upload and confirmation logic are unchanged.
+
 ## IR central final three-second reminder (2026-09-13)
 
 Moved the final three-second warning from the lower clock into the circle, matching the opening countdown. Capture continues throughout all three warning seconds, with a smaller Recording indicator above the number and the same explicit Submit afterward.

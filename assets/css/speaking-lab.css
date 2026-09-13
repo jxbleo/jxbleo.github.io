@@ -1306,3 +1306,45 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 #individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-ring { visibility:visible; }
 #individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-ring-track { stroke:#f7deda; }
 #individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-ring-progress { visibility:hidden; }
+
+/* Approved IR theme and ending transition. Native dialog owns all colour changes. */
+#individual-response-dialog{background:#fff;transition:background-color 280ms ease}
+#individual-response-dialog.is-response-focused{background:#15151c;color:#f4f0fb}
+#individual-response-dialog.is-response-focused .speaking-response-dialog-question{background:#22222d;border-color:#343240;color:#f3eff9}
+#individual-response-dialog.is-response-focused .speaking-response-ring-track{stroke:#393644}
+#individual-response-dialog.is-response-focused .speaking-response-ring-progress{stroke:#b4a0e8}
+#individual-response-dialog.is-response-focused .speaking-response-microphone{background:radial-gradient(circle,#302a42 0%,#211e2c 66%,transparent 75%);color:#c5b5f1}
+#individual-response-dialog.is-response-focused .speaking-response-microphone:hover{background:#292437}
+#individual-response-dialog.is-response-focused .speaking-response-clock{color:#eee7fc}
+#individual-response-dialog.is-response-focused .speaking-response-recording-indicator{color:#ffa49e}
+#individual-response-dialog.is-response-focused .speaking-response-recording-dot{background:#ff746e}
+#individual-response-dialog.is-response-focused .speaking-response-close{background:#23222d;border-color:#393645;color:#c9c2d8}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="countdown"],[data-state="ending"]) .speaking-response-microphone{background:#322124}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="countdown"],[data-state="ending"]) .speaking-response-opening-digit{color:#ffaaa2}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="countdown"],[data-state="ending"]) .speaking-response-ring-track{stroke:#674041}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-mic-icon{display:none}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-finished-icon{display:block;stroke-width:3.2;width:22cqw;height:22cqw;color:#31916b}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-ring{visibility:visible}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-ring-track{stroke:#add4bf}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-ring-progress{visibility:hidden}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-microphone{color:#31916b;background:#edf7f1}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-microphone-label{color:#398568}
+#individual-response-dialog .speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"]) .speaking-response-clock{color:#398568}
+#individual-response-dialog :is(.speaking-response-dialog-file,.speaking-response-dialog-upload){height:48px;min-width:160px;padding:0 24px;gap:10px;border:1px solid #8874ba2e;border-radius:999px;background:#eee9f8a6;color:#72609f;font:600 15px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:inset 0 1px 0 #fff}
+#individual-response-dialog :is(.speaking-response-dialog-file,.speaking-response-dialog-upload):hover{background:#e5dcf5}
+@media(prefers-reduced-motion:reduce){#individual-response-dialog{transition:none}}
+#individual-response-dialog .speaking-response-dialog-upload{background:#287b59;color:#fff;border-color:#287b59;box-shadow:none}
+#individual-response-dialog .speaking-response-dialog-upload:hover{background:#216749}
+#individual-response-dialog:has(.speaking-response-dialog-recorder:is([data-state="finished"],[data-state="stopped"])) .speaking-response-dialog-question { background:#edf7f1; border-color:#dceee3; color:#34453d; }
+#individual-response-dialog .speaking-response-microphone{position:relative}
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-dial{animation:none}
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-recording-indicator{position:absolute;inset:0;top:0;display:flex;align-items:center;justify-content:center;font-size:clamp(20px,7cqw,26px);min-height:0;opacity:0;animation:speaking-response-label-exit 160ms ease-out both}
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-recording-indicator .speaking-response-recording-dot{visibility:hidden}
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-opening-digit{animation:speaking-response-digit-enter 180ms ease-out 140ms both}
+#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-microphone:has(.speaking-response-recording-indicator:not([hidden]))::after{content:"";position:absolute;top:15%;left:calc(50% - 4.5px);width:9px;height:9px;background:#ff746e;border-radius:50%;animation:speaking-response-recording-blink 1.2s step-end infinite}
+@keyframes speaking-response-label-exit{from{opacity:1}to{opacity:0}}
+@keyframes speaking-response-digit-enter{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-recording-indicator{animation:none;opacity:0}#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-opening-digit{animation:none;opacity:1}#individual-response-dialog .speaking-response-dialog-recorder[data-state="ending"] .speaking-response-microphone::after{animation:none!important}}
+#individual-response-dialog.is-response-focused { transition-duration:280ms; }
+#individual-response-dialog.is-response-focused::backdrop { background:#15151c; transition-duration:280ms; }
+@media(prefers-reduced-motion:reduce) { #individual-response-dialog.is-response-focused,#individual-response-dialog.is-response-focused::backdrop { transition-duration:100ms; } }
