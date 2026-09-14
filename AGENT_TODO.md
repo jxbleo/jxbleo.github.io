@@ -42,16 +42,6 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
-- 2026-09-14 — IR personal coaching prompt .4 is implemented and locally verified.
-  Feedback addresses the recipient as 你 / 你的 and cites actual ideas/wording;
-  segment IDs remain only in internal evidence arrays. Removed the prior
-  ambiguous instruction to cite segment IDs in feedback. Full Speaking suite,
-  syntax/diff checks and unchanged Group/evidence-contract checks pass.
-  Updated prompts.js plus requirements, data-model version, changelog and QA
-  documentation in /private/tmp/mrcat-ir-report-history. No .4 cloud deployment
-  or historical regeneration has been performed; live output wording still
-  needs review after deployment.
-
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
   use one column with full-width fields and 44px controls. Account re-render
@@ -115,6 +105,21 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+### 2026-09-14 — IR personal coaching prompt .4 (deployed and verified)
+
+- Source f6c0f863: IR feedback addresses the recipient as 你 / 你的 and cites
+  actual ideas/wording; segment IDs belong only in internal evidence arrays.
+- Full Speaking regression, syntax/diff checks, release verification and
+  speakingLab packaging passed. Group prompts and evidence contracts unchanged.
+- Owner-authorized speakingLab code update is Active. Downloaded code exactly
+  matches bundle SHA-256 d8b51d58d8c30cb78249c23f785346eb3fd843e9627b60f27700fe57a0a97b80.
+  Runtime/configuration, model settings, ASR, triggers and roles are preserved.
+  CLI refreshed the expired existing session before deployment.
+- Private audit: .cloudbase-private/ir-personal-prompt-release. No historical
+  regeneration/data writes. Wording quality remains a model instruction, not
+  a deterministic prose filter; review the next naturally generated report.
+
 
 ### 2026-09-14 — Final IR white layout (deployed and verified)
 

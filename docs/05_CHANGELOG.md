@@ -6,8 +6,9 @@ Part B prompt .4 confines segment references to evidence_segment_ids and asks
 all Chinese feedback to address the learner as 你 / 你的. Analysis cites actual
 wording or ideas without technical IDs or numbered locations. English exemplars
 remain proposed learner speech. Schema v4, scoring, evidence validation, ASR
-safeguards, Group prompts and model configuration are unchanged. Source updated;
-cloud deployment and historical regeneration have not been performed for .4.
+safeguards, Group prompts and model configuration are unchanged. Source f6c0f863 deployed to speakingLab and verified Active with an exact bundle
+match and unchanged configuration. Historical reports were not regenerated;
+newly generated IR reports use .4.
 
 
 ## IR option B disclosures and student answer typography (2026-09-14)

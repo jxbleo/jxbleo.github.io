@@ -1,5 +1,21 @@
 # 10 Deployment
 
+## IR personal coaching prompt .4 (deployed and verified, 2026-09-14)
+
+Owner explicitly authorized deployment of the Part B prompt update in f6c0f863.
+Package and deploy only speakingLab; keep schema v4, Group prompt, Writing,
+model/provider configuration, ASR, permissions and historical reports intact.
+Before code update, compare live code with the verified .3 envelope. After code
+update, require Active status, exact bundle-code SHA-256 and unchanged function
+configuration. Private deployment audit: .cloudbase-private/ir-personal-prompt-release.
+Speaking regression and release verification passed. No report regeneration is
+part of this deployment.
+
+Deployment completed: speakingLab is Active; downloaded code matches bundle
+SHA-256 d8b51d58d8c30cb78249c23f785346eb3fd843e9627b60f27700fe57a0a97b80.
+All compared function configuration fields are unchanged.
+
+
 ## IR white report presentation (deployed and verified, 2026-09-14)
 
 Owner authorized this static-only release: Speaking CSS/JS, Speaking HTML and
