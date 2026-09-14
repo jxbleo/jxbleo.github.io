@@ -1571,12 +1571,30 @@
         load();
     }
 
-    function renderIndividualResponseDevelopment(report) {
+    function individualResponseExemplarLabels(response) {
+        // Frozen v1 pools and mapping: do not reorder, rename or resize these pools.
+        // Stable random session IDs give varied labels without per-device storage.
+        // Report revision, not updated_at or render time, fixes the choice for life.
+        var thinking = ['A little guidance', 'Questions to consider', 'Take it further', 'Before you answer', 'Find your angle', 'Your next step', 'Let’s think deeper', 'Think it through', 'Explore your ideas', 'Build your answer', 'Consider another angle', 'Make your point clearer'];
+        var sample = ['A possible answer', 'A stronger answer', 'Your ideas, developed', 'See it in action', 'Model response', 'One way to respond', 'Sample answer', 'An example response', 'Putting it into words', 'From ideas to an answer', 'A developed response', 'One possible approach'];
+        if (!response || !response.response_session_id) return { thinking: 'Take it further', sample: 'Sample answer' };
+        var key = String(response.response_session_id) + ':' + String(response.active_report_version || 1);
+        function choose(pool, group) {
+            var value = 'ir-labels-v1:' + group + ':' + key, hash = 2166136261;
+            for (var i = 0; i < value.length; i += 1) hash = Math.imul(hash ^ value.charCodeAt(i), 16777619);
+            hash ^= hash >>> 16;
+            return pool[(hash >>> 0) % pool.length];
+        }
+        return { thinking: choose(thinking, 'thinking'), sample: choose(sample, 'sample') };
+    }
+
+    function renderIndividualResponseDevelopment(report, labels) {
+        labels = labels || individualResponseExemplarLabels(null);
         var samples = Array.isArray(report.sample_responses) ? report.sample_responses : report.sample_response_en ? [{ response_en: report.sample_response_en }] : [];
         if (!samples.length) return '';
         return '<div class="speaking-ir-samples">' + samples.map(function (item, index) {
             var thinking = item.thinking_prompt_zh || '這份舊報告尚未包含與這篇示範配對的思考引導。';
-            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><section class="speaking-ir-thinking"><h3>Thinking prompts</h3><p lang="zh-Hant">' + esc(thinking) + '</p></section><section class="speaking-ir-example"><h3>Sample</h3><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p></section></article>';
+            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><details class="speaking-ir-block speaking-ir-thinking" open><summary><span>' + esc(labels.thinking) + '</span><span class="speaking-ir-block-chevron" aria-hidden="true"></span></summary><p lang="zh-Hant">' + esc(thinking) + '</p></details><details class="speaking-ir-block speaking-ir-example"><summary><span>' + esc(labels.sample) + '</span><span class="speaking-ir-block-chevron" aria-hidden="true"></span></summary><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p></details></article>';
         }).join('') + '</div>';
     }
 
@@ -1588,7 +1606,7 @@
         var transcript = (Array.isArray(report.transcript) ? report.transcript : []).map(function (line) { return String(line.text || '').trim(); }).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
         var wordCount = (transcript.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) || []).length;
         var waitingLabel = response.analysis_status === 'ready' && response.report ? 'Ready' : response.recording_status === 'uploading' ? 'Uploading…' : response.analysis_status === 'failed' || response.analysis_status === 'not_ready' ? 'Waiting to retry' : 'Preparing…';
-        var answer = pending ? '<div class="speaking-ir-answer is-pending" role="status"><div class="speaking-ir-answer-pending"><strong>Your answer</strong><span class="speaking-ir-word-count">' + waitingLabel + '</span></div></div>' : '<details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</span><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p></details>';
+        var answer = pending ? '<div class="speaking-ir-answer is-pending" role="status"><div class="speaking-ir-answer-pending"><strong>Your answer</strong><span class="speaking-ir-word-count">' + waitingLabel + '</span></div></div>' : '<details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><div class="speaking-ir-answer-manuscript"><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p><p class="speaking-ir-answer-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</p></div></details>';
         return '<header class="speaking-report-card speaking-ir-session-card"><div class="speaking-ir-session-heading"><h2 class="eyebrow">' + esc(setLabel) + '</h2><label class="speaking-ir-date-picker"><span class="sr-only">Recording date</span><span class="speaking-ir-date-measure" id="response-history-measure" aria-hidden="true"></span><select id="response-history-date" aria-controls="response-report-content"' + (pending ? ' disabled' : '') + '>' + (pending ? '<option>' + esc(individualResponseDateLabel(response)) + '</option>' : responseHistoryOptions(response)) + '</select></label></div><p class="speaking-ir-session-question">' + esc(question.text || '') + '</p><p id="response-history-notice" class="speaking-ir-history-notice" role="status" hidden></p>' + answer + '</header>';
     }
     function renderIndividualResponseDomain(key, label, report) {
@@ -1622,6 +1640,9 @@
                 var group = picker.getAttribute('data-ir-select');
                 detail.querySelectorAll('[data-ir-panel="' + group + '"]').forEach(function (panel) {
                     panel.hidden = panel.getAttribute('data-ir-value') !== picker.value;
+                    if (group === 'exemplar' && !panel.hidden) panel.querySelectorAll('details.speaking-ir-block').forEach(function (block) {
+                        block.open = block.classList.contains('speaking-ir-thinking');
+                    });
                 });
                 sizeIndividualResponseCardPickers();
             });
@@ -1631,7 +1652,7 @@
     }
     function renderIndividualResponseReport(response) {
         var report = response.report || {};
-        var development = renderIndividualResponseDevelopment(report);
+        var development = renderIndividualResponseDevelopment(report, individualResponseExemplarLabels(response));
         var samples = Array.isArray(report.sample_responses) && report.sample_responses.length ? report.sample_responses : report.sample_response_en ? [{}] : [];
         var samplePicker = samples.length ? individualResponseCardPicker('exemplar', 'Exemplar', samples.map(function (_item, index) { return { value: String(index), label: 'Exemplar ' + (index + 1) }; })) : '';
         return '<section class="speaking-response-report">' + renderIndividualResponseSession(response, false) + '<div id="response-report-content" class="speaking-response-report">' +

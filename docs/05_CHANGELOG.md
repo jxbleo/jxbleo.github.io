@@ -1,5 +1,15 @@
 # Changelog
 
+## IR option B disclosures and student answer typography (2026-09-14)
+
+Implemented the selected white, divided peer disclosures with report-stable
+English title variation; guidance opens by default and each selected Sample
+starts closed. Analysis panels now stack on every device. Your answer uses a
+serif label and manuscript, with the word count moved to the expanded text's
+footer. Frontend only; prompts, scores and stored reports are unchanged.
+Prepared locally; this iteration has not been published.
+
+
 ## Paired IR Exemplars and full Analysis labels (2026-09-14)
 
 Each Exemplar now displays only its own Socratic thinking paragraph followed

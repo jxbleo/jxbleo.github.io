@@ -1,5 +1,18 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## IR reading presentation (2026-09-14)
+
+Analysis always stacks green What works above gold How to improve on every
+device and orientation. Approved Exemplar option B uses white peer disclosures
+with matching blue labels and a thin divider. Guidance starts open; the Sample
+starts closed and returns to closed when selecting an Exemplar. Each report
+receives two varied English labels from frozen 12-entry pools. Labels stay fixed
+across refreshes, devices and exemplar selection. The answer disclosure uses a
+serif label/manuscript to distinguish the student's speech from feedback; its
+word count appears only after the expanded transcript, never in the summary.
+Pending upload/analysis status remains visible beside Your answer.
+
+
 ## Paired IR Exemplars (2026-09-14)
 
 Each of three Exemplars pairs a single Traditional Chinese thinking paragraph
@@ -8,7 +21,7 @@ the student's reliable original position. The paragraph addresses the student
 through connected Socratic questions, with light guidance or clearly hypothetical
 cases but no supplied answer. The Sample demonstrates how to develop those
 questions. Use distinct routes where relevant, not three paraphrases.
-Only Thinking prompts and Sample appear in each selected exemplar; no shared
+Only the thinking paragraph and Sample appear in each selected exemplar; no shared
 question bank, separate hint, grounding subtitle or post-sample explanation.
 Insufficient evidence must be acknowledged in the visible paragraph; proposed
 personal scenarios remain hypothetical. 5** remains a teaching aspiration.
@@ -40,8 +53,8 @@ Score only the original response; preserve evidence and ASR safeguards.
 Explicit Submit immediately enters the report workspace, before secure upload
 or AI feedback completes. Show the frozen Set title in the toolbar, Y/year/Set/Q,
 compact recording-date control, question and blue Your answer row immediately.
-Keep the approved white surfaces and pale-blue heading. Replace word count with
-Uploading… / Preparing… while pending; do not invent a transcript or feedback.
+Keep the approved white surfaces and pale-blue heading. Show
+Uploading… / Preparing… beside Your answer while pending; do not invent a transcript or feedback.
 Below this card show only the existing waiting game. A ready report freezes the
 game until the student selects View results, including with Reduced Motion.
 Group Discussion retains its automatic ready transition.

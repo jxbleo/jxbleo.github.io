@@ -1012,19 +1012,21 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-ir-answer { border-top: 1px solid rgba(74,95,106,.10); }
 .speaking-ir-answer summary { display: flex; align-items: center; gap: 9px; min-height: 48px; padding: 13px 24px; list-style: none; cursor: pointer; }
 .speaking-ir-answer summary::-webkit-details-marker { display: none; }
-.speaking-ir-answer summary strong { color: var(--sl-blue-deep); font-size: 12px; font-weight: 650; }
+.speaking-ir-answer summary strong, .speaking-ir-answer-pending strong { color: var(--sl-blue-deep); font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-style: italic; font-weight: 600; }
 .speaking-ir-word-count { display: inline-flex; gap: 9px; color: var(--sl-muted); font-size: 11px; font-weight: 500; white-space: nowrap; }
 .speaking-ir-word-count::before { content: "·"; }
 .speaking-ir-answer-chevron { width: 6px; height: 6px; flex: 0 0 auto; margin-left: auto; margin-right: 2px; border-right: 1.5px solid #7a8a92; border-bottom: 1.5px solid #7a8a92; transform: rotate(45deg); }
 .speaking-ir-answer[open] .speaking-ir-answer-chevron { transform: rotate(225deg); }
-.speaking-ir-transcription-text { margin: 0; padding: 0 24px 24px; color: #344850; font-size: 1rem; line-height: 1.85; overflow-wrap: anywhere; }
+.speaking-ir-answer-manuscript { padding: 0 24px 22px; }
+.speaking-ir-transcription-text { margin: 0; color: #344850; font-family: Georgia, "Times New Roman", serif; font-size: 1.0625rem; font-style: normal; font-weight: 400; line-height: 1.85; overflow-wrap: anywhere; }
+.speaking-ir-answer-word-count { margin: 12px 0 0; color: var(--sl-muted); font-size: 11px; line-height: 1.5; text-align: right; }
 .speaking-ir-answer summary:focus-visible { outline: 2px solid var(--sl-blue-deep); outline-offset: -4px; border-radius: 6px; }
 @media (max-width: 540px) {
     .speaking-ir-session-heading { gap: 8px; padding: 12px 16px; }
     .speaking-ir-session-heading .eyebrow, .speaking-ir-card-title h2 { letter-spacing: 0; }
     .speaking-ir-session-question { padding: 20px 16px 22px; }
     .speaking-ir-answer summary { padding: 13px 16px; }
-    .speaking-ir-transcription-text { padding: 0 16px 20px; }
+    .speaking-ir-answer-manuscript { padding: 0 16px 20px; }
     .speaking-ir-history-notice { padding-left: 16px; padding-right: 16px; }
 }
 @media (max-width: 350px) {
@@ -1374,7 +1376,7 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 
 /* Individual Response: stable submission header and two-domain assessment. */
 .speaking-ir-answer-pending { display: flex; align-items: center; gap: 9px; min-height: 48px; padding: 13px 24px; }
-.speaking-ir-answer-pending strong { color: var(--sl-blue-deep); font-size: 12px; font-weight: 650; }
+
 .speaking-report-card.speaking-ir-titled-card { padding: 0; overflow: hidden; }
 .speaking-ir-card-body { padding: 24px; }
 .speaking-ir-domain + .speaking-ir-domain { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--sl-hairline); }
@@ -1384,7 +1386,7 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .speaking-ir-domain-heading h3 span { color: var(--sl-muted); font-size: 12px; font-weight: 500; }
 .speaking-ir-domain-score { color: var(--sl-blue-deep); font-size: 27px; font-weight: 650; }
 .speaking-ir-domain-score small { margin-left: 3px; color: var(--sl-muted); font-size: 12px; font-weight: 500; }
-.speaking-ir-domain-feedback { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.speaking-ir-domain-feedback { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .speaking-ir-domain-feedback > section > h3 { margin: 0 0 14px; color: #526771; font-size: 12px; font-weight: 650; }
 .speaking-ir-feedback-list { display: grid; gap: 20px; padding: 0; margin: 0; list-style: none; }
 .speaking-ir-feedback-list h4 { margin: 0 0 6px; color: #293e49; font-size: 14px; line-height: 1.6; }
@@ -1416,11 +1418,17 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .speaking-ir-feedback-grow blockquote { background: rgba(255,255,255,.55); border-left-color: #ca9b35; border-radius: 0 9px 9px 0; padding: 10px 12px; color: #513e20; }
 @media (max-width: 767px) { .speaking-ir-domain-feedback > section { padding: 16px; } }
 
-/* Each exemplar keeps its own thinking paragraph directly above its Sample. */
+/* Option B: two peer disclosures, blue labels and a quiet dividing line. */
 .speaking-ir-samples .speaking-ir-sample[data-ir-panel] { padding: 0; border: 0; border-radius: 0; background: transparent; }
-.speaking-ir-thinking { padding: 16px 18px; border-radius: 12px; background: #f2f7fc; }
-.speaking-ir-thinking h3, .speaking-ir-example h3 { margin: 0 0 10px; color: var(--sl-blue-deep); font-size: 12px; font-weight: 650; line-height: 1.5; }
-.speaking-ir-thinking p { margin: 0; color: #415767; font-size: 14px; line-height: 1.9; }
-.speaking-ir-example { margin-top: 22px; }
-.speaking-ir-example .speaking-ir-sample-text { margin: 0; color: #344850; font-size: 15px; line-height: 1.85; }
-@media (max-width: 540px) { .speaking-ir-thinking { padding: 14px 16px; } }
+.speaking-ir-block { min-width: 0; }
+.speaking-ir-thinking { border-bottom: 1px solid var(--sl-hairline); }
+.speaking-ir-samples .speaking-ir-block > summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 48px; padding: 13px 2px 13px 0; color: var(--sl-blue-deep); font-size: 12px; font-weight: 650; line-height: 1.5; list-style: none; cursor: pointer; }
+.speaking-ir-block > summary::-webkit-details-marker { display: none; }
+.speaking-ir-samples .speaking-ir-block > summary > span { margin: 0; color: inherit; }
+.speaking-ir-block > summary:active { opacity: .7; }
+.speaking-ir-block > summary:focus-visible { outline: 2px solid var(--sl-blue-deep); outline-offset: 2px; border-radius: 4px; }
+.speaking-ir-block-chevron { display: block; width: 7px; height: 7px; flex: 0 0 auto; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform 160ms ease; }
+.speaking-ir-block[open] > summary .speaking-ir-block-chevron { transform: rotate(225deg); }
+.speaking-ir-thinking p { margin: 0; padding-bottom: 20px; color: #415767; font-size: 14px; line-height: 1.9; }
+.speaking-ir-example .speaking-ir-sample-text { margin: 0; padding-bottom: 8px; color: #344850; font-size: 15px; line-height: 1.85; }
+@media (prefers-reduced-motion: reduce) { .speaking-ir-block-chevron { transition: none; } }

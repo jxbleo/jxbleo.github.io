@@ -1,5 +1,20 @@
 # 03 UI / UX Spec
 
+## IR stable labels and student manuscript (2026-09-14)
+
+Exemplar guidance/Sample labels each come from a frozen 12-entry English pool.
+One pair serves all three Exemplars in that report. Report/session identity
+fixes the pair across reloads, devices and history navigation; no timer or
+render-time randomization. Both section headers have equal blue typography and
+44px-or-larger keyboard-accessible native disclosure targets (option B).
+Your answer stays closed initially. Its blue label is 15px italic Georgia with
+Times New Roman/serif fallbacks; the expanded English transcript uses normal
+17px Georgia/serif for sustained reading. The 11px system-font word count sits
+below the manuscript, right aligned, inside the disclosure. No count or
+separator dot remains next to the ready-state Your answer label. Pending states
+retain their inline status text. No remote font dependency is introduced.
+
+
 ## IR concise Analysis body (2026-09-14)
 
 The Analysis selector shows Ideas & Organisation and Vocabulary & Language
@@ -29,8 +44,7 @@ and a right-aligned control; narrow headers may wrap to retain the full name.
 Each domain contains two rounded panels: pale-green What works and pale-gold
 How to improve. Gold holds brief context plus more prominent Try this steps
 and a highlighted English example. Colour is reinforced by explicit headings.
-Phone portrait (up to 767 CSS px) stacks green above gold; landscape phones,
-landscape iPads and desktop show equal side-by-side columns. Text wraps within
+All viewports and orientations stack green above gold in one column. Text wraps within
 each panel without horizontal overflow. Existing scores/history remain intact.
 
 ## IR report card selectors (2026-09-14)
@@ -39,12 +53,14 @@ Analysis has a compact native selector with full dimension names at the upper
 right of its blue heading; Ideas & Organisation is selected initially. Only
 the chosen domain is visible. The 5** Exemplars header has Exemplar 1/2/3; show
 only the selected Thinking prompts paragraph and its Sample, in that order.
-Exemplar 1 is the default. The paragraph uses a quiet pale-blue surface; the
-English Sample follows on white. Do not show shared questions, separate hints,
+Exemplar 1 is the default. Option B uses two peer disclosures on white with
+matching 12px blue labels, chevrons and a thin divider. Guidance is open by
+default; the English Sample is closed. Selecting an Exemplar resets its guidance
+to open and its Sample to closed; Analysis selection leaves these states alone. Do not show shared questions, separate hints,
 grounding subtitles or after-sample explanations. Legacy samples remain visible
 with an explicit missing-paired-guidance message in the first section.
 Selectors switch independently without fetching, rerendering the page or
-resetting other disclosures. Selecting another recording resets both defaults.
+resetting unrelated disclosures. Selecting another recording resets both defaults.
 Only available samples are selectable; a single legacy sample has a disabled
 Exemplar 1 control. Native selects preserve keyboard/mobile interaction.
 
@@ -60,10 +76,10 @@ Ready freezes the game indefinitely; this also applies with Reduced Motion.
 The revealed second card has the first card's pale-blue header, titled Analysis.
 It contains exactly IO and VL, each with name, 0–7 score, rationale, Strengths
 and Weaknesses. Each weakness includes How to improve and an English example.
-Strength/weakness columns stack on phones. The third card repeats the header
+Strength/weakness panels stack on every viewport. The third card repeats the header
 style with 5** Exemplars and switches whole thinking-prompt/Sample pairs.
-The first card then restores the collapsed Your answer row and actual word
-count. All report data changes together when a different date is selected.
+The first card then restores the collapsed Your answer row; the actual word
+count is at the end of its expanded manuscript. All report data changes together when a different date is selected.
 
 ## Approved IR dark capture and green completion (2026-09-13)
 
@@ -3170,9 +3186,9 @@ the content it affects. Unfinished Individual Responses use separate overview,
 question, and recorder/progress cards. Completed IR reports instead start with
 one merged card: blue year/Set identity, Set title, Q number and question, then
 the original recording date aligned bottom-right. There is no separate Session
-Details card. Directly below it, a native expandable `Transcriptions` card shows
-the word count beside its heading and joins all ASR segments into one continuous
-paragraph. English contractions and hyphenated compounds count as one word;
+Details card. The current merged card contains a native expandable `Your answer` row; it
+joins ASR segments into one continuous serif paragraph and shows the word count
+only after that expanded manuscript. English contractions and hyphenated compounds count as one word;
 punctuation does not count. `Your Analysis` retains all four dimensions, summary,
 Strengths, Priority actions and Language suggestions. `Develop Your Ideas` and
 its samples occupy a separate following card; legacy single samples remain
@@ -3363,7 +3379,7 @@ Use `14 Sep 16:42` (current Shanghai year) or `14 Sep 2025 16:42` (other years).
 Full-year labels remain available in option titles. Keep one row on typical
 375px phones; very narrow screens may wrap the selector rightward below metadata.
 Question text stays in the white body. A hairline separates the single-line
-`Your answer · 83 words` disclosure at the bottom: blue semibold label, grey
-word count and small chevron. No duplicate date below it. It is closed initially
+`Your answer` disclosure at the bottom: blue italic serif label and small
+chevron. The count is shown only at the end of the expanded serif manuscript. No duplicate date below it. It is closed initially
 and whenever another report is chosen. Opening it expands inside the first card.
 Keep keyboard-native selection, visible focus and an inline retry on read errors.

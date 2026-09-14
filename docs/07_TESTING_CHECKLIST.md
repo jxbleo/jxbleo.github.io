@@ -1,5 +1,19 @@
 # 07 Testing Checklist
 
+## IR reading presentation (2026-09-14)
+
+- Across independent render contexts and metadata refreshes, the same session
+  and report revision retain the frozen title pair; different reports vary.
+- All three Exemplars have matching header styles, guidance initially open and
+  Sample closed. Switching Exemplar resets only that pair; Analysis selection
+  does not change answer/exemplar disclosures. Keyboard toggles work.
+- Your answer is closed by default, has no summary count, and shows its serif
+  manuscript followed by the correct 0/1/plural word count when opened.
+  Pending upload/analysis status remains visible; transcript HTML is escaped.
+- At 320px, phone landscape and iPad/desktop widths, green and gold stay in one
+  column; no horizontal overflow, clipped selector text or oversized arrow gap.
+
+
 ## IR v4 paired Exemplars
 
 Run test:speaking-lab including test-speaking-ir-pairs.js. Check missing,

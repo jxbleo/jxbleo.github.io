@@ -1,5 +1,18 @@
 # 06 Decisions
 
+## Stable IR presentation labels without report mutation (2026-09-14)
+
+Use the existing authenticated response_session_id plus active_report_version
+(default 1) with the frozen ir-labels-v1 mapping and two frozen 12-entry pools.
+The random session identity supplies variation; deterministic selection gives
+the same labels on every device, including for existing ready reports. The
+same-ID report overwrite retains its labels. Labels are presentation copy,
+not model output or grading data. No schema change, backfill, localStorage,
+provider call or backend deployment is required. Do not reorder, rename or
+resize v1 pools or alter the mapping: that would relabel locked reports. Any
+future copy-policy expansion needs an explicit version/migration design.
+
+
 ## Approved Speaking audio-file icon (2026-09-13)
 
 Embed only the selected Lucide file-music vector in the existing two recorder markup functions; retain existing CSS and introduce no icon-library runtime or network dependency. Distribute its ISC notice in assets/licenses/lucide-file-music.txt.
