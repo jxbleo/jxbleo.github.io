@@ -106,7 +106,7 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
-### 2026-09-14 — Speaking Set headers (authorized publication in progress)
+### 2026-09-14 — Speaking Set headers (deployed and verified)
 
 - Header-only update for Context, Part A and Part B: pale-blue title bars,
   existing identity/Part labels and compact minus/plus controls. Context title
@@ -116,6 +116,9 @@ cp .qa-secrets.example .qa-secrets.local
   to medium. Baseline comparison confirms body text/font/colour/background/
   padding/margins/width unchanged; only Context title margin moves outside header.
 - Static version 20260914-speaking-set-headers-1. No backend or data changes.
+- Release 511fa02a deployed through successful COS run 34826007745. All five
+  live files (Speaking HTML/JS/CSS, public config and Teacher HTML) match
+  released bytes. Wide visual check passed. Private audit: .cloudbase-private/set-header-release.
 
 
 ### 2026-09-14 — IR personal coaching prompt .4 (deployed and verified)

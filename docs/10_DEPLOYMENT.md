@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## Speaking Set title bars (deployed and verified, 2026-09-14)
+
+Owner-authorized header-only release 511fa02a uses cache version
+20260914-speaking-set-headers-1. Full Speaking tests, release verification,
+static build and phone/wide visual checks passed. COS run 34826007745 succeeded;
+Speaking HTML/JS/CSS, public config and Teacher HTML match released bytes.
+Body styling/content and existing entry actions are preserved. No CloudBase
+function deployment, model change or report regeneration was performed.
+
+
 ## IR personal coaching prompt .4 (deployed and verified, 2026-09-14)
 
 Owner explicitly authorized deployment of the Part B prompt update in f6c0f863.
