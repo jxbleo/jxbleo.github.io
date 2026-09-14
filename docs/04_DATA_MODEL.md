@@ -3,7 +3,9 @@
 ## Individual Response v4 pairs (2026-09-14)
 
 New reports use dse-individual-response-v4 and prompt
-dse-individual-response-prompts-2026-09-14.3, retaining the IO/VL rubric.
+dse-individual-response-prompts-2026-09-14.4, retaining the IO/VL rubric.
+Prompt .4 changes prose instructions only; evidence_segment_ids and all v4
+fields retain the same structure. Stored .3 reports remain valid.
 Root sample_responses contains exactly three objects. Each has student_idea_zh
 (nonempty, max 600), evidence_segment_ids (0–12 unique supplied IDs; nonempty
 when grounded), thinking_prompt_zh (nonempty, max 1600, contains a question,

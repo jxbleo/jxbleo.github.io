@@ -1,5 +1,17 @@
 # 07 Testing Checklist
 
+## IR direct-address feedback wording (2026-09-14)
+
+Run the Speaking regression suite after prompt changes. Verify that internal
+input segment IDs and output evidence_segment_ids remain available and Group
+prompts are unchanged. For a newly generated Part B report after deployment,
+review both Analysis dimensions and all three Exemplar pairs: feedback addresses
+the recipient as 你, cites real wording/ideas, and contains no seg IDs, timestamps
+or numbered paragraph/line/turn citations. English examples must still read as
+the learner's proposed answer. Automated contract checks do not establish live
+model wording quality; review actual output when the prompt is deployed.
+
+
 ## IR reading presentation (2026-09-14)
 
 - All Exemplars show untitled non-collapsible guidance; samples start closed.

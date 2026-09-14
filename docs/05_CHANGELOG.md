@@ -1,5 +1,15 @@
 # Changelog
 
+## IR direct-address feedback prompt (2026-09-14)
+
+Part B prompt .4 confines segment references to evidence_segment_ids and asks
+all Chinese feedback to address the learner as 你 / 你的. Analysis cites actual
+wording or ideas without technical IDs or numbered locations. English exemplars
+remain proposed learner speech. Schema v4, scoring, evidence validation, ASR
+safeguards, Group prompts and model configuration are unchanged. Source updated;
+cloud deployment and historical regeneration have not been performed for .4.
+
+
 ## IR option B disclosures and student answer typography (2026-09-14)
 
 Final owner-approved IR layout uses white Analysis sections with fine dividers,

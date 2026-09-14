@@ -1,5 +1,17 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## IR personal coaching language (2026-09-14)
+
+All IR Chinese feedback addresses the recipient directly as 你 / 你的, rather
+than 該學生 or third-person examiner commentary. Explain strengths and next steps
+through the learner's actual ideas or reliable short quotations. Student-facing
+prose must not contain segment IDs, timestamps, technical field names or numbered
+paragraph/line/turn citations. Evidence IDs remain in the existing internal
+arrays for validation. English examples remain proposed speech in the learner's
+voice. Apply the same boundary to Analysis, summaries and Exemplar guidance;
+retain all grounding and ASR safeguards.
+
+
 ## IR reading presentation (2026-09-14)
 
 All three IR cards use white bodies and matching pale-blue headers. Analysis

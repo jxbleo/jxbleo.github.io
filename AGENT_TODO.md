@@ -42,6 +42,16 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-14 — IR personal coaching prompt .4 is implemented and locally verified.
+  Feedback addresses the recipient as 你 / 你的 and cites actual ideas/wording;
+  segment IDs remain only in internal evidence arrays. Removed the prior
+  ambiguous instruction to cite segment IDs in feedback. Full Speaking suite,
+  syntax/diff checks and unchanged Group/evidence-contract checks pass.
+  Updated prompts.js plus requirements, data-model version, changelog and QA
+  documentation in /private/tmp/mrcat-ir-report-history. No .4 cloud deployment
+  or historical regeneration has been performed; live output wording still
+  needs review after deployment.
+
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
   use one column with full-width fields and 44px controls. Account re-render
