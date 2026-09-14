@@ -1,6 +1,6 @@
 # Changelog
 
-## Paired IR Exemplars and full Analysis labels (2026-09-14, local)
+## Paired IR Exemplars and full Analysis labels (2026-09-14)
 
 Each Exemplar now displays only its own Socratic thinking paragraph followed
 by the corresponding developed Sample. Part B prompt .3 and report schema v4
@@ -9,7 +9,9 @@ ideas, with explicit uncertainty/hypothetical boundaries. Removed the shared
 question list, separate hint and after-sample explanation from the renderer.
 Analysis selects use full dimension names with the existing fitted grey-blue
 control style. Updated legacy validation, regression tests and documentation.
-No deployment or historical replay was performed for this iteration.
+Initially prepared locally; the owner subsequently authorized deployment and
+replacement of the 64 existing reports from Sep 8–14. Track final results in
+AGENT_TODO.md and the deployment record.
 
 
 ## Authorized IR report release and seven-day overwrite (2026-09-14)

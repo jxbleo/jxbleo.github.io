@@ -1,6 +1,12 @@
 # 10 Deployment
 
-## IR paired Exemplars v4 (prepared locally, 2026-09-14)
+## IR paired Exemplars v4 (authorized rollout, 2026-09-14)
+
+Owner has now authorized publication and report replacement for the same
+Sep 8–14 Shanghai date range. The fresh scope has 64 current reports and one
+failed recording without an existing report, which is excluded. Backend code
+is deployed and configuration preservation verified; final rollout counts are
+recorded in AGENT_TODO.md and the ignored private release audit.
 
 Package speakingLab with shared canonicalizer and Part B prompt .3/schema v4,
 then publish versioned Speaking assets/config after release authorization.

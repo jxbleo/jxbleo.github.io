@@ -106,6 +106,20 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Authorized v4 publication and overwrite (in progress)
+
+- Owner authorized publication and replacement of old IR reports. Reconfirmed
+  Shanghai Sep 8–14 scope: 64 current reports; one previously failed recording
+  has no report/text and is excluded from replacement.
+- speakingLab v4 is Active; deployed bundle SHA-256
+  acf6d86b87fa64dfb03ae4b73d1858b2cba68ed2d452d3354e4b649140adf966.
+  Runtime, environment/model configuration, roles and triggers are unchanged.
+- Fresh private v4 manifest captures source pointers and transcript hashes.
+  Pilot verification precedes the bounded batch; reports publish atomically
+  into existing report IDs after validation. No additional old report versions.
+- Existing full Speaking tests, release verification, static build and function
+  packaging passed. Frontend publication and all 64 results are being verified.
+
 ### 2026-09-14 — Paired IR Exemplars and full labels (local)
 
 - Updated Part B prompt .3, schema v4/shared validator and report renderer:
