@@ -1,17 +1,22 @@
 # 10 Deployment
 
-## IR paired Exemplars v4 (authorized rollout, 2026-09-14)
+## IR paired Exemplars v4 (deployed and verified, 2026-09-14)
 
-Owner has now authorized publication and report replacement for the same
-Sep 8–14 Shanghai date range. The fresh scope has 64 current reports and one
-failed recording without an existing report, which is excluded. Backend code
-is deployed and configuration preservation verified; final rollout counts are
-recorded in AGENT_TODO.md and the ignored private release audit.
+Owner-authorized publication and report replacement completed for the same
+Sep 8–14 Shanghai date range. All 64 current reports are overwritten and
+verified under prompt 2026-09-14.3/schema v4, retaining report IDs, transcript
+hashes, original creation times and recording links. The one failed recording
+without ASR text or an existing report is excluded. speakingLab is Active with
+the exact tested bundle and unchanged cloud configuration. COS run 34813829027
+succeeded for release 2eca740f; production Speaking HTML/JS/CSS/public config
+match the released bytes. Detailed counts and the private audit location are
+recorded in AGENT_TODO.md.
 
 Package speakingLab with shared canonicalizer and Part B prompt .3/schema v4,
 then publish versioned Speaking assets/config after release authorization.
 The worker, model identities/fallbacks, Writing prompts, cloud configuration,
-indexes and permissions need no change for this iteration. Existing reports
+indexes and permissions need no change for this iteration. Older reports
+outside the regenerated date range
 show saved Samples and an honest missing-guidance message. A separate authorized
 regeneration is required to produce genuinely paired prompts for old reports;
 never reuse the old shared questions as though they were paired.

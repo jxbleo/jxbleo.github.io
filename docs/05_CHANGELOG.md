@@ -9,9 +9,13 @@ ideas, with explicit uncertainty/hypothetical boundaries. Removed the shared
 question list, separate hint and after-sample explanation from the renderer.
 Analysis selects use full dimension names with the existing fitted grey-blue
 control style. Updated legacy validation, regression tests and documentation.
-Initially prepared locally; the owner subsequently authorized deployment and
-replacement of the 64 existing reports from Sep 8–14. Track final results in
-AGENT_TODO.md and the deployment record.
+Owner-authorized deployment and replacement completed for all 64 existing
+reports from Sep 8–14 (Shanghai dates). Every report passes v4 validation and
+retains its original report ID, transcript and recording association. One
+pre-existing failed recording has no transcript or report and is excluded.
+speakingLab is Active with unchanged configuration; COS publication succeeded
+and the four live frontend files match the release. Verification details are
+in AGENT_TODO.md and the deployment record.
 
 
 ## Authorized IR report release and seven-day overwrite (2026-09-14)

@@ -106,7 +106,7 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
-### 2026-09-14 — Authorized v4 publication and overwrite (in progress)
+### 2026-09-14 — Authorized v4 publication and overwrite (completed; 64 verified)
 
 - Owner authorized publication and replacement of old IR reports. Reconfirmed
   Shanghai Sep 8–14 scope: 64 current reports; one previously failed recording
@@ -115,10 +115,16 @@ cp .qa-secrets.example .qa-secrets.local
   acf6d86b87fa64dfb03ae4b73d1858b2cba68ed2d452d3354e4b649140adf966.
   Runtime, environment/model configuration, roles and triggers are unchanged.
 - Fresh private v4 manifest captures source pointers and transcript hashes.
-  Pilot verification precedes the bounded batch; reports publish atomically
-  into existing report IDs after validation. No additional old report versions.
+  Pilot and bounded batch completed: all 64 reports passed canonical validation
+  and were atomically overwritten in their existing report IDs. Transcript
+  hashes, original creation times, response pointers and report caches match.
+  All use prompt 2026-09-14.3/schema v4; no additional old report versions.
 - Existing full Speaking tests, release verification, static build and function
-  packaging passed. Frontend publication and all 64 results are being verified.
+  packaging passed. COS run 34813829027 succeeded for release 2eca740f;
+  production Speaking HTML/JS/CSS/public config match the release bytes.
+  Private manifest/status/live-asset audit: .cloudbase-private/ir-v4-release.
+  One pre-existing 4.522688-second recording has no ASR text or old report;
+  it remains excluded and unscorable. No owner action is needed for this rollout.
 
 ### 2026-09-14 — Paired IR Exemplars and full labels (local)
 
