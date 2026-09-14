@@ -8,7 +8,8 @@ Hide exemplar control. Expanded exemplar text has a pale-blue rounded background
 The original Your answer label is retained; its 15px comic manuscript has a
 footer word count. Randomized headings are removed. All three cards retain
 matching blue headers. Frontend only; no report regeneration or cloud-function
-change. Owner authorized publication; live verification is recorded in AGENT_TODO.
+change. Release 63090f6f is deployed and verified: COS run 34822545777 succeeded
+and all five live asset files match. Details are recorded in AGENT_TODO.
 
 
 ## Paired IR Exemplars and full Analysis labels (2026-09-14)

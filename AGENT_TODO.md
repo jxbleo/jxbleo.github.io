@@ -106,7 +106,7 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
-### 2026-09-14 — Final IR white layout (authorized publication in progress)
+### 2026-09-14 — Final IR white layout (deployed and verified)
 
 - Final approved design: white, divided Analysis sections; always-visible
   untitled thinking; centered 30px Show exemplar / Hide exemplar button and a
@@ -117,6 +117,10 @@ cp .qa-secrets.example .qa-secrets.local
   Browser: 320px no overflow, native keyboard Show/Hide, blue expanded panel,
   Exemplar switch resets closed, 1024px Analysis sections remain stacked.
   No backend/schema/prompt/data change or historical regeneration is required.
+- Release 63090f6f published successfully in COS run 34822545777. All five
+  live assets (Speaking HTML/JS/CSS, public config and Teacher HTML) match
+  the release bytes. Private audit: .cloudbase-private/ir-white-release.
+  No backend deployment or production data writes were performed.
 - Source worktree: /private/tmp/mrcat-ir-report-history. Final renderer preview:
   http://127.0.0.1:8824/index.html (illustrative content only).
 
