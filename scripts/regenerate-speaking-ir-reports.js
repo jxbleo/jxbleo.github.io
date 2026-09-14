@@ -95,7 +95,7 @@ async function status(app, manifest) {
     assert.equal(report.prompt_version, manifest.prompt_version); assert.equal(report.schema_version, manifest.schema_version);
     assert.deepStrictEqual(report.dse_analysis, row.report, 'CACHE_NOT_REPLACED');
     assert.deepStrictEqual(Object.keys(row.report.domains).sort(), ['ideas_organisation', 'vocabulary_language_patterns']);
-    const canonical = lab.canonicalizeIndividualResponseReport(report.dse_analysis, report.transcript.segments, { redactNames: [row.student_name_snapshot, row.student_id_snapshot] });
+    const canonical = lab.canonicalizeIndividualResponseReport(report.dse_analysis, report.transcript.segments, { reportVersion: report.schema_version, redactNames: [row.student_name_snapshot, row.student_id_snapshot] });
     assert.deepStrictEqual(canonical, report.dse_analysis, 'RESULT_SCHEMA_OR_LEGACY_FIELDS');
     verified++;
   }

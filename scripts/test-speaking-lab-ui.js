@@ -29,7 +29,7 @@ function run() {
   assert.match(page, /id="speaking-initial-loading"[\s\S]*speaking-upload-spinner/);
   assert.match(teacherPage, /data-view="speaking"/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-compact-analysis-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-paired-exemplars-1/);
   assert.match(page, /New Discussion/);
   assert.match(page, /speaking-sidebar-toggle/);
   assert.match(page, /id="speaking-back-button"[^>]*aria-label="Back"/);
@@ -309,7 +309,7 @@ function run() {
   assert.match(teacher, /function loadDiscussionPages\(offset, collected\)/);
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
-  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-compact-analysis-1/);
+  assert.match(teacherPage, /speaking-lab\.css\?v=20260914-ir-paired-exemplars-1/);
   assert.match(teacherPage, /teacher-speaking\.js\?v=20260913-discussion-ring-1/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
@@ -472,8 +472,8 @@ function run() {
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
-  assert.match(page, /speaking-lab\.css\?v=20260914-ir-compact-analysis-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260914-ir-compact-analysis-1/);
+  assert.match(page, /speaking-lab\.css\?v=20260914-ir-paired-exemplars-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260914-ir-paired-exemplars-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

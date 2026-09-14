@@ -1,5 +1,22 @@
 # 04 Data Model
 
+## Individual Response v4 pairs (2026-09-14)
+
+New reports use dse-individual-response-v4 and prompt
+dse-individual-response-prompts-2026-09-14.3, retaining the IO/VL rubric.
+Root sample_responses contains exactly three objects. Each has student_idea_zh
+(nonempty, max 600), evidence_segment_ids (0–12 unique supplied IDs; nonempty
+when grounded), thinking_prompt_zh (nonempty, max 1600, contains a question,
+whitespace normalized to one paragraph), and response_en (90–170 words,
+max 3000 characters). Both prompts and Samples must be distinct across pairs.
+Only thinking_prompt_zh and response_en are student-visible. Remove the former
+root socratic_questions and sample title_zh/explanation_zh from new canonical
+output. Basis/grounding metadata and IO/VL assessment constraints are unchanged.
+V1/V2/V3 stored reports retain explicit-version validation and remain readable.
+This changes report JSON only; no collection/index/permission migration.
+The operator checks saved output against its recorded schema version.
+
+
 ## IR overwrite metadata (2026-09-14)
 
 Private reanalysis jobs may use refresh_kind ir-analysis-overwrite-v3 with

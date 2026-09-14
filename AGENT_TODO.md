@@ -106,6 +106,20 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Paired IR Exemplars and full labels (local)
+
+- Updated Part B prompt .3, schema v4/shared validator and report renderer:
+  three independent Socratic paragraph/Sample pairs, exactly two visible blocks
+  each. Analysis selector uses full dimension names with fitted width.
+- Historical V1/V2/V3 reports remain readable; missing paired guidance is explicit.
+  No cloud writes, publication or historical regeneration in this iteration.
+- Updated requirements, UI, architecture, model, changelog, test and deployment
+  docs. Speaking suite passes including v4 pairs and legacy regressions.
+- Release verification, static build and speakingLab ZIP packaging passed.
+- Local visual preview: http://127.0.0.1:8821/index.html (illustrative content).
+  Verified 320px full VL label, fitted chevron, no horizontal overflow and
+  whole-pair switching. Deployment/replay remain separate follow-up work.
+
 ### 2026-09-14 — Authorized IR release and overwrite (deployed; 64 verified, one unscorable)
 
 - Owner authorized deploying the complete approved report changes and replacing

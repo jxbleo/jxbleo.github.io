@@ -1,5 +1,16 @@
 # 07 Testing Checklist
 
+## IR v4 paired Exemplars
+
+Run test:speaking-lab including test-speaking-ir-pairs.js. Check missing,
+non-question, duplicate or overlong prompts, foreign/empty grounded evidence,
+short/duplicate Samples, insufficient evidence, name redaction and unambiguous
+misplaced-block recovery. Retain V1/V2/V3 contracts. Each visible exemplar has
+exactly two sections in order; changing the selector switches both together.
+Check 320/375px and iPad widths: full Analysis names, fitted chevrons and no
+horizontal overflow. Preview content demonstrates layout, not model quality.
+
+
 - IR reanalysis: recover a complete misplaced coaching block only; reject mixed
   root/nested fields, partial blocks, foreign evidence and short samples. Verify
   published equality with the publisher's student-name redaction inputs.

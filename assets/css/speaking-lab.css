@@ -1415,3 +1415,12 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .speaking-ir-feedback-grow .speaking-ir-improvement b { color: #805c17; font-size: 12px; margin-bottom: 4px; }
 .speaking-ir-feedback-grow blockquote { background: rgba(255,255,255,.55); border-left-color: #ca9b35; border-radius: 0 9px 9px 0; padding: 10px 12px; color: #513e20; }
 @media (max-width: 767px) { .speaking-ir-domain-feedback > section { padding: 16px; } }
+
+/* Each exemplar keeps its own thinking paragraph directly above its Sample. */
+.speaking-ir-samples .speaking-ir-sample[data-ir-panel] { padding: 0; border: 0; border-radius: 0; background: transparent; }
+.speaking-ir-thinking { padding: 16px 18px; border-radius: 12px; background: #f2f7fc; }
+.speaking-ir-thinking h3, .speaking-ir-example h3 { margin: 0 0 10px; color: var(--sl-blue-deep); font-size: 12px; font-weight: 650; line-height: 1.5; }
+.speaking-ir-thinking p { margin: 0; color: #415767; font-size: 14px; line-height: 1.9; }
+.speaking-ir-example { margin-top: 22px; }
+.speaking-ir-example .speaking-ir-sample-text { margin: 0; color: #344850; font-size: 15px; line-height: 1.85; }
+@media (max-width: 540px) { .speaking-ir-thinking { padding: 14px 16px; } }

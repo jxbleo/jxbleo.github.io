@@ -1,5 +1,17 @@
 # Changelog
 
+## Paired IR Exemplars and full Analysis labels (2026-09-14, local)
+
+Each Exemplar now displays only its own Socratic thinking paragraph followed
+by the corresponding developed Sample. Part B prompt .3 and report schema v4
+require the three pairs to address the exact question and retain the student's
+ideas, with explicit uncertainty/hypothetical boundaries. Removed the shared
+question list, separate hint and after-sample explanation from the renderer.
+Analysis selects use full dimension names with the existing fitted grey-blue
+control style. Updated legacy validation, regression tests and documentation.
+No deployment or historical replay was performed for this iteration.
+
+
 ## Authorized IR report release and seven-day overwrite (2026-09-14)
 
 Owner requested publication of the approved IR report interface and full

@@ -1,5 +1,18 @@
 # 10 Deployment
 
+## IR paired Exemplars v4 (prepared locally, 2026-09-14)
+
+Package speakingLab with shared canonicalizer and Part B prompt .3/schema v4,
+then publish versioned Speaking assets/config after release authorization.
+The worker, model identities/fallbacks, Writing prompts, cloud configuration,
+indexes and permissions need no change for this iteration. Existing reports
+show saved Samples and an honest missing-guidance message. A separate authorized
+regeneration is required to produce genuinely paired prompts for old reports;
+never reuse the old shared questions as though they were paired.
+Do not reuse a v3 reanalysis manifest for v4. New manifests capture the new
+prompt/schema, while status verification still uses each stored report version.
+
+
 ## Authorized IR overwrite rollout (2026-09-14)
 
 Owner authorization covers the approved frontend, speakingLab and speakingAiWorker

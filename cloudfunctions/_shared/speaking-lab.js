@@ -44,7 +44,7 @@ const SPEAKING_SET_PART_A_MAX = 12;
 const SPEAKING_SET_PART_B_MAX = 20;
 const INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS = 65;
 const INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS = 3;
-const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v3";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v4";
 
 function text(value, limit = 2000) {
   return String(value == null ? "" : value).normalize("NFKC").trim().slice(0, limit);
@@ -988,7 +988,9 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
   if (!report || typeof report !== "object" || Array.isArray(report)) throw new Error("INDIVIDUAL_RESPONSE_REPORT_INVALID");
   // Some providers put the complete coaching block one level too deep. Move
   // only this unambiguous shape; every value still passes the validator below.
-  const coachingKeys = ["basis_status", "student_viewpoint_zh", "socratic_questions", "sample_responses"];
+  const version = options.reportVersion || INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION;
+  const paired = version === "dse-individual-response-v4";
+  const coachingKeys = ["basis_status", "student_viewpoint_zh", ...(paired ? [] : ["socratic_questions"]), "sample_responses"];
   const owns = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
   if (report.domains && typeof report.domains === "object" && coachingKeys.some((key) => owns(report.domains, key))) {
     if (coachingKeys.some((key) => owns(report, key)) || !coachingKeys.every((key) => owns(report.domains, key))) throw new Error("INDIVIDUAL_RESPONSE_COACHING_INVALID");
@@ -997,7 +999,6 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
   const validIds = new Set((Array.isArray(segments) ? segments : []).map((row) => String(row.segment_id || "")));
   const domains = report.domains && typeof report.domains === "object" ? report.domains : {};
   const canonical = {};
-  const version = options.reportVersion || INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION;
   const legacy = ["dse-individual-response-v1", "dse-individual-response-v2"].includes(version);
   const requiredFeedbackText = (value, max) => {
     if (typeof value !== "string" || !value.trim() || value.length > max) throw new Error("INDIVIDUAL_RESPONSE_FEEDBACK_INVALID");
@@ -1054,12 +1055,12 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
     output.basis_status = report.basis_status;
     output.student_viewpoint_zh = requiredText(report.student_viewpoint_zh, 800);
     const evidence = (value) => {
-      if (!Array.isArray(value) || (output.basis_status === "grounded" && !value.length) || value.some((id) => typeof id !== "string" || !validIds.has(id)) || new Set(value).size !== value.length) return invalid();
+      if (!Array.isArray(value) || (paired && value.length > 12) || (output.basis_status === "grounded" && !value.length) || value.some((id) => typeof id !== "string" || !validIds.has(id)) || new Set(value).size !== value.length) return invalid();
       return value.slice();
     };
     const focuses = ["reason", "example", "qualification", "implication"];
-    if (!Array.isArray(report.socratic_questions) || report.socratic_questions.length !== 4 || !Array.isArray(report.sample_responses) || report.sample_responses.length !== 3) invalid();
-    output.socratic_questions = report.socratic_questions.map((item, index) => {
+    if ((!paired && (!Array.isArray(report.socratic_questions) || report.socratic_questions.length !== 4)) || !Array.isArray(report.sample_responses) || report.sample_responses.length !== 3) invalid();
+    if (!paired) output.socratic_questions = report.socratic_questions.map((item, index) => {
       if (!item || item.focus !== focuses[index]) return invalid();
       return { focus: item.focus, student_idea_zh: requiredText(item.student_idea_zh, 600), evidence_segment_ids: evidence(item.evidence_segment_ids), question_zh: requiredText(item.question_zh, 600), hint_zh: requiredText(item.hint_zh, 600) };
     });
@@ -1069,10 +1070,15 @@ function canonicalizeIndividualResponseReport(report, segments = [], options = {
       const words = response.split(/\s+/).filter(Boolean).length;
       if (words < 90 || words > 170) invalid();
       if (/\b(?:as I (?:suggested|mentioned)|my (?:initial|original) (?:thought|point|answer))\b/i.test(response)) invalid();
+      if (paired) {
+        const thinking = requiredText(item.thinking_prompt_zh, 1600).replace(/\s+/g, " ");
+        if (!/[?？]/.test(thinking)) invalid();
+        return { student_idea_zh: requiredText(item.student_idea_zh, 600), evidence_segment_ids: evidence(item.evidence_segment_ids), thinking_prompt_zh: thinking, response_en: response };
+      }
       return { title_zh: requiredText(item.title_zh, 160), student_idea_zh: requiredText(item.student_idea_zh, 600), evidence_segment_ids: evidence(item.evidence_segment_ids), response_en: response, explanation_zh: requiredText(item.explanation_zh, 1400) };
     });
     const unique = (values) => new Set(values.map((value) => normalizeWhitespace(value, 4000).toLowerCase())).size === values.length;
-    if (!unique(output.socratic_questions.map((item) => item.question_zh)) || !unique(output.sample_responses.map((item) => item.response_en))) invalid();
+    if (!(paired ? unique(output.sample_responses.map((item) => item.thinking_prompt_zh)) : unique(output.socratic_questions.map((item) => item.question_zh))) || !unique(output.sample_responses.map((item) => item.response_en))) invalid();
   }
   return options.redactNames ? redactExactNames(output, options.redactNames) : output;
 }

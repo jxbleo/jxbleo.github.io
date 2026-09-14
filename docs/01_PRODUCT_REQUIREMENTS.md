@@ -1,5 +1,22 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Paired IR Exemplars (2026-09-14)
+
+Each of three Exemplars pairs a single Traditional Chinese thinking paragraph
+with its own English Sample. Both answer the exact Part B question and develop
+the student's reliable original position. The paragraph addresses the student
+through connected Socratic questions, with light guidance or clearly hypothetical
+cases but no supplied answer. The Sample demonstrates how to develop those
+questions. Use distinct routes where relevant, not three paraphrases.
+Only Thinking prompts and Sample appear in each selected exemplar; no shared
+question bank, separate hint, grounding subtitle or post-sample explanation.
+Insufficient evidence must be acknowledged in the visible paragraph; proposed
+personal scenarios remain hypothetical. 5** remains a teaching aspiration.
+The Analysis selector spells out Ideas & Organisation and Vocabulary & Language
+Patterns. Old reports remain readable and explicitly identify missing paired
+guidance until an authorized regeneration supplies it.
+
+
 ## Owner-authorized IR report replacement (2026-09-14)
 
 An explicit owner reanalysis may replace an existing Individual Response report
@@ -33,7 +50,7 @@ New Individual Response analyses score only IO (Ideas & Organisation) and VL
 (Vocabulary & Language), each 0–7, with detailed transcript-grounded strengths
 and weaknesses, practical improvements and English examples. Do not assess CS
 or pronunciation/delivery for this task. The second card is Analysis. The third
-card is 5** Exemplars, retaining four guided questions and three sample answers;
+card is 5** Exemplars, containing three paired thinking paragraphs and Samples;
 5** is a learning target, not an official grade. Existing reports and scores are
 preserved; absent legacy per-domain feedback is identified rather than invented.
 

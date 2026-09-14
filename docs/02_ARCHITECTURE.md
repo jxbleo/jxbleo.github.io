@@ -1,5 +1,14 @@
 # 02 Architecture
 
+## IR paired guidance pipeline (2026-09-14)
+
+The existing Part B model call now requests three thinking-prompt/Sample pairs.
+The shared canonicalizer validates v4 pairs before the existing atomic report
+and response-cache publication. Historical versions retain their own validation.
+The browser switches the entire selected pair together, without a new request.
+Old shared questions are never relabelled as new per-exemplar guidance.
+
+
 ## Scoped IR overwrite jobs (2026-09-14)
 
 The private operator scripts/regenerate-speaking-ir-reports.js plans an explicit

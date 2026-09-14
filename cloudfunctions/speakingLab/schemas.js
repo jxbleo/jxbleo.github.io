@@ -1,7 +1,7 @@
 "use strict";
 
 const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v4";
-const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v3";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v4";
 
 const DOMAIN_SCHEMA = {
   type: "object",
@@ -108,7 +108,7 @@ const IR_DOMAIN_SCHEMA = {
 const INDIVIDUAL_RESPONSE_REPORT_SCHEMA = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   type: "object", additionalProperties: false,
-  required: ["summary_zh", "domains", "basis_status", "student_viewpoint_zh", "socratic_questions", "sample_responses"],
+  required: ["summary_zh", "domains", "basis_status", "student_viewpoint_zh", "sample_responses"],
   properties: {
     summary_zh: { type: "string", maxLength: 1200 },
     domains: {
@@ -121,31 +121,16 @@ const INDIVIDUAL_RESPONSE_REPORT_SCHEMA = {
     },
     basis_status: { enum: ["grounded", "insufficient"] },
     student_viewpoint_zh: { type: "string", minLength: 1, maxLength: 800 },
-    socratic_questions: {
-      type: "array", minItems: 4, maxItems: 4,
-      items: {
-        type: "object", additionalProperties: false,
-        required: ["focus", "student_idea_zh", "evidence_segment_ids", "question_zh", "hint_zh"],
-        properties: {
-          focus: { enum: ["reason", "example", "qualification", "implication"] },
-          student_idea_zh: { type: "string", minLength: 1, maxLength: 600 },
-          evidence_segment_ids: { type: "array", uniqueItems: true, items: { type: "string" } },
-          question_zh: { type: "string", minLength: 1, maxLength: 600 },
-          hint_zh: { type: "string", minLength: 1, maxLength: 600 },
-        },
-      },
-    },
     sample_responses: {
       type: "array", minItems: 3, maxItems: 3,
       items: {
         type: "object", additionalProperties: false,
-        required: ["title_zh", "student_idea_zh", "evidence_segment_ids", "response_en", "explanation_zh"],
+        required: ["student_idea_zh", "evidence_segment_ids", "thinking_prompt_zh", "response_en"],
         properties: {
-          title_zh: { type: "string", minLength: 1, maxLength: 160 },
           student_idea_zh: { type: "string", minLength: 1, maxLength: 600 },
-          evidence_segment_ids: { type: "array", uniqueItems: true, items: { type: "string" } },
+          evidence_segment_ids: { type: "array", maxItems: 12, uniqueItems: true, items: { type: "string" } },
           response_en: { type: "string", minLength: 1, maxLength: 3000 },
-          explanation_zh: { type: "string", minLength: 1, maxLength: 1400 },
+          thinking_prompt_zh: { type: "string", minLength: 1, maxLength: 1600, pattern: "[?？]" },
         },
       },
     },

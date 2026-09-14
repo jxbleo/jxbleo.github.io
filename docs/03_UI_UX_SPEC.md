@@ -2,8 +2,8 @@
 
 ## IR concise Analysis body (2026-09-14)
 
-The Analysis selector again shows IO and VL abbreviations in the shared
-11px grey-blue style. Keep the full dimension name and score in the body,
+The Analysis selector shows Ideas & Organisation and Vocabulary & Language
+Patterns in full, using the shared 11px grey-blue style. Keep the full dimension name and score in the body,
 then go directly to the green/gold panels with a 20px gap. Do not render a
 separate commentary_zh sentence between the heading and panels. All feedback
 belongs inside the coloured panels. Legacy reports without structured points
@@ -35,11 +35,14 @@ each panel without horizontal overflow. Existing scores/history remain intact.
 
 ## IR report card selectors (2026-09-14)
 
-Analysis has a compact native IO/VL selector at the upper right of its blue
-heading; IO is selected initially. Only the chosen domain is visible. The
-5** Exemplars header has Exemplar 1/2/3; show only the selected full sample,
-its grounding note and improvement explanation. Exemplar 1 is the default.
-Place the sample before the retained shared Develop your ideas guidance.
+Analysis has a compact native selector with full dimension names at the upper
+right of its blue heading; Ideas & Organisation is selected initially. Only
+the chosen domain is visible. The 5** Exemplars header has Exemplar 1/2/3; show
+only the selected Thinking prompts paragraph and its Sample, in that order.
+Exemplar 1 is the default. The paragraph uses a quiet pale-blue surface; the
+English Sample follows on white. Do not show shared questions, separate hints,
+grounding subtitles or after-sample explanations. Legacy samples remain visible
+with an explicit missing-paired-guidance message in the first section.
 Selectors switch independently without fetching, rerendering the page or
 resetting other disclosures. Selecting another recording resets both defaults.
 Only available samples are selectable; a single legacy sample has a disabled
@@ -58,7 +61,7 @@ The revealed second card has the first card's pale-blue header, titled Analysis.
 It contains exactly IO and VL, each with name, 0–7 score, rationale, Strengths
 and Weaknesses. Each weakness includes How to improve and an English example.
 Strength/weakness columns stack on phones. The third card repeats the header
-style with 5** Exemplars and keeps the guided questions and selectable samples.
+style with 5** Exemplars and switches whole thinking-prompt/Sample pairs.
 The first card then restores the collapsed Your answer row and actual word
 count. All report data changes together when a different date is selected.
 

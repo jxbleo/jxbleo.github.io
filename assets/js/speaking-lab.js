@@ -1572,16 +1572,14 @@
     }
 
     function renderIndividualResponseDevelopment(report) {
-        var questions = Array.isArray(report.socratic_questions) ? report.socratic_questions : [];
-        var samples = Array.isArray(report.sample_responses) ? report.sample_responses : [];
-        if (!questions.length && !samples.length) return report.sample_response_en ? '<div class="speaking-response-sample"><p class="eyebrow accent">SAMPLE IMPROVED RESPONSE</p><p>' + esc(report.sample_response_en) + '</p></div>' : '';
-        var guidance = '<section class="speaking-ir-development"><p class="eyebrow accent">DEVELOP YOUR IDEAS</p><p>' + esc(report.student_viewpoint_zh || '') + '</p>' + (report.basis_status === 'insufficient' ? '<p class="speaking-ir-note">未能從錄音可靠判斷你的立場；以下為根據題目提供的假設示範。</p>' : '') + '<ol class="speaking-ir-questions">' + questions.map(function (item) {
-            return '<li><p class="speaking-ir-anchor">' + esc(item.student_idea_zh || '') + '</p><h3>' + esc(item.question_zh || '') + '</h3><details><summary>思考提示</summary><p>' + esc(item.hint_zh || '') + '</p></details></li>';
-        }).join('') + '</ol></section>';
-        return '<section class="speaking-ir-development"><p class="speaking-ir-note">以 5** 水平為學習目標的示範；並非官方評級或分數保證。</p><div class="speaking-ir-samples">' + samples.map(function (item, index) {
-            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><h3 class="speaking-ir-exemplar-heading">' + esc(item.title_zh || ('Exemplar ' + (index + 1))) + '</h3><p class="speaking-ir-anchor">' + esc(item.student_idea_zh || '') + '</p><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p><div class="speaking-ir-explanation"><h3>內容與語言提升</h3><p>' + esc(item.explanation_zh || '') + '</p></div></article>';
-        }).join('') + '</div></section>' + guidance;
+        var samples = Array.isArray(report.sample_responses) ? report.sample_responses : report.sample_response_en ? [{ response_en: report.sample_response_en }] : [];
+        if (!samples.length) return '';
+        return '<div class="speaking-ir-samples">' + samples.map(function (item, index) {
+            var thinking = item.thinking_prompt_zh || '這份舊報告尚未包含與這篇示範配對的思考引導。';
+            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><section class="speaking-ir-thinking"><h3>Thinking prompts</h3><p lang="zh-Hant">' + esc(thinking) + '</p></section><section class="speaking-ir-example"><h3>Sample</h3><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p></section></article>';
+        }).join('') + '</div>';
     }
+
     function renderIndividualResponseSession(response, pending) {
         var report = response.report || {};
         var snapshot = response.set_snapshot || {};
@@ -1637,7 +1635,7 @@
         var samples = Array.isArray(report.sample_responses) && report.sample_responses.length ? report.sample_responses : report.sample_response_en ? [{}] : [];
         var samplePicker = samples.length ? individualResponseCardPicker('exemplar', 'Exemplar', samples.map(function (_item, index) { return { value: String(index), label: 'Exemplar ' + (index + 1) }; })) : '';
         return '<section class="speaking-response-report">' + renderIndividualResponseSession(response, false) + '<div id="response-report-content" class="speaking-response-report">' +
-            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2>' + individualResponseCardPicker('analysis', 'Analysis dimension', [{ value: 'io', label: 'IO' }, { value: 'vl', label: 'VL' }]) + '</header><div class="speaking-ir-card-body" id="response-analysis-panels"><div data-ir-panel="analysis" data-ir-value="io">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + '</div><div data-ir-panel="analysis" data-ir-value="vl" hidden>' + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language Patterns'], report) + '</div>' + '</div></section>' +
+            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2>' + individualResponseCardPicker('analysis', 'Analysis dimension', [{ value: 'io', label: 'Ideas & Organisation' }, { value: 'vl', label: 'Vocabulary & Language Patterns' }]) + '</header><div class="speaking-ir-card-body" id="response-analysis-panels"><div data-ir-panel="analysis" data-ir-value="io">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + '</div><div data-ir-panel="analysis" data-ir-value="vl" hidden>' + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language Patterns'], report) + '</div>' + '</div></section>' +
             (development ? '<section class="speaking-report-card speaking-ir-development-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>5** Exemplars</h2>' + samplePicker + '</header><div class="speaking-ir-card-body" id="response-exemplar-panels">' + development + '</div></section>' : '') + '</div></section>';
     }
     function updateIndividualResponsePendingHeader(response) {
