@@ -2,15 +2,18 @@
 
 ## IR reading presentation (2026-09-14)
 
-Analysis always stacks green What works above gold How to improve on every
-device and orientation. Approved Exemplar option B uses white peer disclosures
-with matching blue labels and a thin divider. Guidance starts open; the Sample
-starts closed and returns to closed when selecting an Exemplar. Each report
-receives two varied English labels from frozen 12-entry pools. Labels stay fixed
-across refreshes, devices and exemplar selection. The answer disclosure uses a
-serif label/manuscript to distinguish the student's speech from feedback; its
-word count appears only after the expanded transcript, never in the summary.
-Pending upload/analysis status remains visible beside Your answer.
+All three IR cards use white bodies and matching pale-blue headers. Analysis
+always stacks What works above How to improve, separated by hairlines; no
+nested green/gold boxes or highlighted example containers remain. Exemplar
+guidance is always visible, with no title or collapse control. A centered,
+compact Show exemplar / Hide exemplar action controls only the English sample,
+which starts closed and sits on a pale-blue rounded surface when expanded.
+Exemplar selection updates the guidance immediately and closes its sample.
+Fixed action wording replaces the earlier randomized labels.
+Your answer keeps its original blue label; only its expanded manuscript uses
+15px comic-style type, slightly smaller than the 16px question. The word count
+appears at the manuscript footer, never beside the label. Pending status text
+remains visible. These display changes do not alter reports or prompt output.
 
 
 ## Paired IR Exemplars (2026-09-14)
@@ -42,8 +45,8 @@ remain separate response sessions. Invalid output must not erase a usable report
 
 ## IR constructive feedback panels (2026-09-14)
 
-Each selected IO/VL assessment has What works on pale green and How to improve
-on pale gold. Improvements are the main teaching content: explain the supported
+Each selected IO/VL assessment has white What works and How to improve
+sections separated by a fine divider. Improvements are the main teaching content: explain the supported
 gap briefly, then give tailored steps, where to apply them, why they help and a
 usable English example. Do not judge the learner or manufacture faults.
 Score only the original response; preserve evidence and ASR safeguards.

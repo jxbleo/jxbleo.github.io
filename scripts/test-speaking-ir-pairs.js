@@ -49,28 +49,19 @@ assert.match(html,/<option value="vl">Vocabulary &amp; Language Patterns<\/optio
 assert.doesNotMatch(html,/<option[^>]*>(?:IO|VL)<\/option>|思考提示|DEVELOP YOUR IDEAS|內容與語言提升|speaking-ir-questions/);
 const articles=[...html.matchAll(/<article class="speaking-ir-sample"([^>]*)>([\s\S]*?)<\/article>/g)];
 assert.equal(articles.length,3);
-articles.forEach(([,attrs,body],i)=>{assert.equal((body.match(/<details /g)||[]).length,2);assert(body.indexOf('Take it further')<body.indexOf('Sample answer'));assert.match(body, /speaking-ir-thinking" open>/);assert.match(body, /speaking-ir-example">/);assert(body.includes(input.sample_responses[i].thinking_prompt_zh));assert.equal(/ hidden/.test(attrs),i!==0);});
+articles.forEach(([,attrs,body],i)=>{assert.equal((body.match(/<details /g)||[]).length,1);assert.match(body, /<div class="speaking-ir-thinking"><p lang="zh-Hant">/);assert.doesNotMatch(body, /Take it further|Let’s think deeper|Thinking prompts/);assert.match(body, /speaking-ir-example">/);assert(body.includes(input.sample_responses[i].thinking_prompt_zh));assert.equal(/ hidden/.test(attrs),i!==0);});
 const hostile=fixture();hostile.sample_responses[0].thinking_prompt_zh='<img src=x onerror=alert(1)>?';assert.doesNotMatch(context.renderIndividualResponseDevelopment(hostile),/<img/);
 // A selector change must switch the entire paired article, never just its Sample.
 const panels=[0,1,2].map(i=>({hidden:i!==0,getAttribute:()=>String(i),querySelectorAll:()=>[{open:true,classList:{contains:()=>false}},{open:false,classList:{contains:()=>true}}]}));
 let change;const picker={value:'2',options:[{text:'Exemplar 3'}],selectedIndex:0,style:{},parentElement:{querySelector:()=>({textContent:'',getBoundingClientRect:()=>({width:70})})},getAttribute:()=> 'exemplar',addEventListener:(name,cb)=>{change=cb;}};
 context.detail={querySelectorAll:selector=>selector==='[data-ir-select]'?[picker]:panels};context.document={};context.bindIndividualResponseCardPickers();change();assert.deepStrictEqual(panels.map(x=>x.hidden),[true,true,false]);
-// Report-bound copy is stable across independent renders/devices and metadata refreshes.
-const response = { response_session_id: 'stable-ir-report-7', active_report_version: 1 };
-const labels = context.individualResponseExemplarLabels(response);
-const fresh = { ...context }; vm.createContext(fresh);
-vm.runInContext(source.slice(source.indexOf('    function individualResponseDateLabel('),source.indexOf('    function renderIndividualResponseWorkspace(')),fresh);
-assert.equal(JSON.stringify(labels),JSON.stringify(fresh.individualResponseExemplarLabels({...response,updated_at:'2099-01-01'})));
-const variations = Array.from({length:100},(_,i)=>context.individualResponseExemplarLabels({response_session_id:'ir-'+i,active_report_version:1}));
-assert.equal(new Set(variations.map(x=>x.thinking)).size,12);
-assert.equal(new Set(variations.map(x=>x.sample)).size,12);
-// Pin the v1 choice so later pool/order edits cannot silently relabel locked reports.
-assert.deepStrictEqual(JSON.parse(JSON.stringify(labels)), {"thinking":"Let’s think deeper","sample":"One way to respond"});
-const titleMarkup = context.renderIndividualResponseReport({...response,report:result});
-assert.equal((titleMarkup.match(new RegExp(context.esc(labels.thinking),'g'))||[]).length,3);
-assert.equal((titleMarkup.match(new RegExp(context.esc(labels.sample),'g'))||[]).length,3);
+// Explicit action labels replace both retired random-heading pools.
+assert.doesNotMatch(source, /individualResponseExemplarLabels/);
+assert.equal((html.match(/>Show exemplar<\/span>/g)||[]).length,3);
+assert.equal((html.match(/>Hide exemplar<\/span>/g)||[]).length,3);
+assert.doesNotMatch(html, /speaking-ir-block-chevron/);
 // Changing exemplars resets only the newly selected pair, never the transcript/Analysis.
-const firstBlocks = [{open:false,classList:{contains:()=>true}},{open:true,classList:{contains:()=>false}}];
+const firstBlocks = [{open:true}];
 panels[2].querySelectorAll=()=>firstBlocks;change();
-assert.deepStrictEqual(firstBlocks.map(x=>x.open),[true,false]);
+assert.deepStrictEqual(firstBlocks.map(x=>x.open),[false]);
 console.log('IR v4 paired thinking prompts, strict validation, legacy boundaries, selectors and safe rendering passed.');

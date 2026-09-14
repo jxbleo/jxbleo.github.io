@@ -2,12 +2,13 @@
 
 ## IR option B disclosures and student answer typography (2026-09-14)
 
-Implemented the selected white, divided peer disclosures with report-stable
-English title variation; guidance opens by default and each selected Sample
-starts closed. Analysis panels now stack on every device. Your answer uses a
-serif label and manuscript, with the word count moved to the expanded text's
-footer. Frontend only; prompts, scores and stored reports are unchanged.
-Prepared locally; this iteration has not been published.
+Final owner-approved IR layout uses white Analysis sections with fine dividers,
+always-visible untitled thinking guidance, and a centered 30px Show exemplar /
+Hide exemplar control. Expanded exemplar text has a pale-blue rounded background.
+The original Your answer label is retained; its 15px comic manuscript has a
+footer word count. Randomized headings are removed. All three cards retain
+matching blue headers. Frontend only; no report regeneration or cloud-function
+change. Owner authorized publication; live verification is recorded in AGENT_TODO.
 
 
 ## Paired IR Exemplars and full Analysis labels (2026-09-14)

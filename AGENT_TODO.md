@@ -106,21 +106,19 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
-### 2026-09-14 — IR option B and student manuscript (local, verified)
+### 2026-09-14 — Final IR white layout (authorized publication in progress)
 
-- Implemented option B peer disclosures; each report has fixed varied titles
-  from frozen 12-entry pools. Guidance starts open, Sample closed; selecting
-  another Exemplar restores those defaults without resetting other cards.
-- Analysis uses one column on all devices. Your answer label/manuscript uses
-  Georgia/serif, and word count moves into the expanded manuscript footer.
-- Full Speaking suite, release verification, static build and diff check pass.
-  Browser checked 320px without horizontal overflow, 1024px stacked panels,
-  manuscript/count placement, Enter-to-expand and exemplar reset/label stability.
-- Updated requirements, UI, decisions, changelog and test checklist. Only
-  frontend sources/cache references and tests change; no backend/schema/prompt
-  change or report regeneration is needed. Not published in this iteration.
-- Preview using the real renderer and illustrative content:
-  http://127.0.0.1:8824/index.html. Source worktree: /private/tmp/mrcat-ir-report-history.
+- Final approved design: white, divided Analysis sections; always-visible
+  untitled thinking; centered 30px Show exemplar / Hide exemplar button and a
+  pale-blue rounded expanded exemplar. Removed random headings and arrows.
+- Your answer label remains original. Only the manuscript uses 0.9375rem comic
+  type; its word count is in the footer. All changes are scoped to IR classes.
+- Full Speaking suite, release verification, static build and diff checks pass.
+  Browser: 320px no overflow, native keyboard Show/Hide, blue expanded panel,
+  Exemplar switch resets closed, 1024px Analysis sections remain stacked.
+  No backend/schema/prompt/data change or historical regeneration is required.
+- Source worktree: /private/tmp/mrcat-ir-report-history. Final renderer preview:
+  http://127.0.0.1:8824/index.html (illustrative content only).
 
 
 ### 2026-09-14 — Authorized v4 publication and overwrite (completed; 64 verified)

@@ -2,15 +2,12 @@
 
 ## Stable IR presentation labels without report mutation (2026-09-14)
 
-Use the existing authenticated response_session_id plus active_report_version
-(default 1) with the frozen ir-labels-v1 mapping and two frozen 12-entry pools.
-The random session identity supplies variation; deterministic selection gives
-the same labels on every device, including for existing ready reports. The
-same-ID report overwrite retains its labels. Labels are presentation copy,
-not model output or grading data. No schema change, backfill, localStorage,
-provider call or backend deployment is required. Do not reorder, rename or
-resize v1 pools or alter the mapping: that would relabel locked reports. Any
-future copy-policy expansion needs an explicit version/migration design.
+The owner replaced the earlier randomized title design before publication:
+guidance now has no title, and sample visibility uses fixed Show exemplar /
+Hide exemplar wording. Remove the unused frozen pools and mapping. Labels are
+ordinary frontend copy, not model output or persisted grading data. Native
+details open state controls the visible label via CSS, avoiding toggle-event
+races. No schema change, backfill, model call or backend deployment is needed.
 
 
 ## Approved Speaking audio-file icon (2026-09-13)

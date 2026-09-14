@@ -111,7 +111,7 @@ assert.equal((html.match(/class="speaking-ir-sample"/g) || []).length, 3);
 assert.doesNotMatch(html, /speaking-ir-questions|思考提示|內容與語言提升/);
 assert.equal((html.match(/class="speaking-ir-domain"/g)||[]).length,2);
 assert.doesNotMatch(html, /Communication Strategies|Pronunciation &amp; Delivery/);
-assert.match(html, /Take it further/);
+assert.match(html, /<div class="speaking-ir-thinking"><p/);
 const reportResponse = { report: { ...report, transcript: [{ text: '  I think school gardens help.\n' }, { text: "They're useful for hands-on learning." }, { text: '   ' }] }, set_snapshot: { exam_year: 2023, paper_version: '3.1', title: 'School gardens' }, question_snapshot: { order: 5, text: 'Should schools have gardens?' }, response_date: '2026-09-12' };
 const compactHtml = context.renderIndividualResponseReport(reportResponse);
 assert.match(compactHtml, /Y2023-Set3\.1-Q5/);

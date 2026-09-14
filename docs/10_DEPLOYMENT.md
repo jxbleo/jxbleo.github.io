@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## IR white report presentation (2026-09-14)
+
+Owner authorized this static-only release: Speaking CSS/JS, Speaking HTML and
+shared cache configuration, plus Teacher's Speaking CSS cache reference. Publish
+version 20260914-ir-white-report-1 after Speaking/release/build/browser checks.
+Verify the corresponding COS run and live asset bytes. No CloudBase deployment,
+model configuration or report regeneration is needed; existing saved reports
+render with the new presentation after the assets load.
+
+
 ## IR paired Exemplars v4 (deployed and verified, 2026-09-14)
 
 Owner-authorized publication and report replacement completed for the same

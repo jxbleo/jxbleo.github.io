@@ -2,27 +2,28 @@
 
 ## IR stable labels and student manuscript (2026-09-14)
 
-Exemplar guidance/Sample labels each come from a frozen 12-entry English pool.
-One pair serves all three Exemplars in that report. Report/session identity
-fixes the pair across reloads, devices and history navigation; no timer or
-render-time randomization. Both section headers have equal blue typography and
-44px-or-larger keyboard-accessible native disclosure targets (option B).
-Your answer stays closed initially. Its blue label is 15px italic Georgia with
-Times New Roman/serif fallbacks; the expanded English transcript uses normal
-17px Georgia/serif for sustained reading. The 11px system-font word count sits
-below the manuscript, right aligned, inside the disclosure. No count or
-separator dot remains next to the ready-state Your answer label. Pending states
-retain their inline status text. No remote font dependency is introduced.
+The guidance paragraph is ordinary always-visible text, without a heading.
+Use fixed Show exemplar / Hide exemplar action text, replacing the random label
+pools. Native details/summary switches the visible action label with open state;
+no arrow. The pale-blue #eaf3fb action is centered, 128px wide, 30px high, 8px
+radius, 12px/550 type, with no border or shadow. Both labels have the same width.
+A thin divider sits 12px below guidance; the button follows after 8px.
+Expanded English exemplar uses #f2f7fc with 12px radius and 16px 18px padding
+(14px 16px on phones), 12px below the button. The control stays above the text.
+Your answer retains its 12px/650 blue system label. Only the expanded manuscript
+uses 15px (0.9375rem) normal Comic Sans MS, with Chalkboard SE/Comic Sans/cursive
+fallbacks, below the 16px question size. The word count is 11px system text at
+the bottom right inside the disclosure. No remote font dependency is introduced.
 
 
 ## IR concise Analysis body (2026-09-14)
 
 The Analysis selector shows Ideas & Organisation and Vocabulary & Language
 Patterns in full, using the shared 11px grey-blue style. Keep the full dimension name and score in the body,
-then go directly to the green/gold panels with a 20px gap. Do not render a
+then go directly to the white feedback sections with a 20px gap. Do not render a
 separate commentary_zh sentence between the heading and panels. All feedback
-belongs inside the coloured panels. Legacy reports without structured points
-may show their saved commentary inside gold, explicitly marked 舊版評語;
+belongs inside the white sections. Legacy reports without structured points
+may show their saved commentary inside How to improve, explicitly marked 舊版評語;
 do not invent strengths or refer to a removed comment above.
 
 ## Unified IR report headings (2026-09-14)
@@ -35,17 +36,17 @@ The first title joins frozen metadata with hyphens and no added spaces:
 Y2026-Set3.1-Q1. Preserve decimal Set versions and original letter case;
 do not substitute the current year for the Set's exam year.
 
-## IR green/gold feedback and full dimension names (2026-09-14)
+## IR white feedback and full dimension names (2026-09-14)
 
-The Analysis selector shows Ideas & Organisation or Vocabulary & Language
-Patterns in full. Measure the selected label to fit its native select rather
-than leaving space for the longest option. Preserve keyboard/mobile selection
-and a right-aligned control; narrow headers may wrap to retain the full name.
-Each domain contains two rounded panels: pale-green What works and pale-gold
-How to improve. Gold holds brief context plus more prominent Try this steps
-and a highlighted English example. Colour is reinforced by explicit headings.
-All viewports and orientations stack green above gold in one column. Text wraps within
-each panel without horizontal overflow. Existing scores/history remain intact.
+The final owner-approved design replaces white feedback sections with white sections.
+Analysis still uses the full dimension names in its fitted 11px native selector.
+Keep What works and How to improve as 12px blue headings with 14px body text;
+stack the sections on every device and separate them with a fine hairline.
+Remove inner padding, coloured backgrounds, rounded borders and quote boxes.
+Use 22px between sections and 20px after the divider. Advice and examples remain
+fully visible; no scores or feedback content are removed. Limit these rules to
+IR classes so Group Discussion and Teacher surfaces keep their own styling.
+
 
 ## IR report card selectors (2026-09-14)
 
@@ -53,10 +54,10 @@ Analysis has a compact native selector with full dimension names at the upper
 right of its blue heading; Ideas & Organisation is selected initially. Only
 the chosen domain is visible. The 5** Exemplars header has Exemplar 1/2/3; show
 only the selected Thinking prompts paragraph and its Sample, in that order.
-Exemplar 1 is the default. Option B uses two peer disclosures on white with
-matching 12px blue labels, chevrons and a thin divider. Guidance is open by
-default; the English Sample is closed. Selecting an Exemplar resets its guidance
-to open and its Sample to closed; Analysis selection leaves these states alone. Do not show shared questions, separate hints,
+Exemplar 1 is the default. Guidance appears immediately on selection, without
+a title or collapse action. The centered Sample button stays closed initially
+and resets to closed on each Exemplar selection. Analysis selection leaves the
+Sample state alone. Do not show shared questions, separate hints,
 grounding subtitles or after-sample explanations. Legacy samples remain visible
 with an explicit missing-paired-guidance message in the first section.
 Selectors switch independently without fetching, rerendering the page or
@@ -76,7 +77,7 @@ Ready freezes the game indefinitely; this also applies with Reduced Motion.
 The revealed second card has the first card's pale-blue header, titled Analysis.
 It contains exactly IO and VL, each with name, 0–7 score, rationale, Strengths
 and Weaknesses. Each weakness includes How to improve and an English example.
-Strength/weakness panels stack on every viewport. The third card repeats the header
+Strength/weakness sections stack on every viewport. The third card repeats the header
 style with 5** Exemplars and switches whole thinking-prompt/Sample pairs.
 The first card then restores the collapsed Your answer row; the actual word
 count is at the end of its expanded manuscript. All report data changes together when a different date is selected.
@@ -3187,7 +3188,7 @@ question, and recorder/progress cards. Completed IR reports instead start with
 one merged card: blue year/Set identity, Set title, Q number and question, then
 the original recording date aligned bottom-right. There is no separate Session
 Details card. The current merged card contains a native expandable `Your answer` row; it
-joins ASR segments into one continuous serif paragraph and shows the word count
+joins ASR segments into one continuous comic-style paragraph and shows the word count
 only after that expanded manuscript. English contractions and hyphenated compounds count as one word;
 punctuation does not count. `Your Analysis` retains all four dimensions, summary,
 Strengths, Priority actions and Language suggestions. `Develop Your Ideas` and
@@ -3379,7 +3380,7 @@ Use `14 Sep 16:42` (current Shanghai year) or `14 Sep 2025 16:42` (other years).
 Full-year labels remain available in option titles. Keep one row on typical
 375px phones; very narrow screens may wrap the selector rightward below metadata.
 Question text stays in the white body. A hairline separates the single-line
-`Your answer` disclosure at the bottom: blue italic serif label and small
-chevron. The count is shown only at the end of the expanded serif manuscript. No duplicate date below it. It is closed initially
+`Your answer` disclosure at the bottom: original blue system-font label and small
+chevron. The count is shown only at the end of the expanded comic-style manuscript. No duplicate date below it. It is closed initially
 and whenever another report is chosen. Opening it expands inside the first card.
 Keep keyboard-native selection, visible focus and an inline retry on read errors.
