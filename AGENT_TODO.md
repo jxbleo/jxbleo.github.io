@@ -106,6 +106,18 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-09-14 — Speaking Set headers (authorized publication in progress)
+
+- Header-only update for Context, Part A and Part B: pale-blue title bars,
+  existing identity/Part labels and compact minus/plus controls. Context title
+  sits beneath its bar; all reading bodies and entry actions are preserved.
+- Full Speaking suite, release verification, static build and diff checks pass.
+  Browser: 320px no horizontal overflow; all three controls independently move
+  to medium. Baseline comparison confirms body text/font/colour/background/
+  padding/margins/width unchanged; only Context title margin moves outside header.
+- Static version 20260914-speaking-set-headers-1. No backend or data changes.
+
+
 ### 2026-09-14 — IR personal coaching prompt .4 (deployed and verified)
 
 - Source f6c0f863: IR feedback addresses the recipient as 你 / 你的 and cites

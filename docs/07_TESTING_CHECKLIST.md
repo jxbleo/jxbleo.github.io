@@ -1,5 +1,15 @@
 # 07 Testing Checklist
 
+## Speaking Set title bars (2026-09-14)
+
+Verify Context/Part A/Part B at 320px and wide layouts: the year/Set or Part
+label and minus/plus stay in the blue header, long labels wrap without overflow,
+and the Context title stays outside the bar. Exercise all three independent
+font-size controls. Confirm body padding/type, task/question content, Start and
+question entry controls match the previous renderer. Run Speaking regression
+and release/static-build checks before the authorized frontend publication.
+
+
 ## IR direct-address feedback wording (2026-09-14)
 
 Run the Speaking regression suite after prompt changes. Verify that internal

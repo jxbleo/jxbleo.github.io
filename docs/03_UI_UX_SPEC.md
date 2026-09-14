@@ -1,5 +1,15 @@
 # 03 UI / UX Spec
 
+## Speaking Set title bars (2026-09-14)
+
+Context, Part A and Part B use a shared pale-blue (#eff6fe) full-width title bar,
+with 12px/700 blue labels on the left and compact grey-blue minus/plus controls
+on the right. Keep the existing year/Set and Part wording. The Context title
+remains centered below the bar. Bars are at least 52px tall; long Part labels
+may wrap while controls stay right-aligned. Preserve card body padding, type,
+colours, content and Start/question actions; this approval changes headers only.
+
+
 ## IR stable labels and student manuscript (2026-09-14)
 
 The guidance paragraph is ordinary always-visible text, without a heading.

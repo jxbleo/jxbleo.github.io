@@ -1427,3 +1427,20 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .speaking-ir-example .speaking-ir-sample-text { margin: 12px 0 0; padding: 16px 18px; border-radius: 12px; background: #f2f7fc; color: #344850; font-size: 15px; line-height: 1.85; }
 .speaking-ir-development-card .speaking-ir-card-body { padding-bottom: 12px; }
 @media (max-width: 540px) { .speaking-ir-example .speaking-ir-sample-text { padding: 14px 16px; } }
+
+/* Speaking Set headers: preserve the existing reading bodies and controls. */
+.speaking-set-detail > [data-speaking-reading-section] { --sl-set-inset: clamp(22px,4vw,34px); overflow: hidden; }
+.speaking-set-detail .speaking-set-section-head-with-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; margin: calc(-1 * var(--sl-set-inset)) calc(-1 * var(--sl-set-inset)) 22px; padding: 8px 24px; background: #eff6fe; border-bottom: 1px solid rgba(8,124,240,.08); }
+.speaking-set-detail .speaking-set-section-head .eyebrow { margin: 0; color: var(--sl-blue-deep); font-size: 12px; font-weight: 700; line-height: 1.5; letter-spacing: .035em; text-transform: none; text-align: left; }
+.speaking-set-detail .speaking-set-context-head { margin-bottom: 12px; }
+.speaking-set-detail .speaking-set-context > .speaking-set-context-title { margin: 0 0 22px; color: #223740; font-size: clamp(1.14rem,2.8vw,1.5rem); line-height: 1.18; letter-spacing: -.03em; text-align: center; }
+.speaking-set-detail .speaking-set-text-size { position: static; flex-shrink: 0; display: flex; align-items: center; gap: 0; padding: 0; border: 1px solid rgba(74,95,106,.12); border-radius: 9px; background: rgba(255,255,255,.7); box-shadow: none; }
+.speaking-set-detail .speaking-set-text-size button { position: relative; width: 32px; height: 30px; border-radius: 8px; background: transparent; color: #526779; box-shadow: none; font-size: 17px; font-weight: 500; }
+.speaking-set-detail .speaking-set-text-size button + button::before { content: ""; position: absolute; left: 0; top: 7px; height: 16px; border-left: 1px solid rgba(74,95,106,.13); }
+.speaking-set-detail .speaking-set-text-size button:disabled { color: #aab8c1; opacity: .7; }
+.speaking-set-detail .speaking-set-text-size button:hover:not(:disabled) { background: #e4eff8; }
+@media (max-width: 540px) {
+    .speaking-set-detail .speaking-set-section-head-with-controls { padding: 8px 16px; gap: 8px; }
+    .speaking-set-detail .speaking-set-section-head .eyebrow { letter-spacing: 0; }
+    .speaking-set-detail .speaking-set-text-size button { width: 30px; }
+}

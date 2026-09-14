@@ -1,5 +1,14 @@
 # Changelog
 
+## Speaking Set title bars (2026-09-14)
+
+Owner-approved header-only update gives Context, Part A and Part B matching
+pale-blue bars with existing labels and font-size controls. The Context topic
+moves just below its bar; body styling/content and all actions stay unchanged.
+Static-only release 20260914-speaking-set-headers-1; deployment verification
+is tracked in AGENT_TODO.md. No backend or report regeneration is involved.
+
+
 ## IR direct-address feedback prompt (2026-09-14)
 
 Part B prompt .4 confines segment references to evidence_segment_ids and asks
