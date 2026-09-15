@@ -5,6 +5,7 @@ const Module = require("module");
 const fs = require("fs");
 const path = require("path");
 const rules = require("../cloudfunctions/_shared/ielts-speaking");
+const realSpeech = require("../cloudfunctions/speakingLab/speech-provider");
 const { prepare } = require("./prepare-ielts-speaking");
 const clone = value => structuredClone(value);
 // Original, synthetic test questions; never included in the topic bank or dist.
@@ -39,7 +40,7 @@ Module._load = function (request, parent, main) {
   if (request === "@cloudbase/node-sdk") return { init: () => app, SYMBOL_CURRENT_ENV: "test" };
   if (request === "@cloudbase/node-sdk/dist/cloudbase") return { CloudBase: { getCloudbaseContext: () => ({}) } };
   if (request === "@cloudbase/node-sdk/dist/utils/tcbapirequester") return { request: async () => ({}) };
-  if (parent && parent.filename.endsWith("speakingLab/index.js") && request === "./speech-provider") return { createSpeechProvider: () => ({ name: "synthetic", inspectAudio: async () => ({}), transcribeAndDiarize: async () => { transcriptionCalls++; return { status: "completed", output: { duration_ms: transcriptionDuration, segments: segments.map(s => ({ ...s, provider_speaker_id: "one" })), speaker_tracks: [{ provider_speaker_id: "one", speech_duration_ms: 20000 }] } }; } }) };
+  if (parent && parent.filename.endsWith("speakingLab/index.js") && request === "./speech-provider") return { createSpeechProvider: () => ({ name: "synthetic", inspectAudio: input => realSpeech.inspectAudio(input), transcribeAndDiarize: async () => { transcriptionCalls++; return { status: "completed", output: { duration_ms: transcriptionDuration, segments: segments.map(s => ({ ...s, provider_speaker_id: "one" })), speaker_tracks: [{ provider_speaker_id: "one", speech_duration_ms: 20000 }] } }; } }) };
   if (parent && parent.filename.endsWith("speakingLab/index.js") && request === "./model-provider") return { createModelProvider: () => ({ name: "synthetic", model: "test-only", callStructuredModel: async input => { assert.match(input.system_prompt, /IELTS/); assert.equal(JSON.parse(input.user_prompt).part, transcriptionDuration === 120000 ? 2 : 3); modelCalls++; return { output: modelReport() }; } }) };
   return originalLoad.call(this, request, parent, main);
 };
@@ -61,6 +62,13 @@ async function processResponse(response) {
   return call("processQueuedJob", { job_id: job.job_id, dispatch_token: job.dispatch_token });
 }
 async function main() {
+  const audio = { mime_type: "audio/webm", size_bytes: 100, duration_seconds: 120 };
+  assert.equal((await realSpeech.inspectAudio({ ...audio, duration_limit_seconds: 120 })).status, "scorable");
+  assert.equal((await realSpeech.inspectAudio({ ...audio, duration_seconds: 90, duration_limit_seconds: 90 })).status, "scorable");
+  await assert.rejects(() => realSpeech.inspectAudio({ ...audio, duration_seconds: 123, duration_limit_seconds: 120 }), /SPEAKING_AUDIO_TOO_LONG/);
+  await assert.rejects(() => realSpeech.inspectAudio({ ...audio, duration_seconds: 93, duration_limit_seconds: 90 }), /SPEAKING_AUDIO_TOO_LONG/);
+  await assert.rejects(() => realSpeech.inspectAudio({ ...audio, duration_seconds: 69 }), /SPEAKING_AUDIO_TOO_LONG/);
+  await assert.rejects(() => realSpeech.inspectAudio({ ...audio, duration_limit_seconds: 999 }), /SPEAKING_AUDIO_TOO_LONG/);
   assert.equal(prepare([topic])[0].part_3[0].part, 3);
   assert.throws(() => prepare([topic, topic]), /Duplicate/);
   assert.throws(() => prepare([{ ...topic, source_verified: false }]), /INVALID/);

@@ -1644,7 +1644,7 @@ async function processIndividualResponseQueuedJob(claimed) {
   if (!asset) throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
   if (claimed.stage === "audio_quality") {
     const speech = createSpeechProvider();
-    const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes, duration_seconds: Number(asset.duration_ms || 0) / 1000 || undefined });
+    const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes, duration_seconds: Number(asset.duration_ms || 0) / 1000 || undefined, ...(response.exam_family === "ielts" ? { duration_limit_seconds: ielts.durationLimit(response) } : {}) });
     await requeueClaimedJob(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
     return { success: true, status: "queued", stage: "transcription", job_id: claimed.job_id };
   }

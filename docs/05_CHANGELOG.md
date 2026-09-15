@@ -3768,3 +3768,8 @@ passed. Deployment evidence and rollback packages are private under
 Browser automation timed out during release checks; no live student recording
 or provider-generated IELTS report is claimed as tested. Device audio and
 real-provider calibration remain acceptance follow-ups.
+
+Release preflight correction: the shared speech validator now accepts only
+gateway-derived IELTS limits (120/90 seconds plus the existing IELTS tolerance),
+while retaining DSE’s 68-second boundary. Gateway tests now call the actual
+validator so mocked speech inspection cannot conceal a duration regression.

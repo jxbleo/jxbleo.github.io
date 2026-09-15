@@ -3493,3 +3493,8 @@ Confirm raw source and import artifacts remain ignored and absent from `dist`.
   another student, inactive profile and visitor cannot read those records.
 - Live acceptance still requires real devices, authorized rollout and a real
   ASR/model report. Mocked contract tests do not establish band-score accuracy.
+
+IELTS audio preflight must run the real `speech-provider.inspectAudio` validator
+in gateway tests: 120/90-second recordings pass their trusted question limits;
+123/93 seconds fail; legacy DSE 69 seconds still fails. Arbitrary overrides
+cannot expand the limit.

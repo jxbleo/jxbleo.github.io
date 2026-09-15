@@ -117,7 +117,9 @@ async function inspectAudio(input = {}) {
   if (!SUPPORTED_MIME.test(mime) || !Number.isFinite(size) || size < 1 || size > MAX_AUDIO_BYTES) {
     throw new SpeakingProviderError("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
   }
-  if (Number.isFinite(duration) && duration > 68) throw new SpeakingProviderError("SPEAKING_AUDIO_TOO_LONG");
+  // The gateway supplies this limit from the trusted IELTS question snapshot.
+  const limit = [90, 120].includes(input.duration_limit_seconds) ? input.duration_limit_seconds + 2 : 68;
+  if (Number.isFinite(duration) && duration > limit) throw new SpeakingProviderError("SPEAKING_AUDIO_TOO_LONG");
   return { status: "scorable", warning_codes: [], mime_type: mime, size_bytes: Math.round(size), duration_seconds: Number.isFinite(duration) ? Math.max(0, duration) : null };
 }
 
