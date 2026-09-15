@@ -2361,6 +2361,13 @@ html.teacher-modal-scroll-locked {
     --skill-edge: rgba(221, 105, 40, 0.19);
     --skill-focus: rgba(221, 105, 40, 0.28);
 }
+.student-skill-card.speaking.ielts {
+    --skill-tone: #7955b8;
+    --skill-glow: rgba(121, 85, 184, 0.21);
+    --skill-wash: rgba(237, 229, 250, 0.9);
+    --skill-edge: rgba(121, 85, 184, 0.22);
+    --skill-focus: rgba(121, 85, 184, 0.32);
+}
 .student-skill-card:hover {
     transform: translateY(-2px);
     filter: saturate(1.04) brightness(1.01);

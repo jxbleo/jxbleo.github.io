@@ -2761,3 +2761,12 @@ is Chinese with exact English evidence. Question banks are 剑雅官方真题 an
 older seasons remain available. The source index is prepared, but no real
 Cambridge questions have yet been imported; seasonal topics are a placeholder.
 See [full scope and content handoff](IELTS_SPEAKING_LAB.md).
+
+
+### Speaking homepage labels and colours — 2026-09-15
+
+Owner revision: both Dashboard entry titles display `Speaking Lab`. The adjacent
+capsules retain `HKDSE Paper 4` and `IELTS Part 2 & Part 3`. HKDSE retains its
+warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
+capsule, background tint and focus ring. Destination pages keep their exam-specific
+names. This supersedes the earlier prefixed Dashboard-title decision.

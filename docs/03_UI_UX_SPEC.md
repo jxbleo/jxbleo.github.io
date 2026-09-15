@@ -3412,3 +3412,12 @@ teacher mode, with history filtered by Login ID/topic. Ready reports have three
 cards: Session details (audio and collapsed Transcript), Analysis (three bands,
 pronunciation unassessed, no overall), Band 8 Answer (Thinking Prompt then
 collapsed Sample Answer). See [full specification](IELTS_SPEAKING_LAB.md).
+
+
+### Speaking homepage labels and colours — 2026-09-15
+
+Owner revision: both Dashboard entry titles display `Speaking Lab`. The adjacent
+capsules retain `HKDSE Paper 4` and `IELTS Part 2 & Part 3`. HKDSE retains its
+warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
+capsule, background tint and focus ring. Destination pages keep their exam-specific
+names. This supersedes the earlier prefixed Dashboard-title decision.

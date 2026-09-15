@@ -3773,3 +3773,10 @@ Release preflight correction: the shared speech validator now accepts only
 gateway-derived IELTS limits (120/90 seconds plus the existing IELTS tolerance),
 while retaining DSE’s 68-second boundary. Gateway tests now call the actual
 validator so mocked speech inspection cannot conceal a duration regression.
+
+
+## 2026-09-15 — Differentiate Speaking homepage entries
+
+Both Dashboard titles now read Speaking Lab. Existing exam capsules distinguish
+HKDSE and IELTS; the IELTS card has a purple theme alongside the orange HKDSE
+card. Updated the Dashboard stylesheet version; no backend or content change.
