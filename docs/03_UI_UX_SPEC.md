@@ -3398,10 +3398,16 @@ Keep keyboard-native selection, visible focus and an inline retry on read errors
 ## IELTS Speaking Lab (2026-09-15)
 
 Independent HKDSE/IELTS Dashboard capsules lead to separate libraries. IELTS
-reuses the Individual Response microphone dialog styling. Its Part 2 dialog adds
-`One minute preparation`; preparation never automatically activates recording.
-Recording caps are 02:00 / 01:30, with an early-stop action and final-five-second
-warning. Preview and replace are available before explicit submission. Analysis
+uses the same full-page native-dialog surface and existing `#individual-response-dialog`
+styles as current DSE Individual Response, with identical dial/ring/icon/footer markup.
+The top-left Back button and question replace the old part/topic headings and Done
+footer. Part 2 alone adds `One minute preparation`; preparation never activates the
+microphone. Capture opens with an unrecorded 3–2–1, then a shrinking progress ring,
+remaining-time clock and dark focus theme. Final 3–2–1 cues are INSIDE the 120/90-second
+cap (unlike the DSE-specific extra ending period). Early stop and automatic completion
+restore the green saved state and Submit. An optional collapsed Listen control keeps
+audio preview available without shifting the shared recorder stack. Replace/discard
+remains guarded before explicit submission. Analysis
 can continue while another question is practised. Dialogs lock background scroll,
 restore focus/scroll on close and confirm discard of unsent takes.
 

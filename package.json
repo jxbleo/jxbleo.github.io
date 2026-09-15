@@ -54,7 +54,7 @@
     "models:apply": "node scripts/configure-text-models.js --apply",
     "models:check": "node scripts/configure-text-models.js --check",
     "test:text-model-policy": "node scripts/test-text-model-policy.js",
-    "test:ielts-speaking": "node scripts/test-ielts-speaking.js",
+    "test:ielts-speaking": "node scripts/test-ielts-speaking.js && node scripts/test-ielts-speaking-recorder.js",
     "prepare:ielts-speaking": "node scripts/prepare-ielts-speaking.js"
   },
   "devDependencies": {

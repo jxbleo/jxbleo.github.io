@@ -203,3 +203,15 @@ passed. Deployment evidence and rollback packages are private under
 Browser automation timed out during release checks; no live student recording
 or provider-generated IELTS report is claimed as tested. Device audio and
 real-provider calibration remain acceptance follow-ups.
+
+### Recorder parity correction — 2026-09-15
+
+Use the current DSE full-page Individual Response surface and its shared CSS, not
+the legacy narrow dialog. Show Back, the question/cue card, shared recording dial,
+remaining clock and Upload Files/Submit. Omit duplicate topic/part labels, generic
+recording instructions and bottom Done. Part 2 adds only the optional one-minute
+preparation control. The unrecorded opening 3–2–1, dark capture, shrinking ring,
+final 3–2–1 and green saved state match DSE. IELTS ending reminders count within
+120/90 seconds, never extend either limit. Replay stays in a collapsed control
+below the recorder. Return, discard, file cancellation and microphone cleanup
+retain their existing privacy and draft protections.

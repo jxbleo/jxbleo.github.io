@@ -3780,3 +3780,12 @@ validator so mocked speech inspection cannot conceal a duration regression.
 Both Dashboard titles now read Speaking Lab. Existing exam capsules distinguish
 HKDSE and IELTS; the IELTS card has a purple theme alongside the orange HKDSE
 card. Updated the Dashboard stylesheet version; no backend or content change.
+
+## 2026-09-15 — IELTS recorder parity correction
+
+IELTS now activates the current DSE full-page recorder surface, reuses its exact
+circle/progress/icon/footer structure, and removes duplicate topic/part headings,
+instruction copy and bottom Done. Added matching opening/ending countdowns, dark
+capture and green completion states, screen wake lock and safe cancellation. IELTS
+capture still stops at 120/90 seconds; preparation never opens the microphone.
+Preview is collapsed below the shared stack. No backend or historical data changes.

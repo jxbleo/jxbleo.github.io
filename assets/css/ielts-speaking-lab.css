@@ -24,11 +24,6 @@
 .ielts-preparation { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin: 20px 0 0; }
 .ielts-preparation output { font-variant-numeric: tabular-nums; color: #557291; }
 .ielts-preparation button[aria-pressed="true"] { background: #e8f1fc; color: #2267af; }
-.ielts-speaking-page #ielts-recorder .speaking-response-dialog-body { padding: 22px; }
-.ielts-speaking-page #ielts-recorder .speaking-response-dialog-header h2 { font-size: 1.3rem; }
-.ielts-speaking-page #ielts-recorder .speaking-response-dialog-question { padding: 12px 16px; margin-top: 16px; }
-.ielts-speaking-page #ielts-recorder .speaking-response-dialog-question p { margin: 8px 0; }
-.ielts-speaking-page #ielts-recorder .speaking-response-dialog-question ul { margin: 10px 0; }
 .ielts-topic-question > span { display: block; }
 .ielts-topic-question .ielts-bullets { padding: 12px 0 12px 20px; }
 .ielts-bullets > span { display: list-item; }
@@ -54,7 +49,7 @@
 .ielts-muted { color: #6a7d86; font-size: .82rem; }
 .ielts-speaking-page button:disabled { opacity: .55; cursor: default; }
 .ielts-speaking-page button:focus-visible, .ielts-speaking-page summary:focus-visible { outline: 3px solid #83b7f3; outline-offset: 3px; }
-.ielts-speaking-page dialog::backdrop { background: #23394b55; backdrop-filter: blur(4px); }
+.ielts-speaking-page dialog:not(#individual-response-dialog)::backdrop { background: #23394b55; backdrop-filter: blur(4px); }
 @media (max-width: 650px) {
   .ielts-identity { max-width: 80px; font-size: .7rem; }
   .ielts-score-grid { grid-template-columns: 1fr; }
@@ -63,3 +58,13 @@
   .ielts-speaking-page #ielts-history { padding: 9px 11px; }
 }
 @media (prefers-reduced-motion: reduce) { .ielts-speaking-page *, .ielts-speaking-page *::before { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* Only cue-card content and optional preparation differ from the shared IR surface. */
+#individual-response-dialog .speaking-response-dialog-question p { margin: 0; }
+#individual-response-dialog .speaking-response-dialog-question ul { margin: 12px 0; padding-left: 24px; text-align: left; font-size: .85em; font-weight: 500; }
+#individual-response-dialog .ielts-preparation { flex: none; margin-top: 16px; transition: opacity 220ms ease; }
+#individual-response-dialog .ielts-preparation button { min-height: 36px; padding: 8px 16px; border-radius: 999px; border-color: #8874ba2e; color: #72609f; font-size: 13px; }
+#individual-response-dialog .ielts-preparation output { color: #72609f; }
+#individual-response-dialog.is-response-focused .ielts-preparation { opacity: 0; pointer-events: none; }
+#individual-response-dialog .ielts-recording-preview { width: min(100%, 360px); margin-top: 16px; color: #62747a; text-align: center; font-size: 13px; }
+#individual-response-dialog .ielts-recording-preview summary { cursor: pointer; }

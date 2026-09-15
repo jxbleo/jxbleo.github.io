@@ -8,6 +8,7 @@
   var operation = function () { return window.crypto.randomUUID ? window.crypto.randomUUID() : Array.from(window.crypto.getRandomValues(new Uint32Array(4))).join('-'); };
   var teacher = false, sets = [], source = 'cambridge', selectedSet = null, reportId = '', pageGeneration = 0;
   var take = null, stream = null, recorder = null, captureGeneration = 0, timer = 0, prepTimer = 0, prepDeadline = 0;
+  var captureDeadline = 0, cueContext = null, wakeLock = window.MrCatScreenWakeLock.create();
   var historyOffset = null, historyGeneration = 0, historyRows = [], pollTimer = 0, reportPolling = false;
   var modalStack = [], bodyStyle = '', scrollPosition = 0, lastAudio = null;
   function status(message) { $('ielts-status').textContent = message || ''; }
@@ -95,61 +96,92 @@
     } catch (error) { if (generation === pageGeneration) status(friendly(error)); }
   }
   function stopPreparation() { window.clearInterval(prepTimer); prepTimer = 0; prepDeadline = 0; $('ielts-prepare').setAttribute('aria-pressed', 'false'); }
-  function cleanupCapture() {
-    window.clearInterval(timer); timer = 0; stopPreparation();
-    if (recorder) { recorder.onstop = null; recorder.ondataavailable = null; recorder.onerror = null; if (recorder.state !== 'inactive') { try { recorder.stop(); } catch (_) {} } }
-    recorder = null; if (stream) stream.getTracks().forEach(function (track) { track.stop(); }); stream = null;
+  function prepareCues() {
+    try { var Audio = window.AudioContext || window.webkitAudioContext; if (Audio) { cueContext = new Audio(); cueContext.resume().catch(function () {}); } } catch (_) { cueContext = null; }
   }
-  function clearPreview() { $('ielts-preview').pause(); $('ielts-preview').removeAttribute('src'); $('ielts-preview').load(); $('ielts-preview').hidden = true; if (take && take.url) { URL.revokeObjectURL(take.url); take.url = ''; } }
+  function scheduleCues(offsets) {
+    if (!cueContext) return;
+    try {
+      offsets.forEach(function (offset) {
+        var at = cueContext.currentTime + offset, oscillator = cueContext.createOscillator(), gain = cueContext.createGain();
+        oscillator.frequency.setValueAtTime(880, at); gain.gain.setValueAtTime(0, at); gain.gain.linearRampToValueAtTime(.12, at + .01); gain.gain.exponentialRampToValueAtTime(.001, at + .13);
+        oscillator.connect(gain); gain.connect(cueContext.destination); oscillator.start(at); oscillator.stop(at + .15);
+      });
+    } catch (_) { /* Audio cues are optional; microphone capture must still work. */ }
+  }
+  function cleanupCapture() {
+    window.clearInterval(timer); window.clearTimeout(captureDeadline); timer = 0; captureDeadline = 0; stopPreparation(); wakeLock.setActive(false);
+    if (cueContext) { try { cueContext.close().catch(function () {}); } catch (_) {} cueContext = null; }
+    if (recorder) { recorder.onstop = null; recorder.ondataavailable = null; recorder.onerror = null; if (recorder.state !== 'inactive') { try { recorder.stop(); } catch (_) {} } }
+    recorder = null;
+    if (stream) stream.getTracks().forEach(function (track) { track.onended = null; track.stop(); }); stream = null;
+  }
+  function clearPreview() {
+    $('ielts-preview').pause(); $('ielts-preview').removeAttribute('src'); $('ielts-preview').load(); $('ielts-preview').hidden = true;
+    $('ielts-preview-panel').hidden = true; $('ielts-preview-panel').open = false;
+    if (take && take.url) { URL.revokeObjectURL(take.url); take.url = ''; }
+  }
   function updateTakeControls() {
     if (!take) return;
     var locked = take.busy || take.uploaded || take.requesting;
-    $('ielts-record').disabled = locked || take.stopping;
-    $('ielts-file').disabled = locked || take.recording || take.stopping;
-    $('ielts-prepare').disabled = locked || take.recording || take.stopping;
-    $('ielts-submit').hidden = !take.blob || take.uploaded || take.recording || take.stopping;
-    $('ielts-submit').disabled = locked;
-    $('ielts-record').classList.toggle('is-recording', !!take.recording);
-    $('ielts-record-label').textContent = take.recording ? 'Stop recording' : take.blob ? 'Record again' : 'Tap to record';
+    var active = take.countdown || take.recording || take.stopping;
+    var state = take.countdown ? 'countdown' : take.recording ? (take.ending ? 'ending' : 'recording') : take.blob ? (take.stoppedEarly ? 'stopped' : 'finished') : take.requesting ? 'requesting' : 'idle';
+    var label = take.countdown ? 'Cancel countdown' : take.recording ? 'Tap to Stop' : take.blob ? 'Tap to start over' : take.requesting ? 'Connecting…' : 'Tap to Record';
+    $('ielts-recorder-surface').dataset.state = state;
+    $('ielts-record').disabled = !!(locked || take.stopping);
+    $('ielts-record').setAttribute('aria-label', label); $('ielts-record-label').textContent = label;
+    $('ielts-file').disabled = !!(locked || active); $('ielts-file-label').hidden = !!take.blob;
+    $('ielts-prepare').disabled = !!(locked || active || take.blob);
+    $('ielts-submit').hidden = !take.blob || take.uploaded || !!active; $('ielts-submit').disabled = !!locked;
+    $('ielts-recording-indicator').hidden = !take.recording;
+    $('ielts-timer').setAttribute('aria-hidden', String(!!(take.countdown || take.ending)));
+    $('ielts-timer').setAttribute('role', take.blob ? 'status' : 'timer');
+    $('ielts-timer').setAttribute('aria-label', take.blob ? 'Your recording was successfully saved.' : 'Time left');
+    $('individual-response-dialog').classList.toggle('is-response-focused', !!active);
+    [$('ielts-recorder-close'), $('ielts-preparation'), $('ielts-file-label').parentElement, $('ielts-record-status')].forEach(function (node) { node.inert = !!active; });
   }
   function setTakeBlob(blob, seconds) {
     clearPreview(); take.blob = blob; take.seconds = seconds; take.response = null; take.operation = operation(); take.uploadOperation = operation();
-    take.url = URL.createObjectURL(blob); $('ielts-preview').src = take.url; $('ielts-preview').hidden = false;
-    $('ielts-timer').textContent = clockText(seconds) + ' / ' + clockText(take.limit);
-    $('ielts-record-status').textContent = 'Listen, record again, or submit for analysis.'; updateTakeControls();
+    take.url = URL.createObjectURL(blob); $('ielts-preview').src = take.url; $('ielts-preview').hidden = false; $('ielts-preview-panel').hidden = false;
+    $('ielts-timer').textContent = 'Your recording was successfully saved.';
+    $('ielts-record-status').textContent = ''; updateTakeControls();
+  }
+  function resetCaptureDisplay() {
+    $('ielts-timer').textContent = clockText(take.limit); $('ielts-ring-progress').style.strokeDashoffset = '0';
+    $('ielts-record-status').textContent = ''; $('ielts-opening-digit').textContent = '3';
   }
   function openRecorder(q) {
     if (teacher) { status('Teacher preview · Use History to view student recordings.'); return; }
     captureGeneration += 1;
     take = { question: q, setId: selectedSet.set_id, limit: q.part === 2 ? 120 : 90, blob: null, busy: false, uploaded: false };
-    $('ielts-part-label').textContent = 'IELTS · PART ' + q.part;
-    $('ielts-recorder-title').textContent = q.part === 2 ? selectedSet.title : 'Question ' + q.order;
     $('ielts-question').innerHTML = questionMarkup(q);
     $('ielts-preparation').hidden = q.part !== 2; $('ielts-preparation-time').textContent = '';
-    $('ielts-timer').textContent = '00:00 / ' + clockText(take.limit); $('ielts-timer').classList.remove('is-warning');
-    $('ielts-record-status').textContent = 'Record one uninterrupted response. You can stop early.';
-    $('ielts-submit').textContent = 'Submit & analyse'; updateTakeControls();
-    openModal($('ielts-recorder'));
+    resetCaptureDisplay(); $('ielts-submit').textContent = 'Submit'; updateTakeControls();
+    openModal($('individual-response-dialog')); $('ielts-record').focus({ preventScroll: true });
   }
   async function closeRecorder() {
     if (!take) return;
     if (take.busy) { $('ielts-record-status').textContent = 'Please wait for the upload to finish.'; return; }
-    if (!take.uploaded && (take.blob || take.recording || take.requesting) && !(await confirmDiscard())) return;
-    captureGeneration += 1; cleanupCapture(); clearPreview(); take = null; closeModal($('ielts-recorder'));
+    if (!take.uploaded && (take.blob || take.recording || take.requesting || take.countdown) && !(await confirmDiscard())) return;
+    captureGeneration += 1; cleanupCapture(); clearPreview(); take = null; closeModal($('individual-response-dialog'));
   }
-  function stopRecording() {
+  function stopRecording(automatic) {
     if (!take || !recorder || recorder.state === 'inactive' || take.stopping) return;
-    take.seconds = (performance.now() - take.startedAt) / 1000; take.stopping = true; window.clearInterval(timer); updateTakeControls();
+    take.seconds = (performance.now() - take.startedAt) / 1000; take.stoppedEarly = !automatic; take.stopping = true; window.clearInterval(timer); window.clearTimeout(captureDeadline); updateTakeControls();
     try { recorder.stop(); } catch (_) { captureError('This recording could not be saved. Please record again.'); }
   }
-  function captureError(message) { cleanupCapture(); if (take) { take.recording = false; take.requesting = false; take.stopping = false; updateTakeControls(); $('ielts-record-status').textContent = message; } }
+  function captureError(message) {
+    captureGeneration += 1; cleanupCapture();
+    if (take) { take.recording = false; take.requesting = false; take.stopping = false; take.countdown = false; take.ending = false; resetCaptureDisplay(); updateTakeControls(); $('ielts-record-status').textContent = message; }
+  }
   async function startRecording() {
-    if (!take || take.busy || take.uploaded || take.requesting) return;
-    if (take.recording) { stopRecording(); return; }
+    if (!take || take.busy || take.uploaded || take.requesting || take.stopping) return;
+    if (take.countdown) { captureError(''); return; }
+    if (take.recording) { stopRecording(false); return; }
     if (take.blob && !(await confirmDiscard())) return;
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { $('ielts-record-status').textContent = 'Recording is unavailable. Choose an audio file instead.'; return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { $('ielts-record-status').textContent = 'Recording is unavailable. Use Upload Files instead.'; return; }
     var generation = ++captureGeneration; clearPreview(); take.blob = null; stopPreparation(); $('ielts-preparation-time').textContent = '';
-    take.requesting = true; updateTakeControls();
+    resetCaptureDisplay(); prepareCues(); take.requesting = true; take.ending = false; updateTakeControls();
     try {
       var input = await navigator.mediaDevices.getUserMedia({ audio: true });
       if (generation !== captureGeneration || !take) { input.getTracks().forEach(function (track) { track.stop(); }); return; }
@@ -157,29 +189,43 @@
       var preferred = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(function (mime) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime); });
       recorder = new MediaRecorder(stream, preferred ? { mimeType: preferred } : undefined);
       var chunks = [], device = recorder;
-      device.ondataavailable = function (event) { if (event.data && event.data.size) chunks.push(event.data); };
-      device.onerror = function () { captureError('The microphone stopped working. Please record again.'); };
+      device.ondataavailable = function (event) { if (generation === captureGeneration && event.data && event.data.size) chunks.push(event.data); };
+      device.onerror = function () { if (generation === captureGeneration) captureError('The microphone stopped working. Please record again.'); };
       device.onstop = function () {
         if (generation !== captureGeneration || !take) return;
         var seconds = take.seconds || (performance.now() - take.startedAt) / 1000;
         var blob = new Blob(chunks, { type: device.mimeType || 'audio/webm' });
-        cleanupCapture(); take.recording = false; take.stopping = false;
+        cleanupCapture(); take.recording = false; take.stopping = false; take.countdown = false; take.ending = false;
         if (!blob.size || seconds <= 0 || seconds > take.limit + 2) { captureError('The recording could not be timed reliably. Please record again.'); return; }
         setTakeBlob(blob, seconds);
       };
-      device.start(250); take.startedAt = performance.now(); take.seconds = 0; take.requesting = false; take.recording = true;
-      $('ielts-record-status').textContent = 'Recording…'; updateTakeControls();
+      stream.getTracks().forEach(function (track) { track.onended = function () { if (generation !== captureGeneration) return; if (take.recording) stopRecording(false); else captureError('The microphone disconnected. Please try again.'); }; });
+      var openingStartedAt = performance.now(); take.requesting = false; take.countdown = true; wakeLock.setActive(true); scheduleCues([0, 1, 2]); updateTakeControls();
       timer = window.setInterval(function () {
-        if (!take || !take.recording) return;
+        if (!take || generation !== captureGeneration) return;
+        if (take.countdown) {
+          var openingElapsed = (performance.now() - openingStartedAt) / 1000;
+          if (openingElapsed < 3) { $('ielts-opening-digit').textContent = String(3 - Math.floor(openingElapsed)); return; }
+          try { device.start(250); } catch (_) { captureError('Recording could not start. Use Upload Files instead.'); return; }
+          take.startedAt = performance.now(); take.seconds = 0; take.countdown = false; take.recording = true; updateTakeControls();
+          // IELTS ending cues belong INSIDE its 120/90-second cap, never extra time.
+          scheduleCues([take.limit - 3, take.limit - 2, take.limit - 1]);
+          captureDeadline = window.setTimeout(function () { if (generation === captureGeneration) stopRecording(true); }, take.limit * 1000);
+        }
+        if (!take.recording) return;
         var seconds = (performance.now() - take.startedAt) / 1000;
-        $('ielts-timer').textContent = clockText(Math.min(seconds, take.limit)) + ' / ' + clockText(take.limit);
-        $('ielts-timer').classList.toggle('is-warning', seconds >= take.limit - 5);
-        if (seconds >= take.limit) stopRecording();
-      }, 100);
-    } catch (_) { if (generation === captureGeneration) captureError('Microphone access was unavailable. Choose an audio file or try again.'); }
+        if (seconds >= take.limit) { stopRecording(true); return; }
+        take.ending = seconds >= take.limit - 3;
+        $('ielts-recorder-surface').dataset.state = take.ending ? 'ending' : 'recording';
+        if (take.ending) $('ielts-opening-digit').textContent = String(Math.ceil(take.limit - seconds));
+        $('ielts-timer').setAttribute('aria-hidden', String(take.ending));
+        $('ielts-timer').textContent = clockText(Math.ceil(take.limit - seconds));
+        $('ielts-ring-progress').style.strokeDashoffset = String(Math.min(1, seconds / take.limit));
+      }, 50);
+    } catch (_) { if (generation === captureGeneration) captureError('Microphone access was unavailable. Use Upload Files or try again.'); }
   }
   async function chooseFile(file) {
-    if (!file || !take || take.busy || take.recording || take.uploaded) return;
+    if (!file || !take || take.busy || take.recording || take.countdown || take.requesting || take.stopping || take.uploaded) return;
     if (!/^audio\/(webm|mp4|mpeg|wav|x-m4a|aac)(;|$)/.test(file.type) || file.size > 50 * 1024 * 1024 || !file.size) { $('ielts-record-status').textContent = 'Choose a supported audio file up to 50 MB.'; return; }
     if (take.blob && !(await confirmDiscard())) return;
     stopPreparation(); var generation = captureGeneration, url = URL.createObjectURL(file), audio = document.createElement('audio');
@@ -278,13 +324,13 @@
   $('ielts-file').addEventListener('change', function () { var file = $('ielts-file').files[0]; $('ielts-file').value = ''; chooseFile(file); });
   $('ielts-submit').addEventListener('click', submit);
   $('ielts-prepare').addEventListener('click', function () {
-    if (!take || take.question.part !== 2 || take.busy || take.recording) return;
+    if (!take || take.question.part !== 2 || take.busy || take.recording || take.countdown || take.requesting || take.blob) return;
     if (prepTimer) { stopPreparation(); $('ielts-preparation-time').textContent = ''; return; }
     prepDeadline = performance.now() + 60000; $('ielts-prepare').setAttribute('aria-pressed', 'true'); $('ielts-preparation-time').textContent = '01:00';
     prepTimer = window.setInterval(function () { var remaining = Math.max(0, Math.ceil((prepDeadline - performance.now()) / 1000)); $('ielts-preparation-time').textContent = clockText(remaining); if (!remaining) { stopPreparation(); $('ielts-record-status').textContent = 'Preparation finished. Tap the microphone when you are ready.'; } }, 100);
   });
   $('ielts-recorder-close').addEventListener('click', closeRecorder);
-  $('ielts-recorder').addEventListener('cancel', function (event) { event.preventDefault(); closeRecorder(); });
+  $('individual-response-dialog').addEventListener('cancel', function (event) { if (event.target !== $('individual-response-dialog')) return; event.preventDefault(); closeRecorder(); });
   $('ielts-history').addEventListener('click', function () { openModal($('ielts-history-dialog')); loadHistory(false); });
   function closeHistory() { historyGeneration += 1; closeModal($('ielts-history-dialog')); }
   $('ielts-history-close').addEventListener('click', closeHistory);
@@ -293,9 +339,9 @@
   $('ielts-history-more').addEventListener('click', function () { loadHistory(true); });
   $('ielts-history-list').addEventListener('click', function (event) { var button = event.target.closest('[data-response]'); if (button) { closeHistory(); openReport(button.dataset.response); } });
   $('ielts-back').addEventListener('click', function () { if (!$('ielts-detail').hidden) showLibrary(); else window.location.href = teacher ? 'teacher.html' : 'dashboard.html'; });
-  window.addEventListener('beforeunload', function (event) { if (take && (take.recording || take.blob || take.busy || take.requesting)) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', function (event) { if (take && (take.recording || take.countdown || take.blob || take.busy || take.requesting)) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('pagehide', function () { captureGeneration += 1; cleanupCapture(); clearPreview(); take = null; clearReportAudio(); window.clearInterval(pollTimer); modalStack.slice().reverse().forEach(function (entry) { closeModal(entry.dialog); }); });
-  document.addEventListener('visibilitychange', function () { if (document.hidden && take && take.recording) stopRecording(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden || !take) return; if (take.recording) stopRecording(false); else if (take.countdown || take.requesting) captureError('Recording paused. Tap to start again.'); });
   function startPolling() {
     window.clearInterval(pollTimer);
     pollTimer = window.setInterval(async function () {

@@ -3498,3 +3498,20 @@ IELTS audio preflight must run the real `speech-provider.inspectAudio` validator
 in gateway tests: 120/90-second recordings pass their trusted question limits;
 123/93 seconds fail; legacy DSE 69 seconds still fails. Arbitrary overrides
 cannot expand the limit.
+
+### IELTS recorder parity (2026-09-15)
+
+Run `npm run test:ielts-speaking` for shared markup parity and the actual recorder
+event lifecycle: both duration caps, unrecorded opening countdown, ending cues,
+preparation without microphone access, early-stop duration before finalization,
+rerecord keep/discard, pending permission after close, denied microphone, start
+failure, hidden-tab cancellation and file picker cancel/over-limit rejection.
+Visually compare DSE and IELTS Part 3 at equal viewport sizes: full-page bounds,
+Back/question/dial/clock/footer positions, dark capture and green saved states.
+Check Part 2 long cue-card scrolling, optional preparation and collapsed replay.
+
+Parity correction QA: local browser fixtures passed at 1280×720; DSE and IELTS
+Part 3 positions match. A 390×844 embedded viewport also passed Part 2 with
+scrollWidth 390 and footer bottom 814. Dark capture, green early-stop completion,
+preparation and discard were exercised using synthetic audio; no student recording
+or live analysis was submitted during this UI check.
