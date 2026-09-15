@@ -2032,3 +2032,29 @@ Session anchor; never use client-provided identity or display titles as filters.
 Keep history summaries metadata-only and keyset-paginated beyond the legacy
 sidebar cap. Each selection reads one authorized saved report. Preserve frozen
 snapshots, grading and audio; unsubmitted restarts are not report history.
+
+### IELTS Speaking Lab V1 (owner decisions 2026-09-14)
+
+IELTS is a separate authenticated Part 2/Part 3 classroom workspace. Dashboard
+capsules are HKDSE Speaking Lab and IELTS Speaking Lab. Part 2 has optional
+one-minute preparation (never auto-starts the mic) and 120-second recording;
+Part 3 has independent 90-second recordings. Submitted IELTS audio is immutable;
+new practice creates a new response. Teachers can read recordings and reports
+but have no IELTS topic editor. No Part 1, assignment, completion or STAR
+projection is added. Keep the new `ielts_speaking_sets` and all reused Speaking
+collections ADMINONLY. `exam_family: ielts` selects separate prompts/schema;
+legacy missing family remains DSE. Preserve the single response locator, durable
+job, worker ACL/timer and paired Speaking/Writing text-model policy.
+
+Ready reports contain Session details/audio/collapsed Transcript, Analysis with
+three IELTS criterion training estimates (no pronunciation or overall band),
+and Band 8 Answer with Chinese Thinking Prompt before a collapsed original
+English sample. Validate exact source evidence and fail closed on invalid
+scores; ASR uncertainty must not become invented pronunciation/grammar criticism.
+
+The Cambridge source index is metadata, not the question corpus. Eight paired
+Cambridge 10/11 cards from the owner-supplied HTML are prepared locally
+(8 Part 2, 49 Part 3 questions); live import was verified on 2026-09-15. Keep owner-supplied original source and prepared import
+files under ignored `.cloudbase-private`. Never substitute generated questions
+for official ones. Seasonal topics are an explicit placeholder. See
+`docs/IELTS_SPEAKING_LAB.md` for source intake, indexes and owner-gated rollout.

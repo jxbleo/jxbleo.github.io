@@ -2743,3 +2743,21 @@ processing/failed responses do not appear in this report-only selector.
 Dates use English months and Shanghai time: `14 Sep 16:42` in the current year,
 `14 Sep 2025 16:42` outside it. The selected label determines the control width;
 the longest option must not leave a large gap beside shorter labels.
+
+## IELTS Speaking Lab classroom practice (2026-09-15)
+
+The owner-approved V1 has an independent IELTS Speaking Lab Dashboard capsule;
+the existing capsule is named HKDSE Speaking Lab. Topic cards pair Part 2 and
+Part 3. Part 2 offers optional one-minute preparation and 120-second recording;
+Part 3 questions each allow 90 seconds. Students can stop early, preview,
+re-record locally and submit independently; later practice preserves earlier
+submissions. Teachers can view recordings/reports but cannot edit the IELTS
+library. This is free practice without Part 1, assignments, completion or STAR.
+
+Ready reports have Session details/audio/collapsed Transcript, Analysis with
+three IELTS criterion estimates (no pronunciation or overall), and Band 8 Answer
+with Chinese Thinking Prompt before a collapsed English Sample Answer. Analysis
+is Chinese with exact English evidence. Question banks are 剑雅官方真题 and 当季题库;
+older seasons remain available. The source index is prepared, but no real
+Cambridge questions have yet been imported; seasonal topics are a placeholder.
+See [full scope and content handoff](IELTS_SPEAKING_LAB.md).

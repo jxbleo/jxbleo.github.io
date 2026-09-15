@@ -1,0 +1,166 @@
+{
+  "checked_at": "2026-09-14",
+  "latest_published_book": 21,
+  "initial_import_books": [
+    10,
+    11
+  ],
+  "initial_import_scope_updated_at": "2026-09-15",
+  "prepared_topic_count": 8,
+  "status": "cloud_import_verified",
+  "sources": [
+    {
+      "title": "Cambridge English IELTS preparation",
+      "url": "https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/",
+      "supports": "Current official preparation series includes IELTS 21."
+    },
+    {
+      "title": "Cambridge IELTS 21 Academic publisher excerpt",
+      "url": "https://assets.cambridge.org/97810098/26723/excerpt/9781009826723_excerpt.pdf",
+      "supports": "Four authentic practice papers; introduction, not a complete speaking corpus."
+    },
+    {
+      "title": "Cambridge IELTS 20 publisher product",
+      "url": "https://shop.cambridge.org/english/product/2700250101",
+      "supports": "Four complete papers, published July 2025."
+    },
+    {
+      "title": "Cambridge publisher catalogue, books 1–7",
+      "url": "https://www.cambridge.org/elt/order/catalogue/Exams.pdf",
+      "supports": "Historical series catalogue."
+    },
+    {
+      "title": "IELTS Speaking public descriptors",
+      "url": "https://ielts.org/cdn/ielts-guides/ielts-speaking-band-descriptors.pdf",
+      "supports": "Rubric reference, not question-bank content."
+    }
+  ],
+  "books": [
+    {
+      "book": 1,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 2,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 3,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 4,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 5,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 6,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 7,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 8,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 9,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 10,
+      "status": "cloud_import_verified",
+      "reviewed_topic_count": 4,
+      "reviewed_part_3_count": 24
+    },
+    {
+      "book": 11,
+      "status": "cloud_import_verified",
+      "reviewed_topic_count": 4,
+      "reviewed_part_3_count": 25
+    },
+    {
+      "book": 12,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 13,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 14,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 15,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 16,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 17,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 18,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 19,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 20,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    },
+    {
+      "book": 21,
+      "status": "source_not_supplied",
+      "reviewed_topic_count": 0
+    }
+  ],
+  "seasonal": {
+    "status": "placeholder",
+    "sets": []
+  },
+  "notes": [
+    "This is a source-acquisition index, not an imported question bank.",
+    "Verify each original Part 2 / Part 3 pairing, wording, edition and page before marking source_verified.",
+    "Do not fabricate missing questions, relabel paraphrases as official, or force older speaking formats into the current schema.",
+    "Owner-supplied complete raw material and import artifacts stay in .cloudbase-private, outside Git and dist."
+  ],
+  "prepared_part_3_count": 49,
+  "owner_source": {
+    "filename": "cambridge-ielts-10-11-speaking.html",
+    "received_at": "2026-09-15",
+    "review_basis": "Extraction checked against owner-supplied HTML; publisher edition not independently checked.",
+    "private_review": ".cloudbase-private/sources/ielts-c10-c11/review.json"
+  },
+  "cloud_import_verified_at": "2026-09-15",
+  "cloud_import_verified_count": 8
+}

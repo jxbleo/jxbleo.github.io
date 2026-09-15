@@ -1705,3 +1705,21 @@ submission, not a retained microphone-start timestamp. Date labels preserve the
 stored response day and append the Shanghai creation clock only when it falls
 on that same day. Older day-only/backdated records show their date without an
 invented recording time. Missing response dates fall back to creation time.
+
+## IELTS Speaking additions (2026-09-15)
+
+New ADMINONLY `ielts_speaking_sets`: unique `set_id`, `exam_family: ielts`,
+`source_kind: cambridge|seasonal`, book/Test or year/season, title,
+`content_revision`, `source_reference`, `source_verified`, visibility, one
+`part_2` cue card and ordered `part_3` questions with stable child IDs.
+
+Reuse `speaking_individual_responses` with `exam_family: ielts`, authenticated
+student UID, source/question snapshots, server-selected 120/90-second cap,
+submitted audio and independent durable report state. Submitted IELTS records
+cannot be deleted or have their audio replaced via browser actions. Shared
+assets/jobs/reports keep `response_session_id` as their only session locator.
+IELTS reports use `ielts_analysis` and `ielts-speaking-v1`; no overall band,
+pronunciation score, assignment, attempt, completion or STAR projection exists.
+History summaries exclude question snapshots/report bodies. Student reads scope
+to UID; active teachers may read all. Full schemas/index requirements and private
+intake paths are in [IELTS Speaking Lab](IELTS_SPEAKING_LAB.md).

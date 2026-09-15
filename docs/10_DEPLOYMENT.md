@@ -1920,3 +1920,44 @@ have not been executed. After owner authorization, smoke-test two ready reports
 for one student/question and an unauthorized anchor; confirm date selection
 loads distinct saved content. A missing gateway action leaves the current report
 readable and displays a history retry rather than silently claiming no history.
+
+## IELTS Speaking Lab V1 rollout (2026-09-15)
+
+Create ADMINONLY `ielts_speaking_sets` and the topic/history indexes listed in
+[IELTS Speaking Lab](IELTS_SPEAKING_LAB.md). Preserve existing audio/job/report
+collections and the three-field unique Speaking report locator index. Prepare
+reviewed owner-supplied content with `scripts/prepare-ielts-speaking.js`; the
+source-acquisition index contains no importable original questions.
+
+After explicit owner authorization, import only `ielts_speaking_sets`, deploy
+packaged `speakingLab` and `speakingAiWorker` with existing environment values,
+worker ACL and timer preserved, then publish the scoped static changes. The
+shared text-model policy is unchanged; no secret, provider or model update is
+required. First verify release, both Speaking test suites, static build and
+function packaging. Live collection/index setup, imports and publication were
+not performed during local implementation.
+
+
+## 2026-09-15 — Authorized IELTS Speaking rollout
+
+Owner authorized publication. Created ADMINONLY `ielts_speaking_sets`, added
+three topic indexes and six IELTS history indexes, and inserted only Cambridge
+10/11 Tests 1–4. Live readback matched all eight source records (8 Part 2,
+49 Part 3). Existing Speaking records and indexes were retained.
+
+Both `speakingLab` and `speakingAiWorker` were deployed from a scoped release
+copy based on `d5193d8c`; downloaded ZIP SHA-256 values match the uploaded
+packages. Function configuration hashes before/after are identical, including
+environment values and timer configuration; worker client invocation remains
+denied. Speaking/Writing text models were checked together and preserved.
+
+The static release version is `20260915-ielts-speaking-1`. Its scoped source
+retains current main's DSE history, report refresh, recorder and model-attempt
+auditing. Private source and import artifacts are excluded from the public
+build. IELTS and full current DSE test suites, release checks and packaging
+passed. Deployment evidence and rollback packages are private under
+`.cloudbase-private/ielts-speaking-release-audit/`.
+
+Browser automation timed out during release checks; no live student recording
+or provider-generated IELTS report is claimed as tested. Device audio and
+real-provider calibration remain acceptance follow-ups.

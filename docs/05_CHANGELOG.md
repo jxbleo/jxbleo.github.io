@@ -3718,3 +3718,53 @@ After Tap to Stop, Individual Response shows the actual captured duration in gre
   whole-report switching with stale-read/error protection.
 - Add date, selection, access and 605-record pagination coverage. No production
   deployment, schema migration, grading change or report regeneration performed.
+
+## 2026-09-15 — IELTS Speaking Lab V1, local implementation
+
+Added independent IELTS entry and renamed the DSE capsule HKDSE Speaking Lab.
+Implemented paired topic browsing, optional Part 2 preparation, 120/90-second
+individual recordings, immutable submissions, private history/audio playback,
+teacher viewing and three-card IELTS reports. Reused Speaking's durable backend
+with a separate three-criterion rubric, no pronunciation/overall score, and
+Thinking Prompt before an original Band 8-target sample. Added validated private
+content preparation and CloudBase import registration. No dependencies added.
+
+Content research produced a source index through Cambridge IELTS 21, not a
+complete imported question bank. Zero original Cambridge topic cards are loaded;
+owner-supplied source is needed. Seasonal topics remain an explicit placeholder.
+Cloud collection/index changes, imports, static publication and live provider
+acceptance have not been performed.
+
+## 2026-09-15 — Cambridge 10/11 Speaking source prepared
+
+Extracted the owner-supplied Desktop HTML into eight private paired topic cards:
+8 Part 2 prompts and 49 Part 3 questions. Preserved question order, group labels
+and supplied follow-ups; excluded Part 1. Retained the exact source backup,
+SHA-256, reproducible extraction and review notes privately. Updated the source
+index and handoff status. Normalization and eight-row CloudBase import dry run
+passed; no live import, collection/index creation or deployment was performed.
+
+
+## 2026-09-15 — Authorized IELTS Speaking rollout
+
+Owner authorized publication. Created ADMINONLY `ielts_speaking_sets`, added
+three topic indexes and six IELTS history indexes, and inserted only Cambridge
+10/11 Tests 1–4. Live readback matched all eight source records (8 Part 2,
+49 Part 3). Existing Speaking records and indexes were retained.
+
+Both `speakingLab` and `speakingAiWorker` were deployed from a scoped release
+copy based on `d5193d8c`; downloaded ZIP SHA-256 values match the uploaded
+packages. Function configuration hashes before/after are identical, including
+environment values and timer configuration; worker client invocation remains
+denied. Speaking/Writing text models were checked together and preserved.
+
+The static release version is `20260915-ielts-speaking-1`. Its scoped source
+retains current main's DSE history, report refresh, recorder and model-attempt
+auditing. Private source and import artifacts are excluded from the public
+build. IELTS and full current DSE test suites, release checks and packaging
+passed. Deployment evidence and rollback packages are private under
+`.cloudbase-private/ielts-speaking-release-audit/`.
+
+Browser automation timed out during release checks; no live student recording
+or provider-generated IELTS report is claimed as tested. Device audio and
+real-provider calibration remain acceptance follow-ups.

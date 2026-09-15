@@ -3394,3 +3394,21 @@ Question text stays in the white body. A hairline separates the single-line
 chevron. The count is shown only at the end of the expanded comic-style manuscript. No duplicate date below it. It is closed initially
 and whenever another report is chosen. Opening it expands inside the first card.
 Keep keyboard-native selection, visible focus and an inline retry on read errors.
+
+## IELTS Speaking Lab (2026-09-15)
+
+Independent HKDSE/IELTS Dashboard capsules lead to separate libraries. IELTS
+reuses the Individual Response microphone dialog styling. Its Part 2 dialog adds
+`One minute preparation`; preparation never automatically activates recording.
+Recording caps are 02:00 / 01:30, with an early-stop action and final-five-second
+warning. Preview and replace are available before explicit submission. Analysis
+can continue while another question is practised. Dialogs lock background scroll,
+restore focus/scroll on close and confirm discard of unsent takes.
+
+Library filters are source, book/year, Test/season and search. The seasonal bank
+is a placeholder. The Cambridge bank stays pending until source intake completes.
+Teacher Speaking links to the same IELTS workspace in authenticated read-only
+teacher mode, with history filtered by Login ID/topic. Ready reports have three
+cards: Session details (audio and collapsed Transcript), Analysis (three bands,
+pronunciation unassessed, no overall), Band 8 Answer (Thinking Prompt then
+collapsed Sample Answer). See [full specification](IELTS_SPEAKING_LAB.md).

@@ -522,3 +522,27 @@ may carry stable reference words (maximum 30 scored words). It writes V2 track
 metadata to ignored private import rows and keeps transcript/reference text out
 of public `data/`. Review both track counts and every Shadowing segment before
 owner-gated import.
+
+## IELTS Speaking owner-source intake (2026-09-15)
+
+`content/speaking/ielts-source-index.json` records research/acquisition status,
+not a ready question corpus. Keep complete owner-supplied PDFs/text and normalized
+JSON under ignored `.cloudbase-private/sources/`. The agent extracts and verifies
+book/Test and original Part 2/3 pairing, including ordered bullets and stable
+Part 3 IDs; the owner need not hand-edit JSON. Never invent missing official
+questions or publish textbook/sample-answer content in static assets.
+
+Run `node scripts/prepare-ielts-speaking.js --source <private-json>` to validate,
+then `--write` for local private JSON Lines. No-source dry runs leave existing
+outputs untouched. Only verified complete cards are importable. Use
+`npm run cloudbase:import:content -- --only ielts_speaking_sets` to review the
+import; `--apply` requires owner authorization. Older seasonal entries are kept.
+The initial empty-source run was superseded on 2026-09-15: the owner supplied
+`cambridge-ielts-10-11-speaking.html` from Desktop. Eight paired cards
+(8 Part 2, 49 Part 3) are now prepared locally, with the exact source backup,
+extraction script, SHA-256 and review notes under
+`.cloudbase-private/sources/ielts-c10-c11/`. Verification is against the supplied
+HTML, not an independent publisher edition. C10 Test 4 retains its supplied
+second discussion heading; C11 Test 4 retains all seven supplied questions.
+The CloudBase import dry run targets only those eight `ielts_speaking_sets` rows.
+See [source research, schema and commands](IELTS_SPEAKING_LAB.md).

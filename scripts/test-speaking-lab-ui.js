@@ -21,7 +21,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260901-1/);
+  assert.match(dashboard, /speaking-lab\.html\?v=20260915-ielts-speaking-1/);
   assert.match(page, /entry\.get\('discussion'\)\|\|entry\.get\('response'\)\|\|entry\.get\('set'\)[\s\S]*speaking-direct-entry/);
   assert.match(app, /initialSetId = new URLSearchParams\(window\.location\.search\)\.get\('set'\)/);
   assert.match(app, /if \(initialSetId\) \{[\s\S]*openSpeakingSet\(initialSetId\)[\s\S]*finishInitialLoading\(\)/);
@@ -473,7 +473,7 @@ function run() {
   assert.match(app, /speaking-report-layout/);
   assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
   assert.match(page, /speaking-lab\.css\?v=20260914-speaking-set-headers-1/);
-  assert.match(page, /speaking-lab\.js\?v=20260914-speaking-set-headers-1/);
+  assert.match(page, /speaking-lab\.js\?v=20260915-ielts-speaking-1/);
   assert.match(page, /ai-waiting-runner\.js/);
   assert.match(page, /speaking-waiting\.js/);
   assert.match(app, /startSpeakingWaiting\('response', response\)/);

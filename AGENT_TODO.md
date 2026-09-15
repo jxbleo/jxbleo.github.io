@@ -1458,3 +1458,29 @@ cp .qa-secrets.example .qa-secrets.local
   final 00:03 warning and restored Finished/Submit state. No real mic or upload.
 - Product/UI/testing docs and changelog updated. Owner authorized publication;
   no CloudBase deployment or database changes are needed.
+
+## IELTS Speaking local QA — 2026-09-15
+
+- Done: implemented independent IELTS capsule/workspace, paired topic schema,
+  optional preparation, 120/90-second recording, immutable submissions, private
+  history/audio, teacher reads and three-card report. Existing DSE renamed HKDSE
+  Speaking Lab. No new dependency or model configuration change.
+- Passed: IELTS synthetic gateway/pipeline tests (auth, concurrent idempotency,
+  ownership, actual provider-duration checks, exact quote validation, report
+  isolation, historical snapshots and pagination); full existing Speaking suite;
+  release verification; static build excludes `content/speaking`; both Speaking
+  functions packaged locally.
+- Browser QA: local synthetic-only server, desktop and 390px phone viewport;
+  preparation does not activate microphone, early stop and independent submit
+  preserve history, report has three cards with collapsed sample. Fixed toolbar
+  wrapping and compacted long Part 2 recorder spacing. No real user, audio,
+  provider, email or CloudBase records were used.
+- Content follow-up: Desktop owner HTML extracted into eight Cambridge 10/11
+  paired cards (8 Part 2, 49 Part 3). Exact private backup and review retained;
+  schema validation and eight-record import dry run passed.
+  IELTS regression passed after updating the obsolete zero-source assertion;
+  static build passed and excludes all private source/import artifacts.
+- Cloud rollout: eight live topic records verified; nine indexes added;
+  both Speaking code packages deployed and downloaded back with matching SHA-256.
+  Environment/ACL/timer configuration preserved. Seasonal placeholder is intentional. Actual device audio and real-provider band calibration remain.
+  See `docs/IELTS_SPEAKING_LAB.md`.

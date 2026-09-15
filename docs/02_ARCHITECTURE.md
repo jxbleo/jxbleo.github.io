@@ -1426,3 +1426,20 @@ It then loads exactly one selected report with `getIndividualResponse`.
 Navigation/request guards discard stale replies. During loading/failure the
 previous date and previous report remain together, with a local retry action.
 No persistent browser report cache is introduced.
+
+## IELTS Speaking Lab (2026-09-15)
+
+`ielts-speaking-lab.html` uses the existing authenticated `speakingLab` gateway.
+`ielts-service.js` supplies authorized topic/list/history/playback actions;
+`_shared/ielts-speaking.js` validates content and canonical reports. IELTS topics
+live in one ADMINONLY `ielts_speaking_sets` collection. Existing individual
+responses, audio, jobs, reports and usage audit are reused with `exam_family:
+ielts`, one response locator and a separate prompt/schema. Existing DSE rows
+without a family field retain their behavior; DSE lists exclude IELTS at query
+and projection boundaries. Frozen question/topic snapshots protect history.
+
+Uploads lock once submitted. IELTS finish commits asset+response atomically;
+new attempts require new response IDs. Analysis retries use one deterministic
+job per response/audio revision. Exact evidence and scores are validated before
+transactional publication. The worker, model configuration and timer boundaries
+are unchanged. See [implementation and indexes](IELTS_SPEAKING_LAB.md).

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f8f5">
+  <title>IELTS Speaking Lab | Mr. Cat Academy</title>
+  <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+  <link rel="stylesheet" href="assets/css/app.css?v=20260826-1">
+  <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
+  <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260914-speaking-set-headers-1">
+  <link rel="stylesheet" href="assets/css/ielts-speaking-lab.css?v=20260915-ielts-speaking-1">
+</head>
+<body class="app-page liquid-glass-shell speaking-lab-page ielts-speaking-page">
+  <main class="app-shell">
+    <header class="app-header speaking-lab-toolbar">
+      <button class="speaking-back-button" id="ielts-back" aria-label="Back" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"/></svg></button>
+      <h1 class="ielts-toolbar-title">IELTS Speaking Lab</h1>
+      <span id="ielts-identity" class="ielts-identity"></span>
+      <button class="outline-button" id="ielts-history" type="button" disabled>History</button>
+    </header>
+    <p id="ielts-status" class="ielts-status" role="status" aria-live="polite">Loading…</p>
+    <section class="speaking-set-library" id="ielts-library" aria-label="Topic library" hidden>
+      <nav class="ielts-source-tabs" aria-label="Question banks">
+        <button type="button" data-source="cambridge" aria-pressed="true">剑雅官方真题</button>
+        <button type="button" data-source="seasonal" aria-pressed="false">当季题库</button>
+      </nav>
+      <div class="speaking-set-filters">
+        <label class="speaking-set-search"><span class="sr-only">Search topics</span><input id="ielts-search" type="search" placeholder="Search topics" autocomplete="off"></label>
+        <label><span class="sr-only">Book or year</span><select id="ielts-group"><option value="">All books</option></select></label>
+        <label><span class="sr-only">Test or season</span><select id="ielts-subgroup"><option value="">All tests</option></select></label>
+      </div>
+      <div class="speaking-set-list" id="ielts-topics"></div>
+    </section>
+    <section class="ielts-detail" id="ielts-detail" aria-label="Speaking practice" hidden></section>
+  </main>
+  <dialog class="speaking-dialog speaking-response-dialog" id="ielts-recorder" aria-labelledby="ielts-recorder-title">
+    <div class="speaking-response-dialog-body">
+      <div class="speaking-response-dialog-header"><p class="eyebrow accent" id="ielts-part-label"></p><h2 id="ielts-recorder-title"></h2></div>
+      <div class="speaking-response-dialog-question" id="ielts-question"></div>
+      <div class="ielts-preparation" id="ielts-preparation">
+        <button class="outline-button" type="button" id="ielts-prepare" aria-pressed="false">One minute preparation</button>
+        <output id="ielts-preparation-time" aria-label="Preparation time"></output>
+      </div>
+      <div class="speaking-response-dialog-recorder">
+        <div class="speaking-response-timer" id="ielts-timer">00:00 / 02:00</div>
+        <button class="speaking-response-microphone" type="button" id="ielts-record" aria-describedby="ielts-record-status">
+          <span class="speaking-response-microphone-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="11" y="5" width="10" height="15" rx="5"/><path d="M7.5 16.5a8.5 8.5 0 0 0 17 0M16 25v3M12 28h8"/></svg></span>
+          <span class="speaking-response-microphone-label" id="ielts-record-label">Tap to record</span>
+        </button>
+        <p class="speaking-response-status" id="ielts-record-status" role="status" aria-live="polite"></p>
+        <label class="speaking-response-dialog-file">Choose existing audio<input type="file" id="ielts-file" accept="audio/*" hidden></label>
+        <audio class="ielts-audio" id="ielts-preview" controls preload="metadata" hidden></audio>
+        <button class="primary-button speaking-response-dialog-upload" id="ielts-submit" type="button" hidden>Submit &amp; analyse</button>
+      </div>
+      <div class="speaking-dialog-actions"><button class="outline-button" id="ielts-recorder-close" type="button">Done</button></div>
+    </div>
+  </dialog>
+  <dialog class="speaking-dialog ielts-history-dialog" id="ielts-history-dialog" aria-labelledby="ielts-history-title">
+    <div class="speaking-response-dialog-body">
+      <div class="ielts-history-head"><h2 id="ielts-history-title">History</h2><button class="outline-button" type="button" id="ielts-history-close">Done</button></div>
+      <form id="ielts-history-filters" class="ielts-history-filters">
+        <label id="ielts-student-filter" hidden>Student Login ID<input id="ielts-student-id" autocomplete="off" placeholder="All students"></label>
+        <label>Topic<select id="ielts-history-topic"><option value="">All topics</option></select></label>
+        <button class="outline-button" type="submit">Filter</button>
+      </form>
+      <p id="ielts-history-status" role="status" aria-live="polite"></p>
+      <div id="ielts-history-list" class="ielts-history-list"></div>
+      <button class="outline-button" id="ielts-history-more" type="button" hidden>Load more</button>
+    </div>
+  </dialog>
+  <dialog class="speaking-dialog" id="ielts-discard-dialog" aria-labelledby="ielts-discard-title">
+    <div class="speaking-response-dialog-body"><h2 id="ielts-discard-title">Discard this recording?</h2><p>This recording has not been submitted.</p><div class="speaking-dialog-actions"><button class="outline-button" type="button" id="ielts-keep">Keep recording</button><button class="primary-button" type="button" id="ielts-discard">Discard</button></div></div>
+  </dialog>
+  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+  <script src="assets/js/config.public.js?v=20260915-ielts-speaking-1"></script>
+  <script src="assets/js/cloudbase-client.js?v=20260828-1"></script>
+  <script src="assets/js/auth.js?v=20260911-1"></script>
+  <script src="assets/js/ielts-speaking-lab.js?v=20260915-ielts-speaking-1"></script>
+</body>
+</html>

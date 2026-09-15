@@ -272,3 +272,16 @@ locally cropped/masked photos. OCR runs through private `vocabularyScan`
 per-page jobs; reviewed words and phrases use the existing My Words save and
 enrichment path. See `docs/18_MY_WORDS_SCAN_IMPLEMENTATION_PLAN.md`,
 `npm run test:my-words-scan`, and `docs/10_DEPLOYMENT.md`.
+
+## IELTS Speaking Lab
+
+The local IELTS Speaking Lab V1 pairs Part 2 and Part 3 in a private topic
+library, with independent recordings, three-criterion training estimates and
+teacher report access. The Cambridge source index is prepared through volume
+21. The owner-supplied Cambridge 10/11 HTML has now been prepared as eight
+paired cards (8 Part 2 and 49 Part 3 questions), imported and verified in CloudBase.
+Seasonal topics remain a placeholder. See
+[scope, content intake and rollout](docs/IELTS_SPEAKING_LAB.md).
+
+Run `npm run test:ielts-speaking` and `npm run prepare:ielts-speaking`. The latter
+is a local dry run; a missing source never silently overwrites existing imports.

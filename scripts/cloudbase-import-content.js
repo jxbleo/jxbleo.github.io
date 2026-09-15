@@ -16,6 +16,7 @@ const OVERLAPPING_SPEAKING_MOCK_IDS = [
 ];
 
 const COLLECTIONS = {
+  ielts_speaking_sets: { file: ".cloudbase-private/import/ielts-speaking-sets-cloudbase.json", keyField: "set_id" },
   sets: {
     file: ".cloudbase-private/import/sets-cloudbase.json",
     keyField: "set_id",
@@ -50,7 +51,7 @@ Default mode is a dry run. Add --apply to write to CloudBase.
 
 Options:
   --apply                    Execute CloudBase writes
-  --only <list>              Comma-separated collections: sets,grading_keys,intensive_listening_materials,system_config,vocabulary_lexicon,speaking_sets
+  --only <list>              Comma-separated collections: sets,grading_keys,intensive_listening_materials,system_config,vocabulary_lexicon,speaking_sets,ielts_speaking_sets
   --ids <list>               Comma-separated keys to import, matched against each collection key field
   --offset <number>           Skip this many input records before importing, default 0
   --overwrite-existing       Update existing records instead of insert-missing only

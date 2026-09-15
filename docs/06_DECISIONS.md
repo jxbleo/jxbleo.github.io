@@ -1680,3 +1680,19 @@ to the selected unit's own start/end interval.
 ### 2026-09-13 — Manage Speaking and Writing model identity together
 
 The owner considers both tasks one text-model scope. Use a shared, non-secret policy JSON and one owner-only paired configuration script instead of independent ad hoc updates. Preserve runtime adapter differences and existing credentials. CloudBase does not atomically update two functions, so preflight both, preserve unrelated fields, verify both after apply and detect drift on reruns. Reuse the existing manager SDK; no new dependency or service.
+
+## 2026-09-15 — Reuse Speaking transport for IELTS classroom practice
+
+Keep IELTS's topic collection, report schema and prompts separate while reusing
+individual-response ownership, private storage, durable jobs and worker timer.
+Use `exam_family: ielts`; missing family means legacy DSE. This avoids a second
+provider/worker configuration and preserves the paired Speaking/Writing model
+policy. No library dependency or service is added. Submitted IELTS audio is
+immutable; retries resume one deterministic job and fresh practice creates a
+new response. Three criterion estimates cannot be labelled an official overall
+Speaking band. ASR evidence limitations must be explicit.
+
+The question bank must come from reviewed owner-supplied material. Research
+metadata is retained separately from actual imported content, and empty source
+states are visible rather than filled with fabricated official questions.
+See [scope and rollout](IELTS_SPEAKING_LAB.md).

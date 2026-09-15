@@ -5,6 +5,9 @@ const cloudbase = require("@cloudbase/node-sdk");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
 const lab = require("../_shared/speaking-lab");
+const ielts = require("../_shared/ielts-speaking");
+const ieltsPrompts = require("./ielts-prompts");
+const { createService: createIeltsService } = require("./ielts-service");
 const irRefresh = require("../_shared/speaking-ir-refresh");
 const voiceprintProvider = require("../_shared/tencent-asr-voiceprint");
 const voiceprintLibrary = require("../_shared/speaking-voiceprint-library");
@@ -353,6 +356,7 @@ function responseView(actor, row, options = {}) {
   return {
     response_session_id: row.response_session_id,
     session_type: "individual_response",
+    exam_family: row.exam_family === "ielts" ? "ielts" : "dse",
     student_id_snapshot: teacher ? row.student_id_snapshot || null : null,
     student_name_snapshot: teacher ? row.student_name_snapshot || null : null,
     set_id: row.set_id,
@@ -361,7 +365,7 @@ function responseView(actor, row, options = {}) {
     question_snapshot: row.question_snapshot || null,
     title: lab.text(row.title, MAX_TITLE),
     response_date: row.response_date || null,
-    duration_limit_seconds: 65,
+    duration_limit_seconds: row.exam_family === "ielts" ? ielts.durationLimit(row) : 65,
     recording_status: row.recording_status || "not_uploaded",
     formal_audio_asset_id: teacher ? row.formal_audio_asset_id || null : null,
     analysis_status: row.analysis_status || "not_ready",
@@ -385,9 +389,9 @@ function individualResponseHasCommittedWork(row) {
 }
 
 async function listIndividualResponses(actor, event) {
-  const rows = await getMany(INDIVIDUAL_RESPONSES, lab.isTeacher(actor) ? {} : { student_uid: actor.auth_uid, deleted_at: null }, 500);
+  const rows = await getMany(INDIVIDUAL_RESPONSES, { exam_family: db.command.neq("ielts"), ...(lab.isTeacher(actor) ? {} : { student_uid: actor.auth_uid, deleted_at: null }) }, 500);
   const offset = Math.max(0, Number(event.offset || 0));
-  const eligible = rows.filter((row) => individualResponseHasCommittedWork(row) && (lab.isTeacher(actor) || String(row.student_uid) === String(actor.auth_uid))).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  const eligible = rows.filter((row) => row.exam_family !== "ielts" && individualResponseHasCommittedWork(row) && (lab.isTeacher(actor) || String(row.student_uid) === String(actor.auth_uid))).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
   const responses = eligible.slice(offset, offset + Math.min(50, Math.max(1, Number(event.page_size || 20)))).map((row) => responseView(actor, row));
   return { success: true, responses, next_offset: offset + responses.length < eligible.length ? offset + responses.length : null };
 }
@@ -486,10 +490,12 @@ async function startIndividualResponseAudioUpload(actor, event) {
   const size = Number(event.size_bytes);
   const duration = Number(event.duration_seconds);
   if (!/^audio\/(webm|mp4|mpeg|wav|x-m4a|aac)$/.test(mime) || !Number.isFinite(size) || size < 1 || size > INDIVIDUAL_RESPONSE_MAX_FILE_BYTES) throw new Error("AUDIO_FILE_INVALID");
-  if (Number.isFinite(duration) && duration > lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
+  if (response.exam_family === "ielts" && (!Number.isFinite(duration) || duration <= 0)) throw new Error("AUDIO_FILE_INVALID");
+  if (Number.isFinite(duration) && duration > (response.exam_family === "ielts" ? ielts.durationLimit(response) + 2 : lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS)) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
   const assetId = stable("speaking_individual_response_asset", response.student_uid, response.response_session_id, operationId);
   const existing = await getOne(ASSETS, { asset_id: assetId, response_session_id: response.response_session_id });
   if (existing && existing.status === "uploaded") return { success: true, idempotent_replay: true, asset_id: assetId, status: "uploaded" };
+  if (response.exam_family === "ielts" && (!lab.isActiveStudent(actor) || response.recording_status === "uploaded")) throw new Error("IELTS_RESPONSE_LOCKED");
   const cloudPath = `speaking-lab/individual-response/${response.response_session_id}/${assetId}.${mime.split("/")[1].replace("x-", "")}`;
   const created = now();
   const row = { asset_id: assetId, response_session_id: response.response_session_id, session_type: "individual_response", participant_id: null, asset_kind: "individual_response", upload_operation_id: operationId, status: "uploading", file_id: null, cloud_path: cloudPath, mime_type: mime, expected_size_bytes: Math.round(size), duration_ms: Number.isFinite(duration) ? Math.round(duration * 1000) : null, quality_status: "pending", quality_codes: [], created_at: created, updated_at: created, expires_at: new Date(created.getTime() + 30 * 60 * 1000), delete_after: null };
@@ -510,8 +516,24 @@ async function finishIndividualResponseAudioUpload(actor, event) {
   const file = info && info.fileList && info.fileList[0];
   if (!file || Number(file.size || 0) < 1 || Number(file.size || 0) > INDIVIDUAL_RESPONSE_MAX_FILE_BYTES || Number(file.size || 0) !== Number(asset.expected_size_bytes || 0)) throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
   const duration = Number(event.duration_seconds || asset.duration_ms && Number(asset.duration_ms) / 1000);
-  if (Number.isFinite(duration) && duration > lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
+  if (response.exam_family === "ielts" && (!Number.isFinite(duration) || duration <= 0)) throw new Error("AUDIO_FILE_INVALID");
+  if (Number.isFinite(duration) && duration > (response.exam_family === "ielts" ? ielts.durationLimit(response) + 2 : lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS)) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
   const uploadedAt = now();
+  if (response.exam_family === "ielts") {
+    if (!lab.isActiveStudent(actor)) throw new Error("STUDENT_REQUIRED");
+    await db.runTransaction(async transaction => {
+      const result = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: response.response_session_id }).limit(1).get();
+      const current = result.data && result.data[0];
+      if (!current || current.deleted_at) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+      if (current.recording_status === "uploaded") {
+        if (current.formal_audio_asset_id === asset.asset_id) return;
+        throw new Error("IELTS_RESPONSE_LOCKED");
+      }
+      await transaction.collection(ASSETS).doc(asset._id || asset.asset_id).update({ status: "uploaded", file_id: fileId, actual_size_bytes: Number(file.size), duration_ms: Math.round(duration * 1000), uploaded_at: uploadedAt, updated_at: uploadedAt, expires_at: null });
+      await transaction.collection(INDIVIDUAL_RESPONSES).doc(current._id || current.response_session_id).update({ formal_audio_asset_id: asset.asset_id, duration_seconds: duration, recording_status: "uploaded", analysis_status: "not_ready", active_audio_revision: 1, updated_at: uploadedAt });
+    });
+    return { success: true, asset_id: asset.asset_id, status: "uploaded" };
+  }
   await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ status: "uploaded", file_id: fileId, actual_size_bytes: Number(file.size), duration_ms: Number.isFinite(duration) ? Math.round(duration * 1000) : asset.duration_ms || null, uploaded_at: uploadedAt, updated_at: uploadedAt, expires_at: null });
   await db.collection(INDIVIDUAL_RESPONSES).doc(response._id || response.response_session_id).update({ formal_audio_asset_id: asset.asset_id, duration_seconds: Number.isFinite(duration) && duration > 0 ? duration : null, recording_status: "uploaded", analysis_status: "not_ready", active_analysis_job_id: null, active_audio_revision: Number(response.active_audio_revision || 0) + 1, updated_at: uploadedAt });
   return { success: true, asset_id: asset.asset_id, status: "uploaded" };
@@ -522,17 +544,19 @@ async function startIndividualResponseAnalysis(actor, event) {
   if (!row) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
   if (String(row.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
   if (!row.formal_audio_asset_id || row.recording_status !== "uploaded") throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
-  const operationId = lab.stableOperationId(event.operation_id || `analysis-${row.response_session_id}`);
+  const operationId = lab.stableOperationId(row.exam_family === "ielts" ? `analysis-${row.response_session_id}` : event.operation_id || `analysis-${row.response_session_id}`);
   const jobId = stable("speaking_individual_response_job", row.response_session_id, String(row.active_audio_revision || 0), operationId);
   const existing = await getOne(JOBS, { job_id: jobId });
   if (existing && ["queued", "processing", "succeeded"].includes(existing.status)) return { success: true, idempotent_replay: true, job: publicJob(existing) };
   const created = now();
   const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-io-vl-v2", created_at: created, updated_at: created, finished_at: null };
+  if (row.exam_family === "ielts") Object.assign(job, { exam_family: "ielts", prompt_version: ielts.VERSION, schema_version: ielts.VERSION, rubric_version: ielts.VERSION });
   await db.runTransaction(async (transaction) => {
     const currentResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: row.response_session_id }).limit(1).get();
     const current = currentResult.data && currentResult.data[0];
     if (!current || current.deleted_at || current.formal_audio_asset_id !== row.formal_audio_asset_id) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
     const existingResult = await transaction.collection(JOBS).where({ job_id: jobId }).limit(1).get();
+    if (row.exam_family === "ielts" && existingResult.data && existingResult.data[0] && ["queued", "processing", "succeeded"].includes(existingResult.data[0].status)) return;
     if (existingResult.data && existingResult.data[0]) await transaction.collection(JOBS).doc(existingResult.data[0]._id || jobId).update(job);
     else await transaction.collection(JOBS).doc(jobId).create(job);
     await transaction.collection(INDIVIDUAL_RESPONSES).doc(current._id || current.response_session_id).update({ analysis_status: "queued", active_analysis_job_id: jobId, updated_at: created });
@@ -544,6 +568,7 @@ async function startIndividualResponseAnalysis(actor, event) {
 async function deleteIndividualResponse(actor, event) {
   const row = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140), deleted_at: null });
   if (!row) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+  if (row.exam_family === "ielts") throw new Error("IELTS_RESPONSE_LOCKED");
   if (String(row.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
   const deletedAt = now();
   await db.collection(INDIVIDUAL_RESPONSES).doc(row._id || row.response_session_id).update({ deleted_at: deletedAt, updated_at: deletedAt });
@@ -1609,6 +1634,9 @@ function canonicalIndividualTranscript(output) {
 
 async function processIndividualResponseQueuedJob(claimed) {
   const response = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: claimed.response_session_id, deleted_at: null });
+  const isIelts = response && response.exam_family === "ielts";
+  if (isIelts && irRefresh.isRefresh(claimed)) throw new Error("IELTS_RESPONSE_LOCKED");
+  const reportMetadata = isIelts ? { exam_family: "ielts", schema_version: ielts.VERSION, prompt_version: ielts.VERSION, rubric_version: ielts.VERSION } : {};
   if (!response || String(response.active_analysis_job_id || "") !== String(claimed.job_id) || Number(response.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) throw new Error("SPEAKING_JOB_SUPERSEDED");
   const sourceReport = irRefresh.isRefresh(claimed) ? await getOne(REPORTS, { report_id: claimed.source_report_id, response_session_id: response.response_session_id }) : null;
   irRefresh.assertSource(claimed, response, sourceReport);
@@ -1632,10 +1660,11 @@ async function processIndividualResponseQueuedJob(claimed) {
       return { success: true, status: "pending", stage: "transcription", job_id: claimed.job_id };
     }
     const transcript = canonicalIndividualTranscript(transcription.output);
-    if (Number(transcript.duration_ms || 0) > (lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) * 1000) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
+    if (isIelts && !(Number(transcript.duration_ms) > 0)) throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
+    if (Number(transcript.duration_ms || 0) > (isIelts ? ielts.durationLimit(response) + 2 : lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) * 1000) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
     const transcriptIdentity = individualResponseReportIdentity(claimed);
     const existingTranscriptReport = await getOne(REPORTS, { report_id: transcriptIdentity.report_id });
-    const transcriptRow = { ...transcriptIdentity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "processing", transcript, updated_at: now() };
+    const transcriptRow = { ...transcriptIdentity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "processing", transcript, updated_at: now(), ...reportMetadata };
     if (existingTranscriptReport) await db.collection(REPORTS).doc(existingTranscriptReport._id || transcriptIdentity.report_id).update(transcriptRow);
     else await db.collection(REPORTS).doc(transcriptIdentity.report_id).create({ ...transcriptRow, created_at: now() });
     await db.collection(JOBS).doc(claimed._id || claimed.job_id).update({ stage: "analysis", transcript_metadata: { segment_count: transcript.segments.length, duration_ms: transcript.duration_ms }, updated_at: now() });
@@ -1648,13 +1677,13 @@ async function processIndividualResponseQueuedJob(claimed) {
   if (!transcript || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
   const question = response.question_snapshot && response.question_snapshot.text || "";
   const model = createAuditedModelProvider(claimed, "individual_analysis");
-  const result = await model.callStructuredModel({ system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
+  const result = await model.callStructuredModel(isIelts ? { system_prompt: ieltsPrompts.systemPrompt(), user_prompt: ieltsPrompts.userPrompt(response, transcript) } : { system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
   const output = { report: result.output };
-  const generatedAnalysis = lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
+  const generatedAnalysis = isIelts ? ielts.canonicalReport(output.report, transcript.segments) : lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
   const analysis = sourceReport && !irRefresh.isOverwrite(claimed) ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
-  const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, dse_analysis: analysis, created_at: finishedAt, updated_at: finishedAt };
+  const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, ...(isIelts ? { ielts_analysis: analysis } : { dse_analysis: analysis }), created_at: finishedAt, updated_at: finishedAt, ...reportMetadata };
   reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname };
   if (sourceReport && !irRefresh.isOverwrite(claimed)) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true, rubric_version: sourceReport.rubric_version || "dse-individual-response-v1" });
   if (irRefresh.isOverwrite(claimed)) Object.assign(reportRow, {
@@ -1672,7 +1701,7 @@ async function processIndividualResponseQueuedJob(claimed) {
     const existingReportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
     const existingReport = existingReportResult.data && existingReportResult.data[0];
     if (irRefresh.isOverwrite(claimed)) irRefresh.assertSource(claimed, latestResponse, existingReport);
-    if (existingReport) await transaction.collection(REPORTS).doc(existingReport._id || identity.report_id).update(replaceFields(reportRow, ["dse_analysis", "transcript", "model_metadata"]));
+    if (existingReport) await transaction.collection(REPORTS).doc(existingReport._id || identity.report_id).update(replaceFields(reportRow, [isIelts ? "ielts_analysis" : "dse_analysis", "transcript", "model_metadata"]));
     else await transaction.collection(REPORTS).doc(identity.report_id).create(reportRow);
     await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
     await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update(replaceFields({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt }, ["report"]));
@@ -2187,6 +2216,7 @@ async function deleteDiscussion(actor, event) {
 }
 function friendlyMessage(code) {
   const messages = {
+    IELTS_CONTENT_INVALID: "This IELTS topic is not ready for practice.", IELTS_RESPONSE_LOCKED: "This recording has been submitted. Start a new response to practise again.",
     VOICEPRINT_BUSY: "Voiceprint registration is busy. Please try again shortly.",
     AUTH_REQUIRED: "Please sign in first.", STUDENT_REQUIRED: "This action is for students.", TEACHER_REQUIRED: "Teacher access is required.",
     DISCUSSION_NOT_FOUND: "This Discussion is no longer available.", DISCUSSION_ACCESS_DENIED: "You do not have access to this Discussion.", DISCUSSION_TITLE_REQUIRED: "Enter a Discussion title.",
@@ -2204,7 +2234,7 @@ function friendlyMessage(code) {
     VOICE_MATCHING_NOT_READY: "Finish the Discussion analysis before searching for voice matches.", OPERATION_ID_REQUIRED: "Refresh the page and try that action again.",
     VOICE_DISPUTE_LOCKED: "Your voice concern is waiting for a teacher. Only a teacher can change the mapping now.",
     VOICE_CONFIRMATION_REQUIRED_FOR_SHARE: "Confirm your voice before creating a student share.", SHARE_PROJECTION_STALE: "The report or identity labels changed. Refresh before sharing.", SHARE_NOT_AVAILABLE: "This share link is no longer available.",
-    SPEAKING_SET_NOT_FOUND: "This Speaking Set is no longer available.", SPEAKING_SET_NOT_VISIBLE: "This Speaking Set is not available for new practice.", SPEAKING_SET_ID_INVALID: "Enter a valid Speaking Set ID.", SPEAKING_SET_EXISTS: "That Speaking Set ID is already in use.", SPEAKING_SET_INVALID: "Check the Speaking Set content and try again.", SPEAKING_SET_STALE: "This Speaking Set changed in another editor. Refresh before saving.", SPEAKING_SET_IN_USE: "This Speaking Set has historical Sessions and cannot be deleted. Hide it from students instead.", SPEAKING_QUESTION_NOT_FOUND: "That individual question is no longer available.", INDIVIDUAL_RESPONSE_NOT_FOUND: "This Individual Response is no longer available.", INDIVIDUAL_RESPONSE_ACCESS_DENIED: "You do not have access to this Individual Response.", INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG: "Individual Response audio must be no longer than 65 seconds.", INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE: "The Individual Response upload is incomplete. Retry the same upload.", INDIVIDUAL_RESPONSE_ANALYSIS_NOT_READY: "This Individual Response report is not ready yet.", SPEAKING_JOB_LOCATOR_INVALID: "This Speaking analysis job is invalid. Please retry.",
+    SPEAKING_SET_NOT_FOUND: "This Speaking Set is no longer available.", SPEAKING_SET_NOT_VISIBLE: "This Speaking Set is not available for new practice.", SPEAKING_SET_ID_INVALID: "Enter a valid Speaking Set ID.", SPEAKING_SET_EXISTS: "That Speaking Set ID is already in use.", SPEAKING_SET_INVALID: "Check the Speaking Set content and try again.", SPEAKING_SET_STALE: "This Speaking Set changed in another editor. Refresh before saving.", SPEAKING_SET_IN_USE: "This Speaking Set has historical Sessions and cannot be deleted. Hide it from students instead.", SPEAKING_QUESTION_NOT_FOUND: "That individual question is no longer available.", INDIVIDUAL_RESPONSE_NOT_FOUND: "This Individual Response is no longer available.", INDIVIDUAL_RESPONSE_ACCESS_DENIED: "You do not have access to this Individual Response.", INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG: "This recording exceeds the time limit for its question.", INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE: "The Individual Response upload is incomplete. Retry the same upload.", INDIVIDUAL_RESPONSE_ANALYSIS_NOT_READY: "This Individual Response report is not ready yet.", SPEAKING_JOB_LOCATOR_INVALID: "This Speaking analysis job is invalid. Please retry.",
   };
   return messages[code] || "The Speaking Lab request could not be completed. Please try again.";
 }
@@ -2215,6 +2245,8 @@ exports.main = async (event = {}) => {
     if (action === "getSharedReport") return await getSharedReport(event);
     if (action === "processQueuedJob") return await processQueuedJob(event);
     const actor = await profileForAuth();
+    const ieltsActions = createIeltsService({ db, getOne, stable, now, shanghaiDate, responseView, temporaryAudioUrl });
+    if (Object.prototype.hasOwnProperty.call(ieltsActions, action)) return await ieltsActions[action](actor, event);
     if (action === "listSpeakingSets") return await listSpeakingSets(actor);
     if (action === "getSpeakingSet") return await getSpeakingSet(actor, event);
     if (action === "teacherListSpeakingSets") return await teacherListSpeakingSets(actor);

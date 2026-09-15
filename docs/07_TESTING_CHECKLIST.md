@@ -3467,3 +3467,29 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
   line with its word count and opens within the first card. Test keyboard focus.
 - Keep existing transcript, analysis, examples, recorder and Group Discussion
   contracts passing. Live backend/index smoke testing follows owner-approved deploy.
+
+## IELTS Speaking Lab V1
+
+Owner-source intake (2026-09-15): verify eight Cambridge 10/11 paired records,
+8 Part 2 prompts and 49 Part 3 questions (C11 Test 4 has seven in the supplied
+HTML). Check source order, closing instructions, stable IDs and absence of Part 1.
+Prepared counts must agree with the source index without claiming live import.
+Confirm raw source and import artifacts remain ignored and absent from `dist`.
+
+- Run `npm run test:ielts-speaking`, `npm run test:speaking-lab`,
+  `npm run verify:release`, `npm run build:static` and package both Speaking functions.
+- Verify no private source or original fixtures enter `dist/`; source preparation
+  rejects incomplete/unverified pairs and duplicate IDs without changing live data.
+- Browser: independent capsules; Cambridge and seasonal empty states; topic/search
+  filters; optional 60-second preparation never starts the mic; 120/90-second
+  caps, early stop, preview/replace, permission failure and upload retry.
+- Closing/discard and stacked dialogs restore focus and background scroll;
+  leaving during permission acquisition stops any late-arriving microphone stream.
+- Submit two questions while analysis is pending. Verify independent immutable
+  history, no duplicate submission/job after retries, and no DSE history pollution.
+- Ready report has exactly three cards, no overall/pronunciation score, exact
+  evidence, collapsed Transcript, and Thinking Prompt before collapsed sample.
+- Active teacher can filter/read student audio/reports but cannot record or edit;
+  another student, inactive profile and visitor cannot read those records.
+- Live acceptance still requires real devices, authorized rollout and a real
+  ASR/model report. Mocked contract tests do not establish band-score accuracy.

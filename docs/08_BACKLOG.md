@@ -143,3 +143,12 @@ collection indexes, timer configuration, and real-device microphone smoke tests
 remain rollout work. Future iterations may add richer phoneme feedback and
 teacher analytics, but must preserve the 80/79 product boundary and private
 provider contract.
+
+## IELTS Speaking V1 rollout follow-up (2026-09-15)
+
+Local feature code is implemented. The owner-supplied Cambridge 10/11 HTML
+has been extracted and checked: eight paired cards, 8 Part 2 and 49 Part 3
+questions, with private local import artifacts ready. Live import is verified. Seasonal bank intentionally stays a placeholder. Collection/index setup and both Speaking function updates are complete. Finish
+real microphone, ASR/report and teacher-view acceptance after static publication. First-version pronunciation remains
+unassessed by owner decision; no overall band is inferred. See
+[handoff](IELTS_SPEAKING_LAB.md).

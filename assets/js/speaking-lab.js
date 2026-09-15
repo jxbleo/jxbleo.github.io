@@ -202,13 +202,13 @@
     }
     function updateToolbar(item) {
         currentDiscussion = item && !item.invitation ? item : null;
-        var title = item && item.title ? item.title : 'Speaking Lab';
+        var title = item && item.title ? item.title : 'HKDSE Speaking Lab';
         toolbarTitle.textContent = title;
         toolbarTitle.setAttribute('title', title);
         toolbarEdit.hidden = !(currentDiscussion && currentDiscussion.can_edit_title);
         toolbarEdit.disabled = recordingLocksPage();
         scheduleToolbarTitleMeasure();
-        document.title = currentDiscussion ? title + ' | Speaking Lab' : 'Speaking Lab | Mr. Cat Academy';
+        document.title = currentDiscussion ? title + ' | HKDSE Speaking Lab' : 'HKDSE Speaking Lab | Mr. Cat Academy';
     }
     function openTitleDialog() {
         if (!currentDiscussion || !currentDiscussion.can_edit_title || recordingLocksPage()) return;
