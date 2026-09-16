@@ -307,6 +307,7 @@
     }
 
     function clearTeacherWorkspaceCache(profile) {
+        if (window.MrCatTeacherAiUsage) window.MrCatTeacherAiUsage.dispose();
         var id = teacherCacheRecordId(profile || state.profile);
         try { window.sessionStorage.removeItem(TEACHER_SESSION_RETURN_KEY); } catch (error) {}
         if (!id) return Promise.resolve(false);
@@ -327,7 +328,7 @@
             });
         });
     }
-    var teacherViews = ['tasks', 'view', 'library', 'listening', 'speaking'];
+    var teacherViews = ['tasks', 'view', 'library', 'listening', 'speaking', 'ai-usage'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -8375,6 +8376,7 @@
         if (viewName === 'library') renderTeacherLibrary(teacherLibraryActiveTab);
         if (viewName === 'listening' && window.__MRCAT_TEACHER_LISTENING_TEST__ && window.__MRCAT_TEACHER_LISTENING_TEST__.setView) window.__MRCAT_TEACHER_LISTENING_TEST__.setView();
         if (viewName === 'speaking' && window.MrCatTeacherSpeaking) window.MrCatTeacherSpeaking.load();
+        if (viewName === 'ai-usage' && window.MrCatTeacherAiUsage) window.MrCatTeacherAiUsage.load();
         if (viewName === 'view' && teacherLiveDataLoadedAt
             && Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {
             refreshTeacherLiveProgress();

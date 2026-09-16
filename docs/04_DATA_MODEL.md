@@ -1,5 +1,22 @@
 # 04 Data Model
 
+## AI Usage teacher projection (2026-09-16)
+
+No new collections or persisted fields. Existing ADMINONLY
+`writing_model_usage_events`, `speaking_model_usage_events`,
+`vocabulary_scan_jobs` and pre-telemetry `writing_ai_jobs` supply metadata.
+Speaking ownership joins `speaking_ai_jobs`, `speaking_individual_responses` and
+`speaking_discussions`; current profiles join `students.auth_uid`. Names and
+Login IDs are display values, never join keys. The response uses a stable hashed
+account key and safe display identity rather than raw authentication UIDs.
+
+Response rows distinguish physical model/speech calls, Scan Words task totals
+and legacy tasks. Missing Token counts/call counts/prices remain `null`; explicit
+free-quota rejection has estimated value zero. Legacy rows with any usage ledger
+are omitted to avoid duplication. Scan totals spanning multiple calls have no
+price estimate because per-call pricing tiers are unavailable. Price/comparison
+values are response-only calculations, not invoices or stored billing entries.
+
 ## Individual Response v4 pairs (2026-09-14)
 
 New reports use dse-individual-response-v4 and prompt

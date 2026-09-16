@@ -1,5 +1,19 @@
 # 03 UI / UX Spec
 
+## Teacher AI Usage (2026-09-16)
+
+Add an AI Usage navigation item alongside Teacher Speaking. Four summary cards
+show recorded request count, Tokens, estimated CNY and missing usage. Date,
+account, activity, model, status and search filters update both summary and list.
+Desktop uses a newest-first table; narrow screens use two-column record cards.
+Rows expose Shanghai time, account, purpose, model, input/output/total Tokens,
+estimated value and outcome. Missing usage uses an em dash and an explicit label.
+Group attribution, legacy tasks and Scan Words task totals are identified.
+
+Provide Refresh, Load 30 more, loading/partial/empty states and a resumable Retry.
+About these numbers explains coverage, price date, free-quota exclusion and the
+text-only Max/Plus comparison. This is a normal view, not a modal or quota switch.
+
 ## Speaking Set title bars (2026-09-14)
 
 Context, Part A and Part B use a shared pale-blue (#eff6fe) full-width title bar,

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="assets/css/speaking-discussion-recorder.css?v=20260913-speaking-center-1">
     <link rel="stylesheet" href="assets/css/voiceprint-success.css?v=20260912-1">
     <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260905-2">
+    <link rel="stylesheet" href="assets/css/teacher-ai-usage.css?v=20260916-1">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
@@ -77,6 +78,7 @@
                 <button class="tab-button" type="button" data-view="library"><span aria-hidden="true">L</span>Library</button>
                 <button class="tab-button" type="button" data-view="listening"><span aria-hidden="true">N</span>Listening</button>
                 <button class="tab-button" type="button" data-view="speaking"><span aria-hidden="true">S</span>Speaking</button>
+                <button class="tab-button" type="button" data-view="ai-usage"><span aria-hidden="true">AI</span>AI Usage</button>
             </nav>
 
             <div class="teacher-workspace-content">
@@ -375,6 +377,34 @@
                     </section>
                 </section>
 
+                <section class="dashboard-view" id="view-ai-usage" hidden>
+                    <section class="ai-usage-workspace" aria-labelledby="ai-usage-title">
+                        <header class="ai-usage-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1 id="ai-usage-title">AI Usage</h1><p>Speaking, Writing &amp; Scan Words — every recorded call.</p></div><button type="button" class="outline-button" id="ai-usage-refresh">Refresh</button></header>
+                        <div class="ai-usage-summary">
+                            <div class="ai-usage-stat"><span>Calls</span><strong id="ai-usage-calls">—</strong><small id="ai-usage-calls-note">Recorded requests</small></div>
+                            <div class="ai-usage-stat"><span>Recorded Tokens</span><strong id="ai-usage-tokens">—</strong><small id="ai-usage-tokens-note">Input / output</small></div>
+                            <div class="ai-usage-stat"><span>Est. API cost · CNY</span><strong id="ai-usage-cost">—</strong><small id="ai-usage-cost-note">Before free quota</small></div>
+                            <div class="ai-usage-stat"><span>Missing usage</span><strong id="ai-usage-attention">—</strong><small id="ai-usage-attention-note">Entries without Token data</small></div>
+                        </div>
+                        <div class="ai-usage-filters">
+                            <label>Period<select id="ai-usage-period"><option value="today">Today</option><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="all">All time</option></select></label>
+                            <label>Account<select id="ai-usage-student"><option value="">All accounts</option></select></label>
+                            <label>Activity<select id="ai-usage-module"><option value="">All activities</option><option value="writing">Writing</option><option value="speaking">Speaking</option><option value="scan">Scan Words</option></select></label>
+                            <label>Model<select id="ai-usage-model"><option value="">All models</option></select></label>
+                            <label>Status<select id="ai-usage-status"><option value="">All statuses</option><option value="completed">Completed</option><option value="failed">Failed</option><option value="quota_exhausted">Free quota exhausted</option><option value="missing">Missing Token data</option><option value="pending">In progress</option><option value="unknown">Unknown</option></select></label>
+                            <label>Search<input type="search" id="ai-usage-search" placeholder="Name, Login ID or model" autocomplete="off"></label>
+                        </div>
+                        <div class="ai-usage-meta"><p id="ai-usage-progress" role="status" aria-live="polite">Open AI Usage to load history.</p><button class="outline-button" id="ai-usage-retry" type="button" hidden>Retry loading</button><span id="ai-usage-count"></span></div>
+                        <div class="ai-usage-table-wrap" id="ai-usage-list" aria-busy="false">
+                            <table class="ai-usage-table"><caption class="sr-only">AI calls and recorded Token usage, newest first</caption><thead><tr><th scope="col">Time · Shanghai</th><th scope="col">Account</th><th scope="col">Activity</th><th scope="col">Model</th><th scope="col">Input</th><th scope="col">Output</th><th scope="col">Total Tokens</th><th scope="col">Est. CNY</th><th scope="col">Status</th></tr></thead><tbody id="ai-usage-body"></tbody></table>
+                            <p class="ai-usage-empty" id="ai-usage-empty">Open AI Usage to load history.</p>
+                        </div>
+                        <div class="ai-usage-footer"><button type="button" class="outline-button" id="ai-usage-more" hidden>Load 30 more</button></div>
+                        <p class="ai-usage-comparison" id="ai-usage-comparison" hidden></p>
+                        <details class="ai-usage-notes"><summary>About these numbers</summary><p>Estimates are API value before free quota, not an invoice. Recorded cached input is discounted. Beijing prices checked <span id="ai-usage-pricing-date">2026-09-16</span>; Plus includes the current limited-time discount. <a href="https://help.aliyun.com/zh/model-studio/model-pricing" target="_blank" rel="noopener noreferrer">Official pricing</a></p><p>Retries are separate calls. Scan Words shows each page task’s recorded total. Legacy tasks and missing usage stay visible as unknown, never zero. Group speaking is attributed to the account that created the discussion, not split between participants.</p><p>Speech transcription is listed without a Token price. Voiceprints, Shadowing scoring, external calls and unrecorded historical calls are outside this view. Filtering changes all four summaries; partial loading is marked until history is complete.</p></details>
+                    </section>
+                </section>
+
                 <section class="dashboard-view" id="view-speaking" hidden>
                     <section class="speaking-lab-main teacher-speaking-main">
                         <div class="teacher-speaking-entry-actions"><a class="outline-button" href="ielts-speaking-lab.html?v=20260915-ielts-speaking-1">IELTS Speaking Lab · Student reports</a></div>
@@ -496,11 +526,12 @@
         </div>
     </dialog>
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260916-speaking-feedback-1"></script>
+    <script src="assets/js/config.public.js?v=20260916-ai-usage-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
     <script src="assets/js/auth.js?v=20260911-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/teacher.js?v=20260916-speaking-feedback-1"></script>
+    <script src="assets/js/teacher-ai-usage.js?v=20260916-1"></script>
+    <script src="assets/js/teacher.js?v=20260916-ai-usage-1"></script>
     <script src="assets/js/teacher-listening.js?v=20260907-1"></script>
     <script src="assets/js/voiceprint-success.js?v=20260912-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>

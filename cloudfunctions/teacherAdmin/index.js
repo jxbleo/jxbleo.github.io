@@ -1,4 +1,5 @@
 const speakingNotifications = require("../_shared/speaking-notifications");
+const teacherAiUsage = require("../_shared/teacher-ai-usage");
 const cloudbase = require("@cloudbase/node-sdk");
 const CloudBaseManager = require("../_shared/cloudbase-user-manager");
 const starRewards = require("../_shared/star-rewards");
@@ -4540,6 +4541,7 @@ exports.main = async (event) => {
   try {
     const teacher = await getAuthenticatedTeacher();
     const action = text(event.action);
+    if (action === "listAiUsage") return await teacherAiUsage.listPage(db, event, teacher);
     if (action === "listStudents") return await listStudents();
     if (action === "getWritingTutorStudentSettings") return await getWritingTutorStudentSettings(event);
     if (action === "updateWritingTutorStudentSettings") return await updateWritingTutorStudentSettings(event, teacher);

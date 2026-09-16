@@ -1,5 +1,22 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Teacher AI Usage（2026-09-16）
+
+教师页增加 AI Usage，按上海时间倒序显示 Writing、Speaking、Scan Words
+已有调用记录。可按时间、账户、功能、模型、状态及姓名/Login ID 搜索筛选；
+同步显示请求次数、已记录输入/输出 Token、估算 API 价值和缺失用量数。
+教师自己的测试调用也保留并标注 Teacher；小组口语归属创建讨论的账户，不重复分摊。
+
+Writing/Speaking 账本中的重试与额度拒绝逐条展示；Scan Words 现有数据只支持
+按扫描任务汇总，旧 Writing 任务可能没有调用次数与 Token，必须显示未知而非零。
+费用按页面注明日期的北京价目及已记录缓存用量估算，未扣免费额度，不代表账单；
+另列同等文本用量的 Max/Plus 对比。语音转写单列但不计算 Token 费用；声纹、
+Shadowing 评分、站外调用及从未记录的历史调用不在本视图内。
+
+仅活跃教师可读取；按需分页加载，未加载完整时所有汇总标记 Partial。
+教师可手动刷新，重新进入过期视图时刷新。此功能不更改模型、付费开关、
+学生历史或账本，不把私人用量存入持久浏览器缓存。
+
 ## IR personal coaching language (2026-09-14)
 
 All IR Chinese feedback addresses the recipient directly as 你 / 你的, rather

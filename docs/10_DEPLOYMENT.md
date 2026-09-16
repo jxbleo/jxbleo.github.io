@@ -1,5 +1,21 @@
 # 10 Deployment
 
+## Teacher AI Usage rollout (2026-09-16; owner authorized rollout)
+
+Owner authorized deployment and publication on 2026-09-16. Package/deploy `teacherAdmin` with
+`cloudfunctions/_shared/teacher-ai-usage.js`, then publish `teacher.html`,
+`assets/js/teacher.js`, `assets/js/teacher-ai-usage.js`,
+`assets/css/teacher-ai-usage.css` and the updated `assets/js/config.public.js`.
+Use `npm run test:teacher-ai-usage`, `npm run test:teacheradmin-package` and normal
+release verification first. Package from source; preserve unrelated shared
+worktree changes when preparing the scoped release.
+
+No collection, permission, index, provider secret, model, free-only billing switch,
+timer or historical-data update is required. Verify deployed package/configuration,
+teacher authorization and live UI readback after rollout. Static cache version is
+`20260916-ai-usage-1`. An older backend shows a clear service-update message rather
+than silently reporting zero usage. Local implementation is not a completed rollout.
+
 ## Speaking Set title bars (deployed and verified, 2026-09-14)
 
 Owner-authorized header-only release 511fa02a uses cache version

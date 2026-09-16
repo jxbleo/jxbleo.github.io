@@ -1,5 +1,20 @@
 # 06 Decisions
 
+## 2026-09-16 — Reuse existing AI usage records for Teacher visibility
+
+AI Usage is a metadata-only read projection, not a new billing ledger. Existing
+Writing/Speaking ledgers preserve per-request attempts; Scan Words retains task
+aggregates, and older Writing tasks expose historical gaps. We show those limits
+instead of inventing Token values or multiplying tasks into inferred requests.
+Price estimates use a dated Beijing rate snapshot, preserve unknowns, exclude
+free-quota deductions and distinguish speech services from Token billing.
+
+Bounded `_id` cursor pages avoid a large Teacher bootstrap response and require
+no new indexes. The browser aggregates/deduplicates the loaded history in memory,
+marks partial totals and clears it on logout. This first version adds no service,
+dependency, persistent browser cache or production schema mutation. If history
+outgrows this approach, add a separately authorized server summary design.
+
 ## Stable IR presentation labels without report mutation (2026-09-14)
 
 The owner replaced the earlier randomized title design before publication:

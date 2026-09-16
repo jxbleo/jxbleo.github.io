@@ -42,6 +42,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-16 — Teacher AI Usage implementation and local browser QA are complete.
+  Owner authorized rollout; deploy `teacherAdmin` and publish
+  the scoped Teacher static changes. Preserve unrelated shared-worktree work.
+
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -106,6 +110,17 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-16 — Teacher AI Usage: authenticated metadata-only pagination, safe
+  student attribution, legacy/aggregate/missing-use labels, filters, summaries and
+  dated cost comparisons implemented. Backend tests and actual Teacher desktop/
+  390px browser tests passed with synthetic data (lazy load, pagination, escaping,
+  empty/filter states and retry deduplication). Read-only live scan: eight pages,
+  1,181 records, all identities resolved; known text usage reconciles exactly to
+  544 calls / 2,469,467 Tokens. No production writes, deployment or model changes.
+  Final checks also passed: logout DOM cleanup, student-account lifecycle,
+  Speaking notifications/report reader, teacherAdmin package guardrail
+  (1,233,207 unzipped bytes), release verification, static build and diff check.
 
 - 2026-09-16 — Speaking teacher feedback is live: frontend `7fda14af`, successful COS run `35090037743`, seven live files matched; `teacherAdmin`, `sendTeacherAttemptEmails`, `speakingLab` are Active and downloaded packages exactly match the scoped tested release. Before-code matched main baseline; configuration hashes and function ACL preserved, private collections ADMINONLY. Both new report/audio endpoints denied unauthenticated live calls. Full current DSE/IELTS, notification and existing email/login suites passed. No historical notification backfill or real test email/recording; device/provider end-to-end acceptance remains optional follow-up. Evidence/rollback packages: `.cloudbase-private/speaking-feedback-release-audit/` in shared root; source: `/private/tmp/mrcat-speaking-feedback-release-20260916`. No further deployment authorization is needed for this completed rollout.
 

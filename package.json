@@ -51,6 +51,7 @@
     "test:listening-shadowing-provider": "node scripts/test-listening-shadowing-provider.js",
     "test:listening-authoring": "node scripts/test-listening-authoring.js",
     "test:teacheradmin-package": "node scripts/test-teacheradmin-package.js",
+    "test:teacher-ai-usage": "node scripts/test-teacher-ai-usage.js",
     "models:plan": "node scripts/configure-text-models.js",
     "models:apply": "node scripts/configure-text-models.js --apply",
     "models:check": "node scripts/configure-text-models.js --check",

@@ -24,6 +24,16 @@ schemas. If a cloud update is interrupted, run `--check` before rerunning
 
 ## 1. Project Intent
 
+### Teacher AI Usage invariant (2026-09-16)
+
+AI Usage is an active-teacher-only, read-only metadata projection of existing
+Writing/Speaking ledgers and Scan Words/legacy Writing tasks. Preserve unknown
+Token/call counts as unknown, label task aggregates and group creator attribution,
+and distinguish estimated API value from the actual invoice/free-quota balance.
+Keep bounded history pages outside Teacher bootstrap and persistent browser caches;
+never expose prompts, answers, audio, credentials or raw authentication UIDs.
+Changes here do not authorize model/billing changes or production deployment.
+
 Mr. Cat Academy is a static learning website with a CloudBase backend. The
 owner should be able to give an agent Markdown, PDFs, raw questions, or
 natural-language changes and have the agent turn them into complete website

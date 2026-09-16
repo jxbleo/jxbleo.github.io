@@ -1,5 +1,10 @@
 # Mr. Cat Academy
 
+Teacher **AI Usage** lists recorded Writing, Speaking and Scan Words activity,
+with account/date/model/status filters, Token totals and estimated API value.
+Implementation and local QA are complete; rollout requires the updated
+`teacherAdmin` function and teacher static assets (see `docs/10_DEPLOYMENT.md`).
+
 Mr. Cat Academy is a small teaching web application for English learning. It
 combines a static website with Tencent CloudBase backend functions so the
 teacher can assign practice, students can submit work, and the system can keep

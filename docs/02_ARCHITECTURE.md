@@ -1,5 +1,24 @@
 # 02 Architecture
 
+## Teacher AI Usage read projection (2026-09-16)
+
+`teacherAdmin.listAiUsage` runs after existing active-teacher authentication and
+delegates to `_shared/teacher-ai-usage.js`. It reads metadata-only projections
+from Writing/Speaking usage events, Scan Words jobs and legacy Writing jobs.
+Each response scans at most 100 rows per source using the native `_id` index;
+the cursor carries a fixed creation-time cutoff and independent source progress.
+Jobs with an existing ledger are excluded from the legacy fallback. Speaking
+ownership resolves through job/response/discussion metadata to account profiles.
+No prompts, answers, recordings, raw authentication UIDs or credentials are returned.
+
+`assets/js/teacher-ai-usage.js` loads only when its Teacher view opens, merges
+pages by stable event ID and renders 30 rows at a time. Filters and totals use
+the same in-memory rows; incomplete history is explicitly marked. Loading pauses
+when the view/tab becomes hidden and resumes on return. Logout/pagehide clears
+rows and rendered identities. This is outside Teacher bootstrap and IndexedDB.
+The cutoff excludes newly created records but mutable job status/aggregate reads
+are observations, not a transactional billing snapshot. No schema/index changes.
+
 ## IR paired guidance pipeline (2026-09-14)
 
 The existing Part B model call now requests three thinking-prompt/Sample pairs.

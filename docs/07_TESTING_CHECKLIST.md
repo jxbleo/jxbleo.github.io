@@ -1,5 +1,19 @@
 # 07 Testing Checklist
 
+## Teacher AI Usage (2026-09-16)
+
+- Run `npm run test:teacher-ai-usage`: active teacher authorization, denied student
+  access, bounded cursor pagination, stable deduplication/cutoff, legacy exclusion,
+  identity joins, safe projections, missing usage, quota failures and pricing tiers.
+- Browser-check actual Teacher navigation and lazy loading, filters/totals,
+  Load 30 more, empty results, HTML escaping, interrupted-page Retry without
+  duplication, logout cleanup and 390px layout using synthetic data.
+- Reconcile read-only live pagination with independent usage totals; the initial
+  2026-09-16 check loaded 1,181 records across eight pages, all with resolvable
+  identity, and 544 known text calls / 2,469,467 text Tokens. No live writes.
+- After authorized rollout, verify teacher-only endpoint access and actual Teacher
+  view loading/refresh; historical unknowns must stay distinct from zero usage.
+
 ## Speaking Set title bars (2026-09-14)
 
 Verify Context/Part A/Part B at 320px and wide layouts: the year/Set or Part
