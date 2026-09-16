@@ -1,8 +1,15 @@
 # 10 Deployment
 
-## Teacher AI Usage rollout (2026-09-16; owner authorized rollout)
+## Teacher AI Usage rollout (2026-09-16; complete)
 
-Owner authorized deployment and publication on 2026-09-16. Package/deploy `teacherAdmin` with
+Owner-authorized deployment and publication completed on 2026-09-16.
+Release `87adb639`; COS workflow `35097038528` succeeded. `teacherAdmin` is
+Active, its downloaded ZIP matches the tested package byte-for-byte, and its
+configuration hash and function ACL are unchanged. All five changed public files
+match the release bytes at `https://mrcatenglish.com`. Rollback and verification
+evidence are in ignored `.cloudbase-private/ai-usage-release-audit/`.
+
+For future changes, package/deploy `teacherAdmin` with
 `cloudfunctions/_shared/teacher-ai-usage.js`, then publish `teacher.html`,
 `assets/js/teacher.js`, `assets/js/teacher-ai-usage.js`,
 `assets/css/teacher-ai-usage.css` and the updated `assets/js/config.public.js`.
@@ -14,7 +21,7 @@ No collection, permission, index, provider secret, model, free-only billing swit
 timer or historical-data update is required. Verify deployed package/configuration,
 teacher authorization and live UI readback after rollout. Static cache version is
 `20260916-ai-usage-1`. An older backend shows a clear service-update message rather
-than silently reporting zero usage. Local implementation is not a completed rollout.
+than silently reporting zero usage. No deployment action remains for this release.
 
 ## Speaking Set title bars (deployed and verified, 2026-09-14)
 

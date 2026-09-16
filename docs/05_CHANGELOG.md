@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-09-16 — Teacher AI Usage (implementation ready; rollout pending)
+## 2026-09-16 — Teacher AI Usage (live)
 
 - Added Teacher AI Usage with student/account, period, activity, model and status
   filters, per-record Token display, totals, missing-data labels and Max/Plus
@@ -9,7 +9,8 @@
   and historical tasks; no provider/model/billing/history changes.
 - Backend regression and desktop/390px browser checks passed. Read-only live
   reconciliation found 1,181 visible records and the same 2,469,467 known text
-  Tokens as the independent audit. Cloud function/static rollout remains gated.
+  Tokens as the independent audit. Owner-authorized rollout completed: release
+  `87adb639`, successful COS run `35097038528`; live code and static bytes verified.
 
 ## Speaking Set title bars (2026-09-14)
 

@@ -42,10 +42,6 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
-- 2026-09-16 — Teacher AI Usage implementation and local browser QA are complete.
-  Owner authorized rollout; deploy `teacherAdmin` and publish
-  the scoped Teacher static changes. Preserve unrelated shared-worktree work.
-
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -110,6 +106,18 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-16 — Teacher AI Usage is live: owner-authorized scoped release
+  `87adb639`, successful COS run `35097038528`. `teacherAdmin` Active; downloaded
+  ZIP matches tested release exactly; configuration hash and function ACL preserved.
+  Unauthenticated `listAiUsage` returns AUTH_REQUIRED. All five public files match
+  release bytes. Published-source read-only DB reconciliation: eight pages, 1,181
+  records with account identities, 544 known text calls / 2,469,467 Tokens.
+  Isolated release regression/browser tests passed; package 1,236,744 unzipped
+  bytes. Production signed-in browser automation was not run because the dedicated
+  local QA login file is absent; real Teacher UI was tested with synthetic data.
+  Evidence/rollback: `.cloudbase-private/ai-usage-release-audit/`; release checkout:
+  `/private/tmp/mrcat-ai-usage-release-20260916`. No rollout action remains.
 
 - 2026-09-16 — Teacher AI Usage: authenticated metadata-only pagination, safe
   student attribution, legacy/aggregate/missing-use labels, filters, summaries and
