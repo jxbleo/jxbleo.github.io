@@ -3790,11 +3790,11 @@ capture and green completion states, screen wake lock and safe cancellation. IEL
 capture still stops at 120/90 seconds; preparation never opens the microphone.
 Preview is collapsed below the shared stack. No backend or historical data changes.
 
-## 2026-09-16 — Speaking teacher feedback (local implementation)
+## 2026-09-16 — Speaking teacher feedback
 
 Connected ready DSE group/individual and IELTS Part 2/3 reports to the Teacher
 bell and existing email dispatcher. Added a shared authenticated reader with
 recording playback, full analysis and exact report-version links. Publication
 stores a recoverable notification intent; report-based events deduplicate
 retries and preserve existing teacher inbox/read-state rules. Added backend and
-reader regression tests. No production deployment or mail sending was performed.
+reader regression tests. Frontend and all three required functions are deployed; no real test email was sent. See the verified rollout in `10_DEPLOYMENT.md`.

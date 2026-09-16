@@ -42,7 +42,6 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
-- 2026-09-16 — Owner authorized Speaking feedback frontend and three-function deployment. Scoped release `/private/tmp/mrcat-speaking-feedback-release-20260916` preserves current main's IR IO/VL feedback, three exemplars, history/refresh, model audits and updated IELTS recorder. All current DSE/IELTS, notification, mail, login and release tests pass; function bundles rebuilt from this checkout. Actual device/inbox acceptance remains after deployment.
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -107,6 +106,8 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-16 — Speaking teacher feedback is live: frontend `7fda14af`, successful COS run `35090037743`, seven live files matched; `teacherAdmin`, `sendTeacherAttemptEmails`, `speakingLab` are Active and downloaded packages exactly match the scoped tested release. Before-code matched main baseline; configuration hashes and function ACL preserved, private collections ADMINONLY. Both new report/audio endpoints denied unauthenticated live calls. Full current DSE/IELTS, notification and existing email/login suites passed. No historical notification backfill or real test email/recording; device/provider end-to-end acceptance remains optional follow-up. Evidence/rollback packages: `.cloudbase-private/speaking-feedback-release-audit/` in shared root; source: `/private/tmp/mrcat-speaking-feedback-release-20260916`. No further deployment authorization is needed for this completed rollout.
 
 ### 2026-09-14 — Speaking Set headers (deployed and verified)
 

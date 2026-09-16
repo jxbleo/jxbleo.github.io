@@ -1962,7 +1962,7 @@ Browser automation timed out during release checks; no live student recording
 or provider-generated IELTS report is claimed as tested. Device audio and
 real-provider calibration remain acceptance follow-ups.
 
-## Speaking report notifications (2026-09-16; awaiting authorization)
+## Speaking report notifications (2026-09-16; deployed)
 
 Locally package `speakingLab`, `teacherAdmin`, and `sendTeacherAttemptEmails` with
 `npm run package:functions -- speakingLab teacherAdmin sendTeacherAttemptEmails`.
@@ -1983,3 +1983,31 @@ Reports without the new intent field are not backfilled. Pending intents recover
 through the existing timer after producer rollout. Rollback of the producer does
 not require deleting notifications or historical reports; retain the reader and
 consumer support while already-queued messages remain deliverable.
+
+### Speaking feedback rollout verified — 2026-09-16
+
+Owner-authorized rollout is complete. Frontend commit `7fda14af` was published
+by successful COS workflow `35090037743`; all seven affected live files matched
+the release bytes. The scoped source is
+`/private/tmp/mrcat-speaking-feedback-release-20260916` and main.
+
+After renewing the expired CLI login, preflight verified all three live bundles
+against baseline `35b26d95` and retained private rollback ZIPs. Code-only updates
+completed in order: `teacherAdmin` (19:32:25 Shanghai),
+`sendTeacherAttemptEmails` (19:32:31), `speakingLab` (19:32:37). All are Active.
+Downloaded `index.js` and `package.json` match the tested packages byte for byte;
+whole ZIP hashes match as well. Before/after environment, handler, runtime,
+memory, timeout, role, VPC, layers and trigger hashes are identical. Function ACL
+is unchanged; `speakingAiWorker` remains inaccessible to clients. All relevant
+collections remain ADMINONLY. No index, collection, timer or model-setting
+mutation was required. Existing SMTP configuration and HTTPS report-link origin
+were verified without exposing secret values.
+
+Live calls to `getTeacherSpeakingReport` and `getTeacherSpeakingAudio` without
+an authenticated session both returned `AUTH_REQUIRED`. Full current DSE/IELTS,
+notification, existing mail, login and release tests passed before rollout.
+No synthetic student recording or real test email was created; microphone,
+playback and real-provider/email end-to-end acceptance on the owner's devices
+remains a follow-up. New ready reports notify; old reports without notification
+intent are not backfilled. Private evidence is under
+`.cloudbase-private/speaking-feedback-release-audit/` in the shared root.

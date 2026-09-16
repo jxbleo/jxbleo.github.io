@@ -2068,7 +2068,7 @@ warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
 capsule, background tint and focus ring. Destination pages keep their exam-specific
 names. This supersedes the earlier prefixed Dashboard-title decision.
 
-### Speaking teacher report notifications (2026-09-16; local, pending rollout)
+### Speaking teacher report notifications (2026-09-16; deployed)
 
 Ready DSE Group Discussion, DSE Individual Response, and IELTS Part 2/Part 3
 reports create one metadata-only `speaking_report_ready` outbox event per

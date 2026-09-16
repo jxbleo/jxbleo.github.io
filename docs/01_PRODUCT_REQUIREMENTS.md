@@ -2771,7 +2771,7 @@ warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
 capsule, background tint and focus ring. Destination pages keep their exam-specific
 names. This supersedes the earlier prefixed Dashboard-title decision.
 
-## 口语完成后的教师反馈（2026-09-16；待上线）
+## 口语完成后的教师反馈（2026-09-16；已上线）
 
 - DSE Group Discussion 一场报告一条通知；DSE Individual Response 和 IELTS
   Part 2/Part 3 每次独立回答各一条。以报告成功生成作为完成通知时点，上传中、
