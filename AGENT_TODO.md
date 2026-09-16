@@ -42,6 +42,8 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-16 — Owner authorized Speaking feedback frontend and three-function deployment. Scoped release `/private/tmp/mrcat-speaking-feedback-release-20260916` preserves current main's IR IO/VL feedback, three exemplars, history/refresh, model audits and updated IELTS recorder. All current DSE/IELTS, notification, mail, login and release tests pass; function bundles rebuilt from this checkout. Actual device/inbox acceptance remains after deployment.
+
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
   use one column with full-width fields and 44px controls. Account re-render

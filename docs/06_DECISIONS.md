@@ -1696,3 +1696,15 @@ The question bank must come from reviewed owner-supplied material. Research
 metadata is retained separately from actual imported content, and empty source
 states are visible rather than filled with fabricated official questions.
 See [scope and rollout](IELTS_SPEAKING_LAB.md).
+
+## 2026-09-16 — Speaking feedback reuses the teacher outbox
+
+Use report-ready publication, rather than audio upload, as the teacher feedback
+trigger so every notification opens a usable report. One report-version identity
+owns one durable event; group sessions stay one event rather than multiplying
+mail per participant. Reuse `teacher_attempt_email_events`, recipient settings
+and the existing dispatcher instead of introducing a Speaking mail service.
+A shared authenticated report reader accepts an immutable report locator, not a
+public share token, so mail never needs embedded private audio or analysis.
+SMTP cannot guarantee exactly-once handoff after a post-send database failure;
+existing transactional claims and bounded retries remain the accepted behavior.

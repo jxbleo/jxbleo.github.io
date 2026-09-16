@@ -1443,3 +1443,25 @@ new attempts require new response IDs. Analysis retries use one deterministic
 job per response/audio revision. Exact evidence and scores are validated before
 transactional publication. The worker, model configuration and timer boundaries
 are unchanged. See [implementation and indexes](IELTS_SPEAKING_LAB.md).
+
+## Speaking report notification pipeline (2026-09-16)
+
+`Speaking publication transaction -> ready speaking_reports + pending intent ->
+_shared/speaking-notifications -> teacher_attempt_email_events -> existing bell
+and sendTeacherAttemptEmails -> speaking-review.html`.
+
+The shared helper creates deterministic report-based events and repairs missed
+post-commit enqueue operations in bounded batches. SMTP remains separate from
+analysis and uses existing recipient resolution, claims and retry rules. No new
+dependency, collection, service, timer or credential is introduced.
+`teacherAdmin.listAttemptNotifications` consumes Speaking events in the existing
+outbox cursor and returns a separate safe `speaking_events` array. Its unread
+count uses the same teacher read cutoff/reviewed IDs as other notifications.
+
+`speakingLab.getTeacherSpeakingReport` reuses canonical analysis/identity
+projections and reads the exact ready report ID, including historical revisions.
+`getTeacherSpeakingAudio` resolves the report's durable job and checks the
+session-owned asset before returning a temporary URL. Both require active teacher
+authentication. Older Discussion revisions use anonymous Speaker labels when
+the current roster mapping no longer belongs to that report version.
+The reader does not persist report bodies or audio URLs in browser storage.

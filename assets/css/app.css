@@ -6041,6 +6041,7 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255,255,255,0.74);
     text-align: left;
 }
+.speaking-activity-row { text-decoration: none; font: inherit; }
 .activity-row.unread { background: var(--danger-soft); }
 .activity-row:hover {
     border-color: rgba(124,58,237,0.28);

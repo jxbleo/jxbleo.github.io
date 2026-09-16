@@ -2067,3 +2067,22 @@ capsules retain `HKDSE Paper 4` and `IELTS Part 2 & Part 3`. HKDSE retains its
 warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
 capsule, background tint and focus ring. Destination pages keep their exam-specific
 names. This supersedes the earlier prefixed Dashboard-title decision.
+
+### Speaking teacher report notifications (2026-09-16; local, pending rollout)
+
+Ready DSE Group Discussion, DSE Individual Response, and IELTS Part 2/Part 3
+reports create one metadata-only `speaking_report_ready` outbox event per
+immutable `report_id`. Save `teacher_notification_status: pending` inside the
+report publication transaction; enqueue afterward without failing publication.
+The existing email timer repairs at most 20 pending report intents per run;
+reports without an intent are not backfilled. Group reports use confirmed
+identity projections, with Speaker labels for unconfirmed identities.
+
+Teacher bell summaries and email link to `speaking-review.html?report=<id>`.
+Both report and audio actions require an active teacher derived server-side.
+The reader resolves the exact ready report version and its job-owned audio;
+deleted sessions are unavailable. Sending email does not read the bell;
+successfully opening a report uses the existing per-teacher reviewed-ID marker.
+No Speaking notification creates an attempt, assignment, completion or STAR.
+Reuse enabled teacher inboxes/BCC, existing timer and SMTP configuration.
+Function deployment and the optional pending-intent index remain owner-gated.

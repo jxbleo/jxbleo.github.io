@@ -1,0 +1,18 @@
+.speaking-review-shell { width: min(1100px, calc(100% - 32px)); margin: 24px auto 80px; }
+.speaking-review-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
+#review-content { display: grid; gap: 20px; }
+#review-content p, #review-content li, #review-content blockquote { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; }
+#review-content audio { width: 100%; margin-top: 16px; }
+#review-content details > summary { cursor: pointer; padding: 8px 0; font-weight: 700; }
+.review-scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.review-scores strong { font-size: 28px; }
+.review-score { border-radius: 16px; padding: 16px; background: rgba(120,130,150,.08); }
+.review-score h3 { font-size: 15px; }
+.review-score small { font-size: 13px; }
+.review-turn { border-top: 1px solid rgba(100,110,130,.15); padding: 16px 0; }
+.review-meta { color: #5b6574; }
+.review-candidate-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.review-candidate { scroll-margin-top: 24px; }
+.speaking-review-shell[data-exam="ielts"] .accent { color: #7256a6; }
+@media (max-width: 620px) { .review-scores { grid-template-columns: 1fr; } .speaking-review-shell { width: calc(100% - 24px); } }
+@media print { .speaking-review-header, #review-recovery, #review-play, audio { display: none; } .speaking-review-shell { width: 100%; } }

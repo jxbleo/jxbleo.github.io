@@ -95,6 +95,9 @@ async function main() {
   assert.equal((await call("deleteIndividualResponse", { response_session_id: response.response_session_id })).code, "IELTS_RESPONSE_LOCKED");
   await processResponse(response);
   const ready = (await ok("getIeltsResponse", { response_session_id: response.response_session_id })).response;
+  assert.equal(tables.teacher_attempt_email_events.length, 1, "successful publication creates one teacher notification");
+  assert.equal(tables.teacher_attempt_email_events[0].event_kind, "speaking_report_ready");
+  assert.equal(tables.speaking_reports[0].teacher_notification_status, "queued");
   assert.equal(ready.analysis_status, "ready"); assert.equal(ready.report.schema_version, rules.VERSION);
   assert.equal(modelCalls, 1); assert.equal(transcriptionCalls, 1); assert.equal(tables.speaking_reports.length, 1);
   await ok("startIndividualResponseAnalysis", { response_session_id: response.response_session_id, operation_id: "force-another" }); assert.equal(tables.speaking_ai_jobs.length, 1);
@@ -105,6 +108,8 @@ async function main() {
   assert.equal((await call("startIndividualResponseAudioUpload", { response_session_id: p3.response_session_id, operation_id: "long", mime_type: "audio/webm", size_bytes: 100, duration_seconds: 120 })).code, "INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
   await upload(p3, 90); transcriptionDuration = 90000; await processResponse(p3); assert.equal(tables.speaking_reports.length, 2, "independent responses never collide");
   const forgedDuration = await create("p3_02"); await upload(forgedDuration, 90); transcriptionDuration = 150000; const longResult = await processResponse(forgedDuration); assert.notEqual(longResult.status, "succeeded"); assert.equal(modelCalls, 2, "provider measured overlength is rejected before scoring");
+  assert.equal(tables.teacher_attempt_email_events.length, 2, "Part 2 and Part 3 notify independently; failed analysis never notifies");
+  assert.equal(new Set(tables.teacher_attempt_email_events.map(event => event.report_id)).size, 2);
   tables.ielts_speaking_sets[0].part_2.text = "Changed source"; assert.equal((await ok("getIeltsResponse", { response_session_id: response.response_session_id })).response.question_snapshot.text, topic.part_2.text);
   uid = "t"; assert.equal((await ok("getIeltsResponse", { response_session_id: response.response_session_id })).response.student_id_snapshot, "Alice");
   assert.equal((await call("createIeltsResponse", { set_id: topic.set_id, question_id: "p2", operation_id: "teacher" })).code, "STUDENT_REQUIRED");

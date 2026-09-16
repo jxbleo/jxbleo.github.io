@@ -152,3 +152,10 @@ questions, with private local import artifacts ready. Live import is verified. S
 real microphone, ASR/report and teacher-view acceptance after static publication. First-version pronunciation remains
 unassessed by owner decision; no overall band is inferred. See
 [handoff](IELTS_SPEAKING_LAB.md).
+
+
+## 2026-09-16 — Speaking feedback acceptance
+
+After rollout, verify report/audio playback and email entry on the owner's
+actual devices. The scoped release is based on current main and passes its full
+DSE/IELTS suites; stale-root recorder/capsule failures do not affect this release.

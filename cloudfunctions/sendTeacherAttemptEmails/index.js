@@ -8,6 +8,7 @@ const intensiveNotifications = require("../_shared/intensive-listening-notificat
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
 const argueNotifications = require("../_shared/argue-notifications");
 const argueReminders = require("../_shared/argue-reminders");
+const speakingNotifications = require("../_shared/speaking-notifications");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -386,6 +387,9 @@ async function attemptThreadForJob(job, cutoffAt) {
 async function emailContext(claimed, now) {
   const jobs = claimed.jobs;
   const anchor = jobs[0];
+  if (anchor.event_kind === speakingNotifications.EVENT_KIND) {
+    return { ...await speakingNotifications.loadContext(db, anchor.report_id), speaking: true, teacherUrl: text(process.env.TEACHER_ATTEMPT_EMAIL_TEACHER_URL) };
+  }
   if (anchor.event_kind === argueNotifications.EVENT_KIND) {
     const context = await argueNotifications.loadContext(db, anchor.dispute_id);
     if (context.dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
@@ -496,7 +500,7 @@ function deliveryMessageId(claimed, config) {
 async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
   try {
     const context = await emailContext(claimed, now);
-    const rendered = context.argue ? argueNotifications.renderEmail(context) : context.intensive
+    const rendered = context.speaking ? speakingNotifications.renderEmail(context) : context.argue ? argueNotifications.renderEmail(context) : context.intensive
       ? notifications.renderIntensiveListeningEmail(context)
       : notifications.renderAttemptEmail(context);
     const mail = {
@@ -525,8 +529,9 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
     await finishJobs(claimed, result && result.messageId || mail.messageId, now);
     return { success: true, event_count: claimed.jobs.length };
   } catch (error) {
-    if (claimed.jobs[0].event_kind === argueNotifications.EVENT_KIND &&
-        ["DISPUTE_NOT_AVAILABLE", "DISPUTE_ALREADY_RESOLVED", "ARGUE_REMINDER_EXPIRED"].includes(error.message)) {
+    if ((claimed.jobs[0].event_kind === speakingNotifications.EVENT_KIND && error.message === "SPEAKING_REPORT_NOT_AVAILABLE") ||
+        (claimed.jobs[0].event_kind === argueNotifications.EVENT_KIND &&
+        ["DISPUTE_NOT_AVAILABLE", "DISPUTE_ALREADY_RESOLVED", "ARGUE_REMINDER_EXPIRED"].includes(error.message))) {
       for (const job of claimed.jobs) {
         await db.collection(EVENT_COLLECTION).doc(job._id).update({
           status: "skipped", skipped_at: now, skip_reason: error.message,
@@ -547,6 +552,9 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
 async function dispatch(now) {
   const recovered = await recoverStaleClaims(now);
   // Recovery is independent of ordinary attempt delivery, including during rollout.
+  let speaking_events_repaired = 0;
+  try { speaking_events_repaired = await speakingNotifications.repairPendingEvents(db); }
+  catch (_) { console.error("Speaking notification repair deferred"); }
   let argue_events_repaired = 0;
   try { argue_events_repaired = await argueNotifications.repairPendingEvents(db); }
   catch (_) { console.error("Argue email intent repair deferred"); }
@@ -576,6 +584,7 @@ async function dispatch(now) {
     failed_batches: 0,
     intensive_paused_sessions,
     argue_events_repaired,
+    speaking_events_repaired,
     argue_reminders_queued,
     argue_reminder_error,
   };

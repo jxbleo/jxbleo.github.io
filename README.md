@@ -22,6 +22,8 @@ boundaries matter more than visual polish right now.
   minutes, while every recorded Vocabulary Quiz/Timed Practice sends promptly
   with cumulative thread history; Teacher Personal Center controls which of up
   to ten private BCC inboxes are enabled
+- Speaking report feedback for DSE groups/individual responses and IELTS Part 2/3:
+  Teacher bell and email open one authenticated report reader
 - Protected STAR/mastery records
 - Yellow-STAR Cash requests with private evidence and teacher confirmation
 - Dedicated personal My Words workspace with editing, Notes, merge suggestions,

@@ -3427,3 +3427,21 @@ capsules retain `HKDSE Paper 4` and `IELTS Part 2 & Part 3`. HKDSE retains its
 warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
 capsule, background tint and focus ring. Destination pages keep their exam-specific
 names. This supersedes the earlier prefixed Dashboard-title decision.
+
+## Speaking feedback in Teacher Notifications (2026-09-16)
+
+Speaking rows join the existing upper-left Notifications bell, showing a student
+or group label, Group Discussion / Individual Response / IELTS part, title,
+Shanghai report-ready time and `View report →`. No percentage is fabricated for
+a Speaking report. Existing bell scrolling and background lock remain intact.
+
+The shared `speaking-review.html` reader has a Teacher return link, identity,
+session details, on-demand recording playback and collapsed transcript. Group
+reports offer a participant jump list and retain all personal/turn analysis.
+Individual reports show the original question, dimension feedback and improved
+response. IELTS preserves Thinking Prompt before a collapsed Sample Answer.
+Cards become one column on narrow screens. Access errors show retry or account
+switch controls without rendering private content. Successful reading through
+either entry marks the same teacher notification read; failed loading does not.
+
+The teacher reader also preserves current DSE Individual Response IO/VL structured strengths/weaknesses and all three paired Thinking Prompt/5** Exemplars, with legacy single-sample compatibility.

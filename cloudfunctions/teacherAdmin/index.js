@@ -1,3 +1,4 @@
+const speakingNotifications = require("../_shared/speaking-notifications");
 const cloudbase = require("@cloudbase/node-sdk");
 const CloudBaseManager = require("../_shared/cloudbase-user-manager");
 const starRewards = require("../_shared/star-rewards");
@@ -2914,8 +2915,10 @@ async function listAttemptNotifications(event) {
   });
   intensiveRows.forEach((record, rawIndex) => {
     const item = recordData(record);
-    const eligible = visibleStudentUids.has(item.student_uid) && item.event_kind === "intensive_listening_session";
-    const safe = eligible ? intensiveNotifications.normalizeBellItem(item, studentMap.get(String(item.student_uid)) || {}) : null;
+    const speaking = item.event_kind === speakingNotifications.EVENT_KIND;
+    const eligible = speaking ? (!item.student_uid || visibleStudentUids.has(item.student_uid))
+      : visibleStudentUids.has(item.student_uid) && item.event_kind === "intensive_listening_session";
+    const safe = eligible ? (speaking ? speakingNotifications : intensiveNotifications).normalizeBellItem(item, studentMap.get(String(item.student_uid)) || {}) : null;
     candidates.push({
       source: "intensive",
       rawIndex,
@@ -2948,7 +2951,8 @@ async function listAttemptNotifications(event) {
   return {
     success: true,
     attempts: page.filter((item) => item.source === "attempt").map((item) => item.row),
-    intensive_events: page.filter((item) => item.source === "intensive").map((item) => item.row),
+    intensive_events: page.filter((item) => item.source === "intensive" && item.row.activity_type !== speakingNotifications.EVENT_KIND).map((item) => item.row),
+    speaking_events: page.filter((item) => item.row.activity_type === speakingNotifications.EVENT_KIND).map((item) => item.row),
     thread_keys: page.map((item) => item.threadKey),
     // A page can be empty when all rows in this raw window belong to already
     // represented threads. Keep the consumed cursor in that case so the
@@ -3054,7 +3058,9 @@ async function getUnreadActivityThreadCount(teacher) {
   });
   intensiveRows.forEach((record) => {
     const item = recordData(record);
-    if (item.event_kind !== "intensive_listening_session" || !visibleStudentUids.has(item.student_uid)) return;
+    if (item.event_kind === speakingNotifications.EVENT_KIND) {
+      if (item.student_uid && !visibleStudentUids.has(item.student_uid)) return;
+    } else if (item.event_kind !== "intensive_listening_session" || !visibleStudentUids.has(item.student_uid)) return;
     const eventId = text(item.event_id || item._id);
     if (reviewed.has(eventId)) return;
     const occurred = new Date(item.occurred_at || item.submitted_at || 0).getTime();

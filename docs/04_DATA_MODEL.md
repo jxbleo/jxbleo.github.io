@@ -1723,3 +1723,25 @@ pronunciation score, assignment, attempt, completion or STAR projection exists.
 History summaries exclude question snapshots/report bodies. Student reads scope
 to UID; active teachers may read all. Full schemas/index requirements and private
 intake paths are in [IELTS Speaking Lab](IELTS_SPEAKING_LAB.md).
+
+## Speaking report feedback intent and outbox (2026-09-16)
+
+`ADMINONLY speaking_reports.teacher_notification_status` is optional:
+`pending | queued | skipped`. New ready publication writes `pending` atomically
+with the report; a successful deterministic outbox create/existence check changes
+it to `queued`. Deleted/unavailable sources may become `skipped`. Missing intent
+means legacy history and is never automatically backfilled. A recommended
+nonunique index is `(teacher_notification_status ASC, status ASC)`.
+
+`teacher_attempt_email_events` now accepts `event_kind: speaking_report_ready`,
+`event_id: speaking-<sha256(report_id) prefix>`, exact `report_id`/`report_version`,
+one Discussion or response session locator, optional `student_uid`, safe name/title
+snapshots, `notification_label`, `exam_family`, `thread_key: speaking::<report_id>`,
+`delivery_policy: speaking_immediate` and report-ready `occurred_at/submitted_at`.
+Existing due/status/retry/claim fields apply. Group events have no synthetic student
+or attempt owner. No transcript, model analysis, audio file ID, temporary URL,
+recipient list or rendered mail is persisted in the outbox.
+
+The safe bell array is `speaking_events`; its `activity_id` uses the existing
+`students.teacher_activity_attempt_reviewed_ids` and read-all cutoff. Full report
+bodies are not part of teacher bootstrap, bell pages or IndexedDB snapshots.

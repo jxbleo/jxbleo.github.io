@@ -3515,3 +3515,20 @@ Part 3 positions match. A 390×844 embedded viewport also passed Part 2 with
 scrollWidth 390 and footer bottom 814. Dark capture, green early-stop completion,
 preparation and discard were exercised using synthetic audio; no student recording
 or live analysis was submitted during this UI check.
+
+## Speaking teacher feedback regression (2026-09-16)
+
+Run `npm run test:speaking-notifications`, `npm run test:speaking-lab`,
+`node scripts/test-ielts-speaking.js`, and the existing attempt/Argue email suites.
+The notification tests cover all four modes, concurrent repair/timer claims,
+outbox failure recovery, SMTP retry, private report/audio access, deleted source
+handling, read state, muted recipients and mixed ten-thread pagination. Reader
+VM tests cover escaped report content, candidate navigation, lazy audio, login
+return, error handling and read timing. These are synthetic local tests; they
+send no real email and do not substitute for browser or production smoke tests.
+
+After owner-authorized rollout, complete one Group Discussion, one DSE individual
+response, and one IELTS response in each part using test accounts. Confirm one
+bell row/email per ready report, exact link return after login, original audio,
+mobile layout, candidate jumps, and updated unread count after returning to the
+Teacher page. An ordinary student must not read teacher report/audio endpoints.

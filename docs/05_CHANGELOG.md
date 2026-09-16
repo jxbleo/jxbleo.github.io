@@ -3789,3 +3789,12 @@ instruction copy and bottom Done. Added matching opening/ending countdowns, dark
 capture and green completion states, screen wake lock and safe cancellation. IELTS
 capture still stops at 120/90 seconds; preparation never opens the microphone.
 Preview is collapsed below the shared stack. No backend or historical data changes.
+
+## 2026-09-16 — Speaking teacher feedback (local implementation)
+
+Connected ready DSE group/individual and IELTS Part 2/3 reports to the Teacher
+bell and existing email dispatcher. Added a shared authenticated reader with
+recording playback, full analysis and exact report-version links. Publication
+stores a recoverable notification intent; report-based events deduplicate
+retries and preserve existing teacher inbox/read-state rules. Added backend and
+reader regression tests. No production deployment or mail sending was performed.

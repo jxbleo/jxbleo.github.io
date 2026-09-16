@@ -1,6 +1,7 @@
 "use strict";
 
 const crypto = require("crypto");
+const speakingNotifications = require("../_shared/speaking-notifications");
 const cloudbase = require("@cloudbase/node-sdk");
 const { CloudBase } = require("@cloudbase/node-sdk/dist/cloudbase");
 const tcbApiCaller = require("@cloudbase/node-sdk/dist/utils/tcbapirequester");
@@ -1683,7 +1684,7 @@ async function processIndividualResponseQueuedJob(claimed) {
   const analysis = sourceReport && !irRefresh.isOverwrite(claimed) ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
-  const reportRow = { ...identity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, ...(isIelts ? { ielts_analysis: analysis } : { dse_analysis: analysis }), created_at: finishedAt, updated_at: finishedAt, ...reportMetadata };
+  const reportRow = { ...identity, teacher_notification_status: "pending", session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, ...(isIelts ? { ielts_analysis: analysis } : { dse_analysis: analysis }), created_at: finishedAt, updated_at: finishedAt, ...reportMetadata };
   reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname };
   if (sourceReport && !irRefresh.isOverwrite(claimed)) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true, rubric_version: sourceReport.rubric_version || "dse-individual-response-v1" });
   if (irRefresh.isOverwrite(claimed)) Object.assign(reportRow, {
@@ -1706,6 +1707,7 @@ async function processIndividualResponseQueuedJob(claimed) {
     await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
     await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update(replaceFields({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt }, ["report"]));
   });
+  await speakingNotifications.enqueueSafely(db, { report_id: identity.report_id });
   return { success: true, status: "succeeded", stage: "publishing", job_id: claimed.job_id };
 }
 
@@ -1815,10 +1817,11 @@ async function processQueuedJob(event) {
         const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
         const currentReport = reportResult.data && reportResult.data[0];
         if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1) || !currentReport || currentReport.status !== "processing") throw new Error("SPEAKING_JOB_SUPERSEDED");
-        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", stage: "published", ...replaceFields({ dse_analysis: analysis, model_metadata: { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", teacher_notification_status: "pending", stage: "published", ...replaceFields({ dse_analysis: analysis, model_metadata: { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ analysis_status: "ready", active_report_version: identity.report_version, updated_at: finishedAt });
       });
+      await speakingNotifications.enqueueSafely(db, { report_id: identity.report_id });
       return { success: true, status: "succeeded", stage: "publishing", job_id: claimed.job_id, report_version: identity.report_version };
     }
     throw new Error("SPEAKING_AI_SCHEMA_INVALID");
@@ -2239,12 +2242,39 @@ function friendlyMessage(code) {
   return messages[code] || "The Speaking Lab request could not be completed. Please try again.";
 }
 
+async function getTeacherSpeakingReport(actor, event, audioOnly = false) {
+  if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
+  const context = await speakingNotifications.loadContext(db, lab.text(event.report_id, 160));
+  const { report, session, student, participants } = context;
+  if (audioOnly) {
+    const job = await getOne(JOBS, { job_id: report.job_id });
+    const asset = job && await getOne(ASSETS, { asset_id: job.formal_audio_asset_id, status: "uploaded" });
+    if (!asset || !asset.file_id || (session.response_session_id
+      ? asset.response_session_id !== session.response_session_id : asset.discussion_id !== session.discussion_id)) throw new Error("AUDIO_NOT_FOUND");
+    return { success: true, audio_url: await temporaryAudioUrl(asset) };
+  }
+  const individual = Boolean(session.response_session_id);
+  return { success: true, report: {
+    report_id: report.report_id, report_version: report.report_version,
+    notification_id: speakingNotifications.eventId(report.report_id),
+    kind: individual ? (session.exam_family === "ielts" ? "ielts" : "individual_response") : "group_discussion",
+    title: lab.text(session.title, MAX_TITLE), date: session.response_date || session.discussion_date || session.created_at,
+    student_name: student ? lab.text(student.name || student.student_id, 200) : "",
+    student_id: student ? lab.text(student.student_id, 120) : "",
+    duration_seconds: Number(report.transcript && report.transcript.duration_ms || 0) / 1000 || session.duration_seconds || null,
+    question: session.question_snapshot || null,
+    analysis: individual ? (report.ielts_analysis || report.dse_analysis) : internalReportView(actor, report, participants),
+  } };
+}
+
 exports.main = async (event = {}) => {
   try {
     const action = lab.text(event.action, 80);
     if (action === "getSharedReport") return await getSharedReport(event);
     if (action === "processQueuedJob") return await processQueuedJob(event);
     const actor = await profileForAuth();
+    if (action === "getTeacherSpeakingReport") return await getTeacherSpeakingReport(actor, event);
+    if (action === "getTeacherSpeakingAudio") return await getTeacherSpeakingReport(actor, event, true);
     const ieltsActions = createIeltsService({ db, getOne, stable, now, shanghaiDate, responseView, temporaryAudioUrl });
     if (Object.prototype.hasOwnProperty.call(ieltsActions, action)) return await ieltsActions[action](actor, event);
     if (action === "listSpeakingSets") return await listSpeakingSets(actor);

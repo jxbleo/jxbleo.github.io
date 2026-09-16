@@ -1961,3 +1961,25 @@ passed. Deployment evidence and rollback packages are private under
 Browser automation timed out during release checks; no live student recording
 or provider-generated IELTS report is claimed as tested. Device audio and
 real-provider calibration remain acceptance follow-ups.
+
+## Speaking report notifications (2026-09-16; awaiting authorization)
+
+Locally package `speakingLab`, `teacherAdmin`, and `sendTeacherAttemptEmails` with
+`npm run package:functions -- speakingLab teacherAdmin sendTeacherAttemptEmails`.
+No change to `speakingAiWorker` or its private invocation ACL/timer is required.
+Review/create the recommended nonunique `speaking_reports` index
+`teacher_notification_status ASC, status ASC` under owner authorization. Existing
+outbox event uniqueness, due-date and occurred/submitted-time indexes are reused.
+Keep every collection ADMINONLY. No new collection, timer, provider or secret.
+
+Retain existing SMTP and enabled teacher inbox settings. Verify the existing
+`TEACHER_ATTEMPT_EMAIL_TEACHER_URL` is an HTTPS Teacher URL on the intended site;
+Speaking derives its report link from that origin/path and fails closed when the
+setting is absent. Ship the reader HTML/CSS/JS and updated teacher asset version
+before enabling the backend producer. Deploy consumers (`teacherAdmin`,
+`sendTeacherAttemptEmails`) before `speakingLab`, then smoke-test all four modes.
+
+Reports without the new intent field are not backfilled. Pending intents recover
+through the existing timer after producer rollout. Rollback of the producer does
+not require deleting notifications or historical reports; retain the reader and
+consumer support while already-queued messages remain deliverable.

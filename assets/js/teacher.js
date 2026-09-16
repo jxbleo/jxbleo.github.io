@@ -84,6 +84,7 @@
         attempts: [],
         intensiveEvents: [],
         notificationAttemptIds: {},
+        speakingEvents: [],
         disputes: [],
         notificationCursor: { attempt_offset: 0, intensive_offset: 0 },
         notificationHasMore: false,
@@ -797,7 +798,7 @@
             var group = intensiveGroups[event.thread_key] || (intensiveGroups[event.thread_key] = { unread: false });
             if (isIntensiveReviewUnread(event)) group.unread = true;
         });
-        return groups.concat(Object.keys(intensiveGroups).map(function(key) { return intensiveGroups[key]; })).reduce(function(counts, group) {
+        return groups.concat(Object.keys(intensiveGroups).map(function(key) { return intensiveGroups[key]; }), (state.speakingEvents || []).map(function(event) { return { unread: isIntensiveReviewUnread(event) }; })).reduce(function(counts, group) {
             counts.total += 1;
             if (group.unread) counts.unread += 1;
             else counts.read += 1;
@@ -1640,6 +1641,7 @@
             state.notificationFeedReady = false;
             state.notificationAttemptIds = {};
             state.intensiveEvents = [];
+            state.speakingEvents = [];
         }
         renderUpdatesPanel();
         return teacherCall('listAttemptNotifications', {
@@ -1651,10 +1653,15 @@
             var intensiveEvents = result.intensive_events || [];
             mergeAttemptSummaries(attempts, true);
             mergeIntensiveEvents(intensiveEvents);
+            (result.speaking_events || []).forEach(function(event) {
+                var index = state.speakingEvents.findIndex(function(item) { return item.activity_id === event.activity_id; });
+                if (index < 0) state.speakingEvents.push(event);
+                else state.speakingEvents[index] = event;
+            });
             state.notificationCursor = result.next_cursor == null ? cursor : result.next_cursor;
             state.notificationHasMore = result.has_more === true;
             state.notificationFeedReady = true;
-            return attempts.concat(intensiveEvents);
+            return attempts.concat(intensiveEvents, result.speaking_events || []);
         }).catch(function() {
             return [];
         }).finally(function() {
@@ -4635,7 +4642,7 @@
 
     function prefetchNotificationItems(items) {
         var chain = Promise.resolve();
-        (items || []).forEach(function(item) {
+        (items || []).filter(function(item) { return item && item.type === 'attempt' && item.attempt; }).forEach(function(item) {
             chain = chain.then(function() {
                 return prefetchNotificationThread(item.attempt, false);
             });
@@ -7428,13 +7435,24 @@
             });
             return intensiveActivityItem(events[0], events);
         });
-        return attemptItems.concat(intensiveItems)
+        var speakingItems = (state.speakingEvents || []).map(function(event) {
+            return { type: 'speaking', date: event.occurred_at, unread: isIntensiveReviewUnread(event),
+                report_id: event.report_id, label: [event.student_name || event.student_id, event.notification_label, event.set_title].filter(Boolean).join(' · '),
+                time: formatDateTime(event.occurred_at) };
+        });
+        return attemptItems.concat(intensiveItems, speakingItems)
             .sort(function(a, b) {
                 return new Date(activityDateValue(b) || 0) - new Date(activityDateValue(a) || 0);
             });
     }
 
     function renderActivityFeedRow(item) {
+        if (item.type === 'speaking') {
+            return '<a class="activity-row compact-activity-row speaking-activity-row' + (item.unread ? ' unread' : '') + '" href="speaking-review.html?report=' + encodeURIComponent(item.report_id) + '">' +
+                '<span class="activity-unread-dot"></span><span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong></span>' +
+                '<span class="activity-timing"><span class="activity-attempt-count">Report ready</span><span class="activity-date">' + escapeHtml(item.time) + '</span></span>' +
+                '<span class="activity-score">View report →</span></a>';
+        }
         if (item.type === 'intensive_listening') {
             return '<button class="activity-row compact-activity-row intensive-activity-row' + (item.unread ? ' unread' : '') +
                 '" type="button" data-open-intensive-event-id="' + escapeHtml(item.intensive_event_id) + '">' +
@@ -7464,7 +7482,7 @@
         var items = activityItems();
         return '<div class="activity-list compact-activity-list">' +
             (items.length ? items.map(renderActivityFeedRow).join('') :
-                '<div class="empty-card compact-empty"><strong>No attempts</strong>Student attempt activity will appear here.</div>') +
+                '<div class="empty-card compact-empty"><strong>No notifications</strong>Student practice and report notifications will appear here.</div>') +
             (state.notificationPageLoading ? '<div class="notification-feed-loading" role="status"><span aria-hidden="true"></span><span class="sr-only">Loading more notifications</span></div>' : '') +
             '</div>';
     }
@@ -9114,6 +9132,9 @@
         var overview = document.getElementById('assignment-overview');
         if (overview && overview.querySelector('.progress-matrix-scroll')) renderAssignmentOverview();
     }, { passive: true });
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted && state.profile) initializeNotificationFeed();
+    });
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden && teacherLiveDataLoadedAt
             && Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {

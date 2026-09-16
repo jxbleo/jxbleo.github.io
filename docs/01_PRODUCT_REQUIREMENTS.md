@@ -2770,3 +2770,21 @@ capsules retain `HKDSE Paper 4` and `IELTS Part 2 & Part 3`. HKDSE retains its
 warm orange palette; IELTS uses lavender/purple for its title, microphone icon,
 capsule, background tint and focus ring. Destination pages keep their exam-specific
 names. This supersedes the earlier prefixed Dashboard-title decision.
+
+## 口语完成后的教师反馈（2026-09-16；待上线）
+
+- DSE Group Discussion 一场报告一条通知；DSE Individual Response 和 IELTS
+  Part 2/Part 3 每次独立回答各一条。以报告成功生成作为完成通知时点，上传中、
+  分析中或分析失败不发送“报告完成”。重新分析生成新报告版本时可产生新通知。
+- 沿用教师左上角铃铛、红色未读标记和最新在前的十条分页。摘要展示学生/参与者、
+  练习类别、题目、上海时间和 Report ready；未确认的声音仍显示 Speaker。
+- 铃铛和邮件进入同一个教师专用报告页。小组报告包含总体分析、可直接跳转的个人
+  分析和逐轮点评；个人回答含题目、评分点评、改进示例；雅思含三项训练估分、
+  中文 Thinking Prompt 和默认收起的 Band 8 示例，不计算总分或发音分。
+- 所有报告可按需播放原录音、展开转写。邮件只含简短摘要和 View student report
+  链接；完整录音和分析必须经教师登录读取。登录后返回邮件指定的报告。
+- 报告成功打开才清除该教师对应未读；只打开铃铛或发送邮件不清除。沿用个人中心
+  启用邮箱、BCC、发送重试和全部停用时跳过的规则，不补发历史报告邮件。
+- 不改变学生已有报告、成绩、作业、STAR 或模型配置。
+
+The teacher reader also preserves current DSE Individual Response IO/VL structured strengths/weaknesses and all three paired Thinking Prompt/5** Exemplars, with legacy single-sample compatibility.
