@@ -1,5 +1,24 @@
 # 04 Data Model
 
+## Chunked Speaking analysis state and diagnostics (2026-09-21, deployed)
+
+While a Group Discussion report is `processing`, `speaking_reports` may contain
+`dse_analysis_state`: pipeline/prompt/schema versions, a server-canonical full-
+transcript overview, canonical turn reviews grouped by Speaker, completed stable
+chunk IDs, bounded model names and a quota-fallback flag. It contains no new
+audio, credentials or provider response text. The field is cleared atomically
+when the final `dse_analysis` is published.
+
+`speaking_ai_jobs.failure_retry_key` and `failure_retry_count` scope bounded
+retries to the current overview/chunk; successful progress clears both. Existing
+job lease and active-job publication guards remain authoritative.
+`speaking_model_usage_events` already stores bounded `safe_error_code`,
+`http_status`, `provider_code`, finish reason and content-shape diagnostics.
+New Writing usage events additionally store bounded `safe_error_code` and
+`provider_code` beside `response_status`. The teacher projection may return only
+those safe fields; request IDs, prompts, transcripts and response bodies remain
+private and are not projected.
+
 ## AI Usage teacher projection (2026-09-16)
 
 No new collections or persisted fields. Existing ADMINONLY

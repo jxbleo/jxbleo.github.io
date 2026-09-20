@@ -1,5 +1,24 @@
 # 07 Testing Checklist
 
+## Chunked Group Discussion analysis (2026-09-21)
+
+- Run `npm run test:speaking-lab` and `npm run test:teacher-ai-usage`, plus
+  `node scripts/test-writing-model-quota-fallback.js`.
+- Verify a complete transcript first produces a canonical overview, then chunks
+  no more than eight target turns for one Candidate per worker invocation. Every
+  canonical turn must appear exactly once after merge; removing, duplicating or
+  assigning a turn to the wrong Candidate must fail closed.
+- Interrupt after the overview and after a middle chunk. Confirm the next lease
+  resumes the first incomplete chunk without ASR, voice matching, overview or
+  completed-chunk calls. Manual retry must reuse the same durable progress.
+- Force invalid JSON/schema twice for one chunk: the first failure requeues and
+  the second is terminal. For timeout, transport, 429 and 5xx, confirm two retry
+  opportunities and terminal failure on the third. A completed chunk resets the
+  budget for the next stable chunk ID.
+- In Teacher AI Usage, verify friendly timeout/transport/rate-limit/provider/
+  invalid-output labels and HTTP status. Confirm no prompt, transcript, response
+  content, raw authentication UID or provider request ID reaches the response.
+
 ## Teacher AI Usage (2026-09-16)
 
 - Run `npm run test:teacher-ai-usage`: active teacher authorization, denied student

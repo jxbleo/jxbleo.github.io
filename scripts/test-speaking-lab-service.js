@@ -30,6 +30,8 @@ async function run() {
   assert.match(source, /if \(participant\) await transaction\.collection\(PARTICIPANTS\)/);
   assert.match(source, /responseSnapshot = lab\.buildIndividualResponseSnapshot/);
   assert.match(source, /job_type: "individual_response_analysis"/);
+  assert.match(source, /async function continueDseAnalysis\(claimed\)/);
+  assert.match(source, /await invokeWorker\(claimed\)/, "completed chunks should continue immediately while the minute timer remains a fallback");
   assert.match(source, /options\.includeReport \? \{ report: row\.report \|\| null \} : \{\}/, "Individual Response lists must not include full reports");
   assert.match(source, /INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS \+ lab\.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS/, "ASR-measured response duration must be checked server-side");
   assert.match(source, /next_question_sequence/);
@@ -122,8 +124,10 @@ async function run() {
   assert.equal(unknownConfidenceOutput.segments[0].confidence, null);
   await assert.rejects(() => Promise.resolve().then(() => speech.inspectAudio({ mime_type: "audio/webm", size_bytes: 10, duration_seconds: 69 })), (error) => error.code === "SPEAKING_AUDIO_TOO_LONG");
   assert.equal(model._test.normalizedUsage({}).total_tokens, null);
+  assert.equal(model._test.providerHttpErrorCode(429), "SPEAKING_AI_RATE_LIMITED");
+  assert.equal(model._test.providerHttpErrorCode(503), "SPEAKING_AI_PROVIDER_UNAVAILABLE");
 
-  assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-08-30\./);
+  assert.match(prompts.PROMPT_VERSION, /^dse-speaking-prompts-2026-09-21\./);
   assert.equal(schemas.DOMAIN_SCHEMA.required.includes("strengths"), false, "the shared legacy domain base stays unchanged; Part B V3 extends it separately");
   ["strengths", "priority_actions", "language_suggestions"].forEach((field) => {
     assert.equal(schemas.GROUP_DOMAIN_SCHEMA.required.includes(field), true, `Group Discussion domains must require ${field}`);
@@ -131,6 +135,8 @@ async function run() {
   ["strength_zh", "limitation_zh", "improvement_zh", "sample_en"].forEach((field) => {
     assert.equal(schemas.TURN_COACHING_SCHEMA.required.includes(field), true, `Turn coaching must require ${field}`);
   });
+  assert.equal(schemas.TURN_REVIEW_CHUNK_SCHEMA.properties.turn_reviews.maxItems, 8);
+  assert.equal(schemas.SPEAKING_OVERVIEW_SCHEMA.properties.candidates.items.properties.turn_reviews, undefined);
   const systemPrompt = prompts.dseAnalysisPrompt();
   assert.match(systemPrompt, /MANDATORY ASR SAFEGUARD/);
   assert.match(systemPrompt, /Never deduct a score, criticize the Candidate, or propose an exact correction solely because of one odd word/);
@@ -168,6 +174,17 @@ async function run() {
   assert.equal(guardedInput.speaking_turns[0].turn_id, "spk_01_turn_01");
   assert.match(systemPrompt, /Communication Strategies \(CS\)/);
   assert.match(systemPrompt, /Ideas & Organisation \(IO\)/);
+  assert.match(prompts.dseOverviewPrompt(), /complete supplied DSE Group Interaction transcript/);
+  assert.match(prompts.dseOverviewPrompt(), /Omit turn_reviews/);
+  assert.match(prompts.dseTurnReviewPrompt(), /Coach every target turn/);
+  const chunkPrompt = prompts.dseTurnReviewUserPrompt({
+    taskText: "Discuss a trend.", candidateSpeakerKey: "spk_01", chunkId: "spk_01_chunk_01",
+    targetTurns: [{ turn_id: "spk_01_turn_01", speaker_key: "spk_01", segment_ids: ["seg_0001"], text: "I agree." }],
+    contextTurns: [{ turn_id: "spk_02_turn_01", speaker_key: "spk_02", segment_ids: ["seg_0002"], text: "A prior point." }, { turn_id: "spk_01_turn_01", speaker_key: "spk_01", segment_ids: ["seg_0001"], text: "I agree." }],
+    overview: { group_summary_zh: "完整讨论摘要" }, schemaVersion: schemas.SPEAKING_REPORT_SCHEMA_VERSION,
+  });
+  assert.match(chunkPrompt, /exactly one item for every target_turn_ids entry/);
+  assert.match(chunkPrompt, /complete_transcript_overview_untrusted/);
 
   const speechCalls = [];
   const speechEnv = {
@@ -235,6 +252,7 @@ async function run() {
   const modelResult = await modelProvider.callStructuredModel({ system_prompt: "Return JSON", user_prompt: "JSON input" });
   assert.equal(modelResult.output.group_summary_zh, "測試");
   assert.equal(modelResult.usage.total_tokens, 15);
+  assert.equal(modelResult.call_index, null);
   assert.equal(modelCalls[0].body.response_format.type, "json_object");
   assert.equal(modelCalls[0].body.max_tokens, 16000);
   assert.equal(Object.prototype.hasOwnProperty.call(modelCalls[0].body, "max_completion_tokens"), false);
@@ -258,11 +276,43 @@ async function run() {
       && error.responseDiagnostics.content_length === 15,
   );
 
+  for (const [status, expectedCode] of [[429, "SPEAKING_AI_RATE_LIMITED"], [503, "SPEAKING_AI_PROVIDER_UNAVAILABLE"]]) {
+    await assert.rejects(
+      () => model.callStructuredModel({ system_prompt: "Return JSON", user_prompt: "JSON input" }, {
+        env: modelEnv,
+        fetch: async () => ({ ok: false, status, headers: { get: () => null }, text: async () => JSON.stringify({ error: { code: "provider-test" } }) }),
+      }),
+      (error) => error.code === expectedCode && error.httpStatus === status,
+    );
+  }
+  await assert.rejects(
+    () => model.callStructuredModel({ system_prompt: "Return JSON", user_prompt: "JSON input" }, {
+      env: modelEnv,
+      fetch: async () => ({ ok: false, status: 503, headers: { get: () => null }, text: async () => "upstream unavailable" }),
+    }),
+    (error) => error.code === "SPEAKING_AI_PROVIDER_UNAVAILABLE" && error.httpStatus === 503,
+  );
+  await assert.rejects(
+    () => model.callStructuredModel({ system_prompt: "Return JSON", user_prompt: "JSON input" }, { env: modelEnv, fetch: async () => { throw new TypeError("socket reset"); } }),
+    (error) => error.code === "SPEAKING_AI_TRANSPORT_ERROR",
+  );
+
   const job = { job_id: "job", status: "queued", stage: "transcription", attempt_count: 0, safe_error_code: null, created_at: null, updated_at: null, finished_at: null };
-  const view = require("../cloudfunctions/speakingLab/index.js")._test.publicJob(job);
+  const indexTest = require("../cloudfunctions/speakingLab/index.js")._test;
+  const view = indexTest.publicJob(job);
   assert.deepEqual(view, { job_id: "job", status: "queued", stage: "transcription", attempt_count: 0, error_code: null, created_at: null, updated_at: null, finished_at: null });
   assert.equal(Object.prototype.hasOwnProperty.call(view, "dispatch_token"), false);
   assert.equal(Object.prototype.hasOwnProperty.call(view, "prompt_text"), false);
+  assert.equal(indexTest.aiRetryLimit("SPEAKING_AI_SCHEMA_INVALID"), 2, "schema errors receive one repair retry");
+  assert.equal(indexTest.aiRetryLimit("SPEAKING_AI_TIMEOUT"), 3, "transient model failures receive two retries");
+  assert.equal(indexTest.failureRetryState({}, "dse_analysis:chunk_1", "SPEAKING_AI_SCHEMA_INVALID").retry, true);
+  assert.equal(indexTest.failureRetryState({ failure_retry_key: "dse_analysis:chunk_1", failure_retry_count: 1 }, "dse_analysis:chunk_1", "SPEAKING_AI_SCHEMA_INVALID").retry, false);
+  assert.equal(indexTest.failureRetryState({ failure_retry_key: "dse_analysis:chunk_1", failure_retry_count: 1 }, "dse_analysis:chunk_2", "SPEAKING_AI_SCHEMA_INVALID").retry, true, "a completed chunk must not spend the next chunk's repair budget");
+  assert.equal(indexTest.schemaInvalidError().code, "SPEAKING_AI_SCHEMA_INVALID");
+  const resumeChunks = [{ chunk_id: "spk_01_chunk_01" }, { chunk_id: "spk_01_chunk_02" }];
+  const resumedState = indexTest.dseAnalysisState({ pipeline_version: "dse-chunked-v1", prompt_version: prompts.PROMPT_VERSION, schema_version: schemas.SPEAKING_REPORT_SCHEMA_VERSION, overview: { group_summary_zh: "saved" }, completed_chunk_ids: ["spk_01_chunk_01", "stale"], turn_reviews_by_speaker: { spk_01: [{ turn_id: "spk_01_turn_01" }] } }, resumeChunks);
+  assert.deepEqual(resumedState.completed_chunk_ids, ["spk_01_chunk_01"], "resume keeps only durable chunks that still belong to this transcript");
+  assert.equal(resumedState.overview.group_summary_zh, "saved");
   const usageEvent = require("../cloudfunctions/speakingLab/index.js")._test.providerUsageEvent({ job_id: "j", discussion_id: "d", operation_id: "o", attempt_count: 1 }, "transcription", 1, "tencent", { usage: {} });
   assert.equal(usageEvent.audio_seconds, null);
   assert.equal(usageEvent.usage_status, "missing");

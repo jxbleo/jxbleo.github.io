@@ -1,6 +1,6 @@
 "use strict";
 
-const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v4";
+const SPEAKING_REPORT_SCHEMA_VERSION = "dse-speaking-report-v5";
 const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v4";
 
 const DOMAIN_SCHEMA = {
@@ -89,6 +89,31 @@ const SPEAKING_REPORT_SCHEMA = {
   },
 };
 
+const SPEAKING_OVERVIEW_SCHEMA = {
+  ...SPEAKING_REPORT_SCHEMA,
+  properties: {
+    ...SPEAKING_REPORT_SCHEMA.properties,
+    candidates: {
+      ...SPEAKING_REPORT_SCHEMA.properties.candidates,
+      items: {
+        ...SPEAKING_REPORT_SCHEMA.properties.candidates.items,
+        required: ["speaker_key", "summary_zh", "domains", "interaction_summary"],
+        properties: Object.fromEntries(Object.entries(SPEAKING_REPORT_SCHEMA.properties.candidates.items.properties).filter(([key]) => key !== "turn_reviews" && !["strengths", "priority_actions", "language_suggestions"].includes(key))),
+      },
+    },
+  },
+};
+
+const TURN_REVIEW_CHUNK_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  type: "object", additionalProperties: false,
+  required: ["speaker_key", "turn_reviews"],
+  properties: {
+    speaker_key: { type: "string" },
+    turn_reviews: { type: "array", minItems: 1, maxItems: 8, items: TURN_REVIEW_SCHEMA },
+  },
+};
+
 const IR_STRENGTH_SCHEMA = {
   type: "object", additionalProperties: false,
   required: ["point_zh", "explanation_zh", "evidence_segment_ids"],
@@ -137,4 +162,4 @@ const INDIVIDUAL_RESPONSE_REPORT_SCHEMA = {
   },
 };
 
-module.exports = { SPEAKING_REPORT_SCHEMA_VERSION, INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, SPEAKING_REPORT_SCHEMA, INDIVIDUAL_RESPONSE_REPORT_SCHEMA, DOMAIN_SCHEMA, GROUP_DOMAIN_SCHEMA, TURN_REVIEW_SCHEMA, TURN_COACHING_SCHEMA };
+module.exports = { SPEAKING_REPORT_SCHEMA_VERSION, INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, SPEAKING_REPORT_SCHEMA, SPEAKING_OVERVIEW_SCHEMA, TURN_REVIEW_CHUNK_SCHEMA, INDIVIDUAL_RESPONSE_REPORT_SCHEMA, DOMAIN_SCHEMA, GROUP_DOMAIN_SCHEMA, TURN_REVIEW_SCHEMA, TURN_COACHING_SCHEMA };

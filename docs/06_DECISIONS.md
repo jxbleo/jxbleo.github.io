@@ -1,5 +1,21 @@
 # 06 Decisions
 
+## 2026-09-21 — Preserve complete turn coverage by chunking model output
+
+Do not reduce Group Discussion reports to representative-turn samples. The
+largest reliability risk is output size, so split generation at the durable-job
+boundary: a complete-transcript overview preserves global scoring context and
+bounded per-Candidate chunks preserve every turn's detailed coaching. Merge
+canonical chunks deterministically instead of spending another model call to
+rewrite them. This intentionally trades some repeated input Tokens and more
+physical calls for lower truncation/timeout risk and isolated retries, without
+reducing visible report coverage.
+
+Store canonical progress in the processing report rather than in browser state
+or a new collection. One model call per worker lease stays below the existing
+lease window, and a failed chunk can resume independently. No new dependency or
+external service is introduced.
+
 ## 2026-09-16 — Reuse existing AI usage records for Teacher visibility
 
 AI Usage is a metadata-only read projection, not a new billing ledger. Existing

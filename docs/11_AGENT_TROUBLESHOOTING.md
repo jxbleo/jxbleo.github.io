@@ -1,5 +1,15 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-09-21 — Group Discussion 大响应超时或截断
+
+不要通过抽样发言来降低输出量，也不要继续无限提高单次超时。V5 流程先基于完整
+转录生成 overview，再按每位考生最多八个目标发言生成逐轮点评；处理中的报告保存
+`dse_analysis_state`。排查时先看 `dse_analysis_overview` 或
+`dse_analysis_turn_reviews` 的安全错误码、HTTP 状态、finish reason 和
+content-closed，再核对 completed chunk IDs。失败重试必须从当前稳定 chunk ID 继续，
+不能重跑 ASR、声纹匹配或已经成功的分块。Schema/无效响应只允许一次修复重试；
+超时、网络传输、429 和供应商 5xx 允许两次。不要记录模型正文来诊断截断。
+
 ## IR model output nesting during reanalysis (2026-09-14)
 
 A live diagnostic found a complete coaching block inside `domains` instead of

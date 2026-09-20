@@ -132,6 +132,8 @@ async function persistModelTelemetry(job, stage, telemetry, providerMetadata) {
       provider_host: text(providerMetadata && providerMetadata.provider_host, 300) || null,
       provider_request_id: text(attempt.provider_request_id, 200) || null,
       response_status: Number.isInteger(attempt.response_status) ? attempt.response_status : null,
+      safe_error_code: text(attempt.safe_error_code, 120) || null,
+      provider_code: text(attempt.provider_code, 200) || null,
       outcome: text(attempt.outcome, 80) || "unknown",
       usage_status: attempt.usage_status === "recorded" ? "recorded" : "missing",
       input_tokens: Number.isInteger(attempt.input_tokens) ? attempt.input_tokens : null,

@@ -1,5 +1,28 @@
 # 02 Architecture
 
+## Chunked Group Discussion analysis (2026-09-21, deployed)
+
+`dse_analysis` is a resumable multi-invocation pipeline. One overview call sees
+the complete canonical transcript and produces the group flow plus every
+Candidate's CS/IO/VL assessment. Deterministic chunks then target at most eight
+turns for one Candidate while carrying the complete-transcript overview and the
+chronological interaction window from the preceding through following turn.
+Each worker lease performs at most one model call, canonicalizes its output and
+stores `dse_analysis_state` before requeueing. Publication occurs only after
+every canonical turn ID has exactly one CS and IO review; the final merge is
+server-side and does not ask a model to rewrite completed coaching.
+After each durable save, an asynchronous self-dispatch starts the next lease;
+the existing minute timer remains the fallback if that dispatch is interrupted.
+
+The overview and completed chunks survive retries and manual resume, so ASR,
+voice matching and successful model chunks are not repeated. Retry counters are
+scoped to the overview or stable chunk ID: invalid JSON/schema gets one retry,
+while timeout, transport, rate-limit and provider-unavailable failures get two.
+The provider adapter distinguishes those conditions instead of collapsing them
+into timeout. Physical-call ledgers retain only bounded error/HTTP/provider-code
+and output-shape diagnostics; Teacher AI Usage projects friendly reasons without
+prompts, transcript text, response content or provider request IDs.
+
 ## Teacher AI Usage read projection (2026-09-16)
 
 `teacherAdmin.listAiUsage` runs after existing active-teacher authentication and

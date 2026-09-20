@@ -16,7 +16,7 @@ const clipProvider = require("../_shared/tencent-ci-audio");
 const { createSpeechProvider } = require("./speech-provider");
 const { createModelProvider } = require("./model-provider");
 const { SPEAKING_REPORT_SCHEMA_VERSION } = require("./schemas");
-const { PROMPT_VERSION, dseAnalysisPrompt, dseAnalysisUserPrompt, INDIVIDUAL_RESPONSE_PROMPT_VERSION, individualResponseAnalysisPrompt, individualResponseUserPrompt } = require("./prompts");
+const { PROMPT_VERSION, dseOverviewPrompt, dseOverviewUserPrompt, dseTurnReviewPrompt, dseTurnReviewUserPrompt, INDIVIDUAL_RESPONSE_PROMPT_VERSION, individualResponseAnalysisPrompt, individualResponseUserPrompt } = require("./prompts");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -40,6 +40,33 @@ const VOICE_PASSAGE_VERSION = "dse-voice-reference-v1";
 const VOICEPRINT_PASSAGE_VERSION = "dse-reusable-voiceprint-v1";
 const VOICEPRINT_PASSAGE = "Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.";
 const INDIVIDUAL_RESPONSE_MAX_FILE_BYTES = 50 * 1024 * 1024;
+
+// Transient provider failures retry on the same stage so a resume never re-runs Tencent ASR.
+const RETRYABLE_AI_CODES = new Set([
+  "SPEAKING_AI_TIMEOUT",
+  "SPEAKING_AI_TRANSPORT_ERROR",
+  "SPEAKING_AI_RATE_LIMITED",
+  "SPEAKING_AI_PROVIDER_UNAVAILABLE",
+  "SPEAKING_AI_FAILED",
+  "SPEAKING_AI_INVALID_RESPONSE",
+  "SPEAKING_AI_SCHEMA_INVALID",
+  "SPEAKING_ASR_UNAVAILABLE",
+]);
+
+const DSE_ANALYSIS_PIPELINE_VERSION = "dse-chunked-v1";
+
+function aiRetryLimit(code) {
+  if (["SPEAKING_AI_SCHEMA_INVALID", "SPEAKING_AI_INVALID_RESPONSE"].includes(code)) return 2;
+  if (["SPEAKING_AI_TIMEOUT", "SPEAKING_AI_TRANSPORT_ERROR", "SPEAKING_AI_RATE_LIMITED", "SPEAKING_AI_PROVIDER_UNAVAILABLE", "SPEAKING_AI_FAILED"].includes(code)) return 3;
+  return 5;
+}
+
+function failureRetryState(job, scopeKey, code) {
+  const key = lab.text(scopeKey || `${job && job.stage || "unknown"}:${job && job.job_type || "job"}`, 160);
+  const previous = job && job.failure_retry_key === key ? Math.max(0, Number(job.failure_retry_count || 0)) : 0;
+  const count = previous + 1;
+  return { key, count, limit: aiRetryLimit(code), retry: RETRYABLE_AI_CODES.has(code) && count < aiRetryLimit(code) };
+}
 
 function now() { return new Date(); }
 function shanghaiDate(value = now()) {
@@ -1297,6 +1324,17 @@ async function removeParticipant(actor, event) {
   return { success: true, removed: true };
 }
 
+// A manual retry can resume from the durable transcript instead of paying for ASR again.
+async function resumableAnalysisStage(discussionId, discussionRevision) {
+  const report = await getOne(REPORTS, { report_id: stable("speaking_report", discussionId, String(discussionRevision)) });
+  if (!report || report.status === "ready" || report.status === "failed") return null;
+  const transcript = reportTranscript(report);
+  if (!Array.isArray(transcript.segments) || !transcript.segments.length) return null;
+  const matching = report.voice_matching || {};
+  const matchingComplete = report.stage === "voice_matching_complete" || matching.status === "completed" || matching.status === "unavailable";
+  return matchingComplete ? "dse_analysis" : "voice_matching";
+}
+
 async function startAnalysis(actor, event) {
   const rows = await authorizedDiscussion(actor, event.discussion_id);
   if (!lab.canInviteOrFreeze(actor, rows.discussion, rows.participants) && !rows.participants.some((participant) => String(participant.student_uid) === String(actor.auth_uid) && participant.invitation_status === "accepted")) throw new Error("DISCUSSION_ACCESS_DENIED");
@@ -1305,11 +1343,12 @@ async function startAnalysis(actor, event) {
   if (!asset) throw new Error("AUDIO_UPLOAD_INCOMPLETE");
   const operationId = lab.stableOperationId(event.operation_id || `analysis:${rows.discussion.discussion_id}:${rows.discussion.updated_at || "1"}`);
   const discussionRevision = Number(rows.discussion.discussion_revision || 1);
+  const resumeStage = await resumableAnalysisStage(rows.discussion.discussion_id, discussionRevision);
   const jobId = stable("speaking_analysis_job", rows.discussion.discussion_id, String(discussionRevision), operationId);
   const old = await getOne(JOBS, { job_id: jobId });
   if (old && ["queued", "processing", "succeeded"].includes(old.status)) return { success: true, idempotent_replay: true, job: publicJob(old) };
   const created = now();
-  const job = { job_id: jobId, operation_id: operationId, job_type: "discussion_analysis", discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision, formal_audio_asset_id: asset.asset_id, reference_asset_ids: [], reusable_voiceprints: [], status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION, rubric_version: "dse-group-interaction-v1", provider_config_version: "speaking-provider-v2", created_at: created, updated_at: created, finished_at: null };
+  const job = { job_id: jobId, operation_id: operationId, job_type: "discussion_analysis", discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision, formal_audio_asset_id: asset.asset_id, reference_asset_ids: [], reusable_voiceprints: [], status: "queued", stage: resumeStage || "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION, rubric_version: "dse-group-interaction-v1", provider_config_version: "speaking-provider-v2", created_at: created, updated_at: created, finished_at: null };
   let persistedJob = job;
   let replay = false;
   await db.runTransaction(async (transaction) => {
@@ -1520,11 +1559,104 @@ async function saveProviderUsage(job, stage, callIndex, provider, metadata) {
     return false;
   }
 }
+async function markModelValidationFailure(job, stage, result) {
+  const callIndex = result && result.call_index;
+  if (!Number.isInteger(Number(callIndex))) return false;
+  try {
+    const eventId = stable("speaking_usage", job.job_id, stage, String(callIndex));
+    const existing = await getOne(USAGE, { event_id: eventId });
+    if (!existing) return false;
+    await db.collection(USAGE).doc(existing._id || eventId).update({ outcome: "failed", safe_error_code: "SPEAKING_AI_SCHEMA_INVALID" });
+    return true;
+  } catch (error) {
+    console.error("speakingLab usage validation mark failed", job.job_id, stage, error && error.message);
+    return false;
+  }
+}
+function schemaInvalidError() {
+  const error = new Error("SPEAKING_AI_SCHEMA_INVALID");
+  error.code = "SPEAKING_AI_SCHEMA_INVALID";
+  return error;
+}
 function createAuditedModelProvider(job, stage) {
   return createModelProvider({
     beforeAttempt: () => reserveProviderCall(job, "model_call_count"),
     afterAttempt: (metadata, callIndex) => saveProviderUsage(job, stage, callIndex, "openai_compatible", metadata),
   });
+}
+
+function dseChunkOverview(overview, speakerKey) {
+  const candidate = overview && Array.isArray(overview.candidates)
+    ? overview.candidates.find((item) => String(item.speaker_key) === String(speakerKey))
+    : null;
+  return {
+    group_summary_zh: overview && overview.group_summary_zh || "",
+    group_strengths: overview && overview.group_strengths || [],
+    group_priorities: overview && overview.group_priorities || [],
+    discussion_flow: overview && overview.discussion_flow || [],
+    candidate: candidate ? {
+      speaker_key: candidate.speaker_key,
+      summary_zh: candidate.summary_zh,
+      domains: candidate.domains,
+      interaction_summary: candidate.interaction_summary,
+    } : null,
+  };
+}
+
+function dseAnalysisState(value, chunks) {
+  const source = value && value.pipeline_version === DSE_ANALYSIS_PIPELINE_VERSION
+    && value.prompt_version === PROMPT_VERSION && value.schema_version === SPEAKING_REPORT_SCHEMA_VERSION ? value : {};
+  const completed = new Set(Array.isArray(source.completed_chunk_ids) ? source.completed_chunk_ids.map(String) : []);
+  const validChunkIds = new Set((Array.isArray(chunks) ? chunks : []).map((chunk) => chunk.chunk_id));
+  return {
+    pipeline_version: DSE_ANALYSIS_PIPELINE_VERSION,
+    prompt_version: PROMPT_VERSION,
+    schema_version: SPEAKING_REPORT_SCHEMA_VERSION,
+    overview: source.overview && typeof source.overview === "object" ? source.overview : null,
+    turn_reviews_by_speaker: source.turn_reviews_by_speaker && typeof source.turn_reviews_by_speaker === "object" ? source.turn_reviews_by_speaker : {},
+    completed_chunk_ids: [...completed].filter((chunkId) => validChunkIds.has(chunkId)),
+    models_used: Array.isArray(source.models_used) ? [...new Set(source.models_used.map((model) => lab.text(model, 200)).filter(Boolean))].slice(0, 8) : [],
+    quota_fallback_used: source.quota_fallback_used === true,
+  };
+}
+
+function appendDseChunk(state, chunk, reviews, result) {
+  const current = Array.isArray(state.turn_reviews_by_speaker[chunk.speaker_key])
+    ? state.turn_reviews_by_speaker[chunk.speaker_key] : [];
+  const byId = new Map(current.map((review) => [review.turn_id, review]));
+  reviews.forEach((review) => byId.set(review.turn_id, review));
+  return {
+    ...state,
+    turn_reviews_by_speaker: { ...state.turn_reviews_by_speaker, [chunk.speaker_key]: [...byId.values()] },
+    completed_chunk_ids: [...new Set([...state.completed_chunk_ids, chunk.chunk_id])],
+    models_used: [...new Set([...state.models_used, lab.text(result && result.model, 200)].filter(Boolean))].slice(0, 8),
+    quota_fallback_used: state.quota_fallback_used || Boolean(result && result.quota_fallback_used),
+  };
+}
+
+async function saveDseAnalysisProgress(claimed, state) {
+  const identity = reportIdentity(claimed);
+  let saved = false;
+  await db.runTransaction(async (transaction) => {
+    const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const currentJob = jobResult.data && jobResult.data[0];
+    const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
+    const currentReport = reportResult.data && reportResult.data[0];
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)
+      || !currentReport || currentReport.status !== "processing") throw new Error("SPEAKING_JOB_SUPERSEDED");
+    await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update(replaceFields({
+      stage: "dse_analysis", dse_analysis_state: state, updated_at: now(),
+    }, ["dse_analysis_state"]));
+    saved = true;
+  });
+  return saved;
+}
+async function continueDseAnalysis(claimed) {
+  const queued = await requeueClaimedJob(claimed, { stage: "dse_analysis", failure_retry_key: null, failure_retry_count: 0, next_retry_at: now() });
+  if (queued) {
+    try { await invokeWorker(claimed); } catch (error) { console.error("speakingLab chunk dispatch deferred", claimed.job_id, error && error.message); }
+  }
+  return queued;
 }
 function canonicalTranscript(output) {
   const tracksWithEligibility = output.speaker_tracks.map((track) => ({
@@ -1802,12 +1934,61 @@ async function processQueuedJob(event) {
       const candidateKeys = Array.isArray(transcript.candidate_speaker_keys) ? transcript.candidate_speaker_keys : [];
       const nonCandidateKeys = Array.isArray(transcript.non_candidate_speaker_keys) ? transcript.non_candidate_speaker_keys : [];
       const speakingTurns = lab.canonicalSpeakingTurns(transcript.segments, candidateKeys);
-      const model = createAuditedModelProvider(claimed, "dse_analysis");
-      const result = await model.callStructuredModel({
-          system_prompt: dseAnalysisPrompt(),
-          user_prompt: dseAnalysisUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, speakingTurns, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
+      const chunks = lab.speakingTurnReviewChunks(speakingTurns, candidateKeys, 8);
+      let state = dseAnalysisState(pipelineReport.dse_analysis_state, chunks);
+      if (!state.overview) {
+        claimed.failure_retry_scope = "dse_analysis:overview";
+        const overviewModel = createAuditedModelProvider(claimed, "dse_analysis_overview");
+        const overviewResult = await overviewModel.callStructuredModel({
+          system_prompt: dseOverviewPrompt(),
+          user_prompt: dseOverviewUserPrompt({ taskText: discussion.prompt_text, candidateSpeakerKeys: candidateKeys, nonCandidateSpeakerKeys: nonCandidateKeys, segments: transcript.segments, speakingTurns, schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION }),
         });
-      const analysis = lab.canonicalizeReport(result.output, transcript.speaker_tracks.map((track) => track.speaker_key), transcript.segments, { reportVersion: identity.report_version, candidateSpeakerKeys: candidateKeys, nonCandidateKeys });
+        let overview;
+        try {
+          overview = lab.canonicalizeReport(overviewResult.output, transcript.speaker_tracks.map((track) => track.speaker_key), transcript.segments, { reportVersion: identity.report_version, candidateSpeakerKeys: candidateKeys, nonCandidateKeys, requireTurnReviews: false });
+        } catch (_error) {
+          await markModelValidationFailure(claimed, "dse_analysis_overview", overviewResult);
+          throw schemaInvalidError();
+        }
+        state = {
+          ...state, overview,
+          models_used: [...new Set([...state.models_used, overviewResult.model].filter(Boolean))].slice(0, 8),
+          quota_fallback_used: state.quota_fallback_used || Boolean(overviewResult.quota_fallback_used),
+        };
+        await saveDseAnalysisProgress(claimed, state);
+        await continueDseAnalysis(claimed);
+        return { success: true, status: "queued", stage: "dse_analysis", analysis_step: "overview_complete", job_id: claimed.job_id };
+      }
+      const completedChunks = new Set(state.completed_chunk_ids);
+      const nextChunk = chunks.find((chunk) => !completedChunks.has(chunk.chunk_id));
+      if (nextChunk) {
+        claimed.failure_retry_scope = `dse_analysis:${nextChunk.chunk_id}`;
+        const turnModel = createAuditedModelProvider(claimed, "dse_analysis_turn_reviews");
+        const turnResult = await turnModel.callStructuredModel({
+          system_prompt: dseTurnReviewPrompt(),
+          user_prompt: dseTurnReviewUserPrompt({
+            taskText: discussion.prompt_text,
+            candidateSpeakerKey: nextChunk.speaker_key,
+            targetTurns: nextChunk.target_turns,
+            contextTurns: nextChunk.context_turns,
+            overview: dseChunkOverview(state.overview, nextChunk.speaker_key),
+            schemaVersion: SPEAKING_REPORT_SCHEMA_VERSION,
+            chunkId: nextChunk.chunk_id,
+          }),
+        });
+        let reviews;
+        try {
+          reviews = lab.canonicalizeTurnReviewChunk(turnResult.output, nextChunk.speaker_key, nextChunk.target_turns);
+        } catch (_error) {
+          await markModelValidationFailure(claimed, "dse_analysis_turn_reviews", turnResult);
+          throw schemaInvalidError();
+        }
+        state = appendDseChunk(state, nextChunk, reviews, turnResult);
+        await saveDseAnalysisProgress(claimed, state);
+        await continueDseAnalysis(claimed);
+        return { success: true, status: "queued", stage: "dse_analysis", analysis_step: nextChunk.chunk_id, completed_chunks: state.completed_chunk_ids.length, total_chunks: chunks.length, job_id: claimed.job_id };
+      }
+      const analysis = lab.mergeChunkedSpeakingReport(state.overview, state.turn_reviews_by_speaker, transcript.speaker_tracks.map((track) => track.speaker_key), transcript.segments, { reportVersion: identity.report_version, candidateSpeakerKeys: candidateKeys, nonCandidateKeys });
       const finishedAt = now();
       await db.runTransaction(async (transaction) => {
         const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
@@ -1817,7 +1998,7 @@ async function processQueuedJob(event) {
         const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
         const currentReport = reportResult.data && reportResult.data[0];
         if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1) || !currentReport || currentReport.status !== "processing") throw new Error("SPEAKING_JOB_SUPERSEDED");
-        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", teacher_notification_status: "pending", stage: "published", ...replaceFields({ dse_analysis: analysis, model_metadata: { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", teacher_notification_status: "pending", stage: "published", ...replaceFields({ dse_analysis: analysis, dse_analysis_state: null, model_metadata: { provider: "openai_compatible", models: state.models_used, quota_fallback_used: state.quota_fallback_used, pipeline_version: DSE_ANALYSIS_PIPELINE_VERSION, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "dse_analysis_state", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ analysis_status: "ready", active_report_version: identity.report_version, updated_at: finishedAt });
       });
@@ -1828,10 +2009,20 @@ async function processQueuedJob(event) {
   } catch (error) {
     const code = error && error.code || error && error.message || "SPEAKING_PROVIDER_NOT_CONFIGURED";
     const failedAt = now();
+    let retried = false;
     await db.runTransaction(async (transaction) => {
       const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
       const currentJob = jobResult.data && jobResult.data[0];
       if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)) return;
+      const attempt = Number(currentJob.attempt_count || 0);
+      const retryState = failureRetryState(currentJob, claimed.failure_retry_scope, code);
+      if (retryState.retry) {
+        // Transient provider failure: keep the same stage so a retry resumes without re-running ASR.
+        const delayMs = Math.min(60000, 5000 * Math.pow(2, Math.max(0, retryState.count - 1)));
+        await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "queued", attempt_count: Math.max(0, attempt - 1), failure_retry_key: retryState.key, failure_retry_count: retryState.count, safe_error_code: code, lease_token: null, lease_until: null, next_retry_at: new Date(Date.now() + delayMs), updated_at: failedAt });
+        retried = true;
+        return;
+      }
       await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "failed", stage: currentJob.stage || "audio_quality", safe_error_code: code, lease_token: null, lease_until: null, finished_at: failedAt, updated_at: failedAt });
       if (currentJob.job_type === "individual_response_analysis") {
         const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: currentJob.response_session_id }).limit(1).get();
@@ -1846,7 +2037,7 @@ async function processQueuedJob(event) {
         ? { voice_match_status: "failed", voice_match_safe_error_code: code, voice_match_last_run_at: failedAt, updated_at: failedAt }
         : { analysis_status: "failed", updated_at: failedAt });
     });
-    return { success: false, code, job_id: job.job_id };
+    return { success: false, code, job_id: job.job_id, retrying: retried };
   }
 }
 
@@ -2233,7 +2424,7 @@ function friendlyMessage(code) {
     VOICEPRINT_CAPACITY_REACHED: "Voiceprint registration has reached the account capacity. Please contact your teacher.", VOICEPRINT_PROVIDER_UNAVAILABLE: "Tencent voiceprint service is temporarily unavailable. Please try again.", VOICEPRINT_PROVIDER_INVALID_RESPONSE: "Tencent returned an invalid voiceprint response. Please try again.", VOICEPRINT_PROVIDER_FAILED: "Tencent could not save this voiceprint. Please record again.", VOICEPRINT_NOT_FOUND: "This voiceprint no longer exists at Tencent. Record it again.", VOICEPRINT_STALE: "This voiceprint changed in another session. Refresh before trying again.",
     SPEAKING_PROVIDER_NOT_CONFIGURED: "Speaking analysis is not enabled yet; no report was generated.", SPEAKING_ASR_UNAVAILABLE: "Speech transcription is temporarily unavailable. Please retry.", SPEAKING_ASR_FAILED: "Tencent could not transcribe this recording. Please check the audio and retry.",
     SPEAKING_ASR_INVALID_RESPONSE: "Tencent returned an incomplete transcript. Please retry.", SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE: "The recording could not be scored reliably. Its available transcript was preserved.", SPEAKING_AI_TIMEOUT: "Speaking analysis was interrupted. Please retry.",
-    SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", SPEAKING_AUDIO_TOO_LONG: "Individual Response audio must be no longer than 65 seconds.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
+    SPEAKING_AI_SCHEMA_INVALID: "Speaking analysis returned an invalid report. Please retry.", SPEAKING_AI_INPUT_TOO_LARGE: "This transcript is too large for one reliable report. Shorten the recording and retry.", SPEAKING_AI_INVALID_RESPONSE: "Speaking analysis returned an invalid response. Please retry.", SPEAKING_AI_TRANSPORT_ERROR: "The speaking analysis provider could not be reached. Please retry.", SPEAKING_AI_RATE_LIMITED: "Speaking analysis is temporarily busy. Please retry shortly.", SPEAKING_AI_PROVIDER_UNAVAILABLE: "The speaking analysis provider is temporarily unavailable. Please retry.", SPEAKING_AI_FAILED: "Speaking analysis is temporarily unavailable. Please retry.", SPEAKING_AUDIO_TOO_LONG: "Individual Response audio must be no longer than 65 seconds.", VOICE_MATCH_STALE: "The voice mapping changed. Refresh before confirming.", VOICE_MAPPING_NOT_READY: "Generate a report before editing Voice Matches.",
     VOICE_MATCHING_NOT_READY: "Finish the Discussion analysis before searching for voice matches.", OPERATION_ID_REQUIRED: "Refresh the page and try that action again.",
     VOICE_DISPUTE_LOCKED: "Your voice concern is waiting for a teacher. Only a teacher can change the mapping now.",
     VOICE_CONFIRMATION_REQUIRED_FOR_SHARE: "Confirm your voice before creating a student share.", SHARE_PROJECTION_STALE: "The report or identity labels changed. Refresh before sharing.", SHARE_NOT_AVAILABLE: "This share link is no longer available.",
@@ -2338,6 +2529,7 @@ exports.main = async (event = {}) => {
 exports._test = {
   friendlyMessage, publicJob, participantView, discussionView, candidateTrackViews, shanghaiDate, automaticMatchOutputPath,
   replaceFields, uploadTargetView, verifiedUploadedFileId, voiceprintSubjectKey, voiceprintStatusView, publicVoiceprintTarget, reportIdentity, providerUsageEvent, canonicalTranscript, completedVoiceMatchState, hasExactlyOneSessionLocator, individualResponseHasCommittedWork, compareDiscussionOrder,
+  aiRetryLimit, failureRetryState, dseAnalysisState, appendDseChunk, dseChunkOverview, schemaInvalidError,
   constants: { DISCUSSIONS, PARTICIPANTS, ASSETS, JOBS, REPORTS, EVENTS, SHARES, USAGE, VOICEPRINTS, VOICEPRINT_EVENTS, SPEAKING_SETS, INDIVIDUAL_RESPONSES, VOICE_PASSAGE_VERSION, VOICEPRINT_PASSAGE_VERSION },
   setActions: { listSpeakingSets, getSpeakingSet, teacherListSpeakingSets, teacherGetSpeakingSet, teacherCreateSpeakingSet, teacherUpdateSpeakingSet, teacherSetSpeakingSetVisibility, teacherDeleteSpeakingSet },
   responseActions: { listIndividualResponseHistory, listIndividualResponses, getIndividualResponse, createIndividualResponse, startIndividualResponseAudioUpload, finishIndividualResponseAudioUpload, startIndividualResponseAnalysis, discardEmptyIndividualResponse, deleteIndividualResponse },

@@ -91,6 +91,12 @@ function loadEndpoint(db, uid) {
 
   const lost = usage.normalize("speaking", { _id: "timeout", stage: "individual_analysis", outcome: "failed", safe_error_code: "SPEAKING_AI_TIMEOUT" });
   assert.equal(lost.total_tokens, null); assert.equal(lost.estimated_cny, null);
+  assert.equal(lost.error_code, "SPEAKING_AI_TIMEOUT");
+  const providerFailure = usage.normalize("speaking", { _id: "provider", stage: "dse_analysis_turn_reviews", outcome: "failed", safe_error_code: "SPEAKING_AI_PROVIDER_UNAVAILABLE", http_status: 503, provider_code: "InternalError" });
+  assert.equal(providerFailure.http_status, 503); assert.equal(providerFailure.provider_code, "InternalError");
+  assert.equal(usage.normalize("speaking", { _id: "unsafe-provider", outcome: "failed", provider_code: "message with private text" }).provider_code, null, "only code-shaped provider diagnostics may be projected");
+  const writingFailure = usage.normalize("writing", { _id: "writing-timeout", stage: "language_review", outcome: "transport_error", safe_error_code: "WRITING_AI_TIMEOUT", response_status: 408 });
+  assert.equal(writingFailure.error_code, "WRITING_AI_TIMEOUT"); assert.equal(writingFailure.http_status, 408);
   const quota = usage.normalize("speaking", { _id: "quota", stage: "individual_analysis", outcome: "failed", safe_error_code: "SPEAKING_AI_FREE_QUOTA_EXHAUSTED" });
   assert.equal(quota.usage_status, "nonbillable"); assert.equal(quota.estimated_cny, 0); assert.equal(quota.total_tokens, null);
   const speech = usage.normalize("speaking", { _id: "asr", stage: "individual_transcription", provider: "tencent", outcome: "completed" });
@@ -113,7 +119,9 @@ function loadEndpoint(db, uid) {
 
   const html = fs.readFileSync(path.resolve(__dirname, "../teacher.html"), "utf8");
   const js = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
+  const usageJs = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher-ai-usage.js"), "utf8");
   assert(html.includes('data-view="ai-usage"') && html.includes('id="view-ai-usage"'));
   assert(js.includes("window.MrCatTeacherAiUsage.load()"));
+  assert(usageJs.includes("SPEAKING_AI_PROVIDER_UNAVAILABLE") && usageJs.includes("WRITING_AI_SCHEMA_RESPONSE_INVALID"));
   console.log("Teacher AI Usage: authentication, keyset pagination, concurrent inserts, identities, projection privacy, missing usage, deduplication and pricing passed.");
 })().catch(error => { console.error(error); process.exitCode = 1; });

@@ -5,13 +5,14 @@ const crypto = require("crypto");
 const PAGE_SIZE = 100;
 const PRICE_DATE = "2026-09-16";
 const SOURCES = {
-  writing: { table: "writing_model_usage_events", fields: "event_id job_id student_uid stage model outcome usage_status input_tokens output_tokens cached_input_tokens created_at" },
-  speaking: { table: "speaking_model_usage_events", fields: "event_id job_id discussion_id response_session_id student_uid stage model provider outcome safe_error_code input_tokens output_tokens cached_tokens audio_seconds created_at" },
+  writing: { table: "writing_model_usage_events", fields: "event_id job_id student_uid stage model outcome safe_error_code response_status provider_code usage_status input_tokens output_tokens cached_input_tokens created_at" },
+  speaking: { table: "speaking_model_usage_events", fields: "event_id job_id discussion_id response_session_id student_uid stage model provider outcome safe_error_code http_status provider_code response_finish_reason response_content_closed input_tokens output_tokens cached_tokens audio_seconds created_at" },
   scan: { table: "vocabulary_scan_jobs", fields: "job_id student_uid status attempt_count model_usage model_metadata.model created_at finished_at" },
   legacy: { table: "writing_ai_jobs", fields: "job_id student_uid job_type status attempt_count telemetry_version created_at finished_at" },
 };
 const field = names => Object.fromEntries(("_id " + names).split(" ").map(key => [key, true]));
 const text = (v, max = 160) => String(v == null ? "" : v).trim().slice(0, max);
+const safeCode = (v, max = 120) => { const value = text(v, max); return /^[A-Za-z0-9_.:-]+$/.test(value) ? value : ""; };
 const count = v => Number.isSafeInteger(v) && v >= 0 ? v : null;
 function iso(value) { const n = value == null ? NaN : new Date(value).getTime(); return Number.isFinite(n) ? new Date(n).toISOString() : null; }
 function identityKey(uid) { return crypto.createHash("sha256").update(String(uid)).digest("hex").slice(0, 24); }
@@ -61,6 +62,11 @@ function normalize(source, raw) {
     estimated_cny: quota ? 0 : priceable ? estimate(model, input, output, cached) : null,
     comparison_max_cny: textModel && recorded ? estimate("qwen3.8-max", input, output, 0) : null,
     comparison_plus_cny: textModel && recorded ? estimate("qwen3.7-plus", input, output, 0) : null,
+    error_code: safeCode(raw.safe_error_code, 120) || null,
+    http_status: Number.isInteger(raw.http_status) ? raw.http_status : Number.isInteger(raw.response_status) ? raw.response_status : null,
+    provider_code: safeCode(raw.provider_code, 120) || null,
+    finish_reason: text(raw.response_finish_reason, 80) || null,
+    content_closed: typeof raw.response_content_closed === "boolean" ? raw.response_content_closed : null,
     students: [], group: false,
   };
 }

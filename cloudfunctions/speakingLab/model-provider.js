@@ -103,6 +103,14 @@ function isFreeTierQuotaExhausted(status, body, config) {
     && /\buse[ -]free[ -]tier[ -]only\b/i.test(message);
 }
 
+function providerHttpErrorCode(status) {
+  if (status === 408) return "SPEAKING_AI_TIMEOUT";
+  if (status === 429) return "SPEAKING_AI_RATE_LIMITED";
+  if (status >= 500) return "SPEAKING_AI_PROVIDER_UNAVAILABLE";
+  if (status === 401 || status === 403) return "SPEAKING_PROVIDER_NOT_CONFIGURED";
+  return "SPEAKING_AI_FAILED";
+}
+
 async function callOnce(input, options, config) {
   const payload = {
     model: config.model,
@@ -131,16 +139,20 @@ async function callOnce(input, options, config) {
       signal: typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(config.timeoutMs) : undefined,
     });
     raw = await response.text();
-  } catch (_error) {
-    throw new SpeakingModelError("SPEAKING_AI_TIMEOUT");
+  } catch (error) {
+    const timedOut = error && (error.name === "AbortError" || error.name === "TimeoutError")
+      || error && /(?:abort|timed?\s*out)/i.test(String(error.message || ""));
+    throw new SpeakingModelError(timedOut ? "SPEAKING_AI_TIMEOUT" : "SPEAKING_AI_TRANSPORT_ERROR");
   }
   let body;
-  try { body = JSON.parse(String(raw || "").replace(/^\uFEFF/, "")); } catch (_error) { throw new SpeakingModelError("SPEAKING_AI_INVALID_RESPONSE", { httpStatus: response.status }); }
+  try { body = JSON.parse(String(raw || "").replace(/^\uFEFF/, "")); } catch (_error) {
+    throw new SpeakingModelError(response.ok ? "SPEAKING_AI_INVALID_RESPONSE" : providerHttpErrorCode(response.status), { httpStatus: response.status });
+  }
   const requestId = text(response.headers && response.headers.get && (response.headers.get("x-request-id") || response.headers.get("request-id")), 200) || text(body && body.id, 200);
   if (!response.ok || body && body.error) {
     const providerCode = text(body && body.error && (body.error.code || body.error.type), 200);
-    const code = response.status === 401 || response.status === 403 ? "SPEAKING_PROVIDER_NOT_CONFIGURED" : (response.status === 408 || response.status === 429 || response.status >= 500 ? "SPEAKING_AI_TIMEOUT" : "SPEAKING_AI_FAILED");
     const freeTierExhausted = isFreeTierQuotaExhausted(response.status, body, config);
+    const code = providerHttpErrorCode(response.status);
     throw new SpeakingModelError(freeTierExhausted ? "SPEAKING_AI_FREE_QUOTA_EXHAUSTED" : code, { httpStatus: response.status, providerCode, requestId, freeTierExhausted });
   }
   const choice = body && Array.isArray(body.choices) && body.choices[0];
@@ -163,6 +175,7 @@ async function callOnce(input, options, config) {
     output,
     usage: normalizedUsage(body && body.usage),
     request_id: requestId,
+    response_diagnostics: responseDiagnostics,
   };
 }
 
@@ -186,8 +199,8 @@ async function callStructuredModel(input = {}, options = {}) {
       if (error.freeTierExhausted && index + 1 < models.length) continue;
       throw error;
     }
-    if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "completed", http_status: 200, request_id: result.request_id, usage: result.usage }, callIndex);
-    return { ...result, ...metadata, quota_fallback_used: index > 0 };
+    if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "completed", http_status: 200, request_id: result.request_id, response_diagnostics: result.response_diagnostics, usage: result.usage }, callIndex);
+    return { ...result, ...metadata, call_index: callIndex, quota_fallback_used: index > 0 };
   }
 }
 
@@ -196,5 +209,5 @@ module.exports = {
   createModelProvider,
   providerConfigStatus,
   callStructuredModel,
-  _test: { configuration, contentText, parseJsonContent, normalizedUsage, isFreeTierQuotaExhausted },
+  _test: { configuration, contentText, parseJsonContent, normalizedUsage, isFreeTierQuotaExhausted, providerHttpErrorCode },
 };

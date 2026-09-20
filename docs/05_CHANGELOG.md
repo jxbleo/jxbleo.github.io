@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-09-21 — Resumable full-coverage Group Discussion analysis (live)
+
+- Replaced the single oversized Group Discussion model response with one full-
+  transcript overview plus deterministic per-Candidate chunks of at most eight
+  speaking turns. Every turn still receives complete CS/IO coaching, and the
+  server validates and merges all chunks into the unchanged report experience.
+- Persisted each completed step so retry/manual resume skips ASR, voice matching,
+  overview work and already completed chunks. Added per-step retry budgets: one
+  repair retry for invalid output and two retries for transient provider errors.
+- Split timeout, transport, rate-limit and provider-5xx error classes. Extended
+  safe Speaking/Writing usage metadata and Teacher AI Usage reason labels without
+  exposing prompt, transcript, response text or request IDs.
+- Added chunk/merge/resume, retry-budget, provider classification, privacy and
+  usage-projection regression coverage. Owner-authorized speakingLab,
+  writingTutor and teacherAdmin code deployment completed with successful
+  unauthenticated handler smoke checks; the matching static/source release uses
+  this changelog entry.
+
 ## 2026-09-16 — Teacher AI Usage (live)
 
 - Added Teacher AI Usage with student/account, period, activity, model and status

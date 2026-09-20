@@ -526,6 +526,33 @@ function canonicalTurnReviews(candidate, expectedTurns) {
   return canonical;
 }
 
+function speakingTurnReviewChunks(speakingTurns, candidateSpeakerKeys, chunkSize = 8) {
+  const turns = Array.isArray(speakingTurns) ? speakingTurns : [];
+  const size = Math.max(1, Math.min(8, Number(chunkSize) || 8));
+  const chunks = [];
+  (Array.isArray(candidateSpeakerKeys) ? candidateSpeakerKeys : []).map(String).forEach((speakerKey) => {
+    const candidateTurns = turns.filter((turn) => String(turn.speaker_key) === speakerKey);
+    for (let offset = 0; offset < candidateTurns.length; offset += size) {
+      const targetTurns = candidateTurns.slice(offset, offset + size);
+      const firstIndex = turns.findIndex((turn) => turn.turn_id === targetTurns[0].turn_id);
+      const lastIndex = turns.findIndex((turn) => turn.turn_id === targetTurns[targetTurns.length - 1].turn_id);
+      chunks.push({
+        chunk_id: `${speakerKey}_chunk_${String(Math.floor(offset / size) + 1).padStart(2, "0")}`,
+        speaker_key: speakerKey,
+        target_turns: targetTurns,
+        context_turns: turns.slice(Math.max(0, firstIndex - 1), Math.min(turns.length, lastIndex + 2)),
+      });
+    }
+  });
+  return chunks;
+}
+
+function canonicalizeTurnReviewChunk(output, speakerKey, expectedTurns) {
+  if (!output || typeof output !== "object" || Array.isArray(output)) throw new Error("SPEAKING_AI_TURN_REVIEWS_INVALID");
+  if (text(output.speaker_key, 60) !== String(speakerKey)) throw new Error("SPEAKING_AI_SPEAKER_INVALID");
+  return canonicalTurnReviews(output, expectedTurns);
+}
+
 function canonicalDomain(domain, evidenceIds, validSegmentIds, candidateSpeakerKey) {
   if (!domain || typeof domain !== "object" || Array.isArray(domain)) throw new Error("SPEAKING_AI_DOMAIN_OBJECT_INVALID");
   const score = Number(domain.score);
@@ -565,6 +592,7 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
   const expected = (Array.isArray(options.candidateSpeakerKeys) ? options.candidateSpeakerKeys : [...knownSpeakers]).filter((key) => !nonCandidates.has(String(key))).map(String);
   const speakingTurns = canonicalSpeakingTurns(segments, expected);
   if (candidates.length !== expected.length) throw new Error("SPEAKING_AI_CANDIDATE_COUNT_INVALID");
+  const requireTurnReviews = options.requireTurnReviews !== false;
   const canonical = candidates.map((candidate) => {
     if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("SPEAKING_AI_CANDIDATE_OBJECT_INVALID");
     const key = text(candidate && candidate.speaker_key, 60);
@@ -593,7 +621,7 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
       priority_actions: safeList(candidate.priority_actions),
       language_suggestions: safeList(candidate.language_suggestions),
       interaction_summary: { turn_count: speakingTurns.filter((turn) => turn.speaker_key === key).length },
-      turn_reviews: canonicalTurnReviews(candidate, speakingTurns.filter((turn) => turn.speaker_key === key)),
+      turn_reviews: requireTurnReviews ? canonicalTurnReviews(candidate, speakingTurns.filter((turn) => turn.speaker_key === key)) : [],
     };
   });
   canonical.sort((left, right) => expected.indexOf(left.speaker_key) - expected.indexOf(right.speaker_key));
@@ -605,6 +633,14 @@ function canonicalizeReport(report, speakerKeys, segments, options = {}) {
     discussion_flow: safeList(sourceReport.discussion_flow),
     candidates: canonical,
   };
+}
+
+function mergeChunkedSpeakingReport(overview, turnReviewsBySpeaker, speakerKeys, segments, options = {}) {
+  const candidates = (overview && Array.isArray(overview.candidates) ? overview.candidates : []).map((candidate) => ({
+    ...candidate,
+    turn_reviews: Array.isArray(turnReviewsBySpeaker && turnReviewsBySpeaker[candidate.speaker_key]) ? turnReviewsBySpeaker[candidate.speaker_key] : [],
+  }));
+  return canonicalizeReport({ ...overview, candidates }, speakerKeys, segments, { ...options, requireTurnReviews: true });
 }
 
 function evidenceProjection(segments, speakerKey, limit = 12) {
@@ -1123,7 +1159,10 @@ module.exports = {
   automaticVoiceMatches,
   canonicalizeMapping,
   canonicalSpeakingTurns,
+  speakingTurnReviewChunks,
+  canonicalizeTurnReviewChunk,
   canonicalizeReport,
+  mergeChunkedSpeakingReport,
   evidenceProjection,
   reportCandidate,
   turnReviewProjection,

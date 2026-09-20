@@ -262,15 +262,26 @@ function normalizeProviderUsage(payload) {
   };
 }
 
-function providerAttempt(config, payload, responseStatus, outcome, requestId) {
+function providerAttempt(config, payload, responseStatus, outcome, requestId, details = {}) {
   return {
     model: config.model,
     protocol: config.protocol,
     provider_request_id: text(requestId || payload && payload.id, 200) || null,
     response_status: Number.isInteger(responseStatus) ? responseStatus : null,
     outcome: text(outcome, 80) || "unknown",
+    safe_error_code: text(details.safeErrorCode, 120) || null,
+    provider_code: text(details.providerCode, 200) || null,
     ...normalizeProviderUsage(payload),
   };
+}
+
+function writingSafeErrorCode(status, providerCode) {
+  if (providerCode === "AllocationQuota.FreeTierOnly") return "WRITING_AI_FREE_QUOTA_EXHAUSTED";
+  if (status === 408) return "WRITING_AI_TIMEOUT";
+  if (status === 429) return "WRITING_AI_RATE_LIMITED";
+  if (status >= 500) return "WRITING_AI_PROVIDER_UNAVAILABLE";
+  if (status === 401 || status === 403) return "WRITING_AI_NOT_CONFIGURED";
+  return "WRITING_AI_HTTP_ERROR";
 }
 
 function attachProviderTelemetry(error, attempts) {
@@ -355,7 +366,7 @@ async function callOnce(config, options, correction) {
     });
   } catch (error) {
     const code = error && error.name === "AbortError" ? "WRITING_AI_TIMEOUT" : "WRITING_AI_UNAVAILABLE";
-    throw attachProviderTelemetry(new Error(code), [providerAttempt(config, null, null, "transport_error", null)]);
+    throw attachProviderTelemetry(new Error(code), [providerAttempt(config, null, null, "transport_error", null, { safeErrorCode: code })]);
   } finally {
     clearTimeout(timeout);
   }
@@ -365,13 +376,14 @@ async function callOnce(config, options, correction) {
     let errorPayload = null;
     try { errorPayload = await response.json(); } catch (_error) {}
     const code = providerErrorCode(errorPayload);
+    const safeErrorCode = writingSafeErrorCode(response.status, code);
     const error = new Error(`WRITING_AI_HTTP_${response.status}`);
     error.providerCode = code || null;
     throw attachProviderTelemetry(error, [
       providerAttempt(
         config, null, response.status,
         code === "AllocationQuota.FreeTierOnly" ? "quota_exhausted" : "http_error",
-        response.headers.get("x-request-id"),
+        response.headers.get("x-request-id"), { safeErrorCode, providerCode: code },
       ),
     ]);
   }
@@ -382,7 +394,11 @@ async function callOnce(config, options, correction) {
       config, payload, response.status, "response_received", response.headers.get("x-request-id"),
     );
     const output = responseOutputText(payload, config.protocol);
-    if (!output) throw attachProviderTelemetry(new Error("WRITING_AI_EMPTY_RESPONSE"), [attempt]);
+    if (!output) {
+      attempt.outcome = "invalid_response";
+      attempt.safe_error_code = "WRITING_AI_EMPTY_RESPONSE";
+      throw attachProviderTelemetry(new Error("WRITING_AI_EMPTY_RESPONSE"), [attempt]);
+    }
     const parsed = parseStructuredOutput(output, options.schema);
     const schemaErrors = validateAgainstSchema(parsed, options.schema);
     if (schemaErrors.length) {
@@ -390,6 +406,8 @@ async function callOnce(config, options, correction) {
       console.error("writingTutor AI schema shape", config.model, safeResultShape(parsed));
       const error = new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID");
       error.validationMessage = schemaErrors.join("; ");
+      attempt.outcome = "schema_invalid";
+      attempt.safe_error_code = "WRITING_AI_SCHEMA_RESPONSE_INVALID";
       throw attachProviderTelemetry(error, [attempt]);
     }
     attempt.outcome = "structured_success";
@@ -398,6 +416,7 @@ async function callOnce(config, options, correction) {
     if (error && error.providerTelemetry) throw error;
     const attempt = providerAttempt(
       config, payload, response.status, "invalid_response", response.headers.get("x-request-id"),
+      { safeErrorCode: error && error.message === "WRITING_AI_SCHEMA_RESPONSE_INVALID" ? "WRITING_AI_SCHEMA_RESPONSE_INVALID" : "WRITING_AI_INVALID_RESPONSE" },
     );
     const safeError = error instanceof SyntaxError
       ? new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID") : error;
@@ -476,6 +495,6 @@ module.exports = {
   _test: {
     validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig,
     normalizeOcrPages, normalizeTimeoutMs, normalizeProviderUsage,
-    providerErrorCode, isFreeTierQuotaExhausted,
+    providerErrorCode, isFreeTierQuotaExhausted, writingSafeErrorCode,
   },
 };

@@ -4,8 +4,9 @@
     if (!root) return;
     var state = { rows: [], ids: new Set(), cursor: null, complete: false, loading: false, error: '', scanned: 0, asOf: '', pricing: null, generation: 0, visible: 30, lastLoaded: 0 };
     var $ = function(id) { return document.getElementById('ai-usage-' + id); };
-    var labels = { language_review: 'Writing review', standardized_review: 'Exam writing review', rewrite_check: 'Sentence check', ocr_transcription: 'Writing OCR', ocr_uncertainty_location: 'OCR location check', revision_ocr: 'Revision OCR', individual_analysis: 'Individual speaking', dse_analysis: 'Group speaking', individual_transcription: 'Speech transcription', transcription: 'Group transcription', vocabulary_page_ocr: 'Scan Words', review: 'Writing review', rewrite: 'Sentence check', ocr: 'Writing OCR' };
+    var labels = { language_review: 'Writing review', standardized_review: 'Exam writing review', rewrite_check: 'Sentence check', ocr_transcription: 'Writing OCR', ocr_uncertainty_location: 'OCR location check', revision_ocr: 'Revision OCR', individual_analysis: 'Individual speaking', dse_analysis: 'Group speaking', dse_analysis_overview: 'Group speaking overview', dse_analysis_turn_reviews: 'Group speaking turn reviews', individual_transcription: 'Speech transcription', transcription: 'Group transcription', vocabulary_page_ocr: 'Scan Words', review: 'Writing review', rewrite: 'Sentence check', ocr: 'Writing OCR' };
     var statusLabels = { completed: 'Completed', failed: 'Failed', quota_exhausted: 'Free quota exhausted', pending: 'In progress', unknown: 'Unknown' };
+    var errorLabels = { SPEAKING_AI_TIMEOUT: 'Timed out', SPEAKING_AI_TRANSPORT_ERROR: 'Network transport error', SPEAKING_AI_RATE_LIMITED: 'Rate limited', SPEAKING_AI_PROVIDER_UNAVAILABLE: 'Provider unavailable', SPEAKING_AI_SCHEMA_INVALID: 'Invalid report JSON', SPEAKING_AI_INVALID_RESPONSE: 'Invalid provider response', SPEAKING_PROVIDER_NOT_CONFIGURED: 'Provider configuration error', SPEAKING_AI_FREE_QUOTA_EXHAUSTED: 'Free quota switch', WRITING_AI_TIMEOUT: 'Timed out', WRITING_AI_UNAVAILABLE: 'Network transport error', WRITING_AI_RATE_LIMITED: 'Rate limited', WRITING_AI_PROVIDER_UNAVAILABLE: 'Provider unavailable', WRITING_AI_SCHEMA_RESPONSE_INVALID: 'Invalid report JSON', WRITING_AI_EMPTY_RESPONSE: 'Empty provider response', WRITING_AI_NOT_CONFIGURED: 'Provider configuration error', WRITING_AI_FREE_QUOTA_EXHAUSTED: 'Free quota switch' };
     function escape(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function number(value) { return typeof value === 'number' ? value.toLocaleString('en-US') : '—'; }
     function money(value, digits) { return typeof value === 'number' ? '¥' + value.toFixed(digits == null ? 2 : digits) : '—'; }
@@ -65,13 +66,19 @@
         if (row.kind === 'task_summary') detail = 'Task total · ' + number(row.call_count) + ' calls';
         if (row.kind === 'legacy_task') detail = 'Legacy task · call count unavailable';
         var usage = row.usage_status === 'missing' ? 'Usage unavailable' : row.usage_status === 'nonbillable' ? 'No billable usage' : row.kind === 'speech_call' ? 'Audio service · not Token-billed' : row.cached_input_tokens ? number(row.cached_input_tokens) + ' cached input' : '';
+        var statusParts = [];
+        if (errorLabels[row.error_code]) statusParts.push(errorLabels[row.error_code]);
+        if (row.status === 'failed' && row.finish_reason === 'length') statusParts = ['Output truncated'];
+        if (row.status === 'failed' && row.http_status) statusParts.push('HTTP ' + row.http_status);
+        if (row.status === 'failed' && row.provider_code) statusParts.push(row.provider_code);
+        var statusDetail = statusParts.join(' · ');
         return '<tr><td data-label="Time"><time>' + escape(time(row.occurred_at)) + '</time></td>' +
             '<td data-label="Account">' + person + '</td><td data-label="Activity"><strong>' + escape(labels[row.stage] || row.stage || 'AI task') + '</strong><small>' + escape(detail) + '</small></td>' +
             '<td data-label="Model"><span class="ai-usage-model">' + escape(row.model || 'Not recorded') + '</span></td>' +
             '<td data-label="Input" class="ai-usage-number">' + number(row.input_tokens) + '</td><td data-label="Output" class="ai-usage-number">' + number(row.output_tokens) + '</td>' +
             '<td data-label="Total" class="ai-usage-number"><strong>' + number(row.total_tokens) + '</strong><small>' + escape(usage) + '</small></td>' +
             '<td data-label="Est. CNY" class="ai-usage-number">' + money(row.estimated_cny, 4) + '</td>' +
-            '<td data-label="Status"><span class="ai-usage-status is-' + escape(row.status) + '">' + escape(statusLabels[row.status] || 'Unknown') + '</span></td></tr>';
+            '<td data-label="Status"><span class="ai-usage-status is-' + escape(row.status) + '">' + escape(statusLabels[row.status] || 'Unknown') + '</span><small>' + escape(statusDetail) + '</small></td></tr>';
     }
     function render() {
         var rows = filteredRows(), total = totals(rows), prefix = state.complete ? '' : 'Partial · ';
