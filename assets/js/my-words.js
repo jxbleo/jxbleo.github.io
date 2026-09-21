@@ -551,16 +551,6 @@
         }, 1000);
     }
 
-    function detailActionsHtml(word, dictionary) {
-        return '<details class="my-words-detail-actions"><summary aria-label="More word actions">•••</summary><div class="my-words-detail-actions-menu">' +
-            '<button type="button" data-edit-word="' + escapeHtml(word.vocab_id) + '">Edit word</button>' +
-            '<button type="button" data-edit-note="' + escapeHtml(word.vocab_id) + '">' + (word.personal_note ? 'Edit Note' : 'Add Note') + '</button>' +
-            (!dictionary && word.lookup_status === 'not_found' ? '<button type="button" data-ai-word="' + escapeHtml(word.vocab_id) + '">Ask AI</button>' : '') +
-            (dictionary ? '<button type="button" data-report-word="' + escapeHtml(word.vocab_id) + '">Report issue</button>' : '') +
-            '<button class="my-word-archive" type="button" data-archive-word="' + escapeHtml(word.vocab_id) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg>Remove word</button>' +
-        '</div></details>';
-    }
-
     function wordSavedDate(word) {
         return formatShortDate(word.last_added_at || word.updated_at || word.created_at);
     }
@@ -637,43 +627,6 @@
         return '<div class="my-word-mobile-detail-copy">' + formsHtml + editHtml + recommendation + lookupHtml +
             mobileSourceHtml(word) +
             '<section class="my-word-mobile-section"><h3>Note</h3>' + noteHtml + '</section>' +
-        '</div>';
-    }
-
-    function wordDetailBodyHtml(word) {
-        var dictionary = word.dictionary;
-        var spokenWord = dictionary && dictionary.word || word.text || '';
-        var examples = Array.isArray(word.saved_examples) ? word.saved_examples : [];
-        var examplesHtml = examples.length ? '<div class="my-word-examples"><strong>Saved examples</strong>' + examples.slice(0, 8).map(function(example) {
-            return '<div><span>' + escapeHtml(example.form || word.text || '') + '</span>' +
-                (example.context ? '<blockquote>' + escapeHtml(example.context) + '</blockquote>' : '') +
-                '<small>' + escapeHtml(example.source_title || example.source_set_id || '') + '</small></div>';
-        }).join('') + '</div>' : (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '');
-        var noteHtml = state.noteEditingId === word.vocab_id
-            ? '<form class="my-word-note-form" data-note-form="' + escapeHtml(word.vocab_id) + '"><textarea maxlength="500" placeholder="Add a personal note">' + escapeHtml(word.personal_note || '') + '</textarea><div><button class="outline-button" type="button" data-cancel-note>Cancel</button><button class="primary-button" type="submit">Done</button></div></form>'
-            : '<div class="my-word-note"><strong>Note</strong><p>' + escapeHtml(word.personal_note || 'No personal note yet.') + '</p></div>';
-        var editHtml = state.editingId === word.vocab_id
-            ? '<form class="my-word-edit-form" data-edit-form="' + escapeHtml(word.vocab_id) + '"><input name="text" maxlength="120" value="' + escapeHtml(word.text || '') + '" required><div><button class="outline-button" type="button" data-cancel-word-edit>Cancel</button><button class="primary-button" type="submit">Done</button></div></form>'
-            : '';
-        var recommendation = word.recommended_headword
-            ? '<button class="my-word-recommendation" type="button" data-use-headword="' + escapeHtml(word.recommended_headword) + '" data-vocab-id="' + escapeHtml(word.vocab_id) + '">' +
-                ((word.merge_candidate_ids || []).length ? 'Merge with ' : 'Use ') + escapeHtml(word.recommended_headword) + '</button>'
-            : '';
-        var dictionaryStatus = dictionary && dictionary.review_status === 'ai_draft'
-            ? '<p class="my-word-dictionary-status">AI-generated · Not reviewed by teacher</p>'
-            : (dictionary && dictionary.verified ? '<p class="my-word-dictionary-status">Teacher reviewed</p>' : '');
-        var lookupHtml = '';
-        if (!dictionary) {
-            lookupHtml = '<p>' + (word.lookup_status === 'not_found' ? 'Dictionary entry not found yet.' : 'Finding dictionary details...') + '</p>' +
-                (word.lookup_status === 'not_found' ? '<button class="my-word-lookup" type="button" data-lookup-word="' + escapeHtml(word.vocab_id) + '">Retry</button>' : '');
-        }
-        return '<div class="my-word-detail-copy' + (!dictionary ? ' muted' : '') + '">' + editHtml + recommendation + dictionaryStatus +
-            '<div class="my-word-phonetic-row"><p class="my-word-phonetic">' + escapeHtml(dictionary && dictionary.phonetic || 'Pronunciation pending') + '</p>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
-            lookupHtml +
-            (dictionary && dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
-            (dictionary && dictionary.word_forms ? '<p><strong>Forms:</strong> ' + escapeHtml(dictionary.word_forms) + '</p>' : '') +
-            examplesHtml + noteHtml +
-            '<p class="my-word-detail-meta">' + escapeHtml(wordSourceLabel(word)) + (formatShortDate(word.last_added_at || word.updated_at || word.created_at) ? ' · ' + escapeHtml(formatShortDate(word.last_added_at || word.updated_at || word.created_at)) : '') + '</p>' +
         '</div>';
     }
 
@@ -1486,11 +1439,6 @@
             if (state.mobileDetailOpen && !isMobileLayout()) closeMobileDetail(true);
             fitDetailTitles(desktopDetail);
             fitDetailTitles(mobileDetail);
-        });
-        document.addEventListener('click', function(event) {
-            document.querySelectorAll('.my-words-detail-actions[open]').forEach(function(actions) {
-                if (!actions.contains(event.target)) actions.removeAttribute('open');
-            });
         });
         document.addEventListener('submit', handleDetailSubmit);
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });

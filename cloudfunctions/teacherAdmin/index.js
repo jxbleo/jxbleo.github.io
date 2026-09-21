@@ -400,10 +400,6 @@ function attemptDateValue(attempt) {
   return date && !Number.isNaN(date.getTime()) ? date.getTime() : 0;
 }
 
-function isSelfStudyAchievement(item) {
-  return starRewards.isBlueAchievement(item);
-}
-
 function isVocabularySet(set) {
   if (!set) return false;
   return [
@@ -641,11 +637,6 @@ function generatedClassId(name) {
 
 function membershipIsActive(membership) {
   return Boolean(membership) && membership.active !== false && !membership.ended_at;
-}
-
-async function activeClassMembershipsForStudent(studentUid) {
-  const memberships = await getAll(CLASS_MEMBERSHIP_COLLECTION, { where: { student_uid: studentUid } });
-  return memberships.map(recordData).filter(membershipIsActive);
 }
 
 async function endActiveClassMemberships(studentUid, now, teacherUid) {
@@ -3545,18 +3536,6 @@ async function applyAdjustedAttemptEffects(attempt, adjustedAttempt, correctCoun
     });
     await protectSelfStudyStar(student, adjustedAttempt, now);
   }
-}
-
-async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
-  const attempt = await getOne("attempts", {
-    attempt_id: dispute.attempt_id,
-    student_uid: dispute.student_uid,
-  });
-  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
-  return await improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, {
-    source: "dispute",
-    gradingHistoryId: dispute.grading_history_id || null,
-  });
 }
 
 async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, options = {}) {

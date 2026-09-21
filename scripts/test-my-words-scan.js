@@ -90,7 +90,7 @@ assert(html.includes("data-scan-progress") && html.includes("data-scan-progress-
 assert(!html.includes('data-scan-phase="edit"') && !html.includes("data-scan-editor") && !html.includes("data-scan-run"));
 assert(html.includes("data-scan-preview") && html.includes("data-scan-next disabled>Confirm</button>"));
 assert(html.includes("data-scan-remove-confirm") && html.includes("data-scan-remove-confirm-action"));
-assert(html.includes("assets/js/my-words-scan.js?v=20260907-1") && html.includes("assets/css/my-words-scan.css?v=20260907-1"));
+assert(/assets\/js\/my-words-scan\.js\?v=\d{8}-[a-z0-9-]+/.test(html) && /assets\/css\/my-words-scan\.css\?v=\d{8}-[a-z0-9-]+/.test(html));
 assert(dashboardHtml.includes("dashboard-words-scan-overlay") && dashboardHtml.includes("data-scan-next disabled>Confirm</button>"));
 assert(!dashboardHtml.includes("Bring in the words you found.") && !dashboardHtml.includes("Prepare Photos"));
 assert(dashboardHtml.includes("Page") || js.includes("'Page '"));

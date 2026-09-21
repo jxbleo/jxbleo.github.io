@@ -28,8 +28,9 @@ function testDashboardCapsules() {
   assert.match(capsuleMarkup, /student-skill-title">Speaking Lab</);
   assert.match(capsuleMarkup, /student-skill-badge">HKDSE Paper 4</);
   assert.ok(!/data-glyph=|>写<|>听<|>说</.test(capsuleMarkup));
-  assert.strictEqual((capsuleMarkup.match(/class="student-skill-icon"/g) || []).length, 3);
-  assert.strictEqual((capsuleMarkup.match(/<svg/g) || []).length, 3);
+  assert.match(capsuleMarkup, /href="ielts-speaking-lab\.html/);
+  assert.strictEqual((capsuleMarkup.match(/class="student-skill-icon"/g) || []).length, 4);
+  assert.strictEqual((capsuleMarkup.match(/<svg/g) || []).length, 4);
   assert.match(dashboardCss, /\.student-skill-title \{[\s\S]*?color: var\(--skill-tone\);[\s\S]*?font-size: clamp\(1\.2rem, 1\.8vw, 1\.4rem\);/);
   assert.match(dashboardCss, /@media \(max-width: 640px\) \{[\s\S]*?\.student-skill-card \{[\s\S]*?min-height: 112px;[\s\S]*?padding: 15px 18px;/);
   assert.match(dashboard, /id="student-workspace-confirm-overlay"/);

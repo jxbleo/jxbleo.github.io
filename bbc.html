@@ -3473,7 +3473,7 @@
 </div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260815-1"></script>
+<script src="assets/js/config.public.js?v=20260921-cleanup-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
 <script src="assets/js/login-navigation.js?v=20260819-1"></script>
 <script src="assets/js/practice-session.js?v=20260819-1"></script>
@@ -4030,12 +4030,6 @@
         });
     }
 
-    function openLessonWordsPanel() {
-        var panel = document.getElementById('lesson-words-panel');
-        if (!panel) return;
-        panel.classList.add('open');
-        loadLessonWords();
-    }
 
     function setupLessonWordsPanel() {
         if (lessonWordsListenersReady) return;
@@ -4531,26 +4525,6 @@
         saveDraftAnswers();
     }
 
-    function enableRetry() {
-        submitted = false;
-        document.querySelectorAll('#quiz-form input, #quiz-form select').forEach(function(el) {
-            el.disabled = false;
-        });
-        applyBlankAttemptLocks();
-        applyMcLocks();
-        var btn = document.getElementById('submit-btn');
-        btn.disabled = false;
-        btn.textContent = 'Submit';
-        document.querySelectorAll('.inline-explanation,.feedback-bar,.argue-btn,.answer-toggle-btn,.question-action-buttons').forEach(function(el) { el.remove(); });
-        document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
-        document.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host', 'has-argue-action'); });
-        document.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
-            el.classList.remove('correct', 'wrong', 'disabled');
-        });
-        document.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
-            el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
-        });
-    }
 
     function clearRenderedAttemptFeedback() {
         var form = document.getElementById('quiz-form');
@@ -5391,20 +5365,6 @@
         return missing;
     }
 
-    function showScore(score) {
-        var el = document.getElementById('score-display');
-        el.textContent = score.correct + ' / ' + score.total + ' correct';
-        el.className = 'show';
-        if (score.total === 0) {
-            el.className += ' zero';
-        } else if (score.correct === score.total) {
-            el.className += ' perfect';
-        } else if (score.correct === 0) {
-            el.className += ' zero';
-        } else {
-            el.className += ' partial';
-        }
-    }
 
     var answerRevealConfirmed = false;
     function confirmAnswerReveal() {

@@ -672,20 +672,6 @@
         return category === 'ngsl' || category === 'nawl' || category === 'tk2' || category === 'oxford5000';
     }
 
-    function renderSystemTag(value, emptyLabel) {
-        var label = String(value || '').trim();
-        if (!label) return escapeHtml(emptyLabel || 'Not set');
-        return '<span class="system-tag"><span>' + escapeHtml(label) + '</span></span>';
-    }
-
-    function studentMetaHtml(student) {
-        return '<span class="student-meta">' +
-            '<span>' + escapeHtml(student.student_id || 'No Login ID') + '</span>' +
-            '<span>' + escapeHtml(student.class_group || 'No class') + '</span>' +
-            (student.curriculum_track ? renderSystemTag(student.curriculum_track, '') : '') +
-        '</span>';
-    }
-
     function studentChineseName(student) {
         return String(student && student.chinese_name || '').trim();
     }
@@ -1405,10 +1391,6 @@
         return day + ' ' + time;
     }
 
-    function randomItem(items) {
-        return items[Math.floor(Math.random() * items.length)];
-    }
-
     function englishName(value) {
         var textValue = String(value && (value.name || value.student_id) || value || '').trim();
         if (!textValue) return 'Teacher';
@@ -1447,44 +1429,6 @@
             return width + (/[^\x00-\xFF]/.test(character) ? 2 : 1);
         }, 0);
     }
-
-    function shanghaiHour() {
-        var parts = new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Asia/Shanghai',
-            hour: '2-digit',
-            hourCycle: 'h23'
-        }).formatToParts(new Date());
-        var hourPart = parts.find(function(part) { return part.type === 'hour'; });
-        return Number(hourPart ? hourPart.value : 12);
-    }
-
-    function greetingFor(name) {
-        var hour = shanghaiHour();
-        var timeGreetings = hour < 12
-            ? ['Good morning, {name}.', 'A fresh morning, {name}.', 'Morning, {name}. Ready to begin?']
-            : hour < 18
-                ? ['Good afternoon, {name}.', 'A bright afternoon, {name}.', 'Afternoon, {name}. Let us keep moving.']
-                : ['Good evening, {name}.', 'A calm evening, {name}.', 'Evening, {name}. One more step forward.'];
-        var flexibleGreetings = [
-            'Welcome back, {name}.',
-            'Great to see you, {name}.',
-            'Ready when you are, {name}.',
-            'Let us make some progress, {name}.',
-            'Here we go, {name}.',
-            'Your next win starts here, {name}.',
-            'Let us build on yesterday, {name}.',
-            'A new chance to grow, {name}.',
-            'Good to have you here, {name}.',
-            'Let us get started, {name}.',
-            'Keep the momentum going, {name}.',
-            'Today has possibilities, {name}.',
-            'One step at a time, {name}.',
-            'You are back, {name}. Let us do this.',
-            'Ready for something new, {name}?'
-        ];
-        return randomItem(timeGreetings.concat(flexibleGreetings)).replace('{name}', name);
-    }
-
 
     function teacherCall(action, data) {
         return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
@@ -2323,10 +2267,6 @@
         });
     }
 
-    function isCambridgeCategory(category) {
-        return category === 'ielts-reading' || category === 'ielts-listening';
-    }
-
     function cambridgeBookId(set) {
         var id = String(set.set_id || set.id || '').trim().toUpperCase();
         var match = id.match(/^C(\d+)(?:-|$)/);
@@ -2514,10 +2454,6 @@
             .then(function(r) { if (!r.ok) return; return r.json(); })
             .then(function(c) { if (c) teacherLibraryCatalog = c; })
             .catch(function() {});
-    }
-
-    function teacherLibraryBadge(item, section, itemYear) {
-        return '';
     }
 
     function teacherLibrarySectionLabel(sectionId, fallback) {
@@ -3401,10 +3337,6 @@
         ].join('-');
     }
 
-    function shanghaiDateInputValue(value) {
-        return shanghaiDateInputValueFromParts(shanghaiDateParts(value));
-    }
-
     function currentShanghaiMondayParts(weekOffset) {
         var today = shanghaiDateParts(new Date());
         if (!today) return null;
@@ -4264,34 +4196,6 @@
         });
     }
 
-    function assignmentStatusCounts(assignments) {
-        var counts = { to_do: 0, passed: 0, mastered: 0, cancelled: 0 };
-        assignments.forEach(function(item) {
-            var status = normalizedAssignmentStatus(item.status);
-            counts[status] = (counts[status] || 0) + 1;
-        });
-        return counts;
-    }
-
-    function progressModeTabs(assignments) {
-        var counts = assignmentStatusCounts(assignments);
-        var finishedCount = counts.passed + counts.mastered;
-        var tabs = [
-            { id: 'to_do', label: 'TO DO', count: counts.to_do },
-            { id: 'finished', label: 'Finished', count: finishedCount },
-            { id: 'data', label: 'Data', count: null }
-        ];
-        return '<div class="summary-grid student-summary" role="tablist" aria-label="Progress sections">' +
-            tabs.map(function(tab) {
-                return '<button class="summary-card assignment-filter progress-status-filter' +
-                    (state.studentProgressView === tab.id ? ' active' : '') +
-                    '" type="button" data-progress-view="' + escapeHtml(tab.id) + '">' +
-                    '<span class="summary-value">' + (tab.count == null ? '—' : tab.count) + '</span><span class="summary-label">' + escapeHtml(tab.label) + '</span>' +
-                    '</button>';
-            }).join('') +
-        '</div>';
-    }
-
     function setTitleFor(setId) {
         var set = state.sets.find(function(item) { return item.set_id === setId; });
         return set ? set.title || setId : setId;
@@ -4458,16 +4362,6 @@
         if (mode === 'all') return true;
         var range = matrixDateRange();
         return dateMatchesMatrixRange(matrixFilterDateValue(item), range);
-    }
-
-    function visibleProgressAssignments(assignments) {
-        return assignments.filter(function(item) {
-            var status = normalizedAssignmentStatus(item.status);
-            if (state.studentProgressView === 'finished') return status === 'passed' || status === 'mastered';
-            return status === 'to_do';
-        }).sort(function(a, b) {
-            return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0);
-        });
     }
 
     function progressAttemptsForAssignment(assignment) {
@@ -4753,16 +4647,6 @@
         return status === 'passed' || status === 'mastered';
     }
 
-    function formatDateInputValue(value) {
-        if (!value) return '';
-        var date = new Date(value);
-        if (isNaN(date.getTime())) return '';
-        var year = date.getFullYear();
-        var month = String(date.getMonth() + 1).padStart(2, '0');
-        var day = String(date.getDate()).padStart(2, '0');
-        return year + '-' + month + '-' + day;
-    }
-
     function commonFieldValue(items, field) {
         var values = (items || []).map(function(item) {
             return item[field] == null ? '' : String(item[field]);
@@ -4817,7 +4701,6 @@
         }
         return String(value);
     }
-
 
     function renderAttemptWrongAnswers(attempt) {
         if (attempt && !attemptHasDetail(attempt)) {
@@ -4967,63 +4850,11 @@
         '</div>';
     }
 
-    function renderAssignmentCapsule(assignment) {
-        var key = assignment.progress_id || assignment.assignment_id || assignment.set_id;
-        var expanded = state.expandedAssignmentSets[key] === true;
-        var attempts = progressAttemptsForAssignment(assignment);
-        var score = formatPercent(assignment.best_percentage);
-        var isIntensive = assignment && (assignment.intensive_listening === true || /^IL-/i.test(String(assignment.set_id || '')));
-        var attemptCount = Math.max(Number(assignment.attempt_count || 0), attempts.length);
-        var activityCount = isIntensive ? Number(assignment.completed_unit_count) || 0 : attemptCount;
-        var sourceLabel = assignment.source === 'self_study' ? 'Self-study' : 'Assigned';
-        return '<article class="attempt-set-capsule assignment-capsule' + (expanded ? ' expanded' : '') + '">' +
-            '<button class="attempt-set-head" type="button" data-assignment-set="' + escapeHtml(key) + '">' +
-                '<span><strong>' + escapeHtml(assignment.set_title || setTitleFor(assignment.set_id)) + '</strong>' +
-                '<small>' + escapeHtml(assignment.set_id) + ' · ' + escapeHtml(sourceLabel) +
-                ' · ' + escapeHtml(activityCount) + ' ' + (isIntensive ? 'unit' : 'attempt') + (activityCount === 1 ? '' : 's') +
-                ' · ' + escapeHtml(formatDateTime(assignmentSortDate(assignment))) + '</small></span>' +
-                '<span class="assignment-best-score">' + escapeHtml(score) + '</span>' +
-            '</button>' +
-            (expanded ? renderAssignmentDetails(assignment, attempts) : '') +
-        '</article>';
-    }
-
-    function renderAssignmentProgress(assignments) {
-        if (state.studentProgressView === 'data') {
-            return '<div class="learning-section attempt-set-list"><h3>Data</h3>' +
-                '<p class="muted">Data analysis will appear here later.</p></div>';
-        }
-        var visibleAssignments = visibleProgressAssignments(assignments);
-        var label = state.studentProgressView === 'finished' ? 'Finished' : 'To Do';
-        var assignmentHtml = visibleAssignments.length ? visibleAssignments.map(renderAssignmentCapsule).join('') :
-            '<p class="muted">No ' + escapeHtml(label.toLowerCase()) + ' work yet.</p>';
-
-        return '<div class="learning-section attempt-set-list"><h3>' + escapeHtml(label) + '</h3>' +
-                assignmentHtml + '</div>';
-    }
-
     function assignedProgressItems() {
         var source = state.progressItems.length ? state.progressItems : state.assignments;
         return source.filter(function(item) {
             return (!item.source || item.source === 'assigned') && normalizedAssignmentStatus(item.status) !== 'cancelled';
         });
-    }
-
-    function assignmentAlert(item) {
-        var status = normalizedAssignmentStatus(item.status);
-        var attempts = progressAttemptsForAssignment(item);
-        var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
-        var best = item.best_percentage == null ? null : Number(item.best_percentage);
-        var dueDate = assignmentDueDate(item);
-        var overdue = dueDate && !isNaN(dueDate.getTime()) && dueDate < new Date() && status === 'to_do';
-        if (overdue) return { label: 'Overdue', css: 'danger', rank: 0 };
-        if (status === 'to_do' && attemptCount >= 2) return { label: 'Stuck', css: 'danger', rank: 1 };
-        if (status === 'to_do' && best != null && best < Number(item.passing_percentage || 50)) {
-            return { label: 'Low score', css: 'watch', rank: 2 };
-        }
-        if (status === 'to_do' && !attemptCount) return { label: 'Not started', css: 'watch', rank: 3 };
-        if (status === 'to_do') return { label: 'Working', css: 'watch', rank: 4 };
-        return { label: status === 'mastered' ? 'Mastered' : 'Finished', css: 'ok', rank: 5 };
     }
 
     function assignmentOverviewMetrics(items, completedAverageOnly) {
@@ -5645,11 +5476,6 @@
     function matrixStudentName(item) {
         var student = matrixStudentProfile(item);
         return (student && studentDisplayName(student)) || item.student_name || item.student_id || 'Student';
-    }
-
-    function matrixStudentId(item) {
-        var student = matrixStudentProfile(item);
-        return item.student_id || (student && student.student_id) || '';
     }
 
     function matrixIndividualFilterValue(item) {
@@ -6699,32 +6525,6 @@
         if (!isFinite(current)) current = matrixStudentMonthSerial(today);
         state.matrixStudentProgressMonths[studentKey] = current + offset;
         state.matrixStudentProgressSelections[studentKey] = '';
-    }
-
-    function renderMatrixStudentTimeline(items) {
-        var sorted = items.slice().sort(function(a, b) {
-            return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0) ||
-                String(a.set_title || a.set_id || '').localeCompare(String(b.set_title || b.set_id || ''));
-        });
-        if (!sorted.length) {
-            return '<div class="matrix-student-empty">No assigned work recorded for this student.</div>';
-        }
-        return '<div class="matrix-student-timeline">' +
-            sorted.map(function(item) {
-                var status = normalizedAssignmentStatus(item.status);
-                var score = numericPercent(item.best_percentage);
-                var fill = score == null ? 0 : Math.max(score, 4);
-                var rowClass = status === 'mastered' ? ' mastered' : status === 'to_do' ? ' open' : status === 'cancelled' ? ' cancelled' : '';
-                var date = assignmentSortDate(item);
-                return '<article class="matrix-student-timeline-row' + rowClass + '">' +
-                    '<span class="matrix-student-date">' + escapeHtml(date ? formatDate(date, '', 'compact') : 'Not yet') + '</span>' +
-                    '<span class="matrix-student-task"><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id) || item.set_id || 'Task') + '</strong>' +
-                    '<small>' + escapeHtml(item.set_id || '') + ' · ' + escapeHtml(assignmentStatusLabel(status)) + '</small></span>' +
-                    '<span class="matrix-student-bar"><span style="width:' + escapeHtml(fill) + '%"></span></span>' +
-                    '<span class="matrix-student-score">' + escapeHtml(formatPercent(item.best_percentage)) + '</span>' +
-                '</article>';
-            }).join('') +
-        '</div>';
     }
 
     function renderMatrixStudentModal(studentKey, items) {

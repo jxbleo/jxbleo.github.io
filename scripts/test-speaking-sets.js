@@ -8,7 +8,7 @@ const lab = require("../cloudfunctions/_shared/speaking-lab");
 
 const root = path.join(__dirname, "..");
 const file = path.join(root, "content", "speaking", "dse-paper4-sets.json");
-const staticBuildSource = fs.readFileSync(path.join(__dirname, "build-static-site.js"), "utf8");
+const staticManifest = require("./static-site-manifest.json");
 const rawImportSource = fs.readFileSync(path.join(__dirname, "import-dse-paper4-speaking-sets.js"), "utf8");
 const auditMergeSource = fs.readFileSync(path.join(__dirname, "apply-dse-paper4-audits.js"), "utf8");
 const deployWorkflowSource = fs.readFileSync(path.join(root, ".github", "workflows", "deploy-cos.yml"), "utf8");
@@ -133,8 +133,8 @@ function run() {
   assert.match(corrected2025.part_a.discussion_points[0].text, /unwanted clothing/i);
   assert.ok(!/Viewpoint Bank|Useful language|60-second drill|Reusable Framework|Interaction Phrases|Self-check\b/i.test(raw));
 
-  assert.match(staticBuildSource, /privateStaticPrefixes\s*=\s*\["content\/speaking"\]/, "Speaking Set source stays outside the public static build");
-  assert.match(deployWorkflowSource, /test ! -e dist\/content\/speaking/, "deployment fails if private Speaking Set source enters dist");
+  assert.ok(staticManifest.excludedPaths.includes("content/speaking"), "Speaking Set source stays outside the public static build");
+  assert.match(deployWorkflowSource, /node scripts\/test-static-build\.js --artifact/, "deployment validates the actual public artifact");
   assert.match(serviceSource, /speakingSetSummaryView/, "Set lists return metadata summaries instead of 306 complete Contexts");
   assert.match(frontendSource, /speakingSetRenderLimit = 48/, "student Set cards render in bounded batches");
   assert.match(teacherSource, /teacherListSpeakingSets/, "the teacher recording card loads safe Set summaries for its topic picker");

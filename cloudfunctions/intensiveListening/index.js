@@ -384,11 +384,6 @@ function shadowingReference(material, segmentId) {
   return segment;
 }
 
-async function authorizedListeningAssignment(student, material, assignmentId, track) {
-  if (assignmentId) throw new Error("LISTENING_NOT_ASSIGNABLE");
-  return null;
-}
-
 async function enforceShadowingQuota(student, material, segmentId, policy) {
   const now = Date.now();
   const tenMinutes = new Date(now - 10 * 60 * 1000);
@@ -824,29 +819,6 @@ async function updateListeningTrackAssignment(student, material, track, progress
   // Intensive Listening is self-study only. Keep this compatibility function
   // as a no-op so old progress rows cannot mutate Assignment records.
   return;
-  /* istanbul ignore next -- legacy assignment rows are intentionally inert.
-  const setId = material.set_id || material.material_id;
-  const rows = await getAll(ASSIGNMENT_TRACKS, { where: { student_uid: student.auth_uid, set_id: setId, track } });
-  const summary = shadowingProgressSummaryForTrack(material, track, progress);
-  for (const row of rows) {
-    if (assignmentId && String(row.assignment_id) !== String(assignmentId)) continue;
-    if (row.status === "cancelled") continue;
-    const update = { completed_count: summary.completed_count, segment_count: summary.segment_count, percentage: summary.percentage, updated_at: new Date() };
-    if (summary.completed) { update.status = "completed"; update.completed_at = row.completed_at || new Date(); }
-    await db.collection(ASSIGNMENT_TRACKS).doc(row._id || row.participation_id).update(update);
-    const parentId = row.assignment_id;
-    if (parentId) await refreshListeningAssignment(student, parentId);
-  }
-  */
-}
-
-function shadowingProgressSummaryForTrack(material, track, progress) {
-  if (track === "shadowing") {
-    const summary = shadowing.progressSummary(progress);
-    return { completed_count: summary.qualified_segment_count, segment_count: summary.segment_count, percentage: summary.percentage, completed: summary.completed };
-  }
-  const summary = service.progressSummary(material, progress && progress.unit_states || {});
-  return { completed_count: summary.completed_count, segment_count: summary.unit_count, percentage: summary.percentage, completed: summary.percentage >= 100 };
 }
 
 async function refreshListeningAssignment(student, assignmentId) {

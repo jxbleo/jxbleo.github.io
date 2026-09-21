@@ -114,12 +114,6 @@ async function getAll(collection, options = {}) {
   return output;
 }
 
-function effectivePercentage(attempt) {
-  return Number(
-    attempt.adjusted_percentage == null ? attempt.percentage || 0 : attempt.adjusted_percentage
-  );
-}
-
 function isVocabularySet(set) {
   if (!set) return false;
   return [
@@ -494,14 +488,6 @@ function bbcMultipleChoiceAnswers(answers, questionIds) {
   return locked;
 }
 
-function attemptDisplayPercentage(attempt) {
-  return Number(attempt.display_percentage == null ? attempt.percentage || 0 : attempt.display_percentage);
-}
-
-function attemptRawPercentage(attempt) {
-  return Number(attempt.raw_percentage == null ? attemptDisplayPercentage(attempt) : attempt.raw_percentage);
-}
-
 function globalScoreLockAt(set, assignments) {
   if (!isBbcSet(set)) return null;
   return (assignments || [])
@@ -548,10 +534,6 @@ function globalAssignmentSummary(assignment, set, attempts, scoreLockedAt) {
       updated_at: new Date(),
     },
   };
-}
-
-function isSelfStudyAchievement(item) {
-  return starRewards.isBlueAchievement(item);
 }
 
 async function protectSelfStudyStar(student, attempt, now) {

@@ -994,8 +994,8 @@ My Words:
 - visitors see a login prompt instead of personal data.
 - its Dashboard notebook entry follows the same circular SVG treatment as the
   other right-side utility controls but is a normal page link.
-- `my-words-modal-preview.html` is an isolated static design reference for this
-  compact modal. It is not linked from production navigation, must not call
+- `docs/prototypes/my-words-modal-preview.html` is a local-only static design
+  reference, excluded from the public artifact. It must not call
   CloudBase or contain real student data, and is not a second My Words runtime.
 
 Teacher Dictionary workspace:

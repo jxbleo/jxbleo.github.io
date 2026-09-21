@@ -1,5 +1,17 @@
 # 07 Testing Checklist
 
+## Source cleanup / static publication
+
+- Run `npm run test:static-build`: an unapproved preview is excluded, private
+  Speaking source/templates are excluded, stale output disappears, and a
+  missing declared entry fails before replacing the previous artifact.
+- Run `npm run verify:release`, `npm run test:release`, `npm run build:static`
+  and `node scripts/test-static-build.js --artifact` before publication.
+- Removed UI implementations must not remain as test-only runtime hooks.
+  Cache assertions validate versioned asset URLs rather than a historical date.
+- Full private-payload integrity checks remain local: `test:protected-resources`
+  requires the ignored owner-generated payload, which must never enter CI/Git.
+
 ## Chunked Group Discussion analysis (2026-09-21)
 
 - Run `npm run test:speaking-lab` and `npm run test:teacher-ai-usage`, plus
@@ -2209,9 +2221,8 @@ Check:
 - desktop selection and mobile detail show phonetic plus adjacent speaker,
   Chinese/English definitions, source/context, retry, Note, and confirmed
   removal; external dictionary provider branding is not shown
-- `my-words-modal-preview.html` loads as a standalone sample-only design
-  reference, has no CloudBase/network data calls, and is not linked from the
-  production Dashboard or Library navigation
+- `docs/prototypes/my-words-modal-preview.html` loads locally as a sample-only
+  reference, has no CloudBase/network data calls and is absent from `dist/`
 - the student My Words interface contains no Today/New/Learning/Mastered
   filters, due review, Reveal, Forgot, A little, or Know controls
 - the mobile pencil warns about spelling/dictionary loss, then edits the English

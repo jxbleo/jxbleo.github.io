@@ -1,5 +1,9 @@
 # Project Blueprint
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 ## 这份文档的作用
 
 这份文档不是写给程序员炫技的。

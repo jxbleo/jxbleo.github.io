@@ -974,17 +974,6 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-response-question { margin: 0; color: #344850; font-size: clamp(.88rem,2vw,1rem); font-weight: 650; line-height: 1.62; }
 .speaking-response-recorder-card, .speaking-response-state-card { padding: clamp(24px,4vw,36px); text-align: center; }
 .speaking-response-recorder-card .speaking-detail-actions, .speaking-response-state-card .speaking-detail-actions { justify-content: center; }
-.speaking-circular-timer.speaking-response-timer { --timer-size: clamp(9.5rem,32vw,12rem); --timer-accent: #6b5bb5; --timer-track: rgba(103,87,174,.13); margin: 0 auto; }
-.speaking-circular-timer { --timer-size: clamp(9.5rem,30vw,12.5rem); --timer-accent: #087cf0; --timer-track: rgba(8,124,240,.13); position: relative; display: grid; width: var(--timer-size); height: var(--timer-size); flex: 0 0 auto; place-items: center; color: #243740; font-variant-numeric: tabular-nums; isolation: isolate; }
-.speaking-circular-timer svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 9px 17px rgba(57,76,96,.08)); }
-.speaking-circular-timer circle { fill: none; stroke-width: 7; vector-effect: non-scaling-stroke; }
-.speaking-circular-timer-track { stroke: var(--timer-track); }
-.speaking-circular-timer-progress { stroke: var(--timer-accent); stroke-linecap: round; stroke-dasharray: 100; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 220ms linear,stroke 220ms ease; will-change: stroke-dashoffset; }
-.speaking-circular-timer-copy { position: relative; z-index: 1; display: grid; place-items: center; line-height: 1; }
-.speaking-circular-timer-copy strong { color: currentColor; font-size: clamp(1.9rem,7.5vw,3.15rem); font-weight: 650; letter-spacing: -.055em; }
-.speaking-circular-timer-copy small { margin-top: 8px; color: currentColor; font-size: .61rem; font-weight: 760; letter-spacing: .11em; opacity: .56; text-transform: uppercase; }
-.speaking-circular-timer[data-phase="minute"] { --timer-accent: #ed8a33; --timer-track: rgba(237,138,51,.15); }
-.speaking-circular-timer[data-phase="final"] { --timer-accent: #df4e47; --timer-track: rgba(223,78,71,.17); color: #a4312c; }
 .speaking-response-status { max-width: 560px; min-height: 1.4em; margin: 8px auto 0; color: var(--sl-muted); text-align: center; }
 .speaking-response-state-card .speaking-response-state-symbol { display: grid; width: 46px; height: 46px; place-items: center; margin: 0 auto 16px; border-radius: 15px; color: #b74435; background: rgba(183,68,53,.09); font-weight: 880; }
 .speaking-response-state-card .speaking-upload-spinner { margin: 0 auto 18px; }
@@ -1204,7 +1193,7 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 @media(max-width:760px) { .speaking-recording-choice { grid-template-columns:1fr 1fr; } .speaking-audio-date { grid-column:2; } }
 @media(max-width:520px) { .speaking-recording-choice { grid-template-columns:1fr; } .speaking-audio-date { grid-column:auto; } .speaking-recording-dial { --diameter:min(94vw,69dvh); } .speaking-recording-live-content { gap:32px; } .speaking-recording-live { padding-top:80px; } .speaking-recording-live .speaking-recording-live-label { left:24px; transform:none; font-size:10px; } .speaking-recording-live button.speaking-finish-recording { font-size:14px; padding:9px 20px; } }
 @media(max-height:500px) and (orientation:landscape) { .speaking-recording-live { padding:42px 14px 14px; } .speaking-recording-live-content { gap:10px; } .speaking-recording-dial { --diameter:min(70vw,69dvh); } .speaking-recording-live .speaking-recording-live-label { top:14px; } .speaking-recording-live button.speaking-finish-recording { min-height:36px; padding:6px 18px; font-size:13px; } }
-@media(prefers-reduced-motion:reduce) { .speaking-circular-timer-progress, .speaking-recording-live, .speaking-recording-ring-track, .speaking-recording-live .speaking-recording-time { transition:none; } .is-ending .speaking-recording-ring-progress, .speaking-recording-live .is-ending .speaking-recording-countdown { animation:none; } .speaking-recording-wave-bar { transition-duration:180ms; will-change:auto; } }
+@media(prefers-reduced-motion:reduce) { .speaking-recording-live, .speaking-recording-ring-track, .speaking-recording-live .speaking-recording-time { transition:none; } .is-ending .speaking-recording-ring-progress, .speaking-recording-live .is-ending .speaking-recording-countdown { animation:none; } .speaking-recording-wave-bar { transition-duration:180ms; will-change:auto; } }
 @media(prefers-reduced-transparency:reduce) { .speaking-recording-live.is-minute button.speaking-finish-recording { background:#fff; } }
 @media(prefers-contrast:more) { .speaking-recording-ring-track { stroke:#7895a2; } .speaking-recording-live button.speaking-finish-recording { border-color:#97665f; } }
 

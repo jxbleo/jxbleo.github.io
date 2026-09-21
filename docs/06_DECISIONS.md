@@ -1,5 +1,15 @@
 # 06 Decisions
 
+## 2026-09-21 — Explicit static entry list and conservative retirement
+
+Use one JSON manifest with the existing Node copy builder; new root HTML files
+require an explicit publication decision. Keep source templates and local
+prototypes outside dist, and verify the actual artifact before COS upload.
+No bundler/framework or dependency is added. Archive historical design context
+instead of maintaining conflicting active documents. Delete local unreachable
+code after reference and regression checks, but retain externally callable
+compatibility paths until real usage and data prerequisites are known.
+
 ## 2026-09-21 — Preserve complete turn coverage by chunking model output
 
 Do not reduce Group Discussion reports to representative-turn samples. The

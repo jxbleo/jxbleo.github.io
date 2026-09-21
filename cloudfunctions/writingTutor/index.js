@@ -2106,20 +2106,6 @@ async function releaseUsage(student, usage, code) {
   });
 }
 
-async function commitReviewAndUsage(composition, usage, update) {
-  const now = new Date();
-  await db.runTransaction(async (transaction) => {
-    const usageResult = await transaction.collection(USAGE)
-      .where({ usage_id: usage.usage_id, status: "reserved" }).limit(1).get();
-    const usageRow = usageResult.data && usageResult.data[0];
-    if (!usageRow) throw new Error("AI_USAGE_RESERVATION_LOST");
-    await transaction.collection(COMPOSITIONS).doc(composition._id).update(update);
-    await transaction.collection(USAGE).doc(usageRow._id).update({
-      status: "succeeded", succeeded_at: now, updated_at: now,
-    });
-  });
-}
-
 async function enqueueReviewEmail(student, usage, composition, mode) {
   const now = new Date();
   const emailId = stableId("writing_email", usage.usage_id);

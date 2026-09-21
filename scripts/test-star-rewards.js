@@ -159,8 +159,8 @@ function testIntegrationContracts() {
   assert(dashboardHtml.includes('id="student-star-overlay"'), "My STARs must use an independent modal");
   assert(dashboardHtml.includes('id="student-star-content"'));
   assert(appCss.includes(".student-star-dialog"), "wallet must use its own opaque dialog surface");
-  assert(/assets\/css\/app\.css\?v=\d{8}-\d+/.test(dashboardHtml));
-  assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));
+  assert(/assets\/css\/app\.css\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml));
+  assert(/assets\/js\/dashboard\.js\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml));
   assert(dashboard.includes("starWalletHeader('STAR WALLET', 'account', 'Back to Personal Center')"));
   assert(dashboard.includes('account-wallet-pass'), "wallet landing must use the selected gold pass balance card");
   assert(!dashboard.includes('account-star-history-count self-study-star-counter'), "wallet landing must not show a Blue balance");

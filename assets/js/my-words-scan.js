@@ -945,30 +945,11 @@
         });
     }
 
-    function viewPage(page) {
-        callScan({ action: 'getPagePreview', scan_id: state.scan.scan_id, page_id: page.page_id }).then(function(result) {
-            previewImage.src = result.preview_url;
-            preview.hidden = false;
-            overlay.querySelector('[data-scan-preview-close]').focus();
-        }).catch(function(error) { say(error.message); });
-    }
-
     function retryPage(page) {
         say('Retrying page ' + (Number(page.page_index) + 1) + '…');
         callScan({ action: 'retryPage', scan_id: state.scan.scan_id, page_id: page.page_id }).then(function(result) {
             if (result.scan) hydrateScan(result.scan);
             poll();
-        }).catch(function(error) { say(error.message); });
-    }
-
-    function removeReviewPage(page) {
-        if (!window.confirm('Remove this page from the scan?')) return;
-        callScan({ action: 'removePage', scan_id: state.scan.scan_id, page_id: page.page_id }).then(function(result) {
-            if (result.scan) {
-                hydrateScan(result.scan);
-                renderReview(result.scan);
-            }
-            say('Page removed.');
         }).catch(function(error) { say(error.message); });
     }
 

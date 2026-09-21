@@ -423,7 +423,7 @@ check("sidebar edit mode shakes titles and saves the selected title", () => {
 check("Writing main area is a focused new-writing surface while saved work stays in the sidebar", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const welcome = functionSource(client, "renderWelcome", "compactQuota");
+  const welcome = functionSource(client, "renderWelcome", "showWelcomeToolbar");
   requireEvery(welcome, [
     "Polishing", "Grammar &amp; Usage", "Brainstorming", "Ideas &amp; Structure", "homeComposerHtml", "writing-home-start",
   ], "Writing home workspace");
@@ -483,7 +483,7 @@ check("Writing mode cards toggle the inline composer without clearing local inpu
     "collapsing the composer must not clear entered text");
   assert(!/savePendingHomeComposer|restorePendingHomeComposer/.test(startClient),
     "collapsing must retain values only in current-page memory, not persistent browser storage");
-  assert(/aria-expanded=/.test(functionSource(client, "renderWelcome", "compactQuota")),
+  assert(/aria-expanded=/.test(functionSource(client, "renderWelcome", "showWelcomeToolbar")),
     "mode cards must expose their expansion state accessibly");
 });
 

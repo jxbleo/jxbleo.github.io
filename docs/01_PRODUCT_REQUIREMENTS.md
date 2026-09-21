@@ -593,7 +593,7 @@ flowchart TD
 
 ## 7. 主要数据对象
 
-本节只写人能读懂的简化模型。精确字段以 `docs/04_DATA_MODEL.md`、当前 CloudBase 函数和真实代码为准；`CLOUDBASE_ARCHITECTURE.md` 只作为旧的详细参考。如果规则冲突，应先更新本文档和数据模型文档。
+本节只写人能读懂的简化模型。精确字段以 `docs/04_DATA_MODEL.md`、当前 CloudBase 函数和真实代码为准；`docs/archive/legacy/CLOUDBASE_ARCHITECTURE.md` 只作为旧的详细参考。如果规则冲突，应先更新本文档和数据模型文档。
 
 ### 7.1 students
 
@@ -1270,14 +1270,10 @@ IndexedDB 快照可立即显示脱敏作业摘要、周进度数量、STAR 数�
 - 私有载荷由仓库外源文件生成，生成文件和部署 ZIP 均不提交 Git
 - 分块响应包含数量、编码和 SHA-256；浏览器组装后必须校验完整性
 
-### 8.9 resetStudentPassword
+### 8.9 Student password reset
 
-当前状态：独立函数已禁用，真正 reset 走 `teacherAdmin`。
-
-后续选择：
-
-- 保持禁用并从“活跃函数”文档中移除
-- 或恢复为一个只做 reset 的 teacher-only 小函数
+密码重置统一走 `teacherAdmin.resetStudentPassword`，由服务端验证 active teacher。
+已禁用的独立 `resetStudentPassword` 函数源码已移除；线上遗留函数的删除需要单独授权。
 
 ### 8.10 learningReports（Learning Reports V1）
 

@@ -107,6 +107,21 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+- 2026-09-21 — Phase-one repository cleanup completed locally on the isolated
+  `codex/project-cleanup` branch: removed 80 unreferenced functions and their
+  exclusive styles, retired the disabled standalone password-reset stub,
+  archived 12 historical documents, and added an explicit static publication
+  manifest plus release regression gates. All 40 package test suites, the
+  additional Dashboard achievements suite, release verification, static build
+  and artifact checks passed; all six changed cloud functions packaged locally.
+  Browser QA passed visitor rendering and unauthenticated access boundaries,
+  without real student/teacher login or production mutations. Original dirty
+  checkout and interrupted rebase are preserved. Redundant release clones and
+  generated output were removed only after backups, including unique commits;
+  89 stale worktree registrations were pruned with metadata backed up. Nothing
+  was pushed or deployed. Phase-two compatibility/data prerequisites remain in
+  `docs/08_BACKLOG.md`; publication needs separate owner authorization.
+
 - 2026-09-16 — Teacher AI Usage is live: owner-authorized scoped release
   `87adb639`, successful COS run `35097038528`. `teacherAdmin` Active; downloaded
   ZIP matches tested release exactly; configuration hash and function ACL preserved.

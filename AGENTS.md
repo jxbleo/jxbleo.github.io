@@ -351,8 +351,8 @@ All collections use `ADMINONLY`:
   transcripts, audio, provider evidence, or pointer coordinates
 
 Read exact schemas in `docs/04_DATA_MODEL.md` and current code before adding
-fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
-the numbered docs are the current handoff entry point.
+fields. The numbered docs are the current handoff entry point. Documents under
+`docs/archive/` preserve history and must not override current rules or code.
 Preserve these stable identifiers:
 
 - `student_id`: unique Login ID during a current account lifecycle; a completed
@@ -1969,7 +1969,7 @@ Discussion. Package/deploy and timer/provider configuration remain owner-gated. 
 `{"invoke": false}`. CloudBase timer triggers bypass client ACLs, so the worker
 accepts only the exact `Timer` event for `speaking-ai-worker-minute`; do not make
 the worker client-callable or replace this boundary with a browser-visible token.
-`docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`.
+`docs/archive/plans/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`.
 
 ### Speaking voiceprint capacity invariants
 

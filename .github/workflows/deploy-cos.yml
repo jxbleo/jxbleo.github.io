@@ -29,17 +29,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify release and core contracts
+        run: |
+          npm run verify:release
+          npm run test:release
+
       - name: Build public static artifact
         run: npm run build:static
 
       - name: Verify public artifact boundary
-        run: |
-          test -f dist/index.html
-          test ! -e dist/cloudfunctions
-          test ! -e dist/scripts
-          test ! -e dist/docs
-          test ! -e dist/AGENTS.md
-          test ! -e dist/content/speaking
+        run: node scripts/test-static-build.js --artifact
 
       - name: Upload public artifact to COS
         env:

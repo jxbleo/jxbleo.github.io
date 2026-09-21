@@ -449,7 +449,7 @@ Never fix only the visible text while leaving grading inconsistent.
 
 ## 13. Legacy Detailed Reference
 
-The older root-level [CONTENT_WORKFLOW.md](../CONTENT_WORKFLOW.md) contains
+The older root-level [CONTENT_WORKFLOW.md](archive/legacy/CONTENT_WORKFLOW.md) contains
 historical notes and examples. This `docs/09_CONTENT_WORKFLOW.md` is the
 current docs-system entry point.
 

@@ -49,8 +49,8 @@ assert.match(
   "achievement and active-day totals should share the lower summary"
 );
 assert.match(dashboardHtml, /student-achievements-panel[^>]*aria-label="Achievements"/, "the heading-free panel needs an accessible name");
-assert.ok(dashboardHtml.includes("assets/css/app.css?v=20260907-2"), "calendar interaction styles should be cache-busted");
-assert.ok(dashboardHtml.includes("assets/js/dashboard.js?v=20260907-3"), "calendar interaction logic should be cache-busted");
+assert.match(dashboardHtml, /assets\/css\/app\.css\?v=\d{8}-[a-z0-9-]+/, "calendar interaction styles should be cache-busted");
+assert.match(dashboardHtml, /assets\/js\/dashboard\.js\?v=\d{8}-[a-z0-9-]+/, "calendar interaction logic should be cache-busted");
 
 const achievementHref = vm.runInNewContext(`(${dashboardFunctionSource("studentCalendarAchievementHref")})`, {
   String,

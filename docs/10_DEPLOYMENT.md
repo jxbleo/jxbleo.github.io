@@ -1032,11 +1032,18 @@ npm run build:static
 ```
 
 The workflow is `.github/workflows/deploy-cos.yml`. It installs locked npm
-dependencies, runs `npm run build:static`, verifies the public boundary, and
-runs `scripts/deploy-static-to-cos.js`. The allowlist contains root
-HTML/web-manifest files plus `assets/`, `bbc-audio/`, `content/`, and `data/`;
-it excludes cloud functions, scripts, documentation, deployment packages, and
-local/private files.
+dependencies, runs `npm run verify:release` and `npm run test:release`, builds
+the site, validates the actual artifact with `test-static-build.js --artifact`,
+then runs `scripts/deploy-static-to-cos.js`. `scripts/static-site-manifest.json`
+explicitly lists every public root HTML/web-manifest file and the `assets/`,
+`bbc-audio/`, `content/`, and `data/` directories. `content/speaking` and
+`content/templates` are excluded. New pages require a manifest entry; local
+prototypes belong under `docs/prototypes/`. Cloud functions, scripts,
+documentation, deployment packages and local/private files are never copied.
+
+The core CI suite uses synthetic fixtures and requires no private payloads or
+CloudBase credentials. `test:protected-resources` additionally checks real
+private payload integrity locally when those owner sources are available.
 
 Automatic static publication does not authorize function deployment, database
 imports, DNS changes, certificate changes, secrets, environment variables,
@@ -1229,7 +1236,7 @@ explicitly approves the exact plan.
 
 ## 11. Legacy Detailed Reference
 
-The older root-level [CLOUDBASE_DEPLOYMENT.md](../CLOUDBASE_DEPLOYMENT.md)
+The older root-level [CLOUDBASE_DEPLOYMENT.md](archive/legacy/CLOUDBASE_DEPLOYMENT.md)
 contains historical console notes and examples. This `docs/10_DEPLOYMENT.md`
 is the current docs-system entry point.
 

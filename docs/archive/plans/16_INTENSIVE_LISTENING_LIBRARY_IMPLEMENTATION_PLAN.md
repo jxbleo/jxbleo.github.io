@@ -1,5 +1,9 @@
 # Intensive Listening Library — Detailed Engineering Implementation Plan
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 > Status: product design approved on 2026-08-27; implementation-ready local
 > plan.
 >

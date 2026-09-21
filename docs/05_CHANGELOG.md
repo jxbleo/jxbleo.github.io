@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-21 — Conservative source cleanup (local, not published)
+
+- Removed 80 unreferenced functions, obsolete Writing entry-dialog state,
+  retired My Words action-menu wiring and exclusive old CSS; removed the
+  disabled standalone password-reset function. Current reset uses teacherAdmin.
+- Added an explicit static publication manifest, fixture/artifact checks and
+  core CI gates. Moved the My Words prototype outside the public build.
+- Archived eight previous plans and four legacy root documents, preserving
+  their full text and updating links. Retained current Listening plan 20.
+- Removed tracked Finder metadata and the generated studentVocabulary ZIP.
+- Kept database migrations, old client API compatibility, JSON/JS fallbacks
+  and production resources unchanged pending their specific retirement checks.
+
 ## 2026-09-21 — Resumable full-coverage Group Discussion analysis (live)
 
 - Replaced the single oversized Group Discussion model response with one full-

@@ -20,7 +20,6 @@ const VOICEPRINT_EVENTS = "speaking_voiceprint_events";
 const MAX_ATTEMPTS = 5;
 const LIMIT = 20;
 
-function text(value, limit = 200) { return String(value == null ? "" : value).trim().slice(0, limit); }
 function isTimerEvent(event) {
   if (!event || event.Type !== "Timer" || event.TriggerName !== "speaking-ai-worker-minute") return false;
   const triggeredAt = Date.parse(String(event.Time || ""));

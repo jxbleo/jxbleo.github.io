@@ -1,11 +1,15 @@
 # AI Tutor Waiting Experience V2 工程实施计划
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 状态：产品决定已确认，等待编码实现
 适用页面：`ai-tutor.html`
 当前基线：线上 `main` 提交 `f587ad8`（2026-08-24，Asia/Shanghai）
 目标执行者：Luna Extra High 或其他上下文较短、需要明确步骤的编码模型
 
-> 本计划是 V2 的唯一执行说明。`docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md`
+> 本计划是 V2 的唯一执行说明。`docs/archive/plans/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md`
 > 是已经完成的 V1 历史计划，其中“成功后自动进入结果”“不播放声音”“显示
 > Distance / Ink”“Saved / Queued / Analysing / Ready 固定文案”等决定已经失效。
 
@@ -23,7 +27,7 @@
 6. `docs/04_DATA_MODEL.md` 中 Writing Collections 部分
 7. `docs/07_TESTING_CHECKLIST.md` 中 Writing Tutor 部分
 8. `docs/11_AGENT_TROUBLESHOOTING.md` 中 Writing Tutor / durable job 部分
-9. `docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md`，只用于理解 V1 架构，不得照搬其失效规则
+9. `docs/archive/plans/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md`，只用于理解 V1 架构，不得照搬其失效规则
 10. `ai-tutor.html`
 11. `assets/js/ai-tutor.js`
 12. `assets/js/ai-waiting-runner.js`

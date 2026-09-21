@@ -1,5 +1,9 @@
 # My Words Scan — Detailed Implementation Plan
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 > Status: approved for implementation on 2026-09-02.
 >
 > Product owner decisions in this document are binding for the V1 implementation.

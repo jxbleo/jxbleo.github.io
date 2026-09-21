@@ -7,7 +7,7 @@
   reviewed/hardened by the primary agent locally on 2026-09-07. The owner-
   authorized CloudBase collection/index, five-function, GitHub Pages, and
   Tencent COS rollout completed on 2026-09-08.
-- Predecessor: `docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md`.
+- Predecessor: `docs/archive/plans/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md`.
 - This document supersedes the conflicting product and implementation rules in
   Plans 16 and 19. Those files remain historical records; do not silently edit
   them into pretending the earlier design never existed.

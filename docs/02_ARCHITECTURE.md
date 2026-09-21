@@ -1,5 +1,20 @@
 # 02 Architecture
 
+## Source cleanup and publication boundary (2026-09-21, local)
+
+`scripts/static-site-manifest.json` is the explicit public entry list. The build
+copies only listed root files and asset directories, excluding Speaking source
+data and authoring templates. Prototypes live under `docs/prototypes/`.
+CI runs release verification, core contracts, and the built-artifact boundary
+check before upload. Historical plans 12–19 and old root documents are archived;
+the numbered current docs remain authoritative. No runtime dependency was added.
+
+Removed 80 unreferenced functions and their exclusive styles/event wiring.
+Existing cloud action names, authorization, durable jobs and persisted schemas
+are unchanged. Listening's old externally callable activity/assignment paths,
+teacher migrations and Dashboard full-refresh compatibility remain until their
+usage and data prerequisites are verified; see the cleanup backlog.
+
 ## Chunked Group Discussion analysis (2026-09-21, deployed)
 
 `dse_analysis` is a resumable multi-invocation pipeline. One overview call sees
@@ -294,8 +309,8 @@ Current frontend philosophy:
 - Reuse shared practice pages.
 - Do not create a permanent standalone HTML page for each exercise.
 - Temporary classroom pages may remain standalone.
-- Keep isolated design previews, such as `my-words-modal-preview.html`, clearly
-  unlinked from production navigation and free of real student/backend data.
+- Keep isolated design previews under `docs/prototypes/`, outside the static
+  publication manifest and free of real student/backend data.
 - Preserve cache query strings on changed scripts.
 
 Intensive Listening imports publish catalog metadata only. Reviewed text,
@@ -397,12 +412,15 @@ Active or relevant functions:
   never raw report documents to the browser
 - `generateLearningReports`: timer-only idempotent generator for Shanghai-time
   preview/final report phases, protected by an internal trigger token
-- `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`
 
 Generated deployment ZIPs live in `deploy-packages/`. They are ignored by Git
 but still required for CloudBase upload. `package:functions` uses locked
 dependencies and esbuild to include only reachable runtime code, so deployed
 functions do not depend on CloudBase resolving npm ranges during an update.
+
+Password reset has one supported entry, `teacherAdmin.resetStudentPassword`.
+The disabled standalone stub has been removed from source/package discovery;
+this source cleanup does not remove a deployed CloudBase function.
 
 Protected report payloads use a separate private build boundary. The reviewed
 full HTML stays outside the public repository. `scripts/prepare-protected-resource.js`

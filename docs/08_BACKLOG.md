@@ -5,6 +5,28 @@
 
 ## High Priority
 
+### Remaining cleanup prerequisites (2026-09-21)
+
+- Retire Listening `recordActivity`, action aliases and assignment-track
+  compatibility only after read-only live data/call-log checks and an old-client
+  cache window. Do not remove historical progress or session evidence.
+- Retire teacherAdmin backfill/migration actions only after bounded dry runs
+  prove completion; retain owner-only repair tooling if still operationally used.
+- Replace Dashboard's final full refresh with a small supplement request only
+  after proving parity for wallet, STAR, library and paginated history.
+- Remove Vocabulary/catalog JS fallbacks only after explicitly retiring their
+  documented local-file compatibility and updating all generators/checks.
+- IELTS Reading Argue renderers lack current callers but still have product and
+  test contracts. Decide whether to wire the feature or retire it; retain the
+  implementation meanwhile rather than treating reference count as proof.
+- Reconcile the shared checkout's unfinished rebase separately. The cleanup
+  is isolated on `codex/project-cleanup`, based on `origin/main` at 2267b364;
+  original modified/untracked files were preserved and backed up locally.
+- Review remaining private release worktrees individually; do not bulk-delete
+  `.cloudbase-private`, which contains source material and deployment evidence.
+
+### Existing product work
+
 - Add teacher-managed accepted spelling variants and a bounded abandoned-replay
   cleanup policy after the first Intensive Listening classroom trial.
 

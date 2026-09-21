@@ -47,7 +47,6 @@
     if (!Number.isFinite(percentage)) percentage = total ? completed / total * 100 : 0;
     return { enabled: value.enabled !== false, completed: Math.max(0, completed), total: Math.max(0, total), percentage: Math.max(0, Math.min(100, percentage)), updated_at: value.updated_at || progress.updated_at || item.updated_at || null };
   }
-  function progressValue(item, mode) { return progressFor(item, mode).percentage; }
   function searchText(item) {
     return [item.title, item.source_label, item.series_label, item.set_id, item.source_set_id, item.published_on]
       .concat(item.ielts_identifiers || []).filter(Boolean).join(' ').toLowerCase();

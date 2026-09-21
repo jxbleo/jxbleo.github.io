@@ -128,18 +128,6 @@
         return 'q ' + fmt(color) + ' g ' + fmt(x) + ' ' + fmt(y) + ' ' + fmt(width) + ' ' + fmt(height) + ' re f Q';
     }
 
-    function drawWrapped(commands, text, x, topY, maxWidth, options) {
-        options = options || {};
-        var size = options.size || 10;
-        var leading = options.leading || size * 1.25;
-        var font = options.font || 'F1';
-        var lines = wrapText(text, maxWidth, size);
-        lines.forEach(function(line, index) {
-            commands.push(textCommand(x, topY - (index * leading), line, { font: font, size: size }));
-        });
-        return topY - (lines.length * leading);
-    }
-
     function hashSeed(text) {
         var value = 2166136261;
         text = String(text || '');
@@ -197,10 +185,6 @@
             if (groups[i].id === group.id) return i + 1;
         }
         return 1;
-    }
-
-    function groupTitle(unit, group) {
-        return 'Set ' + groupIndex(unit, group) + ' - Words ' + group.rangeStart + '-' + group.rangeEnd;
     }
 
     function prepareGroup(group, options) {

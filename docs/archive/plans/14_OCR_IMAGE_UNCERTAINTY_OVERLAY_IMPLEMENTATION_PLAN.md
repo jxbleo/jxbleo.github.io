@@ -1,5 +1,9 @@
 # OCR Image Uncertainty Overlay — Safe Implementation Plan
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 > Status: approved implementation plan.
 >
 > Audience: coding agents, including lower-capability agents. Follow every
@@ -676,4 +680,3 @@ The implementing agent must report:
 5. any part of this plan not implemented;
 6. remaining risks, especially real-model coordinate accuracy;
 7. whether any deployment or external state change occurred (expected: no).
-

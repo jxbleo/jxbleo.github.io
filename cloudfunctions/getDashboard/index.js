@@ -805,17 +805,6 @@ async function revealAnswers(student, event) {
   return { success: true };
 }
 
-async function starCount(student) {
-  const rows = await getAll("student_set_achievements", { where: {
-    student_uid: student.auth_uid,
-  } });
-  return rows.length;
-}
-
-function isSelfStudyAchievement(item) {
-  return starRewards.isBlueAchievement(item);
-}
-
 function normalizedStarBuckets(achievements) {
   const buckets = starRewards.normalizedStarBuckets(achievements);
   return {

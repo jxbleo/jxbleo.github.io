@@ -681,17 +681,6 @@
         return vocabularyLibraryUsesNumberRange(item) ? 'vocabulary' : vocabularySourceLabel(item);
     }
 
-    function formatDate(value) {
-        if (!value) return 'Due next class';
-        var date = value instanceof Date ? value : new Date(value);
-        if (isNaN(date.getTime())) return 'Due next class';
-        return 'Due ' + new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Asia/Shanghai',
-            month: 'short',
-            day: 'numeric'
-        }).format(date);
-    }
-
     function formatShortDate(value) {
         if (!value) return '';
         var date = value instanceof Date ? value : new Date(value);
@@ -1901,10 +1890,6 @@
         return assignmentTime(right) - assignmentTime(left);
     }
 
-    function teacherReplyTotal() {
-        return (state.teacherReplies || []).length;
-    }
-
     function teacherReplyUnreadTotal() {
         if (!state.teacherRepliesComplete) return Number(state.teacherReplyUnreadCount || 0);
         return (state.teacherReplies || []).filter(function(reply) {
@@ -1995,18 +1980,6 @@
         return 'pending';
     }
 
-    function renderTeacherRepliesPrompt() {
-        var replies = state.teacherReplies || [];
-        if (!replies.length) return '';
-        return '<section class="teacher-replies-card">' +
-            '<div>' +
-                '<span class="teacher-replies-tag">Teacher Replies</span>' +
-                '<h3>Your teacher replied to ' + replies.length + ' question' + (replies.length === 1 ? '' : 's') + '.</h3>' +
-            '</div>' +
-            '<button class="primary-button" id="open-teacher-replies" type="button">View replies</button>' +
-        '</section>';
-    }
-
     function renderTeacherReplyItem(reply) {
         var statusClass = replyStatusClass(reply);
         var statusLabel = replyStatusLabel(reply);
@@ -2075,28 +2048,6 @@
                 '<svg viewBox="0 0 24 24" focusable="false"><path d="m9 5 7 7-7 7"></path></svg>' +
             '</div>' +
         '</article>';
-    }
-
-    function renderStudentMessageSection(title, count, body, emptyText, extraClass, collapsible, openByDefault) {
-        var content = body
-            ? '<div class="student-message-list">' + body + '</div>'
-            : emptyText
-                ? '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>'
-                : '';
-        var head = '<h3>' + escapeHtml(title) + '</h3>' +
-            '<span class="student-message-section-head-meta">' +
-                (count == null ? '' : '<span class="student-message-section-count">' + escapeHtml(count) + '</span>') +
-                (collapsible ? '<svg class="student-message-section-toggle" viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"></path></svg>' : '') +
-            '</span>';
-        if (collapsible) {
-            return '<details class="student-message-section is-collapsible ' + escapeHtml(extraClass || '') + '"' + (openByDefault ? ' open' : '') + '>' +
-                '<summary class="student-message-section-head">' + head + '</summary>' +
-                content +
-            '</details>';
-        }
-        return '<section class="student-message-section ' + escapeHtml(extraClass || '') + '">' +
-            '<div class="student-message-section-head">' + head + '</div>' + content +
-        '</section>';
     }
 
     function renderStudentMessageFlatList(body, emptyText) {
@@ -2773,21 +2724,6 @@
                 });
             });
         });
-    }
-
-    function resourceCard(item) {
-        return '<article class="resource-card">' +
-            '<div>' +
-                '<span class="badge neutral">' + escapeHtml(item.course || item.sectionTitle || item.type || 'Resource') + '</span>' +
-                '<h3>' + escapeHtml(item.title || item.set_id || item.id) + '</h3>' +
-                '<div class="card-meta">' +
-                    (item.difficulty ? '<span>' + escapeHtml(item.difficulty) + '</span>' : '') +
-                    (item.estimated_minutes ? '<span>' + escapeHtml(item.estimated_minutes) + ' min</span>' : '') +
-                    (item.displayValue ? '<span>' + escapeHtml(item.displayValue) + '</span>' : '') +
-                '</div>' +
-            '</div>' +
-            '<a class="card-button" href="' + escapeHtml(practiceHref(item, null)) + '">Open</a>' +
-        '</article>';
     }
 
     var libraryActiveTab = 'general';
@@ -3826,17 +3762,6 @@
         });
     }
 
-    function enrichPendingVocabItems(items) {
-        if (!window.MrCatPersonalVocab || !window.MrCatPersonalVocab.enrichWord) return;
-        (items || []).filter(function(word) {
-            return word && !word.dictionary && (word.lookup_status || 'pending') === 'pending';
-        }).slice(0, 8).forEach(function(word, index) {
-            window.setTimeout(function() {
-                window.MrCatPersonalVocab.enrichWord(word, false);
-            }, index * 180);
-        });
-    }
-
     function renderMyWordsList() {
         var list = document.getElementById('my-words-list');
         var count = document.getElementById('my-words-count');
@@ -3974,19 +3899,6 @@
         }
     }
 
-    function closeMyWordsTools() {
-        setMyWordsToolOpen('add', false);
-        setMyWordsToolOpen('search', false);
-        setExportOpen(false);
-    }
-
-    function setMyWordsToolbarAvailable(available) {
-        [wordsSearchTrigger, wordsAddTrigger, wordsExportTrigger, wordsSearchInput, wordsAddInput].forEach(function(control) {
-            if (control) control.disabled = !available;
-        });
-        if (!available) closeMyWordsTools();
-    }
-
     function bindMyWordsToolbar() {
         if (wordsSearchTrigger) wordsSearchTrigger.addEventListener('click', function() {
             setMyWordsToolOpen('search', wordsSearchTrigger.getAttribute('aria-expanded') !== 'true');
@@ -4022,51 +3934,6 @@
             renderMyWordsList();
         });
         bindManualWordAdd();
-    }
-
-    function renderMyWordsCard() {
-        return '<section class="my-words-card">' +
-            '<div class="my-words-list" id="my-words-list">' + myWordsListHtml() + '</div>' +
-        '</section>';
-    }
-
-    function renderMyWordsView() {
-        if (!myWordsContent) return;
-        if (!state.session) {
-            setMyWordsToolbarAvailable(false);
-            myWordsContent.innerHTML = '<div class="my-words-message loading-card">Loading My Words...</div>';
-            return;
-        }
-        if (state.session.mode === 'visitor') {
-            setMyWordsToolbarAvailable(false);
-            myWordsContent.innerHTML =
-                '<div class="my-words-message"><p class="muted">Log in as a student to save words and phrases.</p>' +
-                '<div class="profile-actions"><button class="primary-button" id="words-login">Log In</button></div></div>';
-            document.getElementById('words-login').addEventListener('click', function() {
-                window.location.href = window.MrCatLoginNavigation.loginHref(window.location.href, 'dashboard.html');
-            });
-            return;
-        }
-        setMyWordsToolbarAvailable(true);
-        myWordsContent.innerHTML = renderMyWordsCard();
-        renderMyWordsList();
-    }
-
-    function rememberedMyWordsScrollTop() {
-        if (state.myWordsScrollTop > 0) return state.myWordsScrollTop;
-        try {
-            return Math.max(0, Number(sessionStorage.getItem('mrcat_my_words_scroll_top') || 0));
-        } catch (error) {
-            return 0;
-        }
-    }
-
-    function saveMyWordsScrollPosition() {
-        if (!wordsScroll) return;
-        state.myWordsScrollTop = Math.max(0, wordsScroll.scrollTop || 0);
-        try {
-            sessionStorage.setItem('mrcat_my_words_scroll_top', String(state.myWordsScrollTop));
-        } catch (error) {}
     }
 
     function myWordsPreviewItemHtml(word) {
@@ -4742,19 +4609,6 @@
             var progress = progressBySet[item.set_id || item.id];
             return progress ? Object.assign({}, item, progress) : item;
         });
-    }
-
-    function loadPublicCatalogSections() {
-        if (libraryCatalog) return Promise.resolve();
-        return fetch('data/home-catalog.json?v=' + encodeURIComponent(appVersion()))
-            .then(function(response) {
-                if (!response.ok) return;
-                return response.json();
-            })
-            .then(function(catalog) {
-                if (catalog) libraryCatalog = catalog;
-            })
-            .catch(function() {});
     }
 
     function assignmentIdentity(item) {

@@ -69,7 +69,7 @@ async function main() {
   assert(dashboardHtml.indexOf('id="student-words-preview-add-trigger"') < dashboardHtml.indexOf('class="student-words-open-button"'), "add and camera actions must precede the top-right See All route");
   assert(dashboardHtml.includes('data-preview-scan data-open-scan'), "the camera action must open the scanner directly from Dashboard");
   assert(dashboardHtml.includes('id="my-words-scan-overlay"'), "Dashboard must mount Scan Words as an independent overlay");
-  assert(dashboardHtml.includes('assets/js/my-words-scan.js?v=20260907-1'), "Dashboard must load the shared scanner runtime");
+  assert(/assets\/js\/my-words-scan\.js\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml), "Dashboard must load the cache-versioned shared scanner runtime");
   assert(dashboardHtml.includes('id="student-words-preview-context-input" type="text" maxlength="320"'), "manual entry must accept one optional bounded single-line Context sentence");
   assert(dashboardHtml.includes('id="student-words-manual-layer"') && dashboardHtml.includes('aria-hidden="true" hidden'), "manual entry must use an independent initially hidden modal layer");
   assert(dashboardHtml.includes('id="student-words-manual-close"'), "the independent manual-entry modal must provide an explicit Close action");
@@ -103,8 +103,8 @@ async function main() {
   assert(personalVocabJs.includes("fragment.querySelectorAll('[data-mrcat-vocab-ignore]')"), "My Words must remove structural labels from captured selection text");
   assert(personalVocabJs.includes("transform:translate(-50%,6px) scale(.94)"), "the selection popover must enter from a restrained anchored offset");
   assert(personalVocabJs.includes("@media (prefers-reduced-motion:reduce)"), "the selection popover must provide a reduced-motion transition");
-  assert(/assets\/css\/app\.css\?v=\d{8}-\d+/.test(dashboardHtml));
-  assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));
+  assert(/assets\/css\/app\.css\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml));
+  assert(/assets\/js\/dashboard\.js\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml));
   assert(myWordsHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
   assert(myWordsHtml.includes('id="my-words-export-panel"'));
   assert(!myWordsHtml.includes('id="my-words-select-all"'), "Export must not retain the Select all results action");
@@ -173,7 +173,7 @@ async function main() {
   assert(!myWordsJs.includes("var wordInput = mobileDetail.querySelector"), "entering pencil edit mode must not autofocus or auto-select the word field");
   assert(!myWordsJs.includes("mobileOverlay.addEventListener('click'"), "mobile word detail must ignore backdrop clicks");
   assert(myWordsJs.includes("if (state.mobileDetailOpen) return;"), "mobile word detail must ignore Escape");
-  assert(myWordsJs.includes("if (!actions.contains(event.target)) actions.removeAttribute('open')"), "word action menus must close when the student clicks elsewhere");
+  assert(!myWordsJs.includes(".my-words-detail-actions"), "retired three-dot menus must not retain a document click listener");
   assert(!myWordsJs.includes("Saved word"), "mobile word detail must not retain the old Saved word label");
   assert(myWordsJs.includes('my-word-mobile-section\"><h3>Source</h3>'), "mobile word detail must label the source box");
   assert(myWordsJs.includes('my-word-mobile-section\"><h3>Note</h3>'), "mobile word detail must label the note box");

@@ -795,7 +795,7 @@
 </nav>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260815-1"></script>
+<script src="assets/js/config.public.js?v=20260921-cleanup-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
 <script src="assets/js/login-navigation.js?v=20260819-1"></script>
 <script src="assets/js/practice-session.js?v=20260819-1"></script>
@@ -1136,23 +1136,6 @@
         storeAnswers();
     }
 
-    function enableRetry() {
-        document.querySelectorAll('[data-question]').forEach(function(el) { el.disabled = false; });
-        document.querySelectorAll('.correct,.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
-        document.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
-            el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
-        });
-        document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
-        document.querySelectorAll('.evidence-text').forEach(function(el) {
-            el.classList.remove('show');
-            resetEvidenceAnswerData(el);
-        });
-        document.querySelectorAll('[data-student-argue],[data-explain-question]').forEach(function(el) { el.remove(); });
-        removeEmptyQuestionActionRows();
-        var submitBtn = document.getElementById('submit-btn');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Answers';
-    }
 
     function showHistoryAnswers() {
         if (!historyAttemptId || !window.MrCatCloud) return;

@@ -1,5 +1,9 @@
 # DSE Paper 4 Set Library and Individual Response — Detailed Engineering Plan
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 Status: approved for implementation on 2026-08-30
 Owner: Mr. Cat Academy
 Executor: coding agent operating in `/Users/jxbleo/jxbleo.github.io`
@@ -21,7 +25,7 @@ Read these files in order:
 6. `docs/11_AGENT_TROUBLESHOOTING.md`
 7. `docs/09_CONTENT_WORKFLOW.md`
 8. `docs/10_DEPLOYMENT.md`
-9. `docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`
+9. `docs/archive/plans/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`
 10. `docs/adr/0004-discussion-scoped-voice-identity-and-share-snapshots.md`
 11. `docs/adr/0005-reusable-tencent-voiceprints.md`
 12. This document
@@ -1062,7 +1066,7 @@ Update:
 - `docs/09_CONTENT_WORKFLOW.md`: DOCX-to-reviewed-Set seed workflow and insert-missing rule.
 - `docs/10_DEPLOYMENT.md`: new collections/indexes, seed preparation/import, package/deploy order and rollback.
 - `docs/11_AGENT_TROUBLESHOOTING.md`: only if a repeatable new failure is discovered.
-- `docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`: mark this document as the approved V2 extension rather than rewriting V1 history.
+- `docs/archive/plans/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`: mark this document as the approved V2 extension rather than rewriting V1 history.
 
 ## 16. File-level work order
 

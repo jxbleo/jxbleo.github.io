@@ -255,13 +255,6 @@
         var text = String(value || 'not ready').replace(/_/g, ' ').trim();
         return text ? text.charAt(0).toUpperCase() + text.slice(1) : 'Not ready';
     }
-    function statusTone(value) {
-        var state = String(value || '').toLowerCase();
-        if (['ready', 'uploaded', 'accepted', 'voiceprint_confirmed', 'student_confirmed', 'teacher_confirmed'].indexOf(state) >= 0) return 'ready';
-        if (['queued', 'processing', 'uploading', 'ai_matched'].indexOf(state) >= 0) return 'working';
-        if (['pending', 'failed', 'quality_failed', 'disputed'].indexOf(state) >= 0) return 'attention';
-        return 'neutral';
-    }
     function initials(value) {
         var parts = String(value || 'Speaker').trim().split(/\s+/).filter(Boolean);
         return (parts.length > 1 ? parts[0].charAt(0) + parts[parts.length - 1].charAt(0) : parts[0].slice(0, 2)).toUpperCase();
@@ -701,10 +694,6 @@
     }
     function speakingSetLabel(set) {
         return set.display_label || [String(set.exam_year || '') + ' ' + String(set.source_kind || 'mock').toUpperCase(), set.paper_version ? 'Set ' + set.paper_version : '', set.title || 'Speaking Set'].filter(Boolean).join(' · ');
-    }
-    function speakingSetMetaLabel(set) {
-        var source = String(set.source_kind || 'mock').toLowerCase() === 'pp' ? 'Past Paper' : 'Mock';
-        return [String(set.exam_year || '') + ' ' + source, set.paper_version ? 'Set ' + set.paper_version : ''].filter(Boolean).join(' · ');
     }
     function renderSpeakingSetResults() {
         var target = document.getElementById('speaking-set-list');
@@ -1195,26 +1184,6 @@
     function timerClockText(seconds) {
         var value = Math.max(0, Math.ceil(Number(seconds || 0)));
         return String(Math.floor(value / 60)).padStart(2, '0') + ':' + String(value % 60).padStart(2, '0');
-    }
-    function circularTimerMarkup(id, label, totalSeconds, className) {
-        var total = Math.max(1, Math.round(Number(totalSeconds || 1)));
-        var timerText = timerClockText(total);
-        return '<div class="speaking-circular-timer ' + esc(className || '') + '" id="' + esc(id) + '" role="timer" data-phase="standard" data-timer-label="' + esc(label) + '" aria-label="' + esc(label + ': ' + timerText + ' remaining') + '"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="speaking-circular-timer-track" cx="60" cy="60" r="52" pathLength="100"></circle><circle class="speaking-circular-timer-progress" cx="60" cy="60" r="52" pathLength="100" style="stroke-dashoffset:100"></circle></svg><span class="speaking-circular-timer-copy"><strong data-timer-value>' + esc(timerText) + '</strong><small>remaining</small></span></div>';
-    }
-    function updateCircularTimer(timer, elapsedSeconds, totalSeconds, minuteWarningSeconds) {
-        if (!timer) return Math.max(0, Math.ceil(Number(totalSeconds || 0)));
-        var total = Math.max(1, Number(totalSeconds || 1));
-        var elapsed = Math.max(0, Math.min(total, Number(elapsedSeconds || 0)));
-        var remaining = Math.max(0, Math.ceil(total - elapsed));
-        var progress = Math.max(0, Math.min(1, elapsed / total));
-        var progressRing = timer.querySelector('.speaking-circular-timer-progress');
-        var value = timer.querySelector('[data-timer-value]');
-        var timerText = timerClockText(remaining);
-        if (progressRing) progressRing.style.strokeDashoffset = (100 - progress * 100).toFixed(3);
-        if (value) value.textContent = timerText;
-        timer.setAttribute('aria-label', (timer.getAttribute('data-timer-label') || 'Time remaining') + ': ' + timerText + ' remaining');
-        timer.setAttribute('data-phase', remaining <= 5 ? 'final' : minuteWarningSeconds && remaining <= minuteWarningSeconds ? 'minute' : 'standard');
-        return remaining;
     }
     function recordingLocksPage() {
         return ['ready', 'requesting', 'countdown', 'recording', 'ending', 'stopping', 'uploading'].indexOf(recordingState) >= 0;

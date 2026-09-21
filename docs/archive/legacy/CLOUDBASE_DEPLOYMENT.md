@@ -1,5 +1,9 @@
 # CloudBase Development Deployment
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 > Current numbered docs entry: `docs/10_DEPLOYMENT.md`.
 > This root-level file is kept as a legacy detailed reference.
 

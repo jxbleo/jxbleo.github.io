@@ -72,9 +72,6 @@
         homeComposerOpen: false,
         homeComposerPreparing: false,
         homeComposerError: '',
-        compositionEntryDialogOpen: false,
-        compositionEntryTargetId: '',
-        compositionEntryReturnFocus: null,
         photoChoiceOpen: false,
         photoChoiceContext: '',
         photoChoiceTarget: 'writing',
@@ -870,27 +867,6 @@
         return firstText(composition && composition.status, 'draft');
     }
 
-    function formatDate(value) {
-        var date = value ? new Date(value) : null;
-        if (!date || Number.isNaN(date.getTime())) return '刚刚';
-        try {
-            return new Intl.DateTimeFormat('zh-CN', {
-                timeZone: 'Asia/Shanghai', month: 'short', day: 'numeric', year: 'numeric'
-            }).format(date);
-        } catch (error) { return date.toLocaleDateString(); }
-    }
-
-    function modeLabel(mode) { return mode === 'standardized' ? '标化考试' : '通用语言'; }
-
-    function statusLabel(status) {
-        var labels = {
-            draft: '草稿', photo_uploading: '正在确认照片', ocr_queued: '等待识别', ocr_processing: '正在识别', ocr_failed: '识别失败', ocr_ready: '待确认', ocr_review: '待确认', ready: '等待批改', queued: '等待批改', evaluating: '正在批改',
-            review_queued: '等待批改', review_processing: '正在批改', review_failed: '批改失败', standardized_ready: '评估完成', language_ready: '待逐句训练', review_ready: '待训练', reviewed: '评估完成', sentence_training: '待逐句训练', needs_revision: '需要再修改', completed: '已完成', failed: '稍后继续',
-            rewrite_queued: '等待检查', rewrite_processing: '正在检查', rewrite_failed: '检查失败'
-        };
-        return labels[status] || status || '草稿';
-    }
-
     function icon(name) {
         var paths = {
             plus: '<path d="M12 5v14M5 12h14"></path>',
@@ -1032,16 +1008,6 @@
         if (state.waitingPollTimer != null) window.clearTimeout(state.waitingPollTimer);
         state.waitingPollTimer = null;
         if (typeof state.waitingPollNow === 'function') state.waitingPollNow();
-    }
-
-    function waitingPollComplete(run, hadError) {
-        state.waitingPollInFlight = false;
-        if (state.waitingPollWakePending) {
-            state.waitingPollWakePending = false;
-            scheduleWaitingPoll(run, false);
-        } else {
-            scheduleWaitingPoll(run, hadError);
-        }
     }
 
     function stopOcrPolling() {
@@ -1756,12 +1722,6 @@
         scheduleStageViewportReset();
     }
 
-    function compactQuota(value) {
-        var number = Math.max(0, Number(value || 0));
-        if (number >= 1000) return (number / 1000).toFixed(number >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
-        return String(Math.round(number));
-    }
-
     function showWelcomeToolbar() {
         state.titleEditing = false;
         state.titleEditTargetId = '';
@@ -1775,38 +1735,6 @@
             revisionProgress.removeAttribute('title');
         }
         document.title = 'Writing | Mr. Cat Academy';
-    }
-
-    function homeWorkflowProgress(composition) {
-        var status = compositionStatus(composition);
-        if (status === 'completed') return 100;
-        var progressByStatus = {
-            draft: 12, photo_uploading: 18, ocr_queued: 24, ocr_processing: 32, ocr_failed: 32,
-            ocr_ready: 42, ocr_review: 42, ready: 50, queued: 54, evaluating: 60,
-            review_queued: 54, review_processing: 60, review_failed: 60, standardized_ready: 72,
-            language_ready: 74, review_ready: 74, reviewed: 78, sentence_training: 82,
-            needs_revision: 88, rewrite_queued: 90, rewrite_processing: 94, rewrite_failed: 90,
-            failed: 60
-        };
-        return progressByStatus[status] || 12;
-    }
-
-    function welcomeUnfinishedHtml(items) {
-        return welcomeCompositionStrip(items, 'Continue', 'Unfinished writing');
-    }
-
-    function welcomeCompletedHtml(items) {
-        return welcomeCompositionStrip(items, 'Review', 'Completed writing');
-    }
-
-    function welcomeCompositionStrip(items, label, ariaLabel) {
-        if (!items.length) return '';
-        var cards = items.map(function(item) {
-            var mode = compositionMode(item);
-            var progress = homeWorkflowProgress(item);
-            return '<button class="writing-pending-pill" type="button" data-open-composition="' + escapeHtml(compositionId(item)) + '" aria-label="Open ' + escapeHtml(compositionTitle(item)) + ', ' + escapeHtml(statusLabel(compositionStatus(item))) + '"><span class="writing-pending-copy"><span class="writing-pending-meta"><span class="mini-badge ' + (mode === 'standardized' ? 'standardized' : '') + '">' + escapeHtml(mode === 'standardized' ? 'Brainstorming' : 'Polishing') + '</span><small>' + escapeHtml(statusLabel(compositionStatus(item))) + '</small></span><strong>' + escapeHtml(compositionTitle(item)) + '</strong></span><span class="writing-pending-progress" aria-hidden="true"><span style="width:' + progress + '%"></span></span><span class="writing-pending-arrow">' + icon('arrow') + '</span></button>';
-        }).join('');
-        return '<section class="writing-home-list-section"><p class="writing-home-list-label">' + escapeHtml(label) + '</p><div class="writing-pending-strip" aria-label="' + escapeHtml(ariaLabel) + '">' + cards + '</div></section>';
     }
 
     function homeComposerHtml() {
@@ -2963,12 +2891,6 @@
         })[confidence] || { symbol: '?', label: '识别置信度：低，请仔细检查' };
     }
 
-    function revisionScanCandidate(candidate, index) {
-        var scan = revisionScanState();
-        var id = revisionScanCandidateId(candidate, index);
-        return scan.candidates.find(function(item) { return item.candidate_id === id; }) || candidate;
-    }
-
     function revisionScanDuplicateIds() {
         var counts = {};
         var eligible = revisionScanSentences().map(function(sentence, index) { return sentenceId(sentence, index); });
@@ -3984,7 +3906,7 @@
 
     function hasBlockingDialogOpen() {
         return state.titleEditing || state.leaveDialogOpen || state.incompleteRewriteAlertOpen || state.sentenceFeedbackOpen || state.scanSubmitConfirmationOpen ||
-            state.compositionEntryDialogOpen || state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen;
+            state.photoChoiceOpen || state.photoViewerOpen || state.photoRemoveDialogOpen;
     }
 
     function updateOverlayLock() {
@@ -4038,68 +3960,6 @@
         var selector = source === 'camera' ? '[data-writing-photo-camera]' : '[data-writing-photo-library]';
         var input = document.querySelector(selector);
         if (input && typeof input.click === 'function') input.click();
-    }
-
-    function compositionForEntry(id) {
-        return portfolioCompositions().find(function(item) { return compositionId(item) === id; }) || null;
-    }
-
-    function ensureCompositionEntryDialog() {
-        var existing = document.getElementById('writing-entry-overlay');
-        if (existing) return existing;
-        var overlay = document.createElement('div');
-        overlay.className = 'practice-entry-overlay writing-entry-overlay';
-        overlay.id = 'writing-entry-overlay';
-        overlay.hidden = true;
-        overlay.innerHTML = '<div class="practice-entry-shell"><section class="practice-entry-card is-question-confirmation" role="dialog" aria-modal="true" aria-label="Writing entry confirmation">' +
-            '<div class="practice-entry-task"><small id="writing-entry-status">Draft</small><strong id="writing-entry-title">Writing</strong></div>' +
-            '<div class="writing-entry-progress" aria-hidden="true"><span></span></div>' +
-            '<div class="practice-entry-actions"><button class="practice-entry-enter" id="writing-entry-enter" type="button"><span>Enter</span>' + icon('arrow') + '</button></div></section>' +
-            '<button class="practice-entry-close" id="writing-entry-close" type="button">Close</button></div>';
-        document.body.appendChild(overlay);
-        overlay.querySelector('#writing-entry-close').addEventListener('click', function() { closeCompositionEntryDialog(); });
-        overlay.querySelector('#writing-entry-enter').addEventListener('click', function() {
-            var id = state.compositionEntryTargetId;
-            closeCompositionEntryDialog(false);
-            if (id) loadComposition(id);
-        });
-        return overlay;
-    }
-
-    function showCompositionEntryDialog(id, trigger) {
-        var composition = compositionForEntry(id);
-        if (!composition) { loadComposition(id); return; }
-        var overlay = ensureCompositionEntryDialog();
-        var progress = homeWorkflowProgress(composition);
-        state.compositionEntryDialogOpen = true;
-        state.compositionEntryTargetId = id;
-        state.compositionEntryReturnFocus = trigger || document.activeElement;
-        overlay.querySelector('#writing-entry-status').textContent = statusLabel(compositionStatus(composition));
-        overlay.querySelector('#writing-entry-title').textContent = compositionTitle(composition);
-        overlay.querySelector('.writing-entry-progress > span').style.width = progress + '%';
-        overlay.querySelector('.practice-entry-card').setAttribute('aria-label', compositionTitle(composition) + ', ' + statusLabel(compositionStatus(composition)));
-        overlay.hidden = false;
-        app.inert = true;
-        updateOverlayLock();
-        window.requestAnimationFrame(function() {
-            var enter = overlay.querySelector('#writing-entry-enter');
-            if (enter) enter.focus({ preventScroll: true });
-        });
-    }
-
-    function closeCompositionEntryDialog(restoreFocus) {
-        if (!state.compositionEntryDialogOpen) return;
-        var overlay = document.getElementById('writing-entry-overlay');
-        var focusTarget = state.compositionEntryReturnFocus;
-        state.compositionEntryDialogOpen = false;
-        state.compositionEntryTargetId = '';
-        state.compositionEntryReturnFocus = null;
-        if (overlay) overlay.hidden = true;
-        app.inert = hasBlockingDialogOpen();
-        updateOverlayLock();
-        if (restoreFocus !== false && focusTarget && focusTarget.isConnected && typeof focusTarget.focus === 'function') {
-            focusTarget.focus({ preventScroll: true });
-        }
     }
 
     function openIncompleteRewriteAlert(sentenceIdValue) {
@@ -4696,16 +4556,6 @@
             else if (!event.shiftKey && document.activeElement === photoLast) { event.preventDefault(); photoFirst.focus(); }
             return;
         }
-        if (state.compositionEntryDialogOpen && event.key === 'Tab') {
-            var entryOverlay = document.getElementById('writing-entry-overlay');
-            var entryControls = entryOverlay ? entryOverlay.querySelectorAll('button:not(:disabled)') : [];
-            if (!entryControls.length) return;
-            var entryFirst = entryControls[0];
-            var entryLast = entryControls[entryControls.length - 1];
-            if (event.shiftKey && document.activeElement === entryFirst) { event.preventDefault(); entryLast.focus(); }
-            else if (!event.shiftKey && document.activeElement === entryLast) { event.preventDefault(); entryFirst.focus(); }
-            return;
-        }
         if (state.scanSubmitConfirmationOpen && event.key === 'Tab') {
             var scanSubmitControls = scanSubmitConfirmation.querySelectorAll('button:not(:disabled)');
             if (!scanSubmitControls.length) return;
@@ -4739,7 +4589,6 @@
             else if (state.photoViewerOpen) closePhotoViewer();
             else if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation();
             else if (state.photoChoiceOpen) closePhotoChoice();
-            else if (state.compositionEntryDialogOpen) closeCompositionEntryDialog();
             else if (state.scanSubmitConfirmationOpen) closeScanSubmitConfirmation();
             else if (state.sentenceFeedbackOpen) closeSentenceFeedback();
             else if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();
@@ -4752,7 +4601,6 @@
         if (state.photoViewerOpen) closePhotoViewer(false);
         if (state.photoRemoveDialogOpen) closePhotoRemoveConfirmation(false);
         if (state.photoChoiceOpen) closePhotoChoice(false);
-        if (state.compositionEntryDialogOpen) closeCompositionEntryDialog(false);
         if (state.scanSubmitConfirmationOpen) closeScanSubmitConfirmation(false);
         if (state.sentenceFeedbackOpen) closeSentenceFeedback(false);
         if (state.incompleteRewriteAlertOpen) closeIncompleteRewriteAlert();

@@ -54,9 +54,10 @@ boundaries matter more than visual polish right now.
 | Function runtime | Node.js 18 |
 | Scheduled reports | CloudBase timer invokes a trusted report-generation function |
 
-`npm run build:static` creates the public-only `dist/` release artifact. It is
-an allowlist copy step rather than a bundler: Cloud functions, scripts,
-documentation, and private local files are never published with the website.
+`npm run build:static` creates the public-only `dist/` release artifact from
+`scripts/static-site-manifest.json`. New root pages must be explicitly listed;
+prototypes, source templates, Speaking source data, Cloud functions, scripts,
+documentation and private local files stay outside the artifact.
 
 ## Local Run
 
@@ -179,22 +180,10 @@ Supporting docs:
 - [docs/08_BACKLOG.md](docs/08_BACKLOG.md)
 - [docs/09_CONTENT_WORKFLOW.md](docs/09_CONTENT_WORKFLOW.md)
 - [docs/10_DEPLOYMENT.md](docs/10_DEPLOYMENT.md)
-- [docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md](docs/12_AI_TUTOR_WAITING_RUNNER_IMPLEMENTATION_PLAN.md):
-  historical V1 implementation plan for the shared AI waiting experience and
-  original Mr. Cat Runner interaction
-- [docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md](docs/13_AI_TUTOR_WAITING_EXPERIENCE_V2_IMPLEMENTATION_PLAN.md):
-  executable V2 plan for contextual progress, reliable automatic result
-  refresh, replayable Runner scoring, Ready controls, animation, and sound
-- [docs/14_OCR_IMAGE_UNCERTAINTY_OVERLAY_IMPLEMENTATION_PLAN.md](docs/14_OCR_IMAGE_UNCERTAINTY_OVERLAY_IMPLEMENTATION_PLAN.md):
-  approved OCR uncertainty-location overlay implementation plan and verification checklist
-- [docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md](docs/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md):
-  detailed implementation plan for the DSE Group Interaction Speaking Lab,
-  per-Discussion voice identity, durable audio analysis, and privacy-preserving
-  report sharing
-- [docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md](docs/19_LISTENING_DICTATION_SHADOWING_IMPLEMENTATION_PLAN.md):
-  approved executable plan for the unified Listening workspace, independent
-  Dictation and Shadowing Tracks, Tencent SOE-N scoring, teacher authoring,
-  abuse controls, temporary audio retention, and Apple-style interaction
+- [docs/20_LISTENING_MODE_FIRST_EFFECTIVE_TIME_REDESIGN_PLAN.md](docs/20_LISTENING_MODE_FIRST_EFFECTIVE_TIME_REDESIGN_PLAN.md):
+  current Listening effective-time and self-study contract
+- [Historical documents](docs/archive/README.md): previous plans and superseded
+  root documents; consult only when tracing a past decision
 
 ## Documentation Rule
 
@@ -277,7 +266,7 @@ ignored `.cloudbase-private/` directory.
 The authenticated My Words workspace includes V1 Scan Words for up to five
 locally cropped/masked photos. OCR runs through private `vocabularyScan`
 per-page jobs; reviewed words and phrases use the existing My Words save and
-enrichment path. See `docs/18_MY_WORDS_SCAN_IMPLEMENTATION_PLAN.md`,
+enrichment path. See `docs/archive/plans/18_MY_WORDS_SCAN_IMPLEMENTATION_PLAN.md`,
 `npm run test:my-words-scan`, and `docs/10_DEPLOYMENT.md`.
 
 ## IELTS Speaking Lab

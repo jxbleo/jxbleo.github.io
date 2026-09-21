@@ -1,5 +1,9 @@
 # Listening: Dictation + Shadowing — Detailed Engineering Implementation Plan
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 ## Implementation review status — 2026-09-05
 
 The first implementation slice is complete in the worktree and has received a
@@ -35,7 +39,7 @@ request was made during deployment.
 > authorizes those exact actions.
 >
 > Supersession: this plan replaces the product rules in
-> `docs/16_INTENSIVE_LISTENING_LIBRARY_IMPLEMENTATION_PLAN.md` wherever that
+> `docs/archive/plans/16_INTENSIVE_LISTENING_LIBRARY_IMPLEMENTATION_PLAN.md` wherever that
 > document describes a Dictation-only product, calls the feature `Intensive
 > Listening`, shows Track progress in the ordinary Library, or treats one
 > percentage as the whole Listening result. Preserve the older document only as

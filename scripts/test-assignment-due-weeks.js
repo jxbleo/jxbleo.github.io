@@ -233,7 +233,6 @@ function dashboardScheduleHooks() {
       renderStudentCalendarAchievement: renderStudentCalendarAchievement,
       renderTeacherReplyItem: renderTeacherReplyItem,
       renderStudentMessageTask: renderStudentMessageTask,
-      renderStudentMessageSection: renderStudentMessageSection,
       renderDefaultStudentMessageSections: renderDefaultStudentMessageSections,
       renderStudentMessageFlatList: renderStudentMessageFlatList,
       accountStarItems: accountStarItems,
@@ -755,31 +754,6 @@ function testStudentCalendarModel() {
   const firstDay = model.days.find((day) => day);
   const expectedMondayIndex = (new Date(Date.UTC(values.year, values.month - 1, 1)).getUTCDay() + 6) % 7;
   assert.equal(model.days.indexOf(firstDay), expectedMondayIndex);
-
-  const finishedSection = hooks.renderStudentMessageSection(
-    "Finished",
-    1,
-    "<article>Finished task</article>",
-    "No finished work.",
-    "finished",
-    true
-  );
-  assert(finishedSection.startsWith('<details class="student-message-section is-collapsible'));
-  assert(finishedSection.includes('<summary class="student-message-section-head">'));
-  assert(!finishedSection.includes('<details open'));
-  assert(finishedSection.includes('<span class="student-message-section-count">1</span>'));
-
-  const thisWeekSection = hooks.renderStudentMessageSection(
-    "This Week",
-    1,
-    "<article>Current task</article>",
-    "No unfinished work.",
-    "todo",
-    true,
-    true
-  );
-  assert(thisWeekSection.startsWith('<details class="student-message-section is-collapsible todo" open>'));
-  assert(thisWeekSection.includes('<span class="student-message-section-count">1</span>'));
 
   const defaultSections = hooks.renderDefaultStudentMessageSections(
     [{ assignment_id: "current", status: "to_do" }],

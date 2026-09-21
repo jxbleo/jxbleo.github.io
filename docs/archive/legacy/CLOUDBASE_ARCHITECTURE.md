@@ -1,5 +1,9 @@
 # Mr. Cat Academy CloudBase Architecture
 
+> Historical reference, archived 2026-09-21. Deployment status and design choices
+> below describe the original plan, not the current operating contract. Use
+> [the current documentation map](../../../README.md#documentation-map) first.
+
 ## 1. Project Goal
 
 Turn the current static resource website into a lightweight student learning
