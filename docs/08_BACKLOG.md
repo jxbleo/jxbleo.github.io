@@ -16,16 +16,18 @@
   assignment-track compatibility requires a separate replacement/dependency
   audit, read-only live data/call-log checks and an old-client cache window.
   Do not remove historical progress or session evidence.
-- Retire teacherAdmin backfill/migration actions only after bounded dry runs
-  prove completion; retain owner-only repair tooling if still operationally used.
-- Dashboard duplicate normal warm-up requests are removed locally in phase two,
+- Keep teacherAdmin repair actions under their existing active-teacher guard.
+  A missing UI caller does not make an operational API dead code. Source audit
+  below distinguishes recurring repair tools from possible one-time migrations;
+  production completion has not been audited in this cleanup.
+- Dashboard duplicate normal warm-up requests are removed in phase two,
   with pagination retained only as a failure fallback. Keep the authoritative
   full result: bootstrap/pages do not reconstruct self-study, global-best/STAR
   repairs and wallet history. A new supplement endpoint is not needed for this
-  cleanup. Phase-two publication and browser acceptance remain pending.
+  cleanup. Real-account phase-two browser acceptance remains pending.
 - Remove Vocabulary/catalog JS fallbacks only after explicitly retiring their
   documented local-file compatibility and updating all generators/checks.
-- IELTS Reading's retired Argue UI is removed locally in phase two after checking
+- IELTS Reading's retired Argue UI is removed in phase two after checking
   the explicit August 12 product policy and backend rejection paths. Stale UI
   wording and a test-only function expectation are corrected; Explain, teacher
   preview and historical feedback remain. No historical dispute is deleted.
@@ -34,6 +36,27 @@
   original modified/untracked files were preserved and backed up locally.
 - Review remaining private release worktrees individually; do not bulk-delete
   `.cloudbase-private`, which contains source material and deployment evidence.
+
+### Remaining runtime cleanup audit (2026-09-21; source-only)
+
+| Candidate | Confirmed dependency or purpose | Decision / retirement prerequisite |
+| --- | --- | --- |
+| Listening `recordActivity` | Current browser navigation/audio calls; server starts/refreshes/closes teacher notification sessions | Keep. Effective-time tracking is not evidence that notification-session work is redundant. |
+| Listening action aliases / assignment tracks | Exported router contracts and historical assignment-track reads/updates remain | Keep pending old-client usage window and historical-data audit; no collection deletion. |
+| `backfillAcceptedAnswerRegrades` | Explicit product requirement; repairs historical results after accepted-answer changes | Keep as repair tooling, not a one-time migration assumed complete. Attempts are paged (max 200), but grading keys are loaded in full. |
+| `backfillVocabularyContentVersionMismatch` | Repairs a specified set's stale content/grading-version incident | Keep for recovery. Reads all attempts for the selected set; no bounded page contract. |
+| `backfillAssignmentDueWeeks` | Repairs missing/non-normalized due weeks; troubleshooting still references it | Possible retirement only after complete zero-candidate / zero-missing-source audit and old writer retirement. Output is limited, but every call reads all assignments. |
+| `backfillLearningReportModel` | Repairs profiles, class memberships and legacy class assignment scope | Possible retirement only after all profile/membership/scope pages and skipped cases are resolved. Student/assignment output pages do not bound its four collection scans. |
+| `migrateStarRewards` | Creates missing Yellow credits and converted Blue history | Possible retirement only after a complete dry run has zero pending credits/converted Blue rows and no legacy producer remains. Scans all achievements plus per-Yellow ledger lookups. |
+| Vocabulary/catalog JS fallbacks | `AGENTS.md` explicitly requires local-file loading compatibility | Keep unless the owner deliberately retires that supported use case. |
+
+All five teacher actions were inspected for their default no-apply paths. This
+is source review, not a production dry run or proof of zero pending records.
+Do not invoke a full-scan action merely because its response exposes a `limit`.
+Any follow-up production audit should first confirm live/source parity and use
+authorized, bounded, read-only queries with aggregate-only output; no student
+answers, identifiers or grading keys should enter the cleanup report. Applying
+a repair, changing permissions, or deleting historical data needs separate scope.
 
 ### Existing product work
 
@@ -46,7 +69,8 @@
   - Argue approval can create or repair STAR
 - Investigate teacher Progress data freshness after recent student completion.
 - Add lightweight smoke-test script for JSON parsing, catalog links, and key static pages.
-- Add pure rule tests for assignment status monotonicity, STAR protection, Argue regrade, and Vocabulary countability.
+- Extend the existing assignment/STAR/Argue/Vocabulary rule suites only for
+  demonstrated coverage gaps; these suites already exist and pass locally.
 - Build a grading-key reconcile workflow so local imports do not overwrite teacher-approved CloudBase corrections.
 - Pass durable `question_text` from every practice runtime's Argue submission path.
 - Add optional owner-only CloudBase CLI workflow after testing the local release helpers.
@@ -68,7 +92,9 @@
 - Define the My Words Study learning loop before replacing its honest static
   placeholder; decide prompts, feedback, progress ownership, and whether any
   review schedule belongs in the backend.
-- Extract shared backend logic into `cloudfunctions/_shared/`.
+- Shared backend modules already exist under `cloudfunctions/_shared/`. Extract
+  further code only when concrete duplication is confirmed and behavior parity
+  is tested; do not introduce another abstraction layer as a generic cleanup.
 - Clean old documentation references to `done/failed`, three-card dashboard, and STAR blocking reassignment.
 - Improve teacher Progress filters by class, student, set, and curriculum track.
 - Add browser smoke coverage for visitor mode, student login, and teacher preview.

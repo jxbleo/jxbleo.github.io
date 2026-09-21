@@ -11,8 +11,8 @@ the numbered current docs remain authoritative. No runtime dependency was added.
 
 Removed 80 unreferenced functions and their exclusive styles/event wiring.
 Existing cloud action names, authorization, durable jobs and persisted schemas
-are unchanged. Phase one is published. Phase two removes retired IELTS Reading
-Argue dialogs and duplicate Dashboard warm-up requests locally, pending release.
+are unchanged. Both phases are published. Phase two removed retired IELTS Reading
+Argue dialogs and duplicate Dashboard warm-up requests in release `b14aaf17`.
 Listening activity has current callers; teacher migrations and documented
 local-file compatibility remain. See the cleanup backlog for retirement gates.
 
@@ -850,7 +850,8 @@ Keep collections `ADMINONLY`.
 ## 12. Current Architecture Limits
 
 - Backend domain logic is still partly duplicated across cloud functions.
-- There is no automated backend test suite yet.
+- Backend pure-rule and mocked-service suites exist; they do not replace
+  authenticated live CloudBase integration or real-browser acceptance.
 - Some public legacy data still contains answers from before the private grading migration.
 - CloudBase function deployment is manual.
 - Grading-key reconciliation after teacher Argue corrections is not fully automated.
@@ -866,12 +867,14 @@ Keep collections `ADMINONLY`.
 
 High-value next steps:
 
-- Extract shared backend logic under `cloudfunctions/_shared/`.
-- Add pure rule tests for assignment status, STAR, Argue, and Vocabulary boundaries.
+- Reuse the existing `cloudfunctions/_shared/` modules. Extract additional logic
+  only for demonstrated duplication, with tests proving unchanged behavior.
+- Extend existing assignment, STAR, Argue and Vocabulary regression suites for
+  confirmed gaps; do not recreate the test architecture.
 - Add grading key reconcile workflow before large imports.
 - Keep `AGENTS.md` short and move product/architecture detail into `docs/`.
-- Add pure report-rule tests for time-zone boundaries, membership eligibility,
-  class-task scope, redacted reads, and idempotent timer retries.
+- Keep the existing report-rule/service tests and add authorized live integration
+  coverage for report generation, redacted reads and timer retries.
 
 ## 14. Edition-Aware Content Routing
 

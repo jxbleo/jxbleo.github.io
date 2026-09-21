@@ -1,6 +1,16 @@
 # Changelog
 
-## 2026-09-21 — Cleanup phase two (local, not published)
+## 2026-09-21 — Cleanup follow-up audit
+
+- Classified remaining Listening and teacher migration/repair paths against
+  current callers, product contracts and actual query scope. Kept active and
+  operational APIs; documented retirement prerequisites instead of deleting
+  them based on missing UI references. No production data audit/apply was run.
+- Corrected stale architecture/backlog/testing claims: shared modules and
+  pure-rule/mocked-service suites already exist. Live integration and browser
+  acceptance remain distinct gaps; no new framework or abstraction was added.
+
+## 2026-09-21 — Cleanup phase two (live)
 
 - Removed nine retired IELTS Reading Argue functions, unused attempt state and
   exclusive modal styles. Kept Explain styling, teacher answer preview and
@@ -17,6 +27,10 @@
   Browser automation timed out; real-browser phase-two acceptance remains open.
 - Owner reports checking one real student account after phase one with no issue;
   this is not a claim of full teacher-flow or phase-two production acceptance.
+- Owner-authorized static release `b14aaf17` completed through COS workflow
+  `35580962211`. All 45 checked public files match the local artifact, unversioned
+  index/config match and the three nonpublic boundary URLs return 404. No cloud
+  functions, production records or model settings were changed.
 
 ## 2026-09-21 — Conservative source cleanup (live)
 

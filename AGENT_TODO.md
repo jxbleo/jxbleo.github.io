@@ -42,13 +42,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
-- 2026-09-21 — Cleanup phase two is local only: retired IELTS Reading Argue UI
-  removed; Dashboard full-result warm-up runs before pagination (fallback only).
-  All 41 npm test suites, extra Dashboard achievements, release gates, static
-  build/artifact, JS/CSS syntax and synthetic Explain render/reveal/open/close
-  checks passed. CUA connection timed out; real-browser checks of Dashboard and
-  IELTS Explain/teacher/history behavior remain pending. Obtain scoped publication
-  approval before rollout. No cloud/data changes; original checkout untouched.
+- 2026-09-21 — Cleanup phase two is live; owner/browser acceptance remains open
+  for Dashboard Finished, Replies, STAR wallet, Library progress and IELTS
+  Explain/teacher/history behavior. Prior CUA connection timed out; automated
+  and public-file checks do not replace authenticated browser acceptance.
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -113,6 +110,19 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-21 — Owner-authorized phase-two static release `b14aaf17` published
+  through successful COS run `35580962211`. All 45 public files match the tested
+  artifact; unversioned index/config match and three nonpublic paths return 404.
+  All 41 suites and extra achievements passed before release; core gates and
+  build/artifact checks passed again locally and in CI. No CloudBase deployment,
+  account/data mutation, model change or original-worktree edit. Verification:
+  `.local/cleanup-release-audit/static-verified-phase2.json` in the original repo.
+- 2026-09-21 — Follow-up cleanup source audit: retained active Listening activity,
+  five teacher repair/migration actions and documented JS fallbacks. Recorded
+  each retirement gate and actual full-scan cost in Backlog; no production dry
+  run was performed. Corrected stale claims that shared modules and backend rule
+  tests do not exist. Further removal needs evidence, not another generic layer.
 
 - 2026-09-21 — Owner reports inspecting one real student account on phase-one
   production with no issue. Do not generalize this to all teacher flows or to

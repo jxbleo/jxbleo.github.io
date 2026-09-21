@@ -2319,7 +2319,9 @@ Parent Mode regression checks:
   lines use `合格线：80%`-style Chinese labels and never `PASS 80%`.
 
 - No automated CloudBase integration tests.
-- No pure unit tests for assignment status, STAR, and Argue rules yet.
+- Pure-rule and mocked-service tests cover assignment/global progress, STAR,
+  Argue and Vocabulary boundaries; their passing result is not live integration
+  evidence. Use the corresponding `test:*` commands in `package.json`.
 - No automated browser smoke for teacher/student login yet.
 - No automated grading-key reconcile check yet.
 - No scheduled-report integration harness or production timer monitoring yet;
@@ -2327,7 +2329,8 @@ Parent Mode regression checks:
 
 High priority improvement:
 
-- Add a lightweight pure JS rule test suite for backend status/STAR/Argue logic.
+- Add missing live integration/browser coverage around the existing rule suites,
+  rather than introducing a second unit-test framework.
 
 ## 11. Content Edition Checks
 

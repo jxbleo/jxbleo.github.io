@@ -1,5 +1,23 @@
 # 10 Deployment
 
+## Phase-two cleanup publication (2026-09-21; published)
+
+Owner-authorized release `b14aaf17` is live through successful
+[COS workflow 35580962211](https://github.com/jxbleo/jxbleo.github.io/actions/runs/35580962211).
+Cache version: `20260921-cleanup-2`. All 45 checked public entry/asset files match
+the tested artifact; unversioned index/config also match. Old/relocated prototype
+and build-manifest URLs return 404. Private verification evidence is retained in
+`.local/cleanup-release-audit/static-verified-phase2.json` in the original repo.
+
+This release removes retired IELTS Argue UI and duplicate Dashboard warm-up
+requests only. All 41 local test suites and extra Dashboard achievements passed;
+release/core checks and artifact boundaries passed again before upload and in CI.
+No CloudBase deployment, migration apply, account/data mutation, model/billing or
+permission changes were performed. Phase-two real-account browser acceptance is
+still pending: inspect Finished, Replies, STAR wallet, Library progress, IELTS
+Explain/history and teacher answer preview without creating test attempts in
+real student accounts. Phase-one owner acceptance does not validate phase two.
+
 ## Phase-one cleanup publication (2026-09-21; published)
 
 Release `a787c24b` is live through successful
@@ -8,7 +26,8 @@ All 45 checked public files match the tested artifact; unversioned index/config
 also match. Old/relocated prototype and build-manifest URLs return 404. All six
 retained functions are Active with unchanged code, configuration and ACL, and
 reject unauthenticated handler calls. Post-release browser automation timed out;
-the owner's real-account visual/history acceptance remains pending.
+the owner subsequently reported inspecting one real student account without
+issues. Full teacher-flow acceptance was not reported.
 
 Owner authorized static/source publication from `codex/project-cleanup` after
 the 40 test suites, additional Dashboard achievements suite, release gates and
