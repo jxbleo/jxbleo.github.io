@@ -10,11 +10,13 @@ check before upload. Historical plans 12–19 and old root documents are archive
 the numbered current docs remain authoritative. No runtime dependency was added.
 
 Removed 80 unreferenced functions and their exclusive styles/event wiring.
-Existing cloud action names, authorization, durable jobs and persisted schemas
-are unchanged. Both phases are published. Phase two removed retired IELTS Reading
-Argue dialogs and duplicate Dashboard warm-up requests in release `b14aaf17`.
-Listening activity has current callers; teacher migrations and documented
-local-file compatibility remain. See the cleanup backlog for retirement gates.
+Both static phases are published. Phase two removed retired IELTS Reading Argue
+dialogs and duplicate Dashboard warm-up requests in release `b14aaf17`. The final
+backend cleanup retains active Listening activity and recurring repair actions,
+but removes backend-only Listening aliases, the empty assignment-track runtime,
+and the completed report-model/STAR migration actions after a stable production
+metadata audit. Authorization, durable jobs and historical records are unchanged.
+Documented local-file compatibility remains.
 
 ## Chunked Group Discussion analysis (2026-09-21, deployed)
 

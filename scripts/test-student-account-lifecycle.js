@@ -331,40 +331,6 @@ async function main() {
   assert.equal(enableResult.success, true);
   assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
 
-  const classId = students.find((student) => student.auth_uid === recreateResult.student.auth_uid).class_id;
-  students.push({
-    _id: "peer-profile",
-    auth_uid: "peer-uid",
-    student_id: "peer-login",
-    name: "Peer",
-    class_id: classId,
-    class_group: "Class A",
-    role: "student",
-    active: true,
-  });
-  classMemberships.push({
-    _id: "peer-membership",
-    membership_id: "peer-membership",
-    student_uid: "peer-uid",
-    class_id: classId,
-    active: true,
-    started_at: new Date("2026-01-01T00:00:00.000Z"),
-    ended_at: null,
-  });
-  assignments.push(
-    { _id: "legacy-a", assignment_batch_id: "legacy-batch", student_uid: recreateResult.student.auth_uid, set_id: "BBC-TEST" },
-    { _id: "legacy-b", assignment_batch_id: "legacy-batch", student_uid: "peer-uid", set_id: "BBC-TEST" }
-  );
-
-  const reportModelDryRun = await call("backfillLearningReportModel", { limit: 10 });
-  assert.equal(reportModelDryRun.success, true);
-  assert.equal(reportModelDryRun.dry_run, true);
-  assert.equal(reportModelDryRun.assignment_scope.class_batches.length, 1, "only exact full-class legacy batches become Class Tasks");
-  const reportModelApply = await call("backfillLearningReportModel", { apply: true, limit: 10 });
-  assert.equal(reportModelApply.success, true);
-  assert.equal(reportModelApply.dry_run, false);
-  assert.equal(assignments.every((assignment) => assignment.assignment_scope === "class" && assignment.class_id === classId), true);
-
   const originalConsoleError = console.error;
   console.error = () => {};
   let duplicateResult;
@@ -454,6 +420,10 @@ async function main() {
   assert(teacherAdminSource.includes('if (action === "getStudentStarSources")') &&
     teacherAdminSource.includes('where: { student_uid: authUid }'),
     "STAR sources should load through one teacher-authorized student-bounded action");
+  assert(!teacherAdminSource.includes('action === "backfillLearningReportModel"'),
+    "the completed report-model migration must not remain exposed in production");
+  assert(teacherAdminSource.includes('action === "backfillAssignmentDueWeeks"'),
+    "the still-needed due-week repair must remain available");
 
   console.log("Student account lifecycle tests passed.");
 }

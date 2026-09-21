@@ -2,6 +2,10 @@
 
 ## Source cleanup / static publication
 
+- Run `npm run test:listening-contracts`, `npm run test:student-accounts` and
+  `npm run test:star-rewards`: canonical Listening actions and `recordActivity`
+  remain; backend-only aliases/assignment-track storage and the completed
+  report/STAR migration routes are absent; retained due-week repair is present.
 - Run `npm run test:dashboard-loading`: successful warm-up avoids duplicate
   pagination/reply requests while preserving self-study, STAR/wallet, replies
   and library progress; failed full responses fall back to pages and stalled or

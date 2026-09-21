@@ -1652,10 +1652,11 @@ collection contains one non-attempt student lock document used only to enforce
 the single in-flight take invariant. `listening_shadowing_usage` records one
 billable provider boundary with stable take/reference/audio/policy/provider
 revisions plus Shanghai `usage_day` and `billable_claimed` for quota enforcement.
-`listening_assignment_tracks` is retained only as a dormant compatibility
-collection from the earlier V2 rollout. New Intensive Listening work is
-self-study only and neither the browser nor server creates new assignment-track
-or parent Assignment rows. All collections remain ADMINONLY.
+`listening_assignment_tracks` is an empty ADMINONLY collection left from the
+earlier V2 rollout; the production runtime no longer reads or writes it. New
+Intensive Listening work is self-study only and neither the browser nor server
+creates assignment-track or parent Assignment rows. The collection was not
+dropped as part of code cleanup, and no historical progress was deleted.
 
 `learning_activity_sessions` is a mixed-document ADMINONLY collection. Session
 rows use immutable `session_id`, authenticated `student_uid`, safe student ID

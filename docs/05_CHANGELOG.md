@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-09-21 — Final runtime cleanup (owner-authorized release)
+
+- Retired nine backend-only Intensive Listening action aliases and removed the
+  unused assignment-track constant, no-op writer, legacy aggregation path and
+  reads. Canonical browser actions and active `recordActivity` remain.
+- Retired `backfillLearningReportModel` and `migrateStarRewards` after a fresh,
+  stable production metadata audit found zero report-model repairs, zero
+  promotable legacy class batches, zero STAR migration candidates and zero old
+  Listening assignment/track rows. No collection or historical row was deleted.
+- Kept accepted-answer and Vocabulary incident repair actions. Kept
+  `backfillAssignmentDueWeeks` because 243 historical candidates and three
+  source-less rows still require compatibility. Added regression assertions for
+  the retired and retained production contracts.
+
 ## 2026-09-21 — Cleanup acceptance and live/source reconciliation
 
 - Owner completed production acceptance for cleanup phase two and the approved

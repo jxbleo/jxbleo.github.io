@@ -64,6 +64,10 @@ const gatewaySource = fs.readFileSync(path.join(__dirname, "..", "cloudfunctions
 const shadowingClient = fs.readFileSync(path.join(__dirname, "..", "assets/js/listening-shadowing.js"), "utf8");
 const shadowingCss = fs.readFileSync(path.join(__dirname, "..", "assets/css/listening-shadowing.css"), "utf8");
 assert.doesNotMatch(gatewaySource, /required_tracks:\s*requiredTracks/, "bootstrap must not reference a removed assignment variable");
+assert.doesNotMatch(gatewaySource, /listening_assignment_tracks/, "retired Listening assignment-track storage must not remain in the runtime");
+assert.doesNotMatch(gatewaySource, /reserve_take|finish_take|register_upload|cancel_take|continue_segment|action === "warm"|action === "track"|action === "startCompleteListen"/, "backend-only legacy action aliases must stay retired");
+assert.match(gatewaySource, /action === "recordActivity"/, "the active browser activity action must remain available");
+assert.match(gatewaySource, /action === "reserveShadowingTake"/, "the canonical Shadowing action must remain available");
 assert.match(gatewaySource, /profile\.role === "student" && event\.assignment_id[\s\S]{0,80}LISTENING_NOT_ASSIGNABLE/, "all student Listening actions must reject forged Assignment context before routing");
 assert.match(gatewaySource, /runTransaction\(async \(transaction\) => \{[\s\S]*last_sequence/, "effective-time sequence acceptance must be transactional");
 assert.match(gatewaySource, /observedElapsed \+ ACTIVITY_TRANSPORT_TOLERANCE_SECONDS/, "the first and later time flushes use server elapsed time");

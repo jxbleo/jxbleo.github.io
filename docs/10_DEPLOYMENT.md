@@ -713,41 +713,12 @@ This release requires all three deployment tracks plus private Storage setup.
 npm run package:functions -- getDashboard teacherAdmin submitAttempt
 ```
 
-4. Run the owner-gated STAR wallet migration in dry-run mode first. It reports
-   active Blue rows, Yellow credits, grandfathered duplicate Yellow rows, and
-   existing liability without changing CloudBase. Apply only after reviewing
-   that report. From an authenticated Teacher page browser console:
-
-```js
-await MrCatCloud.callFunction('teacherAdmin', {
-  action: 'migrateStarRewards'
-});
-```
-
-After the owner accepts the report, apply once:
-
-```js
-await MrCatCloud.callFunction('teacherAdmin', {
-  action: 'migrateStarRewards',
-  apply: true
-});
-```
-
-`teacherAdmin` currently has a 10-second execution timeout. An apply call can
-time out in the browser after completing only part of the idempotent migration.
-If that happens, do not infer success or failure from the browser error and do
-not inspect student payloads in broad logs. Run the dry run again: if either
-pending count remains non-zero, rerun apply; otherwise continue to verification.
-Use the supported CLS command for aggregate log checks:
-
-```bash
-tcb logs search -e mrcat-dev-d9gwy2v1icdfdf597 \
-  -q 'function_name:"teacherAdmin" AND "credits_created"' \
-  -t 30m --sort desc --json
-```
-
-Rerun the dry run afterward; `credits_created` and
-`converted_blue_created` should both be `0`.
+4. Historical rollout only: the owner-gated STAR migration was completed and a
+   final 2026-09-21 read-only audit found zero missing Yellow credits, converted
+   Blue rows, unclassified achievements or normalization candidates. The
+   `migrateStarRewards` production action is retired. Do not restore or invoke
+   the old full-table migration; if a future audit finds a new defect, design a
+   bounded, idempotent repair for the exact affected rows and obtain owner approval.
 5. Publish versioned `dashboard.html`, `teacher.html`, `assets/js/dashboard.js`,
    `assets/js/teacher.js`, `assets/js/cloudbase-client.js`, and `assets/css/app.css`.
 
@@ -947,16 +918,11 @@ migration without explicit owner approval.
    manual sending. Do not deploy an unofficial personal-WeChat robot as part of
    this feature.
 
-The authenticated teacher-only migration action is
-`teacherAdmin.backfillLearningReportModel`. Invoke it with
-`{ "action": "backfillLearningReportModel", "limit": 100, "offset": 0,
-"assignment_limit": 25, "assignment_offset": 0 }`
-first; omission of `apply: true` is the required dry run. Review every proposed
-class, membership, skipped legacy batch, and exact full-class assignment batch.
-Only then repeat each reviewed page with `"apply": true`. Continue student
-pages with `next_offset` and assignment-batch pages with
-`assignment_scope.assignment_next_offset`; each assignment batch is promoted
-transactionally. Never substitute an unauthenticated database script.
+Historical rollout only: `teacherAdmin.backfillLearningReportModel` completed
+the class/report cutover. A final 2026-09-21 read-only audit found zero proposed
+class/profile/membership repairs and zero promotable legacy assignment batches,
+so the production action is retired. Never substitute an unauthenticated
+database script or restore the old full-collection handler for a new incident.
 
 Rollback notes: static files and report functions can roll back normally.
 Published `learning_reports` and membership history are audit data; do not

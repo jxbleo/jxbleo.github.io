@@ -169,7 +169,7 @@ function testIntegrationContracts() {
   assert(dashboard.includes("if (button.dataset.walletBack === 'account') closeStarPanel(true);"), "STAR Back must not bubble into the global Personal Center closer");
   assert(teacher.includes("Final confirmation: mark this request completed"));
   assert(backend.includes('action === "confirmStarRedemption"'));
-  assert(backend.includes('action === "migrateStarRewards"'));
+  assert(!backend.includes('action === "migrateStarRewards"'), "the completed STAR migration must not remain exposed in production");
 }
 
 async function main() {

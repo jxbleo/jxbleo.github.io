@@ -42,12 +42,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
-- 2026-09-21 — Phase-three metadata audit found 280 due-week normalization
-  candidates (42 open, 196 completed, 42 cancelled) plus three rows without
-  usable source dates. Subsequently, owner-approved 37 enabled-account open
-  rows were repaired and verified (see Done). Keep compatibility/backfill for
-  remaining history; do not apply the rest or infer dates for source-less rows.
-  Original aggregate counts are a pre-repair snapshot, not a new live audit.
+- 2026-09-21 — Fresh post-repair metadata audit found 243 due-week candidates,
+  245 missing `due_at`, one non-normalized date and three rows without usable
+  source dates. Keep compatibility/backfill for remaining history; do not apply
+  the rest or infer dates for source-less rows. The report/STAR migration and
+  empty Listening assignment-track runtime are separately retired (see Done).
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -112,6 +111,15 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-21 — Final cleanup implementation: two stable complete production
+  metadata passes found zero report-model repairs, zero promotable legacy class
+  batches, zero STAR migration candidates and zero Listening assignment/track
+  rows. Removed backend-only Listening aliases/track runtime and the completed
+  report/STAR migration routes; kept canonical actions, `recordActivity`, three
+  operational repair paths and due-week compatibility. No collection or row was
+  deleted. Targeted contract tests passed; full release/deployment evidence is
+  recorded with the release commit.
 
 - 2026-09-21 — Owner reports completing the requested production acceptance for
   both the 37-row due-week repair and cleanup phase two: historical due-week

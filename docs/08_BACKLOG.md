@@ -5,17 +5,16 @@
 
 ## High Priority
 
-### Remaining cleanup prerequisites (2026-09-21)
+### Cleanup closeout and retained prerequisites (2026-09-21)
 
-- Release preflight found live/main bundle differences in intensiveListening,
-  teacherAdmin and submitAttempt. All six source cleanups preserve executable
-  code, so their live functions are intentionally retained. Reconcile these
-  existing differences separately before any future function deployment.
+- Exact saved-live provenance reconciled the earlier intensiveListening,
+  teacherAdmin and submitAttempt bundle differences. They were uncalled shared
+  module additions, not missing target behavior. The final scoped function
+  release has its own fresh code/config/ACL preflight and rollback packages.
 - Listening `recordActivity` is still called on unit navigation and audio time
-  updates; it is not dead code. Any retirement of this path, action aliases or
-  assignment-track compatibility requires a separate replacement/dependency
-  audit, read-only live data/call-log checks and an old-client cache window.
-  Do not remove historical progress or session evidence.
+  updates; it is not dead code and remains. Backend-only aliases and the empty
+  assignment-track runtime were retired after source/history, live metadata and
+  log-retention review. Do not remove historical progress or session evidence.
 - Keep teacherAdmin repair actions under their existing active-teacher guard.
   A missing UI caller does not make an operational API dead code. Source audit
   below distinguishes recurring repair tools from possible one-time migrations;
@@ -24,8 +23,7 @@
 - Dashboard duplicate normal warm-up requests are removed in phase two,
   with pagination retained only as a failure fallback. Keep the authoritative
   full result: bootstrap/pages do not reconstruct self-study, global-best/STAR
-  repairs and wallet history. A new supplement endpoint is not needed for this
-  cleanup. Real-account phase-two browser acceptance remains pending.
+  repairs and wallet history. Real-account phase-two acceptance is complete.
 - Remove Vocabulary/catalog JS fallbacks only after explicitly retiring their
   documented local-file compatibility and updating all generators/checks.
 - IELTS Reading's retired Argue UI is removed in phase two after checking
@@ -38,45 +36,42 @@
 - Review remaining private release worktrees individually; do not bulk-delete
   `.cloudbase-private`, which contains source material and deployment evidence.
 
-### Remaining runtime cleanup audit (2026-09-21; source-only)
+### Runtime cleanup decisions (2026-09-21; source + production metadata)
 
 | Candidate | Confirmed dependency or purpose | Decision / retirement prerequisite |
 | --- | --- | --- |
 | Listening `recordActivity` | Current browser navigation/audio calls; server starts/refreshes/closes teacher notification sessions | Keep. Effective-time tracking is not evidence that notification-session work is redundant. |
-| Listening action aliases / assignment tracks | Exported router contracts and historical assignment-track reads/updates remain | Keep pending old-client usage window and historical-data audit; no collection deletion. |
+| Listening action aliases / assignment tracks | No committed client generation used the aliases; production has zero Listening assignment/track rows | Retired runtime aliases/track code. The empty ADMINONLY collection remains; no data deletion. |
 | `backfillAcceptedAnswerRegrades` | Explicit product requirement; repairs historical results after accepted-answer changes | Keep as repair tooling, not a one-time migration assumed complete. Attempts are paged (max 200), but grading keys are loaded in full. |
 | `backfillVocabularyContentVersionMismatch` | Repairs a specified set's stale content/grading-version incident | Keep for recovery. Reads all attempts for the selected set; no bounded page contract. |
 | `backfillAssignmentDueWeeks` | Repairs missing/non-normalized due weeks; troubleshooting still references it | Possible retirement only after complete zero-candidate / zero-missing-source audit and old writer retirement. Output is limited, but every call reads all assignments. |
-| `backfillLearningReportModel` | Repairs profiles, class memberships and legacy class assignment scope | Possible retirement only after all profile/membership/scope pages and skipped cases are resolved. Student/assignment output pages do not bound its four collection scans. |
-| `migrateStarRewards` | Creates missing Yellow credits and converted Blue history | Possible retirement only after a complete dry run has zero pending credits/converted Blue rows and no legacy producer remains. Scans all achievements plus per-Yellow ledger lookups. |
+| `backfillLearningReportModel` | One-time class/report cutover; current writers enforce the canonical model | Retired after complete audit found zero profile/membership repairs and zero promotable legacy batches. |
+| `migrateStarRewards` | One-time Yellow ledger/converted Blue cutover; current writers use the canonical shared STAR module | Retired after complete audit found zero missing/unclassified/normalization candidates. |
 | Vocabulary/catalog JS fallbacks | `AGENTS.md` explicitly requires local-file loading compatibility | Keep unless the owner deliberately retires that supported use case. |
 
-All five teacher actions were inspected for their default no-apply paths. This
-table is source review, not a live migration invocation or proof of zero pending records.
-Do not invoke a full-scan action merely because its response exposes a `limit`.
-Any follow-up production audit should first confirm live/source parity and use
-authorized, bounded, read-only queries with aggregate-only output; no student
-answers, identifiers or grading keys should enter the cleanup report. Applying
-a repair, changing permissions, or deleting historical data needs separate scope.
+All five teacher actions were source-reviewed. The final decisions also use two
+stable, complete, field-projected production metadata passes; no migration
+handler was invoked. Future audits should remain bounded and aggregate-only;
+applying a repair, changing permissions, or deleting history needs separate scope.
 
-### Phase-three read-only production audit (2026-09-21, 17:25 Shanghai)
+### Final read-only production audit (2026-09-21, 23:47 Shanghai)
 
 Two complete metadata passes, each paged at 100 rows with an explicit upper
 bound, returned identical projected data across seven collections. This is a
 stable observed interval, not a transactional snapshot. The comparison uses
-current source rules; known live/source bundle differences remain unresolved.
+current source rules after saved-live provenance reconciliation.
 No migration handler, write, account impersonation, answer or grading-key read
 was performed. Only aggregate evidence is retained in the original checkout's
 ignored `.local/cleanup-release-audit/retirement-metadata-audit.json`.
 
 | Scope | Observed result | Cleanup decision |
 | --- | --- | --- |
-| Assignment due weeks | 798 assignments; 282 lack `due_at`. Of these, 279 have a usable fallback date and 3 lack a usable source. One additional existing due date is not normalized. | Keep due-date compatibility and `backfillAssignmentDueWeeks`; 280 proposed updates are not authorization to apply. |
-| Due-week candidates by status | 42 `to_do`, 144 `passed`, 51 `mastered`, 1 `done`, 42 `cancelled` | Do not bulk-normalize completed/cancelled history as a code-cleanup side effect. Review open work separately. |
+| Assignment due weeks | Fresh post-repair audit: 798 assignments; 243 remaining candidates, 245 missing `due_at`, one non-normalized date and 3 missing sources. | Keep due-date compatibility and `backfillAssignmentDueWeeks`; do not bulk-normalize history as a cleanup side effect. |
+| Due-week status population | 51 `mastered`, 42 `cancelled`, 144 `passed`, 5 `to_do`, 1 `done` | Historical completed/cancelled/excluded rows remain deliberate compatibility dependencies. |
 | Class/report metadata | 36 active students; zero proposed class creation, profile change, membership change or multiple-active-membership cases | No class repair is indicated by this comparison. |
 | Assignment scope | 206 batches: 27 already scoped, zero promotable legacy batches; 147 partial/mixed-recipient and 32 existing non-legacy-scope batches are skipped | Skips are not automatically faults or missing migrations; do not promote partial or explicitly individual work. |
-| STAR migration | 165 achievements / 83 ledger rows; zero missing Yellow credits, converted Blue rows, unclassified achievements or normalization candidates | No STAR apply is indicated. Keep the repair entry until live-code parity and operational retirement are established. |
-| Old Listening assignments | Zero `assignment_kind: listening`, zero `IL-*` assignment rows, zero assignment-track rows | No row dependency found for this snapshot. Old-client calls and server-source drift still block API retirement; keep active `recordActivity`. |
+| STAR migration | 166 achievements: 78 Yellow, 88 Blue; zero missing credits, converted Blue rows, unclassified achievements or normalization candidates | Migration entry retired; current STAR writers retained. |
+| Old Listening assignments | Zero `assignment_kind: listening`, zero `IL-*` assignment rows, zero assignment-track rows | Backend-only aliases/track runtime retired; active `recordActivity` retained. |
 
 ### Approved due-week repair and next cleanup plan (2026-09-21, 22:56 Shanghai)
 
@@ -103,15 +98,12 @@ Next stages, ordered by their dependencies:
    Writing Argue mail, Intensive Listening email rendering, and chunked Speaking
    analysis helpers respectively. No target behavior is missing and no hash-only
    deployment is indicated. Preserve the shared checkout's unfinished rebase.
-3. **Next:** Listening retirement assessment: review available action-call evidence and
-   the longest supported old-client cache/session window. A zero-row snapshot
-   alone is insufficient. Keep `recordActivity`; remove aliases/track compatibility
-   only with positive dependency evidence, regression coverage and owner approval.
-4. **After that:** repair-tool decision: keep accepted-answer/content-version repair tools.
-   Keep due-week compatibility while completed/cancelled/excluded history needs
-   it. Revisit report/STAR migration entry points only after live-source parity,
-   complete bounded audits and old-producer retirement. Do not migrate history
-   just to make a helper deletable.
+3. **Completed:** Listening retirement assessment. Committed browser generations
+   use canonical action names; no static service worker exists; production has no
+   old assignment/track rows. Retired aliases/track runtime, kept `recordActivity`.
+4. **Completed:** repair-tool decision. Retired the completed report/STAR
+   migrations; kept accepted-answer/content-version repairs and due-week
+   compatibility. No history was migrated merely to make code deletable.
 
 Reconciliation evidence: the saved live intensiveListening bundle exactly
 rebuilds from `194bbb53`; submitAttempt from `e6cb5901`; teacherAdmin from

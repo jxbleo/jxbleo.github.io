@@ -16,7 +16,6 @@ const DISPUTES = "answer_disputes";
 const SHADOW_PROGRESS = "listening_shadowing_progress";
 const SHADOW_TAKES = "listening_shadowing_takes";
 const SHADOW_USAGE = "listening_shadowing_usage";
-const ASSIGNMENT_TRACKS = "listening_assignment_tracks";
 const LEARNING_ACTIVITY = "learning_activity_sessions";
 const SYSTEM_CONFIG = "system_config";
 const SHADOW_POLICY_KEY = "listening_shadowing_score_policy";
@@ -482,7 +481,7 @@ async function revealShadowingTranscript(student, event, material) {
   };
 }
 
-async function startCompleteListen(student, event, material) {
+async function startListeningPlayback(student, event, material) {
   const segment = shadowingReference(material, event.segment_id);
   if (event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
   const progress = await loadShadowingProgress(student, material, true);
@@ -750,7 +749,6 @@ async function finishShadowingTake(student, event, material) {
   await db.collection(SHADOW_TAKES).doc(take._id || takeId).update(update);
   await db.collection(SHADOW_USAGE).doc(usageId).update({ status: "sent", billable_claimed: true, provider_request_id: provider.request_id || null, terminal_at: now, updated_at: now });
   await releaseTakeLock(student, takeId);
-  await updateListeningTrackAssignment(student, material, "shadowing", savedProgress, take.assignment_id);
   await refreshShadowingNotification(student, material, savedProgress, take.assignment_id);
   return { success: true, take_id: takeId, score: productScore, word_states: wordStates, transcript_revealed: true, qualified: nextProgress.segment_states[take.segment_id].qualified, segment: shadowingTrackResponse(material, savedProgress, false).find((item) => item.segment_id === take.segment_id), progress: shadowingProgressResponse(material, savedProgress) };
 }
@@ -811,39 +809,7 @@ async function continueShadowingSegment(student, event, material) {
   const segment = shadowingReference(material, event.segment_id);
   const progress = await loadShadowingProgress(student, material, true);
   const saved = await saveShadowingProgress(student, material, shadowing.continueSegment(progress, segment.segment_id));
-  await updateListeningTrackAssignment(student, material, "shadowing", saved, event.assignment_id);
   return { success: true, segment_id: segment.segment_id, progress: shadowingProgressResponse(material, saved) };
-}
-
-async function updateListeningTrackAssignment(student, material, track, progress, assignmentId) {
-  // Intensive Listening is self-study only. Keep this compatibility function
-  // as a no-op so old progress rows cannot mutate Assignment records.
-  return;
-}
-
-async function refreshListeningAssignment(student, assignmentId) {
-  const rows = await getAll(ASSIGNMENT_TRACKS, { where: { assignment_id: assignmentId, student_uid: student.auth_uid } });
-  const active = rows.filter((row) => row.status !== "cancelled");
-  if (!active.length) return;
-  const complete = active.every((row) => row.status === "completed");
-  const aggregate = Math.round(active.reduce((sum, row) => sum + Math.max(0, Math.min(100, Number(row.percentage) || 0)), 0) / active.length);
-  const assignment = await getOne("assignments", { assignment_id: assignmentId, student_uid: student.auth_uid });
-  if (!assignment || assignment.status === "cancelled") return;
-  const now = new Date();
-  const update = {
-    latest_percentage: aggregate,
-    latest_raw_percentage: aggregate,
-    best_percentage: Math.max(Number(assignment.best_percentage) || 0, aggregate),
-    raw_best_percentage: Math.max(Number(assignment.raw_best_percentage) || 0, aggregate),
-    updated_at: now,
-    required_listening_tracks: active.map((row) => row.track),
-  };
-  if (aggregate > Number(assignment.best_percentage || 0)) update.best_improved_at = now;
-  if (complete) {
-    update.status = "passed";
-    update.completed_at = assignment.completed_at || now;
-  }
-  await db.collection("assignments").doc(assignment._id || assignmentId).update(update);
 }
 
 function recordPayload(student, material, record, unitStates, now, replayMode) {
@@ -927,20 +893,6 @@ async function syncAssignments(student, set, percentage, now) {
   }).limit(100).get();
   for (const assignment of result.data || []) {
     if (assignment.status === "cancelled") continue;
-    if (assignment.assignment_kind === "listening") {
-      const assignmentId = assignment.assignment_id || assignment._id;
-      const trackRows = await getAll(ASSIGNMENT_TRACKS, { where: { assignment_id: assignmentId, student_uid: student.auth_uid, track: "dictation" } });
-      if (trackRows.length) {
-        for (const row of trackRows) {
-          if (row.status === "cancelled") continue;
-          const trackUpdate = { completed_count: percentage >= 100 ? 1 : 0, segment_count: 1, percentage, updated_at: now };
-          if (percentage >= 100) { trackUpdate.status = "completed"; trackUpdate.completed_at = row.completed_at || now; }
-          await db.collection(ASSIGNMENT_TRACKS).doc(row._id || row.participation_id).update(trackUpdate);
-        }
-        await refreshListeningAssignment(student, assignmentId);
-        continue;
-      }
-    }
     const passing = Number(assignment.passing_percentage == null ? set.passing_percentage || 100 : assignment.passing_percentage);
     const mastery = Number(assignment.mastery_percentage == null ? set.mastery_percentage || 100 : assignment.mastery_percentage);
     const masteryEnabled = !isIntensiveListeningSet(set) && assignment.mastery_enabled === true;
@@ -2146,8 +2098,8 @@ exports.main = async (event = {}) => {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return closeLearningActivity(profile, event, set, material);
     }
-    if (action === "bootstrap" || action === "warm") return bootstrap(profile, event, set, material);
-    if (action === "getTrack" || action === "track") {
+    if (action === "bootstrap") return bootstrap(profile, event, set, material);
+    if (action === "getTrack") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return getTrack(profile, event, material);
     }
@@ -2159,35 +2111,35 @@ exports.main = async (event = {}) => {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return revealShadowingTranscript(profile, event, material);
     }
-    if (action === "startListen" || action === "startCompleteListen") {
+    if (action === "startListen") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return startCompleteListen(profile, event, material);
+      return startListeningPlayback(profile, event, material);
     }
     if (action === "completeListen") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return recordCompleteListen(profile, event, material);
     }
-    if (action === "reserveShadowingTake" || action === "reserve_take") {
+    if (action === "reserveShadowingTake") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return reserveShadowingTake(profile, event, material);
     }
-    if (action === "finishShadowingTake" || action === "finish_take") {
+    if (action === "finishShadowingTake") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return finishShadowingTake(profile, event, material);
     }
-    if (action === "registerShadowingUpload" || action === "register_upload") {
+    if (action === "registerShadowingUpload") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return registerShadowingUpload(profile, event, material);
     }
-    if (action === "cancelShadowingTake" || action === "cancel_take") {
+    if (action === "cancelShadowingTake") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return cancelShadowingTake(profile, event, material);
     }
-    if (action === "getShadowingTake" || action === "take") {
+    if (action === "getShadowingTake") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return getShadowingTake(profile, event, material);
     }
-    if (action === "continueShadowingSegment" || action === "continue_segment") {
+    if (action === "continueShadowingSegment") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return continueShadowingSegment(profile, event, material);
     }
