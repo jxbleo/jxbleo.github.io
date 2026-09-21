@@ -1,5 +1,23 @@
 # 10 Deployment
 
+## Phase-one cleanup publication (2026-09-21)
+
+Owner authorized static/source publication from `codex/project-cleanup` after
+the 40 test suites, additional Dashboard achievements suite, release gates and
+artifact-boundary checks passed again. Do not deploy the six function packages
+merely because their sources changed: with identifier minification disabled,
+before/after executable bundles are byte-identical for getDashboard,
+intensiveListening, teacherAdmin, writingTutor, submitAttempt and speakingAiWorker.
+The removed functions were already eliminated during bundling. Preserve all live
+code, configuration, model policy, ACLs, timers and data.
+
+Preflight also found existing live/main bundle differences in intensiveListening,
+teacherAdmin and submitAttempt; this cleanup does not authorize reconciling them.
+Private rollback ZIPs, configuration fingerprints and bundle-equivalence evidence
+are in `.local/cleanup-release-audit/`. Browser acceptance with the owner's real
+accounts follows publication; start with existing history/report views and avoid
+test submissions or edits against real student records.
+
 ## Teacher AI Usage rollout (2026-09-16; complete)
 
 Owner-authorized deployment and publication completed on 2026-09-16.

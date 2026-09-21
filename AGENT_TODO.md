@@ -42,6 +42,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-21 — Owner authorized phase-one cleanup publication. All 40 suites,
+  additional Dashboard achievements, release gates and static artifact checks
+  passed again. Six before/after bundles are identical with identifier
+  minification disabled, so retain existing cloud functions and publish only
+  static/source changes. Private cloud preflight/backups are in
+  `.local/cleanup-release-audit/`. Finish COS workflow and live-byte/browser
+  checks; owner will inspect existing records using real student accounts.
+
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-09-21 — Conservative source cleanup (local, not published)
+## 2026-09-21 — Conservative source cleanup
 
 - Removed 80 unreferenced functions, obsolete Writing entry-dialog state,
   retired My Words action-menu wiring and exclusive old CSS; removed the
@@ -12,6 +12,12 @@
 - Removed tracked Finder metadata and the generated studentVocabulary ZIP.
 - Kept database migrations, old client API compatibility, JSON/JS fallbacks
   and production resources unchanged pending their specific retirement checks.
+- Owner authorized publication after local regression. Cloud preflight found
+  all six cleaned functions produce identical executable bundles before/after
+  when identifier minification is disabled (five normal bundles are already
+  identical; submitAttempt differs only in minifier naming). No cloud function
+  update is needed; retain live code/configuration and publish static/source
+  changes only. Live/main bundle differences are a separate reconciliation task.
 
 ## 2026-09-21 — Resumable full-coverage Group Discussion analysis (live)
 

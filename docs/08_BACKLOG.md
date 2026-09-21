@@ -7,6 +7,10 @@
 
 ### Remaining cleanup prerequisites (2026-09-21)
 
+- Release preflight found live/main bundle differences in intensiveListening,
+  teacherAdmin and submitAttempt. All six source cleanups preserve executable
+  code, so their live functions are intentionally retained. Reconcile these
+  existing differences separately before any future function deployment.
 - Retire Listening `recordActivity`, action aliases and assignment-track
   compatibility only after read-only live data/call-log checks and an old-client
   cache window. Do not remove historical progress or session evidence.
