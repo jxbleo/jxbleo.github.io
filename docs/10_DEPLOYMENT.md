@@ -1,5 +1,71 @@
 # 10 Deployment
 
+## Cleanup live/source reconciliation (2026-09-21; no deployment)
+
+After owner acceptance of cleanup phase two and the approved due-week repair,
+the three pre-existing live/source differences were reconciled from the exact
+saved live packages. Rebuilding historical source with the same esbuild release
+options produced byte-identical live `index.js` files:
+
+| Function | Exact live provenance | Only current bundled-input difference | Decision |
+| --- | --- | --- | --- |
+| `intensiveListening` | `194bbb53` | Later Writing sentence Argue email/context support in `_shared/argue-notifications.js`; Listening calls the unchanged intensive dispute-save path | Keep live; no target fix missing |
+| `teacherAdmin` | `2267b364`, with `_shared/speaking-lab.js` from `65f48489` | Later chunked Speaking-analysis helpers; Teacher's transitive notification module consumes only the unchanged identity projection | Keep live; no target fix missing |
+| `submitAttempt` | `e6cb5901` | Later Intensive Listening email policy/render helpers in `_shared/attempt-email-notifications.js`; submitAttempt consumes unchanged BBC/Vocabulary event creation | Keep live; no target fix missing |
+
+The differing code is bundled because CommonJS exports retain the full shared
+module, not because the target functions call it. Do not deploy these functions
+solely to align hashes. Future functional deployments should still package the
+current source normally and follow the usual configuration/ACL preservation,
+rollback backup and authenticated regression process.
+
+Passed: Intensive Listening, Listening contracts, Writing Argue, attempt-email
+notifications, Speaking Lab rules, Speaking notifications and Teacher AI Usage.
+The final read-only CloudBase check downloaded all three current packages and
+confirmed Active status plus unchanged saved code and configuration fingerprints.
+Private provenance/input evidence and read-only scripts are ignored under the
+original checkout's `.local/cleanup-release-audit/`. No deployment, function
+business invocation, database write, model change or permission change occurred.
+
+## Historical due-week data repair (2026-09-21; verified)
+
+Owner explicitly approved the private 37-row enabled-account proposal, excluding
+five deleted/deleting-account rows and three anomalous/source-less rows. At
+22:56 Shanghai, the scoped CloudBase administrator operation changed only each
+approved assignment's `due_at` from null to a BSON Date. Actual Shanghai creation
+days Mon–Fri map to that week and Sat/Sun to the following week, ending Sunday
+23:59:59. Thirteen effective dates moved one week later; 24 stayed unchanged.
+This is not a new scheduling default or authorization to apply the older broad
+`backfillAssignmentDueWeeks` handler, whose inference rule differs.
+
+Two stable preflight reads and private before backup preceded 37 exact guarded
+updates (`upsert: false`, `multi: false`). Per-row and final readback verified
+the expected BSON dates, every other selected assignment field, all eight
+excluded records and the projected metadata of 12 associated profiles. The
+operation did not write attempts, STARs, class memberships or published reports,
+and did not deploy frontend/functions or change permissions/models. No teacher
+identity was impersonated and no teacher-attribution field was fabricated;
+operation attribution/timing lives in the private administrator audit journal.
+
+Private files in the original checkout's ignored `.local/cleanup-release-audit/`:
+
+- `approved-due-weeks-before.private.json`: exact before values / scope, mode 600.
+- `approved-due-weeks-journal.private.jsonl`: per-row intent, response and readback.
+- `approved-due-weeks-verified.private.json`: verification summary and exact dates.
+- `apply-approved-due-weeks.cjs`: one-off guarded operator with test/preflight/apply/verify modes.
+
+The private operator's boundary/scope/CAS tests and the existing assignment
+due-week, learning-report rules/service, Parent Mode rules/service, Dashboard
+loading and achievement-calendar suites passed. Browser acceptance remains a
+separate check: refresh Teacher View and inspect affected historical weeks;
+never create test submissions in real student accounts. No republish is needed.
+
+Rollback, only on owner request: re-read each exact approved document, require
+its expected post-repair values to remain unchanged, and restore only `due_at`
+to the backed-up null. Never replace the whole document or overwrite a later
+teacher edit. Read back before retrying an uncertain write. Preserve all private
+evidence and do not publish it in Git or static artifacts.
+
 ## Phase-two cleanup publication (2026-09-21; published)
 
 Owner-authorized release `b14aaf17` is live through successful

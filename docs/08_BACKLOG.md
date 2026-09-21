@@ -78,20 +78,51 @@ ignored `.local/cleanup-release-audit/retirement-metadata-audit.json`.
 | STAR migration | 165 achievements / 83 ledger rows; zero missing Yellow credits, converted Blue rows, unclassified achievements or normalization candidates | No STAR apply is indicated. Keep the repair entry until live-code parity and operational retirement are established. |
 | Old Listening assignments | Zero `assignment_kind: listening`, zero `IL-*` assignment rows, zero assignment-track rows | No row dependency found for this snapshot. Old-client calls and server-source drift still block API retirement; keep active `recordActivity`. |
 
-Safe next steps, without expanding code cleanup into a data migration:
+### Approved due-week repair and next cleanup plan (2026-09-21, 22:56 Shanghai)
 
-1. Keep all runtime compatibility identified above; there is no new backend
-   deployment in phase three and no reason to redeploy the already-live phase two.
-2. If due-week normalization is requested separately, first confirm the live
-   helper's behavior, prepare a private per-record before/after proposal and
-   backup, and review the 42 open candidates separately from 196 completed and
-   42 cancelled records. Do not infer dates for the three source-less rows.
-3. Apply only explicit owner-approved records with stale-value checks, then
-   compare task grouping/overdue state and immutable history. Do not use an
-   unscoped all-history backfill just to enable deleting a helper.
-4. Only revisit removal of report/STAR migration APIs and empty Listening
-   compatibility after live-source reconciliation and an old-client/call-log
-   retirement window. The two grading repair tools remain operational tools.
+The owner reviewed exact records and approved 37 enabled-account open rows.
+Only their null `due_at` fields were filled with BSON dates, based on actual
+Shanghai `created_at`: Mon–Fri -> same week, Sat/Sun -> next week, Sunday
+23:59:59. Thirteen effective weeks shifted later; 24 did not. Five deleted /
+deleting-account rows and three anomalous/source-less rows were excluded.
+Before/after comparisons verified all other fields and all eight exclusions
+unchanged. No all-history backfill handler was invoked. See Deployment for
+private backup/evidence and rollback conditions.
+
+The aggregate table above is the earlier snapshot. The historical remainder
+includes completed/cancelled work and the excluded records; it has NOT been
+re-audited collection-wide after the repair and does not justify removing fallback.
+
+Next stages, ordered by their dependencies:
+
+1. **Completed:** owner accepted the repaired historical weeks and phase-two
+   real-account student/teacher behavior. No new rollout was needed.
+2. **Completed:** exact saved-live provenance and current bundle inputs were
+   reconciled for intensiveListening, teacherAdmin and submitAttempt. The only
+   differences are uncalled later additions in transitive CommonJS modules:
+   Writing Argue mail, Intensive Listening email rendering, and chunked Speaking
+   analysis helpers respectively. No target behavior is missing and no hash-only
+   deployment is indicated. Preserve the shared checkout's unfinished rebase.
+3. **Next:** Listening retirement assessment: review available action-call evidence and
+   the longest supported old-client cache/session window. A zero-row snapshot
+   alone is insufficient. Keep `recordActivity`; remove aliases/track compatibility
+   only with positive dependency evidence, regression coverage and owner approval.
+4. **After that:** repair-tool decision: keep accepted-answer/content-version repair tools.
+   Keep due-week compatibility while completed/cancelled/excluded history needs
+   it. Revisit report/STAR migration entry points only after live-source parity,
+   complete bounded audits and old-producer retirement. Do not migrate history
+   just to make a helper deletable.
+
+Reconciliation evidence: the saved live intensiveListening bundle exactly
+rebuilds from `194bbb53`; submitAttempt from `e6cb5901`; teacherAdmin from
+`2267b364` with `_shared/speaking-lab.js` at `65f48489`. Current source differs
+in exactly one bundled input per function. Relevant regression suites pass.
+Private hashes/input maps remain under `.local/cleanup-release-audit/`; no
+student data, prompts, answers or credentials are in the committed summary.
+
+Vocabulary/catalog JS local-file fallbacks stay under the existing product
+contract. Duplicate content records and the original checkout rebase remain
+separate, owner-scoped work; neither is included in this database repair.
 
 ### Existing product work
 

@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-09-21 — Cleanup acceptance and live/source reconciliation
+
+- Owner completed production acceptance for cleanup phase two and the approved
+  historical due-week repair. Closed the real-account/browser acceptance items.
+- Rebuilt the three differing saved live function packages from their exact
+  historical source provenance and compared their bundle inputs with current
+  source. Each difference is isolated to one later shared-module addition that
+  the target function does not call: Writing Argue mail in intensiveListening,
+  Intensive Listening mail rendering in submitAttempt, and chunked Speaking
+  analysis helpers in teacherAdmin's transitive notification dependency.
+- Relevant Listening, Writing Argue, attempt-email, Speaking notification/rule
+  and Teacher AI Usage suites passed. A fresh read-only download confirmed all
+  three functions remain Active with unchanged code/configuration fingerprints.
+  No deployment or data write was needed; do not redeploy merely to align hashes.
+
+## 2026-09-21 — Approved historical due-week repair (verified)
+
+- Filled only `due_at` on the 37 explicitly reviewed enabled-account assignments,
+  using Shanghai creation dates: weekdays mean the same week, weekends mean the
+  next week, ending Sunday 23:59:59. Thirteen effective due weeks shifted one
+  week later; 24 stayed the same. New-assignment scheduling is unchanged.
+- Kept five deleted/deleting-account rows and three anomalous/source-less rows
+  untouched. Full selected-document readback verified every other assignment
+  field unchanged; no attempts, STARs, memberships or report snapshots were written.
+- Saved private before values and a per-record write journal; used exact
+  stale-value guards with no upsert. No runtime edit or deployment was needed.
+- Updated the remaining cleanup gates; historical compatibility is not yet
+  safe to delete. Existing aggregate audit counts remain dated snapshots.
+
 ## 2026-09-21 — Cleanup phase three: production metadata verification
 
 - Confirmed phase two remains live (`20260921-cleanup-2`); no duplicate static

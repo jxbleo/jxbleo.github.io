@@ -44,14 +44,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 - 2026-09-21 — Phase-three metadata audit found 280 due-week normalization
   candidates (42 open, 196 completed, 42 cancelled) plus three rows without
-  usable source dates. Keep compatibility/backfill; no apply was authorized or
-  performed. Any repair requires a private before/after review and explicit
-  record scope, not an automatic cleanup migration. See Backlog for evidence.
-
-- 2026-09-21 — Cleanup phase two is live; owner/browser acceptance remains open
-  for Dashboard Finished, Replies, STAR wallet, Library progress and IELTS
-  Explain/teacher/history behavior. Prior CUA connection timed out; automated
-  and public-file checks do not replace authenticated browser acceptance.
+  usable source dates. Subsequently, owner-approved 37 enabled-account open
+  rows were repaired and verified (see Done). Keep compatibility/backfill for
+  remaining history; do not apply the rest or infer dates for source-less rows.
+  Original aggregate counts are a pre-repair snapshot, not a new live audit.
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -116,6 +112,40 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-21 — Owner reports completing the requested production acceptance for
+  both the 37-row due-week repair and cleanup phase two: historical due-week
+  placement/state and the real-account Dashboard Finished, Replies, STAR wallet,
+  Library progress and IELTS Explain/teacher/history checks were accepted. No
+  new test submissions were requested. This closes the two browser-acceptance
+  items; it does not authorize unrelated historical migrations.
+
+- 2026-09-21 — Reconciled the three pre-existing live/source function differences
+  offline from exact saved live packages. `intensiveListening` matches commit
+  `194bbb53`; its only current bundle-input difference is later Writing Argue
+  mail support in `argue-notifications`, while this function still calls only
+  the unchanged intensive dispute save path. `submitAttempt` matches `e6cb5901`;
+  its only difference is later Intensive Listening email rendering/policy code,
+  while submitAttempt calls the unchanged BBC/Vocabulary attempt event path.
+  `teacherAdmin` exactly matches `2267b364` with only `_shared/speaking-lab.js`
+  from `65f48489`; later chunked Speaking analysis helpers are not consumed by
+  Teacher's speaking-notification identity projection. Seven relevant suites
+  passed. A final read-only download confirmed all three remain Active and their
+  code/configuration fingerprints are unchanged. These are shared CommonJS bundle
+  side effects, not missing target behavior; no deployment or write is indicated.
+
+- 2026-09-21 — At 22:56 Shanghai, completed the owner's exact 37-row historical
+  due-week repair: Shanghai creation day Mon–Fri -> current week, Sat/Sun ->
+  next week, Sunday 23:59:59. Changed only `assignments.due_at` from null to
+  BSON Date; 13 effective weeks moved one week later, 24 remained unchanged.
+  Two stable preflight reads, private mode-600 before backup, per-row stale-value
+  guards/readback and final full-document comparison passed. All other fields,
+  12 projected account profiles and 8 excluded assignments remained unchanged.
+  Private evidence is in the original `.local/cleanup-release-audit/approved-due-weeks-*`;
+  no impersonation, function/static deployment or other collection writes.
+  Passed private scope/date/CAS tests and seven existing due-week, report,
+  Parent Mode and Dashboard suites. Owner may refresh Teacher View to inspect
+  affected historical weeks; authenticated browser acceptance remains separate.
 
 - 2026-09-21 — Phase-three production metadata audit completed at 17:25 Shanghai:
   two bounded, field-projected passes matched across seven collections. No
