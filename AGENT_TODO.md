@@ -42,6 +42,12 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-21 — Phase-three metadata audit found 280 due-week normalization
+  candidates (42 open, 196 completed, 42 cancelled) plus three rows without
+  usable source dates. Keep compatibility/backfill; no apply was authorized or
+  performed. Any repair requires a private before/after review and explicit
+  record scope, not an automatic cleanup migration. See Backlog for evidence.
+
 - 2026-09-21 — Cleanup phase two is live; owner/browser acceptance remains open
   for Dashboard Finished, Replies, STAR wallet, Library progress and IELTS
   Explain/teacher/history behavior. Prior CUA connection timed out; automated
@@ -110,6 +116,14 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-21 — Phase-three production metadata audit completed at 17:25 Shanghai:
+  two bounded, field-projected passes matched across seven collections. No
+  pending STAR credit/converted-Blue/normalization or active class-membership
+  repair was found; old Listening assignment/track counts are zero. Due-week
+  dependencies remain (see Open). No cloud handler invocation, answer/key reads,
+  database writes or runtime edits. Private aggregate evidence/script remain
+  under the original repo's `.local/cleanup-release-audit/`; no raw records saved.
 
 - 2026-09-21 — Owner-authorized phase-two static release `b14aaf17` published
   through successful COS run `35580962211`. All 45 public files match the tested

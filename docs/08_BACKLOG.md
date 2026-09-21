@@ -19,7 +19,8 @@
 - Keep teacherAdmin repair actions under their existing active-teacher guard.
   A missing UI caller does not make an operational API dead code. Source audit
   below distinguishes recurring repair tools from possible one-time migrations;
-  production completion has not been audited in this cleanup.
+  production metadata was audited below; repair completion and old-client
+  retirement must not be inferred from an action name or a zero candidate count.
 - Dashboard duplicate normal warm-up requests are removed in phase two,
   with pagination retained only as a failure fallback. Keep the authoritative
   full result: bootstrap/pages do not reconstruct self-study, global-best/STAR
@@ -51,12 +52,46 @@
 | Vocabulary/catalog JS fallbacks | `AGENTS.md` explicitly requires local-file loading compatibility | Keep unless the owner deliberately retires that supported use case. |
 
 All five teacher actions were inspected for their default no-apply paths. This
-is source review, not a production dry run or proof of zero pending records.
+table is source review, not a live migration invocation or proof of zero pending records.
 Do not invoke a full-scan action merely because its response exposes a `limit`.
 Any follow-up production audit should first confirm live/source parity and use
 authorized, bounded, read-only queries with aggregate-only output; no student
 answers, identifiers or grading keys should enter the cleanup report. Applying
 a repair, changing permissions, or deleting historical data needs separate scope.
+
+### Phase-three read-only production audit (2026-09-21, 17:25 Shanghai)
+
+Two complete metadata passes, each paged at 100 rows with an explicit upper
+bound, returned identical projected data across seven collections. This is a
+stable observed interval, not a transactional snapshot. The comparison uses
+current source rules; known live/source bundle differences remain unresolved.
+No migration handler, write, account impersonation, answer or grading-key read
+was performed. Only aggregate evidence is retained in the original checkout's
+ignored `.local/cleanup-release-audit/retirement-metadata-audit.json`.
+
+| Scope | Observed result | Cleanup decision |
+| --- | --- | --- |
+| Assignment due weeks | 798 assignments; 282 lack `due_at`. Of these, 279 have a usable fallback date and 3 lack a usable source. One additional existing due date is not normalized. | Keep due-date compatibility and `backfillAssignmentDueWeeks`; 280 proposed updates are not authorization to apply. |
+| Due-week candidates by status | 42 `to_do`, 144 `passed`, 51 `mastered`, 1 `done`, 42 `cancelled` | Do not bulk-normalize completed/cancelled history as a code-cleanup side effect. Review open work separately. |
+| Class/report metadata | 36 active students; zero proposed class creation, profile change, membership change or multiple-active-membership cases | No class repair is indicated by this comparison. |
+| Assignment scope | 206 batches: 27 already scoped, zero promotable legacy batches; 147 partial/mixed-recipient and 32 existing non-legacy-scope batches are skipped | Skips are not automatically faults or missing migrations; do not promote partial or explicitly individual work. |
+| STAR migration | 165 achievements / 83 ledger rows; zero missing Yellow credits, converted Blue rows, unclassified achievements or normalization candidates | No STAR apply is indicated. Keep the repair entry until live-code parity and operational retirement are established. |
+| Old Listening assignments | Zero `assignment_kind: listening`, zero `IL-*` assignment rows, zero assignment-track rows | No row dependency found for this snapshot. Old-client calls and server-source drift still block API retirement; keep active `recordActivity`. |
+
+Safe next steps, without expanding code cleanup into a data migration:
+
+1. Keep all runtime compatibility identified above; there is no new backend
+   deployment in phase three and no reason to redeploy the already-live phase two.
+2. If due-week normalization is requested separately, first confirm the live
+   helper's behavior, prepare a private per-record before/after proposal and
+   backup, and review the 42 open candidates separately from 196 completed and
+   42 cancelled records. Do not infer dates for the three source-less rows.
+3. Apply only explicit owner-approved records with stale-value checks, then
+   compare task grouping/overdue state and immutable history. Do not use an
+   unscoped all-history backfill just to enable deleting a helper.
+4. Only revisit removal of report/STAR migration APIs and empty Listening
+   compatibility after live-source reconciliation and an old-client/call-log
+   retirement window. The two grading repair tools remain operational tools.
 
 ### Existing product work
 

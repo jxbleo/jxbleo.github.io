@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-21 — Cleanup phase three: production metadata verification
+
+- Confirmed phase two remains live (`20260921-cleanup-2`); no duplicate static
+  rollout or CloudBase deployment was performed.
+- Ran two bounded read-only metadata passes across seven existing collections.
+  Found real due-week compatibility dependencies: 280 normalization candidates,
+  including 42 open assignments, plus three records without a usable date source.
+  No dates, statuses, grades, STARs, class membership or history were changed.
+- Found no pending STAR migration or active class/profile repair in the observed
+  stable interval, and no old Listening assignment/track rows. Kept APIs because
+  zero current rows does not prove old-client retirement or live/source parity.
+- Recorded a scoped follow-up plan; did not turn code cleanup into a data repair.
+
 ## 2026-09-21 — Cleanup follow-up audit
 
 - Classified remaining Listening and teacher migration/repair paths against
