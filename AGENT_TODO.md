@@ -42,14 +42,6 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
-- 2026-09-21 — Owner authorized phase-one cleanup publication. All 40 suites,
-  additional Dashboard achievements, release gates and static artifact checks
-  passed again. Six before/after bundles are identical with identifier
-  minification disabled, so retain existing cloud functions and publish only
-  static/source changes. Private cloud preflight/backups are in
-  `.local/cleanup-release-audit/`. Finish COS workflow and live-byte/browser
-  checks; owner will inspect existing records using real student accounts.
-
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -114,6 +106,20 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-21 — Phase-one cleanup is published: release `a787c24b`, COS workflow
+  `35575995706` succeeded. All 45 public entry/assets checked match local release
+  bytes; unversioned index/config also match, and the old prototype, relocated
+  prototype and build manifest URLs return 404. All 40 suites, additional
+  Dashboard achievements, release gates and static boundary checks passed again.
+  Six cloud functions remain Active with unchanged downloaded code, configuration
+  fingerprints and ACL; unauthenticated handler checks all return AUTH_REQUIRED.
+  No cloud redeploy was needed because before/after source bundles are identical
+  with identifier minification disabled. Existing live/main differences are
+  preserved and recorded in Backlog. Post-release browser automation timed out
+  twice, so do not claim authenticated or live visual acceptance. Owner will
+  inspect real-account existing records; no student submission/data mutation was
+  performed. Private evidence/rollback ZIPs: `.local/cleanup-release-audit/`.
 
 - 2026-09-21 — Phase-one repository cleanup completed locally on the isolated
   `codex/project-cleanup` branch: removed 80 unreferenced functions and their

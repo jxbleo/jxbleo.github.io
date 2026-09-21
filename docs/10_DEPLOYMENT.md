@@ -1,6 +1,14 @@
 # 10 Deployment
 
-## Phase-one cleanup publication (2026-09-21)
+## Phase-one cleanup publication (2026-09-21; published)
+
+Release `a787c24b` is live through successful
+[COS workflow 35575995706](https://github.com/jxbleo/jxbleo.github.io/actions/runs/35575995706).
+All 45 checked public files match the tested artifact; unversioned index/config
+also match. Old/relocated prototype and build-manifest URLs return 404. All six
+retained functions are Active with unchanged code, configuration and ACL, and
+reject unauthenticated handler calls. Post-release browser automation timed out;
+the owner's real-account visual/history acceptance remains pending.
 
 Owner authorized static/source publication from `codex/project-cleanup` after
 the 40 test suites, additional Dashboard achievements suite, release gates and

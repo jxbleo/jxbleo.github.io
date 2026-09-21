@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-09-21 — Conservative source cleanup
+## 2026-09-21 — Conservative source cleanup (live)
 
 - Removed 80 unreferenced functions, obsolete Writing entry-dialog state,
   retired My Words action-menu wiring and exclusive old CSS; removed the
@@ -18,6 +18,9 @@
   identical; submitAttempt differs only in minifier naming). No cloud function
   update is needed; retain live code/configuration and publish static/source
   changes only. Live/main bundle differences are a separate reconciliation task.
+- Published release `a787c24b` via successful COS run `35575995706`; 45 public
+  files match tested release bytes and the old prototype is unavailable (404).
+  All six retained functions pass unauthenticated access-boundary checks.
 
 ## 2026-09-21 — Resumable full-coverage Group Discussion analysis (live)
 
