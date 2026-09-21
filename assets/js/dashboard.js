@@ -4732,22 +4732,24 @@
     function prefetchAssignmentPages(kind) {
         var pageState = state.assignmentPages[kind];
         if (!pageState || pageState.loading || !pageState.hasMore || pageState.nextCursor == null) return Promise.resolve();
+        var requestedCursor = pageState.nextCursor;
         pageState.loading = true;
         return window.MrCatCloud.callFunction('getDashboard', {
             action: 'listAssignmentPage',
             kind: kind,
-            cursor: pageState.nextCursor,
+            cursor: requestedCursor,
             page_size: 10
         }).then(function(result) {
-            if (!result || result.success === false) return;
+            if (!result || result.success === false) return false;
             var page = result.page || {};
             mergeAssignmentItems(page.items || []);
             pageState.nextCursor = page.next_cursor == null ? null : Number(page.next_cursor);
             pageState.hasMore = page.has_more === true;
             saveStudentDashboardCache();
-        }).catch(function() {}).then(function() {
+            return Number.isFinite(pageState.nextCursor) && pageState.nextCursor > requestedCursor;
+        }).catch(function() { return false; }).then(function(advanced) {
             pageState.loading = false;
-            if (pageState.hasMore) return prefetchAssignmentPages(kind);
+            if (advanced && pageState.hasMore) return prefetchAssignmentPages(kind);
         });
     }
 
@@ -4774,7 +4776,7 @@
             })
         ]).then(function(results) {
             var dashboard = results[0] || {};
-            if (dashboard.success === false) return;
+            if (!results[0] || dashboard.success === false) return false;
             applyFullDashboard(dashboard);
             var cloudResources = results[1] && results[1].resources || [];
             return loadPublicCatalog().then(function(items) {
@@ -4784,17 +4786,27 @@
                 state.resources = applyLibraryProgress(state.resources, state.libraryProgress);
             }).catch(function() {
                 if (cloudResources.length) state.resources = applyLibraryProgress(cloudResources, state.libraryProgress);
-            }).then(renderStudentDashboardState);
-        }).catch(function() {});
+            }).then(function() {
+                renderStudentDashboardState();
+                return true;
+            });
+        }).catch(function() { return false; });
     }
 
     function warmStudentDashboard() {
         if (studentDashboardWarmPromise) return studentDashboardWarmPromise;
         studentDashboardWarmPromise = prefetchFirstTodoContent()
-            .then(function() { return prefetchAssignmentPages('todo'); })
-            .then(prefetchTeacherReplies)
-            .then(function() { return prefetchAssignmentPages('finished'); })
-            .then(refreshFullStudentDashboard);
+            .then(refreshFullStudentDashboard)
+            .then(function(loaded) {
+                if (loaded) return;
+                // The full result includes self-study, repaired STARs and wallet
+                // history. Use pages only as a fallback, not before overwriting
+                // them with the same full response on every successful startup.
+                return prefetchAssignmentPages('todo')
+                    .then(prefetchTeacherReplies)
+                    .then(function() { return prefetchAssignmentPages('finished'); })
+                    .then(renderStudentDashboardState);
+            });
         return studentDashboardWarmPromise;
     }
 

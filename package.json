@@ -6,7 +6,8 @@
   "scripts": {
     "build:static": "node scripts/build-static-site.js",
     "test:static-build": "node scripts/test-static-build.js",
-    "test:release": "npm run test:static-build && npm run test:student-accounts && npm run test:global-progress && npm run test:parent-mode && npm run test:listening-contracts && npm run test:listening-activity && npm run test:vocabulary-session && npm run test:text-model-policy",
+    "test:dashboard-loading": "node scripts/test-dashboard-loading.js",
+    "test:release": "npm run test:static-build && npm run test:dashboard-loading && npm run test:student-accounts && npm run test:global-progress && npm run test:parent-mode && npm run test:listening-contracts && npm run test:listening-activity && npm run test:vocabulary-session && npm run test:text-model-policy",
     "verify": "node scripts/verify-release.js",
     "verify:release": "node scripts/verify-release.js",
     "test:vocabulary": "node scripts/test-vocabulary-versioning.js",

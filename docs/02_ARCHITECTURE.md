@@ -1,6 +1,6 @@
 # 02 Architecture
 
-## Source cleanup and publication boundary (2026-09-21, local)
+## Source cleanup and publication boundary (2026-09-21)
 
 `scripts/static-site-manifest.json` is the explicit public entry list. The build
 copies only listed root files and asset directories, excluding Speaking source
@@ -11,9 +11,10 @@ the numbered current docs remain authoritative. No runtime dependency was added.
 
 Removed 80 unreferenced functions and their exclusive styles/event wiring.
 Existing cloud action names, authorization, durable jobs and persisted schemas
-are unchanged. Listening's old externally callable activity/assignment paths,
-teacher migrations and Dashboard full-refresh compatibility remain until their
-usage and data prerequisites are verified; see the cleanup backlog.
+are unchanged. Phase one is published. Phase two removes retired IELTS Reading
+Argue dialogs and duplicate Dashboard warm-up requests locally, pending release.
+Listening activity has current callers; teacher migrations and documented
+local-file compatibility remain. See the cleanup backlog for retirement gates.
 
 ## Chunked Group Discussion analysis (2026-09-21, deployed)
 
@@ -353,11 +354,15 @@ those reply bodies remain current-tab memory only and never enter IndexedDB.
 
 First paint does not wait for complete attempts, wallet history, STAR
 provenance, self-study reconstruction, or protected resource merging. A silent
-queue prefetches public data for the first ten actionable To Do items, continues
-the remaining To Do summary pages, hydrates Teacher Replies, and finally runs
-the authoritative full Dashboard/resource refresh. Visible To Do and Finished
-lists append ten rows near their internal scroll edge. Full CloudBase results
-replace cached summaries and explicit logout deletes the Student cache.
+queue prefetches public data for the first ten actionable To Do items, then runs
+the authoritative full Dashboard/resource refresh once. This full response is
+still required for self-study completions, global-best projections, STAR repairs
+and wallet history. Only if it fails does the queue load remaining To Do pages,
+Teacher Replies and Finished pages, preserving bootstrap totals and the partial-
+data flag. A failed or non-advancing page stops that pagination pass. Visible To
+Do and Finished lists still append ten rows near their internal scroll edge.
+Full CloudBase results replace cached summaries and explicit logout deletes the
+Student cache. Existing pagination endpoints remain compatible with old clients.
 
 ## 5. Backend Structure
 

@@ -2,6 +2,14 @@
 
 ## Source cleanup / static publication
 
+- Run `npm run test:dashboard-loading`: successful warm-up avoids duplicate
+  pagination/reply requests while preserving self-study, STAR/wallet, replies
+  and library progress; failed full responses fall back to pages and stalled or
+  failed cursors terminate without looping. Included in `test:release`.
+- Run `npm run test:assignment-schedule`: IELTS Reading retains Explain, teacher
+  answers and historical review but contains no new Argue submission/modal code.
+  Before phase-two acceptance, check those retained controls in the browser and
+  compare Dashboard Finished, Teacher Replies, STAR wallet and Library progress.
 - Run `npm run test:static-build`: an unapproved preview is excluded, private
   Speaking source/templates are excluded, stale output disappears, and a
   missing declared entry fails before replacing the previous artifact.

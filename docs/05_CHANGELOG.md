@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-09-21 — Cleanup phase two (local, not published)
+
+- Removed nine retired IELTS Reading Argue functions, unused attempt state and
+  exclusive modal styles. Kept Explain styling, teacher answer preview and
+  historical dispute feedback; new IELTS Argue was already disabled by policy
+  and trusted backend checks. Corrected stale UI/test expectations accordingly.
+- Dashboard warm-up now tries its authoritative full result before pagination;
+  successful loads no longer fetch pages/replies just to overwrite them. Retained
+  pagination as a failure fallback and stopped retries on failed/stalled cursors.
+  No API, database schema, grading, model or account changes are included.
+- Added executable loading regression coverage to the release gate. Listening's
+  active activity calls, teacher repair tools and local-file JS fallbacks remain.
+- Passed all 41 npm test suites, extra Dashboard achievements, release gates,
+  static build/artifact boundary, syntax and synthetic Explain interaction checks.
+  Browser automation timed out; real-browser phase-two acceptance remains open.
+- Owner reports checking one real student account after phase one with no issue;
+  this is not a claim of full teacher-flow or phase-two production acceptance.
+
 ## 2026-09-21 — Conservative source cleanup (live)
 
 - Removed 80 unreferenced functions, obsolete Writing entry-dialog state,

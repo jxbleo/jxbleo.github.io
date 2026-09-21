@@ -42,6 +42,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Open
 
+- 2026-09-21 — Cleanup phase two is local only: retired IELTS Reading Argue UI
+  removed; Dashboard full-result warm-up runs before pagination (fallback only).
+  All 41 npm test suites, extra Dashboard achievements, release gates, static
+  build/artifact, JS/CSS syntax and synthetic Explain render/reveal/open/close
+  checks passed. CUA connection timed out; real-browser checks of Dashboard and
+  IELTS Explain/teacher/history behavior remain pending. Obtain scoped publication
+  approval before rollout. No cloud/data changes; original checkout untouched.
 
 - 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
   lookup grid rows no longer absorb spare viewport height; phone Account cards
@@ -106,6 +113,10 @@ cp .qa-secrets.example .qa-secrets.local
       delete duplicates without backup and owner approval.
 
 ## Done
+
+- 2026-09-21 — Owner reports inspecting one real student account on phase-one
+  production with no issue. Do not generalize this to all teacher flows or to
+  phase two, which has not been deployed.
 
 - 2026-09-21 — Phase-one cleanup is published: release `a787c24b`, COS workflow
   `35575995706` succeeded. All 45 public entry/assets checked match local release

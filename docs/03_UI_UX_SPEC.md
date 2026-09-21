@@ -2022,9 +2022,11 @@ Shared rules:
 - In the BBC blue render theme, the top lesson tools show `Worksheet` only,
   the exercise body does not show separate `Part 1` / `Part 2` headings, and
   the main submission button reads `Submit`.
-- The BBC and IELTS Reading Argue sent/thanks dialogs must show their Close
+- The BBC Argue sent/thanks dialogs must show their Close
   button outside the thank-you card, centered directly below it, in both
   student mode and teacher preview mode.
+- IELTS Reading has no new Argue dialog. Explain, teacher answer preview and
+  historical dispute feedback remain; retired submission UI is not required.
 - In the `classroom-worksheet` theme, multiple-choice answer, explanation,
   dispute-status, and question-action blocks must span the full question-card
   grid on phone, iPad, and desktop. They must never fall into the narrow

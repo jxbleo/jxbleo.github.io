@@ -963,10 +963,13 @@ function testStudentModalShellMarkup() {
   assert(!vocabularyHtml.includes("if (action === 'close' || event.target === overlay) overlay.remove();"), "Vocabulary results must require their Close action");
   assert(!bbcHtml.includes("if (action === 'close' || event.target === overlay) overlay.remove();"), "BBC results must require their Close action");
   assert(!bbcHtml.includes("if (event.target === modal) closeArgueModal();"), "BBC student Argue must ignore backdrop clicks");
-  const studentArgueStart = ieltsReadingHtml.indexOf("function openStudentArgueModal");
-  const studentArgueEnd = ieltsReadingHtml.indexOf("function renderStudentArgueButton", studentArgueStart);
-  assert(studentArgueStart >= 0 && studentArgueEnd > studentArgueStart);
-  assert(!ieltsReadingHtml.slice(studentArgueStart, studentArgueEnd).includes("event.target === modal"), "IELTS Reading student Argue must ignore backdrop clicks");
+  assert(!ieltsReadingHtml.includes("function openStudentArgueModal"), "IELTS Reading Argue is retired, not a hidden modal contract");
+  assert(!ieltsReadingHtml.includes("function openTeacherArgueModal"), "IELTS teacher preview must not recreate retired Argue dialogs");
+  assert(!ieltsReadingHtml.includes("action: 'submitDispute'"));
+  assert(!ieltsReadingHtml.includes("submitTeacherDispute"));
+  assert(ieltsReadingHtml.includes("function renderExplainButton"), "Removing Argue must retain Explain");
+  assert(ieltsReadingHtml.includes("function renderTeacherAnswers"), "Removing Argue must retain teacher answer review");
+  assert(ieltsReadingHtml.includes("function markHistoryReview"), "Existing historical dispute feedback remains readable");
   assert(!appCss.includes("height: min(620px, 74vh);"));
   assert(!appCss.includes("height: min(590px, 72vh);"));
 }

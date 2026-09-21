@@ -11,18 +11,24 @@
   teacherAdmin and submitAttempt. All six source cleanups preserve executable
   code, so their live functions are intentionally retained. Reconcile these
   existing differences separately before any future function deployment.
-- Retire Listening `recordActivity`, action aliases and assignment-track
-  compatibility only after read-only live data/call-log checks and an old-client
-  cache window. Do not remove historical progress or session evidence.
+- Listening `recordActivity` is still called on unit navigation and audio time
+  updates; it is not dead code. Any retirement of this path, action aliases or
+  assignment-track compatibility requires a separate replacement/dependency
+  audit, read-only live data/call-log checks and an old-client cache window.
+  Do not remove historical progress or session evidence.
 - Retire teacherAdmin backfill/migration actions only after bounded dry runs
   prove completion; retain owner-only repair tooling if still operationally used.
-- Replace Dashboard's final full refresh with a small supplement request only
-  after proving parity for wallet, STAR, library and paginated history.
+- Dashboard duplicate normal warm-up requests are removed locally in phase two,
+  with pagination retained only as a failure fallback. Keep the authoritative
+  full result: bootstrap/pages do not reconstruct self-study, global-best/STAR
+  repairs and wallet history. A new supplement endpoint is not needed for this
+  cleanup. Phase-two publication and browser acceptance remain pending.
 - Remove Vocabulary/catalog JS fallbacks only after explicitly retiring their
   documented local-file compatibility and updating all generators/checks.
-- IELTS Reading Argue renderers lack current callers but still have product and
-  test contracts. Decide whether to wire the feature or retire it; retain the
-  implementation meanwhile rather than treating reference count as proof.
+- IELTS Reading's retired Argue UI is removed locally in phase two after checking
+  the explicit August 12 product policy and backend rejection paths. Stale UI
+  wording and a test-only function expectation are corrected; Explain, teacher
+  preview and historical feedback remain. No historical dispute is deleted.
 - Reconcile the shared checkout's unfinished rebase separately. The cleanup
   is isolated on `codex/project-cleanup`, based on `origin/main` at 2267b364;
   original modified/untracked files were preserved and backed up locally.
