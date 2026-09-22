@@ -3,7 +3,6 @@
 .ielts-speaking-page .speaking-lab-toolbar { display: flex; align-items: center; gap: 12px; }
 .ielts-speaking-page .speaking-back-button { flex: 0 0 42px; }
 .ielts-toolbar-title { flex: 1; min-width: 0; margin: 0; font-size: clamp(1rem, 3vw, 1.35rem); letter-spacing: -.035em; color: #243740; }
-.ielts-identity { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #62747a; font-size: .8rem; }
 .ielts-status { margin: 12px auto; max-width: 920px; color: #62747a; font-size: .9rem; }
 .ielts-status:empty { display: none; }
 .ielts-source-tabs { display: flex; gap: 5px; padding: 5px; border: 1px solid #dce5ea; border-radius: 18px; background: #edf2f5; }
@@ -15,6 +14,10 @@
 .ielts-detail { display: grid; gap: 20px; max-width: 920px; margin: 24px auto 64px; }
 .ielts-detail .speaking-report-card { margin: 0; }
 .ielts-detail h2 { margin: 0 0 20px; font-size: 1.5rem; letter-spacing: -.025em; }
+.ielts-detail .ielts-topic-card-title { color: var(--accent); text-align: center; overflow-wrap: anywhere; }
+.ielts-topic-heading { text-align: center; }
+.ielts-topic-heading .ielts-topic-meta { margin: 0 0 10px; }
+.ielts-topic-heading .ielts-topic-card-title { margin-bottom: 0; }
 .ielts-detail h3 { font-size: 1.08rem; }
 .ielts-detail p, .ielts-detail li { line-height: 1.8; }
 .ielts-topic-meta { color: #637c86; font-size: .82rem; }
@@ -51,7 +54,6 @@
 .ielts-speaking-page button:focus-visible, .ielts-speaking-page summary:focus-visible { outline: 3px solid #83b7f3; outline-offset: 3px; }
 .ielts-speaking-page dialog:not(#individual-response-dialog)::backdrop { background: #23394b55; backdrop-filter: blur(4px); }
 @media (max-width: 650px) {
-  .ielts-identity { max-width: 80px; font-size: .7rem; }
   .ielts-score-grid { grid-template-columns: 1fr; }
   .ielts-score h3 { min-height: 0; }
   .ielts-speaking-page .speaking-lab-toolbar { gap: 8px; }

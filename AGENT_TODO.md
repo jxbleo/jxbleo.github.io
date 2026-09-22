@@ -112,6 +112,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### IELTS topic cards static release — 2026-09-22
+
+- Removed toolbar name and library Part 2 / Part 3 route text; topic detail now
+  has separate topic/source, Part 2 and Part 3 cards with centered green titles.
+- Scoped release retains current main's shared stylesheet versions and all
+  recording/auth/history behavior. UI specification and checklist updated.
+- Passed IELTS core/recorder tests, GitHub publisher contracts, release verification,
+  static build and whitespace checks against current main. Local visual QA remains
+  blocked by browser policy.
+- Publication uses an isolated worktree; no backend deployment or data import.
+
 - 2026-09-21 — Final cleanup implementation: two stable complete production
   metadata passes found zero report-model repairs, zero promotable legacy class
   batches, zero STAR migration candidates and zero Listening assignment/track

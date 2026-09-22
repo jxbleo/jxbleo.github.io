@@ -64,7 +64,7 @@
       $('ielts-topics').innerHTML = '<div class="ielts-empty"><h2>' + (emptyBank ? source === 'seasonal' ? '当季题库 · Coming soon' : '剑雅官方真题 · 待导入' : 'No matching topics') + '</h2><p>' + (emptyBank ? source === 'seasonal' ? '题库更新后会显示在这里。' : '题目整理完成后即可开始练习。' : 'Try a different search or filter.') + '</p></div>';
       return;
     }
-    $('ielts-topics').innerHTML = rows.map(function (set) { return '<button class="speaking-set-card" type="button" data-set="' + esc(set.set_id) + '"><span class="speaking-set-card-leading"><strong>' + esc(set.book || set.year) + '</strong><small>' + (source === 'cambridge' ? 'BOOK' : 'YEAR') + '</small></span><span class="speaking-set-card-copy"><span class="speaking-set-card-meta">' + esc(bankLabel(set)) + '</span><h3>' + esc(set.title) + '</h3><span class="speaking-set-card-route">Part 2 <i aria-hidden="true"></i> Part 3</span></span><span class="speaking-set-card-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button>'; }).join('');
+    $('ielts-topics').innerHTML = rows.map(function (set) { return '<button class="speaking-set-card" type="button" data-set="' + esc(set.set_id) + '"><span class="speaking-set-card-leading"><strong>' + esc(set.book || set.year) + '</strong><small>' + (source === 'cambridge' ? 'BOOK' : 'YEAR') + '</small></span><span class="speaking-set-card-copy"><span class="speaking-set-card-meta">' + esc(bankLabel(set)) + '</span><h3>' + esc(set.title) + '</h3></span><span class="speaking-set-card-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"/></svg></span></button>'; }).join('');
   }
   function updateFilters() {
     var rows = sets.filter(function (set) { return set.source_kind === source; });
@@ -91,7 +91,7 @@
       if (generation !== pageGeneration) return;
       selectedSet = result.set; var set = selectedSet;
       $('ielts-library').hidden = true; $('ielts-detail').hidden = false;
-      $('ielts-detail').innerHTML = '<article class="speaking-report-card"><p class="ielts-topic-meta">' + esc(bankLabel(set)) + '</p><h2>' + esc(set.title) + '</h2><p class="eyebrow accent">PART 2</p><button class="ielts-topic-question" data-question="p2" type="button">' + questionMarkup(set.part_2, true) + '</button></article><article class="speaking-report-card"><h2>Part 3</h2><ol class="ielts-question-list">' + set.part_3.map(function (q) { return '<li><button class="ielts-topic-question" type="button" data-question="' + esc(q.question_id) + '"><small>Question ' + q.order + (q.group ? ' · ' + esc(q.group) : '') + '</small>' + esc(q.text) + '</button></li>'; }).join('') + '</ol>' + (teacher ? '<p class="ielts-muted">Teacher preview · Open History to view student recordings.</p>' : '') + '</article>';
+      $('ielts-detail').innerHTML = '<article class="speaking-report-card ielts-topic-heading"><p class="ielts-topic-meta">' + esc(bankLabel(set)) + '</p><h2 class="ielts-topic-card-title">' + esc(set.title) + '</h2></article><article class="speaking-report-card"><h2 class="ielts-topic-card-title">Part 2</h2><button class="ielts-topic-question" data-question="p2" type="button">' + questionMarkup(set.part_2, true) + '</button></article><article class="speaking-report-card"><h2 class="ielts-topic-card-title">Part 3</h2><ol class="ielts-question-list">' + set.part_3.map(function (q) { return '<li><button class="ielts-topic-question" type="button" data-question="' + esc(q.question_id) + '"><small>Question ' + q.order + (q.group ? ' · ' + esc(q.group) : '') + '</small>' + esc(q.text) + '</button></li>'; }).join('') + '</ol>' + (teacher ? '<p class="ielts-muted">Teacher preview · Open History to view student recordings.</p>' : '') + '</article>';
       status('');
     } catch (error) { if (generation === pageGeneration) status(friendly(error)); }
   }
@@ -356,7 +356,7 @@
   window.addEventListener('pageshow', function (event) { if (event.persisted) startPolling(); });
   auth.getSession().then(async function (session) {
     if (!session || !['student', 'teacher'].includes(session.mode)) { window.location.replace('index.html?return=ielts-speaking-lab.html'); return; }
-    teacher = session.mode === 'teacher'; $('ielts-identity').textContent = session.profile.name || session.profile.student_id;
+    teacher = session.mode === 'teacher';
     $('ielts-student-filter').hidden = !teacher; $('ielts-history').disabled = false; $('ielts-library').hidden = false;
     // History stays available even before the new topic collection is deployed.
     try { await loadLibrary(); } catch (error) { status(friendly(error)); updateFilters(); }

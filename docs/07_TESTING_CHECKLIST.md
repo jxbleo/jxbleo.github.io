@@ -3529,6 +3529,12 @@ Run `node scripts/test-speaking-response-recorder.js` (also in `npm run test:spe
 
 ## IELTS Speaking Lab V1
 
+- Topic layout (2026-09-22): at desktop and mobile widths, verify that the
+  toolbar has no name, library capsules omit the Part 2 / Part 3 footer, and
+  opening a topic shows three separate cards with centered green titles. The
+  first card retains small source book/Test metadata; Part 2 and Part 3 still
+  open their respective recorders with the complete original question content.
+
 Owner-source intake (2026-09-15): verify eight Cambridge 10/11 paired records,
 8 Part 2 prompts and 49 Part 3 questions (C11 Test 4 has seven in the supplied
 HTML). Check source order, closing instructions, stable IDs and absence of Part 1.

@@ -3413,6 +3413,13 @@ Keep keyboard-native selection, visible focus and an inline retry on read errors
 
 ## IELTS Speaking Lab (2026-09-15)
 
+Topic layout revision (2026-09-22): the toolbar omits the profile name. Opening
+one topic shows three separate cards: source book/Test in small type above the
+topic title, Part 2 with its cue-card entry, and Part 3 with its question entries.
+All three card titles are centered and use the existing green accent. Library
+topic capsules omit the redundant Part 2 / Part 3 route line. Recording entry,
+question text, history and report layouts retain their existing behavior.
+
 Independent HKDSE/IELTS Dashboard capsules lead to separate libraries. IELTS
 uses the same full-page native-dialog surface and existing `#individual-response-dialog`
 styles as current DSE Individual Response, with identical dial/ring/icon/footer markup.
