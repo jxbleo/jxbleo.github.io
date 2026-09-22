@@ -1,3 +1,12 @@
+/* Keep available native transcript faces; use a bundled, readable fallback. */
+@font-face {
+    font-family: "Mrcat Transcript";
+    src: url("../fonts/comic-neue/ComicNeue-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
 .speaking-lab-page, .teacher-speaking-main, .teacher-speaking-recorder-dialog {
     --sl-blue: #087cf0;
     --sl-blue-deep: #0067d5;
@@ -1007,7 +1016,7 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-ir-answer-chevron { width: 6px; height: 6px; flex: 0 0 auto; margin-left: auto; margin-right: 2px; border-right: 1.5px solid #7a8a92; border-bottom: 1.5px solid #7a8a92; transform: rotate(45deg); }
 .speaking-ir-answer[open] .speaking-ir-answer-chevron { transform: rotate(225deg); }
 .speaking-ir-answer-manuscript { padding: 0 24px 22px; }
-.speaking-ir-transcription-text { margin: 0; color: #344850; font-family: "Comic Sans MS", "Chalkboard SE", "Comic Sans", cursive; font-size: 0.9375rem; font-style: normal; font-weight: 400; line-height: 1.85; overflow-wrap: anywhere; }
+.speaking-ir-transcription-text { margin: 0; color: #344850; font-family: "Comic Sans MS", "Chalkboard SE", "Comic Sans", "Mrcat Transcript", Arial, sans-serif; font-size: 0.9375rem; font-style: normal; font-weight: 400; line-height: 1.85; overflow-wrap: anywhere; }
 .speaking-ir-answer-word-count { margin: 12px 0 0; color: var(--sl-muted); font-size: 11px; line-height: 1.5; text-align: right; }
 .speaking-ir-answer summary:focus-visible { outline: 2px solid var(--sl-blue-deep); outline-offset: -4px; border-radius: 6px; }
 @media (max-width: 540px) {

@@ -3461,3 +3461,12 @@ switch controls without rendering private content. Successful reading through
 either entry marks the same teacher notification read; failed loading does not.
 
 The teacher reader also preserves current DSE Individual Response IO/VL structured strengths/weaknesses and all three paired Thinking Prompt/5** Exemplars, with legacy single-sample compatibility.
+
+## Transcript font fallback (2026-09-22; approved for release)
+
+Individual Response Your answer transcription keeps its native Comic Sans MS,
+Chalkboard SE and Comic Sans priority, existing size, line height and colour.
+When unavailable, use same-origin Comic Neue Regular rather than generic cursive.
+A font-load failure falls back to Arial/sans-serif. Names, timestamps, Chinese
+feedback and other report prose are unaffected. The new face uses font-display
+swap and is fetched only when selected.

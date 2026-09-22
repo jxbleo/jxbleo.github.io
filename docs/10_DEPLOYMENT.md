@@ -2118,3 +2118,18 @@ playback and real-provider/email end-to-end acceptance on the owner's devices
 remains a follow-up. New ready reports notify; old reports without notification
 intent are not backfilled. Private evidence is under
 `.cloudbase-private/speaking-feedback-release-audit/` in the shared root.
+
+## 2026-09-22 — Speaking transcript font compatibility release
+
+Owner-approved static release only. Publish assets/css/speaking-lab.css,
+assets/fonts/comic-neue/ (unmodified font, license and provenance), and stylesheet
+version 20260922-transcript-font-1 in speaking-lab.html, ielts-speaking-lab.html,
+speaking-review.html and teacher.html. The COS uploader includes font/ttf MIME.
+No cloud function, model or data deployment is needed.
+
+Run the existing Speaking UI contracts, build:static and verify:release; confirm
+the artifact contains the font/license and excludes private content. After the
+main push and successful COS workflow, compare live file bytes and check font
+response MIME, actual embedded font rendering when native fonts are unavailable,
+and readable sans-serif fallback when the font request fails. Desktop browser
+emulation does not replace Android/iOS device acceptance.

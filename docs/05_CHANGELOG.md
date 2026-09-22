@@ -3938,3 +3938,11 @@ recording playback, full analysis and exact report-version links. Publication
 stores a recoverable notification intent; report-based events deduplicate
 retries and preserve existing teacher inbox/read-state rules. Added backend and
 reader regression tests. Frontend and all three required functions are deployed; no real test email was sent. See the verified rollout in `10_DEPLOYMENT.md`.
+
+## 2026-09-22 — Readable Speaking transcript fallback
+
+Replaced the individual transcription generic cursive fallback with bundled
+Comic Neue Regular, keeping the prior native font order and readable sans-serif
+fallback. Updated Speaking stylesheet cache versions and the static uploader
+font MIME type. The owner approved static publication. Existing Speaking UI
+checks pass; real Android visual acceptance remains required.

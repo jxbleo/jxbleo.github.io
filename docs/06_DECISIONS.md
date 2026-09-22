@@ -1749,3 +1749,13 @@ A shared authenticated report reader accepts an immutable report locator, not a
 public share token, so mail never needs embedded private audio or analysis.
 SMTP cannot guarantee exactly-once handoff after a post-send database failure;
 existing transactional claims and bounded retries remain the accepted behavior.
+
+## 2026-09-22 — Bundle a deterministic transcript fallback
+
+Generic cursive can choose an ornate, hard-to-read font on Android. Preserve the
+existing native choices on Apple devices, then use unmodified Comic Neue Regular
+(SIL OFL 1.1) from assets/fonts/comic-neue. The font and license ship together;
+no remote font service, JavaScript browser sniffing or npm dependency is added.
+Use swap plus sans-serif fallback. This preserves the native look where available
+without claiming pixel-identical rendering between platforms. The owner approved
+static publication; the uploader serves the new TTF as font/ttf.
