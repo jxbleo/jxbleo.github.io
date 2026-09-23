@@ -1,5 +1,10 @@
 # Listening: Dictation + Shadowing — Detailed Engineering Implementation Plan
 
+> Historical plan/decision: Shadowing was retired by the owner on 2026-09-23.
+> Dual-mode, recording and scoring requirements below are superseded. Current
+> Dictation behavior and rollout are in docs 01, 02 and 10.
+
+
 > Historical reference, archived 2026-09-21. Deployment status and design choices
 > below describe the original plan, not the current operating contract. Use
 > [the current documentation map](../../../README.md#documentation-map) first.

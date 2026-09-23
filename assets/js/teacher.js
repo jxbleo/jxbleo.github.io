@@ -4569,7 +4569,7 @@
             var context = item.practice_context === 'assignment' ? 'Assigned' : item.practice_context === 'review' ? 'Review' : 'Self study';
             return '<article class="intensive-notification-event">' +
                 '<div class="intensive-notification-event-head"><strong>' + escapeHtml(phase) + '</strong><span class="muted">' + escapeHtml(formatDateTime(item.occurred_at)) + '</span></div>' +
-                '<p class="muted">Listening · ' + escapeHtml(item.practice_track === 'shadowing' ? 'Shadowing' : 'Dictation') + ' · ' + escapeHtml(context) + '</p>' +
+                '<p class="muted">Listening · ' + escapeHtml(item.practice_track === 'dictation' ? 'Dictation' : 'Archived practice') + ' · ' + escapeHtml(context) + '</p>' +
                 '<div class="activity-session-summary"><strong>' + escapeHtml(formatPercent(item.completion_percentage)) + '</strong><span>Completion</span>' +
                 '<span>' + escapeHtml(Number(item.completed_unit_count) || 0) + ' units · ' + escapeHtml(Number(item.new_completed_unit_count) || 0) + ' new</span>' +
                 '<span>' + escapeHtml(Number(item.independent_unit_count) || 0) + ' independent · ' + escapeHtml(Number(item.assisted_unit_count) || 0) + ' with answers</span>' +
@@ -7193,7 +7193,7 @@
         var name = studentDisplayName(student) || event.student_name || event.student_id || 'Student';
         var phase = event.session_phase === 'completed' ? 'completed' : event.session_phase === 'paused' ? 'paused' : 'started';
         var title = event.set_title || setTitleFor(event.set_id) || event.set_id || 'Intensive Listening';
-        var mode = event.practice_track === 'shadowing' ? 'Shadowing' : 'Dictation';
+        var mode = event.practice_track === 'dictation' ? 'Dictation' : 'Archived practice';
         var effectiveTime = event.effective_time_label || formatEffectiveLearningTime(event.effective_seconds);
         return {
             type: 'intensive_listening',

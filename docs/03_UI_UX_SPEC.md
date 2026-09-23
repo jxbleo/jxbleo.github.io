@@ -3283,44 +3283,19 @@ There is no Remove button. The first tap on a chip turns it red and reveals a
 small corner `×`; tapping that armed chip again opens a glass confirmation with
 Keep and Remove actions. The count and `Add <n> items` action remain fixed around
 the internally scrolling chip area so OCR text remains visible on long articles.
-### Listening V2 interaction surface
+### Dictation-only Listening surface (2026-09-22)
 
-The visible product language is `Listening`. The ordinary Library keeps its
-existing listening-comprehension card and one Listening action; track choice
-happens only in the dedicated Listening surface. Its floating glass toolbar
-centres a `Dictation` or `Shadowing` button with a down arrow; that account-wide
-choice has highest priority and immediately changes every visible material card,
-its mode-specific Continue state, and every subsequently opened practice. There
-is no mode chooser page and card activation has no confirmation dialog.
+Listening Library cards open Dictation directly. The header displays a static
+Dictation label, with no dropdown, mode switch or switch-confirmation modal.
+Practice keeps Back, Dictation progress and the static label. Completion opens
+as soon as Dictation is complete; it never waits for another track. Teacher
+Listening keeps Details and Transcript & Units; there is no mode-preview tab.
+Recording, microphone permissions, voice replay and pronunciation scores are
+removed. Existing contextual BBC/IELTS links still open the same practice page.
 
-Practice reuses the Writing/Speaking light spatial-gradient, restrained glass,
-rounded surfaces, SF system typography, 44px actions and press-scale motion.
-Listening keeps teal as its accent rather than inventing a separate dark theme.
-The toolbar is exactly Back / current-mode progress / mode switch. The material
-heading contains the optional linked comprehension exercise instead of crowding
-the toolbar.
-
-Shadowing shows one responsive canonical unit at a time with previous/next
-navigation. The upper media area carries a compact headphone/listen-count badge.
-After reveal, ordinary words remain visually neutral; uncertain words use a
-yellow dotted underline and incorrect/missing words use a red solid underline,
-so colour is not the only signal. The primary result is the latest integer
-score; a differing historical Best is secondary. Under 80 uses `Try Again` and
-`Listen Again`; session audio uses `Replay My Voice` / `Stop Replay`. `Thinking`
-is the sole scoring-wait copy. A qualified current take renders the result and a
-visible 1.5-second depletion line before advancing; the first page activation
-cancels and is consumed. Video material keeps the picture playing silently
-during the student take. Controls are keyboard reachable, use live status text,
-preserve 44px touch targets, respect reduced motion/transparency/contrast and
-safe areas, and collapse to one column on narrow layouts. Pre-reveal cards never
-contain transcript, reference words, or word-state feedback.
-
-Only scored `dictation` units appear in the learner Shadowing pager. The disabled
-microphone action remains visibly named `Record take` before the first complete
-listen rather than disguising itself as another Listen action. A backend segment
-error, media/network failure, and browser autoplay block use distinct status
-copy; an autoplay retry reuses the already-issued listen token and performs the
-second `play()` directly from the student's tap.
+The existing teal palette, glass surfaces, responsive spacing and accessible
+playback/word controls remain. Historical non-Dictation learning time is labelled
+Archived practice in calendar/report metadata; new practice links open Dictation.
 
 Dictation preserves one-word slots and keyboard behaviour. Checked results over
 50% may restore both correct and wrong slot state on another device; unchecked

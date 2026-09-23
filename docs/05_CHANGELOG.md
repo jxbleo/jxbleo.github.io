@@ -3946,3 +3946,17 @@ Comic Neue Regular, keeping the prior native font order and readable sans-serif
 fallback. Updated Speaking stylesheet cache versions and the static uploader
 font MIME type. The owner approved static publication. Existing Speaking UI
 checks pass; real Android visual acceptance remains required.
+
+## 2026-09-23 — Retire Listening Shadowing
+
+- Listening Library and practice now open Dictation directly; remove mode menus,
+  recording/replay/scoring controls, completion dependencies and teacher previews.
+- Extract canonical material normalization into `intensiveListening/material.js`;
+  remove Shadowing gateway, Tencent adapter, quota/upload paths and maintenance
+  function source/config. Imports and authoring publish Dictation only.
+- Remove retired-progress reads from catalog and timer paths; preserve historical
+  learning time under archived metadata, Dictation grading/Argue and audit rows.
+- Update regression coverage and current docs; earlier dual-mode plans/ADR are
+  historical. Six changed cloud functions were deployed with verified code and
+  unchanged configuration; the obsolete timer/function were removed after a
+  zero-pending-audio audit. Historical collections remain intact.

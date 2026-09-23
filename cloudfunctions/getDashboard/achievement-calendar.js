@@ -176,7 +176,7 @@ function buildAchievementCalendar({ attempts = [], sets = [], compositions = [],
     if (row.effective_seconds < 60 || !row.date) return;
     const set = setMap.get(text(row.set_id || row.material_id)) || setMap.get(text(row.material_id)) || {};
     const setId = text(row.set_id || row.material_id);
-    const mode = ["dictation", "shadowing"].includes(row.mode) ? row.mode : "dictation";
+    const mode = row.mode === "dictation" ? "dictation" : "archived";
     items.push({
       achievement_key: `listening:${row.date}:${mode}:${text(row.material_id || setId)}`,
       date: row.date,
@@ -184,10 +184,10 @@ function buildAchievementCalendar({ attempts = [], sets = [], compositions = [],
       set_id: setId,
       mode,
       title: exerciseTitle(set, { set_id: setId, resource_title: row.material_title || set.title }),
-      detail: `Listening · ${mode === "shadowing" ? "Shadowing" : "Dictation"}`,
+      detail: `Listening · ${mode === "dictation" ? "Dictation" : "Archived practice"}`,
       result: learningActivity.formatEffectiveTime(row.effective_seconds),
       effective_seconds: row.effective_seconds,
-      open_href: `intensive-listening.html?set=${encodeURIComponent(setId)}&mode=${encodeURIComponent(mode)}`,
+      open_href: `intensive-listening.html?set=${encodeURIComponent(setId)}&mode=dictation`,
       percentage: null,
       completed_at: row.date,
     });

@@ -514,16 +514,16 @@ Scan Words is private student activity, not canonical content. Processed
 photos, OCR, marks, and candidates remain in ADMINONLY scan collections and are
 never imported into `content/`, public `data/`, or grading keys. Only reviewed
 vocabulary and safe sentence provenance cross the existing My Words boundary.
-### Listening V2 source intake
+### Listening Dictation source intake (2026-09-22)
 
-The importer accepts `schemaVersion: 2` sources with explicit `tracks`.
-Dictation slots may carry private answers/accepted variants; Shadowing segments
-may carry stable reference words (maximum 30 scored words). It writes V2 track
-metadata to ignored private import rows and keeps transcript/reference text out
-of public `data/`. Review both track counts and every Shadowing segment before
-owner-gated import.
+The importer accepts reviewed Dictation units and legacy explicit Dictation
+tracks. Only Dictation contributes training counts; no recording-reference or
+scoring metadata is generated. Preserve context-only/skip units, source timings
+and private answers. Existing schema-2 files may contain retired tracks; these
+are ignored. Reject a material with no Dictation units. Cloud import remains
+owner-gated and full transcripts never enter public `data/`.
 
-## IELTS Speaking owner-source intake (2026-09-15)
+## IELTS Speaking owner-source## IELTS Speaking owner-source intake (2026-09-15)
 
 `content/speaking/ielts-source-index.json` records research/acquisition status,
 not a ready question corpus. Keep complete owner-supplied PDFs/text and normalized

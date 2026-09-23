@@ -1724,7 +1724,8 @@ at `0 15 */6 * * * *`; the handler accepts only its trusted SCF timer source and
 exact trigger name, or the private token fallback. Static Hosting received all
 1,300 generated files, and critical live-object ETags matched their local MD5s.
 
-Shadowing scoring remains fail-closed: do not set
+Historical rollout note (superseded by retirement below): scoring remained
+fail-closed; do not set
 `LISTENING_SHADOWING_SCORING_ENABLED=true` or approve the private
 `listening_shadowing_score_policy` until representative real-audio benchmarking
 has been reviewed by the owner and Tencent SOE-N access is confirmed. No
@@ -1754,9 +1755,9 @@ Commit `da54bd3a` was then published by successful GitHub Pages run
 and single-part ETags for `intensive-listening-library.html`,
 `intensive-listening.html`, `assets/js/learning-activity.js`, and
 `dashboard.html` matched the release files exactly. Smoke-test
-with a dedicated student: Library preference, both mode resumes, >50% Dictation
-restore, one complete Shadowing listen, microphone denial/record/replay, 80-point
-auto-advance cancellation, 20-second idle, three-minute close, and calendar time.
+with a dedicated student: direct Dictation entry/resume, >50% checked-answer
+restore, answer reveal/Argue, completion/restart, 20-second idle, three-minute
+close, and calendar time.
 Rollback may restore prior static/functions but must retain the activity
 collection and accepted session rows as permanent learning history.
 
@@ -2133,3 +2134,22 @@ main push and successful COS workflow, compare live file bytes and check font
 response MIME, actual embedded font rendering when native fonts are unavailable,
 and readable sans-serif fallback when the font request fails. Desktop browser
 emulation does not replace Android/iOS device acceptance.
+
+### Shadowing retirement release (2026-09-23; deployed)
+
+The owner authorized this release. Six changed functions were deployed code-only:
+`intensiveListening`, `teacherAdmin`, `sendTeacherAttemptEmails`, `getDashboard`,
+`learningReports`, and `generateLearningReports`. Each returned to Active with
+its previous runtime, handler, timeout, memory, environment, timer and other
+configuration unchanged; the downloaded live ZIP matched the release package.
+`parentMode` was packaged and checked but its ZIP was identical to the prior
+live version, so no unnecessary update was made.
+
+The `listening_shadowing_takes` read-only preflight found zero records and zero
+pending temporary audio. The `listeningMaintenanceEvery6Hours` trigger and
+`listeningMaintenance` function were deleted after the new gateway stopped old
+recording/scoring routes. Historical collections and learning-time rows were
+preserved. The static release removes the obsolete Shadowing JS/CSS objects;
+legacy mode URLs open Dictation. Private preflight backups and verification
+records are in `.cloudbase-private/shadowing-retirement-20260923/` of the
+release checkout.

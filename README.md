@@ -101,10 +101,10 @@ git diff --check
 `.cloudbase-private/`. Do not commit that directory.
 
 
-Listening accepts a self-contained private JSON with independent `dictation`
-and `shadowing` tracks; legacy `listen_only` input remains compatible as
-`context_only`. The importer keeps transcripts, answer slots, and Shadowing
-reference words in private output; only metadata enters the static site.
+Listening accepts a self-contained private JSON with reviewed Dictation units.
+Legacy `listen_only` input remains compatible as `context_only`; schema-2
+Dictation tracks remain readable. The importer keeps transcripts and answer
+slots in private output; only metadata enters the static site.
 Teacher-approved Provided Words can later be exported back to current JSON.
 
 The release scripts are owner-gated. They verify, package, and generate a local
@@ -213,15 +213,15 @@ and [docs/11_AGENT_TROUBLESHOOTING.md](docs/11_AGENT_TROUBLESHOOTING.md).
 
 Listening is a separate authenticated student workspace at
 intensive-listening-library.html. It lists only safe metadata and server
-progress; Dictation and Shadowing are selected only after opening a material,
-and private transcript material remains behind the intensiveListening function.
+Dictation progress. Materials open directly in Dictation; private transcripts
+remain behind the intensiveListening function. Shadowing has been retired.
 Dashboard capsules and linked BBC/IELTS entry points preserve same-origin
 returns. Run the focused contracts with:
 
 ~~~bash
 npm run test:intensive-listening-library
-npm run test:listening-shadowing
-npm run test:listening-shadowing-provider
+npm run test:listening-contracts
+npm run test:listening-activity
 npm run test:listening-authoring
 ~~~
 

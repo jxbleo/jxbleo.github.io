@@ -1616,49 +1616,30 @@ The `students` profile uses top-level operational fields
 server-owned, not teacher-editable. Permanent vocabulary `saved_examples` may
 retain bounded `context_token_ranges`, but vocabulary items never contain scan
 file IDs, URLs, or full OCR pages.
-## Listening V2 collections (ADMINONLY)
+## Listening authoring and retired collections (ADMINONLY)
 
-`intensive_listening_materials` keeps existing private Dictation fields and may
-add `schema_version: 2`, `media`, `transcript_revision`, and explicit
-`tracks.dictation` / `tracks.shadowing` rows with stable `segment_id`, timing,
-practice mode, and track revision. Shadowing reference text/words are private.
-`listening_material_drafts` keeps one private top-level teacher draft per
-`material_id`. Its `draft_revision` is an optimistic concurrency counter and
-`base_publication_revision` prevents a stale draft replacing a newer published
-material. Draft saves never mutate or hide the learner-visible record.
+`intensive_listening_materials` stores schema-3 canonical `units`, private slots,
+media and content revision. Legacy schema-1 units and schema-2 Dictation tracks
+remain readable without a migration. New drafts, publication audit snapshots,
+exports and imports contain only Dictation metadata.
 
-`listening_material_history` is private immutable publication audit. One row
-per material publication revision stores the teacher, timestamp, impact
-(`dictation|shadowing|both|metadata`), and bounded private before/after material
-snapshots. Students never query either authoring collection.
+`listening_material_drafts` stores one private draft per material with optimistic
+`draft_revision` and `base_publication_revision`. `listening_material_history`
+retains immutable publication snapshots; new impact values are `dictation` or
+`metadata`. Historical impact values are not rewritten.
 
-`listening_shadowing_progress` is unique by student + material + shared content
-revision and stores the account reveal threshold snapshot plus per-segment
-complete-listen count, transcript reveal state, monotonic
-`best_score`/`best_take_id`, latest `latest_score`/`latest_take_id`/
-`latest_word_states`, qualified/assisted/independent flags, and bounded
-pending/completed server play tokens. Public projections omit private word
-states until that segment's transcript is revealed. The student profile stores
-only allowlisted `listening_mode_preference: dictation|shadowing` and
-`listening_transcript_reveal_threshold: 1|2|3|5|off` preferences.
-`listening_shadowing_takes` is immutable attempt
-history with owner/material/segment/revision hashes, idempotent `client_take_id`,
-private upload path and registered `file_id`, validation/provider status,
-product score, private word states, and delete-after timestamp. A conclusive
-take sets `delete_after` immediately and records `audio_deleted_at` after direct
-private-file deletion; maintenance retries only when that deletion did not
-succeed. The same
-collection contains one non-attempt student lock document used only to enforce
-the single in-flight take invariant. `listening_shadowing_usage` records one
-billable provider boundary with stable take/reference/audio/policy/provider
-revisions plus Shanghai `usage_day` and `billable_claimed` for quota enforcement.
-`listening_assignment_tracks` is an empty ADMINONLY collection left from the
-earlier V2 rollout; the production runtime no longer reads or writes it. New
-Intensive Listening work is self-study only and neither the browser nor server
-creates assignment-track or parent Assignment rows. The collection was not
-dropped as part of code cleanup, and no historical progress was deleted.
+As of 2026-09-22, `listening_shadowing_progress`, `listening_shadowing_takes`,
+`listening_shadowing_usage`, `listening_assignment_tracks`, old score policies
+and student mode/transcript-reveal preferences are dormant historical data.
+Runtime code does not read or write the retired scoring collections or preference
+fields. Keep all existing collections ADMINONLY; this code change deletes no
+records, audio objects, accepted learning time or published reports.
 
-`learning_activity_sessions` is a mixed-document ADMINONLY collection. Session
+New learning sessions use only `practice_mode: dictation`. Calendar/report
+projections retain retired-mode seconds under `archived`; stored source rows
+and immutable published snapshots are unchanged.
+
+`learning_activity_sessions` is a mixed-document`learning_activity_sessions` is a mixed-document ADMINONLY collection. Session
 rows use immutable `session_id`, authenticated `student_uid`, safe student ID
 snapshot, `activity_type: listening`, material/set ID, `practice_mode`, content
 revision, active/paused/closed status and server lifecycle timestamps. Accepted

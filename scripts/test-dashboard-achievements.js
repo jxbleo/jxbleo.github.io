@@ -148,8 +148,8 @@ assert.strictEqual(calendar.days[1].items[0].assignment_id, null, "self-study na
 assert.strictEqual(calendar.days[1].items[0].set_id, "VOCAB-01");
 assert.strictEqual(calendar.days[1].items[1].composition_id, "essay", "writing achievements should reopen the owned composition");
 assert.deepStrictEqual(calendar.days[1].items.map((item) => item.type), ["vocabulary", "writing"]);
-assert.deepStrictEqual(calendar.days[2].items.map((item) => item.mode), ["dictation", "shadowing"]);
-assert.strictEqual(calendar.days[2].items[0].detail, "Listening · Dictation");
+assert.deepStrictEqual(calendar.days[2].items.map((item) => item.mode), ["archived", "dictation"]);
+assert.strictEqual(calendar.days[2].items[0].detail, "Listening · Archived practice");
 assert.strictEqual(calendar.days[2].items[0].result, "1 min");
 assert.strictEqual(calendar.days[2].items[0].open_href, "intensive-listening.html?set=IL-2601&mode=dictation");
 

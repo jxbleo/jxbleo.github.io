@@ -87,7 +87,7 @@ function safeProgress(material, progress, service) {
   };
 }
 
-function safeCatalogItem(set, material, progress, assignment, linkedPractice, service, shadowingProgress) {
+function safeCatalogItem(set, material, progress, assignment, linkedPractice, service) {
   const metadata = { ...fallbackSourceMetadata(set || {}), ...fallbackSourceMetadata(material || {}) };
   const materialId = text(material && (material.material_id || material.set_id)) || text(set && set.set_id);
   const setId = text(set && set.set_id) || materialId;
@@ -98,11 +98,8 @@ function safeCatalogItem(set, material, progress, assignment, linkedPractice, se
   const dictationSegments = normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.dictation && Array.isArray(normalizedTracks.tracks.dictation.segments)
     ? normalizedTracks.tracks.dictation.segments.filter((item) => String(item.practice_mode || "dictation") === "dictation")
     : units.filter((unit) => String(unit && unit.practice_mode || "dictation") === "dictation");
-  const shadowingSegments = normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.shadowing && Array.isArray(normalizedTracks.tracks.shadowing.segments)
-    ? normalizedTracks.tracks.shadowing.segments.filter((item) => String(item.practice_mode || "dictation") === "dictation")
-    : dictationSegments;
   const dictationUnitCount = dictationSegments.length;
-  const sequenceUnitCount = units.length || dictationSegments.length || shadowingSegments.length;
+  const sequenceUnitCount = units.length || dictationSegments.length;
   const safe = safeProgress(material, progress, service);
   const output = {
     set_id: setId,
@@ -129,13 +126,6 @@ function safeCatalogItem(set, material, progress, assignment, linkedPractice, se
         completed_count: safe.completed_count,
         percentage: safe.percentage,
       },
-      shadowing: {
-        enabled: Boolean(normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.shadowing && normalizedTracks.tracks.shadowing.enabled),
-        segment_count: shadowingSegments.length,
-        completed_count: Number(shadowingProgress && shadowingProgress.qualified_segment_count) || 0,
-        percentage: Number(shadowingProgress && shadowingProgress.percentage) || 0,
-        updated_at: shadowingProgress && shadowingProgress.updated_at || null,
-      },
     },
     modes: {
       dictation: {
@@ -143,13 +133,6 @@ function safeCatalogItem(set, material, progress, assignment, linkedPractice, se
         completed_count: safe.completed_count,
         segment_count: dictationSegments.length,
         percentage: safe.percentage,
-      },
-      shadowing: {
-        enabled: Boolean(normalizedTracks && normalizedTracks.tracks && normalizedTracks.tracks.shadowing && normalizedTracks.tracks.shadowing.enabled),
-        completed_count: Number(shadowingProgress && shadowingProgress.qualified_segment_count) || 0,
-        segment_count: shadowingSegments.length,
-        percentage: Number(shadowingProgress && shadowingProgress.percentage) || 0,
-        updated_at: shadowingProgress && shadowingProgress.updated_at || null,
       },
     },
   };
@@ -228,8 +211,8 @@ function buildSessionEvent({ student, material, record, sessionId, phase, occurr
     assignment_id: text(assignmentId) || null,
     thread_key: text(threadKey) || activityThreadKey(student && student.auth_uid, assignmentId, material && (material.set_id || material.material_id), practiceTrack),
     mode: "intensive_listening",
-    practice_track: ["dictation", "shadowing"].includes(text(practiceTrack)) ? text(practiceTrack) : "dictation",
-    notification_label: `Listening · ${text(practiceTrack) === "shadowing" ? "Shadowing" : "Dictation"}`,
+    practice_track: "dictation",
+    notification_label: "Listening · Dictation",
     delivery_policy: "intensive_listening_immediate",
     practice_context: text(practiceContext) || "self_study",
     occurred_at: occurred,
@@ -269,7 +252,7 @@ function normalizeBellItem(event, student = {}) {
     activity_id: text(row.event_id || row._id),
     activity_type: "intensive_listening",
     practice_track: text(row.practice_track) || "dictation",
-    notification_label: text(row.notification_label) || `Listening · ${text(row.practice_track) === "shadowing" ? "Shadowing" : "Dictation"}`,
+    notification_label: text(row.notification_label) || "Listening",
     thread_key: text(row.thread_key),
     student_uid: text(row.student_uid),
     student_id: text(student.student_id || row.student_id_snapshot),

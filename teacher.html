@@ -10,13 +10,13 @@
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
     <link rel="stylesheet" href="assets/css/app.css?v=20260921-cleanup-1">
-    <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
+    <link rel="stylesheet" href="assets/css/reports.css?v=20260922-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260810-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
     <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260922-transcript-font-1">
     <link rel="stylesheet" href="assets/css/speaking-discussion-recorder.css?v=20260913-speaking-center-1">
     <link rel="stylesheet" href="assets/css/voiceprint-success.css?v=20260912-1">
-    <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260905-2">
+    <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260922-1">
     <link rel="stylesheet" href="assets/css/teacher-ai-usage.css?v=20260916-1">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
@@ -360,16 +360,15 @@
 
                 <section class="dashboard-view" id="view-listening" hidden>
                     <section class="teacher-listening-main" aria-labelledby="teacher-listening-title">
-                        <header class="teacher-listening-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1 id="teacher-listening-title">Listening</h1><p>Review one canonical transcript and use its units for both Dictation and Shadowing.</p></div><button class="primary-button" id="teacher-listening-new" type="button">New material</button></header>
+                        <header class="teacher-listening-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1 id="teacher-listening-title">Listening</h1><p>Review one canonical transcript and use its units for Dictation.</p></div><button class="primary-button" id="teacher-listening-new" type="button">New material</button></header>
                         <p class="teacher-listening-message" id="teacher-listening-message" role="status" aria-live="polite"></p>
                         <div class="teacher-listening-layout">
                             <section class="teacher-listening-material-list" id="teacher-listening-material-list" aria-label="Listening materials"><div class="empty-card">Loading Listening materials…</div></section>
                             <section class="teacher-listening-editor" id="teacher-listening-editor" hidden aria-labelledby="teacher-listening-editor-title">
                                 <div class="teacher-listening-editor-head"><div><p class="eyebrow accent">MATERIAL EDITOR</p><h2 id="teacher-listening-editor-title">New material</h2></div><span class="teacher-listening-status" id="teacher-listening-status">Draft</span></div>
-                                <div class="teacher-listening-editor-tabs" role="tablist" aria-label="Listening editor sections"><button class="is-active" type="button" data-listening-editor-tab="common" role="tab">Details</button><button type="button" data-listening-editor-tab="dictation" role="tab">Transcript &amp; Units</button><button type="button" data-listening-editor-tab="shadowing" role="tab">Mode previews</button></div>
+                                <div class="teacher-listening-editor-tabs" role="tablist" aria-label="Listening editor sections"><button class="is-active" type="button" data-listening-editor-tab="common" role="tab">Details</button><button type="button" data-listening-editor-tab="dictation" role="tab">Transcript &amp; Units</button></div>
                                 <div class="teacher-listening-editor-panel is-active" data-listening-editor-panel="common"><div class="teacher-listening-fields"><label>Material ID<input id="teacher-listening-id" placeholder="IL-BBC-260905" autocomplete="off"></label><label>Title<input id="teacher-listening-title" placeholder="A focused listening lesson"></label><label>Source label<input id="teacher-listening-source" placeholder="BBC"></label><label>Series label<input id="teacher-listening-series" placeholder="BBC 6 Minute English"></label><label>Media type<select id="teacher-listening-media-kind"><option value="audio">Audio</option><option value="video">Video</option></select></label><label>Audio or video URL<input id="teacher-listening-media" placeholder="assets/audio/example.mp3" inputmode="url"></label><label>Content revision<input id="teacher-listening-revision" value="1"></label></div></div>
-                                <div class="teacher-listening-editor-panel" data-listening-editor-panel="dictation" hidden><div class="teacher-listening-track-head"><div><strong>Canonical transcript &amp; units</strong><p>Edit this reviewed source once. Dictation answer slots stay private; Shadowing derives its reference words from the same text.</p></div><div class="teacher-listening-track-tools"><label class="teacher-listening-track-toggle"><input id="teacher-listening-dictation-enabled" type="checkbox" data-listening-track-enabled="dictation" checked><span>Dictation enabled</span></label><button class="outline-button" type="button" data-listening-add-segment="dictation">Add unit</button></div></div><div class="teacher-listening-segment-list" id="teacher-listening-dictation-rows"></div><textarea id="teacher-listening-dictation" hidden></textarea></div>
-                                <div class="teacher-listening-editor-panel" data-listening-editor-panel="shadowing" hidden><div class="teacher-listening-track-head"><div><strong>Dictation &amp; Shadowing previews</strong><p>Both modes use the canonical units above. Shadowing is paragraph-scored, with a maximum of 120 reference words per scored unit.</p></div><div class="teacher-listening-track-tools"><label class="teacher-listening-track-toggle"><input id="teacher-listening-shadowing-enabled" type="checkbox" data-listening-track-enabled="shadowing" checked><span>Shadowing enabled</span></label></div></div><div class="teacher-listening-segment-list" id="teacher-listening-shadowing-rows"></div><textarea id="teacher-listening-shadowing" hidden></textarea></div>
+                                <div class="teacher-listening-editor-panel" data-listening-editor-panel="dictation" hidden><div class="teacher-listening-track-head"><div><strong>Canonical transcript &amp; units</strong><p>Edit the reviewed transcript and timing. Dictation answer slots stay private.</p></div><div class="teacher-listening-track-tools"><label class="teacher-listening-track-toggle"><input id="teacher-listening-dictation-enabled" type="checkbox" data-listening-track-enabled="dictation" checked><span>Dictation enabled</span></label><button class="outline-button" type="button" data-listening-add-segment="dictation">Add unit</button></div></div><div class="teacher-listening-segment-list" id="teacher-listening-dictation-rows"></div><textarea id="teacher-listening-dictation" hidden></textarea></div>
                                 <div class="teacher-listening-editor-actions"><button class="outline-button" id="teacher-listening-validate" type="button">Validate</button><button class="outline-button" id="teacher-listening-preview" type="button">Preview</button><button class="outline-button teacher-listening-hide" id="teacher-listening-hide" type="button" hidden>Hide</button><button class="primary-button" id="teacher-listening-save" type="button">Save draft</button><button class="primary-button" id="teacher-listening-publish" type="button">Publish</button></div>
                                 <pre class="teacher-listening-validation" id="teacher-listening-validation" aria-live="polite"></pre>
                             </section>
@@ -401,7 +400,7 @@
                         </div>
                         <div class="ai-usage-footer"><button type="button" class="outline-button" id="ai-usage-more" hidden>Load 30 more</button></div>
                         <p class="ai-usage-comparison" id="ai-usage-comparison" hidden></p>
-                        <details class="ai-usage-notes"><summary>About these numbers</summary><p>Estimates are API value before free quota, not an invoice. Recorded cached input is discounted. Beijing prices checked <span id="ai-usage-pricing-date">2026-09-16</span>; Plus includes the current limited-time discount. <a href="https://help.aliyun.com/zh/model-studio/model-pricing" target="_blank" rel="noopener noreferrer">Official pricing</a></p><p>Retries are separate calls. Scan Words shows each page task’s recorded total. Legacy tasks and missing usage stay visible as unknown, never zero. Group speaking is attributed to the account that created the discussion, not split between participants.</p><p>Speech transcription is listed without a Token price. Voiceprints, Shadowing scoring, external calls and unrecorded historical calls are outside this view. Filtering changes all four summaries; partial loading is marked until history is complete.</p></details>
+                        <details class="ai-usage-notes"><summary>About these numbers</summary><p>Estimates are API value before free quota, not an invoice. Recorded cached input is discounted. Beijing prices checked <span id="ai-usage-pricing-date">2026-09-16</span>; Plus includes the current limited-time discount. <a href="https://help.aliyun.com/zh/model-studio/model-pricing" target="_blank" rel="noopener noreferrer">Official pricing</a></p><p>Retries are separate calls. Scan Words shows each page task’s recorded total. Legacy tasks and missing usage stay visible as unknown, never zero. Group speaking is attributed to the account that created the discussion, not split between participants.</p><p>Speech transcription is listed without a Token price. Voiceprints, external calls and unrecorded historical calls are outside this view. Filtering changes all four summaries; partial loading is marked until history is complete.</p></details>
                     </section>
                 </section>
 
@@ -531,8 +530,8 @@
     <script src="assets/js/auth.js?v=20260911-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher-ai-usage.js?v=20260921-1"></script>
-    <script src="assets/js/teacher.js?v=20260921-cleanup-1"></script>
-    <script src="assets/js/teacher-listening.js?v=20260907-1"></script>
+    <script src="assets/js/teacher.js?v=20260922-1"></script>
+    <script src="assets/js/teacher-listening.js?v=20260922-1"></script>
     <script src="assets/js/voiceprint-success.js?v=20260912-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
     <script src="assets/js/screen-wake-lock.js?v=20260913-speaking-wake-lock-1"></script>

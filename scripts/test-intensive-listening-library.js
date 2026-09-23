@@ -88,7 +88,7 @@ function testSafeCatalogAndSessions() {
   assert.strictEqual(item.dictation_unit_count, 1);
   assert.ok(!("units" in item) && !("answers" in item) && !("audio_src" in item) && !("slots" in item));
   assert.ok(!("open_assignment" in item), "Listening catalog must not project assignment state");
-  assert.strictEqual(item.modes.shadowing.segment_count, 1, "Shadowing derives its count from canonical Dictation units");
+  assert.deepStrictEqual(Object.keys(item.modes), ["dictation"]);
   assert.strictEqual(notifications.sessionEventId("ils_abc", "started"), "ils_abc::started");
   assert.strictEqual(notifications.sessionEventId("ils_abc", "paused"), "ils_abc::final");
   assert.strictEqual(notifications.sessionDeadline(new Date("2026-08-27T00:00:00Z")).getTime(), new Date("2026-08-27T00:03:00Z").getTime());
@@ -167,9 +167,7 @@ function testLibraryHelpers() {
   assert.strictEqual(helpers.actionLabel({ progress: { percentage: 0 } }), "Start");
   assert.strictEqual(helpers.actionLabel({ progress: { percentage: 25 } }), "Continue");
   assert.strictEqual(helpers.actionLabel({ progress: { percentage: 100 } }), "Completed");
-  assert.strictEqual(helpers.safeMode("invalid"), "");
-  assert.strictEqual(helpers.safeMode("shadowing"), "shadowing");
-  assert.strictEqual(helpers.progressFor({ modes: { shadowing: { completed_count: 2, segment_count: 4, percentage: 50 } } }, "shadowing").completed, 2);
+  assert.strictEqual(helpers.progressFor({ progress: { completed_count: 1 }, modes: { shadowing: { completed_count: 2 } } }, "shadowing").completed, 1, "legacy URLs must use Dictation progress");
   assert.match(helpers.card({ set_id: "IL-BBC-260813", title: "A safe lesson", modes: { dictation: { enabled: true, completed_count: 0, segment_count: 2, percentage: 0 } } }), /mode="dictation"/);
   assert.ok(helpers.matches({ title: "BBC Lists", source_label: "BBC", set_id: "IL-BBC-260813" }, "", "lists"));
   assert.ok(helpers.matches({ title: "IELTS Transport", source_label: "IELTS", set_id: "IL-C7-T1-S1" }, "", "transport"));

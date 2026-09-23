@@ -48,17 +48,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   -webkit-backdrop-filter: blur(26px) saturate(165%);
   backdrop-filter: blur(26px) saturate(165%);
 }
-.ill-mode-menu { position: relative; justify-self: center; min-width: 0; }
-.ill-mode-trigger { display: inline-flex; min-height: 44px; align-items: center; gap: 7px; padding: 7px 12px; border: 0; border-radius: 14px; color: #315c64; background: transparent; font-size: .84rem; font-weight: 850; cursor: pointer; transition: transform 120ms ease, background 180ms ease; }
-.ill-mode-trigger:hover, .ill-mode-trigger[aria-expanded="true"] { background: rgba(255, 255, 255, .72); }
-.ill-mode-trigger:active { transform: scale(.97); }
-.ill-mode-chevron { color: var(--ill-accent); font-size: 1rem; line-height: 1; }
-.ill-mode-popover { position: absolute; z-index: 60; top: calc(100% + 8px); left: 50%; width: 170px; padding: 6px; transform: translateX(-50%); border: 1px solid rgba(36, 91, 99, .13); border-radius: 15px; background: rgba(255, 255, 255, .97); box-shadow: 0 16px 36px rgba(39, 74, 79, .16); transform-origin: 50% 0; }
-.ill-mode-popover[hidden] { display: none; }
-.ill-mode-popover button { display: flex; width: 100%; min-height: 42px; align-items: center; gap: 8px; padding: 8px 10px; border: 0; border-radius: 10px; color: var(--ill-ink); background: transparent; text-align: left; font-weight: 750; cursor: pointer; }
-.ill-mode-popover button:hover, .ill-mode-popover button:focus-visible { background: var(--ill-accent-soft); }
-.ill-mode-check { width: 1em; color: var(--ill-accent-deep); visibility: hidden; }
-.ill-mode-popover button[aria-checked="true"] .ill-mode-check { visibility: visible; }
 .ill-back {
   display: grid;
   width: 42px;
@@ -188,3 +177,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-contrast: more) {
   .ill-header, .ill-intro, .ill-card, .ill-search, .ill-sort select { border-color: rgba(23, 52, 58, .38); }
 }
+
+.ill-practice-label { justify-self: center; color: #315c64; font-size: .84rem; font-weight: 850; }

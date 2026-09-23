@@ -1,8 +1,7 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const crypto = require("crypto");
 const service = require("./service");
-const shadowing = require("./shadowing-service");
-const soe = require("./tencent-soe-n");
+const listeningMaterial = require("./material");
 const notifications = require("../_shared/intensive-listening-notifications");
 const intensiveSpelling = require("../_shared/intensive-listening-spelling");
 const learningActivity = require("../_shared/learning-activity");
@@ -13,17 +12,9 @@ const MATERIALS = "intensive_listening_materials";
 const PROGRESS = "intensive_listening_progress";
 const REPLAYS = "intensive_listening_replays";
 const DISPUTES = "answer_disputes";
-const SHADOW_PROGRESS = "listening_shadowing_progress";
-const SHADOW_TAKES = "listening_shadowing_takes";
-const SHADOW_USAGE = "listening_shadowing_usage";
 const LEARNING_ACTIVITY = "learning_activity_sessions";
-const SYSTEM_CONFIG = "system_config";
-const SHADOW_POLICY_KEY = "listening_shadowing_score_policy";
-const SHADOW_MAX_SEGMENT_WORDS = shadowing.MAX_REFERENCE_WORDS;
-const SHADOW_MIN_TAKE_SECONDS = 2;
-const SHADOW_PROVIDER_MAX_SECONDS = 300;
-const ACTIVITY_MODES = ["dictation", "shadowing"];
-const ACTIVITY_REASONS = ["audio", "playback", "typing", "input", "recording", "replay", "review", "interaction", "navigation", "flush", "pause", "close", "hidden", "blur", "pagehide", "mode-switch", "unit-switch", "complete", "permission", "modal", "thinking", "network", "auto-advance", "superseded"];
+const ACTIVITY_MODES = ["dictation"];
+const ACTIVITY_REASONS = ["audio", "playback", "typing", "input", "replay", "review", "interaction", "navigation", "flush", "pause", "close", "hidden", "blur", "pagehide", "unit-switch", "complete", "permission", "modal", "thinking", "network", "auto-advance", "superseded"];
 const ACTIVITY_MAX_SPANS = 30;
 const ACTIVITY_MAX_SPAN_SECONDS = 60;
 const ACTIVITY_LEASE_SECONDS = 180;
@@ -72,8 +63,8 @@ async function loadMaterial(event) {
     getOne(MATERIALS, { set_id: setId, visible: true }),
   ]);
   if (!set || !material) throw new Error("MATERIAL_NOT_FOUND");
-  const normalized = shadowing.normalizeMaterial(material);
-  if (!shadowing.trainingSegments(normalized, "dictation").length && !shadowing.trainingSegments(normalized, "shadowing").length) {
+  const normalized = listeningMaterial.normalizeMaterial(material);
+  if (!listeningMaterial.trainingSegments(normalized, "dictation").length) {
     throw new Error("MATERIAL_EMPTY");
   }
   return { set, material };
@@ -111,26 +102,15 @@ function isListeningPracticeSet(set) {
 
 function safeListeningMode(value) {
   const mode = String(value || "").trim().toLowerCase();
-  return ["dictation", "shadowing"].includes(mode) ? mode : "";
-}
-
-async function setModePreference(profile, event) {
-  if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-  const mode = safeListeningMode(event.mode || event.practice_mode);
-  if (!mode) throw new Error("LISTENING_MODE_INVALID");
-  const update = { listening_mode_preference: mode, updated_at: new Date() };
-  if (profile._id) await db.collection("students").doc(profile._id).update(update);
-  else await db.collection("students").where({ auth_uid: profile.auth_uid, active: true }).limit(1).update(update);
-  return { success: true, preferred_mode: mode };
+  return ["dictation"].includes(mode) ? mode : "";
 }
 
 async function listCatalog(profile) {
   if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-  const [setRows, materialRows, progressRows, shadowProgressRows] = await Promise.all([
+  const [setRows, materialRows, progressRows] = await Promise.all([
     getAll("sets"),
     getAll(MATERIALS),
     getAll(PROGRESS, { where: { student_uid: profile.auth_uid } }),
-    getAll(SHADOW_PROGRESS, { where: { student_uid: profile.auth_uid } }),
   ]);
   const sets = setRows.map((row) => row.data && typeof row.data === "object" ? { ...row.data, _id: row._id } : row)
     .filter((row) => row.visible !== false && isIntensiveListeningSet(row));
@@ -139,20 +119,18 @@ async function listCatalog(profile) {
     .filter((row) => row.visible !== false && String(row.set_id || row.material_id || ""))
     .map((row) => [String(row.set_id || row.material_id), row]));
   const progressMap = new Map(progressRows.map((row) => [service.progressScope(row), row]));
-  const shadowProgressMap = new Map(shadowProgressRows.map((row) => [String(row.material_id || row.set_id), row]));
   const output = [];
   for (const set of sets) {
     const material = materialMap.get(String(set.set_id));
     if (!material) continue;
-    const normalizedMaterial = shadowing.normalizeMaterial(material);
-    if (!shadowing.trainingSegments(normalizedMaterial, "dictation").length && !shadowing.trainingSegments(normalizedMaterial, "shadowing").length) continue;
+    const normalizedMaterial = listeningMaterial.normalizeMaterial(material);
+    if (!listeningMaterial.trainingSegments(normalizedMaterial, "dictation").length) continue;
     const progress = progressMap.get(service.progressScope(material)) || null;
     const linked = await linkedPracticeFor(set, material);
-    output.push(notifications.safeCatalogItem(set, material, progress, null, linked, service, shadowProgressMap.get(String(material.material_id || material.set_id)) || null));
+    output.push(notifications.safeCatalogItem(set, material, progress, null, linked, service));
   }
   return {
     success: true,
-    preferred_mode: safeListeningMode(profile.listening_mode_preference) || "dictation",
     materials: output.sort((a, b) => String(b.published_on || "").localeCompare(String(a.published_on || "")) || String(a.title).localeCompare(String(b.title))),
   };
 }
@@ -191,625 +169,6 @@ async function loadReplayRecord(student, material, replayId) {
 
 async function loadSessionRecord(student, material, replayId) {
   return replayId ? loadReplayRecord(student, material, replayId) : loadBestRecord(student, material);
-}
-
-function shadowingProgressId(student, material, revision) {
-  return stableId("shadowing-progress", student.auth_uid, material.material_id || material.set_id, revision || shadowing.normalizeMaterial(material).tracks.shadowing.revision);
-}
-
-function revealThresholdPreference(student) {
-  const value = student && student.listening_transcript_reveal_threshold;
-  const normalized = value === "off" ? "off" : Number(value);
-  return [1, 2, 3, 5, "off"].includes(normalized) ? normalized : 3;
-}
-
-function applyRevealPreference(progress, student) {
-  const threshold = revealThresholdPreference(student);
-  const states = progress && progress.segment_states && typeof progress.segment_states === "object"
-    ? progress.segment_states
-    : {};
-  const nextStates = {};
-  Object.keys(states).forEach((segmentId) => {
-    const current = states[segmentId] || {};
-    nextStates[segmentId] = {
-      ...current,
-      transcript_revealed: current.transcript_revealed === true
-        || (threshold !== "off" && Number(current.complete_listen_count) >= Number(threshold)),
-    };
-  });
-  return { ...progress, reveal_threshold: threshold, segment_states: nextStates };
-}
-
-function safeShadowingProgress(progress, includePrivate = false) {
-  const source = progress && typeof progress === "object" ? progress : {};
-  const states = source.segment_states && typeof source.segment_states === "object" ? source.segment_states : {};
-  const outputStates = {};
-  Object.keys(states).forEach((segmentId) => {
-    const state = states[segmentId] || {};
-    outputStates[segmentId] = {
-      complete_listen_count: Math.max(0, Number(state.complete_listen_count) || 0),
-      transcript_revealed: state.transcript_revealed === true,
-      best_score: state.best_score == null ? null : Math.max(0, Math.min(100, Math.round(Number(state.best_score) || 0))),
-      best_take_id: state.best_take_id || null,
-      best_word_states: (includePrivate || state.transcript_revealed === true) && Array.isArray(state.best_word_states) ? state.best_word_states.slice(0, 120).map((word) => ({
-        word_id: String(word.word_id || ""), state: ["normal", "yellow", "red", "unscored"].includes(word.state) ? word.state : "normal",
-      })) : [],
-      latest_score: state.latest_score == null
-        ? (state.best_score == null ? null : Math.max(0, Math.min(100, Math.round(Number(state.best_score) || 0))))
-        : Math.max(0, Math.min(100, Math.round(Number(state.latest_score) || 0))),
-      latest_take_id: state.latest_take_id || state.best_take_id || null,
-      latest_word_states: (includePrivate || state.transcript_revealed === true) && Array.isArray(state.latest_word_states || state.best_word_states) ? (state.latest_word_states || state.best_word_states).slice(0, 120).map((word) => ({
-        word_id: String(word.word_id || ""), state: ["normal", "yellow", "red", "unscored"].includes(word.state) ? word.state : "normal",
-      })) : [],
-      qualified: state.qualified === true,
-      assisted: state.assisted === true,
-      independent: state.independent === true,
-      in_to_improve: state.in_to_improve === true,
-      updated_at: state.updated_at || null,
-    };
-  });
-  const summary = shadowing.progressSummary({ ...source, segment_states: outputStates });
-  return {
-    progress_id: source.progress_id || null,
-    material_id: String(source.material_id || ""),
-    set_id: String(source.set_id || ""),
-    shadowing_revision: String(source.shadowing_revision || ""),
-    reveal_threshold: [1, 2, 3, 5, "off"].includes(source.reveal_threshold) ? source.reveal_threshold : 3,
-    segment_states: outputStates,
-    qualified_segment_count: summary.qualified_segment_count,
-    segment_count: summary.segment_count,
-    percentage: summary.percentage,
-    completed: summary.completed,
-    completed_at: source.completed_at || null,
-    updated_at: source.updated_at || null,
-  };
-}
-
-async function loadShadowingProgress(student, material, create = false) {
-  const normalized = shadowing.normalizeMaterial(material);
-  const revision = normalized.tracks.shadowing.revision;
-  const progressId = shadowingProgressId(student, material, revision);
-  const existing = await getOne(SHADOW_PROGRESS, {
-    progress_id: progressId,
-    student_uid: student.auth_uid,
-    material_id: normalized.material_id,
-    shadowing_revision: revision,
-  });
-  if (existing) return applyRevealPreference(existing, student);
-  const blank = shadowing.createProgress(normalized, {
-    progress_id: progressId,
-    student_uid: student.auth_uid,
-    reveal_threshold: revealThresholdPreference(student),
-  });
-  if (!create) return blank;
-  const now = new Date();
-  const payload = { ...blank, created_at: now, updated_at: now };
-  try {
-    await db.collection(SHADOW_PROGRESS).doc(progressId).create(payload);
-    return payload;
-  } catch (error) {
-    const message = String(error && (error.message || error.code) || "").toLowerCase();
-    if (!message.includes("exist") && !message.includes("duplicate") && !message.includes("already")) throw error;
-    return await getOne(SHADOW_PROGRESS, { progress_id: progressId, student_uid: student.auth_uid }) || payload;
-  }
-}
-
-async function saveShadowingProgress(student, material, progress) {
-  const normalized = shadowing.normalizeMaterial(material);
-  const progressId = progress.progress_id || shadowingProgressId(student, material, normalized.tracks.shadowing.revision);
-  const now = new Date();
-  const safe = safeShadowingProgress({ ...progress, progress_id: progressId, student_uid: student.auth_uid, material_id: normalized.material_id, set_id: normalized.set_id, shadowing_revision: normalized.tracks.shadowing.revision, updated_at: now }, true);
-  const payload = { ...progress, ...safe, student_uid: student.auth_uid, created_at: progress.created_at || now, updated_at: now };
-  delete payload._id;
-  try {
-    await db.collection(SHADOW_PROGRESS).doc(progress._id || progressId).update(payload);
-  } catch (error) {
-    const message = String(error && (error.message || error.code) || "").toLowerCase();
-    if (!message.includes("not found") && !message.includes("exist")) throw error;
-    await db.collection(SHADOW_PROGRESS).doc(progressId).create(payload);
-  }
-  return { ...progress, ...payload };
-}
-
-function shadowingTrackResponse(material, progress, revealAll = false) {
-  const normalized = shadowing.normalizeMaterial(material);
-  // The learner Shadowing surface contains scored practice lines only. Context
-  // and skip units remain canonical material but are not accepted by the
-  // listen/take endpoints, so returning them here would create dead controls.
-  const segments = shadowing.trainingSegments(normalized, "shadowing");
-  const states = progress && progress.segment_states || {};
-  return segments.map((segment) => {
-    const state = states[segment.segment_id] || {};
-    const revealed = revealAll || state.transcript_revealed === true;
-    const result = {
-      segment_id: segment.segment_id,
-      start_seconds: segment.start_seconds,
-      end_seconds: segment.end_seconds,
-      speaker: segment.speaker,
-      practice_mode: shadowing.normalizeMode(segment.practice_mode),
-      transcript_revealed: revealed,
-      complete_listen_count: Number(state.complete_listen_count) || 0,
-      best_score: state.best_score == null ? null : Number(state.best_score),
-      latest_score: state.latest_score == null ? (state.best_score == null ? null : Number(state.best_score)) : Number(state.latest_score),
-      qualified: state.qualified === true,
-      assisted: state.assisted === true,
-      independent: state.independent === true,
-      in_to_improve: state.in_to_improve === true,
-    };
-    if (revealed) {
-      result.text = segment.text;
-      result.reference_words = shadowing.referenceWords(segment).map((word) => ({
-        word_id: word.word_id, text: word.text, unscored: word.unscored === true,
-      }));
-    }
-    return result;
-  });
-}
-
-function shadowingProgressResponse(material, progress) {
-  const safe = safeShadowingProgress(progress);
-  const normalized = shadowing.normalizeMaterial(material);
-  return {
-    ...safe,
-    material_id: normalized.material_id,
-    set_id: normalized.set_id,
-    shadowing_revision: normalized.tracks.shadowing.revision,
-    to_improve: shadowing.toImproveQueue(safe, shadowing.trainingSegments(normalized, "shadowing")),
-  };
-}
-
-async function scoringPolicy() {
-  const row = await getOne(SYSTEM_CONFIG, { config_key: SHADOW_POLICY_KEY });
-  if (!row) return null;
-  const value = row.value && typeof row.value === "object" ? row.value : row;
-  return { ...value, revision: String(value.revision || row.revision || "") };
-}
-
-function assertShadowingProviderConfigured() {
-  const config = soe.configFromEnv();
-  if (config.enabled !== true || !config.appId || !config.secretId || !config.secretKey) {
-    throw new Error("SCORING_NOT_AVAILABLE");
-  }
-  try { soe.assertEndpoint(config.endpoint); } catch (_error) { throw new Error("SCORING_NOT_AVAILABLE"); }
-  return config;
-}
-
-function shadowingReference(material, segmentId) {
-  const normalized = shadowing.normalizeMaterial(material);
-  const segment = shadowing.trainingSegments(normalized, "shadowing").find((item) => item.segment_id === String(segmentId));
-  if (!segment) throw new Error("SHADOWING_SEGMENT_NOT_FOUND");
-  const words = shadowing.referenceWords(segment);
-  if (!segment.text || !words.length || words.length > SHADOW_MAX_SEGMENT_WORDS) throw new Error("SHADOWING_REFERENCE_INVALID");
-  return segment;
-}
-
-async function enforceShadowingQuota(student, material, segmentId, policy) {
-  const now = Date.now();
-  const tenMinutes = new Date(now - 10 * 60 * 1000);
-  const hour = new Date(now - 60 * 60 * 1000);
-  const shanghaiKey = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(now));
-  const [segmentRows, hourRows, dayRows] = await Promise.all([
-    getAll(SHADOW_USAGE, { where: { student_uid: student.auth_uid, material_id: material.material_id || material.set_id, segment_id: segmentId, usage_day: shanghaiKey, billable_claimed: true }, orderBy: { field: "created_at", direction: "desc" }, limit: 50 }),
-    getAll(SHADOW_USAGE, { where: { student_uid: student.auth_uid, usage_day: shanghaiKey, billable_claimed: true }, orderBy: { field: "created_at", direction: "desc" }, limit: 500 }),
-    getAll(SHADOW_USAGE, { where: { student_uid: student.auth_uid, usage_day: shanghaiKey, billable_claimed: true }, orderBy: { field: "created_at", direction: "desc" }, limit: 500 }),
-  ]);
-  const within = (row, cutoff) => {
-    const at = new Date(row.sent_at || row.created_at || 0).getTime();
-    return at >= cutoff.getTime();
-  };
-  const intervalSeconds = Math.max(0, Number(policy && (policy.min_interval_seconds || policy.minIntervalSeconds)) || 2);
-  if (intervalSeconds && [...hourRows, ...segmentRows].some((row) => Date.now() - new Date(row.sent_at || row.created_at || 0).getTime() < intervalSeconds * 1000)) throw new Error("SHADOWING_RATE_LIMITED");
-  if (segmentRows.filter((row) => within(row, tenMinutes)).length >= 6) throw new Error("SHADOWING_SEGMENT_QUOTA");
-  if (hourRows.filter((row) => within(row, hour)).length >= 60) throw new Error("SHADOWING_HOURLY_QUOTA");
-  if (dayRows.filter((row) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(row.sent_at || row.created_at || 0)) === shanghaiKey).length >= 250) throw new Error("SHADOWING_DAILY_QUOTA");
-  const globalLimit = Number(policy && (policy.global_daily_limit || policy.globalDailyLimit));
-  if (Number.isFinite(globalLimit) && globalLimit > 0) {
-    const counted = await db.collection(SHADOW_USAGE).where({ usage_day: shanghaiKey, billable_claimed: true }).count();
-    if (Number(counted && counted.total) >= globalLimit) throw new Error("SHADOWING_GLOBAL_QUOTA");
-  }
-}
-
-async function shadowingBootstrap(student, event, set, material, base) {
-  const normalized = shadowing.normalizeMaterial(material);
-  const progress = await loadShadowingProgress(student, material, false);
-  const preferredMode = safeListeningMode(event.mode) || safeListeningMode(student.listening_mode_preference) || "dictation";
-  return {
-    ...base,
-    listening_version: 3,
-    preferred_mode: preferredMode,
-    material: { ...base.material, units: base.material.units, modes: base.material.modes },
-    tracks: {
-      dictation: { enabled: normalized.tracks.dictation.enabled, revision: normalized.content_revision, segment_count: shadowing.trainingSegments(normalized, "dictation").length },
-      shadowing: { enabled: normalized.tracks.shadowing.enabled, revision: normalized.content_revision, segment_count: shadowing.trainingSegments(normalized, "shadowing").length },
-    },
-    shadowing_progress: shadowingProgressResponse(material, progress),
-    shadowing_segments: shadowingTrackResponse(material, progress, false),
-  };
-}
-
-async function getTrack(student, event, material) {
-  const track = String(event.track || "").toLowerCase();
-  if (!shadowing.TRACKS.includes(track)) throw new Error("LISTENING_TRACK_INVALID");
-  if (event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
-  const normalized = shadowing.normalizeMaterial(material);
-  if (!normalized.tracks[track].enabled) throw new Error("LISTENING_TRACK_DISABLED");
-  if (track === "dictation") return { success: true, track, revision: normalized.tracks.dictation.revision, segments: service.publicMaterial(material).tracks.dictation.segments };
-  const progress = await loadShadowingProgress(student, material, false);
-  return { success: true, track, revision: normalized.tracks.shadowing.revision, segments: shadowingTrackResponse(material, progress, false), progress: shadowingProgressResponse(material, progress) };
-}
-
-async function setRevealThreshold(student, event, material) {
-  const value = event.reveal_threshold == null ? event.revealThreshold : event.reveal_threshold;
-  const threshold = value === "off" ? "off" : Number(value);
-  if (![1, 2, 3, 5, "off"].includes(threshold)) throw new Error("REVEAL_THRESHOLD_INVALID");
-  const progress = await loadShadowingProgress(student, material, true);
-  await db.collection("students").doc(student._id).update({
-    listening_transcript_reveal_threshold: threshold,
-    updated_at: new Date(),
-  });
-  const nextStates = {};
-  Object.keys(progress.segment_states || {}).forEach((segmentId) => {
-    const current = progress.segment_states[segmentId] || {};
-    nextStates[segmentId] = {
-      ...current,
-      transcript_revealed: current.transcript_revealed === true
-        || (threshold !== "off" && Number(current.complete_listen_count) >= Number(threshold)),
-    };
-  });
-  const saved = await saveShadowingProgress(student, material, { ...progress, reveal_threshold: threshold, segment_states: nextStates });
-  return { success: true, reveal_threshold: threshold, progress: shadowingProgressResponse(material, saved) };
-}
-
-async function revealShadowingTranscript(student, event, material) {
-  const segment = shadowingReference(material, event.segment_id);
-  const progress = await loadShadowingProgress(student, material, true);
-  const current = progress.segment_states && progress.segment_states[segment.segment_id];
-  if (!current) throw new Error("SHADOWING_SEGMENT_NOT_FOUND");
-  const saved = await saveShadowingProgress(student, material, {
-    ...progress,
-    segment_states: {
-      ...progress.segment_states,
-      [segment.segment_id]: { ...current, transcript_revealed: true, updated_at: new Date() },
-    },
-  });
-  return {
-    success: true,
-    segment_id: segment.segment_id,
-    transcript_revealed: true,
-    segment: shadowingTrackResponse(material, saved, false).find((item) => item.segment_id === segment.segment_id),
-    progress: shadowingProgressResponse(material, saved),
-  };
-}
-
-async function startListeningPlayback(student, event, material) {
-  const segment = shadowingReference(material, event.segment_id);
-  if (event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
-  const progress = await loadShadowingProgress(student, material, true);
-  const now = new Date();
-  const durationMs = Math.max(400, Math.round((Number(segment.end_seconds) - Number(segment.start_seconds)) * 1000));
-  const pending = progress.pending_play_tokens && typeof progress.pending_play_tokens === "object"
-    ? { ...progress.pending_play_tokens }
-    : {};
-  Object.keys(pending).forEach((key) => {
-    if (new Date(pending[key] && pending[key].expires_at || 0).getTime() <= now.getTime()) delete pending[key];
-  });
-  const playToken = `play_${crypto.randomBytes(18).toString("hex")}`;
-  const tokenKey = stableId(student.auth_uid, material.material_id || material.set_id, segment.segment_id, playToken);
-  pending[tokenKey] = {
-    segment_id: segment.segment_id,
-    started_at: now,
-    earliest_complete_at: new Date(now.getTime() + Math.max(250, Math.ceil(durationMs * 0.9))),
-    expires_at: new Date(now.getTime() + durationMs + 120000),
-  };
-  const keys = Object.keys(pending);
-  while (keys.length > 20) delete pending[keys.shift()];
-  await saveShadowingProgress(student, material, { ...progress, pending_play_tokens: pending });
-  return { success: true, segment_id: segment.segment_id, play_token: playToken };
-}
-
-async function recordCompleteListen(student, event, material) {
-  const segment = shadowingReference(material, event.segment_id);
-  const token = safeId(event.complete_play_token || event.play_token, "COMPLETE_PLAY_TOKEN_REQUIRED");
-  const progress = await loadShadowingProgress(student, material, true);
-  const pending = progress.pending_play_tokens && typeof progress.pending_play_tokens === "object" ? { ...progress.pending_play_tokens } : {};
-  const tokens = progress.complete_play_tokens && typeof progress.complete_play_tokens === "object" ? { ...progress.complete_play_tokens } : {};
-  const tokenKey = stableId(student.auth_uid, material.material_id || material.set_id, segment.segment_id, token);
-  let credited = false;
-  if (!tokens[tokenKey]) {
-    const issued = pending[tokenKey];
-    const now = Date.now();
-    if (!issued || String(issued.segment_id) !== String(segment.segment_id)) throw new Error("COMPLETE_PLAY_TOKEN_INVALID");
-    if (new Date(issued.earliest_complete_at || 0).getTime() > now) throw new Error("COMPLETE_PLAY_TOO_EARLY");
-    if (new Date(issued.expires_at || 0).getTime() < now) throw new Error("COMPLETE_PLAY_TOKEN_EXPIRED");
-    delete pending[tokenKey];
-    const state = progress.segment_states[segment.segment_id] || {};
-    const threshold = progress.reveal_threshold;
-    const countCap = threshold === "off" ? 5 : Math.max(1, Math.min(5, Number(threshold) || 3));
-    const nextState = { ...state, complete_listen_count: Math.min(countCap, (Number(state.complete_listen_count) || 0) + 1), updated_at: new Date() };
-    if (threshold !== "off" && nextState.complete_listen_count >= Number(threshold)) nextState.transcript_revealed = true;
-    tokens[tokenKey] = new Date().toISOString();
-    const keys = Object.keys(tokens);
-    if (keys.length > 200) delete tokens[keys[0]];
-    progress.segment_states = { ...progress.segment_states, [segment.segment_id]: nextState };
-    progress.complete_play_tokens = tokens;
-    progress.pending_play_tokens = pending;
-    credited = true;
-  }
-  const saved = await saveShadowingProgress(student, material, progress);
-  if (credited) await refreshShadowingNotification(student, material, saved, null);
-  const current = saved.segment_states[segment.segment_id] || {};
-  const base = {
-    success: true,
-    segment_id: segment.segment_id,
-    transcript_revealed: current.transcript_revealed === true,
-    segment: shadowingTrackResponse(material, saved, false).find((item) => item.segment_id === segment.segment_id),
-    progress: shadowingProgressResponse(material, saved),
-  };
-  return base;
-}
-
-function takePath(student, material, takeId) {
-  return `listening-shadowing/${String(student.auth_uid).replace(/[^A-Za-z0-9._:-]/g, "_")}/${String(material.material_id || material.set_id).replace(/[^A-Za-z0-9._:-]/g, "_")}/${takeId}.wav`;
-}
-
-function takeLockId(student) {
-  return `slock_${stableId("shadowing-take-lock", student.auth_uid)}`;
-}
-
-async function releaseTakeLock(student, takeId) {
-  const lockId = takeLockId(student);
-  await db.runTransaction(async (transaction) => {
-    const result = await transaction.collection(SHADOW_TAKES).doc(lockId).get();
-    const lock = result && result.data && (Array.isArray(result.data) ? result.data[0] : result.data);
-    if (!lock || String(lock.active_take_id || "") !== String(takeId)) return;
-    await transaction.collection(SHADOW_TAKES).doc(lockId).update({ active_take_id: null, status: "idle", released_at: new Date(), updated_at: new Date() });
-  });
-}
-
-function validatesTakeFile(take, fileId) {
-  const value = String(fileId || "").trim();
-  return Boolean(value && (value === take.upload_path || value.endsWith(`/${take.upload_path}`)));
-}
-
-function shadowingMaxDurationSeconds(segment) {
-  const sourceDuration = Math.max(0, Number(segment.end_seconds) - Number(segment.start_seconds));
-  return Math.min(SHADOW_PROVIDER_MAX_SECONDS, Math.max(SHADOW_MIN_TAKE_SECONDS, sourceDuration * 1.8 + 3));
-}
-
-function shadowingMaxBytes(segment) {
-  return Math.min(10 * 1024 * 1024, Math.ceil(shadowingMaxDurationSeconds(segment) * 32000 + 44));
-}
-
-async function reserveShadowingTake(student, event, material) {
-  const segment = shadowingReference(material, event.segment_id);
-  const clientTakeId = safeId(event.client_take_id || event.clientTakeId, "CLIENT_TAKE_ID_REQUIRED");
-  if (event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
-  const assignment = null;
-  const progress = await loadShadowingProgress(student, material, true);
-  const segmentProgress = progress.segment_states && progress.segment_states[segment.segment_id];
-  if (!segmentProgress || Number(segmentProgress.complete_listen_count) < 1) throw new Error("SHADOWING_LISTEN_REQUIRED");
-  const duplicate = await getOne(SHADOW_TAKES, { student_uid: student.auth_uid, client_take_id: clientTakeId, material_id: material.material_id || material.set_id });
-  if (duplicate) return { success: true, take_id: duplicate.take_id, client_take_id: clientTakeId, upload_path: duplicate.upload_path, status: duplicate.status, idempotent: true };
-  const policy = await scoringPolicy();
-  if (!policy || policy.status !== "approved") throw new Error("SCORING_POLICY_NOT_APPROVED");
-  assertShadowingProviderConfigured();
-  await enforceShadowingQuota(student, material, segment.segment_id, policy);
-  const takeId = `sht_${stableId(student.auth_uid, material.material_id || material.set_id, clientTakeId)}`;
-  const now = new Date();
-  const payload = {
-    take_id: takeId,
-    client_take_id: clientTakeId,
-    student_uid: student.auth_uid,
-    student_id_snapshot: student.student_id,
-    material_id: material.material_id || material.set_id,
-    set_id: material.set_id,
-    shadowing_revision: shadowing.normalizeMaterial(material).tracks.shadowing.revision,
-    segment_id: segment.segment_id,
-    assignment_id: assignment && (assignment.assignment_id || assignment._id) || null,
-    reference_hash: shadowing.stableReferenceHash(segment, policy),
-    upload_path: takePath(student, material, takeId),
-    status: "reserved",
-    provider: soe.PROVIDER,
-    provider_revision: soe.PROVIDER_REVISION,
-    scoring_policy_revision: String(policy.revision || ""),
-    progress_id: progress.progress_id,
-    reserved_at: now,
-    expires_at: new Date(now.getTime() + 10 * 60 * 1000),
-    created_at: now,
-    updated_at: now,
-  };
-  try {
-    await db.runTransaction(async (transaction) => {
-      const lockId = takeLockId(student);
-      const lockResult = await transaction.collection(SHADOW_TAKES).doc(lockId).get();
-      const lock = lockResult && lockResult.data && (Array.isArray(lockResult.data) ? lockResult.data[0] : lockResult.data);
-      if (lock && lock.active_take_id && new Date(lock.expires_at || 0).getTime() > now.getTime() && String(lock.active_take_id) !== takeId) throw new Error("SHADOWING_TAKE_IN_FLIGHT");
-      await transaction.collection(SHADOW_TAKES).doc(takeId).create(payload);
-      await transaction.collection(SHADOW_TAKES).doc(lockId).set({ kind: "student_take_lock", lock_id: lockId, student_uid: student.auth_uid, active_take_id: takeId, status: "active", expires_at: payload.expires_at, updated_at: now, created_at: lock && lock.created_at || now });
-    });
-  } catch (error) {
-    const message = String(error && (error.message || error.code) || "").toLowerCase();
-    if (error && error.message === "SHADOWING_TAKE_IN_FLIGHT") throw error;
-    if (!message.includes("exist") && !message.includes("duplicate") && !message.includes("already")) throw error;
-    const existing = await getOne(SHADOW_TAKES, { take_id: takeId, student_uid: student.auth_uid });
-    if (existing) return { success: true, take_id: takeId, client_take_id: clientTakeId, upload_path: existing.upload_path, status: existing.status, idempotent: true };
-    throw error;
-  }
-  return { success: true, take_id: takeId, client_take_id: clientTakeId, upload_path: payload.upload_path, upload_expires_at: payload.expires_at, max_bytes: shadowingMaxBytes(segment), max_duration_seconds: shadowingMaxDurationSeconds(segment), status: payload.status, progress: shadowingProgressResponse(material, progress) };
-}
-
-async function finishShadowingTake(student, event, material) {
-  const takeId = safeId(event.take_id || event.takeId, "TAKE_REQUIRED");
-  const take = await getOne(SHADOW_TAKES, { take_id: takeId, student_uid: student.auth_uid });
-  if (!take) throw new Error("SHADOWING_TAKE_NOT_FOUND");
-  if (take.status === "scored") {
-    const progress = await loadShadowingProgress(student, material, false);
-    const revealed = progress.segment_states && progress.segment_states[take.segment_id] && progress.segment_states[take.segment_id].transcript_revealed === true;
-    return {
-      success: true,
-      idempotent: true,
-      ...safeShadowingResult(take, revealed),
-      segment: shadowingTrackResponse(material, progress, false).find((item) => item.segment_id === take.segment_id),
-      progress: shadowingProgressResponse(material, progress),
-    };
-  }
-  if (!["reserved", "uploaded", "validating"].includes(String(take.status))) {
-    if (take.status === "outcome_unknown") throw new Error("SHADOWING_OUTCOME_UNKNOWN");
-    throw new Error("SHADOWING_TAKE_NOT_ACTIVE");
-  }
-  if (new Date(take.expires_at || 0).getTime() < Date.now()) throw new Error("SHADOWING_TAKE_EXPIRED");
-  const fileId = String(event.file_id || event.fileId || "").trim();
-  if (!validatesTakeFile(take, fileId)) throw new Error("SHADOWING_UPLOAD_PATH_INVALID");
-  const downloaded = await app.downloadFile({ fileID: fileId });
-  const buffer = downloaded && downloaded.fileContent;
-  const segment = shadowingReference(material, take.segment_id);
-  const validation = shadowing.validateWav(buffer, {
-    max_duration_seconds: shadowingMaxDurationSeconds(segment),
-    min_duration_seconds: SHADOW_MIN_TAKE_SECONDS,
-    max_bytes: shadowingMaxBytes(segment),
-  });
-  if (!validation.valid) {
-    let deleted = false;
-    try { await app.deleteFile({ fileList: [fileId] }); deleted = true; } catch (_error) { /* cleanup worker retries */ }
-    const invalidAt = new Date();
-    await db.collection(SHADOW_TAKES).doc(take._id || takeId).update({ status: "invalid", safe_error: validation.code, file_id: fileId, delete_after: invalidAt, audio_deleted_at: deleted ? invalidAt : null, updated_at: invalidAt });
-    await releaseTakeLock(student, takeId);
-    throw new Error(validation.code);
-  }
-  const audioHash = crypto.createHash("sha256").update(buffer).digest("hex");
-  const policy = await scoringPolicy();
-  let preflightError = "";
-  if (!policy || policy.status !== "approved") preflightError = "SCORING_POLICY_NOT_APPROVED";
-  else if (String(policy.revision || "") !== String(take.scoring_policy_revision || "")) preflightError = "SCORING_POLICY_CHANGED";
-  else {
-    try { assertShadowingProviderConfigured(); } catch (_error) { preflightError = "SCORING_NOT_AVAILABLE"; }
-  }
-  if (preflightError) {
-    const rejectedAt = new Date();
-    let deleted = false;
-    try { await app.deleteFile({ fileList: [fileId] }); deleted = true; } catch (_error) { /* cleanup worker retries */ }
-    await db.collection(SHADOW_TAKES).doc(take._id || takeId).update({
-      status: "invalid",
-      safe_error: preflightError.toLowerCase(),
-      file_id: fileId,
-      delete_after: rejectedAt,
-      audio_deleted_at: deleted ? rejectedAt : null,
-      updated_at: rejectedAt,
-    });
-    await releaseTakeLock(student, takeId);
-    throw new Error(preflightError);
-  }
-  const referenceHash = take.reference_hash || shadowing.stableReferenceHash(segment, policy);
-  const cacheKey = shadowing.duplicateKey({ audio_hash: audioHash, reference_hash: referenceHash, material_id: material.material_id || material.set_id, shadowing_revision: take.shadowing_revision, policy_revision: policy.revision, provider_revision: soe.PROVIDER_REVISION });
-  const cached = await getOne(SHADOW_TAKES, { duplicate_key: cacheKey, status: "scored", student_uid: student.auth_uid });
-  if (cached) {
-    const progress = await loadShadowingProgress(student, material, true);
-    const revealedBeforeTake = progress.segment_states[take.segment_id] && progress.segment_states[take.segment_id].transcript_revealed === true;
-    const savedProgress = await saveShadowingProgress(student, material, shadowing.applyTake(progress, take.segment_id, { take_id: takeId, score: cached.product_score, word_states: cached.word_states }));
-    let deleted = false;
-    try { await app.deleteFile({ fileList: [fileId] }); deleted = true; } catch (_error) { /* cleanup worker retries */ }
-    const evaluatedAt = new Date();
-    const update = { status: "scored", duplicate_key: cacheKey, deduped_from_take_id: cached.take_id, audio_hash: audioHash, byte_size: validation.bytes, duration_seconds: validation.duration_seconds, product_score: cached.product_score, word_states: cached.word_states, independent: revealedBeforeTake !== true, assisted: revealedBeforeTake === true, safe_error: null, file_id: fileId, delete_after: evaluatedAt, audio_deleted_at: deleted ? evaluatedAt : null, evaluated_at: evaluatedAt, updated_at: evaluatedAt };
-    await db.collection(SHADOW_TAKES).doc(take._id || takeId).update(update);
-    await releaseTakeLock(student, takeId);
-    await refreshShadowingNotification(student, material, savedProgress, null);
-    return { success: true, take_id: takeId, score: cached.product_score, word_states: cached.word_states, transcript_revealed: true, qualified: Number(cached.product_score) >= shadowing.PASS_LINE, segment: shadowingTrackResponse(material, savedProgress, false).find((item) => item.segment_id === take.segment_id), progress: shadowingProgressResponse(material, savedProgress), cached: true };
-  }
-  const usageId = stableId("shadowing-usage", takeId);
-  const usageDay = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-  const usage = { usage_id: usageId, take_id: takeId, student_uid: student.auth_uid, material_id: material.material_id || material.set_id, segment_id: take.segment_id, client_take_id: take.client_take_id, provider: soe.PROVIDER, provider_revision: soe.PROVIDER_REVISION, scoring_policy_revision: String(policy.revision || ""), reference_hash: referenceHash, audio_hash: audioHash, usage_day: usageDay, status: "reserved", billable_claimed: false, estimated_billable_units: 1, created_at: new Date(), updated_at: new Date() };
-  await db.collection(SHADOW_USAGE).doc(usageId).create(usage);
-  await db.collection(SHADOW_TAKES).doc(take._id || takeId).update({ status: "evaluating", file_id: fileId, audio_hash: audioHash, byte_size: validation.bytes, duration_seconds: validation.duration_seconds, usage_id: usageId, updated_at: new Date() });
-  let provider;
-  try {
-    const sentAt = new Date();
-    await db.collection(SHADOW_USAGE).doc(usageId).update({ status: "sent", billable_claimed: true, sent_at: sentAt, updated_at: sentAt });
-    provider = await soe.evaluate(buffer, { referenceText: segment.text, appId: process.env.TENCENTCLOUD_APPID, secretId: process.env.TENCENTCLOUD_SECRETID, secretKey: process.env.TENCENTCLOUD_SECRETKEY, endpoint: process.env.LISTENING_SHADOWING_SOE_ENDPOINT, scoreCoeff: policy.score_coeff });
-  } catch (error) {
-    const category = error && error.category || soe.classifyError(error, "sent");
-    const terminal = category === "outcome_unknown" ? "outcome_unknown" : "provider_failed";
-    const failedAt = new Date();
-    let deleted = false;
-    try { await app.deleteFile({ fileList: [fileId] }); deleted = true; } catch (_error) { /* cleanup worker retries */ }
-    await db.collection(SHADOW_TAKES).doc(take._id || takeId).update({ status: terminal, safe_error: category, file_id: fileId, delete_after: failedAt, audio_deleted_at: deleted ? failedAt : null, updated_at: failedAt });
-    await db.collection(SHADOW_USAGE).doc(usageId).update({ status: terminal, billable_claimed: true, safe_error: category, terminal_at: new Date(), updated_at: new Date() });
-    await releaseTakeLock(student, takeId);
-    throw new Error(category === "not_configured" ? "SCORING_NOT_AVAILABLE" : category === "outcome_unknown" ? "SHADOWING_OUTCOME_UNKNOWN" : "SHADOWING_PROVIDER_FAILED");
-  }
-  const wordStates = shadowing.wordStatesFromEvidence(provider.words, segment, policy);
-  const productScore = shadowing.scoreFromEvidence({ ...provider, word_states: wordStates }, policy);
-  const now = new Date();
-  const progress = await loadShadowingProgress(student, material, true);
-  const revealedBeforeTake = progress.segment_states[take.segment_id] && progress.segment_states[take.segment_id].transcript_revealed === true;
-  const nextProgress = shadowing.applyTake(progress, take.segment_id, { take_id: takeId, score: productScore, word_states: wordStates }, now);
-  const savedProgress = await saveShadowingProgress(student, material, nextProgress);
-  let deleted = false;
-  try { await app.deleteFile({ fileList: [fileId] }); deleted = true; } catch (_error) { /* bounded cleanup worker retries */ }
-  const update = { status: "scored", duplicate_key: cacheKey, file_id: fileId, provider_request_id: provider.request_id || null, provider_scores: { suggested_score: provider.suggested_score, pron_accuracy: provider.pron_accuracy, pron_fluency: provider.pron_fluency, pron_completion: provider.pron_completion }, product_score: productScore, word_states: wordStates, independent: revealedBeforeTake !== true, assisted: revealedBeforeTake === true, evaluated_at: now, delete_after: now, audio_deleted_at: deleted ? now : null, updated_at: now };
-  await db.collection(SHADOW_TAKES).doc(take._id || takeId).update(update);
-  await db.collection(SHADOW_USAGE).doc(usageId).update({ status: "sent", billable_claimed: true, provider_request_id: provider.request_id || null, terminal_at: now, updated_at: now });
-  await releaseTakeLock(student, takeId);
-  await refreshShadowingNotification(student, material, savedProgress, take.assignment_id);
-  return { success: true, take_id: takeId, score: productScore, word_states: wordStates, transcript_revealed: true, qualified: nextProgress.segment_states[take.segment_id].qualified, segment: shadowingTrackResponse(material, savedProgress, false).find((item) => item.segment_id === take.segment_id), progress: shadowingProgressResponse(material, savedProgress) };
-}
-
-async function registerShadowingUpload(student, event, material) {
-  const takeId = safeId(event.take_id || event.takeId, "TAKE_REQUIRED");
-  const take = await getOne(SHADOW_TAKES, { take_id: takeId, student_uid: student.auth_uid, material_id: material.material_id || material.set_id });
-  if (!take) throw new Error("SHADOWING_TAKE_NOT_FOUND");
-  const fileId = String(event.file_id || event.fileId || "").trim();
-  if (!validatesTakeFile(take, fileId)) throw new Error("SHADOWING_UPLOAD_PATH_INVALID");
-  if (!["reserved", "uploaded"].includes(String(take.status))) throw new Error("SHADOWING_TAKE_NOT_ACTIVE");
-  await db.collection(SHADOW_TAKES).doc(take._id || takeId).update({ status: "uploaded", file_id: fileId, uploaded_at: take.uploaded_at || new Date(), updated_at: new Date() });
-  return { success: true, take_id: takeId, status: "uploaded" };
-}
-
-async function cancelShadowingTake(student, event, material) {
-  const takeId = safeId(event.take_id || event.takeId, "TAKE_REQUIRED");
-  const take = await getOne(SHADOW_TAKES, { take_id: takeId, student_uid: student.auth_uid, material_id: material.material_id || material.set_id });
-  if (!take) throw new Error("SHADOWING_TAKE_NOT_FOUND");
-  if (!["reserved", "uploaded", "validating"].includes(String(take.status))) {
-    return { success: true, take_id: takeId, status: take.status, already_terminal: true };
-  }
-  const suppliedFileId = String(event.file_id || event.fileId || "").trim();
-  if (suppliedFileId && !validatesTakeFile(take, suppliedFileId)) throw new Error("SHADOWING_UPLOAD_PATH_INVALID");
-  const fileId = suppliedFileId || String(take.file_id || "").trim();
-  const cancelledAt = new Date();
-  let deleted = false;
-  if (fileId) {
-    try { await app.deleteFile({ fileList: [fileId] }); deleted = true; } catch (_error) { /* cleanup worker retries */ }
-  }
-  await db.collection(SHADOW_TAKES).doc(take._id || takeId).update({
-    status: "invalid",
-    safe_error: "client_cancelled",
-    file_id: fileId || null,
-    delete_after: cancelledAt,
-    audio_deleted_at: !fileId || deleted ? cancelledAt : null,
-    updated_at: cancelledAt,
-  });
-  await releaseTakeLock(student, takeId);
-  return { success: true, take_id: takeId, status: "invalid" };
-}
-
-function safeShadowingResult(take, transcriptRevealed = false) {
-  const score = Math.max(0, Math.min(100, Math.round(Number(take.product_score) || 0)));
-  return { take_id: take.take_id, score, product_score: score, word_states: transcriptRevealed && Array.isArray(take.word_states) ? take.word_states : [], transcript_revealed: transcriptRevealed, qualified: score >= shadowing.PASS_LINE };
-}
-
-async function getShadowingTake(student, event, material) {
-  const takeId = safeId(event.take_id || event.takeId, "TAKE_REQUIRED");
-  const take = await getOne(SHADOW_TAKES, { take_id: takeId, student_uid: student.auth_uid, material_id: material.material_id || material.set_id });
-  if (!take) throw new Error("SHADOWING_TAKE_NOT_FOUND");
-  const progress = await loadShadowingProgress(student, material, false);
-  const revealed = progress.segment_states && progress.segment_states[take.segment_id] && progress.segment_states[take.segment_id].transcript_revealed === true;
-  return { success: true, result: take.status === "scored" ? safeShadowingResult(take, revealed) : { take_id: takeId, status: take.status, safe_error: take.safe_error || null } };
-}
-
-async function continueShadowingSegment(student, event, material) {
-  const segment = shadowingReference(material, event.segment_id);
-  const progress = await loadShadowingProgress(student, material, true);
-  const saved = await saveShadowingProgress(student, material, shadowing.continueSegment(progress, segment.segment_id));
-  return { success: true, segment_id: segment.segment_id, progress: shadowingProgressResponse(material, saved) };
 }
 
 function recordPayload(student, material, record, unitStates, now, replayMode) {
@@ -919,7 +278,7 @@ async function syncAssignments(student, set, percentage, now) {
 
 function findUnit(material, unitId) {
   const id = safeId(unitId, "UNIT_REQUIRED");
-  const normalized = shadowing.normalizeMaterial(material);
+  const normalized = listeningMaterial.normalizeMaterial(material);
   const units = Array.isArray(material.units) && material.units.length
     ? material.units
     : normalized.tracks.dictation.segments;
@@ -1097,85 +456,6 @@ async function closeNotificationSession(student, material, record, endSummary, r
   return updated;
 }
 
-function shadowingSessionSummary(progress) {
-  const states = progress && progress.segment_states && typeof progress.segment_states === "object" ? progress.segment_states : {};
-  const values = Object.values(states);
-  const qualified = values.filter((item) => item && item.qualified === true).length;
-  return {
-    percentage: Number(progress && progress.percentage) || 0,
-    completed_unit_count: qualified,
-    independent_unit_count: values.filter((item) => item && item.independent === true).length,
-    assisted_unit_count: values.filter((item) => item && item.assisted === true).length,
-  };
-}
-
-async function refreshShadowingNotification(student, material, progress, assignmentId) {
-  let record = progress;
-  const now = new Date();
-  const summary = shadowingSessionSummary(progress);
-  const documentId = record._id || record.progress_id || shadowingProgressId(student, material, record.shadowing_revision);
-  const save = async (fields) => {
-    await db.collection(SHADOW_PROGRESS).doc(documentId).update(fields);
-    record = { ...record, ...fields };
-    return record;
-  };
-  const close = async (current, reason) => {
-    if (!current.notification_session_id || current.notification_session_status !== "active") return current;
-    const phase = reason === "target_met" ? "completed" : "paused";
-    const fields = notificationUpdateFields({ sessionId: current.notification_session_id, status: phase, context: current.notification_practice_context, assignmentId: current.notification_assignment_id, target: current.notification_target_percentage, now, latestSummary: summary, closedAt: now, closeReason: reason, practiceTrack: "shadowing" });
-    const updated = await save(fields);
-    await createSessionEvent(notifications.buildSessionEvent({ student, material, record: current, sessionId: current.notification_session_id, phase, occurredAt: now, startSummary: { percentage: Number(current.notification_start_percentage) || 0, completed_unit_count: Number(current.notification_start_completed_count) || 0 }, endSummary: summary, targetPercentage: Number(current.notification_target_percentage == null ? 100 : current.notification_target_percentage), assignmentId: current.notification_assignment_id, practiceContext: current.notification_practice_context, practiceTrack: "shadowing" }));
-    return updated;
-  };
-  if (record.notification_session_status === "active" && record.notification_session_id) {
-    const updated = await save({
-      notification_practice_track: "shadowing",
-      notification_last_active_at: now,
-      notification_session_due_at: notifications.sessionDeadline(now),
-      notification_latest_percentage: summary.percentage,
-      notification_latest_completed_count: summary.completed_unit_count,
-      notification_latest_independent_count: summary.independent_unit_count,
-      notification_latest_assisted_count: summary.assisted_unit_count,
-      updated_at: now,
-    });
-    if (summary.percentage >= Number(record.notification_target_percentage == null ? 100 : record.notification_target_percentage)) {
-      return close(updated, "target_met");
-    }
-    return updated;
-  }
-  const sessionId = notifications.createSessionId();
-  const context = assignmentId ? "assignment" : "self_study";
-  const fields = notificationUpdateFields({
-    sessionId,
-    status: "active",
-    context,
-    assignmentId,
-    target: 100,
-    now,
-    startSummary: summary,
-    latestSummary: summary,
-    dueAt: notifications.sessionDeadline(now),
-    practiceTrack: "shadowing",
-  });
-  const updated = await save(fields);
-  await createSessionEvent(notifications.buildSessionEvent({
-    student,
-    material,
-    record: updated,
-    sessionId,
-    phase: "started",
-    occurredAt: now,
-    startSummary: summary,
-    endSummary: summary,
-    targetPercentage: 100,
-    assignmentId,
-    practiceContext: context,
-    practiceTrack: "shadowing",
-  }));
-  if (summary.percentage >= 100) return close(updated, "target_met");
-  return updated;
-}
-
 function activityMode(event) {
   const mode = safeListeningMode(event && (event.mode || event.practice_mode));
   if (!ACTIVITY_MODES.includes(mode)) throw new Error("LISTENING_MODE_INVALID");
@@ -1264,8 +544,8 @@ async function startLearningActivity(student, event, set, material) {
   if (event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
   if (!isIntensiveListeningSet(set)) throw new Error("MATERIAL_NOT_FOUND");
   const mode = activityMode(event);
-  const normalized = shadowing.normalizeMaterial(material);
-  if (!shadowing.validateCanonicalMaterial(normalized)) throw new Error("MATERIAL_INVALID");
+  const normalized = listeningMaterial.normalizeMaterial(material);
+  if (!listeningMaterial.validateCanonicalMaterial(normalized)) throw new Error("MATERIAL_INVALID");
   const sessionId = activitySessionId(student, event);
   const now = new Date();
   const existing = await loadActivitySession(student, sessionId);
@@ -1364,16 +644,9 @@ function appendActivityBuckets(daily, windows, start, seconds) {
 async function ensureActivityNotification(student, material, session, mode, now) {
   if (session.notification_session_id) return session;
   // The original progress notifier still owns the immediate Started event.
-  // Bind the time session to that same mode-specific thread so a long first
+  // Bind the time session to that same thread so a long first
   // unit cannot create a second bell/email thread at the 60-second flush.
-  let progress;
-  if (mode === "shadowing") {
-    progress = await loadShadowingProgress(student, material, true);
-    if (progress.notification_session_status !== "active" || !progress.notification_session_id) {
-      progress = await refreshShadowingNotification(student, material, progress, null);
-    }
-  } else {
-    progress = await loadBestRecord(student, material);
+  let progress = await loadBestRecord(student, material);
     if (progress.notification_session_status !== "active" || !progress.notification_session_id) {
       const summary = recordNotificationSummary(progress, null, material);
       const sessionId = notifications.createSessionId();
@@ -1393,7 +666,6 @@ async function ensureActivityNotification(student, material, session, mode, now)
         }));
       }
     }
-  }
   if (progress.notification_session_status !== "active" || !progress.notification_session_id) return session;
   return saveActivitySession(session, { notification_session_id: progress.notification_session_id, updated_at: now });
 }
@@ -1401,12 +673,8 @@ async function ensureActivityNotification(student, material, session, mode, now)
 async function closeActivityNotification(student, material, session, reason, now) {
   if (!session.notification_session_id) return;
   const mode = safeListeningMode(session.practice_mode) || "dictation";
-  const progress = mode === "shadowing"
-    ? await loadShadowingProgress(student, material, false)
-    : await loadBestRecord(student, material);
-  const summary = mode === "shadowing"
-    ? shadowingSessionSummary(progress)
-    : recordNotificationSummary(progress, null, material);
+  const progress = await loadBestRecord(student, material);
+  const summary = recordNotificationSummary(progress, null, material);
   const ownsActiveThread = progress.notification_session_status === "active"
     && String(progress.notification_session_id || "") === String(session.notification_session_id);
   // A result-based completion may already have closed this shared thread. Do
@@ -1417,11 +685,7 @@ async function closeActivityNotification(student, material, session, reason, now
     assignmentId: null, target: 100, now, latestSummary: summary,
     closedAt: now, closeReason: reason, practiceTrack: mode,
   });
-  if (mode === "shadowing") {
-    await db.collection(SHADOW_PROGRESS).doc(progress._id || progress.progress_id).update(fields);
-  } else {
-    await saveNotificationOnProgress(student, material, progress, fields);
-  }
+  await saveNotificationOnProgress(student, material, progress, fields);
   await createSessionEvent(notifications.buildSessionEvent({
     student,
     material,
@@ -1446,8 +710,8 @@ async function recordLearningActivity(student, event, set, material) {
   if (student.role !== "student") throw new Error("STUDENT_REQUIRED");
   if (event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
   const mode = activityMode(event);
-  const normalized = shadowing.normalizeMaterial(material);
-  if (!shadowing.validateCanonicalMaterial(normalized)) throw new Error("MATERIAL_INVALID");
+  const normalized = listeningMaterial.normalizeMaterial(material);
+  if (!listeningMaterial.validateCanonicalMaterial(normalized)) throw new Error("MATERIAL_INVALID");
   const sessionId = activitySessionId(student, event);
   let session = await loadActivitySession(student, sessionId);
   if (!session || session.status === "closed") {
@@ -1733,15 +997,7 @@ async function requesterDisputes(profile, material) {
 async function bootstrap(profile, event, set, material) {
   const linkedPractice = await linkedPracticeFor(set, material);
   if (profile.role === "teacher") {
-    const normalized = shadowing.normalizeMaterial(material);
-    const previewProgress = shadowing.createProgress(normalized, {
-      progress_id: null,
-      student_uid: profile.auth_uid,
-      reveal_threshold: 1,
-    });
-    Object.keys(previewProgress.segment_states || {}).forEach((segmentId) => {
-      previewProgress.segment_states[segmentId].transcript_revealed = true;
-    });
+    const normalized = listeningMaterial.normalizeMaterial(material);
     const base = {
       success: true,
       teacher_mode: true,
@@ -1758,13 +1014,9 @@ async function bootstrap(profile, event, set, material) {
     return {
       ...base,
       listening_version: 3,
-      preferred_mode: safeListeningMode(event.mode) || "dictation",
       tracks: {
-        dictation: { enabled: normalized.tracks.dictation.enabled, revision: normalized.content_revision, segment_count: shadowing.trainingSegments(normalized, "dictation").length },
-        shadowing: { enabled: normalized.tracks.shadowing.enabled, revision: normalized.content_revision, segment_count: shadowing.trainingSegments(normalized, "shadowing").length },
+        dictation: { enabled: normalized.tracks.dictation.enabled, revision: normalized.content_revision, segment_count: listeningMaterial.trainingSegments(normalized, "dictation").length },
       },
-      shadowing_progress: shadowingProgressResponse(material, previewProgress),
-      shadowing_segments: shadowingTrackResponse(material, previewProgress, true),
     };
   }
   const student = profile;
@@ -1799,7 +1051,7 @@ async function bootstrap(profile, event, set, material) {
       required_listening_tracks: Array.isArray(assignment.required_listening_tracks) ? assignment.required_listening_tracks : [],
     } : null,
   };
-  return shadowingBootstrap(student, event, set, material, base);
+  return { ...base, listening_version: 3, tracks: base.material.tracks };
 }
 
 async function checkUnit(student, event, set, material) {
@@ -2008,7 +1260,7 @@ function errorResponse(error) {
     MATERIAL_INVALID: "This listening material is not ready for practice.",
     ASSIGNMENT_NOT_FOUND: "This assignment is no longer available.",
     LISTENING_NOT_ASSIGNABLE: "Listening practice is self-study and cannot be assigned.",
-    LISTENING_MODE_INVALID: "Choose Dictation or Shadowing.",
+    LISTENING_MODE_INVALID: "This listening mode is unavailable.",
     ACTIVITY_SESSION_INVALID: "This learning-time session is unavailable.",
     ACTIVITY_SEQUENCE_INVALID: "This learning-time batch is unavailable.",
     ACTIVITY_SESSION_SUPERSEDED: "This learning-time session was superseded by another tab.",
@@ -2027,46 +1279,6 @@ function errorResponse(error) {
     REPLAY_NOT_ACTIVE: "This temporary practice has ended. Open the material again.",
     ACTIVITY_TYPE_INVALID: "This listening activity is unavailable.",
     TEACHER_USE_PROVIDE_WORD: "Teacher preview uses the direct Provide Word approval.",
-    LISTENING_TRACK_INVALID: "This Listening track is unavailable.",
-    LISTENING_TRACK_DISABLED: "This Listening track is not enabled for this material.",
-    LISTENING_TRACK_NOT_ASSIGNED: "This Listening track is not part of the assignment.",
-    SHADOWING_SEGMENT_NOT_FOUND: "This Shadowing segment is unavailable.",
-    SHADOWING_REFERENCE_INVALID: "This Shadowing segment cannot be scored yet.",
-    SHADOWING_LISTEN_REQUIRED: "Listen to the complete line before recording it.",
-    SHADOWING_TAKE_REQUIRED: "Record a scored take before moving this line to To Improve.",
-    SHADOWING_TAKE_IN_FLIGHT: "Finish the current recording before starting another.",
-    SCORING_POLICY_NOT_APPROVED: "Shadowing scoring is temporarily unavailable.",
-    SCORING_NOT_AVAILABLE: "Shadowing scoring is temporarily unavailable.",
-    SHADOWING_PROVIDER_FAILED: "Shadowing scoring could not be completed. Please try another take.",
-    SHADOWING_OUTCOME_UNKNOWN: "The recording result is being checked. Please do not retry this take.",
-    COMPLETE_PLAY_TOKEN_REQUIRED: "The listening playback could not be verified.",
-    COMPLETE_PLAY_TOKEN_INVALID: "Start the line with Listen before completing it.",
-    COMPLETE_PLAY_TOKEN_EXPIRED: "That listening play expired. Please listen again.",
-    COMPLETE_PLAY_TOO_EARLY: "Listen to the complete line before continuing.",
-    REVEAL_THRESHOLD_INVALID: "Choose a valid transcript reveal setting.",
-    SHADOWING_UPLOAD_PATH_INVALID: "This recording upload does not belong to the current take.",
-    SHADOWING_TAKE_EXPIRED: "This recording upload has expired. Please record again.",
-    SHADOWING_TAKE_NOT_FOUND: "This recording is unavailable.",
-    SHADOWING_TAKE_NOT_ACTIVE: "This recording is no longer accepting audio.",
-    SCORING_POLICY_CHANGED: "Shadowing scoring was updated. Please record a new take.",
-    AUDIO_WAV_INVALID: "Recordings must be valid WAV audio.",
-    AUDIO_FORMAT_INVALID: "Use a mono 16 kHz 16-bit WAV recording.",
-    AUDIO_TOO_LONG: "This recording is too long for the line.",
-    AUDIO_TOO_SHORT: "This recording is too short to score.",
-    AUDIO_SILENT: "No clear speech was detected in this recording.",
-    AUDIO_CLIPPED: "The recording is distorted. Please try again.",
-    AUDIO_TOO_LARGE: "This recording is too large.",
-    WAV_NOT_WAV: "Recordings must be WAV audio.",
-    WAV_FORMAT_UNSUPPORTED: "Use a mono 16 kHz 16-bit WAV recording.",
-    WAV_DURATION_INVALID: "This recording duration is not valid for the segment.",
-    WAV_TOO_SILENT: "No clear speech was detected in this recording.",
-    WAV_CLIPPED: "The recording is distorted. Please try again.",
-    WAV_TOO_LARGE: "This recording is too large.",
-    SHADOWING_SEGMENT_QUOTA: "This segment has reached its short-term scoring limit.",
-    SHADOWING_HOURLY_QUOTA: "You have reached the hourly Shadowing scoring limit.",
-    SHADOWING_DAILY_QUOTA: "You have reached today's Shadowing scoring limit.",
-    SHADOWING_GLOBAL_QUOTA: "Shadowing scoring is busy. Please try again later.",
-    SHADOWING_RATE_LIMITED: "Please wait a moment before sending another Shadowing take.",
   };
   return { success: false, code, message: messages[code] || "Unable to continue this listening practice." };
 }
@@ -2076,89 +1288,44 @@ exports.main = async (event = {}) => {
     const profile = await getAuthenticatedProfile();
     const action = String(event.action || "bootstrap");
     if (action === "listCatalog") return await listCatalog(profile);
-    if (action === "setModePreference") return await setModePreference(profile, event);
     const { set, material } = await loadMaterial(event);
     // Listening is one self-study surface. Apply the boundary once before any
     // material action so stale or forged Assignment URLs cannot reach grading,
-    // notifications, recording, replay, or learning-time writes.
+    // notifications, replay, or learning-time writes.
     if (profile.role === "student" && event.assignment_id) throw new Error("LISTENING_NOT_ASSIGNABLE");
     if (action === "startLearningActivity") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return startLearningActivity(profile, event, set, material);
+      return await startLearningActivity(profile, event, set, material);
     }
     if (action === "recordLearningActivity") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return recordLearningActivity(profile, event, set, material);
+      return await recordLearningActivity(profile, event, set, material);
     }
     if (action === "pauseLearningActivity") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return pauseLearningActivity(profile, event, set, material);
+      return await pauseLearningActivity(profile, event, set, material);
     }
     if (action === "closeLearningActivity") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return closeLearningActivity(profile, event, set, material);
+      return await closeLearningActivity(profile, event, set, material);
     }
-    if (action === "bootstrap") return bootstrap(profile, event, set, material);
-    if (action === "getTrack") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return getTrack(profile, event, material);
-    }
-    if (action === "setRevealThreshold") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return setRevealThreshold(profile, event, material);
-    }
-    if (action === "revealShadowingTranscript") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return revealShadowingTranscript(profile, event, material);
-    }
-    if (action === "startListen") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return startListeningPlayback(profile, event, material);
-    }
-    if (action === "completeListen") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return recordCompleteListen(profile, event, material);
-    }
-    if (action === "reserveShadowingTake") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return reserveShadowingTake(profile, event, material);
-    }
-    if (action === "finishShadowingTake") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return finishShadowingTake(profile, event, material);
-    }
-    if (action === "registerShadowingUpload") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return registerShadowingUpload(profile, event, material);
-    }
-    if (action === "cancelShadowingTake") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return cancelShadowingTake(profile, event, material);
-    }
-    if (action === "getShadowingTake") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return getShadowingTake(profile, event, material);
-    }
-    if (action === "continueShadowingSegment") {
-      if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return continueShadowingSegment(profile, event, material);
-    }
+    if (action === "bootstrap") return await bootstrap(profile, event, set, material);
     if (action === "check") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return checkUnit(profile, event, set, material);
+      return await checkUnit(profile, event, set, material);
     }
     if (action === "recordActivity") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return recordActivity(profile, event, set, material);
+      return await recordActivity(profile, event, set, material);
     }
-    if (action === "reveal") return revealAnswer(profile, event, set, material);
-    if (action === "policy") return policyStatus(event, material);
-    if (action === "provideWord") return provideTeacherWord(profile, event, material);
-    if (action === "submitSpellingDispute") return submitSpellingDispute(profile, event, material);
-    if (action === "exportMaterial") return exportMaterial(profile, material);
+    if (action === "reveal") return await revealAnswer(profile, event, set, material);
+    if (action === "policy") return await policyStatus(event, material);
+    if (action === "provideWord") return await provideTeacherWord(profile, event, material);
+    if (action === "submitSpellingDispute") return await submitSpellingDispute(profile, event, material);
+    if (action === "exportMaterial") return await exportMaterial(profile, material);
     if (action === "startReplay") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
-      return startReplay(profile, material);
+      return await startReplay(profile, material);
     }
     throw new Error("ACTION_NOT_SUPPORTED");
   } catch (error) {
@@ -2177,13 +1344,4 @@ exports.__test = {
   sessionSummaryFromProgress,
   notificationUpdateFields,
   isOpenAssignment,
-  shadowingProgressId,
-  safeShadowingProgress,
-  shadowingTrackResponse,
-  shadowingProgressResponse,
-  takePath,
-  shadowingMaxDurationSeconds,
-  shadowingMaxBytes,
-  safeShadowingResult,
-  shadowingReference,
 };

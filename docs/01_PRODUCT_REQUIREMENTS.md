@@ -24,7 +24,7 @@ Writing/Speaking 账本中的重试与额度拒绝逐条展示；Scan Words 现�
 按扫描任务汇总，旧 Writing 任务可能没有调用次数与 Token，必须显示未知而非零。
 费用按页面注明日期的北京价目及已记录缓存用量估算，未扣免费额度，不代表账单；
 另列同等文本用量的 Max/Plus 对比。语音转写单列但不计算 Token 费用；声纹、
-Shadowing 评分、站外调用及从未记录的历史调用不在本视图内。
+站外调用及从未记录的历史调用不在本视图内。
 
 仅活跃教师可读取；按需分页加载，未加载完整时所有汇总标记 Partial。
 教师可手动刷新，重新进入过期视图时刷新。此功能不更改模型、付费开关、
@@ -2658,61 +2658,29 @@ Parent Mode do not receive this entry point. The server enforces authentication,
 idempotency, one active scan, per-page retry, and 10-scan/30-page Shanghai-day
 quotas. Once owner-gated infrastructure and smoke testing are complete, the
 feature switch applies to every active student rather than a cohort.
-### Listening V2: Dictation and Shadowing
+### Listening: Dictation only (owner decision 2026-09-22)
 
-Listening is one material surface with explicit Dictation and Shadowing tracks.
-The dedicated Listening Library and practice toolbar use a top-level mode menu;
-the selected mode has highest priority and every subsequently opened material
-uses it without an intermediate chooser. Existing contextual BBC/IELTS buttons
-retain the label `Intensive Listening`. Existing URLs remain compatible and
-default invalid/missing preferences to Dictation. Practice toolbar geometry is
-Back / current-mode result progress / mode switch.
+Listening opens each material directly in Dictation. The Library and practice
+page have no mode menu, microphone, recording, voice replay, pronunciation
+score, or transcript-reveal preference. Existing URLs, including retired mode
+parameters, open Dictation. BBC/IELTS entry links remain compatible.
 
-Both modes use one teacher-reviewed canonical unit list, timing, speaker and
-text, but keep independent result progress and resume at the first unfinished
-or unqualified unit. A canonical content update recalculates both current result
-scopes while permanently retaining historical effective learning time.
-Intensive Listening is self-study only: it is hidden from Assign and rejected
-by the server; ordinary BBC/IELTS comprehension exercises remain assignable.
+One teacher-reviewed canonical unit list owns timing, speaker, transcript and
+private answer slots. Canonical content edits may change the Dictation progress
+scope but preserve historical learning time. Listening remains self-study only,
+without new assignments or STARs; ordinary comprehension remains assignable.
 
 Dictation completes a unit only at 100%. A checked result strictly above 50%
 persists that checked entry/mark snapshot, including wrong words; a result at or
 below 50% never erases the last qualifying snapshot. Unchecked edits remain
-local and trigger a warning before mode switch. `Show Answer` becomes `Hide`,
+local. `Show Answer` becomes `Hide`,
 and focusing a word slot hides the answer. Argue exists only in Dictation.
-
-Shadowing requires a server-verified 90% audible listen before listen credit,
-then records one unit at a time and scores through server-side Tencent SOE-N
-paragraph EvalMode 2. A unit contains at most 120 reference words and qualifies
-at integer product score 80. A red/missing/misread word caps the score at 79;
-yellow may still qualify. Latest valid Attempt owns current word feedback and
-session replay, while Best Score is monotonic. Transcript reveal preference is
-account-wide (1/2/3/5 complete listens, default 3, or off); manual Show Script
-is always available and every conclusive score reveals word feedback. Shadowing
-never creates STARs, Argue requests, or teacher score overrides.
-
-The learner Shadowing queue contains only canonical `dictation` units because
-those are the units accepted by complete-listen and recording endpoints.
-Canonical `skip` and `context_only` rows remain available to Dictation/material
-authoring but never render as dead Shadowing practice cards. Ordered unit time
-ranges may overlap at reviewed ASR or speaker hand-offs; each practice unit is
-still clipped to its own start/end bounds.
-
-Recording starts after a visible three-second countdown. Video material plays
-muted picture during the take. Student recording may end early; the safety cap
-is source duration × 1.8 + 3 seconds, never above 300 seconds, and long outside
-silence is trimmed locally. `Thinking` is the only scoring wait label. A
-qualified current take shows a cancellable 1.5-second depletion indicator before
-advancing. Browser replay keeps only the latest Blob per practised unit during
-the open-material session and warns on exit; it is destroyed on exit/reload.
-Private server upload objects are deleted immediately after every conclusive
-provider result, with bounded maintenance retry only when deletion fails.
 
 Completion remains result-based. Effective learning time is a separate,
 permanent server-accepted total in seconds. It counts visible/focused playback,
-typing, recording/countdown, replay and active feedback review, pauses after 20
+typing, replay and active feedback review, pauses after 20
 seconds without qualifying activity, pauses immediately on hidden/blur, and
-excludes permission, network, `Thinking`, menus/modals and auto-advance waits.
+excludes network and modal waits.
 Three inactive minutes closes the session. The achievement calendar lights a
 Shanghai day at 60 accepted seconds and shows only formatted time at the right;
 reports may aggregate the same safe material/mode totals. Time never completes

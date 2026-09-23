@@ -1659,7 +1659,7 @@ callback immediately before the outbound model request; Scan Words uses it as
 the quota boundary, while all existing Writing callers retain identical
 behavior. This keeps provider configuration/protocol handling unified without
 coupling scan sessions to Writing compositions.
-### Listening V2: explicit tracks and provider isolation
+### Listening V2: explicit tracks and provider isolation (superseded 2026-09-22)
 
 Listening stores Dictation and Shadowing as explicit tracks under one stable
 material identity. This preserves existing Dictation progress while preventing
@@ -1759,3 +1759,13 @@ no remote font service, JavaScript browser sniffing or npm dependency is added.
 Use swap plus sans-serif fallback. This preserves the native look where available
 without claiming pixel-identical rendering between platforms. The owner approved
 static publication; the uploader serves the new TTF as font/ttf.
+
+## 2026-09-22: Retire Shadowing; retain Dictation and private history
+
+Owner abandons Shadowing entirely. Remove its UI, routes, score/provider domain,
+WebSocket dependency and cleanup worker rather than keeping a feature flag.
+Extract only shared canonical normalization into `intensiveListening/material.js`
+so Dictation IDs, revisions, answer privacy and legacy materials stay compatible.
+No dependency is added. Keep existing audit records and permanent accepted time;
+read-only time aggregation groups retired modes under `archived`. Live timer and
+function retirement is a separate owner-authorized deployment step.

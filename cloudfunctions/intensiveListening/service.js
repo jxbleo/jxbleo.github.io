@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const shadowing = require("./shadowing-service");
+const listeningMaterial = require("./material");
 
 function normalizeAnswer(value) {
   return String(value == null ? "" : value)
@@ -42,8 +42,8 @@ function isProvided(slot) {
 }
 
 function dictationUnits(material) {
-  const normalized = shadowing.normalizeMaterial(material);
-  return shadowing.trainingSegments(normalized, "dictation");
+  const normalized = listeningMaterial.normalizeMaterial(material);
+  return listeningMaterial.trainingSegments(normalized, "dictation");
 }
 
 function emptyUnitState(slotCount) {
@@ -178,9 +178,9 @@ function progressSummary(material, unitStates) {
 }
 
 function publicMaterial(material) {
-  const normalized = shadowing.normalizeMaterial(material);
+  const normalized = listeningMaterial.normalizeMaterial(material);
   const units = normalized.units;
-  const dictation = shadowing.trainingSegments(normalized, "dictation");
+  const dictation = listeningMaterial.trainingSegments(normalized, "dictation");
   const output = {
     material_id: String(material.material_id || material.set_id || ""),
     set_id: String(material.set_id || material.material_id || ""),
@@ -210,8 +210,8 @@ function publicMaterial(material) {
     })),
   };
   // Schema v3 has one canonical unit list. The safe response carries timing,
-  // speaker, and Dictation slot geometry only; transcript text and Shadowing
-  // reference words remain server-only until their respective reveal rules.
+  // speaker, and Dictation slot geometry only; transcript answers remain
+  // server-only until the answer reveal boundary.
   output.schema_version = normalized.schema_version;
   output.media = { ...normalized.media };
   output.transcript_revision = normalized.transcript_revision;
@@ -219,17 +219,16 @@ function publicMaterial(material) {
   output.linked_practice_set_id = normalized.linked_practice_set_id;
   output.modes = {
     dictation: { enabled: normalized.tracks.dictation.enabled },
-    shadowing: { enabled: normalized.tracks.shadowing.enabled },
   };
   output.tracks = {};
-  ["dictation", "shadowing"].forEach((track) => {
+  ["dictation"].forEach((track) => {
     const source = normalized.tracks[track];
-    const training = shadowing.trainingSegments(normalized, track);
+    const training = listeningMaterial.trainingSegments(normalized, track);
     output.tracks[track] = {
       enabled: Boolean(source && source.enabled),
       revision: source && source.revision || "1",
       segment_count: training.length,
-      segments: shadowing.trackSegments(normalized, track).map((segment) => {
+      segments: listeningMaterial.trackSegments(normalized, track).map((segment) => {
         const safe = {
           segment_id: segment.segment_id,
           start_seconds: segment.start_seconds,
@@ -263,7 +262,7 @@ function sourceMaterial(material) {
     return [hours, minutes, seconds].map((part) => String(part).padStart(2, "0")).join(":")
       + "." + String(millis).padStart(3, "0");
   };
-  const normalized = shadowing.normalizeMaterial(material);
+  const normalized = listeningMaterial.normalizeMaterial(material);
   const output = {
     schemaVersion: 3,
     schema_version: 3,
@@ -279,7 +278,6 @@ function sourceMaterial(material) {
     policyRevision: Math.max(1, Number(material.policy_revision) || 1),
     modes: {
       dictation: { enabled: normalized.tracks.dictation.enabled },
-      shadowing: { enabled: normalized.tracks.shadowing.enabled },
     },
     units: normalized.units.map((unit) => {
       const item = {
@@ -309,7 +307,7 @@ function sourceMaterial(material) {
 
 function progressScope(material) {
   const materialId = String(material && (material.material_id || material.set_id) || "");
-  const normalized = shadowing.normalizeMaterial(material);
+  const normalized = listeningMaterial.normalizeMaterial(material);
   const version = String(material && (material.content_revision || material.content_version) || normalized.content_revision || "1");
   return version === "1" ? materialId : materialId + "\ncontent_version:" + version;
 }
@@ -355,6 +353,6 @@ module.exports = {
   sourceMaterial,
   progressScope,
   publicProgress,
-  normalizedMaterial: shadowing.normalizeMaterial,
-  publicListeningMaterial: shadowing.safeTrackMaterial,
+  normalizedMaterial: listeningMaterial.normalizeMaterial,
+  publicListeningMaterial: listeningMaterial.safeTrackMaterial,
 };

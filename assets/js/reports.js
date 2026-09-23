@@ -370,11 +370,11 @@
         var summary = detail && detail.effective_learning_time || {};
         var byMode = summary.by_mode || {};
         var dictation = Math.max(0, Math.floor(Number(byMode.dictation) || 0));
-        var shadowing = Math.max(0, Math.floor(Number(byMode.shadowing) || 0));
+        var archived = Math.max(0, Math.floor(Number(summary.effective_seconds) || 0) - dictation);
         return '<div class="reports-category-list reports-listening-time" aria-label="Effective Listening time">' +
             '<div class="reports-category-item"><span>Effective Listening</span><strong>' + escapeHtml(effectiveTimeLabel(summary)) + '</strong></div>' +
             '<div class="reports-category-item"><span>Dictation</span><strong>' + escapeHtml(!dictation ? '0 min' : dictation < 60 ? '<1 min' : Math.max(1, Math.round(dictation / 60)) + ' min') + '</strong></div>' +
-            '<div class="reports-category-item"><span>Shadowing</span><strong>' + escapeHtml(!shadowing ? '0 min' : shadowing < 60 ? '<1 min' : Math.max(1, Math.round(shadowing / 60)) + ' min') + '</strong></div>' +
+            (archived ? '<div class="reports-category-item"><span>Archived practice</span><strong>' + escapeHtml(archived < 60 ? '<1 min' : Math.max(1, Math.round(archived / 60)) + ' min') + '</strong></div>' : '') +
         '</div>';
     }
 

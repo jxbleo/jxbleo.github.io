@@ -379,7 +379,7 @@ function effectiveLearningTimeSummary(sessions, setById, periodStart, cutoffAt) 
   const rows = learningActivity.aggregateActivities(sessions).filter((row) =>
     row.date && (!startKey || row.date >= startKey) && (!endKey || row.date <= endKey)
   );
-  const byMode = { dictation: 0, shadowing: 0 };
+  const byMode = { dictation: 0, archived: 0 };
   const items = rows.map((row) => {
     const seconds = Math.max(0, Math.floor(Number(row.effective_seconds) || 0));
     if (Object.hasOwn(byMode, row.mode)) byMode[row.mode] += seconds;

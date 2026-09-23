@@ -13,7 +13,7 @@ function usage() {
 The JSON may be an array of transcript records or a self-contained object with
 materialId, sourceSetId, title, audioSrc, contentVersion, and segments. V2
 objects may also contain media, transcriptRevision, and explicit tracks with
-dictation and shadowing segments. Segment practiceMode values are dictation,
+dictation segments. Segment practiceMode values are dictation,
 listen_only/context_only, or skip. Public content contains
 metadata only; text and answers are written to ignored private source data.`);
 }
@@ -200,22 +200,7 @@ const units = records.map((record, index) => {
 });
 
 const dictationUnits = units.filter((unit) => unit.practice_mode === "dictation");
-const shadowingSegments = sourceTracks && sourceTracks.shadowing && Array.isArray(sourceTracks.shadowing.segments)
-  ? sourceTracks.shadowing.segments.map((segment, index) => {
-    const range = timeRange(segment, index + 1);
-    const text = String(segment.text == null ? segment.transcript || "" : segment.text).trim();
-    if (!text) throw new Error(`Shadowing segment ${index + 1} has no text`);
-    return {
-      segment_id: String(segment.segmentId || segment.segment_id || `shadow-${String(index + 1).padStart(3, "0")}`),
-      speaker: String(segment.speaker || segment.speaker_name || "").trim(), text,
-      start_seconds: range.start, end_seconds: range.end,
-      practice_mode: String(segment.practiceMode || segment.practice_mode || "shadowing").trim().toLowerCase(),
-      reference_words: Array.isArray(segment.referenceWords || segment.reference_words) ? (segment.referenceWords || segment.reference_words).map((word, wordIndex) => ({
-        word_id: String(word.wordId || word.word_id || `w${String(wordIndex + 1).padStart(3, "0")}`), text: String(word.text || ""), unscored: word.unscored === true,
-      })) : [],
-    };
-  }) : [];
-if (!dictationUnits.length && !shadowingSegments.length) throw new Error("The material must contain at least one dictation or shadowing segment");
+if (!dictationUnits.length) throw new Error("The material must contain at least one dictation segment");
 
 const material = {
   material_id: setId,
@@ -237,7 +222,6 @@ const material = {
 };
 if (schemaVersion >= 2 || sourceTracks) {
   const dictationTrack = sourceTracks && sourceTracks.dictation || {};
-  const shadowingTrack = sourceTracks && sourceTracks.shadowing || {};
   material.schema_version = 2;
   material.schemaVersion = 2;
   material.media = payload.media && typeof payload.media === "object" ? { ...payload.media } : { audio_src: audioSrc };
@@ -247,11 +231,6 @@ if (schemaVersion >= 2 || sourceTracks) {
       enabled: dictationTrack.enabled !== false && dictationUnits.length > 0,
       revision: String(dictationTrack.revision || "1"),
       segments: units.filter((unit) => unit.practice_mode === "dictation").map((unit) => ({ ...unit, segment_id: unit.unit_id })),
-    },
-    shadowing: {
-      enabled: shadowingTrack.enabled !== false && shadowingSegments.length > 0,
-      revision: String(shadowingTrack.revision || "1"),
-      segments: shadowingSegments,
     },
   };
 }
@@ -265,7 +244,7 @@ const meta = {
   publishedOn: publishedOn || String(payload && payload.publishedOn || existingMeta.publishedOn || "") || new Date().toISOString().slice(0, 10),
   topic: seriesLabel,
   tags: ["Listening", sourceLabel].filter(Boolean),
-  note: `${dictationUnits.length + shadowingSegments.length} listening segments`,
+  note: `${dictationUnits.length} listening segments`,
   sourceFamily,
   sourceLabel,
   seriesLabel,
@@ -274,8 +253,7 @@ const meta = {
   dictationUnitCount: dictationUnits.length,
   sequenceUnitCount: units.length,
   schemaVersion: material.schema_version || 1,
-  shadowingSegmentCount: shadowingSegments.length,
-  trackCount: (dictationUnits.length ? 1 : 0) + (shadowingSegments.length ? 1 : 0),
+  trackCount: 1,
   catalogVisible: false,
   visible: true,
 };

@@ -11,7 +11,7 @@ const writingDisputes = require("../_shared/writing-disputes");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const intensiveSpelling = require("../_shared/intensive-listening-spelling");
 const intensiveListeningService = require("../intensiveListening/service");
-const listeningShadowing = require("../intensiveListening/shadowing-service");
+const listeningMaterial = require("../intensiveListening/material");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -1224,8 +1224,7 @@ function listeningDraftFromEvent(event) {
     return output;
   });
   const dictationEnabled = (!tracks.dictation || tracks.dictation.enabled !== false) && units.some((unit) => unit.practice_mode === "dictation");
-  const shadowingEnabled = (!tracks.shadowing || tracks.shadowing.enabled !== false) && units.some((unit) => unit.practice_mode === "dictation");
-  if (!dictationEnabled && !shadowingEnabled) throw new Error("LISTENING_TRACKS_EMPTY");
+  if (!dictationEnabled) throw new Error("LISTENING_TRACKS_EMPTY");
   const contentRevision = text(source.content_revision || source.contentRevision || source.transcript_revision || source.transcriptRevision || source.content_version || source.contentVersion || normalized.content_revision) || "1";
   return {
     material_id: id,
@@ -1245,9 +1244,8 @@ function listeningDraftFromEvent(event) {
     units,
     tracks: {
       dictation: { enabled: dictationEnabled, revision: contentRevision, segments: units },
-      shadowing: { enabled: shadowingEnabled, revision: contentRevision, segments: units.map((unit) => ({ ...unit, slots: undefined })) },
     },
-    modes: { dictation: { enabled: dictationEnabled }, shadowing: { enabled: shadowingEnabled } },
+    modes: { dictation: { enabled: dictationEnabled } },
     publication_status: "draft",
     visible: false,
   };
@@ -1272,7 +1270,6 @@ function listeningTeacherView(material, includeSource = true, metadata = {}) {
     media: normalized.media,
     tracks: {
       dictation: { enabled: normalized.tracks.dictation.enabled, revision: normalized.tracks.dictation.revision, segment_count: normalized.tracks.dictation.segments.length },
-      shadowing: { enabled: normalized.tracks.shadowing.enabled, revision: normalized.tracks.shadowing.revision, segment_count: normalized.tracks.shadowing.segments.length },
     },
     source: includeSource ? source : null,
   };
@@ -1308,19 +1305,15 @@ function listeningValidation(material) {
   const errors = [];
   const warnings = [];
   try {
-    const checked = listeningShadowing.validateCanonicalMaterial(normalized);
+    const checked = listeningMaterial.validateCanonicalMaterial(normalized);
     if (!checked.tracks.dictation.enabled) errors.push("Dictation: at least one scored unit is required");
-    if (!checked.tracks.shadowing.enabled) warnings.push("Shadowing preview is disabled until a scored canonical unit is available");
-    checked.units.forEach((unit, index) => {
-      if (unit.practice_mode === "dictation" && !listeningShadowing.referenceWords(unit).length) warnings.push(`Unit ${index + 1}: no scored reference words; verify the transcript`);
-    });
   } catch (error) {
     const code = String(error && error.message || "LISTENING_VALIDATION_FAILED");
     errors.push(code);
   }
   if (!normalized.media.src) errors.push("common: media source is required");
   if (!normalized.source_label) warnings.push("common: source label is empty");
-  return { valid: errors.length === 0, errors, warnings, counts: { dictation: listeningShadowing.trainingSegments(normalized, "dictation").length, shadowing: listeningShadowing.trainingSegments(normalized, "shadowing").length } };
+  return { valid: errors.length === 0, errors, warnings, counts: { dictation: listeningMaterial.trainingSegments(normalized, "dictation").length } };
 }
 
 async function saveListeningMaterial(event, teacher) {
@@ -1375,15 +1368,13 @@ function publishedListeningMaterial(draft, current) {
     content_version: contentRevision,
     content_revision: contentRevision,
     dictation_revision: contentRevision,
-    shadowing_revision: contentRevision,
     transcript_revision: contentRevision,
     tracks: {
       ...draft.tracks,
       dictation: { ...draft.tracks.dictation, revision: contentRevision, segments: after.units },
-      shadowing: { ...draft.tracks.shadowing, revision: contentRevision, segments: after.units.map((unit) => ({ ...unit, slots: undefined })) },
     },
     units: after.units,
-    modes: { dictation: { enabled: after.tracks.dictation.enabled }, shadowing: { enabled: after.tracks.shadowing.enabled } },
+    modes: { dictation: { enabled: after.tracks.dictation.enabled } },
   };
 }
 
@@ -1400,9 +1391,8 @@ async function upsertListeningSet(material, status, now) {
     link: `intensive-listening.html?set=${encodeURIComponent(id)}`,
     visible: status === "published",
     schema_version: 3,
-    dictation_unit_count: normalized.tracks.dictation.enabled ? listeningShadowing.trainingSegments(normalized, "dictation").length : 0,
-    shadowing_segment_count: normalized.tracks.shadowing.enabled ? listeningShadowing.trainingSegments(normalized, "shadowing").length : 0,
-    track_count: listeningShadowing.enabledTracks(normalized).length,
+    dictation_unit_count: normalized.tracks.dictation.enabled ? listeningMaterial.trainingSegments(normalized, "dictation").length : 0,
+    track_count: listeningMaterial.enabledTracks(normalized).length,
     mastery_enabled: false,
     passing_percentage: 100,
     mastery_percentage: 100,
@@ -1449,10 +1439,7 @@ async function publishListeningMaterial(event, teacher) {
   const afterNormalized = intensiveListeningService.normalizedMaterial(payload);
   const commonChanged = Boolean(beforeNormalized) && JSON.stringify(beforeNormalized.media) !== JSON.stringify(afterNormalized.media);
   const dictationChanged = !current || listeningTrackChanged(current, payload, "dictation", commonChanged);
-  const shadowingChanged = !current || listeningTrackChanged(current, payload, "shadowing", commonChanged);
-  const impact = commonChanged || (dictationChanged && shadowingChanged)
-    ? "both"
-    : dictationChanged ? "dictation" : shadowingChanged ? "shadowing" : "metadata";
+  const impact = commonChanged || dictationChanged ? "dictation" : "metadata";
   const historyId = `listening-history-${id}-${nextPublicationRevision}`;
   try {
     await db.collection(LISTENING_HISTORY_COLLECTION).doc(historyId).create({

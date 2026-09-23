@@ -19,7 +19,6 @@ const DISPATCH_LIMIT = 20;
 const MAX_RETRIES = 5;
 const CLAIM_TIMEOUT_MS = 10 * 60 * 1000;
 const INTENSIVE_PROGRESS = "intensive_listening_progress";
-const SHADOWING_PROGRESS = "listening_shadowing_progress";
 const INTENSIVE_MATERIALS = "intensive_listening_materials";
 const LEARNING_ACTIVITY = "learning_activity_sessions";
 
@@ -263,55 +262,6 @@ async function closeIdleIntensiveSessions(now) {
   return closed;
 }
 
-async function closeIdleShadowingSessions(now) {
-  let rows;
-  try { rows = await getAll(SHADOWING_PROGRESS, { notification_session_status: "active" }); }
-  catch (_) { rows = await getAll(SHADOWING_PROGRESS); }
-  const expired = rows.filter((row) => dateValue(row.notification_session_due_at) > 0 && dateValue(row.notification_session_due_at) <= now.getTime());
-  if (!expired.length) return 0;
-  const materials = new Map((await getAll(INTENSIVE_MATERIALS)).map((row) => [text(row.set_id || row.material_id), row]));
-  let closed = 0;
-  for (const row of expired) {
-    const material = materials.get(text(row.set_id || row.material_id));
-    if (!material) continue;
-    let snapshot = null;
-    await db.runTransaction(async (transaction) => {
-      const result = await transaction.collection(SHADOWING_PROGRESS).where({ progress_id: text(row.progress_id), student_uid: text(row.student_uid) }).limit(1).get();
-      const current = result.data && result.data[0] ? recordData(result.data[0]) : null;
-      if (!current || current.notification_session_status !== "active" || dateValue(current.notification_session_due_at) > now.getTime()) return;
-      snapshot = current;
-      await transaction.collection(SHADOWING_PROGRESS).doc(current._id).update({
-        notification_session_status: "paused",
-        notification_session_due_at: null,
-        notification_closed_at: now,
-        notification_close_reason: "idle",
-        notification_latest_percentage: Number(current.notification_latest_percentage) || Number(current.percentage) || 0,
-        notification_latest_completed_count: Number(current.notification_latest_completed_count) || Number(current.qualified_segment_count) || 0,
-        notification_latest_independent_count: Number(current.notification_latest_independent_count) || 0,
-        notification_latest_assisted_count: Number(current.notification_latest_assisted_count) || 0,
-        updated_at: now,
-      });
-    });
-    if (!snapshot) continue;
-    const student = await getOne("students", { auth_uid: text(snapshot.student_uid) });
-    if (!student) continue;
-    const endSummary = {
-      percentage: Number(snapshot.notification_latest_percentage) || Number(snapshot.percentage) || 0,
-      completed_unit_count: Number(snapshot.notification_latest_completed_count) || Number(snapshot.qualified_segment_count) || 0,
-      independent_unit_count: Number(snapshot.notification_latest_independent_count) || 0,
-      assisted_unit_count: Number(snapshot.notification_latest_assisted_count) || 0,
-    };
-    await createIntensiveEvent(intensiveNotifications.buildSessionEvent({
-      student, material, record: snapshot, sessionId: snapshot.notification_session_id, phase: "paused", occurredAt: now,
-      startSummary: { percentage: Number(snapshot.notification_start_percentage) || 0, completed_unit_count: Number(snapshot.notification_start_completed_count) || 0 },
-      endSummary, targetPercentage: snapshot.notification_target_percentage, assignmentId: snapshot.notification_assignment_id,
-      practiceContext: snapshot.notification_practice_context, practiceTrack: "shadowing",
-    }));
-    closed += 1;
-  }
-  return closed;
-}
-
 async function closeIdleLearningActivities(now) {
   let rows;
   try { rows = await getAll(LEARNING_ACTIVITY, { kind: "session", status: "active" }); }
@@ -336,15 +286,15 @@ async function closeIdleLearningActivities(now) {
     if (!current || !current.notification_session_id) continue;
     const student = await getOne("students", { auth_uid: text(current.student_uid) });
     if (!student) continue;
-    const progressCollection = current.practice_mode === "shadowing" ? SHADOWING_PROGRESS : INTENSIVE_PROGRESS;
-    const progress = await getOne(progressCollection, {
+    if (current.practice_mode !== "dictation") continue;
+    const progress = await getOne(INTENSIVE_PROGRESS, {
       student_uid: text(current.student_uid),
       set_id: text(current.set_id || current.material_id),
     }) || {};
     const endSummary = {
       percentage: Number(progress.notification_latest_percentage) || Number(progress.percentage) || 0,
       completed_unit_count: Number(progress.notification_latest_completed_count)
-        || Number(current.practice_mode === "shadowing" ? progress.qualified_segment_count : progress.completed_unit_count) || 0,
+        || Number(progress.completed_unit_count) || 0,
       independent_unit_count: Number(progress.notification_latest_independent_count) || Number(progress.independent_unit_count) || 0,
       assisted_unit_count: Number(progress.notification_latest_assisted_count) || Number(progress.assisted_unit_count) || 0,
     };
@@ -569,8 +519,7 @@ async function dispatch(now) {
   // Paused event with effective_seconds; the legacy progress closers then sync
   // their state and harmlessly reuse that same event ID.
   const intensive_paused_sessions = await closeIdleLearningActivities(now)
-    + await closeIdleIntensiveSessions(now)
-    + await closeIdleShadowingSessions(now);
+    + await closeIdleIntensiveSessions(now);
   const anchors = await dueEvents(now);
   const recipients = await enabledRecipients();
   const summary = {
@@ -645,7 +594,6 @@ module.exports._test = {
   dispatch,
   authorizedTimerEvent,
   closeIdleIntensiveSessions,
-  closeIdleShadowingSessions,
   deliveryMessageId,
   isIntensiveEvent,
   smtpConfiguration,

@@ -342,10 +342,11 @@ All collections use `ADMINONLY`:
 - `class_memberships`: time-bounded student-to-class history
 - `learning_reports`: preview and immutable published learning-report snapshots
 - `parent_view_sessions`: hashed Parent Mode sessions and anti-enumeration login guards
-- `intensive_listening_materials`, `intensive_listening_progress`,
-  `listening_shadowing_progress`, `listening_shadowing_takes`, and
-  `listening_shadowing_usage`: private canonical Listening content and
-  independent Dictation/Shadowing result history
+- `intensive_listening_materials`, `intensive_listening_progress`: private
+  canonical Listening content and Dictation result history
+- Retired `listening_shadowing_progress`, `listening_shadowing_takes`, and
+  `listening_shadowing_usage`: historical ADMINONLY records only; no runtime
+  readers/writers or scoring routes remain after 2026-09-22
 - `learning_activity_sessions`: permanent server-accepted Listening effective
   time plus deterministic per-student lease rows; never stores answers,
   transcripts, audio, provider evidence, or pointer coordinates
@@ -1984,6 +1985,14 @@ access. Recording-entry preflight exposes only safe availability, not counts or
 provider locators. No new collection or student re-enrolment is needed.
 
 ### Intensive Listening Library invariants
+
+Owner decision (2026-09-22): Listening is Dictation-only. Do not restore
+Shadowing controls, recording/scoring APIs, mode/reveal preferences, or the
+`listeningMaintenance` worker. Shared material normalization lives in
+`cloudfunctions/intensiveListening/material.js`. Preserve historical private
+records and accepted learning time; retired-mode time is an archived aggregate.
+Retiring deployed functions/timers or deleting historical audio requires separate
+owner authorization; local source removal does not perform those cloud actions.
 
 Intensive Listening is a dedicated authenticated student library, not an
 ordinary Student or Teacher Library section. It lists only visible sets with

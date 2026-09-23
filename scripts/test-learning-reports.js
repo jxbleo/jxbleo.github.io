@@ -210,7 +210,7 @@ function testEffectiveLearningTimeProjection() {
   const alice = snapshot.student_details.find((detail) => detail.student_uid === "alice");
   assert.equal(alice.effective_learning_time.effective_seconds, 275);
   assert.equal(alice.effective_learning_time.by_mode.dictation, 185);
-  assert.equal(alice.effective_learning_time.by_mode.shadowing, 90);
+  assert.equal(alice.effective_learning_time.by_mode.archived, 90);
   assert.equal(alice.effective_learning_time.items.length, 3);
   assert.equal(alice.effective_learning_time.items[0].title, "Listening time");
   assert.equal(Object.hasOwn(alice.effective_learning_time.items[0], "student_uid"), false);

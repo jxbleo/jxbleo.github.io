@@ -3331,22 +3331,17 @@ only the chip area scrolls while the count and Add action stay visible. Tap one
 chip once and confirm it turns red with a corner `×`; tap it again and verify the
 glass Keep/Remove confirmation. Keep must preserve it, Remove must clear it and
 restore the source-token state. Repeat at 390px and desktop.
-### Listening V2
+### Dictation-only Listening (2026-09-22)
 
-Run `npm run test:listening-shadowing`,
-`npm run test:listening-shadowing-provider`, and
-`npm run test:listening-authoring`. Verify transcript redaction before reveal,
-legacy `listen_only` normalization, 80 pass/79 red cap, monotonic best score,
-WAV validation, duplicate take replay, provider fixture isolation, track-aware
-assignment payloads, teacher editor validation, no private source in static
-output, pre-upload provider-configuration gating, policy-change cleanup,
-single-take locking, server-timed complete-listen tokens, and
-`listeningMaintenance` timer-token gating. Manual browser QA covers
-Dictation/Shadowing selection, complete-play counting, microphone denial,
-record/upload failure, To Improve, teacher per-line timing/text editing, reduced
-motion, keyboard focus, and 1440px, 1024px, 768px, and 390px viewports.
+Run `test:intensive-listening`, `test:intensive-listening-library`,
+`test:listening-contracts`, `test:listening-authoring` and
+`test:listening-retirement`. Verify redacted bootstrap/catalog, legacy material
+IDs/revisions, replay/Argue, direct completion, and rejected retired actions.
+Confirm no mode dropdown, microphone, scoring or teacher mode-preview controls.
+Verify visitor playback locally and student/teacher flows with offline fixtures;
+no test may call a speech provider or mutate production history.
 
-## Argue email / single-question review (2026-09-06)
+## Argue email /## Argue email / single-question review (2026-09-06)
 
 - Run `npm run test:argue-emails`, `npm run test:attempt-emails`, `npm run test:login-redirect`, `npm run test:teacher-quick-accept`, `npm run test:intensive-listening`, and `npm run test:global-progress`.
 - Validate new student requests create exactly one private event; a failed outbox write leaves a recoverable intent; a muted inbox is not backfilled; resolved/cancelled/deleted requests are not sent.
@@ -3368,13 +3363,11 @@ request; do not backdate genuine requests or resend resolved ones to force a tes
 ## Listening mode-first and effective learning time (2026-09-07)
 
 - Run `npm run test:listening-activity`, `npm run test:listening-contracts`,
-  `npm run test:listening-shadowing`, `npm run test:listening-shadowing-provider`,
   `npm run test:listening-authoring`, and `npm run test:learning-reports`.
-- Verify the Library mode menu defaults to Dictation, practice has one shared
-  mode toolbar, Shadowing uses canonical unit IDs/timing, and no Listening
-  Assignment affordance is rendered.
+- Verify Library/practice open Dictation directly with unchanged unit IDs/timing
+  and no Listening Assignment affordance.
 - Verify effective time stops after 20 seconds without interaction, pauses on
-  hidden/blurred pages, excludes Thinking/auto-advance, closes stale sessions at
+  hidden/blurred pages, excludes network/modal waits, closes stale sessions at
   three minutes, splits Shanghai midnight correctly, and renders calendar/report
   time as safe minutes without PASS/Completed labels.
 - Verify the first eligible interaction sends the server start handshake before

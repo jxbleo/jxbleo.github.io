@@ -73,7 +73,7 @@ function aggregateActivities(sessions) {
   const rows = new Map();
   (sessions || []).forEach((session) => {
     const materialId = String(session && (session.material_id || session.set_id) || "").trim();
-    const mode = ["dictation", "shadowing"].includes(String(session && session.practice_mode || "")) ? String(session.practice_mode) : "";
+    const mode = session && session.practice_mode === "dictation" ? "dictation" : session && session.practice_mode ? "archived" : "";
     if (!materialId || !mode) return;
     const buckets = mergeDailyBuckets([session]);
     Object.keys(buckets).forEach((date) => {

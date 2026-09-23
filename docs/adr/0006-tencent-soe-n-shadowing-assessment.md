@@ -1,5 +1,10 @@
 # ADR 0006: Isolated Tencent SOE-N assessment for Listening Shadowing
 
+> Historical plan/decision: Shadowing was retired by the owner on 2026-09-23.
+> Dual-mode, recording and scoring requirements below are superseded. Current
+> Dictation behavior and rollout are in docs 01, 02 and 10.
+
+
 ## Status
 
 Accepted for the local Listening V2 vertical slice; production enablement is

@@ -2,7 +2,7 @@
   'use strict';
   var root = document.getElementById('view-listening');
   if (!root) return;
-  var state = { materials: [], selected: '', source: null, draftRevision: 0, enabled: { dictation: true, shadowing: true }, tracks: { dictation: [], shadowing: [] } };
+  var state = { materials: [], selected: '', source: null, draftRevision: 0, enabled: { dictation: true }, tracks: { dictation: [] } };
   var list = document.getElementById('teacher-listening-material-list');
   var editor = document.getElementById('teacher-listening-editor');
   var message = document.getElementById('teacher-listening-message');
@@ -24,8 +24,7 @@
     list.innerHTML = state.materials.map(function(item) {
       var tracks = item.tracks || {};
       var dictation = tracks.dictation && tracks.dictation.segment_count || 0;
-      var shadowing = tracks.shadowing && tracks.shadowing.segment_count || 0;
-      return '<article class="teacher-listening-material-card' + (item.material_id === state.selected ? ' is-active' : '') + '" tabindex="0" role="button" data-listening-material-id="' + escapeHtml(item.material_id) + '"><span class="status">' + escapeHtml(item.publication_status || 'draft') + '</span><h3>' + escapeHtml(item.title || item.material_id) + '</h3><p>' + escapeHtml(item.material_id) + ' · ' + dictation + ' Dictation · ' + shadowing + ' Shadowing</p></article>';
+      return '<article class="teacher-listening-material-card' + (item.material_id === state.selected ? ' is-active' : '') + '" tabindex="0" role="button" data-listening-material-id="' + escapeHtml(item.material_id) + '"><span class="status">' + escapeHtml(item.publication_status || 'draft') + '</span><h3>' + escapeHtml(item.title || item.material_id) + '</h3><p>' + escapeHtml(item.material_id) + ' · ' + dictation + ' Dictation</p></article>';
     }).join('');
   }
   function sourceTrack(source, track) {
@@ -41,28 +40,22 @@
           practice_mode: unit.practiceMode || unit.practice_mode || 'dictation',
           slots: Array.isArray(unit.slots) ? unit.slots.map(function(slot) { return { slot_id: slot.slotId || slot.slot_id, prefix: slot.prefix || '', suffix: slot.suffix || '', answer: slot.answer || '', accepted_answers: slot.acceptedAnswers || slot.accepted_answers || [], spelling_requirement: slot.spellingRequirement || slot.spelling_requirement || 'required' }; }) : []
         };
-      }).filter(function(unit) { return track === 'shadowing' ? unit.practice_mode !== 'skip' : true; });
+      });
     }
     var tracks = source && source.tracks || {};
     var current = tracks[track] || {};
     return Array.isArray(current.segments) ? current.segments : [];
   }
   function segmentModeOptions(track, selected) {
-    var values = track === 'shadowing' ? [['shadowing', 'Shadowing'], ['context_only', 'Context only'], ['skip', 'Skip']] : [['dictation', 'Dictation'], ['context_only', 'Context only'], ['skip', 'Skip']];
+    var values = [['dictation', 'Dictation'], ['context_only', 'Context only'], ['skip', 'Skip']];
     return values.map(function(option) { return '<option value="' + option[0] + '"' + (option[0] === selected ? ' selected' : '') + '>' + option[1] + '</option>'; }).join('');
   }
   function renderTrackRows(track) {
     var target = document.getElementById('teacher-listening-' + track + '-rows');
     var segments = state.tracks[track] || [];
     if (!segments.length) { target.innerHTML = '<div class="teacher-listening-track-empty">No lines yet. Add the first line when the timing is ready.</div>'; return; }
-    if (track === 'shadowing') {
-      target.innerHTML = segments.map(function(segment, index) {
-        return '<article class="teacher-listening-segment-row teacher-listening-preview-row"><header><span>' + String(index + 1).padStart(2, '0') + '</span><strong>' + escapeHtml(segment.speaker || 'Listening line') + '</strong><span class="teacher-listening-preview-badge">Derived from canonical unit</span></header><div class="teacher-listening-segment-fields"><span> ' + escapeHtml(Number(segment.start_seconds || 0).toFixed(2)) + '–' + escapeHtml(Number(segment.end_seconds || 0).toFixed(2)) + ' s</span><span>' + escapeHtml(segment.practice_mode || 'dictation') + '</span></div><p class="teacher-listening-preview-text">' + escapeHtml(segment.text || '') + '</p></article>';
-      }).join('');
-      return;
-    }
     target.innerHTML = segments.map(function(segment, index) {
-      var mode = String(segment.practice_mode || (track === 'shadowing' ? 'shadowing' : 'dictation'));
+      var mode = String(segment.practice_mode || 'dictation');
       var slots = JSON.stringify(Array.isArray(segment.slots) ? segment.slots : [], null, 2);
       return '<article class="teacher-listening-segment-row" data-listening-row="' + track + '" data-index="' + index + '">' +
         '<header><span>' + String(index + 1).padStart(2, '0') + '</span><strong>' + escapeHtml(segment.speaker || 'Listening line') + '</strong><div><button type="button" data-segment-action="duplicate">Duplicate</button><button type="button" data-segment-action="delete">Delete</button></div></header>' +
@@ -89,11 +82,8 @@
     $('teacher-listening-revision').value = raw.transcriptRevision || raw.transcript_revision || source.transcript_revision || '1';
     state.draftRevision = Math.max(0, Number(source.draft_revision) || 0);
     state.enabled.dictation = !(raw.tracks && raw.tracks.dictation && raw.tracks.dictation.enabled === false);
-    state.enabled.shadowing = !(raw.tracks && raw.tracks.shadowing && raw.tracks.shadowing.enabled === false);
     $('teacher-listening-dictation-enabled').checked = state.enabled.dictation;
-    $('teacher-listening-shadowing-enabled').checked = state.enabled.shadowing;
     setTrackSegments('dictation', sourceTrack(raw, 'dictation').length ? sourceTrack(raw, 'dictation') : (raw.segments || []));
-    setTrackSegments('shadowing', sourceTrack(raw, 'shadowing'));
     $('teacher-listening-editor-title').textContent = source.title || id || 'New material';
     $('teacher-listening-status').textContent = source.publication_status || 'Draft';
     $('teacher-listening-hide').hidden = source.has_published !== true && source.publication_status !== 'published';
@@ -102,26 +92,23 @@
   }
   function blank() {
     state.selected = '';
-    fill({ material_id: '', title: '', source: { materialId: '', title: '', segments: [], tracks: { dictation: { segments: [] }, shadowing: { segments: [] } } }, publication_status: 'draft' });
+    fill({ material_id: '', title: '', source: { materialId: '', title: '', segments: [], tracks: { dictation: { segments: [] } } }, publication_status: 'draft' });
   }
   function segmentsForDraft(track) {
     return (state.tracks[track] || []).map(function(source, index) {
       var segment = Object.assign({}, source, {
-        segment_id: String(source.segment_id || (track === 'shadowing' ? 's-' : 'd-') + String(index + 1).padStart(3, '0')),
+        segment_id: String(source.segment_id || 'd-' + String(index + 1).padStart(3, '0')),
         start_seconds: Number(source.start_seconds),
         end_seconds: Number(source.end_seconds),
         speaker: String(source.speaker || '').trim(),
         text: String(source.text || '').trim(),
-        practice_mode: String(source.practice_mode || (track === 'shadowing' ? 'shadowing' : 'dictation'))
+        practice_mode: String(source.practice_mode || 'dictation')
       });
       if (track === 'dictation') {
         if (typeof source.slots_json === 'string') {
           try { segment.slots = JSON.parse(source.slots_json || '[]'); } catch (error) { throw new Error('Dictation line ' + (index + 1) + ' has invalid answer slots JSON.'); }
         }
         if (!Array.isArray(segment.slots)) throw new Error('Dictation line ' + (index + 1) + ' answer slots must be a list.');
-      } else {
-        delete segment.reference_words;
-        delete segment.referenceWords;
       }
       delete segment.slots_json;
       return segment;
@@ -140,8 +127,8 @@
       transcript_revision: String($('teacher-listening-revision').value || '1').trim(),
       content_revision: String($('teacher-listening-revision').value || '1').trim(),
       units: canonicalUnits,
-      tracks: { dictation: { enabled: state.enabled.dictation, revision: '1', segments: canonicalUnits }, shadowing: { enabled: state.enabled.shadowing, revision: '1', segments: canonicalUnits.map(function(unit) { return Object.assign({}, unit, { slots: undefined }); }) } },
-      modes: { dictation: { enabled: state.enabled.dictation }, shadowing: { enabled: state.enabled.shadowing } }
+      tracks: { dictation: { enabled: state.enabled.dictation, revision: '1', segments: canonicalUnits } },
+      modes: { dictation: { enabled: state.enabled.dictation } }
     };
   }
   function showValidation(result) {
@@ -170,7 +157,7 @@
     var segments = state.tracks[track] || [];
     var last = segments[segments.length - 1] || {};
     var start = Number(last.end_seconds) || 0;
-    segments.push({ segment_id: (track === 'shadowing' ? 's-' : 'd-') + String(segments.length + 1).padStart(3, '0'), start_seconds: start, end_seconds: start + 3, speaker: '', text: '', practice_mode: track === 'shadowing' ? 'shadowing' : 'dictation', slots: track === 'dictation' ? [{ slot_id: 'w1', answer: '', spelling_requirement: 'required' }] : undefined });
+    segments.push({ segment_id: 'd-' + String(segments.length + 1).padStart(3, '0'), start_seconds: start, end_seconds: start + 3, speaker: '', text: '', practice_mode: 'dictation', slots: track === 'dictation' ? [{ slot_id: 'w1', answer: '', spelling_requirement: 'required' }] : undefined });
     renderTrackRows(track);
   }); });
   document.querySelectorAll('[data-listening-track-enabled]').forEach(function(input) { input.addEventListener('change', function() {
@@ -197,7 +184,7 @@
       if (action === 'delete') state.tracks[track].splice(index, 1);
       if (action === 'duplicate') {
         var clone = JSON.parse(JSON.stringify(state.tracks[track][index]));
-        clone.segment_id = (track === 'shadowing' ? 's-' : 'd-') + String(state.tracks[track].length + 1).padStart(3, '0');
+        clone.segment_id = 'd-' + String(state.tracks[track].length + 1).padStart(3, '0');
         clone.start_seconds = Number(clone.end_seconds) || 0;
         clone.end_seconds = clone.start_seconds + Math.max(1, Number(state.tracks[track][index].end_seconds) - Number(state.tracks[track][index].start_seconds) || 3);
         state.tracks[track].splice(index + 1, 0, clone);

@@ -42,11 +42,11 @@ assert.strictEqual(tracker.summary().local_seconds, 5, "idle time beyond 20 seco
 context.now = 50000;
 context.window.__MRCAT_LEARNING_ACTIVITY_TEST__.tick();
 assert.strictEqual(tracker.summary().local_seconds, 5, "long idle periods are not counted");
-tracker.setContinuous("recording", true, "unit-1");
+tracker.setContinuous("audio", true, "unit-1");
 context.now = 60000;
 context.window.__MRCAT_LEARNING_ACTIVITY_TEST__.tick();
-assert.strictEqual(tracker.summary().local_seconds, 15, "continuous recording keeps the timer alive");
-tracker.setContinuous("recording", false);
+assert.strictEqual(tracker.summary().local_seconds, 15, "continuous playback keeps the timer alive");
+tracker.setContinuous("audio", false);
 const beforeFlush = tracker.summary().pending_span_count;
 assert.ok(beforeFlush > 0);
 tracker.flush("test").then(() => {

@@ -1,5 +1,10 @@
 # Listening Mode-First + Effective Learning Time Redesign
 
+> Historical plan/decision: Shadowing was retired by the owner on 2026-09-23.
+> Dual-mode, recording and scoring requirements below are superseded. Current
+> Dictation behavior and rollout are in docs 01, 02 and 10.
+
+
 ## 0. Document status
 
 - Product decisions: approved by the owner on 2026-09-07.

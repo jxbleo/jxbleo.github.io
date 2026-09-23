@@ -1390,38 +1390,15 @@ scan provider reuses the Writing vision adapter and marks quota usage at the
 actual outbound provider-request boundary. Commit reuses the shared personal-
 vocabulary upsert; dictionary enrichment remains the existing post-save
 behavior.
-### Listening V2 provider and track boundary
+### Dictation-only Listening boundary (2026-09-22)
 
-The `intensiveListening` gateway owns one schema-v3 canonical unit list and two
-independent result projections. Schema 1/2 material is normalized at the service
-boundary; the next teacher publication stores canonical units once rather than
-maintaining divergent Dictation and Shadowing transcripts. The account-owned
-`listening_mode_preference` drives both dedicated Library and practice entry.
-`shadowing-service.js` owns pure normalization, stable reference-word IDs,
-latest-versus-best state, pass/cap scoring, WAV validation, and duplicate keys.
-`tencent-soe-n.js` is the only Tencent SOE-N signing/WebSocket adapter and is
-imported by the cloud function only; browser code cannot call a provider or
-receive credentials.
-Shadowing complete-listen credit uses a server-issued, segment-bound token with
-an earliest-completion time derived from the reviewed segment duration; a
-browser-generated timer cannot increment reveal progress. Takes use a reserve →
-private upload → register upload → finish flow, with a cancellation cleanup path
-for interrupted browser uploads, a transaction-owned single-active
-take lock per student, deterministic client idempotency, provider outcome
-categories, dynamic source-duration limits, and usage rows claimed immediately
-before the outbound request.
-The learner `shadowing_segments` projection uses the service's scored training
-segments rather than the complete canonical sequence; the browser repeats that
-filter defensively for stale cached responses. Canonical validation permits
-ordered overlapping time ranges because playback clips every unit independently,
-but still rejects reverse source order and invalid per-unit bounds.
-The Tencent adapter signs the documented host/path/appid plus sorted unescaped
-query, waits for the JSON handshake, sends one complete WAV recording in
-paragraph EvalMode 2, and accepts only the final provider result. Product score
-uses Tencent `SuggestedScore` and applies the reviewed red-word pass cap. The
-browser retains latest per-unit replay Blobs only for the open material session;
-the cloud function deletes the private upload immediately after any conclusive
-result. `listeningMaintenance` retries only failed/interrupted cleanup.
+`intensiveListening/material.js` owns canonical schema-3 normalization and
+validation, including legacy units/schema-2 Dictation tracks. `service.js`
+retains private grading and redacted material/progress projections. Catalog and
+bootstrap never query retired recording/score collections. No scoring provider,
+recording upload, take, complete-listen token, reveal-preference or mode-preference
+endpoint remains. Unknown actions fail closed. `listeningMaintenance` source
+and its packaging configuration have been removed.
 
 Teacher authoring uses a separate ADMINONLY `listening_material_drafts` record,
 so saving work never mutates or hides the current learner-visible material.
@@ -1429,8 +1406,8 @@ Draft revisions reject stale multi-tab saves; the captured publication revision
 rejects a stale publish. Publishing replaces the one current material, writes a
 private immutable `listening_material_history` audit row, and changes only the
 single shared content revision whenever canonical media/unit semantics change;
-metadata-only changes may keep it. Both current result projections therefore
-recalculate together. Students never select a version.
+metadata-only changes may keep it. Dictation progress uses that content
+revision. Students never select a version.
 
 `assets/js/learning-activity.js` samples transcript-free eligible spans with a
 monotonic clock. The first real interaction performs a server start handshake,
@@ -1440,8 +1417,10 @@ then flushes bounded, account-scoped batches to
 mode/reason/unit IDs, enforces one student activity lease, transactionally
 deduplicates monotonic sequences, caps claims to server-observed elapsed time,
 and splits accepted seconds at Shanghai midnight. Hidden/blur, explicit pause,
-mode switch and page exit release the lease. `sendTeacherAttemptEmails` closes
-orphaned active sessions after three minutes. Dashboard calendar and learning
+and page exit release the lease. `sendTeacherAttemptEmails` closes
+orphaned active sessions after three minutes. Historical retired-mode seconds
+remain visible as an archived aggregate without querying retired collections.
+Dashboard calendar and learning
 reports aggregate only safe daily seconds and never receive typed entries,
 transcript, word evidence, audio, or accepted-window audit details.
 

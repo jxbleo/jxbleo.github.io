@@ -7,7 +7,7 @@
   var state = {
     setId: String(params.get('set') || '').trim(),
     assignmentId: String(params.get('assignment') || '').trim(),
-    mode: ['dictation', 'shadowing'].indexOf(String(params.get('mode') || '').toLowerCase()) >= 0 ? String(params.get('mode')).toLowerCase() : 'dictation',
+    mode: 'dictation',
     teacherMode: params.get('teacher') === '1',
     visitorMode: params.get('visitor') === '1' || localStorage.getItem('mrcat_visitor') === 'true',
     material: null,
@@ -30,10 +30,6 @@
     lastActivitySentAt: 0,
     activityInFlight: false,
     activityPending: '',
-    dictationEnabled: true,
-    shadowingEnabled: false,
-    shadowingCompleted: false,
-    pendingMode: '',
     pendingComprehensionHref: '',
     shortcuts: readShortcuts(),
     shortcutDraft: null,
@@ -146,8 +142,6 @@
     return unit && Array.isArray(unit.slots) && unit.slots.length === 0 ? 'skip' : 'dictation';
   }
   function isDictation(unit) { return unitMode(unit) === 'dictation'; }
-  function safeMode(value) { return ['dictation', 'shadowing'].indexOf(String(value || '').toLowerCase()) >= 0 ? String(value).toLowerCase() : 'dictation'; }
-  function modeLabel(mode) { return safeMode(mode) === 'shadowing' ? 'Shadowing' : 'Dictation'; }
   function isProvided(slot) { return String(slot && slot.spelling_requirement || 'required') === 'provided'; }
   function disputeKey(unitId, slotId) { return String(unitId) + '::' + String(slotId); }
   function currentUnit() { return state.material.units[state.currentIndex]; }
@@ -174,18 +168,6 @@
     } catch (error) { return fallback; }
   }
 
-  function renderModeMenu() {
-    var trigger = $('#il-practice-mode-trigger');
-    var label = $('#il-practice-mode-label');
-    if (label) label.textContent = modeLabel(state.mode);
-    document.querySelectorAll('[data-practice-listening-mode]').forEach(function(button) {
-      var value = safeMode(button.getAttribute('data-practice-listening-mode'));
-      var enabled = value === 'dictation' ? state.dictationEnabled !== false : state.shadowingEnabled === true;
-      button.disabled = !enabled;
-      button.setAttribute('aria-checked', value === state.mode ? 'true' : 'false');
-    });
-    if (trigger) trigger.setAttribute('aria-label', 'Practice mode: ' + modeLabel(state.mode));
-  }
   function configureLearningActivity() {
     if (!window.MrCatLearningActivity || state.visitorMode || state.teacherMode || !state.material) return;
     window.MrCatLearningActivity.configure({
@@ -195,106 +177,6 @@
       send: function(payload) { return call(payload.action || 'recordLearningActivity', payload); }
     });
   }
-  function hasUncheckedDictation() {
-    if (state.mode !== 'dictation' || !state.material) return false;
-    return Object.keys(state.localUnits).some(function(unitId) {
-      var local = state.localUnits[unitId];
-      return local && local.dirty === true && local.entries.some(function(entry) { return String(entry || '').trim(); });
-    });
-  }
-  function closeModeSwitchModal() {
-    state.pendingMode = '';
-    $('#mode-switch-modal').hidden = true;
-    if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) {
-      var unit = currentUnit();
-      window.MrCatLearningActivity.resume('interaction', unit && unit.unit_id);
-    }
-  }
-  function discardUncheckedDictation() {
-    if (!state.material || !state.progress) return;
-    state.material.units.forEach(function(unit) {
-      var local = state.localUnits[unit.unit_id];
-      if (!local || local.dirty !== true) return;
-      var serverUnit = state.progress.unit_progress[unit.unit_id] || {};
-      var replacement = emptyLocalUnit(unit, serverUnit);
-      if (Array.isArray(serverUnit.saved_entries) && serverUnit.saved_entries.length === unit.slots.length) {
-        replacement.entries = serverUnit.saved_entries.map(function(value) { return String(value || '').replace(/\s+/g, ''); });
-        replacement.marks = Array.isArray(serverUnit.saved_marks) && serverUnit.saved_marks.length === unit.slots.length
-          ? serverUnit.saved_marks.map(function(mark) { return mark ? 'correct' : 'incorrect'; })
-          : replacement.marks;
-      }
-      applyServerMarks(replacement, serverUnit);
-      state.localUnits[unit.unit_id] = replacement;
-    });
-    saveDraft();
-  }
-  function performModeSwitch(nextMode) {
-    nextMode = safeMode(nextMode);
-    if (nextMode === state.mode) { closeModeMenu(); return; }
-    if (nextMode === 'shadowing' && !state.shadowingEnabled) return;
-    if (nextMode === 'dictation' && !state.dictationEnabled) return;
-    pauseAudio('');
-    var previous = state.mode;
-    var switchMode = function() {
-      state.mode = nextMode;
-      renderModeMenu();
-      configureLearningActivity();
-      document.dispatchEvent(new CustomEvent('mrcat:listening-mode-change', { detail: { mode: nextMode, previous: previous } }));
-      closeModeMenu();
-    };
-    var pause = window.MrCatLearningActivity && window.MrCatLearningActivity.pause
-      ? window.MrCatLearningActivity.pause('mode-switch') : Promise.resolve();
-    Promise.resolve(pause).then(function() {
-      return state.teacherMode ? { success: true } : call('setModePreference', { mode: nextMode });
-    }).then(switchMode).catch(function(error) {
-      state.mode = previous; renderModeMenu();
-      showFeedback(error.message || 'Unable to change practice mode.', 'error');
-    });
-  }
-  function selectMode(nextMode) {
-    nextMode = safeMode(nextMode);
-    if (nextMode === state.mode) { closeModeMenu(); return; }
-    if (window.MrCatShadowingController && !window.MrCatShadowingController.canSwitchMode()) {
-      closeModeMenu();
-      window.MrCatShadowingController.explainSwitchBlock();
-      return;
-    }
-    if (hasUncheckedDictation()) {
-      state.pendingMode = nextMode;
-      closeModeMenu();
-      if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
-      $('#mode-switch-modal').hidden = false;
-      $('#mode-switch-cancel').focus();
-      return;
-    }
-    performModeSwitch(nextMode);
-  }
-  function closeModeMenu() {
-    var popover = $('#il-practice-mode-popover');
-    var trigger = $('#il-practice-mode-trigger');
-    var wasOpen = Boolean(popover && !popover.hidden);
-    if (popover) popover.hidden = true;
-    if (trigger) trigger.setAttribute('aria-expanded', 'false');
-    if (wasOpen && window.MrCatLearningActivity && window.MrCatLearningActivity.resume && state.material && !state.busy) {
-      var unit = currentUnit();
-      window.MrCatLearningActivity.resume('interaction', unit && unit.unit_id);
-    }
-  }
-  function toggleModeMenu() {
-    var popover = $('#il-practice-mode-popover');
-    var trigger = $('#il-practice-mode-trigger');
-    if (!popover || !trigger) return;
-    popover.hidden = !popover.hidden;
-    trigger.setAttribute('aria-expanded', popover.hidden ? 'false' : 'true');
-    if (!popover.hidden) {
-      pauseAudio('Paused · choose a mode or close the menu');
-      if (window.MrCatShadowingController) window.MrCatShadowingController.pauseForModal();
-      if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
-      var selected = popover.querySelector('[aria-checked="true"]');
-      if (selected) selected.focus();
-    }
-  }
-
   function studentIdentity() {
     try {
       var profile = JSON.parse(localStorage.getItem('mrcat_student_profile') || 'null');
@@ -831,7 +713,6 @@
     if (countReplay && isDictation(unit) && !state.teacherMode) {
       currentLocal().replayDelta += 1; renderProgress(); saveDraft();
     }
-    if (window.MrCatShadowingController) window.MrCatShadowingController.pauseForModal();
     pauseAudio('');
     // Each unit starts a fresh playhead window. Without resetting this
     // baseline, moving from a long unit back to an earlier timestamp could
@@ -880,10 +761,6 @@
       state.currentIndex = firstIncomplete;
       showFeedback('This unit still needs your answer.');
       renderUnit(); replayUnit(false);
-      return;
-    }
-    if (state.shadowingEnabled && !state.shadowingCompleted) {
-      showFeedback('Dictation complete. Use the mode menu above to continue with Shadowing.', 'success');
       return;
     }
     var progress = state.progress;
@@ -1040,41 +917,17 @@
       state.progress = result.progress || { percentage: 0, completed_count: 0, independent_count: 0, assisted_count: 0, replay_count: 0, best_percentage: 0, unit_progress: {} };
       state.linkedPractice = result.linked_practice || null;
       state.assignmentContext = result.assignment_context || null;
-      state.dictationEnabled = Boolean(result.tracks && result.tracks.dictation && result.tracks.dictation.enabled);
-      state.shadowingEnabled = Boolean(result.tracks && result.tracks.shadowing && result.tracks.shadowing.enabled);
-      state.shadowingCompleted = Boolean(result.shadowing_progress && result.shadowing_progress.completed);
-      var requestedMode = String(params.get('mode') || '').toLowerCase();
-      var serverPreferredMode = safeMode(result.preferred_mode || state.mode);
-      state.mode = ['dictation', 'shadowing'].indexOf(requestedMode) >= 0
-        ? requestedMode
-        : serverPreferredMode;
-      if (state.mode === 'shadowing' && !state.shadowingEnabled) state.mode = 'dictation';
-      if (state.mode === 'dictation' && !state.dictationEnabled && state.shadowingEnabled) state.mode = 'shadowing';
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
-      if (!state.teacherMode && !state.visitorMode && ['dictation', 'shadowing'].indexOf(requestedMode) >= 0 && requestedMode !== serverPreferredMode) {
-        call('setModePreference', { mode: requestedMode }).catch(function() { /* Practice remains usable; the next explicit switch retries. */ });
-      }
-      renderModeMenu();
       renderMaterialContext();
       $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
       var dictationPlayer = dictationMedia();
       dictationPlayer.src = dictationMediaSource();
       $('#dictation-video').hidden = dictationPlayer !== $('#dictation-video');
       hydrateLocalUnits(); renderProgress();
-      if (state.mode === 'shadowing' && state.shadowingEnabled) {
-        state.started = true;
-        $('#start-screen').hidden = true;
-        $('#practice-shell').hidden = false;
-        $('#practice-card').hidden = true;
-        document.dispatchEvent(new CustomEvent('mrcat:listening-mode-change', { detail: { mode: 'shadowing' } }));
-        configureLearningActivity();
-        return;
-      }
       if (state.visitorMode) {
         document.body.classList.add('il-visitor-mode');
-        $('#il-practice-mode-trigger').hidden = true;
         $('#header-progress').parentElement.hidden = true;
         $('.il-stats').hidden = true;
         $('#start-copy').textContent = 'Listen to the full programme. Dictation, answers, and saved progress require a student account.';
@@ -1087,7 +940,7 @@
         state.started = true; $('#export-button').hidden = false; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
         renderUnit(); showFeedback('Teacher preview · replay the unit, then open Show Answer to mark a word.'); configureLearningActivity(); return;
       }
-      if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100 && !state.shadowingEnabled) {
+      if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100) {
         $('#start-screen').hidden = true; $('#completion-screen').hidden = false;
         $('#completion-percent').textContent = state.progress.best_percentage + '%';
         $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; return;
@@ -1102,15 +955,6 @@
   }
 
   $('#start-button').addEventListener('click', startRitual);
-  $('#il-practice-mode-trigger').addEventListener('click', toggleModeMenu);
-  document.querySelectorAll('[data-practice-listening-mode]').forEach(function(button) {
-    button.addEventListener('click', function() { selectMode(button.getAttribute('data-practice-listening-mode')); });
-  });
-  document.addEventListener('click', function(event) {
-    var menu = $('#il-practice-mode-popover');
-    var wrapper = document.querySelector('.il-practice-mode-menu');
-    if (menu && wrapper && !wrapper.contains(event.target)) closeModeMenu();
-  });
   $('#replay-button').addEventListener('click', function() { state.playing ? pauseAudio('Paused · press Replay to continue') : replayUnit(true); });
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);
@@ -1140,28 +984,6 @@
   $('#next-unit-button').addEventListener('click', function() { moveToUnit(1); });
   $('#restart-button').addEventListener('click', startTemporaryReplay);
   $('#export-button').addEventListener('click', exportLatest);
-  document.addEventListener('mrcat:listening-shadowing-progress', function(event) {
-    state.shadowingCompleted = Boolean(event.detail && event.detail.completed);
-    if (state.mode === 'shadowing' && event.detail && event.detail.percentage != null) {
-      var percentage = Number(event.detail.percentage) || 0;
-      $('#header-progress').value = percentage;
-      $('#header-progress-label').textContent = percentage + '%';
-    }
-  });
-  document.addEventListener('mrcat:listening-mode-change', function(event) {
-    if (event.detail && event.detail.mode) {
-      state.mode = safeMode(event.detail.mode);
-      renderModeMenu();
-      if (state.mode === 'shadowing') {
-        pauseAudio('');
-        $('#practice-card').hidden = true;
-      } else {
-        $('#practice-card').hidden = false;
-        renderProgress();
-        renderUnit();
-      }
-    }
-  });
   function onDictationTimeUpdate(event) {
     if (!state.playing) return;
     var media = event.currentTarget;
@@ -1209,34 +1031,18 @@
   window.setInterval(refreshPolicy, 30000);
   window.addEventListener('focus', refreshPolicy);
   $('#back-button').addEventListener('click', function() {
-    if (window.MrCatShadowingController && !window.MrCatShadowingController.canSwitchMode()) {
-      window.MrCatShadowingController.explainSwitchBlock();
-      return;
-    }
     pauseAudio('');
-    var hasRecordings = window.MrCatShadowingController && window.MrCatShadowingController.hasReplayBlobs();
-    $('#leave-copy').textContent = hasRecordings
-      ? "Your practice progress is saved. Your recordings are not. If you leave now, you won't be able to replay them."
-      : 'Your saved progress is safe. You can continue from the next unfinished unit later.';
+    $('#leave-copy').textContent = 'Your saved progress is safe. You can continue from the next unfinished unit later.';
     if (window.MrCatLearningActivity && window.MrCatLearningActivity.pause) window.MrCatLearningActivity.pause('modal').catch(function() {});
     $('#leave-modal').hidden = false;
     $('#leave-cancel').focus();
   });
   $('#leave-cancel').addEventListener('click', function() { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); });
   $('#leave-confirm').addEventListener('click', function() {
-    if (window.MrCatShadowingController) window.MrCatShadowingController.revokeReplays();
     if (window.MrCatLearningActivity) window.MrCatLearningActivity.close('close');
     window.location.href = safeReturnUrl();
   });
   $('#leave-modal').addEventListener('click', function(event) { if (event.target === $('#leave-modal')) { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); } });
-  $('#mode-switch-cancel').addEventListener('click', closeModeSwitchModal);
-  $('#mode-switch-confirm').addEventListener('click', function() {
-    var nextMode = state.pendingMode;
-    $('#mode-switch-modal').hidden = true;
-    state.pendingMode = '';
-    if (nextMode) { discardUncheckedDictation(); performModeSwitch(nextMode); }
-  });
-  $('#mode-switch-modal').addEventListener('click', function(event) { if (event.target === $('#mode-switch-modal')) closeModeSwitchModal(); });
   $('#argue-close').addEventListener('click', closeArgue);
   $('#argue-cancel').addEventListener('click', closeArgue);
   $('#argue-sent-close').addEventListener('click', closeArgue);
@@ -1250,9 +1056,7 @@
     if (event.key === 'Escape' && !$('#argue-modal').hidden) { closeArgue(); return; }
     if (event.key === 'Escape' && !$('#shortcuts-modal').hidden) { closeShortcuts(); return; }
     if (event.key === 'Escape' && !$('#comprehension-modal').hidden) { closeComprehension(); return; }
-    if (event.key === 'Escape' && !$('#mode-switch-modal').hidden) { closeModeSwitchModal(); return; }
     if (event.key === 'Escape' && !$('#leave-modal').hidden) { $('#leave-modal').hidden = true; if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('interaction', currentUnit() && currentUnit().unit_id); }
-    if (!$('#argue-modal').hidden || !$('#shortcuts-modal').hidden || !$('#comprehension-modal').hidden || !$('#mode-switch-modal').hidden || !$('#leave-modal').hidden) return;
     if (state.started && !state.busy && state.mode === 'dictation' && !event.target.classList.contains('il-word-slot')) handlePracticeShortcut(event, null);
   });
 
