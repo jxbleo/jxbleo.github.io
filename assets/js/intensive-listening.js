@@ -731,19 +731,13 @@
       state.playing = false; $('#replay-button').textContent = '▶'; $('#audio-status').textContent = 'Press Replay to hear this unit';
     });
   }
-  function startRitual() {
-    var button = $('#start-button'); button.disabled = true; button.classList.add('counting');
-    var remaining = 3; $('#start-button-label').textContent = remaining;
-    var timer = window.setInterval(function() {
-      remaining -= 1;
-      if (remaining > 0) { $('#start-button-label').textContent = remaining; return; }
-      window.clearInterval(timer); $('#start-button-label').textContent = 'Listen';
-      window.setTimeout(function() {
-        state.started = true; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
-        if (window.MrCatLearningActivity) window.MrCatLearningActivity.markInteraction('audio', currentUnit() && currentUnit().unit_id);
-        renderUnit(); replayUnit(false);
-      }, 380);
-    }, 1000);
+  function enterPractice(autoplay) {
+    state.started = true;
+    $('#loading-screen').hidden = true;
+    $('#completion-screen').hidden = true;
+    $('#practice-shell').hidden = false;
+    renderUnit();
+    if (autoplay) replayUnit(false);
   }
   function finishSession() {
     pauseAudio('');
@@ -775,11 +769,8 @@
     state.busy = true; $('#restart-button').disabled = true; $('#restart-button').textContent = 'Preparing…';
     call('startReplay').then(function(result) {
       state.replayId = result.replay_id; state.progress = result.progress; state.currentIndex = firstPlayableIndex();
-      state.started = false; state.busy = false; hydrateLocalUnits(); renderProgress();
-      $('#completion-screen').hidden = true; $('#practice-shell').hidden = true; $('#start-screen').hidden = false;
-      $('#start-title').textContent = state.material.title;
-      $('#start-copy').textContent = 'Temporary practice is ready. Your best record stays at 100%.';
-      $('#start-button').disabled = false; $('#start-button').classList.remove('counting'); $('#start-button-label').textContent = 'Start';
+      state.busy = false; hydrateLocalUnits(); renderProgress();
+      configureLearningActivity(); enterPractice(true);
       $('#restart-button').disabled = false; $('#restart-button').textContent = 'Clear & Start Again';
     }).catch(function(error) {
       state.busy = false; $('#restart-button').disabled = false; $('#restart-button').textContent = 'Clear & Start Again';
@@ -871,10 +862,10 @@
     call('policy').catch(function() { /* The next normal action retries. */ });
   }
   function showLoadError(error) {
-    $('#start-title').textContent = 'Practice unavailable';
-    $('#start-copy').textContent = error.message || 'Unable to load this listening material.';
-    $('#start-button').hidden = true;
-    $('#start-note').textContent = error.code === 'AUTH_REQUIRED' ? 'Return to the login page and sign in first.' : 'Please return and try again.';
+    $('#loading-title').textContent = 'Practice unavailable';
+    $('#loading-copy').textContent = error.message || 'Unable to load this listening material.';
+    $('#loading-return').href = safeReturnUrl();
+    $('#loading-return').hidden = false;
   }
   function loadVisitorMaterial() {
     var sourceSetId = state.setId.replace(/^IL-/i, '');
@@ -919,9 +910,8 @@
       state.assignmentContext = result.assignment_context || null;
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
-      $('#material-title').textContent = state.material.title; $('#start-title').textContent = state.material.title;
+      $('#material-title').textContent = state.material.title;
       renderMaterialContext();
-      $('#start-copy').textContent = 'The first unit waits for you. Later units play once when you enter them.';
       var dictationPlayer = dictationMedia();
       dictationPlayer.src = dictationMediaSource();
       $('#dictation-video').hidden = dictationPlayer !== $('#dictation-video');
@@ -930,22 +920,20 @@
         document.body.classList.add('il-visitor-mode');
         $('#header-progress').parentElement.hidden = true;
         $('.il-stats').hidden = true;
-        $('#start-copy').textContent = 'Listen to the full programme. Dictation, answers, and saved progress require a student account.';
-        $('#start-note').textContent = 'Visitor Mode plays public audio only and never loads answer data.';
         $('#previous-unit-button').hidden = true; $('#next-unit-button').hidden = true;
-        renderUnit(); $('#start-button').disabled = false; $('#start-button-label').textContent = 'Listen';
+        enterPractice(true);
         return;
       }
       if (state.teacherMode) {
-        state.started = true; $('#export-button').hidden = false; $('#start-screen').hidden = true; $('#practice-shell').hidden = false;
-        renderUnit(); showFeedback('Teacher preview · replay the unit, then open Show Answer to mark a word.'); configureLearningActivity(); return;
+        $('#export-button').hidden = false;
+        enterPractice(false); showFeedback('Teacher preview · replay the unit, then open Show Answer to mark a word.'); return;
       }
       if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100) {
-        $('#start-screen').hidden = true; $('#completion-screen').hidden = false;
+        $('#loading-screen').hidden = true; $('#completion-screen').hidden = false;
         $('#completion-percent').textContent = state.progress.best_percentage + '%';
         $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; return;
       }
-      renderUnit(); $('#start-button').disabled = false; $('#start-button-label').textContent = 'Start'; configureLearningActivity();
+      configureLearningActivity(); enterPractice(true);
     }).catch(function(error) {
       if (error.code === 'AUTH_REQUIRED' || /Please log in/i.test(error.message || '')) {
         window.location.replace('index.html?return=' + encodeURIComponent(window.location.href)); return;
@@ -954,7 +942,6 @@
     });
   }
 
-  $('#start-button').addEventListener('click', startRitual);
   $('#replay-button').addEventListener('click', function() { state.playing ? pauseAudio('Paused · press Replay to continue') : replayUnit(true); });
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);

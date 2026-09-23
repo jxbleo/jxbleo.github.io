@@ -601,6 +601,12 @@ Home-screen icon checks:
 
 Intensive Listening checks:
 
+- BBC lesson capsule, Listening Studio card, assignment link, teacher preview,
+  and visitor link reach the shared practice page without a Focus Session
+  or three-second start countdown; after bootstrap, the first unit is visible
+  immediately, and Replay works if browser autoplay is blocked;
+- Clear & Start Again returns directly to the first practice unit after its
+  temporary replay is prepared;
 - visitor mode reads only the linked lesson's public title/audio metadata,
   creates one local full-audio `listen_only` unit, and never calls the private
   Intensive Listening function;

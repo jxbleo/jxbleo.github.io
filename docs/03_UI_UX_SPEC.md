@@ -1861,8 +1861,10 @@ Shared rules:
   a disabled input-shaped field reading `No typing needed for this sentence.`
   They expose no Check or Show Answer action, advance automatically after their
   own timestamp range, and never count toward progress or replay totals. The
-  first source segment waits behind a three-second Start Ritual; later segments
-  autoplay.
+  first source segment opens directly in the practice card after material load,
+  without a Focus Session screen or countdown. Playback starts when the browser
+  allows it; otherwise the visible Replay button starts the unit. Later segments
+  autoplay, and Clear & Start Again opens the practice card directly.
 - Provided Words render inline in green instead of as inputs. Keyboard movement
   skips them and server checking excludes them.
 - After Show Answer, each required answer token is clickable for a Spelling

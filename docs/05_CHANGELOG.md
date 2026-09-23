@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-23 — Open Intensive Listening directly
+
+- Removed the shared Focus Session and three-second start countdown from all
+  Intensive Listening entry routes, including visitor listening and temporary
+  replay. Once material loads, the practice card opens immediately and attempts
+  the first playback; Replay remains available when the browser blocks autoplay.
+- Kept loading and error feedback in a non-interactive status view. This is a
+  static-only release; no backend or private material changes are required.
+
 ## 2026-09-21 — Final runtime cleanup (owner-authorized release)
 
 - Retired nine backend-only Intensive Listening action aliases and removed the
