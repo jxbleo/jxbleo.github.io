@@ -275,3 +275,13 @@ unassessed by owner decision; no overall band is inferred. See
 After rollout, verify report/audio playback and email entry on the owner's
 actual devices. The scoped release is based on current main and passes its full
 DSE/IELTS suites; stale-root recorder/capsule failures do not affect this release.
+
+### Listening retirement source sync (2026-09-23)
+
+The Dictation-only backend and scoped COS static release are live, but GitHub
+`main` still predates the Shadowing removal. Source commit `239ce0c7` is saved
+on `codex/retire-listening-shadowing`. Reconcile the current COS public tree
+with GitHub source before merging it to `main` or running the full static
+workflow; that workflow deletes obsolete objects and can overwrite other
+concurrent production changes. Keep the private rollout snapshots until the
+source and live site match.

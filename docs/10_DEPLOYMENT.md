@@ -2149,7 +2149,17 @@ The `listening_shadowing_takes` read-only preflight found zero records and zero
 pending temporary audio. The `listeningMaintenanceEvery6Hours` trigger and
 `listeningMaintenance` function were deleted after the new gateway stopped old
 recording/scoring routes. Historical collections and learning-time rows were
-preserved. The static release removes the obsolete Shadowing JS/CSS objects;
-legacy mode URLs open Dictation. Private preflight backups and verification
+preserved. GitHub HTTPS was unavailable during publication, so the scoped static release
+was uploaded directly to the existing COS site bucket. It merged the 12 affected
+public files against a read-only live snapshot, preserved a concurrent Teacher
+Speaking audio update, read back each uploaded file for hash equality, and
+removed only the obsolete Shadowing JS/CSS objects. Legacy mode URLs open
+Dictation. Private preflight backups, merged static files and verification
 records are in `.cloudbase-private/shadowing-retirement-20260923/` of the
 release checkout.
+
+Source commit `239ce0c7` is on `codex/retire-listening-shadowing`; GitHub `main`
+was not advanced. The live COS tree has other deployments that differ from
+`main`, so merging this branch directly would trigger a full COS workflow and
+could overwrite unrelated live updates. Reconcile that drift before merging or
+running the full static publisher.
