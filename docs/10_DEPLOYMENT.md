@@ -2158,8 +2158,9 @@ Dictation. Private preflight backups, merged static files and verification
 records are in `.cloudbase-private/shadowing-retirement-20260923/` of the
 release checkout.
 
-Source commit `239ce0c7` is on `codex/retire-listening-shadowing`; GitHub `main`
-was not advanced. The live COS tree has other deployments that differ from
-`main`, so merging this branch directly would trigger a full COS workflow and
-could overwrite unrelated live updates. Reconcile that drift before merging or
-running the full static publisher.
+Source commit `239ce0c7` is on `codex/retire-listening-shadowing`. GitHub `main`
+was advanced in a later source-only `[skip ci]` commit so the automatic full-site
+publisher did not overwrite concurrent live COS updates. The release gate now
+checks retired Shadowing routes and the static artifact's obsolete JS/CSS files.
+The live COS tree still has other deployments that differ from source; reconcile
+that drift before the next full static publish.

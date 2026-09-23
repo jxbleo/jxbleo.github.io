@@ -278,10 +278,10 @@ DSE/IELTS suites; stale-root recorder/capsule failures do not affect this releas
 
 ### Listening retirement source sync (2026-09-23)
 
-The Dictation-only backend and scoped COS static release are live, but GitHub
-`main` still predates the Shadowing removal. Source commit `239ce0c7` is saved
-on `codex/retire-listening-shadowing`. Reconcile the current COS public tree
-with GitHub source before merging it to `main` or running the full static
-workflow; that workflow deletes obsolete objects and can overwrite other
-concurrent production changes. Keep the private rollout snapshots until the
-source and live site match.
+The Dictation-only backend and scoped COS static release are live. The
+Shadowing-free source is also on GitHub `main` through a source-only `[skip ci]`
+push; automatic release tests now reject retired routes and JS/CSS assets.
+Reconcile the remaining current COS/public-source differences before running
+the next full static workflow; it deletes obsolete objects and can overwrite
+other concurrent production changes. Keep the private rollout snapshots until
+the source and live site match.

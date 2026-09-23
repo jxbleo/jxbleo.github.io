@@ -13,6 +13,9 @@ function checkArtifact(directory) {
   for (const excluded of manifest.excludedPaths) {
     assert(!fs.existsSync(path.join(directory, excluded)), `Private/source-only path published: ${excluded}`);
   }
+  for (const retired of ["assets/js/listening-shadowing.js", "assets/css/listening-shadowing.css"]) {
+    assert(!fs.existsSync(path.join(directory, retired)), `Retired Shadowing asset published: ${retired}`);
+  }
 }
 
 if (process.argv.includes("--artifact")) {
@@ -37,6 +40,10 @@ if (process.argv.includes("--artifact")) {
     const result = build();
     assert.equal(result.status, 0, result.stderr);
     checkArtifact(path.join(fixture, "dist"));
+    fs.mkdirSync(path.join(fixture, "dist/assets/js"), { recursive: true });
+    fs.writeFileSync(path.join(fixture, "dist/assets/js/listening-shadowing.js"), "retired fixture");
+    assert.throws(() => checkArtifact(path.join(fixture, "dist")), /Retired Shadowing asset published/);
+    fs.unlinkSync(path.join(fixture, "dist/assets/js/listening-shadowing.js"));
     fs.unlinkSync(path.join(fixture, "index.html"));
     assert.notEqual(build().status, 0, "Missing approved entry must fail the build");
     assert(fs.existsSync(path.join(fixture, "dist", "index.html")), "Invalid source must not erase the previous artifact");
