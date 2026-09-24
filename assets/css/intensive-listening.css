@@ -362,3 +362,6 @@ body.il-answer-open { overflow: hidden; }
   .il-unit-bar { padding-inline: 12px; gap: 6px; }
   .il-header-tools { gap: 5px; }
 }
+
+/* Show the unit fraction in the green identity label; hide the muted copy. */
+.il-unit-position { display: none !important; }
