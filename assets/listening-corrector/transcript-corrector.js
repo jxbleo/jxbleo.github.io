@@ -448,6 +448,17 @@ function navigateSentence(direction) {
   if (next) selectSegment(next.id)
 }
 
+function resumeCorrectorAudio() {
+  const wavesurfer = state.wavesurfer
+  if (!wavesurfer) return Promise.resolve()
+  const player = (typeof wavesurfer.getMediaElement === 'function' && wavesurfer.getMediaElement()) || wavesurfer.media || null
+  const context = player && player.audioContext
+  if (context && context.state !== 'running' && typeof context.resume === 'function') {
+    return context.resume().catch(() => {})
+  }
+  return Promise.resolve()
+}
+
 function playRange(start, end) {
   if (!state.wavesurfer) return
   if (state.wavesurfer.isPlaying()) state.wavesurfer.pause()
@@ -455,9 +466,16 @@ function playRange(start, end) {
   const rangeEnd = Math.min(state.duration || end, end)
   if (rangeEnd <= rangeStart) return
   state.activePlaybackEnd = rangeEnd
-  state.wavesurfer.play(rangeStart, rangeEnd).catch(() => {
-    state.activePlaybackEnd = null
-    toast('Audio playback could not start')
+  // Safari leaves the Web Audio context suspended when it is created after an
+  // await (the waveform modules load asynchronously) and wavesurfer never
+  // resumes it, so playback looks active but stays silent. Resume the context
+  // inside this user gesture before scheduling the range.
+  resumeCorrectorAudio().then(() => {
+    if (!state.wavesurfer) return
+    state.wavesurfer.play(rangeStart, rangeEnd).catch(() => {
+      state.activePlaybackEnd = null
+      toast('Audio playback could not start')
+    })
   })
 }
 
@@ -684,6 +702,10 @@ function replaceFiles() {
 $('#corrector-audio-input').addEventListener('change', (event) => acceptAudio(event.target.files[0]))
 $('#corrector-json-input').addEventListener('change', (event) => acceptJson(event.target.files[0]))
 $('#open-corrector-button').addEventListener('click', openCorrector)
+// Unlock the Web Audio context on the first real interaction so Safari (and
+// any autoplay-policy browser) does not keep the waveform player silent.
+document.addEventListener('pointerdown', resumeCorrectorAudio)
+document.addEventListener('keydown', resumeCorrectorAudio)
 $('#replace-files-button').addEventListener('click', replaceFiles)
 $('#undo-correction-button').addEventListener('click', undo)
 $('#redo-correction-button').addEventListener('click', redo)
