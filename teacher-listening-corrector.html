@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mr. Cat · Teacher Transcript Corrector</title>
+  <link rel="stylesheet" href="assets/listening-corrector/transcript-corrector.css?v=20260924-selected-resize-1">
+  <link rel="stylesheet" href="assets/css/teacher-listening-corrector.css?v=20260924-compact-1">
+</head>
+<body>
+  <header class="teacher-corrector-bar" id="teacher-corrector-bar" hidden><a href="teacher.html?view=listening" class="secondary-button">← Teacher Listening</a><label>Live material <select id="teacher-corrector-material"><option value="">Choose material</option></select></label><button type="button" id="teacher-corrector-load" class="secondary-button">Open live transcript</button><span id="teacher-corrector-state" role="status" aria-live="polite"></span><button type="button" id="teacher-corrector-apply" class="primary-button" disabled>更正并发布</button></header>
+  <p id="teacher-corrector-access" role="status">Checking teacher access…</p>
+  <p id="teacher-corrector-signin" hidden><a href="teacher.html">Open Teacher sign-in</a></p>
+  <main class="corrector-main" hidden>
+    <section class="load-card" id="load-card">
+      <div class="load-heading">
+        <span class="step-label">01 · OPEN A MATCHING PAIR</span>
+        <h2>Upload a timestamped JSON, or choose an audio and JSON pair</h2>
+        <p>Select a live material first to use its audio automatically. Files are read in this browser. Apply correction updates the selected private Listening material.</p>
+      </div>
+      <div class="file-grid">
+        <label class="file-picker" id="audio-picker">
+          <input id="corrector-audio-input" type="file" accept="audio/*,video/mp4,.m4a,.flac,.aac,.ogg">
+          <span class="file-icon" aria-hidden="true">♫</span>
+          <span><strong id="audio-file-name">Choose audio</strong><small>MP3, M4A, WAV, FLAC, AAC or OGG</small></span>
+          <span class="choose-file">Choose</span>
+        </label>
+        <label class="file-picker" id="json-picker">
+          <input id="corrector-json-input" type="file" accept="application/json,.json">
+          <span class="file-icon json-icon" aria-hidden="true">{ }</span>
+          <span><strong id="json-file-name">Choose transcript JSON</strong><small>Array or an object containing segments</small></span>
+          <span class="choose-file">Choose</span>
+        </label>
+      </div>
+      <div class="load-actions">
+        <p id="load-message" role="status">Choose JSON for the selected material, or choose both files.</p>
+        <button class="primary-button" id="open-corrector-button" type="button" disabled>Open corrector</button>
+      </div>
+    </section>
+
+    <section class="corrector-workspace" id="corrector-workspace" hidden>
+      <div class="workspace-topbar">
+        <div class="material-identity">
+          <span class="step-label">02 · CORRECT TRANSCRIPT</span>
+          <strong id="material-name">Transcript</strong>
+          <span id="material-meta"></span>
+        </div>
+        <div class="workspace-actions">
+          <span class="session-status" id="session-status">Ready</span>
+          <button class="secondary-button" id="replace-files-button" type="button">Replace files</button>
+          <button class="secondary-button" id="undo-correction-button" type="button" disabled>Undo</button>
+          <button class="secondary-button" id="redo-correction-button" type="button" disabled>Redo</button>
+          <button class="settings-toggle-button" id="settings-toggle-button" type="button" aria-label="Open quality and settings" aria-controls="settings-drawer" aria-expanded="false" title="Quality and settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8.2 4.8v-2.2l-2.3-.8a7.5 7.5 0 0 0-.6-1.4l1.1-2.2-1.6-1.6-2.2 1.1a7.5 7.5 0 0 0-1.4-.6L12.4 3h-2.2l-.8 2.3a7.5 7.5 0 0 0-1.4.6L5.8 4.8 4.2 6.4l1.1 2.2a7.5 7.5 0 0 0-.6 1.4l-2.3.8V13l2.3.8c.1.5.3 1 .6 1.4l-1.1 2.2L5.8 19 8 17.9c.4.3.9.5 1.4.6l.8 2.3h2.2l.8-2.3c.5-.1 1-.3 1.4-.6l2.2 1.1 1.6-1.6-1.1-2.2c.3-.4.5-.9.6-1.4l2.3-.7Z"/></svg>
+          </button>
+          <button class="primary-button" id="export-correction-button" type="button">Export corrected JSON</button>
+        </div>
+      </div>
+
+      <section class="waveform-card" aria-label="Audio waveform editor">
+        <div class="waveform-toolbar">
+          <button class="play-button" id="play-selection-button" type="button" aria-label="Play selected sentence">▶</button>
+          <div class="playback-copy">
+            <strong id="selected-wave-label">Sentence 1</strong>
+            <span id="selected-wave-time">00:00.000 – 00:00.000</span>
+          </div>
+          <div class="boundary-playback" role="group" aria-label="Boundary playback">
+            <button class="quiet-button" id="play-start-boundary-button" type="button">Hear start</button>
+            <button class="quiet-button" id="play-end-boundary-button" type="button">Hear end</button>
+          </div>
+          <label class="zoom-control">Zoom <input id="corrector-zoom-slider" type="range" min="20" max="500" value="100"></label>
+          <output id="current-time-output">00:00.000</output>
+        </div>
+        <div class="waveform-scroll-shell">
+          <div id="corrector-waveform"></div>
+          <div id="corrector-timeline"></div>
+        </div>
+        <p class="waveform-hint">Select a sentence, then drag its left or right edge to adjust its timing. The other sentences stay fixed. Existing overlaps are red.</p>
+      </section>
+
+      <div class="editing-layout">
+        <aside class="sentence-panel" aria-label="Transcript sentences">
+          <div class="panel-header">
+            <div><span class="step-label">SENTENCES</span><strong id="sentence-count">0</strong></div>
+            <label class="search-field"><span class="visually-hidden">Search transcript</span><input id="sentence-search" type="search" placeholder="Search"></label>
+          </div>
+          <div class="sentence-list" id="sentence-list"></div>
+        </aside>
+
+        <section class="sentence-editor" aria-labelledby="editor-heading">
+          <div class="panel-header editor-header">
+            <div><span class="step-label">SELECTED SENTENCE</span><strong id="editor-heading">Sentence 1</strong></div>
+            <div class="sentence-navigation">
+              <button class="icon-button" id="previous-sentence-button" type="button" aria-label="Previous sentence">←</button>
+              <button class="icon-button" id="next-sentence-button" type="button" aria-label="Next sentence">→</button>
+            </div>
+          </div>
+
+          <div class="editor-body">
+            <label class="field-label">Speaker
+              <input id="speaker-editor" type="text" autocomplete="off">
+            </label>
+            <label class="field-label sentence-text-field">Sentence text
+              <textarea id="text-editor" rows="6" spellcheck="true"></textarea>
+              <small>For Split, place the text cursor between two words and the audio playhead at the matching sound.</small>
+            </label>
+
+            <div class="time-editor-grid">
+              <div class="time-editor-card">
+                <span>Start</span>
+                <input id="start-time-editor" type="text" inputmode="decimal" aria-label="Sentence start time">
+                <div class="nudge-row">
+                  <button type="button" data-nudge="start:-0.05">−0.05</button>
+                  <button type="button" data-nudge="start:0.05">+0.05</button>
+                  <button type="button" data-set-boundary="start">Use playhead</button>
+                </div>
+              </div>
+              <div class="time-editor-card">
+                <span>End</span>
+                <input id="end-time-editor" type="text" inputmode="decimal" aria-label="Sentence end time">
+                <div class="nudge-row">
+                  <button type="button" data-nudge="end:-0.05">−0.05</button>
+                  <button type="button" data-nudge="end:0.05">+0.05</button>
+                  <button type="button" data-set-boundary="end">Use playhead</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="sentence-tools" role="group" aria-label="Sentence structure tools">
+              <button class="secondary-button" id="merge-previous-correction-button" type="button">← Merge previous</button>
+              <button class="secondary-button" id="split-sentence-button" type="button">Split at playhead</button>
+              <button class="secondary-button" id="merge-next-correction-button" type="button">Merge next →</button>
+              <button class="secondary-button" id="add-sentence-button" type="button">＋ Add after</button>
+              <button class="danger-button" id="delete-sentence-button" type="button">Delete</button>
+            </div>
+
+            <div class="selected-issues" id="selected-issues" role="status"></div>
+          </div>
+        </section>
+
+        <aside class="qa-panel settings-drawer" id="settings-drawer" aria-label="Quality and settings" hidden>
+          <div class="panel-header settings-drawer-header">
+            <div><span class="step-label">QUALITY &amp; SETTINGS</span><strong id="qa-heading">Ready</strong></div>
+            <button class="drawer-close-button" id="settings-close-button" type="button" aria-label="Close quality and settings">×</button>
+          </div>
+          <div class="qa-summary" id="qa-summary"></div>
+          <div class="keyboard-card">
+            <strong>Shortcuts</strong>
+            <dl>
+              <div><dt>Space</dt><dd>Play / pause</dd></div>
+              <div><dt>⌘ Z</dt><dd>Undo</dd></div>
+              <div><dt>⇧ ⌘ Z</dt><dd>Redo</dd></div>
+              <div><dt>↑ / ↓</dt><dd>Previous / next</dd></div>
+            </dl>
+          </div>
+          <p class="local-note">Your edits stay in this tab until you export or apply the correction. Export regularly during a long correction session.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="corrector-toast" role="status" aria-live="polite"></div>
+  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
+  <script src="assets/js/config.public.js"></script>
+  <script src="assets/js/cloudbase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script type="module" src="assets/listening-corrector/transcript-corrector.js?v=20260924-selected-resize-1"></script>
+  <script type="module" src="assets/js/teacher-listening-corrector.js?v=20260924-json-only-2"></script>
+</body>
+</html>

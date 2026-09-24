@@ -2,6 +2,8 @@
 .teacher-listening-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 28px 30px; border: 1px solid rgba(255,255,255,.72); border-radius: 26px; background: linear-gradient(135deg, rgba(248,253,253,.86), rgba(237,248,247,.72)); box-shadow: 0 20px 55px rgba(38,72,77,.09), inset 0 1px 0 rgba(255,255,255,.9); }
 .teacher-listening-heading h1 { margin: 6px 0; font-size: clamp(2.1rem, 4vw, 3.4rem); letter-spacing: -.055em; }
 .teacher-listening-heading p:not(.eyebrow) { margin: 0; color: #6c8084; font-size: .82rem; }
+.teacher-listening-heading-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.teacher-listening-heading-actions a, .teacher-listening-editor-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 14px; text-decoration: none; }
 .teacher-listening-message { min-height: 26px; margin: 11px 8px 0; color: #167251; font-size: .78rem; font-weight: 720; }
 .teacher-listening-message.error { color: #a33e42; }
 .teacher-listening-layout { display: grid; grid-template-columns: minmax(270px, .7fr) minmax(0, 1.4fr); gap: 14px; align-items: start; }
@@ -12,6 +14,8 @@
 .teacher-listening-material-card h3 { margin: 0; color: #23474d; font-size: .9rem; }
 .teacher-listening-material-card p { margin: 4px 0 0; color: #6c8084; font-size: .69rem; }
 .teacher-listening-material-card .status { float: right; padding: 3px 6px; border-radius: 7px; color: #6b8084; background: #edf2f2; font-size: .59rem; font-weight: 800; }
+.teacher-listening-material-correct { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; margin-top: 11px; padding: 6px 13px; border: 1px solid rgba(36,91,99,.16); border-radius: 11px; color: #086a76; background: rgba(255,255,255,.82); font-size: .68rem; font-weight: 800; text-decoration: none; }
+.teacher-listening-material-correct:hover { border-color: rgba(13,143,157,.42); background: #e8f7f6; }
 .teacher-listening-editor { padding: 22px; }
 .teacher-listening-editor-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
 .teacher-listening-editor-head h2 { margin: 5px 0 0; color: #23474d; font-size: 1.25rem; letter-spacing: -.03em; }

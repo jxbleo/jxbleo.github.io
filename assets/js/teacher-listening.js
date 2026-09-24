@@ -24,7 +24,9 @@
     list.innerHTML = state.materials.map(function(item) {
       var tracks = item.tracks || {};
       var dictation = tracks.dictation && tracks.dictation.segment_count || 0;
-      return '<article class="teacher-listening-material-card' + (item.material_id === state.selected ? ' is-active' : '') + '" tabindex="0" role="button" data-listening-material-id="' + escapeHtml(item.material_id) + '"><span class="status">' + escapeHtml(item.publication_status || 'draft') + '</span><h3>' + escapeHtml(item.title || item.material_id) + '</h3><p>' + escapeHtml(item.material_id) + ' · ' + dictation + ' Dictation</p></article>';
+      var published = item.has_published === true && item.publication_status === 'published';
+      var corrector = published ? '<a class="teacher-listening-material-correct" href="teacher-listening-corrector.html?material=' + encodeURIComponent(item.material_id) + '">Edit Json</a>' : '';
+      return '<article class="teacher-listening-material-card' + (item.material_id === state.selected ? ' is-active' : '') + '" tabindex="0" role="button" data-listening-material-id="' + escapeHtml(item.material_id) + '"><span class="status">' + escapeHtml(item.publication_status || 'draft') + '</span><h3>' + escapeHtml(item.title || item.material_id) + '</h3><p>' + escapeHtml(item.material_id) + ' · ' + dictation + ' Dictation</p>' + corrector + '</article>';
     }).join('');
   }
   function sourceTrack(source, track) {
@@ -87,6 +89,7 @@
     $('teacher-listening-editor-title').textContent = source.title || id || 'New material';
     $('teacher-listening-status').textContent = source.publication_status || 'Draft';
     $('teacher-listening-hide').hidden = source.has_published !== true && source.publication_status !== 'published';
+    $('teacher-listening-corrector-link').href = id ? 'teacher-listening-corrector.html?material=' + encodeURIComponent(id) : 'teacher-listening-corrector.html';
     editor.hidden = false;
     renderList();
   }
@@ -150,8 +153,8 @@
   }
   document.querySelectorAll('[data-view="listening"]').forEach(function(button) { button.addEventListener('click', function() { setView(); loadMaterials(); }); });
   document.getElementById('teacher-listening-new').addEventListener('click', function() { setView(); blank(); });
-  list.addEventListener('click', function(event) { var card = event.target.closest('[data-listening-material-id]'); if (card) loadMaterial(card.getAttribute('data-listening-material-id')); });
-  list.addEventListener('keydown', function(event) { if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-listening-material-id]')) { event.preventDefault(); loadMaterial(event.target.closest('[data-listening-material-id]').getAttribute('data-listening-material-id')); } });
+  list.addEventListener('click', function(event) { if (event.target.closest('.teacher-listening-material-correct')) return; var card = event.target.closest('[data-listening-material-id]'); if (card) loadMaterial(card.getAttribute('data-listening-material-id')); });
+  list.addEventListener('keydown', function(event) { if (event.target.closest('.teacher-listening-material-correct')) return; if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-listening-material-id]')) { event.preventDefault(); loadMaterial(event.target.closest('[data-listening-material-id]').getAttribute('data-listening-material-id')); } });
   document.querySelectorAll('[data-listening-add-segment]').forEach(function(button) { button.addEventListener('click', function() {
     var track = button.getAttribute('data-listening-add-segment');
     var segments = state.tracks[track] || [];
