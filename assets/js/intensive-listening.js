@@ -509,6 +509,7 @@
     updateUnitNavigation();
     $('#time-range').textContent = state.visitorFullAudio ? 'Full audio' : formatTime(unit.start_seconds) + ' – ' + formatTime(unit.end_seconds);
     $('#practice-card').dataset.mode = mode;
+    updateWaveProgress(0);
     var passiveListening = state.visitorMode || mode !== 'dictation';
     $('#listen-only-panel').hidden = !passiveListening;
     $('#word-slots').hidden = passiveListening;
@@ -670,15 +671,50 @@
   function nextPlaybackEndIndex(startIndex) {
     return startIndex;
   }
+  function updateTitleOverflow() {
+    var viewport = document.querySelector('.il-title-viewport');
+    var title = $('#material-title');
+    var overflow = Math.max(0, title.scrollWidth - viewport.clientWidth);
+    title.style.setProperty('--title-overflow', overflow + 'px');
+    title.classList.toggle('is-overflowing', overflow > 2);
+  }
+  window.addEventListener('resize', updateTitleOverflow);
+
+  function setPlaybackUi(playing) {
+    $('#replay-button').classList.toggle('is-playing', playing);
+    $('#wave-icon').textContent = playing ? 'Ⅱ' : '▶';
+    $('#replay-button').setAttribute('aria-label', playing ? 'Pause this unit' : 'Play or resume this unit');
+  }
+  function updateWaveProgress(fraction) {
+    var percentage = Math.round(Math.max(0, Math.min(1, fraction)) * 100);
+    $('#wave-fill').style.clipPath = 'inset(0 ' + (100 - percentage) + '% 0 0)';
+    $('#replay-button').setAttribute('aria-description', percentage + '% played. Click to play or pause; seeking is unavailable.');
+  }
+  function updateWaveProgressForTime(currentTime, media) {
+    var unit = currentUnit();
+    if (!unit) return;
+    var start = state.visitorFullAudio ? 0 : Number(unit.start_seconds) || 0;
+    var end = state.visitorFullAudio ? Number(media.duration) : Number(unit.end_seconds);
+    if (Number.isFinite(end) && end > start) updateWaveProgress((currentTime - start) / (end - start));
+  }
+  (function buildWaveform() {
+    var heights = [11,16,22,14,29,37,25,15,34,44,31,19,26,40,48,32,21,38,28,16,35,46,30,19,27,43,36,23,15,32,47,39,20,29,42,26,17,36,45,28,19,33,24,14,21,30,18,12];
+    var bars = heights.map(function(height) { return '<i style="height:' + height + 'px"></i>'; }).join('');
+    $('#wave-bars').innerHTML = bars;
+    $('#wave-bars-active').innerHTML = bars;
+    updateWaveProgress(0);
+  })();
+
   function pauseAudio(message) {
     var media = dictationMedia();
     if (media) media.pause();
-    state.playing = false; $('#replay-button').textContent = '▶';
+    state.playing = false; setPlaybackUi(false);
     if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', false, currentUnit() && currentUnit().unit_id);
     if (message) $('#audio-status').textContent = message;
   }
   function finishPlayback() {
     pauseAudio('');
+    updateWaveProgress(1);
     if (!currentUnit()) return;
     if (state.visitorMode) {
       $('#audio-status').textContent = 'Full programme finished';
@@ -714,6 +750,7 @@
       currentLocal().replayDelta += 1; renderProgress(); saveDraft();
     }
     pauseAudio('');
+    updateWaveProgress(0);
     // Each unit starts a fresh playhead window. Without resetting this
     // baseline, moving from a long unit back to an earlier timestamp could
     // suppress every subsequent 30-second heartbeat until the old timestamp
@@ -725,15 +762,16 @@
     state.stopAt = state.visitorFullAudio ? Infinity : Number(endUnit.end_seconds) || 0;
     if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('audio', unit.unit_id);
     audio.play().then(function() {
-      state.playing = true; $('#replay-button').textContent = 'Ⅱ'; $('#audio-status').textContent = 'Listening…';
+      state.playing = true; setPlaybackUi(true); $('#audio-status').textContent = 'Listening…';
       if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit.unit_id);
     }).catch(function() {
-      state.playing = false; $('#replay-button').textContent = '▶'; $('#audio-status').textContent = 'Press Replay to hear this unit';
+      state.playing = false; setPlaybackUi(false); $('#audio-status').textContent = 'Press Play to hear this unit';
     });
   }
   function enterPractice(autoplay) {
     state.started = true;
-    $('#loading-screen').hidden = true;
+    $('#practice-shell').setAttribute('aria-busy', 'false');
+    $('#replay-button').disabled = false;
     $('#completion-screen').hidden = true;
     $('#practice-shell').hidden = false;
     renderUnit();
@@ -862,10 +900,12 @@
     call('policy').catch(function() { /* The next normal action retries. */ });
   }
   function showLoadError(error) {
-    $('#loading-title').textContent = 'Practice unavailable';
-    $('#loading-copy').textContent = error.message || 'Unable to load this listening material.';
+    $('#practice-shell').setAttribute('aria-busy', 'false');
+    $('#load-error-copy').textContent = error.message || 'Unable to load this listening material.';
     $('#loading-return').href = safeReturnUrl();
-    $('#loading-return').hidden = false;
+    $('#load-error').hidden = false;
+    $('#audio-status').textContent = 'Unable to load listening';
+    $('#practice-card .il-actions').hidden = true;
   }
   function loadVisitorMaterial() {
     var sourceSetId = state.setId.replace(/^IL-/i, '');
@@ -911,6 +951,7 @@
       state.slotDisputes = {};
       (result.slot_disputes || []).forEach(function(dispute) { state.slotDisputes[disputeKey(dispute.unit_id, dispute.slot_id)] = dispute; });
       $('#material-title').textContent = state.material.title;
+      requestAnimationFrame(updateTitleOverflow);
       renderMaterialContext();
       var dictationPlayer = dictationMedia();
       dictationPlayer.src = dictationMediaSource();
@@ -919,7 +960,6 @@
       if (state.visitorMode) {
         document.body.classList.add('il-visitor-mode');
         $('#header-progress').parentElement.hidden = true;
-        $('.il-stats').hidden = true;
         $('#previous-unit-button').hidden = true; $('#next-unit-button').hidden = true;
         enterPractice(true);
         return;
@@ -929,7 +969,7 @@
         enterPractice(false); showFeedback('Teacher preview · replay the unit, then open Show Answer to mark a word.'); return;
       }
       if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100) {
-        $('#loading-screen').hidden = true; $('#completion-screen').hidden = false;
+        $('#practice-shell').hidden = true; $('#completion-screen').hidden = false;
         $('#completion-percent').textContent = state.progress.best_percentage + '%';
         $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; return;
       }
@@ -942,7 +982,22 @@
     });
   }
 
-  $('#replay-button').addEventListener('click', function() { state.playing ? pauseAudio('Paused · press Replay to continue') : replayUnit(true); });
+  $('#replay-button').addEventListener('click', function() {
+    if (!state.material) return;
+    if (state.playing) { pauseAudio('Paused · press to continue'); return; }
+    var media = dictationMedia();
+    var unit = currentUnit();
+    var start = Number(unit && unit.start_seconds) || 0;
+    var end = Number.isFinite(state.stopAt) ? state.stopAt : Number(media.duration);
+    if (media.currentTime > start + 0.05 && media.currentTime < end - 0.05 && !media.ended) {
+      media.play().then(function() {
+        state.playing = true; setPlaybackUi(true); $('#audio-status').textContent = 'Listening…';
+        if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit.unit_id);
+      }).catch(function() { $('#audio-status').textContent = 'Press Play to hear this unit'; });
+      return;
+    }
+    replayUnit(true);
+  });
   $('#check-button').addEventListener('click', checkUnit);
   $('#answer-button').addEventListener('click', showAnswer);
   $('#continue-button').addEventListener('click', function() { hideAnswer(); });
@@ -976,6 +1031,7 @@
     var media = event.currentTarget;
     if (media !== dictationMedia()) return;
     var currentTime = Number(media.currentTime) || 0;
+    updateWaveProgressForTime(currentTime, media);
     if (!state.visitorMode && !state.teacherMode && state.started && currentTime > 0) {
       var changed = state.lastAudioTime == null || currentTime > state.lastAudioTime + 0.08;
       var due = Date.now() - state.lastActivitySentAt >= 30000;
@@ -987,7 +1043,7 @@
     while (state.currentIndex < state.playbackEndIndex) {
       var next = state.material.units[state.currentIndex + 1];
       if (!next || media.currentTime < Number(next.start_seconds || 0)) break;
-      state.currentIndex += 1; renderUnit();
+      state.currentIndex += 1; renderUnit(); updateWaveProgressForTime(currentTime, media);
     }
     if (Number.isFinite(state.stopAt) && media.currentTime >= state.stopAt) finishPlayback();
   }

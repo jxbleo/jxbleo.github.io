@@ -3454,3 +3454,7 @@ When unavailable, use same-origin Comic Neue Regular rather than generic cursive
 A font-load failure falls back to Arial/sans-serif. Names, timestamps, Chinese
 feedback and other report prose are unaffected. The new face uses font-display
 swap and is fetched only when selected.
+
+### Intensive Listening practice surface (2026-09-24)
+
+The practice shell is visible on entry, with the typing card occupying the first content position. The sticky toolbar is a two-column 50/50 layout: Back plus a clipped, automatically scrolling material title on the left; the visible progress track and percentage on the right, including narrow screens. Assignment context and the linked comprehension action sit as a compact row in the practice card. The former introductory material card and top-right Dictation label are absent. The full-width waveform is one button, never a seek control. Its fill follows the current unit's media time; pressing it pauses active playback, resumes a paused segment at the saved position, or replays after completion. Reduced-motion users can manually scroll long titles. Loading errors appear inside the card with a return action.

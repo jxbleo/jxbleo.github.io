@@ -3977,3 +3977,7 @@ checks pass; real Android visual acceptance remains required.
   historical. Six changed cloud functions were deployed with verified code and
   unchanged configuration; the obsolete timer/function were removed after a
   zero-pending-audio audit. Historical collections remain intact.
+
+### 2026-09-24 — Direct Intensive Listening practice layout
+
+Removed the full-screen loading interstitial from Intensive Listening entry, moved the material title into a balanced title/progress toolbar, removed the opening summary card and Dictation label, and replaced the round replay control with a non-seekable waveform button for play, pause, and resume. Material load failures now show an inline error in the practice card.

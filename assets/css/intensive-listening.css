@@ -292,3 +292,58 @@ body.il-answer-open { overflow: hidden; }
 }
 
 .il-practice-label { color: var(--il-accent-deep); font-size: .75rem; font-weight: 800; }
+
+/* Direct practice layout: title/progress share the toolbar; no opening card. */
+.il-header { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(8px, 2vw, 22px); }
+.il-header-title { min-width: 0; display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 12px; }
+.il-title-viewport { min-width: 0; overflow: hidden; white-space: nowrap; }
+.il-title-viewport strong { display: inline-block; max-width: none; color: var(--il-ink); font-size: clamp(.83rem, 1.6vw, 1.08rem); font-weight: 850; }
+.il-title-viewport strong.is-overflowing { animation: il-title-scroll 9s ease-in-out infinite alternate; }
+@keyframes il-title-scroll { 0%, 18% { transform: translateX(0); } 82%, 100% { transform: translateX(calc(-1 * var(--title-overflow))); } }
+.il-header-progress { width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr) auto; }
+.il-header-progress progress { display: block; min-width: 0; }
+.il-shell { padding-top: 14px; }
+.il-practice-card { margin-top: 0; }
+.il-context-row { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; padding: 0 18px; }
+.il-context-row:has(> :not([hidden])) { padding-top: 10px; }
+.il-assignment-context { margin: 0 auto 0 0; }
+.il-load-error { margin: 16px; padding: 18px; border-radius: 16px; color: var(--il-red); background: var(--il-red-soft); }
+.il-load-error p { margin: 5px 0 12px; }
+.il-load-error a { color: var(--il-accent-deep); font-weight: 780; }
+.il-audio-row { display: grid; gap: 8px; }
+.il-wave-button { width: 100%; min-width: 0; min-height: 74px; padding: 10px 15px; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; border: 1px solid rgba(13, 143, 157, .22); border-radius: 17px; color: var(--il-accent-deep); background: rgba(255,255,255,.8); box-shadow: 0 5px 18px rgba(8,106,118,.06); transition: transform 120ms ease, background 180ms ease; }
+.il-wave-button:hover:not(:disabled) { background: #fff; }
+.il-wave-button:active:not(:disabled) { transform: scale(.995); }
+.il-wave-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: #fff !important; background: var(--il-accent-deep); font-size: .85rem !important; }
+.il-wave-display { position: relative; display: block; width: 100%; height: 50px; overflow: hidden; }
+.il-wave-bars { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; gap: 2px; }
+.il-wave-bars i { flex: 0 0 2px; max-height: 46px; min-height: 2px; border-radius: 2px; background: rgba(13,143,157,.25); }
+.il-wave-fill { position: absolute; inset: 0; overflow: hidden; pointer-events: none; clip-path: inset(0 100% 0 0); }
+.il-wave-fill .il-wave-bars { width: 100%; min-width: 100%; }
+.il-wave-fill .il-wave-bars i { background: var(--il-accent); }
+.il-wave-time { color: var(--il-muted); font-size: .73rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.il-audio-caption { padding: 0 3px; display: grid; }
+.il-audio-caption strong { font-size: .8rem; }
+@media (max-width: 900px) { .il-header { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 680px) {
+  .il-header { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  .il-header-title { grid-template-columns: 38px minmax(0, 1fr); gap: 7px; }
+  .il-header-title .il-back { width: 38px; height: 38px; }
+  .il-header-progress { min-width: 0; grid-template-columns: minmax(0, 1fr) auto; gap: 5px; }
+  .il-header-progress progress { display: block; }
+  .il-header-progress strong { min-width: 2.6em; font-size: .72rem; }
+  .il-wave-button { padding-inline: 9px; gap: 6px; }
+  .il-wave-display { height: 48px; }
+  .il-wave-bars i { flex-basis: 1.5px; }
+  .il-wave-time { font-size: .62rem; }
+  .il-unit-bar { flex-wrap: wrap; gap: 5px; }
+}
+@media (max-width: 400px) {
+  .il-title-viewport strong { font-size: .76rem; }
+  .il-wave-button { grid-template-columns: 30px minmax(0, 1fr); }
+  .il-wave-time { grid-column: 2; justify-self: end; margin-top: -8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .il-title-viewport { overflow-x: auto; }
+  .il-title-viewport strong.is-overflowing { animation: none; }
+}

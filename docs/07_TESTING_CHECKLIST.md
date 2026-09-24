@@ -3596,3 +3596,11 @@ response, and one IELTS response in each part using test accounts. Confirm one
 bell row/email per ready report, exact link return after login, original audio,
 mobile layout, candidate jumps, and updated unread count after returning to the
 Teacher page. An ordinary student must not read teacher report/audio endpoints.
+
+### Intensive Listening direct-entry UI (2026-09-24)
+
+- Open Intensive Listening from BBC Library and another supported entry: the practice card and toolbar appear immediately, with no Focus Session/countdown or full-screen loading page; after bootstrap, word inputs are ready.
+- Confirm title/progress each occupy half the toolbar on desktop and mobile; long title scrolls without moving the progress bar; reduced-motion title is manually scrollable.
+- Confirm the first summary card and Dictation label are absent. Assignment context and comprehension link remain available.
+- Press the waveform while playing, paused, and finished: it pauses, resumes from the paused time, and replays after completion. The fill advances with media time; clicking any horizontal position cannot seek.
+- Simulate bootstrap failure: show inline error and return link, never an indefinite loading overlay.

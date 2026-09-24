@@ -2790,3 +2790,7 @@ names. This supersedes the earlier prefixed Dashboard-title decision.
 - 不改变学生已有报告、成绩、作业、STAR 或模型配置。
 
 The teacher reader also preserves current DSE Individual Response IO/VL structured strengths/weaknesses and all three paired Thinking Prompt/5** Exemplars, with legacy single-sample compatibility.
+
+### Intensive Listening direct entry and playback (2026-09-24)
+
+Opening Intensive Listening from Library or any supported entry shows the practice toolbar and dictation card immediately. The page has no Focus Session/countdown or full-screen loading interstitial. While private material loads, the practice card shows inline loading; a failed load shows an inline error and return link. The toolbar gives equal space to the listening title and completion progress; long titles scroll within their half. The first material summary card and Dictation toolbar label are removed. Unit playback uses a single waveform button that displays progress and supports play, pause, and resume; students cannot seek to a chosen timestamp.

@@ -9,39 +9,20 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260923-direct-1">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260924-practice-2">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
-    <button class="il-back" id="back-button" type="button" aria-label="Back">
+    <div class="il-header-title"><button class="il-back" id="back-button" type="button" aria-label="Back">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7"></path></svg>
-    </button>
-    <div class="il-header-progress" aria-label="Dictation progress">
+    </button><div class="il-title-viewport"><strong id="material-title">Loading listening…</strong></div></div>
+    <div class="il-header-progress" aria-label="Listening progress">
       <progress id="header-progress" max="100" value="0"></progress>
       <strong id="header-progress-label">0%</strong>
     </div>
-    <div class="il-header-tools">
-      <span class="il-practice-label">Dictation</span>
-      <button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button>
-    </div>
   </header>
 
-  <main class="il-shell" id="practice-shell" hidden>
-    <section class="il-material-heading">
-      <div class="il-material-copy">
-        <span class="il-eyebrow" id="material-source">LISTEN · TYPE · CHECK</span>
-        <h1 id="material-title">Loading…</h1>
-        <p class="il-assignment-context" id="assignment-context" hidden></p>
-        <a class="il-linked-practice" id="linked-practice-header" href="#" data-comprehension-link hidden>Comprehension Practice</a>
-      </div>
-      <div class="il-stats" aria-label="Practice summary">
-        <span>Completed</span>
-        <span>Independent</span>
-        <span>With answer</span>
-        <span>Replays</span>
-      </div>
-    </section>
-
+  <main class="il-shell" id="practice-shell" aria-busy="true">
     <section class="il-practice-card" id="practice-card">
       <div class="il-unit-bar">
         <div class="il-unit-navigation">
@@ -52,15 +33,21 @@
         <div class="il-unit-tools">
           <span class="il-unit-position" id="unit-position">1 / 1</span>
           <button class="il-shortcuts-button" id="shortcuts-button" type="button" aria-haspopup="dialog" aria-controls="shortcuts-modal">Keys</button>
+          <button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button>
         </div>
       </div>
 
+      <div class="il-context-row"><span id="material-source" hidden></span><p class="il-assignment-context" id="assignment-context" hidden></p><a class="il-linked-practice" id="linked-practice-header" href="#" data-comprehension-link hidden>Comprehension Practice</a></div>
+      <div class="il-load-error" id="load-error" role="alert" hidden><strong>Practice unavailable</strong><p id="load-error-copy"></p><a id="loading-return" href="intensive-listening-library.html">Back to Listening</a></div>
       <video class="il-source-video" id="dictation-video" preload="metadata" playsinline hidden></video>
 
       <div class="il-audio-row">
-        <button class="il-replay" id="replay-button" type="button" aria-label="Replay this unit">▶</button>
-        <div><strong id="audio-status">Ready when you are</strong><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
-        <span class="il-time-range" id="time-range"></span>
+        <button class="il-wave-button" id="replay-button" type="button" aria-label="Play this unit" disabled>
+          <span class="il-wave-icon" id="wave-icon" aria-hidden="true">▶</span>
+          <span class="il-wave-display" aria-hidden="true"><span class="il-wave-bars" id="wave-bars"></span><span class="il-wave-fill" id="wave-fill"><span class="il-wave-bars" id="wave-bars-active"></span></span></span>
+          <span class="il-wave-time" id="time-range"></span>
+        </button>
+        <div class="il-audio-caption"><strong id="audio-status">Loading listening…</strong><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
       </div>
 
       <div class="il-listen-only" id="listen-only-panel" hidden>
@@ -88,14 +75,6 @@
       <div class="il-answer-progress" id="answer-progress" aria-hidden="true"><span></span></div>
     </div>
   </div>
-
-  <section class="il-loading-screen" id="loading-screen" aria-live="polite">
-    <div class="il-loading-card">
-      <h1 id="loading-title">Loading listening…</h1>
-      <p id="loading-copy">Preparing your material…</p>
-      <a id="loading-return" href="intensive-listening-library.html" hidden>Back to Listening</a>
-    </div>
-  </section>
 
   <section class="il-completion-screen" id="completion-screen" hidden>
     <div class="il-completion-card">
@@ -167,6 +146,6 @@
   <script src="assets/js/config.public.js?v=20260921-cleanup-2"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
   <script src="assets/js/learning-activity.js?v=20260907-3"></script>
-  <script src="assets/js/intensive-listening.js?v=20260923-direct-1"></script>
+  <script src="assets/js/intensive-listening.js?v=20260924-practice-2"></script>
 </body>
 </html>
