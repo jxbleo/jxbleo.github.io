@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260924-practice-2">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260924-ui-1">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
@@ -20,21 +20,18 @@
       <progress id="header-progress" max="100" value="0"></progress>
       <strong id="header-progress-label">0%</strong>
     </div>
+    <div class="il-header-tools">
+      <button class="il-shortcuts-button" id="shortcuts-button" type="button" aria-haspopup="dialog" aria-controls="shortcuts-modal">Keys</button>
+      <button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button>
+    </div>
   </header>
 
   <main class="il-shell" id="practice-shell" aria-busy="true">
     <section class="il-practice-card" id="practice-card">
       <div class="il-unit-bar">
-        <div class="il-unit-navigation">
-          <button class="il-unit-step" id="previous-unit-button" type="button" aria-label="Previous sentence" title="Previous sentence">←</button>
-          <div class="il-unit-identity"><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label"></span></div>
-          <button class="il-unit-step" id="next-unit-button" type="button" aria-label="Next sentence" title="Next sentence">→</button>
-        </div>
-        <div class="il-unit-tools">
-          <span class="il-unit-position" id="unit-position">1 / 1</span>
-          <button class="il-shortcuts-button" id="shortcuts-button" type="button" aria-haspopup="dialog" aria-controls="shortcuts-modal">Keys</button>
-          <button class="il-export" id="export-button" type="button" hidden>Export Latest JSON</button>
-        </div>
+        <button class="il-unit-step" id="previous-unit-button" type="button" aria-label="Previous sentence" title="Previous sentence">←</button>
+        <div class="il-unit-identity"><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label" hidden></span><span class="il-unit-position" id="unit-position">1 / 1</span></div>
+        <button class="il-unit-step" id="next-unit-button" type="button" aria-label="Next sentence" title="Next sentence">→</button>
       </div>
 
       <div class="il-context-row"><span id="material-source" hidden></span><p class="il-assignment-context" id="assignment-context" hidden></p><a class="il-linked-practice" id="linked-practice-header" href="#" data-comprehension-link hidden>Comprehension Practice</a></div>

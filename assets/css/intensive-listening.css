@@ -347,3 +347,18 @@ body.il-answer-open { overflow: hidden; }
   .il-title-viewport { overflow-x: auto; }
   .il-title-viewport strong.is-overflowing { animation: none; }
 }
+
+/* Student Listening refinements: hide the speaker field, the audio status
+   caption, and the top Comprehension Practice button; spread the unit arrows
+   to the card edges; and keep the Keys control in the header toolbar. */
+.il-speaker { display: none !important; }
+.il-audio-caption { display: none !important; }
+.il-linked-practice { display: none !important; }
+.il-header { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+.il-unit-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.il-unit-identity { min-width: 0; }
+@media (max-width: 680px) {
+  .il-header { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+  .il-unit-bar { padding-inline: 12px; gap: 6px; }
+  .il-header-tools { gap: 5px; }
+}
