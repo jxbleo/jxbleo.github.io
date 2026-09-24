@@ -202,6 +202,7 @@ Speaking Lab 不使用上述旧模式。`speakingAiWorker` 的函数级权限必
 | 初稿照片上传成功后仍停在原页面，刷新才出现等待游戏 | 前端只保存了排队状态却没有立即渲染 OCR waiting 或启动同一 Composition 的轮询 | 上传 handoff 成功后同步进入 waiting 并立即启动 serialized polling；确认 toolbar Back 可恢复且不要用假的百分比 |
 | iPhone/iPad 点击相机或相册选择后没有弹出系统选择器 | `input.click()` 被放在 Promise、定时器或 `requestAnimationFrame` 后，Safari 已撤销用户手势授权 | 先同步渲染对应隐藏 input，再在同一个点击处理函数中直接调用 `input.click()`；保存草稿可并行后台执行 |
 | 内页登录后回到错误页面、丢失练习 query/hash，或旧 user/visitor 参数继续传播 | login-navigation.js 未在页面脚本前加载、cache query 不一致，或调用没有传完整当前 URL | 检查页面脚本顺序与 loginHref(window.location.href, fallback)；验证同源根级 HTML、外部目标拒绝和旧身份参数清理；这是静态路由问题，不要先改 CloudBase 数据 |
+| 精听页一直显示 `Loading listening…` | 页面脚本在初始化前绑定缺失的 `Keys` / `Comprehension` 弹窗节点时抛出 TypeError | 核对 `intensive-listening.html` 是否包含脚本直接引用的全部 ID；补齐弹窗并用页面 ID 契约测试覆盖，不要只检查脚本语法或 CloudBase 响应 |
 | 精听进入后只显示空白输入区域，首句没有词位 | 线上 `intensiveListening` 仍是未返回 `practice_mode` 的旧版或函数更新状态为 `Update failed`；首段实际是零词槽的 Skip，旧前端协议把它当 Dictation | 先查函数状态和线上代码是否返回 `practice_mode` / `sequence_count`，再查材料首段模式与词槽数量；部署同一提交生成的最新函数包和静态文件，不要重做 JSON 或删除数据库词槽 |
 | 登录 Teacher 显示 `The size of HTTP response body exceeds the upper limit (6MB)` | 旧版 `teacherAdmin.listAttempts` / `listProgress` 一次返回全部历史的逐题答案和 explanation，且 progress 重复嵌套 attempts | 部署轻量摘要与 `getAttemptDetail` 版本的 `teacherAdmin.zip`，并发布最新版 `teacher.html` / `teacher.js`；不需要删除 attempts |
 | `tcb hosting deploy` 显示成功，但目标 CSS/JS 的 ETag 仍未改变 | 单文件上传只给目录型 `cloudPath` 时，CLI 可能没有覆盖预期对象键 | 单文件部署时把完整目标键写明，例如本地 `assets/js/dashboard.js` 对应云端 `assets/js/dashboard.js`；随后用 `tcb hosting list <完整键> --json` 对比本地 MD5 与 ETag |

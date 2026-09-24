@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-24 — Restore Intensive Listening startup
+
+- Restored the Keys and Comprehension dialogs referenced by the shared listening
+  runtime. Their missing DOM nodes stopped script initialization and left the
+  page on `Loading listening…` after the direct-entry release.
+- Added a contract check that every literal runtime ID selector exists in the
+  listening page. This is a static frontend fix; no CloudBase change is needed.
+
 ## 2026-09-23 — Open Intensive Listening directly
 
 - Removed the shared Focus Session and three-second start countdown from all

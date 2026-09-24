@@ -170,6 +170,10 @@ function run() {
   assert.ok(intensiveRuntime.includes("!local.answerVisible"), "answer render must not immediately focus a blocked word slot");
 
   const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
+  const pageIds = new Set(Array.from(intensivePage.matchAll(/\bid="([^"]+)"/g), match => match[1]));
+  for (const match of intensiveRuntime.matchAll(/\$\('#([A-Za-z][A-Za-z0-9_-]*)/g)) {
+    assert.ok(pageIds.has(match[1]), "Intensive Listening runtime requires #" + match[1] + " in the page");
+  }
   assert.ok(intensivePage.includes('id="previous-unit-button"'));
   assert.ok(intensivePage.includes('aria-label="Previous sentence"'));
   assert.ok(intensivePage.includes('id="next-unit-button"'));
