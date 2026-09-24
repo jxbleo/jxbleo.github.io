@@ -605,7 +605,7 @@
     var position = dictationPosition(state.currentIndex);
     $('#unit-label').textContent = state.visitorMode
       ? 'FULL PROGRAMME'
-      : mode === 'dictation' ? 'UNIT ' + String(position).padStart(2, '0') + ' / ' + state.material.unit_count : 'JUST LISTEN';
+      : mode === 'dictation' ? 'UNIT ' + String(position).padStart(2, '0') : 'JUST LISTEN';
     $('#speaker-label').textContent = unit.speaker || '';
     $('#unit-position').textContent = state.visitorMode
       ? 'LISTEN ONLY'

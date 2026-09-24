@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260924-title-center-1">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260924-audio-dock-1">
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
@@ -27,11 +27,19 @@
     </div>
   </header>
 
+  <div class="il-audio-row">
+    <button class="il-wave-button" id="replay-button" type="button" aria-label="Play this unit" disabled>
+      <span class="il-wave-icon" id="wave-icon" aria-hidden="true">▶</span>
+      <span class="il-wave-display" aria-hidden="true"><span class="il-wave-bars" id="wave-bars"></span><span class="il-wave-fill" id="wave-fill"><span class="il-wave-bars" id="wave-bars-active"></span></span></span>
+    </button>
+    <div class="il-audio-caption"><strong id="audio-status">Loading listening…</strong><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
+  </div>
+
   <main class="il-shell" id="practice-shell" aria-busy="true">
     <section class="il-practice-card" id="practice-card">
       <div class="il-unit-bar">
         <button class="il-unit-step" id="previous-unit-button" type="button" aria-label="Previous sentence" title="Previous sentence">←</button>
-        <div class="il-unit-identity"><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-speaker" id="speaker-label" hidden></span><span class="il-unit-position" id="unit-position">1 / 1</span></div>
+        <div class="il-unit-identity"><span class="il-eyebrow" id="unit-label">UNIT 01</span><span class="il-unit-time" id="time-range">0:00 – 0:00</span><span class="il-speaker" id="speaker-label" hidden></span><span class="il-unit-position" id="unit-position" hidden>1 / 1</span></div>
         <button class="il-unit-step" id="next-unit-button" type="button" aria-label="Next sentence" title="Next sentence">→</button>
       </div>
 
@@ -39,14 +47,6 @@
       <div class="il-load-error" id="load-error" role="alert" hidden><strong>Practice unavailable</strong><p id="load-error-copy"></p><a id="loading-return" href="intensive-listening-library.html">Back to Listening</a></div>
       <video class="il-source-video" id="dictation-video" preload="metadata" playsinline hidden></video>
 
-      <div class="il-audio-row">
-        <button class="il-wave-button" id="replay-button" type="button" aria-label="Play this unit" disabled>
-          <span class="il-wave-icon" id="wave-icon" aria-hidden="true">▶</span>
-          <span class="il-wave-display" aria-hidden="true"><span class="il-wave-bars" id="wave-bars"></span><span class="il-wave-fill" id="wave-fill"><span class="il-wave-bars" id="wave-bars-active"></span></span></span>
-          <span class="il-wave-time" id="time-range"></span>
-        </button>
-        <div class="il-audio-caption"><strong id="audio-status">Loading listening…</strong><small class="il-activity-sync-status" id="activity-sync-status" hidden>Activity sync will retry shortly.</small></div>
-      </div>
 
       <div class="il-listen-only" id="listen-only-panel" hidden>
         <span class="il-listen-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
@@ -144,6 +144,6 @@
   <script src="assets/js/config.public.js?v=20260921-cleanup-2"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
   <script src="assets/js/learning-activity.js?v=20260907-3"></script>
-  <script src="assets/js/intensive-listening.js?v=20260924-unit-fraction-1"></script>
+  <script src="assets/js/intensive-listening.js?v=20260924-audio-dock-1"></script>
 </body>
 </html>
