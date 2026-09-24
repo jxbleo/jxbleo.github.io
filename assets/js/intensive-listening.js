@@ -18,6 +18,17 @@
     started: false,
     playing: false,
     stopAt: 0,
+    audioContext: null,
+    audioBuffer: null,
+    audioBufferSrc: '',
+    audioBufferPromise: null,
+    sourceNode: null,
+    playbackOffset: 0,
+    playbackStartedAt: 0,
+    playbackEnd: 0,
+    playbackPausedAt: 0,
+    playbackToken: 0,
+    tickHandle: 0,
     visitorFullAudio: false,
     busy: false,
     autoAdvancing: false,
@@ -156,6 +167,101 @@
     var media = state.material && state.material.media || {};
     if (media.kind === 'video') return String(media.src || media.video_src || '');
     return String(state.material && (state.material.audio_src || media.audio_src || media.src) || '');
+  }
+  // Audio materials play through Web Audio, scheduling the exact unit window
+  // the teacher set in the waveform corrector (the same engine the teacher
+  // preview uses). A plain <audio> element can only seek on a best-effort
+  // basis and stops on the coarse `timeupdate` event, which shifted the start
+  // and end of each unit by up to a few hundred milliseconds. Video materials
+  // keep the element path because they cannot be decoded to an AudioBuffer.
+  function isAudioMaterial() {
+    return !(state.material && state.material.media && state.material.media.kind === 'video');
+  }
+  function audioContext() {
+    if (!state.audioContext) {
+      var Constructor = window.AudioContext || window.webkitAudioContext;
+      if (!Constructor) return null;
+      try { state.audioContext = new Constructor(); } catch (error) { state.audioContext = null; }
+    }
+    return state.audioContext;
+  }
+  function loadAudioBuffer() {
+    var source = dictationMediaSource();
+    if (!source) return Promise.reject(new Error('This listening material has no audio source.'));
+    if (state.audioBuffer && state.audioBufferSrc === source) return Promise.resolve(state.audioBuffer);
+    if (state.audioBufferPromise && state.audioBufferSrc === source) return state.audioBufferPromise;
+    var context = audioContext();
+    if (!context) return Promise.reject(new Error('This browser cannot play the audio precisely.'));
+    state.audioBufferSrc = source;
+    state.audioBuffer = null;
+    state.audioBufferPromise = window.fetch(source, { credentials: 'same-origin' }).then(function(response) {
+      if (!response.ok) throw new Error('This listening audio could not be loaded.');
+      return response.arrayBuffer();
+    }).then(function(data) {
+      return new Promise(function(resolve, reject) {
+        var settled = false;
+        function done(buffer) { if (!settled) { settled = true; resolve(buffer); } }
+        function fail() { if (!settled) { settled = true; reject(new Error('This listening audio could not be decoded.')); } }
+        try {
+          var result = context.decodeAudioData(data, done, fail);
+          if (result && typeof result.then === 'function') result.then(done, fail);
+        } catch (error) { fail(); }
+      });
+    }).then(function(buffer) {
+      state.audioBuffer = buffer;
+      state.audioBufferPromise = null;
+      return buffer;
+    }).catch(function(error) {
+      state.audioBufferPromise = null;
+      state.audioBufferSrc = '';
+      throw error;
+    });
+    return state.audioBufferPromise;
+  }
+  function stopAudioSource() {
+    var source = state.sourceNode;
+    if (!source) return;
+    state.sourceNode = null;
+    try { source.onended = null; } catch (error) { /* ignore */ }
+    try { source.stop(); } catch (error) { /* already stopped */ }
+    try { source.disconnect(); } catch (error) { /* ignore */ }
+  }
+  function playAudioRange(start, end, token) {
+    var context = audioContext();
+    if (!context) return Promise.reject(new Error('This browser cannot play the audio precisely.'));
+    return context.resume().then(function() {
+      if (token !== state.playbackToken) return false;
+      if (context.state !== 'running') throw new Error('Audio is paused until you press Play.');
+      return loadAudioBuffer();
+    }).then(function(buffer) {
+      if (buffer === false || token !== state.playbackToken) return false;
+      stopAudioSource();
+      var offset = Math.max(0, Math.min(Number(start) || 0, buffer.duration));
+      var limit = end == null || !isFinite(Number(end)) ? buffer.duration : Math.max(offset, Math.min(Number(end), buffer.duration));
+      var duration = limit - offset;
+      if (!(duration > 0.01)) duration = Math.max(0, buffer.duration - offset);
+      var source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(context.destination);
+      state.sourceNode = source;
+      state.playbackOffset = offset;
+      state.playbackStartedAt = context.currentTime;
+      state.playbackEnd = offset + duration;
+      source.onended = function() {
+        if (state.sourceNode !== source) return;
+        state.sourceNode = null;
+        finishPlayback();
+      };
+      source.start(0, offset, duration);
+      return true;
+    });
+  }
+  function playbackPosition() {
+    if (state.sourceNode && state.audioContext) {
+      return Math.min(state.playbackEnd, state.playbackOffset + Math.max(0, state.audioContext.currentTime - state.playbackStartedAt));
+    }
+    var media = dictationMedia();
+    return media ? Number(media.currentTime) || 0 : 0;
   }
 
   function safeReturnUrl() {
@@ -690,11 +796,12 @@
     $('#wave-fill').style.clipPath = 'inset(0 ' + (100 - percentage) + '% 0 0)';
     $('#replay-button').setAttribute('aria-description', percentage + '% played. Click to play or pause; seeking is unavailable.');
   }
-  function updateWaveProgressForTime(currentTime, media) {
+  function updateWaveProgressForTime(currentTime, media, durationOverride) {
     var unit = currentUnit();
     if (!unit) return;
     var start = state.visitorFullAudio ? 0 : Number(unit.start_seconds) || 0;
-    var end = state.visitorFullAudio ? Number(media.duration) : Number(unit.end_seconds);
+    var total = Number.isFinite(Number(durationOverride)) ? Number(durationOverride) : (media ? Number(media.duration) : NaN);
+    var end = state.visitorFullAudio ? total : Number(unit.end_seconds);
     if (Number.isFinite(end) && end > start) updateWaveProgress((currentTime - start) / (end - start));
   }
   (function buildWaveform() {
@@ -705,7 +812,68 @@
     updateWaveProgress(0);
   })();
 
+  function stopPlaybackTick() {
+    if (state.tickHandle) { window.cancelAnimationFrame(state.tickHandle); state.tickHandle = 0; }
+  }
+  function startPlaybackTick() {
+    stopPlaybackTick();
+    var step = function() {
+      if (!state.playing) return;
+      onPlaybackFrame(playbackPosition());
+      state.tickHandle = window.requestAnimationFrame(step);
+    };
+    state.tickHandle = window.requestAnimationFrame(step);
+  }
+  function recordPlayback(position) {
+    if (state.visitorMode || state.teacherMode || !state.started || !(position > 0)) return;
+    var changed = state.lastAudioTime == null || position > state.lastAudioTime + 0.08;
+    var due = Date.now() - state.lastActivitySentAt >= 30000;
+    if (changed && (state.lastAudioTime == null || due)) activity('playback');
+    state.lastAudioTime = position;
+  }
+  function onPlaybackFrame(position) {
+    if (!state.playing) return;
+    updateWaveProgressForTime(position, dictationMedia(), state.audioBuffer ? state.audioBuffer.duration : undefined);
+    recordPlayback(position);
+    while (state.currentIndex < state.playbackEndIndex) {
+      var next = state.material.units[state.currentIndex + 1];
+      if (!next || position < Number(next.start_seconds || 0)) break;
+      state.currentIndex += 1; renderUnit(); updateWaveProgressForTime(position, dictationMedia(), state.audioBuffer ? state.audioBuffer.duration : undefined);
+    }
+    // Web Audio stops exactly on the scheduled boundary via `onended`; the
+    // element fallback still needs the coarse poll as its safety net.
+    if (!state.sourceNode && Number.isFinite(state.stopAt) && position >= state.stopAt) finishPlayback();
+  }
+  function playElementStart(audio, startSeconds, unit) {
+    if (!audio) return;
+    if (!audio.src) audio.src = dictationMediaSource();
+    try { audio.currentTime = startSeconds; } catch (error) { /* metadata settles before play */ }
+    startPlaybackTick();
+    audio.play().then(function() {
+      state.playing = true; setPlaybackUi(true); $('#audio-status').textContent = 'Listening…';
+      if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit.unit_id);
+    }).catch(function() {
+      state.playing = false; stopPlaybackTick(); setPlaybackUi(false); $('#audio-status').textContent = 'Press Play to hear this unit';
+    });
+  }
+  function startAudioFrom(seconds, endSeconds, unit) {
+    var token = ++state.playbackToken;
+    state.playing = true; setPlaybackUi(true); $('#audio-status').textContent = 'Listening…';
+    startPlaybackTick();
+    playAudioRange(seconds, endSeconds, token).then(function(started) {
+      if (!started || token !== state.playbackToken) return;
+      if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit && unit.unit_id);
+    }).catch(function() {
+      if (token !== state.playbackToken) return;
+      playElementStart(dictationMedia(), seconds, unit || currentUnit());
+    });
+  }
   function pauseAudio(message) {
+    state.playbackToken += 1;
+    stopPlaybackTick();
+    if (state.sourceNode) state.playbackPausedAt = playbackPosition();
+    else { var pausedMedia = dictationMedia(); state.playbackPausedAt = pausedMedia ? Number(pausedMedia.currentTime) || 0 : 0; }
+    stopAudioSource();
     var media = dictationMedia();
     if (media) media.pause();
     state.playing = false; setPlaybackUi(false);
@@ -713,6 +881,7 @@
     if (message) $('#audio-status').textContent = message;
   }
   function finishPlayback() {
+    if (!state.playing) return;
     pauseAudio('');
     updateWaveProgress(1);
     if (!currentUnit()) return;
@@ -758,15 +927,12 @@
     state.lastAudioTime = null;
     state.playbackEndIndex = nextPlaybackEndIndex(state.currentIndex);
     var endUnit = state.material.units[state.playbackEndIndex];
-    try { audio.currentTime = Number(unit.start_seconds) || 0; } catch (error) { /* metadata settles before play */ }
+    var startSeconds = Number(unit.start_seconds) || 0;
+    var endSeconds = state.visitorFullAudio ? null : Number(endUnit.end_seconds) || 0;
     state.stopAt = state.visitorFullAudio ? Infinity : Number(endUnit.end_seconds) || 0;
     if (window.MrCatLearningActivity && window.MrCatLearningActivity.resume) window.MrCatLearningActivity.resume('audio', unit.unit_id);
-    audio.play().then(function() {
-      state.playing = true; setPlaybackUi(true); $('#audio-status').textContent = 'Listening…';
-      if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit.unit_id);
-    }).catch(function() {
-      state.playing = false; setPlaybackUi(false); $('#audio-status').textContent = 'Press Play to hear this unit';
-    });
+    if (isAudioMaterial()) { startAudioFrom(startSeconds, endSeconds, unit); return; }
+    playElementStart(audio, startSeconds, unit);
   }
   function enterPractice(autoplay) {
     state.started = true;
@@ -954,7 +1120,7 @@
       requestAnimationFrame(updateTitleOverflow);
       renderMaterialContext();
       var dictationPlayer = dictationMedia();
-      dictationPlayer.src = dictationMediaSource();
+      if (dictationPlayer === $('#dictation-video')) dictationPlayer.src = dictationMediaSource();
       $('#dictation-video').hidden = dictationPlayer !== $('#dictation-video');
       hydrateLocalUnits(); renderProgress();
       if (state.visitorMode) {
@@ -985,11 +1151,21 @@
   $('#replay-button').addEventListener('click', function() {
     if (!state.material) return;
     if (state.playing) { pauseAudio('Paused · press to continue'); return; }
-    var media = dictationMedia();
     var unit = currentUnit();
     var start = Number(unit && unit.start_seconds) || 0;
-    var end = Number.isFinite(state.stopAt) ? state.stopAt : Number(media.duration);
-    if (media.currentTime > start + 0.05 && media.currentTime < end - 0.05 && !media.ended) {
+    var end = Number.isFinite(state.stopAt) ? state.stopAt : 0;
+    if (isAudioMaterial()) {
+      var resumeAt = Number(state.playbackPausedAt) || 0;
+      if (resumeAt > start + 0.05 && (!end || resumeAt < end - 0.05)) {
+        startAudioFrom(resumeAt, end || null, unit);
+        return;
+      }
+      replayUnit(true);
+      return;
+    }
+    var media = dictationMedia();
+    var mediaEnd = Number.isFinite(state.stopAt) ? state.stopAt : Number(media.duration);
+    if (media.currentTime > start + 0.05 && media.currentTime < mediaEnd - 0.05 && !media.ended) {
       media.play().then(function() {
         state.playing = true; setPlaybackUi(true); $('#audio-status').textContent = 'Listening…';
         if (window.MrCatLearningActivity) window.MrCatLearningActivity.setContinuous('playback', true, unit.unit_id);
@@ -1030,22 +1206,7 @@
     if (!state.playing) return;
     var media = event.currentTarget;
     if (media !== dictationMedia()) return;
-    var currentTime = Number(media.currentTime) || 0;
-    updateWaveProgressForTime(currentTime, media);
-    if (!state.visitorMode && !state.teacherMode && state.started && currentTime > 0) {
-      var changed = state.lastAudioTime == null || currentTime > state.lastAudioTime + 0.08;
-      var due = Date.now() - state.lastActivitySentAt >= 30000;
-      if (changed && (state.lastAudioTime == null || due)) {
-        activity('playback');
-      }
-      state.lastAudioTime = currentTime;
-    }
-    while (state.currentIndex < state.playbackEndIndex) {
-      var next = state.material.units[state.currentIndex + 1];
-      if (!next || media.currentTime < Number(next.start_seconds || 0)) break;
-      state.currentIndex += 1; renderUnit(); updateWaveProgressForTime(currentTime, media);
-    }
-    if (Number.isFinite(state.stopAt) && media.currentTime >= state.stopAt) finishPlayback();
+    onPlaybackFrame(Number(media.currentTime) || 0);
   }
   $('#audio').addEventListener('timeupdate', onDictationTimeUpdate);
   $('#dictation-video').addEventListener('timeupdate', onDictationTimeUpdate);
@@ -1073,6 +1234,7 @@
   // Start/Replay click from notifying the teacher before audio really moves.
   window.setInterval(refreshPolicy, 30000);
   window.addEventListener('focus', refreshPolicy);
+  window.addEventListener('pagehide', function() { state.playbackToken += 1; stopPlaybackTick(); stopAudioSource(); });
   $('#back-button').addEventListener('click', function() {
     pauseAudio('');
     $('#leave-copy').textContent = 'Your saved progress is safe. You can continue from the next unfinished unit later.';
