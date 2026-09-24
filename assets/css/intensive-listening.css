@@ -365,3 +365,15 @@ body.il-answer-open { overflow: hidden; }
 
 /* Show the unit fraction in the green identity label; hide the muted copy. */
 .il-unit-position { display: none !important; }
+
+/* Whole-toolbar progress: the sticky header itself becomes the progress bar.
+   The separate bar and the percentage text are hidden; only the material name
+   (plus the back button and Keys) remains on top of a translucent teal fill. */
+.il-header { overflow: hidden; grid-template-columns: minmax(0, 1fr) auto; }
+.il-header-progress { position: absolute; inset: 0; justify-self: stretch; width: 100%; min-width: 0; display: block; z-index: 0; pointer-events: none; }
+.il-header-progress strong { display: none; }
+.il-header-progress progress { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 100%; border: 0; border-radius: 0; background: transparent; }
+.il-header-progress progress::-webkit-progress-bar { background: transparent; border-radius: 0; }
+.il-header-progress progress::-webkit-progress-value { background: linear-gradient(90deg, rgba(13, 143, 157, .07), rgba(13, 143, 157, .30)); border-radius: 0; transition: width .45s ease; }
+.il-header-progress progress::-moz-progress-bar { background: linear-gradient(90deg, rgba(13, 143, 157, .07), rgba(13, 143, 157, .30)); }
+.il-header-title, .il-header-tools { position: relative; z-index: 1; }
