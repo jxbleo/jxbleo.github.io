@@ -377,3 +377,12 @@ body.il-answer-open { overflow: hidden; }
 .il-header-progress progress::-webkit-progress-value { background: linear-gradient(90deg, rgba(13, 143, 157, .07), rgba(13, 143, 157, .30)); border-radius: 0; transition: width .45s ease; }
 .il-header-progress progress::-moz-progress-bar { background: linear-gradient(90deg, rgba(13, 143, 157, .07), rgba(13, 143, 157, .30)); }
 .il-header-title, .il-header-tools { position: relative; z-index: 1; }
+
+/* Center the material name in the toolbar and keep long names scrolling. */
+.il-header { grid-template-columns: auto minmax(0, 1fr) auto; }
+.il-title-viewport { min-width: 0; overflow: hidden; white-space: nowrap; }
+.il-title-viewport strong { display: block; width: fit-content; max-width: none; margin-inline: auto; }
+@media (max-width: 680px) {
+  .il-header { grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; }
+  .il-back { width: 38px; height: 38px; }
+}
