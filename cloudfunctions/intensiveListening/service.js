@@ -167,13 +167,36 @@ function progressSummary(material, unitStates) {
   const assisted = states.filter((state) => state.completed && state.assisted).length;
   const independent = completed - assisted;
   const replays = states.reduce((sum, state) => sum + state.replays, 0);
+  // Progress is measured in words, not units: every required (non-provided)
+  // Dictation word counts exactly once across the whole material, and words
+  // the teacher provided/exempted are excluded from the denominator. This lets
+  // the progress bar move the moment one more word is correct even while a
+  // unit is still unfinished.
+  let requiredWordCount = 0;
+  let correctWordCount = 0;
+  units.forEach((unit, index) => {
+    const slots = Array.isArray(unit.slots) ? unit.slots : [];
+    const state = states[index];
+    slots.forEach((slot, slotIndex) => {
+      if (isProvided(slot)) return;
+      requiredWordCount += 1;
+      if (state.correct_positions[slotIndex] === true) correctWordCount += 1;
+    });
+  });
+  // A material whose words are all provided has nothing left to spell, so a
+  // finished run still reads as 100% instead of an empty denominator.
+  const percentage = requiredWordCount
+    ? Math.round(correctWordCount / requiredWordCount * 100)
+    : (units.length && completed === units.length ? 100 : 0);
   return {
     unit_count: units.length,
     completed_count: completed,
     independent_count: independent,
     assisted_count: assisted,
     replay_count: replays,
-    percentage: units.length ? Math.round(completed / units.length * 100) : 0,
+    required_word_count: requiredWordCount,
+    correct_word_count: correctWordCount,
+    percentage,
   };
 }
 
