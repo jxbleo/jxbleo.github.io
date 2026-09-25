@@ -393,7 +393,7 @@ body.il-answer-open { overflow: hidden; }
 
 /* The waveform is a toolbar-sized dock: same width, height and sticky top as
    the header, so while scrolling it takes the header's place. */
-.il-audio-row { position: sticky; z-index: 30; top: 10px; width: min(1500px, calc(100% - 28px)); margin: 8px auto 0; padding: 10px 12px; display: block; border: 1px solid rgba(255, 255, 255, .72); border-radius: 24px; background: rgba(250, 253, 253, .94); box-shadow: 0 12px 38px rgba(39, 74, 79, .10), inset 0 1px 0 rgba(255, 255, 255, .82); -webkit-backdrop-filter: blur(26px) saturate(165%); backdrop-filter: blur(26px) saturate(165%); }
+.il-audio-row { position: sticky; z-index: 30; top: 10px; width: min(1500px, calc(100% - 28px)); margin: 8px auto 0; padding: 10px 12px; display: block; border: 1px solid rgba(255, 255, 255, .72); border-radius: 24px; background: rgba(250, 253, 253, .55); box-shadow: 0 12px 38px rgba(39, 74, 79, .10), inset 0 1px 0 rgba(255, 255, 255, .82); -webkit-backdrop-filter: blur(26px) saturate(165%); backdrop-filter: blur(26px) saturate(165%); }
 .il-audio-row .il-wave-button { min-height: 44px; padding: 2px 12px; border: 0; border-radius: 17px; background: transparent; box-shadow: none; }
 .il-audio-row .il-wave-button:hover:not(:disabled) { background: rgba(13, 143, 157, .07); }
 .il-audio-row .il-wave-display { height: 40px; }
