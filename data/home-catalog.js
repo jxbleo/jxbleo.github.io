@@ -278,7 +278,8 @@ window.__HOME_CATALOG__ = {
         "Culture"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-250109"
     },
     {
       "id": "BBC-250116",

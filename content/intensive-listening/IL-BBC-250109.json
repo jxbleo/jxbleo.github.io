@@ -1,0 +1,24 @@
+{
+  "id": "IL-BBC-250109",
+  "sectionId": "intensive-listening",
+  "title": "Eating 50-Year-Old Stew",
+  "href": "intensive-listening.html?set=IL-BBC-250109",
+  "publishedOn": "2025-01-09",
+  "topic": "BBC 6 Minute English",
+  "tags": [
+    "Listening",
+    "BBC"
+  ],
+  "note": "106 listening segments",
+  "sourceFamily": "bbc",
+  "sourceLabel": "BBC",
+  "seriesLabel": "BBC 6 Minute English",
+  "sourceSetId": "BBC-250109",
+  "linkedPracticeSetId": null,
+  "dictationUnitCount": 106,
+  "sequenceUnitCount": 121,
+  "schemaVersion": 1,
+  "trackCount": 1,
+  "catalogVisible": false,
+  "visible": true
+}
