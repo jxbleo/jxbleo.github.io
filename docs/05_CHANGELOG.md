@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-25 — Restore Teacher Listening Edit page
+
+- Added the existing Teacher Listening waveform corrector HTML to the static
+  publication manifest. The Edit link previously reached a 404 because the
+  manifest omitted its target from the COS artifact.
+- Added a static artifact regression check for that page. This release changes
+  only public static files; no CloudBase function or data update is required.
+
 ## 2026-09-24 — Restore Intensive Listening startup
 
 - Restored the Keys and Comprehension dialogs referenced by the shared listening

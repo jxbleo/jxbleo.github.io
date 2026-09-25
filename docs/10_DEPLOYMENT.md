@@ -1114,7 +1114,8 @@ the site, validates the actual artifact with `test-static-build.js --artifact`,
 then runs `scripts/deploy-static-to-cos.js`. `scripts/static-site-manifest.json`
 explicitly lists every public root HTML/web-manifest file and the `assets/`,
 `bbc-audio/`, `content/`, and `data/` directories. `content/speaking` and
-`content/templates` are excluded. New pages require a manifest entry; local
+`content/templates` are excluded. New pages require a manifest entry; the Teacher Listening Edit target
+`teacher-listening-corrector.html` must be included. Local
 prototypes belong under `docs/prototypes/`. Cloud functions, scripts,
 documentation, deployment packages and local/private files are never copied.
 

@@ -14,6 +14,9 @@
   answers and historical review but contains no new Argue submission/modal code.
   Before phase-two acceptance, check those retained controls in the browser and
   compare Dashboard Finished, Teacher Replies, STAR wallet and Library progress.
+- Confirm the Teacher Listening `Edit Json` link target
+  `teacher-listening-corrector.html` exists in `dist/`; the static artifact test
+  fails if it is absent. After publication, open that URL and confirm HTTP 200.
 - Run `npm run test:static-build`: an unapproved preview is excluded, private
   Speaking source/templates are excluded, stale output disappears, and a
   missing declared entry fails before replacing the previous artifact.

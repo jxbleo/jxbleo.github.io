@@ -10,6 +10,7 @@ const manifest = require("./static-site-manifest.json");
 function checkArtifact(directory) {
   const expected = [...manifest.directories, ...manifest.rootFiles].sort();
   assert.deepEqual(fs.readdirSync(directory).sort(), expected, "Only approved entry points and asset directories may be published");
+  assert(fs.existsSync(path.join(directory, "teacher-listening-corrector.html")), "Teacher Listening Edit target missing from static artifact");
   for (const excluded of manifest.excludedPaths) {
     assert(!fs.existsSync(path.join(directory, excluded)), `Private/source-only path published: ${excluded}`);
   }
