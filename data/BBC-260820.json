@@ -1,0 +1,146 @@
+{
+  "id": "BBC-260820",
+  "title": "Sharing the Road with Driverless Cars",
+  "audioSrc": "bbc-audio/260820-sharing-the-road-with-driverless-cars.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "With a human driver, a person outside the car can make _____ to help decide who should move first.",
+      "section": "Communicating at a crossing"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One road user says he might feel a little _____ when crossing in front of a robotaxi.",
+      "section": "Communicating at a crossing"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Because accidents may happen when approaching danger is unseen, a researcher wants to improve driverless cars' _____.",
+      "section": "Making the vehicles easier to notice"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Two kinds of signals were tested: moving displays called _____ and a fixed light display.",
+      "section": "Making the vehicles easier to notice"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Runners and cyclists have _____ to decide what to do, so a quick look may miss a moving display.",
+      "section": "Making the vehicles easier to notice"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "One example shows a _____ to indicate that crossing is safe.",
+      "section": "Making the vehicles easier to notice"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The team used _____ to warn faster-moving road users instead.",
+      "section": "Making the vehicles easier to notice"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "In one culture, a wave of the hand can mean \"_____\", inviting another road user forward.",
+      "section": "Cultural differences"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What central difficulty arises when a driverless car meets someone outside it?",
+      "options": [
+        "The car cannot identify the person's planned route.",
+        "The person lacks a human driver to signal who should move first.",
+        "The person cannot know who is riding inside the car.",
+        "The car cannot be seen by anyone on the road."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How does one road user say he might respond to a robotaxi at a crossing?",
+      "options": [
+        "He might let it pass and cross behind it.",
+        "He might signal for it to stop and cross first.",
+        "He might follow it to another road junction.",
+        "He might remain inside until it has passed."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What change does one speaker cautiously expect as driverless cars become more familiar?",
+      "options": [
+        "People may no longer need to choose when to cross.",
+        "People may learn to stop the cars whenever they wish.",
+        "People may better judge how and when to cross near them.",
+        "People may avoid all roads used by the cars."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why does a researcher want driverless cars to stand out more clearly?",
+      "options": [
+        "Road users often disagree about hand gestures.",
+        "Cyclists may not follow the same legal rules.",
+        "Human drivers sometimes miss the pedestrians ahead.",
+        "Accidents may happen when approaching danger is unseen."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why did the moving displays work less well for runners and cyclists than for pedestrians?",
+      "options": [
+        "The displays could only be seen at crossings.",
+        "Faster users might not take in an animation during a glance.",
+        "The images showed a message meant for cyclists only.",
+        "The displays changed meaning between different cultures."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does the hand-waving example show about road communication?",
+      "options": [
+        "A gesture is clear only when it lasts a long time.",
+        "A gesture is understood identically in all countries.",
+        "The same gesture can carry different cultural meanings.",
+        "Hand movements are always clearer than light signals."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the speaker contrast jaywalking in South Korea and the UK?",
+      "options": [
+        "It is accepted in both places but less common in Korea.",
+        "It is common in Korea but rare in the UK.",
+        "It is illegal in the UK but accepted in Korea.",
+        "It is illegal in Korea but frequent in the UK."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What broader point follows from the comparison of jaywalking habits?",
+      "options": [
+        "Local road behaviour can affect conditions for autonomous cars.",
+        "Legal penalties alone decide whether autonomous cars are safe.",
+        "Autonomous cars are safe only where jaywalking is illegal.",
+        "Rare jaywalking removes the need for vehicle warning signals."
+      ]
+    }
+  ],
+  "matching": []
+}

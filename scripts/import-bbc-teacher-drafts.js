@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 
 const projectRoot = path.resolve(__dirname, "..");
 const dataDir = path.join(projectRoot, "data");
@@ -8,6 +9,24 @@ const audioDir = path.join(projectRoot, "bbc-audio");
 const privateDir = path.join(projectRoot, ".cloudbase-private", "source", "bbc-six-minute-english");
 
 const lessonDetails = {
+  "240919": { title: "Saving Water in the Driest Place on Earth", topic: "Water / Farming", tags: ["Environment", "Farming"] },
+  "240926": { title: "Learning a New Food Culture", topic: "Food / Migration", tags: ["Food", "Culture"] },
+  "241003": { title: "What Decides Our Taste?", topic: "Food / Biology", tags: ["Food", "Science"] },
+  "241010": { title: "Did Taylor Swift Fans Cause an Earthquake?", topic: "Music / Earth Science", tags: ["Music", "Science"] },
+  "241017": { title: "Tech That Refuses to Die", topic: "Technology / Change", tags: ["Technology", "Society"] },
+  "241024": { title: "Divorce: Why Does It Happen?", topic: "Relationships / Society", tags: ["Relationships", "Society"] },
+  "241031": { title: "Why You Need a Good Night's Sleep", topic: "Sleep / Health", tags: ["Health", "Science"] },
+  "241107": { title: "Having Acne", topic: "Skin / Wellbeing", tags: ["Health", "Wellbeing"] },
+  "241114": { title: "The Bond Between Sisters", topic: "Family / Relationships", tags: ["Family", "Relationships"] },
+  "241121": { title: "The Secrets to a Healthy Old Age", topic: "Ageing / Health", tags: ["Health", "Society"] },
+  "241128": { title: "How Babies Learn to Talk", topic: "Language / Childhood", tags: ["Language", "Children"] },
+  "260709": { title: "Should We Cycle More?", topic: "Cycling / Environment", tags: ["Health", "Environment"] },
+  "260820": { title: "Sharing the Road with Driverless Cars", topic: "Transport / Technology", tags: ["Technology", "Transport"] },
+  "260827": { title: "How Do We Describe Smells?", topic: "Smell / Language", tags: ["Language", "Science"] },
+  "260903": { title: "Climate Change and Extreme Weather", topic: "Climate / Weather", tags: ["Climate", "Science"] },
+  "260910": { title: "Can Apps Teach You a Language?", topic: "Language / Technology", tags: ["Language", "Technology"] },
+  "260917": { title: "Is Rejection Good for Us?", topic: "Rejection / Psychology", tags: ["Psychology", "Wellbeing"] },
+  "260924": { title: "Why Do We Itch?", topic: "Skin / Science", tags: ["Health", "Science"] },
   "260716": {
     title: "What's in a Footballer's Brain?",
     topic: "Sport / Neuroscience",
@@ -36,7 +55,7 @@ const lessonDetails = {
 };
 
 function usage() {
-  console.error("Usage: node scripts/import-bbc-teacher-drafts.js <teacher-draft.md> [<teacher-draft.md> ...]");
+  console.error("Usage: node scripts/import-bbc-teacher-drafts.js [--audio-dir <directory>] <teacher-draft.md> [<teacher-draft.md> ...]");
   process.exit(1);
 }
 
@@ -131,7 +150,7 @@ function parseMultipleChoiceQuestions(content) {
 
   lines.forEach((line) => {
     const trimmed = line.trim();
-    const heading = trimmed.match(/^###\s+(1[1-9]|20)\.\s+(.+)$/);
+    const heading = trimmed.match(/^(?:###\s+)?(?:\*\*)?(1[1-9]|20)\.\s*(.+)$/);
     if (heading) {
       if (current) questions.push(current);
       const number = Number(heading[1]);
@@ -193,7 +212,7 @@ function parseMcKey(content) {
     const blockStart = match.index + match[0].length;
     const blockEnd = index + 1 < matches.length ? matches[index + 1].index : content.length;
     const block = content.slice(blockStart, blockEnd);
-    const evidenceMatch = block.match(/\*\*原文证据：\*\*\s*\n+([^\n]+)/);
+    const evidenceMatch = block.match(/\*\*原文证据：\*\*\s*\n+([\s\S]*?)(?=\n\s*\*\*位置：\*\*|\n\s*\*\*[A-D]错误|$)/);
     const locationMatch = block.match(/\*\*位置：\*\*\s*([^\n]+)/);
     const wrong = [];
     const wrongRegex = /\*\*([A-D])错误｜[^*]+\*\*\s*\n+([^\n]+)/g;
@@ -219,16 +238,20 @@ function answerWordCount(answer) {
 }
 
 function validateLesson(lesson, privateSource, sourceTypes) {
-  const expectedBlankIds = Array.from({ length: 10 }, (_, index) => `fill-${index + 1}`);
-  const expectedMcIds = Array.from({ length: 10 }, (_, index) => `mc-${index + 11}`);
+  if (lesson.blanks.length < 1 || lesson.blanks.length > 10 ||
+      lesson.multipleChoice.length < 1 || lesson.multipleChoice.length > 10) {
+    throw new Error(`${lesson.id} must contain 1–10 note items and 1–10 MC items`);
+  }
+  const expectedBlankIds = Array.from({ length: lesson.blanks.length }, (_, index) => `fill-${index + 1}`);
+  const expectedMcIds = Array.from({ length: lesson.multipleChoice.length }, (_, index) => `mc-${index + 11}`);
   const blankIds = lesson.blanks.map((item) => item.id);
   const mcIds = lesson.multipleChoice.map((item) => item.id);
 
   if (JSON.stringify(blankIds) !== JSON.stringify(expectedBlankIds)) {
-    throw new Error(`${lesson.id} must contain fill-1 through fill-10 exactly`);
+    throw new Error(`${lesson.id} has non-contiguous Note Completion IDs`);
   }
   if (JSON.stringify(mcIds) !== JSON.stringify(expectedMcIds)) {
-    throw new Error(`${lesson.id} must contain mc-11 through mc-20 exactly`);
+    throw new Error(`${lesson.id} has non-contiguous MC IDs starting at mc-11`);
   }
   lesson.multipleChoice.forEach((item) => {
     if (item.options.length !== 4) throw new Error(`${lesson.id} ${item.id} must have four options`);
@@ -254,9 +277,14 @@ function validateLesson(lesson, privateSource, sourceTypes) {
     });
   });
 
-  const directCount = Object.values(sourceTypes).filter((type) => type === "direct_extraction").length;
-  const controlledCount = Object.values(sourceTypes).filter((type) => type !== "direct_extraction").length;
-  if (directCount < 7 || controlledCount < 2) {
+  const types = expectedBlankIds.map((key) => sourceTypes[key]);
+  const directCount = types.filter((type) => type === "direct_extraction").length;
+  const controlledCount = types.filter((type) => type && type !== "direct_extraction").length;
+  if (directCount + controlledCount !== expectedBlankIds.length ||
+      directCount < (expectedBlankIds.length >= 10 ? 7 : 6) ||
+      controlledCount < 2 || controlledCount > 3 ||
+      !types.includes("word_form_transformation") ||
+      !types.some((type) => type === "lexical_paraphrase" || type === "semantic_summary")) {
     throw new Error(`${lesson.id} has an invalid Note Completion source mix (${directCount} direct, ${controlledCount} controlled)`);
   }
 
@@ -273,18 +301,28 @@ function publishedOn(datePrefix) {
   return `20${datePrefix.slice(0, 2)}-${datePrefix.slice(2, 4)}-${datePrefix.slice(4, 6)}`;
 }
 
-function importDraft(sourcePath) {
+function importDraft(sourcePath, sourceAudioDir) {
   const absoluteSource = path.resolve(sourcePath);
   const fileName = path.basename(absoluteSource);
-  const dateMatch = fileName.match(/^(\d{6})-(.+?)-exercises Teachers Draft\.md$/i);
+  const legacyMatch = fileName.match(/^(\d{6})-(.+?)-exercises Teachers Draft\.md$/i);
+  const reviewedMatch = fileName.match(/^BBC-(\d{6})-teacher-review\.md$/i);
+  const dateMatch = legacyMatch || reviewedMatch;
   if (!dateMatch) {
     throw new Error(`Unexpected teacher draft filename: ${fileName}`);
   }
 
   const datePrefix = dateMatch[1];
-  const sourceBase = fileName.replace(/-exercises Teachers Draft\.md$/i, "");
-  const audioSource = path.join(path.dirname(absoluteSource), `${sourceBase}.mp3`);
+  const sourceBase = legacyMatch
+    ? fileName.replace(/-exercises Teachers Draft\.md$/i, "")
+    : fs.readdirSync(sourceAudioDir).filter((name) => new RegExp(`^${datePrefix}-.+\\.mp3$`, "i").test(name))[0];
+  if (!sourceBase) throw new Error(`Missing matching audio for BBC-${datePrefix} in ${sourceAudioDir}`);
+  const audioSource = legacyMatch
+    ? path.join(path.dirname(absoluteSource), `${sourceBase}.mp3`)
+    : path.join(sourceAudioDir, sourceBase);
   if (!fs.existsSync(audioSource)) throw new Error(`Missing matching audio: ${audioSource}`);
+  if (reviewedMatch && fs.readdirSync(sourceAudioDir).filter((name) => new RegExp(`^${datePrefix}-.+\\.mp3$`, "i").test(name)).length !== 1) {
+    throw new Error(`Expected exactly one matching audio for BBC-${datePrefix} in ${sourceAudioDir}`);
+  }
 
   const details = lessonDetails[datePrefix];
   if (!details) throw new Error(`Add title/topic metadata for BBC-${datePrefix}`);
@@ -295,7 +333,7 @@ function importDraft(sourcePath) {
   const lesson = {
     id,
     title: details.title,
-    audioSrc: `bbc-audio/${sourceBase}.mp3`,
+    audioSrc: `bbc-audio/${path.basename(audioSource)}`,
     blanks: parseBlankQuestions(content),
     multipleChoice: parseMultipleChoiceQuestions(content),
     matching: [],
@@ -324,7 +362,7 @@ function importDraft(sourcePath) {
   writeJson(path.join(contentDir, `${id}.json`), metadata);
   writeJson(path.join(privateDir, `${id}.json`), privateSource);
   ensureDir(audioDir);
-  fs.copyFileSync(audioSource, path.join(audioDir, `${sourceBase}.mp3`));
+  fs.copyFileSync(audioSource, path.join(audioDir, path.basename(audioSource)));
   ensureDir(privateDir);
   fs.copyFileSync(absoluteSource, path.join(privateDir, `${id}.teacher.md`));
 
@@ -337,9 +375,16 @@ function importDraft(sourcePath) {
 }
 
 function main() {
-  const sources = process.argv.slice(2);
+  const args = process.argv.slice(2);
+  let sourceAudioDir = path.join(os.homedir(), "Downloads");
+  if (args[0] === "--audio-dir") {
+    if (!args[1]) usage();
+    sourceAudioDir = path.resolve(args[1]);
+    args.splice(0, 2);
+  }
+  const sources = args;
   if (!sources.length) usage();
-  const imported = sources.map(importDraft);
+  const imported = sources.map((source) => importDraft(source, sourceAudioDir));
   imported.forEach((item) => {
     console.log(`Imported ${item.id}: ${item.blankCount} blanks, ${item.mcCount} MC, ${item.audio}`);
   });

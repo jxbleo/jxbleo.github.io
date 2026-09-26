@@ -1,0 +1,180 @@
+{
+  "id": "BBC-241024",
+  "title": "Divorce: Why Does It Happen?",
+  "audioSrc": "bbc-audio/241024-divorce-why-does-it-happen.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "In the 1990s, _____ of marriages in Europe and America ended in divorce.",
+      "section": "A wider pattern"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Since then, divorce rates in the West have shown a _____, while the number of divorces elsewhere has risen.",
+      "section": "A wider pattern"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Marrying _____ may increase the chance of growing apart later.",
+      "section": "How a relationship can change"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In one marriage, the wife began with _____, while her husband was highly educated.",
+      "section": "How a relationship can change"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Later, she wanted to stop being a _____ and return to education.",
+      "section": "How a relationship can change"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The resulting change in their situation became _____ for the couple.",
+      "section": "How a relationship can change"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "More generally, partners' life _____ may change over time.",
+      "section": "How a relationship can change"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Some people remain in marriages that no longer work for _____ reasons.",
+      "section": "Barriers and possible responses"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "In China, a _____ waiting period was introduced for couples seeking separation.",
+      "section": "Barriers and possible responses"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The presenter says a marriage may be saved if partners communicate _____, possibly with professional help.",
+      "section": "Barriers and possible responses"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What contrast in divorce trends is described?",
+      "options": [
+        "Rates have stabilised in both the West and other regions.",
+        "Rates are increasing at similar speeds across the world.",
+        "Rates have slowed in the West but are rising elsewhere.",
+        "Rates have fallen outside the West but risen within it."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which pair of circumstances is identified as a common reason for partners to drift apart?",
+      "options": [
+        "Marrying early and having different backgrounds or interests.",
+        "Marrying late and having different levels of income.",
+        "Having children early and receiving different education.",
+        "Having different careers and living in different countries."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the account of the marriage's early years show?",
+      "options": [
+        "Both partners first wanted to return to education.",
+        "The couple had similar educational opportunities.",
+        "Their differences immediately made the marriage fail.",
+        "Their differences did not prevent an initially good relationship."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why did the woman's return to school become a problem for the marriage?",
+      "options": [
+        "It forced her husband to give up his own education.",
+        "It changed a family arrangement that had worked before.",
+        "It made her decide that no couple should have children.",
+        "It followed a period when the relationship had already ended."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How did the couple's outlook change over time?",
+      "options": [
+        "They came to agree more strongly on their future.",
+        "They developed different ideas about what they wanted.",
+        "They returned to the same plans they had at first.",
+        "They stopped caring about education altogether."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What attitude does the presenter show toward people who remain in marriages that no longer work?",
+      "options": [
+        "She blames them for failing to adapt.",
+        "She doubts that such situations exist.",
+        "She believes leaving is always simple.",
+        "She regrets that some feel unable to leave."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the counsellor view a compulsory waiting period when the relationship itself stays the same?",
+      "options": [
+        "It is unlikely by itself to restore the couple's wish to stay together.",
+        "It is likely to restore the couple's wish to stay together immediately.",
+        "It gives couples the communication training they need.",
+        "It removes the need for any change between the partners."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What policy direction follows most closely from the counsellor's comments?",
+      "options": [
+        "Governments should require couples to wait for much longer.",
+        "Governments should decide which marriages can continue.",
+        "Governments could help couples improve how they communicate.",
+        "Governments could discourage couples from discussing problems."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What feature of the Chinese cooling-off policy is presented as unusual?",
+      "options": [
+        "Courts choose which partners may separate.",
+        "Government intervenes in couples' private lives.",
+        "Counsellors determine the length of the wait.",
+        "The rule applies only to unmarried couples."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "Which broader conclusion follows from the personal account and the counsellor's advice?",
+      "options": [
+        "Changes in people's lives can strain a marriage, and partners may need to change how they communicate.",
+        "Once partners return to education, their marriage always ends.",
+        "A compulsory wait will resolve differences created by changing circumstances.",
+        "Financial support alone can repair every troubled marriage."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,113 @@
+{
+  "id": "BBC-260924",
+  "title": "Why Do We Itch?",
+  "audioSrc": "bbc-audio/260924-why-do-we-itch.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A presenter says she sometimes feels itchy for _____.",
+      "section": "An itch without an obvious trigger"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The expert names two examples of things scratching can remove from the skin: _____.",
+      "section": "How scratching may protect the skin"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "People tend to scratch the _____ where they feel the itch.",
+      "section": "How scratching may protect the skin"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Removing the unwanted thing helps prevent harm; this gives scratching a _____ role.",
+      "section": "How scratching may protect the skin"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Researchers asked whether merely _____ about itching might make people feel itchier.",
+      "section": "Testing whether an itch can spread by observation"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "In their study, participants watched _____ of itching and scratching.",
+      "section": "Testing whether an itch can spread by observation"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "After watching, participants felt _____.",
+      "section": "Testing whether an itch can spread by observation"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The study also recorded _____ scratching by participants.",
+      "section": "Testing whether an itch can spread by observation"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main benefit of scratching in the skin expert's account?",
+      "options": [
+        "It identifies the exact source of an itch.",
+        "It clears potentially harmful things from the skin.",
+        "It prevents every future contact with parasites.",
+        "It makes the skin stop noticing unfamiliar objects."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What question did the researchers set out to explore?",
+      "options": [
+        "Whether itchy clothing changes how people think.",
+        "Whether parasites can be seen in a video recording.",
+        "Whether scratching removes objects from the skin faster.",
+        "Whether thinking about itching can increase itchy feelings."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What did the video study show about its participants?",
+      "options": [
+        "They felt itchier and scratched more without prompting.",
+        "They felt itchier but deliberately avoided scratching.",
+        "They scratched more only after receiving instructions.",
+        "They scratched less although they felt equally itchy."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does the expert's phrase \"catch a scratch\" suggest in this study?",
+      "options": [
+        "Scratching directly transfers a skin parasite.",
+        "A person needs physical contact to begin scratching.",
+        "Seeing scratching can trigger an urge to scratch.",
+        "An itchy feeling always spreads through conversation."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Which contrast best captures the two experts' findings?",
+      "options": [
+        "One explains the cause of every itch; the other disproves that cause.",
+        "One describes a protective action; the other finds a response to what people see.",
+        "One studies skin damage; the other shows that scratching repairs damaged skin.",
+        "One rules out outside triggers; the other identifies a parasite in the videos."
+      ]
+    }
+  ],
+  "matching": []
+}

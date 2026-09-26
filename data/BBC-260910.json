@@ -1,0 +1,158 @@
+{
+  "id": "BBC-260910",
+  "title": "Can Apps Teach You a Language?",
+  "audioSrc": "bbc-audio/260910-can-apps-teach-you-a-language.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Apps use _____ to test a recurring set of words.",
+      "section": "How the apps teach"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "App companies say many apps focus on language for _____ instead of directly teaching rules.",
+      "section": "How the apps teach"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Children benefit from constant _____ to the language around them.",
+      "section": "How children and adults learn"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Research supports some direct teaching of _____ for adults.",
+      "section": "How children and adults learn"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "For adults, matching a child's _____ is not realistic.",
+      "section": "How children and adults learn"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Adults may have only _____ each week to study a new language.",
+      "section": "How children and adults learn"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The _____ on exactly how well apps work remains limited.",
+      "section": "What the evidence shows"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "One study compared two groups of _____ learning English.",
+      "section": "What the evidence shows"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "In some _____, app learners improved a little more than classroom learners.",
+      "section": "What the evidence shows"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The expert wants more studies across apps, teaching approaches and _____.",
+      "section": "What the evidence shows"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What similarity is suggested between many apps' stated approach and children's early language learning?",
+      "options": [
+        "Both begin with formal grammar lessons before language use.",
+        "Both depend on a few hours of weekly homework.",
+        "Both can involve learning without direct explanations of rules.",
+        "Both provide the same amount of language exposure."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What difference between child and adult learners does the expert emphasise?",
+      "options": [
+        "Children receive more formal grammar lessons each week.",
+        "Adults already know the vocabulary of the new language.",
+        "Children use apps more often than adults can manage.",
+        "Children encounter the language much more continuously."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which activity best illustrates the direct teaching considered useful for adults?",
+      "options": [
+        "A teacher explains a grammar rule to learners.",
+        "A learner repeats words without an explanation.",
+        "A child picks up speech from everyday surroundings.",
+        "An app presents situations without discussing rules."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why is a blend of app learning and direct teaching suggested for adults?",
+      "options": [
+        "Apps make learning grammar impossible for adults.",
+        "Adults have limited exposure, while some direct teaching helps.",
+        "Classes recreate a child's constant language exposure.",
+        "Research has already found the exact best mix of methods."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How did the two groups differ in the study's test results?",
+      "options": [
+        "App learners led in some written grammar tests and appeared to lead in listening.",
+        "Classroom learners led in some written grammar tests and appeared to lead in listening.",
+        "App learners led in some written grammar tests; classroom learners appeared to lead in listening.",
+        "Classroom learners led in some written grammar tests; app learners appeared to lead in listening."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What can be inferred from the expert's qualification of the study?",
+      "options": [
+        "Similar outcomes may not hold for other apps and languages.",
+        "Neither group improved on any of the reported tests.",
+        "The learners studied for completely different lengths of time.",
+        "Written grammar results are never useful evidence."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What role might platforms play alongside human teaching?",
+      "options": [
+        "They might replace the teachers who explain rules.",
+        "They might recreate a child's full immersion.",
+        "They might remove the need for listening practice.",
+        "They might provide repeated practice with language."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What approach follows from the final advice on improving different skills?",
+      "options": [
+        "Use the app activity with the highest test score for every skill.",
+        "Combine app work with activities aimed at particular skills.",
+        "Replace apps entirely with podcasts and speaking partners.",
+        "Choose one method and use it for speaking, listening, reading and writing."
+      ]
+    }
+  ],
+  "matching": []
+}

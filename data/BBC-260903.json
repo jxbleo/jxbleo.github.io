@@ -1,0 +1,158 @@
+{
+  "id": "BBC-260903",
+  "title": "Climate Change and Extreme Weather",
+  "audioSrc": "bbc-audio/260903-climate-change-and-extreme-weather.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Weather is experienced day by day, while climate describes _____ conditions.",
+      "section": "Understanding change"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Tropical storms are large systems with _____ movement.",
+      "section": "Tropical storms"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "They form over _____.",
+      "section": "Tropical storms"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In the Indian Ocean, these storms are called _____.",
+      "section": "Tropical storms"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Scientists think storms may become _____ as they move across an area.",
+      "section": "Slower storms and their effects"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Rain over one area may last longer, increasing _____.",
+      "section": "Slower storms and their effects"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Compared with landslides, mudslides tend to be faster and _____.",
+      "section": "Slower storms and their effects"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "After heavy rain, either kind of slide can damage _____.",
+      "section": "Slower storms and their effects"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Sea levels are getting _____; this may make surges more dangerous.",
+      "section": "Storm surges"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "A surge may reach a height of _____.",
+      "section": "Storm surges"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How does the opening distinction compare weather with climate?",
+      "options": [
+        "Weather concerns longer periods than climate does.",
+        "Weather and climate describe the same time span.",
+        "Weather is experienced daily; climate spans longer periods.",
+        "Climate is observed only during tropical storms."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why do hurricanes, cyclones and typhoons have different names?",
+      "options": [
+        "They develop in different parts of the world.",
+        "They rotate at different rates over water.",
+        "They reach different levels of destruction.",
+        "They form at different stages of warming."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What change do climate scientists anticipate as the world warms?",
+      "options": [
+        "Tropical storms will become easier to predict.",
+        "Tropical storms will become more destructive.",
+        "Tropical storms will form only in warmer seas.",
+        "Tropical storms will stop changing their names."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How may slower movement make a storm more damaging in one area?",
+      "options": [
+        "It reduces the wind but delays the rain.",
+        "It creates more storms over the same sea.",
+        "It keeps wind and rain over the area longer.",
+        "It moves floods away from populated areas."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What limitation would a building-only assessment of landslides and mudslides have?",
+      "options": [
+        "It would misidentify the place where a slide began.",
+        "It would overstate the damage suffered by buildings.",
+        "It would treat landslides as faster than mudslides.",
+        "It would overlook possible deaths and injuries."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why is a storm surge singled out as a major danger within a storm?",
+      "options": [
+        "It is the only part of a storm that can move inland.",
+        "It can cause more casualties than any other element.",
+        "It prevents the storm's winds from becoming stronger.",
+        "It makes all other forms of flooding impossible."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What drives the rapid rise of seawater during a storm surge?",
+      "options": [
+        "Strong storm winds push the sea towards land.",
+        "Heavy rainfall pulls seawater into the clouds.",
+        "Moving rocks force seawater over the shore.",
+        "A falling sea level exposes the ocean floor."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What follows from the two kinds of harm described when a surge reaches land?",
+      "options": [
+        "Damage to buildings is the only harm to consider.",
+        "Protecting buildings would also protect every person.",
+        "People face danger only at the maximum surge height.",
+        "Protecting buildings alone may leave people at risk."
+      ]
+    }
+  ],
+  "matching": []
+}

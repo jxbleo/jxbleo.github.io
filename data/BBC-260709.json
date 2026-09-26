@@ -1,0 +1,158 @@
+{
+  "id": "BBC-260709",
+  "title": "Should We Cycle More?",
+  "audioSrc": "bbc-audio/260709-should-we-cycle-more.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Electric bikes have opened cycling to more people, including _____.",
+      "section": "Britain: a wider group of cyclists"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The rise of cycling began in the _____, as bicycle manufacturing expanded.",
+      "section": "The Netherlands: how cycling became ordinary"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Bikes changed from wealthy people's toys into a form of _____.",
+      "section": "The Netherlands: how cycling became ordinary"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Later, new factories made bicycles _____ to buy.",
+      "section": "The Netherlands: how cycling became ordinary"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Cycling may offer visitors a greener way to explore _____.",
+      "section": "The UAE: reasons for encouraging cycling"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The _____ among Gulf cities helps explain their wish to rank highly worldwide.",
+      "section": "The UAE: reasons for encouraging cycling"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Cycling can benefit people physically and _____.",
+      "section": "The UAE: reasons for encouraging cycling"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Dubai's temperature regularly reaches _____.",
+      "section": "The UAE: responding to local conditions"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Planners look abroad for useful _____ rather than complete systems to copy.",
+      "section": "The UAE: responding to local conditions"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Measures for cycling in the heat include _____ and shaded rest areas.",
+      "section": "The UAE: responding to local conditions"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why do many people in Britain choose to cycle?",
+      "options": [
+        "It gives them access to tourist attractions abroad.",
+        "It helps their cities rise in global rankings.",
+        "It benefits their health and the environment.",
+        "It makes every journey cheaper than driving."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What effect are electric bikes having on cycling in Britain?",
+      "options": [
+        "They are making it accessible to a wider group.",
+        "They are replacing conventional bicycles entirely.",
+        "They are turning cycling into a wealthy hobby.",
+        "They are reducing the number of older riders."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What can be inferred about bicycles before they became everyday transport in the Netherlands?",
+      "options": [
+        "They were mainly designed for hot climates.",
+        "They were widely used for daily commuting.",
+        "They were already inexpensive for most people.",
+        "They were less accessible to ordinary people."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What did some Dutch bicycle brands come to represent?",
+      "options": [
+        "A new network of city cycle routes.",
+        "A newer, more comfortable bike style.",
+        "A cheaper form of electrical transport.",
+        "A return to wealthy people's toys."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How do competitive Gulf cities view cycling in relation to their reputation?",
+      "options": [
+        "It could contribute to their standing for quality of life.",
+        "It could remove the need for cities to compete.",
+        "It could make Dutch factories more profitable.",
+        "It could guarantee the highest position in every ranking."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What do Dubai's planners hope the existing cycle tracks will achieve?",
+      "options": [
+        "Make cycling compulsory for local residents.",
+        "Make the city resemble the Netherlands in climate.",
+        "Make the city more attractive as a place to live.",
+        "Make other kinds of transport unnecessary."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why have water stations and shaded rest areas been created?",
+      "options": [
+        "To make Dutch cycle routes less expensive.",
+        "To help people cycle despite the local heat.",
+        "To raise the number of bikes in the Netherlands.",
+        "To replace existing tourist attractions in Dubai."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What overall conclusion about cycling is supported by the discussion?",
+      "options": [
+        "It should replace other transport in every location.",
+        "It is useful only where cycling has a long history.",
+        "It succeeds whenever cities compete for rankings.",
+        "It can be a green option where conditions suit it."
+      ]
+    }
+  ],
+  "matching": []
+}

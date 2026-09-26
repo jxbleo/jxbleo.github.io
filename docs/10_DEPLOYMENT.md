@@ -1,5 +1,17 @@
 # 10 Deployment
 
+## BBC approved batch import (2026-09-26; deployed)
+
+Published 18 reviewed BBC lessons with 172 Note Completion blanks and 139
+Multiple Choice questions. The scoped COS release added each lesson's public
+JSON, MP3 and no-answer worksheet PDF, then merged the 18 entries into the live
+catalog. All 56 public objects were read back and verified. CloudBase received
+18 new `sets` and 18 private `grading_keys` records by insert-missing operations;
+both collections remain `ADMINONLY`. No existing lesson or student history was
+changed. Release evidence and catalog backups are in ignored
+`.cloudbase-private/bbc-release-20260926/`. The matching source commit uses
+`[skip ci]` because COS publication was scoped and already completed.
+
 ## Cleanup live/source reconciliation (2026-09-21; no deployment)
 
 After owner acceptance of cleanup phase two and the approved due-week repair,

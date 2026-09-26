@@ -1,0 +1,147 @@
+{
+  "id": "BBC-241128",
+  "title": "How Babies Learn to Talk",
+  "audioSrc": "bbc-audio/241128-how-babies-learn-to-talk.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Before their first word, babies enter a stage called _____ and produce simple sounds.",
+      "section": "Early sound-making"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "To make particular sounds, they must learn to control their _____.",
+      "section": "Early sound-making"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "One presenter guesses that babies may learn by _____ what adults do.",
+      "section": "Early sound-making"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Babies first divide the continuous _____ into words.",
+      "section": "Finding words in speech"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "They then connect those words with things in their _____.",
+      "section": "Finding words in speech"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "As they listen, babies must recognise where _____ begin and end.",
+      "section": "Finding words in speech"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "In English, a word often starts with a _____, which may help babies find its beginning.",
+      "section": "Finding words in speech"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "In one example, a child drops an _____ at the start of a word.",
+      "section": "Finding words in speech"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "A further task is to connect a word with the _____ it names.",
+      "section": "Working out what words refer to"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Several possible things may fit a spoken word, creating _____ for the child.",
+      "section": "Working out what words refer to"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does the early discussion suggest about babies' production of speech sounds?",
+      "options": [
+        "They wait until they know a word's meaning before trying its sounds.",
+        "They explore how different mouth movements produce sounds.",
+        "They rely on hearing sounds without practising mouth movements.",
+        "They use the same mouth shape for each sound they attempt."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "In the expert's account, what must a child do before attaching meanings to words?",
+      "options": [
+        "Identify the objects that adults are likely to name.",
+        "Copy the exact sounds made by an adult speaker.",
+        "Learn which syllables carry the strongest stress.",
+        "Separate the continuous flow of speech into words."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why may stress help a baby identify word boundaries in English?",
+      "options": [
+        "A stressed syllable often signals the start of a word.",
+        "A stressed syllable usually signals the end of a word.",
+        "Each English word contains just one syllable.",
+        "Every English word begins with the same sound."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does a child's use of \"raffe\" for \"giraffe\" illustrate?",
+      "options": [
+        "The child has confused the animal with another object.",
+        "The child has added a stressed syllable to the word.",
+        "The child has left out an unstressed opening syllable.",
+        "The child has changed the meaning of the whole word."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What is implied by the alternative explanation \"my sminge\"?",
+      "options": [
+        "The same child pronunciation might reflect a different division of the sounds.",
+        "The child had already learnt the meaning of the word \"machine\".",
+        "The adult was certain about exactly how the child understood the word.",
+        "The child was trying to correct the adult's pronunciation of \"machine\"."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How is matching words to objects presented from adult and child perspectives?",
+      "options": [
+        "Both find it difficult because speech has no clear sound patterns.",
+        "Adults find it difficult, while children do it without effort.",
+        "Both rely mainly on copying the speaker's mouth movements.",
+        "Adults do it almost automatically, while children face a harder task."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What can reasonably be inferred about a child hearing \"cup\" with several objects nearby?",
+      "options": [
+        "The child can use the word's sound alone to identify the object.",
+        "The child must always choose the object closest to the speaker.",
+        "The child may be unsure which object the speaker intends.",
+        "The child is unable to learn the word until the objects are removed."
+      ]
+    }
+  ],
+  "matching": []
+}

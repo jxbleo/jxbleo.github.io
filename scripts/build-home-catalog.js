@@ -119,17 +119,19 @@ function validateEditionFamilies(items) {
 function main() {
   const { sections, map } = getSectionMap();
   const itemFiles = listItemFiles();
-  const items = itemFiles.filter((filePath) => {
-    const item = readJson(filePath);
-    return item.catalogVisible !== false;
-  }).map((filePath) => {
-    const item = readJson(filePath);
-    const section = map.get(item.sectionId);
-    if (!section) {
-      throw new Error(`Unknown sectionId "${item.sectionId}" in ${filePath}`);
-    }
-    return buildCatalogItem(item, section);
-  });
+  const items = itemFiles.map((filePath) => ({ filePath, item: readJson(filePath) }))
+    .filter(({ item }) => item && !Array.isArray(item) && typeof item === "object" &&
+      item.catalogVisible !== false && (item.id || item.sectionId))
+    .map(({ filePath, item }) => {
+      if (!item.id || !item.sectionId) {
+        throw new Error(`Incomplete catalog item in ${filePath}`);
+      }
+      const section = map.get(item.sectionId);
+      if (!section) {
+        throw new Error(`Unknown sectionId "${item.sectionId}" in ${filePath}`);
+      }
+      return buildCatalogItem(item, section);
+    });
   validateEditionFamilies(items);
 
   const catalog = { sections, items };

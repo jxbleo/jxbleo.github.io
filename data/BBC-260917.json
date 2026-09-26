@@ -1,0 +1,158 @@
+{
+  "id": "BBC-260917",
+  "title": "Is Rejection Good for Us?",
+  "audioSrc": "bbc-audio/260917-is-rejection-good-for-us.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "In a social media trend, people record conversations with _____, sometimes receiving a refusal.",
+      "section": "The activity"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "She asked the taxi driver, \"Can I _____?\"; he refused.",
+      "section": "Two requests in the experiment"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In a shop, a request to have _____ in a bed received an unexpected yes.",
+      "section": "Two requests in the experiment"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Before her first approach, her _____ rose sharply.",
+      "section": "The participant's changing response"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "By the fourth approach, she was _____ by whether the answer was yes or no.",
+      "section": "The participant's changing response"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The trend is not established therapy: it has not been _____.",
+      "section": "Claims and concerns"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Critics worry that strangers may be _____ without wanting this.",
+      "section": "Claims and concerns"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "People posting the videos say the activity increases their _____.",
+      "section": "Claims and concerns"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Concern about how others judge them may increase young people's _____ when speaking to strangers.",
+      "section": "A possible reason and a discovery"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The participant discovered that many strangers were willing to _____.",
+      "section": "A possible reason and a discovery"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does Neil suggest about experiencing rejection?",
+      "options": [
+        "It feels pleasant once people reach adulthood.",
+        "It should be avoided until people become older.",
+        "It can be valuable despite being unpleasant.",
+        "It guarantees that future refusals will feel easy."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How did Hannah react to her first approach despite her usual self-image?",
+      "options": [
+        "She felt frightened despite normally seeing herself as confident.",
+        "She felt relaxed because she expected everyone to agree.",
+        "She became anxious only after several approaches.",
+        "She relied on a friend to make the first request."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What changed as Hannah made further approaches?",
+      "options": [
+        "Approaching people became harder, while answers mattered less.",
+        "Approaching people became easier, while answers mattered less.",
+        "Approaching people became easier, but refusals stayed frightening.",
+        "Approaching people stayed equally difficult regardless of replies."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Which contrast is made about the activity's name and status?",
+      "options": [
+        "It was tested before being called a form of therapy.",
+        "It is now used as a verified clinical treatment.",
+        "It was first introduced as formal medical research.",
+        "It is called therapy, although it has not been tested."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How do critics and video posters differ in their views of the trend?",
+      "options": [
+        "Critics question filming strangers; posters report greater confidence.",
+        "Critics oppose confidence; posters oppose filming strangers.",
+        "Critics support formal therapy; posters avoid unfamiliar people.",
+        "Critics question acceptance rates; posters seek medical treatment."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What might make some young people less willing to approach strangers, according to the psychologist?",
+      "options": [
+        "Certainty that strangers will reject every request.",
+        "Dislike of seeing other people's videos online.",
+        "Worry that strangers will judge them unfavourably.",
+        "Concern that strangers expect them to be perfect."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why might deliberately making such requests feel like a positive step?",
+      "options": [
+        "It proves that other people rarely form opinions about them.",
+        "It gives them a way to assess strangers' personalities.",
+        "It ensures that a therapist will monitor their progress.",
+        "It may let them act against their fear of being judged."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What did Hannah's experience suggest about expecting rejection?",
+      "options": [
+        "Most strangers preferred not to speak to her.",
+        "Responses may be friendlier than she anticipated.",
+        "Every unusual request was accepted without hesitation.",
+        "A refusal was necessary before she felt more confident."
+      ]
+    }
+  ],
+  "matching": []
+}

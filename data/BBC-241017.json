@@ -1,0 +1,180 @@
+{
+  "id": "BBC-241017",
+  "title": "Tech That Refuses to Die",
+  "audioSrc": "bbc-audio/241017-tech-that-refuses-to-die.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Until recently, Japan's government stored _____ on floppy disks.",
+      "section": "Different kinds of continued use"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "An older design may be kept when it _____.",
+      "section": "A rover for Venus"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A night there lasts about _____ in complete darkness.",
+      "section": "A rover for Venus"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The rover could draw power from _____ during the long nights.",
+      "section": "A rover for Venus"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "This power source was meant to support its _____ through those nights.",
+      "section": "A rover for Venus"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Its clockwork mechanism contains _____.",
+      "section": "A rover for Venus"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Countries use different plugs; it would be better to _____ their designs.",
+      "section": "The difficulty of changing a familiar system"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Making such a change would require considerable _____.",
+      "section": "The difficulty of changing a familiar system"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "QWERTY may limit _____ compared with another keyboard layout.",
+      "section": "The difficulty of changing a familiar system"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Court reporters can work much faster with _____.",
+      "section": "The difficulty of changing a familiar system"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What central point do the opening examples make about old technology?",
+      "options": [
+        "Older devices usually return once their prices fall.",
+        "Older devices can remain useful despite rapid change.",
+        "Older devices survive mainly as private collections.",
+        "Older devices are always preferred by institutions."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What two possible reasons are given for the survival of old technology?",
+      "options": [
+        "It may be cheaper to make, or easier to dispose of.",
+        "It may be legally required, or difficult to repair.",
+        "People may love it, or it may still work well.",
+        "People may collect it, or it may type faster."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How is HAR-V described when it is introduced?",
+      "options": [
+        "A mechanical rover built for harsh conditions.",
+        "An electronic rover built for easy repairs.",
+        "A specialised keyboard built for fast records.",
+        "A storage device built for official records."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why was wind power included in the Venus rover concept?",
+      "options": [
+        "To help the rover avoid the planet's strong winds.",
+        "To shorten the period of darkness on Venus.",
+        "To replace a damaged electrical plug system.",
+        "To help the rover survive Venus's long, hot nights."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What makes clockwork a suitable choice for the Venus rover?",
+      "options": [
+        "It can record information more precisely than electronics.",
+        "It can work where ordinary electronics would fail.",
+        "It can make the planet's extreme heat disappear.",
+        "It can be operated by a court reporter remotely."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is the obstacle to using the same electrical plugs worldwide?",
+      "options": [
+        "Changing the different systems would take substantial work.",
+        "Standard plugs would make appliances less efficient.",
+        "Most countries have already rejected electrical plugs.",
+        "A common design would prevent new devices being made."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What limitation of QWERTY is raised in the discussion?",
+      "options": [
+        "Its keys are difficult to recognise by sight.",
+        "Its layout cannot be used for exact records.",
+        "Its layout may be less efficient for fast typing.",
+        "Its design can only be used on typewriters."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does the curator's response imply about the speed advantage of specialist keyboards?",
+      "options": [
+        "It will persuade most everyday users to change immediately.",
+        "It exists only when reporters use a QWERTY layout.",
+        "It is too small to be useful in any recording work.",
+        "It does not outweigh the effort of learning them for her."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why are court reporters used as an example?",
+      "options": [
+        "They show that another keyboard can support faster exact transcription.",
+        "They show that official records are still stored on floppy disks.",
+        "They show that QWERTY has become the fastest keyboard layout.",
+        "They show that mechanical devices can survive extreme heat."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader conclusion does the continued use of QWERTY support?",
+      "options": [
+        "The oldest design will eventually become the most efficient.",
+        "A technical disadvantage always forces a rapid change.",
+        "Familiarity can preserve a system despite better alternatives.",
+        "Specialist tools will soon replace everyday keyboards."
+      ]
+    }
+  ],
+  "matching": []
+}

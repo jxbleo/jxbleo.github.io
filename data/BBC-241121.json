@@ -1,0 +1,158 @@
+{
+  "id": "BBC-241121",
+  "title": "The Secrets to a Healthy Old Age",
+  "audioSrc": "bbc-audio/241121-the-secrets-to-a-healthy-old-age.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Ageing is partly linked to the _____ of the body's cells.",
+      "section": "Changing our understanding of ageing"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Earlier explanations focused mainly on _____ processes; newer research also considers how people live in society.",
+      "section": "Changing our understanding of ageing"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A recent paper suggests that _____ of ageing can be influenced by how people live.",
+      "section": "Changing our understanding of ageing"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Alongside diet, a _____ may matter for health in later life.",
+      "section": "Outlook and health"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Researchers followed _____ over their lives to examine differences in health.",
+      "section": "Outlook and health"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Older people may feel _____, which can have a serious effect on health.",
+      "section": "Social life and daily habits"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The impact of this isolation is compared with that of _____.",
+      "section": "Social life and daily habits"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "In Mediterranean countries, the climate encourages _____ outdoors.",
+      "section": "Social life and daily habits"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "People may share _____ and live with family members of different generations.",
+      "section": "Social life and daily habits"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Wherever people live, keeping in _____ with other people may help them age well.",
+      "section": "Social life and daily habits"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main change in researchers' understanding of ageing described in the discussion?",
+      "options": [
+        "They now see ageing as completely preventable through medical treatment.",
+        "They now consider social and lifestyle factors alongside changes in cells.",
+        "They now regard inherited traits as less important than a person's age.",
+        "They now believe the body's cells remain unchanged during later life."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does the figure from the recent paper suggest about ageing?",
+      "options": [
+        "A substantial share may be influenced by the way people live.",
+        "Most people will remain healthy until the age of sixty.",
+        "Lifestyle explains every difference between older people.",
+        "Cell changes account for exactly sixty per cent of ageing."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What did the twin studies described by Professor Harper do?",
+      "options": [
+        "Keep the twins' diets identical throughout adulthood.",
+        "Compare medical treatments given after retirement.",
+        "Measure participants' attitudes in a single short interview.",
+        "Follow twins over time and compare their outlook with later health."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "According to the twin studies, how did outlook relate to health in later life?",
+      "options": [
+        "A positive outlook prevented all signs of physical ageing.",
+        "A negative outlook improved health when diet was controlled.",
+        "A positive outlook was associated with better later-life health.",
+        "Both outlooks produced similar health as the twins grew older."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "An older person eats well but has little social contact. What concern follows from the discussion?",
+      "options": [
+        "Diet alone may leave a health-related risk unaddressed.",
+        "A healthy diet is likely to cause more loneliness.",
+        "Outdoor exercise would certainly remove the risk.",
+        "A multigenerational home would be the only solution."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is the point of describing the Mediterranean way of life beyond its food?",
+      "options": [
+        "To show that its meals are healthier when eaten outdoors.",
+        "To show that its benefits may involve exercise and social routines too.",
+        "To show that diet matters only in warm countries.",
+        "To show that living with relatives replaces the need for exercise."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What can be inferred about the value of communal meals in this discussion?",
+      "options": [
+        "They are valuable mainly because every dish contains fish.",
+        "They are valuable only when several generations prepare them.",
+        "They guarantee that people will never experience loneliness.",
+        "They may support the social contact linked to ageing well."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is the most reasonable practical message for someone living outside the Mediterranean?",
+      "options": [
+        "Move to a warmer country before changing any daily habits.",
+        "Copy Mediterranean meals exactly to gain the same results.",
+        "Cultivate a positive outlook and make time for social contact.",
+        "Depend mainly on inherited traits to determine future health."
+      ]
+    }
+  ],
+  "matching": []
+}

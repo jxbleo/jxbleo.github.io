@@ -202,19 +202,29 @@ For BBC transcript-only intake:
 3. Use line references such as `L23` or `L23-L25`.
 4. Do not create public website data until the owner approves the draft.
 
-For an approved HKDSE Paper 3 teacher draft in the current
-`Teachers Draft.md` format, import the reviewed Markdown and same-basename MP3
-with:
+For an approved HKDSE Paper 3 teacher draft, import either the older
+`YYMMDD-...-exercises Teachers Draft.md` with its same-basename MP3 or a reviewed
+`BBC-YYMMDD-teacher-review.md` with the unique `YYMMDD-*.mp3` in the specified
+audio directory:
 
 ```bash
 node scripts/import-bbc-teacher-drafts.js \
   "/absolute/path/to/example-exercises Teachers Draft.md"
+node scripts/import-bbc-teacher-drafts.js --audio-dir "/absolute/path/to/audio" \
+  "/absolute/path/to/BBC-YYMMDD-teacher-review.md"
 ```
 
-The importer requires Questions 1-10 as note-completion blanks and Questions
-11-20 as four-option multiple choice. It validates the three-word answer limit,
-keeps answers and explanations in ignored private source, copies the matching
-audio, and generates the public runtime, metadata, and no-answer worksheet.
+The importer accepts contiguous Note Completion questions starting at 1 and
+four-option Multiple Choice questions starting at 11, with fewer than ten in
+either part when the reviewed source-sufficiency note justifies it. A runtime
+note line must contain one blank; split a two-blank sentence into two complete
+note lines before import. It validates the three-word answer limit and answer
+source mix, keeps answers and explanations in ignored private source, and copies
+the matching audio. Generate the catalog with `node scripts/build-home-catalog.js`
+and the public no-answer worksheet PDFs with
+`python3 scripts/generate-bbc-worksheets.py BBC-YYMMDD ...` (use the bundled
+Python with ReportLab when system Python lacks it). The catalog builder skips
+non-catalog supporting JSON in `content/`, such as Speaking seed arrays.
 
 BBC public runtime rules:
 

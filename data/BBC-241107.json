@@ -1,0 +1,158 @@
+{
+  "id": "BBC-241107",
+  "title": "Having Acne",
+  "audioSrc": "bbc-audio/241107-having-acne.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Acne often occurs between the ages of _____.",
+      "section": "When and how it appears"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Its more serious forms can include _____.",
+      "section": "When and how it appears"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Looking different from other people may cause _____, especially during adolescence.",
+      "section": "When and how it appears"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Acne can begin at _____.",
+      "section": "How long it lasts and whom it affects"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Some female patients may still have acne into their 30s and _____.",
+      "section": "How long it lasts and whom it affects"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Even less severe cases may affect teenagers' _____ as well as their peer groups.",
+      "section": "How long it lasts and whom it affects"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Natural changes in _____ can trigger acne during adolescence.",
+      "section": "Causes and personal experience"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Concern about appearance can add to teenagers' _____.",
+      "section": "Causes and personal experience"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "As a teenager, one doctor could not see a dermatologist because of her family's _____.",
+      "section": "Causes and personal experience"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Having tried treatments herself, she can speak from experience when making a _____ to patients.",
+      "section": "Causes and personal experience"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Which concern frames the discussion of acne?",
+      "options": [
+        "How teenagers choose among competing skin products.",
+        "How visible skin problems can affect a person's life.",
+        "Why doctors classify several kinds of skin condition.",
+        "Why most skin conditions disappear after adolescence."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How is the range of acne described?",
+      "options": [
+        "It is limited to marks on the face and neck.",
+        "It progresses from mild cases to cysts in everyone.",
+        "It is mainly a condition that begins in adulthood.",
+        "It includes less severe spots and more serious forms."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which group does the doctor identify as the largest among her acne patients?",
+      "options": [
+        "People in their teenage years.",
+        "Women in their forties.",
+        "Children before puberty.",
+        "Adults of every age equally."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "An adult dismisses a teenager's mild acne because it is not medically severe. Which response best follows from the doctor's account?",
+      "options": [
+        "Mild acne always develops into a more serious form.",
+        "Mild acne can stop puberty from progressing normally.",
+        "Mild acne can still seriously affect social relationships.",
+        "Mild acne usually needs treatment through adulthood."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How does the explanation of acne's causes challenge a possible social judgement?",
+      "options": [
+        "It presents acne as linked to inherited and natural processes.",
+        "It presents acne as a result of poor personal choices.",
+        "It presents acne as a response to pressure from friends.",
+        "It presents acne as a problem created by treatment."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What can be inferred about the doctor's earlier attempts to manage her acne?",
+      "options": [
+        "She rejected specialist treatment after trying it.",
+        "She received prescriptions through her family doctor.",
+        "She tried shop-bought options because specialist care was unaffordable.",
+        "She waited until adulthood before trying any treatment."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why does the doctor mention having tried treatments she recommends?",
+      "options": [
+        "To show that every patient will respond in the same way.",
+        "To suggest that professional training is unnecessary.",
+        "To explain why she stopped using other treatments.",
+        "To show that her advice also draws on lived experience."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Which broader message follows from the doctor's later work and the explanation of acne's causes?",
+      "options": [
+        "Personal difficulties prevent people from supporting others.",
+        "A natural condition can be faced with informed support.",
+        "Acne should always be managed without professional advice.",
+        "Everyone's acne ends at the same stage of adulthood."
+      ]
+    }
+  ],
+  "matching": []
+}

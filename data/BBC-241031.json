@@ -1,0 +1,146 @@
+{
+  "id": "BBC-241031",
+  "title": "Why You Need a Good Night's Sleep",
+  "audioSrc": "bbc-audio/241031-why-you-need-a-good-nights-sleep.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "People who get enough of it may live about _____ longer than those who do not.",
+      "section": "The value of sleep"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Sleeping leaves people _____, yet its benefits are considerable.",
+      "section": "The value of sleep"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "After a poor night, a person may struggle to _____ at work.",
+      "section": "Learning and thinking"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Sleep after learning helps with the _____ of information.",
+      "section": "Learning and thinking"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "During sleep, information moves into _____.",
+      "section": "Learning and thinking"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Overnight, the brain may work on a problem and find _____ to it.",
+      "section": "Learning and thinking"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The body's stress response gives priority to _____.",
+      "section": "Too little sleep"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "When sleep loss continues, the _____ may become less active.",
+      "section": "Too little sleep"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why does the discussion raise the danger of becoming unconscious each night?",
+      "options": [
+        "To suggest that sleep's benefits must be substantial despite that danger.",
+        "To argue that humans have become less exposed to danger over time.",
+        "To show that people can choose when to become unconscious.",
+        "To explain why the benefits of sleep cannot be measured."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How may a poor night of sleep affect learning the next day?",
+      "options": [
+        "It removes information learned long ago.",
+        "It can make new information harder to take in.",
+        "It prevents any information from being stored again.",
+        "It makes familiar problems impossible to solve."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How is new learning handled during sleep, beyond being stored?",
+      "options": [
+        "It is kept apart from earlier learning.",
+        "It replaces ideas learned in the past.",
+        "It is connected with what the person already knows.",
+        "It is tested against immediate physical dangers."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What further benefit of sleep is described?",
+      "options": [
+        "It removes the need to concentrate the next day.",
+        "It guarantees that every problem will be solved.",
+        "It lets the brain stop processing information completely.",
+        "It can leave a person feeling rested in the morning."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What distinction is made about \"sleeping on\" a problem?",
+      "options": [
+        "The phrase means delaying a decision, while the brain may also work on the problem overnight.",
+        "The phrase means forgetting the problem, while the brain recalls it only after waking.",
+        "The phrase means deciding immediately, while the brain questions the choice overnight.",
+        "The phrase means avoiding work, while the brain stores the problem without changing it."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How does the interviewee characterise sleep deprivation?",
+      "options": [
+        "As proof that a person's immune system has failed.",
+        "As a brief pause in the body's normal activity.",
+        "As a form of stress that activates a survival response.",
+        "As a condition caused mainly by stressful employment."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why are money worries and a stressful job mentioned?",
+      "options": [
+        "They are identified as the two main causes of sleep loss.",
+        "They show that financial problems are worse than lost sleep.",
+        "They explain how sleeping directly solves daily problems.",
+        "They illustrate continuing stress alongside chronic sleep loss."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is a supported implication of continued sleep loss?",
+      "options": [
+        "Its effects are limited to poor concentration the next day.",
+        "It may contribute to wider health problems over time.",
+        "It always causes heart disease before immunity changes.",
+        "Its effects stop when the survival response begins."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,158 @@
+{
+  "id": "BBC-240919",
+  "title": "Saving Water in the Driest Place on Earth",
+  "audioSrc": "bbc-audio/240919-saving-water-in-the-driest-place-on-earth.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Growing food is becoming harder as climate change increases _____.",
+      "section": "The wider problem"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Farming uses _____ of the world's fresh water supply.",
+      "section": "The wider problem"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "During a severe drought, date farmers have had to draw water from _____.",
+      "section": "The situation in Yuma"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Gaps in sandy soil cause rapid _____ of water.",
+      "section": "How the soil differs"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "This makes it hard for a plant to establish its _____.",
+      "section": "How the soil differs"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Clay has _____ that stick together, helping the soil retain water.",
+      "section": "How the soil differs"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "According to the maker, the treatment creates a habitat in which _____ can develop.",
+      "section": "The proposed response"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "By changing the soil, the clay-and-water mixture promotes _____ in trees.",
+      "section": "The proposed response"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Its maker expects most farmers to recover their _____ within two years.",
+      "section": "The proposed response"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "According to its maker, the mixture contains clay, air and water, with _____.",
+      "section": "The maker's account of the ingredients"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why is improving water use in farming presented as an important issue?",
+      "options": [
+        "Farming has made river water permanently unusable.",
+        "Date farms produce less food than other farms.",
+        "Farming uses much fresh water while droughts threaten food growing.",
+        "Household drinking water is the main source of irrigation."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What makes the drought in Yuma especially severe in the account?",
+      "options": [
+        "It is described as the area's worst in five centuries.",
+        "It has already forced all date farms to close.",
+        "It has spread from Yuma across every US state.",
+        "It has stopped rivers from carrying any water."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What effect do the liquid's makers claim for sandy desert soil?",
+      "options": [
+        "It supplies all the nutrients plants need to make.",
+        "It removes the need for a plant's root system.",
+        "It changes the weather immediately around farms.",
+        "It helps the ground hold water and nutrients."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why is the habitat for soil microbiology significant in the maker's explanation?",
+      "options": [
+        "It prevents all future changes to the soil.",
+        "It may help soil life and natural processes develop.",
+        "It replaces the need for any water in the soil.",
+        "It proves the mixture works in every desert."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What financial tradeoff is described for farmers considering the technique?",
+      "options": [
+        "A low setup price comes with high annual fees.",
+        "An immediate profit comes with a shorter harvest.",
+        "A substantial initial cost may be recovered within two years.",
+        "A free trial may lead to permanent equipment costs."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What water-saving benefit does the maker claim for fruit trees?",
+      "options": [
+        "They could need half as much water to grow.",
+        "They could grow without any water at all.",
+        "They could produce twice as many fruits with no change in water.",
+        "They could be protected from half of future droughts."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What concern is raised about changing the soil in this way?",
+      "options": [
+        "The technique has already damaged nearby farms.",
+        "Harmful effects might emerge later.",
+        "The mixture will stop natural processes immediately.",
+        "The soil will become too expensive for other uses."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What overall conclusion is best supported by the claimed benefits and the later caution?",
+      "options": [
+        "The water savings prove it is a permanent solution.",
+        "The named ingredients guarantee it is safe over time.",
+        "Its initial cost means it cannot help any farmers.",
+        "Its long-term value remains uncertain despite the claims."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,146 @@
+{
+  "id": "BBC-260827",
+  "title": "How Do We Describe Smells?",
+  "audioSrc": "bbc-audio/260827-how-do-we-describe-smells.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A long list of apparent smell descriptions may simply mean that something is _____.",
+      "section": "The words available"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Speakers often describe an odour by comparing it with _____, such as a rose.",
+      "section": "The words available"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Words such as *stinky* and *fragrant* do not identify a perfume's _____.",
+      "section": "The words available"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Taste words can create a _____ that different people can share.",
+      "section": "Comparing smell with other senses"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Smell descriptions depend more on _____ and feelings than on objective facts.",
+      "section": "Comparing smell with other senses"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Children in the UK may show _____ in smells and comment on them.",
+      "section": "Everyday talk and its limits"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "It is often _____ who stop children discussing unpleasant smells.",
+      "section": "Everyday talk and its limits"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "English has _____ for the particular qualities of odours themselves.",
+      "section": "Everyday talk and its limits"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does the list of words for unpleasant smells illustrate?",
+      "options": [
+        "English can name every odour's exact qualities.",
+        "English speakers rarely notice unpleasant odours.",
+        "Many expressions may still communicate the same broad judgement.",
+        "Each expression identifies a different physical source."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why are a rose and rotten eggs used as examples?",
+      "options": [
+        "They show how speakers compare odours with familiar things.",
+        "They show that pleasant and unpleasant odours share one source.",
+        "They provide a fixed scale for measuring smell intensity.",
+        "They identify two words for the same odour quality."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the perfume example show about *stinky* and *fragrant*?",
+      "options": [
+        "They refer to perfumes made from different ingredients.",
+        "They describe two stages in a perfume's development.",
+        "They must agree when the perfume itself is unchanged.",
+        "They can express opposing reactions to the same perfume."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "In the researcher's view, how do smell labels differ from colour terms?",
+      "options": [
+        "Smell labels are always longer than colour terms.",
+        "Smell labels can depend less on an object's properties.",
+        "Smell labels can be measured more easily than colours.",
+        "Smell labels are learned before colour terms."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does the contrast with taste words suggest?",
+      "options": [
+        "People agree more readily on smell than taste descriptions.",
+        "Taste words are useful only for unpleasant experiences.",
+        "People may find it harder to agree on what smell words convey.",
+        "Smell words have replaced common taste descriptions."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What pattern did the researcher observe in everyday talk?",
+      "options": [
+        "People discuss what they see much more than what they smell.",
+        "People discuss odours as often as sights and sounds.",
+        "People avoid describing what they can see clearly.",
+        "People talk mainly about smells they enjoy."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is a cautious inference from adults ending children's smell conversations?",
+      "options": [
+        "Children will lose the ability to detect odours.",
+        "Such reactions may discourage later talk about smells.",
+        "Parents are teaching a precise smell vocabulary.",
+        "Unpleasant odours become less common with age."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why is *musty* presented as an example?",
+      "options": [
+        "It states whether a person enjoys an odour.",
+        "It compares an odour with a different object.",
+        "It proves all old books smell exactly alike.",
+        "It describes a recognisable quality of an odour."
+      ]
+    }
+  ],
+  "matching": []
+}

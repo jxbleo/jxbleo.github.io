@@ -1,0 +1,158 @@
+{
+  "id": "BBC-241003",
+  "title": "What Decides Our Taste?",
+  "audioSrc": "bbc-audio/241003-what-decides-our-taste.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Both our _____ and DNA influence taste.",
+      "section": "Why people differ"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Scientists identified cells called _____ in the tongue's taste buds.",
+      "section": "Why people differ"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Differences in the receptors people are born with suggest taste can be partly _____.",
+      "section": "Why people differ"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Early genetic studies involved only a few _____.",
+      "section": "How research changed"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Researchers later studied people of _____ ancestry.",
+      "section": "How research changed"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "One researcher describes taste as a matter of _____ rather than simply opinion.",
+      "section": "How research changed"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The researcher compares differences in taste with being _____.",
+      "section": "How people respond to differences"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The comparison asks why people feel free to _____ a friend's sense of taste.",
+      "section": "How people respond to differences"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "A wine judge acknowledges the _____ of individual taste.",
+      "section": "The role of expert judgement"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "During judging, people are expected to set aside their _____.",
+      "section": "The role of expert judgement"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Which idea best explains why people may disagree about the taste of the same food?",
+      "options": [
+        "Each person learns a different set of food rules.",
+        "Experts give people conflicting advice about food.",
+        "Inherited biology can affect how each person tastes it.",
+        "Familiar foods change flavour as people get older."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Where are the taste receptors discussed in the recording located?",
+      "options": [
+        "In the taste buds on the tongue.",
+        "In the nerves around the mouth.",
+        "In the nose above the mouth.",
+        "In the brain behind the eyes."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What limited the researchers' first picture of human taste?",
+      "options": [
+        "They studied too many kinds of food at once.",
+        "They drew evidence from a narrow ancestry group.",
+        "They focused on wine judges rather than ordinary people.",
+        "They assumed all taste receptors were on the tongue."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What changed when the studies included people from more ancestry groups?",
+      "options": [
+        "Researchers found taste differences were less important.",
+        "Researchers decided that taste was only an opinion.",
+        "Researchers recognised greater human variation in taste.",
+        "Researchers replaced genetic studies with wine competitions."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why does the researcher compare taste with colour-blindness?",
+      "options": [
+        "To show that both conditions prevent people from enjoying food.",
+        "To suggest that both conditions can be corrected by practice.",
+        "To argue that both conditions should be judged by experts.",
+        "To question why people criticise others for a biological difference."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why is the value of wine competitions questioned?",
+      "options": [
+        "Different people may experience taste differently by nature.",
+        "Judges may not know which wines are most popular.",
+        "Competitions may include too few kinds of wine.",
+        "Critics may use unfamiliar words to describe flavours."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What does the judge's \"I would say that, wouldn't I?\" suggest about his defence of wine competitions?",
+      "options": [
+        "He has forgotten the challenge put to him.",
+        "He knows his role may favour a \"no\" answer.",
+        "He believes all judges share identical tastes.",
+        "He plans to stop judging future competitions."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does the instruction to \"park\" prejudices imply about wine judging?",
+      "options": [
+        "Judges should refuse to discuss wines they dislike.",
+        "Judges should record their favourite flavours first.",
+        "Judges should rely on their personal tastes alone.",
+        "Judges should try to keep personal preferences out of their decisions."
+      ]
+    }
+  ],
+  "matching": []
+}

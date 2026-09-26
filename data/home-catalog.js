@@ -168,6 +168,171 @@ window.__HOME_CATALOG__ = {
   ],
   "items": [
     {
+      "id": "BBC-240919",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Saving Water in the Driest Place on Earth",
+      "href": "bbc.html?set=BBC-240919",
+      "displayValue": "2024-09-19",
+      "sortValue": "2024-09-19",
+      "topic": "Water / Farming",
+      "tags": [
+        "Environment",
+        "Farming"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-240926",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Learning a New Food Culture",
+      "href": "bbc.html?set=BBC-240926",
+      "displayValue": "2024-09-26",
+      "sortValue": "2024-09-26",
+      "topic": "Food / Migration",
+      "tags": [
+        "Food",
+        "Culture"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241003",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What Decides Our Taste?",
+      "href": "bbc.html?set=BBC-241003",
+      "displayValue": "2024-10-03",
+      "sortValue": "2024-10-03",
+      "topic": "Food / Biology",
+      "tags": [
+        "Food",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241010",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Did Taylor Swift Fans Cause an Earthquake?",
+      "href": "bbc.html?set=BBC-241010",
+      "displayValue": "2024-10-10",
+      "sortValue": "2024-10-10",
+      "topic": "Music / Earth Science",
+      "tags": [
+        "Music",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241017",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Tech That Refuses to Die",
+      "href": "bbc.html?set=BBC-241017",
+      "displayValue": "2024-10-17",
+      "sortValue": "2024-10-17",
+      "topic": "Technology / Change",
+      "tags": [
+        "Technology",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241024",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Divorce: Why Does It Happen?",
+      "href": "bbc.html?set=BBC-241024",
+      "displayValue": "2024-10-24",
+      "sortValue": "2024-10-24",
+      "topic": "Relationships / Society",
+      "tags": [
+        "Relationships",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241031",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Why You Need a Good Night's Sleep",
+      "href": "bbc.html?set=BBC-241031",
+      "displayValue": "2024-10-31",
+      "sortValue": "2024-10-31",
+      "topic": "Sleep / Health",
+      "tags": [
+        "Health",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241107",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Having Acne",
+      "href": "bbc.html?set=BBC-241107",
+      "displayValue": "2024-11-07",
+      "sortValue": "2024-11-07",
+      "topic": "Skin / Wellbeing",
+      "tags": [
+        "Health",
+        "Wellbeing"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241114",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Bond Between Sisters",
+      "href": "bbc.html?set=BBC-241114",
+      "displayValue": "2024-11-14",
+      "sortValue": "2024-11-14",
+      "topic": "Family / Relationships",
+      "tags": [
+        "Family",
+        "Relationships"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241121",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Secrets to a Healthy Old Age",
+      "href": "bbc.html?set=BBC-241121",
+      "displayValue": "2024-11-21",
+      "sortValue": "2024-11-21",
+      "topic": "Ageing / Health",
+      "tags": [
+        "Health",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241128",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Babies Learn to Talk",
+      "href": "bbc.html?set=BBC-241128",
+      "displayValue": "2024-11-28",
+      "sortValue": "2024-11-28",
+      "topic": "Language / Childhood",
+      "tags": [
+        "Language",
+        "Children"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
       "id": "BBC-241205",
       "sectionId": "bbc-six-minute-english",
       "title": "Can You Trust Ancestry DNA Kits?",
@@ -1123,6 +1288,21 @@ window.__HOME_CATALOG__ = {
       "visible": true
     },
     {
+      "id": "BBC-260709",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Should We Cycle More?",
+      "href": "bbc.html?set=BBC-260709",
+      "displayValue": "2026-07-09",
+      "sortValue": "2026-07-09",
+      "topic": "Cycling / Environment",
+      "tags": [
+        "Health",
+        "Environment"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
       "id": "BBC-260716",
       "sectionId": "bbc-six-minute-english",
       "title": "What's in a Footballer's Brain?",
@@ -1193,6 +1373,96 @@ window.__HOME_CATALOG__ = {
       "tags": [
         "Society",
         "Gender"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260820",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Sharing the Road with Driverless Cars",
+      "href": "bbc.html?set=BBC-260820",
+      "displayValue": "2026-08-20",
+      "sortValue": "2026-08-20",
+      "topic": "Transport / Technology",
+      "tags": [
+        "Technology",
+        "Transport"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260827",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Do We Describe Smells?",
+      "href": "bbc.html?set=BBC-260827",
+      "displayValue": "2026-08-27",
+      "sortValue": "2026-08-27",
+      "topic": "Smell / Language",
+      "tags": [
+        "Language",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260903",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Climate Change and Extreme Weather",
+      "href": "bbc.html?set=BBC-260903",
+      "displayValue": "2026-09-03",
+      "sortValue": "2026-09-03",
+      "topic": "Climate / Weather",
+      "tags": [
+        "Climate",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260910",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Can Apps Teach You a Language?",
+      "href": "bbc.html?set=BBC-260910",
+      "displayValue": "2026-09-10",
+      "sortValue": "2026-09-10",
+      "topic": "Language / Technology",
+      "tags": [
+        "Language",
+        "Technology"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260917",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Is Rejection Good for Us?",
+      "href": "bbc.html?set=BBC-260917",
+      "displayValue": "2026-09-17",
+      "sortValue": "2026-09-17",
+      "topic": "Rejection / Psychology",
+      "tags": [
+        "Psychology",
+        "Wellbeing"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260924",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Why Do We Itch?",
+      "href": "bbc.html?set=BBC-260924",
+      "displayValue": "2026-09-24",
+      "sortValue": "2026-09-24",
+      "topic": "Skin / Science",
+      "tags": [
+        "Health",
+        "Science"
       ],
       "note": "Listening Practice",
       "visible": true

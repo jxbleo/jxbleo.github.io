@@ -1,0 +1,147 @@
+{
+  "id": "BBC-240926",
+  "title": "Learning a New Food Culture",
+  "audioSrc": "bbc-audio/240926-learning-a-new-food-culture.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "At first, the new surroundings took one woman outside her familiar _____.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Living and working in another country brought _____, including unfamiliar local foods.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Some _____ from her previous cooking were unavailable.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Using Dutch ingredients required recipe _____.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The second woman moved from England to the Caribbean island of _____.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Seasoning was an _____ part of preparing food there.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Flavours were added in several _____.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Individual cooks made their own small _____.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "There were no set _____ for the seasoning.",
+      "section": "Learning a new food culture"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "With no fixed quantities, learning involved _____: trying different methods and learning from mistakes, some of which her family did not appreciate.",
+      "section": "Learning a new food culture"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What broad difficulty can arise when people move to another country?",
+      "options": [
+        "They may have to give up cooking familiar dishes entirely.",
+        "They may need to adjust to food that differs from what they know.",
+        "They may find that local people reject food from abroad.",
+        "They may struggle to learn the names of local dishes."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What led the first woman to leave Ukraine?",
+      "options": [
+        "An invitation to open a restaurant abroad.",
+        "A wish to train with Dutch cooks.",
+        "A plan to join relatives in Poland.",
+        "The Russian invasion of her country."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What contrast does she draw between staying in one place and moving abroad?",
+      "options": [
+        "Familiar routines give way to situations that require adjustment.",
+        "Familiar ingredients become easier to obtain after a move.",
+        "Working abroad removes the difficulties of daily life.",
+        "Moving abroad makes cooking less important than before."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How did she respond when some ingredients from home were unavailable?",
+      "options": [
+        "She stopped preparing her usual kinds of meals.",
+        "She ordered the missing ingredients from Ukraine.",
+        "She found local substitutes and cooked with what she had.",
+        "She asked her customers to choose replacement ingredients."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How did customers respond to the cooking she developed in the Netherlands?",
+      "options": [
+        "They rejected it because it used unfamiliar ingredients.",
+        "They enjoyed the new kind of cooking she created.",
+        "They insisted that she restore every original recipe.",
+        "They welcomed it only after she imported Ukrainian staples."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why are the small personal adjustments to seasoning relevant?",
+      "options": [
+        "They show that cooks develop individual ways of flavouring food.",
+        "They show that cooks normally measure every spice precisely.",
+        "They show that food preparation is identical across families.",
+        "They show that the newcomer rejected local cooking methods."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What wider conclusion is supported by the two food experiences?",
+      "options": [
+        "Successful adaptation requires people to abandon foods from home.",
+        "Food customs are easier to learn than other parts of a culture.",
+        "Encountering local food can reveal how people live and cook.",
+        "A new culture can be understood only by opening a restaurant."
+      ]
+    }
+  ],
+  "matching": []
+}

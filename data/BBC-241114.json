@@ -1,0 +1,136 @@
+{
+  "id": "BBC-241114",
+  "title": "The Bond Between Sisters",
+  "audioSrc": "bbc-audio/241114-the-bond-between-sisters.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "One woman says that she and her sister get along now. Their relationship improved in _____.",
+      "section": "A relationship that changes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One sister moved abroad to work as a _____.",
+      "section": "Three sisters living in different places"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The other two sisters remained in _____.",
+      "section": "Three sisters living in different places"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Despite the distance, one sister describes their relationship as very _____.",
+      "section": "Three sisters living in different places"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Asked to describe her sister, an older sister agrees that she is _____.",
+      "section": "A sister's character"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "She also says that this sister likes to _____.",
+      "section": "A sister's character"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "A common label presents the middle sister as a _____.",
+      "section": "Ideas about birth order"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "A therapist says _____ helps people make sense of behaviour.",
+      "section": "Ideas about birth order"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "However, the therapist says scientists have found no _____ for these fixed family roles.",
+      "section": "Ideas about birth order"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "In one woman's own family, it is her _____ who tends to be bossy.",
+      "section": "Ideas about birth order"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What was the sister's initial concern before speaking with her siblings publicly?",
+      "options": [
+        "They might refuse to join the conversation.",
+        "They might reveal an unflattering view of her.",
+        "They might disagree about where they grew up.",
+        "They might question her choice of profession."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How does one sister feel about the bond among the three of them?",
+      "options": [
+        "Unsure whether it will last.",
+        "Surprised it has become distant.",
+        "Concerned that it limits her freedom.",
+        "Pleased that they remain close."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What picture emerges from the older sister's description of her sibling?",
+      "options": [
+        "She follows others' decisions but avoids arguments.",
+        "She follows her own path and prefers to direct events.",
+        "She depends on others and seeks their approval.",
+        "She avoids decisions and keeps her views private."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How are the usual birth-order labels presented in relation to this family?",
+      "options": [
+        "They are familiar claims that do not fit these sisters.",
+        "They are proven patterns that explain these sisters.",
+        "They are rules that apply only to the youngest sister.",
+        "They are descriptions that the sisters invented themselves."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What purpose does the final personal example serve in the discussion?",
+      "options": [
+        "It shows that younger sisters are always more assertive.",
+        "It proves that the eldest sister is usually a peacemaker.",
+        "It challenges the expected link between age and bossiness.",
+        "It explains why sisters become closer when they are adults."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Taken together, what do the sisters' experiences and the therapist's comments imply?",
+      "options": [
+        "A person's family position alone is a poor guide to character.",
+        "A person's family position always determines character.",
+        "Sisters living apart are more likely to reject labels.",
+        "Sisters become less independent as they grow older."
+      ]
+    }
+  ],
+  "matching": []
+}

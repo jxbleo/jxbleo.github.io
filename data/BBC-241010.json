@@ -1,0 +1,136 @@
+{
+  "id": "BBC-241010",
+  "title": "Did Taylor Swift Fans Cause an Earthquake?",
+  "audioSrc": "bbc-audio/241010-did-taylor-swift-fans-cause-an-earthquake.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "At the Edinburgh concert, fans' _____ was linked to measurable movement of the Earth.",
+      "section": "The first report"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The disturbance was detected as far as _____ from the concert.",
+      "section": "The first report"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "At the Cardiff show, instruments allowed _____ and recording of ground motion.",
+      "section": "Checking what happened at another concert"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The upper graph showed the ground's _____ as it vibrated up and down.",
+      "section": "Checking what happened at another concert"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The movement reflected the combined energy of _____ people in the stadium.",
+      "section": "Checking what happened at another concert"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The fans made _____ movements, so their energy combined.",
+      "section": "Checking what happened at another concert"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The graph reached a high point during the song _____.",
+      "section": "What the measurements showed"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The ground bent up and down by about _____.",
+      "section": "What the measurements showed"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Attempts to express concert energy on an earthquake scale generally produced magnitudes of _____.",
+      "section": "Why scientists did not call it an earthquake"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "An actual earthquake involves a break in the _____.",
+      "section": "Why scientists did not call it an earthquake"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What made the Edinburgh concert an unusual example of a live music event?",
+      "options": [
+        "The sound could be heard four miles away.",
+        "The performers felt the stage shake beneath them.",
+        "The audience's movement registered beyond the venue.",
+        "The audience left because of an earthquake warning."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why did the researchers prepare equipment for the Cardiff concert?",
+      "options": [
+        "To check whether a similar ground effect would occur there.",
+        "To compare the songs played at the two venues.",
+        "To measure how far the music travelled through the air.",
+        "To test whether the stadium could withstand an earthquake."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How did the crowd produce the recorded effect?",
+      "options": [
+        "Their separate movements cancelled one another out.",
+        "Their movements together contributed to the ground vibration.",
+        "Their singing alone pushed air against the ground.",
+        "Their movement began only after the ground shook."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How is the small measurement of ground movement presented?",
+      "options": [
+        "As small in size but still a real bending of the Earth.",
+        "As too uncertain for the scientists to take seriously.",
+        "As proof that the concert damaged the ground.",
+        "As larger than the movement from an earthquake."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why are moving tectonic plates and volcanoes mentioned?",
+      "options": [
+        "To explain how concerts can trigger those natural events.",
+        "To identify places where concert vibrations are strongest.",
+        "To suggest two methods for measuring concert energy.",
+        "To identify natural causes in the definition of an earthquake."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Which conclusion best fits the discussion as a whole?",
+      "options": [
+        "Any detectable ground movement should count as an earthquake.",
+        "Concertgoers may feel an earthquake-like effect without a real earthquake occurring.",
+        "Concerts cannot move the Earth unless its crust breaks.",
+        "A concert's measured magnitude alone explains its natural cause."
+      ]
+    }
+  ],
+  "matching": []
+}
