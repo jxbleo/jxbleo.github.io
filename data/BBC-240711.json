@@ -1,0 +1,141 @@
+{
+  "id": "BBC-240711",
+  "title": "The School That Puts the Kids in Charge",
+  "audioSrc": "bbc-audio/240711-the-school-that-puts-the-kids-in-charge.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Students help decide who works at the school by _____.",
+      "section": "NO MORE THAN THREE WORDS — Decisions and daily work"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Running the school is intended to teach pupils _____.",
+      "section": "Decisions and daily work"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Pupils visit the vegetable market _____.",
+      "section": "Buying and checking food"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Other pupils check prices; one student manages the _____.",
+      "section": "Buying and checking food"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Doing the accounting lets students see the school's _____, not just a practice exercise.",
+      "section": "Buying and checking food"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Compared with her previous school, one pupil can now develop _____ with friends.",
+      "section": "Learning beyond lessons"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Trying different activities may help pupils discover their personal _____.",
+      "section": "Learning beyond lessons"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Children give a positive _____ when adults place trust in them.",
+      "section": "Trust and authority"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "One observer describes the school as partly _____ despite its unusual approach.",
+      "section": "Trust and authority"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What best describes the students' role in the school's operation?",
+      "options": [
+        "They advise teachers on rules while adults handle most daily decisions.",
+        "They take responsibility for decisions and tasks across school life.",
+        "They manage food purchases while staff make the school's rules.",
+        "They choose new staff but leave student discipline to teachers."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which arrangement would best fit the school's way of teaching responsibility?",
+      "options": [
+        "Giving pupils extra talks about why everyday school duties matter.",
+        "Asking pupils to watch support staff organise their daily work.",
+        "Letting pupils choose a job to discuss in a classroom presentation.",
+        "Putting pupils in charge of arranging the school's cleaning rota."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the description of food shopping show about student responsibility?",
+      "options": [
+        "Pupils help buy food for the whole school, with an adult accompanying them.",
+        "Pupils compare menus for different classes before an adult buys the food.",
+        "Pupils purchase food independently for a small group of classmates.",
+        "Pupils check food prices after an adult has chosen what to purchase."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why does the pupil interested in accounting enjoy managing the food records?",
+      "options": [
+        "The task gives her a break from studying school subjects.",
+        "The task allows her to supervise the other market shoppers.",
+        "The task lets her work with actual purchases and spending.",
+        "The task prepares her to teach accounting to younger pupils."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How does the pupil contrast her former school with the Bamboo School?",
+      "options": [
+        "Her former school offered practical tasks, while her current school stresses classroom lessons.",
+        "Her former school stressed individual work, while her current school avoids lessons.",
+        "Her former school offered leadership roles, while her current school limits them.",
+        "Her previous school centred on lessons; her current one also offers practical experience."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does the account of adults and children suggest about the school's approach?",
+      "options": [
+        "It transfers classroom teaching to children while adults manage activities outside.",
+        "It keeps adult authority in all areas but invites student suggestions.",
+        "It combines familiar classroom teaching with unusual student control outside it.",
+        "It lets each class decide whether teachers or pupils should lead lessons."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What further responsibility is mentioned alongside the pupils' schoolwork?",
+      "options": [
+        "They also have a regular commitment to unpaid work for the community.",
+        "They must complete community work before joining ordinary lessons.",
+        "They spend most of each school week on community work.",
+        "They choose whether community work replaces classroom lessons."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1623,3 +1623,12 @@ cp .qa-secrets.example .qa-secrets.local
   both Speaking code packages deployed and downloaded back with matching SHA-256.
   Environment/ACL/timer configuration preserved. Seasonal placeholder is intentional. Actual device audio and real-provider band calibration remain.
   See `docs/IELTS_SPEAKING_LAB.md`.
+
+## Done — 2026-09-27 BBC approved 21-lesson import
+
+- Owner approved the reviewed Markdown batch: 158 blanks + 134 MC = 292 questions.
+- Added scoped public runtime/metadata/audio/worksheet assets and private grading source.
+- Reconciled all accepted answers, correct MC options and explanation coverage with Markdown; checked IDs, word limits, source ordering and public/private separation.
+- Rendered and visually reviewed 21 no-answer PDFs, 45 pages. Fixed importer support for numbered/bold notes and reduced-count source mixes with sufficiency notes.
+- Live verification: 21 sets + 21 grading keys remain ADMINONLY, all 65 public objects checked. No existing records or student history changed.
+- No implementation test suite was run. No owner action remains for this batch.

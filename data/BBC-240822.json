@@ -1,0 +1,136 @@
+{
+  "id": "BBC-240822",
+  "title": "Why We Love Dumplings",
+  "audioSrc": "bbc-audio/240822-why-we-love-dumplings.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "In China, the examples described are _____ and contain pork and cabbage.",
+      "section": "NO MORE THAN THREE WORDS — Dumplings around the world"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Alongside rice and corn, _____ is one grain commonly used as a dough base.",
+      "section": "Dumplings around the world"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Over time, cooks have changed the _____ to create local varieties.",
+      "section": "Dumplings around the world"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The time and place of the first dumpling remain _____.",
+      "section": "How dumplings may have spread"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "One proposed birthplace lies along the _____, which connected China with Central Asia and Turkey.",
+      "section": "How dumplings may have spread"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "In Ghana, dumplings can add _____ to a meal and absorb its sauces.",
+      "section": "How dumplings may have spread"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Kenkey is a regular main food for the _____, although people eat it across Ghana.",
+      "section": "Kenkey in Ghana"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "One accompaniment is a _____; another is a dark sauce containing seafood.",
+      "section": "Kenkey in Ghana"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The meal gives eaters a strong feeling of _____.",
+      "section": "Kenkey in Ghana"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Preparation takes time: the maize is left in water for _____.",
+      "section": "Kenkey in Ghana"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main point of the examples from China, Nepal, Ireland and Italy?",
+      "options": [
+        "Dumplings from each place are normally eaten with a sauce.",
+        "Dumplings take different local forms across the world.",
+        "Dumplings from each place use the same kind of dough.",
+        "Dumplings are usually fried outside their place of origin."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How does the description of dumplings distinguish the dough from the filling?",
+      "options": [
+        "The dough determines the shape, while the filling determines the name.",
+        "The dough is always boiled, while the filling may be fried.",
+        "The dough is made from vegetables, while the filling is made from grains.",
+        "The dough surrounds the filling, which may contain very different foods."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Besides adding substance to a Ghanaian dish, what other job can a dumpling do?",
+      "options": [
+        "Take up sauce and juices from the dish.",
+        "Replace the dish's need for any sauce.",
+        "Help the dish stay warm throughout the meal.",
+        "Give the sauce its distinctive dark colour."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What contrast is made between the two sauces eaten with kenkey?",
+      "options": [
+        "One is a chilli sauce; the other is made mainly from maize.",
+        "One is served hot; the other is served only after the meal.",
+        "One is a chilli sauce; the other contains seafood and other proteins.",
+        "One is eaten across Ghana; the other belongs to a single tribe."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "If a manual worker cannot eat again for several hours, why might kenkey be a useful choice?",
+      "options": [
+        "They can prepare it quickly before starting work.",
+        "They can eat it without another food or sauce.",
+        "They can buy it wherever they are working.",
+        "It can keep them feeling full for much of the day."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Which detail about kenkey's ingredients is given after the interview?",
+      "options": [
+        "Its dough is made from maize sourdough.",
+        "Its dough is made from wheat and potato.",
+        "Its filling is made from fish and shrimp.",
+        "Its filling is made from cabbage and pork."
+      ]
+    }
+  ],
+  "matching": []
+}

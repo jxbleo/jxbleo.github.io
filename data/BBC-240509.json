@@ -1,0 +1,90 @@
+{
+  "id": "BBC-240509",
+  "title": "Bitter Food, Better Health?",
+  "audioSrc": "bbc-audio/240509-bitter-food-better-health.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "It can interact with the gut _____.",
+      "section": "NO MORE THAN THREE WORDS — Bitter food: possible effects and public perception"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "It may help control _____.",
+      "section": "Bitter food: possible effects and public perception"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "It may even counter long-lasting _____ in the body.",
+      "section": "Bitter food: possible effects and public perception"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "People's actual _____ to bitter food may be greater than they realise.",
+      "section": "Bitter food: possible effects and public perception"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Yet bitter food carries _____ in people's minds, both as a flavour and an emotion.",
+      "section": "Bitter food: possible effects and public perception"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Among the drinks named, the chef says every kind of _____ has a bitter element.",
+      "section": "Bitter food: possible effects and public perception"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main point of the research described in the discussion?",
+      "options": [
+        "Bitter foods mainly improve people's sense of taste.",
+        "Bitter foods have been shown to cure digestive illness.",
+        "Bitter foods may influence several aspects of health.",
+        "Bitter foods produce the same effect in every person."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What tension does the discussion identify about bitter foods?",
+      "options": [
+        "They may be beneficial, yet people can find them hard to enjoy.",
+        "Their health effects are clear, but their flavour has not been studied.",
+        "They are popular with chefs, yet unavailable to most consumers.",
+        "They may taste pleasant, yet people avoid them for health reasons."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "According to the chef, how do people's beliefs about bitter foods compare with their experience?",
+      "options": [
+        "They dislike bitterness because they have rarely encountered it.",
+        "They expect bitterness mainly in unfamiliar specialty foods.",
+        "They notice it in food but rarely associate it with emotions.",
+        "They may encounter it often while still thinking of it negatively."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why does the chef name chocolate, coffee and alcohol?",
+      "options": [
+        "To suggest that bitter ingredients should be added to everyday diets.",
+        "To illustrate that familiar products can have a bitter element.",
+        "To show that people's bitter preferences change with age.",
+        "To distinguish foods with bitterness from drinks without bitterness."
+      ]
+    }
+  ],
+  "matching": []
+}

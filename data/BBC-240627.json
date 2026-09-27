@@ -1,0 +1,146 @@
+{
+  "id": "BBC-240627",
+  "title": "How Learning to Read Changes Lives",
+  "audioSrc": "bbc-audio/240627-how-learning-to-read-changes-lives.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Reading helps with ordinary tasks, such as checking product _____ while shopping.",
+      "section": "NO MORE THAN THREE WORDS — Why literacy matters"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "A UN report estimates that _____ adults worldwide cannot read or write.",
+      "section": "Why literacy matters"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In coastal towns, regular _____ forces families to move, making school difficult for children.",
+      "section": "A project in Bangladesh"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The Friendship Project teaches reading and writing to _____.",
+      "section": "A project in Bangladesh"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Before learning to write, one learner used her _____ instead of signing her name.",
+      "section": "A project in Bangladesh"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The project is _____ for learners.",
+      "section": "A project in Bangladesh"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "At Readeasy, trained volunteers teach adult learners _____, rather than in groups.",
+      "section": "A project in England"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "One learner who could not read before is now working through the _____.",
+      "section": "A project in England"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why does the opening discussion describe reading as an essential skill?",
+      "options": [
+        "It allows people to follow printed information used in everyday life.",
+        "It enables people to finish journeys to work more quickly.",
+        "It helps people choose which news reports are most reliable.",
+        "It helps people judge product quality without asking shop staff."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What is presented as the main reason many people grow up unable to read, with coastal Bangladesh given as an example?",
+      "options": [
+        "Their families prefer lessons at home to formal classes.",
+        "They do not attend school, sometimes because moving disrupts education.",
+        "Their schools concentrate on counting rather than reading.",
+        "They begin work before they have learnt to write their names."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How did Rashida say her children reacted to her inability to read and write?",
+      "options": [
+        "They were worried that she would stop keeping household accounts.",
+        "They were relieved that she could already sign official papers.",
+        "They felt embarrassed that their mother could not read or write.",
+        "They became interested in joining her lessons themselves."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does the Bangladeshi learner's account suggest about managing her money after the lessons?",
+      "options": [
+        "She can work out in advance what every purchase will cost.",
+        "She can provide financial advice to other learners.",
+        "She now relies on her children to record her expenses.",
+        "She can make informed checks that may protect her from being cheated."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How is the English project presented in relation to the Bangladeshi one?",
+      "options": [
+        "It serves a different country where adults also face literacy difficulties.",
+        "It offers the same group lessons to women and girls in coastal towns.",
+        "It is described as replacing the Bangladeshi project's approach.",
+        "It serves adults who already read but need help with maths."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How did Peter's childhood hearing difficulties affect his education, according to the discussion?",
+      "options": [
+        "They led his family to keep him away from school.",
+        "They caused him to lose interest in learning after school.",
+        "They made it harder for him to keep up at school, and he did not learn to read.",
+        "They meant that he learnt reading only through written college lessons."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How did the unsuccessful college attempts affect Peter's belief about learning to read?",
+      "options": [
+        "He thought independent reading was unnecessary once a neighbour could help.",
+        "He thought the college courses had prepared him to read letters.",
+        "He blamed only his hearing difficulties for the unsuccessful courses.",
+        "He had begun to doubt that learning to read would work for him."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does Peter's later reading of the Harry Potter books most clearly illustrate?",
+      "options": [
+        "The books were the teaching materials used in every Readeasy lesson.",
+        "The lessons have enabled him to read for himself after earlier difficulties.",
+        "His childhood hearing problems have now completely disappeared.",
+        "He has finished all the books since joining Readeasy."
+      ]
+    }
+  ],
+  "matching": []
+}

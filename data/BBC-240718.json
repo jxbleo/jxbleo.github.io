@@ -1,0 +1,124 @@
+{
+  "id": "BBC-240718",
+  "title": "AI to Reduce Animal Testing",
+  "audioSrc": "bbc-audio/240718-ai-to-reduce-animal-testing.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Alongside product safety, animal tests explore how _____ a new medicine is.",
+      "section": "NO MORE THAN THREE WORDS — Why tests are used and debated"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Scientists who support the practice say it has saved _____.",
+      "section": "Why tests are used and debated"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In Britain, medicines have to be tested on _____ of animals.",
+      "section": "Why tests are used and debated"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "A substance found harmful to animals may nevertheless be safe in _____.",
+      "section": "The difficulty of applying results to people"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The animal-welfare aim is a _____ in the number of animals used, while safety is still maintained.",
+      "section": "Reducing animal use while protecting people"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Assessing possible harm involves the _____ of thousands of experimental results.",
+      "section": "How AI may help"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Scientists must examine a large quantity of _____ when judging chemical safety.",
+      "section": "How AI may help"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "A possible reduction in testing could benefit both modern medicine and _____.",
+      "section": "How AI may help"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How do the two sides of the animal-testing debate differ?",
+      "options": [
+        "Supporters stress human safety; campaigners question both welfare and effectiveness.",
+        "Both accept the tests as accurate but disagree about their cost.",
+        "Supporters seek fewer medicines; campaigners seek more safety checks.",
+        "Both question animal welfare but disagree about which species to use."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What has led groups on both sides of the debate to reconsider animal testing?",
+      "options": [
+        "A change in the number of legally required animal types.",
+        "New evidence that medicines affect all species alike.",
+        "The possible contribution of artificial intelligence.",
+        "A decision to begin tests with human volunteers."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the example of substances toxic to animals but safe for humans suggest?",
+      "options": [
+        "Animal tests can help identify every risk to humans.",
+        "A substance safe for one species is usually safe for another.",
+        "Substances harmful to animals should first be tested on people.",
+        "Animal results do not always predict human results reliably."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why is AI potentially useful when assessing whether a new medicine may harm people?",
+      "options": [
+        "It can remove the need to examine experimental results.",
+        "It is good at analysing very large amounts of data.",
+        "It can ensure all experimental results agree.",
+        "It can rule out the need to assess newly invented chemicals."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why may the work of assessing chemical safety keep growing?",
+      "options": [
+        "New chemicals continue to be created alongside the existing data burden.",
+        "Existing data become unusable whenever a chemical is invented.",
+        "Scientists must repeat all previous tests for every new medicine.",
+        "AI generates more chemicals than scientists can evaluate."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Which conclusion best reflects the discussion's view of AI and future animal testing?",
+      "options": [
+        "AI has already made testing on animals unnecessary.",
+        "AI may help reduce or eventually end such testing, but it is only part of the solution.",
+        "AI offers no benefit until it can replace every safety check.",
+        "AI will certainly end animal testing within a few years."
+      ]
+    }
+  ],
+  "matching": []
+}

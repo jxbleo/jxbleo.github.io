@@ -1,0 +1,84 @@
+{
+  "id": "BBC-240801",
+  "title": "The Science of Falling in Love",
+  "audioSrc": "bbc-audio/240801-the-science-of-falling-in-love.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "The body sends _____ into the blood; these help control mood and are involved in falling in love.",
+      "section": "NO MORE THAN THREE WORDS — Looking beyond romance"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "For some people who are _____, lust may not occur at all.",
+      "section": "Lust"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "When it does occur, two hormones that drive it are _____.",
+      "section": "Lust"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Lust can encourage _____ by creating the urge to have offspring.",
+      "section": "Lust"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A rewarding feeling can encourage the _____ of a behaviour.",
+      "section": "Attraction"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How does the discussion initially shift from romantic expressions about love?",
+      "options": [
+        "It examines how romantic language shapes people's expectations of a partner.",
+        "It compares the health effects of love with those of other emotions.",
+        "It considers chemical activity in the brain and body during love.",
+        "It explains why physical attraction usually develops before romance."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which qualification does the expert make about lust's place in romantic love?",
+      "options": [
+        "It may appear first, but its timing and occurrence vary between people.",
+        "It usually follows attraction, though its intensity varies between people.",
+        "It develops in everyone, but some people notice it much later.",
+        "It appears first only when both people want to have children."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What is the expert's contrast between how lust may feel and what it may serve?",
+      "options": [
+        "It may feel rewarding, while encouraging a person to repeat a behaviour.",
+        "It may feel romantic, while helping a person choose a long-term partner.",
+        "It may feel stressful, while helping a person form an emotional bond.",
+        "It may feel purely physical, while supporting reproduction."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What difficulty does the example of chasing new relationships suggest for some people?",
+      "options": [
+        "They may struggle to feel rewarded by any romantic relationship.",
+        "They may struggle to stop seeking novelty in successive relationships.",
+        "They may form relationships mainly to reduce physical stress.",
+        "They may confuse physical desire with a wish to have children."
+      ]
+    }
+  ],
+  "matching": []
+}

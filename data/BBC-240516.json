@@ -1,0 +1,129 @@
+{
+  "id": "BBC-240516",
+  "title": "Can You Keep a Secret?",
+  "audioSrc": "bbc-audio/240516-can-you-keep-a-secret.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Keeping good news private can make someone feel more _____, especially when they intend to tell someone later.",
+      "section": "NO MORE THAN THREE WORDS — A possible benefit"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "A _____ is one example of something enjoyable that a person may plan never to disclose.",
+      "section": "Different plans for a secret"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A surprise _____ is an example of news kept so that it can later be revealed.",
+      "section": "Different plans for a secret"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Revealing welcome news gives people a chance to share and _____ it with others.",
+      "section": "Different plans for a secret"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A sense of _____ over one's emotions can make a positive secret energising.",
+      "section": "Why a secret can feel positive"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "In some cultures, people may _____ a pregnancy announcement until they feel it is safe to share.",
+      "section": "When sharing may be postponed"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "In the early stages, a pregnancy secret may feel like a _____ to the person keeping it.",
+      "section": "When sharing may be postponed"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Which contrast introduces the discussion about keeping secrets?",
+      "options": [
+        "People often value privacy, although sharing news can strengthen relationships.",
+        "People often see secrecy negatively, although some secrets may improve their lives.",
+        "People often keep secrets easily, although some news is difficult to protect.",
+        "People often enjoy surprises, although keeping them can make them anxious."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "According to the studies described, when might holding on to good news feel especially positive?",
+      "options": [
+        "When the news concerns a person whom the listener already knows.",
+        "When the person expects the news to remain private indefinitely.",
+        "When the person intends to share the news with someone later.",
+        "When the person has already discussed the news with friends."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What distinguishes the two kinds of enjoyable secrets described by the researcher?",
+      "options": [
+        "Whether the person intends to reveal them eventually.",
+        "Whether the news concerns a relationship or an object.",
+        "Whether other people can guess the secret beforehand.",
+        "Whether keeping the secret produces a sense of guilt."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What effect does the presenter attribute to negative secrets?",
+      "options": [
+        "They can reduce the excitement of a planned surprise.",
+        "They can make people less willing to discuss emotions.",
+        "They can prevent good news from reaching other people.",
+        "They can harm people and strain their relationships."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is the location of the research raised in the discussion?",
+      "options": [
+        "It may limit how confidently the findings apply to other cultures.",
+        "It explains why the study focused on marriage proposals.",
+        "It shows that secrecy is understood similarly worldwide.",
+        "It suggests that the results depend on the language spoken."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is the purpose of the example about delaying pregnancy news in some cultures?",
+      "options": [
+        "To show that early pregnancy news is usually a negative secret.",
+        "To explain why researchers avoid asking about pregnancy.",
+        "To explore whether cultural beliefs affect decisions to share good news.",
+        "To show that all good news is best kept private until it is safe."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the researcher tentatively contrast pregnancy secrets at earlier and later stages?",
+      "options": [
+        "People become less concerned about others' reactions as time passes.",
+        "The same news can feel more comfortable to discuss at a later stage.",
+        "The secret becomes positive only after everyone already knows it.",
+        "Pregnancy news has a fixed emotional effect across cultures."
+      ]
+    }
+  ],
+  "matching": []
+}

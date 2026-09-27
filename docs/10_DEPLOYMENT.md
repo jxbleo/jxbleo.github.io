@@ -1,5 +1,18 @@
 # 10 Deployment
 
+## BBC approved batch import (2026-09-27; deployed)
+
+Published 21 reviewed BBC lessons with 158 Note Completion blanks and 134
+Multiple Choice questions (292 total). Each lesson has public JSON, matching
+MP3 and a no-answer worksheet PDF. The scoped release adds 63 assets and merges
+only these 21 entries into both live catalogs. CloudBase receives 21 new `sets`
+and 21 private `grading_keys` records by insert-missing operations; both
+collections remain `ADMINONLY`. Answers and explanations were reconciled against
+the approved Markdown; 21 PDFs (45 pages) were rendered and reviewed.
+Release plans, catalog backups and readback evidence are ignored under
+`.cloudbase-private/bbc-release-20260927/`. Source publication uses `[skip ci]`
+because the scoped COS release was independently verified.
+
 ## BBC approved batch import (2026-09-26; deployed)
 
 Published 18 reviewed BBC lessons with 172 Note Completion blanks and 139

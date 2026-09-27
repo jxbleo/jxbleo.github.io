@@ -1,0 +1,118 @@
+{
+  "id": "BBC-240808",
+  "title": "Birthday Cakes",
+  "audioSrc": "bbc-audio/240808-birthday-cakes.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "In the past, most birthday cakes were _____.",
+      "section": "NO MORE THAN THREE WORDS — A change over time"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Many present-day cakes are edible _____ rather than plain party food.",
+      "section": "A change over time"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Her favourite fruit flavours for a cake are _____.",
+      "section": "A baker's preferred cake"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "She values the cake's taste and _____ more than a tidy appearance.",
+      "section": "A baker's preferred cake"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Customers have seen his _____, which helps them trust him with a new commission.",
+      "section": "A designer's approach"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "He wants his finished cakes to be _____ to the people receiving them, even after the celebration.",
+      "section": "A designer's approach"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "To develop decoration ideas, he learns about each person's _____.",
+      "section": "A designer's approach"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What broader change in birthday cakes does the discussion describe?",
+      "options": [
+        "Cakes have increasingly become edible designs that reflect the person celebrating.",
+        "Cakes have increasingly been chosen for the number of candles they can hold.",
+        "Cakes have increasingly followed one standard design for every celebration.",
+        "Cakes have increasingly been prepared at home for a more personal occasion."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why would an unevenly decorated cake still suit the first baker's ideal?",
+      "options": [
+        "It could show that the cake was made without any planning.",
+        "It could take less time to make than a carefully flavoured cake.",
+        "It could still be fresh and taste the way she wants.",
+        "It could make the customer's hobbies easier to recognise."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How are the two approaches to birthday cakes presented?",
+      "options": [
+        "The first baker seeks impressive decoration; the newer baker values speed above appearance.",
+        "The first baker favours simple, flavourful cakes; the newer baker gives greater attention to visual design.",
+        "The first baker follows customers' hobbies; the newer baker prefers familiar fruit flavours.",
+        "The first baker creates cakes to be remembered; the newer baker focuses on making them at home."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What makes designing cakes personally satisfying for the second baker?",
+      "options": [
+        "It lets him repeat earlier designs for a wider range of customers.",
+        "It lets him avoid learning about the people receiving the cakes.",
+        "It lets him judge how long other bakers spend on each cake.",
+        "It gives him room to express himself through his work."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "A new client says, \"I trust your ideas; you choose the design.\" Which response best fits the second baker's approach?",
+      "options": [
+        "He develops his own ideas while keeping the client's satisfaction in mind.",
+        "He develops the cake without considering the recipient.",
+        "He assumes the client is no longer concerned with appearance.",
+        "He promises to reproduce a cake from his earlier designs."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does the baker enjoy about revealing the finished cake?",
+      "options": [
+        "The reveal helps him decide whether to change the cake's flavour.",
+        "The reveal gives him a chance to see whether the customer is pleased.",
+        "The reveal is when his clients first grant him design freedom.",
+        "The reveal shows that every cake takes longer than clients expect."
+      ]
+    }
+  ],
+  "matching": []
+}

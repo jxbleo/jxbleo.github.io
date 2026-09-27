@@ -1,0 +1,141 @@
+{
+  "id": "BBC-240912",
+  "title": "Keeping Kids off Smartphones",
+  "audioSrc": "bbc-audio/240912-keeping-kids-off-smartphones.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Studies associate greater social-media use among girls with a higher chance of _____ or depression.",
+      "section": "NO MORE THAN THREE WORDS — Concerns despite widespread ownership"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Smartphones have also been linked to delayed brain development and _____.",
+      "section": "Concerns despite widespread ownership"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Nevertheless, _____ of British children aged eight to eleven own a smartphone.",
+      "section": "Concerns despite widespread ownership"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Without a phone, her daughter might miss _____ with friends, in addition to online trends and chats.",
+      "section": "One parent's dilemma"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The parent fears that refusing a phone could result in her daughter's _____ from her friendship circle.",
+      "section": "One parent's dilemma"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The original proposal was to delay giving a child a smartphone until the age of _____.",
+      "section": "Families responding together"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The WhatsApp group offered parents _____ as they faced pressure to give their children phones.",
+      "section": "Families responding together"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The community eventually included over _____ in the UK.",
+      "section": "Families responding together"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The campaign later had groups in _____ around the world.",
+      "section": "Families responding together"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why does the discussion give particular attention to children when describing concerns about smartphones?",
+      "options": [
+        "Children have stopped using phones mainly for social activities.",
+        "Children may be more affected by the negative effects being discussed.",
+        "Children's phone use has already been reduced by family campaigns.",
+        "Children are the only group whose phone use causes concern."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does the research cited about girls and social media actually establish?",
+      "options": [
+        "Frequent social-media use was identified as the direct cause of girls' depression.",
+        "Girls' delayed brain development was explained by time spent on social media.",
+        "Girls' anxiety was traced chiefly to phone-related disruption of their sleep.",
+        "Girls who use social media more are more likely to be anxious or depressed."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What contrast is highlighted by the figure for British eight-to-eleven-year-olds?",
+      "options": [
+        "Many children own a smartphone despite concerns about possible harm.",
+        "Phone ownership rises sharply between the ages of eight and eleven.",
+        "Most children in that age group avoid smartphones although their friends have them.",
+        "British children spend more time online than children in other countries."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Which change would most directly ease the mother's social worry about withholding a phone?",
+      "options": [
+        "Her daughter receiving more advice about what she might see online.",
+        "Her daughter spending less time using her own device at home.",
+        "Her daughter's friends also being able to socialise without phones.",
+        "Her daughter learning how to follow more online trends."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How did the initial campaign proposal distinguish between smartphones and social media?",
+      "options": [
+        "It proposed allowing smartphones at fourteen only for school activities.",
+        "It proposed waiting until sixteen for a smartphone and fourteen for social media.",
+        "It proposed allowing both from fourteen if a parent supervised their use.",
+        "It proposed waiting until fourteen for a smartphone and sixteen for social media."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why were people encouraged to establish groups in their own areas?",
+      "options": [
+        "The original group was full while interest continued to grow.",
+        "The founders wanted each group to use a different age policy.",
+        "A school rule prevented families from joining groups elsewhere.",
+        "The first group had stopped supporting families with younger children."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the campaign address children's need for friendship?",
+      "options": [
+        "It lets children keep in touch mainly through the campaign's online groups.",
+        "It tries to make phone-free friendship easier through in-person play and talk.",
+        "It replaces local friendships with an international network of children.",
+        "It gives parents new contacts while children continue relying on phone chats."
+      ]
+    }
+  ],
+  "matching": []
+}

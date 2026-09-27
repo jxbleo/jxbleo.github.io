@@ -9,6 +9,27 @@ const audioDir = path.join(projectRoot, "bbc-audio");
 const privateDir = path.join(projectRoot, ".cloudbase-private", "source", "bbc-six-minute-english");
 
 const lessonDetails = {
+  "240425": { title: "Eating for Two", topic: "Pregnancy / Nutrition", tags: ["Health", "Science"] },
+  "240502": { title: "Talking at the Table", topic: "Meals / Conversation", tags: ["Culture", "Family"] },
+  "240509": { title: "Bitter Food, Better Health?", topic: "Food / Health", tags: ["Food", "Health"] },
+  "240516": { title: "Can You Keep a Secret?", topic: "Secrets / Psychology", tags: ["Psychology", "Relationships"] },
+  "240523": { title: "How Bubble Tea Got Its Bubbles", topic: "Food / Innovation", tags: ["Food", "Culture"] },
+  "240530": { title: "Too Old to Have a Baby?", topic: "Parenthood / Age", tags: ["Health", "Society"] },
+  "240606": { title: "E-rickshaws Driving Away Pollution", topic: "Transport / Environment", tags: ["Transport", "Environment"] },
+  "240613": { title: "How Names Can Tell Painful Stories", topic: "Names / History", tags: ["History", "Identity"] },
+  "240620": { title: "Building a Better World with Wood", topic: "Construction / Environment", tags: ["Environment", "Technology"] },
+  "240627": { title: "How Learning to Read Changes Lives", topic: "Literacy / Education", tags: ["Education", "Society"] },
+  "240704": { title: "What Can We Learn from Toddlers?", topic: "Childhood / Wellbeing", tags: ["Children", "Wellbeing"] },
+  "240711": { title: "The School That Puts the Kids in Charge", topic: "Education / Responsibility", tags: ["Education", "Children"] },
+  "240718": { title: "AI to Reduce Animal Testing", topic: "AI / Research", tags: ["Technology", "Science"] },
+  "240725": { title: "Why Read Books, Not Screens?", topic: "Reading / Learning", tags: ["Education", "Technology"] },
+  "240801": { title: "The Science of Falling in Love", topic: "Love / Biology", tags: ["Science", "Relationships"] },
+  "240808": { title: "Birthday Cakes", topic: "Baking / Creativity", tags: ["Food", "Creativity"] },
+  "240815": { title: "Kids and Climate Change", topic: "Climate / Childhood", tags: ["Climate", "Children"] },
+  "240822": { title: "Why We Love Dumplings", topic: "Food / Culture", tags: ["Food", "Culture"] },
+  "240829": { title: "Chocolate: Meet a Real Willy Wonka", topic: "Chocolate / Product Development", tags: ["Food", "Business"] },
+  "240905": { title: "Less Salt, Better Health", topic: "Salt / Health", tags: ["Food", "Health"] },
+  "240912": { title: "Keeping Kids off Smartphones", topic: "Childhood / Technology", tags: ["Children", "Technology"] },
   "240919": { title: "Saving Water in the Driest Place on Earth", topic: "Water / Farming", tags: ["Environment", "Farming"] },
   "240926": { title: "Learning a New Food Culture", topic: "Food / Migration", tags: ["Food", "Culture"] },
   "241003": { title: "What Decides Our Taste?", topic: "Food / Biology", tags: ["Food", "Science"] },
@@ -118,17 +139,23 @@ function parseBlankQuestions(content) {
       return;
     }
 
-    const matches = Array.from(trimmed.matchAll(/\((\d+)\)\s*\*{0,2}_{3,}\*{0,2}/g));
+    let blankLine = trimmed.replace(/\*\*/g, "");
+    const numberedNote = blankLine.match(/^(\d+)\.\s+(.+_{3,}.*)$/);
+    if (numberedNote) {
+      blankLine = numberedNote[2].replace(/_{3,}/, `(${numberedNote[1]}) _____`);
+    }
+    const blankPattern = /(?:\((\d+)\)|(\d+)\.)\s*_{3,}/g;
+    const matches = Array.from(blankLine.matchAll(blankPattern));
     if (!matches.length) return;
     if (matches.length !== 1) {
       throw new Error(`Expected one blank per note line, found ${matches.length}: ${trimmed}`);
     }
 
-    const number = Number(matches[0][1]);
+    const number = Number(matches[0][1] || matches[0][2]);
     const sentence = cleanInlineMarkdown(
-      trimmed
+      blankLine
         .replace(/^[-*]\s+/, "")
-        .replace(/\((\d+)\)\s*\*{0,2}_{3,}\*{0,2}/g, "_____")
+        .replace(blankPattern, "_____")
     );
     questions.push({
       id: `fill-${number}`,
@@ -281,7 +308,7 @@ function validateLesson(lesson, privateSource, sourceTypes) {
   const directCount = types.filter((type) => type === "direct_extraction").length;
   const controlledCount = types.filter((type) => type && type !== "direct_extraction").length;
   if (directCount + controlledCount !== expectedBlankIds.length ||
-      directCount < (expectedBlankIds.length >= 10 ? 7 : 6) ||
+      directCount < (expectedBlankIds.length >= 10 ? 7 : 1) ||
       controlledCount < 2 || controlledCount > 3 ||
       !types.includes("word_form_transformation") ||
       !types.some((type) => type === "lexical_paraphrase" || type === "semantic_summary")) {
@@ -338,6 +365,13 @@ function importDraft(sourcePath, sourceAudioDir) {
     multipleChoice: parseMultipleChoiceQuestions(content),
     matching: [],
   };
+  if (lesson.blanks.length) {
+    lesson.blanks[0].section = `NO MORE THAN THREE WORDS — ${lesson.blanks[0].section}`;
+  }
+  if ((lesson.blanks.length < 10 || lesson.multipleChoice.length < 10) &&
+      !/## Source Sufficiency Note\s*\n\s*\S/.test(content)) {
+    throw new Error(`${id} reduced question count requires a reviewed Source Sufficiency Note`);
+  }
   const privateSource = {
     set_id: id,
     grading_version: "1",

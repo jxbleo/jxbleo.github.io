@@ -1,0 +1,78 @@
+{
+  "id": "BBC-240425",
+  "title": "Eating for Two",
+  "audioSrc": "bbc-audio/240425-eating-for-two.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Nourishment: The developing baby can take the _____ it needs from its mother.",
+      "section": "NO MORE THAN THREE WORDS — Eating during pregnancy"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Physical changes: Before pregnancy, one woman's nosebleeds were rare. During pregnancy, they happened _____.",
+      "section": "Eating during pregnancy"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Cravings and guilt: A late-night _____ illustrates how strong an urge for food can feel.",
+      "section": "Eating during pregnancy"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Advice for the early months: Rather than punishing herself for cravings, a woman should show herself _____.",
+      "section": "Eating during pregnancy"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why can a pregnant woman have nutritional difficulties even when her baby gets what it needs?",
+      "options": [
+        "The baby relies mostly on food eaten before pregnancy.",
+        "The baby can draw needed nutrients from the mother's body.",
+        "The mother's need for nutrients becomes less important.",
+        "The mother's cravings prevent nutrients reaching the baby."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does the account of changing nosebleeds chiefly illustrate?",
+      "options": [
+        "Pregnancy can make previous health problems disappear.",
+        "Food choices can prevent many physical changes.",
+        "Nosebleeds are the main difficulty in pregnancy.",
+        "Pregnancy can bring unexpected bodily changes."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why might some pregnant women feel guilty about a craving?",
+      "options": [
+        "What they want to eat may conflict with their idea of eating healthily.",
+        "They may think all cravings show that the baby needs more food.",
+        "They may find it difficult to tell whether the craving is genuine.",
+        "What they want may differ from the foods they enjoyed before pregnancy."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why might a woman especially want chips during the first trimester, according to the therapist?",
+      "options": [
+        "Her body may be demanding a specific nutrient found in chips.",
+        "Her earlier food preferences may be returning more strongly.",
+        "Her body may be reacting to what it perceives as physical stress.",
+        "Her concerns about healthy eating may be causing the craving."
+      ]
+    }
+  ],
+  "matching": []
+}

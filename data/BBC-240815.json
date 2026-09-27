@@ -1,0 +1,118 @@
+{
+  "id": "BBC-240815",
+  "title": "Kids and Climate Change",
+  "audioSrc": "bbc-audio/240815-kids-and-climate-change.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Some young climate campaigners feel _____ by politicians and adults.",
+      "section": "NO MORE THAN THREE WORDS — A divide between generations"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Worries about the planet can also create _____ in families and schools.",
+      "section": "A divide between generations"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Dealing with the crisis requires _____ from younger and older people.",
+      "section": "A divide between generations"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In a UK survey, at least _____ of young people found the future frightening.",
+      "section": "Young people's concerns"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "One teenager pictures climate change as a parasite: its _____ contrasts with the decline of other living things.",
+      "section": "Young people's concerns"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Another fears environmental loss because there is _____ for people to go.",
+      "section": "Young people's concerns"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Adults can admit their _____ about exactly how to deal with the crisis, while seeking answers with children.",
+      "section": "Listening and talking"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What problem makes cooperation across generations harder?",
+      "options": [
+        "Young people disagree about whether the planet needs protection.",
+        "Young people feel let down by adults and worry about the future.",
+        "Adults expect children to agree on a single climate solution.",
+        "Adults and children have stopped discussing school issues."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What is the point of comparing climate change to a parasite?",
+      "options": [
+        "It shows that climate change moves between species.",
+        "It suggests that nature can recover by itself.",
+        "It shows that animals suffer more than people.",
+        "It pictures a threat expanding while other life declines."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Besides climate change itself, what disturbs the first young interviewee?",
+      "options": [
+        "The limited action she sees from many people.",
+        "The difficulty of explaining climate science to adults.",
+        "The way some plants grow faster in warmer weather.",
+        "The amount of attention given to young campaigners."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does the second young interviewee's view of Earth suggest?",
+      "options": [
+        "People should search for another habitable world.",
+        "Environmental damage matters mainly to future travellers.",
+        "Protecting this planet matters because it cannot simply be replaced.",
+        "The planet will remain safe because it is exceptionally rare."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What two responses had teenagers encountered when raising their fears with adults?",
+      "options": [
+        "Being invited to plan action and then asked to lead it.",
+        "Being reassured and then asked to ignore the problem.",
+        "Being taught the science and then asked to explain it.",
+        "Being ignored or told that fixing the planet was their task."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How does the psychotherapist advise adults to handle climate conversations?",
+      "options": [
+        "Save concerns for one planned, detailed discussion.",
+        "Wait until children have settled their feelings first.",
+        "Make discussion a regular part of family or school life.",
+        "Focus each discussion on finding a complete solution."
+      ]
+    }
+  ],
+  "matching": []
+}

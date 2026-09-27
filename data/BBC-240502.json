@@ -1,0 +1,84 @@
+{
+  "id": "BBC-240502",
+  "title": "Talking at the Table",
+  "audioSrc": "bbc-audio/240502-talking-at-the-table.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "For one family, eating together was often the _____ when everyone could meet and chat.",
+      "section": "NO MORE THAN THREE WORDS — Family meals"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Eating with close family members brought a sense of _____.",
+      "section": "Family meals"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In a different group, someone known as the funny one may instead become the _____.",
+      "section": "Roles within groups"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In the past, children were sometimes seated at a _____ from adults.",
+      "section": "Children at the table"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "One mother's children were not brought up being _____ from adults at meals.",
+      "section": "Children at the table"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does the family-meal example suggest about the children?",
+      "options": [
+        "They find it easier to discuss their day and concerns while eating.",
+        "They usually save their questions until the meal has finished.",
+        "They prefer to discuss difficult matters with people outside the family.",
+        "They talk most freely when the family follows a formal routine."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does the example of moving to another group suggest about family roles?",
+      "options": [
+        "A person's role depends mainly on how long the group has known them.",
+        "A person should adopt the same role in every group they join.",
+        "A person's usual family label may not describe them in every group.",
+        "A person needs another group to discover their true family role."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does this mother's approach differ from the older dinner-table arrangements described?",
+      "options": [
+        "It gives children a separate space to discuss their own concerns.",
+        "It makes age the basis for deciding who may join a discussion.",
+        "It leaves adults to raise difficult subjects on the children's behalf.",
+        "It lets children ask questions across the former adult–child divide."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What can be inferred about the older generation's response to the children's questions?",
+      "options": [
+        "They oppose the children's questions despite enjoying family meals.",
+        "They are largely favourable, although the freedom to ask is unfamiliar.",
+        "They feel comfortable because the children follow old table rules.",
+        "They approve only when the children sit at a separate table."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,158 @@
+{
+  "id": "BBC-240606",
+  "title": "E-rickshaws Driving Away Pollution",
+  "audioSrc": "bbc-audio/240606-e-rickshaws-driving-away-pollution.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "The move to electric vehicles includes workers from _____ groups, as well as richer buyers.",
+      "section": "NO MORE THAN THREE WORDS — Who is changing?"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Small vehicles called _____ are common on Indian roads; more than half now use electricity.",
+      "section": "Who is changing?"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The benefits depend partly on the power supply: over three quarters of India's electricity still comes from _____.",
+      "section": "How green is the change?"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "One key advantage is _____: they suit people's everyday travel needs.",
+      "section": "Why do small vehicles appeal?"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "They are also _____, so more people can manage the purchase price.",
+      "section": "Why do small vehicles appeal?"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Their spread has been helped by a shortage of frequent, high-quality _____.",
+      "section": "Why do small vehicles appeal?"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "A sharp rise in _____ has contributed to dangerous smog in Delhi.",
+      "section": "What problem is the change addressing?"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Children are especially exposed because they are closer to _____.",
+      "section": "What problem is the change addressing?"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "In winter, severe pollution may cause school _____ lasting weeks.",
+      "section": "What problem is the change addressing?"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "By 2030, it wants _____ of vehicles on the road to be electric.",
+      "section": "What is the government aiming for?"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Which tension does the introduction raise about electric vehicles in India?",
+      "options": [
+        "They are affordable for most workers but have gained little public interest.",
+        "They can be costly, yet their use has spread beyond wealthy buyers.",
+        "They are common among wealthy buyers but unavailable to poorer workers.",
+        "They are cheaper than conventional cars but have made little climate impact."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does the figure for India's small two- and three-wheeled vehicles show?",
+      "options": [
+        "Electric models make up a small but rapidly increasing minority.",
+        "Electric models have replaced nearly every petrol-powered vehicle.",
+        "Most electric vehicles there are larger private cars.",
+        "Electric models now account for a majority of these small vehicles."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What follows from the discussion of electricity generation?",
+      "options": [
+        "An EV's environmental value also depends on how its power is produced.",
+        "An EV offers no environmental advantage until all coal use has ended.",
+        "The type of power station matters less than the vehicle's purchase price.",
+        "Coal-generated power is the main reason small vehicles became popular."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why did two- and three-wheelers become widespread, according to the climate specialist?",
+      "options": [
+        "They replaced an established metro network whose services became costly.",
+        "They met demand created by a sudden ban on conventional cars.",
+        "They offered a practical response to inadequate frequent public transport.",
+        "They were introduced mainly to support a new government funding plan."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What different roles do electric scooters and petrol cars have in the Delhi discussion?",
+      "options": [
+        "Scooters worsen the city's smog, while petrol cars fill a transport gap.",
+        "Both are presented chiefly as solutions to weak public transport.",
+        "Both are described chiefly as causes of the same health problem.",
+        "Scooters can fill a travel gap, while petrol-car growth has increased smog."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is a reasonable implication of the explanation about children and exhaust pipes?",
+      "options": [
+        "Children are less affected because they spend less time on the road.",
+        "Reducing traffic pollution could particularly benefit children.",
+        "School closures protect children from every source of air pollution.",
+        "Adults are exposed to more exhaust because they are taller."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the interviewer regard closing schools during bad pollution?",
+      "options": [
+        "As an effective long-term substitute for changing transport.",
+        "As a costly measure best replaced by improvements to school buildings.",
+        "As a troubling response that does not solve the pollution itself.",
+        "As a sign that the main pollution sources are inside schools."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What role does the funding play in the government's transport plan?",
+      "options": [
+        "It uses public investment to encourage the switch to electric vehicles.",
+        "It expects every road vehicle to be electric before 2030.",
+        "It plans to spend the entire sum on closing polluted schools.",
+        "It has already achieved its target through voluntary purchases alone."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,158 @@
+{
+  "id": "BBC-240613",
+  "title": "How Names Can Tell Painful Stories",
+  "audioSrc": "bbc-audio/240613-how-names-can-tell-painful-stories.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A name is closely connected to a person's feelings and _____.",
+      "section": "NO MORE THAN THREE WORDS — Names, identity and history"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Some people consider a change because their name recalls _____ in the past.",
+      "section": "Names, identity and history"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In Christianity, many names carry a _____.",
+      "section": "A name inherited through religion and empire"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The missionary after whom the bishop was named set up several _____ in South India.",
+      "section": "A name inherited through religion and empire"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Despite his good aims, his _____ with colonial rulers gives the name a difficult history.",
+      "section": "A name inherited through religion and empire"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Names in India can indicate a person's _____.",
+      "section": "A name inherited through religion and empire"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Conversion to Christianity and new names gave some families greater _____ from social discrimination.",
+      "section": "Names as responses to inequality"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The Beckford surname carries a family history of _____ in Jamaica.",
+      "section": "Names as responses to inequality"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The professor admires biblical figures who challenge _____.",
+      "section": "Names as responses to inequality"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "For his own name, however, no biblical choice really _____ with him.",
+      "section": "Names as responses to inequality"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What contrast about personal names introduces the discussion?",
+      "options": [
+        "They shape how people see themselves, although parents usually choose them.",
+        "They matter mainly in childhood, although adults continue to use them.",
+        "They reflect family history, although most people select them as adults.",
+        "They express religious beliefs, although families may later reject them."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How does the discussion broaden the reasons for changing a birth name?",
+      "options": [
+        "It shifts from cultural pronunciation to difficulties with legal records.",
+        "It shifts from simple dislike to painful connections with past unfairness.",
+        "It shifts from family pressure to a desire for religious recognition.",
+        "It shifts from social standing to a preference for shorter names."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What makes the missionary's legacy difficult for the bishop to carry?",
+      "options": [
+        "His schools were opened only after colonial rule ended.",
+        "His religious aims prevented him from helping local children.",
+        "His family name was adopted without the bishop's knowledge.",
+        "His educational work was tied to support for colonial power."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What can be inferred about discussing the British Empire's role in India?",
+      "options": [
+        "Family names provide a complete record of colonial events.",
+        "The missionaries' schools settle the question of the empire's value.",
+        "A fair assessment should consider both educational work and colonial harm.",
+        "The empire's influence ended when people changed religion."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How did taking Christian names help some low-status Indians?",
+      "options": [
+        "It made their original names easier for others to pronounce.",
+        "It allowed them to claim a higher position within the empire.",
+        "It offered a way to avoid discrimination linked to social status.",
+        "It preserved the names used by earlier generations of their family."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What broader point does the Beckford surname illustrate?",
+      "options": [
+        "A surname can reveal exactly where an ancestor was born.",
+        "A surname can show whether a person shares an ancestor's beliefs.",
+        "A surname can lose its historical meaning within one generation.",
+        "A surname can carry a painful past into later generations."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What quality in biblical figures influenced the name chosen for the professor's son?",
+      "options": [
+        "Their readiness to confront injustice and powerful people.",
+        "Their success in gaining authority within government.",
+        "Their ability to avoid upsetting people with different views.",
+        "Their willingness to leave their inherited names behind."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What might the final reflection imply for someone who keeps a name with a painful history?",
+      "options": [
+        "Its religious origin determines how others will judge the person.",
+        "The person may still give the name significance through their actions.",
+        "Its historical meaning should always lead to a change.",
+        "The person's family must decide how the name is used."
+      ]
+    }
+  ],
+  "matching": []
+}

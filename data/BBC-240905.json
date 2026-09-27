@@ -1,0 +1,169 @@
+{
+  "id": "BBC-240905",
+  "title": "Less Salt, Better Health",
+  "audioSrc": "bbc-audio/240905-less-salt-better-health.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Salt brings out the _____ of ingredients.",
+      "section": "NO MORE THAN THREE WORDS — Why people use salt"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The body needs at least 1g of salt daily for _____.",
+      "section": "How much is needed"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Average daily salt intake is _____.",
+      "section": "A long-standing food practice in Kazakhstan"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Salting meat for long journeys helped prevent food _____.",
+      "section": "A long-standing food practice in Kazakhstan"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The old salting practice also affected _____, not only meat.",
+      "section": "A long-standing food practice in Kazakhstan"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "It helped people have enough to eat in the long _____.",
+      "section": "A long-standing food practice in Kazakhstan"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The body responds by _____.",
+      "section": "Possible effects of too much salt"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "High blood pressure may eventually lead to _____.",
+      "section": "Possible effects of too much salt"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "British laws require _____ to reduce the salt they use.",
+      "section": "Responses to high salt intake"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "For flavour without added salt, people can try _____.",
+      "section": "Responses to high salt intake"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What tension does the opening discussion establish about eating salt?",
+      "options": [
+        "It is useful for flavour, but its health effects depend mainly on which food contains it.",
+        "The body needs some, but many people consume amounts that raise health risks.",
+        "It helps the body survive, but a teaspoon is required every day.",
+        "It improves ingredients, but its main danger comes from traditional preserved foods."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does the figure given for Kazakhstan show in relation to the WHO guidance quoted in the programme?",
+      "options": [
+        "The average intake there is only slightly above the guidance.",
+        "The average intake there is close to the amount needed for survival.",
+        "The average intake there is roughly twice the British recommendation.",
+        "The average intake there is more than three times the amount in the WHO guidance."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why did salting meat become part of the tradition described by the Kazakh interviewee?",
+      "options": [
+        "People had to carry meat while travelling for long periods.",
+        "People needed meat to taste stronger than dairy products.",
+        "People wanted to replace the milk products they carried.",
+        "People had begun to buy more processed food while travelling."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What contrast marks the shift from the historical discussion to modern health concerns?",
+      "options": [
+        "Traditional uses of salt explain why modern processed food is generally safe.",
+        "A useful preservation method should determine today's daily intake target.",
+        "Salt has had practical value, while high intake today remains a health concern.",
+        "Health risks mean the historical value of salting food should be dismissed."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "According to the explanation of the body's response, why can excess salt increase strain on the heart?",
+      "options": [
+        "The body releases water, so the heart must replace lost liquid.",
+        "Salt directly damages the heart before blood pressure changes.",
+        "The body stores less liquid, so blood pressure rises quickly.",
+        "The body keeps more water, so the heart pumps more liquid."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How do the Australian and British responses described in the programme differ?",
+      "options": [
+        "Australia restricts food companies; Britain leaves the daily amount for individual consumers to decide.",
+        "Australia lowered its daily guidance; Britain also required companies to reduce salt in food.",
+        "Australia recommends 5g per day; Britain sets a higher target of 6g for its population.",
+        "Australia limits salt in dairy products; Britain directs its restrictions chiefly at traditionally preserved meat."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is the nutrition professor's main objection to debating whether the limit should be 5g or 6g?",
+      "options": [
+        "It can distract from widespread high intake and its early health consequences.",
+        "It gives food companies too little time to change their products.",
+        "It overlooks the fact that 1g is the minimum needed for survival.",
+        "It assumes every country has exactly the same average intake."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "A country has a strong tradition of using salt to preserve food. Which response would best fit the professor's view?",
+      "options": [
+        "Keep the traditional intake because preservation has a useful history.",
+        "Set the same exact reduction method used by every other country.",
+        "Design a way to address high intake that suits the local culture.",
+        "Focus first on settling whether 5g or 6g is the correct number."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What practical purpose do herbs and spices serve in the final advice?",
+      "options": [
+        "They preserve food for longer without changing its taste.",
+        "They offer a way to add flavour when using less salt.",
+        "They help the body remove water retained after a salty meal.",
+        "They make processed food meet the British legal standard."
+      ]
+    }
+  ],
+  "matching": []
+}

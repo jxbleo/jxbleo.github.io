@@ -1,0 +1,146 @@
+{
+  "id": "BBC-240620",
+  "title": "Building a Better World with Wood",
+  "audioSrc": "bbc-audio/240620-building-a-better-world-with-wood.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Earlier British buildings commonly used _____; modern builders have largely turned to manufactured materials.",
+      "section": "NO MORE THAN THREE WORDS — A change in building materials"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "In wooden schools, children show greater _____, alongside other physical and emotional benefits.",
+      "section": "Possible health benefits"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Rooms made of wood or other natural materials, or with a view of nature, are linked to better patient _____.",
+      "section": "Possible health benefits"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Wood captures _____, which helps in the fight against climate change.",
+      "section": "A climate argument"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The architect names bamboo, _____ and flax as growable materials considered for construction.",
+      "section": "Materials and uses"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The architect's examples range from tall buildings to _____ and schools.",
+      "section": "Materials and uses"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Layers of pine are laid _____ and then glued together.",
+      "section": "Making plywood"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Tests indicate that the resulting plywood has strength _____ that of steel.",
+      "section": "Making plywood"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How has the choice of building materials in Britain changed over time?",
+      "options": [
+        "Wood became common only after concrete and steel were introduced.",
+        "Brick was traditionally dominant, but timber is now replacing it.",
+        "Timber was widely used before manufactured materials took over much of its role.",
+        "Natural materials remained dominant despite the arrival of concrete and steel."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What broader conclusion does the architect's school example support?",
+      "options": [
+        "The materials in a learning space may affect children's wellbeing and learning.",
+        "The view from a classroom is the main influence on children's heart rates.",
+        "The effects depend mainly on how old the school buildings are.",
+        "The physical benefits in wooden schools are stronger than the learning benefits."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why are some governments interested in replacing concrete and steel with wood-based materials?",
+      "options": [
+        "The raw materials needed for concrete and steel are becoming scarce.",
+        "Finished concrete buildings need more maintenance than wooden ones.",
+        "Concrete and steel create a less comfortable indoor environment.",
+        "Making concrete and steel has a high carbon burden."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What makes bamboo, hemp and flax relevant to the architect's proposal?",
+      "options": [
+        "They have already replaced steel in several types of building.",
+        "They are materials that can be grown and considered for construction.",
+        "They are processed in exactly the same way as layers of pine.",
+        "They are useful mainly for making rope and strong cloth."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does the architect's list of skyscrapers, housing and schools illustrate?",
+      "options": [
+        "Wood is most suitable for buildings where children spend time.",
+        "Tall buildings are easier to make from wood than homes are.",
+        "Careful use of wood could suit several different kinds of building.",
+        "Growable materials have already replaced steel in these buildings."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Which condition does the architect place on the wider use of growable materials?",
+      "options": [
+        "Builders should combine them with steel in tall structures.",
+        "Governments should secure their supply before changing designs.",
+        "Designers should restrict them to buildings made mainly of wood.",
+        "The materials need to be used with careful judgement."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is the point of comparing plywood with steel?",
+      "options": [
+        "The comparison challenges the idea that wood-based construction must lack strength.",
+        "The comparison shows that plywood has a similar weight to steel.",
+        "The comparison suggests wooden buildings need fewer safety checks.",
+        "The comparison shows pine performs better than other kinds of wood."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What do the buildings in Norway and Milwaukee demonstrate?",
+      "options": [
+        "Plywood is becoming the preferred material for the world's tallest towers.",
+        "Wood-based material has already been used in substantial tall buildings.",
+        "Both cities have adopted the same design for their wooden towers.",
+        "The two buildings were designed to compare plywood across climates."
+      ]
+    }
+  ],
+  "matching": []
+}

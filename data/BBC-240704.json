@@ -1,0 +1,113 @@
+{
+  "id": "BBC-240704",
+  "title": "What Can We Learn from Toddlers?",
+  "audioSrc": "bbc-audio/240704-what-can-we-learn-from-toddlers.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Toddlers learn to move and make sense of the _____.",
+      "section": "NO MORE THAN THREE WORDS — Early development"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Being unable to do what they want can leave them feeling _____.",
+      "section": "Early development"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "At this stage, a child's _____ begins to develop.",
+      "section": "Early development"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "For everyday care, two- or three-year-olds still rely on _____.",
+      "section": "Early development"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A toddler's self-talk may help reduce _____ in an anxiety-provoking situation.",
+      "section": "How people speak to themselves"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "As people grow up, their inner voice often becomes _____.",
+      "section": "How people speak to themselves"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Adults who feel angry with themselves can imagine speaking to a _____.",
+      "section": "How people speak to themselves"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Adults can learn to treat themselves with greater _____.",
+      "section": "A lesson for adults"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why does the idea of learning from toddlers initially seem surprising?",
+      "options": [
+        "They can explain their feelings more clearly than adults can.",
+        "They still need adults to meet many basic needs.",
+        "They are already able to manage most daily tasks alone.",
+        "They learn mainly by copying adults' spoken advice."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What do the examples of the mitts and the boots show together?",
+      "options": [
+        "Toddlers speak to themselves both to encourage themselves and to acknowledge mistakes.",
+        "Toddlers need an adult to correct each small mistake.",
+        "Toddlers learn to dress by repeating the same task silently.",
+        "Toddlers become anxious whenever clothing is difficult."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does the discussion contrast toddlers' and adults' inner voices?",
+      "options": [
+        "Toddlers' inner voices are private, whereas adults' are usually spoken aloud.",
+        "Toddlers rely on praise from others, whereas adults rely on their own judgment.",
+        "Toddlers' self-talk is usually critical, whereas adults' is encouraging.",
+        "Toddlers' self-talk tends to encourage, whereas adults' may become critical."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "An adult makes a small mistake and begins insulting themselves. Which response best applies Dr Merali's advice?",
+      "options": [
+        "\"I made a mistake; I can learn from it and try again.\"",
+        "Ask a good friend to decide what should be said next.",
+        "Stop thinking about the situation until the anger passes.",
+        "Repeat the mistake aloud to understand its cause."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is learning to get dressed used as an example near the end?",
+      "options": [
+        "It shows why young children often depend on adult care.",
+        "It illustrates how toddlers avoid difficult tasks.",
+        "It shows how toddlers value small achievements.",
+        "It illustrates how toddlers develop their personalities."
+      ]
+    }
+  ],
+  "matching": []
+}

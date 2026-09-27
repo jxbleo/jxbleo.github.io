@@ -1,0 +1,95 @@
+{
+  "id": "BBC-240829",
+  "title": "Chocolate: Meet a Real Willy Wonka",
+  "audioSrc": "bbc-audio/240829-chocolate-meet-a-real-willy-wonka.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Information for new ideas comes from _____ around the world.",
+      "section": "NO MORE THAN THREE WORDS — Developing a new chocolate bar"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The team creates both the product and its _____.",
+      "section": "Developing a new chocolate bar"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A product that sells poorly can teach the team useful _____ about its work.",
+      "section": "Developing a new chocolate bar"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The company starts promoting a new bar when consumer _____ is strong.",
+      "section": "Developing a new chocolate bar"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Blueberry Truffle and the heart-shaped Geisha bar are examples of products that were commercially _____.",
+      "section": "Developing a new chocolate bar"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How does the developer's actual work differ from the imagined job of travelling simply to eat chocolate?",
+      "options": [
+        "She collects customer orders from shops before designing each bar.",
+        "She judges when new ideas should be developed and brought to market.",
+        "She samples finished bars abroad before choosing a factory to produce them.",
+        "She visits international stores to copy their most popular chocolate bars."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What chiefly makes the developer feel proud when a new product is well received?",
+      "options": [
+        "Her opportunity to taste more chocolate than other employees.",
+        "Her success in finding raw materials at a lower cost.",
+        "Her personal decision about when the product should go on sale.",
+        "Her team's work in creating the product and its taste experience."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does the developer compare products that fail with those that sell well?",
+      "options": [
+        "Both can be valuable because an unsuccessful product teaches the team something.",
+        "Both deserve the same advertising because sales cannot reveal their quality.",
+        "Failed products are more valuable because they are easier to develop again.",
+        "Strong-selling products provide more useful feedback than failed ones can."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What order of events is described when demand for a new bar is strong?",
+      "options": [
+        "Shops stock the bar, then the company decides whether to promote it.",
+        "Customers choose the bar, then the team begins developing it.",
+        "The company promotes the bar before it becomes available in shops.",
+        "The company promotes the bar only after customers reject its first version."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What do the examples of Blueberry Truffle and the Geisha bar show about the developer's work?",
+      "options": [
+        "New chocolate bars are generally designed as pairs of products.",
+        "She has produced notable hits, although not every new bar succeeds.",
+        "Fruit flavours and unusual shapes now guide most of her team's designs.",
+        "These bars succeeded chiefly because of the way they were packaged."
+      ]
+    }
+  ],
+  "matching": []
+}

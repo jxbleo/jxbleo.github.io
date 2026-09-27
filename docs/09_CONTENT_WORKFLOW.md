@@ -214,6 +214,16 @@ node scripts/import-bbc-teacher-drafts.js --audio-dir "/absolute/path/to/audio" 
   "/absolute/path/to/BBC-YYMMDD-teacher-review.md"
 ```
 
+Reviewed drafts may use `(1) _____`, inline `1. _____`, or a numbered note
+line with a blank later in the sentence; bold Markdown around the marker is
+accepted. Reduced worksheets require a non-empty `Source Sufficiency Note`.
+For fewer than ten notes, preserve the reviewed direct/controlled mix rather
+than requiring six direct answers regardless of the total. At least one direct
+answer and two to three controlled answers remain required, including both a
+word-form change and a lexical/semantic paraphrase. Ten-note worksheets retain
+the seven-direct-answer minimum. The first public note heading carries the
+three-word limit so it survives both the runtime and PDF conversion.
+
 The importer accepts contiguous Note Completion questions starting at 1 and
 four-option Multiple Choice questions starting at 11, with fewer than ten in
 either part when the reviewed source-sufficiency note justifies it. A runtime

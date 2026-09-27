@@ -1,0 +1,129 @@
+{
+  "id": "BBC-240530",
+  "title": "Too Old to Have a Baby?",
+  "audioSrc": "bbc-audio/240530-too-old-to-have-a-baby.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Overall, women today are having _____.",
+      "section": "NO MORE THAN THREE WORDS — Changing patterns of parenthood"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Two factors linked to later motherhood are better access to _____.",
+      "section": "Changing patterns of parenthood"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Having a baby later in life may also involve _____.",
+      "section": "Changing patterns of parenthood"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In many countries, women now have their first baby when they are _____.",
+      "section": "Age and attitudes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A former label for mothers over 35 was considered _____ by many people.",
+      "section": "Age and attitudes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Compared with women, men may remain _____ for longer.",
+      "section": "Age and attitudes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Some young women in the West say they intend to have _____.",
+      "section": "Different plans"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What change does the researcher describe across recent decades?",
+      "options": [
+        "First births have shifted from women's thirties to much younger ages.",
+        "Having a first child after 30 has become common in many countries.",
+        "Women in every country now begin motherhood after turning 30.",
+        "First births have become less frequent only among women in their thirties."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What distinction does the presenter make between the former label for mothers over 35 and social attitudes?",
+      "options": [
+        "It was replaced because most mothers now start having children before 35.",
+        "It remains in common use although social attitudes have become more positive.",
+        "Its meaning changed when women started having children in their thirties.",
+        "Its use has ended, while negative attitudes towards older mothers can remain."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why is the older male celebrity's later child mentioned?",
+      "options": [
+        "To illustrate men's ability to father children beyond women's usual fertile years.",
+        "To show that older fathers usually have more children than younger fathers do.",
+        "To explain why women's natural fertility begins to decline during their forties.",
+        "To suggest that becoming a father later is common among male celebrities."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "According to the researcher, what may contribute to praise for an older father?",
+      "options": [
+        "People may admire his willingness to raise a child without a partner.",
+        "People may assume he has chosen to delay his career for parenthood.",
+        "People may notice that he has a considerably younger partner.",
+        "People may believe he has avoided the health risks of later parenthood."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How do the reactions in the researcher's comparison differ?",
+      "options": [
+        "Both parents tend to receive praise, but the father receives it more publicly.",
+        "The older father may be congratulated, while the older mother may cause discomfort.",
+        "The older father may cause concern, while the older mother may be congratulated.",
+        "Both parents may make people uncomfortable, though for different reasons."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is the researcher's attitude to the difference in reactions?",
+      "options": [
+        "She regards it as an expected result of medical differences.",
+        "She thinks it is mainly a question of the parents' exact ages.",
+        "She treats it as a reaction limited to famous parents.",
+        "She presents it as a problem involving gender."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What can be concluded from the final comparison of young women in the West and women in more traditional countries?",
+      "options": [
+        "Views about having children can differ substantially between social settings.",
+        "Young women in both settings are increasingly refusing motherhood.",
+        "Women in traditional settings generally become mothers at younger ages.",
+        "Western women tend to want children only after establishing careers."
+      ]
+    }
+  ],
+  "matching": []
+}

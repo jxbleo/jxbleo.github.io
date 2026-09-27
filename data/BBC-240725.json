@@ -1,0 +1,135 @@
+{
+  "id": "BBC-240725",
+  "title": "Why Read Books, Not Screens?",
+  "audioSrc": "bbc-audio/240725-why-read-books-not-screens.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A person may enjoy books but still read on screens most days because of the availability of _____.",
+      "section": "NO MORE THAN THREE WORDS — Why screens are common"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Among the qualities reading may bring are creativity, intelligence and _____.",
+      "section": "Reading and children's development"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Reading for enjoyment is one factor linked to children becoming _____ later in life.",
+      "section": "Reading and children's development"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Researchers have found that children's deep-reading skills develop better when they read from _____.",
+      "section": "Reading and children's development"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Deep reading uses more of the _____ than reading at a surface level.",
+      "section": "How people read"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A high volume of material can increase the tendency towards _____.",
+      "section": "How people read"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Reading on screens tends to encourage a _____ understanding, focused on what is easy to grasp.",
+      "section": "The effect of screens"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The heavy flow of words comes with pings and _____.",
+      "section": "The effect of screens"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What tension does the opening discussion illustrate?",
+      "options": [
+        "Enjoying books can lead someone to avoid digital reading most days.",
+        "Enjoying books can coexist with frequent reading from screens.",
+        "Frequent screen use shows that printed books have lost their appeal.",
+        "Frequent screen use is mainly a deliberate choice to protect one's eyes."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What is the main point of Cowell's comments about reading?",
+      "options": [
+        "Its chief benefit is to make children better at school examinations.",
+        "Its value lies chiefly in replacing other forms of entertainment.",
+        "Its benefits are limited to creativity and intelligence in childhood.",
+        "It may support personal qualities and later-life advantages."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why does the discussion distinguish deep reading from reading in general?",
+      "options": [
+        "Some of reading's benefits depend on understanding meaning beyond the surface.",
+        "Children can read deeply only after learning about digital information.",
+        "Deep reading is mainly a way of increasing the number of words read.",
+        "General reading is valuable only when it leads to economic success."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "According to Wolf, what separates deep reading from surface reading?",
+      "options": [
+        "Deep reading gathers information more quickly than surface reading.",
+        "Deep reading depends on knowing the author's intended answer.",
+        "Deep reading engages more mental processes to interpret the text.",
+        "Deep reading reduces the need to make judgments about the text."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Which view best reflects Wolf's point about the amount people read?",
+      "options": [
+        "The volume matters most because it shows whether readers are literate.",
+        "The way people read matters more, while high volume may encourage skimming.",
+        "The subject matters most because some texts contain fewer distractions.",
+        "The amount matters less only when the material is read from books."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What contrast does the discussion draw between screens and books?",
+      "options": [
+        "Screens tend to encourage surface reading; books can support deeper interpretation.",
+        "Screens prevent all critical thought; books guarantee it in every reader.",
+        "Screens mainly develop empathy; books mainly provide quick factual information.",
+        "Screens and books develop the same skills when readers use them for equal periods."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the discussion explain why screens can discourage deep reading?",
+      "options": [
+        "Their physical light makes readers forget the meaning of words.",
+        "Their information arrives too slowly for readers to stay engaged.",
+        "Their text lacks the comparisons needed for careful interpretation.",
+        "Their large flow of words and alerts encourages rapid overview reading."
+      ]
+    }
+  ],
+  "matching": []
+}

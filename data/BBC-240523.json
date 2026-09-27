@@ -1,0 +1,140 @@
+{
+  "id": "BBC-240523",
+  "title": "How Bubble Tea Got Its Bubbles",
+  "audioSrc": "bbc-audio/240523-how-bubble-tea-got-its-bubbles.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A familiar black tea drink contains a _____.",
+      "section": "NO MORE THAN THREE WORDS — Changing tea habits in Britain"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Bubble tea often contains milk and _____, along with tapioca balls.",
+      "section": "The drink and its origins"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The drink was first invented in _____.",
+      "section": "The drink and its origins"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "A visit to _____ introduced the inventor to iced milk tea.",
+      "section": "The idea behind the drink"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Back in Taiwan, he found tapioca balls at a _____.",
+      "section": "The idea behind the drink"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Media attention accompanied the drink's rapid rise in _____.",
+      "section": "Its reception"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "After reaching nearby countries, bubble tea spread _____.",
+      "section": "Its reception"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What broader change in tea drinking does the British example illustrate?",
+      "options": [
+        "New teas have largely displaced black tea in Britain.",
+        "Traditional tea now tends to be served without milk.",
+        "New varieties have gained ground alongside a familiar style.",
+        "Cold tea is preferred mainly on hot summer days."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which aspect of bubble tea can customers choose for themselves?",
+      "options": [
+        "The extra flavours mixed into it.",
+        "The starch used for the balls.",
+        "The firmness of the tapioca balls.",
+        "The original strength of the tea."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What are the \"bubbles\" in bubble tea?",
+      "options": [
+        "Air pockets produced when milk is shaken.",
+        "Pieces of ice that soften in the drink.",
+        "Drops of flavouring mixed into the tea.",
+        "Chewy balls made from tapioca starch."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why can bubble tea take on different added flavours?",
+      "options": [
+        "Iced milk tea loses its flavour in warm weather.",
+        "Tapioca has little taste of its own.",
+        "The balls are sourced from local markets.",
+        "Tea tastes different after it is chilled."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What helped turn the new drink into a wider tea trend?",
+      "options": [
+        "Its inventor opened tea shops in neighbouring countries.",
+        "Its range of flavours drew immediate media interest.",
+        "Well-known visitors began coming to the inventor's shop.",
+        "Local markets began selling the drink in large quantities."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does the inventor's mention of his other products suggest about bubble tea's rise?",
+      "options": [
+        "His other products had failed before bubble tea appeared.",
+        "He regarded this product as certain to lead the range.",
+        "He had designed the range to attract media attention.",
+        "He did not see this product's success as guaranteed."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "According to the discussion, what helped the drink gain fans beyond Taiwan?",
+      "options": [
+        "People enjoyed its smooth, chewy quality after trying it.",
+        "People followed celebrity visits to shops in each country.",
+        "People valued its newness more than its taste.",
+        "People chiefly wanted its range of added flavours."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does the suggestion about Britain imply?",
+      "options": [
+        "Familiar tea could recover its appeal without any change.",
+        "A fresh version of a familiar drink could appeal there.",
+        "British drinkers already favour the Taiwanese version.",
+        "Returning to an older recipe could renew interest."
+      ]
+    }
+  ],
+  "matching": []
+}
