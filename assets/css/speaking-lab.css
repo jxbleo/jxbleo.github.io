@@ -657,6 +657,18 @@ button.speaking-report-ledger-row .speaking-report-ledger-value { padding-right:
 .speaking-dialog::backdrop { background: rgba(24,37,44,.38); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
 .speaking-dialog form, #invitation-dialog-content, .speaking-leave-dialog-body { padding: clamp(22px,4vw,34px); }
 .speaking-leave-dialog { width: min(500px, calc(100vw - 24px)); }
+.speaking-leave-dialog { width: min(320px,calc(100vw - 48px)); max-height: none; overflow: hidden; border: 1px solid rgba(255,255,255,.88); border-radius: 22px; color: #18352f; background: rgba(247,249,248,.94); box-shadow: 0 22px 64px rgba(20,54,47,.24),0 2px 8px rgba(20,54,47,.08); text-align: center; -webkit-backdrop-filter: blur(32px) saturate(165%); backdrop-filter: blur(32px) saturate(165%); animation: speaking-leave-materialize 260ms cubic-bezier(.22,1,.36,1); }
+.speaking-leave-dialog::backdrop { background: rgba(17,38,34,.3); -webkit-backdrop-filter: blur(8px) saturate(118%); backdrop-filter: blur(8px) saturate(118%); }
+.speaking-leave-dialog-body { padding: 24px 22px 0; }
+.speaking-leave-dialog .speaking-dialog-head { margin: 0; }
+.speaking-leave-dialog .speaking-dialog-head .eyebrow { color: #13766d; }
+.speaking-leave-dialog .speaking-dialog-head h2 { font-size: 1.2rem; letter-spacing: -.02em; }
+.speaking-leave-dialog .speaking-dialog-head > p:not(.eyebrow) { max-width: 270px; margin: 8px auto 20px; font-size: .88rem; }
+.speaking-leave-dialog .speaking-dialog-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0; margin: 0; border-top: .5px solid rgba(24,49,43,.16); }
+.speaking-leave-dialog .speaking-dialog-actions button { min-height: 48px; padding: 8px; border: 0; border-radius: 0; color: #13766d; background: transparent; box-shadow: none; font-size: .88rem; font-weight: 700; }
+.speaking-leave-dialog .speaking-dialog-actions button + button { border-left: .5px solid rgba(24,49,43,.16); }
+.speaking-leave-dialog .speaking-dialog-actions button:focus-visible { outline: 3px solid rgba(19,118,109,.24); outline-offset: -4px; }
+@keyframes speaking-leave-materialize { from { opacity: .72; transform: scale(.965); } to { opacity: 1; transform: scale(1); } }
 .speaking-dialog-head { margin-bottom: 22px; }
 .speaking-dialog-head .eyebrow { margin: 0 0 7px; color: var(--sl-blue-deep); font-size: .64rem; }
 .speaking-dialog-head h2 { margin: 0; font-size: clamp(1.55rem,4vw,2.15rem); line-height: 1.1; letter-spacing: -.04em; }
@@ -1442,3 +1454,39 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
     .speaking-set-detail .speaking-set-section-head .eyebrow { letter-spacing: 0; }
     .speaking-set-detail .speaking-set-text-size button { width: 30px; }
 }
+
+/* Private report recording playback. */
+.speaking-transcript-toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.speaking-report-audio { display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0; max-width:100%; }
+.speaking-report-audio audio { width:280px; max-width:100%; }
+.speaking-report-audio audio[hidden] { display:none; }
+.speaking-report-play { white-space:nowrap; min-height:44px; }
+.speaking-report-audio-status { font-size:.85rem; }
+
+/* Keep IR disclosure and playback in one row. */
+.speaking-ir-answer-toolbar { position:relative; display:block; padding-right:0; border-top:1px solid rgba(74,95,106,.10); }
+.speaking-ir-answer-toolbar > details { display:block; width:100%; min-width:0; border-top:0; }
+.speaking-ir-answer-toolbar .speaking-ir-answer summary { padding-right:76px; }
+.speaking-ir-answer-toolbar .speaking-ir-answer-chevron { margin-left:0; }
+.speaking-ir-answer-toolbar > .speaking-report-audio-compact { position:absolute; top:6px; right:20px; display:block; padding:0; }
+.speaking-ir-answer-toolbar .speaking-report-audio-compact .speaking-report-play { display:grid; width:36px; height:36px; min-height:36px; padding:0; place-items:center; border-radius:50%; font-size:13px; }
+.speaking-ir-answer-toolbar .speaking-report-audio-compact audio { display:none; }
+.speaking-ir-answer-toolbar .speaking-report-audio-compact .speaking-report-audio-status:not(:empty) { position:absolute; top:40px; right:0; z-index:2; width:max-content; max-width:min(240px,70vw); padding:6px 9px; border-radius:9px; background:#fff; box-shadow:0 4px 16px rgba(35,67,84,.14); text-align:right; }
+@media(max-width:540px) { .speaking-ir-answer-toolbar .speaking-ir-answer summary { padding-right:66px; } .speaking-ir-answer-toolbar > .speaking-report-audio-compact { right:14px; } }
+
+.speaking-retry-dialog { width: min(500px,calc(100vw - 28px)); }
+.speaking-retry-status { text-align: center; }
+.speaking-retry-symbol { display: grid; width: 54px; height: 54px; place-items: center; margin: 0 auto 17px; border-radius: 18px; color: #176143; background: rgba(8,124,240,.08); font-size: 1.55rem; font-weight: 800; }
+.speaking-retry-symbol .speaking-upload-spinner { width: 27px; height: 27px; margin: 0; }
+.speaking-retry-symbol.is-ready { color: #176143; background: rgba(34,150,102,.12); }
+.speaking-retry-symbol.is-error { color: #b74435; background: rgba(183,68,53,.1); }
+.speaking-retry-status .eyebrow { margin: 0 0 7px; color: #6859aa; font-size: .62rem; }
+.speaking-retry-status h2 { margin: 0; color: #243740; font-size: clamp(1.45rem,4vw,1.9rem); line-height: 1.15; letter-spacing: -.035em; }
+.speaking-retry-status > p:not(.eyebrow) { max-width: 370px; margin: 10px auto 0; color: var(--sl-muted); font-size: .84rem; line-height: 1.55; }
+.speaking-retry-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; margin: 26px 0 0; padding: 0; list-style: none; counter-reset: retry-step; }
+.speaking-retry-steps li { min-width: 0; padding: 10px 6px; border-radius: 11px; color: #718087; background: rgba(91,112,124,.07); font-size: .7rem; font-weight: 700; line-height: 1.3; }
+.speaking-retry-steps li.is-current { color: #075eaf; background: rgba(8,124,240,.12); }
+.speaking-retry-steps li.is-done { color: #176143; background: rgba(34,150,102,.11); }
+.speaking-retry-dialog .speaking-dialog-actions { justify-content: center; }
+.speaking-retry-dialog .speaking-dialog-actions button { min-width: 160px; min-height: 44px; }
+@media (prefers-reduced-motion: reduce) { .speaking-retry-symbol .speaking-upload-spinner { animation: none; border-top-color: var(--sl-blue); } }

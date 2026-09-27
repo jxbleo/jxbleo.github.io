@@ -41,6 +41,8 @@
     var transcriptionDialogClose = document.getElementById('discussion-transcription-close');
     var responseDialog = document.getElementById('individual-response-dialog');
     var responseDialogContent = document.getElementById('individual-response-dialog-content');
+    var responseRetryDialog = document.getElementById('individual-response-retry-dialog');
+    var responseRetryContent = document.getElementById('individual-response-retry-content');
     var invitationDialog = document.getElementById('invitation-dialog');
     var invitationDialogContent = document.getElementById('invitation-dialog-content');
     var selectedId = new URLSearchParams(window.location.search).get('discussion') || '';
@@ -107,6 +109,8 @@
     var responseBlob = null;
     var responseUploadOperationId = '';
     var responseUploadInProgress = false;
+    var responseRetryId = '';
+    var responseRetryPhase = '';
     var responseSubmissionRetry = null;
     var responseWakeLock = window.MrCatScreenWakeLock.create();
     var responseCaptureState = 'idle';
@@ -1557,7 +1561,7 @@
         var transcript = (Array.isArray(report.transcript) ? report.transcript : []).map(function (line) { return String(line.text || '').trim(); }).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
         var wordCount = (transcript.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu) || []).length;
         var waitingLabel = response.analysis_status === 'ready' && response.report ? 'Ready' : response.recording_status === 'uploading' ? 'Uploading…' : response.analysis_status === 'failed' || response.analysis_status === 'not_ready' ? 'Waiting to retry' : 'Preparing…';
-        var answer = pending ? '<div class="speaking-ir-answer is-pending" role="status"><div class="speaking-ir-answer-pending"><strong>Your answer</strong><span class="speaking-ir-word-count">' + waitingLabel + '</span></div></div>' : '<details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><div class="speaking-ir-answer-manuscript"><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p><p class="speaking-ir-answer-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</p></div></details>';
+        var answer = pending ? '<div class="speaking-ir-answer is-pending" role="status"><div class="speaking-ir-answer-pending"><strong>Your answer</strong><span class="speaking-ir-word-count">' + waitingLabel + '</span></div></div>' : '<div class="speaking-transcript-toolbar speaking-ir-answer-toolbar"><details class="speaking-ir-transcriptions speaking-ir-answer" id="response-answer"><summary><strong>Your answer</strong><span class="speaking-ir-answer-chevron" aria-hidden="true"></span></summary><div class="speaking-ir-answer-manuscript"><p class="speaking-ir-transcription-text" lang="en">' + esc(transcript || 'No transcription available.') + '</p><p class="speaking-ir-answer-word-count">' + wordCount + (wordCount === 1 ? ' word' : ' words') + '</p></div></details>' + (response.report_id ? window.MrCatSpeakingReportAudio.markup(response.report_id, true) : '') + '</div>';
         return '<header class="speaking-report-card speaking-ir-session-card"><div class="speaking-ir-session-heading"><h2 class="eyebrow">' + esc(setLabel) + '</h2><label class="speaking-ir-date-picker"><span class="sr-only">Recording date</span><span class="speaking-ir-date-measure" id="response-history-measure" aria-hidden="true"></span><select id="response-history-date" aria-controls="response-report-content"' + (pending ? ' disabled' : '') + '>' + (pending ? '<option>' + esc(individualResponseDateLabel(response)) + '</option>' : responseHistoryOptions(response)) + '</select></label></div><p class="speaking-ir-session-question">' + esc(question.text || '') + '</p><p id="response-history-notice" class="speaking-ir-history-notice" role="status" hidden></p>' + answer + '</header>';
     }
     function renderIndividualResponseDomain(key, label, report) {
@@ -2049,6 +2053,7 @@
         }).catch(function () { /* The report remains unread on the server and will reappear safely. */ });
     }
     function stopSpeakingWaiting() {
+        if (responseRetryDialog && responseRetryDialog.open) responseRetryDialog.close();
         responseSubmissionRetry = null;
         responseReportHistory = null;
         responseReportSwitch += 1;
@@ -2057,6 +2062,46 @@
         pollTimer = 0;
         if (speakingWaiting) speakingWaiting.destroy();
         speakingWaiting = null;
+    }
+    function showIndividualResponseRetry(phase, message) {
+        var restoreFocus = responseRetryDialog.open && responseRetryDialog.contains(document.activeElement);
+        responseRetryPhase = phase;
+        var requesting = phase === 'requesting';
+        var working = requesting || phase === 'queued';
+        var ready = phase === 'ready';
+        var title = requesting ? 'Starting analysis…' : phase === 'queued' ? 'Analysis restarted' : ready ? 'Your report is ready' : phase === 'failed' ? 'Analysis stopped again' : 'Could not confirm the retry';
+        var copy = message || (requesting ? 'Sending one retry request for your saved recording.' : phase === 'queued' ? 'Your recording is safe. The report is being prepared; you can return later.' : ready ? 'Your updated report is ready to open.' : 'Check the response status before retrying. Your recording is safe.');
+        responseRetryContent.innerHTML = '<div class="speaking-retry-status" role="status" aria-live="polite">' +
+            '<span class="speaking-retry-symbol ' + (ready ? 'is-ready' : phase === 'failed' || phase === 'error' ? 'is-error' : '') + '" aria-hidden="true">' + (working ? '<span class="speaking-upload-spinner"></span>' : ready ? '✓' : '!') + '</span>' +
+            '<p class="eyebrow accent">INDIVIDUAL RESPONSE</p><h2 id="individual-response-retry-title">' + esc(title) + '</h2><p>' + esc(copy) + '</p>' +
+            '<ol class="speaking-retry-steps"><li class="' + (requesting ? 'is-current' : 'is-done') + '">Retry request</li><li class="' + (phase === 'queued' ? 'is-current' : ready ? 'is-done' : '') + '">Report analysis</li><li class="' + (ready ? 'is-done' : '') + '">Report ready</li></ol></div>' +
+            '<div class="speaking-dialog-actions"><button class="' + (ready ? 'primary-button' : 'outline-button') + '" type="button" id="individual-response-retry-close">' + (requesting ? 'Continue in background' : ready ? 'View report' : 'Done') + '</button></div>';
+        var close = document.getElementById('individual-response-retry-close');
+        close.addEventListener('click', function () { responseRetryDialog.close(); });
+        if (!responseRetryDialog.open) responseRetryDialog.showModal();
+        if (restoreFocus) close.focus();
+    }
+    function startIndividualResponseRetry(item) {
+        var responseId = item.response_session_id;
+        responseRetryId = responseId;
+        showIndividualResponseRetry('requesting');
+        return call('startIndividualResponseAnalysis', { response_session_id: responseId, operation_id: 'analysis-' + responseId }).then(function (result) {
+            if (responseRetryDialog.open && responseRetryId === responseId) showIndividualResponseRetry('queued');
+            return result;
+        }).catch(function (error) {
+            // The request can time out after the server has already queued the job.
+            return call('getIndividualResponse', { response_session_id: responseId }).then(function (result) {
+                var current = result.response;
+                if (current && ['queued', 'processing', 'ready'].includes(current.analysis_status)) {
+                    if (responseRetryDialog.open && responseRetryId === responseId) showIndividualResponseRetry(current.analysis_status === 'ready' && current.report ? 'ready' : 'queued');
+                    return result;
+                }
+                throw error;
+            }).catch(function () {
+                if (responseRetryDialog.open && responseRetryId === responseId) showIndividualResponseRetry('error', friendlyError(error));
+                throw error;
+            });
+        });
     }
     function startSpeakingWaiting(kind, item) {
         if (kind !== 'response' && item && item.recording_status !== 'uploaded') return;
@@ -2073,18 +2118,22 @@
             manualResult: response,
             isActive: function () { return generation === pollGeneration && !detail.hidden && (response ? selectedResponseId === item.response_session_id : selectedId === id); },
             request: function () { if (response) { id = item.response_session_id; args[field] = id; } return call(response ? 'getIndividualResponse' : 'getDiscussion', args).then(function (result) { var next = response ? result.response : result.discussion; if (!next || next[field] !== id) { var error = new Error('Session unavailable'); error.code = 'NOT_FOUND'; throw error; } return next; }); },
-            retry: function () { if (response && item.recording_status !== 'uploaded' && responseSubmissionRetry) return responseSubmissionRetry(); if (response) { id = item.response_session_id; args[field] = id; } return call(response ? 'startIndividualResponseAnalysis' : 'startAnalysis', Object.assign({ operation_id: 'analysis-' + id }, args)); },
+            retry: function () { if (response && item.recording_status !== 'uploaded' && responseSubmissionRetry) return responseSubmissionRetry(); if (response) return startIndividualResponseRetry(item); return call('startAnalysis', Object.assign({ operation_id: 'analysis-' + id }, args)); },
             onSnapshot: function (next) {
                 if (response) {
                     Object.assign(item, next);
                     selectedResponse = next;
                     updateIndividualResponsePendingHeader(next);
+                    if (responseRetryDialog.open && responseRetryId === next.response_session_id) {
+                        if (next.analysis_status === 'ready' && next.report) showIndividualResponseRetry('ready');
+                        else if (next.analysis_status === 'failed' && responseRetryPhase === 'queued') showIndividualResponseRetry('failed', 'Your recording is safe; you can retry from this response.');
+                    }
                 } else currentDiscussion = next;
             },
             onReady: function (next) {
                 if (generation !== pollGeneration) return;
                 speakingWaiting = null;
-                if (response) renderIndividualResponseWorkspace(next);
+                if (response) { renderIndividualResponseWorkspace(next); if (responseRetryDialog.open && responseRetryId === next.response_session_id) showIndividualResponseRetry('ready'); }
                 else { detail.innerHTML = detailMarkup(next); updateToolbar(next); bindInvitationActions(); bindRecording(); acknowledgeIdentityNotice(next); acknowledgeReportViewed(next); schedulePoll(next, generation); }
                 loadSidebarLists();
             }
