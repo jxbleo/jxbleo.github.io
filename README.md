@@ -1,11 +1,12 @@
 # Mr. Cat Academy
 
-## Working-copy status — 2026-10-03
+## Working-copy status — 2026-10-04
 
 The current cleanup branch is `codex/project-cleanup-oct03`, based on `a7b0f90f`.
 It reconciles published static files with recent source work and keeps the
-existing static allowlist. The old shared checkout's unfinished rebase is
-preserved. This local cleanup is not a deployment; see
+existing static allowlist. The original project directory now uses this clean branch; the stale rebase
+state and unshipped drafts are preserved in a verified local recovery archive.
+This local cleanup is not a deployment; see
 [the reconciliation record](docs/10_DEPLOYMENT.md#source-reconciliation-and-local-cleanup-2026-10-03).
 Completed QA history is in `docs/archive/AGENT_TODO_THROUGH_20261002.md`.
 

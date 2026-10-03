@@ -1,5 +1,28 @@
 # 10 Deployment
 
+## Primary checkout recovery and remaining local-only changes (2026-10-04)
+
+The original `/Users/jxbleo/jxbleo.github.io` directory now uses the verified
+`codex/project-cleanup-oct03` branch. A complete archive of 371 modified/untracked
+files, nine recorded deletions, all refs and rebase metadata was hash-verified
+before switching. The empty stale rebase ended with `git rebase --quit`, preserving
+HEAD and files until the verified checkout switch; no rebase commits were replayed.
+Original `main` is unchanged. `codex/preserved-root-oct04` also retains the old HEAD.
+
+Recovery evidence is in ignored `.cloudbase-private/cleanup-20261004/`:
+`saved-work.tar`, `files.json`, `tracked.patch`, `refs.txt`, `rebase-state/` and
+`remaining-drafts/`. `restore-drafts.py NEW_DIRECTORY` reconstructs the previous
+editable working copy without overwriting this one. Differences include older
+implementations/docs as well as proposals, so they are not a list of approved
+features to publish. Credentials, private sources and unmerged worktrees remain.
+
+This pass additionally removed unreachable BBC/Vocabulary result UI. Those two
+HTML files intentionally differ from the October 3 public snapshot; their current
+receipt adapters, active sounds and page markup are unchanged. The other 117
+snapshot files remain equal. No static push, COS update, CloudBase deployment,
+database mutation or model/billing change was performed. Fresh live cloud/source
+comparison remains a prerequisite to any separately authorized backend release.
+
 ## 2026-10-03 — All-host receipt reliability and Listening completion (deployed)
 
 Owner requested resolving the all-host audit findings. Published only the shared

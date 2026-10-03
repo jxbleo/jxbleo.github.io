@@ -1,6 +1,6 @@
 # Agent QA To Do List
 
-Current status: source reconciliation and local cleanup, 2026-10-03.
+Current status: source reconciliation and primary-checkout cleanup, 2026-10-04.
 Past release notes and superseded local-only states are preserved in
 [the QA archive](docs/archive/AGENT_TODO_THROUGH_20261002.md).
 Use [08 Backlog](docs/08_BACKLOG.md) for product debt and
@@ -8,9 +8,13 @@ Use [08 Backlog](docs/08_BACKLOG.md) for product debt and
 
 ## Current follow-up
 
-- The original shared checkout has an unfinished rebase and preserved local work.
-  Continue this cleanup on `codex/project-cleanup-oct03`, based on `a7b0f90f`.
-  Do not resume/abort/reset the original rebase as an incidental cleanup step.
+- The original project directory now runs `codex/project-cleanup-oct03` normally.
+  Stale rebase bookkeeping was ended with `--quit`; no commits were replayed or
+  reset. Previous main/HEAD refs and all dirty/untracked work remain recoverable.
+- Unshipped drafts are in ignored `.cloudbase-private/cleanup-20261004/`.
+  Read `README.txt` and `remaining-drafts.json`; `restore-drafts.py` recreates
+  the old editable checkout in a new path. Review individual changes before
+  restoring them; do not replace the current tree wholesale with the old one.
 - This cleanup has not published or deployed anything. Static reconciliation
   used 119 public files fetched on 2026-10-03, including the receipt/Listening
   release verified again at closeout. Cloud-function sources include

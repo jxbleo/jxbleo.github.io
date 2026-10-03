@@ -1,5 +1,14 @@
 # 08 Backlog
 
+## Primary-directory cleanup completed (2026-10-04)
+
+The original project directory is now on the verified cleanup branch with normal
+Git state. Previous rebase metadata and unshipped differences are preserved in
+`.cloudbase-private/cleanup-20261004/`; use its recovery instructions for a separate
+draft checkout. Do not reintroduce old implementations by copying that archive
+over the current source. Keep the two retained unmerged release worktrees until
+their individual changes are reconciled. No production release occurred here.
+
 ## Recently resolved — 2026-10-03 unified receipts
 
 The audited profile-read blockage and legacy Intensive Listening completion

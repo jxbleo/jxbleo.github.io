@@ -8,9 +8,10 @@ Vocabulary result sounds, BBC choice sounds and confirmation-dialog motion remai
 Retained backend student-profile projection checks and current receipt lifecycle
 tests. No grading, rewards, attempt history, provider or billing behavior changed.
 
-Local follow-up restores the verified cleanup branch to the original project
-directory after a full checksum-verified archive of dirty/untracked work and
-rebase metadata. Unshipped drafts remain recoverable; no push or deployment.
+Restored the verified cleanup branch to the original project directory after a
+full checksum-verified archive of dirty/untracked work and rebase metadata. The
+empty stale rebase ended with `--quit`; original main and old HEAD are preserved.
+Unshipped drafts remain recoverable; no push or deployment.
 
 ## 2026-10-03 — Unified receipt and Listening completion repair (deployed)
 
