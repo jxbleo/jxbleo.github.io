@@ -2452,7 +2452,7 @@ Important mobile rules:
   low-emphasis red outlined action without fill or shadow: it may permanently remove a revision-1 draft containing only unsent
   title, prompt, or manuscript text after an Apple-style confirmation. Once upload/OCR,
   AI work, replacement, revision, Library binding, or a result exists, the server refuses
-  deletion and the Composition remains permanent.
+  draft hard deletion; the separate confirmed report action now permits soft deletion.
 - Selecting `Polishing` or `Brainstorming` expands the composer in place without
   creating a cloud draft. Title, prompt, manuscript, and mode remain local until
   the student presses text `Submit` or photo `Scan`; before that boundary they
@@ -2549,30 +2549,30 @@ Important mobile rules:
   `Interrupted` state. Refresh/re-login/reopen returns to the same operation
   rather than asking for another upload. Retry is offered only through the same
   recoverable operation after a failure.
-- Review Scan presents each recognized answer as one stacked card. The upper
-  native-select-backed target box uses the Vocabulary wrong-answer treatment
-  (`#fca5a5` border and `#fef2f2` fill), showing the global sentence number and
-  full original sentence; selecting anywhere in that box opens the target list.
-  The lower inset box contains only the editable OCR rewrite plus one tiny
-  confidence mark: green `✓` for high, amber `!` for medium, and red `?` for low,
-  each with an accessible label. Provider `warnings` remain available to the
-  trusted scan pipeline but are not rendered as student-facing text or bullet
-  lists; this confirmation step must not resemble language feedback. Deterministic
-  empty, duplicate, missing-number, and out-of-range validation still controls
-  whether the reviewed mapping can be confirmed. The target list contains
-  only unfinished `rewrite_required` sentences, excludes originally correct and
-  already accepted sentences, and disables a sentence while another scan card
-  claims it. The existing global sentence number appears when mapped, with a
-  `?` placeholder when no safe sentence can be chosen.
-  The student can manually assign an unresolved answer to a sentence from the
-  current list, then review the resulting mapping before importing. Import is an
-  explicit action and places text into editable revision drafts only; it does not
-  press `Check` or show a passed result. The page omits its former heading,
-  instructions, missing-sentence summary, mapping badges, scan labels, handwritten
-  marker text, and typed/scanned choice controls. Pressing `Confirm Scanning` explicitly adopts
-  every reviewed card and replaces the corresponding unfinished draft; the visible
-  primary label is `Confirm Scanning` and remains disabled until every card has one
-  unique eligible sentence and non-empty text. Returning
+- All pairing UI copy, status messages, errors and accessible labels are English.
+  Student writing and original sentences remain unchanged.
+- Review Scan is an explicit pairing step titled `Match Your Revisions`, with the small
+  sequence `Scan photos → Match sentences → Fill drafts`, one purpose sentence and a live count
+  of paired and remaining answers. Initially place unresolved/check cards first;
+  keep that order fixed while the student interacts. Each card shows an
+  `Your draft` box that reuses the Draft manuscript’s exact yellow paper color,
+  texture and shadow, a downward arrow, and a pale-green `Scanned revision` box. Pair status
+  labels mean correspondence only, never grading success. Pending matches use
+  the label `TBC`, a red badge and a red card background, border and glow that breathe every 2.4 seconds.
+  The full formerly white card surface pulses via a background layer’s opacity; the yellow
+  draft and green revision panels, content and layout stay still. Confirming a match
+  removes the effect; reduced-motion uses a static red background, outline and glow. Confirmed
+  and automatic matches retain their existing labels.
+  `Choose sentence` / `Change sentence` opens full-sentence choice buttons, sorted by the
+  server's top three suggested IDs; other claimed targets are disabled. Keep
+  sentence numbers and full original text visible and restore keyboard focus
+  after selection. Do not expose reference answers or similarity percentages.
+  Recognized text is read-only until `Edit text` is selected. Editing cancels
+  that card's confirmation; `Confirm this match` acknowledges uncertain OCR/number
+  mappings and edited text. OCR uncertainty has a concise check-text note;
+  provider warning prose and grammar feedback remain hidden.
+  `Confirm and Fill` requires unique eligible targets, nonempty text and confirmed
+  uncertain cards. It fills draft text only, after explicit adoption. Returning
   without confirmation leaves the prior draft unchanged. After a successful confirmation, every
   revision-required flip card opens on its attempt face so the original sentence and
   imported student revision are immediately visible together. The returned Sentence
@@ -2613,7 +2613,7 @@ Important mobile rules:
   existing `Polishing` and `Brainstorming` cards and their inline composer. Their concise
   secondary labels are `Grammar & Usage` and `Ideas & Structure` respectively.
   Saved work is listed once in the sidebar: `Continue` first, then `Completed`;
-  each row shows only its title. Selecting a row directly restores the Composition's
+  each card shows its title, stage and real correction progress. Selecting a row directly restores the Composition's
   current stage without a Library-style confirmation dialog.
   `Polishing` and `Brainstorming` expand the source form directly below the two cards
   without navigating to another screen. The selected card receives a restrained state
@@ -2905,8 +2905,8 @@ The drawer's top row contains two equal labelled actions: microphone plus
 `Voiceprint` on the left and plus plus `Start New` on the right. Voiceprint
 opens its own full workspace, and Start New returns to `Choose a Set`. Directly
 below, a compact
-two-option segmented control uses `Part A` and `Part B`; Part A shows only Group
-Discussion cards and Part B shows only Individual Response cards. The drawer
+two-option segmented control uses `Discussion` and `Response`; Discussion shows
+only Group Discussion cards and Response shows only Individual Response cards. The drawer
 has no `New · Choose a Set`, `Voiceprint`, `Your Work`, `Group Discussions`, or
 `Individual Responses` heading rows. Part B renders one restrained grouped card
 per Set, headed by year/source, Set number, topic, response count, and a chevron.

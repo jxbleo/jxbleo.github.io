@@ -2,13 +2,17 @@ import {
   MIN_SEGMENT_SECONDS,
   analyzeSegments,
   constrainSegmentRange,
+  dictationWords,
   exportTranscriptPayload,
   formatClock,
   importTranscriptPayload,
   mergeSegment,
   parseClock,
+  providedWordPositions,
+  remapProvidedWordPositions,
+  segmentPracticeMode,
   splitSegment,
-} from './transcript-corrector-model.js'
+} from './transcript-corrector-model.js?v=20260927-word-policy-1'
 
 const $ = (selector) => document.querySelector(selector)
 const state = {
@@ -28,6 +32,8 @@ const state = {
   undoStack: [],
   redoStack: [],
   changed: false,
+  publishedSignature: null,
+  confirmedLeave: false,
   renderingRegions: false,
   nextId: 1,
   toastTimer: null,
@@ -99,11 +105,27 @@ function renderHistoryButtons() {
   $('#redo-correction-button').disabled = !state.redoStack.length
 }
 
+function annotationSignature(segments) {
+  return JSON.stringify(segments.map((segment) => ({
+    speaker: String(segment.speaker || '').trim(),
+    text: String(segment.text || '').trim(),
+    start: Math.round(segment.start * 1000),
+    end: Math.round(segment.end * 1000),
+    mode: segmentPracticeMode(segment),
+    provided: segmentPracticeMode(segment) === 'dictation'
+      ? [...new Set(providedWordPositions(segment))].sort((left, right) => left - right)
+      : [],
+  })))
+}
+
 function markChanged() {
-  state.changed = true
+  state.changed = state.publishedSignature === null || annotationSignature(state.segments) !== state.publishedSignature
   const status = $('#session-status')
-  status.textContent = 'Changes not exported'
-  status.classList.add('changed')
+  status.textContent = state.changed
+    ? document.body.dataset.correctorMode === 'teacher' ? 'Changes not published' : 'Changes not exported'
+    : 'No unpublished changes'
+  status.classList.toggle('changed', state.changed)
+  if (document.body.dataset.correctorMode === 'teacher') window.dispatchEvent(new Event('mr-cat-corrector-changed'))
 }
 
 function markExported() {
@@ -336,10 +358,12 @@ function renderSentenceList() {
   $('#sentence-list').innerHTML = rows.length ? rows.map(({ segment, index }) => {
     const warning = report.issues.has(segment.id)
     const sentenceNumber = String(index + 1).padStart(2, '0')
+    const mode = segmentPracticeMode(segment)
+    const detail = mode === 'skip' ? ' · Skip' : mode === 'listen_only' ? ' · Listen only' : providedWordPositions(segment).length ? ` · ${providedWordPositions(segment).length} given` : ''
     return `<div class="sentence-row ${segment.id === state.selectedId ? 'active' : ''} ${warning ? 'has-warning' : ''}">
       <button class="sentence-select-button" type="button" data-select-segment-id="${escapeHtml(segment.id)}" aria-label="Select sentence ${index + 1} and show it in the waveform">
         <span class="sentence-number">${sentenceNumber}</span>
-        <span class="sentence-copy"><strong>${escapeHtml(segment.speaker || 'Unlabelled speaker')}</strong><p>${escapeHtml(segment.text || 'Empty sentence')}</p><small>${formatClock(segment.start)} – ${formatClock(segment.end)}</small></span>
+        <span class="sentence-copy"><strong>${escapeHtml(segment.speaker || 'Unlabelled speaker')}</strong><p>${escapeHtml(segment.text || 'Empty sentence')}</p><small>${formatClock(segment.start)} – ${formatClock(segment.end)}${detail}</small></span>
       </button>
       <button class="sentence-play-button" type="button" data-play-segment-id="${escapeHtml(segment.id)}" aria-label="Play sentence ${index + 1}" title="Play sentence ${index + 1}">▶</button>
     </div>`
@@ -352,6 +376,72 @@ function renderSentenceList() {
   })
 }
 
+function resizeTextEditor() {
+  const editor = $('#text-editor')
+  editor.style.height = 'auto'
+  editor.style.height = `${editor.scrollHeight + editor.offsetHeight - editor.clientHeight}px`
+}
+
+function renderPracticeControls() {
+  const segment = selectedSegment()
+  const wordList = $('#provided-word-list')
+  if (!segment || !wordList) return
+  const mode = segmentPracticeMode(segment)
+  document.querySelectorAll('[data-practice-mode]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.practiceMode === mode))
+  })
+  $('#provided-word-controls').hidden = mode !== 'dictation'
+  if (mode !== 'dictation') return
+  const words = dictationWords(segment.text)
+  const given = new Set(providedWordPositions(segment))
+  wordList.innerHTML = words.length ? words.map((word, index) => {
+    const position = index + 1
+    const provided = given.has(position)
+    return `<button type="button" data-provided-position="${position}" aria-pressed="${provided}" aria-label="${provided ? 'Require typing for' : 'Provide'} word ${position}: ${escapeHtml(word.answer)}" title="${provided ? 'Shown to students; click to require typing' : 'Student types this word; click to provide it'}">${escapeHtml(word.prefix + word.answer + word.suffix)}</button>`
+  }).join('') : '<span class="no-words">Type a sentence to choose words.</span>'
+  wordList.querySelectorAll('[data-provided-position]').forEach((button) => {
+    button.addEventListener('click', () => toggleProvidedWord(Number(button.dataset.providedPosition)))
+  })
+}
+
+function setPracticeMode(mode) {
+  const segment = selectedSegment()
+  if (!segment || !['dictation', 'listen_only', 'skip'].includes(mode) || segmentPracticeMode(segment) === mode) return
+  if (segmentPracticeMode(segment) === 'dictation' && mode !== 'dictation' &&
+      !state.segments.some((other) => other !== segment && segmentPracticeMode(other) === 'dictation')) {
+    toast('Keep at least one sentence as Dictation')
+    return
+  }
+  remember()
+  state.editSession = null
+  segment.extra = { ...segment.extra, practiceMode: mode }
+  delete segment.extra.practice_mode
+  if (mode !== 'dictation') {
+    segment.extra.providedWordPositions = []
+    delete segment.extra.provided_word_positions
+  }
+  markChanged()
+  renderSentenceList()
+  renderEditor()
+  renderHistoryButtons()
+}
+
+function toggleProvidedWord(position) {
+  const segment = selectedSegment()
+  if (!segment || segmentPracticeMode(segment) !== 'dictation' || position < 1 || position > dictationWords(segment.text).length) return
+  remember()
+  state.editSession = null
+  const given = new Set(providedWordPositions(segment))
+  if (given.has(position)) given.delete(position)
+  else given.add(position)
+  segment.extra = { ...segment.extra, providedWordPositions: [...given].sort((left, right) => left - right) }
+  delete segment.extra.provided_word_positions
+  markChanged()
+  renderSentenceList()
+  renderPracticeControls()
+  renderHistoryButtons()
+}
+
 function renderEditor() {
   const segment = selectedSegment()
   const index = selectedIndex()
@@ -359,8 +449,10 @@ function renderEditor() {
   $('#editor-heading').textContent = `Sentence ${index + 1}`
   $('#speaker-editor').value = segment.speaker
   $('#text-editor').value = segment.text
-  $('#start-time-editor').value = formatClock(segment.start)
-  $('#end-time-editor').value = formatClock(segment.end)
+  resizeTextEditor()
+  renderPracticeControls()
+  if ($('#start-time-editor')) $('#start-time-editor').value = formatClock(segment.start)
+  if ($('#end-time-editor')) $('#end-time-editor').value = formatClock(segment.end)
   $('#previous-sentence-button').disabled = index <= 0
   $('#next-sentence-button').disabled = index >= state.segments.length - 1
   $('#merge-previous-correction-button').disabled = index <= 0
@@ -387,7 +479,7 @@ function renderQa() {
     <div class="qa-stat ${report.overlapCount ? 'warning' : ''}"><span>Overlaps</span><strong>${report.overlapCount}</strong></div>
     <div class="qa-stat ${report.emptyCount ? 'warning' : ''}"><span>Empty text</span><strong>${report.emptyCount}</strong></div>
     <div class="qa-stat ${report.rangeCount ? 'warning' : ''}"><span>Invalid times</span><strong>${report.rangeCount}</strong></div>`
-  $('#export-correction-button').textContent = report.warningCount
+  if (document.body.dataset.correctorMode !== 'teacher') $('#export-correction-button').textContent = report.warningCount
     ? `Export with ${report.warningCount} warning${report.warningCount === 1 ? '' : 's'}`
     : 'Export corrected JSON'
 }
@@ -505,18 +597,27 @@ function editTextField(field, value) {
     remember()
     state.editSession.remembered = true
   }
+  if (field === 'text') {
+    const positions = providedWordPositions(segment)
+    if (positions.length || Array.isArray(segment.extra?.providedWordPositions) || Array.isArray(segment.extra?.provided_word_positions)) {
+      segment.extra = { ...segment.extra, providedWordPositions: remapProvidedWordPositions(segment.text, value, positions) }
+      delete segment.extra.provided_word_positions
+    }
+  }
   segment[field] = value
   markChanged()
   renderSentenceList()
   renderQa()
   renderSelectedIssues()
+  if (field === 'text') renderPracticeControls()
   if (field === 'speaker') updateRegionColors()
   renderWaveLabels()
 }
 
 function finishEditSession() {
   state.editSession = null
-  renderEditor()
+  // Keep word buttons in place through the blur/click sequence.
+  renderSelectedIssues()
 }
 
 function applyRange(start, end, message) {
@@ -641,16 +742,16 @@ function deleteSelected() {
   toast('Sentence deleted. Undo is available.')
 }
 
-function exportCorrection() {
+function exportCorrection(options = {}) {
   const payload = exportTranscriptPayload(state.segments, state.sourceShape, state.wrapperExtra)
   const blob = new Blob([JSON.stringify(payload, null, 2) + '\n'], { type: 'application/json' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
   const original = state.jsonFile?.name || 'transcript.json'
-  link.download = `${original.replace(/\.json$/i, '')}-corrected.json`
+  link.download = options.filename || `${original.replace(/\.json$/i, '')}-corrected.json`
   link.click()
   setTimeout(() => URL.revokeObjectURL(link.href), 1000)
-  markExported()
+  if (options.markExported !== false) markExported()
   const warnings = analysis().warningCount
   toast(warnings ? `JSON exported with ${warnings} warning${warnings === 1 ? '' : 's'}` : 'Corrected JSON exported')
 }
@@ -666,6 +767,7 @@ async function openCorrector() {
     state.undoStack = []
     state.redoStack = []
     state.changed = false
+    if (document.body.dataset.correctorMode !== 'teacher') state.publishedSignature = null
     setSettingsOpen(false)
     $('#load-card').hidden = true
     $('#corrector-workspace').hidden = false
@@ -693,6 +795,7 @@ function replaceFiles() {
   state.segments = []
   state.selectedId = null
   state.changed = false
+  if (document.body.dataset.correctorMode !== 'teacher') state.publishedSignature = null
   setSettingsOpen(false)
   $('#corrector-workspace').hidden = true
   $('#load-card').hidden = false
@@ -717,7 +820,7 @@ $('#settings-close-button').addEventListener('click', () => {
   setSettingsOpen(false)
   $('#settings-toggle-button').focus({ preventScroll: true })
 })
-$('#export-correction-button').addEventListener('click', exportCorrection)
+if (document.body.dataset.correctorMode !== 'teacher') $('#export-correction-button').addEventListener('click', exportCorrection)
 $('#play-selection-button').addEventListener('click', playSelected)
 $('#play-start-boundary-button').addEventListener('click', () => {
   const segment = selectedSegment(); if (segment) playRange(segment.start - 1, Math.min(segment.end, segment.start + 1))
@@ -733,12 +836,17 @@ $('#next-sentence-button').addEventListener('click', () => navigateSentence(1))
 for (const [selector, field] of [['#speaker-editor', 'speaker'], ['#text-editor', 'text']]) {
   const input = $(selector)
   input.addEventListener('focus', () => beginEditSession(field))
-  input.addEventListener('input', () => editTextField(field, input.value))
+  input.addEventListener('input', () => {
+    if (field === 'text') resizeTextEditor()
+    editTextField(field, input.value)
+  })
   input.addEventListener('blur', finishEditSession)
 }
 
-$('#start-time-editor').addEventListener('change', () => commitTimeField('start'))
-$('#end-time-editor').addEventListener('change', () => commitTimeField('end'))
+window.addEventListener('resize', resizeTextEditor)
+
+$('#start-time-editor')?.addEventListener('change', () => commitTimeField('start'))
+$('#end-time-editor')?.addEventListener('change', () => commitTimeField('end'))
 document.querySelectorAll('[data-nudge]').forEach((button) => button.addEventListener('click', () => {
   const [field, amount] = button.dataset.nudge.split(':')
   nudgeBoundary(field, Number(amount))
@@ -749,6 +857,9 @@ $('#merge-previous-correction-button').addEventListener('click', () => mergeSele
 $('#merge-next-correction-button').addEventListener('click', () => mergeSelected(1))
 $('#add-sentence-button').addEventListener('click', addSentenceAfter)
 $('#delete-sentence-button').addEventListener('click', deleteSelected)
+document.querySelectorAll('[data-practice-mode]').forEach((button) => {
+  button.addEventListener('click', () => setPracticeMode(button.dataset.practiceMode))
+})
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !$('#settings-drawer').hidden) {
@@ -757,7 +868,7 @@ document.addEventListener('keydown', (event) => {
     $('#settings-toggle-button').focus({ preventScroll: true })
     return
   }
-  const editing = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement
+  const editing = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLButtonElement || event.target instanceof HTMLSelectElement
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
     event.preventDefault()
     if (event.shiftKey) redo(); else undo()
@@ -776,7 +887,7 @@ document.addEventListener('pointerdown', (event) => {
 })
 
 window.addEventListener('beforeunload', (event) => {
-  if (!state.changed) return
+  if (!state.changed || state.confirmedLeave) return
   event.preventDefault()
   event.returnValue = ''
 })
@@ -790,14 +901,27 @@ updateLoadState()
 // The Teacher workspace reuses this editor without a second waveform UI.
 // Keep the local App's file-only workflow unchanged.
 window.MrCatTranscriptCorrector = {
-  async open(audioFile, transcript, name = 'transcript.json') {
+  async open(audioFile, transcript, name = 'transcript.json', options = {}) {
     if ($('#corrector-workspace').hidden === false && !replaceFiles()) return false
     acceptAudio(audioFile)
     state.jsonFile = new File([JSON.stringify(transcript)], name, { type: 'application/json' })
     state.parsedJson = transcript
     updateLoadState()
     await openCorrector()
+    if (options.unpublished && !$('#corrector-workspace').hidden) markChanged()
     return !$('#corrector-workspace').hidden
+  },
+  hasUnpublishedChanges() { return state.changed },
+  setPublishedBaseline(payload) {
+    state.publishedSignature = annotationSignature(importTranscriptPayload(payload).segments)
+    state.changed = annotationSignature(state.segments) !== state.publishedSignature
+    $('#session-status').textContent = state.changed ? 'Changes not published' : 'No unpublished changes'
+    $('#session-status').classList.toggle('changed', state.changed)
+  },
+  confirmLeave() { state.confirmedLeave = true },
+  exportCurrent(options = {}) {
+    if ($('#corrector-workspace').hidden) throw new Error('Open a transcript first')
+    exportCorrection({ ...options, markExported: options.markExported ?? false })
   },
   snapshot() {
     if ($('#corrector-workspace').hidden) throw new Error('Open a transcript first')
@@ -808,6 +932,7 @@ window.MrCatTranscriptCorrector = {
     }
   },
   markApplied() {
+    state.publishedSignature = annotationSignature(state.segments)
     markExported()
     $('#session-status').textContent = 'Correction applied'
   },

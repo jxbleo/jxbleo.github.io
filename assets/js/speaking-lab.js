@@ -1544,12 +1544,17 @@
         load();
     }
 
+    function renderIndividualResponseFeedback(report) {
+        return '<div class="speaking-ir-domain-feedback"><section class="speaking-ir-feedback-works"><h3>What works</h3><p lang="zh-Hant">' + esc(report.keep_zh || '') + '</p></section><section class="speaking-ir-feedback-grow"><h3>How to improve</h3>' + ((report.analysis || []).length ? '<ol class="speaking-ir-feedback-list speaking-ir-unified-points">' + report.analysis.map(function (point) {
+            return '<li><h4>' + esc(point.title_zh) + '</h4><p lang="zh-Hant">' + esc(point.issue_zh) + '</p><p class="speaking-ir-improvement" lang="zh-Hant"><b>Try this</b> ' + esc(point.action_zh) + '</p>' + (point.sample_context_zh ? '<p lang="zh-Hant">' + esc(point.sample_context_zh) + '</p>' : '') + '<blockquote lang="en">' + esc(point.sample_en) + '</blockquote></li>';
+        }).join('') + '</ol>' : '<p class="speaking-ir-feedback-empty">本次未有足夠可靠證據列出其他改進點。</p>') + '</section></div>';
+    }
     function renderIndividualResponseDevelopment(report) {
         var samples = Array.isArray(report.sample_responses) ? report.sample_responses : report.sample_response_en ? [{ response_en: report.sample_response_en }] : [];
         if (!samples.length) return '';
         return '<div class="speaking-ir-samples">' + samples.map(function (item, index) {
             var thinking = item.thinking_prompt_zh || '這份舊報告尚未包含與這篇示範配對的思考引導。';
-            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><div class="speaking-ir-thinking"><p lang="zh-Hant">' + esc(thinking) + '</p></div><details class="speaking-ir-block speaking-ir-example"><summary><span class="speaking-ir-show-exemplar">Show exemplar</span><span class="speaking-ir-hide-exemplar">Hide exemplar</span></summary><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p></details></article>';
+            return '<article class="speaking-ir-sample" data-ir-panel="exemplar" data-ir-value="' + index + '"' + (index === 0 ? '' : ' hidden') + '><div class="speaking-ir-thinking">' + (Array.isArray(item.thinking_template) ? '<ol class="speaking-ir-thinking-steps">' + item.thinking_template.map(function (step) { return '<li lang="zh-Hant"><strong>' + esc(step.label_zh) + '</strong><span>' + esc(step.content_zh) + '</span></li>'; }).join('') + '</ol>' + (item.assumption_note_zh ? '<p lang="zh-Hant">' + esc(item.assumption_note_zh) + '</p>' : '') : '<p lang="zh-Hant">' + esc(thinking) + '</p>') + '</div><details class="speaking-ir-block speaking-ir-example"><summary><span class="speaking-ir-show-exemplar">Show exemplar</span><span class="speaking-ir-hide-exemplar">Hide exemplar</span></summary><p class="speaking-ir-sample-text" lang="en">' + esc(item.response_en || '') + '</p></details></article>';
         }).join('') + '</div>';
     }
 
@@ -1607,11 +1612,12 @@
     }
     function renderIndividualResponseReport(response) {
         var report = response.report || {};
+        var unified = report.report_version === 'dse-individual-response-v5';
         var development = renderIndividualResponseDevelopment(report);
         var samples = Array.isArray(report.sample_responses) && report.sample_responses.length ? report.sample_responses : report.sample_response_en ? [{}] : [];
         var samplePicker = samples.length ? individualResponseCardPicker('exemplar', 'Exemplar', samples.map(function (_item, index) { return { value: String(index), label: 'Exemplar ' + (index + 1) }; })) : '';
         return '<section class="speaking-response-report">' + renderIndividualResponseSession(response, false) + '<div id="response-report-content" class="speaking-response-report">' +
-            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2>' + individualResponseCardPicker('analysis', 'Analysis dimension', [{ value: 'io', label: 'Ideas & Organisation' }, { value: 'vl', label: 'Vocabulary & Language Patterns' }]) + '</header><div class="speaking-ir-card-body" id="response-analysis-panels"><div data-ir-panel="analysis" data-ir-value="io">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + '</div><div data-ir-panel="analysis" data-ir-value="vl" hidden>' + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language Patterns'], report) + '</div>' + '</div></section>' +
+            '<section class="speaking-report-card speaking-ir-analysis-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>Analysis</h2>' + (unified ? '' : individualResponseCardPicker('analysis', 'Analysis dimension', [{ value: 'io', label: 'Ideas & Organisation' }, { value: 'vl', label: 'Vocabulary & Language Patterns' }])) + '</header><div class="speaking-ir-card-body" id="response-analysis-panels">' + (unified ? renderIndividualResponseFeedback(report) : '<div data-ir-panel="analysis" data-ir-value="io">' + renderIndividualResponseDomain('ideas_organisation', ['IO', 'Ideas & Organisation'], report) + '</div><div data-ir-panel="analysis" data-ir-value="vl" hidden>' + renderIndividualResponseDomain('vocabulary_language_patterns', ['VL', 'Vocabulary & Language Patterns'], report) + '</div>') + '</div></section>' +
             (development ? '<section class="speaking-report-card speaking-ir-development-card speaking-ir-titled-card"><header class="speaking-ir-card-title"><h2>5** Exemplars</h2>' + samplePicker + '</header><div class="speaking-ir-card-body" id="response-exemplar-panels">' + development + '</div></section>' : '') + '</div></section>';
     }
     function updateIndividualResponsePendingHeader(response) {
@@ -1923,6 +1929,7 @@
                     });
                 }).then(function () {
                     activeResponse.recording_status = 'uploaded';
+                    window.MrCatTrainingCheckin.speaking(activeResponse, durationSeconds);
                     responseBlob = null; responseRecordedDurationSeconds = null; responseUploadOperationId = '';
                     return call('startIndividualResponseAnalysis', { response_session_id: activeResponse.response_session_id, operation_id: 'analysis-' + activeResponse.response_session_id });
                 }).then(function () {

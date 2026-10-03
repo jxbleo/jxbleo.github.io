@@ -44,7 +44,7 @@ const SPEAKING_SET_PART_A_MAX = 12;
 const SPEAKING_SET_PART_B_MAX = 20;
 const INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS = 65;
 const INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS = 3;
-const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v4";
+const INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION = "dse-individual-response-v5";
 
 function text(value, limit = 2000) {
   return String(value == null ? "" : value).normalize("NFKC").trim().slice(0, limit);
@@ -1021,6 +1021,10 @@ function individualResponseTimingState(seconds) {
 }
 
 function canonicalizeIndividualResponseReport(report, segments = [], options = {}) {
+  if ((options.reportVersion || INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION) === "dse-individual-response-v5") {
+    const result = require("./speaking-ir-feedback").canonicalReport(report, segments);
+    return options.redactNames ? redactExactNames(result, options.redactNames) : result;
+  }
   if (!report || typeof report !== "object" || Array.isArray(report)) throw new Error("INDIVIDUAL_RESPONSE_REPORT_INVALID");
   // Some providers put the complete coaching block one level too deep. Move
   // only this unambiguous shape; every value still passes the validator below.

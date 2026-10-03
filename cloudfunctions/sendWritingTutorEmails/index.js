@@ -4,11 +4,14 @@ const crypto = require("crypto");
 const cloudbase = require("@cloudbase/node-sdk");
 const nodemailer = require("nodemailer");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
+const writingReportEmail = require("../_shared/writing-report-email");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const EVENTS = "writing_teacher_email_events";
 const DISPATCH_LIMIT = 50;
+const COMPLETION_SCAN_LIMIT = 40;
+const COMPLETION_CURSOR_ID = "writing-report-completion-cursor";
 
 function text(value) { return String(value == null ? "" : value).trim(); }
 function escapeHtml(value) {
@@ -58,9 +61,40 @@ function summaryHtml(events) {
   return `${alerts.length ? `<p><strong>Token telemetry needs attention for ${alerts.length} AI writing job${alerts.length === 1 ? "" : "s"}.</strong> The model request may have completed without a usable Token record. Inspect writing_ai_jobs and writing_model_usage_events using the job ID from the event.</p><table border="1" cellpadding="6" cellspacing="0"><thead><tr><th>Job type</th><th>Reason</th><th>Model</th><th>Stage</th><th>Attempts</th></tr></thead><tbody>${alertRows}</tbody></table>` : ""}${reviews.length ? `<p>AI Tutor has completed ${reviews.length} writing review${reviews.length === 1 ? "" : "s"}.</p><table border="1" cellpadding="6" cellspacing="0"><thead><tr><th>Student</th><th>Mode</th><th>Framework</th><th>Words</th><th>Shanghai day</th></tr></thead><tbody>${reviewRows}</tbody></table>` : ""}<p>This notice contains operational metadata only; student writing is not included.</p>`;
 }
 
+async function repairCompletedReports() {
+  const cursorResult = await db.collection(EVENTS).where({ event_id: COMPLETION_CURSOR_ID }).limit(1).get();
+  const cursorRow = cursorResult.data && cursorResult.data[0];
+  const after = text(cursorRow && cursorRow.after_id);
+  let query = db.collection(EVENTS);
+  if (after) query = query.where({ _id: db.command.gt(after) });
+  const page = await query.orderBy("_id", "asc").limit(COMPLETION_SCAN_LIMIT).get();
+  const rows = page.data || [];
+  for (const first of rows) {
+    if (first.event_type !== "writing_report" || first.report_phase !== "first"
+      || first.completion_watch !== true) continue;
+    const found = await db.collection("writing_compositions")
+      .where({ composition_id: first.composition_id, student_uid: first.student_uid }).limit(1).get();
+    const composition = found.data && found.data[0];
+    if (!composition || composition.status !== "completed") continue;
+    const finalId = writingReportEmail.eventId(first.composition_id, "complete");
+    await writingReportEmail.enqueue(db, first, composition, "complete", {}, "general_language");
+    const finalResult = await db.collection(EVENTS).where({ event_id: finalId }).limit(1).get();
+    if (finalResult.data && finalResult.data.length) {
+      await db.collection(EVENTS).doc(first._id).update({ completion_watch: false, updated_at: new Date() });
+    }
+  }
+  const next = rows.length === COMPLETION_SCAN_LIMIT ? rows[rows.length - 1]._id : "";
+  if (cursorRow) await db.collection(EVENTS).doc(COMPLETION_CURSOR_ID).update({ after_id: next, updated_at: new Date() });
+  else await db.collection(EVENTS).doc(COMPLETION_CURSOR_ID).create({
+    event_id: COMPLETION_CURSOR_ID, status: "cursor", after_id: next, created_at: new Date(), updated_at: new Date(),
+  });
+}
+
 exports.main = async (event = {}) => {
   try {
     authorize(event);
+    try { await repairCompletedReports(); }
+    catch (error) { console.error("Writing completion report repair deferred", error && error.message); }
     const pendingResult = await db.collection(EVENTS).where({ status: "pending" }).limit(DISPATCH_LIMIT).get();
     const pending = pendingResult.data || [];
     if (!pending.length) return { success: true, processed: 0, sent: 0 };
@@ -93,23 +127,34 @@ exports.main = async (event = {}) => {
       connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 20000,
     });
     try {
-      const alertCount = claimed.filter((item) => item.event_type === "model_usage_alert").length;
-      const reviewCount = claimed.length - alertCount;
-      await transport.sendMail({
-        from: config.from, to: config.from, bcc,
-        subject: alertCount
-          ? `Mr. Cat AI Tutor · Token telemetry alert${alertCount === 1 ? "" : "s"} (${alertCount})`
-          : `Mr. Cat AI Tutor · ${reviewCount} writing review${reviewCount === 1 ? "" : "s"}`,
-        text: alertCount
-          ? `${alertCount} AI writing job(s) have missing or incomplete Token telemetry. Inspect the metadata-only alert events in CloudBase. Student writing is not included.`
-          : `AI Tutor completed ${reviewCount} writing review(s). Open Teacher > Students to inspect usage. Student writing is not included.`,
-        html: summaryHtml(claimed),
-      });
-      await Promise.all(claimed.map((item) => db.collection(EVENTS).doc(item._id).update({ status: "sent", sent_at: new Date(), recipient_count: bcc.length, updated_at: new Date() })));
-      return { success: true, processed: claimed.length, sent: claimed.length };
-    } catch (error) {
-      await Promise.all(claimed.map((item) => db.collection(EVENTS).doc(item._id).update({ status: "pending", last_error: text(error && error.message).slice(0, 500), updated_at: new Date() })));
-      throw error;
+      let sent = 0;
+      let failed = 0;
+      for (const item of claimed) {
+        try {
+          if (item.event_type !== "writing_report" && item.event_type !== "model_usage_alert") {
+            await db.collection(EVENTS).doc(item._id).update({
+              status: "skipped", skip_reason: "SUPERSEDED_BY_WRITING_REPORT_POLICY", updated_at: new Date(),
+            });
+            continue;
+          }
+          const message = item.event_type === "writing_report"
+            ? writingReportEmail.render(item)
+            : { subject: "Mr. Cat AI Tutor · Token telemetry alert",
+                text: "AI writing Token telemetry needs attention. Inspect the metadata-only alert event in CloudBase.",
+                html: summaryHtml([item]) };
+          await transport.sendMail({ from: config.from, to: config.from, bcc, ...message });
+          await db.collection(EVENTS).doc(item._id).update({
+            status: "sent", sent_at: new Date(), recipient_count: bcc.length, updated_at: new Date(),
+          });
+          sent += 1;
+        } catch (error) {
+          failed += 1;
+          await db.collection(EVENTS).doc(item._id).update({
+            status: "pending", last_error: text(error && error.message).slice(0, 500), updated_at: new Date(),
+          });
+        }
+      }
+      return { success: failed === 0, processed: claimed.length, sent, failed };
     } finally {
       if (typeof transport.close === "function") transport.close();
     }

@@ -1,5 +1,20 @@
 # 08 Backlog
 
+## Current cleanup status (2026-10-03)
+
+The local reconciliation is on `codex/project-cleanup-oct03` at base `a7b0f90f`.
+Previous cleanup sections below retain dated evidence; they do not describe the
+current branch or authorize a new production action. Old test cache-key and
+IELTS recorder fixture failures have been reconciled with the current UI.
+
+Remaining deliberate boundaries:
+- Original checkout rebase and unmerged work are preserved separately.
+- Confirm fresh cloud source/package parity before any authorized deployment.
+- Large Teacher/Dashboard controllers can be split when a feature requires it;
+  a broad structural rewrite is unnecessary for this cleanup.
+- Historical duplicate content, due-week repairs and real-device/email acceptance
+  remain scoped follow-ups. Do not infer completion from local tests.
+
 > Product, technical, and documentation backlog.
 > Update it when new work is discovered or priorities change.
 

@@ -21,7 +21,7 @@ function run() {
   assert.match(page, /speaking-lab\.js\?v=/);
   assert.match(page, /speaking-lab\.css\?v=/);
   assert.match(page, /Record on this device|Choose audio file/);
-  assert.match(dashboard, /speaking-lab\.html\?v=20260915-ielts-speaking-1/);
+  assert.match(dashboard, /speaking-lab\.html\?v=\d{8}-[a-z0-9-]+/);
   assert.match(page, /entry\.get\('discussion'\)\|\|entry\.get\('response'\)\|\|entry\.get\('set'\)[\s\S]*speaking-direct-entry/);
   assert.match(app, /initialSetId = new URLSearchParams\(window\.location\.search\)\.get\('set'\)/);
   assert.match(app, /if \(initialSetId\) \{[\s\S]*openSpeakingSet\(initialSetId\)[\s\S]*finishInitialLoading\(\)/);
@@ -48,8 +48,8 @@ function run() {
   assert.match(page, /id="speaking-sidebar-voiceprint"[^>]*aria-label="Open Voiceprint"/);
   assert.match(page, /speaking-sidebar-action-label">Voiceprint/);
   assert.match(page, /id="speaking-discussion-sort"[\s\S]*Newest first[\s\S]*Oldest first/);
-  assert.match(page, /id="speaking-sidebar-part-a"[^>]*>Part A<\/button>/);
-  assert.match(page, /id="speaking-sidebar-part-b"[^>]*>Part B<\/button>/);
+  assert.match(page, /id="speaking-sidebar-part-a"[^>]*>Discussion<\/button>/);
+  assert.match(page, /id="speaking-sidebar-part-b"[^>]*>Response<\/button>/);
   assert.doesNotMatch(page, /New · Choose a Set|<p class="eyebrow">YOUR WORK<\/p>/);
   assert.match(page, /id="speaking-list"[\s\S]*aria-label="Group Discussions"/);
   assert.match(page, /DSE PAPER 4[\s\S]*PART A[\s\S]*Group Discussion/);
@@ -145,7 +145,8 @@ function run() {
   assert.match(app, /renderIndividualResponseDomain\('vocabulary_language_patterns'/);
   assert.match(app, /function esc\(value\)/);
   assert.match(teacherPage, /id="teacher-speaking-home"/);
-  assert.equal((teacherPage.match(/class="teacher-speaking-entry-card/g) || []).length, 2, "Teacher Speaking must open with exactly two cards");
+  assert.equal((teacherPage.match(/class="teacher-speaking-entry-card/g) || []).length, 1, "Teacher Speaking has one recording card");
+  assert.match(teacherPage, /id="teacher-speaking-recent-list"/, "the home view retains recent reports beside recording");
   assert.match(teacherPage, /id="teacher-speaking-topic"/);
   assert.match(teacherPage, /id="teacher-speaking-file-button"[^>]*type="button"[^>]*><svg[^>]*[\s\S]*?<span>Choose audio<\/span><\/button>/);
   assert.match(teacherPage, /id="teacher-speaking-record-label">Record<\/span>/);
@@ -179,7 +180,7 @@ function run() {
   assert.match(app, /MrCatSpeakingRecorder.create/);
   const discussionCss = read('assets/css/speaking-discussion-recorder.css');
   for (const html of [page, teacherPage]) {
-    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=20260913-speaking-center-1/);
+    assert.match(html, /speaking-lab\.css[\s\S]*speaking-discussion-recorder\.css\?v=\d{8}-[a-z0-9-]+/);
   }
   assert.match(discussionCss, /is-ending \.speaking-recording-ring-progress \{ display:none/);
   assert.match(discussionCss, /font:300 28cqw/);
@@ -310,7 +311,7 @@ function run() {
   assert.match(teacherPage, /id="teacher-voiceprint-target"/);
   assert.match(teacherPage, /voiceprint-recorder\.js\?v=/);
   assert.match(teacherPage, /speaking-lab\.css\?v=\d{8}-[a-z0-9-]+/);
-  assert.match(teacherPage, /teacher-speaking\.js\?v=20260913-discussion-ring-1/);
+  assert.match(teacherPage, /teacher-speaking\.js\?v=\d{8}-[a-z0-9-]+/);
   assert.match(teacher, /teacherSaveVoiceprint|data-teacher-voiceprint/);
   assert.match(voiceprintRecorder, /16000|audio\/wav|createScriptProcessor/);
   assert.doesNotMatch(teacher, /speaker_keys\s*:|candidate_speaker_keys\s*:/);
@@ -467,7 +468,7 @@ function run() {
   assert.match(app, /closeSidebar\(\);\s*\n\s*auth\.getSession\(\)/);
   assert.match(app, /event\.key === 'Escape'/);
   assert.match(app, /speaking-report-layout/);
-  assert.match(page, /cloudbase-client\.js\?v=20260828-1/);
+  assert.match(page, /cloudbase-client\.js\?v=\d{8}-[a-z0-9-]+/);
   assert.match(page, /speaking-lab\.css\?v=\d{8}-[a-z0-9-]+/);
   assert.match(page, /speaking-lab\.js\?v=\d{8}-[a-z0-9-]+/);
   assert.match(page, /ai-waiting-runner\.js/);
@@ -475,8 +476,8 @@ function run() {
   assert.match(app, /startSpeakingWaiting\('response', response\)/);
   assert.match(app, /startSpeakingWaiting\('discussion', result\.discussion\)/);
   assert.match(app, /if \(speakingWaiting\) return;/);
-  assert.match(report, /speaking-report\.css\?v=20260830-1/);
-  assert.match(report, /speaking-report\.js\?v=20260830-1/);
+  assert.match(report, /speaking-report\.css\?v=\d{8}-[a-z0-9-]+/);
+  assert.match(report, /speaking-report\.js\?v=\d{8}-[a-z0-9-]+/);
   console.log("Speaking Lab UI contracts passed.");
 }
 

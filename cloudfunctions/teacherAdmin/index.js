@@ -7,11 +7,13 @@ const exerciseProgress = require("../_shared/exercise-progress");
 const teacherEmailSettings = require("../_shared/teacher-email-settings");
 const argueNotifications = require("../_shared/argue-notifications");
 const argueResolution = require("../_shared/argue-resolution");
+const bbcEditor = require("../_shared/bbc-editor");
 const writingDisputes = require("../_shared/writing-disputes");
 const intensiveNotifications = require("../_shared/intensive-listening-notifications");
 const intensiveSpelling = require("../_shared/intensive-listening-spelling");
 const intensiveListeningService = require("../intensiveListening/service");
 const listeningMaterial = require("../intensiveListening/material");
+const listeningCorrection = require("./listening-correction");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -400,6 +402,7 @@ function attemptDateValue(attempt) {
   return date && !Number.isNaN(date.getTime()) ? date.getTime() : 0;
 }
 
+
 function isVocabularySet(set) {
   if (!set) return false;
   return [
@@ -638,6 +641,7 @@ function generatedClassId(name) {
 function membershipIsActive(membership) {
   return Boolean(membership) && membership.active !== false && !membership.ended_at;
 }
+
 
 async function endActiveClassMemberships(studentUid, now, teacherUid) {
   const student = await getOne("students", { auth_uid: studentUid });
@@ -1077,6 +1081,10 @@ function sameStringSet(left, right) {
   return a.length === b.length && a.every((value, index) => value === b[index]);
 }
 
+
+
+
+
 async function deleteStudentAccount(event, teacher) {
   const authUid = text(event.auth_uid);
   if (!authUid) throw new Error("AUTH_UID_REQUIRED");
@@ -1265,7 +1273,10 @@ function listeningTeacherView(material, includeSource = true, metadata = {}) {
     transcript_revision: normalized.transcript_revision,
     publication_status: normalized.publication_status,
     has_published: metadata.has_published === true,
+    has_draft: metadata.has_draft === true,
+    publication_revision: Math.max(0, Number(metadata.publication_revision) || 0),
     draft_revision: Math.max(0, Number(material.draft_revision) || 0),
+    created_at: material.created_at || null,
     updated_at: material.updated_at || null,
     media: normalized.media,
     tracks: {
@@ -1281,12 +1292,18 @@ async function listListeningMaterials() {
     getAll(LISTENING_DRAFT_COLLECTION, { orderBy: { field: "updated_at", direction: "desc" } }),
   ]);
   const published = new Map(publishedRows.map((row) => [text(row.material_id || row.set_id), row]));
+  if (published.size !== publishedRows.length) throw new Error("LISTENING_DUPLICATE_MATERIAL");
   const drafts = new Map(draftRows.map((row) => [text(row.material_id || row.set_id), row]));
   const ids = [...new Set([...published.keys(), ...drafts.keys()])].filter(Boolean);
   const materials = ids.map((id) => {
     const draft = drafts.get(id);
     const live = published.get(id);
-    return listeningTeacherView(draft || live, false, { has_published: Boolean(live) });
+    const summary = listeningTeacherView(draft || live, false, { has_published: Boolean(live), has_draft: Boolean(draft), publication_revision: live && live.publication_revision });
+    const createdTimes = [draft && draft.created_at, live && live.created_at].filter(Boolean).map((value) => new Date(value).getTime()).filter(Number.isFinite);
+    const updatedTimes = [draft && draft.updated_at, live && live.updated_at].filter(Boolean).map((value) => new Date(value).getTime()).filter(Number.isFinite);
+    summary.created_at = createdTimes.length ? new Date(Math.min(...createdTimes)) : null;
+    summary.updated_at = updatedTimes.length ? new Date(Math.max(...updatedTimes)) : null;
+    return summary;
   }).sort((left, right) => new Date(right.updated_at || 0).getTime() - new Date(left.updated_at || 0).getTime());
   return { success: true, materials };
 }
@@ -1294,10 +1311,48 @@ async function listListeningMaterials() {
 async function getListeningMaterial(event) {
   const id = listeningMaterialId(event.material_id || event.set_id);
   const draft = await getOne(LISTENING_DRAFT_COLLECTION, { material_id: id }) || await getOne(LISTENING_DRAFT_COLLECTION, { set_id: id });
-  const published = await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: id }) || await getOne(LISTENING_MATERIAL_COLLECTION, { set_id: id });
+  const published = await singlePublishedListeningMaterial(id);
   const material = draft || published;
   if (!material) throw new Error("LISTENING_MATERIAL_NOT_FOUND");
-  return { success: true, material: listeningTeacherView(material, true, { has_published: Boolean(published) }) };
+  return { success: true, material: listeningTeacherView(material, true, { has_published: Boolean(published), has_draft: Boolean(draft), publication_revision: published && published.publication_revision }) };
+}
+
+async function singlePublishedListeningMaterial(id) {
+  const result = await db.collection(LISTENING_MATERIAL_COLLECTION).where({ material_id: id }).limit(2).get();
+  const rows = result.data || [];
+  if (rows.length > 1) throw new Error("LISTENING_DUPLICATE_MATERIAL");
+  return rows[0] || null;
+}
+
+async function applyListeningCorrection(event, teacher) {
+  const id = listeningMaterialId(event.material_id);
+  const published = await singlePublishedListeningMaterial(id);
+  if (!published) throw new Error("LISTENING_MATERIAL_NOT_FOUND");
+  if (intensiveListeningService.normalizedMaterial(published).publication_status !== "published" || published.visible === false) throw new Error("LISTENING_MATERIAL_NOT_PUBLISHED");
+  const claimedId = event.transcript && !Array.isArray(event.transcript) && text(event.transcript.materialId || event.transcript.material_id || event.transcript.setId || event.transcript.set_id);
+  if (claimedId && claimedId !== id) throw new Error("LISTENING_CORRECTION_MATERIAL_MISMATCH");
+  const currentRevision = Math.max(0, Number(published.publication_revision) || 0);
+  if (!Number.isInteger(Number(event.publication_revision)) || Number(event.publication_revision) !== currentRevision) throw new Error("LISTENING_PUBLISH_CONFLICT");
+  const existingDraft = await getOne(LISTENING_DRAFT_COLLECTION, { material_id: id });
+  if (existingDraft) throw new Error("LISTENING_DRAFT_EXISTS");
+  const units = listeningCorrection.correctedUnits(event.transcript, intensiveListeningService.normalizedMaterial(published).units);
+  const source = intensiveListeningService.sourceMaterial(published);
+  const candidate = {
+    ...source,
+    material_id: id,
+    title: published.title,
+    source_family: published.source_family,
+    source_label: published.source_label,
+    series_label: published.series_label,
+    published_on: published.published_on,
+    linked_practice_set_id: published.linked_practice_set_id,
+    media: published.media,
+    audio_src: published.audio_src,
+    units,
+    tracks: { dictation: { enabled: true, segments: units } },
+  };
+  const replacement = listeningDraftFromEvent({ material_id: id, material: candidate });
+  return publishListeningMaterial({ material_id: id, publication_revision: currentRevision }, teacher, replacement);
 }
 
 function listeningValidation(material) {
@@ -1328,6 +1383,10 @@ async function saveListeningMaterial(event, teacher) {
   const now = new Date();
   const payload = {
     ...draft,
+    source_set_id: existing && existing.source_set_id || published && published.source_set_id || draft.source_set_id || draft.material_id.replace(/^IL-/, ""),
+    source_format: existing && existing.source_format || published && published.source_format || "timestamped_transcript",
+    segmentation_policy: existing && existing.segmentation_policy || published && published.segmentation_policy || "source_segments",
+    policy_revision: Math.max(1, Number(existing && existing.policy_revision || published && published.policy_revision) || 1),
     draft_revision: currentRevision + 1,
     base_publication_revision: Math.max(0, Number(published && published.publication_revision) || 0),
     updated_at: now,
@@ -1357,11 +1416,10 @@ function nextListeningRevision(track) {
 }
 
 function publishedListeningMaterial(draft, current) {
-  if (!current) return draft;
-  const before = intensiveListeningService.normalizedMaterial(current);
+  const before = current ? intensiveListeningService.normalizedMaterial(current) : null;
   const after = intensiveListeningService.normalizedMaterial(draft);
-  const canonicalChanged = JSON.stringify({ media: before.media, units: before.units }) !== JSON.stringify({ media: after.media, units: after.units });
-  const contentRevision = canonicalChanged ? nextListeningRevision("content") : before.content_revision;
+  const canonicalChanged = before && JSON.stringify({ media: before.media, units: before.units }) !== JSON.stringify({ media: after.media, units: after.units });
+  const contentRevision = canonicalChanged ? nextListeningRevision("content") : before ? before.content_revision : after.content_revision;
   return {
     ...draft,
     schema_version: 3,
@@ -1370,8 +1428,7 @@ function publishedListeningMaterial(draft, current) {
     dictation_revision: contentRevision,
     transcript_revision: contentRevision,
     tracks: {
-      ...draft.tracks,
-      dictation: { ...draft.tracks.dictation, revision: contentRevision, segments: after.units },
+      dictation: { ...after.tracks.dictation, revision: contentRevision, segments: after.units },
     },
     units: after.units,
     modes: { dictation: { enabled: after.tracks.dictation.enabled } },
@@ -1392,6 +1449,7 @@ async function upsertListeningSet(material, status, now) {
     visible: status === "published",
     schema_version: 3,
     dictation_unit_count: normalized.tracks.dictation.enabled ? listeningMaterial.trainingSegments(normalized, "dictation").length : 0,
+    sequence_unit_count: normalized.units.length,
     track_count: listeningMaterial.enabledTracks(normalized).length,
     mastery_enabled: false,
     passing_percentage: 100,
@@ -1407,16 +1465,19 @@ async function upsertListeningSet(material, status, now) {
   else await db.collection("sets").add({ ...setUpdate, created_at: now });
 }
 
-async function publishListeningMaterial(event, teacher) {
+async function publishListeningMaterial(event, teacher, directReplacement = null) {
   const id = listeningMaterialId(event.material_id || event.set_id);
-  const draft = await getOne(LISTENING_DRAFT_COLLECTION, { material_id: id });
-  const current = await getOne(LISTENING_MATERIAL_COLLECTION, { material_id: id });
+  const draft = directReplacement ? null : await getOne(LISTENING_DRAFT_COLLECTION, { material_id: id });
+  const current = await singlePublishedListeningMaterial(id);
   if (!draft && !current) throw new Error("LISTENING_MATERIAL_NOT_FOUND");
   const currentPublicationRevision = Math.max(0, Number(current && current.publication_revision) || 0);
+  if (directReplacement && (!current || Number(event.publication_revision) !== currentPublicationRevision)) {
+    throw new Error("LISTENING_PUBLISH_CONFLICT");
+  }
   if (draft && Math.max(0, Number(draft.base_publication_revision) || 0) !== currentPublicationRevision) {
     throw new Error("LISTENING_PUBLISH_CONFLICT");
   }
-  const candidate = publishedListeningMaterial(draft || current, current);
+  const candidate = publishedListeningMaterial(directReplacement || draft || current, current);
   const validation = listeningValidation(candidate);
   if (!validation.valid) throw new Error(`LISTENING_VALIDATION_FAILED:${validation.errors.join("; ")}`);
   const now = new Date();
@@ -1429,8 +1490,8 @@ async function publishListeningMaterial(event, teacher) {
     published_at: current && current.published_at || now,
     updated_at: now,
     updated_by_teacher_uid: teacher.auth_uid,
-    created_at: current && current.created_at || now,
-    created_by_teacher_uid: current && current.created_by_teacher_uid || teacher.auth_uid,
+    created_at: current && current.created_at || draft && draft.created_at || now,
+    created_by_teacher_uid: current && current.created_by_teacher_uid || draft && draft.created_by_teacher_uid || teacher.auth_uid,
   };
   delete payload._id;
   delete payload.draft_revision;
@@ -1441,6 +1502,7 @@ async function publishListeningMaterial(event, teacher) {
   const dictationChanged = !current || listeningTrackChanged(current, payload, "dictation", commonChanged);
   const impact = commonChanged || dictationChanged ? "dictation" : "metadata";
   const historyId = `listening-history-${id}-${nextPublicationRevision}`;
+  const publishedSource = intensiveListeningService.sourceMaterial(payload);
   try {
     await db.collection(LISTENING_HISTORY_COLLECTION).doc(historyId).create({
       history_id: historyId,
@@ -1449,7 +1511,7 @@ async function publishListeningMaterial(event, teacher) {
       publication_revision: nextPublicationRevision,
       impact,
       previous_material: current ? intensiveListeningService.sourceMaterial(current) : null,
-      published_material: intensiveListeningService.sourceMaterial(payload),
+      published_material: publishedSource,
       published_by_teacher_uid: teacher.auth_uid,
       published_at: now,
       created_at: now,
@@ -1457,12 +1519,21 @@ async function publishListeningMaterial(event, teacher) {
   } catch (error) {
     const message = String(error && (error.message || error.code) || "").toLowerCase();
     if (!message.includes("exist") && !message.includes("duplicate") && !message.includes("already")) throw error;
+    const existingHistory = await getOne(LISTENING_HISTORY_COLLECTION, { history_id: historyId });
+    if (!existingHistory || JSON.stringify(existingHistory.published_material) !== JSON.stringify(publishedSource)) {
+      throw new Error("LISTENING_PUBLISH_CONFLICT");
+    }
   }
   if (current) await db.collection(LISTENING_MATERIAL_COLLECTION).doc(current._id).update(payload);
-  else await db.collection(LISTENING_MATERIAL_COLLECTION).add(payload);
+  else await db.collection(LISTENING_MATERIAL_COLLECTION).doc(id).create(payload);
   await upsertListeningSet(payload, "published", now);
   if (draft) await db.collection(LISTENING_DRAFT_COLLECTION).doc(draft._id).remove();
-  return { success: true, material: listeningTeacherView(payload, true, { has_published: true }) };
+  const live = await singlePublishedListeningMaterial(id);
+  if (!live || Number(live.publication_revision) !== nextPublicationRevision ||
+      JSON.stringify(intensiveListeningService.normalizedMaterial(live).units) !== JSON.stringify(afterNormalized.units)) {
+    throw new Error("LISTENING_PUBLICATION_VERIFY_FAILED");
+  }
+  return { success: true, material: listeningTeacherView(live, true, { has_published: true, publication_revision: nextPublicationRevision }) };
 }
 
 async function hideListeningMaterial(event, teacher) {
@@ -3287,6 +3358,7 @@ async function applyAdjustedAttemptEffects(attempt, adjustedAttempt, correctCoun
   }
 }
 
+
 async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, options = {}) {
   const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
   const target = currentResults.find((item) => String(item.question_id) === dispute.question_id);
@@ -4006,6 +4078,7 @@ async function supersedeStarEvidence(event, teacher) {
   return { success: true };
 }
 
+
 async function lexiconByNormalizedWords(words) {
   const values = Array.from(new Set((words || []).filter(Boolean)));
   const output = {};
@@ -4254,12 +4327,16 @@ exports.main = async (event) => {
     if (action === "validateListeningMaterial") return await validateListeningMaterial(event);
     if (action === "previewListeningMaterial") return await getListeningMaterial(event);
     if (action === "publishListeningMaterial") return await publishListeningMaterial(event, teacher);
+    if (action === "applyListeningCorrection") return await applyListeningCorrection(event, teacher);
     if (action === "hideListeningMaterial") return await hideListeningMaterial(event, teacher);
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
     if (action === "createAssignments") return await createAssignments(event, teacher);
     if (action === "updateAssignments") return await updateAssignments(event, teacher);
     if (action === "cancelAssignments") return await cancelAssignments(event, teacher);
     if (action === "getAnswerKeyForSet") return await getAnswerKeyForSet(event);
+    if (action === "getBbcEditor") return await bbcEditor.read(db, event.set_id);
+    if (action === "saveBbcContent") return await bbcEditor.save(db, event, teacher, nextGradingVersion);
+    if (action === "acceptBbcAnswer") return await bbcEditor.accept(db, event, teacher, resolveDispute);
     if (action === "listAssignments") return await listAssignments();
     if (action === "listProgress") return await listProgress();
     if (action === "listAttempts") return await listAttempts();

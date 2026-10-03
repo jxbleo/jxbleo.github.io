@@ -695,6 +695,8 @@
             .top-audio-exit { padding: 0 6px; font-size: 10px; }
         }
     </style>
+<link rel="stylesheet" href="assets/css/training-checkin.css?v=20260930-status-1">
+<script src="assets/js/training-checkin.js?v=20260930-status-1"></script>
 </head>
 <body data-practice-nav="manual">
 <main class="exam-shell">
@@ -1359,6 +1361,7 @@
         }).then(function(response) {
             if (!response || !response.success) throw new Error(response && response.message || 'Unable to submit.');
             applyFeedback(response);
+            window.MrCatTrainingCheckin.score(response, { family: '雅思', title: lesson.title || setId, setId: setId, assignmentId: assignmentId });
         }).catch(function(error) {
             submit.disabled = false;
             updateSubmitButton();

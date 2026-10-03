@@ -1,5 +1,17 @@
 # 07 Testing Checklist
 
+## Cleanup regression scope (2026-10-03)
+
+Run the existing domain suites plus `test:bbc-editor`, `test:training-checkin`,
+`test:ai-jobs` and `test:function-packaging`. Writing and Speaking scripts include
+the new pipeline, deletion, email and historical-report compatibility checks.
+UI checks follow the published sidebar and recent-report layout; cache keys must
+be versioned but must not be pinned to one deployment date. Quota timeout tests
+advance a fake clock at the request boundary, not per `Date.now()` read.
+Browser ES-module fixtures must load explicitly on Node 18; do not rely on
+newer Node syntax detection. Offline packaging must preserve auth denial and the SDK adapters still used.
+Private protected-resource payload is a local prerequisite and stays ignored.
+
 ## Source cleanup / static publication
 
 - Run `npm run test:listening-contracts`, `npm run test:student-accounts` and
@@ -2771,8 +2783,9 @@ High priority improvement:
   confirm quota release. Test boundary at exactly the daily limit and limit zero.
 - Confirm replacement failure preserves the current Composition; successful
   confirmation clears prior current reviews without deleting the usage ledger.
-- Confirm teacher settings load lazily, accept 0–100000, and email contains no
-  student prompt, manuscript, feedback, or image.
+- Confirm teacher settings load lazily and accept 0–100000. Review emails sent
+  to enabled teacher addresses contain the full private student report; Token
+  telemetry alerts contain no student prompt, manuscript, feedback, or image.
 - Confirm Cambridge 9093 Paper 2 exposes three separate Rubrics and enforces
   whole-mark ranges of 0–15, 0–10, and 0–25 for Shorter Writing, Reflective
   Commentary, and Extended Writing respectively.
@@ -2800,31 +2813,24 @@ High priority improvement:
   reaches durable OCR enqueue without `Cannot create field ... in element
   {pending_upload: null}`. The contract test must verify `db.command.set(...)`
   coverage for both upload entry points and the revision-job handoff.
-- Verify duplicate, missing, out-of-range, and empty markers never auto-map to a
-  sentence. Exercise low-confidence markers, line-wrapped handwriting, and a
-  page with both mapped and unresolved answers; confirm the tiny high `✓`, medium
-  `!`, and low `?` confidence symbols have accessible names. Manually assign
-  an unresolved answer and verify the sentence identity is shown before import.
-  Populate every candidate with provider `warnings` and confirm Review Scan shows
-  no warning copy, red bullet list, spelling suggestion, or grammar feedback;
-  confidence marks and deterministic mapping validation must continue to work.
-- On every Review Scan card, confirm the upper box has the same pale-red fill and
-  red-border feel as a wrong Vocabulary question, and shows the global number plus
-  original sentence. Clicking anywhere in it must open the native sentence selector;
-  the lower inset OCR sentence must remain directly editable. Verify originally
-  correct and already accepted sentences never appear, another card's selected
-  target is disabled, changing that card releases the old target, and the server
-  rejects any crafted import that targets completed work or duplicates a sentence.
-- Confirm scan results are reviewed before import and that import only fills the
-  selected revision drafts. It must not call `Check`, mark any sentence accepted,
-  or create a rewrite result. Verify the page contains no heading, instruction,
-  missing-sentence summary, mapping badge, handwritten-number label, or typed/scanned
-  choice controls. With an existing draft, confirm `Confirm Scanning` replaces it with the
-  reviewed scan text, while returning without confirmation preserves it unchanged.
-  Confirm the bottom primary action reads exactly `Confirm Scanning`, remains
-  disabled for an unmapped, duplicate, or empty row, and enables as soon as every
-  card has one unique eligible sentence plus non-empty text.
-- After successful `Confirm Scanning`, confirm Sentence Revision returns with all
+- Run `node scripts/test-writing-revision-matching.js`: original/reference matches,
+  ambiguous near ties, fragments, low OCR confidence, number/content conflicts,
+  duplicate numbers, occupied targets, batch order independence and completed-target
+  exclusion. No match may reveal references, edit OCR text or invoke another model.
+- At 320px, phone and iPad widths, review mixed automatic/unresolved/check rows.
+  Verify explicit pairing title/progress, neutral original → scanned text layout,
+  initially unresolved-first order, and no movement of a card after selection.
+  Choice buttons show full text, disable claimed targets and restore keyboard focus.
+- Edit a paired answer through `Edit text`; final import must disable until
+  `Confirm this match` is pressed. Empty text cannot be confirmed. Low-confidence
+  numbered answers require explicit card confirmation; raw provider warnings and
+  reference answers must not appear. Returning leaves prior drafts untouched.
+- Confirm `Confirm and Fill` is disabled for unresolved, duplicate, empty or
+  unreviewed uncertain rows. It only fills owned eligible drafts; the existing
+  server transaction still rejects duplicate/completed targets and stale revisions.
+  During import, disable return and freeze OCR edits; a failed request must unlock
+  the page and re-enable retry without losing the reviewed text.
+- After successful `Confirm and Fill`, confirm Sentence Revision returns with all
   required cards on their attempt faces and immediately opens `Submit revisions now?`.
   Submit must enter the existing rewrite-check flow. Repeat with `Review First`,
   scrim click, and Escape: each must close the dialog, preserve every imported
@@ -2845,9 +2851,38 @@ High priority improvement:
 
 #### Provider Token telemetry
 
+- Run `node scripts/test-writing-report-emails.js`. For a new Composition,
+  verify the first teacher email contains the student's manuscript, content
+  and/or language comments, sentence issues and reference suggestions.
+  Intermediate failed rewrite checks must generate no email. Completion by
+  accepted rewrites or final teacher Argue approval sends exactly one completed
+  report with rewrite feedback. A first review that already completes the
+  Composition sends one email. Retries must not duplicate either milestone,
+  and the first email must keep its original snapshot after later corrections.
+- In CloudBase, confirm both released functions are healthy and the existing
+  sender timer continues to run. For an Argue-approved final completion, verify
+  the sender's bounded `completion_watch` scan creates the same stable final
+  event, clears the watch, and sends it once. Inspect a real first/final email
+  at an enabled teacher recipient before treating SMTP delivery as verified.
+
 - Run `npm run test:writing-tutor`. Verify Chat Completions and Responses usage
   shapes normalize identically, structural repair counts as two calls, and
   absent or partial `usage` is never converted into an estimate.
+- For the current 2026-09-13 configuration, verify the explicit text override
+  selects `qwen3.8-max` first, quota exhaustion selects only `qwen3.8-max-0902`,
+  and OCR remains `qwen3.7-flash`. Neither text call should select Plus; the
+  primary model must be absent from the fallback list. Read back the live
+  function environment after a configuration-only change and verify unrelated
+  values and runtime settings are preserved.
+- For legacy compatibility, configure `qwen3.7-plus` with ordered text quota fallbacks `qwen3.8-max` and
+  `qwen3.8-max-0902`. Simulate the exact `AllocationQuota.FreeTierOnly` response
+  at each boundary and verify the request sequence is Plus, Max, then Max-0902;
+  OCR remains `qwen3.7-flash`, result metadata names the selected Max and marks
+  its position, and all physical calls enter telemetry in order. Repeat with
+  a generic 403 such as `AccessDenied` and verify Max is never called. Audit the
+  exact quota rejection as one non-billable call without producing a false
+  `PROVIDER_USAGE_MISSING` alert. Exhaust all three simulated quotas and verify
+  the request fails after Max-0902 without selecting any paid model.
 - In development, complete one OCR, one General Language/standardized review,
   one Revision Scan, and one rewrite Check. Verify each physical provider call
   creates exactly one immutable `writing_model_usage_events` row with the
@@ -3248,7 +3283,7 @@ Increased Contrast.
   Voiceprint surface; confirm neither `Choose a Set` nor the standalone
   Voiceprint card remains above or below the Discussion/report.
 - Open the drawer at desktop and 390px: its first row must contain only the
-  equal labelled `Voiceprint` and `Start New` actions; below it only the `Part A` / `Part B` segmented control and
+  equal labelled `Voiceprint` and `Start New` actions; below it only the `Discussion` / `Response` segmented control and
   the selected mode's existing cards may appear. Confirm `New · Choose a Set`,
   both `Your Work` headings, and the inactive mode's cards
   are absent.

@@ -5,6 +5,9 @@ not the current product contract, deployment checklist, or default agent reading
 list. Historical statements such as “pending rollout” reflect their original
 date and must be checked against current code and numbered documentation.
 
+- `AGENT_TODO_THROUGH_20261002.md`: completed and superseded QA/release history;
+  original relative paths describe the repository root. Current follow-up is
+  in the root `AGENT_TODO.md`.
 - `plans/`: implementation plans 12–19, including superseded Listening designs.
 - `legacy/`: the former root architecture, deployment, content workflow and
   blueprint documents. Their complete text is retained for provenance.

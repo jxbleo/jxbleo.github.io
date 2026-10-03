@@ -271,6 +271,9 @@ function providerAttempt(config, payload, responseStatus, outcome, requestId, de
     outcome: text(outcome, 80) || "unknown",
     safe_error_code: text(details.safeErrorCode, 120) || null,
     provider_code: text(details.providerCode, 200) || null,
+    request_started_at: details.requestStartedAt || null,
+    response_completed_at: details.responseCompletedAt || null,
+    duration_ms: details.durationMs != null && Number.isFinite(Number(details.durationMs)) ? Math.max(0, Math.round(Number(details.durationMs))) : null,
     ...normalizeProviderUsage(payload),
   };
 }
@@ -300,16 +303,66 @@ function isFreeTierQuotaExhausted(error) {
   return text(error && error.providerCode, 200) === "AllocationQuota.FreeTierOnly";
 }
 
-async function imageContent(url, transport) {
+function deadlineError() {
+  const error = new Error("WRITING_AI_TIMEOUT");
+  error.code = "WRITING_AI_TIMEOUT";
+  error.deadlineExceeded = true;
+  return error;
+}
+
+function deadlineAt(options = {}) {
+  const localDeadline = Date.now() + normalizeTimeoutMs(options.timeoutMs);
+  const supplied = Number(options.deadlineAt);
+  return Number.isFinite(supplied) ? Math.min(localDeadline, supplied) : localDeadline;
+}
+
+function remainingDeadlineMs(deadline) {
+  return Math.max(0, Math.floor(Number(deadline) - Date.now()));
+}
+
+function raceUntil(promise, deadline, onTimeout) {
+  const remaining = remainingDeadlineMs(deadline);
+  if (remaining <= 0) {
+    if (typeof onTimeout === "function") onTimeout();
+    // Attach a rejection handler to an already-started promise before returning.
+    Promise.resolve(promise).catch(() => {});
+    return Promise.reject(deadlineError());
+  }
+  let timer;
+  let settled = false;
+  return new Promise((resolve, reject) => {
+    timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      if (typeof onTimeout === "function") onTimeout();
+      reject(deadlineError());
+    }, remaining);
+    Promise.resolve(promise).then((value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    }, (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(error);
+    });
+  });
+}
+
+async function imageContent(url, transport, runtime = {}) {
   if (transport === "url") return { type: "image_url", image_url: { url } };
-  const response = await fetch(url);
+  const fetcher = runtime.fetcher || fetch;
+  const controller = runtime.controller || new AbortController();
+  const response = await raceUntil(fetcher(url, { signal: controller.signal }), runtime.deadlineAt, () => controller.abort());
   if (!response.ok) throw new Error("PHOTO_URL_FAILED");
   const mimeType = text(response.headers.get("content-type"), 100) || "image/jpeg";
-  const bytes = Buffer.from(await response.arrayBuffer());
+  const bytes = Buffer.from(await raceUntil(response.arrayBuffer(), runtime.deadlineAt, () => controller.abort()));
   return { type: "image_url", image_url: { url: `data:${mimeType};base64,${bytes.toString("base64")}` } };
 }
 
-async function requestBody(config, options, correction) {
+async function requestBody(config, options, correction, runtime = {}) {
   const { system, userText, schemaName, schema, images } = options;
   const repair = correction
     ? `\nThe previous JSON response failed validation: ${correction}. Return a corrected JSON object only.`
@@ -328,7 +381,7 @@ async function requestBody(config, options, correction) {
     };
   }
   const userContent = images.length
-    ? [...await Promise.all(images.map((url) => imageContent(url, config.imageTransport))), { type: "text", text: userText + repair }]
+    ? [...await Promise.all(images.map((url) => imageContent(url, config.imageTransport, runtime))), { type: "text", text: userText + repair }]
     : userText + repair;
   const schemaInstruction = config.protocol === "chat_json_object"
     ? `\nReturn JSON only. It must match this JSON Schema exactly: ${JSON.stringify(schema)}`
@@ -351,47 +404,92 @@ async function requestBody(config, options, correction) {
 }
 
 async function callOnce(config, options, correction) {
-  const body = JSON.stringify(await requestBody(config, options, correction));
-  if (typeof options.onRequestStart === "function") await options.onRequestStart();
-  const controller = new AbortController();
+  const deadline = Number(options.deadlineAt);
+  // Keep the per-request safety clamp in the physical-call function; the
+  // shared absolute deadline below is the authority across repair/fallback.
   const timeoutMs = Math.min(MAX_PROVIDER_TIMEOUT_MS, Math.max(1000, normalizeTimeoutMs(options.timeoutMs)));
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const preparationController = new AbortController();
+  let body;
+  try {
+    if (remainingDeadlineMs(deadline) <= 0) throw deadlineError();
+    body = JSON.stringify(await raceUntil(
+      requestBody(config, options, correction, { deadlineAt: deadline, controller: preparationController, fetcher: options.fetch }),
+      deadline,
+      () => preparationController.abort(),
+    ));
+  } catch (error) {
+    if (!error || !error.deadlineExceeded) throw error;
+    // Image preparation timed out before a model request existed. Keep the
+    // physical-call ledger empty so this is not counted as a provider call.
+    error.request_preparation_timed_out = true;
+    throw error;
+  }
+  if (typeof options.onRequestStart === "function") {
+    await raceUntil(options.onRequestStart({ deadlineAt: deadline }), deadline, null);
+  }
+  if (remainingDeadlineMs(deadline) <= 0) {
+    const error = deadlineError();
+    error.request_not_started = true;
+    throw error;
+  }
+  const requestStartedAt = new Date();
+  let responseCompletedAt = null;
+  const controller = new AbortController();
+  let deadlineExpired = false;
+  const remainingMs = Math.min(timeoutMs, remainingDeadlineMs(deadline));
+  const timeout = setTimeout(() => { deadlineExpired = true; controller.abort(); }, remainingMs);
   let response;
   try {
-    response = await fetch(config.apiUrl, {
+    const fetcher = options.fetch || fetch;
+    response = await raceUntil(fetcher(config.apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.apiKey}` },
       body,
       signal: controller.signal,
-    });
+    }), deadline, () => { deadlineExpired = true; controller.abort(); });
   } catch (error) {
-    const code = error && error.name === "AbortError" ? "WRITING_AI_TIMEOUT" : "WRITING_AI_UNAVAILABLE";
-    throw attachProviderTelemetry(new Error(code), [providerAttempt(config, null, null, "transport_error", null, { safeErrorCode: code })]);
-  } finally {
+    const code = deadlineExpired || error && error.deadlineExceeded || error && error.name === "AbortError"
+      ? "WRITING_AI_TIMEOUT" : "WRITING_AI_UNAVAILABLE";
     clearTimeout(timeout);
+    throw attachProviderTelemetry(new Error(code), [providerAttempt(config, null, null, "transport_error", null, {
+      safeErrorCode: code, requestStartedAt: requestStartedAt.toISOString(), durationMs: Date.now() - requestStartedAt.getTime(),
+    })]);
   }
   if (!response.ok) {
     // Extract only the bounded provider code. Never log or persist the response
     // body because some vendors may echo request data in their error payload.
     let errorPayload = null;
-    try { errorPayload = await response.json(); } catch (_error) {}
+    try { errorPayload = await raceUntil(response.json(), deadline, () => { deadlineExpired = true; controller.abort(); }); } catch (error) {
+      const timedOut = deadlineExpired || error && error.deadlineExceeded || error && error.name === "AbortError";
+      const code = timedOut ? "WRITING_AI_TIMEOUT" : `WRITING_AI_HTTP_${response.status}`;
+      clearTimeout(timeout);
+      const errorOut = new Error(code);
+      errorOut.providerCode = null;
+      throw attachProviderTelemetry(errorOut, [providerAttempt(config, null, response.status, timedOut ? "transport_error" : "http_error", response.headers.get("x-request-id"), {
+        safeErrorCode: timedOut ? code : writingSafeErrorCode(response.status, null), requestStartedAt: requestStartedAt.toISOString(), durationMs: Date.now() - requestStartedAt.getTime(),
+      })]);
+    }
+    responseCompletedAt = new Date();
     const code = providerErrorCode(errorPayload);
     const safeErrorCode = writingSafeErrorCode(response.status, code);
     const error = new Error(`WRITING_AI_HTTP_${response.status}`);
     error.providerCode = code || null;
+    clearTimeout(timeout);
     throw attachProviderTelemetry(error, [
       providerAttempt(
         config, null, response.status,
         code === "AllocationQuota.FreeTierOnly" ? "quota_exhausted" : "http_error",
-        response.headers.get("x-request-id"), { safeErrorCode, providerCode: code },
+        response.headers.get("x-request-id"), { safeErrorCode, providerCode: code, requestStartedAt: requestStartedAt.toISOString(), responseCompletedAt: responseCompletedAt.toISOString(), durationMs: responseCompletedAt.getTime() - requestStartedAt.getTime() },
       ),
     ]);
   }
   let payload;
   try {
-    payload = await response.json();
+    payload = await raceUntil(response.json(), deadline, () => { deadlineExpired = true; controller.abort(); });
+    responseCompletedAt = new Date();
     const attempt = providerAttempt(
       config, payload, response.status, "response_received", response.headers.get("x-request-id"),
+      { requestStartedAt: requestStartedAt.toISOString(), responseCompletedAt: responseCompletedAt.toISOString(), durationMs: responseCompletedAt.getTime() - requestStartedAt.getTime() },
     );
     const output = responseOutputText(payload, config.protocol);
     if (!output) {
@@ -410,17 +508,29 @@ async function callOnce(config, options, correction) {
       attempt.safe_error_code = "WRITING_AI_SCHEMA_RESPONSE_INVALID";
       throw attachProviderTelemetry(error, [attempt]);
     }
+    // Synchronous parsing and validation still consume the same absolute
+    // deadline. Do not publish a result that became valid after the budget.
+    if (remainingDeadlineMs(deadline) <= 0) {
+      const error = deadlineError();
+      attempt.outcome = "timeout";
+      attempt.safe_error_code = "WRITING_AI_TIMEOUT";
+      throw attachProviderTelemetry(error, [attempt]);
+    }
     attempt.outcome = "structured_success";
     return { data: parsed, telemetry: { attempts: [attempt] } };
   } catch (error) {
     if (error && error.providerTelemetry) throw error;
+    const timedOut = deadlineExpired || error && error.deadlineExceeded || error && error.name === "AbortError";
     const attempt = providerAttempt(
       config, payload, response.status, "invalid_response", response.headers.get("x-request-id"),
-      { safeErrorCode: error && error.message === "WRITING_AI_SCHEMA_RESPONSE_INVALID" ? "WRITING_AI_SCHEMA_RESPONSE_INVALID" : "WRITING_AI_INVALID_RESPONSE" },
+      { safeErrorCode: timedOut ? "WRITING_AI_TIMEOUT" : error && error.message === "WRITING_AI_SCHEMA_RESPONSE_INVALID" ? "WRITING_AI_SCHEMA_RESPONSE_INVALID" : error && error.message === "WRITING_AI_OUTPUT_TRUNCATED" ? "WRITING_AI_OUTPUT_TRUNCATED" : "WRITING_AI_INVALID_RESPONSE", requestStartedAt: requestStartedAt.toISOString(), responseCompletedAt: responseCompletedAt && responseCompletedAt.toISOString(), durationMs: Date.now() - requestStartedAt.getTime() },
     );
-    const safeError = error instanceof SyntaxError
+    const safeError = timedOut ? new Error("WRITING_AI_TIMEOUT") : error instanceof SyntaxError
       ? new Error("WRITING_AI_SCHEMA_RESPONSE_INVALID") : error;
+    if (safeError && timedOut) safeError.deadlineExceeded = true;
     throw attachProviderTelemetry(safeError, [attempt]);
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -447,7 +557,8 @@ async function callModelWithStructuralRepair(config, normalized) {
 }
 
 async function callStructuredModel(options) {
-  const normalized = { ...options, images: Array.isArray(options.images) ? options.images : [] };
+  const sharedDeadline = deadlineAt(options);
+  const normalized = { ...options, images: Array.isArray(options.images) ? options.images : [], deadlineAt: sharedDeadline };
   const config = providerConfig(Boolean(options.vision));
   const providerMetadata = (activeConfig, structuralRepairUsed, modelIndex) => {
     let providerHost = "configured-provider";
@@ -495,6 +606,6 @@ module.exports = {
   _test: {
     validateAgainstSchema, responseOutputText, parseStructuredOutput, providerConfig,
     normalizeOcrPages, normalizeTimeoutMs, normalizeProviderUsage,
-    providerErrorCode, isFreeTierQuotaExhausted, writingSafeErrorCode,
+    providerErrorCode, isFreeTierQuotaExhausted, writingSafeErrorCode, deadlineAt, remainingDeadlineMs,
   },
 };

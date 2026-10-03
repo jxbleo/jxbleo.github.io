@@ -1,5 +1,16 @@
 # 06 Decisions
 
+## 2026-10-03 — Reconcile before simplifying
+
+Published static bytes take precedence over unshipped local UI alternatives.
+Preserve the prior main cleanup, current features and historical compatibility;
+avoid a framework migration or broad rewrite of large page controllers.
+Archive completed QA/release history rather than keeping it in the active task
+list. Private sources and unfinished work are retained with verified backups.
+For shared CloudBase module changes, rebuild all function packages conservatively.
+This small rule avoids a new dependency-graph system and never deploys packages.
+No dependency was added.
+
 ## 2026-09-21 — Explicit static entry list and conservative retirement
 
 Use one JSON manifest with the existing Node copy builder; new root HTML files
@@ -1357,6 +1368,15 @@ Decision:
   schema validation and one automatic structural repair attempt. Every result
   freezes non-secret provider/model/protocol metadata so model changes can be
   evaluated later without exposing credentials.
+- A configured ordered text quota chain is deliberately narrower than a
+  reliability fallback. The provider must return the exact free-tier stop code
+  before the same request may advance from its current text model to the next
+  configured model. This requires every non-final model's provider-side `free
+  quota exhausted: stop` switch; the final model also keeps that switch enabled
+  so the chain ends without paid usage. With a switch disabled the provider bills
+  that model and emits no safe transition signal. Vision never inherits the text chain. This avoids
+  masking credentials, permissions, throttling, malformed output, or outages as
+  a model-quality experiment while preserving exact per-call model telemetry.
 - Provider cost accounting is an append-only event ledger, not an estimated
   field on the latest Composition. One row represents one physical HTTP model
   response, including an automatic JSON-repair response. Both Chat Completions

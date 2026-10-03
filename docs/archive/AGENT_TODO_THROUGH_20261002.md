@@ -1,0 +1,1715 @@
+# Agent QA To Do List
+
+## 2026-10-01 — Compact Writing sidebar and report deletion (deployed)
+
+Owner-approved final design is live: 52px cards, 32px right-side state/progress
+rings, single-line scrolling titles, no visible status/count subline and English
+accessible states. Existing live title editing is retained. Opened reports expose
+a confirmed Delete report action; tombstones hide owned records, invalidate old
+student links and suppress late jobs without removing learning/audit history.
+
+Published only three Tutor static files and scoped `writingTutor`/`teacherAdmin`
+code updates from live snapshots. Both cloud configuration hashes are unchanged;
+ZIP, COS and public HTTPS content hashes match. Source suites, staged lifecycle
+and concurrent-deletion tests, desktop/390px synthetic browser QA and live anonymous
+auth-denial probes passed. No real student data was changed for QA.
+
+Release artifacts: ignored `.cloudbase-private/writing-sidebar-release-20261001/`.
+The older `writing-sidebar-qa/english-rings.html` is a design proposal only. No
+remaining feature or deployment action; refresh Writing to load cache key
+`20261001-writing-sidebar-2`. Preserve unrelated dirty files and use the recorded
+live baseline when preparing a future whole-tree release.
+
+## 2026-09-30 — BBC teacher Argue confirmation (deployed)
+
+Teacher BBC Argue now opens a confirmation with question number and proposed
+answer (MC letter plus option text). Only confirmation calls `acceptBbcAnswer`;
+Cancel/Escape sends no mutation. Cancel receives initial focus. Background scroll
+is locked/restored, buttons disable during submission, and failures remain in
+the dialog with retry/cancel controls. The existing authenticated, idempotent
+acceptance and regrade backend is unchanged.
+
+Published only `bbc.html` and `assets/js/bbc-teacher-editor.js` /
+`assets/css/bbc-teacher-editor.css` with cache key `20260930-3`, preserving the
+previous live HTML baseline. All three match staged hashes via COS and public
+HTTPS. Editor, quick-accept, inline-correction and Argue email/review tests plus
+staged JavaScript syntax checks pass. Synthetic browser QA verified zero requests
+on opening/Cancel/Escape, one confirmed update, inline failure recovery controls,
+MC preview, initial focus, scroll lock and 390px fit. No real grading or student
+data was modified for QA. Evidence and backups are in ignored
+`.cloudbase-private/bbc-argue-confirm-release-20260930/`. No owner action remains
+other than refreshing an already-open page. Reconcile this scoped static release
+before future whole-tree publication.
+
+## 2026-09-30 — BBC pencil editor refinement QA
+
+Replaced Edit with an Argue-sized 28×28 pencil toggle and moved Save into each
+question editor. Collapsed unsaved drafts show a red dot. Per-question saves
+preserve other drafts/open states; Save and leave covers collapsed drafts.
+Canonical editor, inline correction, teacher quick-accept and Argue email/review
+tests pass. Browser synthetic QA covers toggle, independent save, failed-save
+retention, retry, leave warning, dot reset on save/revert, Show/Hide Answers,
+and 390px layout without overflow. Staged JS/inline syntax checks pass.
+Published only `bbc.html` and the editor JS/CSS; all three match staged SHA-256
+through COS and public HTTPS. No deployment action remains. Evidence:
+`.cloudbase-private/bbc-editor-pencil-release-20260930/`. No real lesson or
+student writes used for QA; native close warning has the existing manual limit.
+
+## 2026-09-30 — Receipt status collision corrected and deployed
+
+Vocabulary's fixed login `.identity-status` leaked into the shared receipt.
+Changed receipt markup/CSS to `checkin-status`; all six host pages use refreshed
+asset keys. Local/staged receipt tests and live host-style audit passed; only
+Vocabulary contained the old positioning rule. Eight scoped static objects
+verified through COS and public HTTPS; evidence in
+`.cloudbase-private/checkin-status-fix-20260930/`. No backend or student writes.
+CUA unavailable (two timeouts); phone/desktop visual recheck remains unverified.
+
+## 2026-09-28 — Training check-in release QA
+
+Shared screenshot receipt integrated into six practice pages. Verified scoring
+and STAR presentation, Practice group tiles, required-word counts, source labels,
+I–X writing tiers, escaping and owner-only completion aggregates beyond the
+portfolio limit. BBC correction, IL/contracts, Writing Tutor and Speaking UI/IR
+retry regression checks pass. Real-component 320/390px browser QA confirms
+long-title wrapping, no overflow, outside close and one BBC close callback.
+Owner-authorized deployment completed: all eleven static objects match staged
+SHA-256 through COS and public HTTPS. `writingTutor` is Active, its deployed code
+matches the release ZIP, and configuration is unchanged. Release evidence and
+backups are in `.cloudbase-private/training-checkin-release-20260928/`; reconcile
+that scoped release before a later full-site deploy. No real student submission
+created. No remaining deployment action.
+
+
+This file is the shared QA memory for Mr. Cat Academy agents. Keep entries
+short, factual, and useful for the next run.
+
+## How To Use This File
+
+- Add reproducible product, design, content, and test issues under `Open`.
+- Move completed items to `Done` after the fix is verified.
+- Record what was tested, what changed, and any owner action still required.
+- Do not paste passwords, CloudBase secrets, grading keys, private answers, or
+  long command output here.
+- If a test touches the CloudBase development backend, mention the test account
+  role and the kind of data created, but not the password.
+
+## Local QA Credentials
+
+Automated login tests may read credentials from `.qa-secrets.local` when that
+file exists on this machine. The file is ignored by Git. Use only dedicated
+development test accounts, never the owner's real teacher account or a real
+student account.
+
+Future agents should look for the test-login setup in the repository root:
+
+- Local file: `.qa-secrets.local` (ignored by Git; do not print values)
+- Template file: `.qa-secrets.example`
+- Keys: `MR_CAT_TEST_BASE_URL`, `MR_CAT_TEST_TEACHER_ID`,
+  `MR_CAT_TEST_TEACHER_PASSWORD`, `MR_CAT_TEST_STUDENT_ID`,
+  `MR_CAT_TEST_STUDENT_PASSWORD`
+
+Useful search command:
+
+```bash
+rg -n "MR_CAT_TEST|qa-secrets|TEST_TEACHER|TEST_STUDENT" -S . .gitignore AGENTS.md AGENT_TODO.md
+```
+
+Create it from `.qa-secrets.example` and fill in local values:
+
+```bash
+cp .qa-secrets.example .qa-secrets.local
+```
+
+## Open
+
+- 2026-09-21 — Fresh post-repair metadata audit found 243 due-week candidates,
+  245 missing `due_at`, one non-normalized date and three rows without usable
+  source dates. Keep compatibility/backfill for remaining history; do not apply
+  the rest or infer dates for source-less rows. The report/STAR migration and
+  empty Listening assignment-track runtime are separately retired (see Done).
+
+- 2026-09-12 — Teacher Student lookup / Account phone layout fixed locally:
+  lookup grid rows no longer absorb spare viewport height; phone Account cards
+  use one column with full-width fields and 44px controls. Account re-render
+  preserves scroll and active name/class/system drafts, focus and selection.
+  Passed student-account lifecycle, teacher quick-accept, release verification,
+  JS/CSS syntax and diff checks; a synthetic render check
+  also passed Edit/Cancel scroll, delayed-refresh drafts/focus and Class Customize.
+  CUA browser connection timed out, so 320–760px visual QA and iPhone keyboard
+  acceptance remain pending. Owner authorized the scoped static release; no CloudBase changes.
+  Release-worktree student-task-scroll fails on its hard-coded Dashboard JS
+  cache version (20260907-3); reproduced the identical failure on unchanged
+  parent aec23e79. No Dashboard or test edits are included in this release.
+
+- 2026-09-12 — IR V2 coaching: implementation adds four evidence-linked Socratic
+  questions and three distinct-development samples with content/language notes.
+  Full Speaking regression, static build/release verification and both function
+  packages pass. Browser disclosures work; 390px viewport has no horizontal
+  overflow. Both cloud functions are Active with exact downloaded-code matches
+  and original configuration retained. Frontend COS run 34702210726 succeeded;
+  live HTML/JS/CSS bytes match. The authorized Sep 6–12 refresh scanned 62 IR
+  records: 61 ready reports and one pre-existing failed/no-report record.
+  50 reports are upgraded and verified (200 questions, 150 samples, 95–163 words);
+  11 retain their original reports because the model returned HTTP 403,
+  insufficient_quota, explicitly free quota exhausted/use-free-tier-only.
+  No paid-mode switch, top-up or account configuration change was performed.
+  Resume only after the owner restores/authorizes model availability. Private
+  original/refined manifests and verified results are backed up under the main
+  project's .cloudbase-private/ir-coaching-refresh-20260912. Part A, audio,
+  voiceprints, original reports and original assessment fields were untouched.
+
+- 2026-09-12 — Writing sentence Argue: owner-authorized `writingTutor`, `teacherAdmin`, `getDashboard`, and `sendTeacherAttemptEmails` code updates are Active and downloaded code matches the tested packages; cloud configuration is unchanged. Matching static publication follows. Dedicated QA-student real-email acceptance remains for the owner; local QA sent no real email.
+
+- 2026-09-12 — Multi-group voiceprints: local implementation and regression tests pass. The owner authorized deployment of `speakingLab` and publication of the scoped Student/Teacher frontend assets; `speakingLab` was deployed and its downloaded ZIP exactly matches the tested package; existing cloud configuration is unchanged. Static publication is in progress. Verify the next intended registration creates a second group and old IDs still match; no live voiceprints were created, updated or deleted during this task.
+
+- 2026-09-06 — Argue email release: owner-authorized publication of the scoped static entry and `getDashboard`, `intensiveListening`, `teacherAdmin`, `sendTeacherAttemptEmails` is pending. Verify the existing HTTPS Teacher URL setting, then test a dedicated QA-student request through the real WeChat mailbox notification. No real mail or cloud data was changed during local QA.
+
+- [ ] Baseline before Intensive Listening Library work: `npm run test:assignment-schedule`
+      fails at `testDashboardScheduleModel` because the current DSE-overlapping
+      dashboard fixture does not include `UPCOMING`; unrelated to this feature.
+
+- [ ] Add a lightweight smoke-test script that checks JSON parsing, catalog
+      links, and key static pages.
+- [ ] Add browser smoke coverage for visitor mode, student login, and teacher
+      preview once dedicated development test accounts are available.
+- [ ] Consider passing durable `question_text` from each practice runtime's
+      Argue submission path.
+- [ ] If NAWL-A through NAWL-J still do not appear in student Explore or
+      teacher Library after the static site is published, import the matching
+      CloudBase `sets` records for visibility and `grading_keys` records for
+      grading in the development environment.
+- [ ] Investigate teacher Progress data freshness: after a dev student completed
+      assignment `BBC-250717` at 100%, the student dashboard showed it under
+      FINISHED, but teacher Progress still showed the older `5 TO DO / 4
+      Finished` summary and did not list that assignment after reload.
+- [ ] Before importing `NGSL-D`, confirm or replace the duplicate unit words
+      found in the source material: `quiet`, `relatively`, and `attract` each
+      appears twice in the 1301-1400 unit.
+- [ ] Plan a safe CloudBase content de-duplication pass. Read-only checks on
+      2026-06-20 showed 395 visible `sets` and 411 `grading_keys`, more than
+      the 106 generated records, likely from repeated console imports. Do not
+      delete duplicates without backup and owner approval.
+
+## Done
+
+### IELTS topic cards static release — 2026-09-22
+
+- Removed toolbar name and library Part 2 / Part 3 route text; topic detail now
+  has separate topic/source, Part 2 and Part 3 cards with centered green titles.
+- Scoped release retains current main's shared stylesheet versions and all
+  recording/auth/history behavior. UI specification and checklist updated.
+- Passed IELTS core/recorder tests, GitHub publisher contracts, release verification,
+  static build and whitespace checks against current main. Local visual QA remains
+  blocked by browser policy.
+- Publication uses an isolated worktree; no backend deployment or data import.
+
+- 2026-09-21 — Final cleanup implementation: two stable complete production
+  metadata passes found zero report-model repairs, zero promotable legacy class
+  batches, zero STAR migration candidates and zero Listening assignment/track
+  rows. Removed backend-only Listening aliases/track runtime and the completed
+  report/STAR migration routes; kept canonical actions, `recordActivity`, three
+  operational repair paths and due-week compatibility. No collection or row was
+  deleted. Targeted contract tests passed; full release/deployment evidence is
+  recorded with the release commit.
+
+- 2026-09-21 — Owner reports completing the requested production acceptance for
+  both the 37-row due-week repair and cleanup phase two: historical due-week
+  placement/state and the real-account Dashboard Finished, Replies, STAR wallet,
+  Library progress and IELTS Explain/teacher/history checks were accepted. No
+  new test submissions were requested. This closes the two browser-acceptance
+  items; it does not authorize unrelated historical migrations.
+
+- 2026-09-21 — Reconciled the three pre-existing live/source function differences
+  offline from exact saved live packages. `intensiveListening` matches commit
+  `194bbb53`; its only current bundle-input difference is later Writing Argue
+  mail support in `argue-notifications`, while this function still calls only
+  the unchanged intensive dispute save path. `submitAttempt` matches `e6cb5901`;
+  its only difference is later Intensive Listening email rendering/policy code,
+  while submitAttempt calls the unchanged BBC/Vocabulary attempt event path.
+  `teacherAdmin` exactly matches `2267b364` with only `_shared/speaking-lab.js`
+  from `65f48489`; later chunked Speaking analysis helpers are not consumed by
+  Teacher's speaking-notification identity projection. Seven relevant suites
+  passed. A final read-only download confirmed all three remain Active and their
+  code/configuration fingerprints are unchanged. These are shared CommonJS bundle
+  side effects, not missing target behavior; no deployment or write is indicated.
+
+- 2026-09-21 — At 22:56 Shanghai, completed the owner's exact 37-row historical
+  due-week repair: Shanghai creation day Mon–Fri -> current week, Sat/Sun ->
+  next week, Sunday 23:59:59. Changed only `assignments.due_at` from null to
+  BSON Date; 13 effective weeks moved one week later, 24 remained unchanged.
+  Two stable preflight reads, private mode-600 before backup, per-row stale-value
+  guards/readback and final full-document comparison passed. All other fields,
+  12 projected account profiles and 8 excluded assignments remained unchanged.
+  Private evidence is in the original `.local/cleanup-release-audit/approved-due-weeks-*`;
+  no impersonation, function/static deployment or other collection writes.
+  Passed private scope/date/CAS tests and seven existing due-week, report,
+  Parent Mode and Dashboard suites. Owner may refresh Teacher View to inspect
+  affected historical weeks; authenticated browser acceptance remains separate.
+
+- 2026-09-21 — Phase-three production metadata audit completed at 17:25 Shanghai:
+  two bounded, field-projected passes matched across seven collections. No
+  pending STAR credit/converted-Blue/normalization or active class-membership
+  repair was found; old Listening assignment/track counts are zero. Due-week
+  dependencies remain (see Open). No cloud handler invocation, answer/key reads,
+  database writes or runtime edits. Private aggregate evidence/script remain
+  under the original repo's `.local/cleanup-release-audit/`; no raw records saved.
+
+- 2026-09-21 — Owner-authorized phase-two static release `b14aaf17` published
+  through successful COS run `35580962211`. All 45 public files match the tested
+  artifact; unversioned index/config match and three nonpublic paths return 404.
+  All 41 suites and extra achievements passed before release; core gates and
+  build/artifact checks passed again locally and in CI. No CloudBase deployment,
+  account/data mutation, model change or original-worktree edit. Verification:
+  `.local/cleanup-release-audit/static-verified-phase2.json` in the original repo.
+- 2026-09-21 — Follow-up cleanup source audit: retained active Listening activity,
+  five teacher repair/migration actions and documented JS fallbacks. Recorded
+  each retirement gate and actual full-scan cost in Backlog; no production dry
+  run was performed. Corrected stale claims that shared modules and backend rule
+  tests do not exist. Further removal needs evidence, not another generic layer.
+
+- 2026-09-21 — Owner reports inspecting one real student account on phase-one
+  production with no issue. Do not generalize this to all teacher flows or to
+  phase two, which has not been deployed.
+
+- 2026-09-21 — Phase-one cleanup is published: release `a787c24b`, COS workflow
+  `35575995706` succeeded. All 45 public entry/assets checked match local release
+  bytes; unversioned index/config also match, and the old prototype, relocated
+  prototype and build manifest URLs return 404. All 40 suites, additional
+  Dashboard achievements, release gates and static boundary checks passed again.
+  Six cloud functions remain Active with unchanged downloaded code, configuration
+  fingerprints and ACL; unauthenticated handler checks all return AUTH_REQUIRED.
+  No cloud redeploy was needed because before/after source bundles are identical
+  with identifier minification disabled. Existing live/main differences are
+  preserved and recorded in Backlog. Post-release browser automation timed out
+  twice, so do not claim authenticated or live visual acceptance. Owner will
+  inspect real-account existing records; no student submission/data mutation was
+  performed. Private evidence/rollback ZIPs: `.local/cleanup-release-audit/`.
+
+- 2026-09-21 — Phase-one repository cleanup completed locally on the isolated
+  `codex/project-cleanup` branch: removed 80 unreferenced functions and their
+  exclusive styles, retired the disabled standalone password-reset stub,
+  archived 12 historical documents, and added an explicit static publication
+  manifest plus release regression gates. All 40 package test suites, the
+  additional Dashboard achievements suite, release verification, static build
+  and artifact checks passed; all six changed cloud functions packaged locally.
+  Browser QA passed visitor rendering and unauthenticated access boundaries,
+  without real student/teacher login or production mutations. Original dirty
+  checkout and interrupted rebase are preserved. Redundant release clones and
+  generated output were removed only after backups, including unique commits;
+  89 stale worktree registrations were pruned with metadata backed up. Nothing
+  was pushed or deployed. Phase-two compatibility/data prerequisites remain in
+  `docs/08_BACKLOG.md`; publication needs separate owner authorization.
+
+- 2026-09-16 — Teacher AI Usage is live: owner-authorized scoped release
+  `87adb639`, successful COS run `35097038528`. `teacherAdmin` Active; downloaded
+  ZIP matches tested release exactly; configuration hash and function ACL preserved.
+  Unauthenticated `listAiUsage` returns AUTH_REQUIRED. All five public files match
+  release bytes. Published-source read-only DB reconciliation: eight pages, 1,181
+  records with account identities, 544 known text calls / 2,469,467 Tokens.
+  Isolated release regression/browser tests passed; package 1,236,744 unzipped
+  bytes. Production signed-in browser automation was not run because the dedicated
+  local QA login file is absent; real Teacher UI was tested with synthetic data.
+  Evidence/rollback: `.cloudbase-private/ai-usage-release-audit/`; release checkout:
+  `/private/tmp/mrcat-ai-usage-release-20260916`. No rollout action remains.
+
+- 2026-09-16 — Teacher AI Usage: authenticated metadata-only pagination, safe
+  student attribution, legacy/aggregate/missing-use labels, filters, summaries and
+  dated cost comparisons implemented. Backend tests and actual Teacher desktop/
+  390px browser tests passed with synthetic data (lazy load, pagination, escaping,
+  empty/filter states and retry deduplication). Read-only live scan: eight pages,
+  1,181 records, all identities resolved; known text usage reconciles exactly to
+  544 calls / 2,469,467 Tokens. No production writes, deployment or model changes.
+  Final checks also passed: logout DOM cleanup, student-account lifecycle,
+  Speaking notifications/report reader, teacherAdmin package guardrail
+  (1,233,207 unzipped bytes), release verification, static build and diff check.
+
+- 2026-09-16 — Speaking teacher feedback is live: frontend `7fda14af`, successful COS run `35090037743`, seven live files matched; `teacherAdmin`, `sendTeacherAttemptEmails`, `speakingLab` are Active and downloaded packages exactly match the scoped tested release. Before-code matched main baseline; configuration hashes and function ACL preserved, private collections ADMINONLY. Both new report/audio endpoints denied unauthenticated live calls. Full current DSE/IELTS, notification and existing email/login suites passed. No historical notification backfill or real test email/recording; device/provider end-to-end acceptance remains optional follow-up. Evidence/rollback packages: `.cloudbase-private/speaking-feedback-release-audit/` in shared root; source: `/private/tmp/mrcat-speaking-feedback-release-20260916`. No further deployment authorization is needed for this completed rollout.
+
+### 2026-09-14 — Speaking Set headers (deployed and verified)
+
+- Header-only update for Context, Part A and Part B: pale-blue title bars,
+  existing identity/Part labels and compact minus/plus controls. Context title
+  sits beneath its bar; all reading bodies and entry actions are preserved.
+- Full Speaking suite, release verification, static build and diff checks pass.
+  Browser: 320px no horizontal overflow; all three controls independently move
+  to medium. Baseline comparison confirms body text/font/colour/background/
+  padding/margins/width unchanged; only Context title margin moves outside header.
+- Static version 20260914-speaking-set-headers-1. No backend or data changes.
+- Release 511fa02a deployed through successful COS run 34826007745. All five
+  live files (Speaking HTML/JS/CSS, public config and Teacher HTML) match
+  released bytes. Wide visual check passed. Private audit: .cloudbase-private/set-header-release.
+
+
+### 2026-09-14 — IR personal coaching prompt .4 (deployed and verified)
+
+- Source f6c0f863: IR feedback addresses the recipient as 你 / 你的 and cites
+  actual ideas/wording; segment IDs belong only in internal evidence arrays.
+- Full Speaking regression, syntax/diff checks, release verification and
+  speakingLab packaging passed. Group prompts and evidence contracts unchanged.
+- Owner-authorized speakingLab code update is Active. Downloaded code exactly
+  matches bundle SHA-256 d8b51d58d8c30cb78249c23f785346eb3fd843e9627b60f27700fe57a0a97b80.
+  Runtime/configuration, model settings, ASR, triggers and roles are preserved.
+  CLI refreshed the expired existing session before deployment.
+- Private audit: .cloudbase-private/ir-personal-prompt-release. No historical
+  regeneration/data writes. Wording quality remains a model instruction, not
+  a deterministic prose filter; review the next naturally generated report.
+
+
+### 2026-09-14 — Final IR white layout (deployed and verified)
+
+- Final approved design: white, divided Analysis sections; always-visible
+  untitled thinking; centered 30px Show exemplar / Hide exemplar button and a
+  pale-blue rounded expanded exemplar. Removed random headings and arrows.
+- Your answer label remains original. Only the manuscript uses 0.9375rem comic
+  type; its word count is in the footer. All changes are scoped to IR classes.
+- Full Speaking suite, release verification, static build and diff checks pass.
+  Browser: 320px no overflow, native keyboard Show/Hide, blue expanded panel,
+  Exemplar switch resets closed, 1024px Analysis sections remain stacked.
+  No backend/schema/prompt/data change or historical regeneration is required.
+- Release 63090f6f published successfully in COS run 34822545777. All five
+  live assets (Speaking HTML/JS/CSS, public config and Teacher HTML) match
+  the release bytes. Private audit: .cloudbase-private/ir-white-release.
+  No backend deployment or production data writes were performed.
+- Source worktree: /private/tmp/mrcat-ir-report-history. Final renderer preview:
+  http://127.0.0.1:8824/index.html (illustrative content only).
+
+
+### 2026-09-14 — Authorized v4 publication and overwrite (completed; 64 verified)
+
+- Owner authorized publication and replacement of old IR reports. Reconfirmed
+  Shanghai Sep 8–14 scope: 64 current reports; one previously failed recording
+  has no report/text and is excluded from replacement.
+- speakingLab v4 is Active; deployed bundle SHA-256
+  acf6d86b87fa64dfb03ae4b73d1858b2cba68ed2d452d3354e4b649140adf966.
+  Runtime, environment/model configuration, roles and triggers are unchanged.
+- Fresh private v4 manifest captures source pointers and transcript hashes.
+  Pilot and bounded batch completed: all 64 reports passed canonical validation
+  and were atomically overwritten in their existing report IDs. Transcript
+  hashes, original creation times, response pointers and report caches match.
+  All use prompt 2026-09-14.3/schema v4; no additional old report versions.
+- Existing full Speaking tests, release verification, static build and function
+  packaging passed. COS run 34813829027 succeeded for release 2eca740f;
+  production Speaking HTML/JS/CSS/public config match the release bytes.
+  Private manifest/status/live-asset audit: .cloudbase-private/ir-v4-release.
+  One pre-existing 4.522688-second recording has no ASR text or old report;
+  it remains excluded and unscorable. No owner action is needed for this rollout.
+
+### 2026-09-14 — Paired IR Exemplars and full labels (local)
+
+- Updated Part B prompt .3, schema v4/shared validator and report renderer:
+  three independent Socratic paragraph/Sample pairs, exactly two visible blocks
+  each. Analysis selector uses full dimension names with fitted width.
+- Historical V1/V2/V3 reports remain readable; missing paired guidance is explicit.
+  No cloud writes, publication or historical regeneration in this iteration.
+- Updated requirements, UI, architecture, model, changelog, test and deployment
+  docs. Speaking suite passes including v4 pairs and legacy regressions.
+- Release verification, static build and speakingLab ZIP packaging passed.
+- Local visual preview: http://127.0.0.1:8821/index.html (illustrative content).
+  Verified 320px full VL label, fitted chevron, no horizontal overflow and
+  whole-pair switching. Deployment/replay remain separate follow-up work.
+
+### 2026-09-14 — Authorized IR release and overwrite (deployed; 64 verified, one unscorable)
+
+- Owner authorized deploying the complete approved report changes and replacing
+  recent reports in place. Exact Shanghai-date scope Sep 8–14 has 65 uploaded
+  IRs: 62 ready and 3 failed; 64 transcripts reused, one needs transcription.
+- Merged current origin/main homepage wording before release. Both baseline
+  function bundles match live bytes. Added same-ID atomic overwrite behavior,
+  a private bounded operator and tests for score replacement and source races.
+- Frontend release 53e8297b and parser fix b6ca0898 are on main; COS workflow
+  runs 34774845997 and 34776140294 succeeded. Production HTML/JS/CSS match the
+  release. Both functions are Active with unchanged configuration; the history
+  index is verified. Full Speaking suite, packaging and release checks passed.
+- All 64 responses with transcripts now have verified v3 IO/VL reports, new
+  assessments and feedback replacing the prior current report IDs. Original
+  transcript hashes, report creation timestamps, links and response caches
+  were checked; no old report versions were created by this operation.
+- One previously failed uploaded recording is 4.522688 seconds long. Tencent
+  ASR completed with no recognized text/segments, so no reliable report can be
+  generated. It remains failed; no speech or scores were invented.
+- Diagnosed misplaced model coaching fields and fixed their unambiguous
+  normalization before strict validation; also aligned operator verification
+  with publisher name redaction. Bounded retries retained attempt counters.
+  Private scope/status evidence stays in .cloudbase-private; no student content
+  or credentials entered Git.
+
+
+### 2026-09-14 — Concise IR Analysis (local only)
+
+- Restored grey-blue IO/VL select labels and removed the standalone short
+  commentary. Dimension name/score now lead directly to green/gold feedback.
+  Legacy-only commentary stays inside gold with an archival label.
+- Updated JS/CSS/cache references and UI/changelog/test docs. No backend,
+  prompts, stored reports or production changes. Preview refreshed on 8815.
+- Speaking suite, release verification, static build and diff checks passed.
+  Browser verified both abbreviated choices and no standalone summary text.
+
+
+### 2026-09-14 — Unified IR report title bars (local only)
+
+- Shared title/selector CSS across all three cards. Blue titles are 12px/700;
+  selectors use the first card's grey-blue 11px/500 system font, 30px height,
+  matching surface and chevron. Measurements use the same typography/padding.
+- First title renders Y2026-Set3.1-Q1-style metadata, retaining decimal versions.
+  Updated renderer fixture, asset versions, UI/changelog/testing docs and preview.
+- Speaking suite passed. Browser computed-style checks confirm all three
+  heading/selector styles match, equal 55px title bars at 390px and no overflow
+  with the long VL name. No backend/prompt changes or deployment this turn.
+
+
+### 2026-09-14 — IR constructive feedback panels (local only)
+
+- Added pale-green What works and pale-gold How to improve panels per IO/VL,
+  portrait-phone stacking and landscape-phone/iPad columns. Native Analysis
+  select displays full names and sizes to the selected label.
+- Part B prompt 2026-09-14.2 emphasises actionable headings, short evidenced
+  gaps, exact improvement steps, reasons and English demonstrations. Preserved
+  schema, original scoring, ASR/grounding rules and provider configuration.
+- Updated Speaking JS/CSS/cache references, prompt, product/UI/data/changelog/
+  deployment/test docs. Complete Speaking tests passed; actual-code synthetic
+  browser fixture verified colours, orientation and select width changes.
+- Kept isolated codex/ir-report-history worktree and preview on port 8815.
+  No production deployment, analysis replay or root-workspace edits.
+
+
+### 2026-09-14 — IR card selectors (local only)
+
+- Added compact header selectors for Analysis IO/VL and Exemplar 1/2/3;
+  first options selected by default, with independent native selection and
+  only the chosen panels visible. Samples precede retained shared guidance.
+- Updated Speaking JS/CSS, cache references and the renderer test harness;
+  UI, changelog and testing docs updated. No backend/prompt changes this turn.
+- Complete Speaking suite passed. Browser checks used the actual renderer and
+  binding code: default IO/1, independent VL/3 switching, real sample headings,
+  compact phone controls and no runtime errors. Preview kept on port 8815.
+- Remains in isolated codex/ir-report-history worktree; no publication.
+
+
+### 2026-09-14 — IR immediate waiting report and IO/VL (local only)
+
+- Continued in isolated codex/ir-report-history worktree; no root edits or
+  production operations. Added immediate Submit report shell, stable waiting
+  game, upload/analysis retry distinction and manual View results.
+- Part B v3 prompt/schema/validator score only IO and VL, with detailed evidence,
+  strengths, weaknesses and actionable examples. Blue Analysis / 5** Exemplars
+  headers preserve the approved first card, history and collapsed Your answer.
+- Updated product, architecture, UI, data model, changelog, test and deployment
+  docs. Updated static cache references. Tests cover new/legacy schemas, upload
+  retry/double-submit, manual ready state and unchanged Group transitions.
+- Browser fixture uses actual renderer/submission/waiting code plus real runner,
+  with synthetic data only. Verified immediate header, continuous game,
+  Preparing… to Ready, no auto-reveal and click-to-results. Phone layout and
+  answer collapse checked; no real microphone, upload or paid AI calls.
+- Passed the complete Speaking suite, waiting-runner contracts, release
+  verification, static build and diff checks. Failed-upload foreground/online
+  recovery retains Retry upload without querying an uncommitted session.
+- Production rollout still requires authorized gateway deployment, the prior
+  history index verification and static publication; no report regeneration.
+
+
+### 2026-09-14 — Approved Individual Response report history (local only)
+
+- Implemented in isolated worktree `/private/tmp/mrcat-ir-report-history`, branch
+  `codex/ir-report-history`, based on published `6b2abc53`; unrelated root changes
+  remain untouched. Pale blue Y/year/Set/Q header, Set-title toolbar, measured
+  date select and collapsed blue Your answer now use production renderers/CSS.
+- New read-only history action derives owner and stable question from an
+  authorized anchor, returns slim pages and preserves saved reports. Browser
+  selects the latest and switches whole reports with stale-read/error handling.
+- Verified Speaking suite, release verification, diff whitespace and local browser
+  using synthetic reports; at 375px and 300px no horizontal overflow. Actual
+  date control grows from 108px (current year) to 139px (older year), then shrinks.
+  Disclosure expand/collapse and distinct scores/word counts verified.
+- Added automated year/Shanghai-time, 605-row keyset pagination, ownership,
+  equal-timestamp, initial latest, delayed navigation and failure checks.
+- No production resources changed. Later rollout needs owner-authorized index
+  verification/provisioning and speakingLab gateway deployment before static
+  publication; see docs/10_DEPLOYMENT.md. No worker/model/report migration needed.
+
+
+### 2026-09-13 — Approved IR dark capture, green saved state and ending A
+
+- Applied the approved temporary preview to production IR-only CSS: dark native dialog/backdrop through capture; green question/circle/thick check/feedback and text-only solid-green Submit for automatic and manual stops; stationary final 3/2/1 crossfade with an independent red dot. Updated UI/changelog/test docs and host cache versions. Preserved all capture/submit code, latest audio-file icon and Group Discussion.
+- Full Speaking suite and release verification passed. Production markup/CSS native-dialog browser fixture at 390×844 and 375×667 verified dark surface/backdrop, 0→1 label/digit visibility, no dial animation, Stop immediately removing the pseudo-dot, both saved states using the check instead of mic, no Submit icon, and no horizontal overflow. Reduced Motion overrides retained. Browser QA simulated states; no microphone/backend submissions.
+- Static publication pending; no backend or owner action required.
+
+### 2026-09-13 — IR final three seconds inside the circle
+
+- Reused the opening digit for final 3/2/1; retained small Recording above it, hid the duplicate external clock without moving the stack, and kept capture active through all 63 seconds. Updated UI/changelog/test docs and cache versions; preserved the newer Upload Files icon release.
+- Full Speaking suite and release verification passed. Lifecycle tests assert active recording at 60/61/62/62.999 seconds and stop at 63. Browser fixture using production markup/CSS at 375×667 confirmed centered digit, hidden external clock, and 20 px separation from Recording. No real audio/backend submissions in this visual QA.
+- Static publication pending; no backend changes.
+
+- 2026-09-13: Both Speaking audio pickers now read Upload Files and use approved option 03 (Lucide file-music). Verified the actual button markup/styles at 390 px; full Speaking regression suite, release verification and static build passed. UI/changelog/testing/decision docs and icon license included. No owner action beyond refreshing; static-only release.
+
+### 2026-09-13 — Centered Speaking Recording and stable IR phone spacing
+
+- Changed Speaking CSS/JS, shared Discussion recorder, both host cache versions, UI spec, changelog and testing checklist in isolated `codex/speaking-center-recording`; preserved the shared dirty checkout.
+- IR uses the reviewed top-aligned stack with responsive explicit gaps. IR and student/teacher Discussion show blinking Recording inside the stop control; final-minute/ending digits remain readable.
+- Verified full Speaking suite (using existing root node_modules), release checks, and production markup/CSS in native-dialog fixtures at 390×844 and 375×667. IR saved mic/message/Submit fit with no horizontal overflow; Group label centered within 0.01 px and separated from warning digits by over 30 px. This browser pass used simulated states, not microphone capture or backend submissions.
+- Static publication pending; no backend/data changes.
+
+- 2026-09-13 — IR saved-state polish: restored the microphone above Tap to
+  start over for manual and automatic stops; added the final English period
+  to the visible and accessible success message. Checkmark remains hidden and
+  the existing circle button still owns restart. Full Speaking suite, release
+  verification, JS syntax, static build and diff checks passed. Browser visual
+  QA remains unavailable from prior connection failures. Static-only release.
+
+- 2026-09-13: Added shared native screen wake lock to IR and Discussion countdown/capture lifecycles. Cleanup and foreground recovery are covered by recorder tests plus native-API mocks for denial, revocation and pending races. Local browser denied the native lock; synthetic capture still completed to Submit. Physical-phone auto-lock remains a device acceptance check. Product/architecture/UI/decision/testing/changelog docs updated; static-only publication.
+
+- 2026-09-13: Lowered the Discussion Recording indicator, enabled a 1.3 s red-dot opacity pulse, and increased external-clock spacing with compact-height/reduced-motion variants. Desktop and 390 px synthetic-capture browser QA and Speaking regression tests passed; UI/changelog/testing docs updated. Static-only release; no backend changes.
+
+- 2026-09-13 — IR indicator and completion refinement: moved Recording into a
+  reserved row between question and circle; only the dot blinks (Reduced Motion
+  stays steady). Every saved take shows only Tap to start over in the circle
+  and Your recording was successfully saved below; retained duration internally,
+  explicit Submit and replacement confirmation. Full Speaking suite, release
+  verification, JS syntax, static build and diff checks passed. Browser visual
+  QA remains unavailable from the prior connection failures. Static-only release.
+
+- 2026-09-13: Discussion microphone/stop controls now match IR; adjustable large clock and icon Upload below circle, with final-minute seconds exclusively inside. Recorder state regression and local synthetic browser QA; no backend change.
+
+- 2026-09-13 — IR question stays visible during recording: removed Set/year
+  header and Q-number prefix; preserved the question in the fade/accessibility
+  boundary. Saved recording now uses two lines: Recording saved / Tap to start
+  over. Reserved top indicator space; retained replacement confirmation and
+  existing success/duration feedback. Full Speaking suite, release verification,
+  static build and diff checks passed. Browser connection remains unavailable;
+  device visual QA pending. Owner-authorized static publication; no backend change.
+
+- 2026-09-13: Discussion final minute uses larger 60–01 seconds; boundary tests cover 01:01 → 60 → 59 → 09 → 01, final three cues and mm:ss review. Static-only update.
+
+- 2026-09-13: Continuous Discussion circle: Upload → capture/file → Submit → waiting game; larger recording indicator, minimal picker and more responsive real-input outer wave. Recorder/host lifecycle tests and local synthetic browser capture; no physical microphone or production audio used.
+
+- 2026-09-13 — Individual Response recording feedback and live indicator:
+  automatic completion keeps Finished and replaces the lower digits with
+  `Your recording was successful.`; early Stop uses a centred 20px/16px
+  duration/caption row, including short screens. A steady red dot + Recording
+  appears at top centre after the three-second opening and hides immediately
+  on Stop, completion or error; the final warning retains it while capturing.
+  Updated Speaking JS/CSS, HTML/config cache versions, UI spec, manual checklist
+  and existing regressions. Full Speaking suite (using existing workspace
+  dependencies), release verification, JS syntax, build and diff checks passed.
+  CUA inventory timed out; device visual QA remains pending. Owner authorized
+  static publication; release bc274184 is live. COS run 34756134636 succeeded;
+  live HTML, JS, CSS and config bytes match the release. No CloudBase function
+  or data changes were required.
+
+- 2026-09-13: Fixed Speaking Set refresh returning to the library by persisting the stable Set locator and restoring authorized detail before supplementary lists. Browser mock-data QA covers real reload, one loader, fresh article content, Back, late fetch cancellation, missing/retry and Voiceprint route cleanup without mutations. Speaking suite, release verification and static build pass. No backend changes; owner authorized static publication.
+
+- 2026-09-13: Discussion pre-recording Back restores its original Set, focus and scroll position; recorder/host regression covers ready, pending permission, countdown, Escape and stale callbacks. Static-only fix.
+
+- 2026-09-13: Removed the duplicate Speaking Set overview card and moved its year/Set identity into the article's blue heading. Preserved prompts, font controls and recording actions; added title fallback and regression assertions. Speaking contracts, release verification and static build pass; browser checks at 390px and 1024px pass. Product/UX/changelog/checklist updated. No backend or data changes; owner authorized static publication.
+
+- 2026-09-13: Confirmed live getCurrentStudent bundle omits english_name, causing blank Vocabulary crown names. Prepared explicit name projection and independent authenticated refresh for old caches. Regression tests cover backend-to-cache-to-render flow, empty/renamed names, identity races, closed overlays and failed refresh; vocabulary and release checks pass. Built getCurrentStudent.zip. Owner authorized rollout. getCurrentStudent is Active/Available with unchanged configuration; downloaded index.js/package.json match the deployment bundle byte for byte. Static frontend is verified and ready for publication.
+
+- 2026-09-13: Implemented approved bright-gold E crown with original English-name engraving in Vocabulary Quiz Mastered. Browser QA used actual result functions/styles with fictional local data: long/special/empty names, Close and Practice Sets verified. Profile guard checks, release verification and static build passed. UX/changelog/checklist updated; static publication authorized, no CloudBase changes.
+
+### 2026-09-12 — Compact Speaking Set library release
+
+- Removed the decorative Choose a Set card; Search, Year, and Source share one
+  44px row on desktop and phones. Set cards use content height, 10–12px vertical
+  padding, and 10px list gaps. Updated cache versions and matching UI/docs.
+- Ported only these changes onto current main, preserving newer Speaking
+  recording, reading-size, and grouped-history behavior. Local fixture visual
+  QA covered desktop, 320px, and 390px widths. Static-only owner-authorized
+  release; no CloudBase deployment or data change is required.
+- Release checks passed: `npm run test:speaking-lab`,
+  `npm run test:github-publish`, `npm run verify:release`,
+  `npm run build:static`, and `git diff --check`.
+
+- 2026-09-12 — Assign score preview: hide scores for wholly unattempted selections, retain recorded zero and mixed-selection rows, and prefer explicit English names. Updated Teacher assets/cache versions, UI spec and regression checklist. Assignment regression, release verification, static build and publisher checks cover this scoped release. Owner authorized static publication; no CloudBase changes are required.
+
+- 2026-09-12 — Writing Argue local QA: raised-hand controls on wrong cards, last-checked-text dialog, repeated Reject/request, teacher Approve/Reject links, automatic approved sentence/completion updates, private reply projection and late-worker protection implemented. Writing, Argue mail/reminder, attempt-mail, self-study, login-redirect and task-scroll regressions passed; release verification, syntax/diff checks and four function packages passed. Desktop and 390px browser QA used an in-memory synthetic backend, including repeat request and final-sentence completion. Preserved unrelated shared-worktree edits. Product, architecture, UI, data, test, deployment and agent guidance updated.
+
+- 2026-09-12: Added live manuscript OCR word count using the existing
+  Draft/Revised rule, including editing and title extraction/Undo updates.
+  Writing contracts, release verification and focused counter/edit/Undo checks
+  passed. Counter updates preserve the editor DOM; real-device visual QA remains.
+  Scope is static UI only; no CloudBase owner action is required.
+
+- 2026-09-12 — Approved Voiceprint success popup integrated into Student and Teacher confirmed-save paths. Shared native dialog preserves the approved glass/checkmark/Done design, restores focus/scroll, and cooperates with Teacher modal stacking. Full Speaking suite and browser checks (Student/Teacher, Done/Escape, repeated opening, stacked locks, 390px layout) passed. Owner authorized static publication; no cloud function or biometric-data changes.
+
+- 2026-09-12 — Approved Speaking colours release: white recording surface,
+  48 rainbow microphone bars, no timing caption and pale coral final minute.
+  Shared Student/Teacher CSS/JS and cache versions updated. Speaking suite,
+  release verification, static build and publisher tests passed. Existing
+  component visual QA covered normal/minute/ending states. Owner authorized
+  scoped static publication; no CloudBase changes are required.
+
+- 2026-09-12 — Voiceprint release isolation: No backend/production writes were performed. Clean-source release subset based on `cc40c7f3` also passed voiceprint, UI, service and rule tests and was packaged separately, preserving published sidebar/reading changes.
+
+- 2026-09-12 — Fixed the single-group 20-voiceprint bottleneck locally: automatic allocation, definite-full race rollover, account-capacity preflight, preserved replacement groups, and complete cross-group matching. `npm run test:speaking-lab`, `npm run verify:release`, `git diff --check`, and packaging of `speakingLab` / `speakingAiWorker` passed. Provider/concurrency and UI-state checks use mocks; no authenticated live recording test or deployment was performed.
+
+- 2026-09-12 — Speaking final-minute release: reset the shared Student/Teacher
+  ring at 60 seconds and sound the existing reminder three times with short
+  gaps. Recorder/Speaking suites, release verification, static build and
+  publication-helper tests passed. Updated product/UI docs and cache versions.
+  Owner authorized scoped static publication; no CloudBase changes required.
+  Real-device speaker playback remains a manual smoke check.
+
+- 2026-09-12 — Shared Speaking recorder static release: Teacher/Student use the
+  same settings, large ring/waveform, English opening, compact Finish, longer
+  minute cue, and red pulsing final five seconds with synchronized beeps.
+  Scoped changes merged onto the latest main; no backend deployment required.
+  Deterministic recorder/adapter checks and release/build checks cover the
+  release. Desktop/phone fixture QA passed; real microphone/upload smoke checks
+  remain device-dependent.
+
+- 2026-09-11 — Approved Vocabulary result layout A implemented: title/mode badges, canonical selected Practice Set numbers, Quiz Set count, no extra question-count metadata, and Practice completion-only copy. Vocabulary/versioning and session tests, release verification, static build, direct runtime rendering checks (shuffled/single Set, Quiz statuses, escaped title, Close), and browser visual/Close QA passed. Scoped static publication authorized by owner; no CloudBase deployment required.
+
+- 2026-09-11 — Speaking Safari controls: Choose audio/Record share light rounded surfaces with SVG folder/microphone icons; native selects retain menus but use explicit height and one SVG chevron. Actual macOS Safari full-Teacher-shell preview verified; UI/Set contracts, recording-state icon preservation, release verification and static build passed. Owner authorized scoped static push; no CloudBase deployment required.
+
+- 2026-09-11 — Teacher Speaking compact entrance: scoped Year/Set filters, Upload styling and recording label release. UI/Set contracts, runtime filtering/recording lock, desktop and 375px browser preview passed. Owner authorized static publication; no backend deployment is needed.
+
+- 2026-09-06 — Implemented immediate Argue emails and authenticated single-question review. Passed the new integration suite (student producer → private outbox → mocked SMTP → teacher resolution → immutable original plus adjusted result), authorization/disabled-teacher checks, three decisions, Listening decisions, duplicate/concurrent calls, stale revisions and failure recovery. Existing attempt-email, login, quick-accept, Listening and global-progress tests passed; release verification passed. Browser QA at 390px confirmed no horizontal overflow, Chinese optional note, replacement confirmation/cancellation, read-only success, preserved conflict drafts and student-account blocking. Used only synthetic local data. Task-only backend packages were built under `/private/tmp/mrcat-argue-release-20260906/deploy-packages/` to exclude other tasks’ dirty changes; real WeChat acceptance remains open.
+
+### 2026-08-30 — Student Dashboard Achievements
+
+- Replaced the first-card weekly progress area with the approved 53-week
+  Achievements grid while keeping the greeting and motivational sentence.
+- Added a separate `getAchievementCalendar` action: first qualifying BBC or
+  Vocabulary completion counts once, corrected Writing counts once, timed
+  Vocabulary Practice is excluded, and Speaking waits for an explicit
+  correction/practice completion milestone.
+- Verified pure aggregation rules, JavaScript syntax, local Visitor rendering,
+  newest-week phone scrolling, empty-day dialog, Close/Escape behavior, and
+  static diff checks. No test student data was created.
+- Fixed the mobile detail dialog's inherited Teacher-sidebar grid rule, kept
+  header/list/Close within the safe viewport, and added a persistent Today
+  marker plus accessible current-date label. Verified empty and 12-row dialogs
+  at 320 x 568 and the empty dialog at a common 390 px phone width.
+- Replaced the Today animation with approved option F: a static plum
+  Shanghai day-of-month inside the square. The date updates daily, suppresses
+  the green contribution fill, and retains the accessible Today state without
+  a separate legend.
+- Replaced the standalone day-detail popup and header Calendar shortcut with
+  one shared Achievements month calendar. Each contribution square opens its
+  own month and preselects its exact date, using the same achievement data for
+  calendar intensity, result rows, and empty days.
+
+### 2026-08-27
+
+- Implemented the authenticated Intensive Listening Library, safe catalog and
+  linked-practice entry points, Completion-only assignments, teacher Provided
+  Word approval, server-owned three-minute learning sessions, mixed Teacher
+  bell/email summaries, and Parent/learning-report Completion projections.
+  Added focused static/service/report/email coverage and locally packaged the
+  affected functions. Required focused checks, Speaking Lab regression,
+  release verification, and diff checks pass; `test:assignment-schedule`
+  retains its pre-existing DSE-overlap `UPCOMING` failure. Owner must create
+  reviewed collections/indexes, import intended safe/private IL rows, deploy
+  affected functions, and publish static assets; no CloudBase mutation or
+  deployment was performed.
+- Independent handoff review tightened the session boundary so Replay clicks
+  cannot create Started before playhead movement, made Review completion close
+  immediately after the effective Check/Show Answer, protected notification
+  fields from concurrent progress writes, and fixed mixed-feed cursor
+  advancement so unconsumed Teacher notifications are not skipped.
+- Owner-authorized development rollout created the three IL session/event
+  indexes, refreshed all 21 BBC IL set/private-material rows from iCloud
+  backups, and deployed the seven affected reader/producer/report/email
+  functions. The matching static snapshot is published through `main` and the
+  COS workflow; existing timer and SMTP configuration were left unchanged.
+
+### 2026-08-20
+
+- Added `jxbleo@foxmail.com` as a clickable homepage-footer email beside
+  `@猫先生英语`, with responsive contact/registration rows. Verified desktop
+  and phone layouts, `mailto:` behavior, static build output, and release
+  checks. CloudBase deployment is not required.
+
+### 2026-08-19
+
+- Replaced all curriculum-specific home-screen assets with deterministic size
+  exports of the owner-supplied Mr. Cat face. Every root HTML page now uses one
+  favicon, Apple touch icon, and manifest. Removed old DSE, IELTS, and standalone
+  cat image assets and removed runtime curriculum switching.
+- Verified manifest JSON, JavaScript syntax, icon dimensions, complete page
+  head coverage, static build output, and absence of legacy icon references.
+  CloudBase deployment is not required; publish the static site for devices to
+  receive the new icon.
+
+### 2026-08-15
+
+- Diagnosed Vocabulary Quiz/timed Practice Safari error
+  `null is not an object (evaluating 't.scope')` as a CloudBase JS SDK 2.28.6
+  credential-bootstrap null dereference before `submitAttempt` was invoked.
+- Upgraded shared browser SDK references to 2.32.0, added a one-retry
+  authenticated preflight that never retries the mutating call, and added
+  friendly login-verification errors. Timed Practice starts its timer only
+  after that preflight succeeds.
+- Added stable Vocabulary client submission IDs and deterministic attempt
+  document IDs so Quiz and timed Practice replays return one immutable record.
+  Verified syntax, release checks, and Quiz/Practice sequential and concurrent
+  idempotency tests. No CloudBase data migration or collection change is
+  required.
+
+### 2026-08-10
+
+- Added Student Dashboard stale-while-revalidate startup: a redacted,
+  owner-scoped 24-hour IndexedDB snapshot; lightweight 10-row To Do/Finished
+  bootstrap pages; silent first-task, remaining To Do, Teacher Reply, and full
+  Dashboard warming; 10-row scroll continuation; and `Load 5 more` for earlier
+  read replies. Explicit logout deletes the Student cache.
+- Verified Dashboard/auth/getDashboard syntax, assignment scheduling, student
+  account lifecycle, STAR rewards, self-study completions, release checks, ZIP
+  contents, and a local Visitor Dashboard/Assignments browser smoke with no
+  console errors. Authenticated pagination remains an owner/dev-account smoke.
+- Owner action: deploy rebuilt `getDashboard.zip`, then publish the matching
+  static files. No database migration or permission change is required.
+
+### 2026-08-02
+
+- Removed the final `Further Questions` block from the reviewed local HKDSE
+  full-report source, regenerated its private payload, and redeployed
+  `getProtectedResource`. Added a regression assertion that rejects any future
+  payload containing that block; the updated function is Active/Available.
+- Added the HKDSE Writing and Speaking topic-bank preview page and static
+  catalog cards. Visitors see the coverage summary and two sample topics;
+  authenticated active student/teacher profiles load the private full report
+  through `getProtectedResource`.
+- Verified the public HTML contains no tested full-report phrase, the ignored
+  private payload reconstructs with the expected SHA-256 digest, and the local
+  visitor page renders at desktop and mobile widths without console errors or
+  horizontal overflow.
+- Deployed `getProtectedResource` to the CloudBase development environment on
+  Nodejs18.15 and confirmed it is Active/Available. An unauthenticated invoke
+  returns `AUTH_REQUIRED`; no database records or test accounts were created.
+- Authenticated browser QA was not automated because `.qa-secrets.local` is not
+  present. A future run may smoke the full student path with a dedicated
+  development account after the static site is published.
+
+### 2026-07-26
+
+- Removed the Assignments modal's redundant top summary capsules, renamed its
+  default open section to This Week, and collapsed Finished by default. Unified
+  the Progress calendar with the Assignments glass and task-row system so its
+  rows scroll long titles and open the same practice entry confirmation.
+- Flattened hero-card Overdue, This Week, and Upcoming drill-downs to a centered
+  title plus one task list. Removed their duplicate labels, summary/count
+  capsules, and merged This Week with unfinished rows before finished rows.
+- Added the Student Dashboard Progress calendar left of the bell. It renders
+  existing finished assignments and self-study STAR records in a Monday-first
+  month grid with compact activity levels and per-day details. Automated model
+  coverage verifies month alignment, filtering, count levels, and STAR state;
+  no CloudBase deployment or content import is required.
+
+### 2026-07-25
+
+- Replaced the wide Teacher matrix/notification Attempt tracks with compact
+  Apple Health-style capsule bars. Each attempt retains a 48px touch column and
+  shows score, `#N`, and no-space Page/Audio timing down to seconds; reference
+  lines, selected/best states, overflow, and reduced motion are covered.
+- Fixed the BBC yellow `classroom-worksheet` grid so Show Answers,
+  History/Explain, dispute status, and action controls span both columns rather
+  than collapsing into the narrow number column on phone/iPad.
+- Renamed all student-visible Vocabulary Cloze completion actions from `Redo`
+  to `Retry`, including the top sticky action, inline practice action, and
+  confirmation copy. Internal selectors and reset behavior are unchanged.
+- Updated grading defaults to Vocabulary `90/100` and BBC `80/95` across
+  Teacher, backend grading/dashboard fallbacks, and generated CloudBase data.
+  Replaced Assign/edit number inputs with a shared touch-inertial percentage
+  wheel. Owner action after static publish: deploy `teacherAdmin`,
+  `submitAttempt`, and `getDashboard`, then review/apply the documented
+  `sets,system_config` overwrite import. Existing assignments remain unchanged.
+- Restored native iPhone/iPad long-press selection highlighting for My Words.
+  The shared selection script no longer clears the browser range after capture,
+  while the save button still protects the captured text and suppresses the
+  duplicate synthetic click. Bumped all shared script references; JavaScript
+  syntax and release checks passed. Physical iPhone/iPad smoke testing remains
+  useful before publish; no CloudBase deployment or content import is required.
+- Removed the redundant counted-result suffix from Vocabulary Cloze Test
+  options and repaired the phone-only Practice chip scroller collapse. Mobile
+  numbered chips now retain a complete 40px capsule inside a 48px horizontal
+  scroll area; tablet and desktop sizing remains unchanged.
+- Renamed the student-facing counted Cloze path from `Test` to `Quiz` and its
+  action to `Start Quiz`, then aligned the visible dialogs and status copy.
+  Backend session actions and stored `vocabulary_test` modes remain unchanged.
+
+### 2026-07-15
+
+- Audited all 27 commits from 2026-07-14 through 2026-07-15 and consolidated
+  their current behavior into dated changelog sections, frontend architecture,
+  UI, technical decisions, testing, and backlog documentation. Reconciled the
+  stale Student Library note with the shipped title-inline category popover and
+  documented `my-words-modal-preview.html` as an unlinked sample-only design
+  reference. Verified the prototype's inline JavaScript, search interaction,
+  desktop/390px layout, horizontal overflow, console, secret/network scan, and
+  release checks. No CloudBase deployment or data import is required.
+- Added My Words-style browser pronunciation to Vocabulary Learn cards and
+  Spell rows. The Spell control speaks without revealing/filling the answer and
+  uses a neutral accessible label. Static syntax, structure, desktop, and phone
+  checks passed. No CloudBase deployment or content import is required; publish
+  the static site.
+- Made the Teacher View matrix responsive and user-resizable with `−`, `Fit`,
+  and `+`. Phone portrait now fits the normal six-to-seven-task overview using
+  compact task IDs and score cells, while desktop keeps comfortable columns;
+  explicit size choices persist locally. Updated UI/test documentation and
+  cache versions. No backend, CloudBase deployment, or content import is
+  required.
+- Routed Teacher View matrix task headers through the shared practice-entry
+  confirmation so an accidental click no longer leaves the matrix. Confirming
+  opens the existing `teacher=1` preview; Close, Escape, or backdrop dismissal
+  stays in View. Updated the UI/test specifications and bumped the Teacher JS
+  cache version. Verified JavaScript syntax, diff whitespace, release checks,
+  and the authenticated local Teacher View: the matrix stayed on its original
+  URL when the dialog opened or closed, and Enter issued the expected
+  `teacher=1` practice URL with the View return target. No backend, CloudBase
+  deployment, or content import is required.
+- Reduced the Teacher Student lookup dialog to three-quarters of its former
+  desktop width/height, replaced the internal top-right `x` with an external
+  lower `Close`, and simplified student finding to `Choose` plus a magnifying
+  glass that swaps Choose in place for live search. Removed Confirm because a
+  student row now completes selection directly. Closing Create student by its
+  close control, backdrop, or Escape restores the parent lookup with the prior
+  selection intact. Verified JavaScript syntax, diff whitespace, authenticated
+  desktop and 390px browser layouts, live filtering/direct selection, all
+  create-modal return paths, no horizontal overflow, zero console errors, and
+  release verification. No backend, CloudBase deployment, or content import is
+  required.
+
+### 2026-07-14
+
+- Unified all Teacher top-level dialogs on a page-level modal root so Review,
+  Student lookup/create/success, Assign Work/Student pickers, and dynamic View
+  matrix details stay fixed to the current viewport instead of centering within
+  the backdrop-filtered workspace. Added dynamic-viewport height limits and
+  internal scrolling for tall dialogs. Verified Work, Student, Review, Student
+  lookup, Create student, notification, matrix/student progress, assignment
+  editor, and practice-entry dialogs through the authenticated local Teacher
+  page at desktop and 390px widths; a matrix detail also stayed viewport-fixed
+  at page scroll 900. JavaScript syntax, whitespace checks, runtime console, and
+  release verification pass. No backend, CloudBase deployment, or content
+  import is required.
+- Moved the Teacher notification surface out of the backdrop-filtered workspace
+  so the bell opens its message card in the current viewport instead of far down
+  a tall page. Teacher entry now treats stale `?view=tasks` as `View`, while the
+  explicit `?view=library` practice-return route remains supported. Verified
+  JavaScript syntax, static routing/overlay structure, release verification,
+  viewport-fixed placement at page scroll 0 and 1100, and desktop/390px layouts
+  without horizontal overflow. No backend, CloudBase deployment, or content
+  import is required.
+- Simplified the Teacher View entry so it begins directly with the progress
+  matrix: removed the top-left wordmark and the repeated `TEACHER` / `View` /
+  `New assignment` block and shortcut behavior. Aligned the header glass with
+  the workspace frame, matched the sidebar's inner corner to the outer curve,
+  and removed the matrix's contrasting top accent tip. Verified JavaScript
+  syntax, static structure, CSS balance/diff whitespace, release verification,
+  exact header/workspace edge measurements, rounded-corner rendering, and zero
+  page overflow at desktop and 390px widths. No backend, CloudBase deployment,
+  or content import is required.
+- Refined the student bell modal into a shorter `Assignments` card with one
+  external lower `Close` pill, removed both former in-card close controls, and
+  added red right-side `TO DO` / failed-score pills while keeping only passed
+  or mastered assignments in `FINISHED`. Updated UI and test specifications;
+  no backend, CloudBase deployment, or content import is required.
+- Replaced the student Dashboard's top-left wordmark with an unframed animated
+  line-art cat SVG, removed the `STUDENT WORKSPACE` eyebrow, and made the
+  smaller time-aware greeting a single line with overflow-only movement and a
+  reduced-motion ellipsis fallback. Updated the UI and test specifications.
+  Verified JavaScript syntax, CSS brace balance, diff whitespace, release
+  verification, authenticated desktop and 390px browser layouts, zero mobile
+  page overflow, correct accessible branding, and zero console errors. No
+  backend, CloudBase deployment, or content import is required.
+- Refined the student Dashboard header and bell message rows without changing
+  assignment state or practice navigation. The header brand is quieter, its
+  glass capsule now aligns exactly with the workspace card, bell task labels
+  normalize to `BBC` / `IELTS`, and only overflowing task titles use a gentle
+  one-line scroll with a reduced-motion ellipsis fallback. Updated the UI and
+  testing specifications. Verified JavaScript syntax, diff whitespace, release
+  verification, an authenticated dev-student bell at desktop and 390px widths,
+  confirmation-dialog return behavior, zero page overflow, and zero console
+  errors. No CloudBase deployment or content import is needed.
+- Implemented the owner-approved authenticated spatial workspace layout while
+  leaving login, public Library, and every practice runtime unchanged. Student
+  Dashboard now keeps the brand in the header, uses one static China-time-aware
+  greeting, presents welcome/progress as a responsive two-pane workspace, and
+  places Library search plus `Practice` / `Exam` beside the Library heading with
+  a two-column desktop card grid. Teacher now uses the `View` / `Assign` /
+  `Library` sidebar and exact workspace headings, removes the standalone greeting
+  hero, preserves the existing View matrix and its `Class` / `Column` / `Date`
+  filters, and keeps the approved hybrid Assign summaries, task-parameter matrix,
+  and all existing picker/management dialogs. `New assignment` switches views
+  without a write or selection reset, and `?view=tasks|library` now survives a
+  reload. Updated the UI/UX specification and testing checklist. Verified
+  JavaScript syntax, CSS brace balance, diff whitespace, release verification,
+  visitor and authenticated student/teacher desktop layouts, 390px responsive
+  layouts, search focus restoration, URL/view restoration, and zero page console
+  errors. A controlled dev-account test created one non-STAR assignment, confirmed
+  it in the student's To Do list, then soft-cancelled it and confirmed the student
+  totals returned to their original values. No CloudBase function deployment or
+  content import is required; the changed static files still need normal publish.
+
+### 2026-07-13
+
+- Applied the approved neutral Liquid Glass system shell to login, public
+  Library, student Dashboard, and Teacher surfaces without moving existing
+  controls or changing business logic. Practice runtimes remain excluded.
+  Verified asset scope, JavaScript syntax, diff whitespace, desktop login,
+  visitor Dashboard and My Words behavior, 390px login/Library/Dashboard width,
+  and zero page console errors. Authenticated Teacher visual smoke remains for
+  the next publish check; no CloudBase deployment or data import is required.
+- Replaced the yellow BBC `classroom-worksheet` theme's boxed, two-column MC
+  options with the owner-selected open-row design: one full-width column,
+  circular A-D markers, and a soft teal surface only on hover/selection. Kept
+  fill-in styling, other BBC themes, grading, answer locks, and result states
+  unchanged. Verified inline script syntax, CSS scope, desktop/mobile layout,
+  option selection, and zero browser console errors. CloudBase: no deployment
+  or data import required; static publish is required.
+
+### 2026-06-24
+
+- Implemented the selected teacher View `By student` expanded layout: a
+  full-width student history list with task best percentage fixed on the far
+  right. Each task opens the same independent matrix detail modal used by top
+  matrix cells. Verified teacher JavaScript syntax, diff whitespace, cache
+  references, and related UI/test documentation.
+
+### 2026-06-23
+
+- Fixed student and teacher practice-entry dialogs so `Enter` closes the dialog
+  before opening the practice page, and `pageshow` clears restored dialogs when
+  browser Back returns from practice. Verified dashboard and teacher JavaScript
+  syntax plus static cache references.
+- Added BBC MC option click feedback with only a soft bell sound and right-side
+  `✦` marker. Confirmed the default and blue BBC render themes share the
+  behavior, with the blue theme marker following the blue accent color.
+- Fixed the shared practice Back confirmation so it hides before calling
+  browser history navigation. This prevents Vocabulary Test Mode's popstate
+  lock from leaving the Back dialog visible when the page correctly stays on
+  the test. Updated shared practice-session cache versions and verified static
+  checks.
+
+### 2026-06-22
+
+- Fixed Vocabulary Learn `NO_GRADED_QUESTIONS` for NGSL/NAWL units whose
+  generated `grading_keys.answers` were empty by deriving missing private
+  answers from quiz `wordList` order during CloudBase data preparation. Added
+  an `--ids` filter to the CloudBase import helper so the owner can overwrite
+  only reviewed affected grading keys. Verified regenerated private import data
+  has no empty Vocabulary answer maps, dry-ran targeted import, ran release
+  verification, and checked diff whitespace. After the owner applied the
+  targeted CloudBase `grading_keys` overwrite, verified with development
+  student and teacher accounts that NGSL-C Learn `Check Answer`, sampled
+  affected NGSL/NAWL Learn sets, and teacher Library preview `Show Answers`
+  return answers without the `NO_GRADED_QUESTIONS` dialog.
+- Simplified the teacher View matrix filters to `Class`, `Column`, and `Date`,
+  removed the `Recent` numeric limit, and kept `Date` defaulted to `This
+  month`. Verified teacher JavaScript syntax, static references, and diff
+  whitespace.
+- Adjusted teacher View matrix status cells so `Not yet` is neutral white,
+  while `Passed` and `Mastered` share the same green cell background and
+  `Mastered` uses the selected solid green circle with a white star. Verified
+  release checks and diff whitespace; owner still needs to publish the static
+  site.
+- Fixed BBC History coloring after Argue/backfill score adjustments by forcing
+  history rendering to clear stale `wrong`, blank-lock, and MC-lock classes
+  before applying the server-returned `correct`/`wrong` state. Verified release
+  checks and diff whitespace; owner still needs to publish the static site.
+- Fixed teacher bell notification routing for second/third attempts by making
+  View matrix date filtering include each linked attempt's submitted date, not
+  only the assignment summary date. Verified release checks and diff
+  whitespace; owner still needs to publish the static site.
+
+### 2026-06-21
+
+- Moved the student Assignments navigation count badge outside the glass tab so
+  the red number is no longer clipped, and strengthened the `Show Finished`
+  capsule with a brighter golden glow. Verified static CSS checks and diff
+  whitespace; logged-in visual smoke remains useful before static publish.
+- Simplified the student account panel footer to two small quiet capsules for
+  `Change password` and `Log out`, and removed the visible `Password change
+  required` field from the account panel. Verified dashboard JavaScript syntax,
+  cache-version checks, and diff whitespace.
+- Nudged the student Personal Center close button slightly upward/right and
+  removed the extra divider under the `Finished` profile row so the footer has
+  a single clean line. Verified dashboard JavaScript syntax and diff
+  whitespace.
+- Applied the selected golden-ribbon `Show Finished` interaction: collapsed
+  state stays bottom-docked, expanded state becomes page content with a sticky
+  top capsule and ribbon reveal. Moved account-panel stars onto the name row
+  and normalized profile row/divider spacing. Verified dashboard JavaScript
+  syntax, static cache-version checks, and diff whitespace.
+- Changed practice return controls from `Home` to `Back` with a shared
+  leave-page confirmation and one-page browser-history return falling back to
+  `dashboard.html`. Updated BBC, Vocabulary, IELTS Reading, and IELTS Listening
+  practice-session cache versions and verified static checks.
+- Tightened the teacher View matrix's left student-name column so it sizes to
+  the visible names, and added a visible Close button to the BBC Argue
+  sent/thanks dialog for both student and teacher-preview paths. Verified
+  teacher JavaScript syntax, targeted static references, and diff whitespace.
+- Applied the selected teacher View matrix status treatment: orange hollow
+  circle for `Not yet`, green check for `Passed`, and glowing gold star for
+  `Mastered`. Updated teacher asset cache versions and verified static checks.
+- Fixed BBC History when a student opens a previously attempted set from
+  Library without assignment/history URL context. Added a student-owned
+  `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate
+  `historyAttemptId` from it, and returned resolved `assignment_id` from
+  `submitAttempt` for Library-bound assignment submissions.
+- Added automatic upward-only historical Argue regrading for teacher
+  `add`/`replace` decisions. Matching same-set, same-question, same-answer old
+  attempts can now improve assignment summaries and STAR records. Verified
+  backend syntax and release checks; owner still needs to deploy
+  `teacherAdmin.zip`.
+- Added the teacher-only paginated `backfillAcceptedAnswerRegrades` action for
+  older approved grading-key changes. It can dry-run or apply current-key
+  upward repairs in batches and still requires owner-triggered deployment plus
+  authenticated teacher execution.
+- Added front-end-only Vocabulary Test locking: start warning dialog, disabled
+  non-Test mode tabs during the timer, browser leave/back warning, manual
+  submit confirmation, time-up auto-submit, and red wrong-question marking
+  after the result modal. Backend timing validation was intentionally not added
+  because students may take unlimited fresh Vocabulary Tests.
+- Refined Vocabulary Test review: the result modal now has only one Close
+  action, wrong answers reveal inline explanations, and Redo is a separate
+  confirmed clear action from the reviewed test page. `submitAttempt` now
+  returns Vocabulary Test feedback after submission so recorded failed tests
+  can show the same explanations.
+
+### 2026-06-20
+
+- Updated the student dashboard top billboard to use the approved Option A
+  pale aurora-rainbow animated background without changing its greeting text,
+  copy, chips, or layout. Verified syntax and diff whitespace; logged-in
+  visual smoke remains useful before static publish.
+- Standardized message and unread reminder indicators to red across student and
+  teacher surfaces, including tab notices, top-right counts, and teacher unread
+  activity dots. Verified static CSS checks and diff whitespace.
+- Applied the approved Option A soft liquid-glass treatment to the student main
+  navigation capsule and the student Library category capsule, scoped away from
+  teacher tabs. Verified syntax and diff whitespace; logged-in visual smoke
+  remains useful before static publish.
+- Changed the student Assignments finished drawer entry from a sticky stamp to
+  a lower-positioned gold capsule matching the Library badge style, with
+  `Show Finished` / `Hide Finished` text and no count. Verified JavaScript
+  syntax and diff whitespace; logged-in visual smoke remains useful before
+  static publish.
+- Fixed backend assignment binding for Library submissions: `submitAttempt`
+  now auto-resolves the student's open assignment for the same `set_id` when a
+  practice page submits without `assignment_id`. This should make those
+  attempts move the assignment to FINISHED and appear in teacher View matrix
+  after `submitAttempt` is deployed.
+- Hardened backend progress reads and assignment summaries: `teacherAdmin`,
+  `getDashboard`, and `getResources` now page through CloudBase reads instead
+  of trusting fixed first-page limits; `submitAttempt` recomputes assignment
+  summary fields from linked attempts after recording an assignment attempt; and
+  teacher View progress can derive finished status from linked attempts when
+  stored assignment summary fields are stale. Owner must deploy updated
+  `submitAttempt`, `teacherAdmin`, `getDashboard`, and `getResources` packages.
+- Confirmed with dedicated QA teacher/student accounts that a newly assigned
+  `BBC-250529` task opened from the student Library without an `assignment`
+  URL parameter records a passed attempt, moves from student Assignments to
+  Finished, and appears in teacher View groupings. Found and fixed a frontend
+  matrix display cap that hid students beyond the first 12 sorted rows; after
+  the fix, the View matrix directly showed the student row with a `50%`
+  passed cell. Verified `teacher.js`, cloud function syntax, diff whitespace,
+  and `npm run verify:release`.
+- Updated the teacher create-student flow to use a vertical modal form and a
+  checkmark success dialog with the new Login ID, renamed the teacher Tasks tab
+  to Assign, changed the Review entry to a question-mark icon, and simplified
+  Assign so work/student search and filters live in standalone picker dialogs.
+- Verified `assets/js/teacher.js` syntax, diff whitespace, and duplicate IDs in
+  `teacher.html`. Local static server started but could not be reached from a
+  separate command session in this environment, so browser smoke remains useful
+  before static publish.
+- Investigated why `BBC-250529`, `BBC-250605`, and `BBC-250612` did not appear
+  in teacher Assign. Static `data/home-catalog.*`, public data, audio, and local
+  `.cloudbase-private/import/sets-cloudbase.json` / `grading-keys-cloudbase.json`
+  include the three lessons, but CloudBase import is still required for real
+  assignment. Updated teacher Assign to merge catalog-only missing items as
+  disabled import-required rows and bumped `teacher.html` asset versions.
+- Follow-up on whether the three BBC lessons had already been deployed: repo QA
+  notes from the import commit explicitly said the owner still needed static
+  publish and CloudBase content import. A direct read-only `tcb` query for the
+  three `set_id`s could not confirm live CloudBase state because this local CLI
+  session has no valid CloudBase identity. The observed old Assign behavior is
+  still consistent with CloudBase `sets` missing those records or stale static
+  cache, not with a confirmed function-package deployment issue.
+- Root cause summary: static publication, CloudBase function packages, and
+  CloudBase content data are separate release layers. The three BBC lessons were
+  added to static files and local import output, but teacher Assign used
+  CloudBase `sets` as its assignable source and did not merge catalog-only
+  missing records. When CloudBase `sets` / `grading_keys` were not confirmed in
+  the live environment, the lessons were invisible instead of shown with an
+  import-required state. The fix is to merge static catalog fallback rows into
+  Assign and keep them disabled until CloudBase content import is complete.
+- Final diagnosis after owner import: read-only CloudBase queries confirmed the
+  three BBC `sets` and `grading_keys` are present, but duplicate/imported
+  content pushed the live environment to 395 visible `sets` and 411
+  `grading_keys`. Deployed `teacherAdmin.listSets` only read the first 200
+  visible sets, so these BBC lessons could still be treated as catalog-only.
+  Raised teacherAdmin content read limits to 1000 and rebuilt
+  `deploy-packages/teacherAdmin.zip`; owner must deploy that function package.
+- Resolution confirmed: after the owner deployed the rebuilt `teacherAdmin`
+  package, the three BBC lessons became assignable. Future imports should check
+  three layers separately: static catalog visibility, CloudBase `sets` /
+  `grading_keys` presence, and the deployed `teacherAdmin` content read limit.
+  If Assign shows `Import to CloudBase` while CloudBase records exist, suspect a
+  stale teacherAdmin deployment or content-read pagination/limit issue before
+  re-importing data again.
+
+### 2026-06-19
+
+- Updated the student login page to the floating-paper welcome design with a
+  minimal central quote, light green motion elements, `Sign in`, and concise
+  view-only visitor copy. Verified login JavaScript syntax and diff whitespace;
+  browser visual smoke is still useful before static publish.
+- Corrected the Teacher Library BBC year-badge misunderstanding: BBC task
+  capsules should not show gold year badges, and the teacher BBC column should
+  not expose year sub-tabs unless the owner explicitly asks to restore them.
+  This supersedes older notes that mentioned keeping BBC year badges.
+- Lesson learned for missing Teacher Library content: do not assume
+  `teacherAdmin.zip` redeploy is the fix. First check static publish/cache
+  (`teacher.html` script version and `home-catalog`), then CloudBase `sets` and
+  `grading_keys` import state, then teacher Library filters/fallback behavior,
+  and only consider cloud function redeploy when the function logic itself
+  changed or returns stale data.
+- Fixed teacher Library display fallback so it merges visible static
+  `home-catalog` items missing from CloudBase `sets`, allowing newly published
+  lessons to be previewed while CloudBase import state is checked. Verified
+  teacher JavaScript syntax, release checks, and diff whitespace; static publish
+  required.
+- Moved teacher Review out of Tasks into a top-right icon button and standalone
+  modal with Pending, Approved, and Rejected tabs. Removed the old Tasks Review
+  entry and kept notification Review rows opening the modal. Verified
+  `teacher.js` syntax, searched for stale Tasks Review entry points, ran
+  `git diff --check`, and ran release verification. Local browser loaded the
+  updated teacher assets, then redirected to `index.html` because localhost had
+  no active teacher login state; visual smoke still needs an authenticated
+  teacher session after static publish.
+- Changed the teacher notification bell to a standalone attempts-only modal,
+  removed Review items and filter buttons from that feed, and made each attempt
+  row open View with the matching matrix cell and attempt highlighted. Reversed
+  the header `+` button to the same light/purple style as the other header
+  icons. Verified `teacher.js` syntax, stale Review-in-bell searches, and diff
+  whitespace, then ran release verification; authenticated visual smoke is
+  still needed.
+- Reviewed three incoming BBC listening practice drafts from the desktop BBC
+  folder against their transcripts and audio assets, created a revised
+  teacher-review copy outside the repo at `/private/tmp`, lengthened
+  student-facing evidence quotes, synced the revised review draft back to the
+  owner's `testing.md`, imported `BBC-250529`, `BBC-250605`, and `BBC-250612`
+  with blue-studio rendering and private local grading sources, regenerated the
+  static catalog and CloudBase import output, and verified question counts,
+  public answer stripping, grading-key coverage, release checks, and local
+  browser loading. Owner still needs static publish and CloudBase content import.
+- Moved teacher student-account creation to a single top-right header `+`
+  beside notifications, removed the Personal Center/View inline creation
+  entry, and made the form a standalone modal. Verified JavaScript syntax and
+  release checks; static publish required.
+- Refined teacher View matrix detail dialogs: centered the external Close
+  button, capped attempt bar width so a single attempt does not stretch full
+  width, and mapped bar colors to amber not-passed, green passed, and gold
+  mastered. Verified JavaScript syntax and release checks; static publish
+  required.
+- Simplified the matrix score-lock pill so unlocked scores show no icon and
+  locked scores show a lock next to the best score. Verified JavaScript syntax
+  and release checks; static publish required.
+- Redesigned teacher View matrix detail dialogs with a title-only header,
+  student and lock/best-score pills, clickable attempt score bars, external
+  Close button, and newest-first attempt cards that list only wrong answers.
+  Verified JavaScript syntax and release checks; static publish required.
+- Shortened the practice-entry dialog not-passed ribbon to `Not yet` without a
+  best-score field; passed and mastered states keep best-score reminders.
+  Verified JavaScript syntax and diff checks; static publish required.
+- Replaced task-entry browser confirmations with the shared custom entry dialog
+  for student Assignment cards, student Library cards, and teacher Library
+  cards. It shows task title, `Enter`, external `Close`, and status/best-score
+  reminders. Verified JavaScript syntax and diff checks; static publish
+  required.
+- Moved the teacher create-student `+` shortcut into the top-right Personal
+  Center action cluster, centered the panel title, and removed the Teacher
+  Account heading/status row. Verified JavaScript syntax and release checks;
+  static publish required.
+- Added task names under task IDs in the teacher View matrix header and widened
+  task columns slightly so the extra line remains readable with horizontal
+  scrolling. Verified JavaScript syntax and release checks; static publish
+  required.
+- Aligned teacher Assign Work-list sorting with the matching Library column
+  rules, so filtered columns use natural date/numeric ordering instead of raw
+  backend title order. Verified JavaScript syntax and release checks; static
+  publish required.
+- Removed visible `Go` entry buttons from student Assignment, student Library,
+  and teacher Library capsules. The whole capsule now opens the practice item,
+  while explicit secondary controls such as Teacher replies and Get Star keep
+  their own click behavior. Verified JavaScript syntax and release checks;
+  static publish required.
+- Simplified student Assignment task capsules by removing the extra lower-left
+  status/set pills and matching the Library task-card density. Reworked the
+  Finished drawer control into a sticky BBC-result-inspired stamp with
+  `Show Finished` / `Hide Finished`, and made assignment card bodies open the
+  original task while preserving explicit buttons. Verified dashboard syntax and
+  static references; browser smoke remains useful before publish.
+- Split the student account STAR row into two adjacent counters: yellow for
+  assigned-task stars and blue for self-study/library stars. Verified dashboard
+  syntax and cache-version references; browser smoke remains useful before
+  publish.
+- Replaced finished Assignment card action text with clickable `PASSED` and
+  `MASTERED` stamps. Verified dashboard syntax and cache-version references;
+  browser smoke remains useful before publish.
+- Simplified teacher Assign into a minimal two-panel multi-select flow: Work
+  uses search plus Column, Students uses search plus Class, and assignment
+  creation still uses the existing defaults and backend validation. Verified
+  teacher syntax and release checks; static publish remains required.
+- Expanded teacher matrix detail dialogs with latest-attempt wrong-answer
+  comparisons and answer-view lock status from `teacherAdmin`. Verified teacher
+  and function syntax, release checks, and rebuilt the local function package;
+  static publish and `teacherAdmin` redeploy remain required.
+
+### 2026-06-18
+
+- Imported `NGSL-L` into project vocabulary content, leaving `NGSL-K` out for
+  owner rework. Corrected two L word-form mismatches (`meter` and
+  `restriction`), regenerated the static catalog, prepared ignored CloudBase
+  import data, and verified public files omit answer/explanation fields, private
+  grading source has 100 answers, each group's Word Bank order differs from
+  answer order, release verification passes, and local browser loading works.
+  Owner still needs to run CloudBase content import for authenticated
+  Library/Explore and grading.
+- Renumbered NAWL vocabulary units from the old NGSL-continuation sequence
+  (`NAWL-S` through `NAWL-Z2`) to independent `NAWL-A` through `NAWL-J`,
+  regenerated the static catalog, and documented the rule for future imports.
+  Verified JSON/JS fallbacks, CloudBase prep output, release verification, and
+  local browser loading for `NAWL-A` and `NAWL-J`. Owner still needs to import
+  the regenerated CloudBase content data before authenticated Library/Explore
+  and grading use the new set IDs.
+- Added the front-end-only BBC `blue-studio` render theme and applied it to
+  `BBC-250619` and `BBC-250626`. The shared `bbc.html` keeps existing blank,
+  multiple-choice, submit, History/Clear, Explain, and Argue flows while adding
+  themed Worksheet and current-lesson My Words entry points. Verified JSON
+  parsing and static references; browser smoke remains useful before publish.
+- Fixed My Words touch handling by suppressing native selection/callout behavior
+  around the custom save button, preserving the captured selection before
+  clearing mobile browser selection, and bumping the shared script cache version.
+  Verified JavaScript syntax and static references; physical iOS/Android device
+  smoke remains useful before publish.
+- Reviewed and corrected NGSL/NAWL DOCX vocabulary sources for D/E/F/I/J in
+  `/private/tmp/ngsl-corrected`. Verified corrected DOCX structure, answer
+  coverage, prompt leak checks, and rendered all five files to PNG contact
+  sheets. E/F/I/J are import-ready from the source-QA perspective; D still needs
+  owner confirmation for duplicate source words before import.
+- Imported corrected `NGSL-E`, `NGSL-F`, `NGSL-I`, and `NGSL-J` into project
+  vocabulary content with public JSON/JS fallback files, regenerated
+  `data/home-catalog.*`, and prepared ignored CloudBase import data. Verified
+  public files have no answer fields, private grading source has 100 answers
+  per set, HTTP loading succeeds, and `npm run verify:release` passes. Owner
+  still needs to run the CloudBase content import before authenticated
+  Library/Explore and grading use the new sets.
+- Added teacher View matrix `Class`, numeric-select `Recent`, and `Column`
+  filters, removed the top View summary cards, and kept clickable matrix cells
+  that show the selected student's set records, attempt dates, durations,
+  scores, and wrong-question answer summaries. Verified `teacher.js` syntax,
+  `git diff --check`, and v11 resource tags.
+- Refined the teacher View matrix so `Recent` defaults to 7, the toolbar has a
+  `Date` basis selector, matrix student rows show names only, and wrong-question
+  summaries include teacher-only correct answers from `teacherAdmin`. Verified
+  `teacher.js` and `teacherAdmin` syntax; static publish and `teacherAdmin`
+  CloudBase redeploy are still required.
+- Updated teacher View matrix responsiveness and controls: the matrix scrolls
+  horizontally inside the available screen width with a sticky student-name
+  column, filters render as `Class`, `Column`, `Recent`, `Date`, date filtering
+  supports this week/month/custom calendar ranges, and clicked cells open a
+  closeable floating detail dialog. Verified `teacher.js` syntax and release
+  checks; static publish is still required.
+- Aligned student Assignment task capsules with the Library task card structure,
+  including the same eyebrow/set-id/title/action layout while preserving status,
+  score, teacher reply, and star actions. Verified `dashboard.js` syntax,
+  `git diff --check`, and local v8 asset requests.
+- Updated Library card eyebrows to show `ielts-reading` / `ielts-listening`
+  explicitly and simplified the student account panel: removed the separate
+  achievement card and account heading, moved stars into the profile rows,
+  changed independent practice to `Finished`, and made password/logout actions
+  low-noise text buttons. Verified dashboard/teacher syntax, `git diff --check`,
+  and local v7 asset requests.
+- Removed the yellow `C7` IELTS badge from student and teacher Library task
+  cards, kept BBC year badges at that time, and restyled the Library sub-tab
+  layer as yellow capsule buttons. BBC year badges were later removed per owner
+  preference. Verified `dashboard.js`/`teacher.js` syntax, `git diff --check`,
+  and local v6 asset requests.
+- Replaced the student Assignments achievement drawer summary with a compact
+  `Finished` completion button showing a completion SVG and total finished
+  count; expanded state now goes straight to the finished task list. Verified
+  `dashboard.js` syntax, `git diff --check`, and local dashboard smoke.
+- Standardized student and teacher Library sorting: BBC cards now follow
+  release date from earliest to latest, and IELTS cards follow Cambridge book,
+  Test, then Section/Passage order. Regenerated `home-catalog` and bumped
+  dashboard/teacher cache versions; verified syntax, catalog order, and local
+  dashboard/teacher browser smoke.
+- Expanded teacher View progress around `By student`, `By class`, and `By task`;
+  removed Open/Watch status labels, added low-to-high task score bars and
+  clickable single-assignment details, and added scoped due/pass/mastery editing
+  for existing assignments. Verified `teacher.js` and `teacherAdmin` syntax,
+  ran release verification, rebuilt `deploy-packages/teacherAdmin.zip`, and
+  smoke-tested local `teacher.html`; CloudBase still needs the rebuilt
+  `teacherAdmin` function package deployed.
+- Unified student and teacher Library task capsules; added IELTS book badges,
+  BBC year badges at that time, and DSE labels without Paper numbers. BBC year
+  badges were later removed per owner preference. Moved student STAR counters
+  into the account panel, changed My Words to a vocabulary-list layout,
+  simplified the Assignments achievement drawer around a gold completed count,
+  and added class filtering plus mobile-friendly scrolling to the teacher View
+  matrix. Verified `dashboard.js` and `teacher.js` with `node --check`; browser
+  smoke is still needed.
+- Fixed BBC practice feedback states so not-passed submissions still mark wrong
+  questions without revealing answers; History refills editable answers while
+  showing Explain/Argue only when backend feedback is available; Clear removes
+  visible feedback/actions and MC locks now persist only as yellow reminders.
+  Verified inline script parsing with Node and ran `git diff --check`; browser
+  smoke with an authenticated student session is still needed.
+- Changed Vocabulary default thresholds to 80% passing and 100% mastery across
+  CloudBase set generation and backend fallback logic. Verified cloud function
+  syntax, regenerated local private import output, checked all 23 generated
+  vocabulary sets are 80/100 while non-vocabulary sets remain 50/90, rebuilt the
+  affected function ZIPs, and ran release verification. CloudBase: deploy
+  `getDashboard`, `submitAttempt`, and `teacherAdmin`; update existing
+  Vocabulary `sets` records if they already contain old 50/90 values. Historical
+  note: this 2026-06-18 rule was superseded on 2026-07-25 by Vocabulary 90/100
+  and BBC 80/95.
+- Added a failed Vocabulary Test `Choose Again` action that clears the current
+  questions, local draft, timer, and summary, then returns the student to group
+  selection for a fresh start. Verified the `vocabulary.html` inline script
+  parses with Node, exercised the failed-result restart path with a DOM stub,
+  and ran `git diff --check`; browser smoke is still needed.
+- Refactored the student dashboard navigation to `Assignments`, `My Words`,
+  and `Library`; moved account actions and teacher replies to the top-right
+  chip/message controls; added a collapsed `Finished & Wins` drawer focused on
+  completed-count achievement. Refactored the teacher desk to `Tasks`, `View`,
+  and `Library`; moved Review under Tasks, changed Updates into a notification
+  bell, and added a progress matrix to View.
+- Verified `assets/js/dashboard.js` and `assets/js/teacher.js` with
+  `node --check`, ran `git diff --check`, and browser-smoked the teacher page
+  locally with an existing teacher session: `Tasks`, `Tasks > Review`, `View`
+  matrix, notification bell, and teacher account panel loaded without console
+  errors. Student browser smoke with a real student session is still needed.
+  CloudBase: no deployment or data import required; publish the static site for
+  the UI/cache-bump change.
+
+### 2026-06-17
+
+- Restored Teacher Library practice items to compact task capsules while
+  keeping the 3-tab, sub-tab, search, and year filtering behavior. Verified
+  `teacher.js` syntax and browser-smoked a dedicated teacher session locally:
+  Library rendered `teacher-library-card` capsules with `Open` actions and no
+  residual `menu-card` items. Static publish is required for the UI/cache-bump
+  change.
+- Added Cambridge book sub-tabs to the student and teacher Library views for
+  IELTS Reading and IELTS Listening. Verified locally in visitor mode that
+  IELTS Reading shows `C7` and `C8`, defaults to `C7`, and lists 12 C7 Reading
+  passages; IELTS Listening shows `C7` and `C8`, defaults to `C7`, lists 16 C7
+  Listening sections, and switches to C8 correctly.
+- Verified `assets/js/dashboard.js` and `assets/js/teacher.js` with
+  `node --check`. CloudBase: no deployment or import performed; publish the
+  static site for the Library UI change.
+
+### 2026-06-16
+
+- Imported Cambridge IELTS 8 Academic Reading/Listening Test 1 and Test 2:
+  added 6 Reading passage sets, 8 Listening section sets, matching C8 listening
+  mp3 assets, static catalog entries, and local private grading source/import
+  data. Verified C8 public runtime JSON parses, all 14 C8 sets have complete
+  private grading coverage, public C8 data contains no answer/explanation
+  fields, catalog entries are present, and the copied audio files exist.
+- Imported Cambridge IELTS 8 Academic Reading/Listening Test 3 and Test 4:
+  added 6 Reading passage sets, 8 Listening section sets, matching C8 listening
+  mp3 assets, and two public question-image assets for the Test 4 map/diagram
+  tasks. Verified all C8 Test 1-4 catalog/import records are present, T3/T4
+  public runtime JSON has complete private grading coverage, public data
+  contains no answer/explanation fields, copied audio files exist, and release
+  verification passes with only the expected dirty-worktree warning.
+- CloudBase: after publishing the static site, import the regenerated
+  `.cloudbase-private/import/sets-cloudbase.json` and
+  `.cloudbase-private/import/grading-keys-cloudbase.json` so authenticated
+  Library/Explore and server grading can see the C8 sets.
+- Added owner-run CloudBase CLI content import helper:
+  `npm run cloudbase:import:content` dry-runs by default and
+  `-- --apply` writes insert-missing records to `sets` and `grading_keys`.
+  Verified help output, dry-run counts, release verification, and whitespace
+  checks. CloudBase: no apply/import command was run by the agent.
+- Added owner-gated CloudBase release helpers: `verify-release`,
+  `package-cloudfunctions`, and `generate-deploy-plan`. Verified the release
+  checker passes with only a dirty-worktree warning, dry-run packaging lists all
+  current cloud functions, and deploy-plan generation writes the ignored local
+  `.cloudbase-private/deploy-plan.md`. CloudBase: no deployment performed.
+- Fixed source-level P0 backend architecture issues: `submitAttempt` now keeps
+  assignment status monotonic while recording lower-scoring retries, student
+  dashboard/submit functions reject teacher profiles, teacher assignment can
+  reassign completed/STAR work, and Argue regrading can create or repair STAR
+  records when mastery is reached.
+- Updated `teacher.js` candidate cards so completed/STAR students are selectable
+  for reassignment. CloudBase deployment still required for
+  `submitAttempt`, `getDashboard`, and `teacherAdmin`; static publish required
+  for the teacher UI change.
+- Generated light-background square DSE/IELTS app icon assets from the owner's
+  original logo images, wired the student dashboard to switch the home-screen
+  icon/manifest by `curriculum_track`, and kept student/teacher personal
+  profile System fields text-only.
+- Verified icon dimensions/background pixels, manifest JSON, and
+  `dashboard.js`/`teacher.js` syntax. CloudBase: no deployment required; static
+  publish is required for devices to fetch the new icons.
+- Fixed mobile student assignment capsules so the `Go` button stays in a right
+  column instead of dropping to a third line; verified with headless Chrome at
+  390px viewport that `Go` shares the title row and sits on the right.
+- Blocked personal My Words saves from answer, explanation, feedback, result,
+  teacher-reply, and review-answer UI regions; also guarded selections that
+  drag across blocked answer content.
+- Verified `personal-vocab.js` syntax and bumped the script cache query on
+  Dashboard, BBC, IELTS Reading, IELTS Listening, and Vocabulary pages.
+- Removed the green generated app icon and web manifest references, kept the
+  owner's original DSE/IELTS logo images as static assets, and made teacher
+  student Class/System tags visibly editable with DSE/IELTS logo badges.
+- Verified `teacher.js` syntax, original logo byte-for-byte copies, and local
+  static responses for teacher assets and removed icon paths.
+- Fixed IELTS Listening teacher preview audio startup: `teacher=1` no longer
+  blocks the shared `Start Audio` confirmation flow.
+- Added the public app version to teacher Library practice links and bumped the
+  static config cache version to `20260616-1` so devices fetch the updated
+  practice page URL.
+- Verified locally that IELTS Listening teacher preview opens `C7-T1-S1`, sees
+  the audio source, and shows the start-audio dialog after clicking `Start
+  Audio`.
+- Verified NAWL units JSON/JS fallback files parse, are listed in
+  the static home catalog, and the final NAWL unit renders locally with 63 words and 6
+  test groups.
+- CloudBase: no deployment or import performed. Static publish is required for
+  the audio fix; CloudBase `sets` and `grading_keys` import is required if NAWL
+  items are missing from authenticated Library/Explore or grading.
+- Imported Cambridge IELTS 7 Academic Reading/Listening from the supplied PDF:
+  added missing Test 4 Reading passages, added 14 missing Listening section
+  pages, corrected `C7-T3-P1` Questions 7-13 to use the original A-O option
+  format, rebuilt the static catalog, and regenerated private CloudBase import
+  files.
+- Verified all 28 C7 runtime JSON files parse, each C7 grading key is non-empty,
+  public C7 data contains no answer/explanation fields, the home catalog lists
+  all 28 C7 items, and local browser smoke tests load `C7-T4-P1`,
+  `C7-T4-S4`, and corrected `C7-T3-P1` with no console errors.
+- CloudBase: import updated `.cloudbase-private/import/sets-cloudbase.json` and
+  `.cloudbase-private/import/grading-keys-cloudbase.json` after publishing the
+  static site. New Listening pages show `Audio pending` until matching mp3 files
+  are added under `assets/audio/ielts-listening/` and referenced in data JSON.
+
+### 2026-06-15
+
+- Added the personal My Words feature source: new `studentVocabulary` cloud
+  function, shared `personal-vocab.js` selection UI, Dashboard My Words panel,
+  docs, and `deploy-packages/studentVocabulary.zip`.
+- Verified `studentVocabulary`, `personal-vocab.js`, and `dashboard.js` with
+  `node --check`; browser-smoked local BBC visitor loading and local Visitor
+  Dashboard with no console errors.
+- CloudBase: owner already created `student_vocabulary_items` and indexes.
+  Deploy `studentVocabulary`, then publish the static site and test saving with
+  a dedicated development student account.
+- Investigated IELTS Listening `Start Audio` not playing. Verified
+  `C7-T3-S4.mp3` serves locally as `audio/mpeg`; fixed the start/resume state
+  machine so one tap cannot double-trigger `touchend`/`click` and invalidate
+  the first `audio.play()` attempt. Verified inline script syntax and local
+  page/audio 200 responses.
+- Ran a dev end-to-end QA pass with dedicated teacher/student test accounts:
+  teacher assigned `BBC-250717`, student opened it from dashboard, submitted a
+  correct countable attempt, and the student dashboard moved it from TO DO to
+  FINISHED.
+- Verified teacher BBC preview `Show Answers` works with an authenticated
+  teacher session and does not surface a raw CloudBase SDK error.
+- Confirmed owner correction: the current student dashboard is intentionally
+  two groups, `TO DO` and `FINISHED`; do not split it into `PASSED` and
+  `MASTERED` without a new owner request.
+- Reverted the accidental three-filter dashboard change and removed the
+  residual MASTERED `1 Week / 1 Month / All` code path; bumped `dashboard.html`
+  to `dashboard.js?v=20260615-8`.
+- Updated `AGENTS.md` so future agents know the student dashboard is currently
+  a two-group `TO DO` / `FINISHED` design.
+- Verified `assets/js/dashboard.js` with `node --check`.
+- CloudBase: no deployment performed. Test data created in development:
+  one assignment and one attempt for the dedicated student test account.
+- Added PWA/iOS icon assets from the supplied cat-logo references, wired
+  `apple-touch-icon` and `site.webmanifest` across all root HTML pages, and
+  verified manifest JSON, icon dimensions, and page icon references.
+- CloudBase: no deployment required; publish the static site for devices to
+  fetch the new home-screen icon.
+- Created this QA memory file and a local credential template for future
+  Codex-assisted test runs.
+- Added repository rules for updating this file after QA, bug-fix, and
+  verification work.
+- CloudBase: no deployment required.
+### 2026-08-27 — DSE Speaking Lab V1 local implementation
+
+- Added shared Speaking Lab domain rules, provider/model fail-closed
+  boundaries, authenticated gateway/worker scaffolding, student/teacher and
+  redacted external report surfaces, and static/pure contract tests.
+- Updated the numbered product, architecture, UI, data, changelog, decisions,
+  testing, backlog, deployment, troubleshooting, README, and AGENTS docs.
+- Verified `npm run test:speaking-lab`, function/page syntax, release checks,
+  static build, and local function packaging. No CloudBase collections,
+  secrets, timers, provider adapters, deployments, or static publication were
+  performed. Owner still needs the provider benchmark and gated rollout.
+
+### 2026-09-02 — Complete Paper 4 Set library release
+
+- Imported 306 visible PP Sets and retained five hidden MOCKs in CloudBase;
+  deployed the metadata-summary `speakingLab` gateway.
+- Added full-corpus generation/validation, student and teacher filters, bounded
+  rendering, focused private-data preparation and a visibility-only MOCK
+  migration.
+- Verified Speaking contracts, syntax, release checks, private-source exclusion,
+  static build and function package. Static publication and authenticated
+  post-deploy smoke testing remain the final release steps.
+
+### 2026-09-02 — My Words Scan V1 production rollout
+
+- Created and verified the three ADMINONLY scan collections and fourteen documented business indexes.
+- Deployed `studentVocabulary`, `vocabularyScan`, and `vocabularyScanWorker`; enabled the private one-minute timer and the all-active-students feature switch.
+- Corrected CloudBase `getUserInfo()` sync/async compatibility found by the unauthenticated invoke smoke test, added a regression assertion, rebuilt, and redeployed the Scan gateway.
+- Empty-worker execution and unauthenticated `AUTH_REQUIRED` behavior passed. Real-student photo/OCR/dictionary enrichment remains the post-static-publication smoke check.
+
+- 2026-09-06 — Owner-authorized Argue release `bdd483b0` deployed to Tencent COS and all four CloudBase functions. Static bytes and downloaded function hashes verified; original runtime/configuration retained, with only the existing email Teacher URL corrected to HTTPS. Live missing-locator lookup reached the new endpoint. Real new-Argue email and WeChat acceptance remain pending; management CLI invocation was not counted as an anonymous browser authorization test.
+
+- 2026-09-06 — Implemented and deployed next-day Shanghai 11:30 daily Argue reminders in the existing sender. New boundary/concurrency/multi-day/paging/resolution/retry/muted-inbox tests and existing Argue/attempt-email regressions passed; release verification passed. Online bundle hash and unchanged function configuration verified. Live server-time scheduling query succeeded with zero due reminders and no errors. The natural next-day 11:30 delivery is pending observation.
+
+- 2026-09-06 — Final daily-reminder check also covers saved decisions with failed/incomplete regrades: pending requests keep their reminders until resolution succeeds. All three relevant test suites passed again. Final sender bundle verified Active with matching downloaded hash, unchanged configuration, and a successful live scheduler query.
+
+### 2026-09-08 — Listening mode-first rollout
+
+- Owner-authorized CloudBase rollout created `learning_activity_sessions` as `ADMINONLY` with the reviewed sparse unique and compound indexes.
+- Deployed `intensiveListening`, `teacherAdmin`, `getDashboard`, `sendTeacherAttemptEmails`, and `learningReports`; all five reported Deployment completed and downloaded bundle hashes matched locally. Existing function configuration was preserved and Tencent Shadowing scoring remains disabled.
+- Unauthenticated function smoke checks failed closed as expected. GitHub Pages run `34143120451` and Tencent COS run `34143121737` both published commit `da54bd3a`; live COS ETags and content lengths for the Listening library, practice shell, learning-activity client, and Dashboard matched the release files. Authenticated real-student microphone/effective-time acceptance remains pending.
+- Known baseline issue: `test:argue-emails` expects one event while current `origin/main` and this release both produce two; the dedicated Argue reminder test passes, and this Listening release does not alter that behavior.
+
+### 2026-09-08 — Shadowing listen-entry production hotfix
+
+- Fixed the first-unit `SHADOWING_SEGMENT_NOT_FOUND` failure by returning and
+  selecting only scoreable Dictation units for Shadowing; Skip/context rows no
+  longer enter the learner queue.
+- Kept the recording action visibly named `Record take` while disabled, split
+  backend/media/autoplay failures into accurate messages, and allowed the next
+  Listen tap to reuse an issued playback token after browser autoplay denial.
+- Accepted ordered overlapping transcript timestamps while continuing to reject
+  reverse unit order and invalid individual time bounds, preserving compatibility
+  with the existing BBC material.
+- Focused Listening tests, release verification, static build, syntax checks,
+  and diff checks passed. Commit `93de707c` was pushed to `main`; code-only
+  `intensiveListening` and `teacherAdmin` deployments completed. Tencent COS run
+  `34209743876` and GitHub Pages run `34209743564` succeeded, and production COS
+  bytes for the practice shell and Shadowing client matched the release.
+- Authenticated student-device Listen/record/replay remains the final manual
+  acceptance check. Tencent Shadowing scoring remains disabled.
+
+- 2026-09-11 — Teacher Speaking Set search: implemented integrated title/year/Set-number search, Year scoping, keyboard selection, desktop panel and centred phone modal. macOS Safari selection/focus and 375px browser modal/scroll-lock checks passed; UI/Set contracts and static verification/build passed. Owner-authorized scoped static publication pending; no backend changes.
+
+### 2026-09-13 — Individual Response recorder release
+
+- Implemented the owner-approved preview in Speaking Lab: Set heading, Qn, central mic, 3-second opening and 60+5-second response, final-tone emphasis, Finished and manual Submit.
+- Added behavioural checks for capture timing, cue schedule, cancellation, late permission, denial, manual submission, file limit and retry; updated UI contracts and product/UI/test docs.
+- Frontend-only; no production backend mutation or migration required. Behavioural recorder tests, full Speaking Lab regression suite, release verification and static build passed. Browser fixture using production markup/CSS/binding verified central 3/2/1 and Finished/Submit; hardware and live backend upload were not exercised. Static publication pending.
+
+- 2026-09-13: Manual Individual Response stop/cancel now displays Start Over; automatic completion retains Finished. Updated preview, UI spec and behavioural label check.
+
+- 2026-09-13: Fixed Individual Response dialog closing when Upload Files is cancelled. Its cancel handler now ignores descendant input events; genuine dialog Escape still follows guarded close. Added regression checks for repeated picker cancellation and dialog-originated cancel; updated UI/testing/troubleshooting docs.
+
+- Verification: recorder/UI tests and release verification passed. Browser fixture with the production listener kept the dialog open after three bubbling file-input cancel events; dialog-originated Escape still closed it. Native OS picker interaction was not automated.
+
+- 2026-09-13: Individual Response manual stop uses its own stopped presentation: green actual seconds with sec recorded, centred Tap to Start Over, and no checkmark. Added tests for displayed duration, finalization delay exclusion and restart reset. Preview synced.
+
+- Verification: recorder/UI regression checks and release verification passed. Browser fixture using production markup/CSS/binding showed a centred text-only restart control, green recorded duration and Submit after manual stop. Synthetic capture only; no real microphone/backend submission used.
+
+
+### 2026-09-13 — IR focused-session static release
+- Owner approved the dark backdrop, background scroll lock, microphone-reactive
+  colour and green restart microphone. Implemented in speaking-lab JS/CSS;
+  cache version 20260913-response-focus-1. Temporary demo controls are excluded.
+- Preserves shared capture, countdown timing, Submit, file-picker cancellation
+  isolation and the latest analysis waiting-page transition.
+- Tests: response-focus sample/scroll/lifecycle tests, recorder and UI contracts;
+  browser QA uses actual recorder/controller code with synthetic local Web Audio,
+  checks capture colour, stop display and Submit restoring scroll position.
+- UI specification, changelog and testing checklist updated. No CloudBase
+  function, permission, data migration or provider changes are involved.
+
+
+### 2026-09-13 — Group Discussion circle recorder release
+
+- Implemented the owner-approved temporary preview: centred microphone Start,
+  Ready duration selector and Tap to Start, half-minute wheel ticks, three-second
+  opening and ending cues, larger digits, and real microphone colour outside
+  the progress arc. Ending retains a complete static ring.
+- Student and Teacher use the same recorder and scoped CSS. Retained file/date
+  fallback, final-minute reminder, local review and stable explicit upload retry.
+- Passed `npm run test:speaking-lab`, `npm run verify:release`,
+  `npm run build:static` and `git diff --check`. Browser QA at 1280×720 and
+  390×844 verified Ready, wheel selection, opening, outer colour response,
+  final static ring and automatic Review with synthetic audio; no page errors.
+- Updated product, architecture, UI, changelog and regression documentation.
+  No backend or production data changes. Real-device acoustic/permission quality
+  remains device-dependent; synthetic browser QA did not access a physical mic.
+
+
+### 2026-09-13 — Speaking Set headings, owner-run release
+
+- Centred the first card's year/Set eyebrow. Context, Part A and Part B now
+  share a left-label/right-controls row; Context's article title stays below.
+- Verified all four cards at desktop and 390 px phone width with production
+  markup/CSS and synthetic content. UI contracts, release verification, static
+  build and whitespace checks passed. Updated UI spec and changelog.
+- Owner requested terminal publication commands instead of agent deployment.
+  This release includes the preceding approved Group Discussion recorder work.
+
+
+### 2026-09-13 — Approved IR full-capture fade
+
+- Integrated the approved temporary preview into the existing native IR dialog:
+  680 ms surrounding fade for the entire 3 + 60 + 5-second sequence, centred stop
+  square, visible capture clock, and 220 ms restoration. Hidden controls are inert.
+- Completion, cancellation, early finish and recording errors restore the surface;
+  existing microphone ownership, cue scheduling and explicit Submit are preserved.
+- Passed the complete Speaking suite, release verification, static build and diff
+  checks. Local native-dialog browser QA used synthetic audio at desktop and
+  390 px phone width; confirmed persistent focus and final-warning recovery.
+- User authorized static publication. No CloudBase resource or data changes.
+
+
+### 2026-09-13 — Full-page IR and three-second endings
+
+- Shipped the approved full-page IR layout with enlarged question, ring,
+  microphone and timer, maintaining the existing focus and capture interactions.
+- IR now records 60 + 3 seconds with three final tones; Group Discussion retains
+  target + 3. Existing imported audio and historical 65-second takes remain valid.
+- Complete Speaking tests, release verification, static build and whitespace
+  checks passed. Synthetic-audio browser QA verified desktop, 390 px phone,
+  final 00:03 warning and restored Finished/Submit state. No real mic or upload.
+- Product/UI/testing docs and changelog updated. Owner authorized publication;
+  no CloudBase deployment or database changes are needed.
+
+## IELTS Speaking local QA — 2026-09-15
+
+- Done: implemented independent IELTS capsule/workspace, paired topic schema,
+  optional preparation, 120/90-second recording, immutable submissions, private
+  history/audio, teacher reads and three-card report. Existing DSE renamed HKDSE
+  Speaking Lab. No new dependency or model configuration change.
+- Passed: IELTS synthetic gateway/pipeline tests (auth, concurrent idempotency,
+  ownership, actual provider-duration checks, exact quote validation, report
+  isolation, historical snapshots and pagination); full existing Speaking suite;
+  release verification; static build excludes `content/speaking`; both Speaking
+  functions packaged locally.
+- Browser QA: local synthetic-only server, desktop and 390px phone viewport;
+  preparation does not activate microphone, early stop and independent submit
+  preserve history, report has three cards with collapsed sample. Fixed toolbar
+  wrapping and compacted long Part 2 recorder spacing. No real user, audio,
+  provider, email or CloudBase records were used.
+- Content follow-up: Desktop owner HTML extracted into eight Cambridge 10/11
+  paired cards (8 Part 2, 49 Part 3). Exact private backup and review retained;
+  schema validation and eight-record import dry run passed.
+  IELTS regression passed after updating the obsolete zero-source assertion;
+  static build passed and excludes all private source/import artifacts.
+- Cloud rollout: eight live topic records verified; nine indexes added;
+  both Speaking code packages deployed and downloaded back with matching SHA-256.
+  Environment/ACL/timer configuration preserved. Seasonal placeholder is intentional. Actual device audio and real-provider band calibration remain.
+  See `docs/IELTS_SPEAKING_LAB.md`.
+
+## Done — 2026-09-27 BBC approved 21-lesson import
+
+- Owner approved the reviewed Markdown batch: 158 blanks + 134 MC = 292 questions.
+- Added scoped public runtime/metadata/audio/worksheet assets and private grading source.
+- Reconciled all accepted answers, correct MC options and explanation coverage with Markdown; checked IDs, word limits, source ordering and public/private separation.
+- Rendered and visually reviewed 21 no-answer PDFs, 45 pages. Fixed importer support for numbered/bold notes and reduced-count source mixes with sufficiency notes.
+- Live verification: 21 sets + 21 grading keys remain ADMINONLY, all 65 public objects checked. No existing records or student history changed.
+- No implementation test suite was run. No owner action remains for this batch.

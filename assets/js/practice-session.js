@@ -294,10 +294,12 @@
     }
 
     function confirmBack() {
+        if (teacherMode && window.MrCatBbcEditor) return window.MrCatBbcEditor.beforeNavigate(goBack);
         showLeaveModal('back', 'You will return to the page that opened this practice. Unsaved answers on this page may be lost.');
     }
 
     function confirmHome() {
+        if (teacherMode && window.MrCatBbcEditor) return window.MrCatBbcEditor.beforeNavigate(goHome);
         showLeaveModal('home', 'You will go to your main learning page. Unsaved answers on this page may be lost.');
     }
 

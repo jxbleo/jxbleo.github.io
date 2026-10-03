@@ -1,5 +1,14 @@
 # Mr. Cat Academy
 
+## Working-copy status — 2026-10-03
+
+The current cleanup branch is `codex/project-cleanup-oct03`, based on `a7b0f90f`.
+It reconciles published static files with recent source work and keeps the
+existing static allowlist. The old shared checkout's unfinished rebase is
+preserved. This local cleanup is not a deployment; see
+[the reconciliation record](docs/10_DEPLOYMENT.md#source-reconciliation-and-local-cleanup-2026-10-03).
+Completed QA history is in `docs/archive/AGENT_TODO_THROUGH_20261002.md`.
+
 Teacher **AI Usage** lists recorded Writing, Speaking and Scan Words activity,
 with account/date/model/status filters, Token totals and estimated API value.
 Released on 2026-09-16 with the updated `teacherAdmin` and verified teacher
@@ -223,7 +232,19 @@ npm run test:intensive-listening-library
 npm run test:listening-contracts
 npm run test:listening-activity
 npm run test:listening-authoring
+npm run test:teacher-listening-corrector
+npm run test:listening-corrector-model
 ~~~
+
+Teacher Listening links to a checked-in copy of the browser waveform corrector
+used by the local App.
+An active teacher can open a published material or import a timestamped JSON
+locally, edit sentences and timing, then use **Update** to publish the private
+material through `teacherAdmin` and download a corrected JSON copy after the
+server confirms publication. The audio file stays in the browser; the correction
+sends only the reviewed transcript. Export offers a choice between publishing
+and downloading or downloading an unpublished draft when edits are pending.
+Existing unpublished drafts must be resolved in Teacher Listening before Update.
 
 The one-minute sendTeacherAttemptEmails timer also closes idle three-minute
 Intensive Listening sessions and delivers safe Started, Paused, or Completed

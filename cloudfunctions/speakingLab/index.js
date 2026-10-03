@@ -1,4 +1,6 @@
 "use strict";
+const irFeedback = require("../_shared/speaking-ir-feedback");
+const irRetry = require("../_shared/speaking-ir-retry");
 
 const crypto = require("crypto");
 const speakingNotifications = require("../_shared/speaking-notifications");
@@ -16,7 +18,7 @@ const clipProvider = require("../_shared/tencent-ci-audio");
 const { createSpeechProvider } = require("./speech-provider");
 const { createModelProvider } = require("./model-provider");
 const { SPEAKING_REPORT_SCHEMA_VERSION } = require("./schemas");
-const { PROMPT_VERSION, dseOverviewPrompt, dseOverviewUserPrompt, dseTurnReviewPrompt, dseTurnReviewUserPrompt, INDIVIDUAL_RESPONSE_PROMPT_VERSION, individualResponseAnalysisPrompt, individualResponseUserPrompt } = require("./prompts");
+const { PROMPT_VERSION, dseOverviewPrompt, dseOverviewUserPrompt, dseTurnReviewPrompt, dseTurnReviewUserPrompt, INDIVIDUAL_RESPONSE_PROMPT_VERSION } = require("./prompts");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -40,6 +42,7 @@ const VOICE_PASSAGE_VERSION = "dse-voice-reference-v1";
 const VOICEPRINT_PASSAGE_VERSION = "dse-reusable-voiceprint-v1";
 const VOICEPRINT_PASSAGE = "Many people have different ideas. I will listen carefully, explain my view, and respond clearly to the group before we reach a conclusion.";
 const INDIVIDUAL_RESPONSE_MAX_FILE_BYTES = 50 * 1024 * 1024;
+const PROVIDER_MIN_LEASE_REMAINING_MS = 5000;
 
 // Transient provider failures retry on the same stage so a resume never re-runs Tencent ASR.
 const RETRYABLE_AI_CODES = new Set([
@@ -51,13 +54,15 @@ const RETRYABLE_AI_CODES = new Set([
   "SPEAKING_AI_INVALID_RESPONSE",
   "SPEAKING_AI_SCHEMA_INVALID",
   "SPEAKING_ASR_UNAVAILABLE",
+  "SPEAKING_IR_CHECKPOINT_FAILED",
+  "SPEAKING_IR_STORAGE_FAILED",
 ]);
 
 const DSE_ANALYSIS_PIPELINE_VERSION = "dse-chunked-v1";
 
 function aiRetryLimit(code) {
   if (["SPEAKING_AI_SCHEMA_INVALID", "SPEAKING_AI_INVALID_RESPONSE"].includes(code)) return 2;
-  if (["SPEAKING_AI_TIMEOUT", "SPEAKING_AI_TRANSPORT_ERROR", "SPEAKING_AI_RATE_LIMITED", "SPEAKING_AI_PROVIDER_UNAVAILABLE", "SPEAKING_AI_FAILED"].includes(code)) return 3;
+  if (["SPEAKING_AI_TIMEOUT", "SPEAKING_AI_TRANSPORT_ERROR", "SPEAKING_AI_RATE_LIMITED", "SPEAKING_AI_PROVIDER_UNAVAILABLE", "SPEAKING_AI_FAILED", "SPEAKING_IR_CHECKPOINT_FAILED", "SPEAKING_IR_STORAGE_FAILED"].includes(code)) return 3;
   return 5;
 }
 
@@ -399,6 +404,7 @@ function responseView(actor, row, options = {}) {
     analysis_status: row.analysis_status || "not_ready",
     active_analysis_job_id: teacher ? row.active_analysis_job_id || null : null,
     active_report_version: row.active_report_version || null,
+    report_id: row.report_id || null,
     duration_seconds: row.duration_seconds != null && Number.isFinite(Number(row.duration_seconds)) ? Math.max(0, Number(row.duration_seconds)) : null,
     ...(options.includeReport ? { report: row.report || null } : {}),
     created_at: row.created_at || null,
@@ -457,7 +463,12 @@ async function listIndividualResponseHistory(actor, event) {
 async function getIndividualResponse(actor, event) {
   const row = await getOne(INDIVIDUAL_RESPONSES, { response_session_id: lab.text(event.response_session_id, 140) });
   if (!row || row.deleted_at) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
-  return { success: true, response: responseView(actor, row, { includeReport: true }) };
+  const response = responseView(actor, row, { includeReport: true });
+  if (!response.report_id && row.active_report_version) {
+    const report = await getOne(REPORTS, { response_session_id: row.response_session_id, report_version: row.active_report_version, status: "ready" });
+    response.report_id = report && report.report_id || null;
+  }
+  return { success: true, response };
 }
 
 async function createIndividualResponse(actor, event) {
@@ -574,23 +585,52 @@ async function startIndividualResponseAnalysis(actor, event) {
   if (!row.formal_audio_asset_id || row.recording_status !== "uploaded") throw new Error("INDIVIDUAL_RESPONSE_UPLOAD_INCOMPLETE");
   const operationId = lab.stableOperationId(row.exam_family === "ielts" ? `analysis-${row.response_session_id}` : event.operation_id || `analysis-${row.response_session_id}`);
   const jobId = stable("speaking_individual_response_job", row.response_session_id, String(row.active_audio_revision || 0), operationId);
-  const existing = await getOne(JOBS, { job_id: jobId });
-  if (existing && ["queued", "processing", "succeeded"].includes(existing.status)) return { success: true, idempotent_replay: true, job: publicJob(existing) };
   const created = now();
-  const job = { job_id: jobId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: row.response_session_id, response_revision: Number(row.active_audio_revision || 0), formal_audio_asset_id: row.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-io-vl-v2", created_at: created, updated_at: created, finished_at: null };
-  if (row.exam_family === "ielts") Object.assign(job, { exam_family: "ielts", prompt_version: ielts.VERSION, schema_version: ielts.VERSION, rubric_version: ielts.VERSION });
+  let persistedJob, replay = false;
   await db.runTransaction(async (transaction) => {
     const currentResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: row.response_session_id }).limit(1).get();
     const current = currentResult.data && currentResult.data[0];
-    if (!current || current.deleted_at || current.formal_audio_asset_id !== row.formal_audio_asset_id) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
-    const existingResult = await transaction.collection(JOBS).where({ job_id: jobId }).limit(1).get();
-    if (row.exam_family === "ielts" && existingResult.data && existingResult.data[0] && ["queued", "processing", "succeeded"].includes(existingResult.data[0].status)) return;
-    if (existingResult.data && existingResult.data[0]) await transaction.collection(JOBS).doc(existingResult.data[0]._id || jobId).update(job);
-    else await transaction.collection(JOBS).doc(jobId).create(job);
-    await transaction.collection(INDIVIDUAL_RESPONSES).doc(current._id || current.response_session_id).update({ analysis_status: "queued", active_analysis_job_id: jobId, updated_at: created });
+    if (!current || current.deleted_at || current.formal_audio_asset_id !== row.formal_audio_asset_id
+        || Number(current.active_audio_revision || 0) !== Number(row.active_audio_revision || 0)) throw new Error("INDIVIDUAL_RESPONSE_NOT_FOUND");
+    const lookup = async id => {
+      if (!id) return null;
+      const result = await transaction.collection(JOBS).where({ job_id: id }).limit(1).get();
+      const candidate = result.data && result.data[0];
+      return candidate && candidate.response_session_id === current.response_session_id
+        && candidate.formal_audio_asset_id === current.formal_audio_asset_id
+        && Number(candidate.response_revision) === Number(current.active_audio_revision) ? candidate : null;
+    };
+    const prior = await lookup(current.active_analysis_job_id) || await lookup(jobId);
+    // Different click/operation IDs must still join the same active audio job.
+    if (prior && ["queued", "processing", "succeeded"].includes(prior.status)) {
+      persistedJob = prior; replay = true; return;
+    }
+    const failed = prior && prior.status === "failed" ? prior : null;
+    const nextId = failed ? stable("speaking_individual_response_job", failed.job_id, operationId, "resume") : jobId;
+    const job = { job_id: nextId, operation_id: operationId, job_type: "individual_response_analysis", response_session_id: current.response_session_id, response_revision: Number(current.active_audio_revision || 0), formal_audio_asset_id: current.formal_audio_asset_id, status: "queued", stage: "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, validation_status: "pending", validation_safe_error_code: null, validated_at: null, published_at: null, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, rubric_version: "dse-individual-response-action-feedback-v1", created_at: created, updated_at: created, finished_at: null };
+    if (current.exam_family === "ielts") Object.assign(job, { exam_family: "ielts", prompt_version: ielts.VERSION, schema_version: ielts.VERSION, rubric_version: ielts.VERSION });
+    if (failed) {
+      // Retain the failed job and its usage history; the new attempt resumes its
+      // same-audio checkpoints. A manual click cannot bypass a cooling period.
+      job.resumed_from_job_id = failed.job_id;
+      job.stage = failed.stage || "audio_quality";
+      for (const key of ["provider_task_id", "audio_quality", "ir_feedback_state", "ir_model_result", "transcript", "transcript_metadata", "model_request_deadline_at", "model_retry_not_before", "refresh_kind", "source_report_id", "source_report_version"])
+        if (failed[key] != null) job[key] = failed[key];
+      const identity = individualResponseReportIdentity(failed);
+      const stored = await transaction.collection(REPORTS).where({ report_id: identity.report_id, response_session_id: current.response_session_id }).limit(1).get();
+      const checkpoint = stored.data && stored.data[0];
+      if (checkpoint && checkpoint.job_id === failed.job_id && checkpoint.transcript && checkpoint.transcript.segments && checkpoint.transcript.segments.length) job.transcript = checkpoint.transcript;
+      if (job.transcript && job.transcript.segments && job.transcript.segments.length) job.stage = "analysis";
+      job.next_retry_at = new Date(Math.max(created.getTime(), Number(new Date(failed.model_retry_not_before || 0).getTime()) || 0));
+    }
+    await transaction.collection(JOBS).doc(nextId).create(job);
+    await transaction.collection(INDIVIDUAL_RESPONSES).doc(current._id || current.response_session_id).update({ analysis_status: "queued", active_analysis_job_id: nextId, updated_at: created });
+    persistedJob = job;
   });
-  try { await invokeWorker(job); } catch (_error) { /* timer dispatch remains the retry boundary */ }
-  return { success: true, job: publicJob(job) };
+  if (!replay && new Date(persistedJob.next_retry_at).getTime() <= Date.now()) {
+    try { await invokeWorker(persistedJob); } catch (_error) { /* timer dispatch remains the retry boundary */ }
+  }
+  return { success: true, ...(replay ? { idempotent_replay: true } : {}), job: publicJob(persistedJob) };
 }
 
 async function deleteIndividualResponse(actor, event) {
@@ -600,7 +640,7 @@ async function deleteIndividualResponse(actor, event) {
   if (String(row.student_uid) !== String(actor.auth_uid)) throw new Error("INDIVIDUAL_RESPONSE_ACCESS_DENIED");
   const deletedAt = now();
   await db.collection(INDIVIDUAL_RESPONSES).doc(row._id || row.response_session_id).update({ deleted_at: deletedAt, updated_at: deletedAt });
-  if (row.formal_audio_asset_id) await db.collection(ASSETS).doc(row.formal_audio_asset_id).update({ delete_after: new Date(deletedAt.getTime() + 7 * 24 * 60 * 60 * 1000), updated_at: deletedAt });
+  // Soft deletion hides the response; submitted original recordings remain private history.
   return { success: true, deleted: true, response_session_id: row.response_session_id };
 }
 
@@ -874,13 +914,16 @@ async function finishAutomaticVoiceMatching(claimed, asset, report, stateOverrid
   const existing = Array.isArray(state.results) ? state.results : [];
   return { complete: true, mapping_changed_count: applied.changed_count, voice_matching: { status: "completed", excerpt_jobs: updatedJobs.map((item) => ({ speaker_key: item.speaker_key, source_turn_id: item.source_turn_id, status: item.status, safe_reason_code: item.safe_reason_code || null })), results: [...existing, ...applied.results].sort((left, right) => String(left.speaker_key).localeCompare(String(right.speaker_key))) } };
 }
-async function invokeWorker(job) {
+async function invokeWorker(job, options = {}) {
   const context = CloudBase.getCloudbaseContext();
   const routeKey = context && context.TCB_ROUTE_KEY;
+  const remaining = Number(options.remainingMs);
+  const timeout = Number.isFinite(remaining)
+    ? Math.min(10000, Math.max(1000, Math.floor(remaining))) : 10000;
   const result = await tcbApiCaller.request({
     config: app.config,
     params: { action: "functions.invokeFunction", function_name: "speakingLab", async: true, request_data: JSON.stringify({ action: "processQueuedJob", job_id: job.job_id, dispatch_token: job.dispatch_token }) },
-    method: "post", headers: { "content-type": "application/json", ...(routeKey ? { "X-TCB-Route-Key": routeKey } : {}) },
+    method: "post", opts: { timeout }, headers: { "content-type": "application/json", ...(routeKey ? { "X-TCB-Route-Key": routeKey } : {}) },
   });
   if (result && result.code) throw new Error("SPEAKING_JOB_DISPATCH_FAILED");
 }
@@ -948,6 +991,7 @@ function internalReportView(actor, report, participants) {
     return lab.identityProjection(participant, { teacher: lab.isTeacher(actor), self: String(participant.student_uid) === String(actor.auth_uid), fallbackLabel: `Speaker ${String(key).replace(/^spk_0*/, "")}` }).label;
   };
   return {
+    report_id: report.report_id,
     report_version: report.report_version,
     audio_quality: report.audio_quality || null,
     group_summary_zh: lab.text(payload.group_summary_zh, 1200),
@@ -1348,7 +1392,7 @@ async function startAnalysis(actor, event) {
   const old = await getOne(JOBS, { job_id: jobId });
   if (old && ["queued", "processing", "succeeded"].includes(old.status)) return { success: true, idempotent_replay: true, job: publicJob(old) };
   const created = now();
-  const job = { job_id: jobId, operation_id: operationId, job_type: "discussion_analysis", discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision, formal_audio_asset_id: asset.asset_id, reference_asset_ids: [], reusable_voiceprints: [], status: "queued", stage: resumeStage || "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION, rubric_version: "dse-group-interaction-v1", provider_config_version: "speaking-provider-v2", created_at: created, updated_at: created, finished_at: null };
+  const job = { job_id: jobId, operation_id: operationId, job_type: "discussion_analysis", discussion_id: rows.discussion.discussion_id, discussion_revision: discussionRevision, formal_audio_asset_id: asset.asset_id, reference_asset_ids: [], reusable_voiceprints: [], status: "queued", stage: resumeStage || "audio_quality", attempt_count: 0, max_attempts: 5, lease_token: null, lease_until: null, dispatch_token: crypto.randomBytes(24).toString("hex"), next_retry_at: created, safe_error_code: null, validation_status: "pending", validation_safe_error_code: null, validated_at: null, published_at: null, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION, rubric_version: "dse-group-interaction-v1", provider_config_version: "speaking-provider-v2", created_at: created, updated_at: created, finished_at: null };
   let persistedJob = job;
   let replay = false;
   await db.runTransaction(async (transaction) => {
@@ -1448,11 +1492,12 @@ async function claimJob(job, token) {
     const result = await transaction.collection(JOBS).where({ job_id: job.job_id }).limit(1).get();
     const current = result.data && result.data[0];
     if (!current || current.status !== "queued" || !secretMatches(current.dispatch_token, token)) throw new Error("SPEAKING_JOB_NOT_AVAILABLE");
+    if (current.next_retry_at && new Date(current.next_retry_at).getTime() > Date.now()) throw new Error("SPEAKING_JOB_NOT_DUE");
     const attemptCount = Number(current.attempt_count || 0) + 1;
     if (attemptCount > 5) throw new Error("SPEAKING_AI_RETRY_EXHAUSTED");
     const updatedAt = now();
-    await transaction.collection(JOBS).doc(current._id || current.job_id).update({ status: "processing", stage: current.stage || "audio_quality", attempt_count: attemptCount, lease_token: leaseToken, lease_until: leaseUntil, updated_at: updatedAt });
-    claimed = { ...current, status: "processing", lease_token: leaseToken, lease_until: leaseUntil, attempt_count: attemptCount, updated_at: updatedAt };
+    await transaction.collection(JOBS).doc(current._id || current.job_id).update({ status: "processing", stage: current.stage || "audio_quality", attempt_count: attemptCount, lease_token: leaseToken, lease_until: leaseUntil, claimed_at: updatedAt, updated_at: updatedAt });
+    claimed = { ...current, status: "processing", lease_token: leaseToken, lease_until: leaseUntil, attempt_count: attemptCount, claimed_at: updatedAt, updated_at: updatedAt };
   });
   return claimed;
 }
@@ -1471,6 +1516,7 @@ async function requeueClaimedJob(claimed, values = {}) {
     if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)) return;
     const update = {
       ...values,
+      ...(Object.hasOwn(values, "ir_feedback_state") ? { ir_model_result: null } : {}),
       status: "queued",
       attempt_count: Math.max(0, Number(current.attempt_count || 1) - 1),
       lease_token: null,
@@ -1479,8 +1525,33 @@ async function requeueClaimedJob(claimed, values = {}) {
       updated_at: changedAt,
     };
     await transaction.collection(JOBS).doc(current._id || current.job_id).update(
-      replaceFields(update, Object.prototype.hasOwnProperty.call(values, "voice_matching_state") ? ["voice_matching_state"] : [])
+      replaceFields(update, ["voice_matching_state", "ir_feedback_state"].filter(key => Object.prototype.hasOwnProperty.call(values, key)))
     );
+    accepted = true;
+  });
+  return accepted;
+}
+async function requeueAndDispatch(claimed, values = {}) {
+  const nextRetryAt = values.next_retry_at || new Date(Date.now() + 15000);
+  const accepted = await requeueClaimedJob(claimed, { ...values, next_retry_at: nextRetryAt });
+  if (accepted && new Date(nextRetryAt).getTime() <= Date.now()) {
+    try { await invokeWorker(claimed); }
+    catch (error) { console.error("speakingLab immediate dispatch deferred", claimed.job_id, error && error.message); }
+  }
+  return accepted;
+}
+async function updateDiscussionForClaimedJob(claimed, values) {
+  let accepted = false;
+  await db.runTransaction(async (transaction) => {
+    const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const currentJob = jobResult.data && jobResult.data[0];
+    const discussionResult = await transaction.collection(DISCUSSIONS).where({ discussion_id: claimed.discussion_id }).limit(1).get();
+    const currentDiscussion = discussionResult.data && discussionResult.data[0];
+    const activeField = claimed.job_type === "voice_rematch" ? "active_voice_match_job_id" : "active_analysis_job_id";
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)
+      || !currentDiscussion || String(currentDiscussion[activeField] || "") !== String(claimed.job_id)
+      || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1)) return;
+    await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ ...values, updated_at: now() });
     accepted = true;
   });
   return accepted;
@@ -1494,7 +1565,6 @@ async function temporaryAudioUrl(asset) {
 }
 async function upsertPipelineReport(job, values) {
   const identity = reportIdentity(job);
-  const existing = await getOne(REPORTS, { report_id: identity.report_id });
   const changedAt = now();
   const row = {
     ...identity,
@@ -1508,9 +1578,18 @@ async function upsertPipelineReport(job, values) {
     ...values,
     updated_at: changedAt,
   };
-  if (existing) await db.collection(REPORTS).doc(existing._id || existing.report_id).update(row);
-  else await db.collection(REPORTS).doc(identity.report_id).create({ ...row, created_at: changedAt });
-  return { ...(existing || {}), ...row };
+  let saved = null;
+  await db.runTransaction(async (transaction) => {
+    const jobResult = await transaction.collection(JOBS).where({ job_id: job.job_id }).limit(1).get();
+    const currentJob = jobResult.data && jobResult.data[0];
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, job.lease_token)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
+    const existing = reportResult.data && reportResult.data[0];
+    if (existing) await transaction.collection(REPORTS).doc(existing._id || existing.report_id).update(row);
+    else await transaction.collection(REPORTS).doc(identity.report_id).create({ ...row, created_at: changedAt });
+    saved = { ...(existing || {}), ...row };
+  });
+  return saved;
 }
 function providerUsageEvent(job, stage, callIndex, provider, metadata = {}) {
   const eventId = stable("speaking_usage", job.job_id, stage, String(callIndex));
@@ -1531,20 +1610,30 @@ function providerUsageEvent(job, stage, callIndex, provider, metadata = {}) {
     response_content_shape: lab.text(metadata.response_diagnostics && metadata.response_diagnostics.content_shape, 40) || null,
     response_content_closed: metadata.response_diagnostics && typeof metadata.response_diagnostics.content_closed === "boolean" ? metadata.response_diagnostics.content_closed : null,
     response_has_reasoning_content: metadata.response_diagnostics && typeof metadata.response_diagnostics.has_reasoning_content === "boolean" ? metadata.response_diagnostics.has_reasoning_content : null,
+    request_started_at: metadata.request_started_at || null,
+    response_completed_at: metadata.response_completed_at || null,
+    duration_ms: metadata.duration_ms != null && Number.isFinite(Number(metadata.duration_ms)) ? Math.max(0, Math.round(Number(metadata.duration_ms))) : null,
+    validation_safe_error_code: lab.text(metadata.validation_safe_error_code, 120) || null,
+    validated_at: metadata.validated_at || null,
+    published_at: metadata.published_at || null,
     input_tokens: numeric(usage.input_tokens), output_tokens: numeric(usage.output_tokens), total_tokens: numeric(usage.total_tokens),
     cached_tokens: numeric(usage.cached_tokens), reasoning_tokens: numeric(usage.reasoning_tokens), audio_seconds: numeric(usage.audio_seconds),
     usage_status: Object.values(usage).some((value) => value != null) ? "recorded" : "missing", created_at: now(),
   };
 }
-async function reserveProviderCall(claimed, field) {
+async function reserveProviderCall(claimed, field, deadlineAt = null) {
   if (!["provider_call_count", "model_call_count"].includes(field)) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
   let callIndex = null;
   await db.runTransaction(async (transaction) => {
     const result = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
     const current = result.data && result.data[0];
-    if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    const leaseDeadline = Number(new Date(current && current.lease_until || 0).getTime()) - PROVIDER_MIN_LEASE_REMAINING_MS;
+    if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)
+      || leaseDeadline <= Date.now() || (deadlineAt != null && (Number(deadlineAt) <= Date.now() || Number(deadlineAt) > leaseDeadline))) throw new Error("SPEAKING_JOB_SUPERSEDED");
     callIndex = Math.max(0, Number(current[field] || 0)) + 1;
-    await transaction.collection(JOBS).doc(current._id || current.job_id).update({ [field]: callIndex, updated_at: now() });
+    await transaction.collection(JOBS).doc(current._id || current.job_id).update({ [field]: callIndex,
+      ...(field === "model_call_count" && current.job_type === "individual_response_analysis" && deadlineAt != null
+        ? { model_request_started_at: now(), model_request_deadline_at: new Date(deadlineAt) } : {}), updated_at: now() });
   });
   return callIndex;
 }
@@ -1559,14 +1648,26 @@ async function saveProviderUsage(job, stage, callIndex, provider, metadata) {
     return false;
   }
 }
-async function markModelValidationFailure(job, stage, result) {
+async function markModelValidationFailure(job, stage, result, safeCode = "SPEAKING_AI_SCHEMA_INVALID") {
   const callIndex = result && result.call_index;
   if (!Number.isInteger(Number(callIndex))) return false;
   try {
-    const eventId = stable("speaking_usage", job.job_id, stage, String(callIndex));
-    const existing = await getOne(USAGE, { event_id: eventId });
-    if (!existing) return false;
-    await db.collection(USAGE).doc(existing._id || eventId).update({ outcome: "failed", safe_error_code: "SPEAKING_AI_SCHEMA_INVALID" });
+    const markedAt = now();
+    // Provider usage is append-only evidence. Keep its completed/failed
+    // transport fact intact and put coaching/evidence validation on the job.
+    const resultMetadata = {
+      validation_stage: stage,
+      validation_status: "failed",
+      validation_safe_error_code: safeCode,
+      validation_call_index: Number(callIndex),
+      validated_at: markedAt,
+    };
+    await db.runTransaction(async (transaction) => {
+      const currentResult = await transaction.collection(JOBS).where({ job_id: job.job_id }).limit(1).get();
+      const current = currentResult.data && currentResult.data[0];
+      if (!current || !secretMatches(current.lease_token, job.lease_token)) return;
+      await transaction.collection(JOBS).doc(current._id || current.job_id).update(resultMetadata);
+    });
     return true;
   } catch (error) {
     console.error("speakingLab usage validation mark failed", job.job_id, stage, error && error.message);
@@ -1580,7 +1681,8 @@ function schemaInvalidError() {
 }
 function createAuditedModelProvider(job, stage) {
   return createModelProvider({
-    beforeAttempt: () => reserveProviderCall(job, "model_call_count"),
+    deadlineAt: () => Number(new Date(job.lease_until || 0).getTime()) - PROVIDER_MIN_LEASE_REMAINING_MS,
+    beforeAttempt: (metadata) => reserveProviderCall(job, "model_call_count", metadata && metadata.deadlineAt),
     afterAttempt: (metadata, callIndex) => saveProviderUsage(job, stage, callIndex, "openai_compatible", metadata),
   });
 }
@@ -1742,6 +1844,7 @@ async function processVoiceRematch(claimed, discussion, asset) {
 }
 
 function individualResponseReportIdentity(job) {
+  if (irRefresh.isUnified(job)) return { report_id: stable("speaking_ir_feedback_report", job.response_session_id, job.job_id), report_version: `${job.source_report_version}-feedback-v5` };
   if (irRefresh.isOverwrite(job)) return { report_id: job.source_report_id, report_version: job.source_report_version };
   if (irRefresh.isRefresh(job)) return {
     report_id: stable("speaking_ir_coaching_report", job.response_session_id, job.source_report_id),
@@ -1751,6 +1854,39 @@ function individualResponseReportIdentity(job) {
     report_id: stable("speaking_individual_response_report", job.response_session_id, String(job.response_revision || 1)),
     report_version: `response-r${Math.max(1, Number(job.response_revision || 1))}`,
   };
+}
+
+async function persistIndividualTranscript(claimed, response, transcript, reportMetadata) {
+  const identity = individualResponseReportIdentity(claimed);
+  const changedAt = now();
+  const transcriptRow = {
+    ...identity, session_type: "individual_response", response_session_id: response.response_session_id,
+    response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id,
+    schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION,
+    prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-action-feedback-v1",
+    status: "processing", transcript, updated_at: changedAt, ...reportMetadata,
+  };
+  let accepted = false;
+  await db.runTransaction(async (transaction) => {
+    const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+    const currentJob = jobResult.data && jobResult.data[0];
+    const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: response.response_session_id }).limit(1).get();
+    const currentResponse = responseResult.data && responseResult.data[0];
+    if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)
+      || !currentResponse || currentResponse.deleted_at || String(currentResponse.active_analysis_job_id || "") !== String(claimed.job_id)
+      || Number(currentResponse.active_audio_revision || 0) !== Number(claimed.response_revision || 0)) return;
+    const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
+    const existing = reportResult.data && reportResult.data[0];
+    if (existing) await transaction.collection(REPORTS).doc(existing._id || identity.report_id).update(transcriptRow);
+    else await transaction.collection(REPORTS).doc(identity.report_id).create({ ...transcriptRow, created_at: changedAt });
+    await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({
+      status: "queued", stage: "analysis", attempt_count: Math.max(0, Number(currentJob.attempt_count || 1) - 1),
+      lease_token: null, lease_until: null, next_retry_at: changedAt,
+      transcript_metadata: { segment_count: transcript.segments.length, duration_ms: transcript.duration_ms }, updated_at: changedAt,
+    });
+    accepted = true;
+  });
+  return accepted;
 }
 
 function canonicalIndividualTranscript(output) {
@@ -1763,6 +1899,31 @@ function canonicalIndividualTranscript(output) {
   const canonical = own.map((segment, index) => ({ segment_id: `seg_${String(index + 1).padStart(4, "0")}`, start_ms: Math.max(0, Math.round(Number(segment.start_ms || 0))), end_ms: Math.max(0, Math.round(Number(segment.end_ms || 0))), text: lab.text(segment.text, 2000), confidence: segment.confidence != null && Number.isFinite(Number(segment.confidence)) ? Math.max(0, Math.min(1, Number(segment.confidence))) : null })).filter((segment) => segment.text && segment.end_ms > segment.start_ms);
   if (!canonical.length) throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
   return { language: source.language || "en", duration_ms: Number(source.duration_ms || 0), segments: canonical };
+}
+
+async function saveIrModelResult(claimed, checkpoint) {
+  if (checkpoint && JSON.stringify(checkpoint).length > 180000) throw schemaInvalidError();
+  try {
+    await db.runTransaction(async transaction => {
+      const rows = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+      const current = rows.data && rows.data[0];
+      if (!current || current.status !== "processing" || !secretMatches(current.lease_token, claimed.lease_token)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+      await transaction.collection(JOBS).doc(current._id || current.job_id).update(replaceFields({ ir_model_result: checkpoint, updated_at: now() }, ["ir_model_result"]));
+    });
+  } catch (error) {
+    if (error.message === "SPEAKING_JOB_SUPERSEDED") throw error;
+    throw Object.assign(new Error("SPEAKING_IR_CHECKPOINT_FAILED"), { code: "SPEAKING_IR_CHECKPOINT_FAILED" });
+  }
+}
+
+async function continueIrFeedback(claimed, state) {
+  try {
+    const accepted = await requeueAndDispatch(claimed, { stage: "analysis", ir_feedback_state: state, failure_retry_key: null, failure_retry_count: 0, next_retry_at: now() });
+    if (!accepted) throw new Error("SPEAKING_JOB_SUPERSEDED");
+  } catch (error) {
+    if (error.message === "SPEAKING_JOB_SUPERSEDED") throw error;
+    throw Object.assign(new Error("SPEAKING_IR_STORAGE_FAILED"), { code: "SPEAKING_IR_STORAGE_FAILED" });
+  }
 }
 
 async function processIndividualResponseQueuedJob(claimed) {
@@ -1778,7 +1939,7 @@ async function processIndividualResponseQueuedJob(claimed) {
   if (claimed.stage === "audio_quality") {
     const speech = createSpeechProvider();
     const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes, duration_seconds: Number(asset.duration_ms || 0) / 1000 || undefined, ...(response.exam_family === "ielts" ? { duration_limit_seconds: ielts.durationLimit(response) } : {}) });
-    await requeueClaimedJob(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
+    await requeueAndDispatch(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
     return { success: true, status: "queued", stage: "transcription", job_id: claimed.job_id };
   }
   if (claimed.stage === "transcription") {
@@ -1795,13 +1956,13 @@ async function processIndividualResponseQueuedJob(claimed) {
     const transcript = canonicalIndividualTranscript(transcription.output);
     if (isIelts && !(Number(transcript.duration_ms) > 0)) throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
     if (Number(transcript.duration_ms || 0) > (isIelts ? ielts.durationLimit(response) + 2 : lab.INDIVIDUAL_RESPONSE_DURATION_LIMIT_SECONDS + lab.INDIVIDUAL_RESPONSE_DURATION_TOLERANCE_SECONDS) * 1000) throw new Error("INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
-    const transcriptIdentity = individualResponseReportIdentity(claimed);
-    const existingTranscriptReport = await getOne(REPORTS, { report_id: transcriptIdentity.report_id });
-    const transcriptRow = { ...transcriptIdentity, session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "processing", transcript, updated_at: now(), ...reportMetadata };
-    if (existingTranscriptReport) await db.collection(REPORTS).doc(existingTranscriptReport._id || transcriptIdentity.report_id).update(transcriptRow);
-    else await db.collection(REPORTS).doc(transcriptIdentity.report_id).create({ ...transcriptRow, created_at: now() });
-    await db.collection(JOBS).doc(claimed._id || claimed.job_id).update({ stage: "analysis", transcript_metadata: { segment_count: transcript.segments.length, duration_ms: transcript.duration_ms }, updated_at: now() });
-    claimed = { ...claimed, stage: "analysis", transcript };
+    if (!await persistIndividualTranscript(claimed, response, transcript, reportMetadata)) throw new Error("SPEAKING_JOB_SUPERSEDED");
+    try { await invokeWorker({ ...claimed, stage: "analysis" }); }
+    catch (error) { console.error("speakingLab individual analysis dispatch deferred", claimed.job_id, error && error.message); }
+    // The transaction above released this lease and queued the next stage.
+    // Let the new worker invocation claim it; the old invocation must not
+    // continue into model work with a stale processing token.
+    return { success: true, status: "queued", stage: "analysis", job_id: claimed.job_id };
   }
   const currentJob = await getOne(JOBS, { job_id: claimed.job_id });
   const responseReportIdentity = individualResponseReportIdentity(claimed);
@@ -1809,22 +1970,71 @@ async function processIndividualResponseQueuedJob(claimed) {
   const transcript = sourceReport ? sourceReport.transcript : claimed.transcript || processingReport && processingReport.transcript || currentJob && currentJob.transcript;
   if (!transcript || !transcript.segments.length) throw new Error("SPEAKING_AI_SCHEMA_INVALID");
   const question = response.question_snapshot && response.question_snapshot.text || "";
-  const model = createAuditedModelProvider(claimed, "individual_analysis");
-  const result = await model.callStructuredModel(isIelts ? { system_prompt: ieltsPrompts.systemPrompt(), user_prompt: ieltsPrompts.userPrompt(response, transcript) } : { system_prompt: individualResponseAnalysisPrompt(), user_prompt: individualResponseUserPrompt({ questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments, schemaVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION }) });
-  const output = { report: result.output };
-  const generatedAnalysis = isIelts ? ielts.canonicalReport(output.report, transcript.segments) : lab.canonicalizeIndividualResponseReport(output.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
-  const analysis = sourceReport && !irRefresh.isOverwrite(claimed) ? irRefresh.preserveAssessment(sourceReport.dse_analysis, generatedAnalysis) : generatedAnalysis;
+  const request = isIelts ? null : irFeedback.nextRequest(currentJob && currentJob.ir_feedback_state, { questionText: question, context: response.set_snapshot && response.set_snapshot.context, segments: transcript.segments });
+  const modelStage = request ? `individual_${request.scope}` : "individual_analysis";
+  if (request) claimed.failure_retry_scope = `ir_feedback:${request.scope}`;
+  const model = createAuditedModelProvider(claimed, modelStage);
+  let result;
+  const cached = !isIelts && currentJob && currentJob.ir_model_result;
+  try {
+    result = cached && cached.scope === request.scope ? cached.result : await model.callStructuredModel(isIelts ? { system_prompt: ieltsPrompts.systemPrompt(), user_prompt: ieltsPrompts.userPrompt(response, transcript) } : { system_prompt: request.system_prompt, user_prompt: request.user_prompt });
+  } catch (error) {
+    // An unparseable batch is attempted only once. Continue with bounded single
+    // exemplars, preserving the validated core; transport errors use normal retries.
+    const fallback = !isIelts && error.code === "SPEAKING_AI_SCHEMA_INVALID" && irFeedback.batchFailure(request);
+    if (!fallback) throw error;
+    const latestCall = await getOne(JOBS, { job_id: claimed.job_id });
+    await markModelValidationFailure(claimed, modelStage, { call_index: latestCall && latestCall.model_call_count }, "INDIVIDUAL_RESPONSE_BATCH_PARSE_FAILED");
+    await continueIrFeedback(claimed, fallback);
+    return { success: true, status: "queued", stage: "analysis", job_id: claimed.job_id };
+  }
+  if (!isIelts && !(cached && cached.scope === request.scope)) {
+    await saveIrModelResult(claimed, { scope: request.scope, result, saved_at: now() });
+  }
+  let generatedAnalysis;
+  try {
+    if (isIelts) generatedAnalysis = ielts.canonicalReport(result.output, transcript.segments);
+    else {
+      const accepted = irFeedback.accept(request, result.output, transcript.segments);
+      if (!accepted.complete) {
+        if (request.batch || request.single) await markModelValidationFailure(claimed, modelStage, result, "INDIVIDUAL_RESPONSE_BATCH_PARTIAL_REPAIR");
+        await continueIrFeedback(claimed, accepted.state);
+        return { success: true, status: "queued", stage: "analysis", job_id: claimed.job_id };
+      }
+      generatedAnalysis = lab.canonicalizeIndividualResponseReport(accepted.report, transcript.segments, { reportVersion: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, redactNames: [response.student_name_snapshot, response.student_id_snapshot] });
+    }
+  } catch (error) {
+    if (error.code === "SPEAKING_IR_STORAGE_FAILED" || error.message === "SPEAKING_JOB_SUPERSEDED") throw error;
+    // A bounded retry repairs the rejected exemplar instead of generating the
+    // same overlong answer again. Only private job state holds this draft.
+    const repair = !isIelts && error.code === "SPEAKING_AI_SCHEMA_INVALID" && irFeedback.repairState(request, result.output, error);
+    if (repair) await db.runTransaction(async (transaction) => {
+      const rows = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
+      const current = rows.data && rows.data[0];
+      if (current && current.status === "processing" && secretMatches(current.lease_token, claimed.lease_token)) {
+        await transaction.collection(JOBS).doc(current._id || current.job_id).update(replaceFields({ ir_feedback_state: repair, ir_model_result: null }, ["ir_feedback_state", "ir_model_result"]));
+      }
+    });
+    if (!isIelts && !repair && error.code === "SPEAKING_AI_SCHEMA_INVALID") await saveIrModelResult(claimed, null);
+    const rawCode = lab.text(error && (error.validation_reason || error.code || error.message), 120);
+    const safeCode = /^[A-Z][A-Z0-9_]{2,119}$/.test(rawCode)
+      ? `${isIelts ? "IELTS_RESPONSE" : "INDIVIDUAL_RESPONSE_FEEDBACK"}_${rawCode}`.slice(0, 120)
+      : (isIelts ? "IELTS_RESPONSE_VALIDATION_FAILED" : "INDIVIDUAL_RESPONSE_FEEDBACK_VALIDATION_FAILED");
+    await markModelValidationFailure(claimed, modelStage, result, safeCode);
+    throw error;
+  }
+  const analysis = generatedAnalysis;
   const identity = individualResponseReportIdentity(claimed);
   const finishedAt = now();
-  const reportRow = { ...identity, teacher_notification_status: "pending", session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-io-vl-v2", status: "ready", transcript, ...(isIelts ? { ielts_analysis: analysis } : { dse_analysis: analysis }), created_at: finishedAt, updated_at: finishedAt, ...reportMetadata };
-  reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname };
-  if (sourceReport && !irRefresh.isOverwrite(claimed)) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: irRefresh.REFRESH_KIND, assessment_preserved: true, rubric_version: sourceReport.rubric_version || "dse-individual-response-v1" });
+  const reportRow = { ...identity, teacher_notification_status: "pending", session_type: "individual_response", response_session_id: response.response_session_id, response_revision: Number(claimed.response_revision || 0), job_id: claimed.job_id, schema_version: lab.INDIVIDUAL_RESPONSE_REPORT_SCHEMA_VERSION, prompt_version: INDIVIDUAL_RESPONSE_PROMPT_VERSION, rubric_version: "dse-individual-response-action-feedback-v1", status: "ready", transcript, ...(isIelts ? { ielts_analysis: analysis } : { dse_analysis: analysis }), created_at: finishedAt, updated_at: finishedAt, validated_at: finishedAt, published_at: finishedAt, ...reportMetadata };
+  reportRow.model_metadata = { provider: model.name, model: result.model, primary_model: result.primary_model, quota_fallback_used: result.quota_fallback_used, protocol: model.protocol, hostname: model.hostname, ...(!isIelts ? { pipeline_version: request.legacy ? irFeedback.LEGACY_PIPELINE : request.state.pipeline_version, model_scope: request.single ? "single_report_call" : request.scope === "exemplars" ? "exemplar_batch_call" : "final_exemplar_call" } : {}) };
+  if (sourceReport && !irRefresh.isOverwrite(claimed)) Object.assign(reportRow, { previous_report_id: sourceReport.report_id, refresh_kind: claimed.refresh_kind, assessment_preserved: false });
   if (irRefresh.isOverwrite(claimed)) Object.assign(reportRow, {
     created_at: sourceReport.created_at || finishedAt,
     refresh_kind: irRefresh.OVERWRITE_KIND, assessment_preserved: false,
     previous_report_id: db.command.remove(), regenerated_at: finishedAt,
   });
-  await db.runTransaction(async (transaction) => {
+  try { await db.runTransaction(async (transaction) => {
     const currentJobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
     const latestJob = currentJobResult.data && currentJobResult.data[0];
     const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: response.response_session_id }).limit(1).get();
@@ -1836,9 +2046,12 @@ async function processIndividualResponseQueuedJob(claimed) {
     if (irRefresh.isOverwrite(claimed)) irRefresh.assertSource(claimed, latestResponse, existingReport);
     if (existingReport) await transaction.collection(REPORTS).doc(existingReport._id || identity.report_id).update(replaceFields(reportRow, [isIelts ? "ielts_analysis" : "dse_analysis", "transcript", "model_metadata"]));
     else await transaction.collection(REPORTS).doc(identity.report_id).create(reportRow);
-    await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
+    await transaction.collection(JOBS).doc(latestJob._id || latestJob.job_id).update({ status: "succeeded", stage: "publishing", ...(!isIelts ? { ir_feedback_state: null, ir_model_result: null } : {}), safe_error_code: null, validation_status: "passed", validation_stage: null, validation_safe_error_code: null, validation_call_index: null, validated_at: finishedAt, published_at: finishedAt, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
     await transaction.collection(INDIVIDUAL_RESPONSES).doc(latestResponse._id || latestResponse.response_session_id).update(replaceFields({ analysis_status: "ready", active_report_version: identity.report_version, report_id: identity.report_id, report: analysis, duration_seconds: Number(transcript.duration_ms || 0) > 0 ? Number(transcript.duration_ms) / 1000 : latestResponse.duration_seconds || null, updated_at: finishedAt }, ["report"]));
-  });
+  }); } catch (error) {
+    if (isIelts || error.message === "SPEAKING_JOB_SUPERSEDED") throw error;
+    throw Object.assign(new Error("SPEAKING_IR_STORAGE_FAILED"), { code: "SPEAKING_IR_STORAGE_FAILED" });
+  }
   await speakingNotifications.enqueueSafely(db, { report_id: identity.report_id });
   return { success: true, status: "succeeded", stage: "publishing", job_id: claimed.job_id };
 }
@@ -1866,7 +2079,7 @@ async function processQueuedJob(event) {
     const speech = createSpeechProvider();
     if (claimed.stage === "audio_quality") {
       const quality = await speech.inspectAudio({ mime_type: asset.mime_type, size_bytes: asset.actual_size_bytes || asset.expected_size_bytes });
-      await requeueClaimedJob(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
+      await requeueAndDispatch(claimed, { stage: "transcription", audio_quality: quality, next_retry_at: now() });
       return { success: true, status: "queued", stage: "transcription", job_id: claimed.job_id };
     }
     if (claimed.stage === "transcription") {
@@ -1899,9 +2112,9 @@ async function processQueuedJob(event) {
         ],
       };
       await upsertPipelineReport(claimed, { stage: "speaker_canonicalization", audio_quality: quality, transcript });
-      await db.collection(DISCUSSIONS).doc(discussion._id || discussion.discussion_id).update({ candidate_count: transcript.candidate_speaker_keys.length, updated_at: now() });
+      if (!await updateDiscussionForClaimedJob(claimed, { candidate_count: transcript.candidate_speaker_keys.length })) throw new Error("SPEAKING_JOB_SUPERSEDED");
       if (quality.status === "not_reliably_scorable") throw new Error("SPEAKING_AUDIO_NOT_RELIABLY_SCORABLE");
-      await requeueClaimedJob(claimed, { stage: "voice_matching", provider_task_id: transcription.task_id, next_retry_at: now() });
+      await requeueAndDispatch(claimed, { stage: "voice_matching", provider_task_id: transcription.task_id, next_retry_at: now() });
       return { success: true, status: "queued", stage: "voice_matching", job_id: claimed.job_id };
     }
     if (claimed.stage === "voice_matching") {
@@ -1923,7 +2136,7 @@ async function processQueuedJob(event) {
         await requeueClaimedJob(claimed, { stage: "voice_matching", next_retry_at: new Date(Date.now() + 15000) });
         return { success: true, status: "pending", stage: "voice_matching", job_id: claimed.job_id };
       }
-      await requeueClaimedJob(claimed, { stage: "dse_analysis", next_retry_at: now() });
+      await requeueAndDispatch(claimed, { stage: "dse_analysis", next_retry_at: now() });
       return { success: true, status: "queued", stage: "dse_analysis", job_id: claimed.job_id };
     }
     if (claimed.stage === "dse_analysis") {
@@ -1946,8 +2159,10 @@ async function processQueuedJob(event) {
         let overview;
         try {
           overview = lab.canonicalizeReport(overviewResult.output, transcript.speaker_tracks.map((track) => track.speaker_key), transcript.segments, { reportVersion: identity.report_version, candidateSpeakerKeys: candidateKeys, nonCandidateKeys, requireTurnReviews: false });
-        } catch (_error) {
-          await markModelValidationFailure(claimed, "dse_analysis_overview", overviewResult);
+        } catch (error) {
+          const rawCode = lab.text(error && (error.code || error.message), 120);
+          const safeCode = /^[A-Z][A-Z0-9_]{2,119}$/.test(rawCode) ? rawCode : "SPEAKING_AI_OVERVIEW_VALIDATION_FAILED";
+          await markModelValidationFailure(claimed, "dse_analysis_overview", overviewResult, safeCode);
           throw schemaInvalidError();
         }
         state = {
@@ -1979,8 +2194,10 @@ async function processQueuedJob(event) {
         let reviews;
         try {
           reviews = lab.canonicalizeTurnReviewChunk(turnResult.output, nextChunk.speaker_key, nextChunk.target_turns);
-        } catch (_error) {
-          await markModelValidationFailure(claimed, "dse_analysis_turn_reviews", turnResult);
+        } catch (error) {
+          const rawCode = lab.text(error && (error.code || error.message), 120);
+          const safeCode = /^[A-Z][A-Z0-9_]{2,119}$/.test(rawCode) ? rawCode : "SPEAKING_AI_TURN_REVIEW_VALIDATION_FAILED";
+          await markModelValidationFailure(claimed, "dse_analysis_turn_reviews", turnResult, safeCode);
           throw schemaInvalidError();
         }
         state = appendDseChunk(state, nextChunk, reviews, turnResult);
@@ -1998,8 +2215,8 @@ async function processQueuedJob(event) {
         const reportResult = await transaction.collection(REPORTS).where({ report_id: identity.report_id }).limit(1).get();
         const currentReport = reportResult.data && reportResult.data[0];
         if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token) || !currentDiscussion || String(currentDiscussion.active_analysis_job_id || "") !== String(claimed.job_id) || Number(currentDiscussion.discussion_revision || 1) !== Number(claimed.discussion_revision || 1) || !currentReport || currentReport.status !== "processing") throw new Error("SPEAKING_JOB_SUPERSEDED");
-        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", teacher_notification_status: "pending", stage: "published", ...replaceFields({ dse_analysis: analysis, dse_analysis_state: null, model_metadata: { provider: "openai_compatible", models: state.models_used, quota_fallback_used: state.quota_fallback_used, pipeline_version: DSE_ANALYSIS_PIPELINE_VERSION, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "dse_analysis_state", "model_metadata"]), finished_at: finishedAt, updated_at: finishedAt });
-        await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(REPORTS).doc(currentReport._id || currentReport.report_id).update({ status: "ready", teacher_notification_status: "pending", stage: "published", ...replaceFields({ dse_analysis: analysis, dse_analysis_state: null, model_metadata: { provider: "openai_compatible", models: state.models_used, quota_fallback_used: state.quota_fallback_used, pipeline_version: DSE_ANALYSIS_PIPELINE_VERSION, prompt_version: PROMPT_VERSION, schema_version: SPEAKING_REPORT_SCHEMA_VERSION } }, ["dse_analysis", "dse_analysis_state", "model_metadata"]), validated_at: finishedAt, published_at: finishedAt, finished_at: finishedAt, updated_at: finishedAt });
+        await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "succeeded", stage: "publishing", safe_error_code: null, validation_status: "passed", validation_stage: null, validation_safe_error_code: null, validation_call_index: null, validated_at: finishedAt, published_at: finishedAt, lease_token: null, lease_until: null, next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt });
         await transaction.collection(DISCUSSIONS).doc(currentDiscussion._id || currentDiscussion.discussion_id).update({ analysis_status: "ready", active_report_version: identity.report_version, updated_at: finishedAt });
       });
       await speakingNotifications.enqueueSafely(db, { report_id: identity.report_id });
@@ -2009,21 +2226,23 @@ async function processQueuedJob(event) {
   } catch (error) {
     const code = error && error.code || error && error.message || "SPEAKING_PROVIDER_NOT_CONFIGURED";
     const failedAt = now();
-    let retried = false;
+    let retried = false, dispatchRetry = false;
     await db.runTransaction(async (transaction) => {
       const jobResult = await transaction.collection(JOBS).where({ job_id: claimed.job_id }).limit(1).get();
       const currentJob = jobResult.data && jobResult.data[0];
       if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, claimed.lease_token)) return;
       const attempt = Number(currentJob.attempt_count || 0);
       const retryState = failureRetryState(currentJob, claimed.failure_retry_scope, code);
+      const specific = currentJob.job_type === "individual_response_analysis" && currentJob.exam_family !== "ielts";
+      const plan = specific ? irRetry.retryPlan(currentJob, error, retryState.count, failedAt.getTime()) : null;
       if (retryState.retry) {
         // Transient provider failure: keep the same stage so a retry resumes without re-running ASR.
         const delayMs = Math.min(60000, 5000 * Math.pow(2, Math.max(0, retryState.count - 1)));
-        await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "queued", attempt_count: Math.max(0, attempt - 1), failure_retry_key: retryState.key, failure_retry_count: retryState.count, safe_error_code: code, lease_token: null, lease_until: null, next_retry_at: new Date(Date.now() + delayMs), updated_at: failedAt });
-        retried = true;
+        await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "queued", attempt_count: Math.max(0, attempt - 1), failure_retry_key: retryState.key, failure_retry_count: retryState.count, safe_error_code: code, lease_token: null, lease_until: null, next_retry_at: new Date(plan ? plan.at : Date.now() + delayMs), ...(plan ? { retry_kind: plan.kind, model_retry_not_before: new Date(plan.at) } : {}), updated_at: failedAt });
+        retried = true; dispatchRetry = Boolean(plan && plan.at <= Date.now());
         return;
       }
-      await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "failed", stage: currentJob.stage || "audio_quality", safe_error_code: code, lease_token: null, lease_until: null, finished_at: failedAt, updated_at: failedAt });
+      await transaction.collection(JOBS).doc(currentJob._id || currentJob.job_id).update({ status: "failed", stage: currentJob.stage || "audio_quality", safe_error_code: code, ...(plan ? { retry_kind: plan.kind, model_retry_not_before: new Date(plan.at) } : {}), lease_token: null, lease_until: null, finished_at: failedAt, updated_at: failedAt });
       if (currentJob.job_type === "individual_response_analysis") {
         const responseResult = await transaction.collection(INDIVIDUAL_RESPONSES).where({ response_session_id: currentJob.response_session_id }).limit(1).get();
         const response = responseResult.data && responseResult.data[0];
@@ -2037,6 +2256,9 @@ async function processQueuedJob(event) {
         ? { voice_match_status: "failed", voice_match_safe_error_code: code, voice_match_last_run_at: failedAt, updated_at: failedAt }
         : { analysis_status: "failed", updated_at: failedAt });
     });
+    if (dispatchRetry) {
+      try { await invokeWorker(claimed); } catch (_error) { /* durable timer fallback */ }
+    }
     return { success: false, code, job_id: job.job_id, retrying: retried };
   }
 }
@@ -2402,7 +2624,7 @@ async function deleteDiscussion(actor, event) {
   const deletedAt = now();
   await db.collection(DISCUSSIONS).doc(rows.discussion._id || rows.discussion.discussion_id).update({ deleted_at: deletedAt, deleted_by_teacher_uid: actor.auth_uid, analysis_status: "not_ready", updated_at: deletedAt });
   const assets = await getMany(ASSETS, { discussion_id: rows.discussion.discussion_id }, 200);
-  for (const asset of assets.filter((item) => !item.deleted_at)) await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ delete_after: deletedAt, updated_at: deletedAt });
+  for (const asset of assets.filter((item) => !item.deleted_at && item.asset_kind === "voice_reference")) await db.collection(ASSETS).doc(asset._id || asset.asset_id).update({ delete_after: deletedAt, updated_at: deletedAt });
   const guestVoiceprints = await getMany(VOICEPRINTS, { discussion_id: rows.discussion.discussion_id, subject_kind: "guest", status: "active" }, 20);
   for (const profile of guestVoiceprints) await db.collection(VOICEPRINTS).doc(profile._id || profile.voiceprint_profile_id).update({ status: "delete_pending", delete_reason: "DISCUSSION_DELETED", delete_requested_at: deletedAt, delete_requested_by_uid: actor.auth_uid, updated_at: deletedAt });
   await invalidateShares(rows.discussion.discussion_id, { reason: "DISCUSSION_DELETED" });
@@ -2433,16 +2655,29 @@ function friendlyMessage(code) {
   return messages[code] || "The Speaking Lab request could not be completed. Please try again.";
 }
 
+async function reportRecording(report, session) {
+  // Bind playback to the immutable report's job, never the session's newest recording.
+  const job = await getOne(JOBS, { job_id: report.job_id });
+  const asset = job && await getOne(ASSETS, { asset_id: job.formal_audio_asset_id });
+  if (!asset || !asset.file_id || asset.deleted_at || !["uploaded", "superseded"].includes(asset.status)
+    || (session.response_session_id ? asset.response_session_id !== session.response_session_id
+      : asset.discussion_id !== session.discussion_id)) throw new Error("AUDIO_NOT_FOUND");
+  return { success: true, audio_url: await temporaryAudioUrl(asset) };
+}
+
+async function getSpeakingReportAudio(actor, event) {
+  const { report, session } = await speakingNotifications.loadContext(db, lab.text(event.report_id, 160));
+  if (session.response_session_id) responseView(actor, session);
+  else await authorizedDiscussion(actor, session.discussion_id);
+  return reportRecording(report, session);
+}
+
 async function getTeacherSpeakingReport(actor, event, audioOnly = false) {
   if (!lab.isTeacher(actor)) throw new Error("TEACHER_REQUIRED");
   const context = await speakingNotifications.loadContext(db, lab.text(event.report_id, 160));
   const { report, session, student, participants } = context;
   if (audioOnly) {
-    const job = await getOne(JOBS, { job_id: report.job_id });
-    const asset = job && await getOne(ASSETS, { asset_id: job.formal_audio_asset_id, status: "uploaded" });
-    if (!asset || !asset.file_id || (session.response_session_id
-      ? asset.response_session_id !== session.response_session_id : asset.discussion_id !== session.discussion_id)) throw new Error("AUDIO_NOT_FOUND");
-    return { success: true, audio_url: await temporaryAudioUrl(asset) };
+    return reportRecording(report, session);
   }
   const individual = Boolean(session.response_session_id);
   return { success: true, report: {
@@ -2464,6 +2699,7 @@ exports.main = async (event = {}) => {
     if (action === "getSharedReport") return await getSharedReport(event);
     if (action === "processQueuedJob") return await processQueuedJob(event);
     const actor = await profileForAuth();
+    if (action === "getSpeakingReportAudio") return await getSpeakingReportAudio(actor, event);
     if (action === "getTeacherSpeakingReport") return await getTeacherSpeakingReport(actor, event);
     if (action === "getTeacherSpeakingAudio") return await getTeacherSpeakingReport(actor, event, true);
     const ieltsActions = createIeltsService({ db, getOne, stable, now, shanghaiDate, responseView, temporaryAudioUrl });

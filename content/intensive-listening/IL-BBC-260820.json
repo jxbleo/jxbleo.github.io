@@ -1,0 +1,24 @@
+{
+  "id": "IL-BBC-260820",
+  "sectionId": "intensive-listening",
+  "title": "Sharing the Road with Driverless Cars",
+  "href": "intensive-listening.html?set=IL-BBC-260820",
+  "publishedOn": "2026-08-20",
+  "topic": "BBC 6 Minute English",
+  "tags": [
+    "Listening",
+    "BBC"
+  ],
+  "note": "125 listening segments",
+  "sourceFamily": "bbc",
+  "sourceLabel": "BBC",
+  "seriesLabel": "BBC 6 Minute English",
+  "sourceSetId": "BBC-260820",
+  "linkedPracticeSetId": "BBC-260820",
+  "dictationUnitCount": 125,
+  "sequenceUnitCount": 150,
+  "schemaVersion": 1,
+  "trackCount": 1,
+  "catalogVisible": false,
+  "visible": true
+}

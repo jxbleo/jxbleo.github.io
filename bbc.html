@@ -3362,6 +3362,9 @@
             }
         }
     </style>
+<link rel="stylesheet" href="assets/css/training-checkin.css?v=20260930-status-1">
+<script src="assets/js/training-checkin.js?v=20260930-status-1"></script>
+<link rel="stylesheet" href="assets/css/bbc-teacher-editor.css?v=20260930-3">
 </head>
 <body>
 <div class="container" id="app">
@@ -3476,7 +3479,8 @@
 <script src="assets/js/config.public.js?v=20260921-cleanup-2"></script>
 <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
 <script src="assets/js/login-navigation.js?v=20260819-1"></script>
-<script src="assets/js/practice-session.js?v=20260819-1"></script>
+<script src="assets/js/practice-session.js?v=20260930-bbc-editor-1"></script>
+<script src="assets/js/bbc-teacher-editor.js?v=20260930-3"></script>
 <script src="assets/js/personal-vocab.js?v=20260818-1"></script>
 <script src="assets/js/bbc-waveform.js?v=20260830-2"></script>
 <script>
@@ -3767,6 +3771,10 @@
         if (modal) modal.classList.add('show');
     }
 
+    function lessonText(item, field) {
+        return item._bbcEditedFields && item._bbcEditedFields[field] ? escapeHtml(item[field]) : item[field];
+    }
+
     function renderBlanks(blanks) {
         var container = document.getElementById('blanks-container');
         if (!blanks || !blanks.length) {
@@ -3791,7 +3799,7 @@
                     sectionFontControlsHtml(currentGroup) +
                 '</li>';
             }
-            var sentence = b.sentence;
+            var sentence = lessonText(b, 'sentence');
             var inputHtml = ' <input type="text" name="' + b.id + '" class="blank-input" placeholder="' + num + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">';
             sentence = sentence.replace('_____', inputHtml);
             html += '<li class="blank-question" data-question-font-group="' + currentGroup + '"><span class="blank-num" data-mrcat-vocab-ignore>' + num + '</span><span class="blank-text">' + sentence + '</span></li>';
@@ -3824,10 +3832,10 @@
             var m = mcItems[i];
             var qNum = m.number || (i + 1);
             html += '<div class="mc-question" data-id="' + m.id + '" data-question-font-group="mc-section">';
-            html += '<div class="mc-title"><span class="mc-num" data-mrcat-vocab-ignore>' + qNum + '</span><span class="mc-title-text">' + m.question + '</span></div>';
+            html += '<div class="mc-title"><span class="mc-num" data-mrcat-vocab-ignore>' + qNum + '</span><span class="mc-title-text">' + lessonText(m, 'question') + '</span></div>';
             html += '<ul class="mc-options">';
             for (var o = 0; o < m.options.length; o++) {
-                var opt = m.options[o];
+                var opt = m._bbcEditedFields && m._bbcEditedFields.options ? escapeHtml(m.options[o]) : m.options[o];
                 var letter = labels[o] || '';
                 var displayOpt = opt;
                 if (displayOpt.indexOf(letter + '. ') !== 0) {
@@ -3880,7 +3888,7 @@
             for (var r = 0; r < pairs.length; r++) {
                 var pair = pairs[r];
                 html += '<tr>';
-                html += '<td>' + pair.left + '</td>';
+                html += '<td>' + lessonText(pair, 'left') + '</td>';
                 html += '<td>';
                 html += '<select name="' + m.id + '-' + r + '">';
                 html += '<option value="">-- Select --</option>';
@@ -4070,6 +4078,8 @@
         document.getElementById('content').style.display = 'block';
         document.getElementById('loading-message').style.display = 'none';
         if (teacherMode) {
+            document.getElementById('submit-btn').hidden = true;
+            document.getElementById('submit-btn').style.display = 'none';
             renderTeacherAnswerToolbar();
         } else {
             loadBlankAttemptState();
@@ -4181,7 +4191,41 @@
                 return response.json();
             })
             .then(function(data) {
-                renderLesson(data);
+                var latest = teacherMode
+                    ? teacherCall('getBbcEditor', { set_id: setId })
+                    : Promise.resolve().then(function() {
+                        return window.MrCatCloud.getLoginState();
+                    }).then(function(state) {
+                        return state || window.MrCatCloud.signInAnonymously();
+                    }).then(function() {
+                        return window.MrCatCloud.callFunction('getResources', { action: 'getBbcContent', set_id: setId });
+                    });
+                return latest.then(function(result) {
+                    if (!result || !result.success || !result.overrides) throw new Error('Unable to load the latest lesson. Please refresh and try again.');
+                    window.MrCatBbcEditor.apply(data, result.overrides);
+                    if (teacherMode) teacherAnswerKey = result;
+                    renderLesson(data);
+                    if (teacherMode) window.MrCatBbcEditor.init({
+                        setId: setId, call: teacherCall,
+                        data: function() { return lessonData; }, key: function() { return teacherAnswerKey; },
+                        answers: collectAnswers, questionText: questionTextForId, actionHost: questionActionButtonHost,
+                        renderAnswers: function() { if (teacherAnswersVisible) preserveViewport(function() { renderTeacherAnswers(teacherAnswerKey); }); },
+                        render: function(afterRender) {
+                            var answers = collectAnswers();
+                            preserveViewport(function() {
+                                renderBlanks(lessonData.blanks); renderMC(lessonData.multipleChoice); renderMatching(lessonData.matching);
+                                Object.keys(answers).forEach(function(id) {
+                                    document.querySelectorAll('[name="' + CSS.escape(id) + '"]').forEach(function(input) {
+                                        if (input.type === 'radio') input.checked = input.value === answers[id];
+                                        else input.value = answers[id];
+                                    });
+                                });
+                                if (teacherAnswersVisible) renderTeacherAnswers(teacherAnswerKey);
+                                afterRender();
+                            });
+                        }
+                    });
+                });
             })
             .catch(function(err) {
                 showError(err.message || 'An error occurred while loading the lesson.');
@@ -4955,7 +4999,8 @@
         argueBtn.setAttribute('aria-label', label || 'Argue this answer');
         argueBtn.setAttribute('data-argue-question', questionId);
         argueBtn.addEventListener('click', function() {
-            openArgueInline(questionId, containerEl);
+            if (teacherMode) window.MrCatBbcEditor.accept(questionId, argueBtn);
+            else openArgueInline(questionId, containerEl);
         });
         buttonHost.appendChild(argueBtn);
         return argueBtn;
@@ -5037,7 +5082,7 @@
     }
 
     function addTeacherArgueButton(questionId, containerEl) {
-        var argueBtn = addQuestionArgueButton(questionId, containerEl, 'Argue this answer');
+        var argueBtn = addQuestionArgueButton(questionId, containerEl, 'Accept as correct answer');
         if (argueBtn) argueBtn.setAttribute('data-teacher-answer', '1');
         return argueBtn;
     }
@@ -5285,45 +5330,9 @@
     }
 
     function showResultOverlay(response, onClose) {
-        var state = response.mastered ? 'mastered' : response.passed ? 'passed' : 'failed';
-        var stampText = response.mastered ? 'MASTERED' : response.passed ? 'PASSED' : 'TRY AGAIN';
-        var score = Number(response.correct_count || 0);
-        var total = Number(response.question_count || 0);
-        var copy = state === 'failed'
-            ? 'Review the misses, then try once more.'
-            : pickResultEncouragement();
-        var ribbon = state === 'mastered'
-            ? '<span class="mini">★</span> Mastery Challenge Complete'
-            : state === 'passed'
-                ? '<span class="mini">✓</span> Listening Challenge Complete'
-                : '<span class="mini">↻</span> Review, then try again';
-        var celebration = state === 'failed' ? '' :
-            '<div class="result-confetti"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>';
-        var spark = state === 'mastered' ? '<div class="result-spark"><span></span><span></span><span></span><span></span></div>' : '';
-        var glow = state === 'mastered' ? '<div class="result-gold-glow"></div>' : '';
-        var overlay = document.createElement('div');
-        overlay.className = 'result-overlay';
-        overlay.innerHTML =
-            '<div class="result-card ' + state + '">' +
-                glow +
-                celebration +
-                spark +
-                '<div class="result-stamp ' + state + (state === 'failed' ? ' show' : '') + '">' + stampText + '</div>' +
-                '<div class="result-score"><span class="result-score-number">' + (state === 'failed' ? score : Math.min(1, score)) + '</span><small>/' + total + '</small></div>' +
-                '<p class="result-copy">' + escapeHtml(copy) + '</p>' +
-                '<div class="result-actions">' +
-                    '<button class="result-review-btn" type="button" data-result-action="close">Close</button>' +
-                '</div>' +
-                '<div class="result-ribbon">' + ribbon + '</div>' +
-            '</div>';
-        document.body.appendChild(overlay);
-        animateResultScore(overlay.querySelector('.result-card'), score, state);
-        overlay.addEventListener('click', function(event) {
-            var action = event.target && event.target.getAttribute('data-result-action');
-            if (action === 'close') {
-                overlay.remove();
-                if (typeof onClose === 'function') onClose();
-            }
+        window.MrCatTrainingCheckin.score(response, {
+            family: 'BBC', title: lessonData.title || setId, setId: setId,
+            assignmentId: assignmentId, onClose: onClose
         });
     }
 
@@ -5554,20 +5563,13 @@
     }
 
     function submitArgueInline(questionId, modal, containerEl) {
+        if (teacherMode) return;
         var reason = modal.querySelector('textarea').value.trim();
         var submitBtn = modal.querySelector('.argue-modal-submit');
         var status = modal.querySelector('.argue-modal-status');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
-        var call = teacherMode
-            ? teacherCall('submitTeacherDispute', {
-                set_id: setId,
-                question_id: questionId,
-                submitted_answer: collectAnswers()[questionId] || '',
-                question_text: questionTextForId(questionId),
-                reason: reason
-            })
-            : window.MrCatCloud.callFunction('getDashboard', {
+        var call = window.MrCatCloud.callFunction('getDashboard', {
                 action: 'submitDispute',
                 attempt_id: currentArgueAttemptId || '',
                 question_id: questionId,
@@ -5607,6 +5609,7 @@
 
     function handleSubmit(e) {
         e.preventDefault();
+        if (teacherMode) return;
 
         if (submitted) return;
 

@@ -40,10 +40,10 @@ async function run() {
   assert.match(source, /studentOwnsSpeakingSetHistory\(actor, set\.set_id\)/);
   assert.match(source, /speaking_individual_responses/);
   assert.match(source, /getMany\(INDIVIDUAL_RESPONSES, \{ set_id: set\.set_id \}, 1\)/);
-  assert.match(source, /individualResponseAnalysisPrompt/);
-  assert.match(source, /individualResponseUserPrompt/);
+  assert.match(source, /irFeedback\.nextRequest/);
+  assert.match(source, /system_prompt: request\.system_prompt, user_prompt: request\.user_prompt/);
   assert.doesNotMatch(source, /set_snapshot[\s\S]{0,200}part_b:\s*set\.part_b/, "Individual Response snapshots must not include unrelated questions");
-  assert.match(workerSource, /job\.job_type === "individual_response_analysis"/);
+  assert.match(workerSource, /current\.job_type === "individual_response_analysis"/);
   assert.match(prepareSource, /dse-paper4-sets\.json/);
   assert.match(prepareSource, /speaking-sets-cloudbase\.json/);
   assert.match(importSource, /speaking_sets/);
@@ -61,7 +61,7 @@ async function run() {
   assert.match(source, /active_voice_match_job_id/);
   assert.match(source, /source_report_id: sourceReport\.report_id/);
   assert.match(source, /async function processVoiceRematch/);
-  assert.match(workerSource, /job\.job_type === "voice_rematch"/);
+  assert.match(workerSource, /current\.job_type === "voice_rematch"/);
   assert.match(source, /invitation_source:\s*"automatic_voice_match"/);
   assert.match(source, /invitation_status:\s*invitationStatus/);
   assert.match(source, /ownPending[\s\S]*invitation_status === "pending"/);
@@ -94,6 +94,8 @@ async function run() {
   assert.equal(speakingTest.individualResponseHasCommittedWork({ recording_status: "uploaded", deleted_at: new Date() }), false);
   assert.equal(typeof speakingTest.responseActions.discardEmptyIndividualResponse, "function");
   assert.doesNotMatch(source, /getUploadMetadata/, "the gateway must not return fragile request-scoped COS credentials");
+  const processQueuedJobSource = source.slice(source.indexOf("async function processQueuedJob(event)"), source.indexOf("async function confirmVoice("));
+  assert.doesNotMatch(processQueuedJobSource, /\bisIelts\b/, "the group-discussion publish path must not reference the Individual Response-only isIelts flag");
   assert.match(source, /uploaded_file_id/);
   assert.deepEqual(speakingTest.uploadTargetView("speaking-lab/path.mp3"), {
     upload_mode: "cloudbase_js_sdk",

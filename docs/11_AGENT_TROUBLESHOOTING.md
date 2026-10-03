@@ -1,5 +1,14 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## Stale shared checkout versus current source (2026-10-03)
+
+A detached, rebasing checkout can list hundreds of untracked/modified files that
+already exist on a newer remote main. Compare Git refs and published hashes
+before calling them unshipped, deleting them or merging the entire old tree.
+Use an isolated current-main branch and preserve the original rebase/work.
+Retirement checks must inspect exact function boundaries; adjacent auth/timer
+guards are live code even beside unused helpers. Keep package smoke tests.
+
 ## 2026-09-21 — 迁移退役核查应读取元数据，不直接运行全表迁移
 
 `@cloudbase/manager-node` 的 `database.runCommands` / `QUERY` 响应存在双层
@@ -1080,6 +1089,26 @@ STAR 不阻止未来重新布置同一个 set。
 - 上传确认转为 `revision_ocr` job 时，`pending_upload`、`pending_revision_scan` 和 `active_job`
   也按完整字段原子更新，避免清理状态与新 job 投影部分合并。
 - 回归测试必须同时覆盖普通作文上传和 Sentence Revision 扫描，不能只检查模型调用或 Schema。
+
+### 2026-09-06：Plus / Max 额度用完后没有进入下一个模型
+
+现象与根因：
+- `WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS=qwen3.8-max,qwen3.8-max-0902` 已配置，但当前
+  模型额度归零后仍继续显示其用量或产生账单。通常不是 fallback 代码失效，而是百炼中该模型的
+  “免费额度用完即停”仍关闭；此时供应商正常返回付费结果，不会发送
+  `AllocationQuota.FreeTierOnly`。
+- 若普通 403、鉴权失败、限流、超时或 Schema 错误没有切 Max，这是预期行为；备用模型只允许
+  响应精确的免费额度停止代码，不能掩盖其他生产问题。
+
+排查顺序：
+1. 在华北2（北京）免费额度页确认 Plus、Max、Max-0902 的用完即停已开启且配置已生效；另行
+   确认每个模型 ID 的免费额度仍有效。
+2. 检查运行模型调用的函数同时配置了主文字模型与 `WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS`，
+   不要把文字备用值写入视觉模型变量。
+3. 查 `writing_model_usage_events`：预期依次有当前模型的 `quota_exhausted` 与下一模型的物理请求；
+   成功产物的 `model_metadata.quota_fallback_used` 应为 `true`。
+4. 若只有当前模型的付费成功记录，先修正百炼开关；若是其他错误码，按原错误排查，不要扩大
+   fallback 条件。
 
 ### 2026-08-24：AI Tutor 等待 Runner 排查顺序
 

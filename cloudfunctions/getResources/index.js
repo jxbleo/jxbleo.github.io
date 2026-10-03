@@ -1,4 +1,5 @@
 const cloudbase = require("@cloudbase/node-sdk");
+const bbcEditor = require("../_shared/bbc-editor");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -52,8 +53,9 @@ function uniqueResources(items) {
   return resources;
 }
 
-exports.main = async () => {
+exports.main = async (event = {}) => {
   try {
+    if (event.action === "getBbcContent") return await bbcEditor.readPublic(db, event.set_id);
     const resources = await getAll("sets", {
       where: { visible: true },
       orderBy: { field: "title", direction: "asc" },

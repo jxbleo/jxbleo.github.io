@@ -45,6 +45,9 @@ function changedFunctions(allFunctions) {
   for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
     const file = line.includes(" -> ") ? line.split(" -> ").pop().trim() : line.slice(3).trim();
     const match = file.match(/^cloudfunctions\/([^/]+)\//);
+    // Shared modules can be bundled into several gateways and workers.
+    // Conservatively rebuild all functions; selection never deploys them.
+    if (match && match[1] === "_shared") return allFunctions.slice();
     if (match && allFunctions.includes(match[1])) {
       names.add(match[1]);
     }
@@ -74,11 +77,28 @@ function speakingRuntimeBundlePlugins(functionName) {
   return [{
     name: "speaking-lab-unused-cloudbase-features",
     setup(build) {
+      // Compress fixed prompt data, not executable code. Source stays readable;
+      // Node's built-in zlib restores byte-identical strings once at cold start.
+      build.onLoad({ filter: /[/\\]speaking-ir-prompts\.js$/ }, args => {
+        const data = require(args.path);
+        const packed = require("node:zlib").brotliCompressSync(Buffer.from(JSON.stringify(data))).toString("base64");
+        return { contents: `module.exports=JSON.parse(require("node:zlib").brotliDecompressSync(Buffer.from("${packed}","base64")).toString("utf8"));`, loader: "js" };
+      });
       build.onResolve({ filter: /^@cloudbase\/wx-cloud-client-sdk$/ }, (args) => ({ path: args.path, namespace: "speaking-empty" }));
       build.onResolve({ filter: /^\.\/ai$/ }, (args) => args.importer.includes("/@cloudbase/node-sdk/dist/cloudbase.js")
         ? { path: "node-sdk-ai", namespace: "speaking-empty" }
         : null);
+      // Speaking uses auth/database/storage and the low-level async requester.
+      // Exclude optional SDK facades only at this exact SDK import boundary;
+      // accidental use fails explicitly instead of silently pretending success.
+      build.onResolve({ filter: /^\.\/(?:analytics|wx|cloudrun|notification|logger|functions)$/ }, (args) => args.importer.endsWith("/@cloudbase/node-sdk/dist/cloudbase.js")
+        ? { path: "unused-sdk-facade", namespace: "speaking-disabled" }
+        : null);
       build.onLoad({ filter: /.*/, namespace: "speaking-empty" }, () => ({ contents: "module.exports = {};", loader: "js" }));
+      build.onLoad({ filter: /.*/, namespace: "speaking-disabled" }, () => ({
+        contents: 'module.exports = new Proxy({}, { get: (_, name) => name === "__esModule" ? false : () => { throw new Error("SPEAKING_SDK_FEATURE_NOT_PACKAGED"); } });',
+        loader: "js",
+      }));
     }
   }];
 }
@@ -115,6 +135,7 @@ async function packageFunction(functionName) {
       target: "node18",
       format: "cjs",
       minify: true,
+      ...(speakingRuntimeFunctions.has(functionName) ? { charset: "utf8" } : {}),
       external: ["@aws-sdk/client-s3"],
       plugins: speakingRuntimeBundlePlugins(functionName),
       logLevel: "silent"
@@ -178,7 +199,11 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error && error.stack || error);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error && error.stack || error);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = { speakingRuntimeBundlePlugins, speakingRuntimeMaxBundleBytes };

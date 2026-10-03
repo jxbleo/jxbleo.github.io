@@ -2146,6 +2146,8 @@
             }
         }
     </style>
+<link rel="stylesheet" href="assets/css/training-checkin.css?v=20260930-status-1">
+<script src="assets/js/training-checkin.js?v=20260930-status-1"></script>
 </head>
 <body>
     <div class="identity-status" id="identity-status">Login</div>
@@ -3039,35 +3041,17 @@
         }
 
         function showResultOverlay(response) {
-            var isPractice = activeTestMode === 'practice';
-            var state = isPractice ? 'passed' : response.mastered ? 'mastered' : response.passed ? 'passed' : 'failed';
-            var status = isPractice ? 'Practice Complete' : response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
-            var emoji = isPractice ? '🎉' : response.mastered ? '👑' : response.passed ? '🎉' : '😅';
-            var score = response.correct_count + ' / ' + response.question_count;
-            var title = unitData && (unitData.title || unitData.id) || setId || 'Vocabulary';
-            var sets = resultSetSummary();
-            var context = '<div class="result-meta"><span class="result-label">' + escapeHtml(title) + '</span>' +
-                '<span class="result-label result-mode' + (isPractice ? ' is-practice' : '') + '">' +
-                (isPractice ? 'Practice' : 'Quiz') + '</span></div>' +
-                (sets ? '<p class="result-sets">' + escapeHtml(sets) + '</p>' : '');
-            var copy = isPractice ? 'Practice finished. Keep up the good work!' :
-                response.mastered ? 'Excellent work. You mastered this vocabulary set.' :
-                response.passed ? 'You passed. Keep trying if you want to master it.' :
-                'Close this result to review your mistakes and explanations.';
-            var actions = '<button class="btn btn-primary" type="button" data-result-action="close">Close</button>';
-            var overlay = document.createElement('div');
-            overlay.className = 'result-overlay';
-            overlay.innerHTML =
-                '<div class="result-card"><div class="result-emoji">' + emoji + '</div><h2>' + status + '</h2>' +
-                context + '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
-                actions + '</div></div>';
-            document.body.appendChild(overlay);
-            playResultSound(state);
-            if (!isPractice && response.mastered) addMasteryCrown(overlay);
-            overlay.addEventListener('click', function(event) {
-                var action = event.target && event.target.getAttribute('data-result-action');
-                if (action === 'close') overlay.remove();
+            var selectedIds = activeTestGroups.map(function(group) { return String(group.id); });
+            var selectedNumbers = (unitData && unitData.quizGroups || []).map(function(group, index) {
+                return selectedIds.indexOf(String(group.id)) >= 0 ? index + 1 : null;
+            }).filter(function(value) { return value !== null; });
+            window.MrCatTrainingCheckin.score(response, {
+                family: '词汇', practice: activeTestMode === 'practice',
+                title: unitData && (unitData.title || unitData.id) || setId,
+                setId: setId, assignmentId: activeTestAssignmentId,
+                groupCount: activeTestGroups.length, selectedGroups: selectedNumbers
             });
+            playResultSound(response.passed ? 'passed' : 'failed');
         }
 
         function showError(message) {

@@ -609,6 +609,8 @@
 
     function updateCurrentWritingTitle() {
         updateRevisionProgress();
+        var deleteButton = document.getElementById('writing-delete-button');
+        if (deleteButton) deleteButton.hidden = !compositionId(state.current);
         if (!currentWritingTitleWindow || !currentWritingTitleTrack) return;
         var title = state.current ? compositionTitle(state.current) : 'Start new Writing';
         currentWritingTitleTrack.textContent = title;
@@ -1541,7 +1543,7 @@
     function revisionScanSentenceLabel(id) {
         var sentences = safeArray(state.review && state.review.sentences);
         var index = sentences.findIndex(function(sentence, sentenceIndex) { return sentenceId(sentence, sentenceIndex) === id; });
-        return index >= 0 ? '第 ' + (index + 1) + ' 句' : id;
+        return index >= 0 ? 'Sentence ' + (index + 1) : id;
     }
 
     function revisionScanSentenceDetails(id) {
@@ -1557,6 +1559,7 @@
         scan.job = revisionScanJobFrom(composition);
         if (pending && Array.isArray(pending.items)) {
             scan.candidates = revisionScanCandidates(pending);
+            scan.reviewOrder = null;
             scan.status = 'ready';
         } else if (scan.job && scan.job.status) {
             scan.status = firstText(scan.job.status).toLowerCase();
@@ -1603,7 +1606,7 @@
     }
 
     function portfolioCompositions() {
-        return state.compositions.filter(function(item) { return !isEmptyCompositionDraft(item); });
+        return state.compositions.filter(function(item) { return !item.deleted_at && !isEmptyCompositionDraft(item); });
     }
 
     function updateSidebarTitleEditModeControl() {
@@ -1635,19 +1638,66 @@
         return Number.isFinite(parsed) ? parsed : 0;
     }
 
+    function portfolioProgress(item) {
+        // Full current records take precedence over older list summaries. Only
+        // persisted accepted rewrites count; local typing never advances progress.
+        if (item.language_review && Array.isArray(item.language_review.sentences)) {
+            var required = new Set(item.language_review.sentences.filter(function(s) { return s.rewrite_required === true; }).map(function(s) { return s.sentence_id; }).filter(Boolean));
+            var accepted = new Set(safeArray(item.rewrite_results && item.rewrite_results.results).filter(function(r) { return r.accepted === true && required.has(r.sentence_id); }).map(function(r) { return r.sentence_id; }));
+            return { total: required.size, completed: accepted.size };
+        }
+        var progress = item.revision_progress;
+        if (!progress || !Number.isInteger(progress.total) || !Number.isInteger(progress.completed)
+            || progress.total < 0 || progress.completed < 0 || progress.completed > progress.total) return null;
+        return progress;
+    }
+
+    function portfolioState(item) {
+        var status = compositionStatus(item);
+        var progress = portfolioProgress(item);
+        if (status === 'completed') return { kind: 'complete', label: 'Completed' };
+        if (/failed$/.test(status)) return { kind: 'failed', label: 'Needs retry' };
+        if (/queued|processing|uploading|evaluating/.test(status)) {
+            return { kind: 'pending', label: /ocr/.test(status) ? 'Reading photos' : /rewrite|revision/.test(status) ? 'Checking revisions' : /upload/.test(status) ? 'Uploading' : 'Reviewing' };
+        }
+        if (progress && progress.total > 0) return { kind: 'progress', percent: Math.round(progress.completed / progress.total * 100), label: 'Revising, ' + progress.completed + ' of ' + progress.total + ' sentences completed' };
+        var labels = { draft: 'Draft', ocr_ready: 'Confirm scanned text', ocr_review: 'Confirm scanned text', ready: 'Ready for review', reviewed: 'Ready to review', standardized_ready: 'Ready to review', language_ready: 'Ready to revise', review_ready: 'Ready to revise', sentence_training: 'Ready to revise', needs_revision: 'Ready to revise' };
+        return { kind: 'ready', label: labels[status] || 'Open writing' };
+    }
+
+    function portfolioRingHtml(info) {
+        var percent = info.kind === 'progress' ? info.percent : 0;
+        var center = info.kind === 'complete' ? icon('check') : info.kind === 'failed' ? '!' : info.kind === 'progress' ? percent + '<small>%</small>' : info.kind === 'ready' ? icon('arrow') : '';
+        return '<span class="portfolio-ring is-' + info.kind + (info.kind === 'progress' && !percent ? ' is-zero' : '') + '" title="' + escapeHtml(info.label) + '" aria-hidden="true" style="--portfolio-progress:' + percent + '">' +
+            '<svg class="portfolio-ring-track" viewBox="0 0 38 38"><circle class="ring-track" cx="19" cy="19" r="16"/>' +
+            (info.kind === 'progress' || info.kind === 'pending' ? '<circle class="ring-value" cx="19" cy="19" r="16" pathLength="100"/>' : '') + '</svg>' +
+            '<span class="portfolio-ring-label">' + center + '</span></span>';
+    }
+
+    function measurePortfolioTitles() {
+        Array.prototype.forEach.call(portfolioList.querySelectorAll('.portfolio-title-window'), function(view) {
+            var track = view.querySelector('.portfolio-title-track');
+            var overflow = Math.max(0, track.scrollWidth - view.clientWidth);
+            view.classList.toggle('is-overflowing', overflow > 2);
+            view.style.setProperty('--portfolio-title-shift', -overflow + 'px');
+            view.style.setProperty('--portfolio-title-duration', Math.max(10, overflow / 26 * 2 + 5) + 's');
+        });
+    }
+
     function portfolioGroupHtml(label, items) {
         if (!items.length) return '';
-        var editDelayOffset = label === 'Completed' ? 5 : 0;
         return '<section class="portfolio-group" aria-label="' + escapeHtml(label) + '">' +
-            '<p class="portfolio-group-label">' + escapeHtml(label) + '</p>' +
+            '<p class="portfolio-group-label">' + escapeHtml(label) + '<span>' + items.length + '</span></p>' +
             items.map(function(item, index) {
                 var id = compositionId(item);
                 var active = state.current && compositionId(state.current) === id;
+                var info = portfolioState(item);
                 var action = state.sidebarTitleEditMode ? 'Edit title ' : 'Open ';
-                return '<article class="portfolio-item' + (active ? ' is-active' : '') + '" style="--title-edit-delay:' + (-(index + editDelayOffset) * 47) + 'ms">' +
+                return '<article class="portfolio-item' + (active ? ' is-active' : '') + '" style="--title-edit-delay:' + (-index * 47) + 'ms">' +
                     '<button class="portfolio-open" type="button" data-open-composition="' + escapeHtml(id) + '"' +
-                    ' aria-label="' + action + escapeHtml(compositionTitle(item)) + '"><strong>' +
-                    escapeHtml(compositionTitle(item)) + '</strong></button></article>';
+                    (active ? ' aria-current="true"' : '') + ' aria-label="' + action + escapeHtml(compositionTitle(item)) + ', ' + escapeHtml(info.label) + '">' +
+                    '<span class="portfolio-title-window" title="' + escapeHtml(compositionTitle(item)) + '"><strong class="portfolio-title-track">' + escapeHtml(compositionTitle(item)) + '</strong></span>' +
+                    portfolioRingHtml(info) + '</button></article>';
             }).join('') + '</section>';
     }
 
@@ -1665,6 +1715,7 @@
             return;
         }
         portfolioList.innerHTML = portfolioGroupHtml('Continue', unfinished) + portfolioGroupHtml('Completed', completed);
+        window.requestAnimationFrame(measurePortfolioTitles);
         updateSidebarTitleEditModeControl();
     }
 
@@ -2412,6 +2463,7 @@
             });
         }).then(function(result) {
             if (result.composition) state.current = result.composition;
+            window.MrCatTrainingCheckin.writing(state.current, { profile: state.profile });
             if (result.review || reviewReady(state.current)) {
                 showReviewResult(result);
                 return;
@@ -2469,6 +2521,7 @@
         showReadyOrOpenResult('review', function() {
             syncCurrentSummary();
             if (mode === 'standardized') renderStandardized();
+            else if (compositionStatus(state.current) === 'completed') openCompletedWritingReport();
             else prepareLanguageReview();
             Promise.all([refreshPortfolio(), refreshWritingProfile()]).catch(function() {});
         });
@@ -2665,7 +2718,7 @@
         showReadyOrOpenResult('rewrite', function() {
             syncCurrentSummary();
             if (record.passed === true || result && result.passed === true || compositionStatus(state.current) === 'completed') {
-                renderCompletion();
+                openCompletedWritingReport();
             } else {
                 state.correctionRound += 1;
                 restoreLanguageReviewState();
@@ -2885,10 +2938,10 @@
 
     function revisionScanConfidenceMeta(confidence) {
         return ({
-            high: { symbol: '✓', label: '识别置信度：高' },
-            medium: { symbol: '!', label: '识别置信度：中，请检查' },
-            low: { symbol: '?', label: '识别置信度：低，请仔细检查' }
-        })[confidence] || { symbol: '?', label: '识别置信度：低，请仔细检查' };
+            high: { symbol: '✓', label: 'Text recognition confidence: high' },
+            medium: { symbol: '!', label: 'Text recognition confidence: medium; please check' },
+            low: { symbol: '?', label: 'Text recognition confidence: low; please check carefully' }
+        })[confidence] || { symbol: '?', label: 'Text recognition confidence: low; please check carefully' };
     }
 
     function revisionScanDuplicateIds() {
@@ -2907,13 +2960,44 @@
         if (!candidates.length || revisionScanDuplicateIds().length) return false;
         return candidates.every(function(candidate) {
             return validIds.indexOf(firstText(candidate.sentence_id)) >= 0
-                && Boolean(normalizedOcrText(candidate.recognized_text).trim());
+                && Boolean(normalizedOcrText(candidate.recognized_text).trim())
+                && (candidate.status === 'mapped' || candidate.reviewed === true);
         });
+    }
+
+    function revisionScanNeedsReview(candidate) {
+        return !revisionScanSentences().some(function(sentence, index) { return sentenceId(sentence, index) === candidate.sentence_id; })
+            || !normalizedOcrText(candidate.recognized_text).trim()
+            || revisionScanDuplicateIds().indexOf(candidate.sentence_id) >= 0
+            || (candidate.status !== 'mapped' && candidate.reviewed !== true);
     }
 
     function updateRevisionScanConfirmState() {
         var button = document.querySelector('[data-confirm-revision-scan]');
         if (button) button.disabled = state.busy || !revisionScanCanConfirm();
+        var back = document.querySelector('.revision-scan-surface [data-cancel-revision-scan]');
+        if (back) back.disabled = state.busy;
+        var candidates = revisionScanState().candidates;
+        var remaining = candidates.filter(revisionScanNeedsReview).length;
+        var progress = document.querySelector('[data-scan-progress]');
+        if (progress) progress.textContent = candidates.length + (candidates.length === 1 ? ' revision found · ' : ' revisions found · ') + (candidates.length - remaining) + ' matched' +
+            (remaining ? ' · ' + remaining + ' to review' : '. Review your matches, then fill your drafts.');
+        candidates.forEach(function(candidate) {
+            var row = document.querySelector('[data-scan-candidate-row="' + candidate.candidate_id + '"]');
+            if (!row) return;
+            var editor = row.querySelector('[data-scan-text]');
+            if (editor) editor.readOnly = state.busy;
+            var needsReview = revisionScanNeedsReview(candidate);
+            var badge = row.querySelector('[data-scan-pair-status]');
+            if (badge) badge.textContent = needsReview ? 'TBC' : candidate.reviewed ? 'Match confirmed' : 'Automatically matched';
+            row.classList.toggle('needs-review', needsReview);
+            var approve = row.querySelector('[data-scan-approve]');
+            if (approve) {
+                approve.hidden = !needsReview || !candidate.sentence_id;
+                approve.disabled = state.busy || !normalizedOcrText(candidate.recognized_text).trim()
+                    || revisionScanDuplicateIds().indexOf(candidate.sentence_id) >= 0;
+            }
+        });
     }
 
     function renderRevisionScanPhotoSelection() {
@@ -2946,7 +3030,7 @@
         var scan = revisionScanState();
         var additions = safeArray(files);
         var remaining = Math.max(0, 8 - scan.files.length);
-        if (additions.length > remaining) setStatus('Revision Scan 最多可加入 8 张照片。');
+        if (additions.length > remaining) setStatus('You can add up to 8 revision photos.');
         var accepted = additions.slice(0, remaining);
         accepted.forEach(function(file) {
             scan.files.push(file);
@@ -2963,39 +3047,47 @@
     }
 
     function revisionScanCandidateHtml(candidate, index) {
-        var scan = revisionScanState();
         var id = revisionScanCandidateId(candidate, index);
-        var sentenceIdValue = firstText(candidate.sentence_id);
-        var status = revisionScanStatusClass(candidate.status);
-        if (!sentenceIdValue || !revisionScanSentences().some(function(sentence, sentenceIndex) {
-            return sentenceId(sentence, sentenceIndex) === sentenceIdValue;
-        })) status = 'unresolved';
-        var duplicate = revisionScanDuplicateIds().indexOf(sentenceIdValue) >= 0;
-        var selectedDetails = revisionScanSentenceDetails(status === 'unresolved' ? '' : sentenceIdValue);
+        var eligible = revisionScanSentences().some(function(sentence, sentenceIndex) { return sentenceId(sentence, sentenceIndex) === candidate.sentence_id; });
+        var selectedDetails = eligible ? revisionScanSentenceDetails(firstText(candidate.sentence_id)) : null;
+        var duplicate = revisionScanDuplicateIds().indexOf(candidate.sentence_id) >= 0;
         var confidence = ['high', 'medium', 'low'].indexOf(candidate.confidence) >= 0 ? candidate.confidence : 'low';
         var confidenceMeta = revisionScanConfidenceMeta(confidence);
-        var claimedByAnother = revisionScanState().candidates.reduce(function(ids, item) {
-            var sid = firstText(item.sentence_id);
-            if (item.candidate_id !== id && sid && ids.indexOf(sid) < 0) ids.push(sid);
-            return ids;
-        }, []);
-        var options = revisionScanSentences().map(function(sentence, sentenceIndex) {
+        var claimedByAnother = revisionScanState().candidates.filter(function(item) {
+            return item.candidate_id !== id;
+        }).map(function(item) { return item.sentence_id; });
+        var suggestions = safeArray(candidate.suggested_sentence_ids);
+        var choices = revisionScanSentences().slice().sort(function(a, b) {
+            var ai = suggestions.indexOf(a.sentence_id), bi = suggestions.indexOf(b.sentence_id);
+            return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+        }).map(function(sentence, sentenceIndex) {
             var sid = sentenceId(sentence, sentenceIndex);
             var details = revisionScanSentenceDetails(sid);
-            var unavailable = claimedByAnother.indexOf(sid) >= 0 && sid !== sentenceIdValue;
-            var optionLabel = details ? details.number + '  ' + firstText(details.sentence && details.sentence.original) : revisionScanSentenceLabel(sid);
-            return '<option value="' + escapeHtml(sid) + '"' + (sid === sentenceIdValue && status !== 'unresolved' ? ' selected' : '') +
-                (unavailable ? ' disabled' : '') + '>' + escapeHtml(optionLabel) + '</option>';
+            var unavailable = claimedByAnother.indexOf(sid) >= 0;
+            return '<button type="button" class="revision-scan-option" data-scan-pick="' + escapeHtml(id) + '" data-scan-target="' + escapeHtml(sid) + '"' +
+                (unavailable ? ' disabled' : '') + '><strong>' + (details ? details.number : revisionScanSentenceLabel(sid)) + '</strong><span>' +
+                escapeHtml(sentence.original) + (unavailable ? '<small>Already matched to another revision</small>' : '') + '</span></button>';
         }).join('');
-        return '<article class="revision-scan-candidate is-' + status + (duplicate ? ' has-duplicate' : '') + '" data-scan-candidate-row="' + escapeHtml(id) + '">' +
-            '<label class="revision-scan-target' + (selectedDetails ? '' : ' is-unassigned') + '">' +
-            '<span class="revision-scan-target-main"><strong class="revision-scan-target-number">' + (selectedDetails ? selectedDetails.number : '?') + '</strong>' +
-            '<span class="revision-scan-target-copy">' + escapeHtml(selectedDetails ? firstText(selectedDetails.sentence && selectedDetails.sentence.original) : 'Select the sentence this rewrite belongs to') + '</span>' +
-            '<span class="revision-scan-target-chevron" aria-hidden="true">⌄</span></span>' +
-            '<select data-scan-sentence="' + escapeHtml(id) + '" aria-label="为识别项 ' + (index + 1) + ' 选择仍需订正的原句"><option value="">Select sentence</option>' + options + '</select></label>' +
-            '<label class="revision-scan-recognized"><span class="revision-scan-confidence is-' + confidence + '" role="img" aria-label="' + escapeHtml(confidenceMeta.label) + '" title="' + escapeHtml(confidenceMeta.label) + '">' + confidenceMeta.symbol + '</span>' +
-            '<textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="编辑识别项 ' + (index + 1) + ' 的文字">' + escapeHtml(candidate.recognized_text) + '</textarea></label>' +
-            (duplicate ? '<p class="revision-scan-warning">同一句被识别了两次。请为每一行选择不同的改写句子后再导入。</p>' : '') + '</article>';
+        var needsReview = revisionScanNeedsReview(candidate);
+        return '<article class="revision-scan-candidate' + (needsReview ? ' needs-review' : '') + (duplicate ? ' has-duplicate' : '') + '" data-scan-candidate-row="' + escapeHtml(id) + '">' +
+            '<div class="revision-scan-card-head"><span>Match ' + (index + 1) + '</span><span class="revision-scan-pair-status" data-scan-pair-status>' +
+            (needsReview ? 'TBC' : candidate.reviewed ? 'Match confirmed' : 'Automatically matched') + '</span></div>' +
+            '<div class="revision-scan-target' + (selectedDetails ? '' : ' is-unassigned') + '"><div class="revision-scan-label-row"><span>Your draft' +
+            (selectedDetails ? ' · ' + selectedDetails.number : '') + '</span><button class="quiet-button" type="button" data-scan-choose="' + escapeHtml(id) +
+            '" aria-expanded="' + Boolean(candidate.choosing) + '" aria-controls="scan-choices-' + escapeHtml(id) + '">' +
+            (candidate.choosing ? 'Hide choices' : selectedDetails ? 'Change sentence' : 'Choose sentence') + '</button></div>' +
+            '<p class="revision-scan-target-copy">' + escapeHtml(selectedDetails ? selectedDetails.sentence.original : 'Which original sentence does this revision belong to?') + '</p></div>' +
+            '<div class="revision-scan-connection" aria-hidden="true">↓</div>' +
+            '<div class="revision-scan-recognized"><div class="revision-scan-label-row"><span>Scanned revision</span>' +
+            '<button class="quiet-button" type="button" data-scan-edit="' + escapeHtml(id) + '">' + (candidate.editing ? 'Done editing' : 'Edit text') + '</button></div>' +
+            (candidate.editing ? '<textarea rows="3" data-scan-text="' + escapeHtml(id) + '" aria-label="Edit scanned text for match ' + (index + 1) + '">' + escapeHtml(candidate.recognized_text) + '</textarea>' :
+                '<p class="revision-scan-copy">' + escapeHtml(candidate.recognized_text || 'No text was recognized. Select Edit text to add it.') + '</p>') +
+            (confidence !== 'high' && !candidate.reviewed ? '<p class="revision-scan-ocr-note"><span class="revision-scan-confidence is-' + confidence + '" role="img" aria-label="' + escapeHtml(confidenceMeta.label) + '">' + confidenceMeta.symbol + '</span>Check the scanned text, then confirm this match.</p>' : '') + '</div>' +
+            '<div class="revision-scan-choices" id="scan-choices-' + escapeHtml(id) + '"' + (candidate.choosing ? '' : ' hidden') + '><p>Choose the original sentence for this revision</p>' + choices + '</div>' +
+            (duplicate ? '<p class="revision-scan-warning">This sentence is matched more than once. Change one of the matches.</p>' : '') +
+            (safeArray(candidate.warnings).indexOf('NUMBER_CONTENT_CONFLICT') >= 0 && !candidate.reviewed ? '<p class="revision-scan-warning">The written number and text do not agree. Choose the correct original sentence.</p>' : '') +
+            '<button class="secondary-button compact revision-scan-approve" type="button" data-scan-approve="' + escapeHtml(id) + '"' +
+            (needsReview && selectedDetails ? '' : ' hidden') + '>Confirm this match</button></article>';
     }
 
     function renderRevisionScanReview() {
@@ -3010,11 +3102,19 @@
         scan.status = 'ready';
         state.screen = 'revision-scan-review';
         var candidates = scan.candidates || [];
-        var canConfirm = revisionScanCanConfirm();
-        stage.innerHTML = '<section class="surface surface-pad revision-scan-surface" aria-label="扫描改写确认">' +
-            (candidates.length ? '<div class="revision-scan-candidate-list">' + candidates.map(revisionScanCandidateHtml).join('') + '</div>' : '<p class="section-hint">没有可供确认的识别项目。你可以重新拍一张更清晰的照片。</p>') +
-            '<div class="form-actions revision-scan-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>返回 Sentence Revision</button>' +
-            '<button class="primary-button" type="button" data-confirm-revision-scan' + (canConfirm ? '' : ' disabled') + '>Confirm Scanning</button></div></section>';
+        // Set the initial order once; choosing a target must not move the focused card.
+        if (!scan.reviewOrder) scan.reviewOrder = candidates.slice().sort(function(a, b) {
+            return Number(revisionScanNeedsReview(b)) - Number(revisionScanNeedsReview(a));
+        }).map(function(item) { return item.candidate_id; });
+        var ordered = scan.reviewOrder.map(function(id) { return candidates.find(function(item) { return item.candidate_id === id; }); }).filter(Boolean);
+        stage.innerHTML = '<section class="surface surface-pad revision-scan-surface" aria-label="Match Your Revisions">' +
+            '<header class="revision-scan-heading"><span class="revision-scan-step">Scan photos → <strong>Match sentences</strong> → Fill drafts</span>' +
+            '<h2>Match Your Revisions</h2><p>Match each scanned revision to its original sentence. Fill your drafts, then submit them for checking.</p>' +
+            '<p class="revision-scan-count" data-scan-progress role="status" aria-live="polite"></p></header>' +
+            (ordered.length ? '<div class="revision-scan-candidate-list">' + ordered.map(revisionScanCandidateHtml).join('') + '</div>' : '<p class="section-hint">No revisions were found to match. Please try a clearer photo.</p>') +
+            '<div class="form-actions revision-scan-actions"><button class="secondary-button" type="button" data-cancel-revision-scan>Back to Revisions</button>' +
+            '<button class="primary-button" type="button" data-confirm-revision-scan' + (revisionScanCanConfirm() ? '' : ' disabled') + '>Confirm and Fill</button></div></section>';
+        updateRevisionScanConfirmState();
         if (previousScreen !== state.screen) scheduleStageViewportReset();
     }
 
@@ -3039,7 +3139,7 @@
     function renderRevisionScanFailure(error) {
         stopRevisionScanPolling();
         var code = firstText(error && error.code, error && error.result && error.result.code, state.revisionScan && state.revisionScan.job && state.revisionScan.job.error_code);
-        var message = firstText(error && error.message, '照片识别没有完成。你的作文和现有改写草稿仍然安全保存。');
+        var message = firstText(error && error.message, 'The scan did not finish. Your composition and existing revision drafts are preserved.');
         state.screen = 'revision-scan-waiting';
         showAiWaitingInterruption('revision_ocr', message, code, code === 'PHOTO_UPLOAD_UNCONFIRMED' ? 'upload' : 'job');
     }
@@ -3058,11 +3158,11 @@
                 syncRevisionScanFromComposition(composition);
                 if (revisionScanReady(composition)) { renderRevisionScanReview(); return; }
                 var job = revisionScanJobFrom(composition);
-                if (firstText(job.status).toLowerCase() === 'failed') { renderRevisionScanFailure({ message: '云端没有完成照片识别，请重新检查状态或拍照。' }); return; }
+                if (firstText(job.status).toLowerCase() === 'failed') { renderRevisionScanFailure({ message: 'The scan did not finish. Check the status again or try another photo.' }); return; }
                 updateAiWaitingExperience({ kind: 'revision_ocr', jobStatus: job.status, durable: true });
                 syncCurrentSummary();
             },
-            onError: function() { var status = document.getElementById('revision-scan-poll-status'); if (status) status.textContent = '暂时无法查询，网络恢复后会继续。当前改写草稿已经安全保存。'; }
+            onError: function() { var status = document.getElementById('revision-scan-poll-status'); if (status) status.textContent = 'Unable to check the scan status. This will resume when the connection returns. Your revision drafts are preserved.'; }
         });
     }
 
@@ -3095,7 +3195,7 @@
                     if (started && started.composition) state.current = started.composition;
                     var uploads = safeArray(started && started.uploads);
                     if (!uploads.length && started && started.job) return started;
-                    if (uploads.length !== preparedPages.length) throw new Error('照片上传信息不完整，请重试。');
+                    if (uploads.length !== preparedPages.length) throw new Error('Photo upload details are incomplete. Please retry.');
                     return Promise.all(uploads.map(function(upload, index) {
                         return window.MrCatCloud.uploadWithMetadata(upload, preparedPages[index].display);
                     })).then(function() {
@@ -3121,7 +3221,7 @@
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanFailure({
                     code: 'PHOTO_UPLOAD_UNCONFIRMED',
-                    message: '网络中断，暂时无法确认照片是否已经完整交给云端。请重新检查状态；如果照片没有完成上传，再重新拍照。当前改写草稿不会丢失。'
+                    message: 'Connection lost. We could not confirm that all photos were uploaded. Check the status again before taking new photos. Your revision drafts are preserved.'
                 });
                 return;
             }
@@ -3132,6 +3232,10 @@
 
     function confirmRevisionScanImport() {
         if (state.busy || state.readOnly) return;
+        if (!revisionScanCanConfirm()) {
+            setStatus('Please confirm every match and check the scanned text first.');
+            return;
+        }
         var scan = revisionScanState();
         var validIds = revisionScanSentences().map(function(sentence, index) { return sentenceId(sentence, index); });
         var duplicateIds = revisionScanDuplicateIds();
@@ -3142,15 +3246,15 @@
             var chosenSentenceId = firstText(candidate.sentence_id);
             var text = normalizedOcrText(candidate.recognized_text).trim();
             if (!chosenSentenceId || validIds.indexOf(chosenSentenceId) < 0) {
-                errors.push('识别项 ' + (index + 1) + ' 还没有选择有效句子。');
+                errors.push('Revision ' + (index + 1) + ' needs a valid original sentence.');
                 return;
             }
             if (duplicateIds.indexOf(chosenSentenceId) >= 0) {
-                errors.push(revisionScanSentenceLabel(chosenSentenceId) + '被重复匹配，请调整识别项。');
+                errors.push(revisionScanSentenceLabel(chosenSentenceId) + ' is matched more than once. Please change one of the matches.');
                 return;
             }
             if (!text) {
-                errors.push('识别项 ' + (index + 1) + ' 没有文字。');
+                errors.push('Revision ' + (index + 1) + ' has no text.');
                 return;
             }
             selected.push({ sentence_id: chosenSentenceId, text: text });
@@ -3177,15 +3281,15 @@
             syncRevisionScanFromComposition(state.current);
             clearLogicalOperation('revision-scan');
             renderLanguage();
-            setStatus('已导入选中的扫描草稿。');
+            setStatus('Your matched revisions have been added to your drafts.');
             openScanSubmitConfirmation();
         }).catch(function(error) {
             if (isNetworkDisconnect(error)) {
                 renderRevisionScanReview();
-                setStatus('网络暂时中断。导入状态尚未确认；请稍后重试，当前改写草稿不会丢失。');
+                setStatus('Connection lost. The import is not yet confirmed. Please retry; your revision drafts are preserved.');
                 return;
             }
-            setStatus(firstText(error && error.message, '扫描草稿导入没有完成，请重试。'));
+            setStatus(firstText(error && error.message, 'The revisions could not be added to your drafts. Please retry.'));
         }).finally(function() {
             setBusy(false);
             updateRevisionScanConfirmState();
@@ -3515,7 +3619,7 @@
         });
         if (!pending.length) {
             clearAcceptedRewriteDrafts(Object.keys(state.rewriteResults).map(function(id) { return state.rewriteResults[id]; }), true);
-            renderCompletion();
+            openCompletedWritingReport();
             return;
         }
         saveRewriteDraftSnapshot();
@@ -3559,34 +3663,29 @@
         }).finally(function() { setBusy(false); });
     }
 
-    function renderCompletion() {
-        destroyAiWaitingExperience();
-        state.screen = 'completed';
-        updateRevisionProgress();
-        stage.innerHTML = '<section class="surface completion-card"><span class="completion-icon">' + icon('check') + '</span><p class="eyebrow">WRITING COMPLETE</p><h2>这次训练完成了。</h2>' +
-            '<p>你的原文、语言观察和改写记录已经保存到 Writing Portfolio。查看过参考句同样算完成，它只是帮助方式的一部分。</p>' +
-            '<div class="hero-actions" style="justify-content:center"><button class="secondary-button" type="button" data-open-current-readonly>查看本篇记录</button><button class="secondary-button" type="button" data-full-rewrite>整篇重写（可选）</button><button class="primary-button" type="button" data-start-new>' + icon('plus') + '开始新作文</button></div></section>';
-        scheduleStageViewportReset();
+    var shownCompletionCheckins = Object.create(null);
+    var pendingCompletionCheckins = Object.create(null);
+    function showWritingCompletionCheckin() {
+        var key = compositionId(state.current) + ':' + (state.current && state.current.revision || 1);
+        if (shownCompletionCheckins[key] || pendingCompletionCheckins[key]) return;
+        if (!state.current || compositionStatus(state.current) !== 'completed') return;
+        if (!window.MrCatTrainingCheckin) return;
+        pendingCompletionCheckins[key] = true;
+        var completedComposition = state.current, completedProfile = state.profile;
+        Promise.resolve().then(function() {
+            if (state.current !== completedComposition) return;
+            return window.MrCatTrainingCheckin.writing(completedComposition, {
+                completed: true, profile: completedProfile,
+                onShown: function() { shownCompletionCheckins[key] = true; }
+            });
+        }).catch(function() {}).finally(function() { delete pendingCompletionCheckins[key]; });
     }
-
-    function startOptionalFullRewrite() {
-        var previous = state.current || {};
-        setBusy(true);
-        renderLoading('Preparing your full rewrite…', 'This optional exercise will be saved as a new composition.');
-        writingCall('createComposition', {
-            title: compositionTitle(previous) + ' · Full rewrite',
-            prompt_text: firstText(previous.prompt_text, state.promptText),
-            assessment_mode: apiMode('language'),
-            source: 'student'
-        }).then(function(result) {
-            resetDraft(result.composition || {});
-            state.assessmentMode = 'language';
-            state.promptText = firstText(previous.prompt_text, state.promptText);
-            state.inputMethod = 'text';
-            setStatus('整篇重写是可选训练；逐句训练已经算完成。');
-            syncCurrentSummary();
-            renderReplacementSource();
-        }).catch(renderFatalAction).finally(function() { setBusy(false); });
+    function openCompletedWritingReport() {
+        destroyAiWaitingExperience();
+        state.readOnly = true;
+        prepareLanguageReview();
+        scheduleStageViewportReset();
+        showWritingCompletionCheckin();
     }
 
     function enterLanguage() {
@@ -3717,6 +3816,7 @@
                 return;
             }
             if (state.assessmentMode === 'standardized' && review) renderStandardized();
+            else if (review && compositionStatus(composition) === 'completed') openCompletedWritingReport();
             else if (review) prepareLanguageReview();
             else renderSourceEntry();
             syncCurrentSummary();
@@ -3725,6 +3825,7 @@
         }).catch(function(error) {
             var code = error && (error.code || error.result && error.result.code) || '';
             if (code === 'COMPOSITION_NOT_FOUND') {
+                state.compositions = state.compositions.filter(function(item) { return compositionId(item) !== id; });
                 state.current = null;
                 state.review = null;
                 syncCompositionLocator('');
@@ -4126,13 +4227,18 @@
 
     function openLeaveConfirmation(action) {
         if (state.leaveDialogOpen) return;
-        state.leaveDialogAction = action === 'discard' ? 'discard' : 'dashboard';
+        state.leaveDialogAction = action === 'delete' ? 'delete' : action === 'discard' ? 'discard' : 'dashboard';
+        state.deleteTargetId = action === 'delete' ? compositionId(state.current) : '';
         state.returnFocus = document.activeElement;
         state.leaveDialogOpen = true;
         var title = leaveConfirmation.querySelector('#leave-confirmation-title');
         var copy = leaveConfirmation.querySelector('#leave-confirmation-copy');
         var confirm = leaveConfirmation.querySelector('button[data-confirm-leave]');
-        if (state.leaveDialogAction === 'discard') {
+        if (state.leaveDialogAction === 'delete') {
+            if (title) title.textContent = 'Delete this report?';
+            if (copy) copy.textContent = '“' + compositionTitle(state.current) + '” 将从你的作文列表中删除，原链接也将无法打开。此操作不能在页面中撤销；已记录的学习记录会保留。';
+            if (confirm) confirm.textContent = 'Delete report';
+        } else if (state.leaveDialogAction === 'discard') {
             if (title) title.textContent = 'Discard this writing?';
             if (copy) copy.textContent = 'This draft will be permanently removed from History.';
             if (confirm) confirm.textContent = 'Discard';
@@ -4151,17 +4257,22 @@
     }
 
     function closeLeaveConfirmation(restoreFocus) {
+        if (state.deletingComposition) return;
         if (!state.leaveDialogOpen) return;
+        var refreshDeletedTarget = state.deleteRequestFailed && state.deleteTargetId;
+        state.deleteRequestFailed = false;
         state.leaveDialogOpen = false;
         leaveConfirmation.hidden = true;
         app.inert = hasBlockingDialogOpen();
         updateOverlayLock();
         if (restoreFocus !== false && state.returnFocus && typeof state.returnFocus.focus === 'function') state.returnFocus.focus();
         state.returnFocus = null;
+        if (refreshDeletedTarget) loadComposition(refreshDeletedTarget);
     }
 
     function confirmLeave() {
         var action = state.leaveDialogAction;
+        if (action === 'delete') { deleteCurrentComposition(); return; }
         closeLeaveConfirmation(false);
         if (action === 'discard') {
             discardDraftAndReturn();
@@ -4171,6 +4282,40 @@
         stopReviewPolling();
         clearWaitingPollSchedule();
         window.location.assign('dashboard.html');
+    }
+
+    function deleteCurrentComposition() {
+        var id = state.deleteTargetId;
+        if (!id || state.deletingComposition) return;
+        state.deletingComposition = true;
+        state.deleteRequestFailed = false;
+        setBusy(true);
+        stopOcrPolling();
+        stopReviewPolling();
+        stopRewritePolling();
+        stopRevisionScanPolling();
+        var confirm = leaveConfirmation.querySelector('[data-confirm-leave]');
+        confirm.textContent = 'Deleting…';
+        confirm.disabled = true;
+        writingCall('deleteComposition', { composition_id: id }).then(function(result) {
+            if (!result.deleted) throw new Error('删除未完成，请重试。');
+            clearAcceptedRewriteDrafts([], true);
+            state.compositions = state.compositions.filter(function(item) { return compositionId(item) !== id; });
+            state.deletingComposition = false;
+            closeLeaveConfirmation(false);
+            returnToTutorHome({ skipEmptyDiscard: true });
+            setStatus('报告已删除。');
+            (state.sidebarOpen ? document.getElementById('history-new-writing') : portfolioToggle).focus({ preventScroll: true });
+        }).catch(function(error) {
+            // Keep the dialog and target for an idempotent retry after uncertainty.
+            state.deleteRequestFailed = true;
+            leaveConfirmation.querySelector('#leave-confirmation-copy').textContent = firstText(error && error.message, '删除失败，请重试。');
+        }).then(function() {
+            state.deletingComposition = false;
+            confirm.disabled = false;
+            confirm.textContent = 'Delete report';
+            setBusy(false);
+        });
     }
 
     function updateSourceState(target) {
@@ -4206,7 +4351,11 @@
             var scanCandidate = revisionScanState().candidates.find(function(candidate) {
                 return candidate.candidate_id === target.getAttribute('data-scan-text');
             });
-            if (scanCandidate) scanCandidate.recognized_text = normalizedOcrText(target.value);
+            if (scanCandidate) {
+                scanCandidate.recognized_text = normalizedOcrText(target.value);
+                scanCandidate.status = 'check';
+                scanCandidate.reviewed = false;
+            }
             updateRevisionScanConfirmState();
         }
         if (target.id === 'ocr-text' || target.closest && target.closest('#ocr-text')) {
@@ -4236,16 +4385,6 @@
         if ((target.id === 'revision-scan-photo' || target.id === 'revision-scan-library') && target.files && target.files.length) {
             addRevisionScanPhotos(Array.prototype.slice.call(target.files));
             target.value = '';
-        }
-        if (target.matches('[data-scan-sentence]')) {
-            var sentenceCandidate = revisionScanState().candidates.find(function(candidate) {
-                return candidate.candidate_id === target.getAttribute('data-scan-sentence');
-            });
-            if (sentenceCandidate) {
-                sentenceCandidate.sentence_id = target.value || null;
-                sentenceCandidate.status = sentenceCandidate.sentence_id ? 'check' : 'unresolved';
-                renderRevisionScanReview();
-            }
         }
     });
 
@@ -4306,10 +4445,10 @@
         else if (button.matches('[data-review-scan-submit]')) closeScanSubmitConfirmation();
         else if (button.matches('[data-confirm-scan-submit]')) confirmScannedRewritesSubmit();
         else if (button.matches('[data-confirm-leave]')) confirmLeave();
+        else if (button.matches('[data-delete-composition]') && !state.busy && state.current) openLeaveConfirmation('delete');
         else if (button.matches('[data-discard-source]')) requestSourceDiscard();
         else if (button.matches('[data-open-history]')) openSidebar();
         else if (button.matches('[data-start-mode]')) startInlineWriting(button.getAttribute('data-start-mode'));
-        else if (button.matches('[data-start-new]')) createNewWriting();
         else if (button.matches('[data-return-home]')) returnToTutorHome();
         else if (button.matches('[data-view-waiting-result]')) {
             var waitingAction = state.waitingResultAction;
@@ -4455,10 +4594,34 @@
             if (state.screen === 'revision-scan-photos') resetRevisionScanState();
             renderLanguage();
         }
+        else if (button.matches('[data-scan-choose],[data-scan-pick],[data-scan-edit],[data-scan-approve]')) {
+            if (state.busy || state.readOnly) return;
+            var action = ['choose', 'pick', 'edit', 'approve'].find(function(name) { return button.hasAttribute('data-scan-' + name); });
+            var candidateId = button.getAttribute('data-scan-' + action);
+            var candidate = revisionScanState().candidates.find(function(item) { return item.candidate_id === candidateId; });
+            if (!candidate) return;
+            if (action === 'choose') candidate.choosing = !candidate.choosing;
+            if (action === 'edit') candidate.editing = !candidate.editing;
+            if (action === 'pick') {
+                var chosen = button.getAttribute('data-scan-target');
+                if (!revisionScanSentences().some(function(sentence, index) { return sentenceId(sentence, index) === chosen; })
+                    || revisionScanState().candidates.some(function(item) { return item !== candidate && item.sentence_id === chosen; })) return;
+                candidate.sentence_id = chosen;
+                candidate.status = 'check';
+                candidate.reviewed = true;
+                candidate.choosing = false;
+            }
+            if (action === 'approve') {
+                if (!candidate.sentence_id || !candidate.recognized_text.trim() || revisionScanDuplicateIds().indexOf(candidate.sentence_id) >= 0) return;
+                candidate.reviewed = true;
+            }
+            renderRevisionScanReview();
+            var row = document.querySelector('[data-scan-candidate-row="' + candidateId + '"]');
+            var focus = row && row.querySelector(candidate.editing ? '[data-scan-text]' : candidate.choosing ? '[data-scan-pick]:not(:disabled)' : '[data-scan-choose]');
+            if (focus) focus.focus({ preventScroll: true });
+        }
         else if (button.matches('[data-confirm-revision-scan]')) confirmRevisionScanImport();
         else if (button.matches('[data-submit-rewrites]')) submitRewrites();
-        else if (button.matches('[data-full-rewrite]')) startOptionalFullRewrite();
-        else if (button.matches('[data-open-current-readonly]')) { state.readOnly = true; prepareLanguageReview(); }
         else if (button.matches('[data-resume-current]')) { if (state.review) state.assessmentMode === 'standardized' ? renderStandardized() : prepareLanguageReview(); else renderSourceEntry(); }
     });
 
@@ -4627,6 +4790,13 @@
         state.waitingAudioContext = null;
         state.waitingAudioOutput = null;
     });
+
+    if (window.ResizeObserver) {
+        var portfolioTitleObserver = new ResizeObserver(measurePortfolioTitles);
+        portfolioTitleObserver.observe(portfolioList);
+    } else {
+        window.addEventListener('resize', measurePortfolioTitles);
+    }
 
     if (currentWritingTitleWindow && window.ResizeObserver) {
         currentWritingTitleResizeObserver = new ResizeObserver(scheduleCurrentWritingTitleOverflow);

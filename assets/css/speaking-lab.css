@@ -1490,3 +1490,12 @@ body .speaking-recording-card .outline-button { display:inline-flex; align-items
 .speaking-retry-dialog .speaking-dialog-actions { justify-content: center; }
 .speaking-retry-dialog .speaking-dialog-actions button { min-width: 160px; min-height: 44px; }
 @media (prefers-reduced-motion: reduce) { .speaking-retry-symbol .speaking-upload-spinner { animation: none; border-top-color: var(--sl-blue); } }
+
+/* IR V5 uses the existing card palette and feedback typography. */
+.speaking-ir-unified-points { list-style: decimal; padding-inline-start: 1.3em; }
+.speaking-ir-thinking-steps { margin: 0; padding-inline-start: 1.3em; color: #415767; font-size: 14px; line-height: 1.9; }
+.speaking-ir-thinking-steps li + li { margin-top: 1rem; }
+.speaking-ir-thinking-steps strong { display: block; margin-bottom: .25rem; }
+.speaking-ir-thinking-steps span { display: block; }
+
+.speaking-ir-feedback-works > p { margin: 0; color: #415767; font-size: 14px; line-height: 1.9; }

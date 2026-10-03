@@ -49,10 +49,12 @@ function stableId(prefix, ...parts) {
 function tokenSummary(events) {
   const rows = Array.isArray(events) ? events : [];
   const sum = (field) => rows.reduce((total, row) => total + (Number.isInteger(row && row[field]) ? row[field] : 0), 0);
+  const nonbillable = (row) => row && row.outcome === "quota_exhausted";
   return {
     call_count: rows.length,
     recorded_call_count: rows.filter((row) => row && row.usage_status === "recorded").length,
-    missing_call_count: rows.filter((row) => !row || row.usage_status !== "recorded").length,
+    nonbillable_call_count: rows.filter(nonbillable).length,
+    missing_call_count: rows.filter((row) => (!row || row.usage_status !== "recorded") && !nonbillable(row)).length,
     input_tokens: sum("input_tokens"),
     output_tokens: sum("output_tokens"),
     total_tokens: sum("total_tokens"),

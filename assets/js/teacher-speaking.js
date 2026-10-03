@@ -6,6 +6,7 @@
     var home = document.getElementById('teacher-speaking-home');
     var resultsPanel = document.getElementById('teacher-speaking-results');
     var list = document.getElementById('teacher-speaking-list');
+    var recentList = document.getElementById('teacher-speaking-recent-list');
     var detail = document.getElementById('teacher-speaking-detail');
     var message = document.getElementById('teacher-speaking-message');
     var voiceprintTargetPanel = document.getElementById('teacher-voiceprint-target');
@@ -463,13 +464,20 @@
         var ready = discussions.filter(function (item) { return item.analysis_status === 'ready'; }).length;
         var working = discussions.filter(function (item) { return ['queued', 'processing'].indexOf(item.analysis_status) !== -1; }).length;
         reportCount.textContent = ready ? ready + ' ready' + (working ? ' · ' + working + ' preparing' : '') : (working ? working + ' preparing' : 'No reports yet');
-        list.innerHTML = discussions.map(function (item) {
-            var status = item.analysis_status === 'ready' ? 'Full report ready' : (['queued', 'processing'].indexOf(item.analysis_status) !== -1 ? 'Preparing report' : item.analysis_status === 'failed' ? 'Analysis interrupted' : 'Recording not analysed');
+        function rowMarkup(item) {
+            var status = item.analysis_status === 'ready' ? 'Ready' : (['queued', 'processing'].indexOf(item.analysis_status) !== -1 ? 'Preparing' : item.analysis_status === 'failed' ? 'Interrupted' : 'Not analysed');
             var participants = Number(item.participant_count || 0);
-            return '<button class="speaking-card" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span><strong>' + esc(item.title) + '</strong><small>' + esc(item.discussion_date || 'No date') + ' · ' + esc(participants) + ' matched participant' + (participants === 1 ? '' : 's') + ' · ' + esc(status) + '</small></span><span class="speaking-pill" data-tone="' + (item.analysis_status === 'ready' ? 'ready' : 'working') + '">' + (item.analysis_status === 'ready' ? 'View report' : 'Open') + '</span></button>';
-        }).join('') || '<div class="speaking-detail-card">No result reports yet. Start with the recording card.</div>';
-        list.querySelectorAll('[data-speaking-teacher-id]').forEach(function (button) {
-            button.addEventListener('click', function () { open(button.getAttribute('data-speaking-teacher-id')); });
+            return '<button class="speaking-card teacher-media-report-row" type="button" data-speaking-teacher-id="' + esc(item.discussion_id) + '"><span class="teacher-media-material-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5ZM14 3v6h5M9 13h6M9 17h4"></path></svg></span><span class="teacher-media-report-copy"><strong>' + esc(item.title || 'Discussion') + '</strong><small>' + esc(item.discussion_date || 'No date') + ' · ' + esc(participants) + ' matched participant' + (participants === 1 ? '' : 's') + '</small></span><span class="speaking-pill" data-tone="' + (item.analysis_status === 'ready' ? 'ready' : 'working') + '">' + status + '</span><span class="teacher-media-chevron" aria-hidden="true">›</span></button>';
+        }
+        [list, recentList].filter(Boolean).forEach(function(container) {
+            var visible = container === recentList ? discussions.slice(0, 3) : discussions;
+            container.innerHTML = visible.map(rowMarkup).join('') || '<div class="speaking-detail-card">No result reports yet. Start with a recording.</div>';
+            container.querySelectorAll('[data-speaking-teacher-id]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    if (teacherCaptureLocked() || captureState === 'ready') { setMessage('Finish this recording or discard it before opening reports.', true); return; }
+                    open(button.getAttribute('data-speaking-teacher-id'));
+                });
+            });
         });
     }
     function refreshDiscussionList() {

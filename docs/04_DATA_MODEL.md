@@ -1,5 +1,14 @@
 # 04 Data Model
 
+## Reconciliation note (2026-10-03)
+
+No collection, permission, production record or billing configuration is changed
+by this local cleanup. Current IR jobs may hold private `ir_feedback_state` and
+`ir_model_result` checkpoints; completion clears them after validated publication.
+The current report schema is `dse-individual-response-v5`; old versions keep
+their version-specific validation/rendering. Checkpoint data never belongs in
+static assets, public source content, or the Teacher AI Usage projection.
+
 ## Chunked Speaking analysis state and diagnostics (2026-09-21, deployed)
 
 While a Group Discussion report is `processing`, `speaking_reports` may contain
@@ -1143,8 +1152,11 @@ Materials store
 speaker, start/end seconds, reviewed text, and word slots. Browser bootstrap
 receives timing, speaker, slot IDs, and punctuation only. Progress stores
 redacted correct-position booleans, effective-check counts, assisted/completed
-flags, replay counts, and monotonic best percentage; exact wrong entries are not
-retained. New assisted states store `reveal_position_version: 2` to distinguish
+flags, replay counts, and monotonic best percentage. A unit state may also store
+bounded `saved_entries` and `saved_marks` only after a server-checked result is
+strictly above 50%; this includes its wrong entries so cross-device resume can
+show the last qualifying state. A result at or below 50% and unchecked browser
+drafts never overwrite it. New assisted states store `reveal_position_version: 2` to distinguish
 preserved grading marks from legacy reveals that synthesized all positions as
 correct. The redacted progress response reports `correct_positions_reliable:
 false` for those legacy states so clients render unknown positions neutrally.
@@ -1161,6 +1173,11 @@ be returned to the browser before answer reveal. `policy_revision` changes when
 a teacher approves a spelling exemption without changing segmentation or
 `content_version`. Existing position arrays remain compatible and Provided
 positions normalize as correct.
+Waveform correction JSON uses `practiceMode` for the selected unit mode and
+one-based `providedWordPositions` for Dictation words. An explicitly supplied
+empty array removes earlier Provided flags; an omitted field retains compatible
+legacy flags. This is a correction rule on the existing private slot fields,
+not a new collection or public answer store.
 
 Intensive spelling requests reuse `answer_disputes` with
 `dispute_type: "intensive_spelling_exemption"` plus `material_id`,
@@ -1225,7 +1242,13 @@ All collections are `ADMINONLY`.
   `pending_revision_scan` is a temporary, owner-scoped reviewable scan result:
   it stores the scan operation ID, Composition revision, ordered result rows,
   mappings, confidence/error codes, and safe timestamps, but is not the live
-  rewrite draft and cannot mark a sentence complete. After an explicit student
+  rewrite draft and cannot mark a sentence complete. Candidate rows may add
+  `match_method: "number" | "text" | null` and up to three
+  `suggested_sentence_ids` from current eligible units. These are deterministic
+  correspondence metadata, not model confidence probabilities. Reference answers
+  and scores are not added to the scan projection. Historical rows without the
+  fields remain readable. Per-card choosing/editing/reviewed flags are ephemeral
+  browser state; the existing final import remains the durable adoption boundary. After an explicit student
   import, the confirmed mapped rows are persisted as `scanned_rewrite_drafts`
   under the same Composition revision. Import is the single explicit adoption
   boundary: every reviewed mapped row replaces the corresponding unfinished browser
@@ -1265,8 +1288,8 @@ All collections are `ADMINONLY`.
   an initial revision-1 draft containing title, prompt, or unsubmitted manuscript
   text. Its lifecycle guard rejects Library-bound work plus every upload, pending
   OCR, active/compatibility job, replacement, review, rewrite, scan, or completion
-  field. This is the only non-empty deletion exception and cannot remove a
-  Composition after server processing has begun.
+  field. This hard-delete action cannot remove a Composition after server processing
+  has begun; submitted reports use the separate tombstone lifecycle above.
 - `writing_photo_uploads`: short-lived private upload audit rows with ownership,
   upload-operation ID, `upload_kind` (`revision_scan` for photographed sentence
   drafts, otherwise original-composition OCR), page order, expected size,
@@ -1300,12 +1323,27 @@ All collections are `ADMINONLY`.
   provider request ID and HTTP status, `usage_status: recorded|missing`, input,
   output, total, cached-input, and reasoning-output Token counts. They never
   contain prompt/manuscript/OCR/feedback text, images, credentials, or endpoint
-  URLs. Missing values remain `null`; the server never estimates them.
-- `writing_teacher_email_events`: metadata-only private delivery outbox. It
-  contains either review-usage metadata or `event_type: model_usage_alert` with
+  URLs. Missing values remain `null`; the server never estimates them. A primary
+  free-tier rejection is recorded with `outcome: quota_exhausted`; every later
+  quota fallback is a separate row with its actual model. Artifact-level
+  `model_metadata` may additionally store safe `primary_model`,
+  `quota_fallback_models`, `quota_fallback_model`, `quota_fallback_index`, and
+  `quota_fallback_used` fields so Plus/Max results can be compared without storing
+  provider bodies or credentials. Token summaries
+  count the rejected boundary under `nonbillable_call_count`; its absent usage
+  is expected and must not generate `PROVIDER_USAGE_MISSING`.
+- `writing_teacher_email_events`: private delivery outbox. New
+  `event_type: writing_report` rows use stable `composition_id + report_phase`
+  (`first|complete`) identity and hold the report snapshot needed to send the
+  exact first or final report: prompt, manuscript, content/language review and
+  completed rewrite results. A first report that still awaits corrections has
+  `completion_watch: true`; the timer clears it after it finds a completed
+  Composition and confirms the final event exists. The same collection holds
+  the private `writing-report-completion-cursor` row (`status: cursor`,
+  `after_id`) used for bounded scans. These rows remain ADMINONLY. Legacy review-usage
+  rows remain metadata-only. `event_type: model_usage_alert` rows contain only
   safe job type, model/stage list, attempt count, aggregate Token counts, and
-  closed alert reasons. It contains no prompt, manuscript, sentence, feedback,
-  or image. Health alerts stay pending when no teacher recipient is enabled.
+  closed alert reasons; health alerts stay pending without a teacher recipient.
 
 New `writing_ai_jobs` rows set `telemetry_version: writing-token-usage-v1`,
 `token_usage_audit_status: pending`, and a sticky

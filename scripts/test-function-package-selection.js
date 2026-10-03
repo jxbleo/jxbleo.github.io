@@ -1,0 +1,20 @@
+"use strict";
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const vm = require("node:vm");
+const code = fs.readFileSync(require.resolve("./package-cloudfunctions"), "utf8");
+const start = code.indexOf("function changedFunctions(");
+const end = code.indexOf("\nfunction selectFunctions(", start);
+assert(start >= 0 && end > start);
+let status = "";
+const context = vm.createContext({ run: () => ({ status: 0, stdout: status }) });
+vm.runInContext(code.slice(start, end), context);
+const names = ["speakingAiWorker", "speakingLab", "writingTutor"];
+function selected(value) { status = value; return Array.from(context.changedFunctions(names)); }
+assert.deepEqual(selected(""), []);
+assert.deepEqual(selected(" M cloudfunctions/speakingLab/index.js\n"), ["speakingLab"]);
+assert.deepEqual(selected("?? cloudfunctions/_shared/new-policy.js\n"), names);
+assert.deepEqual(selected(" D cloudfunctions/_shared/old-policy.js\n"), names);
+assert.deepEqual(selected(" M cloudfunctions/writingTutor/index.js\n M cloudfunctions/_shared/policy.js\n"), names);
+assert.deepEqual(selected("?? cloudfunctions/not-a-function/readme.md\n"), []);
+console.log("Function selection covers shared-only changes without deployment.");

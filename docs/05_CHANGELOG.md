@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-03 — Reconcile source and reduce local clutter
+
+- Reconciled public static assets with the dated live snapshot while retaining
+  main's completed retirements and public build allowlist. Preserved latest
+  Writing, Speaking, receipts, BBC editing and Listening correction sources.
+- Removed reintroduced unused helpers and completed report/STAR migration routes;
+  retained recurring repair tools, authorization guards and historical reports.
+- Archived completed QA history and verified merged workspaces locally; retained
+  private sources, unmerged work and the original unfinished rebase.
+- Updated stale test fixtures for published UI and current async jobs. Shared-only
+  function changes now select all packages conservatively, avoiding a silent miss.
+- No production deployment, content import, data repair or model/billing change.
+  Validation and deployment limitations are recorded in `10_DEPLOYMENT.md`.
+
 ## 2026-09-25 — Restore Teacher Listening Edit page
 
 - Added the existing Teacher Listening waveform corrector HTML to the static

@@ -16,3 +16,10 @@ node_modules/
 __pycache__/
 *.py[cod]
 .DS_Store
+
+# Local dependencies, previews and generated workspaces
+/node_modules
+/tmp/
+/output/
+/.local/
+/.release-worktrees/

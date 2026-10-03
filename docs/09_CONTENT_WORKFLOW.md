@@ -1,5 +1,10 @@
 # 09 Content Workflow
 
+## 2026-09-30 — BBC live corrections
+
+Teacher webpage edits are authoritative CloudBase overlays: public question fields in `sets.bbc_question_overrides`, explanations in `grading_keys.explanations`. Static JSON/PDF worksheets do not change automatically. Before a later source reimport or worksheet regeneration, reconcile the live overlay and private grading history with the owner source; never overwrite teacher revisions with stale static content. Keep explanations out of public JSON. A question edit preserves IDs and scoring structure; substantial new exercises still use the existing edition workflow.
+
+
 > This document explains how teacher materials become website content.
 > Update it when content import rules, source locations, IDs, catalog behavior,
 > or public/private answer boundaries change.
@@ -132,6 +137,15 @@ CloudBase console import of the JSON Lines files remains a fallback.
 Never commit `.cloudbase-private/`.
 
 ### Intensive Listening import
+
+2026-10-02 intake: the owner regenerated six Downloads JSON files with original
+millisecond timestamps for BBC 260820, 260827, 260903, 260910, 260917 and 260924.
+All 809 segment boundaries and texts are preserved exactly; 690 segments are
+Dictation and 119 reviewed ident/greeting/promotion/closing segments are Skip.
+The earlier seconds-only preparation was superseded and never imported live.
+Portable JSON and readable Markdown backups are in the established iCloud BBC
+folders. Timeline correction remains an owner task in Teacher Listening.
+
 
 The editable/backup master lives outside the public repository under the
 owner's iCloud `猫先生英语/BBC/Scripts JSON` folder; matching readable Markdown
@@ -494,6 +508,20 @@ both public runtime metadata and content metadata and match it to the private
 accepted-answer correction may use the existing upward-only regrade path.
 
 ### Intensive Listening source intake
+
+For an already published material, Teacher Listening now links to the waveform
+corrector. Select the target material and either open its live transcript or
+choose the matching audio and a timestamped JSON file in the browser. Review
+sentence text, speakers, boundaries and any `practiceMode` values in the JSON;
+then use Update. The browser sends corrected rows to the teacher-only backend,
+which derives private answer slots and publishes a new material revision. The
+progress dialog becomes closable only after the server confirms publication; Update then
+downloads a corrected JSON copy for the owner's portable backup workflow. If
+Export is chosen before Update, Save and Export publishes first, while Export
+without saving downloads an explicitly named unpublished draft without changing
+the live material.
+New materials still require the source importer or Teacher material authoring
+with a hosted media path. A pending Teacher draft must be resolved first.
 
 Run npm run import-intensive-listening with a timestamped JSON transcript.
 The importer accepts source family/label/series/date, source set, and one

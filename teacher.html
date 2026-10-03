@@ -16,8 +16,9 @@
     <link rel="stylesheet" href="assets/css/speaking-lab.css?v=20260922-transcript-font-1">
     <link rel="stylesheet" href="assets/css/speaking-discussion-recorder.css?v=20260913-speaking-center-1">
     <link rel="stylesheet" href="assets/css/voiceprint-success.css?v=20260912-1">
-    <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260924-edit-json-1">
+    <link rel="stylesheet" href="assets/css/teacher-listening.css?v=20260925-sort-layout-2">
     <link rel="stylesheet" href="assets/css/teacher-ai-usage.css?v=20260916-1">
+    <link rel="stylesheet" href="assets/css/teacher-media-workspace.css?v=20260928-media-1">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
@@ -359,14 +360,15 @@
         </section>
 
                 <section class="dashboard-view" id="view-listening" hidden>
-                    <section class="teacher-listening-main" aria-labelledby="teacher-listening-title">
-                        <header class="teacher-listening-heading"><div><p class="eyebrow accent">TEACHER WORKSPACE</p><h1 id="teacher-listening-title">Listening</h1><p>Review one canonical transcript and use its units for Dictation.</p></div><div class="teacher-listening-heading-actions"><a class="outline-button" href="teacher-listening-corrector.html">Waveform corrector · Upload JSON</a><button class="primary-button" id="teacher-listening-new" type="button">New material</button></div></header>
+                    <section class="teacher-listening-main" aria-labelledby="teacher-listening-heading">
+                        <header class="teacher-listening-heading teacher-media-heading" id="teacher-listening-home-heading"><div><h1 id="teacher-listening-heading">Listening</h1><p>A quiet space to shape better listening.</p></div><div class="teacher-listening-heading-actions"><button class="primary-button" id="teacher-listening-new" type="button">New material</button></div></header>
                         <p class="teacher-listening-message" id="teacher-listening-message" role="status" aria-live="polite"></p>
                         <div class="teacher-listening-layout">
-                            <section class="teacher-listening-material-list" id="teacher-listening-material-list" aria-label="Listening materials"><div class="empty-card">Loading Listening materials…</div></section>
+                            <section class="teacher-listening-material-list" id="teacher-listening-library" aria-label="Listening materials"><div class="teacher-media-tools"><label class="teacher-media-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input type="search" id="teacher-listening-search" placeholder="Search materials" aria-label="Search Listening materials" autocomplete="off"></label><div class="library-tab-bar teacher-listening-sort-bar" role="group" aria-label="Sort Listening materials"><button class="library-tab-btn active" type="button" data-listening-sort="updated" aria-pressed="true" title="Most recently updated first">Updated</button><button class="library-tab-btn" type="button" data-listening-sort="uploaded" aria-pressed="false" title="Most recently uploaded first">Uploaded</button></div></div><div class="teacher-media-list-label"><span id="teacher-listening-count" aria-live="polite">YOUR MATERIALS</span><span>STATUS</span></div><div class="teacher-listening-material-cards" id="teacher-listening-material-list"><div class="empty-card">Loading Listening materials…</div></div><footer class="teacher-media-list-footer"><span>Private teaching materials</span><a href="teacher-listening-corrector.html">Open waveform corrector ↗</a></footer></section>
                             <section class="teacher-listening-editor" id="teacher-listening-editor" hidden aria-labelledby="teacher-listening-editor-title">
-                                <div class="teacher-listening-editor-head"><div><p class="eyebrow accent">MATERIAL EDITOR</p><h2 id="teacher-listening-editor-title">New material</h2></div><span class="teacher-listening-status" id="teacher-listening-status">Draft</span></div>
-                                <div class="teacher-listening-editor-tabs" role="tablist" aria-label="Listening editor sections"><button class="is-active" type="button" data-listening-editor-tab="common" role="tab">Details</button><button type="button" data-listening-editor-tab="dictation" role="tab">Transcript &amp; Units</button></div>
+                                <button class="teacher-media-back" id="teacher-listening-back" type="button">← All materials</button>
+                                <div class="teacher-listening-editor-head"><div><h2 id="teacher-listening-editor-title" tabindex="-1">New material</h2></div><span class="teacher-listening-status" id="teacher-listening-status">Draft</span></div>
+                                <div class="teacher-listening-editor-tabs" role="tablist" aria-label="Listening editor sections"><button class="is-active" type="button" data-listening-editor-tab="common" role="tab" aria-selected="true">Details</button><button type="button" data-listening-editor-tab="dictation" role="tab" aria-selected="false">Transcript &amp; Units</button></div>
                                 <div class="teacher-listening-editor-panel is-active" data-listening-editor-panel="common"><div class="teacher-listening-fields"><label>Material ID<input id="teacher-listening-id" placeholder="IL-BBC-260905" autocomplete="off"></label><label>Title<input id="teacher-listening-title" placeholder="A focused listening lesson"></label><label>Source label<input id="teacher-listening-source" placeholder="BBC"></label><label>Series label<input id="teacher-listening-series" placeholder="BBC 6 Minute English"></label><label>Media type<select id="teacher-listening-media-kind"><option value="audio">Audio</option><option value="video">Video</option></select></label><label>Audio or video URL<input id="teacher-listening-media" placeholder="assets/audio/example.mp3" inputmode="url"></label><label>Content revision<input id="teacher-listening-revision" value="1"></label></div></div>
                                 <div class="teacher-listening-editor-panel" data-listening-editor-panel="dictation" hidden><div class="teacher-listening-track-head"><div><strong>Canonical transcript &amp; units</strong><p>Edit the reviewed transcript and timing. Dictation answer slots stay private.</p></div><div class="teacher-listening-track-tools"><label class="teacher-listening-track-toggle"><input id="teacher-listening-dictation-enabled" type="checkbox" data-listening-track-enabled="dictation" checked><span>Dictation enabled</span></label><button class="outline-button" type="button" data-listening-add-segment="dictation">Add unit</button></div></div><div class="teacher-listening-segment-list" id="teacher-listening-dictation-rows"></div><textarea id="teacher-listening-dictation" hidden></textarea></div>
                                 <div class="teacher-listening-editor-actions"><a class="outline-button" id="teacher-listening-corrector-link" href="teacher-listening-corrector.html">Edit waveform</a><button class="outline-button" id="teacher-listening-validate" type="button">Validate</button><button class="outline-button" id="teacher-listening-preview" type="button">Preview</button><button class="outline-button teacher-listening-hide" id="teacher-listening-hide" type="button" hidden>Hide</button><button class="primary-button" id="teacher-listening-save" type="button">Save draft</button><button class="primary-button" id="teacher-listening-publish" type="button">Publish</button></div>
@@ -406,9 +408,10 @@
 
                 <section class="dashboard-view" id="view-speaking" hidden>
                     <section class="speaking-lab-main teacher-speaking-main">
-                        <div class="teacher-speaking-entry-actions"><a class="outline-button" href="ielts-speaking-lab.html?v=20260915-ielts-speaking-1">IELTS Speaking Lab · Student reports</a></div>
+                        <header class="teacher-media-heading teacher-speaking-heading"><div><h1>Speaking</h1><p>Every conversation is a step forward.</p></div><a class="teacher-media-link" href="ielts-speaking-lab.html?v=20260915-ielts-speaking-1">IELTS Speaking ↗</a></header>
                         <section class="teacher-speaking-home" id="teacher-speaking-home" aria-label="Speaking actions">
                             <article class="teacher-speaking-entry-card teacher-speaking-record-card">
+                                <div class="teacher-speaking-record-form"><h2>Start a new discussion</h2><p>Choose a set. Bring the conversation to life.</p>
                                 <div class="teacher-speaking-filters">
                                     <label class="teacher-speaking-topic-field" for="teacher-speaking-year"><span>Year</span><span class="teacher-speaking-select"><select id="teacher-speaking-year"><option value="">All years</option></select><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></span></label>
                                     <div class="teacher-speaking-topic-field"><span id="teacher-speaking-set-label">Set</span><button class="teacher-speaking-set-trigger" id="teacher-speaking-topic" type="button" value="" aria-haspopup="dialog" aria-expanded="false" aria-controls="teacher-speaking-set-picker" aria-labelledby="teacher-speaking-set-label teacher-speaking-topic-label" disabled><svg class="teacher-speaking-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><span id="teacher-speaking-topic-label">Loading sets…</span><svg class="teacher-speaking-select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"></path></svg></button></div>
@@ -417,20 +420,19 @@
                                     <button class="outline-button teacher-speaking-file-button" id="teacher-speaking-file-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path><path d="M3 10h18"></path></svg><span>Choose audio</span></button>
                                     <input id="teacher-speaking-audio-file" type="file" accept="audio/*" hidden>
                                     <button class="teacher-speaking-record-button" id="teacher-speaking-record" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"></path></svg><span id="teacher-speaking-record-label">Record</span></button>
-                                </div>
+                                </div></div>
+                                <div class="teacher-speaking-record-art" aria-hidden="true"><div><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"></path></svg></div></div>
                             </article>
-                            <button class="teacher-speaking-entry-card teacher-speaking-results-card" id="teacher-speaking-open-results" type="button">
-                                <span class="teacher-speaking-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 3.5h9l3 3v14H6z"></path><path d="M15 3.5v4h3M9 11h6M9 14.5h6M9 18h4"></path></svg></span>
-                                <span class="teacher-speaking-entry-copy"><strong>View existing reports</strong></span>
-                                <span class="teacher-speaking-report-count" id="teacher-speaking-report-count">Loading…</span>
-                                <span class="teacher-speaking-entry-arrow" aria-hidden="true">&#8594;</span>
-                            </button>
+                            <section class="teacher-speaking-recent" aria-labelledby="teacher-speaking-recent-title">
+                                <header class="teacher-media-section-heading"><div><h2 id="teacher-speaking-recent-title">Recent reports</h2><p id="teacher-speaking-report-count" aria-live="polite">Loading reports…</p></div><button class="teacher-media-link" id="teacher-speaking-open-results" type="button">View all →</button></header>
+                                <div id="teacher-speaking-recent-list" class="speaking-list"><div class="speaking-detail-card">Loading result reports…</div></div>
+                            </section>
                         </section>
                         <p class="speaking-banner" id="teacher-speaking-message" role="status" aria-live="polite"></p>
                         <section class="teacher-speaking-results" id="teacher-speaking-results" hidden aria-labelledby="teacher-speaking-results-title">
                             <header>
                                 <button class="outline-button" id="teacher-speaking-results-back" type="button">&#8592; Speaking</button>
-                                <div><p class="eyebrow accent">RESULT REPORTS</p><h2 id="teacher-speaking-results-title">Existing reports</h2></div>
+                                <div><h2 id="teacher-speaking-results-title" tabindex="-1">All reports</h2></div>
                             </header>
                             <section class="speaking-list" id="teacher-speaking-list"><div class="speaking-detail-card">Loading result reports…</div></section>
                         </section>
@@ -531,12 +533,12 @@
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
     <script src="assets/js/teacher-ai-usage.js?v=20260921-1"></script>
     <script src="assets/js/teacher.js?v=20260922-1"></script>
-    <script src="assets/js/teacher-listening.js?v=20260924-edit-json-1"></script>
+    <script src="assets/js/teacher-listening.js?v=20260928-media-1"></script>
     <script src="assets/js/voiceprint-success.js?v=20260912-1"></script>
     <script src="assets/js/voiceprint-recorder.js?v=20260827-2"></script>
     <script src="assets/js/screen-wake-lock.js?v=20260913-speaking-wake-lock-1"></script>
     <script src="assets/js/speaking-recorder.js?v=20260913-speaking-upload-files-1"></script>
-    <script src="assets/js/teacher-speaking.js?v=20260913-discussion-ring-1"></script>
+    <script src="assets/js/teacher-speaking.js?v=20260928-media-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260830-3"></script>
 </body>
 </html>

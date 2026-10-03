@@ -1,0 +1,46 @@
+/* Screenshot-friendly training receipt. All styles are scoped to the native dialog. */
+.mrcat-checkin{position:fixed;inset:0;margin:auto;border:0;padding:16px;width:min(410px,100vw);max-width:100vw;max-height:100dvh;background:transparent;color:#1e302c;overflow:auto;font:16px/1.45 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;box-sizing:border-box}
+.mrcat-checkin::backdrop{background:#102f2b86;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.mrcat-checkin *{box-sizing:border-box}.mrcat-checkin [hidden]{display:none!important}
+.mrcat-checkin .dialog-stack{display:flex;flex-direction:column;align-items:center;gap:14px}
+.mrcat-checkin .checkin-card{--accent-dark:#245e4e;width:100%;padding:22px 22px 18px;border:1px solid #ffffffd9;border-radius:29px;background:#fcfefd;box-shadow:0 14px 32px #0a302a32;font-family:'Avenir Next','PingFang SC',sans-serif}
+.mrcat-checkin .checkin-card[data-tone=muted]{--accent-dark:#4b5a55}
+.mrcat-checkin .identity{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:19px}
+.mrcat-checkin .identity-details{min-width:0}.mrcat-checkin .identity-name{margin:0;font-size:20px;font-weight:500;letter-spacing:-.015em;line-height:1.3;overflow-wrap:anywhere}
+.mrcat-checkin .identity-name span{margin-left:5px;color:#63756e;font-size:13px;font-weight:400}
+.mrcat-checkin .date-value{display:block;margin-top:5px;font-size:9px;color:#829087;white-space:nowrap}
+.mrcat-checkin .checkin-status{flex:none;margin-top:3px;padding:5px 8px;border-radius:8px;font-size:10.4px;line-height:1.3;font-weight:500;white-space:nowrap;background:#d8efe8;color:#245e4e}
+.mrcat-checkin [data-tone=muted] .checkin-status{background:#edf1ef;color:#60716a}.mrcat-checkin .checkin-status[data-state=perfect]{background:#fff1c9;color:#956711}
+.mrcat-checkin .card-rule{height:1px;background:#e8eeea}
+.mrcat-checkin .result-panel{margin:14px 0 16px;overflow:hidden;border:1px solid #c7e2d9;border-radius:21px;background:#f4fbf8}
+.mrcat-checkin .result-heading{padding:8px 16px;background:#d8efe8;border-bottom:1px solid #c7e2d9}
+.mrcat-checkin [data-tone=muted] .result-panel{background:#f3f5f4;border-color:#d9e0dc}.mrcat-checkin [data-tone=muted] .result-heading{background:#e7ece9;border-color:#d9e0dc}
+.mrcat-checkin .task-title{margin:0;text-align:center;text-wrap:balance;font:400 20px/1.25 'Times New Roman',Times,'Songti SC',serif;color:var(--accent-dark);overflow-wrap:anywhere;letter-spacing:0}
+.mrcat-checkin .result-content{padding:18px}.mrcat-checkin .result-summary{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mrcat-checkin .result-main{min-width:0;margin:0;color:var(--accent-dark);font:600 59.2px/1 -apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.mrcat-checkin .result-main.is-text{font:500 23px/1.18 'Avenir Next','PingFang SC',sans-serif;letter-spacing:-.04em}
+.mrcat-checkin .result-decoration{display:grid;place-items:center;width:60px;height:64px;flex:none}
+.mrcat-checkin .celebration-popper{font:48px/1 'Apple Color Emoji','Segoe UI Emoji',sans-serif}
+.mrcat-checkin .result-decoration.is-medal{width:88px;height:auto}.mrcat-checkin .completion-medal svg{display:block;width:88px;height:98px;filter:drop-shadow(0 3px 3px #30493922)}
+.mrcat-checkin .result-note{margin:8px 0 0;color:#62786f;font-size:11.52px;line-height:1.38}
+.mrcat-checkin .achievement-count{margin:0 4px;color:var(--accent-dark);font-size:20px;font-weight:650;line-height:1;font-variant-numeric:tabular-nums}
+.mrcat-checkin .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif}
+.mrcat-checkin .metric{min-width:0;padding:11px 12px;border:1px solid #dce6df;border-radius:13px;background:#fff}
+.mrcat-checkin .metric dt{margin:0;font-size:12px;font-weight:400;letter-spacing:0;color:#6d7871}
+.mrcat-checkin .metric dd{margin:7px 0 0;color:var(--accent-dark);font-size:15px;font-weight:500;line-height:1.4;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.mrcat-checkin .metric.is-wide{grid-column:span 2}.mrcat-checkin .is-groups dt{text-align:center}
+.mrcat-checkin .metric .group-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:20px;gap:3px;margin-top:6px}
+.mrcat-checkin .group-cell{display:grid;place-items:center;border:1px solid #d0e5db;border-radius:5px;background:#e8f5ee;color:var(--accent-dark);font-size:10.4px;font-weight:600}
+.mrcat-checkin .card-footer{margin-top:19px;padding-top:12px;border-top:1px solid #e2ebe6}
+.mrcat-checkin .card-brand{display:grid;grid-template-columns:20px auto 1fr;align-items:center;gap:5px}
+.mrcat-checkin .brand-mark{width:20px;height:20px;object-fit:contain;border-radius:5px}
+.mrcat-checkin .brand-caption{color:#263e34;font:800 9px/1.2 'Yuanti SC','Hiragino Maru Gothic ProN','Arial Rounded MT Bold','PingFang SC',sans-serif;letter-spacing:.035em;white-space:nowrap}
+.mrcat-checkin .brand-website{justify-self:end;color:#71847b;font-size:9px;font-weight:500;white-space:nowrap}
+.mrcat-checkin .close-button{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:1px solid #ffffff7d;border-radius:50%;background:#ffffff24;color:#fff;cursor:pointer;box-shadow:0 5px 18px #0c30272b}
+.mrcat-checkin .close-button svg{width:20px;height:20px}.mrcat-checkin .close-button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.mrcat-checkin .gold-star{display:block;width:60px;height:64px;filter:drop-shadow(0 4px 3px #bd7b2238)}
+.mrcat-checkin .star-sheen{animation:mrcat-checkin-shine 3.6s ease-in-out infinite}
+@keyframes mrcat-checkin-shine{0%,18%{transform:translateX(-70px);opacity:0}24%{opacity:.8}52%,100%{transform:translateX(125px);opacity:0}}
+@media(max-width:410px){.mrcat-checkin .checkin-card{padding:18px 18px 15px;border-radius:24px}.mrcat-checkin .identity{margin-bottom:14px}.mrcat-checkin .result-content{padding:15px}.mrcat-checkin .result-main{font-size:52px}.mrcat-checkin .metric{padding:8px 10px}.mrcat-checkin .card-footer{margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.mrcat-checkin .star-sheen{display:none}}
+@media(prefers-reduced-transparency:reduce){.mrcat-checkin::backdrop{background:#183a36cf;backdrop-filter:none}}

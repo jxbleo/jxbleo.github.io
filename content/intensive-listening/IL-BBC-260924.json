@@ -1,0 +1,24 @@
+{
+  "id": "IL-BBC-260924",
+  "sectionId": "intensive-listening",
+  "title": "Why Do We Itch?",
+  "href": "intensive-listening.html?set=IL-BBC-260924",
+  "publishedOn": "2026-09-24",
+  "topic": "BBC 6 Minute English",
+  "tags": [
+    "Listening",
+    "BBC"
+  ],
+  "note": "124 listening segments",
+  "sourceFamily": "bbc",
+  "sourceLabel": "BBC",
+  "seriesLabel": "BBC 6 Minute English",
+  "sourceSetId": "BBC-260924",
+  "linkedPracticeSetId": "BBC-260924",
+  "dictationUnitCount": 124,
+  "sequenceUnitCount": 135,
+  "schemaVersion": 1,
+  "trackCount": 1,
+  "catalogVisible": false,
+  "visible": true
+}

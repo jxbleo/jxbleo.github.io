@@ -39,7 +39,7 @@ function harness(options = {}) {
   }
   function schedule(fn, delay, repeat) { const id = ++sequence; timers.set(id, { fn, at: now + delay, delay, repeat }); return id; }
   const context = vm.createContext({ console, Blob, MediaRecorder: Recorder, performance: { now: () => now },
-    window: { MediaRecorder: Recorder, AudioContext, confirm: () => true, setInterval: (fn, ms) => schedule(fn, ms, true), clearInterval: id => timers.delete(id), setTimeout: (fn, ms) => schedule(fn, ms, false), clearTimeout: id => timers.delete(id) },
+    window: { MrCatTrainingCheckin: { speaking() {} }, MediaRecorder: Recorder, AudioContext, confirm: () => true, setInterval: (fn, ms) => schedule(fn, ms, true), clearInterval: id => timers.delete(id), setTimeout: (fn, ms) => schedule(fn, ms, false), clearTimeout: id => timers.delete(id) },
     document: { getElementById: node, createElement: () => node('probe') },
     navigator: { mediaDevices: { getUserMedia: () => options.pending ? new Promise(resolve => { resolvePermission = resolve; }) : options.denied ? Promise.reject({ name: 'NotAllowedError' }) : Promise.resolve(stream) } },
     URL: { createObjectURL: () => 'blob:fixture', revokeObjectURL() {} },

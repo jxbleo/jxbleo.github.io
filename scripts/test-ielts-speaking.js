@@ -55,11 +55,17 @@ async function upload(response, seconds) {
   await ok("finishIndividualResponseAudioUpload", payload); await ok("finishIndividualResponseAudioUpload", payload);
   return started;
 }
-async function processResponse(response) {
+async function processResponse(response, allowFailure = false) {
   await ok("startIndividualResponseAnalysis", { response_session_id: response.response_session_id });
   const job = tables.speaking_ai_jobs.find(row => row.response_session_id === response.response_session_id);
-  await ok("processQueuedJob", { job_id: job.job_id, dispatch_token: job.dispatch_token });
-  return call("processQueuedJob", { job_id: job.job_id, dispatch_token: job.dispatch_token });
+  let result;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    result = allowFailure
+      ? await call("processQueuedJob", { job_id: job.job_id, dispatch_token: job.dispatch_token })
+      : await ok("processQueuedJob", { job_id: job.job_id, dispatch_token: job.dispatch_token });
+    if (result.status === "succeeded" || result.status === "failed") return result;
+  }
+  return result;
 }
 async function main() {
   const audio = { mime_type: "audio/webm", size_bytes: 100, duration_seconds: 120 };
@@ -107,7 +113,7 @@ async function main() {
   const p3 = await create("p3_01"); assert.equal(p3.duration_limit_seconds, 90);
   assert.equal((await call("startIndividualResponseAudioUpload", { response_session_id: p3.response_session_id, operation_id: "long", mime_type: "audio/webm", size_bytes: 100, duration_seconds: 120 })).code, "INDIVIDUAL_RESPONSE_AUDIO_TOO_LONG");
   await upload(p3, 90); transcriptionDuration = 90000; await processResponse(p3); assert.equal(tables.speaking_reports.length, 2, "independent responses never collide");
-  const forgedDuration = await create("p3_02"); await upload(forgedDuration, 90); transcriptionDuration = 150000; const longResult = await processResponse(forgedDuration); assert.notEqual(longResult.status, "succeeded"); assert.equal(modelCalls, 2, "provider measured overlength is rejected before scoring");
+  const forgedDuration = await create("p3_02"); await upload(forgedDuration, 90); transcriptionDuration = 150000; const longResult = await processResponse(forgedDuration, true); assert.notEqual(longResult.status, "succeeded"); assert.equal(modelCalls, 2, "provider measured overlength is rejected before scoring");
   assert.equal(tables.teacher_attempt_email_events.length, 2, "Part 2 and Part 3 notify independently; failed analysis never notifies");
   assert.equal(new Set(tables.teacher_attempt_email_events.map(event => event.report_id)).size, 2);
   tables.ielts_speaking_sets[0].part_2.text = "Changed source"; assert.equal((await ok("getIeltsResponse", { response_session_id: response.response_session_id })).response.question_snapshot.text, topic.part_2.text);

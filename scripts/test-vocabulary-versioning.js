@@ -88,7 +88,7 @@ for (const [label, page] of [["Vocabulary", vocabularyPage], ["BBC", bbcPage]]) 
 }
 assert.match(
   vocabularyPage,
-  /document\.body\.appendChild\(overlay\);\s*playResultSound\(state\);/,
+  /function showResultOverlay\(response\)[\s\S]*?MrCatTrainingCheckin\.score\([\s\S]*?playResultSound\(response\.passed \? 'passed' : 'failed'\);/,
   "Vocabulary must play its result sound when the result dialog appears"
 );
 assert.match(

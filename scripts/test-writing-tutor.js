@@ -155,12 +155,12 @@ check("Writing toolbar mirrors the wider Speaking Lab glass frame", () => {
     "phone Writing toolbar must not flatten into a full-bleed strip");
 });
 
-check("the writing sidebar owns plus and title-edit actions without duplicating Home", () => {
+check("the writing sidebar owns the plus action without duplicating Home", () => {
   const page = read(pagePath);
   const client = read(clientPath);
   const sidebar = /<aside\b[^>]*id=["']portfolio-sidebar["'][^>]*>([\s\S]*?)<\/aside>/.exec(page);
   assert(sidebar, "missing History drawer");
-  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-new-writing"', "M12 5v14M5 12h14", 'id="sidebar-title-edit"', 'aria-pressed="false"'],
+  requireEvery(sidebar[1], ["sidebar-actions", 'id="history-new-writing"', "M12 5v14M5 12h14"],
     "writing sidebar navigation actions");
   assert(!/history-home|>Home<|sidebar-home-action/.test(sidebar[1]),
     "the sidebar must not duplicate the toolbar Back hierarchy with Home");
@@ -175,8 +175,8 @@ check("the writing sidebar groups unfinished work before newest completed work",
     "writing sidebar grouping and ordering");
   assert(renderSource.indexOf("portfolioGroupHtml('Continue'") < renderSource.indexOf("portfolioGroupHtml('Completed'"),
     "Continue must appear before Completed");
-  assert(!/overall_score|statusLabel|modeLabel|mini-badge|portfolio-title-edit/.test(renderSource),
-    "sidebar rows must contain only writing titles");
+  requireEvery(renderSource, ["portfolioState", "portfolioRingHtml", "portfolio-title-window", "portfolio-title-track"],
+    "sidebar rows show persisted revision counts and a completed checkmark");
 });
 
 const publicActions = [
@@ -423,7 +423,7 @@ check("sidebar edit mode shakes titles and saves the selected title", () => {
 check("Writing main area is a focused new-writing surface while saved work stays in the sidebar", () => {
   const client = read(clientPath);
   const styles = read(stylePath);
-  const welcome = functionSource(client, "renderWelcome", "showWelcomeToolbar");
+  const welcome = functionSource(client, "renderWelcome", "compactQuota");
   requireEvery(welcome, [
     "Polishing", "Grammar &amp; Usage", "Brainstorming", "Ideas &amp; Structure", "homeComposerHtml", "writing-home-start",
   ], "Writing home workspace");
@@ -483,7 +483,7 @@ check("Writing mode cards toggle the inline composer without clearing local inpu
     "collapsing the composer must not clear entered text");
   assert(!/savePendingHomeComposer|restorePendingHomeComposer/.test(startClient),
     "collapsing must retain values only in current-page memory, not persistent browser storage");
-  assert(/aria-expanded=/.test(functionSource(client, "renderWelcome", "showWelcomeToolbar")),
+  assert(/aria-expanded=/.test(functionSource(client, "renderWelcome", "compactQuota")),
     "mode cards must expose their expansion state accessibly");
 });
 
@@ -1430,12 +1430,11 @@ check("Sentence Revision exposes an accessible photographed-draft import flow", 
   assert(/@media\s*\(max-width:\s*760px\)[\s\S]*\.batch-actions\s*\{[^}]*flex-direction\s*:\s*row/is.test(styles),
     "phone actions must keep the camera to the left of Submit");
   requireEvery(styles, [
-    ".revision-scan-surface", ".revision-scan-target", ".revision-scan-target-number",
-    ".revision-scan-recognized", ".revision-scan-confidence", "#fca5a5", "#fef2f2",
+    ".revision-scan-surface", ".revision-scan-target", ".revision-scan-connection",
+    ".revision-scan-recognized", ".revision-scan-confidence", ".revision-scan-option",
   ], "accessible Review Scan styling");
   requireEvery(styles, [
-    ".revision-scan-confidence.is-high", ".revision-scan-confidence.is-medium",
-    ".revision-scan-confidence.is-low", "width: 13px", "height: 13px",
+    ".revision-scan-ocr-note", "width: 16px", "height: 16px",
   ], "compact Review Scan confidence markers");
 });
 
@@ -1490,7 +1489,7 @@ check("full-screen Writing transitions clear stale mobile scroll positions", () 
     ["renderOcr", "saveAndEvaluate"],
     ["renderStandardized", "bulletList"],
     ["renderRevisionScanPhotoSelection", "revisionScanCandidateHtml"],
-    ["renderCompletion", "startOptionalFullRewrite"],
+    ["openCompletedWritingReport", "enterLanguage"],
   ].forEach(([start, end]) => {
     assert(functionSource(client, start, end).includes("scheduleStageViewportReset"),
       `${start} must reset the viewport after replacing the full stage`);
@@ -1500,14 +1499,25 @@ check("full-screen Writing transitions clear stale mobile scroll positions", () 
     "language screen transition-only viewport reset");
 });
 
-check("Review Scan keeps only mapping cards and imports their edited scan text", () => {
+check("Writing completion leaves the readonly report underneath the shared receipt", () => {
+  const client = read(clientPath);
+  const styles = read("assets/css/ai-tutor.css");
+  ["renderCompletion", "startOptionalFullRewrite", "completion-card", "completion-icon",
+    "WRITING COMPLETE", "这次训练完成了。", "data-full-rewrite", "data-open-current-readonly", "data-start-new"]
+    .forEach((removed) => assert(!client.includes(removed) && !styles.includes(removed),
+      `retired completion page must not retain ${removed}`));
+  const handoff = functionSource(client, "openCompletedWritingReport", "enterLanguage");
+  requireEvery(handoff, ["state.readOnly = true", "prepareLanguageReview()", "showWritingCompletionCheckin()"], "readonly completion handoff");
+});
+
+check("Review Scan makes pairing explicit and imports only confirmed scan text", () => {
   const client = read(clientPath);
   const reviewSource = functionSource(client, "revisionScanCandidateHtml", "renderRevisionScanReview");
   const pageSource = functionSource(client, "renderRevisionScanReview", "renderRevisionScanWaiting");
   const importSource = functionSource(client, "confirmRevisionScanImport", "renderLanguage");
   const eligibleSource = functionSource(client, "revisionScanSentences", "revisionScanSentenceLabel");
   requireEvery(reviewSource, [
-    "data-scan-sentence", "data-scan-text", "revision-scan-confidence",
+    "data-scan-pick", "data-scan-choose", "data-scan-edit", "data-scan-text", "revision-scan-confidence",
     "revisionScanSentenceLabel(sid)", "claimedByAnother", "disabled",
     "revisionScanSentenceDetails", "revisionScanConfidenceMeta",
   ], "Review Scan mapping cards");
@@ -1517,10 +1527,9 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
   ].forEach((removed) => assert(!reviewSource.includes(removed), `Review Scan card must omit ${removed}`));
   assert(!client.includes("revisionScanWarningLabel"),
     "provider warning copy must remain hidden from the OCR confirmation UI");
-  [
-    "revision-scan-heading", "revision-scan-count", "revision-scan-instructions",
-    "revision-scan-missing", "SENTENCE REVISION", "Review Scan",
-  ].forEach((removed) => assert(!pageSource.includes(removed), `Review Scan page must omit ${removed}`));
+  requireEvery(pageSource, ["revision-scan-heading", "Match Your Revisions", "data-scan-progress", "Confirm and Fill"],
+    "explicit pairing page");
+  requireEvery(reviewSource, ["Your draft", "Scanned revision", "Change sentence", "Confirm this match"], "pair relationship");
   assert(/rewriteRequired\s*\(\s*sentence\s*\)[\s\S]{0,180}accepted\s*={2,3}\s*true/.test(eligibleSource),
     "Review Scan target choices must exclude originally-correct and already-accepted sentences");
   assert(/revisionScanSentences\(\)\.length[\s\S]{0,500}Scan Revisions/.test(functionSource(client, "renderLanguage", "sentenceCapsuleHtml")),
@@ -1528,10 +1537,10 @@ check("Review Scan keeps only mapping cards and imports their edited scan text",
   requireEvery(importSource, [
     "confirmRevisionScanImport", "revision", "operation_id", "sentence_id", "saveRewriteDraftSnapshot",
   ], "confirmed scan import");
-  requireEvery(pageSource, ["revisionScanCanConfirm", "Confirm Scanning"],
+  requireEvery(pageSource, ["revisionScanCanConfirm", "Confirm and Fill"],
     "Review Scan confirmation boundary");
   assert(!pageSource.includes("导入选中的草稿"),
-    "the former import label must be replaced by Confirm Scanning");
+    "the import label must describe confirmed pairing");
   assert(!/submitRewrites\s*\(|data-submit-rewrites/.test(importSource),
     "scan import must populate drafts without automatically running Check");
   assert(!/revisionScanSelection|data-scan-choice|Keep typed|Use scanned/.test(client),
@@ -1672,8 +1681,8 @@ check("revision scan canonicalization never silently accepts missing, duplicate,
   assert.strictEqual(completedSentence.status, "unresolved");
   assert(completedSentence.warnings.includes("SENTENCE_NUMBER_OUT_OF_RANGE_OR_NOT_REQUIRED"),
     "an already-accepted sentence must not remain an eligible scan target");
-  assert.deepStrictEqual(result.missing_sentence_ids, ["s004"],
-    "a present low-confidence candidate is not missing, while empty handwriting remains missing and accepted work stays excluded");
+  assert.deepStrictEqual(result.missing_sentence_ids, ["s003", "s004"],
+    "duplicates remain unassigned, empty handwriting remains missing, and accepted work stays excluded");
 });
 
 check("confirmed revision scan import is revision-bound, transactional, and draft-only", () => {
@@ -1852,7 +1861,7 @@ check("Token summaries count repair calls and missing usage without inventing to
     { usage_status: "missing", input_tokens: null, output_tokens: null, total_tokens: null },
   ]);
   assert.deepStrictEqual(summary, {
-    call_count: 3, recorded_call_count: 2, missing_call_count: 1, nonbillable_call_count: 0,
+    call_count: 3, recorded_call_count: 2, nonbillable_call_count: 0, missing_call_count: 1,
     input_tokens: 220, output_tokens: 22, total_tokens: 242,
     cached_input_tokens: 20, reasoning_output_tokens: 5,
   });
@@ -1860,6 +1869,10 @@ check("Token summaries count repair calls and missing usage without inventing to
   assert.deepStrictEqual(worker._test.tokenAuditReasons({}, [
     { usage_status: "missing", input_tokens: null, output_tokens: null, total_tokens: null },
   ]).reasons, ["PROVIDER_USAGE_MISSING"]);
+  assert.deepStrictEqual(worker._test.tokenAuditReasons({}, [
+    { usage_status: "missing", outcome: "quota_exhausted", input_tokens: null, output_tokens: null, total_tokens: null },
+    { usage_status: "recorded", outcome: "structured_success", input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+  ]).reasons, [], "an explicit free-tier rejection is known non-billable and must not create a missing-usage alert");
   assert.deepStrictEqual(worker._test.tokenAuditReasons({ token_usage_persistence_error: true }, [
     { usage_status: "recorded", input_tokens: 10, output_tokens: 2, total_tokens: 12 },
   ]).reasons, ["USAGE_EVENT_PERSISTENCE_FAILED"]);
@@ -2296,20 +2309,35 @@ check("Qwen OCR defaults to the low-latency vision model", () => {
     apiUrl: process.env.WRITING_AI_API_URL,
     model: process.env.WRITING_AI_MODEL,
     visionModel: process.env.WRITING_AI_VISION_MODEL,
+    textQuotaFallbackModels: process.env.WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS,
+    textQuotaFallbackModel: process.env.WRITING_AI_TEXT_QUOTA_FALLBACK_MODEL,
   };
   try {
     process.env.WRITING_AI_API_KEY = "test-key";
     process.env.WRITING_AI_API_URL = "https://workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions";
     process.env.WRITING_AI_MODEL = "qwen3.7-plus";
+    process.env.WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS = "qwen3.8-max,qwen3.8-max-0902";
+    delete process.env.WRITING_AI_TEXT_QUOTA_FALLBACK_MODEL;
     delete process.env.WRITING_AI_VISION_MODEL;
     assert.strictEqual(provider._test.providerConfig(true).model, "qwen3.7-flash");
+    assert.deepStrictEqual(provider._test.providerConfig(true).quotaFallbackModels, []);
     assert.strictEqual(provider._test.providerConfig(false).model, "qwen3.7-plus");
+    assert.deepStrictEqual(provider._test.providerConfig(false).quotaFallbackModels,
+      ["qwen3.8-max", "qwen3.8-max-0902"]);
+    assert.strictEqual(provider._test.providerErrorCode({ code: "AllocationQuota.FreeTierOnly" }),
+      "AllocationQuota.FreeTierOnly");
+    assert.strictEqual(provider._test.providerErrorCode({ error: { code: "AllocationQuota.FreeTierOnly" } }),
+      "AllocationQuota.FreeTierOnly");
+    assert.strictEqual(provider._test.isFreeTierQuotaExhausted({ providerCode: "AllocationQuota.FreeTierOnly" }), true);
+    assert.strictEqual(provider._test.isFreeTierQuotaExhausted({ providerCode: "AccessDenied" }), false);
   } finally {
     const keys = {
       apiKey: "WRITING_AI_API_KEY",
       apiUrl: "WRITING_AI_API_URL",
       model: "WRITING_AI_MODEL",
       visionModel: "WRITING_AI_VISION_MODEL",
+      textQuotaFallbackModels: "WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS",
+      textQuotaFallbackModel: "WRITING_AI_TEXT_QUOTA_FALLBACK_MODEL",
     };
     Object.entries(previous).forEach(([key, value]) => {
       if (value === undefined) delete process.env[keys[key]];
@@ -2687,8 +2715,7 @@ check("students may discard only a server-verified pre-review draft", () => {
     "student draft discard flow");
   assert(/isEmptyCompositionDraft\(draftSnapshot\)[\s\S]{0,180}\? 'discardEmptyComposition'[\s\S]{0,100}: 'discardDraftComposition'/.test(client),
     "legacy empty drafts must use the older safe discard action before requiring the new draft action");
-  assert(!/deleteComposition|removeComposition/.test(`${backend}\n${client}`), "students must not receive a general composition deletion action");
-  assert(!/data-(?:delete|remove)-composition/.test(client), "students must not see a composition deletion control");
+  requireEvery(backend, ["async function deleteComposition", "deleted_by_student_uid", "if (current.deleted_at) return"], "separate owner-scoped retry-safe report deletion");
 });
 
 check("Brainstorming prompt photos retain their OCR purpose and return to the prompt field", () => {
@@ -2732,19 +2759,21 @@ check("empty New Writing placeholders are hidden and safely discarded", () => {
   ], "client empty-draft lifecycle");
   assert(/function renderPortfolio[\s\S]{0,500}portfolioCompositions\s*\(\s*\)/.test(client),
     "History counts and rows must exclude empty New Writing placeholders immediately");
-  assert(!/data-(?:delete|remove|discard)-composition/.test(client),
-    "empty cleanup must not introduce a student-facing delete control");
+  assert(!/data-(?:delete|remove|discard)-composition/.test(functionSource(client, "discardCurrentEmptyComposition", "returnToTutorHome")),
+    "empty cleanup remains separate from explicit report deletion");
 });
 
-check("successful reviews enqueue metadata-only teacher email events", () => {
+check("first and completed Writing reports enqueue full teacher email snapshots", () => {
   const backend = read(functionPath);
   const dispatcherPath = "cloudfunctions/sendWritingTutorEmails/index.js";
   const dispatcher = read(dispatcherPath);
+  const reportEmail = read("cloudfunctions/_shared/writing-report-email.js");
   requireEvery(backend, ["writing_teacher_email_events", "enqueueReviewEmail", "await enqueueReviewEmail"], "writing review email outbox");
   requireEvery(dispatcher, ["writing_teacher_email_events", "WRITING_TUTOR_EMAIL_CRON_TOKEN", "status: \"sent\""], "writing email dispatcher");
-  assert(!/confirmed_text|student_manuscript|standardized_review|language_review/.test(dispatcher),
-    "teacher usage email must not load or include manuscript/review content");
-  assert(/Student writing is not included/i.test(dispatcher), "email must state that it contains usage metadata only");
+  requireEvery(reportEmail, ["report_phase", "confirmed_text", "standardized_review", "language_review", "rewrite_results"], "full Writing report snapshot");
+  requireEvery(backend, ['"first"', '"complete"', 'completed.status === "completed"'], "two-report boundary");
+  assert(!/enqueueReportEmail\(/.test(functionSource(backend, "performRewriteJob", "submitRewrites").split("if (outcome === \"succeeded\")")[0]),
+    "intermediate rewrite checks must not enqueue mail");
 });
 
 check("AI credentials and direct model endpoints never enter frontend files", () => {
@@ -2843,7 +2872,7 @@ check("all four durable jobs use one waiting renderer and keep their polling", (
   [
     ["uploadAndExtract", "isNetworkDisconnect"],
     ["saveAndEvaluate", "reviewJobFrom"],
-    ["submitRewrites", "renderCompletion"],
+    ["submitRewrites", "openCompletedWritingReport"],
   ].forEach(([name, next]) => {
     const source = functionSource(client, name, next);
     assert(!source.includes("renderLoading("), `${name} must enter the Runner before starting its request`);
@@ -2977,7 +3006,7 @@ check("success paths hand off and interrupted AI jobs preserve the Runner", () =
   [
     ["showOcrResult", "renderOcr"],
     ["showReviewResult", "renderStandardized"],
-    ["applyRewriteResult", "renderCompletion"],
+    ["applyRewriteResult", "openCompletedWritingReport"],
   ].forEach(([name, expected]) => {
     const source = matchingFunctionSource(client, name, `${name} success source`);
     assert(source.includes("showReadyOrOpenResult"), `${name} must use the bounded active-wait/direct-open handoff`);

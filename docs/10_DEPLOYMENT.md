@@ -1,5 +1,44 @@
 # 10 Deployment
 
+## Source reconciliation and local cleanup (2026-10-03)
+
+This is a local cleanup, not a release. Base: `origin/main` at `a7b0f90f`;
+working branch: `codex/project-cleanup-oct03`. The old shared checkout's rebase
+and local work remain preserved. A hash-verified recovery archive and manifests
+are under ignored `.cloudbase-private/cleanup-20261003/` in that original checkout.
+
+119 selected public files were fetched from `https://mrcatenglish.com` and
+compared with source. Published Writing sidebar editing, Speaking retry/history,
+Teacher media workspaces, BBC editing and shared receipts are retained. The old
+toolbar-pencil and alternative retry-UI drafts stay in the private backup.
+Recent backend source and tests are integrated, but local test/package results
+must not be described as fresh verification of production CloudBase code.
+
+Before a later owner-authorized publication, check new remote commits, compare
+current public bytes and cloud package/config hashes, and review the exact delta.
+Never use the original dirty/rebasing directory for a whole-tree release.
+Shared `_shared/` changes select all function packages; named package requests
+remain scoped. Packaging and validation do not authorize deployment.
+
+Local cleanup archived six clean merged worktrees, root `dist/`, temporary
+`tmp/`/`output/` artifacts and two root preview pages. It removed 43 merged,
+unattached local branches after recording their tips. Archives were verified;
+unmerged worktrees, private source data and recovery evidence were retained.
+
+Validation completed locally: all 81 test scripts passed, along with static build,
+public-artifact boundary, release verification and whitespace checks. All 20
+CloudBase functions packaged successfully with the Node 18 bundle target.
+Speaking and Teacher package smoke checks passed; source prompts survive package
+compression byte-for-byte and unauthenticated access still fails closed.
+119/119 reconciled public source files match the saved public snapshot hashes.
+Tests ran on local Node 26.5.0; browser-module fixtures also pass with automatic
+ESM detection disabled. This is not an exact Node 18 runtime or device/live-account
+acceptance run. No real student records or mail delivery were used.
+
+Private verification logs: `.cloudbase-private/cleanup-20261003/verified/` in the
+original checkout. The new worktree's `dist/`, packages, dependency link and
+protected-resource payload remain ignored, rebuildable/local prerequisites.
+
 ## BBC approved batch import (2026-09-27; deployed)
 
 Published 21 reviewed BBC lessons with 158 Note Completion blanks and 134
@@ -1368,6 +1407,20 @@ environment variables:
 
 - Text provider: `WRITING_AI_TEXT_API_KEY`, `WRITING_AI_TEXT_API_URL`,
   `WRITING_AI_TEXT_MODEL`, and `WRITING_AI_TEXT_PROTOCOL`
+  (current text model: `WRITING_AI_TEXT_MODEL=qwen3.8-max`, selected by the
+  owner on 2026-09-13).
+- Optional ordered text quota fallbacks: `WRITING_AI_TEXT_QUOTA_FALLBACK_MODELS`.
+  For the current Qwen configuration set it to
+  `qwen3.8-max-0902`; the models reuse the text endpoint, API key,
+  protocol, timeout, and output-token limit. The former singular
+  `WRITING_AI_TEXT_QUOTA_FALLBACK_MODEL` remains accepted for compatibility.
+  The primary model must not also appear in this list. Change both text
+  variables together through a read/merge/update of the complete live function
+  environment, then read back and verify all unrelated values are preserved.
+  The existing shared `WRITING_AI_MODEL=qwen3.7-plus` remains a compatibility
+  fallback for implicit OCR selection (`qwen3.7-flash`); the explicit text
+  override takes precedence, so text no longer calls Plus. This configuration
+  change requires no function-code or static deployment.
 - Vision/OCR provider: `WRITING_AI_VISION_API_KEY`,
   `WRITING_AI_VISION_API_URL`, `WRITING_AI_VISION_MODEL`, and
   `WRITING_AI_VISION_PROTOCOL`
@@ -1383,6 +1436,13 @@ environment variables:
 - Optional `WRITING_AI_TEXT_MAX_OUTPUT_TOKENS` and
   `WRITING_AI_VISION_MAX_OUTPUT_TOKENS` override the conservative 8000-token
   defaults when the selected provider supports a larger response.
+- The quota fallback is activated only by the exact provider code
+  `AllocationQuota.FreeTierOnly`. Therefore enable **free quota exhausted: stop**
+  for `qwen3.8-max` and `qwen3.8-max-0902` in the Beijing Model
+  Studio console. Keep the OCR model independently configured as
+  `qwen3.7-flash`. With a stop switch disabled, that model silently becomes paid
+  usage and the application cannot know when to advance. With both text switches
+  enabled, the final Max-0902 quota rejection ends the request without paid use.
 - `WRITING_TUTOR_EMAIL_CRON_TOKEN`; the sender reuses the existing private
   teacher SMTP environment variables
 - `WRITING_AI_WORKER_CRON_TOKEN`: a separate random CloudBase-only token used by
@@ -1422,6 +1482,23 @@ Package and run the release plan locally first. Production
 collection creation, environment changes, timer configuration, and function
 deployment require a separate explicit owner action; this implementation does
 not perform them automatically.
+
+### 2026-09-25 Writing teacher-report rollout
+
+With the owner's explicit authorization, `sendWritingTutorEmails` and
+`writingTutor` were uploaded through the logged-in CloudBase console in that
+order. The console showed both functions healthy, with last deployment times
+14:01:20 and 14:04:26 Shanghai time respectively. The release ZIPs are kept
+under ignored `.cloudbase-private/writing-report-release-20260925/`.
+`writingTutor-scoped.zip` starts from the previously verified live bundle and
+adds only the report hook; `sendWritingTutorEmails-scoped.zip` is the new sender.
+This avoids uploading unrelated working-tree changes. `teacherAdmin` was not
+deployed; the sender's bounded completion watch handles Argue-final reports.
+The existing sender timer produced HTTP 200 invocation logs after deployment;
+these logs alone do not prove mail delivery. A direct
+unauthenticated `writingTutor` console invocation returned `AUTH_REQUIRED` as
+expected. A real student submission and SMTP delivery were not exercised in
+this rollout, so those remain live acceptance checks.
 
 Development rollout status (2026-08-21): the original five `ADMINONLY` collections and
 required indexes exist; `writingTutor`, `sendWritingTutorEmails`, and the
@@ -1736,6 +1813,58 @@ functions, or publish without the owner's exact authorization.
 
 With explicit owner authorization, production received the three ADMINONLY scan collections and all documented indexes, updated `studentVocabulary`, new `vocabularyScan` and `vocabularyScanWorker` functions, an enabled one-minute worker timer with matching private token, authenticated-only Scan access, worker `invoke: false`, and `VOCABULARY_SCAN_ENABLED=true`. Empty-worker and unauthenticated Scan invocations passed; real-student end-to-end photo/OCR verification remains a post-publication smoke check.
 ### Listening V2 rollout
+
+The owner authorized the Teacher waveform corrector release on 2026-09-24.
+The current live `teacherAdmin` ZIP was backed up and patched only for the
+correction action, revision/draft metadata and source-policy preservation.
+Code-only deployment finished with the function Active, unchanged configuration,
+and a matching downloaded ZIP SHA-256
+`f5be855e5e704a052f714f3ec82892f97d6db0e0ce91202d1a1ea796d805ad84`.
+Then 13 scoped files were published to COS, with each object read back and
+verified; the Teacher link was published last. The public corrector page and
+script matched the published bytes over HTTPS, and an unauthenticated correction
+call returned `AUTH_REQUIRED`. Rollback bundles, live-file backups, and audit
+records are in ignored `.cloudbase-private/listening-corrector-release-20260924/`.
+The corrector page and script then received a two-file, readback-verified update
+so uploading only JSON uses the selected material's hosted audio.
+
+The 2026-09-24 single-current-material follow-up changes only the `teacherAdmin`
+code path. Package a scoped patch from the verified live function ZIP, preserving
+its configuration and bundled correction module. No static publication, content
+import, new collection, or data migration is needed. Verify the function is
+Active, then check a corrected material has one current document, matching Set
+segment counts, and an immutable publication-history row.
+The owner authorized and deployed this code-only follow-up on 2026-09-24. The
+predeploy function ZIP matched the verified baseline SHA-256
+`f5be855e5e704a052f714f3ec82892f97d6db0e0ce91202d1a1ea796d805ad84`.
+The updated function became Active at `2026-09-24 18:20:50` (CloudBase function
+time), retained its configuration, and its downloaded ZIP matched the release
+SHA-256 `ecf1ff3c0d349fc098c1d8be6f766e51aa749c36c75e0f9d7af99bf4a77c386d`.
+The scoped package test covered direct replacement, private history, Set counts,
+stale revision rejection, and duplicate-material rejection. Existing published
+materials were not rewritten by this function deployment.
+On 2026-09-24, the owner reported that a region edge's resize cursor flashed
+too briefly to grab. The online corrector JS/CSS and its HTML cache version were
+updated as a three-file static-only correction. Current COS bytes were checked
+against the prior corrector release before upload, and all three objects were
+read back with matching hashes. A local browser test with adjacent segments
+confirmed continuous horizontal-resize hit testing at their shared boundary;
+dragging the first right edge and second left edge changed only the intended
+end and start times. No function, material, transcript or policy changed.
+Later on 2026-09-24, the owner requested a shorter Teacher corrector header and
+waveform, plus resizing only the currently selected segment. The local tool's
+matching region interaction was updated. Four scoped static files (shared
+corrector CSS/JS, Teacher-only CSS, and the Teacher corrector HTML) were checked
+against the current COS hashes, uploaded, read back, and verified over public
+HTTPS with matching SHA-256 hashes. The preflight first encountered an expired
+temporary COS credential; a read-only CloudBase environment listing refreshed
+the existing login before a successful retry. No CloudBase function, material
+record, transcript, or access policy changed. The rollback copies and hashes
+are in ignored `.cloudbase-private/listening-selected-resize-release-20260924/`.
+An authenticated teacher correction against a chosen material, including its
+new publication revision and private history row, remains to be checked in a
+real Teacher session. A selected live material can provide its hosted audio
+for JSON-only upload; a separately selected local audio file stays in the browser.
 
 On 2026-09-05, with explicit owner authorization, production received these six
 ADMINONLY collections: `listening_material_drafts`,

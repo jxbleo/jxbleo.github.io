@@ -143,6 +143,32 @@ async function main() {
     assert(!email.text.includes("PRIVATE"));
     assert(!email.text.includes("DO NOT NAME UNCONFIRMED"));
   }
+  // Playback authorizes the session and resolves the exact report-owned original.
+  const audioSeed = seed();
+  audioSeed.speaking_participants[0].invitation_status = "accepted";
+  audioSeed.speaking_audio_assets.forEach(row => { row.asset_kind = row.response_session_id ? "individual_response" : "formal_discussion"; });
+  audioSeed.speaking_audio_assets[0].status = "superseded";
+  audioSeed.speaking_discussions[0].formal_audio_asset_id = "unrelated-new-upload";
+  audioSeed.students.push({ _id: "other", auth_uid: "other", role: "student", active: true });
+  const audioDb = database(audioSeed);
+  const ownAudio = loadFunction("speakingLab", audioDb, "student");
+  for (const report_id of ["report-group", "report-individual"]) {
+    assert.equal((await ownAudio.main({ action: "getSpeakingReportAudio", report_id, asset_id: "forged" })).success, true);
+    assert.equal((await loadFunction("speakingLab", audioDb, "other").main({ action: "getSpeakingReportAudio", report_id, auth_uid: "student" })).success, false);
+    assert.equal((await loadFunction("speakingLab", audioDb, "").main({ action: "getSpeakingReportAudio", report_id })).code, "AUTH_REQUIRED");
+  }
+  for (const invitation_status of ["pending", "declined"]) {
+    await audioDb.collection("speaking_participants").doc("pending").update({ invitation_status });
+    assert.equal((await ownAudio.main({ action: "getSpeakingReportAudio", report_id: "report-group" })).code, "DISCUSSION_ACCESS_DENIED");
+  }
+  await audioDb.collection("speaking_audio_assets").doc("asset-report-individual").update({ response_session_id: "other" });
+  assert.equal((await ownAudio.main({ action: "getSpeakingReportAudio", report_id: "report-individual" })).code, "AUDIO_NOT_FOUND");
+  await audioDb.collection("speaking_audio_assets").doc("asset-report-individual").update({ response_session_id: "individual" });
+  assert.equal((await ownAudio.main({ action: "deleteIndividualResponse", response_session_id: "individual" })).success, true);
+  assert.equal(audioDb.rows("speaking_audio_assets").find(row => row.asset_id === "asset-report-individual").delete_after, undefined);
+  assert.equal((await ownAudio.main({ action: "getSpeakingReportAudio", report_id: "report-individual" })).code, "SPEAKING_REPORT_NOT_AVAILABLE");
+  assert.equal((await loadFunction("speakingLab", audioDb, "teacher").main({ action: "deleteDiscussion", discussion_id: "group" })).success, true);
+  assert.equal(audioDb.rows("speaking_audio_assets")[0].delete_after, undefined);
   const studentGateway = loadFunction("speakingLab", db, "student");
   for (const action of ["getTeacherSpeakingReport", "getTeacherSpeakingAudio"]) {
     assert.equal((await studentGateway.main({ action, report_id: "report-individual", role: "teacher", auth_uid: "teacher" })).code, "TEACHER_REQUIRED");

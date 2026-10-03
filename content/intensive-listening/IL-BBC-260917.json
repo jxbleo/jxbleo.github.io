@@ -1,0 +1,24 @@
+{
+  "id": "IL-BBC-260917",
+  "sectionId": "intensive-listening",
+  "title": "Is Rejection Good for Us?",
+  "href": "intensive-listening.html?set=IL-BBC-260917",
+  "publishedOn": "2026-09-17",
+  "topic": "BBC 6 Minute English",
+  "tags": [
+    "Listening",
+    "BBC"
+  ],
+  "note": "128 listening segments",
+  "sourceFamily": "bbc",
+  "sourceLabel": "BBC",
+  "seriesLabel": "BBC 6 Minute English",
+  "sourceSetId": "BBC-260917",
+  "linkedPracticeSetId": "BBC-260917",
+  "dictationUnitCount": 128,
+  "sequenceUnitCount": 139,
+  "schemaVersion": 1,
+  "trackCount": 1,
+  "catalogVisible": false,
+  "visible": true
+}

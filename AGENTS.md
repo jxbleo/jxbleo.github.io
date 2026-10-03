@@ -676,6 +676,21 @@ Only a wrong question in a recorded attempt can be disputed. The authenticated
 student may include an optional reason. Enforce one record per
 `attempt_id + question_id`.
 
+BBC teacher preview (owner revision 2026-09-30) directly accepts the current
+answer with `acceptBbcAnswer` only after an in-page confirmation showing the
+question and proposed answer. Cancel/Escape makes no mutation; focus Cancel by
+default and block duplicate submission while updating. It must not ask the
+teacher to return to Argue for approval. Keep the existing private add/history/upward-regrade flow and
+idempotent retry. BBC inline editing saves public question overrides in `sets`
+and explanations in private `grading_keys`, with transactional revision checks
+and private history. Each 28×28 pencil toggles its editor; each editor has its own
+Save. Collapsed unsaved drafts retain their inputs and show a red dot beside the
+pencil. Saving one question preserves all other drafts. Never persist these
+teacher drafts in browser caches.
+Warn before leaving with unsaved edits. Live corrections are authoritative;
+reconcile them before reimporting static content or regenerating worksheets.
+
+Other practice runtimes retain the existing flow below.
 Teachers can also submit Argue requests from `teacher=1` practice preview after
 showing answers. Teacher-originated disputes use `requester_role: "teacher"`
 and may have `attempt_id: null`; they are for correcting grading rules, not for
@@ -1971,6 +1986,18 @@ Discussion. Package/deploy and timer/provider configuration remain owner-gated. 
 accepts only the exact `Timer` event for `speaking-ai-worker-minute`; do not make
 the worker client-callable or replace this boundary with a browser-visible token.
 `docs/archive/plans/15_DSE_SPEAKING_LAB_IMPLEMENTATION_PLAN.md`.
+
+### Speaking voiceprint capacity invariants
+
+Keep each existing Tencent voiceprint ID and its stored group unchanged during
+replacement. New registrations may automatically allocate extra 20-ID groups
+within Tencent's 1,000-ID account limit. Group names are private storage routing,
+never class or ownership keys. Only a definite provider capacity refusal permits
+bounded automatic rollover; do not replay uncertain enrolment timeouts. Search
+all eligible active-VIP groups before applying the existing score-70 and
+one-to-one identity rules. Partial group results must never grant identity or
+access. Recording-entry preflight exposes only safe availability, not counts or
+provider locators. No new collection or student re-enrolment is needed.
 
 ### Speaking voiceprint capacity invariants
 

@@ -943,6 +943,12 @@
     renderUnit();
     if (autoplay) replayUnit(false);
   }
+  function showTrainingCheckin() {
+    if (state.teacherMode || state.visitorMode) return;
+    window.MrCatTrainingCheckin.listening(state.material, state.progress, state.localUnits, {
+      setId: state.setId, target: state.assignmentContext && state.assignmentContext.completion_target || 100
+    });
+  }
   function finishSession() {
     pauseAudio('');
     if (state.teacherMode) { window.location.href = safeReturnUrl(); return; }
@@ -965,6 +971,7 @@
     $('#completion-percent').textContent = (Number(progress.percentage) || 0) + '%';
     $('#completion-summary').textContent = progress.independent_count + ' completed independently · ' + progress.assisted_count + ' completed with answer';
     $('#completion-screen').hidden = false;
+    showTrainingCheckin();
     if (window.MrCatLearningActivity) window.MrCatLearningActivity.close('complete');
     clearDraft();
   }
@@ -1137,7 +1144,7 @@
       if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100) {
         $('#practice-shell').hidden = true; $('#completion-screen').hidden = false;
         $('#completion-percent').textContent = state.progress.best_percentage + '%';
-        $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; return;
+        $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; showTrainingCheckin(); return;
       }
       configureLearningActivity(); enterPractice(true);
     }).catch(function(error) {

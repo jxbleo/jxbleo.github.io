@@ -127,6 +127,18 @@ async function main() {
   assert.equal((await decide(interrupted, saved.dispute_id, "approve")).code, "DISPUTE_REVIEW_CHANGED");
   assert.equal((await decide(interrupted, saved.dispute_id, "reject")).success, true);
 
+  const deleted = setup();
+  const deletedPending = await request(deleted);
+  const oldHistory = structuredClone(current(deleted).rewrite_results);
+  const deletedOutcome = await lateModelPublication(deleted, async () => {
+    await deleted.collection("writing_compositions").doc(composition._id).update({ deleted_at: new Date(), active_job_id: null });
+  });
+  assert.equal(deletedOutcome.status, "superseded", "late model output cannot republish a deleted report");
+  assert.deepEqual(current(deleted).rewrite_results, oldHistory);
+  await assert.rejects(request(deleted, "after-delete"), /COMPOSITION_NOT_FOUND/);
+  assert.equal((await decide(deleted, deletedPending.dispute_id, "approve")).code, "DISPUTE_REVIEW_CHANGED");
+  assert.equal((await decide(deleted, deletedPending.dispute_id, "reject")).success, true, "teacher can close an old request without reviving the report");
+
   const concurrent = setup();
   const pending = await request(concurrent);
   const published = await lateModelPublication(concurrent, async () => {

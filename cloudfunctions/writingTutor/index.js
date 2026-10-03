@@ -13,6 +13,8 @@ const {
 } = require("./prompts");
 const { callStructuredModel } = require("./model-provider");
 const writingDisputes = require("../_shared/writing-disputes");
+const writingReportEmail = require("../_shared/writing-report-email");
+const { matchRevisionCandidates } = require("./revision-matching");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -34,6 +36,8 @@ const INCOMPLETE_UPLOAD_TTL_MS = 30 * 60 * 1000;
 const CONFIRMED_UPLOAD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const EMPTY_DRAFT_RETENTION_MS = 30 * 60 * 1000;
 const JOB_LEASE_MS = 6 * 60 * 1000;
+const AI_SUBMIT_RESERVE_MS = 5000;
+const WRITING_FUNCTION_DEADLINE_MS = 285000;
 const OCR_LOCATION_MIN_LEASE_REMAINING_MS = 100 * 1000;
 const MAX_JOB_ATTEMPTS = 5;
 const PROMPT_BUNDLE_VERSION = `${PROMPT_VERSION}|${SCHEMA_VERSION}|${RUBRIC_VERSION}`;
@@ -135,6 +139,9 @@ async function persistModelTelemetry(job, stage, telemetry, providerMetadata) {
       safe_error_code: text(attempt.safe_error_code, 120) || null,
       provider_code: text(attempt.provider_code, 200) || null,
       outcome: text(attempt.outcome, 80) || "unknown",
+      request_started_at: attempt.request_started_at || null,
+      response_completed_at: attempt.response_completed_at || null,
+      duration_ms: attempt.duration_ms != null && Number.isFinite(Number(attempt.duration_ms)) ? Math.max(0, Math.round(Number(attempt.duration_ms))) : null,
       usage_status: attempt.usage_status === "recorded" ? "recorded" : "missing",
       input_tokens: Number.isInteger(attempt.input_tokens) ? attempt.input_tokens : null,
       output_tokens: Number.isInteger(attempt.output_tokens) ? attempt.output_tokens : null,
@@ -167,8 +174,23 @@ async function persistModelTelemetry(job, stage, telemetry, providerMetadata) {
 }
 
 async function callModelForJob(job, stage, options) {
+  const leaseDeadline = dateMs(job && job.lease_until) - AI_SUBMIT_RESERVE_MS;
+  const functionDeadline = dateMs(job && job.invocation_deadline_at) || Date.now() + WRITING_FUNCTION_DEADLINE_MS;
+  const absoluteDeadline = leaseDeadline > 0 ? Math.min(leaseDeadline, functionDeadline) : functionDeadline;
+  const providerOptions = {
+    ...options,
+    deadlineAt: absoluteDeadline,
+    onRequestStart: async () => {
+      const current = await getOne(JOBS, { job_id: job.job_id });
+      if (!current || current.status !== "processing"
+        || !secretMatches(current.lease_token, job.lease_token)
+        || dateMs(current.lease_until) - Date.now() < AI_SUBMIT_RESERVE_MS) {
+        throw new Error("WRITING_AI_LEASE_LOST");
+      }
+    },
+  };
   try {
-    const response = await callStructuredModel(options);
+    const response = await callStructuredModel(providerOptions);
     const summary = await persistModelTelemetry(job, stage, response.telemetry, response.metadata);
     response.metadata = { ...response.metadata, token_usage: summary };
     return response;
@@ -258,8 +280,38 @@ async function ownedComposition(student, compositionId) {
   const composition = await getOne(COMPOSITIONS, {
     composition_id: text(compositionId, 96), student_uid: student.auth_uid,
   });
-  if (!composition) throw new Error("COMPOSITION_NOT_FOUND");
+  if (!composition || composition.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
   return composition;
+}
+
+function revisionProgress(composition) {
+  const sentences = composition.language_review && composition.language_review.sentences;
+  if (!Array.isArray(sentences)) return null;
+  const required = new Set(sentences.filter((s) => s && s.rewrite_required === true)
+    .map((s) => text(s.sentence_id, 40)).filter(Boolean));
+  const accepted = new Set((composition.rewrite_results && composition.rewrite_results.results || [])
+    .filter((r) => r && r.accepted === true && required.has(text(r.sentence_id, 40)))
+    .map((r) => text(r.sentence_id, 40)));
+  return { total: required.size, completed: accepted.size };
+}
+
+async function deleteComposition(student, event) {
+  const id = text(event.composition_id, 96);
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(COMPOSITIONS).where({
+      composition_id: id, student_uid: student.auth_uid,
+    }).limit(1).get();
+    const current = result.data && result.data[0];
+    if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+    if (current.deleted_at) return;
+    // Keep learning, report, dispute and usage history. Detaching the active job
+    // in this transaction prevents an in-flight result from republishing it.
+    await transaction.collection(COMPOSITIONS).doc(current._id).update({
+      deleted_at: new Date(), deleted_by_student_uid: student.auth_uid,
+      active_job_id: null, active_job: null, ocr_job: null,
+    });
+  });
+  return { success: true, deleted: true, composition_id: id };
 }
 
 function summaryView(composition) {
@@ -278,6 +330,7 @@ function summaryView(composition) {
     overall_score: composition.standardized_review && composition.standardized_review.overall_score || null,
     has_standardized_review: Boolean(composition.standardized_review),
     has_language_review: Boolean(composition.language_review),
+    revision_progress: revisionProgress(composition),
     created_at: composition.created_at || null,
     updated_at: composition.updated_at || null,
     completed_at: composition.completed_at || null,
@@ -372,6 +425,9 @@ function publicRevisionCandidates(items) {
       ? item.warnings.map((warning) => text(warning, 300)).filter(Boolean).slice(0, 12)
       : [],
     status: ["mapped", "check", "unresolved"].includes(item && item.status) ? item.status : "unresolved",
+    match_method: ["number", "text"].includes(item && item.match_method) ? item.match_method : null,
+    suggested_sentence_ids: Array.isArray(item && item.suggested_sentence_ids)
+      ? item.suggested_sentence_ids.slice(0, 3).map(id => text(id, 40)).filter(Boolean) : [],
   })).filter((item) => item.candidate_id);
 }
 
@@ -582,12 +638,15 @@ async function createComposition(student, event) {
 }
 
 async function listCompositions(student) {
-  const result = await db.collection(COMPOSITIONS).where({ student_uid: student.auth_uid }).limit(200).get();
+  const result = await db.collection(COMPOSITIONS).where({
+    student_uid: student.auth_uid, deleted_at: db.command.exists(false),
+  }).limit(200).get();
   const rows = (result.data || []).sort((a, b) => dateMs(b.updated_at) - dateMs(a.updated_at));
   const now = Date.now();
   const visibleRows = [];
   const staleEmptyRows = [];
   rows.forEach((row) => {
+    if (row.deleted_at) return;
     if (!isDiscardableEmptyComposition(row)) {
       visibleRows.push(row);
       return;
@@ -906,6 +965,7 @@ function canonicalRevisionScanResult(result, composition, studentUid, operationI
       if (!item.warnings.includes("DUPLICATE_SENTENCE_NUMBER")) item.warnings.push("DUPLICATE_SENTENCE_NUMBER");
     }
   });
+  matchRevisionCandidates(items, requiredUnits);
   const presentIds = new Set(items
     .filter((item) => item.sentence_id && item.recognized_text)
     .map((item) => item.sentence_id));
@@ -1032,16 +1092,17 @@ async function finishRevisionScanUpload(student, event) {
     prompt_bundle_version: PROMPT_BUNDLE_VERSION,
     telemetry_version: TOKEN_TELEMETRY_VERSION, token_usage_audit_status: "pending",
     token_usage_persistence_error: false,
+    validation_status: "pending", validation_safe_error_code: null, validated_at: null, published_at: null,
     status: "queued", attempt_count: 0, error_code: null,
     lease_token: null, lease_until: null, next_retry_at: now, created_at: now, updated_at: now,
-    started_at: null, finished_at: null,
+    started_at: null, claimed_at: null, finished_at: null,
   };
   const activeJob = publicJobView(job);
   try {
     await db.runTransaction(async (transaction) => {
       const compositionResult = await transaction.collection(COMPOSITIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).limit(1).get();
       const current = compositionResult.data && compositionResult.data[0];
-      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      if (!current || current.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
       if (Number(current.revision || 1) !== Number(job.composition_revision || 1)) throw new Error("COMPOSITION_REVISION_CHANGED");
       if (current.active_job_id && current.active_job_id !== jobId) {
         const priorResult = await transaction.collection(JOBS).where({ job_id: current.active_job_id, student_uid: student.auth_uid, composition_id: composition.composition_id }).limit(1).get();
@@ -1079,6 +1140,12 @@ function retryableJobError(code) {
     || code === "WRITING_AI_UNAVAILABLE"
     || code === "WRITING_AI_SCHEMA_RESPONSE_INVALID"
     || /^WRITING_AI_HTTP_(?:429|5\d\d)$/.test(code);
+}
+
+function writingValidationFailureCode(code) {
+  const value = text(code, 120);
+  return /^WRITING_AI_(?:SENTENCE_ALIGNMENT|COACHING|EVIDENCE|RUBRIC|FEEDBACK|ALIGNMENT)(?:_[A-Z0-9]+)*$/.test(value)
+    ? value : null;
 }
 
 async function enqueueOcrJob(student, event) {
@@ -1157,6 +1224,7 @@ async function enqueueOcrJob(student, event) {
     telemetry_version: TOKEN_TELEMETRY_VERSION,
     token_usage_audit_status: "pending",
     token_usage_persistence_error: false,
+    validation_status: "pending", validation_safe_error_code: null, validated_at: null, published_at: null,
     status: "queued",
     attempt_count: 0,
     error_code: null,
@@ -1166,6 +1234,7 @@ async function enqueueOcrJob(student, event) {
     created_at: now,
     updated_at: now,
     started_at: null,
+    claimed_at: null,
     finished_at: null,
   };
   const activeJob = publicJobView(job);
@@ -1176,7 +1245,7 @@ async function enqueueOcrJob(student, event) {
         student_uid: student.auth_uid,
       }).limit(1).get();
       const current = compositionResult.data && compositionResult.data[0];
-      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      if (!current || current.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
       if (current.active_job_id && current.active_job_id !== jobId) {
         const priorResult = await transaction.collection(JOBS).where({
           job_id: current.active_job_id,
@@ -1364,7 +1433,7 @@ async function performOcrJob(student, job) {
     const currentJob = jobResult.data && jobResult.data[0];
     if (!currentJob || currentJob.status !== "processing"
       || !secretMatches(currentJob.lease_token, job.lease_token)) return;
-    if (!current || current.active_job_id !== job.job_id) {
+    if (!current || current.deleted_at || current.active_job_id !== job.job_id) {
       await transaction.collection(JOBS).doc(currentJob._id).update({
         status: "superseded", error_code: null, lease_token: null, lease_until: null,
         next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt,
@@ -1380,7 +1449,8 @@ async function performOcrJob(student, job) {
       updated_at: finishedAt,
     });
     await transaction.collection(JOBS).doc(currentJob._id).update({
-      status: "succeeded", error_code: null, lease_token: null, lease_until: null,
+      status: "succeeded", error_code: null, validation_status: "passed", validation_safe_error_code: null, validated_at: finishedAt,
+      published_at: null, lease_token: null, lease_until: null,
       next_retry_at: null, finished_at: finishedAt, updated_at: finishedAt,
     });
     outcome = "succeeded";
@@ -1422,7 +1492,7 @@ async function performRevisionOcrJob(student, job) {
     const current = compositionResult.data && compositionResult.data[0];
     const currentJob = jobResult.data && jobResult.data[0];
     if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, job.lease_token)) return;
-    if (!current || current.active_job_id !== job.job_id || Number(current.revision || 1) !== Number(job.composition_revision || 1)) {
+    if (!current || current.deleted_at || current.active_job_id !== job.job_id || Number(current.revision || 1) !== Number(job.composition_revision || 1)) {
       await transaction.collection(JOBS).doc(currentJob._id).update({ status: "superseded", lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now });
       outcome = "superseded";
       return;
@@ -1430,7 +1500,7 @@ async function performRevisionOcrJob(student, job) {
     await transaction.collection(COMPOSITIONS).doc(current._id).update(replaceWholeFields({
       pending_revision_scan: pending, active_job: succeededJob, status: "revision_scan_review", updated_at: now,
     }, ["pending_revision_scan", "active_job"]));
-    await transaction.collection(JOBS).doc(currentJob._id).update({ status: "succeeded", error_code: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now });
+    await transaction.collection(JOBS).doc(currentJob._id).update({ status: "succeeded", error_code: null, validation_status: "passed", validation_safe_error_code: null, validated_at: now, published_at: null, lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now });
     outcome = "succeeded";
   });
   if (outcome === "succeeded") {
@@ -1462,7 +1532,7 @@ async function claimQueuedJob(jobId, dispatchToken) {
         composition_id: current.composition_id, student_uid: current.student_uid,
       }).limit(1).get();
       const composition = compositionResult.data && compositionResult.data[0];
-      if (composition && composition.active_job_id === current.job_id) {
+      if (composition && !composition.deleted_at && composition.active_job_id === current.job_id) {
         await transaction.collection(COMPOSITIONS).doc(composition._id).update({
           active_job: failedJob,
           ocr_job: current.job_type === "ocr" ? failedJob : composition.ocr_job || null,
@@ -1483,10 +1553,12 @@ async function claimQueuedJob(jobId, dispatchToken) {
       attempt_count: attemptCount,
       lease_token: leaseToken,
       started_at: current.started_at || now,
+      claimed_at: now,
       lease_until: new Date(now.getTime() + JOB_LEASE_MS),
       next_retry_at: null,
       updated_at: now,
       error_code: null,
+      invocation_deadline_at: new Date(Date.now() + WRITING_FUNCTION_DEADLINE_MS),
     };
     await transaction.collection(JOBS).doc(current._id).update(update);
     claimed = { ...current, ...update };
@@ -1506,7 +1578,7 @@ async function publishProcessingJob(job) {
     const currentJob = jobResult.data && jobResult.data[0];
     if (!currentJob || currentJob.status !== "processing"
       || !secretMatches(currentJob.lease_token, job.lease_token)) return;
-    if (!composition || composition.active_job_id !== job.job_id) {
+    if (!composition || composition.deleted_at || composition.active_job_id !== job.job_id) {
       await transaction.collection(JOBS).doc(currentJob._id).update({
         status: "superseded", lease_token: null, lease_until: null,
         finished_at: now, updated_at: now,
@@ -1537,15 +1609,17 @@ async function finishFailedJobAttempt(job, code) {
     if (!currentJob || currentJob.status !== "processing"
       || !secretMatches(currentJob.lease_token, job.lease_token)) return;
     const now = new Date();
+    const validationCode = writingValidationFailureCode(code);
     await transaction.collection(JOBS).doc(currentJob._id).update({
       status, error_code: code, lease_token: null, lease_until: null,
       next_retry_at: nextRetryAt, finished_at: finishedAt, updated_at: now,
+      ...(validationCode ? { validation_status: "failed", validation_safe_error_code: validationCode, validated_at: now, published_at: null } : {}),
     });
     const compositionResult = await transaction.collection(COMPOSITIONS).where({
       composition_id: job.composition_id, student_uid: job.student_uid,
     }).limit(1).get();
     const composition = compositionResult.data && compositionResult.data[0];
-    if (composition && composition.active_job_id === job.job_id) {
+    if (composition && !composition.deleted_at && composition.active_job_id === job.job_id) {
       const activeJob = publicJobView({ ...job, status, error_code: code, finished_at: finishedAt });
       await transaction.collection(COMPOSITIONS).doc(composition._id).update({
         active_job: activeJob,
@@ -1606,6 +1680,10 @@ async function processQueuedJob(event) {
     return { success: result.status === "succeeded", status: result.status };
   } catch (error) {
     const code = error && error.message || "WRITING_TUTOR_ERROR";
+    if (code === "WRITING_AI_LEASE_LOST") {
+      console.error("writingTutor AI job lease no longer writable", claimed.job_id);
+      return { success: false, status: "lease_lost", code };
+    }
     const outcome = await finishFailedJobAttempt(claimed, code);
     if (claimed.job_type === "review" && outcome.committed && !outcome.shouldRetry) {
       await releaseUsage(student || { auth_uid: claimed.student_uid }, { usage_id: claimed.usage_id }, code);
@@ -1662,7 +1740,7 @@ async function retryFailedJob(student, event) {
     }).limit(1).get();
     const current = compositionResult.data && compositionResult.data[0];
     const currentJob = jobResult.data && jobResult.data[0];
-    if (!current || !currentJob || current.active_job_id !== job.job_id
+    if (!current || current.deleted_at || !currentJob || current.active_job_id !== job.job_id
       || currentJob.job_type !== requestedType || currentJob.status !== "failed") return;
     const activeJob = publicJobView({ ...currentJob, ...reset });
     await transaction.collection(JOBS).doc(currentJob._id).update(reset);
@@ -2026,6 +2104,7 @@ async function enqueueReviewJob(student, composition, prepared, event, mode, usa
     telemetry_version: TOKEN_TELEMETRY_VERSION,
     token_usage_audit_status: "pending",
     token_usage_persistence_error: false,
+    validation_status: "pending", validation_safe_error_code: null, validated_at: null, published_at: null,
     status: "queued",
     attempt_count: 0,
     error_code: null,
@@ -2035,6 +2114,7 @@ async function enqueueReviewJob(student, composition, prepared, event, mode, usa
     created_at: now,
     updated_at: now,
     started_at: null,
+    claimed_at: null,
     finished_at: null,
   };
   const activeJob = publicJobView(job);
@@ -2044,7 +2124,7 @@ async function enqueueReviewJob(student, composition, prepared, event, mode, usa
         composition_id: composition.composition_id, student_uid: student.auth_uid,
       }).limit(1).get();
       const current = compositionResult.data && compositionResult.data[0];
-      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      if (!current || current.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
       const currentCandidate = reviewCandidate(current);
       if (current.status === "completed") throw new Error("COMPOSITION_READ_ONLY");
       if (Number(currentCandidate.revision || 1) !== Number(job.composition_revision || 1)) {
@@ -2106,20 +2186,23 @@ async function releaseUsage(student, usage, code) {
   });
 }
 
+
 async function enqueueReviewEmail(student, usage, composition, mode) {
-  const now = new Date();
-  const emailId = stableId("writing_email", usage.usage_id);
-  try {
-    await db.collection(EMAIL_EVENTS).doc(emailId).create({
-      event_id: emailId, usage_id: usage.usage_id, student_uid: student.auth_uid,
-      student_id: student.student_id || "", student_name: student.name || "",
-      composition_id: composition.composition_id, mode, rubric_id: composition.rubric_id || null,
-      word_count: Number(usage.word_count || 0), day_key: usage.day_key,
-      status: "pending", created_at: now, updated_at: now,
-    });
-  } catch (_error) {
-    // Email is an asynchronous side effect; duplicate/outbox failure never invalidates a review.
+  const current = await ownedComposition(student, composition.composition_id);
+  const firstId = writingReportEmail.eventId(current.composition_id, "first");
+  const existingFirst = await getOne(EMAIL_EVENTS, { event_id: firstId });
+  if (!existingFirst) {
+    await enqueueReportEmail(student, current, "first", usage, mode);
+    return;
   }
+  if (current.status === "completed" && existingFirst.report_snapshot
+    && !existingFirst.report_snapshot.completed_at) {
+    await enqueueReportEmail(student, current, "complete", usage, mode);
+  }
+}
+
+async function enqueueReportEmail(student, composition, phase, usage, mode) {
+  await writingReportEmail.enqueue(db, student, composition, phase, usage, mode);
 }
 
 function validateLanguageResult(result, units) {
@@ -2355,7 +2438,7 @@ async function performReviewJob(student, job) {
     const currentJob = jobResult.data && jobResult.data[0];
     usageRow = usageResult.data && usageResult.data[0];
     if (!currentJob || currentJob.status !== "processing" || !secretMatches(currentJob.lease_token, job.lease_token)) return;
-    if (!current || current.active_job_id !== job.job_id || !reviewScopeMatches(job, current, job.review_mode, job.rubric_id)) {
+    if (!current || current.deleted_at || current.active_job_id !== job.job_id || !reviewScopeMatches(job, current, job.review_mode, job.rubric_id)) {
       await transaction.collection(JOBS).doc(currentJob._id).update({
         status: "superseded", lease_token: null, lease_until: null, next_retry_at: null,
         finished_at: now, updated_at: now,
@@ -2391,8 +2474,8 @@ async function performReviewJob(student, job) {
       "standardized_review", "language_review", "rewrite_results", "active_job",
     ]));
     await transaction.collection(JOBS).doc(currentJob._id).update({
-      status: "succeeded", error_code: null, lease_token: null, lease_until: null,
-      next_retry_at: null, finished_at: now, updated_at: now,
+      status: "succeeded", error_code: null, validation_status: "passed", validation_safe_error_code: null, validated_at: now, published_at: now,
+      lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now,
     });
     await transaction.collection(USAGE).doc(usageRow._id).update({ status: "succeeded", succeeded_at: now, updated_at: now });
     outcome = "succeeded";
@@ -2405,7 +2488,8 @@ async function performReviewJob(student, job) {
       try { await db.collection(OBSERVATIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).remove(); }
       catch (error) { console.error("writingTutor stale observation cleanup failed", error); }
     }
-    await enqueueReviewEmail(student, usageRow || { usage_id: job.usage_id }, prepared, job.review_mode);
+    try { await enqueueReviewEmail(student, usageRow || { usage_id: job.usage_id }, prepared, job.review_mode); }
+    catch (error) { console.error("writingTutor review email enqueue deferred", error && error.message); }
   }
   return { status: outcome, review: outcome === "succeeded" ? review : null };
 }
@@ -2527,6 +2611,7 @@ async function enqueueRewriteJob(student, composition, event, items) {
     telemetry_version: TOKEN_TELEMETRY_VERSION,
     token_usage_audit_status: "pending",
     token_usage_persistence_error: false,
+    validation_status: "pending", validation_safe_error_code: null, validated_at: null, published_at: null,
     status: "queued",
     attempt_count: 0,
     error_code: null,
@@ -2536,6 +2621,7 @@ async function enqueueRewriteJob(student, composition, event, items) {
     created_at: now,
     updated_at: now,
     started_at: null,
+    claimed_at: null,
     finished_at: null,
   };
   const pending = {
@@ -2552,7 +2638,7 @@ async function enqueueRewriteJob(student, composition, event, items) {
         composition_id: composition.composition_id, student_uid: student.auth_uid,
       }).limit(1).get();
       const current = compositionResult.data && compositionResult.data[0];
-      if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+      if (!current || current.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
       if (Number(current.revision || 1) !== Number(job.composition_revision || 1)) {
         throw new Error("COMPOSITION_REVISION_CHANGED");
       }
@@ -2679,7 +2765,7 @@ async function performRewriteJob(student, job) {
     if (!currentJob || currentJob.status !== "processing"
       || !secretMatches(currentJob.lease_token, job.lease_token)) return;
     const currentPending = current && current.pending_rewrite_check;
-    if (!current || current.active_job_id !== job.job_id
+    if (!current || current.deleted_at || current.active_job_id !== job.job_id
       || Number(current.revision || 1) !== Number(job.composition_revision || 1)
       || !currentPending || currentPending.operation_id !== job.operation_id
       || currentPending.payload_hash !== job.payload_hash) {
@@ -2700,11 +2786,25 @@ async function performRewriteJob(student, job) {
       updated_at: now,
     }, ["rewrite_results", "pending_rewrite_check", "active_job"]));
     await transaction.collection(JOBS).doc(currentJob._id).update({
-      status: "succeeded", error_code: null, lease_token: null, lease_until: null,
-      next_retry_at: null, finished_at: now, updated_at: now,
+      status: "succeeded", error_code: null, validation_status: "passed", validation_safe_error_code: null, validated_at: now, published_at: now,
+      lease_token: null, lease_until: null, next_retry_at: null, finished_at: now, updated_at: now,
     });
     outcome = "succeeded";
   });
+  if (outcome === "succeeded") {
+    try {
+      const completed = await ownedComposition(student, composition.composition_id);
+      const first = await getOne(EMAIL_EVENTS, {
+        event_id: writingReportEmail.eventId(completed.composition_id, "first"),
+      });
+      if (completed.status === "completed" && first && first.report_snapshot
+        && !first.report_snapshot.completed_at) {
+        await enqueueReportEmail(student, completed, "complete", { usage_id: job.usage_id }, "general_language");
+      }
+    } catch (error) {
+      console.error("writingTutor completion email enqueue deferred", error && error.message);
+    }
+  }
   return { status: outcome, results: outcome === "succeeded" ? enrichedResults : null };
 }
 
@@ -2774,7 +2874,7 @@ async function confirmRevisionScanImport(student, event) {
   await db.runTransaction(async (transaction) => {
     const result = await transaction.collection(COMPOSITIONS).where({ composition_id: composition.composition_id, student_uid: student.auth_uid }).limit(1).get();
     const current = result.data && result.data[0];
-    if (!current) throw new Error("COMPOSITION_NOT_FOUND");
+    if (!current || current.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
     const currentPending = current.pending_revision_scan;
     if (!currentPending && Array.isArray(current.scanned_rewrite_drafts)
       && current.scanned_rewrite_drafts.some((item) => item && item.operation_id === operationId)) return;
@@ -2843,11 +2943,13 @@ exports.main = async (event = {}) => {
     const action = text(event.action, 80);
     if (action === "processQueuedJob") return await processQueuedJob(event);
     const student = await authenticatedStudent();
+    if (action === "getCheckinSummary") return await require("./checkin-summary").getCheckinSummary(db, student, event);
     await retryPrivatePhotoCleanup(student);
     if (action === "createComposition") return await createComposition(student, event);
     if (action === "listCompositions") return await listCompositions(student);
     if (action === "discardEmptyComposition") return await discardEmptyComposition(student, event);
     if (action === "discardDraftComposition") return await discardDraftComposition(student, event);
+    if (action === "deleteComposition") return await deleteComposition(student, event);
     if (action === "getComposition") return await getComposition(student, event);
     if (action === "startPhotoUpload") return await startPhotoUpload(student, event);
     if (action === "finishPhotoUpload") return await finishPhotoUpload(student, event);

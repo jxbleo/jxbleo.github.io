@@ -1,9 +1,11 @@
 "use strict";
 
 const REFRESH_KIND = "ir-coaching-v2";
+const UNIFIED_KIND = "ir-feedback-v5";
+function isUnified(job) { return job && job.refresh_kind === UNIFIED_KIND; }
 const OVERWRITE_KIND = "ir-analysis-overwrite-v3";
 function isOverwrite(job) { return job && job.refresh_kind === OVERWRITE_KIND; }
-function isRefresh(job) { return job && (job.refresh_kind === REFRESH_KIND || isOverwrite(job)); }
+function isRefresh(job) { return job && (job.refresh_kind === REFRESH_KIND || isOverwrite(job) || isUnified(job)); }
 function assertSource(job, response, report) {
   if (!isRefresh(job)) return;
   if (isOverwrite(job)) {
@@ -39,4 +41,4 @@ function preserveAssessment(previous, generated) {
   return result;
 }
 function failureStatus(job, response) { return isRefresh(job) && response && response.report && response.report_id ? "ready" : "failed"; }
-module.exports = { REFRESH_KIND, OVERWRITE_KIND, isOverwrite, isRefresh, assertSource, preserveAssessment, failureStatus };
+module.exports = { REFRESH_KIND, OVERWRITE_KIND, UNIFIED_KIND, isUnified, isOverwrite, isRefresh, assertSource, preserveAssessment, failureStatus };

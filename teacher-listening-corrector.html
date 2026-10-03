@@ -4,15 +4,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Mr. Cat · Teacher Transcript Corrector</title>
-  <link rel="stylesheet" href="assets/listening-corrector/transcript-corrector.css?v=20260924-selected-resize-1">
-  <link rel="stylesheet" href="assets/css/teacher-listening-corrector.css?v=20260924-compact-1">
+  <link rel="stylesheet" href="assets/listening-corrector/transcript-corrector.css?v=20260925-auto-text-1">
+  <link rel="stylesheet" href="assets/css/teacher-listening-corrector.css?v=20260927-word-policy-1">
 </head>
-<body>
-  <header class="teacher-corrector-bar" id="teacher-corrector-bar" hidden><a href="teacher.html?view=listening" class="secondary-button">← Teacher Listening</a><label>Live material <select id="teacher-corrector-material"><option value="">Choose material</option></select></label><button type="button" id="teacher-corrector-load" class="secondary-button">Open live transcript</button><span id="teacher-corrector-state" role="status" aria-live="polite"></span><button type="button" id="teacher-corrector-apply" class="primary-button" disabled>更正并发布</button></header>
+<body data-corrector-mode="teacher">
+
   <p id="teacher-corrector-access" role="status">Checking teacher access…</p>
   <p id="teacher-corrector-signin" hidden><a href="teacher.html">Open Teacher sign-in</a></p>
   <main class="corrector-main" hidden>
-    <section class="load-card" id="load-card">
+      <aside class="sentence-panel" aria-label="Transcript sentences">
+        <div class="panel-header sentence-panel-header">
+          <div><span class="step-label">SENTENCES</span><strong id="sentence-count">0</strong></div>
+          <button class="settings-toggle-button" id="settings-toggle-button" type="button" aria-label="Open quality and settings" aria-controls="settings-drawer" aria-expanded="false" title="Quality and settings">⚙</button>
+        </div>
+        <label class="material-picker"><span class="visually-hidden">Listening material</span><select id="teacher-corrector-material"><option value="">Choose material</option></select></label>
+        <label class="search-field"><span class="visually-hidden">Search transcript</span><input id="sentence-search" type="search" placeholder="Search sentences"></label>
+        <div class="sentence-list" id="sentence-list"></div>
+        <div class="sidebar-status"><span id="teacher-corrector-state" role="status" aria-live="polite"></span><span class="session-status" id="session-status">Ready</span></div>
+      </aside>
+      <header class="teacher-corrector-bar" id="teacher-corrector-bar">
+        <a href="teacher.html?view=listening" class="secondary-button back-button" aria-label="Back to Teacher Listening" title="Back to Teacher Listening">←</a>
+        <div class="material-identity visually-hidden"><strong id="material-name">Transcript</strong><span id="material-meta"></span></div>
+        <div class="workspace-actions">
+          <button id="replace-files-button" type="button" hidden>Replace files</button>
+          <button class="secondary-button history-button" id="undo-correction-button" type="button" disabled><span>Undo</span><span aria-hidden="true">←</span></button>
+          <button class="secondary-button history-button" id="redo-correction-button" type="button" disabled><span>Redo</span><span aria-hidden="true">→</span></button>
+          <button class="secondary-button" id="teacher-corrector-import" type="button">Import</button>
+          <button class="secondary-button" id="export-correction-button" type="button">Export</button>
+        </div>
+        <button type="button" id="teacher-corrector-apply" class="primary-button" disabled>Update</button>
+      </header>
+    <p class="teacher-corrector-empty" id="teacher-corrector-empty" role="status">Choose a published Listening material to open its transcript and waveform.</p>
+    <section class="load-card" id="load-card" hidden>
       <div class="load-heading">
         <span class="step-label">01 · OPEN A MATCHING PAIR</span>
         <h2>Upload a timestamped JSON, or choose an audio and JSON pair</h2>
@@ -39,24 +62,6 @@
     </section>
 
     <section class="corrector-workspace" id="corrector-workspace" hidden>
-      <div class="workspace-topbar">
-        <div class="material-identity">
-          <span class="step-label">02 · CORRECT TRANSCRIPT</span>
-          <strong id="material-name">Transcript</strong>
-          <span id="material-meta"></span>
-        </div>
-        <div class="workspace-actions">
-          <span class="session-status" id="session-status">Ready</span>
-          <button class="secondary-button" id="replace-files-button" type="button">Replace files</button>
-          <button class="secondary-button" id="undo-correction-button" type="button" disabled>Undo</button>
-          <button class="secondary-button" id="redo-correction-button" type="button" disabled>Redo</button>
-          <button class="settings-toggle-button" id="settings-toggle-button" type="button" aria-label="Open quality and settings" aria-controls="settings-drawer" aria-expanded="false" title="Quality and settings">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8.2 4.8v-2.2l-2.3-.8a7.5 7.5 0 0 0-.6-1.4l1.1-2.2-1.6-1.6-2.2 1.1a7.5 7.5 0 0 0-1.4-.6L12.4 3h-2.2l-.8 2.3a7.5 7.5 0 0 0-1.4.6L5.8 4.8 4.2 6.4l1.1 2.2a7.5 7.5 0 0 0-.6 1.4l-2.3.8V13l2.3.8c.1.5.3 1 .6 1.4l-1.1 2.2L5.8 19 8 17.9c.4.3.9.5 1.4.6l.8 2.3h2.2l.8-2.3c.5-.1 1-.3 1.4-.6l2.2 1.1 1.6-1.6-1.1-2.2c.3-.4.5-.9.6-1.4l2.3-.7Z"/></svg>
-          </button>
-          <button class="primary-button" id="export-correction-button" type="button">Export corrected JSON</button>
-        </div>
-      </div>
-
       <section class="waveform-card" aria-label="Audio waveform editor">
         <div class="waveform-toolbar">
           <button class="play-button" id="play-selection-button" type="button" aria-label="Play selected sentence">▶</button>
@@ -75,54 +80,39 @@
           <div id="corrector-waveform"></div>
           <div id="corrector-timeline"></div>
         </div>
-        <p class="waveform-hint">Select a sentence, then drag its left or right edge to adjust its timing. The other sentences stay fixed. Existing overlaps are red.</p>
       </section>
 
       <div class="editing-layout">
-        <aside class="sentence-panel" aria-label="Transcript sentences">
-          <div class="panel-header">
-            <div><span class="step-label">SENTENCES</span><strong id="sentence-count">0</strong></div>
-            <label class="search-field"><span class="visually-hidden">Search transcript</span><input id="sentence-search" type="search" placeholder="Search"></label>
-          </div>
-          <div class="sentence-list" id="sentence-list"></div>
-        </aside>
-
         <section class="sentence-editor" aria-labelledby="editor-heading">
           <div class="panel-header editor-header">
-            <div><span class="step-label">SELECTED SENTENCE</span><strong id="editor-heading">Sentence 1</strong></div>
-            <div class="sentence-navigation">
-              <button class="icon-button" id="previous-sentence-button" type="button" aria-label="Previous sentence">←</button>
-              <button class="icon-button" id="next-sentence-button" type="button" aria-label="Next sentence">→</button>
+            <div class="editor-heading-group">
+              <div><span class="step-label">SELECTED SENTENCE</span><strong id="editor-heading">Sentence 1</strong></div>
+              <div class="sentence-navigation">
+                <button class="icon-button" id="previous-sentence-button" type="button" aria-label="Previous sentence">←</button>
+                <button class="icon-button" id="next-sentence-button" type="button" aria-label="Next sentence">→</button>
+              </div>
             </div>
+            <label class="field-label speaker-header-field">Speaker<input id="speaker-editor" type="text" autocomplete="off"></label>
           </div>
 
           <div class="editor-body">
-            <label class="field-label">Speaker
-              <input id="speaker-editor" type="text" autocomplete="off">
-            </label>
             <label class="field-label sentence-text-field">Sentence text
-              <textarea id="text-editor" rows="6" spellcheck="true"></textarea>
+              <textarea id="text-editor" rows="1" spellcheck="true"></textarea>
               <small>For Split, place the text cursor between two words and the audio playhead at the matching sound.</small>
             </label>
 
-            <div class="time-editor-grid">
-              <div class="time-editor-card">
-                <span>Start</span>
-                <input id="start-time-editor" type="text" inputmode="decimal" aria-label="Sentence start time">
-                <div class="nudge-row">
-                  <button type="button" data-nudge="start:-0.05">−0.05</button>
-                  <button type="button" data-nudge="start:0.05">+0.05</button>
-                  <button type="button" data-set-boundary="start">Use playhead</button>
+            <div class="sentence-policy" aria-label="Student practice settings">
+              <div class="sentence-mode-row">
+                <strong>Student task</strong>
+                <div class="sentence-mode-buttons" role="group" aria-label="Selected sentence mode">
+                  <button type="button" data-practice-mode="dictation" aria-pressed="true">Dictation</button>
+                  <button type="button" data-practice-mode="listen_only" aria-pressed="false">Listen only</button>
+                  <button type="button" data-practice-mode="skip" aria-pressed="false">Skip</button>
                 </div>
               </div>
-              <div class="time-editor-card">
-                <span>End</span>
-                <input id="end-time-editor" type="text" inputmode="decimal" aria-label="Sentence end time">
-                <div class="nudge-row">
-                  <button type="button" data-nudge="end:-0.05">−0.05</button>
-                  <button type="button" data-nudge="end:0.05">+0.05</button>
-                  <button type="button" data-set-boundary="end">Use playhead</button>
-                </div>
+              <div id="provided-word-controls" class="provided-word-controls">
+                <div class="provided-word-heading"><strong>Give words</strong><span>Tap a word to show it to students instead of asking them to type it.</span></div>
+                <div id="provided-word-list" class="provided-word-list" role="group" aria-label="Words shown to students"></div>
               </div>
             </div>
 
@@ -138,12 +128,16 @@
           </div>
         </section>
 
+
+      </div>
+    </section>
         <aside class="qa-panel settings-drawer" id="settings-drawer" aria-label="Quality and settings" hidden>
           <div class="panel-header settings-drawer-header">
             <div><span class="step-label">QUALITY &amp; SETTINGS</span><strong id="qa-heading">Ready</strong></div>
             <button class="drawer-close-button" id="settings-close-button" type="button" aria-label="Close quality and settings">×</button>
           </div>
           <div class="qa-summary" id="qa-summary"></div>
+          <div class="settings-actions"><button class="secondary-button" id="teacher-corrector-load" type="button">Reload live</button><button class="secondary-button" id="teacher-corrector-audio" type="button">Use local audio</button></div>
           <div class="keyboard-card">
             <strong>Shortcuts</strong>
             <dl>
@@ -153,18 +147,46 @@
               <div><dt>↑ / ↓</dt><dd>Previous / next</dd></div>
             </dl>
           </div>
-          <p class="local-note">Your edits stay in this tab until you export or apply the correction. Export regularly during a long correction session.</p>
+          <p class="local-note">Update publishes the correction. Export downloads a JSON copy. Unpublished edits are backed up in this browser tab.</p>
         </aside>
-      </div>
-    </section>
   </main>
+
+  <div class="corrector-dialog-backdrop" id="teacher-corrector-progress" hidden>
+    <div class="corrector-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="teacher-corrector-progress-title" aria-describedby="teacher-corrector-progress-text">
+      <div class="progress-symbol" id="teacher-corrector-progress-symbol" aria-hidden="true"></div>
+      <h2 id="teacher-corrector-progress-title">Updating Listening material</h2>
+      <p id="teacher-corrector-progress-text" role="status" aria-live="polite">Checking and publishing your changes…</p>
+      <button class="primary-button" id="teacher-corrector-progress-close" type="button" hidden>Close</button>
+    </div>
+  </div>
+  <div class="corrector-dialog-backdrop" id="teacher-corrector-export-dialog" hidden>
+    <div class="corrector-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="teacher-corrector-export-title" aria-describedby="teacher-corrector-export-text">
+      <h2 id="teacher-corrector-export-title">Unpublished changes</h2>
+      <p id="teacher-corrector-export-text">Choose whether to update the live material before downloading JSON.</p>
+      <div class="dialog-actions"><button class="primary-button" id="teacher-corrector-save-export" type="button">Save and Export</button><button class="secondary-button" id="teacher-corrector-draft-export" type="button">Export without saving</button><button class="quiet-button" id="teacher-corrector-export-cancel" type="button">Cancel</button></div>
+    </div>
+  </div>
+  <div class="corrector-dialog-backdrop" id="teacher-corrector-leave-dialog" hidden>
+    <div class="corrector-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="teacher-corrector-leave-title" aria-describedby="teacher-corrector-leave-text">
+      <h2 id="teacher-corrector-leave-title">Unpublished changes</h2>
+      <p id="teacher-corrector-leave-text">Your edits are backed up in this browser tab. Leave the editor or keep working?</p>
+      <div class="dialog-actions"><button class="primary-button" id="teacher-corrector-stay" type="button">Keep editing</button><button class="secondary-button" id="teacher-corrector-leave" type="button">Leave editor</button></div>
+    </div>
+  </div>
+  <div class="corrector-dialog-backdrop" id="teacher-corrector-restore-dialog" hidden>
+    <div class="corrector-dialog" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="teacher-corrector-restore-title" aria-describedby="teacher-corrector-restore-text">
+      <h2 id="teacher-corrector-restore-title">Unfinished edit found</h2>
+      <p id="teacher-corrector-restore-text">Restore the edits saved in this browser tab?</p>
+      <div class="dialog-actions"><button class="primary-button" id="teacher-corrector-restore" type="button">Restore edit</button><button class="secondary-button" id="teacher-corrector-discard" type="button">Discard backup</button></div>
+    </div>
+  </div>
 
   <div class="toast" id="corrector-toast" role="status" aria-live="polite"></div>
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.32.0/cloudbase.full.js"></script>
   <script src="assets/js/config.public.js"></script>
   <script src="assets/js/cloudbase-client.js"></script>
   <script src="assets/js/auth.js"></script>
-  <script type="module" src="assets/listening-corrector/transcript-corrector.js?v=20260924-safari-audio-1"></script>
-  <script type="module" src="assets/js/teacher-listening-corrector.js?v=20260924-json-only-2"></script>
+  <script type="module" src="assets/listening-corrector/transcript-corrector.js?v=20260927-update-state-1"></script>
+  <script type="module" src="assets/js/teacher-listening-corrector.js?v=20260927-update-state-1"></script>
 </body>
 </html>

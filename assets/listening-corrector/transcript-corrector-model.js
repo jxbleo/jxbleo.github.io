@@ -1,5 +1,70 @@
 export const MIN_SEGMENT_SECONDS = 0.05
 
+const LEADING_PUNCTUATION = new Set(Array.from('"“‘([{'))
+const TRAILING_PUNCTUATION = new Set(Array.from('"”’.,!?;:…)]}—–'))
+
+// Match the server's word positions so a selected chip identifies the same slot.
+export function dictationWords(text) {
+  const words = String(text || '').trim().split(/\s+/)
+  const slots = []
+  let pending = ''
+  words.forEach((word) => {
+    let left = 0
+    let right = word.length
+    while (left < right && LEADING_PUNCTUATION.has(word[left])) left += 1
+    while (right > left && TRAILING_PUNCTUATION.has(word[right - 1])) right -= 1
+    const answer = word.slice(left, right)
+    if (!answer) {
+      if (slots.length) slots[slots.length - 1].suffix += word
+      else pending += word
+      return
+    }
+    slots.push({ prefix: pending + word.slice(0, left), answer, suffix: word.slice(right) })
+    pending = ''
+  })
+  if (pending && slots.length) slots[slots.length - 1].suffix += pending
+  return slots
+}
+
+export function segmentPracticeMode(segment) {
+  const mode = segment?.extra?.practiceMode || segment?.extra?.practice_mode || 'dictation'
+  return mode === 'context_only' ? 'listen_only' : mode
+}
+
+export function providedWordPositions(segment) {
+  const extra = segment?.extra || {}
+  const positions = extra.providedWordPositions ?? extra.provided_word_positions
+  if (Array.isArray(positions)) return positions.map(Number).filter(Number.isInteger)
+  if (!Array.isArray(extra.slots)) return []
+  return extra.slots.map((slot, index) =>
+    (slot.spellingRequirement || slot.spelling_requirement) === 'provided' ? index + 1 : 0).filter(Boolean)
+}
+
+export function remapProvidedWordPositions(oldText, newText, positions) {
+  const oldWords = dictationWords(oldText).map((word) => word.answer.toLowerCase())
+  const newWords = dictationWords(newText).map((word) => word.answer.toLowerCase())
+  if (!positions.length || oldText === newText) return [...positions]
+  const score = Array.from({ length: oldWords.length + 1 }, () => Array(newWords.length + 1).fill(0))
+  for (let i = oldWords.length - 1; i >= 0; i--) {
+    for (let j = newWords.length - 1; j >= 0; j--) {
+      score[i][j] = oldWords[i] === newWords[j] ? 1 + score[i + 1][j + 1] : Math.max(score[i + 1][j], score[i][j + 1])
+    }
+  }
+  const chosen = new Set(positions.map(Number))
+  const next = []
+  let i = 0
+  let j = 0
+  while (i < oldWords.length && j < newWords.length) {
+    if (oldWords[i] === newWords[j]) {
+      if (chosen.has(i + 1)) next.push(j + 1)
+      i += 1
+      j += 1
+    } else if (score[i + 1][j] >= score[i][j + 1]) i += 1
+    else j += 1
+  }
+  return next
+}
+
 function finiteSeconds(value, label) {
   const seconds = Number(value)
   if (!Number.isFinite(seconds) || seconds < 0) throw new Error(`${label} must be a positive time`)
@@ -167,18 +232,19 @@ export function splitSegment(segments, index, splitTime, textOffset, newId) {
   const before = current.text.slice(0, offset).trim()
   const after = current.text.slice(offset).trim()
   if (!before || !after) throw new Error('Place the text cursor between two words before splitting')
-  const leftCount = before.split(/\s+/).filter(Boolean).length
-  const positions = current.extra?.providedWordPositions || current.extra?.provided_word_positions
-  const positionKey = Array.isArray(current.extra?.providedWordPositions) ? 'providedWordPositions' : 'provided_word_positions'
+  const leftCount = dictationWords(before).length
+  const positions = providedWordPositions(current)
   const leftExtra = structuredClone(current.extra || {})
   const rightExtra = structuredClone(current.extra || {})
   delete rightExtra.unitId
   delete rightExtra.unit_id
   delete rightExtra.segment_id
   delete rightExtra.slots
-  if (Array.isArray(positions)) {
-    leftExtra[positionKey] = positions.filter((position) => Number(position) <= leftCount)
-    rightExtra[positionKey] = positions.filter((position) => Number(position) > leftCount).map((position) => Number(position) - leftCount)
+  if (positions.length || Array.isArray(current.extra?.providedWordPositions) || Array.isArray(current.extra?.provided_word_positions)) {
+    delete leftExtra.provided_word_positions
+    delete rightExtra.provided_word_positions
+    leftExtra.providedWordPositions = positions.filter((position) => position <= leftCount)
+    rightExtra.providedWordPositions = positions.filter((position) => position > leftCount).map((position) => position - leftCount)
   }
   const left = { ...structuredClone(current), extra: leftExtra, text: before, end: Math.round(time * 1000) / 1000 }
   const right = {
@@ -199,9 +265,19 @@ export function mergeSegment(segments, index, direction) {
   const secondIndex = Math.max(index, otherIndex)
   const first = segments[firstIndex]
   const second = segments[secondIndex]
+  if (segmentPracticeMode(first) !== segmentPracticeMode(second)) throw new Error('Set both sentences to the same mode before merging')
   const joined = `${String(first.text || '').trim()} ${String(second.text || '').trim()}`.trim()
+  const firstExtra = structuredClone(first.extra || {})
+  const firstPositions = providedWordPositions(first)
+  const secondPositions = providedWordPositions(second)
+  if (firstPositions.length || secondPositions.length || Array.isArray(firstExtra.providedWordPositions) || Array.isArray(firstExtra.provided_word_positions)) {
+    delete firstExtra.provided_word_positions
+    const offset = dictationWords(first.text).length
+    firstExtra.providedWordPositions = [...firstPositions, ...secondPositions.map((position) => position + offset)]
+  }
   const merged = {
     ...structuredClone(first),
+    extra: firstExtra,
     text: joined,
     start: Math.min(first.start, second.start),
     end: Math.max(first.end, second.end),

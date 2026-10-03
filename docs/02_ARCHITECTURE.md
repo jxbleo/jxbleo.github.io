@@ -1,5 +1,20 @@
 # 02 Architecture
 
+## Current source reconciliation (2026-10-03)
+
+The existing static HTML/vanilla JS/CloudBase architecture stays in place.
+Published static files were restored from a dated public snapshot so older
+local prototypes do not overwrite the current Writing, Speaking or Listening UI.
+Shared screenshot receipts, BBC teacher editing and the Listening waveform
+corrector remain active features; their source belongs in the repository.
+
+Current Individual Response generation uses `dse-individual-response-v5` action
+feedback via `_shared/speaking-ir-feedback.js` and `speaking-ir-prompts.js`.
+Private job checkpoints and bounded repair/continuation reuse accepted work;
+historical v1–v4 canonicalization and rendering remain supported. Dated v3/v4
+generation descriptions below are historical, not the current prompt contract.
+No new framework, dependency, model policy or cloud service was introduced.
+
 ## Source cleanup and publication boundary (2026-09-21)
 
 `scripts/static-site-manifest.json` is the explicit public entry list. The build
@@ -921,8 +936,7 @@ revision-1 student draft containing unsent title, prompt, or manuscript text onl
 Both functions reload ownership and lifecycle state on the server. The broader draft
 guard rejects Library-bound rows and every upload, OCR, active job, review, rewrite,
 replacement, completion, or later-revision field. `listCompositions` still omits empty
-placeholders and prunes abandoned rows only after a 30-minute safety window. There is
-no general student Composition deletion endpoint.
+placeholders and prunes abandoned rows only after a 30-minute safety window. Submitted works use the separate soft-delete endpoint documented above.
 
 `ai-tutor.html` calls the authenticated `writingTutor` function. Photos use a
 two-phase private CloudBase upload and receive short-lived URLs only inside a
@@ -1028,10 +1042,14 @@ storage, then creates/replays one metadata-only `writing_ai_jobs` row with
 Composition revision, and operation ID; a later revision or replacement cannot
 publish into it. The worker normalizes only documented provider wrappers, validates
 the strict revision-OCR schema, and the server then canonicalizes sentence-number
-markers and answer text against the current server-owned sentence list. Missing,
-duplicate, out-of-range, empty, or otherwise unresolved mappings remain explicit
-unresolved results; a model echo never silently chooses a sentence or overwrites a
-draft. A successful worker publishes a guarded `pending_revision_scan` result,
+markers and answer text against the current server-owned sentence list. The pure
+`writingTutor/revision-matching.js` helper compares unnumbered, clearly recognized
+text to each eligible original and existing private reference using normalized
+word edit distance (minimum 0.80, runner-up margin 0.15, at least four words).
+References never enter scan projections. Invalid/duplicate markers, close scores,
+OCR uncertainty and batch target conflicts remain reviewable; strong content that
+contradicts a written number removes that assignment. No additional model call or
+browser-side grading is involved. A successful worker publishes a guarded `pending_revision_scan` result,
 not live rewrite text. The student reviews mapped, `check`, and unresolved
 rows, may assign an unresolved answer manually, and explicitly confirms the rows
 to persist them as scanned sentence drafts. Only those confirmed drafts enter the
@@ -1091,7 +1109,16 @@ mainland-accessible OpenAI-compatible Chat Completions endpoints and models.
 Supported transports are Chat JSON Schema, Chat JSON Object, and a compatibility
 Responses JSON Schema path. JSON Object providers receive the complete schema,
 are checked by the same local schema validator, and receive one automatic repair
-attempt for malformed structure. Server-side `Intl.Segmenter` assigns candidate
+attempt for malformed structure. The text adapter may also declare an ordered
+list of quota-only fallback models on the same endpoint and credentials. It
+advances one position only when the current provider model returns the exact
+`AllocationQuota.FreeTierOnly` code; generic authorization, rate-limit,
+transport, timeout, and schema failures remain ordinary failures. Vision ignores
+this text fallback, so OCR model selection cannot drift when the text quota
+changes. Primary quota rejection and every fallback response remain separate
+physical calls in the append-only Token ledger, while result metadata freezes
+the primary, configured fallback order, selected model, and whether fallback occurred.
+Server-side `Intl.Segmenter` assigns candidate
 boundaries before language review. A deterministic quote-aware repair layer then
 merges boundaries inside balanced curly/straight quotations and lower-case
 continuations after quoted terminal punctuation. It never repairs across a
@@ -1143,9 +1170,19 @@ projection; history is the durable source for the student-facing round timeline.
 Daily quota reservation is server-side and idempotent by authenticated student
 plus client operation ID. A failed model request releases its reservation. A
 successful review updates the Composition and completes the usage ledger event
-in one transaction, then appends a metadata-only teacher email outbox event.
+in one transaction, then appends an idempotent teacher report email event with
+a private snapshot of the student-visible manuscript and feedback. The first
+review creates the first event; a later transition to completed creates the
+final event. Intermediate rewrite checks create neither. A teacher-approved
+Argue that completes all required sentences uses the same final event ID.
 Email delivery is a separate timer function and cannot make a successful review
 fail.
+The 2026-09-25 scoped cloud release preserves the previously deployed
+`writingTutor` bundle and adds a post-job report hook. Until `teacherAdmin` is
+released from a separately verified source, the email timer also scans first
+report events with `completion_watch: true` and creates the idempotent final
+event when an Argue-approved Composition reaches `completed`. A private cursor
+limits each scan and resumes on the next timer invocation.
 
 When a reviewed Composition is re-uploaded or its manuscript changes, `saveDraft`
 stores the candidate under `pending_replacement`. The committed manuscript,
@@ -1401,9 +1438,19 @@ endpoint remains. Unknown actions fail closed. `listeningMaintenance` source
 and its packaging configuration have been removed.
 
 Teacher authoring uses a separate ADMINONLY `listening_material_drafts` record,
-so saving work never mutates or hides the current learner-visible material.
-Draft revisions reject stale multi-tab saves; the captured publication revision
-rejects a stale publish. Publishing replaces the one current material, writes a
+and the Teacher waveform corrector serves a checked-in snapshot of the local
+browser editor's HTML/CSS/JS from `teacher-listening-corrector.html` and
+`assets/listening-corrector/`. The local tool itself is Git-excluded. Local audio is decoded in the browser and
+is never sent with a correction. `teacherAdmin.applyListeningCorrection` accepts
+reviewed timestamped rows only from an active teacher, preserves existing
+practice modes and stable unit IDs where possible, regenerates private word
+slots, then validates and publishes directly into the existing material document.
+This correction path creates no draft copy. A matching publication revision and
+the absence of an unpublished Teacher authoring draft guard the write. Authoring
+draft saves never mutate or hide the current learner-visible material. Draft
+revisions reject stale multi-tab saves; the captured publication revision
+rejects a stale publish. Publishing refuses duplicate current material IDs,
+replaces the one current document, reads it back to verify its units, and writes a
 private immutable `listening_material_history` audit row, and changes only the
 single shared content revision whenever canonical media/unit semantics change;
 metadata-only changes may keep it. Dictation progress uses that content

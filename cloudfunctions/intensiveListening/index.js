@@ -641,31 +641,31 @@ function appendActivityBuckets(daily, windows, start, seconds) {
   });
 }
 
-async function ensureActivityNotification(student, material, session, mode, now) {
+async function ensureActivityNotification(student, material, session, now) {
   if (session.notification_session_id) return session;
   // The original progress notifier still owns the immediate Started event.
   // Bind the time session to that same thread so a long first
   // unit cannot create a second bell/email thread at the 60-second flush.
   let progress = await loadBestRecord(student, material);
-    if (progress.notification_session_status !== "active" || !progress.notification_session_id) {
-      const summary = recordNotificationSummary(progress, null, material);
-      const sessionId = notifications.createSessionId();
-      const fields = notificationUpdateFields({
-        sessionId, status: "active", context: "self_study", assignmentId: null,
-        target: 100, now, startSummary: summary, latestSummary: summary,
-        dueAt: notifications.sessionDeadline(now), practiceTrack: "dictation",
-      });
-      const claim = await claimNotificationSession(student, material, progress, fields);
-      progress = claim.record;
-      if (claim.claimed) {
-        await createSessionEvent(notifications.buildSessionEvent({
-          student, material, record: progress, sessionId, phase: "started", occurredAt: now,
-          startSummary: summary, endSummary: summary, targetPercentage: 100,
-          assignmentId: null, practiceContext: "self_study", practiceTrack: "dictation",
-          effectiveSeconds: session.effective_seconds,
-        }));
-      }
+  if (progress.notification_session_status !== "active" || !progress.notification_session_id) {
+    const summary = recordNotificationSummary(progress, null, material);
+    const sessionId = notifications.createSessionId();
+    const fields = notificationUpdateFields({
+      sessionId, status: "active", context: "self_study", assignmentId: null,
+      target: 100, now, startSummary: summary, latestSummary: summary,
+      dueAt: notifications.sessionDeadline(now), practiceTrack: "dictation",
+    });
+    const claim = await claimNotificationSession(student, material, progress, fields);
+    progress = claim.record;
+    if (claim.claimed) {
+      await createSessionEvent(notifications.buildSessionEvent({
+        student, material, record: progress, sessionId, phase: "started", occurredAt: now,
+        startSummary: summary, endSummary: summary, targetPercentage: 100,
+        assignmentId: null, practiceContext: "self_study", practiceTrack: "dictation",
+        effectiveSeconds: session.effective_seconds,
+      }));
     }
+  }
   if (progress.notification_session_status !== "active" || !progress.notification_session_id) return session;
   return saveActivitySession(session, { notification_session_id: progress.notification_session_id, updated_at: now });
 }
@@ -790,7 +790,7 @@ async function recordLearningActivity(student, event, set, material) {
   if (duplicate) {
     return { success: true, duplicate: true, accepted_seconds: Math.max(0, Number(session.effective_seconds) || 0), session: safeActivitySession(session) };
   }
-  session = await ensureActivityNotification(student, material, session, mode, now);
+  session = await ensureActivityNotification(student, material, session, now);
   if (lock) await db.collection(LEARNING_ACTIVITY).doc(activityLeaseId(student)).update({ status: "active", active_session_id: sessionId, last_received_at: now, updated_at: now });
   return { success: true, accepted_seconds: Math.max(0, Number(session.effective_seconds) || 0), accepted_span_seconds: total, clamped: total < requestedTotal, session: safeActivitySession(session) };
 }
@@ -1024,7 +1024,6 @@ async function bootstrap(profile, event, set, material) {
   best = await repairPolicyProgress(student, set, material, best, false);
   let active = best;
   let replayMode = false;
-  let assignment = null;
   if (event.assignment_id) {
     throw new Error("LISTENING_NOT_ASSIGNABLE");
   }
@@ -1039,17 +1038,11 @@ async function bootstrap(profile, event, set, material) {
     progress: responseProgress(material, active, replayMode ? best : null),
     slot_disputes: await requesterDisputes(profile, material),
     replay_id: replayMode ? active.replay_id : null,
-    assignment_id: assignment ? String(assignment.assignment_id || assignment._id) : null,
+    assignment_id: null,
     source_label: String(set.source_label || material.source_label || notifications.fallbackSourceMetadata(material).source_label || ""),
     series_label: String(set.series_label || material.series_label || notifications.fallbackSourceMetadata(material).series_label || ""),
     linked_practice: linkedPractice,
-    assignment_context: assignment ? {
-      assignment_id: String(assignment.assignment_id || assignment._id),
-      due_at: assignment.due_at || assignment.assigned_at || null,
-      completion_target: Number(assignment.passing_percentage == null ? 100 : assignment.passing_percentage),
-      status: String(assignment.status || "to_do"),
-      required_listening_tracks: Array.isArray(assignment.required_listening_tracks) ? assignment.required_listening_tracks : [],
-    } : null,
+    assignment_context: null,
   };
   return { ...base, listening_version: 3, tracks: base.material.tracks };
 }
@@ -1309,7 +1302,7 @@ exports.main = async (event = {}) => {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return await closeLearningActivity(profile, event, set, material);
     }
-    if (action === "bootstrap") return await bootstrap(profile, event, set, material);
+    if (action === "bootstrap" || action === "warm") return await bootstrap(profile, event, set, material);
     if (action === "check") {
       if (profile.role !== "student") throw new Error("STUDENT_REQUIRED");
       return await checkUnit(profile, event, set, material);

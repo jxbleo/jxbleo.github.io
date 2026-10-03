@@ -2,9 +2,13 @@
   'use strict';
   var root = document.getElementById('view-listening');
   if (!root) return;
-  var state = { materials: [], selected: '', source: null, draftRevision: 0, enabled: { dictation: true }, tracks: { dictation: [] } };
+  var state = { materials: [], sort: 'updated', selected: '', source: null, draftRevision: 0, enabled: { dictation: true }, tracks: { dictation: [] } };
   var list = document.getElementById('teacher-listening-material-list');
   var editor = document.getElementById('teacher-listening-editor');
+  var library = document.getElementById('teacher-listening-library');
+  var homeHeading = document.getElementById('teacher-listening-home-heading');
+  var search = document.getElementById('teacher-listening-search');
+  var materialRequest = 0;
   var message = document.getElementById('teacher-listening-message');
   function $(id) { return document.getElementById(id); }
   function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]; }); }
@@ -19,15 +23,49 @@
     document.querySelectorAll('.dashboard-view').forEach(function(view) { view.hidden = view !== root; });
     document.querySelectorAll('.tab-button').forEach(function(button) { button.classList.toggle('active', button.getAttribute('data-view') === 'listening'); });
   }
+  function sortListeningMaterials(materials, mode) {
+    var field = mode === 'uploaded' ? 'created_at' : 'updated_at';
+    return materials.slice().sort(function(left, right) {
+      var leftDate = new Date(left[field] || 0).getTime() || 0;
+      var rightDate = new Date(right[field] || 0).getTime() || 0;
+      return rightDate - leftDate || String(left.material_id || '').localeCompare(String(right.material_id || ''));
+    });
+  }
   function renderList() {
-    if (!state.materials.length) { list.innerHTML = '<div class="empty-card"><strong>No Listening materials yet.</strong>Create a reviewed material to begin.</div>'; return; }
-    list.innerHTML = state.materials.map(function(item) {
+    var query = String(search && search.value || '').trim().toLowerCase();
+    var rows = sortListeningMaterials(state.materials, state.sort).filter(function(item) {
+      return [item.title, item.material_id, item.source_label, item.series_label].join(' ').toLowerCase().indexOf(query) !== -1;
+    });
+    if ($('teacher-listening-count')) $('teacher-listening-count').textContent = 'YOUR MATERIALS · ' + rows.length;
+    if (!rows.length) {
+      list.innerHTML = '<div class="empty-card"><strong>' + (state.materials.length ? 'No matching materials.' : 'No Listening materials yet.') + '</strong>' + (state.materials.length ? 'Try another title, source, or material ID.' : 'Create a reviewed material to begin.') + '</div>';
+      return;
+    }
+    list.innerHTML = rows.map(function(item) {
       var tracks = item.tracks || {};
       var dictation = tracks.dictation && tracks.dictation.segment_count || 0;
       var published = item.has_published === true && item.publication_status === 'published';
-      var corrector = published ? '<a class="teacher-listening-material-correct" href="teacher-listening-corrector.html?material=' + encodeURIComponent(item.material_id) + '">Edit Json</a>' : '';
-      return '<article class="teacher-listening-material-card' + (item.material_id === state.selected ? ' is-active' : '') + '" tabindex="0" role="button" data-listening-material-id="' + escapeHtml(item.material_id) + '"><span class="status">' + escapeHtml(item.publication_status || 'draft') + '</span><h3>' + escapeHtml(item.title || item.material_id) + '</h3><p>' + escapeHtml(item.material_id) + ' · ' + dictation + ' Dictation</p>' + corrector + '</article>';
+      var status = item.publication_status || 'draft';
+      var corrector = published ? '<a class="teacher-listening-material-correct" href="teacher-listening-corrector.html?material=' + encodeURIComponent(item.material_id) + '" aria-label="Edit Json: ' + escapeHtml(item.title || item.material_id) + '">Edit Json ↗</a>' : '';
+      return '<article class="teacher-listening-material-card' + (item.material_id === state.selected ? ' is-active' : '') + '">' +
+        '<button class="teacher-listening-material-open" type="button" data-listening-material-id="' + escapeHtml(item.material_id) + '"><span class="teacher-media-material-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10v4M7 6v12M12 3v18M17 7v10M21 10v4"></path></svg></span><span class="teacher-media-material-copy"><strong>' + escapeHtml(item.title || item.material_id) + '</strong><span>' + escapeHtml(item.series_label || item.source_label || item.material_id) + ' · ' + dictation + ' Dictation units</span><small>' + escapeHtml(item.material_id) + '</small></span><span class="status' + (published ? ' is-published' : '') + '">' + escapeHtml(status) + '</span><span class="teacher-media-chevron" aria-hidden="true">›</span></button>' + corrector + '</article>';
     }).join('');
+  }
+  function showEditor() {
+    if (library) library.hidden = true;
+    if (homeHeading) homeHeading.hidden = true;
+    editor.hidden = false;
+    if ($('teacher-listening-back')) $('teacher-listening-back').focus({ preventScroll: true });
+    root.scrollIntoView({ block: 'start' });
+  }
+  function showLibrary() {
+    materialRequest += 1;
+    editor.hidden = true;
+    if (library) library.hidden = false;
+    if (homeHeading) homeHeading.hidden = false;
+    setMessage('');
+    var selectedCard = Array.prototype.find.call(list.querySelectorAll('[data-listening-material-id]'), function(button) { return button.getAttribute('data-listening-material-id') === state.selected; });
+    if (selectedCard || search) (selectedCard || search).focus({ preventScroll: true });
   }
   function sourceTrack(source, track) {
     if (source && Array.isArray(source.units) && source.units.length) {
@@ -90,10 +128,11 @@
     $('teacher-listening-status').textContent = source.publication_status || 'Draft';
     $('teacher-listening-hide').hidden = source.has_published !== true && source.publication_status !== 'published';
     $('teacher-listening-corrector-link').href = id ? 'teacher-listening-corrector.html?material=' + encodeURIComponent(id) : 'teacher-listening-corrector.html';
-    editor.hidden = false;
+    showEditor();
     renderList();
   }
   function blank() {
+    materialRequest += 1;
     state.selected = '';
     fill({ material_id: '', title: '', source: { materialId: '', title: '', segments: [], tracks: { dictation: { segments: [] } } }, publication_status: 'draft' });
   }
@@ -142,8 +181,15 @@
     return call('listListeningMaterials').then(function(result) { state.materials = result.materials || []; renderList(); }).catch(function(error) { setMessage(error.message, 'error'); });
   }
   function loadMaterial(id) {
-    state.selected = id;
-    return call('getListeningMaterial', { material_id: id }).then(function(result) { fill(result.material); }).catch(function(error) { setMessage(error.message, 'error'); });
+    if (state.source && state.selected === id) { showEditor(); return Promise.resolve(); }
+    var request = ++materialRequest;
+    setMessage('Opening material…');
+    return call('getListeningMaterial', { material_id: id }).then(function(result) {
+      if (request !== materialRequest) return;
+      state.selected = id;
+      setMessage('');
+      fill(result.material);
+    }).catch(function(error) { if (request === materialRequest) setMessage(error.message, 'error'); });
   }
   function save(action, successText) {
     var value;
@@ -152,9 +198,19 @@
     return call(action, { material_id: value.material_id, material: value, draft_revision: state.draftRevision }).then(function(result) { showValidation(result); state.selected = value.material_id; state.draftRevision = Math.max(0, Number(result.material && result.material.draft_revision) || state.draftRevision); setMessage(successText, 'success'); return loadMaterials().then(function() { return result; }); }).catch(function(error) { setMessage(error.message, 'error'); throw error; });
   }
   document.querySelectorAll('[data-view="listening"]').forEach(function(button) { button.addEventListener('click', function() { setView(); loadMaterials(); }); });
+  document.querySelectorAll('[data-listening-sort]').forEach(function(button) { button.addEventListener('click', function() {
+    state.sort = button.getAttribute('data-listening-sort');
+    document.querySelectorAll('[data-listening-sort]').forEach(function(option) {
+      var active = option === button;
+      option.classList.toggle('active', active);
+      option.setAttribute('aria-pressed', String(active));
+    });
+    renderList();
+  }); });
+  if (search) search.addEventListener('input', renderList);
+  if ($('teacher-listening-back')) $('teacher-listening-back').addEventListener('click', showLibrary);
   document.getElementById('teacher-listening-new').addEventListener('click', function() { setView(); blank(); });
   list.addEventListener('click', function(event) { if (event.target.closest('.teacher-listening-material-correct')) return; var card = event.target.closest('[data-listening-material-id]'); if (card) loadMaterial(card.getAttribute('data-listening-material-id')); });
-  list.addEventListener('keydown', function(event) { if (event.target.closest('.teacher-listening-material-correct')) return; if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('[data-listening-material-id]')) { event.preventDefault(); loadMaterial(event.target.closest('[data-listening-material-id]').getAttribute('data-listening-material-id')); } });
   document.querySelectorAll('[data-listening-add-segment]').forEach(function(button) { button.addEventListener('click', function() {
     var track = button.getAttribute('data-listening-add-segment');
     var segments = state.tracks[track] || [];
@@ -195,12 +251,12 @@
       renderTrackRows(track);
     });
   });
-  document.querySelectorAll('[data-listening-editor-tab]').forEach(function(button) { button.addEventListener('click', function() { var tab = button.getAttribute('data-listening-editor-tab'); document.querySelectorAll('[data-listening-editor-tab]').forEach(function(item) { item.classList.toggle('is-active', item === button); }); document.querySelectorAll('[data-listening-editor-panel]').forEach(function(panel) { panel.hidden = panel.getAttribute('data-listening-editor-panel') !== tab; panel.classList.toggle('is-active', panel.getAttribute('data-listening-editor-panel') === tab); }); }); });
-  $('teacher-listening-save').addEventListener('click', function() { save('saveListeningDraft', 'Draft saved.'); });
+  document.querySelectorAll('[data-listening-editor-tab]').forEach(function(button) { button.addEventListener('click', function() { var tab = button.getAttribute('data-listening-editor-tab'); document.querySelectorAll('[data-listening-editor-tab]').forEach(function(item) { item.classList.toggle('is-active', item === button); item.setAttribute('aria-selected', String(item === button)); }); document.querySelectorAll('[data-listening-editor-panel]').forEach(function(panel) { panel.hidden = panel.getAttribute('data-listening-editor-panel') !== tab; panel.classList.toggle('is-active', panel.getAttribute('data-listening-editor-panel') === tab); }); }); });
+  $('teacher-listening-save').addEventListener('click', function() { save('saveListeningDraft', 'Draft saved.').catch(function() {}); });
   $('teacher-listening-validate').addEventListener('click', function() { var value; try { value = draft(); } catch (error) { showValidation({ validation: { valid: false, errors: [error.message], warnings: [] } }); return; } call('validateListeningMaterial', { material_id: value.material_id, material: value }).then(showValidation).catch(function(error) { setMessage(error.message, 'error'); }); });
   $('teacher-listening-preview').addEventListener('click', function() { var value; try { value = draft(); } catch (error) { setMessage(error.message, 'error'); return; } call('validateListeningMaterial', { material_id: value.material_id, material: value }).then(function(result) { showValidation(result); setMessage(result.validation && result.validation.valid ? 'Preview validated. Student transcript remains protected.' : 'Preview needs attention.', result.validation && result.validation.valid ? 'success' : 'error'); }); });
   $('teacher-listening-publish').addEventListener('click', function() { save('saveListeningDraft', 'Draft saved.').then(function() { return call('publishListeningMaterial', { material_id: state.selected }); }).then(function(result) { fill(result.material); setMessage('Listening material published.', 'success'); loadMaterials(); }).catch(function() {}); });
   $('teacher-listening-hide').addEventListener('click', function() { call('hideListeningMaterial', { material_id: state.selected }).then(function(result) { fill(result.material); setMessage('Listening material hidden from students.', 'success'); loadMaterials(); }).catch(function(error) { setMessage(error.message, 'error'); }); });
-  window.__MRCAT_TEACHER_LISTENING_TEST__ = { draft: draft, sourceTrack: sourceTrack, setView: setView, segmentsForDraft: segmentsForDraft };
+  window.__MRCAT_TEACHER_LISTENING_TEST__ = { draft: draft, sourceTrack: sourceTrack, setView: setView, segmentsForDraft: segmentsForDraft, sortListeningMaterials: sortListeningMaterials };
   loadMaterials();
 })(window, document);

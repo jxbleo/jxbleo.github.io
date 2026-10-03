@@ -1,5 +1,14 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## Current reconciled presentation (2026-10-03)
+
+Individual Response v5 reports focus on grounded action feedback and three
+exemplars, without scores or IO/VL grading categories. Existing historical
+reports remain readable under their original version. Writing title editing
+belongs to the sidebar; the current top toolbar keeps the full title space.
+Teacher Speaking opens the recording card with recent reports. These are
+published behaviors retained by source reconciliation, not new product scope.
+
 ## 2026-09-21 — 小组讨论完整覆盖的分段分析（已部署）
 
 小组讨论报告仍须分析每位考生的每一个规范化发言轮次，不能用代表性发言抽样
@@ -480,6 +489,30 @@ BBC 这类内容应尽量保留老师可读 Markdown 源。IELTS 这类内容可
 
 ### 4.3 Intensive Listening（精听）
 
+教师端 Listening 提供与本地 Transcript Corrector 相同的波形校正界面。
+材料卡片的 Edit JSON 直接打开该材料已发布文稿和波形，无须再经过上传页面或
+第二次打开操作。教师可在常驻句子栏切换已发布材料、从顶部工具栏导入本地 JSON，
+或在设置中选用匹配的本地音频。修改句子、说话人和时间边界后点击 Update。
+选中句子的编辑卡可直接切换 Dictation、Listen only 和 Skip；Dictation
+下可逐词点击设置或取消“直接给出”，并显示已有标记。文字编辑会按词序匹配
+保留未改变的给出词，分句/合句应保留其对应词位；不同练习模式的句子不可
+直接合并。最后一个 Dictation 句子不能改成其他模式。
+当当前句子标注与已发布版本一致时，Update 不可点击；只有文字、说话人、
+时间边界、句子结构、练习模式或直接给出词有实际差异时才可发布。Undo
+回到已发布内容后恢复不可点击状态。
+进度弹窗立即出现，服务端确认正式发布后才显示可关闭的完成勾号。普通 Update
+不自动下载 JSON，教师可主动使用 Export。未发布编辑按教师及材料在当前浏览器
+标签页自动暂存，重新进入同一材料时先询问是否恢复；版本已变化时只允许下载
+旧暂存以供人工核对。浏览器返回和页内返回先阻止误离开并询问，刷新或关闭
+标签页仍使用浏览器原生离开提醒。
+有未发布编辑时，Export 必须让教师选择先保存发布再导出，或仅导出未发布草稿；
+后者不能清除未发布状态。音频仅用于本次浏览器预览；
+服务端从修正后的文本重建私有听写词位，直接替换同一材料 ID 下唯一的
+当前发布记录；校正过程中不另建草稿。已有未发布草稿时禁止直接更正，
+以免覆盖草稿。发布前拒绝同一材料 ID 的重复当前记录，发布后读回核对
+段落和修订号。更改学生练习内容会按现有 content revision 规则重新计算
+当前进度，既有完成审计和私有发布历史保留。
+
 精听使用共享的 `intensive-listening.html` 学生页面。每份带时间戳 JSON 的记录
 直接成为一个播放单元；一个审核后的单词对应一个等宽词位，标点直接显示，核对
 只做忽略大小写的固定位置机械比较。材料加载完成后直接显示首个精听单元，
@@ -699,6 +732,10 @@ flowchart TD
 - 同一次老师 Assign 操作中，同一个 set 给多个学生创建的作业应共享
   `assignment_batch_id`，供教师 View 矩阵按布置批次显示；同一个 set 即使在
   同一周重复布置，也应显示为不同 column
+- Teacher View 的学生行以当前有效学生花名册为准，再把符合 Class / Column / Date
+  筛选的 assignment progress 填入对应单元格。新入班或转班学生即使尚无匹配任务也
+  保留空行；改班保存成功后必须立即按最新 profile 班级重绘，不得等待旧 progress
+  快照刷新或继续使用快照中的旧 `class_group`。
 - Assign 参数按选中的 task 逐行设置。每个 task row 都必须有自己的 due week、
   passing percentage 和 `Earn STAR`/mastery percentage，因此同一次 Assign
   可以把不同 task 设置到不同截止周；缺少 due week 时服务器拒绝创建。
@@ -2139,7 +2176,7 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   学生点击确认或修改后取消高亮，保存时只提交纯文本。编辑器按真实段落显示，按一次 Enter 就产生
   带视觉间距的新段落，不要求学生输入第二个空行。
 - `Scan Revisions` 是可编辑 `Sentence Revision` 内的辅助入口，不是新的作文或提交类型。学生拍照或选择
-  包含改写答案的纸张后，必须在每个答案开头写已有的全局句子编号；`8`、`8.`、`8、`、`8)` 和 `(8)`
+  包含改写答案的纸张后，建议在每个答案开头写已有的全局句子编号；`8`、`8.`、`8、`、`8)` 和 `(8)`
   都有效，标点可省略，编号与答案之间建议留空格。系统只把编号用于映射到当前的句子，不会创建新的句子编号。
   选择第一张照片后不得立即上传；先进入本地照片确认页。确认页不显示 `Revision Photos` 标题，顶部只显示
   居中的当前页/总页数，例如一张为 `1/1`，两张照片随横向切换显示 `1/2` 或 `2/2`，不得显示容量式 `1/8`。
@@ -2149,13 +2186,19 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   不得继承订正长页面底部的旧滚动位置；iPad 单图预览必须限制高度，手机使用同一稳定定位逻辑。只有学生明确按下 `Start Scanning` 后，整组照片
   才作为一个有序且幂等的扫描操作上传并进入后台识别。
   扫描结果必须先经过学生 Review Scan；导入只是把确认的文字放入对应改写草稿，不会自动触发 `Check`。
-  每条识别结果使用一张卡片：顶部红色待订正框显示全局句号与原句，并作为目标句选择器；底部小框显示
-  可编辑的 OCR 改写。目标列表只允许当前仍需订正且尚未通过 `Check` 的句子，原本正确或已订正通过的
-  句子不显示且服务器也拒绝作为导入目标；同一句不能同时分配给两张扫描卡片。
-  Review Scan 页面不显示标题、说明、缺失句子汇总或匹配状态文案，只保留句子卡片和底部返回/确认操作；
-  主按钮固定为 `Confirm Scanning`，且必须等每个识别项都有唯一有效目标句和非空文字后才可用。
-  卡片内不显示手写编号或扫描字段标签；识别置信度仅用极小的高 `✓` / 中 `!` / 低 `?` 符号显示，并提供可访问说明。
-  学生按下 `Confirm Scanning` 即是明确采用当前卡片中已核对的扫描文字；它覆盖对应未完成句子的现有草稿。返回而不确认则不改动原草稿。
+  无可靠编号时，服务端用词级编辑相似度比较当前待订正原句及其已有 AI 参考改写：取两者较高分，
+  分数至少 0.80、领先第二候选至少 0.15、识别文字至少四词且 OCR 文字置信度为 high、无文字识别警告，
+  才自动配对。不新增 AI 调用、不修改识别原文、不向学生显示参考改写。短片段、近似候选、低置信度、
+  无效编号、重复编号及目标冲突留待人工选择；可靠内容指向其他句子时，不静默沿用冲突编号。
+  同批冲突整体判断，不按识别先后抢占原句；已通过或原本正确的句子始终排除。
+  配对页显示“Match Your Revisions”、阶段说明和已配对/待确认数量。卡片明确标出“Your draft → Scanned revision”，
+  原句区域复用 Draft 版本完全相同的黄色纸张底色、纹理与阴影，搭配浅绿识别文字区域。TBC 待确认卡片使用红色标签与缓慢呼吸的整卡红色底面、边框光晕（替换原白色留白，内部黄色原稿与浅绿识别区不变），确认后移除；
+  减少动态效果模式使用静态红色底面与边框提示。此提示表示待配对确认，不表示批改错误。待确认卡片初次进入时排前，操作中不跳动。
+  “Choose sentence”/“Change sentence”展开全文按钮列表，按服务端候选排序；其他卡片已占用的目标禁用。
+  识别文字默认只读，“Edit text”才展开编辑；文字变化撤回该卡确认，需要重新点击“Confirm this match”。
+  低 OCR 置信度只显示核对文字提示，不呈现原始 provider warnings 或语法反馈。
+  “Confirm and Fill”只在每条识别文字非空、目标唯一有效且所有存疑项已人工确认时可用。
+  最终确认才采用扫描文字并覆盖对应未完成草稿；返回不改动已有草稿。配对成功不代表订正正确。
   导入成功返回 Sentence Revision 时，所有需要订正的双面卡片默认翻到作答面，便于同时查看原句和扫描导入的订正。
 - AI 只负责返回受约束的分项判断。标化总分由服务器按照所选 Rubric 的求和或加权规则计算；
   是否需要改写以及改写是否通过也由服务器根据明确字段推导，模型自相矛盾的汇总字段不能直接
@@ -2218,7 +2261,7 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
 - Submit 已完成云端检查但仍有未通过句子时，不得把学生送回订正页顶部。前端必须先选中第一句
   `accepted: false` 的句子，再一次性渲染并把该卡片定位到吸顶工具栏下方。该卡片使用与学生任务清单
   Overdue 项一致的克制红色脉冲，学生开始修改该句后停止；Reduced Motion 使用静态红色边框替代脉冲。
-- 学生在 Review Scan 按下 `Confirm Scanning` 并成功导入后，页面先回到 Sentence Revision、保留
+- 学生在配对页按下 `Confirm and Fill` 并成功导入后，页面先回到 Sentence Revision、保留
   已导入文字并把所有必改卡片翻到 `Your Attempt` 面，然后立即显示 `Submit revisions now?` 弹窗。
   `Submit` 直接进入既有逐句检查提交；`Review First`、遮罩或 Escape 关闭弹窗并留在订正页逐句检查。
   弹窗必须锁定背景、约束键盘焦点并在关闭后回到 Sentence Revision 的 Submit 操作。
@@ -2248,7 +2291,7 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   词数；订正完成后切换 Draft / Revised 时分别显示原稿词数与以全部已通过 student_rewrite 重组后的
   最终稿词数。只显示当前版本的一个统计，不在逐句订正卡片重复显示，也不得为统计再次调用 AI。
 - 参考句暂不向学生前端展示。输入框提示为 `Rewrite this sentence in your own words.`。改写采用
-  语义验收而不是精确匹配，全部提交后统一反馈。完成必要逐句训练即通过；整篇重写为可选训练。
+  语义验收而不是精确匹配，全部提交后统一反馈。完成必要逐句训练即通过；完成后进入只读报告与统一打卡凭证，不再提供旧完成页的整篇重写入口。
 - 逐句改写草稿使用双层持久化。学生输入时按学生、Composition、revision 和 sentence ID 保存在
   浏览器本地，未点击 `Check` 也必须经得住刷新；点击 `Check` 后，同一批正文再写入私有
   Composition 的 `pending_rewrite_check`，由持久 Job 使用。只有检查结果成功发布后才清理相应
@@ -2266,12 +2309,19 @@ Visitor、未登录用户和非学生角色进入 AI Writing Tutor 时，不调�
   `Untitled writing` 可随时手动修改；若学生尚未手动命名，则未来再次评估时可由同一次批改响应
   补生成标题。
 - 教师可为每名学生设置上海自然日 AI 批改字数上限。仅成功的正式评估计费，OCR、失败调用和
-  重试不计；使用记录无作文正文并通过私有邮件摘要通知已启用的教师地址。
+  重试不计；使用记录无作文正文。教师作文报告邮件按本页的首次与完成规则发送给
+  已启用的教师地址。
 - 每一次真实模型请求都必须记录供应商返回的输入、输出和总 Token；OCR、模糊区域定位、正式
   批改、结构修复重试、订正照片 OCR 与改写 Check 分开记账。Token 记录只用于成本与运行健康
   统计，不改变学生字数额度。后台必须独立审计每个已结束任务；若成功/失败任务没有对应记录、
   供应商未返回 `usage`，或账本写入失败，应生成不含作文内容的教师邮件告警，不能阻断学生取得
   已成功生成的 OCR 或批改结果。
+- 视觉/OCR 模型与文字批改模型的额度策略彼此隔离。当前 Qwen 配置保持
+  `qwen3.7-flash` 处理图片；自 2026-09-13 起，文字调用以 `qwen3.8-max` 为首选、
+  `qwen3.8-max-0902` 为备用，不再先调用 Plus；只有当前模型明确返回 `AllocationQuota.FreeTierOnly` 时才可
+  进入下一个模型。普通 403、限流、超时、格式错误或其他失败不得触发切换；最后一份免费额度
+  耗尽后直接失败，不得选择付费模型。最终产物与每次物理请求都必须记录实际模型，以便老师
+  比较 Plus 与两个 Max 版本的质量和成本。
 - A Level 首发采用 Cambridge International AS & A Level English Language 9093，并把 Paper 2
   Shorter Writing、Reflective Commentary 和 Extended Writing 分成三个明确选项，避免混用
   15、10、25 分的不同量表。

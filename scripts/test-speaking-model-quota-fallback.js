@@ -17,6 +17,7 @@ function harness(responses, overrides = {}) {
     afterAttempt: async (metadata, index) => { events.push({ ...metadata, index }); },
     fetch: async (url, options) => {
       const payload = JSON.parse(options.body); requests.push(payload);
+      if (overrides.onRequest) overrides.onRequest();
       const response = responses.shift(); assert(response, "Unexpected extra physical request");
       if (response instanceof Error) throw response;
       return { status: response.status, ok: response.status === 200, headers: { get: () => `request-${requests.length}` }, text: async () => JSON.stringify(response.body) };
@@ -56,8 +57,8 @@ async function main() {
   h = harness([{ status: 403, body: quota }], { env: { ...env, SPEAKING_AI_TEXT_API_URL: "https://other.example.test/chat" } });
   await assert.rejects(h.call); assert.equal(h.requests.length, 1);
   assert.throws(() => provider.createModelProvider({ env: { ...env, SPEAKING_AI_TEXT_QUOTA_FALLBACK_MODELS: "qwen3.7-plus" } }));
-  const times = [0, 1, 2, 180001]; const originalNow = Date.now;
-  try { Date.now = () => times.shift() ?? 180001; h = harness([{ status: 403, body: quota }]); await assert.rejects(h.call, e => e.code === "SPEAKING_AI_TIMEOUT"); assert.equal(h.requests.length, 1); } finally { Date.now = originalNow; }
+  let elapsed = 0; const originalNow = Date.now;
+  try { Date.now = () => elapsed; h = harness([{ status: 403, body: quota }], { onRequest: () => { elapsed = 180001; } }); await assert.rejects(h.call, e => e.code === "SPEAKING_AI_TIMEOUT"); assert.equal(h.requests.length, 1); } finally { Date.now = originalNow; }
   let sent = 0;
   const superseded = provider.createModelProvider({ env, beforeAttempt: async () => { throw new Error("SPEAKING_JOB_SUPERSEDED"); }, fetch: async () => { sent++; } });
   await assert.rejects(() => superseded.callStructuredModel({}), /SPEAKING_JOB_SUPERSEDED/); assert.equal(sent, 0);

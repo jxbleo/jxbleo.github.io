@@ -1,0 +1,30 @@
+.bbc-edit-question { position: relative; display: inline-grid; place-items: center; flex: 0 0 auto; width: 28px; height: 28px; box-sizing: border-box; margin: 0; padding: 0; border: 1px solid #97b3a5; border-radius: 999px; color: #245840; background: #f3faf6; cursor: pointer; }
+.bbc-edit-question svg { width: 18px; height: 18px; display: block; }
+.bbc-edit-question[aria-expanded="true"] { background: #dceee2; border-color: #388863; }
+.bbc-edit-question:focus-visible { outline: 2px solid #388863; outline-offset: 3px; }
+.bbc-edit-unsaved-dot { position: absolute; top: -4px; right: -4px; width: 10px; height: 10px; box-sizing: content-box; border: 2px solid white; border-radius: 50%; background: #dc2626; box-shadow: 0 1px 3px #8a171740; pointer-events: none; }
+.bbc-edit-unsaved-dot[hidden], .bbc-question-editor[hidden] { display: none; }
+.bbc-question-editor { width: 100%; box-sizing: border-box; padding: 16px; margin: 8px 0 16px; border: 1px solid #b8d6c4; border-radius: 12px; background: #f5faf7; color: #245840; }
+.blank-question.bbc-editing-question { flex-wrap: wrap; }
+.bbc-question-editor { flex-basis: 100%; }
+.bbc-question-editor label { display: block; font-size: 14px; font-weight: 600; margin: 0 0 14px; }
+.bbc-question-editor textarea { display: block; box-sizing: border-box; width: 100%; min-height: 76px; margin-top: 6px; padding: 10px 12px; border: 1px solid #b4c8bc; border-radius: 8px; font: 400 16px/1.55 system-ui, sans-serif; color: #20392c; background: white; resize: vertical; }
+.bbc-question-editor textarea:focus { outline: 2px solid #388863; outline-offset: 2px; }
+.bbc-teacher-toolbar { max-width: min(480px, calc(100vw - 32px)); flex-wrap: wrap; align-items: center; padding: 10px; border-radius: 16px; background: #f5faf7f5; box-shadow: 0 6px 30px #102c2820; }
+.bbc-editor-status { flex: 1 1 100%; max-width: 480px; font: 500 13px/1.4 system-ui, sans-serif; color: #245840; }
+.bbc-editor-status:empty { display: none; }
+.bbc-question-editor-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.bbc-question-editor-status { flex: 1; font: 500 13px/1.4 system-ui, sans-serif; }
+.bbc-save-question { flex: 0 0 auto; padding: 9px 20px; border: 0; border-radius: 9px; background: #246b48; color: white; font: 600 14px/1.4 system-ui, sans-serif; cursor: pointer; }
+.bbc-save-question:disabled { opacity: .5; cursor: default; }
+.bbc-save-dialog { max-width: min(460px, calc(100vw - 40px)); max-height: 85vh; overflow: auto; overscroll-behavior: contain; padding: 24px; border: 0; border-radius: 18px; color: #20392c; box-shadow: 0 20px 80px #102c2840; }
+.bbc-save-dialog::backdrop { background: #122c2866; }
+.bbc-save-dialog h2 { font-size: 21px; margin: 0 0 12px; }
+.bbc-save-dialog p { line-height: 1.5; }
+.bbc-save-dialog > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.bbc-save-dialog button { padding: 10px 14px; border: 1px solid #b4c8bc; border-radius: 9px; background: white; color: #245840; cursor: pointer; }
+.bbc-save-dialog button[data-action="save"], .bbc-save-dialog button[data-action="accept"] { background: #246b48; color: white; }
+@media (max-width: 600px) { .bbc-teacher-toolbar { bottom: 72px; left: 16px; right: 16px; transform: none; } }
+
+.bbc-accept-answer { padding: 12px; border-radius: 9px; background: #f0f7f3; font-weight: 600; white-space: pre-wrap; overflow-wrap: anywhere; }
+.bbc-accept-dialog button:disabled { opacity: .5; cursor: default; }

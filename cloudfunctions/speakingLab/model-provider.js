@@ -111,7 +111,56 @@ function providerHttpErrorCode(status) {
   return "SPEAKING_AI_FAILED";
 }
 
+function retryAfterMs(response) {
+  const value = response && response.headers && response.headers.get && response.headers.get("retry-after");
+  if (value == null || value === "") return null;
+  const ms = /^\d+(?:\.\d+)?$/.test(String(value).trim()) ? Number(value) * 1000 : Date.parse(value) - Date.now();
+  return Number.isFinite(ms) ? Math.max(0, ms) : null;
+}
+
+function deadlineError() {
+  const error = new SpeakingModelError("SPEAKING_AI_TIMEOUT");
+  error.deadlineExceeded = true;
+  return error;
+}
+
+function remainingDeadlineMs(deadlineAt) {
+  return Math.max(0, Math.floor(Number(deadlineAt) - Date.now()));
+}
+
+function raceUntil(promise, deadlineAt, onTimeout) {
+  const remaining = remainingDeadlineMs(deadlineAt);
+  if (remaining <= 0) {
+    if (typeof onTimeout === "function") onTimeout();
+    Promise.resolve(promise).catch(() => {});
+    return Promise.reject(deadlineError());
+  }
+  let settled = false;
+  let timer;
+  return new Promise((resolve, reject) => {
+    timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      if (typeof onTimeout === "function") onTimeout();
+      reject(deadlineError());
+    }, remaining);
+    Promise.resolve(promise).then((value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    }, (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(error);
+    });
+  });
+}
+
 async function callOnce(input, options, config) {
+  let requestStartedAt = null;
+  const deadlineAt = Number.isFinite(Number(config.deadlineAt)) ? Number(config.deadlineAt) : Date.now() + config.timeoutMs;
   const payload = {
     model: config.model,
     messages: [
@@ -131,29 +180,52 @@ async function callOnce(input, options, config) {
   }
   let response;
   let raw;
+  let responseCompletedAt = null;
+  let controller = new AbortController();
+  let deadlineExpired = false;
   try {
-    response = await (options.fetch || fetch)(config.url, {
+    if (remainingDeadlineMs(deadlineAt) <= 0) throw deadlineError();
+    // Physical timing starts at the fetch boundary; payload construction is
+    // preparation and must not be reported as a provider call.
+    requestStartedAt = new Date();
+    response = await raceUntil((options.fetch || fetch)(config.url, {
       method: "POST",
       headers: { Authorization: `Bearer ${config.apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-      signal: typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(config.timeoutMs) : undefined,
-    });
-    raw = await response.text();
+      signal: controller.signal,
+    }), deadlineAt, () => { deadlineExpired = true; controller.abort(); });
+    raw = await raceUntil(response.text(), deadlineAt, () => { deadlineExpired = true; controller.abort(); });
+    responseCompletedAt = new Date();
   } catch (error) {
-    const timedOut = error && (error.name === "AbortError" || error.name === "TimeoutError")
+    const timedOut = deadlineExpired || error && error.deadlineExceeded || error && (error.name === "AbortError" || error.name === "TimeoutError")
       || error && /(?:abort|timed?\s*out)/i.test(String(error.message || ""));
-    throw new SpeakingModelError(timedOut ? "SPEAKING_AI_TIMEOUT" : "SPEAKING_AI_TRANSPORT_ERROR");
+    const wrapped = timedOut ? new SpeakingModelError("SPEAKING_AI_TIMEOUT") : new SpeakingModelError("SPEAKING_AI_TRANSPORT_ERROR");
+    wrapped.requestStartedAt = requestStartedAt && requestStartedAt.toISOString();
+    wrapped.responseCompletedAt = responseCompletedAt && responseCompletedAt.toISOString();
+    wrapped.durationMs = requestStartedAt ? Date.now() - requestStartedAt.getTime() : null;
+    throw wrapped;
   }
   let body;
   try { body = JSON.parse(String(raw || "").replace(/^\uFEFF/, "")); } catch (_error) {
-    throw new SpeakingModelError(response.ok ? "SPEAKING_AI_INVALID_RESPONSE" : providerHttpErrorCode(response.status), { httpStatus: response.status });
+    const error = new SpeakingModelError(response.ok ? "SPEAKING_AI_INVALID_RESPONSE" : providerHttpErrorCode(response.status), { httpStatus: response.status });
+    error.requestStartedAt = requestStartedAt && requestStartedAt.toISOString();
+    error.responseCompletedAt = responseCompletedAt && responseCompletedAt.toISOString();
+    error.durationMs = requestStartedAt ? Date.now() - requestStartedAt.getTime() : null;
+    error.retryAfterMs = retryAfterMs(response);
+    throw error;
   }
   const requestId = text(response.headers && response.headers.get && (response.headers.get("x-request-id") || response.headers.get("request-id")), 200) || text(body && body.id, 200);
   if (!response.ok || body && body.error) {
     const providerCode = text(body && body.error && (body.error.code || body.error.type), 200);
     const freeTierExhausted = isFreeTierQuotaExhausted(response.status, body, config);
     const code = providerHttpErrorCode(response.status);
-    throw new SpeakingModelError(freeTierExhausted ? "SPEAKING_AI_FREE_QUOTA_EXHAUSTED" : code, { httpStatus: response.status, providerCode, requestId, freeTierExhausted });
+    const error = new SpeakingModelError(freeTierExhausted ? "SPEAKING_AI_FREE_QUOTA_EXHAUSTED" : code, { httpStatus: response.status, providerCode, requestId, freeTierExhausted });
+    error.requestStartedAt = requestStartedAt && requestStartedAt.toISOString();
+    error.responseCompletedAt = responseCompletedAt && responseCompletedAt.toISOString();
+    error.durationMs = requestStartedAt ? Date.now() - requestStartedAt.getTime() : null;
+    error.retryAfterMs = retryAfterMs(response);
+    error.usage = normalizedUsage(body && body.usage);
+    throw error;
   }
   const choice = body && Array.isArray(body.choices) && body.choices[0];
   const rawContent = contentText(choice && choice.message && choice.message.content);
@@ -169,13 +241,22 @@ async function callOnce(input, options, config) {
   };
   let output;
   try { output = parseJsonContent(rawContent); } catch (_error) {
-    throw new SpeakingModelError("SPEAKING_AI_SCHEMA_INVALID", { httpStatus: response.status, requestId, responseDiagnostics });
+    const error = new SpeakingModelError("SPEAKING_AI_SCHEMA_INVALID", { httpStatus: response.status, requestId, responseDiagnostics });
+    error.requestStartedAt = requestStartedAt && requestStartedAt.toISOString();
+    error.responseCompletedAt = responseCompletedAt && responseCompletedAt.toISOString();
+    error.durationMs = requestStartedAt ? Date.now() - requestStartedAt.getTime() : null;
+    // A billed completion can contain invalid JSON. Keep its real Token usage.
+    error.usage = normalizedUsage(body && body.usage);
+    throw error;
   }
   return {
     output,
     usage: normalizedUsage(body && body.usage),
     request_id: requestId,
     response_diagnostics: responseDiagnostics,
+    request_started_at: requestStartedAt && requestStartedAt.toISOString(),
+    response_completed_at: responseCompletedAt && responseCompletedAt.toISOString(),
+    duration_ms: responseCompletedAt && requestStartedAt ? responseCompletedAt.getTime() - requestStartedAt.getTime() : null,
   };
 }
 
@@ -183,23 +264,31 @@ async function callStructuredModel(input = {}, options = {}) {
   const config = options.config || configuration(options.env || process.env);
   const models = [config.model, ...(config.quotaFallbackModels || [])];
   // One shared deadline, not a fresh full timeout for every fallback model.
-  const deadline = Date.now() + config.timeoutMs;
+  const requestedDeadline = typeof options.deadlineAt === "function" ? options.deadlineAt() : options.deadlineAt;
+  const deadline = Number.isFinite(Number(requestedDeadline))
+    ? Math.min(Date.now() + config.timeoutMs, Number(requestedDeadline)) : Date.now() + config.timeoutMs;
   for (let index = 0; index < models.length; index += 1) {
     if (Date.now() >= deadline) throw new SpeakingModelError("SPEAKING_AI_TIMEOUT");
-    const metadata = { model: models[index], primary_model: config.model, protocol: config.protocol, quota_fallback_index: index };
+    const metadata = { model: models[index], primary_model: config.model, protocol: config.protocol, quota_fallback_index: index, deadlineAt: deadline };
     // The server rechecks its durable-job lease before EVERY physical request.
-    const callIndex = options.beforeAttempt ? await options.beforeAttempt(metadata) : null;
+    let callIndex;
+    try {
+      callIndex = options.beforeAttempt ? await raceUntil(options.beforeAttempt(metadata), deadline, null) : null;
+    } catch (error) {
+      if (error && error.deadlineExceeded) throw error;
+      throw error;
+    }
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw new SpeakingModelError("SPEAKING_AI_TIMEOUT");
     let result;
     try {
-      result = await callOnce(input, options, { ...config, model: models[index], timeoutMs: remaining });
+      result = await callOnce(input, options, { ...config, model: models[index], timeoutMs: remaining, deadlineAt: deadline });
     } catch (error) {
-      if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "failed", safe_error_code: error.code, provider_code: error.providerCode, http_status: error.httpStatus, request_id: error.requestId, response_diagnostics: error.responseDiagnostics, usage: {} }, callIndex);
+      if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "failed", safe_error_code: error.code, provider_code: error.providerCode, http_status: error.httpStatus, request_id: error.requestId, response_diagnostics: error.responseDiagnostics, request_started_at: error.requestStartedAt, response_completed_at: error.responseCompletedAt, duration_ms: error.durationMs, usage: error.usage || {} }, callIndex);
       if (error.freeTierExhausted && index + 1 < models.length) continue;
       throw error;
     }
-    if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "completed", http_status: 200, request_id: result.request_id, response_diagnostics: result.response_diagnostics, usage: result.usage }, callIndex);
+    if (options.afterAttempt) await options.afterAttempt({ ...metadata, outcome: "completed", http_status: 200, request_id: result.request_id, response_diagnostics: result.response_diagnostics, request_started_at: result.request_started_at, response_completed_at: result.response_completed_at, duration_ms: result.duration_ms, usage: result.usage }, callIndex);
     return { ...result, ...metadata, call_index: callIndex, quota_fallback_used: index > 0 };
   }
 }

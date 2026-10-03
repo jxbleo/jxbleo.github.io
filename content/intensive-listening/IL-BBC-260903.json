@@ -1,0 +1,24 @@
+{
+  "id": "IL-BBC-260903",
+  "sectionId": "intensive-listening",
+  "title": "Climate Change and Extreme Weather",
+  "href": "intensive-listening.html?set=IL-BBC-260903",
+  "publishedOn": "2026-09-03",
+  "topic": "BBC 6 Minute English",
+  "tags": [
+    "Listening",
+    "BBC"
+  ],
+  "note": "116 listening segments",
+  "sourceFamily": "bbc",
+  "sourceLabel": "BBC",
+  "seriesLabel": "BBC 6 Minute English",
+  "sourceSetId": "BBC-260903",
+  "linkedPracticeSetId": "BBC-260903",
+  "dictationUnitCount": 116,
+  "sequenceUnitCount": 142,
+  "schemaVersion": 1,
+  "trackCount": 1,
+  "catalogVisible": false,
+  "visible": true
+}

@@ -28,7 +28,7 @@
       : analysis.sample_response_en ? [{ response_en: analysis.sample_response_en }] : [];
     if (!samples.length) return '';
     return '<section class="speaking-report-card"><h2>5** Exemplars</h2>' + samples.map(function (sample, index) {
-      return '<h3>Exemplar ' + (index + 1) + '</h3>' + (sample.thinking_prompt_zh ? '<p>' + esc(sample.thinking_prompt_zh) + '</p>' : '') +
+      return '<h3>Exemplar ' + (index + 1) + '</h3>' + (Array.isArray(sample.thinking_template) ? '<ol>' + sample.thinking_template.map(function (step) { return '<li><strong>' + esc(step.label_zh) + '</strong><p>' + esc(step.content_zh) + '</p></li>'; }).join('') + '</ol>' + (sample.assumption_note_zh ? '<p>' + esc(sample.assumption_note_zh) + '</p>' : '') : (sample.thinking_prompt_zh ? '<p>' + esc(sample.thinking_prompt_zh) + '</p>' : '')) +
         '<details><summary>Show exemplar</summary><p>' + esc(sample.response_en) + '</p></details>';
     }).join('') + '</section>';
   }
@@ -74,7 +74,7 @@
         return '<section id="candidate-' + i + '" class="speaking-report-card review-candidate"><p class="eyebrow accent">STUDENT REPORT</p><h2>' + esc(candidate.speaker_label) + '</h2><p>' + esc(candidate.summary_zh) + '</p>' + scores(candidate.domains, false) + list('Strengths', candidate.strengths) + list('Priority actions', candidate.priority_actions) + list('Language suggestions', candidate.language_suggestions) + turns(candidate.turn_reviews) + '</section>';
       }).join('');
     } else {
-      html += '<section class="speaking-report-card"><h2>Analysis</h2>' + scores(analysis.domains, ielts, true) + '<p>' + esc(analysis.summary_zh) + '</p>' + list('Strengths', analysis.strengths) + list('Priority actions', analysis.priority_actions) + list('Language suggestions', analysis.language_suggestions) + '</section>';
+      html += !ielts && analysis.report_version === 'dse-individual-response-v5' ? '<section class="speaking-report-card"><h2>Analysis</h2><h3>What works</h3><p>' + esc(analysis.keep_zh) + '</p><h3>How to improve</h3><ol>' + (analysis.analysis || []).map(function (point) { return '<li><h4>' + esc(point.title_zh) + '</h4><p>' + esc(point.issue_zh) + '</p><p><b>Try this</b> ' + esc(point.action_zh) + '</p>' + (point.sample_context_zh ? '<p>' + esc(point.sample_context_zh) + '</p>' : '') + '<blockquote>' + esc(point.sample_en) + '</blockquote></li>'; }).join('') + '</ol></section>' : '<section class="speaking-report-card"><h2>Analysis</h2>' + scores(analysis.domains, ielts, true) + '<p>' + esc(analysis.summary_zh) + '</p>' + list('Strengths', analysis.strengths) + list('Priority actions', analysis.priority_actions) + list('Language suggestions', analysis.language_suggestions) + '</section>';
       html += ielts ? '<section class="speaking-report-card"><h2>Band 8 Answer</h2><h3>Thinking Prompt</h3><p>' + esc(analysis.thinking_prompt_zh) + '</p><p>' + esc((analysis.thinking_keywords_en || []).join(' · ')) + '</p><details><summary>Sample Answer</summary><p>' + esc(analysis.sample_answer_en) + '</p></details></section>'
         : exemplars(analysis);
     }

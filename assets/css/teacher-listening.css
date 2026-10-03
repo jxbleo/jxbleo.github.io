@@ -6,14 +6,18 @@
 .teacher-listening-heading-actions a, .teacher-listening-editor-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 14px; text-decoration: none; }
 .teacher-listening-message { min-height: 26px; margin: 11px 8px 0; color: #167251; font-size: .78rem; font-weight: 720; }
 .teacher-listening-message.error { color: #a33e42; }
-.teacher-listening-layout { display: grid; grid-template-columns: minmax(270px, .7fr) minmax(0, 1.4fr); gap: 14px; align-items: start; }
+.teacher-listening-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .teacher-listening-material-list, .teacher-listening-editor { min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.72); border-radius: 24px; background: rgba(250,253,253,.72); box-shadow: 0 18px 48px rgba(38,72,77,.07), inset 0 1px 0 rgba(255,255,255,.88); }
-.teacher-listening-material-list { display: grid; gap: 8px; }
-.teacher-listening-material-card { padding: 15px; border: 1px solid rgba(36,91,99,.12); border-radius: 17px; background: rgba(255,255,255,.64); cursor: pointer; }
+.teacher-listening-material-list { display: block; }
+.teacher-listening-sort-bar { margin-bottom: 12px; }
+.teacher-listening-material-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
+.teacher-listening-material-card { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 16px 18px; border: 1px solid rgba(36,91,99,.12); border-radius: 17px; background: rgba(255,255,255,.64); cursor: pointer; }
 .teacher-listening-material-card.is-active { border-color: rgba(13,143,157,.42); background: #e8f7f6; box-shadow: inset 0 0 0 1px rgba(13,143,157,.1); }
-.teacher-listening-material-card h3 { margin: 0; color: #23474d; font-size: .9rem; }
+.teacher-listening-material-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-width: 0; margin-bottom: 8px; }
+.teacher-listening-material-id { min-width: 0; overflow-wrap: anywhere; color: #617b80; font-size: .69rem; font-weight: 760; }
+.teacher-listening-material-card h3 { margin: 0; max-width: 100%; overflow-wrap: anywhere; color: #23474d; font-size: .9rem; }
 .teacher-listening-material-card p { margin: 4px 0 0; color: #6c8084; font-size: .69rem; }
-.teacher-listening-material-card .status { float: right; padding: 3px 6px; border-radius: 7px; color: #6b8084; background: #edf2f2; font-size: .59rem; font-weight: 800; }
+.teacher-listening-material-card .status { flex: none; padding: 3px 6px; border-radius: 7px; color: #6b8084; background: #edf2f2; font-size: .59rem; font-weight: 800; }
 .teacher-listening-material-correct { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; margin-top: 11px; padding: 6px 13px; border: 1px solid rgba(36,91,99,.16); border-radius: 11px; color: #086a76; background: rgba(255,255,255,.82); font-size: .68rem; font-weight: 800; text-decoration: none; }
 .teacher-listening-material-correct:hover { border-color: rgba(13,143,157,.42); background: #e8f7f6; }
 .teacher-listening-editor { padding: 22px; }
@@ -54,6 +58,5 @@
 .teacher-listening-editor-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; margin-top: 17px; }
 .teacher-listening-editor-actions button { min-height: 40px; }
 .teacher-listening-validation { min-height: 1.2rem; margin: 13px 0 0; padding: 10px; overflow: auto; border-radius: 11px; color: #567175; background: #f2f7f7; font: .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
-@media (max-width: 900px) { .teacher-listening-layout { grid-template-columns: 1fr; } .teacher-listening-material-list { grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); } }
 @media (max-width: 700px) { .teacher-listening-segment-fields { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 @media (max-width: 560px) { .teacher-listening-heading { align-items: flex-start; flex-direction: column; padding: 23px 20px; } .teacher-listening-heading button { width: 100%; } .teacher-listening-fields { grid-template-columns: 1fr; } .teacher-listening-editor { padding: 17px; } .teacher-listening-track-head { align-items: stretch; flex-direction: column; } .teacher-listening-track-tools { align-items: stretch; flex-direction: column; } .teacher-listening-track-head button { width: 100%; } }

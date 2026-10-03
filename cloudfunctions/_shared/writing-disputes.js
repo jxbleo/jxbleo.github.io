@@ -2,6 +2,7 @@
 
 const crypto = require("crypto");
 const notifications = require("./argue-notifications");
+const reportEmail = require("./writing-report-email");
 const TYPE = "writing_sentence";
 const text = (v) => String(v == null ? "" : v).trim();
 const hash = (v) => crypto.createHash("sha256").update(v).digest("hex");
@@ -41,7 +42,7 @@ async function submit({ db, student, event, now = new Date() }) {
   let saved;
   await db.runTransaction(async (tx) => {
     const c = await one(tx, "writing_compositions", { composition_id: compositionId, student_uid: student.auth_uid });
-    if (!c) throw new Error("COMPOSITION_NOT_FOUND");
+    if (!c || c.deleted_at) throw new Error("COMPOSITION_NOT_FOUND");
     const prior = await one(tx, "answer_disputes", { dispute_id: disputeId });
     if (prior) { saved = prior; return; }
     const sentence = sentences(c).find((s) => s.sentence_id === sentenceId);
@@ -82,6 +83,7 @@ async function submit({ db, student, event, now = new Date() }) {
 async function resolve({ db, event, teacher, now = new Date() }) {
   const decision = text(event.decision);
   if (!["approve", "reject"].includes(decision)) throw new Error("DISPUTE_DECISION_REQUIRED");
+  let completedScope = null;
   await db.runTransaction(async (tx) => {
     const d = await one(tx, "answer_disputes", { dispute_id: text(event.dispute_id) });
     if (!d || d.dispute_type !== TYPE) throw new Error("DISPUTE_NOT_AVAILABLE");
@@ -90,7 +92,7 @@ async function resolve({ db, event, teacher, now = new Date() }) {
     const c = await one(tx, "writing_compositions", { composition_id: d.composition_id, student_uid: d.student_uid });
     if (!student || student.deleted || student.deleted_at || student.delete_pending || !c) throw new Error("DISPUTE_NOT_AVAILABLE");
     // Old requests remain rejectable, but cannot approve a replaced manuscript/review.
-    if (decision === "approve" && (scope(c) !== d.review_scope || c.pending_replacement)) throw new Error("DISPUTE_REVIEW_CHANGED");
+    if (decision === "approve" && (c.deleted_at || scope(c) !== d.review_scope || c.pending_replacement)) throw new Error("DISPUTE_REVIEW_CHANGED");
     const teacherNote = text(event.teacher_note).slice(0, 1000);
     const status = decision === "approve" ? "approved" : "rejected";
     const summaries = { ...(c.writing_sentence_disputes || {}) };
@@ -121,12 +123,25 @@ async function resolve({ db, event, teacher, now = new Date() }) {
         patch.pending_rewrite_check = replace(db, null);
         patch.pending_revision_scan = replace(db, null);
         patch.pending_upload = replace(db, null);
+        if (c.status !== "completed") completedScope = { composition_id: c.composition_id, student_uid: d.student_uid };
       }
     }
     await tx.collection("writing_compositions").doc(c._id).update(patch);
     await tx.collection("answer_disputes").doc(d._id).update({ status, decision, teacher_note: teacherNote,
       resolved_by_teacher_uid: teacher.auth_uid, resolved_at: now, updated_at: now, student_seen: false, student_seen_at: null });
   });
+  if (completedScope) {
+    try {
+      const composition = await one(db, "writing_compositions", completedScope);
+      const student = await one(db, "students", { auth_uid: completedScope.student_uid });
+      const first = await one(db, "writing_teacher_email_events", {
+        event_id: reportEmail.eventId(completedScope.composition_id, "first"),
+      });
+      if (composition && student && first && first.report_snapshot && !first.report_snapshot.completed_at) {
+        await reportEmail.enqueue(db, student, composition, "complete", {}, "general_language");
+      }
+    } catch (error) { console.error("Writing completion email enqueue deferred", error && error.message); }
+  }
   return { success: true };
 }
 

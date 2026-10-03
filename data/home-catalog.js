@@ -1705,7 +1705,8 @@ window.__HOME_CATALOG__ = {
         "Transport"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-260820"
     },
     {
       "id": "BBC-260827",
@@ -1720,7 +1721,8 @@ window.__HOME_CATALOG__ = {
         "Science"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-260827"
     },
     {
       "id": "BBC-260903",
@@ -1735,7 +1737,8 @@ window.__HOME_CATALOG__ = {
         "Science"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-260903"
     },
     {
       "id": "BBC-260910",
@@ -1750,7 +1753,8 @@ window.__HOME_CATALOG__ = {
         "Technology"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-260910"
     },
     {
       "id": "BBC-260917",
@@ -1765,7 +1769,8 @@ window.__HOME_CATALOG__ = {
         "Wellbeing"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-260917"
     },
     {
       "id": "BBC-260924",
@@ -1780,7 +1785,8 @@ window.__HOME_CATALOG__ = {
         "Science"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "intensiveListeningSetId": "IL-BBC-260924"
     },
     {
       "id": "DSE-TOPIC-BANK-SPEAKING",
