@@ -13,6 +13,10 @@ full checksum-verified archive of dirty/untracked work and rebase metadata. The
 empty stale rebase ended with `--quit`; original main and old HEAD are preserved.
 Unshipped drafts remain recoverable; no push or deployment.
 
+Archived the temporary cleanup worktree and four historical deployment ZIPs.
+The primary checkout passes all 82 test scripts and five build/package/release
+checks. Current deployment output contains the 20 freshly built function ZIPs.
+
 ## 2026-10-03 — Unified receipt and Listening completion repair (deployed)
 
 Shared receipts now open before identity lookup, handle unavailable/late names,

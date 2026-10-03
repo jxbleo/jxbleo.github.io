@@ -7,7 +7,7 @@ It reconciles published static files with recent source work and keeps the
 existing static allowlist. The original project directory now uses this clean branch; the stale rebase
 state and unshipped drafts are preserved in a verified local recovery archive.
 This local cleanup is not a deployment; see
-[the reconciliation record](docs/10_DEPLOYMENT.md#source-reconciliation-and-local-cleanup-2026-10-03).
+[the cleanup and recovery record](docs/10_DEPLOYMENT.md#primary-checkout-recovery-and-remaining-local-only-changes-2026-10-04).
 Completed QA history is in `docs/archive/AGENT_TODO_THROUGH_20261002.md`.
 
 Teacher **AI Usage** lists recorded Writing, Speaking and Scan Words activity,

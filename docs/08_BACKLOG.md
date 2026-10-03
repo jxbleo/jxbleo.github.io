@@ -32,7 +32,8 @@ current branch or authorize a new production action. Old test cache-key and
 IELTS recorder fixture failures have been reconciled with the current UI.
 
 Remaining deliberate boundaries:
-- Original checkout rebase and unmerged work are preserved separately.
+- Original checkout rebase metadata and unshipped work are archived separately;
+  the primary checkout itself no longer has a rebase in progress.
 - Confirm fresh cloud source/package parity before any authorized deployment.
 - Large Teacher/Dashboard controllers can be split when a feature requires it;
   a broad structural rewrite is unnecessary for this cleanup.

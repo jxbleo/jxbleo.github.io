@@ -23,6 +23,15 @@ snapshot files remain equal. No static push, COS update, CloudBase deployment,
 database mutation or model/billing change was performed. Fresh live cloud/source
 comparison remains a prerequisite to any separately authorized backend release.
 
+Final primary-directory validation passed all 82 test scripts, static build and
+artifact-boundary checks, all 20 current function packages, release verification
+and diff checks (87 checks total). Evidence is in the recovery directory's
+`verified/results.json` and `verification.json`. The temporary managed cleanup
+worktree is archived; dependencies and the private protected-resource source
+remain in the primary directory. Four older ZIPs (three named Writing variants
+and the retired `resetStudentPassword.zip`) are preserved in `archived-packages/`;
+`deploy-packages/` now contains only the 20 freshly built current packages.
+
 ## 2026-10-03 — All-host receipt reliability and Listening completion (deployed)
 
 Owner requested resolving the all-host audit findings. Published only the shared
