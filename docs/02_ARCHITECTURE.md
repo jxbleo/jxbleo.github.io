@@ -1,5 +1,13 @@
 # 02 Architecture
 
+## Result UI retirement (2026-10-04)
+
+BBC and Vocabulary completion render through `assets/js/training-checkin.js`.
+Their inline `showResultOverlay` functions remain thin adapters; the unreachable
+old overlay styles and render helpers have been removed. Vocabulary retains its
+result sound and confirmation animations; BBC retains multiple-choice sound.
+No new UI abstraction or dependency was added.
+
 ## Nonblocking receipt identity (reconciled 2026-10-03)
 
 All receipt families open before identity lookup. A verified named current-page

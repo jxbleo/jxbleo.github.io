@@ -1,5 +1,11 @@
 # 03 UI / UX Spec
 
+## Existing receipt presentation retained (2026-10-04)
+
+The unused inline BBC/Vocabulary result-card skins and crown renderer are retired.
+Current shared receipt presentation, close behavior, result/choice sounds and
+submission confirmation dialogs retain their existing runtime behavior.
+
 ## 2026-10-03 — All receipt hosts show results before identity lookup (deployed)
 
 The shared native dialog opens with the confirmed result immediately. Prefer the

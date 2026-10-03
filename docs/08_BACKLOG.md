@@ -11,9 +11,9 @@ All six host cache keys were updated together. Evidence is in ignored
 `.cloudbase-private/training-checkin-fix-20261003/`; the earlier audit remains in
 `.cloudbase-private/training-checkin-audit-20261003/`.
 
-Vocabulary/BBC retain unused old result styles/helpers. They have no runtime
-completion entry and did not render in browser QA; optional dead-code cleanup is
-separate from this completed functional repair.
+Vocabulary/BBC unused result styles/helpers and retired crown artwork were
+removed locally on 2026-10-04. Shared receipts and active sound/confirmation
+behavior remain. This source cleanup has not been published.
 
 ## Current cleanup status (2026-10-03)
 

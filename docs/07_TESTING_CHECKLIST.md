@@ -1,5 +1,13 @@
 # 07 Testing Checklist
 
+## Result retirement checks (2026-10-04)
+
+Run receipt adapter/lifecycle, Vocabulary version/session, BBC editor/correction,
+student-profile and release checks. `test-current-student-profile.js` preserves
+the server authorization/projection checks formerly embedded in the crown test;
+current shared receipt identity races stay in the lifecycle suite. Retired crown
+rendering and BBC score animation are no longer runtime test targets.
+
 ## 2026-10-03 — Unified receipt identity and Listening completion
 
 Run `npm run test:training-receipts`, Intensive Listening, Listening contracts and

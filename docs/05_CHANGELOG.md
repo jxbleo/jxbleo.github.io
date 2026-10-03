@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-04 — Retire unused result UI and normalize the local checkout
+
+Removed unused BBC/Vocabulary result overlays, crown rendering, encouragement
+pool, score-animation helpers and their exclusive styles/artwork. Shared receipts,
+Vocabulary result sounds, BBC choice sounds and confirmation-dialog motion remain.
+Retained backend student-profile projection checks and current receipt lifecycle
+tests. No grading, rewards, attempt history, provider or billing behavior changed.
+
+Local follow-up restores the verified cleanup branch to the original project
+directory after a full checksum-verified archive of dirty/untracked work and
+rebase metadata. Unshipped drafts remain recoverable; no push or deployment.
+
 ## 2026-10-03 — Unified receipt and Listening completion repair (deployed)
 
 Shared receipts now open before identity lookup, handle unavailable/late names,

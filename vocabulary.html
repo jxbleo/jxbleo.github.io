@@ -1816,43 +1816,6 @@
             display: block;
         }
 
-        .result-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 1200;
-            display: grid;
-            place-items: center;
-            padding: 20px;
-            background: rgba(15,23,42,.35);
-            backdrop-filter: blur(5px);
-        }
-
-        .result-card {
-            width: min(420px,100%);
-            max-height: calc(100dvh - 40px);
-            overflow-y: auto;
-            padding: 26px;
-            border-radius: 24px;
-            background: #fff;
-            text-align: center;
-            box-shadow: 0 24px 70px rgba(0,0,0,.24);
-            animation: resultPop 420ms ease-out both;
-        }
-
-        .result-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px; margin: 16px 0 14px; }
-        .result-label { min-width: 0; max-width: 100%; overflow-wrap: anywhere; padding: 6px 10px; border: 1px solid #e8edf0; border-radius: 8px; background: var(--soft); font-size: 12px; font-weight: 700; }
-        .result-mode { color: var(--accent); background: #e6f5f1; border-color: #d2e9e2; }
-        .result-mode.is-practice { color: #9a5b10; background: #fff3df; border-color: #f5e3c5; }
-        .result-sets { margin: 8px 0 16px; color: #506b60; font-size: 13px; font-weight: 600; line-height: 1.7; }
-
-        .result-emoji { font-size: 3rem; }
-        .result-crown { display: block; width: 180px; max-width: 100%; height: auto; margin: -10px auto -8px; }
-        .result-crown-name { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: .4px; }
-        .result-card h2 { margin: 8px 0; }
-        .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
-        .result-copy { color: var(--muted); line-height: 1.45; }
-        .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
-
         .test-confirm-overlay {
             position: fixed;
             inset: 0;
@@ -2962,82 +2925,6 @@
                 unlockResultAudio();
                 playResultSequence(state === 'failed' ? RESULT_SOUND_FAILED_TONES : RESULT_SOUND_PASSED_TONES);
             } catch (e) {}
-        }
-
-        function resultSetSummary() {
-            var selectedIds = activeTestGroups.map(function(group) { return String(group.id); });
-            var count = selectedIds.length;
-            if (!count) return '';
-            if (activeTestMode === 'practice') {
-                // Match the original picker order, not the shuffled exercise order.
-                var numbers = (unitData && unitData.quizGroups || []).map(function(group, index) {
-                    return selectedIds.indexOf(String(group.id)) !== -1 ? index + 1 : null;
-                }).filter(function(number) { return number !== null; });
-                if (numbers.length === count) {
-                    return (count === 1 ? 'Set ' : 'Sets ') + numbers.join(', ');
-                }
-            }
-            return count + (count === 1 ? ' Set' : ' Sets');
-        }
-
-        function masteryCrownStudentId() {
-            if (teacherMode) return '';
-            try {
-                if (localStorage.getItem('mrcat_visitor') === 'true' || params.get('visitor') === '1') return '';
-                return currentUserId();
-            } catch (error) { return ''; }
-        }
-
-        function masteryCrownName() {
-            var studentId = masteryCrownStudentId();
-            if (!studentId) return '';
-            try {
-                var profile = JSON.parse(localStorage.getItem('mrcat_student_profile') || 'null');
-                if (!profile || profile.student_id !== studentId || typeof profile.english_name !== 'string') return '';
-                return profile.english_name.trim();
-            } catch (error) { return ''; }
-        }
-
-        function refreshMasteryCrownName() {
-            var studentId = masteryCrownStudentId();
-            if (!studentId || !window.MrCatCloud) return Promise.resolve(null);
-            // Profile refresh is independent of the already-successful submission.
-            return Promise.resolve().then(function() {
-                return window.MrCatCloud.callAuthenticatedFunction('getCurrentStudent');
-            }).then(function(result) {
-                var profile = result && result.success && result.student;
-                if (masteryCrownStudentId() !== studentId || !profile || profile.student_id !== studentId ||
-                    profile.role === 'teacher' || typeof profile.english_name !== 'string') return null;
-                try { localStorage.setItem('mrcat_student_profile', JSON.stringify(profile)); } catch (error) {}
-                return profile.english_name.trim();
-            }).catch(function() { return null; });
-        }
-
-        function addMasteryCrown(overlay) {
-            var icon = overlay.querySelector('.result-emoji');
-            var name = masteryCrownName();
-            icon.innerHTML = '<svg class="result-crown" viewBox="0 0 1000 1000" role="img" focusable="false">' +
-                '<image href="assets/images/vocabulary-mastery-crown-e.jpg?v=20260913-1" width="1000" height="1000"/>' +
-                '<g class="result-crown-name" text-anchor="middle">' +
-                '<text x="500" y="633" font-size="112" fill="#fff0c0" transform="translate(0,2)"></text>' +
-                '<text x="500" y="633" font-size="112" fill="#70410d"></text></g></svg>';
-            var svg = icon.querySelector('svg');
-            var texts = svg.querySelectorAll('text');
-            function renderName(value) {
-                svg.setAttribute('aria-label', value ? 'Mastery crown for ' + value : 'Mastery crown');
-                texts.forEach(function(text) { text.textContent = value; });
-                fitName();
-            }
-            function fitName() {
-                texts.forEach(function(text) { text.setAttribute('font-size', '112'); });
-                var width = texts[1].getComputedTextLength();
-                if (width > 720) texts.forEach(function(text) { text.setAttribute('font-size', String(112 * 720 / width)); });
-            }
-            renderName(name);
-            if (document.fonts) document.fonts.ready.then(function() { if (svg.isConnected) fitName(); });
-            refreshMasteryCrownName().then(function(freshName) {
-                if (svg.isConnected && freshName !== null) renderName(freshName);
-            });
         }
 
         function showResultOverlay(response) {

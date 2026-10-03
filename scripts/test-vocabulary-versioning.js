@@ -50,7 +50,6 @@ assert.throws(
 
 const root = path.resolve(__dirname, "..");
 const vocabularyPage = fs.readFileSync(path.join(root, "vocabulary.html"), "utf8");
-const bbcPage = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
 
 function readResultToneArray(source, name) {
   const match = source.match(new RegExp(`var ${name} = (\\[[\\s\\S]*?\\n\\s*\\]);`));
@@ -69,7 +68,7 @@ const expectedPassedTones = [
   { freq: 783.99, start: 0.24, duration: 0.28, volume: 0.16 },
 ];
 
-for (const [label, page] of [["Vocabulary", vocabularyPage], ["BBC", bbcPage]]) {
+for (const [label, page] of [["Vocabulary", vocabularyPage]]) {
   assert.deepStrictEqual(
     readResultToneArray(page, "RESULT_SOUND_FAILED_TONES"),
     expectedFailedTones,
