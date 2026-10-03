@@ -1,5 +1,15 @@
 # 02 Architecture
 
+## Nonblocking receipt identity (reconciled 2026-10-03)
+
+All receipt families open before identity lookup. A verified named current-page
+profile is used immediately; otherwise a per-dialog authenticated read enriches
+the existing card without blocking. No global profile promise/name cache is
+retained. Cached auth identity keys only reject stale identities and close on
+account change. The normal Listening practice view owns completion/replay actions;
+the old completion-screen overlay is retired. This behavior was already public
+when the cleanup took its final snapshot.
+
 ## Current source reconciliation (2026-10-03)
 
 The existing static HTML/vanilla JS/CloudBase architecture stays in place.

@@ -60,9 +60,10 @@
     "test:ielts-speaking": "node scripts/test-ielts-speaking.js && node scripts/test-ielts-speaking-recorder.js",
     "prepare:ielts-speaking": "node scripts/prepare-ielts-speaking.js",
     "test:bbc-editor": "node scripts/test-bbc-teacher-editor.js",
-    "test:training-checkin": "node scripts/test-training-checkin.js",
+    "test:training-checkin": "node scripts/test-training-checkin.js && node scripts/test-training-receipt-lifecycle.js",
     "test:ai-jobs": "node scripts/test-ai-job-continuations.js && node scripts/test-ai-worker-concurrency.js && node scripts/test-ai-provider-deadlines.js && node scripts/test-ai-feedback-latency.js",
-    "test:function-packaging": "node scripts/test-function-package-selection.js && node scripts/test-speaking-runtime-package.js && node scripts/test-teacheradmin-package.js"
+    "test:function-packaging": "node scripts/test-function-package-selection.js && node scripts/test-speaking-runtime-package.js && node scripts/test-teacheradmin-package.js",
+    "test:training-receipts": "npm run test:training-checkin && node scripts/test-writing-completion.js"
   },
   "devDependencies": {
     "@cloudbase/manager-node": "5.5.2",

@@ -1,5 +1,20 @@
 # 07 Testing Checklist
 
+## 2026-10-03 — Unified receipt identity and Listening completion
+
+Run `npm run test:training-receipts`, Intensive Listening, Listening contracts and
+activity suites. Check all six hosts at 320/390/1280px with successful, unresolved
+and rejected profile reads. Results must appear immediately; unknown names remain
+unknown, late names enrich only the current dialog, and identity changes cannot
+reuse a stale profile. Verify known-teacher suppression, one BBC close callback,
+focus/scroll restoration and Writing count enrichment independently.
+
+Exercise the exact staged Listening runtime: completed bootstrap opens a receipt,
+closing reveals saved practice, View Receipt makes no progress mutation, failed
+startReplay remains retryable, and successful temporary replay restores practice.
+Confirm old completion markup/styles/selectors are absent. Use synthetic records;
+never create a real student attempt for UI QA.
+
 ## Cleanup regression scope (2026-10-03)
 
 Run the existing domain suites plus `test:bbc-editor`, `test:training-checkin`,

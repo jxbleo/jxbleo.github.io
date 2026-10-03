@@ -1,6 +1,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
+const vm = require("node:vm");
 const service = require("../cloudfunctions/intensiveListening/service");
 
 function unit() {
@@ -171,7 +172,33 @@ function run() {
 
   const intensivePage = fs.readFileSync(path.join(root, "intensive-listening.html"), "utf8");
   const pageIds = new Set(Array.from(intensivePage.matchAll(/\bid="([^"]+)"/g), match => match[1]));
+  // The old loading screen is optional; exercise the real completion handoff
+  // with both shells before excluding that one legacy ID from required markup.
+  const handoffStart = intensiveRuntime.indexOf("  function showTrainingCheckin()");
+  const handoffEnd = intensiveRuntime.indexOf("  function finishSession()", handoffStart);
+  assert(handoffStart >= 0 && handoffEnd > handoffStart);
+  for (const legacyLoading of [null, { hidden: false }]) {
+    const shell = { hidden: true, attributes: {}, setAttribute(key, value) { this.attributes[key] = value; } };
+    const replay = { disabled: true }, actions = { hidden: true };
+    const nodes = { '#loading-screen': legacyLoading, '#practice-shell': shell, '#replay-button': replay, '#completed-actions': actions };
+    const state = { material: { units: [] }, progress: { percentage: 100 }, localUnits: {}, setId: 'synthetic' };
+    let rendered = 0, shown = 0;
+    const handoff = vm.runInNewContext('(' + intensiveRuntime.slice(handoffStart, handoffEnd) + ')', {
+      state, $: id => nodes[id], renderUnit: () => { rendered += 1; },
+      window: { MrCatTrainingCheckin: { listening(material, progress) {
+        shown += 1; assert.strictEqual(material, state.material); assert.strictEqual(progress, state.progress);
+      } } },
+    });
+    handoff();
+    assert.strictEqual(shell.hidden, false); assert.strictEqual(shell.attributes['aria-busy'], 'false');
+    assert.strictEqual(replay.disabled, false); assert.strictEqual(actions.hidden, false);
+    assert.strictEqual(rendered, 1); assert.strictEqual(shown, 1);
+    if (legacyLoading) assert.strictEqual(legacyLoading.hidden, true);
+    state.teacherMode = true; handoff(); assert.strictEqual(shown, 1);
+    state.teacherMode = false; state.visitorMode = true; handoff(); assert.strictEqual(shown, 1);
+  }
   for (const match of intensiveRuntime.matchAll(/\$\('#([A-Za-z][A-Za-z0-9_-]*)/g)) {
+    if (match[1] === "loading-screen") continue;
     assert.ok(pageIds.has(match[1]), "Intensive Listening runtime requires #" + match[1] + " in the page");
   }
   assert.ok(intensivePage.includes('id="previous-unit-button"'));

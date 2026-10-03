@@ -1,5 +1,22 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-10-03 — Audit every unified receipt host, not only Writing (fixed)
+
+The audited Vocabulary/BBC/IELTS/Intensive Listening/Speaking adapters waited
+for `getCurrentStudent` before showing a receipt. An unresolved read reproduced
+missing dialogs; Intensive Listening also retained a live old completion screen.
+The deployed shared renderer now opens before lookup and enriches identity only
+in a still-connected dialog. Do not cache a profile promise across accounts or
+use cached names; compare identity keys only to reject stale responses.
+
+All six host script keys must advance together for a shared repair. Check actual
+HTML, linked bytes and host CSS, not just old query-string dates or a standalone
+preview. Remove runnable legacy screens separately from unused style remnants.
+The live Listening page differs from the checkout's loading markup, so exact
+staged runtime QA is necessary: completion must clear aria-busy and enable the
+player without assuming a `loading-screen` element exists. Test completed reopen,
+receipt close/reopen and temporary replay failure/retry using synthetic data.
+
 ## Stale shared checkout versus current source (2026-10-03)
 
 A detached, rebasing checkout can list hundreds of untracked/modified files that

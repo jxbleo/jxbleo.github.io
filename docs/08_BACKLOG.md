@@ -1,5 +1,20 @@
 # 08 Backlog
 
+## Recently resolved — 2026-10-03 unified receipts
+
+The audited profile-read blockage and legacy Intensive Listening completion
+page are fixed and deployed. All receipts open before identity lookup; late or
+unavailable identity never blocks results, and account changes cannot reuse old
+names. Listening now keeps return, receipt and temporary-replay controls in its
+normal practice view, including inline retry and completed-review playback.
+All six host cache keys were updated together. Evidence is in ignored
+`.cloudbase-private/training-checkin-fix-20261003/`; the earlier audit remains in
+`.cloudbase-private/training-checkin-audit-20261003/`.
+
+Vocabulary/BBC retain unused old result styles/helpers. They have no runtime
+completion entry and did not render in browser QA; optional dead-code cleanup is
+separate from this completed functional repair.
+
 ## Current cleanup status (2026-10-03)
 
 The local reconciliation is on `codex/project-cleanup-oct03` at base `a7b0f90f`.

@@ -1,6 +1,6 @@
 (function (window, document) {
     'use strict';
-    var serial = 0, active = null, profileRequest = null;
+    var serial = 0, active = null;
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
     function number(value) { return value !== null && value !== '' && value !== undefined && Number.isFinite(Number(value)) ? Number(value) : null; }
     function sourceInfo(value, family) {
@@ -68,13 +68,17 @@
         var parts = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Shanghai', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).formatToParts(date).reduce(function (o,p) { o[p.type]=p.value; return o; }, {});
         return '北京时间 ' + parts.year + '.' + parts.month + '.' + parts.day + ' ' + parts.hour + ':' + parts.minute;
     }
-    function getProfile(explicit) {
-        if (explicit && (explicit.chinese_name || explicit.english_name || explicit.name)) return Promise.resolve(explicit);
-        if (!profileRequest) profileRequest = Promise.resolve().then(function () {
+    function getProfile() {
+        return Promise.resolve().then(function () {
             if (!window.MrCatCloud) return null;
             return window.MrCatCloud.callAuthenticatedFunction('getCurrentStudent').then(function (r) { return r && r.success ? r.student : null; });
-        }).catch(function () { profileRequest = null; return null; });
-        return profileRequest;
+        }).catch(function () { return null; });
+    }
+    function profileIdentityKey() {
+        try {
+            var cached = window.MrCatAuth && window.MrCatAuth.getCachedProfile();
+            return cached ? String(cached.auth_uid || cached.student_id || '') : '';
+        } catch (error) { return ''; }
     }
     function nameHtml(profile) {
         profile = profile || {};
@@ -91,11 +95,16 @@
     function renderHtml(model, profile, prefix) {
         var decoration = model.decoration === 'star' ? starSvg(prefix) : model.decoration === 'popper' ? '<span class="celebration-popper" role="img" aria-label="庆祝礼花">🎉</span>' : model.writingCount > 0 ? '<div class="completion-medal">' + writingBadge(model.writingCount).svg(prefix + '-badge') + '</div>' : '';
         var note = model.writingCount > 0 ? '这是你订正完成的第<strong class="achievement-count">' + escapeHtml(model.writingCount) + '</strong>篇作文' : escapeHtml(model.note || '');
-        return '<div class="dialog-stack"><article class="checkin-card" data-tone="' + (model.tone === 'muted' ? 'muted' : 'green') + '"><header class="identity"><div class="identity-details"><p class="identity-name">' + nameHtml(profile) + '</p><time class="date-value">' + escapeHtml(beijingTime(model.time)) + '</time></div><span class="checkin-status" data-state="' + (model.perfect ? 'perfect' : 'normal') + '">' + escapeHtml(model.status) + '</span></header><div class="card-rule"></div><section class="result-panel"><header class="result-heading"><h2 class="task-title">' + escapeHtml(model.title || '训练记录') + '</h2></header><div class="result-content"><div class="result-summary"><p class="result-main' + (model.text ? ' is-text' : '') + '">' + escapeHtml(model.value) + '</p>' + (decoration ? '<div class="result-decoration' + (model.writingCount > 0 ? ' is-medal' : '') + '">' + decoration + '</div>' : '') + '</div>' + (note ? '<p class="result-note">' + note + '</p>' : '') + '</div></section><dl class="metrics">' + metricsHtml(model) + '</dl><footer class="card-footer"><div class="card-brand"><img class="brand-mark" src="assets/icons/mrcat-apple-touch-icon.png" width="20" height="20" alt=""><span class="brand-caption">猫先生英语</span><span class="brand-website">www.mrcatenglish.com</span></div></footer></article><button class="close-button" type="button" aria-label="关闭打卡凭证"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>';
+        return '<div class="dialog-stack"><article class="checkin-card" data-tone="' + (model.tone === 'muted' ? 'muted' : 'green') + '"><header class="identity"><div class="identity-details"><p class="identity-name">' + (nameHtml(profile) || escapeHtml(model.identityStatus || '')) + '</p><time class="date-value">' + escapeHtml(beijingTime(model.time)) + '</time></div><span class="checkin-status" data-state="' + (model.perfect ? 'perfect' : 'normal') + '">' + escapeHtml(model.status) + '</span></header><div class="card-rule"></div><section class="result-panel"><header class="result-heading"><h2 class="task-title">' + escapeHtml(model.title || '训练记录') + '</h2></header><div class="result-content"><div class="result-summary"><p class="result-main' + (model.text ? ' is-text' : '') + '">' + escapeHtml(model.value) + '</p>' + (decoration ? '<div class="result-decoration' + (model.writingCount > 0 ? ' is-medal' : '') + '">' + decoration + '</div>' : '') + '</div>' + (note ? '<p class="result-note">' + note + '</p>' : '') + '</div></section><dl class="metrics">' + metricsHtml(model) + '</dl><footer class="card-footer"><div class="card-brand"><img class="brand-mark" src="assets/icons/mrcat-apple-touch-icon.png" width="20" height="20" alt=""><span class="brand-caption">猫先生英语</span><span class="brand-website">www.mrcatenglish.com</span></div></footer></article><button class="close-button" type="button" aria-label="关闭打卡凭证"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>';
     }
     function show(model) {
         var time = model.time || new Date().toISOString(), cleanup;
-        return getProfile(model.profile).then(function (profile) {
+        return Promise.resolve().then(function () {
+            var profile = model.profile || (window.MrCatPractice && window.MrCatPractice.profile) || null;
+            var identityKey = profileIdentityKey(), identityTimer;
+            var candidateKey = String(profile && (profile.auth_uid || profile.student_id) || '');
+            if (identityKey && candidateKey && candidateKey !== identityKey) profile = null;
+            if (!nameHtml(profile)) model.identityStatus = '姓名加载中…';
             if (profile && profile.role === 'teacher') return;
             if (active) active.close();
             var prefix = 'checkin-' + (++serial), focus = document.activeElement;
@@ -106,7 +115,7 @@
             document.body.style.position='fixed'; document.body.style.top=-top+'px'; document.body.style.width='100%';
             var title=dialog.querySelector('.task-title'), observer;
             function fit() { title.style.fontSize='20px'; title.style.whiteSpace='nowrap'; var size=20; while(title.scrollWidth>title.clientWidth && size>12) {size-=.5;title.style.fontSize=size+'px';}title.style.whiteSpace='normal'; var value=dialog.querySelector('.result-main:not(.is-text)'); if(value){value.style.fontSize='';var scoreSize=parseFloat(window.getComputedStyle(value).fontSize);while(value.scrollWidth>value.clientWidth && scoreSize>28){scoreSize-=.5;value.style.fontSize=scoreSize+'px';}} }
-            function close() { if (!dialog.isConnected) return; if (observer) observer.disconnect(); dialog.close(); dialog.remove(); if (bodyStyle === null) document.body.removeAttribute('style'); else document.body.setAttribute('style',bodyStyle); window.scrollTo(0,top); active=null; if(focus && focus.isConnected) focus.focus({preventScroll:true}); if(typeof model.onClose==='function') model.onClose(); }
+            function close() { if (!dialog.isConnected) return; window.clearTimeout(identityTimer); if (window.removeEventListener) window.removeEventListener('storage', identityChanged); if (observer) observer.disconnect(); dialog.close(); dialog.remove(); if (bodyStyle === null) document.body.removeAttribute('style'); else document.body.setAttribute('style',bodyStyle); window.scrollTo(0,top); active=null; if(focus && focus.isConnected) focus.focus({preventScroll:true}); if(typeof model.onClose==='function') model.onClose(); }
             dialog.addEventListener('cancel',function(e){e.preventDefault();});
             cleanup = close;
             dialog.addEventListener('click',function(e){if(e.target.closest('.close-button'))close();});
@@ -115,7 +124,7 @@
             if(document.fonts)document.fonts.ready.then(function(){if(dialog.isConnected)fit();});
             active={close:close};
             if(typeof model.onShown==='function')model.onShown();
-            return { close:close, update:function(patch){
+            var receipt = { close:close, update:function(patch){
                 if(!dialog.isConnected)return;
                 var restoreFocus=dialog.contains(document.activeElement);
                 Object.assign(model,patch);
@@ -125,6 +134,20 @@
                 if(observer)observer.observe(title);
                 if(restoreFocus)dialog.querySelector('.close-button').focus({preventScroll:true});
             }};
+            function identityChanged() { if (identityKey !== profileIdentityKey()) close(); }
+            if (window.addEventListener) window.addEventListener('storage', identityChanged);
+            if (!nameHtml(profile)) {
+                identityTimer = window.setTimeout(function() { receipt.update({identityStatus:'姓名暂未加载'}); }, 8000);
+                getProfile().then(function(fresh) {
+                    window.clearTimeout(identityTimer);
+                    if (!dialog.isConnected) return;
+                    if (identityKey !== profileIdentityKey()) { close(); return; }
+                    if (fresh && fresh.role === 'teacher') { close(); return; }
+                    profile = fresh;
+                    receipt.update({identityStatus:nameHtml(fresh) ? '' : '姓名暂未加载'});
+                });
+            }
+            return receipt;
         }).catch(function () { if(cleanup)cleanup();else if(typeof model.onClose==='function')model.onClose();return null; });
     }
     function writing(composition, options) {

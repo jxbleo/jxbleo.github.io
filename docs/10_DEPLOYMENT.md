@@ -1,5 +1,43 @@
 # 10 Deployment
 
+## 2026-10-03 — All-host receipt reliability and Listening completion (deployed)
+
+Owner requested resolving the all-host audit findings. Published only the shared
+`training-checkin.js`, Intensive Listening JS/CSS, and the six host HTML files
+(Vocabulary, BBC, IELTS Listening, Speaking, Writing, Intensive Listening).
+The release uses fresh COS baselines and exact scoped patches, preserving all
+unrelated production changes. Scripts/styles preceded HTML. Shared JS keys on
+all hosts are `20261003-receipts-2`; Listening CSS uses that key and Listening JS
+uses `20261003-receipts-3` after its final completed-playback refinement.
+
+Receipts no longer await identity. Current authorized page profiles are used
+when available; otherwise identity enriches the open receipt with bounded status
+copy. There is no shared profile-promise cache, cached-name display, or late
+reopen; account changes close stale dialogs. Known teacher profiles are suppressed.
+Listening's old completion screen is removed; original practice shows return,
+View Receipt and temporary replay controls, inline replay errors and playback.
+Backend results, stored progress, protected best, models and billing are unchanged.
+
+Lifecycle/receipt/Writing completion and Listening/contracts/activity suites pass.
+Release verification passes with the pre-existing dirty-tree warning. Exact staged
+browser QA covers seven receipt cases times normal/hung/rejected identity reads
+(21 combinations), 320/390/1280px layouts, BBC's one-time close callback and no
+legacy modal. Exact Listening runtime QA covers completed bootstrap, stalled
+identity, report dismissal, receipt reopening without mutations, replay failure
+and retry, and enabled completed-review playback. No real student attempt, model
+call or cloud-function deployment was used. COS and public HTTPS hashes match
+all nine final objects. Existing tabs should be refreshed once.
+
+Ignored evidence: `.cloudbase-private/training-checkin-fix-20261003/` holds
+initial and final manifests/readbacks, original and first-pass backups, guarded
+publisher, tests and screenshots. No bulk Git push occurred; reconcile this live
+baseline before any future whole-tree deployment.
+
+This release was performed separately while cleanup was in progress. Cleanup
+only reconciled its nine already-public objects in the final 119-file snapshot;
+it did not publish them again. Final evidence: `public-snapshot-final.json` in
+the cleanup private evidence folder.
+
 ## Source reconciliation and local cleanup (2026-10-03)
 
 This is a local cleanup, not a release. Base: `origin/main` at `a7b0f90f`;
@@ -25,12 +63,14 @@ Local cleanup archived six clean merged worktrees, root `dist/`, temporary
 unattached local branches after recording their tips. Archives were verified;
 unmerged worktrees, private source data and recovery evidence were retained.
 
-Validation completed locally: all 81 test scripts passed, along with static build,
+Validation completed locally: 81 baseline test scripts and the additional receipt-lifecycle script passed (82 total), along with static build,
 public-artifact boundary, release verification and whitespace checks. All 20
 CloudBase functions packaged successfully with the Node 18 bundle target.
 Speaking and Teacher package smoke checks passed; source prompts survive package
 compression byte-for-byte and unauthenticated access still fails closed.
-119/119 reconciled public source files match the saved public snapshot hashes.
+119/119 reconciled public source files match the final public snapshot hashes.
+After the concurrent receipt release, affected host/runtime tests and the public
+build were rerun; their logs are in `verified/latest-public/`.
 Tests ran on local Node 26.5.0; browser-module fixtures also pass with automatic
 ESM detection disabled. This is not an exact Node 18 runtime or device/live-account
 acceptance run. No real student records or mail delivery were used.

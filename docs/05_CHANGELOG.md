@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-03 — Unified receipt and Listening completion repair (deployed)
+
+Shared receipts now open before identity lookup, handle unavailable/late names,
+and guard account changes. Removed the live Intensive Listening completion
+overlay; its original practice view now provides return, replay and receipt
+controls. Updated all six host script keys together. Source and exact staged
+lifecycle tests plus 21 browser identity scenarios pass; full Listening
+reopen/receipt/replay failure-retry flow passes with synthetic data.
+Published nine scoped front-end objects with COS/public hash verification; a final
+Listening script/HTML refinement clears loading state and enables completed-review
+playback. All six hosts share cache key `20261003-receipts-2`; Listening JS uses
+`20261003-receipts-3`. No backend or student-history change.
+
 ## 2026-10-03 — Reconcile source and reduce local clutter
 
 - Reconciled public static assets with the dated live snapshot while retaining

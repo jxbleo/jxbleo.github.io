@@ -1,5 +1,19 @@
 # 03 UI / UX Spec
 
+## 2026-10-03 — All receipt hosts show results before identity lookup (deployed)
+
+The shared native dialog opens with the confirmed result immediately. Prefer the
+current page profile; otherwise show `姓名加载中…`, then a name-unavailable label
+on error or after eight seconds. Enrich the open card when fresh identity arrives;
+preserve focus and scroll lock, close on account change, and never reopen a closed
+card. Known teacher profiles remain suppressed. Receipt colours/artwork are unchanged.
+
+Intensive Listening removes the old full-screen completion card. Its regular
+practice view hosts Back/linked practice, Clear & Start Again, View Receipt, and
+inline replay errors after completion. Hide this action area during a new run.
+Both finishing and reopening a completed material show the shared receipt over
+this practice view. Retain the best-score and temporary-replay rules.
+
 ## Teacher AI Usage (2026-09-16)
 
 Add an AI Usage navigation item alongside Teacher Speaking. Four summary cards

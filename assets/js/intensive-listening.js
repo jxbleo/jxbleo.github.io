@@ -938,13 +938,20 @@
     state.started = true;
     $('#practice-shell').setAttribute('aria-busy', 'false');
     $('#replay-button').disabled = false;
-    $('#completion-screen').hidden = true;
+    $('#completed-actions').hidden = true;
     $('#practice-shell').hidden = false;
     renderUnit();
     if (autoplay) replayUnit(false);
   }
   function showTrainingCheckin() {
     if (state.teacherMode || state.visitorMode) return;
+    var loading = $('#loading-screen');
+    if (loading) loading.hidden = true;
+    $('#practice-shell').hidden = false;
+    $('#practice-shell').setAttribute('aria-busy', 'false');
+    $('#replay-button').disabled = false;
+    $('#completed-actions').hidden = false;
+    renderUnit();
     window.MrCatTrainingCheckin.listening(state.material, state.progress, state.localUnits, {
       setId: state.setId, target: state.assignmentContext && state.assignmentContext.completion_target || 100
     });
@@ -967,16 +974,13 @@
       renderUnit(); replayUnit(false);
       return;
     }
-    var progress = state.progress;
-    $('#completion-percent').textContent = (Number(progress.percentage) || 0) + '%';
-    $('#completion-summary').textContent = progress.independent_count + ' completed independently · ' + progress.assisted_count + ' completed with answer';
-    $('#completion-screen').hidden = false;
     showTrainingCheckin();
     if (window.MrCatLearningActivity) window.MrCatLearningActivity.close('complete');
     clearDraft();
   }
   function startTemporaryReplay() {
     if (state.busy || state.teacherMode) return;
+    $('#replay-status').textContent = '';
     state.busy = true; $('#restart-button').disabled = true; $('#restart-button').textContent = 'Preparing…';
     call('startReplay').then(function(result) {
       state.replayId = result.replay_id; state.progress = result.progress; state.currentIndex = firstPlayableIndex();
@@ -985,7 +989,7 @@
       $('#restart-button').disabled = false; $('#restart-button').textContent = 'Clear & Start Again';
     }).catch(function(error) {
       state.busy = false; $('#restart-button').disabled = false; $('#restart-button').textContent = 'Clear & Start Again';
-      $('#completion-summary').textContent = error.message;
+      $('#replay-status').textContent = error.message;
     });
   }
 
@@ -1142,9 +1146,7 @@
         enterPractice(false); showFeedback('Teacher preview · replay the unit, then open Show Answer to mark a word.'); return;
       }
       if (Number(state.progress.best_percentage) >= 100 && Number(state.progress.percentage) >= 100) {
-        $('#practice-shell').hidden = true; $('#completion-screen').hidden = false;
-        $('#completion-percent').textContent = state.progress.best_percentage + '%';
-        $('#completion-summary').textContent = state.progress.independent_count + ' completed independently · ' + state.progress.assisted_count + ' completed with answer'; showTrainingCheckin(); return;
+        showTrainingCheckin(); return;
       }
       configureLearningActivity(); enterPractice(true);
     }).catch(function(error) {
@@ -1208,6 +1210,7 @@
   $('#previous-unit-button').addEventListener('click', function() { moveToUnit(-1); });
   $('#next-unit-button').addEventListener('click', function() { moveToUnit(1); });
   $('#restart-button').addEventListener('click', startTemporaryReplay);
+  $('#show-receipt-button').addEventListener('click', showTrainingCheckin);
   $('#export-button').addEventListener('click', exportLatest);
   function onDictationTimeUpdate(event) {
     if (!state.playing) return;

@@ -9,9 +9,9 @@
   <meta name="theme-color" content="#f3f8f8">
   <title>Listening · Mr. Cat Academy</title>
   <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
-  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20260924-audio-dock-2">
+  <link rel="stylesheet" href="assets/css/intensive-listening.css?v=20261003-receipts-2">
 <link rel="stylesheet" href="assets/css/training-checkin.css?v=20260930-status-1">
-<script src="assets/js/training-checkin.js?v=20260930-status-1"></script>
+<script src="assets/js/training-checkin.js?v=20261003-receipts-2"></script>
 </head>
 <body data-practice-nav="manual">
   <header class="il-header">
@@ -38,6 +38,14 @@
   </div>
 
   <main class="il-shell" id="practice-shell" aria-busy="true">
+    <div class="il-completed-actions" id="completed-actions" hidden>
+      <a class="il-finish" id="completion-finish" href="intensive-listening-library.html">Back to Listening</a>
+      <button class="il-restart" id="restart-button" type="button">Clear &amp; Start Again</button>
+      <button class="il-restart" id="show-receipt-button" type="button">View Receipt</button>
+      <span class="il-restart-note">A new run is temporary. Your 100% best record stays locked.</span>
+      <p id="replay-status" role="status"></p>
+    </div>
+
     <section class="il-practice-card" id="practice-card">
       <div class="il-unit-bar">
         <button class="il-unit-step" id="previous-unit-button" type="button" aria-label="Previous sentence" title="Previous sentence">←</button>
@@ -76,19 +84,6 @@
     </div>
   </div>
 
-  <section class="il-completion-screen" id="completion-screen" hidden>
-    <div class="il-completion-card">
-      <span class="il-eyebrow">MATERIAL COMPLETE</span>
-      <strong id="completion-percent">100%</strong>
-      <h1>Listening finished.</h1>
-      <p id="completion-summary"></p>
-      <div class="il-completion-actions">
-        <a class="il-finish" id="completion-finish" href="intensive-listening-library.html" data-comprehension-link>Back to Listening</a>
-        <button class="il-restart" id="restart-button" type="button">Clear &amp; Start Again</button>
-      </div>
-      <span class="il-restart-note">A new run is temporary. Your 100% best record stays locked.</span>
-    </div>
-  </section>
 
   <div class="il-leave-modal" id="leave-modal" hidden>
     <div class="il-leave-box" role="alertdialog" aria-modal="true" aria-labelledby="leave-title" aria-describedby="leave-copy">
@@ -146,6 +141,6 @@
   <script src="assets/js/config.public.js?v=20260921-cleanup-2"></script>
   <script src="assets/js/cloudbase-client.js?v=20260815-2"></script>
   <script src="assets/js/learning-activity.js?v=20260907-3"></script>
-  <script src="assets/js/intensive-listening.js?v=20260928-checkin-1"></script>
+  <script src="assets/js/intensive-listening.js?v=20261003-receipts-3"></script>
 </body>
 </html>

@@ -12,7 +12,8 @@ Use [08 Backlog](docs/08_BACKLOG.md) for product debt and
   Continue this cleanup on `codex/project-cleanup-oct03`, based on `a7b0f90f`.
   Do not resume/abort/reset the original rebase as an incidental cleanup step.
 - This cleanup has not published or deployed anything. Static reconciliation
-  used 119 public files fetched on 2026-10-03. Cloud-function sources include
+  used 119 public files fetched on 2026-10-03, including the receipt/Listening
+  release verified again at closeout. Cloud-function sources include
   recent local implementation; fresh live package/config verification is still
   required before any separately authorized backend release.
 - Keep the remaining due-week repair/compatibility paths. The last recorded
