@@ -15,11 +15,12 @@ Use [08 Backlog](docs/08_BACKLOG.md) for product debt and
   Read `README.txt` and `remaining-drafts.json`; `restore-drafts.py` recreates
   the old editable checkout in a new path. Review individual changes before
   restoring them; do not replace the current tree wholesale with the old one.
-- This cleanup has not published or deployed anything. Static reconciliation
-  used 119 public files fetched on 2026-10-03, including the receipt/Listening
-  release verified again at closeout. Cloud-function sources include
-  recent local implementation; fresh live package/config verification is still
-  required before any separately authorized backend release.
+- BBC/Vocabulary unused-result cleanup was published on 2026-10-04 after a fresh
+  132-path public check. Only two HTML objects and their unused crown image were
+  changed in COS. Public readback hashes match; source synchronization skips CI
+  to preserve the independently verified scoped release. Cloud-function sources
+  include recent local implementation; fresh live package/config verification
+  is still required before any separately authorized backend release.
 - Keep the remaining due-week repair/compatibility paths. The last recorded
   September audit is historical evidence, not a fresh count or authorization
   to modify assignments. Preserve source-less rows and all immutable history.

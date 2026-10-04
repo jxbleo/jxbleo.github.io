@@ -6,8 +6,9 @@ The current cleanup branch is `codex/project-cleanup-oct03`, based on `a7b0f90f`
 It reconciles published static files with recent source work and keeps the
 existing static allowlist. The original project directory now uses this clean branch; the stale rebase
 state and unshipped drafts are preserved in a verified local recovery archive.
-This local cleanup is not a deployment; see
-[the cleanup and recovery record](docs/10_DEPLOYMENT.md#primary-checkout-recovery-and-remaining-local-only-changes-2026-10-04).
+The BBC/Vocabulary static cleanup was published on 2026-10-04; backend packages
+remain local. See [the release record](docs/10_DEPLOYMENT.md#2026-10-04--publish-scoped-result-ui-cleanup)
+and the recovery instructions immediately below it.
 Completed QA history is in `docs/archive/AGENT_TODO_THROUGH_20261002.md`.
 
 Teacher **AI Usage** lists recorded Writing, Speaking and Scan Words activity,

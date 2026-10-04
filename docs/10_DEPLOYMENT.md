@@ -1,5 +1,36 @@
 # 10 Deployment
 
+## 2026-10-04 — Publish scoped result UI cleanup
+
+Owner authorized publication after the local cleanup. A fresh read of 132 public
+paths found 117 equal to source, the two reviewed HTML cleanup differences, one
+retired image, and 12 content-metadata paths returning 404. Those metadata paths
+were not uploaded. GitHub main remained `a7b0f90f` before source synchronization.
+
+Published only `bbc.html` and `vocabulary.html`; deleted only
+`assets/images/vocabulary-mastery-crown-e.jpg` after verifying no current runtime
+references. Every original COS object has a SHA-256-verified private backup.
+The publisher verifies baselines again before each write and supports guarded
+rollback. Both pages preserve byte-identical markup outside styles/scripts;
+only the reviewed unreachable result code/styles were removed.
+
+Nine focused tests/release checks passed. COS and public HTTPS on both
+`www.mrcatenglish.com` and `mrcatenglish.com` return exact release hashes:
+
+| Object | SHA-256 |
+| --- | --- |
+| `bbc.html` | `ecbee2736ed7cd4e785fab49305d0f86b852ec98472b08a2d5da56b574aca74b` |
+| `vocabulary.html` | `c1bf54847a565d1642bc68d22e3b1f6d00a45b94c1f1446005588aefb68d5933` |
+
+The retired image is absent in COS and returns public 404. Evidence and rollback
+are in ignored `.cloudbase-private/cleanup-release-20261004/`, including
+`snapshot.json`, `manifest.json`, `cos-before/`, `checks.json`, `verified.json`
+and `release.js`. Source synchronization uses `[skip ci]` because this scoped COS
+release is already verified; a whole-artifact upload was not performed.
+No cloud-function deployment, data migration, model or billing change occurred.
+The broader backend source reconciliation still requires fresh live package and
+configuration comparison before any separately authorized backend release.
+
 ## Primary checkout recovery and remaining local-only changes (2026-10-04)
 
 The original `/Users/jxbleo/jxbleo.github.io` directory now uses the verified

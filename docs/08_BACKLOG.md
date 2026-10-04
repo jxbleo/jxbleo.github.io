@@ -7,7 +7,8 @@ Git state. Previous rebase metadata and unshipped differences are preserved in
 `.cloudbase-private/cleanup-20261004/`; use its recovery instructions for a separate
 draft checkout. Do not reintroduce old implementations by copying that archive
 over the current source. Keep the two retained unmerged release worktrees until
-their individual changes are reconciled. No production release occurred here.
+their individual changes are reconciled. A subsequent owner-authorized release
+published only the BBC/Vocabulary static cleanup; backend packages remain local.
 
 ## Recently resolved — 2026-10-03 unified receipts
 
@@ -22,7 +23,7 @@ All six host cache keys were updated together. Evidence is in ignored
 
 Vocabulary/BBC unused result styles/helpers and retired crown artwork were
 removed locally on 2026-10-04. Shared receipts and active sound/confirmation
-behavior remain. This source cleanup has not been published.
+behavior remain. This static cleanup was published and verified on 2026-10-04.
 
 ## Current cleanup status (2026-10-03)
 

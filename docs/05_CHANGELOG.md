@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-04 — Publish scoped result UI cleanup
+
+Published the verified BBC/Vocabulary HTML cleanup and removed their unused
+crown image from COS after backing up all three live objects. Both public domains
+return the exact tested page hashes; the image returns 404. Current markup,
+receipts, active sounds, grading and historical results are unchanged.
+Nine focused release checks passed. Source synchronization uses `[skip ci]` to
+retain this scoped release; no CloudBase function, data, model or billing update.
+
 ## 2026-10-04 — Retire unused result UI and normalize the local checkout
 
 Removed unused BBC/Vocabulary result overlays, crown rendering, encouragement
