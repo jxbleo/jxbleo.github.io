@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Client-side material subject projection
+
+The existing teacher-material-links module projects subject membership from stable material IDs or optional validated public metadata. It does not inspect titles or opaque filenames to guess a handout family. The existing private function response and authorization remain unchanged; no new fetch, persistent directory cache, dependency or backend deployment is introduced. Subject filtering composes with the current type/search filters and keeps canonical open/copy URLs intact.
+
 ## 2026-10-16 — Delegate Douyin opening to its share link
 
 The renderer supplies an ordinary Douyin HTTPS anchor with target=_blank, noopener/noreferrer and no-referrer, matching the previously owner-tested fallback link. The dedicated header script no longer selects or intercepts Douyin clicks, stores its share token or builds its copy popup. Contact-copy handling is now used only for WeChat. The platform handles destination/App opening; no new backend, scheme, timer or dependency is involved.

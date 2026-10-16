@@ -1,5 +1,13 @@
 # Agent QA To Do List
 
+## 2026-10-16 — Teacher material subject filters
+
+Implemented and verified locally; static publication is pending renewal of the existing CLI session. No production object has been changed. Teacher → 资料链接 now opens on general handouts with exam/skill filters, counts and scoped search. Current counts are 31 unique study entries: five DSE Listening, four DSE Reading, twenty DSE Writing, one DSE Speaking and two RE; the shared topic bank belongs to Writing and Speaking. IELTS Reading remains empty because its local B01 draft is not a published catalog entry.
+
+Changed teacher-material-links.js/CSS, the HTML cache versions and focused tests; updated product, architecture, UI, metadata, changelog, workflow and testing notes. All handout suites and 45 Teacher navigation-race tests passed in the working copy; isolated source handout checks, static build and publication-boundary checks passed. Browser QA used the real module with synthetic private locators/student names: default study, reading/search scope, overlapping-topic counts, IELTS empty state, student/lesson drilldown, source failure/retry, manual-copy fallback, Escape/focus/scroll restoration and 390px/320px layouts. One browser ViewTransition-aborted navigation message was observed during fixture navigation; no material-filter script failure was observed. Screenshot: `/Users/jxbleo/Research/dse-writing-course/teacher-material-subjects-20261016.png`. Live authenticated Teacher interaction is not certified by this local fixture.
+
+Private release inputs/receipts: `.cloudbase-private/teacher-links-subjects-20261016/`. No handout URL, content, function, secret, permission or student data changes. Use a scoped static release and `[skip ci]` source synchronization; preserve unrelated live/source drift. Refresh the Teacher page after publication.
+
 ## Completed — Douyin share copy and WeChat next step (2026-10-16)
 
 All 23 handouts copy the complete supplied Douyin share message before showing the App instruction, with a secondary opening guide and manual-copy fallback. WeChat copying now explains searching the ID to add a friend. Scoped publication, runtime/artifact checks and mobile popup layout passed. Real-device App token recognition remains unverified; see the deployment record.

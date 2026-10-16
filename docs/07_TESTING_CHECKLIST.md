@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Teacher material subject filtering
+
+Run scripts/test-handout-teacher-ui.js and, in the main working copy with classroom/RE fixtures, scripts/test-teacher-material-links.js. Verify exact subject membership, shared-topic overlap without double-counting All, case-insensitive scoped search, unsupported metadata rejection, empty IELTS category, private-source failure/retry, and unchanged course drilldown/open/copy targets. Browser-check default study view, subject switching, selected state, count announcements, 390px/320px wrapping, Escape/focus and copy-denial recovery. Use synthetic private locators/student names in screenshots; do not publish the QA shell.
+
 ## 2026-10-16 — Direct Douyin profile regression
 
 Check all 23 handouts have one direct Douyin profile anchor and no Douyin copy attributes, popup, textarea, disclosure, or share-message payload. Verify the exact owner URL and safe external-link attributes, with profile wording in aria-label/title. Runtime checks should confirm no Douyin click interception/clipboard write or local popup across desktop/mobile/WeChat contexts, and retain WeChat copy success/failure/dismissal and Xiaohongshu behavior. The owner supplied the successful real-device WeChat/App observation.

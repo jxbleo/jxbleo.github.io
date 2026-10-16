@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — Classify future Teacher materials
+
+Published study metadata is grouped by stable dse-paper-3-*, dse-reading-*, dse-writing-*, dse-speaking-*, ielts-reading-* and other supported family prefixes; RE catalog IDs map to RE. A public catalog item outside those conventions may supply an explicit validated subjects array. Unknown study material stays visible under Other. IELTS Listening/Writing/Speaking and Other filters appear when they contain material. Do not add a guessed URL or expose a private draft just to populate a category. Private independent guides continue through the existing protected catalog pipeline; publish each destination before its catalog entry.
+
 ## 2026-10-16 — Maintain the direct Douyin owner profile link
 
 The current Douyin contact destination is https://v.douyin.com/rjLsjpFg0as/ . Preserve it as a normal anchor in the renderer and bump the header script version when removing the former copy interceptor. The complete share text and token are no longer needed in runtime assets. Account-link changes must come from the owner; independent handout identities remain untouched.

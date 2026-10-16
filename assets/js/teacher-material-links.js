@@ -2,6 +2,31 @@
     'use strict';
     const ORIGIN = 'https://www.mrcatenglish.com/';
     const categories = { classroom: '一对一讲义', study: '通用讲义', information: '资讯' };
+    const subjects = { 'dse-listening': 'DSE 听力', 'dse-reading': 'DSE 阅读', 'dse-writing': 'DSE 写作', 'dse-speaking': 'DSE 口语', 'ielts-reading': '雅思阅读', 'ielts-listening': '雅思听力', 'ielts-writing': '雅思写作', 'ielts-speaking': '雅思口语', 'reading-explorer': 'RE 精读', other: '其他资料' };
+    const pinnedSubjects = new Set(['dse-listening', 'dse-reading', 'dse-writing', 'dse-speaking', 'ielts-reading', 'reading-explorer']);
+    function subjectsFor(item) {
+        if (item.category !== 'study') return [];
+        if (item.subjects !== undefined) {
+            if (!Array.isArray(item.subjects) || !item.subjects.length || item.subjects.some(key => !Object.hasOwn(subjects, key))) throw new Error('资料学科分类无效');
+            return [...new Set(item.subjects)];
+        }
+        // Existing private catalogs need no schema change or link migration.
+        if (item.id === 'dse-topic-bank') return ['dse-writing', 'dse-speaking'];
+        if (/^dse-paper-3-/.test(item.id)) return ['dse-listening'];
+        for (const key of Object.keys(subjects)) if (item.id.startsWith(key + '-')) return [key];
+        if (/^RE-/.test(item.id)) return ['reading-explorer'];
+        return ['other'];
+    }
+    function subjectCounts(items) {
+        const counts = Object.fromEntries(Object.keys(subjects).map(key => [key, 0]));
+        counts.all = 0;
+        for (const item of items) {
+            if (item.category !== 'study') continue;
+            counts.all++;
+            for (const key of subjectsFor(item)) counts[key]++;
+        }
+        return counts;
+    }
     function shareURL(path) {
         if (typeof path !== 'string' || !/^[a-z0-9-]+\.html(?:\?[^#]*)?$/.test(path)) throw new Error('资料链接格式无效');
         const url = new URL(path, ORIGIN);
@@ -13,7 +38,7 @@
         if (catalog.schemaVersion !== 1 || !Array.isArray(catalog.items)) throw new Error('资料目录格式无效');
         return catalog.items.map(item => {
             if (!categories[item.category] || !item.id || !item.title || !item.access) throw new Error('资料信息不完整');
-            return { ...item, links: [{ label: '复制链接', href: shareURL(item.href) }] };
+            return { ...item, subjects: subjectsFor(item), links: [{ label: '复制链接', href: shareURL(item.href) }] };
         });
     }
     function privateHandoutItems(catalog) {
@@ -52,20 +77,21 @@
         if (!Array.isArray(catalog.lessons)) throw new Error('精读目录格式无效');
         return catalog.lessons.map(lesson => ({ id: lesson.id, category: 'study', topic: '阅读 · RE', title: 'RE 精读 · ' + lesson.title, description: lesson.label, access: '师生登录后阅读', links: [{ label: '复制链接', href: shareURL('re.html?lesson=' + encodeURIComponent(lesson.id)) }] }));
     }
-    function matches(item, category, query) {
-        return (!category || item.category === category) && [item.title, item.topic, item.description, item.access].join(' ').toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
+    function matches(item, category, query, subject = '') {
+        const itemSubjects = subjectsFor(item);
+        return (!category || item.category === category) && (!subject || itemSubjects.includes(subject)) && [item.title, item.topic, item.description, item.access, ...itemSubjects.map(key => subjects[key])].join(' ').toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
     }
-    function visibleItems(items, category, query, courseId) {
+    function visibleItems(items, category, query, courseId, subject = '') {
         if (category === 'classroom') {
             if (courseId) return items.filter(item => item.kind === 'lesson' && item.courseId === courseId && matches(item, category, query));
             return items.filter(item => item.kind === 'course' && (matches(item, category, query) || items.some(lesson => lesson.courseId === item.id && matches(lesson, category, query))));
         }
-        return items.filter(item => matches(item, category, query));
+        return items.filter(item => matches(item, category, query, category === 'study' ? subject : ''));
     }
-    if (typeof module !== 'undefined' && module.exports) { module.exports = { shareURL, curatedItems, privateHandoutItems, loadPrivateHandouts, classroomItems, readingItems, matches, visibleItems }; return; }
+    if (typeof module !== 'undefined' && module.exports) { module.exports = { shareURL, curatedItems, privateHandoutItems, loadPrivateHandouts, classroomItems, readingItems, subjects, subjectsFor, subjectCounts, matches, visibleItems }; return; }
     const trigger = document.getElementById('teacher-material-links-button');
     if (!trigger) return;
-    let items = [], loading = false, loaded = false, selected = 'classroom', selectedCourseId = '', parentSearch = '', copySequence = 0;
+    let items = [], loading = false, loaded = false, selected = 'study', selectedSubject = '', selectedCourseId = '', parentSearch = '', copySequence = 0;
     const dialog = document.createElement('dialog');
     dialog.id = 'teacher-material-links-dialog';
     dialog.className = 'material-links-dialog';
@@ -74,16 +100,22 @@
     dialog.setAttribute('aria-modal', 'true');
     dialog.setAttribute('aria-labelledby', 'material-links-title');
     dialog.innerHTML = '<header class="material-links-head"><div><p>SHARE & LEARN</p><h2 id="material-links-title">资料链接</h2></div><button type="button" data-links-close aria-label="关闭资料链接">关闭</button></header>' +
-        '<div class="material-links-controls"><input type="search" aria-label="搜索资料" placeholder="搜索学生、课程或资料关键词…"><nav aria-label="资料分类"></nav></div>' +
-        '<div class="material-links-meta"><p data-links-count></p><button type="button" data-links-retry hidden>重新加载</button></div>' +
+        '<div class="material-links-controls"><nav class="material-type-filters" aria-label="资料分类"></nav><div class="material-subjects"><p class="material-subjects-label">学科分类</p><nav class="material-subject-filters" aria-label="学科分类"></nav></div><input type="search" aria-label="搜索资料" placeholder="在全部通用讲义中搜索…"></div>' +
+        '<div class="material-links-meta"><p data-links-count role="status" aria-live="polite"></p><button type="button" data-links-retry hidden>重新加载</button></div>' +
         '<p class="material-links-status" role="status" aria-live="polite"></p><div class="material-links-list"></div>' +
         '<div class="material-links-manual" hidden><label>可选择并手动复制链接<input type="text" readonly aria-label="待复制链接"></label></div>';
     (document.getElementById('teacher-modal-root') || document.body).append(dialog);
-    const list = dialog.querySelector('.material-links-list'), status = dialog.querySelector('[role="status"]'), search = dialog.querySelector('input[type="search"]'), nav = dialog.querySelector('nav'), count = dialog.querySelector('[data-links-count]'), retry = dialog.querySelector('[data-links-retry]'), manual = dialog.querySelector('.material-links-manual');
+    const list = dialog.querySelector('.material-links-list'), status = dialog.querySelector('.material-links-status'), search = dialog.querySelector('input[type="search"]'), nav = dialog.querySelector('.material-type-filters'), subjectNav = dialog.querySelector('.material-subject-filters'), subjectPanel = dialog.querySelector('.material-subjects'), count = dialog.querySelector('[data-links-count]'), retry = dialog.querySelector('[data-links-retry]'), manual = dialog.querySelector('.material-links-manual');
     function element(tag, className, text) { const node = document.createElement(tag); node.className = className; node.textContent = text; return node; }
     Object.entries(categories).forEach(([key, label]) => {
         const button = element('button', '', label); button.type = 'button'; button.dataset.category = key; button.setAttribute('aria-pressed', String(key === selected));
-        button.onclick = () => { selected = key; selectedCourseId = ''; search.value = ''; search.placeholder = '搜索学生、课程或资料关键词…'; clearCopyFeedback(); nav.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button))); render(); }; nav.append(button);
+        button.onclick = () => { selected = key; selectedCourseId = ''; search.value = ''; clearCopyFeedback(); nav.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button))); render(); }; nav.append(button);
+    });
+    Object.entries({ '': '全部', ...subjects }).forEach(([key, label]) => {
+        const button = element('button', '', ''); button.type = 'button'; button.dataset.subject = key;
+        button.append(element('span', '', label), element('span', 'material-subject-count', ''));
+        button.onclick = () => { selectedSubject = key; clearCopyFeedback(); render(); };
+        subjectNav.append(button);
     });
     function clearCopyFeedback() {
         copySequence++; manual.hidden = true;
@@ -104,9 +136,19 @@
     }
     function render() {
         list.replaceChildren();
+        subjectPanel.hidden = selected !== 'study';
+        const counts = subjectCounts(items);
+        subjectNav.querySelectorAll('button').forEach(button => {
+            const key = button.dataset.subject, total = counts[key || 'all'];
+            button.hidden = !!key && !pinnedSubjects.has(key) && !total && key !== selectedSubject;
+            button.setAttribute('aria-pressed', String(key === selectedSubject));
+            button.querySelector('.material-subject-count').textContent = loading ? '…' : String(total);
+            button.setAttribute('aria-label', (subjects[key] || '全部通用讲义') + (loading ? '，正在加载' : '，' + total + ' 份资料'));
+        });
         const course = selected === 'classroom' && items.find(item => item.kind === 'course' && item.id === selectedCourseId);
-        const shown = visibleItems(items, selected, search.value, course ? course.id : '');
-        count.textContent = loading ? '正在加载资料…' : '共 ' + shown.length + (selected === 'classroom' ? (course ? ' 次课' : ' 位学生') : ' 份资料');
+        const shown = visibleItems(items, selected, search.value, course ? course.id : '', selectedSubject);
+        search.placeholder = selected === 'study' ? '在' + (subjects[selectedSubject] || '全部通用讲义') + '中搜索…' : course ? '搜索这位学生的课次或内容…' : selected === 'classroom' ? '搜索学生、课程或资料关键词…' : '搜索资讯关键词…';
+        count.textContent = loading ? '正在加载资料…' : (selected === 'study' ? (subjects[selectedSubject] || '全部通用讲义') + ' · ' : '') + '共 ' + shown.length + (selected === 'classroom' ? (course ? ' 次课' : ' 位学生') : ' 份资料');
         if (course) {
             const header = element('div', 'material-course-head', '');
             const back = element('button', 'material-course-back', '← 返回学生列表'); back.type = 'button';
@@ -134,11 +176,11 @@
             }
             const row = element('article', 'material-link-row', '');
             const info = element('div', 'material-link-info', '');
-            if (!course) info.append(element('span', 'material-link-topic', item.topic || categories[selected]));
+            if (!course) info.append(element('span', 'material-link-topic', item.category === 'study' ? subjectsFor(item).map(key => subjects[key]).join(' · ') : item.topic || categories[selected]));
             info.append(element('h4', '', item.title), element('p', '', item.description || ''), element('span', 'material-link-access', item.access));
             row.append(info, actionsFor(item)); list.append(row);
         }
-        if (!shown.length && !loading) list.append(element('p', 'material-links-empty', loaded ? (course && !search.value ? '这位学生还没有已收录的课次。' : '没有找到匹配的内容，试试其他关键词。') : '暂时无法加载资料，请重试。'));
+        if (!shown.length && !loading) list.append(element('p', 'material-links-empty', !loaded ? '部分资料尚未加载，请点击「重新加载」后重试。' : search.value.trim() ? '当前分类下没有匹配的内容，试试其他关键词或分类。' : course ? '这位学生还没有已收录的课次。' : selected === 'study' && selectedSubject ? '暂未收录' + subjects[selectedSubject] + '资料。' : '暂未收录资料。'));
     }
     async function copyLink(url, title, button, label) {
         const request = ++copySequence; manual.hidden = true;

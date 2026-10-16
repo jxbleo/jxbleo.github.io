@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Subject filters in Teacher materials
+
+Keep the three top-level types, with 通用讲义 selected on first open. Its 学科分类 panel contains count-labelled buttons above the search field, with one pressed selection and an All choice. Preserve the search text when switching subjects, label the search scope, and announce the filtered result count. Hide this panel in one-to-one and information views; retain the study selection for return. Buttons wrap on narrow screens. A truly empty category says 暂未收录; a failed catalog source shows retry guidance rather than implying there are no handouts.
+
 ## 2026-10-16 — One-click Douyin profile link
 
 Clicking the Douyin icon directly opens the owner-provided official share link. Remove the Douyin copy-success message, manual-copy textarea, alternate-opening disclosure and their styling entirely. Use profile wording in the accessible name and tooltip. Preserve the centered glyph and the four icon-only controls. The WeChat ID popup still explains adding a friend.

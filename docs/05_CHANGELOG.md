@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Filter Teacher materials by exam and skill
+
+Added a subject bar and per-subject counts to Teacher 资料链接, with scoped search and meaningful empty/loading/error states. General handouts now open by default; student drilldown and information categories retain their existing behavior. Canonical handout addresses, publication scope and permissions are unchanged.
+
 ## 2026-10-16 — Open the Douyin profile directly
 
 Replaced the Douyin copy/popup flow with the same direct official share anchor the owner successfully tested in WeChat. Removed the now-unused share text, popup markup and styles. All 23 independent handout links remain stable.

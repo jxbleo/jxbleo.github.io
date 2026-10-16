@@ -1,5 +1,9 @@
 # 04 Data Model
 
+## 2026-10-16 — Material subject display metadata
+
+No CloudBase schema or record changes. Public share-materials schemaVersion 1 may optionally include a nonempty subjects array with keys dse-listening, dse-reading, dse-writing, dse-speaking, ielts-reading, ielts-listening, ielts-writing, ielts-speaking, reading-explorer or other. Duplicate membership is counted once. Existing IDs supply backward-compatible membership; the shared DSE topic bank is Writing and Speaking. The private directory schema is unchanged and still contains no public map. Subject counts are an in-memory UI projection.
+
 ## 2026-10-16 — Private independent-handout metadata
 
 No new collection or database write is introduced. The teacher service only reads `students` by server-derived `auth_uid`, `role: teacher` and `active: true` on every request. Never accept browser-supplied role/UID as authority.

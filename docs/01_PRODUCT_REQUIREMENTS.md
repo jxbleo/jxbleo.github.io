@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Teacher material subject filters
+
+Teacher → 资料链接 now opens on 通用讲义 with an additional subject filter row: All, DSE Listening, DSE Reading, DSE Writing, DSE Speaking, IELTS Reading and RE. Each filter shows its available material count; searching stays within the selected subject. The topic bank belongs to both DSE Writing and Speaking, while All counts it once. IELTS Reading currently has no published catalog entries and shows an honest empty state; its local B01 draft is not published by this change. One-to-one student grouping and information links remain available. This supersedes the earlier default-to-classroom note.
+
 ## 2026-10-16 — Direct Douyin profile entry
 
 The owner reported successful WeChat-to-Douyin App opening through the existing official share link and requested that path directly on the icon. The Douyin control now follows https://v.douyin.com/rjLsjpFg0as/ as a normal HTTPS anchor, without copying or a local confirmation/alternate-opening popup. WeChat ID copying and its friend-search instruction remain as previously specified. This supersedes the earlier copy-first Douyin flow.
