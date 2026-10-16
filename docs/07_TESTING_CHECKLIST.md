@@ -1,5 +1,10 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Speaking report toolbar
+
+Check the parent reader at desktop and 320px: cat home link at left, four contact controls at right, no overflow; home must omit share query/fragment. WeChat copies exactly jxbleo_ and shows the add-friend instruction; Escape/outside click dismisses help. Xiaohongshu/Douyin retain owner HTTPS destinations with no referrer; email retains mailto. Toolbar survives loading, ready and unavailable states because it is outside the report-state container. Run test-speaking-parent-report.js and test-speaking-lab-ui.js. This replaces the prior letterhead visual expectations.
+
+
 ## 2026-10-16 — Handout reference publication checks
 
 Run handout tests, writing builder --check, static build and both artifact boundary checks. Verify all 23 outputs include 权威资料参考, no source/outgoing reference anchors outside the owner toolbar, and no research-status labels or teacher-only instructions in the reference sections. Check complete-course and standalone views, short/long source names at desktop and narrow mobile widths, unchanged exercise/model counts and unchanged private map. Compare scoped COS and both public domains with the frozen release bytes.

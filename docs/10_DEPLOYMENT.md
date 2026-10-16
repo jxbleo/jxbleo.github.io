@@ -1,5 +1,13 @@
 # 10 Deployment
 
+## 2026-10-16 — Speaking report toolbar published
+
+Published at `2026-10-16T15:18:25.613Z` under explicit owner authorization: exactly speaking-report.html, assets/css/speaking-report.css and assets/js/speaking-report.js. The parent reader uses a cat-only home link on the left and handout-style Xiaohongshu/Douyin/WeChat/email controls on the right. Existing share tokens, report content and server authorization are unchanged. The already-published handout contact script and cat asset were checked as unchanged dependencies.
+
+All three COS readbacks and ten plain/versioned public byte checks across apex/www match the frozen stage. Parent-reader and Speaking UI regression tests, JavaScript syntax, whitespace checks and release verification passed in the isolated source checkout. Previous-turn browser QA confirmed desktop/320px layout, WeChat copy success and Escape dismissal. Post-publication browser automation timed out, so live rendering is not separately certified; public delivery is verified by SHA-256. Private stage, backups and receipts: `.cloudbase-private/speaking-toolbar-20261016/`.
+
+Source synchronization preserves the published parent-reader baseline and uses `[skip ci]` to avoid a full-site COS deployment from unrelated source/live drift. Updated owner/product/UI/test/change/deployment records. No backend, database, dependency installation or other live resource change. Refresh existing report links; no owner action remains.
+
 ## 2026-10-16 — Single numbering in writing lesson contents published
 
 Published at `2026-10-16T15:08:45.724Z`: 16 standalone Writing 09–24 handouts, the complete course and the dedicated writing stylesheet. Removed the automatic list markers from 本讲目录 while retaining the numbered link labels and anchor targets. The renderer adds a fresh stylesheet version so existing readers receive the fix. All 18 COS readbacks and 38 plain/versioned apex/www byte checks passed. Private backups, stage and receipt: `.cloudbase-private/handout-toc-20261016/`.

@@ -1,5 +1,15 @@
 # Mr. Cat Academy Agent Guide
 
+### Speaking parent-report toolbar (owner revision, 2026-10-16)
+
+Supersedes the earlier parent-reader letterhead: place a handout-style toolbar
+above the report card, with a cat-only index.html home link on the left and
+Xiaohongshu, Douyin, WeChat and email icons on the right. Reuse the approved
+handout destinations and interactions, accessible names and no-referrer links.
+The home link never forwards the share token. Keep the toolbar present through
+loading, ready and unavailable states; preserve all report/access behavior.
+
+
 ## Independent DSE handouts (owner rule, 2026-10-16)
 
 All published handouts label references `权威资料参考`. Display institution /

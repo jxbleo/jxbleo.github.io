@@ -1,5 +1,10 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Speaking report toolbar
+
+Replace the parent reader’s internal Speaking Report/domain letterhead with one toolbar above the card. Left: 32px cat in a 44px home target. Right: the same four icon-only 44px controls as the handouts, with tooltips and accessible names. Preserve no-referrer external links, direct Douyin HTTPS navigation, official Xiaohongshu handling in WeChat, WeChat copy success/manual fallback and mailto. Reuse dse-handout-header.js on static toolbar markup outside the report-state container so asynchronous report rendering cannot remove its event bindings. No visible brand/domain text is added. At 320px, keep icons on one row and contact help within the viewport. This supersedes the older letterhead layout below.
+
+
 ## 2026-10-16 — Single numbering in writing lesson contents
 
 Writing 09–24 lesson contents retain the section numbers inside each clickable title. Hide the redundant browser list markers and their indentation in both the complete course and standalone modules; keep every anchor target unchanged.

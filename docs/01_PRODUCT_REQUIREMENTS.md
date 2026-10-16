@@ -1,5 +1,10 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Speaking report contact toolbar
+
+The shared parent Speaking report now uses the handout-style toolbar above the report card: a cat-only home link on the left and Xiaohongshu, Douyin, WeChat and email icons on the right. This supersedes the 2026-10-12 letterhead. Home goes to index.html without the share token; WeChat copies jxbleo_ and explains searching it to add a friend. The other controls retain the owner-approved handout destinations and behavior. The toolbar remains available while loading or unavailable; report content and share authorization are unchanged.
+
+
 ## 2026-10-16 — Handout references for students and families
 
 All 23 published independent handouts use the exact heading 权威资料参考. Each entry shows the institution/document name and a concise explanation of its relevance to the handout. Reference titles and inline citations are plain text without outgoing or source-jump links. Keep claims within the consulted evidence; do not imply official endorsement or guaranteed grades. Research access notes, page-reading logs and teacher instructions belong in private authoring/research records.
