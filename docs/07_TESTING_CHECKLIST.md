@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Student header checks supersede earlier copy-button QA
+
+All 23 real outputs must contain the Chinese brand and requested contact text, no header image/link/button and no student print/share/copy controls. Run `test:handouts` plus real-artifact checks. Five reader runtimes must initialize without removed buttons; course/reading navigation and answer disclosures must still work. Earlier copy-button test records below are historical. Verify wrapping on mobile, including the inherited `.resource-brand span` hide rule; verify course navigation, standalone lesson and reading guide in a real browser.
+
 ## 2026-10-16 — Independent DSE handouts published
 
 Owner continued the prepared cutover. Published 23 independent pages plus 12 dedicated assets, then the three Teacher integration/catalog objects. All 38 COS readbacks and 76 public SHA-256 checks across apex/www matched the frozen release. Eight existing predictable handout/alias objects were backed up and removed; all nine retired policy paths return a non-content response on both domains (18 checks). No matching DSE plaintext source objects existed under the old study-guides prefix. No unrelated live object was synchronized or removed.

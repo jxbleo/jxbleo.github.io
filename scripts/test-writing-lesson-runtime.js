@@ -1,28 +1,36 @@
 'use strict';
-const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const script=fs.readFileSync(require('node:path').join(__dirname,'../assets/js/dse-writing-lesson.js'),'utf8');
-async function scenario(printThrows) {
-  const listeners={},buttons={},media={},copied=[],details=[{open:false},{open:true}];
-  const canonical='https://www.mrcatenglish.com/h-'+'a'.repeat(48)+'.html';
-  const toast={textContent:'',classList:{add(){},remove(){}}};
-  for(const id of ['copy-lesson','print-lesson']) buttons[id]={hidden:true,addEventListener:(type,fn)=>{listeners[id+':'+type]=fn;}};
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const read=name=>fs.readFileSync(path.join(__dirname,'../assets/js',name+'.js'),'utf8');
+
+// All student print/copy buttons are absent. Reader startup must still finish.
+function scenario(name,kind) {
+  const listeners={},media={},details=[{open:false},{open:true}];
+  const toolbar={hidden:true};
+  const panel={id:kind==='course'?'overview':'foundation',hidden:true,querySelector:()=>({textContent:'Lesson'}),classList:{contains:()=>true}};
+  const picker={value:'',addEventListener(){}};
   const document={
-    getElementById:id=>buttons[id]||null,
+    title:'Test handout',body:{dataset:{}},
+    getElementById:id=>id===panel.id?panel:['module-picker','course-search'].includes(id)?picker:null,
     addEventListener:(event,fn)=>{listeners['document:'+event]=fn;},
-    querySelector:selector=>selector==='link[rel="canonical"]'?{href:canonical}:selector==='[data-resource-toast]'?toast:null,
-    querySelectorAll:selector=>selector==='details'?details:[],
+    querySelector:selector=>selector==='.course-toolbar'?toolbar:null,
+    querySelectorAll:selector=>selector==='details'?details:selector==='details[open]'?details.filter(d=>d.open):['.course-panel','.study-panel'].includes(selector)?[panel]:[],
   };
-  const context={document,URL,Element:class {},location:{href:'http://127.0.0.1/fixture.html#module-21',hash:''},history:{pushState(){throw Error('Unexpected navigation');}},navigator:{clipboard:{writeText:async text=>copied.push(text)}},window:{
-    isSecureContext:true,matchMedia:query=>({matches:false,addEventListener:(name,fn)=>{media[query]=fn;}}),
-    addEventListener:(name,fn)=>{listeners[name]=fn;},clearTimeout(){},setTimeout(){return 1;},
-    print(){assert(details.every(d=>d.open));if(printThrows) throw Error('Unavailable print');}
+  const context={document,Element:class {},location:{hash:''},history:{pushState(){throw Error('Unexpected navigation');}},window:{
+    matchMedia:query=>({matches:false,addEventListener:(event,fn)=>{media[query]=fn;}}),
+    addEventListener:(event,fn)=>{listeners[event]=fn;},
+    print(){throw Error('Reader must not invoke printing');}
   }};
-  vm.runInNewContext(script,context);
-  assert(!buttons['copy-lesson'].hidden && !buttons['print-lesson'].hidden);
-  await listeners['copy-lesson:click']();
-  assert.deepEqual(copied,[canonical],'Copy must use this isolated page, not the local URL or a full-course hash');
-  listeners['print-lesson:click']();
-  if(!printThrows) {listeners.beforeprint();media.print({matches:true});assert(details.every(d=>d.open));listeners.afterprint();media.print({matches:false});}
-  assert.deepEqual(details.map(d=>d.open),[false,true],'Print cancellation/completion/error must restore each original disclosure state');
+  vm.runInNewContext(read(name),context);
+  if(kind==='course') assert(!toolbar.hidden && !panel.hidden && picker.value==='overview','Course navigation must initialize without action buttons');
+  if(kind==='reading') assert(!panel.hidden,'Reading panel must initialize without a print button');
+  listeners.beforeprint();
+  if(kind==='lesson') {listeners.beforeprint();media.print({matches:true});}
+  assert(details.every(d=>d.open));
+  listeners.afterprint();
+  if(kind==='lesson') media.print({matches:false});
+  assert.deepEqual(details.map(d=>d.open),[false,true],'Native browser print must restore original disclosure state');
 }
-(async()=>{await scenario(false);await scenario(true);console.log('Single-lesson runtime passed: canonical copying and print-state restoration, including repeated browser events and print failure.');})().catch(error=>{console.error(error);process.exitCode=1;});
+scenario('dse-writing-lesson','lesson');
+scenario('dse-writing-course','course');
+for(const type of ['inference','tfng','language-effects']) scenario('dse-reading-'+type,'reading');
+console.log('Five handout runtimes passed: startup/navigation without print or copy buttons and native print-state restoration.');

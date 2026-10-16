@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Text-only student handout headers
+
+All 23 DSE handouts replace the top-left cat image and English brand with `猫先生英语（在抖音、视频号或小红书搜猫先生英语，或联系 email：jxbleo@foxmail.com）`. Remove student print, link-copy and share controls, including the full-course toolbar print buttons and reading-body print buttons/instructions. Preserve teacher-directory copy actions. Keep local study navigation, exercises and disclosures. The contact text wraps on mobile, overrides the shared mobile brand-hide rule and stays in normal flow below 600px.
+
 ## Existing receipt presentation retained (2026-10-04)
 
 The unused inline BBC/Vocabulary result-card skins and crown renderer are retired.

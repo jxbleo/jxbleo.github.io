@@ -9,8 +9,9 @@ function fixture(root) {
   const course={modules};
   const files={};
   const head='<head><meta name="robots" content="noindex,follow"><link rel="canonical" href="https://www.mrcatenglish.com/dse-writing-course.html"><meta property="og:url" content="https://www.mrcatenglish.com/dse-writing-course.html"><title>Test</title><script src="assets/js/dse-writing-course.js" defer></script></head>';
-  files[policy.writingCourse.source]='<html>'+head+'<body>'+modules.map(m=>`<section class="course-panel lesson" id="module-${m.id}"><h2 id="title-${m.id}">${m.title}</h2><p>Only test-content-${m.id}.</p><nav class="lesson-pager"><a href="#overview">All</a></nav></section>`).join('')+'</body></html>';
-  for (const guide of policy.guides) files[guide.source]='<html>'+head.replaceAll(policy.writingCourse.source,guide.source)+'<body><p>Synthetic guide only.</p></body></html>';
+  const header='<header class="resource-topbar" data-resource-topbar><a class="resource-brand" href="index.html"><img src="cat.png" alt="">Mr. Cat Academy</a><button id="copy-lesson">复制链接</button><button id="print-lesson">打印</button></header>';
+  files[policy.writingCourse.source]='<html>'+head+'<body>'+header+modules.map(m=>`<section class="course-panel lesson" id="module-${m.id}"><h2 id="title-${m.id}">${m.title}</h2><p>Only test-content-${m.id}.</p><nav class="lesson-pager"><a href="#overview">All</a></nav></section>`).join('')+'</body></html>';
+  for (const guide of policy.guides) files[guide.source]='<html>'+head.replaceAll(policy.writingCourse.source,guide.source)+'<body>'+header+'<p>Synthetic guide only.</p></body></html>';
   files['content/study-guides/dse-writing-course/course.json']=JSON.stringify(course);
   files['content/study-guides/dse-writing-course/sources.json']=JSON.stringify([{id:'S01',kind:'Test',title:'Official fixture',url:'https://example.com/source',status:'Fixture',use:'Fixture'}]);
   const key=Buffer.alloc(32,17),iv=Buffer.alloc(12,23),cipher=crypto.createCipheriv('aes-256-gcm',key,iv);

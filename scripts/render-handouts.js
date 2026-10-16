@@ -1,6 +1,20 @@
 'use strict';
 const {loadRelease, URL_PATTERN} = require('./handout-store');
 const ORIGIN = 'https://www.mrcatenglish.com/';
+const READER_VERSION = '20261016-header-1';
+const HANDOUT_HEADER = '<header class="resource-topbar handout-topbar" data-resource-topbar><div class="resource-brand"><span class="handout-name">猫先生英语</span><span class="handout-contact">（在抖音、视频号或小红书搜猫先生英语，或联系 email：<span class="handout-email">jxbleo@foxmail.com</span>）</span></div></header>';
+const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
+.resource-topbar.handout-topbar { gap: 0; padding: .8rem 0; }
+.handout-topbar .resource-brand { display: block; min-width: 0; line-height: 1.75; letter-spacing: 0; }
+.handout-topbar .resource-brand span { display: inline; }
+.handout-topbar .handout-name { font-size: 1rem; font-weight: 800; }
+.handout-topbar .handout-contact { color: #52616a; font-size: .8rem; font-weight: 400; }
+.handout-topbar .handout-email { white-space: nowrap; }
+@media (max-width: 600px) {
+  .resource-topbar.handout-topbar { position: relative; }
+  .handout-topbar .handout-contact { font-size: .75rem; }
+}
+</style>`;
 const esc = text => String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function extractSection(html, id) {
@@ -40,6 +54,15 @@ function isolateModule(full, module, sources, overrides = []) {
 }
 function independentPage(html, href, policy) {
   const url=ORIGIN+href;
+  // Student readers have text branding only; sharing belongs to the private teacher directory.
+  html=html.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,HANDOUT_HEADER);
+  html=html.replace(/<button\b[^>]*\bid="print-guide"[^>]*>[\s\S]*?<\/button>\s*<p class="small-note">打印[^<]*<\/p>/g,'')
+    .replace(/<button\b[^>]*\bid="(?:print-current|print-all)"[^>]*>[\s\S]*?<\/button>/g,'')
+    .replace(/<div>\s*<\/div>/g,'')
+    .replaceAll(' · 可打印','')
+    .replace(' · 可直接分享给同学，也可通过浏览器打印整份讲义。','')
+    .replace('仍可使用目录锚点和浏览器打印。','仍可使用目录锚点阅读。');
+  html=html.replace(/(assets\/js\/dse-(?:writing-(?:course|lesson)|reading-(?:inference|tfng|language-effects))\.js)(?:\?[^"']*)?/g,`$1?v=${READER_VERSION}`);
   html=html.replace(/<div class="lesson-card green"><h3>同系列继续学习<\/h3>[\s\S]*?<\/div>/g,'');
   html=html.replace(/<a class="reading-link"[^>]*>[\s\S]*?<\/a>/g,'');
   // A handout is a destination, not an entry into the site's material collection.
@@ -48,7 +71,7 @@ function independentPage(html, href, policy) {
   html=html.replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi,`<link rel="canonical" href="${url}">`)
     .replace(/<meta\b(?=[^>]*property=["']og:url["'])[^>]*>/gi,`<meta property="og:url" content="${url}">`)
     .replace(/<meta\b(?=[^>]*name=["'](?:robots|referrer)["'])[^>]*>/gi,'');
-  html=html.replace('</head>','<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
+  html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
   // Fail, rather than silently publish a forgotten cross-guide address.
   for (const old of policy.retiredPaths) if (html.includes(old)) throw new Error('A handout still exposes a retired address.');
   if (/同系列继续学习|class="reading-link"/.test(html)) throw new Error('A cross-handout promotion remains.');
@@ -63,6 +86,7 @@ function renderRelease(release) {
   for (const item of items) {
     const raw=item.module ? isolateModule(files[item.source],course.modules.find(m=>m.id===item.module),sources,overrides[item.module] || []) : files[item.source];
     const html=independentPage(raw,map.links[item.id],policy);
+    if ((html.match(/class="resource-topbar handout-topbar"/g)||[]).length!==1 || /data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html)) throw new Error('Invalid student handout header or action controls.');
     const opaque=[...new Set(html.match(/h-[a-f0-9]{48}\.html/g)||[])];
     if (opaque.length!==1 || opaque[0]!==map.links[item.id]) throw new Error('A handout exposes another share identity.');
     if (item.module) {

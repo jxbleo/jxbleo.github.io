@@ -1,5 +1,9 @@
 # Agent QA To Do List
 
+## 2026-10-16 — DSE student header follow-up completed
+
+Published all 23 handout header/action changes and five reader scripts with stable addresses; 28 COS readbacks and 66 public checks passed. Scoped source, tests and documentation updated. Desktop/mobile reader checks passed locally; final live screenshot automation timed out. Refresh existing links. See `docs/10_DEPLOYMENT.md` and ignored `.cloudbase-private/handout-header-release-20261016/`. No remaining owner action or backend deployment.
+
 ## 2026-10-16 — Independent DSE handouts published
 
 Owner continued the prepared cutover. Published 23 independent pages plus 12 dedicated assets, then the three Teacher integration/catalog objects. All 38 COS readbacks and 76 public SHA-256 checks across apex/www matched the frozen release. Eight existing predictable handout/alias objects were backed up and removed; all nine retired policy paths return a non-content response on both domains (18 checks). No matching DSE plaintext source objects existed under the old study-guides prefix. No unrelated live object was synchronized or removed.

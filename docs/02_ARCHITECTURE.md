@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Student handout header follow-up
+
+`render-handouts.js` applies the same text-only Chinese brand/contact header to all 23 encrypted-source outputs, strips student print/share actions and versions five reader scripts. Header CSS is confined to generated handouts. The five readers initialize without these controls; native browser-print disclosure restoration remains. Link identities, source ciphertext and teacher catalog are unchanged.
+
 ## 2026-10-16 — Independent handout build and teacher directory
 
 This supersedes the earlier root-page/public-source distribution described below. Plaintext authoring files now live under ignored `.cloudbase-private/handouts/source/`; writing/tones builders update that private tree directly. `scripts/handout-policy.json` defines safe identities and retirement paths, not share addresses. `scripts/handouts.sealed.json` contains gzip-compressed, AES-256-GCM authenticated ciphertext only. The key and complete stable 192-bit link map remain private; CI provides `MRCAT_HANDOUT_CONTENT_KEY` and `MRCAT_HANDOUT_LINKS_JSON` only to build/artifact verification. Cryptography uses Node built-ins, with no new library.

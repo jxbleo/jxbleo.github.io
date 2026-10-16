@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Simplify student handout headers
+
+Removed print, copy-link and share controls from all 23 DSE handouts. Replaced the top-left cat image/English brand with the requested Chinese brand, platform-search instruction and email. Updated five readers for startup without those controls, and added responsive header overrides. Stable addresses, all learning material and teacher distribution controls are preserved.
+
 ## 2026-10-16 — Independent DSE handouts published
 
 Owner continued the prepared cutover. Published 23 independent pages plus 12 dedicated assets, then the three Teacher integration/catalog objects. All 38 COS readbacks and 76 public SHA-256 checks across apex/www matched the frozen release. Eight existing predictable handout/alias objects were backed up and removed; all nine retired policy paths return a non-content response on both domains (18 checks). No matching DSE plaintext source objects existed under the old study-guides prefix. No unrelated live object was synchronized or removed.

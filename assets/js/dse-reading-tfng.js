@@ -42,8 +42,5 @@
   window.addEventListener('afterprint', function () {
     document.querySelectorAll('details').forEach(function (detail) { detail.open = openBeforePrint.includes(detail); });
   });
-  var print = document.getElementById('print-guide');
-  print.hidden = false;
-  print.addEventListener('click', function () { window.print(); });
   restore();
 })();

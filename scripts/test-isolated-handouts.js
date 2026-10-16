@@ -4,12 +4,20 @@ const {spawnSync}=require('node:child_process');
 const fixture=require('./handout-test-fixture');
 const {loadRelease,privatePath}=require('./handout-store');
 const {renderRelease,independentPage}=require('./render-handouts');
+function checkStudentHeader(html) {
+  const header=html.match(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/);
+  assert(header,'Each student handout must have a header');
+  assert(header[0].includes('猫先生英语') && header[0].includes('在抖音、视频号或小红书搜猫先生英语') && header[0].includes('jxbleo@foxmail.com'));
+  assert(!/<img|<button|<a\b|Mr\. Cat Academy/.test(header[0]),'Student header must be text only');
+  assert(!/data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html),'Student handouts must not provide print or link-copy controls');
+}
 if (process.argv.includes('--artifact')) {
   const root=path.resolve(__dirname,'..'),release=loadRelease(root),expected=renderRelease(release);
   const course=JSON.parse(release.files['content/study-guides/dse-writing-course/course.json']);
   for(const item of release.items) {
     const href=release.map.links[item.id],actual=fs.readFileSync(path.join(root,'dist',href),'utf8');
     assert(actual===expected.get(href),'Published handout bytes must match the authenticated source and current isolation rules');
+    checkStudentHeader(actual);
     const ids=[...actual.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
     assert(new Set(ids).size===ids.length,'Handout IDs must be unique');
     for(const match of actual.matchAll(/href="#([^"]+)"/g)) assert(ids.includes(match[1]),'Every local handout anchor must resolve');
@@ -43,6 +51,7 @@ try {
     assert(html.includes('dse-writing-lesson.js') && !html.includes('dse-writing-course.js'));
   }
   for(const [href,html] of pages) {
+    checkStudentHeader(html);
     assert.deepEqual([...new Set(html.match(/h-[a-f0-9]{48}\.html/g))],[href]);
     assert(html.includes('noindex,nofollow,noarchive') && html.includes('no-referrer'));
     assert(policy.retiredPaths.every(p=>!html.includes(p)));

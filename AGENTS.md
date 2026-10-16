@@ -6,7 +6,9 @@ Distribute each DSE Reading/Writing handout independently. The current scope is
 23 share targets: one complete Writing 09–24 course, 16 separate writing
 modules, four reading guides and two earlier writing guides. Each target has its
 own stable 192-bit random filename. A complete-course hash is never a separate
-handout: its copy action must say `复制完整版链接`. A standalone module must contain
+handout. Student pages have no print, copy-link or share controls. Use text-only
+branding: `猫先生英语（在抖音、视频号或小红书搜猫先生英语，或联系 email：jxbleo@foxmail.com）`.
+Keep copy/open controls in the private teacher directory. A standalone module must contain
 only that module, its required task context and relevant references, without
 other modules, course navigation, promotional links or a platform entry.
 

@@ -1,5 +1,13 @@
 # 10 Deployment
 
+## 2026-10-16 — Student handout headers published
+
+At `2026-10-16T08:11:54.554Z`, published exactly 23 existing handout HTML objects and five dedicated reader scripts. All 28 COS readbacks and 66 apex/www public byte checks (including versioned scripts) matched the staged SHA-256 values. Backups and receipt: `.cloudbase-private/handout-header-release-20261016/`. Existing share identities, sealed teaching source and teacher directory remain unchanged; no backend or unrelated static object was deployed.
+
+The common renderer replaces the cat image/English header with the requested Chinese brand and contact text, removes student print/copy/share actions and removes the related print prompts. Five readers initialize without those controls. Desktop full-course navigation, 390px standalone branding/wrapping and reading answer disclosure/navigation were checked in Chrome with no horizontal overflow or console errors. The inherited mobile brand-hide rule was corrected. The final production browser screenshot attempt timed out; production delivery was instead verified by exact public-byte comparison. Native browser print remains available, without page-provided buttons.
+
+Validation passed `test:handouts`, static build, all 23 real-artifact checks and the static publication boundary, in both the working copy and isolated source worktree. Product, architecture, UI, authoring, test and change records were updated. Keep this release scoped and use `[skip ci]` for its source commit: unrelated production/source drift still prevents a full-site COS synchronization. Earlier copy-button QA below describes the superseded interface. Existing readers only need a refresh.
+
 ## 2026-10-16 — Independent DSE handouts published
 
 Owner continued the prepared cutover. Published 23 independent pages plus 12 dedicated assets, then the three Teacher integration/catalog objects. All 38 COS readbacks and 76 public SHA-256 checks across apex/www matched the frozen release. Eight existing predictable handout/alias objects were backed up and removed; all nine retired policy paths return a non-content response on both domains (18 checks). No matching DSE plaintext source objects existed under the old study-guides prefix. No unrelated live object was synchronized or removed.

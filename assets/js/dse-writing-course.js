@@ -24,9 +24,6 @@
       if (link.dataset.route === current) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
-    document.getElementById('print-current').textContent = current === 'overview' ? '打印全套' : '打印本页';
-    document.getElementById('print-all').hidden = current === 'overview';
-    document.getElementById('copy-lesson').textContent = '复制完整版链接';
     var title = panel.querySelector('h2, h1');
     document.title = current === 'overview' ? baseTitle : (title ? title.textContent : '') + '｜DSE Writing · Mr. Cat Academy';
     if (target) {
@@ -82,37 +79,8 @@
     printState = null;
     delete document.body.dataset.printScope;
   }
-  function print(scope) {
-    document.body.dataset.printScope = scope;
-    preparePrint();
-    window.print();
-  }
   window.addEventListener('beforeprint',preparePrint);
   window.addEventListener('afterprint',restorePrint);
-  document.getElementById('print-current').addEventListener('click',function () { print(current === 'overview' ? 'all' : 'current'); });
-  document.getElementById('print-all').addEventListener('click',function () { print('all'); });
-
-  var copy = document.getElementById('copy-lesson');
-  copy.hidden = false;
-  copy.addEventListener('click',async function () {
-    var canonical = document.querySelector('link[rel="canonical"]').href;
-    // This reader grants the whole course. A hash is not a single-lesson share.
-    var url = canonical;
-    try {
-      if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(url);
-      else {
-        var input = document.createElement('textarea');
-        input.value = url;
-        input.style.position = 'fixed'; input.style.opacity = '0'; input.setAttribute('readonly','');
-        document.body.appendChild(input); input.select();
-        var copied = document.execCommand('copy');
-        input.remove(); copy.focus();
-        if (!copied) throw new Error('Copy unavailable');
-      }
-      copy.textContent = '链接已复制';
-    } catch (_) { copy.textContent = '请复制地址栏链接'; }
-    window.setTimeout(function () { copy.textContent = '复制完整版链接'; },2000);
-  });
   document.querySelectorAll('.lesson-body > h3').forEach(function (h) {
     if (h.textContent.includes('冲 5*')) h.classList.add('advanced-heading');
   });

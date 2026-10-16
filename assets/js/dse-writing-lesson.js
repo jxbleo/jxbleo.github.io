@@ -1,10 +1,7 @@
 (function () {
   'use strict';
 
-  var copyButton = document.getElementById('copy-lesson');
-  var printButton = document.getElementById('print-lesson');
   var printState = null;
-  var messageTimer = null;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var printMedia = window.matchMedia('print');
 
@@ -70,74 +67,6 @@
     if (event.matches) preparePrint();
     else restorePrint();
   });
-
-  function announce(message) {
-    var toast = document.querySelector('[data-resource-toast]');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.className = 'resource-toast';
-      toast.setAttribute('data-resource-toast', '');
-      toast.setAttribute('role', 'status');
-      toast.setAttribute('aria-live', 'polite');
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('is-visible');
-    window.clearTimeout(messageTimer);
-    messageTimer = window.setTimeout(function () { toast.classList.remove('is-visible'); }, 2400);
-  }
-
-  if (printButton) {
-    printButton.hidden = false;
-    printButton.addEventListener('click', function () {
-      preparePrint();
-      try { window.print(); }
-      catch (_) {
-        restorePrint();
-        announce('请使用浏览器的打印功能');
-      }
-    });
-  }
-
-  function canonicalUrl() {
-    var canonical = document.querySelector('link[rel="canonical"]');
-    var url = new URL(canonical ? canonical.href : location.href, location.href);
-    url.hash = '';
-    return url.href;
-  }
-
-  async function copyText(value) {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(value);
-      return;
-    }
-    var activeElement = document.activeElement;
-    var input = document.createElement('textarea');
-    input.value = value;
-    input.setAttribute('readonly', '');
-    input.style.position = 'fixed';
-    input.style.opacity = '0';
-    document.body.appendChild(input);
-    input.select();
-    try {
-      if (!document.execCommand('copy')) throw new Error('Copy unavailable');
-    } finally {
-      input.remove();
-      if (activeElement && typeof activeElement.focus === 'function') activeElement.focus({ preventScroll: true });
-    }
-  }
-
-  if (copyButton) {
-    copyButton.hidden = false;
-    copyButton.addEventListener('click', async function () {
-      try {
-        await copyText(canonicalUrl());
-        announce('本讲链接已复制');
-      } catch (_) {
-        announce('请复制浏览器地址栏中的链接');
-      }
-    });
-  }
 
   document.querySelectorAll('.lesson-body > h3').forEach(function (heading) {
     if (heading.textContent.includes('冲 5*')) heading.classList.add('advanced-heading');

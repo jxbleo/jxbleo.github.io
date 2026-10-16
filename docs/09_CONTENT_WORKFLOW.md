@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — Shared student header
+
+For header/contact and student action changes, edit `scripts/render-handouts.js`; this common publication transform covers all 23 handouts. Do not rotate the map or rewrite encrypted teaching content for a presentation-only change. Pair button removal with the affected reader scripts and asset versions. Teacher/local distribution lists retain their copy controls.
+
 ## 2026-09-30 — BBC live corrections
 
 Teacher webpage edits are authoritative CloudBase overlays: public question fields in `sets.bbc_question_overrides`, explanations in `grading_keys.explanations`. Static JSON/PDF worksheets do not change automatically. Before a later source reimport or worksheet regeneration, reconcile the live overlay and private grading history with the owner source; never overwrite teacher revisions with stale static content. Keep explanations out of public JSON. A question edit preserves IDs and scoring structure; substantial new exercises still use the existing edition workflow.
