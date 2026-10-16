@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-17 — Reusable sharing toolbar fully published
+
+Eight root readers now consume the same static template and shared CSS/JS as all 39 independent handouts. Speaking CSS owns placement only. The Paper 3 generator pipes documents through the template synchronizer; build validation rejects malformed/duplicate marked headers before replacing dist. No extra service or runtime dependency.
+
 ## 2026-10-17 — Complete private course and shared header
 
 The writing builder reads five ordered stage definitions from private course.json,

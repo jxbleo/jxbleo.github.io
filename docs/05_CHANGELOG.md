@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-17 — Reusable sharing toolbar fully published
+
+Published at 2026-10-16T16:29:20.535Z under the owner's explicit request: eight root HTML readers (five Paper 3 listening handouts, topic-bank/JUPAS resource shells and parent Speaking report) plus assets/css/speaking-report.css. The 39 independent handouts and two share-header assets had already shipped with the complete Writing course; they were verified and left intact. All 47 shared readers now use the cat + 进入主页 + four-contact toolbar. The eight root-page bodies were transformed from their verified live baseline, preserving unrelated local topic-bank copy changes outside this release.
+
+Nine changed objects and 44 unchanged dependencies passed COS readback; all 118 plain/versioned checks across apex/www match their expected SHA-256. Isolated component synchronization/runtime, Speaking parent/UI, protected-resource, synthetic/real 39-handout, static build/boundary, release and whitespace checks passed. The Paper 3 generator now uses the reusable template, and release checks cover all root consumers plus invalid/duplicate markers before dist replacement. Prior local 320px/desktop layout, 44px controls, copy feedback and dismissal checks passed. Live browser automation timed out while the Mac was locked, so a fresh post-release screenshot or live interaction is not certified.
+
+Updated page integration, generator, focused tests and owner/product/UI/workflow/release records. No backend, database, secret, permission, content identity or new dependency change. Private frozen stage, backups and receipts: .cloudbase-private/shared-header-20261017/. Source synchronization uses [skip ci] to avoid an unrelated full-site deployment. Existing share links remain valid; refresh them to see the toolbar.
+
 ## 2026-10-17 — DSE Writing course completed
 
 Added original foundation 01–08, advanced 25–30 and exam integration 31–32. The

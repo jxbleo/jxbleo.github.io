@@ -1,5 +1,9 @@
 # Mr. Cat Academy
 
+## 2026-10-17 — Reusable sharing toolbar fully published
+
+All handouts, topic-bank/JUPAS share readers and parent Speaking reports now use the reusable toolbar. New shared readers follow docs/09_CONTENT_WORKFLOW.md; run npm run test:share-header after changing the template. Publication is recorded in docs/10_DEPLOYMENT.md.
+
 ## DSE Writing complete course (2026-10-17)
 
 The original 32-module plan is complete: foundation 01–08, deepening 09–16,

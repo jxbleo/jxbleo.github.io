@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-17 — Reusable sharing toolbar fully published
+
+New root shared readers place `<header data-share-header="resource"></header>` outside asynchronously replaced content, join the existing static allowlist, then run `node scripts/sync-share-headers.js`. Use report/paper variants for the existing report/listening layouts. The build renders marked readers automatically. Run `npm run test:share-header` to check every root consumer against the canonical template. The Paper 3 Python builder calls share-header.js --document, including custom output directories; do not copy its toolbar markup into a second template. Independent guides continue through their private-source renderer. Keep relative paths correct for any future nested route and never publish private drafts just to adopt this header.
+
 ## 2026-10-17 — Author and distribute the complete Writing course
 
 Canonical private course scope is modules 01–32, arranged by the five stage objects

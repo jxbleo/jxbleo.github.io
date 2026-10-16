@@ -7,6 +7,7 @@ converter keeps the generated pages easy to refresh when the handout changes.
 
 from __future__ import annotations
 
+import subprocess
 import argparse
 import html
 import posixpath
@@ -298,10 +299,7 @@ def page_html(part: dict, body: str) -> str:
   <link rel="stylesheet" href="assets/css/dse-paper3.css?v=20260821-1">
 </head>
 <body>
-  <header class="paper-topbar">
-    <a class="paper-brand" href="index.html">Mr. Cat English</a>
-    <a class="paper-home" href="index.html">回到主页</a>
-  </header>
+  <header data-share-header="paper"></header>
   <main class="paper-shell">
     <section class="paper-hero">
       <div class="paper-hero-copy">
@@ -358,7 +356,12 @@ def main() -> None:
     buckets = split_parts(nodes)
     for part in PARTS:
         output = args.output / f'{part["slug"]}.html'
-        output.write_text(page_html(part, render_nodes(buckets[part["number"]])), encoding="utf-8")
+        page = subprocess.run(
+            ["node", str(Path(__file__).resolve().parent / "share-header.js"), "--document"],
+            input=page_html(part, render_nodes(buckets[part["number"]])),
+            text=True, capture_output=True, check=True,
+        ).stdout
+        output.write_text(page, encoding="utf-8")
         print(output)
 
 

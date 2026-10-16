@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-17 — Reusable sharing toolbar fully published
+
+All handouts and shared readers now use the canonical cat + 进入主页 + four-contact component. Keep the home label at 13px regular weight beside the 32px cat, with 44px contact targets. Shared-resource authentication controls stay on their existing separate row. The Speaking header remains outside report-state updates; home navigation opens index.html without share tokens or referrers.
+
 ## 2026-10-17 — Complete DSE Writing progression
 
 Restore the agreed original 01–32 curriculum rather than stopping at 09–24:

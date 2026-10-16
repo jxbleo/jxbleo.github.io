@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-17 — Reusable sharing toolbar fully published
+
+Run npm run test:share-header for root-consumer parity/synchronization and node scripts/test-share-header-runtime.js for copy and profile routing. test-static-build.js includes a stale-header regeneration case and proves duplicate headers fail without erasing the prior artifact. Retain the Speaking, protected-resource and independent-handout tests. Verify actual live bytes on both domains, and use sanitized previews for screenshots.
+
 ## 2026-10-17 — Complete Writing 01–32
 
 - Require continuous unique module IDs 01–32 and exactly 39 independent targets;

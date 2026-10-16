@@ -7,7 +7,7 @@
     "build:static": "node scripts/build-static-site.js",
     "test:static-build": "node scripts/test-static-build.js",
     "test:dashboard-loading": "node scripts/test-dashboard-loading.js",
-    "test:release": "npm run test:static-build && npm run test:dashboard-loading && npm run test:student-accounts && npm run test:global-progress && npm run test:parent-mode && npm run test:listening-contracts && npm run test:listening-activity && node scripts/test-listening-retirement.js && npm run test:listening-authoring && npm run test:vocabulary-session && npm run test:text-model-policy && npm run test:bbc-editor && npm run test:training-checkin && node scripts/test-function-package-selection.js && npm run test:handouts",
+    "test:release": "npm run test:static-build && npm run test:dashboard-loading && npm run test:student-accounts && npm run test:global-progress && npm run test:parent-mode && npm run test:listening-contracts && npm run test:listening-activity && node scripts/test-listening-retirement.js && npm run test:listening-authoring && npm run test:vocabulary-session && npm run test:text-model-policy && npm run test:bbc-editor && npm run test:training-checkin && node scripts/test-function-package-selection.js && npm run test:handouts && npm run test:share-header && npm run test:share-header",
     "verify": "node scripts/verify-release.js",
     "verify:release": "node scripts/verify-release.js",
     "test:vocabulary": "node scripts/test-vocabulary-versioning.js",
@@ -64,7 +64,8 @@
     "test:ai-jobs": "node scripts/test-ai-job-continuations.js && node scripts/test-ai-worker-concurrency.js && node scripts/test-ai-provider-deadlines.js && node scripts/test-ai-feedback-latency.js",
     "test:function-packaging": "node scripts/test-function-package-selection.js && node scripts/test-speaking-runtime-package.js && node scripts/test-teacheradmin-package.js",
     "test:training-receipts": "npm run test:training-checkin && node scripts/test-writing-completion.js",
-    "test:handouts": "node scripts/test-isolated-handouts.js && node scripts/test-writing-lesson-runtime.js && node scripts/test-teacher-handout-links.js && node scripts/test-handout-teacher-ui.js && node scripts/test-teacher-handout-package.js && node scripts/test-handout-log-redaction.js && node scripts/test-share-header-runtime.js"
+    "test:handouts": "node scripts/test-isolated-handouts.js && node scripts/test-writing-lesson-runtime.js && node scripts/test-teacher-handout-links.js && node scripts/test-handout-teacher-ui.js && node scripts/test-teacher-handout-package.js && node scripts/test-handout-log-redaction.js && node scripts/test-share-header-runtime.js",
+    "test:share-header": "node scripts/test-share-header.js && node scripts/sync-share-headers.js --check"
   },
   "devDependencies": {
     "@cloudbase/manager-node": "5.5.2",

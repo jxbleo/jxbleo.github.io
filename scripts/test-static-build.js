@@ -34,6 +34,8 @@ if (process.argv.includes("--artifact")) {
     require('./handout-test-fixture')(fixture);
     for (const directory of manifest.directories) fs.mkdirSync(path.join(fixture, directory));
     for (const file of manifest.rootFiles) fs.writeFileSync(path.join(fixture, file), "public fixture");
+    const sharedSource = '<html><head></head><body><header data-share-header="report">stale copy</header><main>report fixture</main></body></html>';
+    fs.writeFileSync(path.join(fixture, 'speaking-report.html'), sharedSource);
     for (const excluded of manifest.excludedPaths) {
       fs.mkdirSync(path.join(fixture, excluded), { recursive: true });
       fs.writeFileSync(path.join(fixture, excluded, "source.json"), "private fixture");
@@ -45,6 +47,14 @@ if (process.argv.includes("--artifact")) {
     const result = build();
     assert.equal(result.status, 0, result.stderr);
     checkArtifact(path.join(fixture, "dist"));
+    const sharedOutput = fs.readFileSync(path.join(fixture, 'dist/speaking-report.html'), 'utf8');
+    assert(sharedOutput.includes(require('./share-header').render('report')));
+    assert(sharedOutput.includes('<main>report fixture</main>'));
+    assert(!sharedOutput.includes('stale copy'));
+    fs.writeFileSync(path.join(fixture, 'speaking-report.html'), sharedSource.replace('</body>', '<header data-share-header="report"></header></body>'));
+    assert.notEqual(build().status, 0, 'Duplicate shared header must fail before replacing dist');
+    assert.equal(fs.readFileSync(path.join(fixture, 'dist/speaking-report.html'), 'utf8'), sharedOutput);
+    fs.writeFileSync(path.join(fixture, 'speaking-report.html'), sharedSource);
     fs.mkdirSync(path.join(fixture, "dist/assets/js"), { recursive: true });
     fs.writeFileSync(path.join(fixture, "dist/assets/js/listening-shadowing.js"), "retired fixture");
     assert.throws(() => checkArtifact(path.join(fixture, "dist")), /Retired Shadowing asset published/);
