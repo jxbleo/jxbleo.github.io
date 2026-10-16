@@ -2,55 +2,13 @@
 const {loadRelease, URL_PATTERN} = require('./handout-store');
 const ORIGIN = 'https://www.mrcatenglish.com/';
 const READER_VERSION = '20261016-header-1';
-const XHS_PROFILE = 'https://xhslink.cn/o/aYLtaYWoBd';
-const DOUYIN_PROFILE = 'https://v.douyin.com/rjLsjpFg0as/';
-// Small, locally drawn platform cues; no third-party image/script requests.
-const XHS_ICON = '<span class="handout-icon handout-xhs" aria-hidden="true">小红书</span>';
-const DOUYIN_ICON = '<span class="handout-icon handout-douyin" aria-hidden="true"><svg viewBox="2 .5 24 24" focusable="false"><path fill="#25f4ee" transform="translate(-1 1)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fe2c55" transform="translate(1 0)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fff" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/></svg></span>';
-const WECHAT_ICON = '<span class="handout-icon handout-wechat" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="#fff" d="M9 3C4.6 3 1 5.8 1 9.3c0 1.9 1.1 3.6 2.8 4.8l-.7 2.4 2.8-1.4c.7.2 1.4.4 2.1.4a6.4 6.4 0 0 1-.3-1.9c0-3.6 3.5-6.5 7.9-6.5h.8C15.2 4.7 12.4 3 9 3Z"/><path fill="#fff" d="M16 8.5c-3.6 0-6.5 2.3-6.5 5.2s2.9 5.2 6.5 5.2c.9 0 1.7-.1 2.5-.4l2.4 1.2-.6-2.1c1.4-1 2.2-2.3 2.2-3.9 0-2.9-2.9-5.2-6.5-5.2Z"/><g fill="#07a84d"><circle cx="6" cy="7.8" r="1"/><circle cx="11.5" cy="7.8" r="1"/><circle cx="13.7" cy="12.5" r=".9"/><circle cx="18.2" cy="12.5" r=".9"/></g></svg></span>';
-const MAIL_ICON = '<svg class="handout-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>';
-const HANDOUT_HEADER = `<header class="resource-topbar handout-topbar" data-resource-topbar>
-<div class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt="" width="32" height="32"><span class="handout-name">猫先生英语</span></div>
-<nav class="handout-socials" aria-label="关注与联系猫先生英语">
-<a class="handout-social" data-handout-app="xiaohongshu" href="${XHS_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="查看猫先生英语的小红书主页" title="小红书 · 猫先生英语主页">${XHS_ICON}</a>
-<a class="handout-social" href="${DOUYIN_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="查看猫先生英语的抖音主页" title="抖音 · 猫先生英语主页">${DOUYIN_ICON}</a>
-<div class="handout-copy-help handout-wechat-help"><button class="handout-social" type="button" data-handout-wechat="jxbleo_" aria-label="复制微信号 jxbleo_" title="点击复制微信号 jxbleo_">${WECHAT_ICON}</button><div class="handout-contact-tip handout-wechat-tip" data-handout-wechat-status role="status" aria-live="polite" hidden><span data-handout-wechat-message></span><code>jxbleo_</code><p>请打开微信，搜索该微信号添加好友即可。</p></div></div>
-<a class="handout-social" href="mailto:jxbleo@foxmail.com" aria-label="发送邮件至 jxbleo@foxmail.com" title="jxbleo@foxmail.com">${MAIL_ICON}</a>
-</nav></header>`;
-const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
+const {render: renderShareHeader, assets: shareHeaderAssets} = require('./share-header');
+const HANDOUT_HEADER = renderShareHeader('handout');
+const HANDOUT_HEADER_STYLE = `<style id="handout-reference-style">
 .handout-references { margin: 2rem 0; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid #dce5e7; border-radius: 18px; background: #fff; color: #354c56; font: 15px/1.85 -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; overflow-wrap: anywhere; }
 .handout-references h2 { margin: 0 0 1rem; font-size: 1.3rem; }
 .handout-references li { margin: 1rem 0; }
 .handout-references p { margin: .4rem 0; }
-.resource-topbar.handout-topbar { gap: .75rem 1.5rem; padding: .65rem 0; flex-wrap: wrap; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
-.handout-topbar .resource-brand { display: inline-flex; flex: 0 0 auto; gap: .65rem; line-height: 1.4; letter-spacing: .02em; }
-.handout-topbar .resource-brand img { width: 2rem; height: 2rem; border-radius: .6rem; }
-.handout-topbar .resource-brand span { display: inline; }
-.handout-topbar .handout-name { font-size: 1rem; font-weight: 600; }
-.handout-topbar .handout-socials { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: .35rem; margin-left: auto; }
-.handout-topbar .handout-social { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-height: 44px; padding: 0; flex: 0 0 44px; border: 1px solid transparent; border-radius: 12px; color: #4c5b62; background: transparent; text-decoration: none; font-family: inherit; font-size: .82rem; font-weight: 500; line-height: 1.4; letter-spacing: 0; white-space: nowrap; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
-.handout-topbar .handout-social:hover { background: #ffffffb8; border-color: #dce5e7; color: #192b35; }
-.handout-topbar .handout-social:focus-visible { outline: 2px solid #2867a0; outline-offset: 2px; }
-.handout-topbar .handout-icon { display: inline-flex; align-items: center; justify-content: center; width: 25px; height: 25px; flex: 0 0 25px; border-radius: 7px; }
-.handout-topbar .handout-xhs { background: #f22d4e; color: #fff; font-size: 7px; font-weight: 700; letter-spacing: -.3px; }
-.handout-topbar .handout-douyin { background: #20212b; }
-.handout-topbar .handout-wechat { background: #07a84d; }
-.handout-topbar .handout-copy-help { position: relative; }
-.handout-topbar .handout-icon svg { width: 20px; height: 20px; }
-.handout-topbar .handout-mail { width: 22px; height: 22px; }
-.handout-topbar .handout-contact-tip { position: absolute; top: calc(100% + .45rem); right: 0; z-index: 60; box-sizing: border-box; width: 288px; max-height: min(480px, 65vh); overflow-y: auto; padding: 1rem 1.1rem; border: 1px solid #e0e7e9; border-radius: 16px; background: #fff; box-shadow: 0 12px 36px #273b4b20; color: #495c67; font-size: .82rem; line-height: 1.8; }
-.handout-topbar .handout-contact-tip p { margin: 0 0 .5rem; white-space: pre-line; }
-.handout-topbar .handout-contact-tip a { display: inline-flex; align-items: center; min-height: 44px; color: #2867a0; text-underline-offset: 3px; }
-.handout-topbar .handout-contact-tip[hidden] { display: none; }
-.handout-topbar .handout-wechat-tip p { margin: .4rem 0 0; }
-.handout-topbar .handout-wechat-tip code { display: block; margin-top: .2rem; color: #173d2b; font-size: 1rem; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; user-select: all; -webkit-user-select: all; }
-@media (max-width: 620px) {
-  .resource-topbar.handout-topbar { position: relative; gap: .25rem; padding: .7rem 0 .45rem; }
-  .handout-topbar .handout-socials { flex-wrap: nowrap; gap: .15rem; }
-  .handout-topbar .handout-copy-help { position: static; }
-  .handout-topbar .handout-contact-tip { width: min(288px, calc(100vw - 2.5rem)); }
-}
-@media (prefers-reduced-motion: reduce) { .handout-topbar .handout-social { transition: none; } }
 </style>`;
 const esc = text => String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -111,13 +69,13 @@ function independentPage(html, href, policy) {
   html=html.replace(/(assets\/js\/dse-(?:writing-(?:course|lesson)|reading-(?:inference|tfng|language-effects))\.js)(?:\?[^"']*)?/g,`$1?v=${READER_VERSION}`);
   html=html.replace(/<div class="lesson-card green"><h3>同系列继续学习<\/h3>[\s\S]*?<\/div>/g,'');
   html=html.replace(/<a class="reading-link"[^>]*>[\s\S]*?<\/a>/g,'');
-  // A handout is a destination, not an entry into the site's material collection.
-  html=html.replace(/<a\b([^>]*\bhref=["'](?:index\.html|https:\/\/(?:www\.)?mrcatenglish\.com\/?)["'][^>]*)>([\s\S]*?)<\/a>/g,(_,attrs,body)=>
-    /resource-brand/.test(attrs)?`<span class="resource-brand">${body}</span>`:'');
+  // Only the owner-approved branded home entry survives; no lesson directory or peer handout links.
+  html=html.replace(/<a\b([^>]*\bhref=["'](?:index\.html|https:\/\/(?:www\.)?mrcatenglish\.com\/?)["'][^>]*)>([\s\S]*?)<\/a>/g,(match,attrs,body)=>
+    /class="resource-brand handout-system-entry"/.test(attrs)?match:/resource-brand/.test(attrs)?`<span class="resource-brand">${body}</span>`:'');
   html=html.replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi,`<link rel="canonical" href="${url}">`)
     .replace(/<meta\b(?=[^>]*property=["']og:url["'])[^>]*>/gi,`<meta property="og:url" content="${url}">`)
     .replace(/<meta\b(?=[^>]*name=["'](?:robots|referrer)["'])[^>]*>/gi,'');
-  html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<script src="assets/js/dse-handout-header.js?v=20261016-douyin-direct-1" defer></script><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
+  html=html.replace('</head>',HANDOUT_HEADER_STYLE+shareHeaderAssets+'<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
   html=html.replace(/(assets\/css\/dse-writing-course\.css)(?:\?[^"']*)?/g, '$1?v=20261016-toc-1');
   // Fail, rather than silently publish a forgotten cross-guide address.
   for (const old of policy.retiredPaths) if (html.includes(old)) throw new Error('A handout still exposes a retired address.');
@@ -133,7 +91,7 @@ function renderRelease(release) {
   for (const item of items) {
     const raw=item.module ? isolateModule(files[item.source],course.modules.find(m=>m.id===item.module),sources,overrides[item.module] || []) : files[item.source];
     const html=independentPage(raw,map.links[item.id],policy);
-    if ((html.match(/class="resource-topbar handout-topbar"/g)||[]).length!==1 || /data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html)) throw new Error('Invalid student handout header or action controls.');
+    if ((html.match(/class="resource-topbar handout-topbar share-header"/g)||[]).length!==1 || /data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html)) throw new Error('Invalid student handout header or action controls.');
     const opaque=[...new Set(html.match(/h-[a-f0-9]{48}\.html/g)||[])];
     if (opaque.length!==1 || opaque[0]!==map.links[item.id]) throw new Error('A handout exposes another share identity.');
     if (item.module) {

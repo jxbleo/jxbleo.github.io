@@ -1,5 +1,15 @@
 # Mr. Cat Academy
 
+## DSE Writing complete course (2026-10-17)
+
+The original 32-module plan is complete: foundation 01–08, deepening 09–16,
+genres 17–24, advanced 25–30 and exam integration 31–32. It contains 260 exercise
+groups, 23 complete original models and 26 reader-facing authoritative references.
+The full-course address and all earlier independent addresses are preserved.
+The private teacher directory has 39 targets: full course, 32 single lessons,
+four reading guides and two earlier writing guides. Use Teacher → 资料链接 → DSE写作.
+See [completion and validation](docs/research/dse-writing-completion-2026-10-17.md).
+
 ## DSE handouts: independent distribution (2026-10-16)
 
 Published one complete Writing 09–24 course, 16 standalone modules, four reading guides and two earlier writing guides. Share individual addresses from Teacher → 资料链接; no public directory is provided. Plaintext authoring is ignored under `.cloudbase-private/handouts/source/`, with encrypted source and stable secret mappings used for builds. Old predictable COS paths have been retired. See [the cutover record](docs/research/dse-handout-isolation-2026-10-16.md) for verified scope and remaining historical-copy limits. This scoped release does not reconcile unrelated production/source drift; avoid a full-site synchronization from an older baseline.

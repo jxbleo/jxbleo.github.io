@@ -1,5 +1,19 @@
 # 03 UI / UX Spec
 
+## 2026-10-17 — Five-stage writing course
+
+The complete-course sidebar, overview cards and mobile selector cover modules
+01–32 in five stages: foundation, deepening, genres, advanced and exam integration.
+Overview statistics are derived, not fixed to the former 16-module scope. Search
+works across all cards. Each single reader retains only its own internal contents,
+exercises, answers and relevant plain-text references, without the complete-course
+selector or next-lesson links. The final full-course module returns to overview.
+
+All 39 independent readers consume the reusable cat/home/four-contact header.
+`进入主页` uses regular 13px type beside the cat on a single row at 320px. Keep
+accessible names/tooltips and the current XHS, direct Douyin, WeChat copy and mail
+behavior. Avoid adding student link-copy or print UI.
+
 ## 2026-10-16 — Speaking report toolbar
 
 Replace the parent reader’s internal Speaking Report/domain letterhead with one toolbar above the card. Left: 32px cat in a 44px home target. Right: the same four icon-only 44px controls as the handouts, with tooltips and accessible names. Preserve no-referrer external links, direct Douyin HTTPS navigation, official Xiaohongshu handling in WeChat, WeChat copy success/manual fallback and mailto. Reuse dse-handout-header.js on static toolbar markup outside the report-state container so asynchronous report rendering cannot remove its event bindings. No visible brand/domain text is added. At 320px, keep icons on one row and contact help within the viewport. This supersedes the older letterhead layout below.

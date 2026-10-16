@@ -1,0 +1,38 @@
+/* Shared reader toolbar. Content typography and access controls stay page-owned. */
+.share-header, .share-header * { box-sizing: border-box; }
+.share-header { display: flex; align-items: center; justify-content: space-between; position: relative; gap: .75rem 1.5rem; padding: .65rem 0; flex-wrap: wrap; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+.share-header .resource-brand { display: inline-flex; align-items: center; flex: 0 0 auto; max-width: 100%; gap: .5rem; line-height: 1.5; letter-spacing: 0; white-space: nowrap; }
+.share-header .handout-system-entry { min-height: 44px; border-radius: .6rem; text-decoration: none; }
+.share-header .handout-system-entry:hover .handout-name { color: #253f49; }
+.share-header .handout-system-entry:focus-visible { outline: 2px solid #2867a0; outline-offset: 3px; }
+.share-header .resource-brand img { flex: none; width: 2rem; height: 2rem; border-radius: .6rem; }
+.share-header .resource-brand span { display: inline; }
+.share-header .handout-name { color: #59676d; font-size: .8125rem; font-weight: 400; line-height: 1.6; }
+.share-header .handout-socials { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: .35rem; margin-left: auto; }
+.share-header .handout-social { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-height: 44px; padding: 0; flex: 0 0 44px; border: 1px solid transparent; border-radius: 12px; color: #4c5b62; background: transparent; text-decoration: none; font-family: inherit; font-size: .82rem; font-weight: 500; line-height: 1.4; letter-spacing: 0; white-space: nowrap; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.share-header .handout-social:hover { background: #ffffffb8; border-color: #dce5e7; color: #192b35; }
+.share-header .handout-social:focus-visible { outline: 2px solid #2867a0; outline-offset: 2px; }
+.share-header .handout-icon { display: inline-flex; align-items: center; justify-content: center; width: 25px; height: 25px; flex: 0 0 25px; border-radius: 7px; }
+.share-header .handout-xhs { background: #f22d4e; color: #fff; font-size: 7px; font-weight: 700; letter-spacing: -.3px; }
+.share-header .handout-douyin { background: #20212b; }
+.share-header .handout-wechat { background: #07a84d; }
+.share-header .handout-copy-help { position: relative; }
+.share-header .handout-icon svg { width: 20px; height: 20px; }
+.share-header .handout-mail { width: 22px; height: 22px; }
+.share-header .handout-contact-tip { position: absolute; top: calc(100% + .45rem); right: 0; z-index: 60; box-sizing: border-box; width: 288px; max-height: min(480px, 65vh); overflow-y: auto; padding: 1rem 1.1rem; border: 1px solid #e0e7e9; border-radius: 16px; background: #fff; box-shadow: 0 12px 36px #273b4b20; color: #495c67; font-size: .82rem; line-height: 1.8; }
+.share-header .handout-contact-tip p { margin: 0 0 .5rem; white-space: pre-line; }
+.share-header .handout-contact-tip a { display: inline-flex; align-items: center; min-height: 44px; color: #2867a0; text-underline-offset: 3px; }
+.share-header .handout-contact-tip[hidden] { display: none; }
+.share-header .handout-wechat-tip p { margin: .4rem 0 0; }
+.share-header .handout-wechat-tip code { display: block; margin-top: .2rem; color: #173d2b; font-size: 1rem; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; user-select: all; -webkit-user-select: all; }
+@media (max-width: 620px) {
+  .share-header { position: relative; gap: .25rem; padding: .7rem 0 .45rem; }
+  .share-header .handout-socials { flex-wrap: nowrap; gap: .15rem; }
+  .share-header .handout-copy-help { position: static; }
+  .share-header .handout-contact-tip { width: min(288px, calc(100vw - 2.5rem)); }
+}
+@media (prefers-reduced-motion: reduce) { .share-header .handout-social { transition: none; } }
+
+/* The Paper 3 header sits outside its content shell. */
+.share-header.paper-topbar { max-width: 1180px; margin: 0 auto; padding: .65rem 28px; }
+@media (max-width: 620px) { .share-header.paper-topbar { padding: .7rem 18px .45rem; } }

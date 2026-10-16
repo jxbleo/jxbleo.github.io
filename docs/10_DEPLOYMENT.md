@@ -1,5 +1,31 @@
 # 10 Deployment
 
+## 2026-10-17 — Complete DSE Writing 01–32 published
+
+Owner-authorized publication completed at `2026-10-16T16:13:30.203Z`: exactly 39 independent
+handout HTML objects and the two reusable share-header assets. The full course now
+contains 32 modules, 260 exercise groups, 23 complete models and 26 reader references.
+Existing 09–24 bodies and all 23 previous share identities are retained; 16 new single
+links complete the original sequence. All 41 COS readbacks and 86 apex/www plain/versioned
+byte checks passed, with 18 unchanged dependencies guarded. The reading/earlier-writing
+pages received the approved reusable header only.
+
+The existing teacherHandoutLinks function received its expanded 39-item bundled catalog.
+At `2026-10-16T16:17:46.048Z`, all three core files matched the frozen package, configuration was
+preserved, and unauthenticated/spoofed-teacher requests were denied without a directory.
+No database, model, billing, permission or unrelated live resource changed. The broader
+report/listening shared-header migration remains separate from this scoped publication.
+
+Private source, frozen objects, previous live bytes, function ZIPs and receipts:
+`.cloudbase-private/dse-writing-complete-20261016/`. Handout/shared-header suites, isolated
+source/artifact build, static boundaries, release verification and whitespace checks pass.
+Local 1440px/390px/320px checks cover course navigation, search and standalone isolation.
+Final live browser navigation timed out; public file delivery is SHA-verified, while a
+signed-in Teacher UI interaction is not independently certified. Refresh Teacher →
+资料链接 → DSE写作 for all module links. Source synchronization uses `[skip ci]`;
+never run full-site COS sync from the unrelated dirty working tree. The existing CI map
+secret was synchronized for 39 targets; the content key was unchanged.
+
 ## 2026-10-16 — Speaking report toolbar published
 
 Published at `2026-10-16T15:18:25.613Z` under explicit owner authorization: exactly speaking-report.html, assets/css/speaking-report.css and assets/js/speaking-report.js. The parent reader uses a cat-only home link on the left and handout-style Xiaohongshu/Douyin/WeChat/email controls on the right. Existing share tokens, report content and server authorization are unchanged. The already-published handout contact script and cat asset were checked as unchanged dependencies.

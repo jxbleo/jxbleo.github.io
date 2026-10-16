@@ -1,6 +1,6 @@
 # Mr. Cat Academy Agent Guide
 
-### Speaking parent-report toolbar (owner revision, 2026-10-16)
+### Earlier Speaking toolbar rollout (superseded by reusable-header rule below)
 
 Supersedes the earlier parent-reader letterhead: place a handout-style toolbar
 above the report card, with a cat-only index.html home link on the left and
@@ -9,6 +9,18 @@ handout destinations and interactions, accessible names and no-referrer links.
 The home link never forwards the share token. Keep the toolbar present through
 loading, ready and unavailable states; preserve all report/access behavior.
 
+
+## Reusable shared-reader header (owner rule, 2026-10-16)
+
+All shared handouts and the parent Speaking report use the same cat + `进入主页`
++ four-contact toolbar. Future share readers must reuse `scripts/share-header.js`
+and `assets/css/share-header.css` / `assets/js/share-header.js`, not copy a new
+implementation. Use a marked `data-share-header` header and run
+`node scripts/sync-share-headers.js`; the static build renders marked readers too.
+Independent handouts consume the same template through their private-source renderer.
+Retain resource access/login controls and all authorization boundaries. The home
+label is 13px, regular weight, beside the cat on one row at normal mobile sizes.
+The legacy handout contact script remains for cached older pages only.
 
 ## Independent DSE handouts (owner rule, 2026-10-16)
 
@@ -19,11 +31,14 @@ privately; do not present internal reading logs or imply official endorsement.
 
 
 Distribute each DSE Reading/Writing handout independently. The current scope is
-23 share targets: one complete Writing 09–24 course, 16 separate writing
+39 share targets: one complete Writing 01–32 course, 32 separate writing
 modules, four reading guides and two earlier writing guides. Each target has its
 own stable 192-bit random filename. A complete-course hash is never a separate
 handout. Student pages have no print, handout-copy or handout-share controls.
-The header retains the cat icon and Chinese brand `猫先生英语`, with owner-approved
+Owner revision (2026-10-16): the header cat and the 13px regular-weight text
+`进入主页` share one accessible `index.html` home link, opening
+a new tab without referrers. This specific home entry is allowed; retain the
+ban on peer-handout addresses and lesson-directory links. The header has owner-approved
 icon-only Xiaohongshu and Douyin owner-profile links, a button that copies the
 owner WeChat ID `jxbleo_`, and `mailto:jxbleo@foxmail.com`.
 The owner verified that the Douyin share link can open the App from WeChat.
@@ -40,7 +55,8 @@ app detection or use timed redirects. Web links open a new tab without referrers
 never use these controls to expose another handout or platform lesson directory.
 Keep copy/open controls in the private teacher directory. A standalone module must contain
 only that module, its required task context and relevant references, without
-other modules, course navigation, cross-handout promotional links or a platform entry.
+other modules, course navigation, cross-handout promotional links or a lesson-directory entry;
+the explicitly approved branded homepage link is the sole exception.
 
 Canonical plaintext now lives only under ignored
 `.cloudbase-private/handouts/source/`. Both writing/tones builders read and write
@@ -72,11 +88,6 @@ production work; consult the current deployment record before repeating them. Th
 Pages is enabled; already-public Git history is not erased by renaming pages.
 See `docs/research/dse-handout-isolation-2026-10-16.md` and current deployment
 instructions. Do not ask the owner to hand-edit JSON or link maps.
-
-
-This file is the operating contract for any coding agent working in this
-repository. Read it before editing code, importing content, changing CloudBase
-data, or deploying functions.
 
 ## Shared Speaking and Writing text models (owner rule, 2026-09-13)
 

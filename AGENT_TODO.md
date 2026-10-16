@@ -1,5 +1,13 @@
 # Agent QA To Do List
 
+## 2026-10-17 — DSE Writing completion handoff
+
+The original 01–32 course is authored and validated with 260 exercise groups,
+23 full models and 26 plain-text reference entries. Keep 39 independent targets
+and the exact prior 23 identities. Source/live evidence and any remaining publication
+actions are recorded in docs/research/dse-writing-completion-2026-10-17.md.
+Do not bulk-publish the unrelated dirty primary checkout.
+
 ## 2026-10-16 — Speaking report toolbar published
 
 Published at `2026-10-16T15:18:25.613Z` under explicit owner authorization: exactly speaking-report.html, assets/css/speaking-report.css and assets/js/speaking-report.js. The parent reader uses a cat-only home link on the left and handout-style Xiaohongshu/Douyin/WeChat/email controls on the right. Existing share tokens, report content and server authorization are unchanged. The already-published handout contact script and cat asset were checked as unchanged dependencies.

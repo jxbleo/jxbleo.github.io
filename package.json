@@ -64,7 +64,7 @@
     "test:ai-jobs": "node scripts/test-ai-job-continuations.js && node scripts/test-ai-worker-concurrency.js && node scripts/test-ai-provider-deadlines.js && node scripts/test-ai-feedback-latency.js",
     "test:function-packaging": "node scripts/test-function-package-selection.js && node scripts/test-speaking-runtime-package.js && node scripts/test-teacheradmin-package.js",
     "test:training-receipts": "npm run test:training-checkin && node scripts/test-writing-completion.js",
-    "test:handouts": "node scripts/test-isolated-handouts.js && node scripts/test-writing-lesson-runtime.js && node scripts/test-teacher-handout-links.js && node scripts/test-handout-teacher-ui.js && node scripts/test-teacher-handout-package.js && node scripts/test-handout-log-redaction.js"
+    "test:handouts": "node scripts/test-isolated-handouts.js && node scripts/test-writing-lesson-runtime.js && node scripts/test-teacher-handout-links.js && node scripts/test-handout-teacher-ui.js && node scripts/test-teacher-handout-package.js && node scripts/test-handout-log-redaction.js && node scripts/test-share-header-runtime.js"
   },
   "devDependencies": {
     "@cloudbase/manager-node": "5.5.2",

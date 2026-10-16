@@ -34,7 +34,7 @@ function unseal(root = ROOT, env = process.env) {
 }
 function itemsFor(policy, files) {
   const course = JSON.parse(files['content/study-guides/dse-writing-course/course.json']);
-  if (course.modules.length !== 16 || course.modules.some((m,i)=>m.id !== String(i+9).padStart(2,'0'))) throw new Error('Incomplete writing course.');
+  if (course.modules.length !== 32 || course.modules.some((m,i)=>m.id !== String(i+1).padStart(2,'0'))) throw new Error('Incomplete writing course.');
   return [...policy.guides, policy.writingCourse, ...course.modules.map(m=>({
     id: 'dse-writing-module-' + m.id, module: m.id, source: policy.writingCourse.source,
     title: '写作 ' + m.id + ' · ' + m.title, topic: '写作 · 单讲', description: m.summary

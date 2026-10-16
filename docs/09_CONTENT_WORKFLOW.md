@@ -1,5 +1,21 @@
 # 09 Content Workflow
 
+## 2026-10-17 — Author and distribute the complete Writing course
+
+Canonical private course scope is modules 01–32, arranged by the five stage objects
+in course.json. Each new lesson uses eight numbered exercise groups, model analysis,
+feedback and a self-check; level labels are training goals. Modules 31/32 each
+contain an original compulsory Part A and four Part B choices, with one complete
+B model plus planning feedback for the other choices. Keep original writing
+separate from official source evidence; record access limits privately.
+
+Build reviewed private source, initialize only missing identities, seal, prepare the
+private teacher catalog, then test the actual static artifact. Expected totals:
+32 modules / 260 groups / 23 full models / 26 displayed references / 39 share targets.
+Do not include unrelated private drafts when sealing. Update the existing CI map
+secret when authorized publication adds targets; never rotate existing addresses
+or publish secret inputs. Shared readers consume the reusable header template.
+
 ## 2026-10-16 — Author student-facing references
 
 Maintain source URLs, access status and evidence limits in private research metadata. Use readerTitle/readerDescription for brief institution/document names and an accurate explanation of their relevance to the handout; omit unread materials instead of inventing support. The public heading is always 权威资料参考 and entries have no links. Regenerate the private writing course, seal only the reviewed source scope, and validate all 23 existing targets. Do not include unrelated private drafts in a scoped source synchronization or rotate identities. This supersedes the older instruction to show reading boundaries on student pages.

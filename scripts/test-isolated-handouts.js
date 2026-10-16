@@ -15,9 +15,13 @@ function checkStudentHeader(html) {
   assert(header[0].includes('<code>jxbleo_</code>') && header[0].includes('role="status"'));
   assert(header[0].includes('请打开微信，搜索该微信号添加好友即可。'));
   assert(!/data-handout-douyin|handout-douyin-help|其他打开方式/.test(header[0]),'Douyin opens the official share link without copying or a local popup');
-  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-douyin-direct-1'));
+  assert(html.includes('assets/js/share-header.js?v=20261016-shared-1'));
   const links=[...header[0].matchAll(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g)];
-  assert.equal(links.length,3,'Only the owner profiles and owner email are linked');
+  assert.equal(links.length,4,'Only the approved home entry, owner profiles and owner email are linked');
+  const home=links.shift();
+  assert.equal(home[2],'index.html');
+  assert(home[0].includes('class="resource-brand handout-system-entry"') && home[0].includes('target="_blank"') && home[0].includes('rel="noopener noreferrer"') && home[0].includes('referrerpolicy="no-referrer"'));
+  assert(header[0].includes('进入主页'));
   const xhs=new URL(links[0][2]),douyin=new URL(links[1][2]);
   assert.equal(xhs.href,'https://xhslink.cn/o/aYLtaYWoBd');
   assert.equal(douyin.href,'https://v.douyin.com/rjLsjpFg0as/');
@@ -55,7 +59,7 @@ if (process.argv.includes('--artifact')) {
   const publicCatalog=fs.readFileSync(path.join(root,'dist/content/share-materials.json'),'utf8');
   for(const href of Object.values(release.map.links)) assert(!publicCatalog.includes(href),'Public catalogs must not expose handout URLs');
   assert(release.policy.retiredPaths.every(file=>!fs.existsSync(path.join(root,'dist',file))));
-  console.log('Real handout artifact passed: all 23 byte matches, unique IDs, working local anchors/assets, complete single-lesson exercises, no retired routes or public source/catalog leaks.');
+  console.log('Real handout artifact passed: all 39 byte matches, unique IDs, working local anchors/assets, complete single-lesson exercises, no retired routes or public source/catalog leaks.');
   process.exit(0);
 }
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mrcat-isolated-handouts-'));
@@ -63,13 +67,13 @@ const env={...process.env,MRCAT_HANDOUT_LINKS_JSON:'',MRCAT_HANDOUT_CONTENT_KEY:
 try {
   const {map,policy}=fixture(dir);
   const release=loadRelease(dir,env),pages=renderRelease(release);
-  assert.equal(pages.size,23);
+  assert.equal(pages.size,39);
   const full=pages.get(map.links['dse-writing-course']);
-  for(let n=9;n<=24;n++) {
+  for(let n=1;n<=32;n++) {
     const id=String(n).padStart(2,'0'),html=pages.get(map.links['dse-writing-module-'+id]);
     assert(html.includes('test-content-'+id));
     assert(full.includes('test-content-'+id));
-    for(let other=9;other<=24;other++) if(other!==n) assert(!html.includes('test-content-'+String(other).padStart(2,'0')),'Single lesson must not preload other lesson text');
+    for(let other=1;other<=32;other++) if(other!==n) assert(!html.includes('test-content-'+String(other).padStart(2,'0')),'Single lesson must not preload other lesson text');
     assert(!/module-picker|course-sidebar|lesson-pager|print-all|#overview/.test(html));
     assert(html.includes('dse-writing-lesson.js') && !html.includes('dse-writing-course.js'));
   }
@@ -107,5 +111,5 @@ try {
   fs.writeFileSync(path.join(dir,policy.retiredPaths[0]),'Accidental public plaintext');rejected();fs.unlinkSync(path.join(dir,policy.retiredPaths[0]));
   const sealedFile=path.join(dir,'scripts/handouts.sealed.json'),sealed=JSON.parse(fs.readFileSync(sealedFile,'utf8'));
   sealed.tag=Buffer.alloc(16,9).toString('base64');fs.writeFileSync(sealedFile,JSON.stringify(sealed));rejected();
-  console.log('Isolated handouts passed: 23 independent targets, complete/single content scopes, no discovery controls or peer URLs, robots/referrer, and fail-closed source/map handling.');
+  console.log('Isolated handouts passed: 39 independent targets, complete/single content scopes, no discovery controls or peer URLs, robots/referrer, and fail-closed source/map handling.');
 } finally {fs.rmSync(dir,{recursive:true,force:true});}

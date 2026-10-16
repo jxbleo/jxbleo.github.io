@@ -1,5 +1,25 @@
 # 07 Testing Checklist
 
+## 2026-10-17 — Complete Writing 01–32
+
+- Require continuous unique module IDs 01–32 and exactly 39 independent targets;
+  all previous 23 id/path pairs must remain unchanged.
+- Check 260 sequential exercise groups, 23 full model word counts, reference ID
+  membership and 26 reader-visible references; keep the 09–24 source bodies unchanged.
+- Verify full-course five-stage desktop/mobile navigation, all 32 cards, search,
+  module/answer switching, source page, last-module return and no horizontal overflow.
+- Standalone pages contain one lesson only, working own anchors/answers, relevant
+  references and no peers or full-course navigation. Retain noindex/no-referrer.
+- Verify the shared header at desktop and 320px, current contact destinations,
+  13px home label, four icons and no student print/link-copy controls.
+- Run handout suites, static build, actual-artifact isolation, static publication
+  boundaries and release verification. Preserve fail-closed map/source behavior.
+- Before publishing, guard prior live SHA baselines and unchanged dependencies;
+  freeze/back up objects and the private function ZIP. Publish dependencies/pages
+  before the private catalog. Check COS, apex/www plain/versioned bytes, the function
+  package/configuration and unauthenticated/spoofed-teacher denials. Do not claim
+  live authenticated Teacher UI behavior from a synthetic test.
+
 ## 2026-10-16 — Speaking report toolbar
 
 Check the parent reader at desktop and 320px: cat home link at left, four contact controls at right, no overflow; home must omit share query/fragment. WeChat copies exactly jxbleo_ and shows the add-friend instruction; Escape/outside click dismisses help. Xiaohongshu/Douyin retain owner HTTPS destinations with no referrer; email retains mailto. Toolbar survives loading, ready and unavailable states because it is outside the report-state container. Run test-speaking-parent-report.js and test-speaking-lab-ui.js. This replaces the prior letterhead visual expectations.

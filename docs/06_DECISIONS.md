@@ -1,5 +1,14 @@
 # 06 Decisions
 
+## 2026-10-17 — Finish original course within independent-reader architecture
+
+Use the original 32-module sequence with private metadata-defined stages, not an
+additional public course directory. Preserve old locators and add new random
+identities through the existing initializer. Keep level targets pedagogical and
+all new tasks/models original. Reuse the approved shared-reader header template
+and assets rather than maintaining another handout-specific copy. No dependency,
+hosting, grading, billing or permission change is introduced.
+
 ## 2026-10-16 — Use the owner-tested Douyin share link directly
 
 The owner reported that clicking the existing “打开抖音主页” link in WeChat opened the Douyin App successfully. Promote that exact URL and anchor behavior to the icon instead of requiring a clipboard round trip. This is owner-reported real-device evidence for the observed environment, not a universal-device guarantee. Do not generate or force an app scheme. The same HTTPS URL also remains usable without JavaScript.

@@ -5,6 +5,7 @@ const root = path.resolve(__dirname, "..");
 const output = path.join(root, "dist");
 const manifest = require("./static-site-manifest.json");
 const { prepare: prepareHandouts } = require("./render-handouts");
+const { synchronize: synchronizeShareHeader } = require("./share-header");
 
 function isPublicSource(source) {
   const relative = path.relative(root, source).split(path.sep).join("/");
@@ -31,6 +32,12 @@ for (const [entries, type] of [[manifest.directories, "directory"], [manifest.ro
 // Authenticate all source and validate the complete stable map BEFORE touching dist.
 // A missing CI secret must never produce an artifact that retires valid links.
 const handouts = prepareHandouts(root);
+// Render marked public readers before replacing dist; malformed components fail closed.
+const sharedReaders = new Map();
+for (const file of manifest.rootFiles.filter(file => file.endsWith(".html"))) {
+  const html = fs.readFileSync(path.join(root, file), "utf8");
+  if (html.includes("data-share-header=")) sharedReaders.set(file, synchronizeShareHeader(html));
+}
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
@@ -40,7 +47,8 @@ for (const directory of manifest.directories) {
 }
 
 for (const file of manifest.rootFiles) {
-  copy(path.join(root, file), path.join(output, file));
+  if (sharedReaders.has(file)) fs.writeFileSync(path.join(output, file), sharedReaders.get(file));
+  else copy(path.join(root, file), path.join(output, file));
 }
 try {
   for (const [file, html] of handouts) fs.writeFileSync(path.join(output, file), html);

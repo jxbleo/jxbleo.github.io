@@ -1,5 +1,21 @@
 # 02 Architecture
 
+## 2026-10-17 — Complete private course and shared header
+
+The writing builder reads five ordered stage definitions from private course.json,
+renders desktop/mobile navigation and derives the actual module/exercise/model/
+reader-reference counts. The source validator requires exactly IDs 01–32.
+Authenticated encrypted source is the only committed teaching payload. The private
+map preserves the existing 23 identities and adds 16, for 39 independent targets.
+The existing private teacher function receives a refreshed bundled catalog; its
+handler, active-teacher checks, environment and data boundaries do not change.
+
+Independent readers now use scripts/share-header.js and assets/css/share-header.css /
+assets/js/share-header.js. The reusable template contains no private map or report
+token. render-handouts injects it during publication. Keep the old contact runtime
+available for cached older HTML. This release adopts the shared component only for
+the 39 independent handouts; other readers have separate rollout records.
+
 ## 2026-10-16 — Separate reader references from research metadata
 
 The private writing source register retains URL/status/use fields and adds readerTitle/readerDescription for publication. A null readerDescription omits an unconsulted source from reader lists. The full-course builder and standalone renderer share referenceCards; the six earlier guides store their reader copy in private HTML. Plaintext stays ignored, and the sealed source is refreshed with the existing authenticated encryption workflow. All 23 map identities, backend access and private Teacher catalogs are preserved.

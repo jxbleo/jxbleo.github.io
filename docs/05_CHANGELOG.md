@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-17 — DSE Writing course completed
+
+Added original foundation 01–08, advanced 25–30 and exam integration 31–32. The
+32-module course now includes 260 exercise groups, 23 full models and 26 published
+reference entries. Retained the existing 09–24 lesson bodies and all old share
+identities. Expanded isolated source/map tests and the private teacher catalog to
+39 targets. Added metadata-driven stage navigation/counts and adopted the approved
+reusable contact header for independent readers. No new dependency or student data
+change. Publication and validation evidence: docs/research/dse-writing-completion-2026-10-17.md.
+
 ## 2026-10-16 — Speaking report toolbar published
 
 Published at `2026-10-16T15:18:25.613Z` under explicit owner authorization: exactly speaking-report.html, assets/css/speaking-report.css and assets/js/speaking-report.js. The parent reader uses a cat-only home link on the left and handout-style Xiaohongshu/Douyin/WeChat/email controls on the right. Existing share tokens, report content and server authorization are unchanged. The already-published handout contact script and cat asset were checked as unchanged dependencies.

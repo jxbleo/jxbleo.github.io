@@ -4,8 +4,8 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 function fixture(root) {
   const policy=require('./handout-policy.json');
   fs.mkdirSync(path.join(root,'scripts'),{recursive:true});
-  for (const file of ['handout-policy.json','handout-store.js','render-handouts.js']) fs.copyFileSync(path.join(__dirname,file),path.join(root,'scripts',file));
-  const modules=Array.from({length:16},(_,i)=>({id:String(i+9).padStart(2,'0'),title:'Test module '+(i+9),summary:'Synthetic summary',sources:['S01']}));
+  for (const file of ['handout-policy.json','handout-store.js','render-handouts.js','share-header.js']) fs.copyFileSync(path.join(__dirname,file),path.join(root,'scripts',file));
+  const modules=Array.from({length:32},(_,i)=>({id:String(i+1).padStart(2,'0'),title:'Test module '+(i+1),summary:'Synthetic summary',sources:['S01']}));
   const course={modules};
   const files={};
   const head='<head><meta name="robots" content="noindex,follow"><link rel="canonical" href="https://www.mrcatenglish.com/dse-writing-course.html"><meta property="og:url" content="https://www.mrcatenglish.com/dse-writing-course.html"><title>Test</title><script src="assets/js/dse-writing-course.js" defer></script></head>';

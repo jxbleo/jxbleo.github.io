@@ -1,5 +1,24 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-17 — Complete DSE Writing progression
+
+Restore the agreed original 01–32 curriculum rather than stopping at 09–24:
+01–08 build task/reader/idea/paragraph/sentence/Part A foundations; 09–16 deepen
+Level 4–5 skills; 17–24 apply genres; 25–30 develop nuanced evaluation,
+persuasion, organisation, precision, narrative depth and unfamiliar-task transfer;
+31–32 provide two original full-paper practice sets and a rewrite/retest process.
+Level labels describe training goals, not official predicted scores. Distinguish
+5*/5** challenges and cautions explicitly. There are 260 numbered exercise groups
+and 23 complete original models. Each new module has a diagnostic, explanation,
+worked examples, errors, eight exercise groups with feedback, and a self-check.
+
+A complete-course link contains all 32 lessons. Each of 32 separate links contains
+only its lesson/context/relevant references. Keep existing identities and teacher-only
+copy/open directory controls. Shared handouts reuse the owner-approved cat +
+13px regular `进入主页` link and four contact icons. No student print/copy-link
+controls, peer addresses or course cross-promotion; the homepage is the explicit
+owner-approved exception. References remain plain-text 权威资料参考.
+
 ## 2026-10-16 — Speaking report contact toolbar
 
 The shared parent Speaking report now uses the handout-style toolbar above the report card: a cat-only home link on the left and Xiaohongshu, Douyin, WeChat and email icons on the right. This supersedes the 2026-10-12 letterhead. Home goes to index.html without the share token; WeChat copies jxbleo_ and explains searching it to add a friend. The other controls retain the owner-approved handout destinations and behavior. The toolbar remains available while loading or unavailable; report content and share authorization are unchanged.

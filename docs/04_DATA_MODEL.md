@@ -1,5 +1,13 @@
 # 04 Data Model
 
+## 2026-10-17 — Expanded private handout catalog
+
+No database schema, collection or student-record change. The bundled private
+schemaVersion 1 directory expands from 23 to 39 items while preserving every prior
+id/href pair. Private course metadata contains 32 ordered modules and five stages;
+public subject membership still derives from the existing dse-writing IDs. Never
+publish the map, catalog JSON, plaintext source or content key as static resources.
+
 ## 2026-10-16 — Material subject display metadata
 
 No CloudBase schema or record changes. Public share-materials schemaVersion 1 may optionally include a nonempty subjects array with keys dse-listening, dse-reading, dse-writing, dse-speaking, ielts-reading, ielts-listening, ielts-writing, ielts-speaking, reading-explorer or other. Duplicate membership is counted once. Existing IDs supply backward-compatible membership; the shared DSE topic bank is Writing and Speaking. The private directory schema is unchanged and still contains no public map. Subject counts are an in-memory UI projection.
