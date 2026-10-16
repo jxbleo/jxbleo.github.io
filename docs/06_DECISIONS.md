@@ -1,5 +1,9 @@
 # 06 Decisions
 
+## 2026-10-16 — Use the owner share message for Douyin
+
+Copy the complete owner-provided Douyin message rather than generating a platform token or deriving an undocumented profile scheme. The public short link is https://v.douyin.com/rjLsjpFg0as/ . The owner text remains verbatim in the dedicated header script. Primary copying does not navigate, giving the visitor time to read the instruction and manually open the App. The secondary share link delegates opening to Douyin. No installed-app token-recognition guarantee is inferred from browser clipboard success.
+
 ## 2026-10-16 — Use platform-owned WeChat launch integration
 
 The owner supplied https://xhslink.cn/o/aYLtaYWoBd . Read-only mobile and WeChat HTTP checks resolved to the same 猫先生英语 profile (public ID 5fbbbaf800000000010081af); the mobile title is @猫先生英语 的个人主页. The WeChat response includes the official jweixin script and wx.config openTagList containing wx-open-launch-app. This is evidence of platform-side integration, not a successful real-device launch test. Prefer that official share page inside WeChat rather than forcing our own scheme or borrowing platform credentials. The generic official opening page https://oia.xiaohongshu.com/oia?source=growth_default_page also retains browser-opening guidance, so no universal launch guarantee is made. The WeChat documentation URL was inaccessible during this review; do not present inferred enrollment requirements as freshly verified facts.

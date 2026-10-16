@@ -6,10 +6,8 @@
     var appLinks = document.querySelectorAll("[data-handout-app]");
     var appHint;
     var appTrigger;
-    var keyword = encodeURIComponent("猫先生英语");
     var appTargets = {
-        xiaohongshu: "xhsdiscover://user/5fbbbaf800000000010081af",
-        douyin: "snssdk1128://search?keyword=" + keyword
+        xiaohongshu: "xhsdiscover://user/5fbbbaf800000000010081af"
     };
     var ua = navigator.userAgent || "";
     var isWeChat = /MicroMessenger/i.test(ua);
@@ -48,14 +46,10 @@
                 appHint.appendChild(fallback);
                 link.closest(".handout-socials").appendChild(appHint);
             }
-            var platformName = platform === "xiaohongshu" ? "小红书" : "抖音";
-            appHint.querySelector("p").textContent = isWeChat
-                ? "在微信中打开？\n① 点击右上角「···」\n② 选择「在默认浏览器中打开」\n③ 再点击" + platformName + "图标"
-                : (platform === "xiaohongshu" ? "若未打开 App，可继续查看猫先生英语的小红书主页。" : "若未打开 App，可继续使用网页版搜索「猫先生英语」。");
+            appHint.querySelector("p").textContent = "若未打开 App，可继续查看猫先生英语的小红书主页。";
             var webLink = appHint.querySelector("a");
             webLink.href = link.href;
-            webLink.textContent = platform === "xiaohongshu"
-                ? "查看小红书主页 ↗" : "打开抖音网页版 ↗";
+            webLink.textContent = "查看小红书主页 ↗";
             appTrigger = link;
             link.setAttribute("aria-describedby", appHint.id);
             appHint.hidden = false;
@@ -74,20 +68,6 @@
     document.addEventListener("visibilitychange", function () {
         if (document.hidden) closeAppHint();
     });
-
-    var button = document.querySelector("[data-handout-wechat]");
-    if (!button) return;
-    var container = button.closest(".handout-wechat-help");
-    var status = container.querySelector("[data-handout-wechat-status]");
-    var message = container.querySelector("[data-handout-wechat-message]");
-    var timer;
-    var request = 0;
-
-    function hideStatus() {
-        request += 1;
-        window.clearTimeout(timer);
-        status.hidden = true;
-    }
 
     function legacyCopy(value) {
         var previous = document.activeElement;
@@ -111,31 +91,71 @@
         return copied;
     }
 
-    button.addEventListener("click", async function () {
-        var current = ++request;
-        var value = button.getAttribute("data-handout-wechat");
-        var copied = false;
-        window.clearTimeout(timer);
-        status.hidden = true;
-        if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
-            try {
-                await navigator.clipboard.writeText(value);
-                copied = true;
-            } catch (error) {
-                copied = false;
-            }
+    function bindCopy(trigger, attribute, value, render, duration) {
+        if (!trigger) return;
+        // Keep the previous WeChat markup usable while shared assets refresh.
+        var container = trigger.closest(".handout-copy-help") || trigger.closest(".handout-wechat-help");
+        var status = container.querySelector("[data-handout-" + attribute + "-status]");
+        var request = 0;
+        var timer;
+        function hideStatus() {
+            request += 1;
+            window.clearTimeout(timer);
+            status.hidden = true;
+            if (trigger.hasAttribute("aria-expanded")) trigger.setAttribute("aria-expanded", "false");
         }
-        if (current !== request) return;
-        if (!copied) copied = legacyCopy(value);
-        message.textContent = copied ? "微信号已复制" : "请长按或选中微信号复制：";
-        status.hidden = false;
-        if (copied) timer = window.setTimeout(hideStatus, 3500);
+        trigger.addEventListener("click", async function (event) {
+            // Preserve the HTTPS profile link for modified/middle clicks and no-JS use.
+            if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            closeAppHint();
+            hideStatus();
+            var current = request;
+            var copied = false;
+            if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(value);
+                    copied = true;
+                } catch (error) { /* Fall back to user-initiated legacy copying. */ }
+            }
+            if (current !== request) return;
+            if (!copied) copied = legacyCopy(value);
+            render(container, copied);
+            status.hidden = false;
+            if (trigger.hasAttribute("aria-expanded")) trigger.setAttribute("aria-expanded", "true");
+            if (copied && duration) timer = window.setTimeout(hideStatus, duration);
+        });
+        document.addEventListener("click", function (event) {
+            if (!container.contains(event.target)) hideStatus();
+        });
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") hideStatus();
+        });
+        window.addEventListener("pagehide", hideStatus);
+        document.addEventListener("visibilitychange", function () {
+            if (document.hidden) hideStatus();
+        });
+    }
+
+    // Preserve the owner's complete share text, including its token and spacing.
+    var douyinShare = "3- 长按复制此条消息，打开抖音搜索，查看TA的更多作品。 https://v.douyin.com/rjLsjpFg0as/ 5@8.com :4pm";
+    bindCopy(document.querySelector("[data-handout-douyin]"), "douyin", douyinShare, function (container, copied) {
+        container.querySelector("[data-handout-douyin-message]").textContent = copied
+            ? "口令已复制，请打开抖音 App" : "未能自动复制，请长按下方文案复制";
+        container.querySelector("[data-handout-douyin-next]").textContent = copied
+            ? "进入抖音后，可按提示查看猫先生英语的主页。" : "复制后，请打开抖音 App。";
+        var text = container.querySelector("[data-handout-douyin-text]");
+        text.value = douyinShare;
+        text.hidden = copied;
+        container.querySelector("[data-handout-douyin-alternative]").open = false;
+        container.querySelector("[data-handout-douyin-guide]").textContent = isWeChat
+            ? "在微信中，也可点击右上角「···」，选择「在默认浏览器中打开」，再通过下方链接进入抖音主页。"
+            : "也可通过下方链接进入抖音官方分享页，再按页面提示打开 App。";
     });
 
-    document.addEventListener("click", function (event) {
-        if (!container.contains(event.target)) hideStatus();
-    });
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") hideStatus();
-    });
+    var wechat = document.querySelector("[data-handout-wechat]");
+    bindCopy(wechat, "wechat", wechat && wechat.getAttribute("data-handout-wechat"), function (container, copied) {
+        container.querySelector("[data-handout-wechat-message]").textContent = copied
+            ? "微信号已复制" : "请长按或选中微信号复制：";
+    }, 6000);
 }());

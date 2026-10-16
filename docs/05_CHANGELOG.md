@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Copy the supplied Douyin profile message
+
+Replaced Douyin keyword-search hand-off with the owner-supplied complete share-message copy flow. Added a secondary opening guide and honest manual-copy fallback. WeChat copy feedback now explains adding the owner through ID search. Preserved all 23 handout identities, centered icons and Xiaohongshu official-profile behavior.
+
 ## 2026-10-16 — Center Douyin and use the official Xiaohongshu profile
 
 Centered the Douyin music glyph and replaced Xiaohongshu keyword search with the owner-provided profile share link. WeChat delegates opening to the official page; other mobile browsers attempt the exact profile. Simplified the remaining WeChat fallback into three short steps. All 23 document identities remain unchanged.

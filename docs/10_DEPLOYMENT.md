@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## 2026-10-16 — Douyin share copy and WeChat friend-search prompt published
+
+Published the owner-authorized Douyin copy-first contact and WeChat friend-search instruction at `2026-10-16T09:56:58.722Z` across all 23 existing handouts. The 23 HTML objects and dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons. Private backup/stage/receipt: `.cloudbase-private/handout-douyin-copy-20261016/`. Existing document identities, teaching content and unrelated live objects are unchanged.
+
+Changed the shared renderer, header runtime and existing isolation contract, plus owner, product, architecture, UI, decision, workflow, testing and change records. Both working and isolated source passed handout checks, static build, actual-artifact checks and static publication boundaries. The controlled runtime check verified exact full Douyin message and WeChat ID copying, Clipboard API/legacy failures, selectable fallback, no automatic Douyin navigation, modified links, stale-copy dismissal and preserved Xiaohongshu routing. All 24 isolated artifacts match published bytes.
+
+Local Chrome showed Douyin copy confirmation, expandable alternate help and the WeChat friend-search instruction. The popup fit 320px and 390px widths without horizontal overflow. Private screenshots: `/Users/jxbleo/Research/dse-writing-course/handout-douyin-copy-20261016.png` and `/Users/jxbleo/Research/dse-writing-course/handout-wechat-copy-20261016.png`. Real iPhone/Android/WeChat App recognition of the copied token remains unverified.
+
+Source synchronization uses `[skip ci]`; unrelated source/live drift still excludes full-site COS synchronization. Refresh the existing handout links.
+
 ## 2026-10-16 — Centered icon and official profile route published
 
 Published the centered Douyin glyph, owner Xiaohongshu profile route and clearer WeChat behavior at `2026-10-16T09:44:48.929Z` across all 23 existing handouts. The 23 HTML objects and dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons. Private backup/stage/receipt: `.cloudbase-private/handout-wechat-guide-20261016/`. No document identity, sealed teaching source, private directory, backend or unrelated live object changed.

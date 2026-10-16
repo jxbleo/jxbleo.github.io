@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Copy-first Douyin contact and WeChat next step
+
+The owner supplied the complete Douyin profile share message. A normal icon click copies it verbatim and first displays “口令已复制，请打开抖音 App”. Secondary browser/share-page guidance is collapsed under “其他打开方式”. Only a successful clipboard operation may produce success wording; denied copying exposes the full selectable message. The WeChat copy popup retains jxbleo_ and now explains searching the ID in WeChat to add a friend. These are contact controls, not handout sharing controls.
+
 ## 2026-10-16 — Owner profile and WeChat opening
 
 The Xiaohongshu icon now opens the owner-provided official profile share link, not a brand search. In WeChat it follows that link normally, allowing the platform to handle app opening. Other mobile browsers attempt the corresponding profile app route, with the official share page as fallback. Douyin keeps keyword search and a short three-step WeChat instruction. Do not promise successful launch for every device.

@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Douyin primary copy confirmation and secondary opening help
+
+Keep the centered Douyin glyph and four icon-only contact controls. The Douyin panel shows copy confirmation above a short App instruction; “其他打开方式” expands contextual WeChat/default-browser guidance and an explicit official profile link. Copy failure instead reveals a labelled readonly textarea containing the complete share message. The panel stays until an outside click, Escape, page hide or tab visibility change. WeChat success shows the ID followed by “请打开微信，搜索该微信号添加好友即可。” for six seconds; manual-copy failure remains visible. Contact panels fit the narrow viewport and allow vertical scrolling.
+
 ## 2026-10-16 — Centered Douyin icon and clearer WeChat path
 
 Correct the Douyin SVG viewBox to `2 .5 24 24`; the colored glyph union is centered within the existing tile. Keep four icon-only controls. Xiaohongshu tooltips/accessible names now say profile. WeChat users follow the official share page without our extra instruction popup. Douyin fallback uses three separate lines: ① 点击右上角「···」; ② 选择「在默认浏览器中打开」; ③ 再点击抖音图标. It does not guarantee success or mislabel the target as Xiaohongshu.

@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Shared contact-copy handling
+
+The dedicated header script shares user-click clipboard handling between Douyin and WeChat: secure Clipboard API, then legacy copying, then selectable manual fallback. Each popup cancels stale permission results when dismissed, hidden or left. The Douyin primary click no longer assigns an app scheme; its HTTPS anchor remains the owner-provided share URL for no-JS/modified clicks. Xiaohongshu routing is unchanged. No dependency, backend, authentication or private handout-map change.
+
 ## 2026-10-16 — Delegate WeChat profile opening to Xiaohongshu
 
 The dedicated header script passes Xiaohongshu clicks through in WeChat, before preventing navigation or creating a local popup. The official profile page supplies its own WeChat SDK/signing integration. We do not copy its AppID/signatures or add the SDK to the handout site. Outside WeChat, the fixed public profile ID is used with the documented user-profile scheme; desktop retains the HTTPS share link. No new backend or dependency.

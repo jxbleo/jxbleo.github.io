@@ -1,5 +1,9 @@
 # Agent QA To Do List
 
+## Completed — Douyin share copy and WeChat next step (2026-10-16)
+
+All 23 handouts copy the complete supplied Douyin share message before showing the App instruction, with a secondary opening guide and manual-copy fallback. WeChat copying now explains searching the ID to add a friend. Scoped publication, runtime/artifact checks and mobile popup layout passed. Real-device App token recognition remains unverified; see the deployment record.
+
 ## Completed — Handout icon alignment and WeChat profile route (2026-10-16)
 
 All 23 handouts use the centered Douyin glyph and supplied official Xiaohongshu profile share link. WeChat follows the platform share page; the remaining fallback uses three short steps. Scoped publication, artifact/runtime checks and icon geometry passed. Real installed-app hand-off remains unverified; see the deployment record.
