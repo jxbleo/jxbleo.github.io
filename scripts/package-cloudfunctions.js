@@ -103,10 +103,37 @@ function speakingRuntimeBundlePlugins(functionName) {
   }];
 }
 
+function privateRuntimeFiles(functionName, sourceDir) {
+  if (functionName !== "teacherHandoutLinks") return [];
+  try {
+    const name = "handout-links.private.json";
+    const contents = fs.readFileSync(path.join(sourceDir, name));
+    const catalog = JSON.parse(contents.toString("utf8"));
+    if (!catalog || catalog.schemaVersion !== 1 || !Array.isArray(catalog.items) || catalog.items.length > 256) throw new Error();
+    const ids = new Set();
+    const links = new Set();
+    for (const item of catalog.items) {
+      if (!item || item.category !== "study" || typeof item.href !== "string" || !/^h-[a-f0-9]{48}\.html$/.test(item.href) || ids.has(item.id) || links.has(item.href)) throw new Error();
+      for (const field of ["id", "title", "topic", "description", "access"]) {
+        if (typeof item[field] !== "string" || !item[field].trim() || item[field].length > 1000) throw new Error();
+      }
+      ids.add(item.id);
+      links.add(item.href);
+    }
+    return [{ name, contents }];
+  } catch (_) {
+    // Never print the private JSON, its URLs, or the underlying file error.
+    throw new Error("teacherHandoutLinks requires a valid private link directory. Regenerate it before packaging.");
+  }
+}
+
 async function packageFunction(functionName) {
   const sourceDir = path.join(functionsRoot, functionName);
   const indexPath = path.join(sourceDir, "index.js");
   const outputPath = path.join(outputRoot, `${functionName}.zip`);
+  // Validate and snapshot required private runtime data before removing an
+  // existing package. No such files are added to any other function.
+  const runtimeFiles = privateRuntimeFiles(functionName, sourceDir);
 
   const check = run("node", ["--check", indexPath]);
   if (check.status !== 0) {
@@ -153,6 +180,11 @@ async function packageFunction(functionName) {
       main: "index.js",
       dependencies: {}
     }, null, 2)}\n`);
+    const runtimePaths = runtimeFiles.map(file => {
+      const destination = path.join(stagingDir, file.name);
+      fs.writeFileSync(destination, file.contents, { mode: 0o600 });
+      return destination;
+    });
 
     const bundledCheck = run("node", ["--check", bundledIndexPath]);
     if (bundledCheck.status !== 0) {
@@ -161,7 +193,7 @@ async function packageFunction(functionName) {
       process.exit(1);
     }
 
-    const zip = run("zip", ["-q", "-j", outputPath, bundledIndexPath, bundledPackagePath]);
+    const zip = run("zip", ["-q", "-j", outputPath, bundledIndexPath, bundledPackagePath, ...runtimePaths]);
     if (zip.status !== 0) {
       console.error(`Failed to package ${functionName}:`);
       console.error(zip.stderr || zip.stdout);

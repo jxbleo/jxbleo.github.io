@@ -1,5 +1,18 @@
 # 02 Architecture
 
+## 2026-10-16 — Independent handout build and teacher directory
+
+This supersedes the earlier root-page/public-source distribution described below. Plaintext authoring files now live under ignored `.cloudbase-private/handouts/source/`; writing/tones builders update that private tree directly. `scripts/handout-policy.json` defines safe identities and retirement paths, not share addresses. `scripts/handouts.sealed.json` contains gzip-compressed, AES-256-GCM authenticated ciphertext only. The key and complete stable 192-bit link map remain private; CI provides `MRCAT_HANDOUT_CONTENT_KEY` and `MRCAT_HANDOUT_LINKS_JSON` only to build/artifact verification. Cryptography uses Node built-ins, with no new library.
+
+`handout-store.js` authenticates and bounds decompression, checks required source and validates complete unique links. `render-handouts.js` produces 23 targets: six existing guides, one full writing course and 16 isolated modules. Each single module is extracted into its own DOM and receives only its required context/overrides and relevant sources. Rendering rejects peer links, retired addresses or full-course controls in a single module. `build-static-site.js` completes these checks before replacing `dist`, then writes random root HTML names without a public index; the static allowlist excludes all `content/study-guides` plaintext and nine retired root routes. Generated HTML and private authoring data never enter Git. No student-page runtime fetch of a course-wide data payload or map is introduced.
+
+`teacherHandoutLinks` is a separate read-only CloudBase function. Every list request derives the authenticated UID and verifies an active teacher in `students`, then returns a validated bundled `handout-links.private.json`. The file is ignored and included only by dedicated validated packaging. It creates no collection or database write. Teacher materials adds this authenticated source without persisting the private directory or falling back to legacy links; the public share catalog loses the six corresponding entries. Missing private package input fails without replacing an existing ZIP.
+
+The existing COS uploader retains its synchronization rules; random paths are redacted from progress, retry and error logs. Missing source/key/map must stop a build before deployment, since a successful full COS synchronization removes objects absent from `dist`. The authorized scoped cutover is now published; see the current deployment record for verified scope and remaining historical-copy limits.
+
+`loadRelease` also rejects retired plaintext files that accidentally reappear at the public root or former public source paths. This prevents a future edit from silently reversing source isolation. A repeated identity initialization preserves the current map byte-for-byte; content regeneration is not a link-rotation operation.
+
+
 ## Result UI retirement (2026-10-04)
 
 BBC and Vocabulary completion render through `assets/js/training-checkin.js`.

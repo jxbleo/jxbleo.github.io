@@ -1,5 +1,47 @@
 # Mr. Cat Academy Agent Guide
 
+## Independent DSE handouts (owner rule, 2026-10-16)
+
+Distribute each DSE Reading/Writing handout independently. The current scope is
+23 share targets: one complete Writing 09–24 course, 16 separate writing
+modules, four reading guides and two earlier writing guides. Each target has its
+own stable 192-bit random filename. A complete-course hash is never a separate
+handout: its copy action must say `复制完整版链接`. A standalone module must contain
+only that module, its required task context and relevant references, without
+other modules, course navigation, promotional links or a platform entry.
+
+Canonical plaintext now lives only under ignored
+`.cloudbase-private/handouts/source/`. Both writing/tones builders read and write
+there. Keep real link maps, content keys, local link lists and generated private
+teacher catalogs outside Git and public assets. Only authenticated AES-256-GCM
+source in `scripts/handouts.sealed.json` may enter the public repository; use the
+existing Node built-ins, not a new dependency. Never restore old root HTML or
+`content/study-guides/` plaintext to public output. Historical paths mentioned
+elsewhere in this guide/docs are not current distribution links.
+
+`prepare-handouts.js --initialize` preserves existing identities; `--seal`
+refreshes the encrypted source; `--teacher-catalog` prepares the private teacher
+directory and local share list. Do not rotate links during routine edits. The
+static build must authenticate source and validate the entire unique map before
+replacing `dist`; missing CI secrets must fail closed. Do not put random links
+in build logs, public catalogs, public screenshots, source maps or public artifacts.
+Every page must suppress indexing/referrers and contain no peer share address.
+
+`teacherHandoutLinks` returns its bundled private catalog only after verifying
+the current caller against an active teacher profile on every request. It adds
+no database writes or collection. The Teacher UI must not persist the directory
+or fall back to predictable legacy URLs. Public `content/share-materials.json`
+must exclude these independent guides.
+
+The owner-authorized initial cutover deployed the private teacher function,
+published the scoped static release and retired the old COS paths. Future
+secret changes, deployments and object retirement still require authorized
+production work; consult the current deployment record before repeating them. The repository is public and
+Pages is enabled; already-public Git history is not erased by renaming pages.
+See `docs/research/dse-handout-isolation-2026-10-16.md` and current deployment
+instructions. Do not ask the owner to hand-edit JSON or link maps.
+
+
 This file is the operating contract for any coding agent working in this
 repository. Read it before editing code, importing content, changing CloudBase
 data, or deploying functions.

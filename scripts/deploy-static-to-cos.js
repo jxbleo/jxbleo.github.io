@@ -13,6 +13,16 @@ const maximumMultipartFileAttempts = 2;
 const multipartThreshold = 4 * 1024 * 1024;
 const multipartChunkSize = 1024 * 1024;
 
+// The random filename grants access to one unlisted handout. GitHub Actions
+// logs are public, so retain useful diagnostics without publishing that locator.
+function redactHandoutPaths(value) {
+  return String(value).replace(/\bh-[a-f0-9]{48}\.html\b/gi, "[private-handout]");
+}
+
+function deploymentLog(level, message) {
+  console[level](redactHandoutPaths(message));
+}
+
 function normalizeCredential(value, name) {
   if (!value) {
     throw new Error(`Missing ${name} GitHub secret.`);
@@ -108,7 +118,7 @@ async function uploadFile(file) {
       if (!isRetryableUploadError(error) || attempt === attempts) {
         throw error;
       }
-      console.warn(
+      deploymentLog("warn",
         `Retrying ${file.key} after ${error.code} ` +
           `(attempt ${attempt + 1}/${attempts}).`
       );
@@ -125,7 +135,7 @@ async function uploadPartWithRetry(parameters, fileKey, partNumber) {
       if (!isRetryableUploadError(error) || attempt === maximumUploadAttempts) {
         throw error;
       }
-      console.warn(
+      deploymentLog("warn",
         `Retrying ${fileKey} part ${partNumber} after ${error.code} ` +
           `(attempt ${attempt + 1}/${maximumUploadAttempts}).`
       );
@@ -304,7 +314,7 @@ async function deploy() {
   let uploaded = 0;
   const failedUploads = [];
 
-  console.log(
+  deploymentLog("log",
     `Deploying ${files.length} public files to cos://${bucket}/: ` +
       `${filesToUpload.length} changed, ${files.length - filesToUpload.length} unchanged.`
   );
@@ -312,7 +322,7 @@ async function deploy() {
     (file) => file.size >= multipartThreshold
   ).length;
   if (multipartFiles > 0) {
-    console.log(
+    deploymentLog("log",
       `Using ${multipartChunkSize / 1024 / 1024} MB multipart chunks for ` +
         `${multipartFiles} files of at least ${multipartThreshold / 1024 / 1024} MB.`
     );
@@ -326,11 +336,11 @@ async function deploy() {
         file.size >= multipartThreshold ||
         uploaded === filesToUpload.length
       ) {
-        console.log(`Uploaded ${uploaded}/${filesToUpload.length}: ${file.key}`);
+        deploymentLog("log", `Uploaded ${uploaded}/${filesToUpload.length}: ${file.key}`);
       }
     } catch (error) {
       failedUploads.push({ file, error });
-      console.error(
+      deploymentLog("error",
         `Skipping ${file.key} after upload retries: ${error?.code || error?.message || error}`
       );
     }
@@ -339,7 +349,7 @@ async function deploy() {
   if (failedUploads.length > 0) {
     const sample = failedUploads
       .slice(0, 10)
-      .map(({ file, error }) => `${file.key} (${error?.code || "unknown error"})`)
+      .map(({ file, error }) => redactHandoutPaths(`${file.key} (${error?.code || "unknown error"})`))
       .join(", ");
     throw new Error(
       `${failedUploads.length} file(s) could not be uploaded; rerun to retry only ` +
@@ -351,7 +361,7 @@ async function deploy() {
     .map((object) => object.key)
     .filter((key) => !localKeys.has(key));
   if (obsoleteKeys.length > 0) {
-    console.log(`Removing ${obsoleteKeys.length} obsolete remote files ...`);
+    deploymentLog("log", `Removing ${obsoleteKeys.length} obsolete remote files ...`);
     await runConcurrent(obsoleteKeys, (key) =>
       cosRequest("deleteObject", {
         Bucket: bucket,
@@ -361,7 +371,7 @@ async function deploy() {
     );
   }
 
-  console.log(
+  deploymentLog("log",
     `COS deployment complete: ${filesToUpload.length} uploaded, ` +
       `${files.length - filesToUpload.length} unchanged, ${obsoleteKeys.length} removed.`
   );
@@ -370,8 +380,8 @@ async function deploy() {
 deploy().catch((error) => {
   const requestId =
     error?.headers?.["x-cos-request-id"] || error?.requestId || undefined;
-  console.error("COS deployment failed.");
-  console.error(
+  deploymentLog("error", "COS deployment failed.");
+  deploymentLog("error",
     JSON.stringify(
       {
         code: error?.code,

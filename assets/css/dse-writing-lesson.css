@@ -1,0 +1,137 @@
+.standalone-writing .resource-topbar,
+.standalone-writing .standalone-layout {
+  width: min(940px, calc(100% - 2.5rem));
+}
+
+.standalone-writing .standalone-layout {
+  margin: 1.5rem auto 3.5rem;
+  min-width: 0;
+}
+
+.standalone-writing .resource-topbar {
+  flex-wrap: wrap;
+  gap: .6rem 1rem;
+  padding: .5rem 0;
+}
+
+.standalone-writing .resource-brand {
+  flex: 1 1 auto;
+}
+
+.standalone-writing .resource-actions {
+  flex: 0 0 auto;
+}
+
+.standalone-writing #copy-lesson,
+.standalone-writing #print-lesson {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  padding: .45rem .9rem;
+  border: 1px solid #d5e1e3;
+  border-radius: 99px;
+  background: #ffffffe0;
+  color: #2e5c72;
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.standalone-writing #copy-lesson:hover,
+.standalone-writing #print-lesson:hover {
+  background: #f0f7fa;
+  border-color: #a9c5d0;
+}
+
+.standalone-writing #copy-lesson span,
+.standalone-writing #print-lesson span {
+  display: inline;
+}
+
+.standalone-writing .lesson-title h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.3vw, 2.35rem);
+  letter-spacing: -.035em;
+}
+
+.standalone-writing .lesson-title > div {
+  min-width: 0;
+}
+
+.standalone-writing .lesson,
+.standalone-writing #sources,
+.standalone-writing [id] {
+  scroll-margin-top: 6rem;
+}
+
+.standalone-writing .lesson,
+.standalone-writing #sources {
+  min-width: 0;
+}
+
+.standalone-writing #sources {
+  margin-top: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.standalone-writing .table-wrap {
+  max-width: 100%;
+  overscroll-behavior-inline: contain;
+}
+
+@media (max-width: 760px) {
+  .standalone-writing .resource-topbar,
+  .standalone-writing .standalone-layout {
+    width: calc(100% - 1.5rem);
+  }
+
+  .standalone-writing .standalone-layout {
+    margin-top: .7rem;
+  }
+
+  .standalone-writing .resource-topbar {
+    gap: .45rem;
+  }
+
+  .standalone-writing .resource-brand {
+    flex: 1 1 2rem;
+  }
+
+  .standalone-writing .resource-actions {
+    gap: .35rem;
+  }
+
+  .standalone-writing #copy-lesson,
+  .standalone-writing #print-lesson {
+    padding-inline: .75rem;
+    font-size: .75rem;
+  }
+
+  .standalone-writing .lesson-title h1 {
+    font-size: 1.55rem;
+  }
+}
+
+@media print {
+  .standalone-writing .standalone-layout {
+    width: 100%;
+    margin: 0;
+  }
+
+  .standalone-writing .lesson {
+    break-before: auto;
+  }
+
+  .standalone-writing #sources {
+    margin-top: 0;
+    break-before: page;
+  }
+
+  .standalone-writing h1 {
+    break-after: avoid;
+  }
+}

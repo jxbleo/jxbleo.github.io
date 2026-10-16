@@ -1,6 +1,15 @@
 {
-  "directories": ["assets", "bbc-audio", "content", "data"],
-  "excludedPaths": ["content/speaking", "content/templates"],
+  "directories": [
+    "assets",
+    "bbc-audio",
+    "content",
+    "data"
+  ],
+  "excludedPaths": [
+    "content/speaking",
+    "content/templates",
+    "content/study-guides"
+  ],
   "rootFiles": [
     "ai-tutor.html",
     "argue-review.html",
@@ -13,8 +22,6 @@
     "dse-paper-3-practice-toolkit.html",
     "dse-paper-3-question-strategies.html",
     "dse-topic-bank.html",
-    "dse-writing-formats.html",
-    "dse-writing-guide.html",
     "hk8-dse-jupas-weighting-report-2026-27.html",
     "ielts-listening.html",
     "ielts-reading.html",
@@ -32,8 +39,6 @@
     "speaking-review.html",
     "teacher-listening-corrector.html",
     "teacher.html",
-    "temp-dse-english-writing-formats.html",
-    "temp-s4-writing-revision-20260607.html",
     "vocabulary.html"
   ]
 }

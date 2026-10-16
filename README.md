@@ -1,5 +1,10 @@
 # Mr. Cat Academy
 
+## DSE handouts: independent distribution (2026-10-16)
+
+Published one complete Writing 09–24 course, 16 standalone modules, four reading guides and two earlier writing guides. Share individual addresses from Teacher → 资料链接; no public directory is provided. Plaintext authoring is ignored under `.cloudbase-private/handouts/source/`, with encrypted source and stable secret mappings used for builds. Old predictable COS paths have been retired. See [the cutover record](docs/research/dse-handout-isolation-2026-10-16.md) for verified scope and remaining historical-copy limits. This scoped release does not reconcile unrelated production/source drift; avoid a full-site synchronization from an older baseline.
+
+
 ## Working-copy status — 2026-10-04
 
 The current cleanup branch is `codex/project-cleanup-oct03`, based on `a7b0f90f`.

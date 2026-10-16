@@ -1,5 +1,16 @@
 # 04 Data Model
 
+## 2026-10-16 — Private independent-handout metadata
+
+No new collection or database write is introduced. The teacher service only reads `students` by server-derived `auth_uid`, `role: teacher` and `active: true` on every request. Never accept browser-supplied role/UID as authority.
+
+Ignored `.cloudbase-private/handouts/links.json` has `schemaVersion: 1` and a `links` object mapping stable internal handout IDs to distinct filenames matching `^h-[a-f0-9]{48}\.html$`. All 23 expected identities must be present with no extras or duplicates; paths are 24 random bytes encoded as lowercase hexadecimal. The map and `content-key.txt` are private build inputs, not public metadata. `scripts/handouts.sealed.json` contains version, algorithm, IV, authentication tag and ciphertext; it contains neither the key nor a link directory. Its decrypted source names are authoring paths, not share URLs.
+
+Generated `cloudfunctions/teacherHandoutLinks/handout-links.private.json` has `schemaVersion: 1` and `items`: safe `id`, `category: study`, `title`, `topic`, `description`, `access` and private `href`. It is ignored, validated during packaging and returned only after active-teacher authorization. The endpoint accepts `action: list` and returns the validated projection; malformed/missing directories fail closed. No grading keys, student submissions, account identifiers or credentials belong in this file. The Teacher UI keeps its response out of persistent caches.
+
+Public `content/share-materials.json` no longer contains the six reading/earlier-writing entries covered by this private directory. Classroom, RE and unrelated information metadata keep their existing schemas and distribution. Earlier descriptions of a wholly public supplemental directory are historical for this DSE subset.
+
+
 ## Reconciliation note (2026-10-03)
 
 No collection, permission, production record or billing configuration is changed

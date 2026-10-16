@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "dse-paper-3-listening-foundation",
+      "category": "study",
+      "title": "听力 01 · 考试底图与听力核心模型",
+      "topic": "听力",
+      "description": "DSE Paper 3：考试结构、听力基础与训练方向。",
+      "access": "公开阅读",
+      "href": "dse-paper-3-listening-foundation.html"
+    },
+    {
+      "id": "dse-paper-3-listening-notes",
+      "category": "study",
+      "title": "听力 02 · 听中策略与快速笔记系统",
+      "topic": "听力",
+      "description": "抓取信息、缩写与笔记组织。",
+      "access": "公开阅读",
+      "href": "dse-paper-3-listening-notes.html"
+    },
+    {
+      "id": "dse-paper-3-question-strategies",
+      "category": "study",
+      "title": "听力 03 · 陷阱、Part A 与 Part B 题型策略",
+      "topic": "听力",
+      "description": "常见陷阱与不同题型的处理方法。",
+      "access": "公开阅读",
+      "href": "dse-paper-3-question-strategies.html"
+    },
+    {
+      "id": "dse-paper-3-level-roadmaps",
+      "category": "study",
+      "title": "听力 04 · Level 3 稳分与 Level 5** 冲刺",
+      "topic": "听力",
+      "description": "按目标分数规划复习与训练。",
+      "access": "公开阅读",
+      "href": "dse-paper-3-level-roadmaps.html"
+    },
+    {
+      "id": "dse-paper-3-practice-toolkit",
+      "category": "study",
+      "title": "听力 05 · 练习、答案与考场工具包",
+      "topic": "听力",
+      "description": "配套练习、解析与考场检查清单。",
+      "access": "公开阅读",
+      "href": "dse-paper-3-practice-toolkit.html"
+    },
+    {
+      "id": "dse-topic-bank",
+      "category": "study",
+      "title": "HKDSE 英文写作与口语全话题备考库（2012–2026）",
+      "topic": "写作 · 口语",
+      "description": "话题整理、写作与口语备考参考。",
+      "access": "可预览 · 师生登录看全文",
+      "href": "dse-topic-bank.html"
+    },
+    {
+      "id": "hk8-dse-jupas-weighting-report-2026-27",
+      "category": "information",
+      "title": "港八大 DSE 选科与 JUPAS 专业加权报告（2026/27）",
+      "topic": "升学 · JUPAS",
+      "description": "选科、专业加权与升学信息参考。",
+      "access": "可预览 · 学生登录看全文",
+      "href": "hk8-dse-jupas-weighting-report-2026-27.html"
+    }
+  ]
+}

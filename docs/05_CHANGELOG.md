@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-16 — Independent DSE handouts published
+
+Owner continued the prepared cutover. Published 23 independent pages plus 12 dedicated assets, then the three Teacher integration/catalog objects. All 38 COS readbacks and 76 public SHA-256 checks across apex/www matched the frozen release. Eight existing predictable handout/alias objects were backed up and removed; all nine retired policy paths return a non-content response on both domains (18 checks). No matching DSE plaintext source objects existed under the old study-guides prefix. No unrelated live object was synchronized or removed.
+
+Deployed only `teacherHandoutLinks` (Node.js 18, 256 MB, 10 seconds). The function is Active, and its three packaged core files match the reviewed ZIP. Two live unauthenticated/spoofed-identity requests were denied without returning the directory. No collection, student record, other function, model, billing or permission setting changed. Configured both handout CI secrets without printing their values. Private stage, backups and receipts live in `.cloudbase-private/handout-cutover-20261016/`.
+
+The source release uses an isolated worktree based on the verified remote main, removes four previously tracked plaintext/alias files, and includes only the handout implementation plus the necessary Teacher directory entry. It uses `[skip ci]` because current production also contains unrelated scoped releases not yet reconciled to main; do not run a full-site COS sync from this older source baseline. GitHub Pages uses legacy main/root publication; its settings and repository visibility stay unchanged. Previously public Git history and third-party saved copies remain outside URL retirement.
+
+The isolated source passed `verify:release`, the full `test:release`, build and both real-artifact boundary checks. A dedicated Teacher UI contract test runs independently of unrelated classroom/RE fixtures. Existing local desktop/mobile and actual copy/paste checks remain valid. This production browser automation timed out while the Mac was locked; authenticated live Teacher UI interaction and native print pagination are not certified. Live file delivery and unauthorized access denial were verified independently.
+
+The local owner share list now reads an ignored `publication.json` receipt, matching map/source digests before displaying a published status. It still never becomes a public index. The active Teacher directory is the regular place to copy individual share links.
+
+
 ## 2026-10-04 — Publish scoped result UI cleanup
 
 Published the verified BBC/Vocabulary HTML cleanup and removed their unused

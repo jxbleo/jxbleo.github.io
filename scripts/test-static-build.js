@@ -8,8 +8,11 @@ const root = path.resolve(__dirname, "..");
 const manifest = require("./static-site-manifest.json");
 
 function checkArtifact(directory) {
-  const expected = [...manifest.directories, ...manifest.rootFiles].sort();
-  assert.deepEqual(fs.readdirSync(directory).sort(), expected, "Only approved entry points and asset directories may be published");
+  const sourceRoot = path.dirname(directory);
+  const release = require('./handout-store').loadRelease(sourceRoot);
+  const expected = [...manifest.directories, ...manifest.rootFiles, ...Object.values(release.map.links)].sort();
+  const actual = fs.readdirSync(directory).sort();
+  assert(actual.length === expected.length && actual.every((name,i)=>name===expected[i]), "Only approved entry points, isolated handouts and asset directories may be published");
   assert(fs.existsSync(path.join(directory, "teacher-listening-corrector.html")), "Teacher Listening Edit target missing from static artifact");
   for (const excluded of manifest.excludedPaths) {
     assert(!fs.existsSync(path.join(directory, excluded)), `Private/source-only path published: ${excluded}`);
@@ -28,6 +31,7 @@ if (process.argv.includes("--artifact")) {
     for (const file of ["build-static-site.js", "static-site-manifest.json"]) {
       fs.copyFileSync(path.join(__dirname, file), path.join(fixture, "scripts", file));
     }
+    require('./handout-test-fixture')(fixture);
     for (const directory of manifest.directories) fs.mkdirSync(path.join(fixture, directory));
     for (const file of manifest.rootFiles) fs.writeFileSync(path.join(fixture, file), "public fixture");
     for (const excluded of manifest.excludedPaths) {
@@ -37,7 +41,7 @@ if (process.argv.includes("--artifact")) {
     fs.writeFileSync(path.join(fixture, "unapproved-preview.html"), "prototype fixture");
     fs.mkdirSync(path.join(fixture, "dist"));
     fs.writeFileSync(path.join(fixture, "dist", "stale.html"), "old artifact");
-    const build = () => spawnSync(process.execPath, ["scripts/build-static-site.js"], { cwd: fixture, encoding: "utf8" });
+    const build = () => spawnSync(process.execPath, ["scripts/build-static-site.js"], { cwd: fixture, encoding: "utf8", env: {...process.env, MRCAT_HANDOUT_LINKS_JSON:'', MRCAT_HANDOUT_CONTENT_KEY:''} });
     const result = build();
     assert.equal(result.status, 0, result.stderr);
     checkArtifact(path.join(fixture, "dist"));

@@ -35,9 +35,15 @@ jobs:
           npm run test:release
 
       - name: Build public static artifact
+        env:
+          MRCAT_HANDOUT_LINKS_JSON: ${{ secrets.MRCAT_HANDOUT_LINKS_JSON }}
+          MRCAT_HANDOUT_CONTENT_KEY: ${{ secrets.MRCAT_HANDOUT_CONTENT_KEY }}
         run: npm run build:static
 
       - name: Verify public artifact boundary
+        env:
+          MRCAT_HANDOUT_LINKS_JSON: ${{ secrets.MRCAT_HANDOUT_LINKS_JSON }}
+          MRCAT_HANDOUT_CONTENT_KEY: ${{ secrets.MRCAT_HANDOUT_CONTENT_KEY }}
         run: node scripts/test-static-build.js --artifact
 
       - name: Upload public artifact to COS

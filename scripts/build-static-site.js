@@ -4,6 +4,7 @@ const path = require("path");
 const root = path.resolve(__dirname, "..");
 const output = path.join(root, "dist");
 const manifest = require("./static-site-manifest.json");
+const { prepare: prepareHandouts } = require("./render-handouts");
 
 function isPublicSource(source) {
   const relative = path.relative(root, source).split(path.sep).join("/");
@@ -27,6 +28,9 @@ for (const [entries, type] of [[manifest.directories, "directory"], [manifest.ro
   }
 }
 
+// Authenticate all source and validate the complete stable map BEFORE touching dist.
+// A missing CI secret must never produce an artifact that retires valid links.
+const handouts = prepareHandouts(root);
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
@@ -38,9 +42,15 @@ for (const directory of manifest.directories) {
 for (const file of manifest.rootFiles) {
   copy(path.join(root, file), path.join(output, file));
 }
+try {
+  for (const [file, html] of handouts) fs.writeFileSync(path.join(output, file), html);
+} catch (_) {
+  // CI logs are public; never include a native error's private object path.
+  throw new Error('Unable to write independent handout output; publication stopped.');
+}
 
 if (!fs.existsSync(path.join(output, "index.html"))) {
   throw new Error("Static output is missing index.html");
 }
 
-console.log(`Static site prepared in ${path.relative(root, output)}/`);
+console.log(`Static site prepared in ${path.relative(root, output)}/ with ${handouts.size} independent handouts.`);

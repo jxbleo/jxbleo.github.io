@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "guides": [
+    {
+      "id": "dse-reading-tones",
+      "source": "dse-reading-tones.html",
+      "title": "阅读 · 语气与态度 Tones & Attitudes",
+      "topic": "阅读",
+      "description": "语气辨别、态度词与配套练习。"
+    },
+    {
+      "id": "dse-reading-inference",
+      "source": "dse-reading-inference.html",
+      "title": "阅读 · 推断 Inference",
+      "topic": "阅读",
+      "description": "从文本证据推断，配原创精讲与练习。"
+    },
+    {
+      "id": "dse-reading-tfng",
+      "source": "dse-reading-tfng.html",
+      "title": "阅读 · True / False / Not Given",
+      "topic": "阅读",
+      "description": "区分原文支持、反证与信息不足。"
+    },
+    {
+      "id": "dse-reading-language-effects",
+      "source": "dse-reading-language-effects.html",
+      "title": "阅读 · 修辞与表达效果",
+      "topic": "阅读",
+      "description": "语言手法、表达效果与答题方法。"
+    },
+    {
+      "id": "dse-writing-guide",
+      "source": "dse-writing-guide.html",
+      "title": "写作 · DSE English Writing 完整备考讲义",
+      "topic": "写作",
+      "description": "写作备考方法与表达训练。"
+    },
+    {
+      "id": "dse-writing-formats",
+      "source": "dse-writing-formats.html",
+      "title": "写作 · Paper 2 写作格式速查",
+      "topic": "写作",
+      "description": "常见文体的格式与写作要点。"
+    }
+  ],
+  "writingCourse": {
+    "id": "dse-writing-course",
+    "source": "dse-writing-course.html",
+    "title": "写作 · 技能与体裁完整版（09–24）",
+    "topic": "写作",
+    "description": "深化与体裁应用的16讲完整版。"
+  },
+  "retiredPaths": [
+    "dse-reading-tones.html",
+    "dse-reading-inference.html",
+    "dse-reading-tfng.html",
+    "dse-reading-language-effects.html",
+    "dse-writing-guide.html",
+    "dse-writing-formats.html",
+    "dse-writing-course.html",
+    "temp-dse-english-writing-formats.html",
+    "temp-s4-writing-revision-20260607.html"
+  ]
+}

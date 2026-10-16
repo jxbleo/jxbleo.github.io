@@ -1,5 +1,37 @@
 # 10 Deployment
 
+## 2026-10-16 — Independent DSE handouts published
+
+Owner continued the prepared cutover. Published 23 independent pages plus 12 dedicated assets, then the three Teacher integration/catalog objects. All 38 COS readbacks and 76 public SHA-256 checks across apex/www matched the frozen release. Eight existing predictable handout/alias objects were backed up and removed; all nine retired policy paths return a non-content response on both domains (18 checks). No matching DSE plaintext source objects existed under the old study-guides prefix. No unrelated live object was synchronized or removed.
+
+Deployed only `teacherHandoutLinks` (Node.js 18, 256 MB, 10 seconds). The function is Active, and its three packaged core files match the reviewed ZIP. Two live unauthenticated/spoofed-identity requests were denied without returning the directory. No collection, student record, other function, model, billing or permission setting changed. Configured both handout CI secrets without printing their values. Private stage, backups and receipts live in `.cloudbase-private/handout-cutover-20261016/`.
+
+The source release uses an isolated worktree based on the verified remote main, removes four previously tracked plaintext/alias files, and includes only the handout implementation plus the necessary Teacher directory entry. It uses `[skip ci]` because current production also contains unrelated scoped releases not yet reconciled to main; do not run a full-site COS sync from this older source baseline. GitHub Pages uses legacy main/root publication; its settings and repository visibility stay unchanged. Previously public Git history and third-party saved copies remain outside URL retirement.
+
+The isolated source passed `verify:release`, the full `test:release`, build and both real-artifact boundary checks. A dedicated Teacher UI contract test runs independently of unrelated classroom/RE fixtures. Existing local desktop/mobile and actual copy/paste checks remain valid. This production browser automation timed out while the Mac was locked; authenticated live Teacher UI interaction and native print pagination are not certified. Live file delivery and unauthorized access denial were verified independently.
+
+The local owner share list now reads an ignored `publication.json` receipt, matching map/source digests before displaying a published status. It still never becomes a public index. The active Teacher directory is the regular place to copy individual share links.
+
+
+## 2026-10-16 — Independent DSE handout cutover prepared (not deployed)
+
+The local release now has 23 independent targets: Writing 09–24 complete course, 16 single modules, four reading guides and two earlier writing guides. Their real random paths are retained only in the ignored private map/catalog. Nine predictable root paths have been removed locally, including the two temporary writing aliases. The private source tree replaces public `content/study-guides/`; earlier dated publication records below are history, not current authorization or proof that those online objects have been retired.
+
+Preparation is complete for the encrypted source/static build and private `teacherHandoutLinks` package; no production secret, function, static object, repository visibility or Pages configuration was changed in this iteration. Local tests and representative 1280/390px browser isolation checks passed as recorded in `docs/research/dse-handout-isolation-2026-10-16.md`; actual browser copy/native-paste matched the single-lesson canonical address, while native print pagination remains unverified. The public repository and enabled GitHub Pages copy were confirmed; existing public Git history may retain earlier writing content. Anonymous COS ListObjects returned HTTP 403 / AccessDenied without credentials, not an object inventory.
+
+An authorized cutover must cover all of the following together:
+
+1. Freeze and privately back up the reviewed source, encrypted source, stable map/key and intended function/static bytes. Preserve unrelated live changes and use scoped release guards; the dirty checkout must not become an incidental full-site release.
+2. Configure the repository secrets `MRCAT_HANDOUT_LINKS_JSON` and `MRCAT_HANDOUT_CONTENT_KEY` from the existing private inputs, without printing or committing their contents. The workflow injects both only into build and actual-artifact verification; it does not upload a publicly downloadable `dist` artifact. Missing values must fail closed, never trigger a fixture or newly generated map.
+3. Prepare the private directory with `node scripts/prepare-handouts.js --teacher-catalog`, validate/package `teacherHandoutLinks`, and deploy that function under explicit authorization. It requires the active-teacher profile boundary and no collection migration or database writes. A local ZIP is not evidence of a deployed endpoint.
+4. Publish and read back all 23 independent pages and their supporting assets before exposing their Teacher entries. Update the Teacher service integration and remove the six public DSE entries from `content/share-materials.json`; failures must not fall back to old addresses.
+5. Retire the exact nine paths in `scripts/handout-policy.json`, their previously published `content/study-guides/` plaintext copies, and any confirmed duplicate teaching payloads in the release scope. Do not redirect old predictable URLs to new random URLs. Verify both `www` and apex domains and any relevant cache layer; old paths must cease disclosing content.
+6. Verify the GitHub Pages copy and its actual publishing source separately, so it cannot continue serving old root/source copies or bypass the encrypted build. Visibility or Pages-setting changes require their own owner authorization. Do not claim that a current-tree deletion erases public Git history or third-party saved copies.
+7. Verify active-teacher directory access, denial for other callers, actual copied URLs and one standalone page's inability to expose peer addresses/content. Keep verification receipts private and redact every random filename from public logs/screenshots.
+
+The existing full COS synchronizer deletes remote objects absent from `dist` only after uploads succeed. A partial map or fixture artifact would therefore be dangerous; source authentication and whole-map validation happen before replacing `dist`. Never run that full synchronizer over a scoped or incomplete staging tree. The current shared checkout also contains unrelated live/source differences, so a reviewed scoped publisher is preferred for this cutover. Do not publish a private local `share-links.html`, the mapping, content key, authoring tree or function catalog as a static object. Local preparation and the commands above do not grant production authorization.
+
+
 ## 2026-10-04 — Publish scoped result UI cleanup
 
 Owner authorized publication after the local cleanup. A fresh read of 132 public

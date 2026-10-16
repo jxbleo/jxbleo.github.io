@@ -10,6 +10,7 @@ service-account.json
 cloudbase-secret.json
 .cloudbase-private/
 cloudfunctions/getProtectedResource/protected-payloads.private.js
+cloudfunctions/teacherHandoutLinks/handout-links.private.json
 deploy-packages/
 dist/
 node_modules/
