@@ -1,5 +1,13 @@
 # 10 Deployment
 
+## 2026-10-16 — Student-facing authoritative references published
+
+Published the owner-requested reference presentation at `2026-10-16T14:48:45.794Z` across all 23 independent handouts. Every reference section is labelled “权威资料参考”; source names and descriptions are plain text without outbound or citation jump links. Descriptions explain the relevant authority and learning basis for students and families, without teacher research notes or unsupported endorsement claims. All 23 COS readbacks and 46 apex/www public byte comparisons match the frozen stage; existing share identities are unchanged. Private backup, stage and receipt: `.cloudbase-private/handout-references-20261016/`.
+
+Changed the common renderer, writing-course builder, encrypted source and focused fixture/isolation checks. Updated owner, product, architecture, UI, authoring, test and change records. Handout tests, course source check, static build, actual-artifact boundaries and release verification passed in the isolated release. Desktop and 390px/320px checks confirmed the new source blocks, no clickable references and no horizontal overflow. The writing course retains all 132 exercises and 11 full original models. Two earlier writing guides now include compact relevant reference sections.
+
+Only the 23 handout HTML objects were deployed. No new dependency, link rotation, teacher function, database or unrelated live object change. Source synchronization uses `[skip ci]`; the shared checkout still has unrelated source/live drift and must not be fully synchronized to COS. Refresh existing handout links; no further owner action is required.
+
 ## 2026-10-16 — Teacher material subject filters
 
 Implemented and verified locally; static publication is pending renewal of the existing CLI session. No production object has been changed. Teacher → 资料链接 now opens on general handouts with exam/skill filters, counts and scoped search. Current counts are 31 unique study entries: five DSE Listening, four DSE Reading, twenty DSE Writing, one DSE Speaking and two RE; the shared topic bank belongs to Writing and Speaking. IELTS Reading remains empty because its local B01 draft is not a published catalog entry.
