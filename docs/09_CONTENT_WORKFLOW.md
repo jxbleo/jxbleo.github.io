@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — Author student-facing references
+
+Maintain source URLs, access status and evidence limits in private research metadata. Use readerTitle/readerDescription for brief institution/document names and an accurate explanation of their relevance to the handout; omit unread materials instead of inventing support. The public heading is always 权威资料参考 and entries have no links. Regenerate the private writing course, seal only the reviewed source scope, and validate all 23 existing targets. Do not include unrelated private drafts in a scoped source synchronization or rotate identities. This supersedes the older instruction to show reading boundaries on student pages.
+
 ## 2026-10-16 — Classify future Teacher materials
 
 Published study metadata is grouped by stable dse-paper-3-*, dse-reading-*, dse-writing-*, dse-speaking-*, ielts-reading-* and other supported family prefixes; RE catalog IDs map to RE. A public catalog item outside those conventions may supply an explicit validated subjects array. Unknown study material stays visible under Other. IELTS Listening/Writing/Speaking and Other filters appear when they contain material. Do not add a guessed URL or expose a private draft just to populate a category. Private independent guides continue through the existing protected catalog pipeline; publish each destination before its catalog entry.

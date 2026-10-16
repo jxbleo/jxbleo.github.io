@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Rewrite handout reference sections
+
+Standardized all 23 handouts to 权威资料参考, removed reference links and rewrote reference descriptions for students and parents. Added compact reference blocks to the two earlier writing guides. Private provenance is retained; the writing register has 24 research records and displays 22 consulted references, omitting two candidate-script directories whose scripts were not read. Exercises, full models and share identities remain stable.
+
 ## 2026-10-16 — Filter Teacher materials by exam and skill
 
 Added a subject bar and per-subject counts to Teacher 资料链接, with scoped search and meaningful empty/loading/error states. General handouts now open by default; student drilldown and information categories retain their existing behavior. Canonical handout addresses, publication scope and permissions are unchanged.

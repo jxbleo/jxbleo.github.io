@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Handout references for students and families
+
+All 23 published independent handouts use the exact heading 权威资料参考. Each entry shows the institution/document name and a concise explanation of its relevance to the handout. Reference titles and inline citations are plain text without outgoing or source-jump links. Keep claims within the consulted evidence; do not imply official endorsement or guaranteed grades. Research access notes, page-reading logs and teacher instructions belong in private authoring/research records.
+
 ## 2026-10-16 — Teacher material subject filters
 
 Teacher → 资料链接 now opens on 通用讲义 with an additional subject filter row: All, DSE Listening, DSE Reading, DSE Writing, DSE Speaking, IELTS Reading and RE. Each filter shows its available material count; searching stays within the selected subject. The topic bank belongs to both DSE Writing and Speaking, while All counts it once. IELTS Reading currently has no published catalog entries and shows an honest empty state; its local B01 draft is not published by this change. One-to-one student grouping and information links remain available. This supersedes the earlier default-to-classroom note.

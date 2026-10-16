@@ -37,6 +37,10 @@ if (process.argv.includes('--artifact')) {
     const href=release.map.links[item.id],actual=fs.readFileSync(path.join(root,'dist',href),'utf8');
     assert(actual===expected.get(href),'Published handout bytes must match the authenticated source and current isolation rules');
     checkStudentHeader(actual);
+    assert(actual.includes('权威资料参考'),'Every handout includes student-facing references');
+    const body=actual.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,'');
+    assert(!/<a\b[^>]*href="(?:https?:|#source-)/.test(body),'Reference titles and citations are plain text');
+    assert(!/读取情况：|用途与边界：|官方资料与读取说明|RESEARCH NOTES|给老师：怎样追问学生的推理/.test(body),'Private research logs and teacher instructions stay out of reader references');
     const ids=[...actual.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
     assert(new Set(ids).size===ids.length,'Handout IDs must be unique');
     for(const match of actual.matchAll(/href="#([^"]+)"/g)) assert(ids.includes(match[1]),'Every local handout anchor must resolve');

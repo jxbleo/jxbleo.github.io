@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Separate reader references from research metadata
+
+The private writing source register retains URL/status/use fields and adds readerTitle/readerDescription for publication. A null readerDescription omits an unconsulted source from reader lists. The full-course builder and standalone renderer share referenceCards; the six earlier guides store their reader copy in private HTML. Plaintext stays ignored, and the sealed source is refreshed with the existing authenticated encryption workflow. All 23 map identities, backend access and private Teacher catalogs are preserved.
+
 ## 2026-10-16 — Client-side material subject projection
 
 The existing teacher-material-links module projects subject membership from stable material IDs or optional validated public metadata. It does not inspect titles or opaque filenames to guess a handout family. The existing private function response and authorization remain unchanged; no new fetch, persistent directory cache, dependency or backend deployment is introduced. Subject filtering composes with the current type/search filters and keeps canonical open/copy URLs intact.

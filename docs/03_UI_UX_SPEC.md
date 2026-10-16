@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Plain-text authority references
+
+The reference heading is 权威资料参考 in full-course navigation, module footers, standalone modules and reading/earlier-writing guides. Show source names as non-interactive text followed by one short student/family-facing explanation. Remove source-link arrows, reading-status labels, access errors and research-method notes. Each standalone module has one relevant reference block; retain the existing owner contact controls and normal lesson navigation.
+
 ## 2026-10-16 — Subject filters in Teacher materials
 
 Keep the three top-level types, with 通用讲义 selected on first open. Its 学科分类 panel contains count-labelled buttons above the search field, with one pressed selection and an All choice. Preserve the search text when switching subjects, label the search scope, and announce the filtered result count. Hide this panel in one-to-one and information views; retain the study selection for return. Buttons wrap on narrow screens. A truly empty category says 暂未收录; a failed catalog source shows retry guidance rather than implying there are no handouts.

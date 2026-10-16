@@ -2,6 +2,12 @@
 
 ## Independent DSE handouts (owner rule, 2026-10-16)
 
+All published handouts label references `权威资料参考`. Display institution /
+document names and concise student/family-facing relevance descriptions as plain
+text, without reference links. Preserve research URLs and access/evidence notes
+privately; do not present internal reading logs or imply official endorsement.
+
+
 Distribute each DSE Reading/Writing handout independently. The current scope is
 23 share targets: one complete Writing 09–24 course, 16 separate writing
 modules, four reading guides and two earlier writing guides. Each target has its

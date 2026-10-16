@@ -18,6 +18,10 @@ const HANDOUT_HEADER = `<header class="resource-topbar handout-topbar" data-reso
 <a class="handout-social" href="mailto:jxbleo@foxmail.com" aria-label="发送邮件至 jxbleo@foxmail.com" title="jxbleo@foxmail.com">${MAIL_ICON}</a>
 </nav></header>`;
 const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
+.handout-references { margin: 2rem 0; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid #dce5e7; border-radius: 18px; background: #fff; color: #354c56; font: 15px/1.85 -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; overflow-wrap: anywhere; }
+.handout-references h2 { margin: 0 0 1rem; font-size: 1.3rem; }
+.handout-references li { margin: 1rem 0; }
+.handout-references p { margin: .4rem 0; }
 .resource-topbar.handout-topbar { gap: .75rem 1.5rem; padding: .65rem 0; flex-wrap: wrap; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
 .handout-topbar .resource-brand { display: inline-flex; flex: 0 0 auto; gap: .65rem; line-height: 1.4; letter-spacing: .02em; }
 .handout-topbar .resource-brand img { width: 2rem; height: 2rem; border-radius: .6rem; }
@@ -50,6 +54,13 @@ const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
 </style>`;
 const esc = text => String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+// Reader copy is distinct from the private research URLs/status/use notes.
+function referenceCards(sources) {
+  return sources.filter(source => source.readerDescription).map(source =>
+    `<article class="source-card" id="source-${esc(source.id)}"><span class="label">${esc(source.kind)}</span><h3>${esc(source.readerTitle || source.title)}</h3><p>${esc(source.readerDescription)}</p></article>`
+  ).join('\n');
+}
+
 function extractSection(html, id) {
   const start = html.indexOf(`<section class="course-panel lesson" id="${id}"`);
   if (start < 0) throw new Error('Missing writing module section.');
@@ -66,7 +77,8 @@ function isolateModule(full, module, sources, overrides = []) {
   let section = extractSection(full,'module-'+module.id)
     .replace('class="course-panel lesson"','class="lesson"')
     .replace(/<h2 id="title-(\d+)">([^<]+)<\/h2>/,'<h1 id="title-$1">$2</h1>')
-    .replace(/<nav class="lesson-pager"[\s\S]*?<\/nav>/g,'');
+    .replace(/<nav class="lesson-pager"[\s\S]*?<\/nav>/g,'')
+    .replace(/<aside class="lesson-sources"[\s\S]*?<\/aside>/g,'');
   for (const [from,to] of overrides) {
     if (!from || section.split(from).length !== 2) throw new Error('Standalone teaching context override needs review.');
     section=section.replace(from,to);
@@ -78,15 +90,16 @@ function isolateModule(full, module, sources, overrides = []) {
     .replace(/<meta name="description"[^>]*>/,`<meta name="description" content="${esc(module.summary)}">`)
     .replace(/<meta property="og:title"[^>]*>/,`<meta property="og:title" content="${esc(module.id+' · '+module.title)}">`)
     .replace(/<meta property="og:description"[^>]*>/,`<meta property="og:description" content="${esc(module.summary)}">`);
-  const cards = module.sources.map(id=>{
+  const cards = referenceCards(module.sources.map(id=>{
     const source=sources.find(s=>s.id===id);
     if (!source) throw new Error('Missing module source.');
-    return `<article class="source-card" id="source-${esc(id)}"><span class="label">${esc(id+' · '+source.kind)}</span><h3><a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(source.title)} ↗</a></h3><p><strong>读取情况：</strong>${esc(source.status)}</p><p><strong>用途与边界：</strong>${esc(source.use)}</p></article>`;
-  }).join('\n');
-  return `<!doctype html><html lang="zh-CN"><head>${head}</head><body class="public-resource-page writing-course standalone-writing"><a class="skip-link" href="#module-${module.id}">跳到本讲内容</a><header class="resource-topbar" data-resource-topbar><span class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt=""><span>Mr. Cat Academy</span></span><div class="resource-actions"><button class="resource-share" id="copy-lesson" type="button" hidden>复制本讲链接</button><button class="resource-share" id="print-lesson" type="button" hidden>打印本讲</button></div></header><main class="standalone-layout">${section}<section class="source-panel" id="sources" aria-labelledby="sources-title"><h2 id="sources-title">本讲官方资料与读取说明</h2><p>以下为本讲相关的官方参考。教学步骤、任务、示范、答案及冲星挑战均由本讲原创设计，训练完成情况不换算官方等级。</p><div class="source-grid">${cards}</div><a href="#module-${module.id}">返回本讲开头 ↑</a></section></main><footer class="course-footer"><span>Mr. Cat Academy · DSE Writing</span><span>模块 ${module.id} · 原创教学讲义</span></footer><div class="resource-toast" data-resource-toast role="status" aria-live="polite"></div></body></html>`;
+    return source;
+  }));
+  return `<!doctype html><html lang="zh-CN"><head>${head}</head><body class="public-resource-page writing-course standalone-writing"><a class="skip-link" href="#module-${module.id}">跳到本讲内容</a><header class="resource-topbar" data-resource-topbar><span class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt=""><span>Mr. Cat Academy</span></span><div class="resource-actions"><button class="resource-share" id="copy-lesson" type="button" hidden>复制本讲链接</button><button class="resource-share" id="print-lesson" type="button" hidden>打印本讲</button></div></header><main class="standalone-layout">${section}<section class="source-panel" id="sources" aria-labelledby="sources-title"><h2 id="sources-title">权威资料参考</h2><p>本讲义参考香港考评局评核资料与香港教育局英语学习资源，将相关写作要求融入讲解、示范与练习。范文与练习为原创教学内容。</p><div class="source-grid">${cards}</div><a href="#module-${module.id}">返回本讲开头 ↑</a></section></main><footer class="course-footer"><span>Mr. Cat Academy · DSE Writing</span><span>模块 ${module.id} · 原创教学讲义</span></footer><div class="resource-toast" data-resource-toast role="status" aria-live="polite"></div></body></html>`;
 }
 function independentPage(html, href, policy) {
   const url=ORIGIN+href;
+  html=html.replace(/<a\b[^>]*href="#source-[^"]+"[^>]*>([\s\S]*?)<\/a>/g,'<span>$1</span>');
   // Owner-approved contact controls never expose another handout or the private teacher directory.
   html=html.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,HANDOUT_HEADER);
   html=html.replace(/<button\b[^>]*\bid="print-guide"[^>]*>[\s\S]*?<\/button>\s*<p class="small-note">打印[^<]*<\/p>/g,'')
@@ -133,4 +146,4 @@ function renderRelease(release) {
   return pages;
 }
 function prepare(root,env) { return renderRelease(loadRelease(root,env)); }
-module.exports={prepare,renderRelease,independentPage,isolateModule,URL_PATTERN};
+module.exports={referenceCards,prepare,renderRelease,independentPage,isolateModule,URL_PATTERN};

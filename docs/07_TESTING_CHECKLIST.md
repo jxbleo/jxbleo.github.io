@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Handout reference publication checks
+
+Run handout tests, writing builder --check, static build and both artifact boundary checks. Verify all 23 outputs include 权威资料参考, no source/outgoing reference anchors outside the owner toolbar, and no research-status labels or teacher-only instructions in the reference sections. Check complete-course and standalone views, short/long source names at desktop and narrow mobile widths, unchanged exercise/model counts and unchanged private map. Compare scoped COS and both public domains with the frozen release bytes.
+
 ## 2026-10-16 — Teacher material subject filtering
 
 Run scripts/test-handout-teacher-ui.js and, in the main working copy with classroom/RE fixtures, scripts/test-teacher-material-links.js. Verify exact subject membership, shared-topic overlap without double-counting All, case-insensitive scoped search, unsupported metadata rejection, empty IELTS category, private-source failure/retry, and unchanged course drilldown/open/copy targets. Browser-check default study view, subject switching, selected state, count announcements, 390px/320px wrapping, Escape/focus and copy-denial recovery. Use synthetic private locators/student names in screenshots; do not publish the QA shell.

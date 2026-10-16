@@ -13,7 +13,7 @@ function fixture(root) {
   files[policy.writingCourse.source]='<html>'+head+'<body>'+header+modules.map(m=>`<section class="course-panel lesson" id="module-${m.id}"><h2 id="title-${m.id}">${m.title}</h2><p>Only test-content-${m.id}.</p><nav class="lesson-pager"><a href="#overview">All</a></nav></section>`).join('')+'</body></html>';
   for (const guide of policy.guides) files[guide.source]='<html>'+head.replaceAll(policy.writingCourse.source,guide.source)+'<body>'+header+'<p>Synthetic guide only.</p></body></html>';
   files['content/study-guides/dse-writing-course/course.json']=JSON.stringify(course);
-  files['content/study-guides/dse-writing-course/sources.json']=JSON.stringify([{id:'S01',kind:'Test',title:'Official fixture',url:'https://example.com/source',status:'Fixture',use:'Fixture'}]);
+  files['content/study-guides/dse-writing-course/sources.json']=JSON.stringify([{id:'S01',kind:'Test',title:'Official fixture',url:'https://example.com/source',status:'Private research fixture',use:'Private scope fixture',readerDescription:'A reader-facing explanation of the reference.'}]);
   const key=Buffer.alloc(32,17),iv=Buffer.alloc(12,23),cipher=crypto.createCipheriv('aes-256-gcm',key,iv);
   cipher.setAAD(Buffer.from('mrcat-independent-handouts-v1'));
   const encrypted=Buffer.concat([cipher.update(zlib.gzipSync(Buffer.from(JSON.stringify(files)))),cipher.final()]);
