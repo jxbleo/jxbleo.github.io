@@ -1,5 +1,11 @@
 # 10 Deployment
 
+## 2026-10-16 — Single numbering in writing lesson contents published
+
+Published at `2026-10-16T15:08:45.724Z`: 16 standalone Writing 09–24 handouts, the complete course and the dedicated writing stylesheet. Removed the automatic list markers from 本讲目录 while retaining the numbered link labels and anchor targets. The renderer adds a fresh stylesheet version so existing readers receive the fix. All 18 COS readbacks and 38 plain/versioned apex/www byte checks passed. Private backups, stage and receipt: `.cloudbase-private/handout-toc-20261016/`.
+
+Changed writing-course CSS and the renderer; updated UI, changelog and deployment records. Handout suites, static build, all 23 artifact boundary checks and static publication boundaries passed. Browser checks confirmed all 16 complete-course directories have no extra markers and every target resolves; standalone desktop/390px checks show one set of numbers, no horizontal overflow and working anchor navigation. Teaching content, encrypted source, stable share links and unrelated live objects are preserved. Source synchronization uses `[skip ci]`; no full-site sync. Refresh the existing links.
+
 ## 2026-10-16 — Student-facing authoritative references published
 
 Published the owner-requested reference presentation at `2026-10-16T14:48:45.794Z` across all 23 independent handouts. Every reference section is labelled “权威资料参考”; source names and descriptions are plain text without outbound or citation jump links. Descriptions explain the relevant authority and learning basis for students and families, without teacher research notes or unsupported endorsement claims. All 23 COS readbacks and 46 apex/www public byte comparisons match the frozen stage; existing share identities are unchanged. Private backup, stage and receipt: `.cloudbase-private/handout-references-20261016/`.

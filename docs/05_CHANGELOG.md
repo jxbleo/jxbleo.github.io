@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Remove duplicate writing contents numbers
+
+Removed the extra ordered-list markers from 本讲目录 across the 16 writing modules and complete course. Link labels retain their original numbered headings and navigation; the dedicated stylesheet URL is versioned to refresh cached pages.
+
 ## 2026-10-16 — Rewrite handout reference sections
 
 Standardized all 23 handouts to 权威资料参考, removed reference links and rewrote reference descriptions for students and parents. Added compact reference blocks to the two earlier writing guides. Private provenance is retained; the writing register has 24 research records and displays 22 consulted references, omitting two candidate-script directories whose scripts were not read. Exercises, full models and share identities remain stable.

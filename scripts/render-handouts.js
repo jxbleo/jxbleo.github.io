@@ -118,6 +118,7 @@ function independentPage(html, href, policy) {
     .replace(/<meta\b(?=[^>]*property=["']og:url["'])[^>]*>/gi,`<meta property="og:url" content="${url}">`)
     .replace(/<meta\b(?=[^>]*name=["'](?:robots|referrer)["'])[^>]*>/gi,'');
   html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<script src="assets/js/dse-handout-header.js?v=20261016-douyin-direct-1" defer></script><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
+  html=html.replace(/(assets\/css\/dse-writing-course\.css)(?:\?[^"']*)?/g, '$1?v=20261016-toc-1');
   // Fail, rather than silently publish a forgotten cross-guide address.
   for (const old of policy.retiredPaths) if (html.includes(old)) throw new Error('A handout still exposes a retired address.');
   if (/同系列继续学习|class="reading-link"/.test(html)) throw new Error('A cross-handout promotion remains.');

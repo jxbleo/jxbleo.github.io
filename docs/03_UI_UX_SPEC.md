@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Single numbering in writing lesson contents
+
+Writing 09–24 lesson contents retain the section numbers inside each clickable title. Hide the redundant browser list markers and their indentation in both the complete course and standalone modules; keep every anchor target unchanged.
+
 ## 2026-10-16 — Plain-text authority references
 
 The reference heading is 权威资料参考 in full-course navigation, module footers, standalone modules and reading/earlier-writing guides. Show source names as non-interactive text followed by one short student/family-facing explanation. Remove source-link arrows, reading-status labels, access errors and research-method notes. Each standalone module has one relevant reference block; retain the existing owner contact controls and normal lesson navigation.
