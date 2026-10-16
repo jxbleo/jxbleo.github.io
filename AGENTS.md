@@ -8,14 +8,13 @@ modules, four reading guides and two earlier writing guides. Each target has its
 own stable 192-bit random filename. A complete-course hash is never a separate
 handout. Student pages have no print, handout-copy or handout-share controls.
 The header retains the cat icon and Chinese brand `猫先生英语`, with owner-approved
-icon-only Xiaohongshu owner-profile and Douyin share-copy controls, a button
-that copies the owner WeChat ID `jxbleo_`, and `mailto:jxbleo@foxmail.com`.
-A plain Douyin click copies the complete owner-provided share text (including
-its token and https://v.douyin.com/rjLsjpFg0as/), then asks the visitor to open
-Douyin. Show success only after copying succeeds; otherwise reveal selectable
-full share text. Keep browser-opening guidance in a secondary disclosure.
-Do not auto-navigate on the primary Douyin click. WeChat success also tells the
-visitor to search that ID in WeChat and add a friend.
+icon-only Xiaohongshu and Douyin owner-profile links, a button that copies the
+owner WeChat ID `jxbleo_`, and `mailto:jxbleo@foxmail.com`.
+The owner verified that the Douyin share link can open the App from WeChat.
+The Douyin icon now directly follows https://v.douyin.com/rjLsjpFg0as/ using
+the same normal HTTPS anchor as that verified link. Do not intercept it with
+clipboard copying, a local popup, a forced app scheme or extra opening steps.
+WeChat copy success tells the visitor to search that ID in WeChat and add a friend.
 Use the owner-provided Xiaohongshu share URL `https://xhslink.cn/o/aYLtaYWoBd`.
 In WeChat, let that official page handle app opening; do not intercept it with
 a forced scheme or an extra local instruction panel. No Video Channels entry or

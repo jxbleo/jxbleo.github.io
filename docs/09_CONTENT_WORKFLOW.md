@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — Maintain the direct Douyin owner profile link
+
+The current Douyin contact destination is https://v.douyin.com/rjLsjpFg0as/ . Preserve it as a normal anchor in the renderer and bump the header script version when removing the former copy interceptor. The complete share text and token are no longer needed in runtime assets. Account-link changes must come from the owner; independent handout identities remain untouched.
+
 ## 2026-10-16 — Preserve the full Douyin share message
 
 The Douyin contact uses the owner-supplied complete “分享主页 → 复制链接” text. Preserve its punctuation, spacing, short link and trailing token verbatim in assets/js/dse-handout-header.js. Keep the renderer profile/fallback links in sync if the owner changes the account, and bump the header cache version. Do not replace the message with just its URL or rotate any independent handout identity.

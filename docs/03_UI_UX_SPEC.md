@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — One-click Douyin profile link
+
+Clicking the Douyin icon directly opens the owner-provided official share link. Remove the Douyin copy-success message, manual-copy textarea, alternate-opening disclosure and their styling entirely. Use profile wording in the accessible name and tooltip. Preserve the centered glyph and the four icon-only controls. The WeChat ID popup still explains adding a friend.
+
 ## 2026-10-16 — Douyin primary copy confirmation and secondary opening help
 
 Keep the centered Douyin glyph and four icon-only contact controls. The Douyin success panel shows only “口令已复制，请打开抖音 App”, with no additional next-step paragraph. Right-align “其他打开方式” and its disclosure chevron; expanding it shows contextual WeChat/default-browser guidance and an explicit official profile link. The manual-copy failure state retains its copy-then-open instruction. Copy failure instead reveals a labelled readonly textarea containing the complete share message. The panel stays until an outside click, Escape, page hide or tab visibility change. WeChat success shows the ID followed by “请打开微信，搜索该微信号添加好友即可。” for six seconds; manual-copy failure remains visible. Contact panels fit the narrow viewport and allow vertical scrolling.

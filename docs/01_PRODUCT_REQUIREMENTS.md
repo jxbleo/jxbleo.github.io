@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Direct Douyin profile entry
+
+The owner reported successful WeChat-to-Douyin App opening through the existing official share link and requested that path directly on the icon. The Douyin control now follows https://v.douyin.com/rjLsjpFg0as/ as a normal HTTPS anchor, without copying or a local confirmation/alternate-opening popup. WeChat ID copying and its friend-search instruction remain as previously specified. This supersedes the earlier copy-first Douyin flow.
+
 ## 2026-10-16 — Copy-first Douyin contact and WeChat next step
 
 The owner supplied the complete Douyin profile share message. A normal icon click copies it verbatim and first displays “口令已复制，请打开抖音 App”. Secondary browser/share-page guidance is collapsed under “其他打开方式”. Only a successful clipboard operation may produce success wording; denied copying exposes the full selectable message. The WeChat copy popup retains jxbleo_ and now explains searching the ID in WeChat to add a friend. These are contact controls, not handout sharing controls.

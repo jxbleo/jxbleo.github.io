@@ -14,19 +14,19 @@ function checkStudentHeader(html) {
   assert(buttons[0][0].includes('type="button"') && buttons[0][0].includes('data-handout-wechat="jxbleo_"') && buttons[0][0].includes('aria-label="复制微信号 jxbleo_"'));
   assert(header[0].includes('<code>jxbleo_</code>') && header[0].includes('role="status"'));
   assert(header[0].includes('请打开微信，搜索该微信号添加好友即可。'));
-  assert(header[0].includes('data-handout-douyin-text readonly') && header[0].includes('其他打开方式'));
-  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-douyin-copy-2'));
+  assert(!/data-handout-douyin|handout-douyin-help|其他打开方式/.test(header[0]),'Douyin opens the official share link without copying or a local popup');
+  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-douyin-direct-1'));
   const links=[...header[0].matchAll(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g)];
-  assert.equal(links.length,4,'Only the owner profiles, explicit Douyin fallback and owner email are linked');
+  assert.equal(links.length,3,'Only the owner profiles and owner email are linked');
   const xhs=new URL(links[0][2]),douyin=new URL(links[1][2]);
   assert.equal(xhs.href,'https://xhslink.cn/o/aYLtaYWoBd');
   assert.equal(douyin.href,'https://v.douyin.com/rjLsjpFg0as/');
-  assert.equal(links[2][2],douyin.href);
-  assert.equal(links[3][2],'mailto:jxbleo@foxmail.com');
-  for(const link of links.slice(0,3)) assert(link[0].includes('target="_blank"') && link[0].includes('rel="noopener noreferrer"') && link[0].includes('referrerpolicy="no-referrer"'));
+  assert.equal(links[2][2],'mailto:jxbleo@foxmail.com');
+  for(const link of links.slice(0,2)) assert(link[0].includes('target="_blank"') && link[0].includes('rel="noopener noreferrer"') && link[0].includes('referrerpolicy="no-referrer"'));
   assert(!/视频号|handout-video/.test(header[0]),'Video Channels has been removed');
   assert(!/<span>(?:小红书|抖音|微信|邮箱)<\/span>/.test(header[0]),'Contact controls show icons only');
-  assert(links[0][0].includes('data-handout-app="xiaohongshu"') && links[1][0].includes('data-handout-douyin'));
+  assert(links[0][0].includes('data-handout-app="xiaohongshu"') && !links[1][0].includes('data-handout-app'));
+  assert(links[1][0].includes('aria-label="查看猫先生英语的抖音主页"'));
   for(const link of links.filter(link=>link[0].includes('class="handout-social"'))) assert(link[0].includes('aria-label=') && link[0].includes('title='),'Icon-only contacts retain accessible names and tooltips');
   assert(!/data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html),'Student handouts must not provide print or link-copy controls');
 }

@@ -1,5 +1,13 @@
 # 10 Deployment
 
+## 2026-10-16 — Direct Douyin profile link published
+
+Published the owner-requested direct Douyin profile link at `2026-10-16T10:16:53.033Z` across all 23 independent handouts. Replaced the icon copy handler with the exact official share anchor the owner reported successfully opening in the Douyin App from WeChat. Removed Douyin copy text, popup and disclosure markup/styles. The renderer, header runtime and existing isolation contract changed; owner, product, architecture, UI, decision, workflow, test and change records describe the current behavior.
+
+Handout tests, static build, 23 actual-artifact checks and static publication boundaries passed. Runtime checks verified no Douyin interception, copying or local popup while preserving WeChat and Xiaohongshu behavior. All 24 published objects passed COS readback and 50 apex/www byte comparisons; isolated output matches each published SHA. Private backup/stage/receipt: `.cloudbase-private/handout-douyin-direct-20261016/`. Browser checking showed the updated accessible profile link and opened a destination tab directly; the desktop destination page could not be inspected before the browser tool timed out. App opening in WeChat is based on the owner's real-device observation.
+
+Existing handout identities, teaching content, private directory, backend and unrelated live objects are unchanged. No dependency added. Source uses `[skip ci]`; do not run full-site COS sync. Refresh the existing handout link.
+
 ## 2026-10-16 — Shorter Douyin popup published
 
 Published the owner-requested shorter Douyin success prompt and right-aligned alternate-opening disclosure at `2026-10-16T10:06:00.086Z`. Only 23 existing handout HTML objects and their shared header script changed; all 24 COS readbacks and 50 apex/www byte comparisons passed. Private backup/stage/receipt: `.cloudbase-private/handout-douyin-simple-20261016/`. Source changes cover the renderer, header script and cache-version contract; UI and changelog docs describe the adjustment. Handout tests, actual-artifact/static boundaries and the existing contact runtime checks passed. Mobile Chrome showed the compact prompt and right-aligned disclosure, which still expands; screenshot: `/Users/jxbleo/Research/dse-writing-course/handout-douyin-simple-20261016.png`. No new dependencies or change to contact-copy behavior, document identities or unrelated live objects. No further owner action beyond refreshing an existing link. Sync source with `[skip ci]`; do not run a full-site deployment.

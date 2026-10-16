@@ -105,7 +105,7 @@
             if (trigger.hasAttribute("aria-expanded")) trigger.setAttribute("aria-expanded", "false");
         }
         trigger.addEventListener("click", async function (event) {
-            // Preserve the HTTPS profile link for modified/middle clicks and no-JS use.
+            // Handle only unmodified primary clicks.
             if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
             event.preventDefault();
             closeAppHint();
@@ -136,23 +136,6 @@
             if (document.hidden) hideStatus();
         });
     }
-
-    // Preserve the owner's complete share text, including its token and spacing.
-    var douyinShare = "3- 长按复制此条消息，打开抖音搜索，查看TA的更多作品。 https://v.douyin.com/rjLsjpFg0as/ 5@8.com :4pm";
-    bindCopy(document.querySelector("[data-handout-douyin]"), "douyin", douyinShare, function (container, copied) {
-        container.querySelector("[data-handout-douyin-message]").textContent = copied
-            ? "口令已复制，请打开抖音 App" : "未能自动复制，请长按下方文案复制";
-        var next = container.querySelector("[data-handout-douyin-next]");
-        next.textContent = "复制后，请打开抖音 App。";
-        next.hidden = copied;
-        var text = container.querySelector("[data-handout-douyin-text]");
-        text.value = douyinShare;
-        text.hidden = copied;
-        container.querySelector("[data-handout-douyin-alternative]").open = false;
-        container.querySelector("[data-handout-douyin-guide]").textContent = isWeChat
-            ? "在微信中，也可点击右上角「···」，选择「在默认浏览器中打开」，再通过下方链接进入抖音主页。"
-            : "也可通过下方链接进入抖音官方分享页，再按页面提示打开 App。";
-    });
 
     var wechat = document.querySelector("[data-handout-wechat]");
     bindCopy(wechat, "wechat", wechat && wechat.getAttribute("data-handout-wechat"), function (container, copied) {

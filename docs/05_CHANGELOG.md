@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Open the Douyin profile directly
+
+Replaced the Douyin copy/popup flow with the same direct official share anchor the owner successfully tested in WeChat. Removed the now-unused share text, popup markup and styles. All 23 independent handout links remain stable.
+
 ## 2026-10-16 — Simplify the Douyin contact popup
 
 Removed the redundant post-copy paragraph from the successful Douyin prompt and right-aligned the alternate-opening disclosure with a matching chevron. Preserved its expandable help and the manual-copy failure instruction across all 23 handouts.

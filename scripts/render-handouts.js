@@ -13,8 +13,7 @@ const HANDOUT_HEADER = `<header class="resource-topbar handout-topbar" data-reso
 <div class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt="" width="32" height="32"><span class="handout-name">猫先生英语</span></div>
 <nav class="handout-socials" aria-label="关注与联系猫先生英语">
 <a class="handout-social" data-handout-app="xiaohongshu" href="${XHS_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="查看猫先生英语的小红书主页" title="小红书 · 猫先生英语主页">${XHS_ICON}</a>
-<div class="handout-copy-help"><a class="handout-social" data-handout-douyin href="${DOUYIN_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="复制猫先生英语的抖音主页口令" title="抖音 · 点击复制主页口令" aria-controls="handout-douyin-help" aria-expanded="false">${DOUYIN_ICON}</a>
-<div class="handout-contact-tip handout-douyin-tip" id="handout-douyin-help" data-handout-douyin-status hidden><strong data-handout-douyin-message role="status" aria-live="polite"></strong><p data-handout-douyin-next hidden></p><textarea data-handout-douyin-text readonly aria-label="抖音主页完整分享文案，长按或选中复制" rows="4" hidden></textarea><details data-handout-douyin-alternative><summary>其他打开方式</summary><p data-handout-douyin-guide></p><a href="${DOUYIN_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">打开抖音主页 ↗</a></details></div></div>
+<a class="handout-social" href="${DOUYIN_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="查看猫先生英语的抖音主页" title="抖音 · 猫先生英语主页">${DOUYIN_ICON}</a>
 <div class="handout-copy-help handout-wechat-help"><button class="handout-social" type="button" data-handout-wechat="jxbleo_" aria-label="复制微信号 jxbleo_" title="点击复制微信号 jxbleo_">${WECHAT_ICON}</button><div class="handout-contact-tip handout-wechat-tip" data-handout-wechat-status role="status" aria-live="polite" hidden><span data-handout-wechat-message></span><code>jxbleo_</code><p>请打开微信，搜索该微信号添加好友即可。</p></div></div>
 <a class="handout-social" href="mailto:jxbleo@foxmail.com" aria-label="发送邮件至 jxbleo@foxmail.com" title="jxbleo@foxmail.com">${MAIL_ICON}</a>
 </nav></header>`;
@@ -38,15 +37,7 @@ const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
 .handout-topbar .handout-contact-tip { position: absolute; top: calc(100% + .45rem); right: 0; z-index: 60; box-sizing: border-box; width: 288px; max-height: min(480px, 65vh); overflow-y: auto; padding: 1rem 1.1rem; border: 1px solid #e0e7e9; border-radius: 16px; background: #fff; box-shadow: 0 12px 36px #273b4b20; color: #495c67; font-size: .82rem; line-height: 1.8; }
 .handout-topbar .handout-contact-tip p { margin: 0 0 .5rem; white-space: pre-line; }
 .handout-topbar .handout-contact-tip a { display: inline-flex; align-items: center; min-height: 44px; color: #2867a0; text-underline-offset: 3px; }
-.handout-topbar .handout-contact-tip[hidden], .handout-topbar .handout-contact-tip textarea[hidden] { display: none; }
-.handout-topbar .handout-douyin-tip strong { display: block; color: #233842; font-size: .88rem; font-weight: 600; }
-.handout-topbar .handout-douyin-tip p { margin-top: .4rem; }
-.handout-topbar .handout-douyin-tip details { margin-top: .65rem; border-top: 1px solid #edf0f2; }
-.handout-topbar .handout-douyin-tip summary { display: flex; align-items: center; justify-content: flex-end; gap: .6rem; min-height: 44px; cursor: pointer; color: #586c79; list-style: none; }
-.handout-topbar .handout-douyin-tip summary::-webkit-details-marker { display: none; }
-.handout-topbar .handout-douyin-tip summary::after { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
-.handout-topbar .handout-douyin-tip details[open] summary::after { transform: rotate(45deg); }
-.handout-topbar .handout-douyin-tip textarea { display: block; box-sizing: border-box; width: 100%; margin: .6rem 0; padding: .65rem; border: 1px solid #d9e2e7; border-radius: 8px; background: #f6f8fa; color: #334a56; font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; user-select: text; -webkit-user-select: text; }
+.handout-topbar .handout-contact-tip[hidden] { display: none; }
 .handout-topbar .handout-wechat-tip p { margin: .4rem 0 0; }
 .handout-topbar .handout-wechat-tip code { display: block; margin-top: .2rem; color: #173d2b; font-size: 1rem; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; user-select: all; -webkit-user-select: all; }
 @media (max-width: 620px) {
@@ -113,7 +104,7 @@ function independentPage(html, href, policy) {
   html=html.replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi,`<link rel="canonical" href="${url}">`)
     .replace(/<meta\b(?=[^>]*property=["']og:url["'])[^>]*>/gi,`<meta property="og:url" content="${url}">`)
     .replace(/<meta\b(?=[^>]*name=["'](?:robots|referrer)["'])[^>]*>/gi,'');
-  html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<script src="assets/js/dse-handout-header.js?v=20261016-douyin-copy-2" defer></script><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
+  html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<script src="assets/js/dse-handout-header.js?v=20261016-douyin-direct-1" defer></script><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
   // Fail, rather than silently publish a forgotten cross-guide address.
   for (const old of policy.retiredPaths) if (html.includes(old)) throw new Error('A handout still exposes a retired address.');
   if (/同系列继续学习|class="reading-link"/.test(html)) throw new Error('A cross-handout promotion remains.');

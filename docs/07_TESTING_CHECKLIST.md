@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Direct Douyin profile regression
+
+Check all 23 handouts have one direct Douyin profile anchor and no Douyin copy attributes, popup, textarea, disclosure, or share-message payload. Verify the exact owner URL and safe external-link attributes, with profile wording in aria-label/title. Runtime checks should confirm no Douyin click interception/clipboard write or local popup across desktop/mobile/WeChat contexts, and retain WeChat copy success/failure/dismissal and Xiaohongshu behavior. The owner supplied the successful real-device WeChat/App observation.
+
 ## 2026-10-16 — Contact copy-first regression checks
 
 Verify all 23 headers use the new versioned script, Douyin owner share URL, accessible copy label, selectable failure textarea and WeChat next-step text. Exercise exact full-message/ID copying, Clipboard API rejection, legacy success/failure, outside/Escape/visibility/pagehide dismissal and late async results. Douyin primary clicks must not auto-navigate; modified/no-JS links remain HTTPS. Confirm Xiaohongshu desktop and WeChat passthrough and other-mobile exact-profile hand-off. Check success UI, secondary disclosure and 320/390px popup bounds. Browser success and a controlled runtime harness do not certify real-device App recognition.

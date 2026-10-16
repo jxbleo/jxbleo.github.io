@@ -1,5 +1,9 @@
 # 06 Decisions
 
+## 2026-10-16 — Use the owner-tested Douyin share link directly
+
+The owner reported that clicking the existing “打开抖音主页” link in WeChat opened the Douyin App successfully. Promote that exact URL and anchor behavior to the icon instead of requiring a clipboard round trip. This is owner-reported real-device evidence for the observed environment, not a universal-device guarantee. Do not generate or force an app scheme. The same HTTPS URL also remains usable without JavaScript.
+
 ## 2026-10-16 — Use the owner share message for Douyin
 
 Copy the complete owner-provided Douyin message rather than generating a platform token or deriving an undocumented profile scheme. The public short link is https://v.douyin.com/rjLsjpFg0as/ . The owner text remains verbatim in the dedicated header script. Primary copying does not navigate, giving the visitor time to read the instruction and manually open the App. The secondary share link delegates opening to Douyin. No installed-app token-recognition guarantee is inferred from browser clipboard success.

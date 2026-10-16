@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Delegate Douyin opening to its share link
+
+The renderer supplies an ordinary Douyin HTTPS anchor with target=_blank, noopener/noreferrer and no-referrer, matching the previously owner-tested fallback link. The dedicated header script no longer selects or intercepts Douyin clicks, stores its share token or builds its copy popup. Contact-copy handling is now used only for WeChat. The platform handles destination/App opening; no new backend, scheme, timer or dependency is involved.
+
 ## 2026-10-16 — Shared contact-copy handling
 
 The dedicated header script shares user-click clipboard handling between Douyin and WeChat: secure Clipboard API, then legacy copying, then selectable manual fallback. Each popup cancels stale permission results when dismissed, hidden or left. The Douyin primary click no longer assigns an app scheme; its HTTPS anchor remains the owner-provided share URL for no-JS/modified clicks. Xiaohongshu routing is unchanged. No dependency, backend, authentication or private handout-map change.
