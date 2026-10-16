@@ -1,5 +1,9 @@
 # Agent QA To Do List
 
+## Completed — DSE contact icons and mobile hand-off (2026-10-16)
+
+All 23 handouts show four icon-only contacts; Video Channels is removed. Mobile search icons attempt their apps with explicit HTTPS fallback. Scoped publication and source/build/runtime checks passed. Real installed-app iPhone/Android confirmation remains a verification limit; see the current deployment record.
+
 ## Completed — DSE WeChat contact (2026-10-16)
 
 All 23 handouts now copy the owner WeChat ID `jxbleo_` from the new header control. Scoped publication/readbacks, responsive UI and handout/build checks passed; source artifacts match live bytes. Existing share links remain valid. See the current deployment record.

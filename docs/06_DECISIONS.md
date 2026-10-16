@@ -1,5 +1,9 @@
 # 06 Decisions
 
+## 2026-10-16 — Best-effort mobile app opening with explicit web fallback
+
+Owner requested mobile app opening. Xiaohongshu documents `xhsdiscover://search/result` and its keyword parameter at https://pages.xiaohongshu.com/activity/deeplink . Douyin officially lists the `snssdk1128` scheme in its iOS SDK integration guide (https://partner.open-douyin.com/docs/resource/zh-CN/dop/develop/sdk/mobile-app/access/ios), but that does not document a public search-route contract. The search route `snssdk1128://search?keyword=` appears in the maintained scheme collection https://github.com/tofrankie/url-scheme-collection ; treat it as a compatibility attempt, not an official guarantee. Platform/app versions and browser policies can prevent hand-off. Keep an explicit HTTPS fallback and never use timer-based navigation that could interrupt an OS prompt or a returning app session. This supersedes the earlier web-only contact decision.
+
 ## 2026-10-16 — Use ordinary platform-search links in handout headers
 
 Use HTTPS search URLs with a fixed percent-encoded 猫先生英语 keyword, not app URL schemes, external SDKs or inferred account profiles. Actual button clicks opened the expected destinations; Xiaohongshu reported 猫先生英语 - 小红书搜索. Third-party search results/login challenges remain outside our control; the browser detail-read timed out. No reliable public WeChat Channels keyword-search destination was verified, so that entry displays instructions instead of inventing a link. The existing cat asset and locally drawn platform cues add no dependency. External navigation suppresses referrers to preserve independent-handout addresses.

@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — Handout contact simplification
+
+Manage the four icon-only controls in the shared renderer and mobile behavior in dse-handout-header.js. Retain the fixed brand keyword, owner WeChat ID and email. Video Channels has been removed by owner request. Update the header script version with behavior changes, regenerate all 23 independent outputs, and preserve their existing link identities.
+
 ## 2026-10-16 — DSE WeChat contact authoring
 
 Maintain the owner WeChat ID in the shared renderer and its existing header contract; the dedicated header script reads that button value. Regenerate all 23 outputs with unchanged opaque identities. No resealing of teaching content or private link-map update is needed for contact-only edits.

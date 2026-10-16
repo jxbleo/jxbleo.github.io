@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Icon-only handout contacts
+
+Remove the labels beside/below contact icons and delete the entire Video Channels entry. Keep cat/Chinese brand, four 44px targets, keyboard focus and title/ARIA text. Responsive flex wrapping keeps the toolbar compact without shrinking touch targets. Mobile app hand-off offers a contextual web fallback; WeChat browsers also receive an open-in-browser hint. The WeChat ID copy confirmation is preserved.
+
 ## 2026-10-16 — DSE WeChat contact
 
 Add the green WeChat icon between Douyin and Video Channels. Click displays 微信号已复制 with `jxbleo_` after success; denied copying displays selectable text and manual instructions. Success closes after 3.5 seconds; manual instructions remain until clicking outside or Escape. At 620px and below, five equal columns place icons above labels with 60px touch targets; retain the cat/brand on the first row.

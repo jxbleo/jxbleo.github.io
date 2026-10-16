@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Icon-only handout contacts
+
+All 23 handouts show four contact icons only: Xiaohongshu, Douyin, WeChat and email. Remove Video Channels and the adjacent visible labels; retain accessible names/tooltips. Mobile search-icon clicks attempt the matching app with the fixed 猫先生英语 keyword; a web-search fallback stays available. Desktop continues to open HTTPS search in another tab. App installation, OS confirmation and host-browser restrictions are not detectable guarantees.
+
 ## 2026-10-16 — DSE WeChat contact
 
 All 23 independent handouts include a green WeChat icon/name control that copies exactly `jxbleo_`. Show success only after a successful copy; if unavailable, display the selectable ID with manual-copy instructions. This contact action does not copy the handout address.

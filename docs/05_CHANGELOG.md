@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Simplify handout icons and attempt mobile app opening
+
+Updated all 23 handouts to four icon-only contacts, removed Video Channels, and added click-triggered mobile Xiaohongshu/Douyin app search attempts with manual HTTPS fallback. Desktop links and WeChat copying remain intact. Real iOS/Android app hand-off is not certified by desktop viewport checks.
+
 ## 2026-10-16 — Add WeChat contact to DSE handouts
 
 Added an accessible WeChat copy button for `jxbleo_` to all 23 handouts, with success/manual feedback and compact five-column mobile controls. Existing lesson addresses, isolation and print/handout-share removal remain intact.

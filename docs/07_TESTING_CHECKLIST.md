@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Icon-only and mobile hand-off checks
+
+Continue all 23 isolation/artifact checks; assert no Video Channels, no extra visible contact labels and retained accessible names. Verify 44px targets and popup bounds on desktop/390px/320px. Exercise desktop and modified-click passthrough, both encoded app targets, rejected scheme navigation, WeChat guidance, dismissal and absence of timed redirects in a runtime harness. Actual app opening requires installed-app iPhone/Android device checks; viewport resizing alone does not certify it.
+
 ## 2026-10-16 — DSE WeChat contact checks
 
 The existing 23-output header contract allows exactly one button: copying `jxbleo_`; it still rejects print and handout-link-copy controls. Verify successful and denied clipboard paths, visible/selectable fallback, keyboard dismissal, desktop and 390px/320px bounds, and versioned header-script delivery. Do not confuse browser-automation virtual clipboard limitations with page copy failure.

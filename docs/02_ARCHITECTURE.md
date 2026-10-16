@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Mobile handout app hand-off
+
+The existing dedicated header script enhances only unmodified primary clicks on the two fixed platform links when mobile/iPad browser identification matches. Schemes contain only a constant brand keyword; no lesson URL or private map is transmitted. A small on-demand status panel exposes the original no-referrer HTTPS link. Page hide, visibility hide, outside click and Escape dismiss it. No timed fallback navigation, install probe, third-party SDK, dependency or backend change.
+
 ## 2026-10-16 — DSE WeChat contact
 
 The shared handout renderer injects the fixed contact button, accessible status and versioned `assets/js/dse-handout-header.js`. This dedicated deferred script uses Clipboard.writeText, a temporary-textarea fallback and a visible manual fallback. No clipboard read, external request, dependency, backend or source-map change.

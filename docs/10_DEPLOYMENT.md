@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## 2026-10-16 — Icon-only contacts and mobile app attempts published
+
+Published the owner-requested four icon-only controls, Video Channels removal and mobile app-search attempts across all 23 handouts at `2026-10-16T09:05:33.293Z`. The 23 HTML objects and dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons. Private backup/stage/receipt: `.cloudbase-private/handout-icons-release-20261016/`. No link identity, sealed content, backend or unrelated live file changed.
+
+Changed the renderer, dedicated header script and existing isolation checks; updated current owner, product, architecture, UI, decisions, workflow, testing and change records. Working and isolated source passed handout tests, builds, all 23 actual-artifact checks and static boundaries. Runtime checks covered desktop passthrough, mobile targets, rejected app navigation, explicit web fallback, WeChat guidance, modified clicks and dismissal without timed redirects. Isolated artifacts match all published objects.
+
+Local Chrome verified the four icons, removed labels/Video Channels, working WeChat-copy feedback, 44px targets and 390px/320px layouts without overflow. Screenshot saved privately at `/Users/jxbleo/Research/dse-writing-course/handout-icons-20261016.png`. Real iPhone/Android app opening remains unverified; platform search schemes, installed-app state, OS prompts and embedded-browser restrictions may prevent hand-off. The visible HTTPS fallback is intentional.
+
+Use `[skip ci]` for the source sync; unrelated live/source drift still prohibits full-site COS synchronization. Existing handout links only need a refresh.
+
 ## 2026-10-16 — WeChat contact published
 
 Published the owner-requested WeChat copy control across all 23 existing handouts at `2026-10-16T08:54:56.598Z`. The 23 HTML objects plus one dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons, including the versioned script. Existing handout links, teaching source and private directory remain unchanged. Private backups/stage/receipt: `.cloudbase-private/handout-wechat-release-20261016/`.
