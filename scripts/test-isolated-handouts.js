@@ -7,8 +7,16 @@ const {renderRelease,independentPage}=require('./render-handouts');
 function checkStudentHeader(html) {
   const header=html.match(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/);
   assert(header,'Each student handout must have a header');
-  assert(header[0].includes('猫先生英语') && header[0].includes('在抖音、视频号或小红书搜猫先生英语') && header[0].includes('jxbleo@foxmail.com'));
-  assert(!/<img|<button|<a\b|Mr\. Cat Academy/.test(header[0]),'Student header must be text only');
+  assert(header[0].includes('猫先生英语') && header[0].includes('assets/icons/mrcat-icon-192.png'));
+  assert(!/<button|Mr\. Cat Academy|handout-contact/.test(header[0]),'Keep a compact Chinese brand and social controls');
+  const links=[...header[0].matchAll(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g)];
+  assert.equal(links.length,3,'Only two platform searches and owner email are linked');
+  const xhs=new URL(links[0][2]),douyin=new URL(links[1][2]);
+  assert.equal(xhs.origin,'https://www.xiaohongshu.com');assert.equal(xhs.pathname,'/search_result');assert.equal(xhs.searchParams.get('keyword'),'猫先生英语');
+  assert.equal(douyin.origin,'https://www.douyin.com');assert.equal(decodeURIComponent(douyin.pathname),'/search/猫先生英语');
+  assert.equal(links[2][2],'mailto:jxbleo@foxmail.com');
+  for(const link of links.slice(0,2)) assert(link[0].includes('target="_blank"') && link[0].includes('rel="noopener noreferrer"') && link[0].includes('referrerpolicy="no-referrer"'));
+  assert(header[0].includes('打开微信 → 发现 → 视频号') && header[0].includes('<summary'),'Video Channels must give real in-WeChat instructions, not an invented search URL');
   assert(!/data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html),'Student handouts must not provide print or link-copy controls');
 }
 if (process.argv.includes('--artifact')) {

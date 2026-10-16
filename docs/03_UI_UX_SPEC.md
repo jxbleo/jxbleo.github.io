@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — DSE handout social toolbar
+
+Restore the 32px cat icon beside 猫先生英语 at 16px/600 weight. Use system/PingFang typography and quiet 44px icon/name controls at the right; remove the long promotional sentence. At 620px and below, keep the brand on the first row, the four platform/contact entries below, and the header in normal flow. Video Channels opens a compact WeChat search instruction; platform search links preserve the current lesson in another tab. Earlier text-only/no-header-image expectations are superseded.
+
 ## 2026-10-16 — Text-only student handout headers
 
 All 23 DSE handouts replace the top-left cat image and English brand with `猫先生英语（在抖音、视频号或小红书搜猫先生英语，或联系 email：jxbleo@foxmail.com）`. Remove student print, link-copy and share controls, including the full-course toolbar print buttons and reading-body print buttons/instructions. Preserve teacher-directory copy actions. Keep local study navigation, exercises and disclosures. The contact text wraps on mobile, overrides the shared mobile brand-hide rule and stays in normal flow below 600px.

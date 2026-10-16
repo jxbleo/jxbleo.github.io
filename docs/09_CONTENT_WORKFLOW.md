@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — DSE social-toolbar authoring
+
+The approved header now contains the original cat image, Chinese brand and compact social/contact entries. Maintain it in render-handouts.js; do not edit 23 independent files or rotate their addresses. Keep search keywords encoded, links external/referrer-free and WeChat instructions honest. The former text-only header record below is historical; teacher link-copy controls are unchanged.
+
 ## 2026-10-16 — Shared student header
 
 For header/contact and student action changes, edit `scripts/render-handouts.js`; this common publication transform covers all 23 handouts. Do not rotate the map or rewrite encrypted teaching content for a presentation-only change. Pair button removal with the affected reader scripts and asset versions. Teacher/local distribution lists retain their copy controls.

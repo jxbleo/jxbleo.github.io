@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — DSE handout social toolbar
+
+Restored the cat icon, refined Chinese typography and replaced the contact sentence with small platform/contact entries across 23 handouts. Added direct keyword-search links for Xiaohongshu/Douyin, native WeChat Channels instructions and email contact. Stable document links and student control-removal rules are preserved.
+
 ## 2026-10-16 — Simplify student handout headers
 
 Removed print, copy-link and share controls from all 23 DSE handouts. Replaced the top-left cat image/English brand with the requested Chinese brand, platform-search instruction and email. Updated five readers for startup without those controls, and added responsive header overrides. Stable addresses, all learning material and teacher distribution controls are preserved.

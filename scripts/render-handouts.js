@@ -2,18 +2,51 @@
 const {loadRelease, URL_PATTERN} = require('./handout-store');
 const ORIGIN = 'https://www.mrcatenglish.com/';
 const READER_VERSION = '20261016-header-1';
-const HANDOUT_HEADER = '<header class="resource-topbar handout-topbar" data-resource-topbar><div class="resource-brand"><span class="handout-name">猫先生英语</span><span class="handout-contact">（在抖音、视频号或小红书搜猫先生英语，或联系 email：<span class="handout-email">jxbleo@foxmail.com</span>）</span></div></header>';
+const SEARCH_TERM = encodeURIComponent('猫先生英语');
+const XHS_SEARCH = 'https://www.xiaohongshu.com/search_result?keyword='+SEARCH_TERM;
+const DOUYIN_SEARCH = 'https://www.douyin.com/search/'+SEARCH_TERM;
+// Small, locally drawn platform cues; no third-party image/script requests.
+const XHS_ICON = '<span class="handout-icon handout-xhs" aria-hidden="true">小红书</span>';
+const DOUYIN_ICON = '<span class="handout-icon handout-douyin" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="#25f4ee" transform="translate(-1 1)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fe2c55" transform="translate(1 0)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fff" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/></svg></span>';
+const VIDEO_ICON = '<span class="handout-icon handout-video" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8.5 4.5a4 4 0 0 1 4 4v7a4 4 0 1 1-8 0v-7a4 4 0 0 1 4-4Zm9 0a4 4 0 0 1 4 4v7a4 4 0 1 1-8 0v-7a4 4 0 0 1 4-4Z" fill="currentColor"/><path d="m9 9 7 3-7 3Z" fill="#fff"/></svg></span>';
+const MAIL_ICON = '<svg class="handout-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>';
+const HANDOUT_HEADER = `<header class="resource-topbar handout-topbar" data-resource-topbar>
+<div class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt="" width="32" height="32"><span class="handout-name">猫先生英语</span></div>
+<nav class="handout-socials" aria-label="关注与联系猫先生英语">
+<a class="handout-social" href="${XHS_SEARCH}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="在小红书搜索猫先生英语（新窗口）" title="在小红书搜索「猫先生英语」">${XHS_ICON}<span>小红书</span></a>
+<a class="handout-social" href="${DOUYIN_SEARCH}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="在抖音搜索猫先生英语（新窗口）" title="在抖音搜索「猫先生英语」">${DOUYIN_ICON}<span>抖音</span></a>
+<details class="handout-video-help"><summary class="handout-social" title="查看视频号搜索方式">${VIDEO_ICON}<span>视频号</span></summary><div class="handout-video-tip"><strong>在微信视频号找到我们</strong><p>打开微信 → 发现 → 视频号<br>搜索「<b>猫先生英语</b>」</p></div></details>
+<a class="handout-social" href="mailto:jxbleo@foxmail.com" aria-label="发送邮件至 jxbleo@foxmail.com" title="jxbleo@foxmail.com">${MAIL_ICON}<span>邮箱</span></a>
+</nav></header>`;
 const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
-.resource-topbar.handout-topbar { gap: 0; padding: .8rem 0; }
-.handout-topbar .resource-brand { display: block; min-width: 0; line-height: 1.75; letter-spacing: 0; }
+.resource-topbar.handout-topbar { gap: .75rem 1.5rem; padding: .65rem 0; flex-wrap: wrap; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+.handout-topbar .resource-brand { display: inline-flex; flex: 0 0 auto; gap: .65rem; line-height: 1.4; letter-spacing: .02em; }
+.handout-topbar .resource-brand img { width: 2rem; height: 2rem; border-radius: .6rem; }
 .handout-topbar .resource-brand span { display: inline; }
-.handout-topbar .handout-name { font-size: 1rem; font-weight: 800; }
-.handout-topbar .handout-contact { color: #52616a; font-size: .8rem; font-weight: 400; }
-.handout-topbar .handout-email { white-space: nowrap; }
-@media (max-width: 600px) {
-  .resource-topbar.handout-topbar { position: relative; }
-  .handout-topbar .handout-contact { font-size: .75rem; }
+.handout-topbar .handout-name { font-size: 1rem; font-weight: 600; }
+.handout-topbar .handout-socials { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem; margin-left: auto; }
+.handout-topbar .handout-social { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-height: 44px; padding: .4rem .7rem; border: 1px solid transparent; border-radius: 12px; color: #4c5b62; background: transparent; text-decoration: none; font-size: .82rem; font-weight: 500; line-height: 1.4; letter-spacing: 0; white-space: nowrap; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.handout-topbar .handout-social:hover, .handout-video-help[open] > summary { background: #ffffffb8; border-color: #dce5e7; color: #192b35; }
+.handout-topbar .handout-social:focus-visible { outline: 2px solid #2867a0; outline-offset: 2px; }
+.handout-topbar .handout-icon { display: inline-flex; align-items: center; justify-content: center; width: 25px; height: 25px; flex: 0 0 25px; border-radius: 7px; }
+.handout-topbar .handout-xhs { background: #f22d4e; color: #fff; font-size: 7px; font-weight: 700; letter-spacing: -.3px; }
+.handout-topbar .handout-douyin { background: #20212b; }
+.handout-topbar .handout-icon svg { width: 20px; height: 20px; }
+.handout-topbar .handout-video { color: #ed921d; }
+.handout-topbar .handout-mail { width: 22px; height: 22px; }
+.handout-topbar .handout-video-help { position: relative; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.handout-topbar .handout-video-help > summary { list-style: none; }
+.handout-topbar .handout-video-help > summary::-webkit-details-marker { display: none; }
+.handout-topbar .handout-video-tip { position: absolute; top: calc(100% + .45rem); right: 0; z-index: 60; width: 255px; padding: 1rem 1.1rem; border: 1px solid #e0e7e9; border-radius: 16px; background: #fff; box-shadow: 0 12px 36px #273b4b20; color: #495c67; font-size: .82rem; line-height: 1.8; }
+.handout-topbar .handout-video-tip strong { color: #253d49; font-weight: 600; }
+.handout-topbar .handout-video-tip p { margin: .35rem 0 0; }
+@media (max-width: 620px) {
+  .resource-topbar.handout-topbar { position: relative; gap: .25rem; padding: .7rem 0 .45rem; }
+  .handout-topbar .handout-socials { width: 100%; margin-left: 0; gap: .15rem; justify-content: space-between; }
+  .handout-topbar .handout-social { padding-inline: .4rem; font-size: .78rem; gap: .35rem; }
+  .handout-topbar .handout-video-tip { right: -.8rem; width: min(255px, calc(100vw - 2.5rem)); }
 }
+@media (prefers-reduced-motion: reduce) { .handout-topbar .handout-social { transition: none; } }
 </style>`;
 const esc = text => String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -54,7 +87,7 @@ function isolateModule(full, module, sources, overrides = []) {
 }
 function independentPage(html, href, policy) {
   const url=ORIGIN+href;
-  // Student readers have text branding only; sharing belongs to the private teacher directory.
+  // Owner-approved social search links never expose another handout or the private teacher directory.
   html=html.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,HANDOUT_HEADER);
   html=html.replace(/<button\b[^>]*\bid="print-guide"[^>]*>[\s\S]*?<\/button>\s*<p class="small-note">打印[^<]*<\/p>/g,'')
     .replace(/<button\b[^>]*\bid="(?:print-current|print-all)"[^>]*>[\s\S]*?<\/button>/g,'')

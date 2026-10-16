@@ -6,11 +6,14 @@ Distribute each DSE Reading/Writing handout independently. The current scope is
 23 share targets: one complete Writing 09–24 course, 16 separate writing
 modules, four reading guides and two earlier writing guides. Each target has its
 own stable 192-bit random filename. A complete-course hash is never a separate
-handout. Student pages have no print, copy-link or share controls. Use text-only
-branding: `猫先生英语（在抖音、视频号或小红书搜猫先生英语，或联系 email：jxbleo@foxmail.com）`.
+handout. Student pages have no print, handout-copy or handout-share controls.
+The header retains the cat icon and Chinese brand `猫先生英语`, with owner-approved
+Xiaohongshu/Douyin keyword-search links, a WeChat Channels instruction disclosure
+and `mailto:jxbleo@foxmail.com`. Social links open a new tab without referrers;
+never use these controls to expose another handout or platform lesson directory.
 Keep copy/open controls in the private teacher directory. A standalone module must contain
 only that module, its required task context and relevant references, without
-other modules, course navigation, promotional links or a platform entry.
+other modules, course navigation, cross-handout promotional links or a platform entry.
 
 Canonical plaintext now lives only under ignored
 `.cloudbase-private/handouts/source/`. Both writing/tones builders read and write

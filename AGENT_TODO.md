@@ -1,5 +1,9 @@
 # Agent QA To Do List
 
+## 2026-10-16 — Cat/social toolbar completed
+
+Published all 23 handouts with restored cat, improved typography and platform/contact entries. 23 COS and 46 public checks passed. Desktop/390px/320px QA and handout tests passed; third-party login/results are platform-controlled. Stable links retained, no backend action needed. See latest deployment record.
+
 ## 2026-10-16 — DSE student header follow-up completed
 
 Published all 23 handout header/action changes and five reader scripts with stable addresses; 28 COS readbacks and 66 public checks passed. Scoped source, tests and documentation updated. Desktop/mobile reader checks passed locally; final live screenshot automation timed out. Refresh existing links. See `docs/10_DEPLOYMENT.md` and ignored `.cloudbase-private/handout-header-release-20261016/`. No remaining owner action or backend deployment.

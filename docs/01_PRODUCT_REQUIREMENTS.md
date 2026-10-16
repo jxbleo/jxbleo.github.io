@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — DSE handout social toolbar — current owner revision
+
+All 23 handouts retain the cat icon and Chinese brand 猫先生英语. Replace the parenthesized promotional sentence with compact icon/name entries: Xiaohongshu and Douyin open HTTPS keyword-search pages for 猫先生英语; Video Channels reveals instructions to search in WeChat; email opens mailto:jxbleo@foxmail.com. No handout print/copy/share buttons or cross-handout links return. This supersedes the text-only header rule below.
+
 ## 2026-10-16 — DSE 讲义独立分发（当前规则；已上线）
 
 每份阅读／写作讲义独立交付，学生不能通过修改题材关键词、切换模块参数、讲义目录或末尾引流进入其他讲义。当前共 23 个分享目标：写作 09–24 完整版、16 份单讲、4 份阅读技能讲义、2 份原有写作讲义；每份采用独立、稳定的 192 位随机路径。无需学生登录即可阅读持有链接的那一份；此规则防止枚举与页面间发现，不限制收到链接者转发或保存。

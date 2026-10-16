@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — DSE social-toolbar checks
+
+For all 23 outputs, verify the cat asset and Chinese brand, exactly two HTTPS search links whose decoded keyword is 猫先生英语, one correct mailto target and native Video Channels instructions. External links require target=_blank, noopener/noreferrer and no-referrer. Continue checking no student print/copy/share controls or peer handout URLs. Check desktop plus 390px/320px layouts, visible brand, 44px controls, keyboard focus, popup bounds and unchanged study navigation. Platform login/result availability is not an application-side guarantee.
+
 ## 2026-10-16 — Student header checks supersede earlier copy-button QA
 
 All 23 real outputs must contain the Chinese brand and requested contact text, no header image/link/button and no student print/share/copy controls. Run `test:handouts` plus real-artifact checks. Five reader runtimes must initialize without removed buttons; course/reading navigation and answer disclosures must still work. Earlier copy-button test records below are historical. Verify wrapping on mobile, including the inherited `.resource-brand span` hide rule; verify course navigation, standalone lesson and reading guide in a real browser.

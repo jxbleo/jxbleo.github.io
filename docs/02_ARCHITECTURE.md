@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — DSE handout social toolbar
+
+The common renderer supplies self-contained HTML/CSS, an existing local cat image and small locally drawn platform cues. Plain external anchors carry only the fixed brand keyword, open with noopener/noreferrer and never include the opaque handout URL. Video Channels uses native details/summary instructions; email uses mailto. No SDK, font download, external icon request, tracking script, new dependency or backend change.
+
 ## 2026-10-16 — Student handout header follow-up
 
 `render-handouts.js` applies the same text-only Chinese brand/contact header to all 23 encrypted-source outputs, strips student print/share actions and versions five reader scripts. Header CSS is confined to generated handouts. The five readers initialize without these controls; native browser-print disclosure restoration remains. Link identities, source ciphertext and teacher catalog are unchanged.

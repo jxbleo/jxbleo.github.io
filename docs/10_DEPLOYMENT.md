@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## 2026-10-16 — Cat brand and social toolbar published
+
+Published all 23 existing handout pages at `2026-10-16T08:33:46.464Z`. All 23 COS readbacks and 46 apex/www public byte comparisons match the frozen stage. Existing source/reader assets and opaque addresses were preserved. Private backup, stage and receipt: `.cloudbase-private/handout-social-release-20261016/`. This supersedes the prior text-only header presentation.
+
+Restored the cat icon beside 猫先生英语, adjusted typography and replaced the contact sentence with Xiaohongshu/Douyin search anchors, a native WeChat Channels search-instruction disclosure and mailto contact. The renderer and existing isolation test are the only implementation/test files changed. Updated product, architecture, UI, decisions, authoring, testing and change records. No model, backend, teacher directory or other site change.
+
+Local Chrome verified desktop and 390px/320px layouts, visible cat/name, 44px contact targets, no horizontal overflow and a bounded Video Channels popup. Actual clicks opened the encoded keyword destinations; Xiaohongshu returned the expected keyword-search title. Reading third-party results timed out, so platform login/result availability is not certified. Desktop screenshot saved privately under `/Users/jxbleo/Research/dse-writing-course/handout-social-header-desktop-20261016.png`. Handout tests, static build, all 23 actual artifact checks and static boundary checks passed. Preserve the existing no-referrer/new-tab properties and no peer-handout addresses.
+
+Publish source with `[skip ci]`; unrelated live/source drift still excludes full-site synchronization. Refresh existing links. No additional owner action is required.
+
 ## 2026-10-16 — Student handout headers published
 
 At `2026-10-16T08:11:54.554Z`, published exactly 23 existing handout HTML objects and five dedicated reader scripts. All 28 COS readbacks and 66 apex/www public byte checks (including versioned scripts) matched the staged SHA-256 values. Backups and receipt: `.cloudbase-private/handout-header-release-20261016/`. Existing share identities, sealed teaching source and teacher directory remain unchanged; no backend or unrelated static object was deployed.
