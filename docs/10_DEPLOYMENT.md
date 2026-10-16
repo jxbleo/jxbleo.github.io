@@ -1,5 +1,9 @@
 # 10 Deployment
 
+## 2026-10-16 — Shorter Douyin popup published
+
+Published the owner-requested shorter Douyin success prompt and right-aligned alternate-opening disclosure at `2026-10-16T10:06:00.086Z`. Only 23 existing handout HTML objects and their shared header script changed; all 24 COS readbacks and 50 apex/www byte comparisons passed. Private backup/stage/receipt: `.cloudbase-private/handout-douyin-simple-20261016/`. Source changes cover the renderer, header script and cache-version contract; UI and changelog docs describe the adjustment. Handout tests, actual-artifact/static boundaries and the existing contact runtime checks passed. Mobile Chrome showed the compact prompt and right-aligned disclosure, which still expands; screenshot: `/Users/jxbleo/Research/dse-writing-course/handout-douyin-simple-20261016.png`. No new dependencies or change to contact-copy behavior, document identities or unrelated live objects. No further owner action beyond refreshing an existing link. Sync source with `[skip ci]`; do not run a full-site deployment.
+
 ## 2026-10-16 — Douyin share copy and WeChat friend-search prompt published
 
 Published the owner-authorized Douyin copy-first contact and WeChat friend-search instruction at `2026-10-16T09:56:58.722Z` across all 23 existing handouts. The 23 HTML objects and dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons. Private backup/stage/receipt: `.cloudbase-private/handout-douyin-copy-20261016/`. Existing document identities, teaching content and unrelated live objects are unchanged.

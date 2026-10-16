@@ -15,7 +15,7 @@ function checkStudentHeader(html) {
   assert(header[0].includes('<code>jxbleo_</code>') && header[0].includes('role="status"'));
   assert(header[0].includes('请打开微信，搜索该微信号添加好友即可。'));
   assert(header[0].includes('data-handout-douyin-text readonly') && header[0].includes('其他打开方式'));
-  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-douyin-copy-1'));
+  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-douyin-copy-2'));
   const links=[...header[0].matchAll(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g)];
   assert.equal(links.length,4,'Only the owner profiles, explicit Douyin fallback and owner email are linked');
   const xhs=new URL(links[0][2]),douyin=new URL(links[1][2]);

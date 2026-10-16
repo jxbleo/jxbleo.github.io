@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Simplify the Douyin contact popup
+
+Removed the redundant post-copy paragraph from the successful Douyin prompt and right-aligned the alternate-opening disclosure with a matching chevron. Preserved its expandable help and the manual-copy failure instruction across all 23 handouts.
+
 ## 2026-10-16 — Copy the supplied Douyin profile message
 
 Replaced Douyin keyword-search hand-off with the owner-supplied complete share-message copy flow. Added a secondary opening guide and honest manual-copy fallback. WeChat copy feedback now explains adding the owner through ID search. Preserved all 23 handout identities, centered icons and Xiaohongshu official-profile behavior.

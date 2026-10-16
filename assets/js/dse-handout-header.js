@@ -142,8 +142,9 @@
     bindCopy(document.querySelector("[data-handout-douyin]"), "douyin", douyinShare, function (container, copied) {
         container.querySelector("[data-handout-douyin-message]").textContent = copied
             ? "口令已复制，请打开抖音 App" : "未能自动复制，请长按下方文案复制";
-        container.querySelector("[data-handout-douyin-next]").textContent = copied
-            ? "进入抖音后，可按提示查看猫先生英语的主页。" : "复制后，请打开抖音 App。";
+        var next = container.querySelector("[data-handout-douyin-next]");
+        next.textContent = "复制后，请打开抖音 App。";
+        next.hidden = copied;
         var text = container.querySelector("[data-handout-douyin-text]");
         text.value = douyinShare;
         text.hidden = copied;
