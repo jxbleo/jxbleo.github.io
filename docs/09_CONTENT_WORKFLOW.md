@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — Maintain owner profile share link
+
+The owner-provided Xiaohongshu share URL is the public contact destination. Preserve it in the renderer; update its corresponding public profile ID and header-script version together if the owner changes accounts. Keep opaque handout addresses and private map/source inputs untouched. Never copy profile-page signing data into our site.
+
 ## 2026-10-16 — Handout contact simplification
 
 Manage the four icon-only controls in the shared renderer and mobile behavior in dse-handout-header.js. Retain the fixed brand keyword, owner WeChat ID and email. Video Channels has been removed by owner request. Update the header script version with behavior changes, regenerate all 23 independent outputs, and preserve their existing link identities.

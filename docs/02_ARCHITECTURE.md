@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — Delegate WeChat profile opening to Xiaohongshu
+
+The dedicated header script passes Xiaohongshu clicks through in WeChat, before preventing navigation or creating a local popup. The official profile page supplies its own WeChat SDK/signing integration. We do not copy its AppID/signatures or add the SDK to the handout site. Outside WeChat, the fixed public profile ID is used with the documented user-profile scheme; desktop retains the HTTPS share link. No new backend or dependency.
+
 ## 2026-10-16 — Mobile handout app hand-off
 
 The existing dedicated header script enhances only unmodified primary clicks on the two fixed platform links when mobile/iPad browser identification matches. Schemes contain only a constant brand keyword; no lesson URL or private map is transmitted. A small on-demand status panel exposes the original no-referrer HTTPS link. Page hide, visibility hide, outside click and Escape dismiss it. No timed fallback navigation, install probe, third-party SDK, dependency or backend change.

@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — Profile hand-off and centered icon checks
+
+Verify the official owner share URL and accessible profile label in all 23 generated outputs. Measure the Douyin colored-path union against the tile center, including translated cyan/red paths. Check WeChat profile clicks preserve normal HTTPS navigation without a forced scheme/local popup; other mobile clicks target the exact profile. Retain Douyin search, honest three-step guidance, HTTPS fallback and modified-click checks. Platform source configuration is not an installed-app iPhone/Android test.
+
 ## 2026-10-16 — Icon-only and mobile hand-off checks
 
 Continue all 23 isolation/artifact checks; assert no Video Channels, no extra visible contact labels and retained accessible names. Verify 44px targets and popup bounds on desktop/390px/320px. Exercise desktop and modified-click passthrough, both encoded app targets, rejected scheme navigation, WeChat guidance, dismissal and absence of timed redirects in a runtime harness. Actual app opening requires installed-app iPhone/Android device checks; viewport resizing alone does not certify it.

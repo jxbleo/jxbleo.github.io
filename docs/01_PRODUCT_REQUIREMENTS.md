@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — Owner profile and WeChat opening
+
+The Xiaohongshu icon now opens the owner-provided official profile share link, not a brand search. In WeChat it follows that link normally, allowing the platform to handle app opening. Other mobile browsers attempt the corresponding profile app route, with the official share page as fallback. Douyin keeps keyword search and a short three-step WeChat instruction. Do not promise successful launch for every device.
+
 ## 2026-10-16 — Icon-only handout contacts
 
 All 23 handouts show four contact icons only: Xiaohongshu, Douyin, WeChat and email. Remove Video Channels and the adjacent visible labels; retain accessible names/tooltips. Mobile search-icon clicks attempt the matching app with the fixed 猫先生英语 keyword; a web-search fallback stays available. Desktop continues to open HTTPS search in another tab. App installation, OS confirmation and host-browser restrictions are not detectable guarantees.

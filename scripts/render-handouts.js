@@ -3,17 +3,17 @@ const {loadRelease, URL_PATTERN} = require('./handout-store');
 const ORIGIN = 'https://www.mrcatenglish.com/';
 const READER_VERSION = '20261016-header-1';
 const SEARCH_TERM = encodeURIComponent('猫先生英语');
-const XHS_SEARCH = 'https://www.xiaohongshu.com/search_result?keyword='+SEARCH_TERM;
+const XHS_PROFILE = 'https://xhslink.cn/o/aYLtaYWoBd';
 const DOUYIN_SEARCH = 'https://www.douyin.com/search/'+SEARCH_TERM;
 // Small, locally drawn platform cues; no third-party image/script requests.
 const XHS_ICON = '<span class="handout-icon handout-xhs" aria-hidden="true">小红书</span>';
-const DOUYIN_ICON = '<span class="handout-icon handout-douyin" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="#25f4ee" transform="translate(-1 1)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fe2c55" transform="translate(1 0)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fff" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/></svg></span>';
+const DOUYIN_ICON = '<span class="handout-icon handout-douyin" aria-hidden="true"><svg viewBox="2 .5 24 24" focusable="false"><path fill="#25f4ee" transform="translate(-1 1)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fe2c55" transform="translate(1 0)" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/><path fill="#fff" d="M14 3h3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.8-.5-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2Z"/></svg></span>';
 const WECHAT_ICON = '<span class="handout-icon handout-wechat" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="#fff" d="M9 3C4.6 3 1 5.8 1 9.3c0 1.9 1.1 3.6 2.8 4.8l-.7 2.4 2.8-1.4c.7.2 1.4.4 2.1.4a6.4 6.4 0 0 1-.3-1.9c0-3.6 3.5-6.5 7.9-6.5h.8C15.2 4.7 12.4 3 9 3Z"/><path fill="#fff" d="M16 8.5c-3.6 0-6.5 2.3-6.5 5.2s2.9 5.2 6.5 5.2c.9 0 1.7-.1 2.5-.4l2.4 1.2-.6-2.1c1.4-1 2.2-2.3 2.2-3.9 0-2.9-2.9-5.2-6.5-5.2Z"/><g fill="#07a84d"><circle cx="6" cy="7.8" r="1"/><circle cx="11.5" cy="7.8" r="1"/><circle cx="13.7" cy="12.5" r=".9"/><circle cx="18.2" cy="12.5" r=".9"/></g></svg></span>';
 const MAIL_ICON = '<svg class="handout-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>';
 const HANDOUT_HEADER = `<header class="resource-topbar handout-topbar" data-resource-topbar>
 <div class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt="" width="32" height="32"><span class="handout-name">猫先生英语</span></div>
 <nav class="handout-socials" aria-label="关注与联系猫先生英语">
-<a class="handout-social" data-handout-app="xiaohongshu" href="${XHS_SEARCH}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="在小红书搜索猫先生英语" title="小红书 · 搜索猫先生英语">${XHS_ICON}</a>
+<a class="handout-social" data-handout-app="xiaohongshu" href="${XHS_PROFILE}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="查看猫先生英语的小红书主页" title="小红书 · 猫先生英语主页">${XHS_ICON}</a>
 <a class="handout-social" data-handout-app="douyin" href="${DOUYIN_SEARCH}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" aria-label="在抖音搜索猫先生英语" title="抖音 · 搜索猫先生英语">${DOUYIN_ICON}</a>
 <div class="handout-wechat-help"><button class="handout-social" type="button" data-handout-wechat="jxbleo_" aria-label="复制微信号 jxbleo_" title="点击复制微信号 jxbleo_">${WECHAT_ICON}</button><div class="handout-contact-tip handout-wechat-tip" data-handout-wechat-status role="status" aria-live="polite" hidden><span data-handout-wechat-message></span><code>jxbleo_</code></div></div>
 <a class="handout-social" href="mailto:jxbleo@foxmail.com" aria-label="发送邮件至 jxbleo@foxmail.com" title="jxbleo@foxmail.com">${MAIL_ICON}</a>
@@ -36,7 +36,7 @@ const HANDOUT_HEADER_STYLE = `<style id="handout-header-style">
 .handout-topbar .handout-icon svg { width: 20px; height: 20px; }
 .handout-topbar .handout-mail { width: 22px; height: 22px; }
 .handout-topbar .handout-contact-tip { position: absolute; top: calc(100% + .45rem); right: 0; z-index: 60; width: 255px; padding: 1rem 1.1rem; border: 1px solid #e0e7e9; border-radius: 16px; background: #fff; box-shadow: 0 12px 36px #273b4b20; color: #495c67; font-size: .82rem; line-height: 1.8; }
-.handout-topbar .handout-app-tip p { margin: 0 0 .5rem; }
+.handout-topbar .handout-app-tip p { margin: 0 0 .5rem; white-space: pre-line; }
 .handout-topbar .handout-app-tip a { display: inline-flex; align-items: center; min-height: 44px; color: #2867a0; text-underline-offset: 3px; }
 .handout-topbar .handout-wechat-tip code { display: block; margin-top: .2rem; color: #173d2b; font-size: 1rem; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; user-select: all; -webkit-user-select: all; }
 @media (max-width: 620px) {
@@ -103,7 +103,7 @@ function independentPage(html, href, policy) {
   html=html.replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi,`<link rel="canonical" href="${url}">`)
     .replace(/<meta\b(?=[^>]*property=["']og:url["'])[^>]*>/gi,`<meta property="og:url" content="${url}">`)
     .replace(/<meta\b(?=[^>]*name=["'](?:robots|referrer)["'])[^>]*>/gi,'');
-  html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<script src="assets/js/dse-handout-header.js?v=20261016-icons-1" defer></script><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
+  html=html.replace('</head>',HANDOUT_HEADER_STYLE+'<script src="assets/js/dse-handout-header.js?v=20261016-wechat-guide-1" defer></script><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"></head>');
   // Fail, rather than silently publish a forgotten cross-guide address.
   for (const old of policy.retiredPaths) if (html.includes(old)) throw new Error('A handout still exposes a retired address.');
   if (/同系列继续学习|class="reading-link"/.test(html)) throw new Error('A cross-handout promotion remains.');

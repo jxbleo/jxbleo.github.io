@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — Centered Douyin icon and clearer WeChat path
+
+Correct the Douyin SVG viewBox to `2 .5 24 24`; the colored glyph union is centered within the existing tile. Keep four icon-only controls. Xiaohongshu tooltips/accessible names now say profile. WeChat users follow the official share page without our extra instruction popup. Douyin fallback uses three separate lines: ① 点击右上角「···」; ② 选择「在默认浏览器中打开」; ③ 再点击抖音图标. It does not guarantee success or mislabel the target as Xiaohongshu.
+
 ## 2026-10-16 — Icon-only handout contacts
 
 Remove the labels beside/below contact icons and delete the entire Video Channels entry. Keep cat/Chinese brand, four 44px targets, keyboard focus and title/ARIA text. Responsive flex wrapping keeps the toolbar compact without shrinking touch targets. Mobile app hand-off offers a contextual web fallback; WeChat browsers also receive an open-in-browser hint. The WeChat ID copy confirmation is preserved.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Center Douyin and use the official Xiaohongshu profile
+
+Centered the Douyin music glyph and replaced Xiaohongshu keyword search with the owner-provided profile share link. WeChat delegates opening to the official page; other mobile browsers attempt the exact profile. Simplified the remaining WeChat fallback into three short steps. All 23 document identities remain unchanged.
+
 ## 2026-10-16 — Simplify handout icons and attempt mobile app opening
 
 Updated all 23 handouts to four icon-only contacts, removed Video Channels, and added click-triggered mobile Xiaohongshu/Douyin app search attempts with manual HTTPS fallback. Desktop links and WeChat copying remain intact. Real iOS/Android app hand-off is not certified by desktop viewport checks.

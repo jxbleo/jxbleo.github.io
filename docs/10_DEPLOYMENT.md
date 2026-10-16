@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## 2026-10-16 — Centered icon and official profile route published
+
+Published the centered Douyin glyph, owner Xiaohongshu profile route and clearer WeChat behavior at `2026-10-16T09:44:48.929Z` across all 23 existing handouts. The 23 HTML objects and dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons. Private backup/stage/receipt: `.cloudbase-private/handout-wechat-guide-20261016/`. No document identity, sealed teaching source, private directory, backend or unrelated live object changed.
+
+Updated the shared renderer, dedicated header script and existing isolation contract; product, architecture, UI, decisions, workflow, testing and owner/change records describe the current behavior. Working and isolated source passed handout tests, static build, all 23 actual-artifact checks and static boundaries. The runtime harness passed WeChat profile passthrough without an extra panel/scheme, exact mobile profile/search targets, three-step Douyin instructions and fallback/dismissal behavior. Isolated artifacts match all published bytes.
+
+Local Chrome measured the Douyin colored-path union center at 0px horizontal and approximately 0px vertical offset. The rendered Xiaohongshu anchor exactly matches the supplied share link. Screenshot saved privately at `/Users/jxbleo/Research/dse-writing-course/handout-wechat-guide-20261016.png`. Read-only platform requests confirmed the correct profile and WeChat-specific launch-tag configuration. No installed-app iPhone/Android/WeChat launch is certified; platform/browser restrictions remain possible.
+
+Use `[skip ci]` for the source sync; unrelated source/live drift still excludes full-site COS synchronization. Refresh existing handout links.
+
 ## 2026-10-16 — Icon-only contacts and mobile app attempts published
 
 Published the owner-requested four icon-only controls, Video Channels removal and mobile app-search attempts across all 23 handouts at `2026-10-16T09:05:33.293Z`. The 23 HTML objects and dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons. Private backup/stage/receipt: `.cloudbase-private/handout-icons-release-20261016/`. No link identity, sealed content, backend or unrelated live file changed.

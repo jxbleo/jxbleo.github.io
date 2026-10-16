@@ -1,5 +1,9 @@
 # 06 Decisions
 
+## 2026-10-16 — Use platform-owned WeChat launch integration
+
+The owner supplied https://xhslink.cn/o/aYLtaYWoBd . Read-only mobile and WeChat HTTP checks resolved to the same 猫先生英语 profile (public ID 5fbbbaf800000000010081af); the mobile title is @猫先生英语 的个人主页. The WeChat response includes the official jweixin script and wx.config openTagList containing wx-open-launch-app. This is evidence of platform-side integration, not a successful real-device launch test. Prefer that official share page inside WeChat rather than forcing our own scheme or borrowing platform credentials. The generic official opening page https://oia.xiaohongshu.com/oia?source=growth_default_page also retains browser-opening guidance, so no universal launch guarantee is made. The WeChat documentation URL was inaccessible during this review; do not present inferred enrollment requirements as freshly verified facts.
+
 ## 2026-10-16 — Best-effort mobile app opening with explicit web fallback
 
 Owner requested mobile app opening. Xiaohongshu documents `xhsdiscover://search/result` and its keyword parameter at https://pages.xiaohongshu.com/activity/deeplink . Douyin officially lists the `snssdk1128` scheme in its iOS SDK integration guide (https://partner.open-douyin.com/docs/resource/zh-CN/dop/develop/sdk/mobile-app/access/ios), but that does not document a public search-route contract. The search route `snssdk1128://search?keyword=` appears in the maintained scheme collection https://github.com/tofrankie/url-scheme-collection ; treat it as a compatibility attempt, not an official guarantee. Platform/app versions and browser policies can prevent hand-off. Keep an explicit HTTPS fallback and never use timer-based navigation that could interrupt an OS prompt or a returning app session. This supersedes the earlier web-only contact decision.

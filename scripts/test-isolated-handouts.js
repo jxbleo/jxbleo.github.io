@@ -13,11 +13,11 @@ function checkStudentHeader(html) {
   assert.equal(buttons.length,1,'The only header button copies the owner WeChat ID');
   assert(buttons[0][0].includes('type="button"') && buttons[0][0].includes('data-handout-wechat="jxbleo_"') && buttons[0][0].includes('aria-label="复制微信号 jxbleo_"'));
   assert(header[0].includes('<code>jxbleo_</code>') && header[0].includes('role="status"'));
-  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-icons-1'));
+  assert(html.includes('assets/js/dse-handout-header.js?v=20261016-wechat-guide-1'));
   const links=[...header[0].matchAll(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g)];
-  assert.equal(links.length,3,'Only two platform searches and owner email are linked');
+  assert.equal(links.length,3,'Only the owner profile, Douyin search and owner email are linked');
   const xhs=new URL(links[0][2]),douyin=new URL(links[1][2]);
-  assert.equal(xhs.origin,'https://www.xiaohongshu.com');assert.equal(xhs.pathname,'/search_result');assert.equal(xhs.searchParams.get('keyword'),'猫先生英语');
+  assert.equal(xhs.href,'https://xhslink.cn/o/aYLtaYWoBd');
   assert.equal(douyin.origin,'https://www.douyin.com');assert.equal(decodeURIComponent(douyin.pathname),'/search/猫先生英语');
   assert.equal(links[2][2],'mailto:jxbleo@foxmail.com');
   for(const link of links.slice(0,2)) assert(link[0].includes('target="_blank"') && link[0].includes('rel="noopener noreferrer"') && link[0].includes('referrerpolicy="no-referrer"'));

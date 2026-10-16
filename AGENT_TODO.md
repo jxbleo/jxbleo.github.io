@@ -1,5 +1,9 @@
 # Agent QA To Do List
 
+## Completed — Handout icon alignment and WeChat profile route (2026-10-16)
+
+All 23 handouts use the centered Douyin glyph and supplied official Xiaohongshu profile share link. WeChat follows the platform share page; the remaining fallback uses three short steps. Scoped publication, artifact/runtime checks and icon geometry passed. Real installed-app hand-off remains unverified; see the deployment record.
+
 ## Completed — DSE contact icons and mobile hand-off (2026-10-16)
 
 All 23 handouts show four icon-only contacts; Video Channels is removed. Mobile search icons attempt their apps with explicit HTTPS fallback. Scoped publication and source/build/runtime checks passed. Real installed-app iPhone/Android confirmation remains a verification limit; see the current deployment record.

@@ -8,10 +8,11 @@
     var appTrigger;
     var keyword = encodeURIComponent("猫先生英语");
     var appTargets = {
-        xiaohongshu: "xhsdiscover://search/result?keyword=" + keyword,
+        xiaohongshu: "xhsdiscover://user/5fbbbaf800000000010081af",
         douyin: "snssdk1128://search?keyword=" + keyword
     };
     var ua = navigator.userAgent || "";
+    var isWeChat = /MicroMessenger/i.test(ua);
     var isMobile = /Android|iPhone|iPad|iPod|HarmonyOS/i.test(ua) ||
         (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
 
@@ -25,7 +26,11 @@
         link.addEventListener("click", function (event) {
             if (!isMobile || event.defaultPrevented || event.button !== 0 ||
                 event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-            var target = appTargets[link.getAttribute("data-handout-app")];
+            var platform = link.getAttribute("data-handout-app");
+            // In WeChat, let the owner's official Xiaohongshu share page handle
+            // platform permissions and app opening instead of forcing a scheme.
+            if (isWeChat && platform === "xiaohongshu") return;
+            var target = appTargets[platform];
             if (!target) return;
             event.preventDefault();
             closeAppHint();
@@ -43,13 +48,14 @@
                 appHint.appendChild(fallback);
                 link.closest(".handout-socials").appendChild(appHint);
             }
-            appHint.querySelector("p").textContent = /MicroMessenger/i.test(ua)
-                ? "若未打开 App，请从右上角菜单选择在浏览器中打开，或继续使用网页版。"
-                : "若未打开 App，可继续使用网页版搜索「猫先生英语」。";
+            var platformName = platform === "xiaohongshu" ? "小红书" : "抖音";
+            appHint.querySelector("p").textContent = isWeChat
+                ? "在微信中打开？\n① 点击右上角「···」\n② 选择「在默认浏览器中打开」\n③ 再点击" + platformName + "图标"
+                : (platform === "xiaohongshu" ? "若未打开 App，可继续查看猫先生英语的小红书主页。" : "若未打开 App，可继续使用网页版搜索「猫先生英语」。");
             var webLink = appHint.querySelector("a");
             webLink.href = link.href;
-            webLink.textContent = link.getAttribute("data-handout-app") === "xiaohongshu"
-                ? "打开小红书网页版 ↗" : "打开抖音网页版 ↗";
+            webLink.textContent = platform === "xiaohongshu"
+                ? "查看小红书主页 ↗" : "打开抖音网页版 ↗";
             appTrigger = link;
             link.setAttribute("aria-describedby", appHint.id);
             appHint.hidden = false;
