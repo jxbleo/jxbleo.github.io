@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-16 — DSE WeChat contact
+
+All 23 independent handouts include a green WeChat icon/name control that copies exactly `jxbleo_`. Show success only after a successful copy; if unavailable, display the selectable ID with manual-copy instructions. This contact action does not copy the handout address.
+
 ## 2026-10-16 — DSE handout social toolbar — current owner revision
 
 All 23 handouts retain the cat icon and Chinese brand 猫先生英语. Replace the parenthesized promotional sentence with compact icon/name entries: Xiaohongshu and Douyin open HTTPS keyword-search pages for 猫先生英语; Video Channels reveals instructions to search in WeChat; email opens mailto:jxbleo@foxmail.com. No handout print/copy/share buttons or cross-handout links return. This supersedes the text-only header rule below.

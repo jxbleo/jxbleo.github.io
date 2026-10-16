@@ -1,5 +1,9 @@
 # Agent QA To Do List
 
+## Completed — DSE WeChat contact (2026-10-16)
+
+All 23 handouts now copy the owner WeChat ID `jxbleo_` from the new header control. Scoped publication/readbacks, responsive UI and handout/build checks passed; source artifacts match live bytes. Existing share links remain valid. See the current deployment record.
+
 ## 2026-10-16 — Cat/social toolbar completed
 
 Published all 23 handouts with restored cat, improved typography and platform/contact entries. 23 COS and 46 public checks passed. Desktop/390px/320px QA and handout tests passed; third-party login/results are platform-controlled. Stable links retained, no backend action needed. See latest deployment record.

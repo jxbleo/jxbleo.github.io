@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-16 — DSE WeChat contact checks
+
+The existing 23-output header contract allows exactly one button: copying `jxbleo_`; it still rejects print and handout-link-copy controls. Verify successful and denied clipboard paths, visible/selectable fallback, keyboard dismissal, desktop and 390px/320px bounds, and versioned header-script delivery. Do not confuse browser-automation virtual clipboard limitations with page copy failure.
+
 ## 2026-10-16 — DSE social-toolbar checks
 
 For all 23 outputs, verify the cat asset and Chinese brand, exactly two HTTPS search links whose decoded keyword is 猫先生英语, one correct mailto target and native Video Channels instructions. External links require target=_blank, noopener/noreferrer and no-referrer. Continue checking no student print/copy/share controls or peer handout URLs. Check desktop plus 390px/320px layouts, visible brand, 44px controls, keyboard focus, popup bounds and unchanged study navigation. Platform login/result availability is not an application-side guarantee.

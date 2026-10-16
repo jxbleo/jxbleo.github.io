@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-16 — DSE WeChat contact
+
+The shared handout renderer injects the fixed contact button, accessible status and versioned `assets/js/dse-handout-header.js`. This dedicated deferred script uses Clipboard.writeText, a temporary-textarea fallback and a visible manual fallback. No clipboard read, external request, dependency, backend or source-map change.
+
 ## 2026-10-16 — DSE handout social toolbar
 
 The common renderer supplies self-contained HTML/CSS, an existing local cat image and small locally drawn platform cues. Plain external anchors carry only the fixed brand keyword, open with noopener/noreferrer and never include the opaque handout URL. Video Channels uses native details/summary instructions; email uses mailto. No SDK, font download, external icon request, tracking script, new dependency or backend change.

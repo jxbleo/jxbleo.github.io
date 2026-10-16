@@ -1,5 +1,15 @@
 # 10 Deployment
 
+## 2026-10-16 — WeChat contact published
+
+Published the owner-requested WeChat copy control across all 23 existing handouts at `2026-10-16T08:54:56.598Z`. The 23 HTML objects plus one dedicated header script passed 24 COS readbacks and 50 apex/www public byte comparisons, including the versioned script. Existing handout links, teaching source and private directory remain unchanged. Private backups/stage/receipt: `.cloudbase-private/handout-wechat-release-20261016/`.
+
+Changed the common renderer, dedicated header script and existing header contract; updated owner rules, product, architecture, UI, authoring, testing and change records. Both working and isolated source passed handout checks, static build, all 23 artifact checks and publication boundaries. Isolated artifacts exactly match published bytes. A temporary runtime harness verified modern/legacy success, denied/unsupported copying, honest manual feedback, textarea cleanup and Escape dismissal.
+
+Local Chrome showed successful copying feedback on desktop and 390px/320px layouts with no horizontal overflow; the 320px popup stays within the viewport. Browser automation could not perform the extra paste-back check because its virtual clipboard was empty, so a native paste-back is not certified. Screenshot saved outside the repository under `/Users/jxbleo/Research/dse-writing-course/handout-wechat-20261016.png`. No code risk remains identified; third-party browser clipboard restrictions use the manual fallback.
+
+Publish source with `[skip ci]`; unrelated live/source drift still excludes full-site synchronization. Refresh the existing link; no other owner action is needed.
+
 ## 2026-10-16 — Cat brand and social toolbar published
 
 Published all 23 existing handout pages at `2026-10-16T08:33:46.464Z`. All 23 COS readbacks and 46 apex/www public byte comparisons match the frozen stage. Existing source/reader assets and opaque addresses were preserved. Private backup, stage and receipt: `.cloudbase-private/handout-social-release-20261016/`. This supersedes the prior text-only header presentation.

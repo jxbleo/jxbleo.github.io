@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-16 — DSE WeChat contact authoring
+
+Maintain the owner WeChat ID in the shared renderer and its existing header contract; the dedicated header script reads that button value. Regenerate all 23 outputs with unchanged opaque identities. No resealing of teaching content or private link-map update is needed for contact-only edits.
+
 ## 2026-10-16 — DSE social-toolbar authoring
 
 The approved header now contains the original cat image, Chinese brand and compact social/contact entries. Maintain it in render-handouts.js; do not edit 23 independent files or rotate their addresses. Keep search keywords encoded, links external/referrer-free and WeChat instructions honest. The former text-only header record below is historical; teacher link-copy controls are unchanged.

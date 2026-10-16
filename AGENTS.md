@@ -8,8 +8,8 @@ modules, four reading guides and two earlier writing guides. Each target has its
 own stable 192-bit random filename. A complete-course hash is never a separate
 handout. Student pages have no print, handout-copy or handout-share controls.
 The header retains the cat icon and Chinese brand `猫先生英语`, with owner-approved
-Xiaohongshu/Douyin keyword-search links, a WeChat Channels instruction disclosure
-and `mailto:jxbleo@foxmail.com`. Social links open a new tab without referrers;
+Xiaohongshu/Douyin keyword-search links, a button that copies the owner WeChat ID
+`jxbleo_`, a WeChat Channels instruction disclosure and `mailto:jxbleo@foxmail.com`. Social links open a new tab without referrers;
 never use these controls to expose another handout or platform lesson directory.
 Keep copy/open controls in the private teacher directory. A standalone module must contain
 only that module, its required task context and relevant references, without

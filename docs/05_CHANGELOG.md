@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-16 — Add WeChat contact to DSE handouts
+
+Added an accessible WeChat copy button for `jxbleo_` to all 23 handouts, with success/manual feedback and compact five-column mobile controls. Existing lesson addresses, isolation and print/handout-share removal remain intact.
+
 ## 2026-10-16 — DSE handout social toolbar
 
 Restored the cat icon, refined Chinese typography and replaced the contact sentence with small platform/contact entries across 23 handouts. Added direct keyword-search links for Xiaohongshu/Douyin, native WeChat Channels instructions and email contact. Stable document links and student control-removal rules are preserved.

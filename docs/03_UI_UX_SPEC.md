@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-16 — DSE WeChat contact
+
+Add the green WeChat icon between Douyin and Video Channels. Click displays 微信号已复制 with `jxbleo_` after success; denied copying displays selectable text and manual instructions. Success closes after 3.5 seconds; manual instructions remain until clicking outside or Escape. At 620px and below, five equal columns place icons above labels with 60px touch targets; retain the cat/brand on the first row.
+
 ## 2026-10-16 — DSE handout social toolbar
 
 Restore the 32px cat icon beside 猫先生英语 at 16px/600 weight. Use system/PingFang typography and quiet 44px icon/name controls at the right; remove the long promotional sentence. At 620px and below, keep the brand on the first row, the four platform/contact entries below, and the header in normal flow. Video Channels opens a compact WeChat search instruction; platform search links preserve the current lesson in another tab. Earlier text-only/no-header-image expectations are superseded.
