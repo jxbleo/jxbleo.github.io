@@ -1,5 +1,13 @@
 # 10 Deployment
 
+## 2026-10-17 — Topic bank direct reader published
+
+The owner explicitly removed the old topic-bank permission design after the previous release still showed the legacy visitor shell when not signed in. Published the full Writing-style direct reader at the same `dse-topic-bank.html` address. The public response now contains all 20 themes, 100 subtopics, 800 viewpoints and 100 development units without preview, login prompts, session checks, protected fetches or iframe delivery.
+
+Exactly eight static objects were published: topic HTML/CSS/JS, both home-catalog files, share-materials metadata, and narrowly patched dashboard HTML/JS. Dashboard changes only preserve the two existing topic entries after their public classification and refresh that script version. Three shared-header dependencies were guarded; all eight COS objects and 32 plain/versioned apex/www checks matched the frozen SHA-256 values at 2026-10-17T09:39:06.147Z. No function, database, model, credential, shared authentication or unrelated resource deployment occurred.
+
+Independent audit confirmed only the topic source entry changed inside the sealed bundle; every other source and all 39 independent share identities are unchanged. Isolated source/artifact builds, direct-reader coverage/fail-closed cases, handout isolation, legacy protected/JUPAS authorization, header and dashboard tests passed. Real Chrome browser acceptance confirmed the direct live layout, theme switching, the 20.4 development deep link, new-material search (1 subtopic / 8 viewpoints / 1 extension), and clear/restore. The approved reader CSS and previous 320px checks are retained; fresh mobile interaction was not repeated. Private frozen stage, original bytes, receipts and live screenshot: `.cloudbase-private/dse-topic-bank-direct-20261017/`. Source synchronization uses `[skip ci]`; never upload the root blueprint instead of its built output.
+
 ## 2026-10-17 — DSE core topic bank published
 
 Owner authorized publication of the reviewed content-development edition. `getProtectedResource` became Active at 2026-10-17T09:15:43.820Z; the four scoped static objects were verified at 09:16:38.448Z. The release contains 20 themes, 100 subtopics, 800 viewpoints and 100 complete development units (200 causal chains, 200 alternatives and 300 material-bearing tasks). Preserve the order viewpoints → content development → later language material; teaching situations and figures are labelled hypothetical.

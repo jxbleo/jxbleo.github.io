@@ -1,5 +1,11 @@
 # Mr. Cat Academy Agent Guide
 
+## DSE topic bank direct reader (owner revision, 2026-10-17)
+
+The owner explicitly removed the topic bank's old preview/login/iframe design. `dse-topic-bank.html` must show the complete Writing-handout-style reader directly without a session check or protected-resource request. This exception applies only to this topic bank; do not change JUPAS, other handouts, student data or shared authentication. A future common permission template is deferred until the owner designs it. Reuse the canonical shared header and preserve noindex/no-referrer.
+
+Keep canonical topic content private under `.cloudbase-private/handouts/source/dse-core-topics/`. The direct output `published.html` is sealed with `node scripts/prepare-topic-bank.js`, which updates only that entry and preserves all other encrypted source and existing 39 handout identities. The root HTML is a build blueprint; static build must authenticate and validate the complete topic reader before replacing `dist`. Full teaching content is intentionally readable at the public topic URL, but plaintext authoring stays out of Git.
+
 ### Earlier Speaking toolbar rollout (superseded by reusable-header rule below)
 
 Supersedes the earlier parent-reader letterhead: place a handout-style toolbar

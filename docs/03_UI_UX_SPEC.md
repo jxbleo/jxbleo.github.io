@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-17 — Topic bank replaces the old access shell
+
+Opening the existing topic URL directly displays the approved Writing-style header, typography, desktop topic sidebar, mobile topic/subtopic selectors, full-content search and viewpoint-to-extension jumps. There is one canonical shared toolbar. Remove the old topbar, Visitor preview, lock panels, sign-in prompts, account badges, loading gates and nested iframe. Use versioned topic assets so the old permission loader cannot be reused by the new page. Catalog descriptions say 打开即可阅读全文.
+
 ## 2026-10-17 — Published topic-bank reader
 
 The Writing-handout-style reader presents 20 themes, 100 subtopics, 800 viewpoints and 100 content-development units, with content before language and four-skill metadata. The original public URL retains its visitor preview and loads the full reader only for active authenticated students/teachers. Render the complete document inside the existing opaque-origin `sandbox="allow-scripts"` iframe. Its parent supplies the sole canonical shared toolbar; the inner reader has only local navigation and no external resources/links. Preserve desktop theme/subtopic navigation, mobile selects, viewpoint/development jumps, search across the extension material and direct hash navigation with the opaque-origin History API fallback.

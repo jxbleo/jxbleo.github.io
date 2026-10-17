@@ -8,6 +8,7 @@ const zlib = require("zlib");
 const vm = require("vm");
 const { roleCanAccess } = require("../cloudfunctions/getProtectedResource/access-policy");
 const { validateTopicBankHtml } = require("./prepare-protected-resource");
+const { validateBlueprint, validateTopicBankHtml: validateDirectTopicBankHtml } = require("./render-topic-bank");
 
 const root = path.resolve(__dirname, "..");
 const payloadPath = path.join(root, "cloudfunctions", "getProtectedResource", "protected-payloads.private.js");
@@ -103,10 +104,11 @@ async function main() {
     assert(htmlText.includes('data-artifact-block-id="speaking-index"'));
   }
   assert(!htmlText.includes('data-artifact-block-id="further-questions"'), "Further Questions must not be present in the protected report.");
-  assert.deepStrictEqual(resource.allowed_roles, ["student", "teacher"], "Topic-bank access must remain student/teacher only.");
+  assert.deepStrictEqual(resource.allowed_roles, ["student", "teacher"], "The retained legacy endpoint must keep its student/teacher authorization.");
   const publicShell = fs.readFileSync(path.join(root, "dse-topic-bank.html"), "utf8");
-  assert(/<iframe\b[^>]*\bid="topic-report-frame"[^>]*\bsandbox="allow-scripts"/.test(publicShell), "Do not relax the protected iframe sandbox.");
-  assert(publicShell.includes('data-share-header'), "The outer authenticated reader must retain the shared toolbar.");
+  assert(validateBlueprint(publicShell) || validateDirectTopicBankHtml(publicShell), "The topic bank must use the direct-reader build entry or complete direct HTML.");
+  assert(!/<iframe\b|getProtectedResource|cloudbase-client|auth\.js/.test(publicShell), "The public topic bank must not retain the old access shell.");
+  assert(publicShell.includes('data-share-header'), "The direct reader must retain the shared toolbar.");
 
   const jupasResource = payload.resources && payload.resources["hk8-dse-jupas-weighting-2026-27"];
   const jupasHtml = unpackResource(jupasResource);
@@ -125,15 +127,19 @@ async function main() {
   publicFiles.forEach((filePath) => {
     assert(fs.existsSync(filePath), `Missing public file: ${path.relative(root, filePath)}`);
     const publicText = fs.readFileSync(filePath, "utf8");
-    assert(!publicText.includes(forbiddenFullText), `Protected topic-bank text leaked into ${path.relative(root, filePath)}`);
     assert(!publicText.includes(forbiddenJupasText), `Protected JUPAS report text leaked into ${path.relative(root, filePath)}`);
-    if (currentPrivateClaim) assert(!publicText.includes(currentPrivateClaim), `Protected viewpoint text leaked into ${path.relative(root, filePath)}`);
+    // The owner now permits complete topic content at its direct public entry.
+    // Other public metadata/asset files must not accidentally acquire that text.
+    if (path.basename(filePath) !== 'dse-topic-bank.html') {
+      assert(!publicText.includes(forbiddenFullText), `Unexpected topic-bank text in ${path.relative(root, filePath)}`);
+      if (currentPrivateClaim) assert(!publicText.includes(currentPrivateClaim), `Unexpected viewpoint text in ${path.relative(root, filePath)}`);
+    }
   });
 
   const ignored = require("child_process").spawnSync("git", ["check-ignore", "-q", path.relative(root, payloadPath)], { cwd: root });
   assert.strictEqual(ignored.status, 0, "Generated protected payload must remain ignored by Git.");
   await checkAuthorizedDelivery(payload);
-  console.log(`Protected resources verified: DSE ${resource.chunks.length} chunks, JUPAS ${jupasResource.chunks.length} chunks, integrity OK, no tested public leak.`);
+  console.log(`Retained protected endpoints verified: legacy DSE ${resource.chunks.length} chunks, JUPAS ${jupasResource.chunks.length} chunks, integrity/auth OK; JUPAS remains private.`);
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });

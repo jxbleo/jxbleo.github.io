@@ -1,165 +1,147 @@
-(function() {
-    'use strict';
+(function () {
+  'use strict';
+  const topics = [...document.querySelectorAll('article.topic')];
+  const subs = [...document.querySelectorAll('section.subtopic')];
+  const search = document.getElementById('idea-search');
+  const status = document.getElementById('idea-status');
+  const topicPicker = document.getElementById('topic-picker');
+  const subPicker = document.getElementById('subtopic-picker');
+  const mobile = document.querySelector('.mobile-navigation');
+  let activeTopic = topics[0].id;
+  let activeSub = '';
+  let searching = false;
+  let scrollQueued = false;
 
-    var RESOURCE_KEY = 'dse-topic-bank-2012-2026';
-    var preview = document.getElementById('topic-preview');
-    var loading = document.getElementById('topic-loading');
-    var full = document.getElementById('topic-full');
-    var errorPanel = document.getElementById('topic-error');
-    var errorMessage = document.getElementById('topic-error-message');
-    var reportFrame = document.getElementById('topic-report-frame');
-    var access = document.getElementById('topic-access');
-    var accessLabel = document.getElementById('topic-access-label');
-    var backLink = document.getElementById('topic-back');
-    var loginLinks = document.querySelectorAll('[data-topic-login]');
-    var retryButton = document.getElementById('topic-retry');
-
-    function safeReturnTarget() {
-        var raw = new URLSearchParams(window.location.search).get('return');
-        if (!raw) return '';
-        try {
-            var target = new URL(raw, window.location.href);
-            if (target.origin !== window.location.origin || !/\.html$/i.test(target.pathname)) return '';
-            return target.pathname.split('/').pop() + target.search + target.hash;
-        } catch (error) {
-            return '';
-        }
+  function elementFromHash() {
+    try { return document.getElementById(decodeURIComponent(location.hash.slice(1))); }
+    catch (_) { return null; }
+  }
+  function pushHash(id) {
+    const hash = '#' + encodeURIComponent(id);
+    if (location.hash === hash) return;
+    try { history.pushState(null, '', hash); }
+    catch (_) { location.hash = hash; }
+  }
+  function updateSubLocation(id) {
+    activeSub = id;
+    subPicker.value = id || activeTopic;
+    const developmentLink = document.getElementById('current-development-link');
+    developmentLink.hidden = false;
+    developmentLink.textContent = '进入内容拓展 ↗';
+    developmentLink.href = '#' + (id || activeTopic+'-sub-1') + '-development';
+    document.querySelectorAll('.sidebar-subs a').forEach(a => {
+      if (a.hash === '#' + id) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  function syncReadingPosition() {
+    if (searching) return;
+    const edge = innerWidth <= 800 ? 160 : 100;
+    const passed = [...document.getElementById(activeTopic).querySelectorAll('.subtopic')].filter(s => s.getBoundingClientRect().top <= edge);
+    const next = passed.length ? passed[passed.length-1].id : '';
+    if (next !== activeSub) updateSubLocation(next);
+  }
+  window.addEventListener('scroll', () => {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(() => { scrollQueued = false; syncReadingPosition(); });
+  }, {passive:true});
+  window.addEventListener('resize', () => requestAnimationFrame(syncReadingPosition));
+  function navigationState() {
+    topicPicker.value = activeTopic;
+    subPicker.replaceChildren();
+    const overview = new Option('本主题概览', activeTopic);
+    subPicker.add(overview);
+    document.getElementById(activeTopic).querySelectorAll('.subtopic').forEach(s => {
+      subPicker.add(new Option(s.dataset.label, s.id));
+    });
+    document.querySelectorAll('.topic-link').forEach(a => {
+      if (a.hash === '#' + activeTopic) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('.sidebar-subs').forEach(n => n.hidden = n.dataset.topic !== activeTopic);
+    updateSubLocation(activeSub);
+  }
+  function scrollToContent(node, focus) {
+    requestAnimationFrame(() => {
+      node.scrollIntoView({block:'start',behavior:'instant'});
+      syncReadingPosition();
+      if (focus) {
+        const heading = node.matches('article.topic') ? node.querySelector('h2') :
+          node.closest('article.topic') ? node.querySelector('h3,h4') || node : node;
+        heading.tabIndex = -1;
+        heading.focus({preventScroll:true});
+      }
+    });
+  }
+  function showTopic(node, options = {}) {
+    const topic = node.matches('article.topic') ? node : node.closest('article.topic');
+    if (!topic) return;
+    activeTopic = topic.id;
+    activeSub = node.closest('.subtopic')?.id || '';
+    searching = false;
+    search.value = '';
+    document.body.classList.remove('searching');
+    topics.forEach(t => t.hidden = t !== topic);
+    subs.forEach(s => s.hidden = false);
+    document.getElementById('idea-empty').hidden = true;
+    navigationState();
+    status.textContent = '当前主题 · ' + topic.querySelectorAll('.subtopic').length + ' 个子话题 · ' + topic.querySelectorAll('.viewpoints > li').length + ' 条观点 · ' + topic.querySelectorAll('.development').length + ' 份拓展';
+    const sidebar = document.querySelector('.sidebar');
+    const selected = sidebar.querySelector('.topic-link[aria-current]');
+    if (selected && innerWidth > 800) {
+      const offset = selected.getBoundingClientRect().top - sidebar.getBoundingClientRect().top;
+      if (offset < 0 || offset > sidebar.clientHeight - 170) sidebar.scrollTop += offset - 100;
     }
-
-    function setAccess(mode, label) {
-        access.classList.remove('is-full', 'is-preview');
-        if (mode) access.classList.add(mode);
-        accessLabel.textContent = label;
+    if (options.push) pushHash(node.id);
+    if (options.scroll) scrollToContent(node, options.focus);
+  }
+  function runSearch() {
+    const q = search.value.trim().toLowerCase();
+    if (!q) {
+      showTopic(document.getElementById(activeSub || activeTopic));
+      return;
     }
-
-    function loginTarget() {
-        return 'index.html?return=' + encodeURIComponent('dse-topic-bank.html');
-    }
-
-    function configureNavigation() {
-        backLink.href = safeReturnTarget() || 'dashboard.html?view=resources';
-        loginLinks.forEach(function(link) { link.href = loginTarget(); });
-    }
-
-    function showPreview(label) {
-        loading.hidden = true;
-        full.hidden = true;
-        errorPanel.hidden = true;
-        preview.hidden = false;
-        setAccess('is-preview', label || 'Visitor preview');
-    }
-
-    function showLoading(label) {
-        preview.hidden = true;
-        full.hidden = true;
-        errorPanel.hidden = true;
-        loading.hidden = false;
-        setAccess('', label || 'Checking access');
-    }
-
-    function showError(message) {
-        preview.hidden = true;
-        loading.hidden = true;
-        full.hidden = true;
-        errorPanel.hidden = false;
-        errorMessage.textContent = message || 'Unable to load the full topic bank. Please try again.';
-        setAccess('', 'Access unavailable');
-    }
-
-    function base64Bytes(value) {
-        var binary = window.atob(value);
-        var bytes = new Uint8Array(binary.length);
-        for (var index = 0; index < binary.length; index += 1) {
-            bytes[index] = binary.charCodeAt(index);
-        }
-        return bytes;
-    }
-
-    function hexDigest(buffer) {
-        return Array.from(new Uint8Array(buffer)).map(function(value) {
-            return value.toString(16).padStart(2, '0');
-        }).join('');
-    }
-
-    function decodeResource(encoded, manifest) {
-        if (manifest.encoding !== 'gzip-base64' || typeof DecompressionStream !== 'function') {
-            return Promise.reject(new Error('This browser cannot open the protected report. Please update Safari, Chrome, or Edge.'));
-        }
-        var bytes = base64Bytes(encoded);
-        var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-        return new Response(stream).arrayBuffer().then(function(buffer) {
-            return window.crypto.subtle.digest('SHA-256', buffer).then(function(digest) {
-                if (hexDigest(digest) !== manifest.sha256) {
-                    throw new Error('The protected report did not pass its integrity check. Please retry.');
-                }
-                return new TextDecoder('utf-8').decode(buffer);
-            });
-        });
-    }
-
-    function protectedCall(data) {
-        return window.MrCatCloud.callFunction('getProtectedResource', Object.assign({
-            resource_key: RESOURCE_KEY
-        }, data || {})).then(function(result) {
-            if (!result || !result.success) {
-                var error = new Error(result && result.message || 'The protected report is unavailable.');
-                error.code = result && result.code || 'RESOURCE_ERROR';
-                throw error;
-            }
-            return result;
-        });
-    }
-
-    function loadFullResource(profile) {
-        showLoading('Loading student edition');
-        return protectedCall({ action: 'manifest' }).then(function(manifest) {
-            if (!Number.isInteger(manifest.chunk_count) || manifest.chunk_count < 1 || manifest.chunk_count > 64) {
-                throw new Error('The protected report manifest is invalid.');
-            }
-            var requests = [];
-            for (var index = 0; index < manifest.chunk_count; index += 1) {
-                requests.push(protectedCall({ action: 'chunk', chunk_index: index }));
-            }
-            return Promise.all(requests).then(function(parts) {
-                parts.sort(function(left, right) { return left.chunk_index - right.chunk_index; });
-                if (parts.some(function(part, index) { return part.chunk_index !== index || part.chunk_count !== manifest.chunk_count; })) {
-                    throw new Error('The protected report is incomplete. Please retry.');
-                }
-                return decodeResource(parts.map(function(part) { return part.chunk; }).join(''), manifest);
-            });
-        }).then(function(html) {
-            reportFrame.srcdoc = html;
-            loading.hidden = true;
-            errorPanel.hidden = true;
-            preview.hidden = true;
-            full.hidden = false;
-            var name = profile && (profile.name || profile.student_id) || 'Student';
-            setAccess('is-full', name + ' · Full edition');
-        });
-    }
-
-    function start() {
-        configureNavigation();
-        showLoading('Checking access');
-        window.MrCatAuth.getSession().then(function(session) {
-            if (!session || session.mode === 'none') {
-                showPreview('Visitor preview');
-                return;
-            }
-            if (session.mode === 'visitor') {
-                showPreview('Visitor preview');
-                return;
-            }
-            return loadFullResource(session.profile);
-        }).catch(function(error) {
-            if (error && (error.code === 'AUTH_REQUIRED' || error.code === 'STUDENT_NOT_LINKED')) {
-                showPreview('Visitor preview');
-                return;
-            }
-            showError(error && error.message);
-        });
-    }
-
-    retryButton.addEventListener('click', start);
-    start();
+    searching = true;
+    document.body.classList.add('searching');
+    let count = 0, opinions = 0;
+    subs.forEach(s => {
+      const match = s.dataset.search.includes(q);
+      s.hidden = !match;
+      if (match) { count++; opinions += s.querySelectorAll('.viewpoints > li').length; }
+    });
+    topics.forEach(t => t.hidden = ![...t.querySelectorAll('.subtopic')].some(s => !s.hidden));
+    document.getElementById('idea-empty').hidden = count > 0;
+    const first = subs.find(s=>!s.hidden);
+    const link = document.getElementById('current-development-link');
+    link.hidden = !first;
+    if (first) {link.href = '#'+first.id+'-development';link.textContent = '查看首项内容拓展 ↗';}
+    status.textContent = '全库找到 ' + count + ' 个子话题 · ' + opinions + ' 条观点 · ' + count + ' 份拓展';
+  }
+  document.addEventListener('click', event => {
+    const a = event.target.closest('a[href^="#"]');
+    if (!a || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    let target;
+    try { target = document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))); }
+    catch (_) { return; }
+    if (!target) return;
+    event.preventDefault();
+    if (target.closest('article.topic')) showTopic(target, {push:true,scroll:true,focus:true});
+    else { pushHash(target.id); scrollToContent(target, true); }
+  });
+  topicPicker.addEventListener('change', () => showTopic(document.getElementById(topicPicker.value), {push:true,scroll:true,focus:true}));
+  subPicker.addEventListener('change', () => showTopic(document.getElementById(subPicker.value), {push:true,scroll:true,focus:true}));
+  search.addEventListener('input', runSearch);
+  document.getElementById('idea-clear').addEventListener('click', () => {search.value='';runSearch();search.focus();});
+  window.addEventListener('hashchange', () => {
+    const node = elementFromHash();
+    if (node && node.closest('article.topic')) showTopic(node, {scroll:true});
+    else if (node) scrollToContent(node, false);
+    else if (!location.hash) showTopic(topics[0], {scroll:true});
+  });
+  document.documentElement.classList.add('js-reader');
+  mobile.hidden = false;
+  const initial = elementFromHash();
+  showTopic(initial?.closest('article.topic') ? initial : topics[0]);
+  if (initial?.closest('article.topic')) requestAnimationFrame(() => scrollToContent(initial, false));
 })();

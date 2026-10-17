@@ -1,5 +1,9 @@
 # 09 Content Workflow
 
+## 2026-10-17 — Publish the direct topic reader
+
+Edit the private topic framework/development source, then run `node .cloudbase-private/handouts/source/dse-core-topics/build-framework.cjs --direct` and `node scripts/prepare-topic-bank.js`. The scoped sealer updates only `dse-core-topics/published.html`, without importing unrelated drafts or rotating keys/identities. Run `node scripts/test-topic-bank.js --source`, `npm run build:static` and artifact checks. Publish `dist/dse-topic-bank.html`, never the root build blueprint. The full topic page is deliberately public under the owner's new rule; authoring plaintext stays private. Future permission design remains separate.
+
 ## 2026-10-17 — Published topic-bank content-development workflow
 
 Canonical authoring remains under ignored `.cloudbase-private/handouts/source/dse-core-topics/`. Four development batches are validated and merged by `development-store.cjs`; `build-framework.cjs --protected` produces the complete protected document. Keep all 20 themes, 100 subtopics, 800 viewpoints and existing references. Each subtopic contains an original labelled hypothetical situation, stakeholder concerns, two conditional causal chains, two actionable options with costs/conditions, a counterexample and three open tasks with supplied material. Build content before adding language material.

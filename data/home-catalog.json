@@ -1809,11 +1809,14 @@
       "topic": "阅读 / 写作 / 聆听 / 说话",
       "tags": [
         "Topic Bank",
-        "Student Access"
+        "Reading",
+        "Writing",
+        "Listening",
+        "Speaking"
       ],
-      "note": "800条观点与100份内容拓展；师生登录阅读完整版",
+      "note": "800条观点与100份内容拓展；打开即可阅读全文",
       "visible": true,
-      "access": "student-preview"
+      "learningMaterial": true
     },
     {
       "id": "DSE-TOPIC-BANK-WRITING",
@@ -1825,11 +1828,14 @@
       "topic": "阅读 / 写作 / 聆听 / 说话",
       "tags": [
         "Topic Bank",
-        "Student Access"
+        "Reading",
+        "Writing",
+        "Listening",
+        "Speaking"
       ],
-      "note": "800条观点与100份内容拓展；师生登录阅读完整版",
+      "note": "800条观点与100份内容拓展；打开即可阅读全文",
       "visible": true,
-      "access": "student-preview"
+      "learningMaterial": true
     },
     {
       "id": "C7-T1-S1",

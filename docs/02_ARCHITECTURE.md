@@ -1,5 +1,9 @@
 # 02 Architecture
 
+## 2026-10-17 — Direct static topic reader
+
+The topic page no longer calls CloudBase, checks a session, decodes protected chunks or renders an iframe. Its vanilla reader loads the existing topic CSS/JS asset paths and canonical shared header. `render-topic-bank.js` reads only `dse-core-topics/published.html` from the authenticated sealed source; `build-static-site.js` validates it with the existing 39-handout release before replacing dist. The root `dse-topic-bank.html` is a marked build blueprint. `prepare-topic-bank.js` refreshes this one sealed entry, preserving every other source and the link map. The legacy shared protected-resource endpoint remains available for existing clients and JUPAS; its authorization is not relaxed.
+
 ## 2026-10-17 — Reusable sharing toolbar fully published
 
 Eight root readers now consume the same static template and shared CSS/JS as all 39 independent handouts. Speaking CSS owns placement only. The Paper 3 generator pipes documents through the template synchronizer; build validation rejects malformed/duplicate marked headers before replacing dist. No extra service or runtime dependency.

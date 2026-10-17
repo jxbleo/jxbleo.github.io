@@ -4591,8 +4591,10 @@
             seen[libraryItemIdentity(item)] = true;
         });
         (publicItems || []).forEach(function(item) {
-            if (item.access !== 'student-preview') return;
             var key = libraryItemIdentity(item);
+            var publicTopicBank = (key === 'DSE-TOPIC-BANK-WRITING' || key === 'DSE-TOPIC-BANK-SPEAKING') &&
+                (item.access === 'public' || item.learningMaterial === true);
+            if (item.access !== 'student-preview' && !publicTopicBank) return;
             if (!key || seen[key]) return;
             seen[key] = true;
             merged.push(item);

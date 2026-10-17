@@ -4,7 +4,9 @@ const path = require("path");
 const root = path.resolve(__dirname, "..");
 const output = path.join(root, "dist");
 const manifest = require("./static-site-manifest.json");
-const { prepare: prepareHandouts } = require("./render-handouts");
+const { loadRelease } = require("./handout-store");
+const { renderRelease: renderHandouts } = require("./render-handouts");
+const { OUTPUT: topicBankFile, renderTopicBank, validateBlueprint } = require("./render-topic-bank");
 const { synchronize: synchronizeShareHeader } = require("./share-header");
 
 function isPublicSource(source) {
@@ -31,7 +33,12 @@ for (const [entries, type] of [[manifest.directories, "directory"], [manifest.ro
 
 // Authenticate all source and validate the complete stable map BEFORE touching dist.
 // A missing CI secret must never produce an artifact that retires valid links.
-const handouts = prepareHandouts(root);
+const release = loadRelease(root);
+const handouts = renderHandouts(release);
+if (!manifest.rootFiles.includes(topicBankFile) || !validateBlueprint(fs.readFileSync(path.join(root, topicBankFile), "utf8"))) {
+  throw new Error("Topic-bank build entry is missing or invalid; publication stopped.");
+}
+const topicBank = renderTopicBank(release.files);
 // Render marked public readers before replacing dist; malformed components fail closed.
 const sharedReaders = new Map();
 for (const file of manifest.rootFiles.filter(file => file.endsWith(".html"))) {
@@ -47,7 +54,8 @@ for (const directory of manifest.directories) {
 }
 
 for (const file of manifest.rootFiles) {
-  if (sharedReaders.has(file)) fs.writeFileSync(path.join(output, file), sharedReaders.get(file));
+  if (file === topicBankFile) fs.writeFileSync(path.join(output, file), topicBank);
+  else if (sharedReaders.has(file)) fs.writeFileSync(path.join(output, file), sharedReaders.get(file));
   else copy(path.join(root, file), path.join(output, file));
 }
 try {

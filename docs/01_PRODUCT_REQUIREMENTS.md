@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-17 — Topic bank opens directly
+
+The owner supersedes the earlier topic-bank permission design: everyone opening `dse-topic-bank.html` sees the full 20-theme / 100-subtopic reader with 800 viewpoints and 100 content extensions. Remove visitor preview, login prompts, access-status badges and iframe delivery. The stable homepage/Teacher/student resource entries remain usable. A common permission template will be designed separately; this does not authorize changing access to any other resource.
+
 ## 2026-10-17 — Published DSE core topic bank
 
 The existing `dse-topic-bank.html` address now serves DSE英文核心话题库 across Reading, Writing, Listening and Speaking: 20 themes, 100 subtopics, 800 viewpoints and 100 complete content-development units. Keep the learning order viewpoints → substantial content development → later language material. Supplied situations and figures are original labelled teaching hypotheses. Visitors see the public introduction; active authenticated students and teachers may read the complete bank, with authorization rechecked on every protected request. Preserve the existing URL and access boundaries.

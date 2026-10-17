@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-17 — Published topic bank direct reader
+
+Replaced the old public preview/login/iframe shell with the approved complete Writing-style reader, following the owner's revised access instruction. Added authenticated-source static rendering and a scoped topic sealer; the existing 39 independent handout identities and unrelated access rules remain unchanged. Updated both topic catalog entries and a narrowly scoped student Library compatibility condition. Topic assets and the dashboard loader receive fresh cache versions. Publication evidence is recorded in docs/10_DEPLOYMENT.md.
+
 ## 2026-10-17 — Published DSE英文核心话题库
 
 Renamed the public reader and Writing/Speaking entry metadata, added all four English-skill labels, and published the redesigned private bank: 20 themes, 100 subtopics, 800 viewpoints and 100 complete content-development units with 200 causal chains, 200 options and 300 open tasks. Original labelled hypothetical cases give students material to compare and revise before vocabulary or model-language work.

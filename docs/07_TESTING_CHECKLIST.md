@@ -1,5 +1,9 @@
 # 07 Testing Checklist
 
+## 2026-10-17 — Direct topic reader acceptance
+
+Run `node scripts/test-topic-bank.js --source`, synthetic static/isolated-handout tests, protected-resource regression, Teacher-material-links, shared-header and dashboard-loading checks. After build run `node scripts/test-topic-bank.js --artifact` and `node scripts/test-static-build.js --artifact`. Require complete 20/100/800/100 coverage and 200 chains / 200 options / 300 tasks, exactly one shared toolbar, valid local anchors and no iframe/auth/protected fetch. Missing sealed topic source, incomplete tasks and missing build marker must fail before dist replacement. Preserve all 39 independent handouts and JUPAS protection. Anonymous public fetch must contain the complete content. Check desktop/320px, search/clear, 20.4 deep links and both Topic Bank catalog entries; do not equate a hash check with a visual browser check.
+
 ## 2026-10-17 — Topic-bank protected content-development edition
 
 - Run `npm run test:protected-resources` with the ignored reviewed payload: require 20 ordered themes, 100 subtopics, eight viewpoints and one complete extension per subtopic, two chains/two options/three supplied-material tasks, valid local anchors and hypothetical labels. Missing sections/tasks, duplicate toolbar and external links must fail validation; legacy payloads remain supported.
