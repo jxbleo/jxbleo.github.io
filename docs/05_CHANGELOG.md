@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-17 — Published DSE英文核心话题库
+
+Renamed the public reader and Writing/Speaking entry metadata, added all four English-skill labels, and published the redesigned private bank: 20 themes, 100 subtopics, 800 viewpoints and 100 complete content-development units with 200 causal chains, 200 options and 300 open tasks. Original labelled hypothetical cases give students material to compare and revise before vocabulary or model-language work.
+
+Changed only the existing DSE protected payload and four public reader/catalog objects in production. Private generation now creates a toolbar-free internal document for the unchanged authenticated sandbox; legacy report validation remains supported. Runtime, JUPAS, authorization, configuration and unrelated live catalog entries are preserved. Updated preparation/validation scripts, two source metadata records and workflow/testing/deployment records. Protected-resource, shared-header and frozen-catalog Teacher-link checks passed; COS and both public domains match expected bytes. Synthetic-session sandbox, search/navigation and 320px checks passed; real authenticated live UI remains unverified after browser timeout. No owner action is required to use the published reader.
+
 ## 2026-10-17 — Reusable sharing toolbar fully published
 
 Published at 2026-10-16T16:29:20.535Z under the owner's explicit request: eight root HTML readers (five Paper 3 listening handouts, topic-bank/JUPAS resource shells and parent Speaking report) plus assets/css/speaking-report.css. The 39 independent handouts and two share-header assets had already shipped with the complete Writing course; they were verified and left intact. All 47 shared readers now use the cat + 进入主页 + four-contact toolbar. The eight root-page bodies were transformed from their verified live baseline, preserving unrelated local topic-bank copy changes outside this release.

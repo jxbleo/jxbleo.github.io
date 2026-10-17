@@ -164,6 +164,17 @@ window.__HOME_CATALOG__ = {
       "titleMode": "title",
       "emptyMessage": "Developing",
       "emptyNote": "IELTS lessons will appear here."
+    },
+    {
+      "id": "reading-explorer",
+      "groupId": "lessons",
+      "title": "RE",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search RE lessons...",
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "RE",
+      "emptyNote": "Reading Explorer 精读课堂"
     }
   ],
   "items": [
@@ -1791,32 +1802,32 @@ window.__HOME_CATALOG__ = {
     {
       "id": "DSE-TOPIC-BANK-SPEAKING",
       "sectionId": "dse-english-paper-4",
-      "title": "HKDSE Writing & Speaking Topic Bank",
+      "title": "DSE英文核心话题库",
       "href": "dse-topic-bank.html",
-      "displayValue": "2012–2026",
+      "displayValue": "20大主题",
       "sortValue": 1,
-      "topic": "Speaking / Writing",
+      "topic": "阅读 / 写作 / 聆听 / 说话",
       "tags": [
         "Topic Bank",
         "Student Access"
       ],
-      "note": "访客可预览；学生登录后查看完整版",
+      "note": "800条观点与100份内容拓展；师生登录阅读完整版",
       "visible": true,
       "access": "student-preview"
     },
     {
       "id": "DSE-TOPIC-BANK-WRITING",
       "sectionId": "dse-english-paper-2",
-      "title": "HKDSE Writing & Speaking Topic Bank",
+      "title": "DSE英文核心话题库",
       "href": "dse-topic-bank.html",
-      "displayValue": "2012–2026",
+      "displayValue": "20大主题",
       "sortValue": 1,
-      "topic": "Writing / Speaking",
+      "topic": "阅读 / 写作 / 聆听 / 说话",
       "tags": [
         "Topic Bank",
         "Student Access"
       ],
-      "note": "访客可预览；学生登录后查看完整版",
+      "note": "800条观点与100份内容拓展；师生登录阅读完整版",
       "visible": true,
       "access": "student-preview"
     },
@@ -3449,6 +3460,40 @@ window.__HOME_CATALOG__ = {
       ],
       "note": "115 Words · 11 Quiz Groups",
       "visible": true
+    },
+    {
+      "id": "RE-F-1B",
+      "sectionId": "reading-explorer",
+      "title": "The Lost City of Atlantis",
+      "href": "re.html?lesson=RE-F-1B",
+      "displayValue": "Foundations · 1B",
+      "sortValue": 1,
+      "topic": "Reading Explorer",
+      "tags": [
+        "Foundations",
+        "精读",
+        "完整课文"
+      ],
+      "note": "",
+      "visible": true,
+      "learningMaterial": true
+    },
+    {
+      "id": "RE-F-2A",
+      "sectionId": "reading-explorer",
+      "title": "The World of Speed Eating",
+      "href": "re.html?lesson=RE-F-2A",
+      "displayValue": "Foundations · 2A",
+      "sortValue": 2,
+      "topic": "Reading Explorer",
+      "tags": [
+        "Foundations",
+        "精读",
+        "照片节选"
+      ],
+      "note": "",
+      "visible": true,
+      "learningMaterial": true
     }
   ]
 };

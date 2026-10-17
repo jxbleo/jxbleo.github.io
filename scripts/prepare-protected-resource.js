@@ -14,13 +14,48 @@ const outputPath = path.join(
 );
 const CHUNK_SIZE = 96000;
 
+function validateTopicBankHtml(html) {
+  if (!html.includes('data-topic-bank-version="content-development-v1"')) return false;
+  if (!html.includes('data-topic-bank-delivery="protected-srcdoc"') ||
+      !html.includes('<title>DSE英文核心话题库</title>') ||
+      !html.includes('<meta name="robots" content="noindex,nofollow,noarchive">') ||
+      !html.includes('<meta name="referrer" content="no-referrer">')) return false;
+  // Full text belongs in the authorized opaque-origin iframe. The public
+  // reader supplies its shared toolbar; no inner links may escape the report.
+  if (/data-share-header|data-resource-topbar|<base\b|<iframe\b|<form\b/i.test(html) ||
+      /<(?:script|img|link)\b[^>]*\b(?:src|href)\s*=/i.test(html)) return false;
+  const hrefs = [...html.matchAll(/<a\b[^>]*\bhref="([^"]*)"/g)].map(match => match[1]);
+  if (!hrefs.length || hrefs.some(href => !/^#[A-Za-z0-9_-]+$/.test(href))) return false;
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+  const uniqueIds = new Set(ids);
+  if (uniqueIds.size !== ids.length || hrefs.some(href => !uniqueIds.has(href.slice(1)))) return false;
+  const themes = [...html.matchAll(/<article class="topic" id="(topic-\d{2})"/g)];
+  if (themes.length !== 20 || themes.some((match, index) => match[1] !== 'topic-' + String(index + 1).padStart(2, '0'))) return false;
+  const subtopics = html.split('<section class="subtopic" ').slice(1);
+  if (subtopics.length !== 100) return false;
+  for (const [index, subtopic] of subtopics.entries()) {
+    const id = 'topic-' + String(Math.floor(index / 5) + 1).padStart(2, '0') + '-sub-' + (index % 5 + 1);
+    if (!subtopic.startsWith(`id="${id}" `) || !subtopic.includes(`class="development" id="${id}-development"`)) return false;
+    const viewpoints = subtopic.match(/<ol class="viewpoints"[^>]*>([\s\S]*?)<\/ol>/);
+    const tasks = subtopic.match(/<ol class="transfer-tasks">([\s\S]*?)<\/ol>/);
+    if (!viewpoints || (viewpoints[1].match(/<li>/g) || []).length !== 8 ||
+        !tasks || (tasks[1].match(/<li>/g) || []).length !== 3 ||
+        (subtopic.match(/<section class="development"/g) || []).length !== 1 ||
+        (subtopic.match(/<div class="chain">/g) || []).length !== 2 ||
+        (subtopic.match(/<article class="option">/g) || []).length !== 2 ||
+        !subtopic.includes('<span class="label">假设情境</span>')) return false;
+  }
+  return true;
+}
+
 const RESOURCE_DEFINITIONS = {
   "dse-topic-bank-2012-2026": {
-    title: "HKDSE 英文写作与口语全话题备考库（2012–2026）",
+    title: "DSE英文核心话题库",
     sourceEnv: "MRCAT_DSE_TOPIC_BANK_SOURCE",
     allowedRoles: ["student", "teacher"],
     validate(html) {
-      return html.includes("HKDSE") && html.includes('data-artifact-block-id="topic-overview-block"');
+      return validateTopicBankHtml(html) ||
+        (!html.includes('data-topic-bank-version=') && html.includes("HKDSE") && html.includes('data-artifact-block-id="topic-overview-block"'));
     },
     error: "The source does not look like the reviewed HKDSE topic-bank HTML.",
   },
@@ -113,4 +148,5 @@ function main() {
   console.log("The generated payload is ignored by Git and must only enter the CloudBase deployment ZIP.");
 }
 
-main();
+if (require.main === module) main();
+module.exports = { validateTopicBankHtml };

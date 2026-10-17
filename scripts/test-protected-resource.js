@@ -5,7 +5,9 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
+const vm = require("vm");
 const { roleCanAccess } = require("../cloudfunctions/getProtectedResource/access-policy");
+const { validateTopicBankHtml } = require("./prepare-protected-resource");
 
 const root = path.resolve(__dirname, "..");
 const payloadPath = path.join(root, "cloudfunctions", "getProtectedResource", "protected-payloads.private.js");
@@ -31,15 +33,80 @@ function unpackResource(resource) {
   return html.toString("utf8");
 }
 
-function main() {
+async function checkAuthorizedDelivery(payload) {
+  let authenticatedUid = "", activeProfile = null, profileReads = 0;
+  const app = {
+    auth: () => ({ getUserInfo: async () => ({ uid: authenticatedUid }) }),
+    database: () => ({ collection: (name) => {
+      assert.strictEqual(name, "students");
+      return { where: (query) => {
+        assert.deepStrictEqual(JSON.parse(JSON.stringify(query)), { auth_uid: authenticatedUid, active: true });
+        return { limit: (limit) => {
+          assert.strictEqual(limit, 1);
+          return { get: async () => { profileReads++; return { data: activeProfile ? [activeProfile] : [] }; } };
+        } };
+      } };
+    } }),
+  };
+  const entry = { exports: {}, require: (name) => {
+    if (name === "@cloudbase/node-sdk") return { SYMBOL_CURRENT_ENV: "test", init: () => app };
+    if (name === "./protected-payloads.private") return payload;
+    if (name === "./access-policy") return { roleCanAccess };
+    throw new Error("Unexpected protected resource dependency: " + name);
+  } };
+  vm.runInNewContext(fs.readFileSync(path.join(root, "cloudfunctions/getProtectedResource/index.js"), "utf8"), entry);
+  const call = (action, extra = {}) => entry.exports.main({ resource_key: "dse-topic-bank-2012-2026", action, chunk_index: 0, auth_uid: "untrusted-uid", role: "teacher", ...extra });
+  for (const action of ["manifest", "chunk"]) {
+    assert.strictEqual((await call(action)).code, "AUTH_REQUIRED");
+    authenticatedUid = "verified-uid";
+    assert.strictEqual((await call(action)).code, "STUDENT_NOT_LINKED");
+    activeProfile = { role: "visitor" };
+    assert.strictEqual((await call(action)).code, "ACCESS_DENIED");
+    for (const role of ["student", "teacher"]) {
+      activeProfile = { role };
+      const before = profileReads;
+      const result = await call(action);
+      assert.strictEqual(result.success, true);
+      assert.strictEqual(profileReads, before + 1, "Each manifest/chunk must recheck the active profile.");
+      assert(!JSON.stringify(result).includes("verified-uid"));
+    }
+    activeProfile = null;
+    assert.strictEqual((await call(action)).code, "STUDENT_NOT_LINKED", "An inactive/unlinked profile must lose access to every action.");
+    authenticatedUid = "";
+  }
+  authenticatedUid = "verified-uid";
+  activeProfile = { role: "teacher" };
+  assert.strictEqual((await call("manifest", { resource_key: "hk8-dse-jupas-weighting-2026-27" })).code, "ACCESS_DENIED");
+  activeProfile = { role: "student" };
+  assert.strictEqual((await call("manifest", { resource_key: "hk8-dse-jupas-weighting-2026-27" })).success, true);
+  for (const index of [-1, 0.5, payload.resources["dse-topic-bank-2012-2026"].chunks.length]) {
+    assert.strictEqual((await call("chunk", { chunk_index: index })).code, "INVALID_CHUNK");
+  }
+}
+
+async function main() {
   assert(fs.existsSync(payloadPath), "Run npm run prepare:dse-topic-bank -- --source <full-report.html> first.");
   delete require.cache[require.resolve(payloadPath)];
   const payload = require(payloadPath);
   const resource = payload.resources && payload.resources["dse-topic-bank-2012-2026"];
   const htmlText = unpackResource(resource);
-  assert(htmlText.includes('data-artifact-block-id="writing-index"'));
-  assert(htmlText.includes('data-artifact-block-id="speaking-index"'));
+  if (htmlText.includes('data-topic-bank-version=')) {
+    assert(validateTopicBankHtml(htmlText), "The protected topic bank must have all 100 complete subtopics and only internal resources.");
+    assert(!validateTopicBankHtml(htmlText.replace('class="development"', 'class="missing-development"')), "Missing development must fail validation.");
+    assert(!validateTopicBankHtml(htmlText.replace('href="#reader-content"', 'href="https://example.invalid/"')), "External inner links must fail validation.");
+    assert(!validateTopicBankHtml(htmlText.replace('<body ', '<body data-share-header ')), "A duplicate shared toolbar must fail validation.");
+    assert(!validateTopicBankHtml(htmlText.replace('<ol class="transfer-tasks"><li>', '<ol class="transfer-tasks"><div>')), "Incomplete task coverage must fail validation.");
+    assert(htmlText.includes("catch (_) { location.hash = hash; }"), "Opaque-origin srcdoc requires a History API fallback.");
+    assert(htmlText.includes("closest('a[href^=\"#\"]')"), "All hash links must use explicit local navigation inside srcdoc.");
+  } else {
+    assert(htmlText.includes('data-artifact-block-id="writing-index"'));
+    assert(htmlText.includes('data-artifact-block-id="speaking-index"'));
+  }
   assert(!htmlText.includes('data-artifact-block-id="further-questions"'), "Further Questions must not be present in the protected report.");
+  assert.deepStrictEqual(resource.allowed_roles, ["student", "teacher"], "Topic-bank access must remain student/teacher only.");
+  const publicShell = fs.readFileSync(path.join(root, "dse-topic-bank.html"), "utf8");
+  assert(/<iframe\b[^>]*\bid="topic-report-frame"[^>]*\bsandbox="allow-scripts"/.test(publicShell), "Do not relax the protected iframe sandbox.");
+  assert(publicShell.includes('data-share-header'), "The outer authenticated reader must retain the shared toolbar.");
 
   const jupasResource = payload.resources && payload.resources["hk8-dse-jupas-weighting-2026-27"];
   const jupasHtml = unpackResource(jupasResource);
@@ -54,16 +121,19 @@ function main() {
 
   const forbiddenFullText = "Northbound travel and local retail";
   const forbiddenJupasText = "条件权重（例如第一／第二选修科）在原始明细中保留适用范围";
+  const currentPrivateClaim = htmlText.match(/<p class="claim">([^<]+)<\/p>/)?.[1];
   publicFiles.forEach((filePath) => {
     assert(fs.existsSync(filePath), `Missing public file: ${path.relative(root, filePath)}`);
     const publicText = fs.readFileSync(filePath, "utf8");
     assert(!publicText.includes(forbiddenFullText), `Protected topic-bank text leaked into ${path.relative(root, filePath)}`);
     assert(!publicText.includes(forbiddenJupasText), `Protected JUPAS report text leaked into ${path.relative(root, filePath)}`);
+    if (currentPrivateClaim) assert(!publicText.includes(currentPrivateClaim), `Protected viewpoint text leaked into ${path.relative(root, filePath)}`);
   });
 
   const ignored = require("child_process").spawnSync("git", ["check-ignore", "-q", path.relative(root, payloadPath)], { cwd: root });
   assert.strictEqual(ignored.status, 0, "Generated protected payload must remain ignored by Git.");
+  await checkAuthorizedDelivery(payload);
   console.log(`Protected resources verified: DSE ${resource.chunks.length} chunks, JUPAS ${jupasResource.chunks.length} chunks, integrity OK, no tested public leak.`);
 }
 
-main();
+main().catch(error => { console.error(error); process.exitCode = 1; });

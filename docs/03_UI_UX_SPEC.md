@@ -1,5 +1,9 @@
 # 03 UI / UX Spec
 
+## 2026-10-17 — Published topic-bank reader
+
+The Writing-handout-style reader presents 20 themes, 100 subtopics, 800 viewpoints and 100 content-development units, with content before language and four-skill metadata. The original public URL retains its visitor preview and loads the full reader only for active authenticated students/teachers. Render the complete document inside the existing opaque-origin `sandbox="allow-scripts"` iframe. Its parent supplies the sole canonical shared toolbar; the inner reader has only local navigation and no external resources/links. Preserve desktop theme/subtopic navigation, mobile selects, viewpoint/development jumps, search across the extension material and direct hash navigation with the opaque-origin History API fallback.
+
 ## 2026-10-17 — Reusable sharing toolbar fully published
 
 All handouts and shared readers now use the canonical cat + 进入主页 + four-contact component. Keep the home label at 13px regular weight beside the 32px cat, with 44px contact targets. Shared-resource authentication controls stay on their existing separate row. The Speaking header remains outside report-state updates; home navigation opens index.html without share tokens or referrers.

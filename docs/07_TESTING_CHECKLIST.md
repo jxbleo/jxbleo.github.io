@@ -1,5 +1,13 @@
 # 07 Testing Checklist
 
+## 2026-10-17 — Topic-bank protected content-development edition
+
+- Run `npm run test:protected-resources` with the ignored reviewed payload: require 20 ordered themes, 100 subtopics, eight viewpoints and one complete extension per subtopic, two chains/two options/three supplied-material tasks, valid local anchors and hypothetical labels. Missing sections/tasks, duplicate toolbar and external links must fail validation; legacy payloads remain supported.
+- Verify gzip/base64 reconstruction, source bytes and SHA; reject anonymous, forged-role, unlinked/inactive and disallowed profiles for both manifest and chunk actions. Recheck the active profile each time. Preserve student/teacher topic-bank access, student-only JUPAS access, JUPAS bytes and the public `allow-scripts` iframe sandbox.
+- Run shared-header synchronization tests and the Teacher-material-link suite against the release catalog. Check all four skill labels, no private text in public files, no random independent-handout links and preservation of unrelated live catalog entries.
+- In a private synthetic-session browser, verify full payload decoding and sandbox rendering, 20/100/800/100 coverage, topic/subtopic/hash navigation, content search and 320px overflow. Keep real-account UI verification distinct: the 2026-10-17 release has live-byte and unauthenticated-denial evidence, but live authenticated browser automation timed out.
+- For authorized publication, compare the frozen release against COS plus both public domains and verify unchanged dependencies/configuration. Keep private manifests, evidence and rollback packages outside Git; never deploy a whole dirty checkout for this scoped content release.
+
 ## 2026-10-17 — Reusable sharing toolbar fully published
 
 Run npm run test:share-header for root-consumer parity/synchronization and node scripts/test-share-header-runtime.js for copy and profile routing. test-static-build.js includes a stale-header regeneration case and proves duplicate headers fail without erasing the prior artifact. Retain the Speaking, protected-resource and independent-handout tests. Verify actual live bytes on both domains, and use sanitized previews for screenshots.

@@ -1,5 +1,9 @@
 # Mr. Cat Academy 产品需求与后端架构说明
 
+## 2026-10-17 — Published DSE core topic bank
+
+The existing `dse-topic-bank.html` address now serves DSE英文核心话题库 across Reading, Writing, Listening and Speaking: 20 themes, 100 subtopics, 800 viewpoints and 100 complete content-development units. Keep the learning order viewpoints → substantial content development → later language material. Supplied situations and figures are original labelled teaching hypotheses. Visitors see the public introduction; active authenticated students and teachers may read the complete bank, with authorization rechecked on every protected request. Preserve the existing URL and access boundaries.
+
 ## 2026-10-17 — Reusable sharing toolbar fully published
 
 All handouts and shared readers now use the canonical cat + 进入主页 + four-contact component. Keep the home label at 13px regular weight beside the 32px cat, with 44px contact targets. Shared-resource authentication controls stay on their existing separate row. The Speaking header remains outside report-state updates; home navigation opens index.html without share tokens or referrers.

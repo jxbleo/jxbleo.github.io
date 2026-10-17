@@ -1,16 +1,16 @@
 {
   "id": "DSE-TOPIC-BANK-SPEAKING",
   "sectionId": "dse-english-paper-4",
-  "title": "HKDSE Writing & Speaking Topic Bank",
+  "title": "DSE英文核心话题库",
   "href": "dse-topic-bank.html",
-  "displayValue": "2012–2026",
+  "displayValue": "20大主题",
   "sortOrder": 1,
-  "topic": "Speaking / Writing",
+  "topic": "阅读 / 写作 / 聆听 / 说话",
   "tags": [
     "Topic Bank",
     "Student Access"
   ],
-  "note": "访客可预览；学生登录后查看完整版",
+  "note": "800条观点与100份内容拓展；师生登录阅读完整版",
   "access": "student-preview",
   "visible": true
 }
