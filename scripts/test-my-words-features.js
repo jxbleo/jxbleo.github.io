@@ -101,8 +101,8 @@ async function main() {
   assert(bbcHtml.includes('class="blank-num" data-mrcat-vocab-ignore'), "BBC fill-blank question numbers must stay outside My Words selections");
   assert(bbcHtml.includes('class="mc-num" data-mrcat-vocab-ignore'), "BBC multiple-choice question numbers must stay outside My Words selections");
   assert(personalVocabJs.includes("fragment.querySelectorAll('[data-mrcat-vocab-ignore]')"), "My Words must remove structural labels from captured selection text");
-  assert(personalVocabJs.includes("transform:translate(-50%,6px) scale(.94)"), "the selection popover must enter from a restrained anchored offset");
-  assert(personalVocabJs.includes("@media (prefers-reduced-motion:reduce)"), "the selection popover must provide a reduced-motion transition");
+  assert(personalVocabJs.includes("modal.showModal()"), "selected vocabulary must open an independent modal for confirmation");
+  assert(personalVocabJs.includes("@media (prefers-reduced-motion:reduce)"), "the selection dialog must respect reduced motion");
   assert(/assets\/css\/app\.css\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml));
   assert(/assets\/js\/dashboard\.js\?v=\d{8}-[a-z0-9-]+/.test(dashboardHtml));
   assert(myWordsHtml.includes("assets/js/my-words-export.js?v=20260801-1"));

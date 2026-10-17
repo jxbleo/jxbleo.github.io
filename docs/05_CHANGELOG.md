@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-17 — Selection opens the manual-add style dialog (deployed)
+
+Supersedes the earlier unpublished below-selection capsule. Completed selection
+now opens an independent glass form matching Dashboard manual add, with selected
+text/context prefilled, editable fields and explicit Confirm/Close. Text and
+original source are captured before native selection is cleared. Added focus
+containment, background-scroll restoration, visual-viewport fitting and pending
+save protection; errors retain the draft. Seven HTML cache references and the
+existing My Words expectations are updated. The backend add/enrich boundary and
+visitor/teacher restrictions are unchanged. Product, architecture, UI and testing
+notes are current. Published the runtime and seven cache references at 22:50 Shanghai;
+eight COS objects, 25 unchanged dependencies and 118 public checks pass. Real
+iPhone/iPad native-menu and keyboard acceptance remains open.
+
 ## 2026-10-17 — Published topic bank direct reader
 
 Replaced the old public preview/login/iframe shell with the approved complete Writing-style reader, following the owner's revised access instruction. Added authenticated-source static rendering and a scoped topic sealer; the existing 39 independent handout identities and unrelated access rules remain unchanged. Updated both topic catalog entries and a narrowly scoped student Library compatibility condition. Topic assets and the dashboard loader receive fresh cache versions. Publication evidence is recorded in docs/10_DEPLOYMENT.md.

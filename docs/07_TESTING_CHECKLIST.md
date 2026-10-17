@@ -2343,13 +2343,25 @@ Check:
   instruction, selecting the first word excludes the adjacent question/option
   label both from the visible selection and the saved My Words text; genuine
   numeric content such as `5G technology` is preserved
-- the anchored `Add to My Words` capsule fades, lifts, and scales into place
-  without a bounce, reverses cleanly when dismissed, and becomes a short
-  opacity-only transition with reduced motion enabled
-- long-pressing selectable lesson text on iPhone and iPad keeps the native
-  selection highlight and handles visible while `Add to My Words` is offered
-- tapping `Add to My Words` on a touch device saves the captured text once,
-  without a duplicate touch/click submission
+- at desktop, 390px and 320px widths, completed word/phrase selection opens
+  the independent Add to My Words form with no anchored capsule. Touch selection
+  must wait for release; mouse/Shift selection must finish before the form opens.
+  Capture the text/context before clearing the native selection. On real
+  iPhone/iPad, verify the system selection menu dismisses and the keyboard stays
+  closed until an input is tapped; synthetic browser gestures do not certify this.
+- compare the card with Dashboard manual add: green title, Word or phrase,
+  Context Optional, Confirm and an outside Close capsule. Both fields prefill
+  and remain editable. Only Confirm saves the edited text/context with the
+  original lesson/set/path; opening, Close and Escape create no requests.
+- verify 44px actions, 16px inputs, no horizontal overflow, short-viewport card
+  scrolling, reachable Close, and reduced motion/transparency. Tab/Shift-Tab must
+  stay in the form; initial focus is on the card. Background scrolling is locked;
+  dismissal restores the exact previous reading position and style values.
+- simulate a slow save: disable duplicate submission and dismissal until it
+  settles. Simulate failure: retain both fields, show the error and permit retry.
+  Success closes once and preserves save-before-enrichment behavior. Visitors
+  send no request; teacher preview opens no collection form. Input fields,
+  active buttons and existing blocked regions do not trigger another modal.
 - My Words accepts single-letter words such as `a` and `I`
 - a curated/shared-lexicon word displays dictionary details immediately after
   save/list, while an unknown word saves first and then enriches automatically

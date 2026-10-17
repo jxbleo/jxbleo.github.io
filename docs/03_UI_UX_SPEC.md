@@ -2402,13 +2402,27 @@ Important mobile rules:
   removed again from the captured Range before saving, so selecting the first
   word never adds its adjacent question number to My Words. Real numeric word
   content such as `5G` remains valid.
-- The anchored `Add to My Words` capsule materializes from the selection with a
-  short fade, 6px lift, and subtle scale/shadow transition, then exits along the
-  same path. It has immediate pressed feedback, no decorative bounce, and uses
-  a short opacity-only equivalent when reduced motion is requested.
-- On touch devices, My Words must preserve the browser's native selection
-  highlight and selection handles after a long press. Tapping the site save
-  button must not clear the captured word or phrase before it is saved.
+- Completed word/short-phrase selection opens one independent `Add to My Words`
+  dialog in every existing shared-runtime consumer. On touch, wait until the
+  selecting finger is released; on desktop, wait for mouse/Shift selection to
+  finish. Replace the anchored capsule entirely. Capture the text, context and
+  original source before clearing the native selection for the independent form.
+- Match the Dashboard manual-add card: a bounded 430px glass surface, centred
+  green title, editable `Word or phrase`, editable `Context Optional`, `Confirm`,
+  and a separate `Close` capsule immediately below. No top-right close icon or
+  backdrop dismissal. Prefill the selected text and nearby source sentence.
+  Initial focus goes to the card, so opening does not summon the software keyboard.
+- Only Confirm submits. While saving, disable repeat submission and dismissal;
+  an error keeps the entered text/context and offers retry. Success closes the
+  dialog, restores the reading position, announces the save and then enriches.
+  Close/Escape cancel without saving. Source attribution remains the original
+  page even when the editable fields change.
+- Native modal inertness and an explicit Tab/Shift-Tab loop keep focus inside;
+  lock background scroll and restore its exact prior inline styles and position.
+  Keep the card scrollable and Close reachable at phone widths and with a reduced
+  visual viewport. Use 44px actions, 16px inputs and reduced-motion/transparency
+  alternatives. Real iPhone/iPad acceptance must check long-press release,
+  dismissal of the native selection menu and keyboard behavior.
 
 ## 9. Future UI Improvements
 

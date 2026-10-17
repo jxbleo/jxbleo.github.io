@@ -1,5 +1,31 @@
 # Agent QA To Do List
 
+## 2026-10-17 — Published: selected words open an independent add dialog
+
+Owner chose a dialog matching the Dashboard manual-add surface, superseding the
+unpublished below-selection capsule. `assets/js/personal-vocab.js` now waits for
+selection completion, snapshots word/context/source, clears the native selection
+and opens a scoped native dialog. Editable Word or phrase and Context Optional,
+Confirm, outside Close, card-first focus, exact scroll restoration, viewport
+fitting, failure retention and pending-save guards are included. The seven HTML
+asset versions, existing My Words expectations, and product/architecture/UI/
+testing/changelog docs are updated. Published the eight scoped static objects at
+22:50 Shanghai; COS and all 118 public hash checks pass, with 25 dependencies
+unchanged. No backend or dependency change.
+
+Passed My Words feature tests, JavaScript syntax and whitespace checks. Local
+browser QA used synthetic responses: desktop and 390/320px forms, 320x320 internal
+scrolling with reachable Close, prefilled fields, edited save payload and retained
+source, failure retention, disabled pending controls, Close/Escape without save,
+focus cycling, and exact reading-position restoration (970.5px). Synthetic touch
+events verified no dialog while held and opening after release. Visitor sends no
+request; teacher preview opens no dialog. Fixed explicit Tab wrapping discovered
+in browser verification. Screenshot: `/tmp/mrcat-vocab-dialog-qa/preview-390.png`.
+
+Open: actual iPhone/iPad Safari long press,
+native-menu dismissal and software-keyboard acceptance. Synthetic browser tests
+do not certify iOS system UI. No CloudBase deployment is needed.
+
 ## 2026-10-17 — Reusable sharing toolbar fully published
 
 Published at 2026-10-16T16:29:20.535Z under the owner's explicit request: eight root HTML readers (five Paper 3 listening handouts, topic-bank/JUPAS resource shells and parent Speaking report) plus assets/css/speaking-report.css. The 39 independent handouts and two share-header assets had already shipped with the complete Writing course; they were verified and left intact. All 47 shared readers now use the cat + 进入主页 + four-contact toolbar. The eight root-page bodies were transformed from their verified live baseline, preserving unrelated local topic-bank copy changes outside this release.

@@ -1,5 +1,29 @@
 # 10 Deployment
 
+## 2026-10-17 — Selection-triggered My Words dialog published
+
+The owner authorized publication with “上线”. Published only the shared
+`assets/js/personal-vocab.js` runtime and seven HTML cache references at
+`2026-10-17T14:50:53.144Z` (22:50 Shanghai). The selected word and context now open
+an editable independent form matching Dashboard manual add; Confirm saves and
+Close/Escape cancel. Cache version: `20261017-selection-dialog-1`.
+
+All seven HTML objects were patched from their verified live bytes, changing only
+the vocabulary script version. Eight COS readbacks, 25 unchanged dependency guards
+and all 118 plain/versioned apex/www SHA-256 checks passed. No backend, database,
+model, permission, content identity or unrelated production change. Private frozen
+stage, original bytes and receipts: `.cloudbase-private/my-words-dialog-20261017/`.
+Source synchronization uses `[skip ci]`; do not run a full-site deploy from the
+shared dirty checkout.
+
+My Words regression, runtime and staged inline-script syntax, narrow HTML-delta
+checks and whitespace validation passed. Earlier browser QA covered desktop,
+390/320px and 320x320 views, edited prefill/save, original source retention, failure
+retry, pending-save guards, focus cycling and exact scroll restoration. Synthetic
+touch held/released, visitor and teacher checks passed. These tests and public
+byte verification do not certify actual iPhone/iPad native-menu or software-keyboard
+behavior; real-device acceptance remains open.
+
 ## 2026-10-17 — Topic bank direct reader published
 
 The owner explicitly removed the old topic-bank permission design after the previous release still showed the legacy visitor shell when not signed in. Published the full Writing-style direct reader at the same `dse-topic-bank.html` address. The public response now contains all 20 themes, 100 subtopics, 800 viewpoints and 100 development units without preview, login prompts, session checks, protected fetches or iframe delivery.

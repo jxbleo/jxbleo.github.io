@@ -379,6 +379,13 @@ and page-level modal layouts. These layers remain ordinary static CSS and
 vanilla JavaScript; they do not introduce a frontend framework or move trusted
 state out of CloudBase functions.
 
+`personal-vocab.js` also owns the selection-triggered native modal across its
+seven existing page consumers. It snapshots selected text, context and source,
+then uses an editable confirmation form before calling the unchanged
+`studentVocabulary` add/enrich flow. The modal uses scoped injected styles and
+native inertness with explicit focus/scroll restoration; no library, collection
+or new public API is introduced. Dashboard manual add retains its own entry.
+
 `my-words.html` is a separate authenticated workspace rather than a Dashboard
 modal. It calls the existing `studentVocabulary` function directly and reuses
 `personal-vocab.js` enrichment plus `my-words-export.js`; no personal word data
