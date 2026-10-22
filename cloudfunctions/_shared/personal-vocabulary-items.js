@@ -67,6 +67,18 @@ async function upsertPersonalVocabularyItem({ db, student, event, getLexiconItem
   const collection = db.collection("student_vocabulary_items");
   const existingResult = await collection.where({ vocab_id: vocabId, student_uid: student.auth_uid }).limit(1).get();
   const existing = existingResult.data && existingResult.data[0];
+  // Notes belong to this student's word, never to the shared dictionary.
+  // Empty legacy/manual/Scan requests must not clear a previously saved note.
+  const note = String(event.personal_note == null ? "" : event.personal_note).trim();
+  if (note.length > 500) throw new Error("NOTE_TOO_LONG");
+  if (note) {
+    const previous = String(existing && existing.personal_note || "");
+    const previousText = previous.trim();
+    const alreadyAppended = previousText === note || previousText.endsWith(`\n\n${note}`);
+    const combined = alreadyAppended ? previous : (previousText ? `${previous}\n\n${note}` : note);
+    if (combined.length > 500) throw new Error("NOTE_LIMIT_REACHED");
+    update.personal_note = combined;
+  }
   const examples = mergeSavedExamples(existing && existing.saved_examples, savedExample);
   const timesAdded = Number(existing && existing.times_added || (existing ? 1 : 0)) + 1;
   if (existing) {

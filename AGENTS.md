@@ -1195,6 +1195,13 @@ write this collection directly or trust a browser-provided Student ID for
 ownership. Visitor mode and teacher preview must not save personal student
 words.
 
+Selection-triggered My Words add includes an optional third Notes field. Reuse
+`student_vocabulary_items.personal_note` (500 characters), saving it with the word
+before enrichment. Blank add notes preserve existing notes; repeat-word notes
+append, consecutive identical notes are not duplicated, and overflow rejects
+before any write. Preserve multiline text and never send notes to shared dictionaries
+or AI. Existing detail editing and export use the same field.
+
 My Words saves must complete before optional dictionary enrichment. Lookup the
 shared `vocabulary_lexicon` first; only a cache miss may call the fixed backend
 English dictionary provider. Curated entries take precedence, provider results

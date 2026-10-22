@@ -2407,20 +2407,36 @@ Important mobile rules:
   selecting finger is released; on desktop, wait for mouse/Shift selection to
   finish. Replace the anchored capsule entirely. Capture the text, context and
   original source before clearing the native selection for the independent form.
-- Match the Dashboard manual-add card: a bounded 430px glass surface, centred
-  green title, editable `Word or phrase`, editable `Context Optional`, `Confirm`,
-  and a separate `Close` capsule immediately below. No top-right close icon or
-  backdrop dismissal. Prefill the selected text and nearby source sentence.
+- Use a bounded 430px glass card with no visible heading. The dialog retains the
+  accessible name Add to My Words. Its first input has an accessible Words label
+  but no visible Words caption: centre the box at at most 260px/84% of the inner
+  width, and centre its text in 25px Georgia/system-serif type. Preserve editing
+  of long words and phrases without widening the card.
+- Context and Notes each use one soft bordered field with a fixed internal label
+  in its first line and the editable content below. Labels remain visible when
+  populated, focused or scrolled; they are not disappearing placeholders. Keep
+  Context/Notes labels in the same #13766d green as the primary button; no visible
+  optional hint. Both fields remain optional. Input content uses
+  15px desktop / 16px narrow-or-touch text; Notes starts at two rows and remains
+  vertically resizable/scrollable. Focus highlights the complete field wrapper.
+  High-contrast/reduced-transparency modes use opaque white and stronger borders.
+  No visible character counter; the existing 500-character validation remains.
+- The sole primary action is Add to My Words, replacing Confirm and the former
+  top heading. Retain the separate external Close capsule, with no top-right icon
+  or backdrop dismissal. Prefill the word and source context; leave Notes blank.
   Initial focus goes to the card, so opening does not summon the software keyboard.
-- Only Confirm submits. While saving, disable repeat submission and dismissal;
-  an error keeps the entered text/context and offers retry. Success closes the
-  dialog, restores the reading position, announces the save and then enriches.
-  Close/Escape cancel without saving. Source attribution remains the original
-  page even when the editable fields change.
+- Only Add to My Words submits. While saving, show Adding… and disable repeat
+  submission and dismissal; errors retain all three inputs and restore the same
+  Add to My Words action. Show the inline error only when needed. Notes preserve
+  internal line breaks; Enter in Notes adds a line. Repeat-word saves append
+  without clearing existing notes. Combined notes above 500 characters keep the
+  form open with an actionable error. Success closes the dialog, restores the
+  reading position, announces the save and then enriches. Close/Escape cancel
+  without saving. Source attribution remains the original page after edits.
 - Native modal inertness and an explicit Tab/Shift-Tab loop keep focus inside;
   lock background scroll and restore its exact prior inline styles and position.
   Keep the card scrollable and Close reachable at phone widths and with a reduced
-  visual viewport. Use 44px actions, 16px inputs and reduced-motion/transparency
+  visual viewport. Use 44px actions, 16px mobile/touch inputs and reduced-motion/transparency
   alternatives. Real iPhone/iPad acceptance must check long-press release,
   dismissal of the native selection menu and keyboard behavior.
 

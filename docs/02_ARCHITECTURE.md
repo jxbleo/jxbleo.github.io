@@ -381,8 +381,10 @@ state out of CloudBase functions.
 
 `personal-vocab.js` also owns the selection-triggered native modal across its
 seven existing page consumers. It snapshots selected text, context and source,
-then uses an editable confirmation form before calling the unchanged
-`studentVocabulary` add/enrich flow. The modal uses scoped injected styles and
+then uses an editable confirmation form with optional multiline Notes. The existing
+`studentVocabulary` add flow saves `personal_note` with the word in one database
+write before enrichment; repeat additions append within the existing 500-character
+limit, and blank notes preserve existing text. Notes never enter dictionary requests. The modal uses scoped injected styles and
 native inertness with explicit focus/scroll restoration; no library, collection
 or new public API is introduced. Dashboard manual add retains its own entry.
 

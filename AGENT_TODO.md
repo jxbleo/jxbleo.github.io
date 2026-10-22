@@ -1,5 +1,33 @@
 # Agent QA To Do List
 
+## 2026-10-22 — My Words add Notes published
+
+Done: optional third multiline Notes field in the shared selection dialog; reused
+personal_note and the authenticated add flow; blank preservation, append/retry
+behavior and 500-character overflow without partial writes. Added note/ownership
+regression to test:my-words; My Words and Scan tests, syntax and studentVocabulary
+packaging pass. Synthetic browser checks pass for multiline save, reset, failure
+retention, pending disabled controls/Escape guard, visitor denial and 347px layout.
+Updated the matching product/UI/architecture/data/testing/release docs and guide.
+Owner layout follow-up: no visible heading/Words caption; narrowed centred word
+box with centred serif text; persistent Context/Notes labels inside the fields,
+matching button-green labels with no optional hints and an Add to My Words button. Optional content uses
+15px desktop/16px mobile-or-touch text, two-row Notes and clear wrapper focus.
+Validation and ownership are unchanged. My Words regression and syntax pass.
+Desktop and 320px iframe QA verify persistent internal labels, centred serif word,
+multiline save and the Add to My Words caption after failure. No page overflow;
+physical-device keyboard acceptance remains open. Latest label revision uses
+#13766d for both labels and removes optional copy; browser preview, syntax and
+My Words regression checks pass, and both fields remain optional.
+
+Published: owner authorized “就是这个样子，请上线吧”; studentVocabulary code-only
+update followed by nine static objects at 17:11 Shanghai. Deployed code matches the
+frozen bundle, configuration is unchanged, three anonymous denials pass, and nine
+COS/124 public content checks plus 24 dependency guards pass. No production data
+was written. Exact-bundle simulated persistence/ownership checks pass.
+Open: authenticated live-account round trip (no dedicated credentials available)
+and physical iPhone/iPad keyboard acceptance. See docs/10_DEPLOYMENT.md.
+
 ## 2026-10-17 — Published: selected words open an independent add dialog
 
 Owner chose a dialog matching the Dashboard manual-add surface, superseding the

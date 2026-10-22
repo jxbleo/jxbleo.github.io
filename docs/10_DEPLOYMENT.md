@@ -1,5 +1,46 @@
 # 10 Deployment
 
+## 2026-10-22 — My Words selection Notes published
+
+Owner authorized the reviewed layout with “就是这个样子，请上线吧”. Published
+at `2026-10-22T09:11:14.566Z` (17:11 Shanghai): one code-only studentVocabulary
+update and exactly nine static objects. Version: `20261022-selection-notes-5`.
+
+The function changes only optional add-note handling and two error messages.
+Rebuilding the pre-task source exactly reproduced the downloaded live index.js;
+the candidate has the same packaged dependencies. The deployed index.js SHA-256 is
+`94e0c87f26931aab7a394a218e4a88f32ec19f17b5a36de9b13f2172c03f5a0a`;
+release ZIP SHA-256 is
+`ae56336505d5f2a65ffc7633a43eb92569015279698fc80cb9194ed64eda8a93`.
+Downloaded deployed index.js and package.json match the frozen candidate. The
+function is Active and its runtime/environment/role/configuration fingerprint is
+unchanged. Three anonymous/spoofed-owner requests return AUTH_REQUIRED. The
+backend was published and verified before the frontend.
+
+Static scope: `assets/js/personal-vocab.js`, `assets/js/config.public.js`, and
+personal-vocab cache references in dashboard.html, my-words.html,
+attempt-review.html, bbc.html, ielts-reading.html, ielts-listening.html and
+vocabulary.html. The seven pages derive from actual live bytes, changing only the
+shared runtime query; config changes only appVersion. Nine COS readbacks and 124
+apex/www plain/versioned content checks pass. All 24 guarded dependencies retain
+their previous bytes. No full-site sync, other function deployment, database write,
+migration, collection/index/ACL, provider, secret or billing change was performed.
+
+My Words/Scan regression tests, syntax and release verification pass. The exact
+release bundle also passes the persistence/append/retry/limit/ownership suite with
+only its SDK factory replaced by isolated auth/database stubs. Synthetic browser
+QA verifies the final green internal labels without optional hints, centred serif
+word, multiline save, reset/failure retention, pending controls, visitor denial,
+and desktop/320px layout. No live student credentials were available; authenticated
+production save/readback and physical iPhone/iPad keyboard acceptance remain
+uncertified. Simulated authentication is not a live-account acceptance result.
+
+Private evidence: `.cloudbase-private/my-words-notes-20261022/` contains the owner
+authorization, previous objects/function, frozen release, bundle verification,
+function-receipt.json and receipt.json. Source synchronization uses an isolated
+remote-main worktree and a scoped `[skip ci]` commit; do not trigger a full-site
+release from the older main baseline. Future production work remains owner-gated.
+
 ## 2026-10-17 — Selection-triggered My Words dialog published
 
 The owner authorized publication with “上线”. Published only the shared

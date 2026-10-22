@@ -2349,19 +2349,33 @@ Check:
   Capture the text/context before clearing the native selection. On real
   iPhone/iPad, verify the system selection menu dismisses and the keyboard stays
   closed until an input is tapped; synthetic browser gestures do not certify this.
-- compare the card with Dashboard manual add: green title, Word or phrase,
-  Context Optional, Confirm and an outside Close capsule. Both fields prefill
-  and remain editable. Only Confirm saves the edited text/context with the
-  original lesson/set/path; opening, Close and Escape create no requests.
-- verify 44px actions, 16px inputs, no horizontal overflow, short-viewport card
-  scrolling, reachable Close, and reduced motion/transparency. Tab/Shift-Tab must
-  stay in the form; initial focus is on the card. Background scrolling is locked;
-  dismissal restores the exact previous reading position and style values.
+- Verify no visible top heading or Words label. The word box is narrower and
+  centred, with centred serif text; long editable phrases must not widen the card.
+  Screen readers still receive the dialog's Add to My Words name and Words input
+  name. Context/Notes labels use the primary button green (#13766d), with no
+  optional copy. Both fields still accept blank values. Labels stay inside their
+  respective borders, above the text, even after input, focus and textarea scroll.
+- Add to My Words is the primary button; Close remains outside. Text/context
+  prefill, Notes starts empty. Only submission saves all three values with the
+  original lesson/set/path; opening, Close and Escape create no requests. On
+  failure, restore the Add to My Words caption, never the old Confirm caption.
+- Verify softer optional fields, 15px desktop / 16px mobile/touch text, two-row
+  initial Notes, full-wrapper focus and opaque high-contrast controls. Check
+  44px actions, no horizontal overflow, short-viewport card scrolling, reachable
+  Close and reduced motion/transparency. Tab/Shift-Tab must stay in the form;
+  initial focus is on the card. Background scroll is locked; dismissal restores
+  the exact previous reading position and style values.
 - simulate a slow save: disable duplicate submission and dismissal until it
-  settles. Simulate failure: retain both fields, show the error and permit retry.
+  settles, including the Notes textarea. Simulate failure: retain all three fields,
+  show the error and permit retry. Verify Enter creates a line in Notes and Tab
+  includes it. Cancel/reopen must clear the prior note draft.
   Success closes once and preserves save-before-enrichment behavior. Visitors
   send no request; teacher preview opens no collection form. Input fields,
   active buttons and existing blocked regions do not trigger another modal.
+- Run `npm run test:my-words` for note persistence and ownership tests: new/duplicate
+  words, omitted/blank notes, consecutive identical notes, multiline Chinese, the
+  500-character limit, overflow with no partial write, failed-write retry, existing
+  detail editing, independent student ownership and visitor/teacher denial.
 - My Words accepts single-letter words such as `a` and `I`
 - a curated/shared-lexicon word displays dictionary details immediately after
   save/list, while an unknown word saves first and then enriches automatically

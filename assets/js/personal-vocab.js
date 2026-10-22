@@ -157,13 +157,14 @@
             '.mrcat-vocab-dialog:not([open]){display:none}.mrcat-vocab-dialog[open]{display:grid;gap:11px;justify-items:stretch}' +
             '.mrcat-vocab-dialog::backdrop{background:rgba(26,57,50,.2);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}' +
             '.mrcat-vocab-dialog *{box-sizing:border-box}.mrcat-vocab-card{min-height:0;max-height:calc(var(--mrcat-vocab-viewport-height,100dvh) - 100px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;overscroll-behavior:contain;padding:24px;border:1px solid rgba(255,255,255,.88);border-radius:26px;background:rgba(248,251,249,.76);box-shadow:0 24px 80px rgba(20,54,47,.24),0 3px 12px rgba(20,54,47,.08);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);outline:none}' +
-            '.mrcat-vocab-title{margin:0 0 18px;text-align:center;color:#0d5d56;font-size:12px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}.mrcat-vocab-form{display:grid;gap:10px;margin:0}.mrcat-vocab-form label{display:grid;gap:6px}.mrcat-vocab-form label>span{color:#647b75;font-size:13px;font-weight:800}.mrcat-vocab-form small{margin-left:4px;font-size:11px;font-weight:650}' +
-            '.mrcat-vocab-form input{display:block;min-width:0;width:100%;min-height:46px;padding:0 13px;border:1px solid #dce8e3;border-radius:12px;color:#18332f;background:#fff;font:inherit;font-size:16px;line-height:1.35}.mrcat-vocab-form input:focus{border-color:#13766d;box-shadow:0 0 0 4px rgba(19,118,109,.1);outline:none}.mrcat-vocab-status{min-height:1.2em;margin:0 2px;color:#b54747;font-size:12px;line-height:1.4}' +
+            '.mrcat-vocab-form{display:grid;gap:14px;margin:0}.mrcat-vocab-form input,.mrcat-vocab-form textarea{display:block;min-width:0;width:100%;color:#456057;font:inherit;font-size:15px;line-height:1.5}.mrcat-vocab-word-field{justify-self:center;width:min(260px,84%);margin:0 0 6px}.mrcat-vocab-form .mrcat-vocab-word-field input{min-height:58px;padding:8px 14px;border:1px solid #dce8e3;border-radius:12px;color:#18332f;background:#fff;font-family:Georgia,"Times New Roman",serif;font-size:25px;font-weight:400;line-height:1.3;text-align:center}.mrcat-vocab-word-field input:focus{border-color:#13766d;box-shadow:0 0 0 4px rgba(19,118,109,.1);outline:none}' +
+            '.mrcat-vocab-optional-field{display:grid;gap:4px;min-width:0;padding:10px 13px;border:1px solid rgba(84,118,101,.14);border-radius:12px;background:rgba(255,255,255,.58);cursor:text}.mrcat-vocab-optional-field>span{display:flex;align-items:baseline;color:#13766d;font-size:11px;font-weight:550;line-height:1.4}.mrcat-vocab-optional-field input,.mrcat-vocab-optional-field textarea{min-height:26px;margin:0;padding:0;border:0;border-radius:0;background:transparent;outline:none;box-shadow:none}.mrcat-vocab-optional-field textarea{min-height:48px;resize:vertical}.mrcat-vocab-optional-field:focus-within{border-color:#13766d;background:#fff;box-shadow:0 0 0 4px rgba(19,118,109,.1)}.mrcat-vocab-optional-field:focus-within input,.mrcat-vocab-optional-field:focus-within textarea{color:#18332f}.mrcat-vocab-status{margin:0 2px;color:#b54747;font-size:12px;line-height:1.4}.mrcat-vocab-status:empty{display:none}' +
             '.mrcat-vocab-dialog button{min-height:44px;border-radius:999px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;touch-action:manipulation}.mrcat-vocab-confirm{justify-self:center;width:min(240px,100%);margin-top:4px;padding:10px 20px;border:1px solid #13766d;color:#fff;background:#13766d;box-shadow:0 8px 18px rgba(19,118,109,.18)}.mrcat-vocab-close{justify-self:center;width:132px;padding:0 22px;border:1px solid rgba(255,255,255,.84);color:#36574f;background:rgba(255,255,255,.9);box-shadow:0 10px 28px rgba(20,54,47,.16);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}' +
             '.mrcat-vocab-dialog button:active{transform:scale(.97)}.mrcat-vocab-dialog button:focus-visible{outline:3px solid #13766d;outline-offset:3px}.mrcat-vocab-dialog button:disabled{opacity:.56;cursor:wait}.mrcat-vocab-dialog[open]>.mrcat-vocab-card{animation:mrcat-vocab-enter 180ms ease-out}@keyframes mrcat-vocab-enter{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}' +
             '.mrcat-vocab-toast{position:fixed;z-index:10021;left:50%;bottom:max(24px,env(safe-area-inset-bottom));max-width:min(420px,calc(100% - 32px));padding:12px 15px;border:1px solid rgba(19,118,109,.16);border-radius:14px;color:#18332f;background:rgba(255,255,255,.97);box-shadow:0 18px 52px rgba(10,52,47,.18);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:0;transform:translate(-50%,12px);transition:opacity 160ms ease,transform 160ms ease;pointer-events:none}.mrcat-vocab-toast.show{opacity:1;transform:translate(-50%,0)}' +
+            '@media (max-width:760px),(any-pointer:coarse){.mrcat-vocab-form .mrcat-vocab-optional-field input,.mrcat-vocab-form .mrcat-vocab-optional-field textarea{font-size:16px}}' +
             '@media (prefers-reduced-motion:reduce){.mrcat-vocab-dialog[open]>.mrcat-vocab-card{animation:none}.mrcat-vocab-dialog button:active{transform:none}.mrcat-vocab-toast{transition:opacity 120ms linear;transform:translateX(-50%)}}' +
-            '@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){.mrcat-vocab-card,.mrcat-vocab-close{background:#f8fbf9;backdrop-filter:none;-webkit-backdrop-filter:none}.mrcat-vocab-card{border-color:#647b75}}';
+            '@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){.mrcat-vocab-card,.mrcat-vocab-close{background:#f8fbf9;backdrop-filter:none;-webkit-backdrop-filter:none}.mrcat-vocab-card{border-color:#647b75}.mrcat-vocab-optional-field{background:#fff;border-color:#647b75}.mrcat-vocab-form input,.mrcat-vocab-form textarea{color:#18332f}}';
         document.head.appendChild(style);
     }
 
@@ -172,16 +173,17 @@
         ensureStyles();
         dialog = document.createElement('dialog');
         dialog.className = 'mrcat-vocab-dialog';
-        dialog.setAttribute('aria-labelledby', 'mrcat-vocab-title');
+        dialog.setAttribute('aria-label', 'Add to My Words');
         dialog.innerHTML = '<section class="mrcat-vocab-card" tabindex="-1" autofocus>' +
-            '<h2 class="mrcat-vocab-title" id="mrcat-vocab-title">Add to My Words</h2>' +
             '<form class="mrcat-vocab-form">' +
-                '<label for="mrcat-vocab-text"><span>Word or phrase</span>' +
-                '<input id="mrcat-vocab-text" type="text" maxlength="120" autocomplete="off" required></label>' +
-                '<label for="mrcat-vocab-context"><span>Context <small>Optional</small></span>' +
+                '<div class="mrcat-vocab-word-field">' +
+                '<input id="mrcat-vocab-text" type="text" aria-label="Words" maxlength="120" autocomplete="off" required></div>' +
+                '<label class="mrcat-vocab-optional-field" for="mrcat-vocab-context"><span>Context</span>' +
                 '<input id="mrcat-vocab-context" type="text" maxlength="320" autocomplete="off"></label>' +
+                '<label class="mrcat-vocab-optional-field" for="mrcat-vocab-note"><span>Notes</span>' +
+                '<textarea id="mrcat-vocab-note" maxlength="500" rows="2"></textarea></label>' +
                 '<p class="mrcat-vocab-status" role="status" aria-live="polite"></p>' +
-                '<button class="mrcat-vocab-confirm" type="submit">Confirm</button>' +
+                '<button class="mrcat-vocab-confirm" type="submit">Add to My Words</button>' +
             '</form></section>' +
             '<button class="mrcat-vocab-close" type="button">Close</button>';
         dialog.querySelector('form').addEventListener('submit', saveSelection);
@@ -193,7 +195,7 @@
         });
         dialog.addEventListener('keydown', function(event) {
             if (event.key !== 'Tab') return;
-            var controls = dialog.querySelectorAll('input:not(:disabled), button:not(:disabled)');
+            var controls = dialog.querySelectorAll('input:not(:disabled), textarea:not(:disabled), button:not(:disabled)');
             var first = controls[0];
             var last = controls[controls.length - 1];
             if (!first) {
@@ -308,6 +310,7 @@
         returnFocus = document.activeElement;
         modal.querySelector('#mrcat-vocab-text').value = text;
         modal.querySelector('#mrcat-vocab-context').value = context;
+        modal.querySelector('#mrcat-vocab-note').value = '';
         modal.querySelector('.mrcat-vocab-status').textContent = '';
         // Capture first, then dismiss native selection before opening the independent form.
         // No long-press handler prevents the browser from determining the selected word.
@@ -346,12 +349,13 @@
             source_set_id: dialogSource.source_set_id,
             source_title: dialogSource.source_title,
             source_path: dialogSource.source_path,
-            context: compactText(dialog.querySelector('#mrcat-vocab-context').value, 320)
+            context: compactText(dialog.querySelector('#mrcat-vocab-context').value, 320),
+            personal_note: dialog.querySelector('#mrcat-vocab-note').value.trim()
         };
         var submit = dialog.querySelector('.mrcat-vocab-confirm');
         saving = true;
         dialog.setAttribute('aria-busy', 'true');
-        dialog.querySelectorAll('input, button').forEach(function(control) { control.disabled = true; });
+        dialog.querySelectorAll('input, textarea, button').forEach(function(control) { control.disabled = true; });
         submit.textContent = 'Adding…';
         status.textContent = '';
         Promise.resolve().then(function() {
@@ -370,8 +374,8 @@
         }).finally(function() {
             saving = false;
             dialog.removeAttribute('aria-busy');
-            dialog.querySelectorAll('input, button').forEach(function(control) { control.disabled = false; });
-            submit.textContent = 'Confirm';
+            dialog.querySelectorAll('input, textarea, button').forEach(function(control) { control.disabled = false; });
+            submit.textContent = 'Add to My Words';
         });
     }
 

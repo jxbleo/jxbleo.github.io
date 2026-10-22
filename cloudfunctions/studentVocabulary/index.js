@@ -959,6 +959,8 @@ function errorMessage(code) {
   if (code === "TEXT_REQUIRED") return "Select a word or short phrase first.";
   if (code === "TEXT_TOO_LONG") return "Please save one word or a short phrase at a time.";
   if (code === "TEXT_INVALID") return "Select a word or phrase with letters or numbers.";
+  if (code === "NOTE_TOO_LONG") return "Keep your notes within 500 characters.";
+  if (code === "NOTE_LIMIT_REACHED") return "This word already has notes. Combined notes exceed 500 characters. Shorten this note or edit the existing notes in My Words, then try again.";
   if (code === "VOCAB_ID_REQUIRED") return "Word ID is required.";
   if (code === "VOCAB_NOT_FOUND") return "This word was not found in your list.";
   if (code === "MERGE_REQUIRED") return "Review the matching word before merging.";

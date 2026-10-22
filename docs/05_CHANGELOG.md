@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-10-22 — Notes in selection-triggered My Words add published
+
+The shared double-click/selection dialog now has a third optional multiline Notes
+field. The word box is narrower, centred and set in centred serif type, with no
+visible heading or Words caption. Context/Notes have persistent internal labels
+in the primary button green, with no visible optional hints; the action reads
+Add to My Words. Optional inputs
+use softer fill and 15px desktop text (16px mobile/touch), with two-row Notes and
+clear focus/high-contrast states. The hidden 500-character limit remains.
+`studentVocabulary` saves notes to the existing personal_note in the same write
+as the word/source, before enrichment. Blank input retains old notes; repeat-word
+additions append, consecutive identical additions do not repeat, and overflow
+rejects without a partial write.
+Existing detail editing and exports reuse that field. No schema, collection,
+permission, dictionary/AI configuration or dependency change.
+
+Changed the selection runtime, shared vocabulary writer, function error messages,
+seven page cache references and appVersion. Added authenticated-entry persistence/
+ownership tests to `test:my-words`; updated product, architecture, UI, data,
+testing, deployment and agent guidance. My Words/Scan tests and syntax checks pass;
+the scoped studentVocabulary ZIP is rebuilt. Local browser QA with synthetic data
+confirms the third field, multiline input, save payload, blank reset, failure draft
+retention, disabled controls/Escape while pending, visitor denial and narrow layout.
+Owner authorized publication with “就是这个样子，请上线吧”. Published the code-only
+studentVocabulary update and nine static objects at 17:11 Shanghai. Downloaded
+code/configuration, nine COS readbacks, 124 apex/www checks and 24 dependency
+guards pass. Exact-bundle simulated persistence/ownership tests pass; physical
+device keyboard behavior and authenticated live-account acceptance remain open.
+
 ## 2026-10-17 — Selection opens the manual-add style dialog (deployed)
 
 Supersedes the earlier unpublished below-selection capsule. Completed selection

@@ -1044,6 +1044,12 @@ Rules:
   stored fields. Mutations continue to use stable `vocab_id` ownership checks.
 - Words may be saved either from selected page text, including answer and
   explanation content, or from the manual My Words add form.
+- `add` accepts optional `personal_note` and writes it alongside the word/source.
+  Blank or omitted notes do not modify an existing note. Nonblank notes append
+  with a blank line; an identical full note or last appended note is not repeated.
+  Preserve internal whitespace. Reject `NOTE_TOO_LONG` / `NOTE_LIMIT_REACHED`
+  before any write when the input/combined note exceeds 500 characters. Existing
+  detail editing and exports reuse the same field; no migration or new collection.
 - Forgot schedules one day, A little schedules three days, and Know advances
   through 7, 14, and 30 days. Three consecutive Know responses mark Mastered.
 - Editing may update `text`/`normalized_text`, `personal_note`, and up to eight
