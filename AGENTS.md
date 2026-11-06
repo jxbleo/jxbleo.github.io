@@ -1,3 +1,41 @@
+## 2026-11-06 — Required scoped publication entry and evidence precedence
+
+For owner-authorized private scoped packages, use `scripts/release-control.cjs`
+(npm aliases `release:status`, `release:preflight`, `release:verify`, `release:run`).
+Read `docs/RELEASE_CONTROL.md` before publication. This supplements, not replaces,
+the existing publisher's fresh-live guards; never deploy this dirty checkout whole.
+Do not modify immutable releases or frozen historical publisher packages.
+
+Start with `status <package>` and inspect the actual root receipt and last attempt;
+old prose and nested offline-test receipts do not establish current live status.
+A receipt records a past completion, not a fresh live check. `verify <package>`
+checks receipt static hashes only; a mismatch can be a later legitimate release,
+so never restore old HTML automatically. Database/media packages require their
+specific read-only verification. A failed later attempt remains visible even when
+an older receipt exists. `--resume` is only for a diagnosed, authorized retry.
+
+Run `preflight` (`--database` for database work) before spending time preparing a
+live release, then `run <package>` after scoped preparation/required checks. The
+runner repeats preflight, serializes cooperating releases, emits 30-second progress,
+limits publication to ten minutes and records partial/unknown outcomes separately
+from completion. It does not infer authorization from a package or this instruction.
+Existing owner authorization persists; do not ask again for the same scoped action.
+
+If sandbox DNS/network fails, request the permitted escalation for the SAME read-only
+preflight before retrying any write. If the tool invocation itself never returns,
+report that no process outcome is available; a script timeout cannot repair a tool
+that never starts. Do not repeatedly launch duplicate commands or silently substitute
+manual Terminal execution as a completed fix. Never disable sandbox/security policy.
+Bounded login refresh uses existing CLI credentials, never prints them; interactive
+login only when refresh fails. Log stage/expected/actual counts in new publishers;
+CloudBase transactions use document operations, not transaction `.where()` queries.
+
+Reconciliation: actual root receipts exist for vocabulary-source-back-20261106
+(2026-11-06 00:52:17 Shanghai) and ielts-c8t1s4-trim-20261106 (00:52:35 Shanghai,
+71 units, revision 3). Those receipts supersede older "no receipt" prose below;
+this entry is not a new live verification or publication.
+
+
 # Mr. Cat Academy Agent Guide
 
 ## DSE topic bank direct reader (owner revision, 2026-10-17)

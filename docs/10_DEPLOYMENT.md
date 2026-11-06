@@ -1,3 +1,16 @@
+## 2026-11-06 — Unified local scoped publication entry
+
+Use [release control](RELEASE_CONTROL.md) for private scoped publishing packages.
+Run `npm run release:status -- PACKAGE`, then `npm run release:preflight` (add
+`-- --database` for document work). After preparation and existing owner authorization,
+use `npm run release:run -- PACKAGE`. This adds bounded read-only preflight, one
+bounded existing-login refresh, a cooperating-release lock, progress and partial-outcome
+records around unchanged frozen publishers. It does not publish all pending work,
+change sandbox permissions or replace the existing GitHub CI deployment path.
+Root receipt evidence takes precedence over historical "not published" notes;
+current live status still needs a scoped readback. See the guide for verify/resume.
+
+
 # 10 Deployment
 
 ## 2026-10-22 — My Words selection Notes published

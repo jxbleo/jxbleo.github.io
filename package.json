@@ -4,6 +4,11 @@
   "private": true,
   "description": "Static English learning app with CloudBase backend.",
   "scripts": {
+    "release:status": "node scripts/release-control.cjs status",
+    "release:preflight": "node scripts/release-control.cjs preflight",
+    "release:verify": "node scripts/release-control.cjs verify",
+    "release:run": "node scripts/release-control.cjs run",
+    "test:release-control": "node scripts/test-release-control.cjs",
     "build:static": "node scripts/build-static-site.js",
     "test:static-build": "node scripts/test-static-build.js",
     "test:dashboard-loading": "node scripts/test-dashboard-loading.js",

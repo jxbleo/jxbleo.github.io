@@ -1,5 +1,21 @@
 # Mr. Cat Academy 技术变更与重复问题记录
 
+## 2026-11-06 — 发布失败必须区分运行环境、发布器和旧状态
+
+统一入口与操作说明：[release control](RELEASE_CONTROL.md)。新入口不会改写旧发布包。
+预检失败记录于 `.cloudbase-private/release-control/preflight.json`，发布尝试另存于
+各包 `release-control-state.json` / `control-attempts/`，不覆盖正式回执。
+
+- `ENOTFOUND` 只证实解析失败；不能据此断定登录失效、腾讯云故障或线上未写入。
+- 沙箱外工具调用没有返回时，进程是否启动尚无证据；进程内的超时不能解决工具调度阻塞。
+- C7 旧事务 `.where()` 是发布代码错误，已修复为文档操作；不能统称为网络问题。
+- C8 旧目标 `IL-C8-T2-S4` 无记录，已由 owner 确认改为 `IL-C8-T1-S4`；统一入口
+  拒绝执行已废弃的 `ielts-unit2-tail72-20261106`，状态输出提示替代包，不自动换目标执行。
+- 根回执优先于旧交接文字；离线测试回执和旧回执不能证明本次发布成功或当前线上一致。
+- 本轮只读真实预检在凭证检查后明确返回 `dns / ENOTFOUND`；不将离线测试成功写成
+  线上发布成功。未执行生产发布，不更改机器 DNS、代理或沙箱策略。
+
+
 ## 2026-10-03 — Audit every unified receipt host, not only Writing (fixed)
 
 The audited Vocabulary/BBC/IELTS/Intensive Listening/Speaking adapters waited
