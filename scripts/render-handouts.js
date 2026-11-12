@@ -3,7 +3,6 @@ const {loadRelease, URL_PATTERN} = require('./handout-store');
 const ORIGIN = 'https://www.mrcatenglish.com/';
 const READER_VERSION = '20261016-header-1';
 const {render: renderShareHeader, assets: shareHeaderAssets} = require('./share-header');
-const HANDOUT_HEADER = renderShareHeader('handout');
 const HANDOUT_HEADER_STYLE = `<style id="handout-reference-style">
 .handout-references { margin: 2rem 0; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid #dce5e7; border-radius: 18px; background: #fff; color: #354c56; font: 15px/1.85 -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; overflow-wrap: anywhere; }
 .handout-references h2 { margin: 0 0 1rem; font-size: 1.3rem; }
@@ -55,18 +54,18 @@ function isolateModule(full, module, sources, overrides = []) {
   }));
   return `<!doctype html><html lang="zh-CN"><head>${head}</head><body class="public-resource-page writing-course standalone-writing"><a class="skip-link" href="#module-${module.id}">跳到本讲内容</a><header class="resource-topbar" data-resource-topbar><span class="resource-brand"><img src="assets/icons/mrcat-icon-192.png" alt=""><span>Mr. Cat Academy</span></span><div class="resource-actions"><button class="resource-share" id="copy-lesson" type="button" hidden>复制本讲链接</button><button class="resource-share" id="print-lesson" type="button" hidden>打印本讲</button></div></header><main class="standalone-layout">${section}<section class="source-panel" id="sources" aria-labelledby="sources-title"><h2 id="sources-title">权威资料参考</h2><p>本讲义参考香港考评局评核资料与香港教育局英语学习资源，将相关写作要求融入讲解、示范与练习。范文与练习为原创教学内容。</p><div class="source-grid">${cards}</div><a href="#module-${module.id}">返回本讲开头 ↑</a></section></main><footer class="course-footer"><span>Mr. Cat Academy · DSE Writing</span><span>模块 ${module.id} · 原创教学讲义</span></footer><div class="resource-toast" data-resource-toast role="status" aria-live="polite"></div></body></html>`;
 }
-function independentPage(html, href, policy) {
+function independentPage(html, href, policy, nativeBrandIcon = false) {
   const url=ORIGIN+href;
   html=html.replace(/<a\b[^>]*href="#source-[^"]+"[^>]*>([\s\S]*?)<\/a>/g,'<span>$1</span>');
   // Owner-approved contact controls never expose another handout or the private teacher directory.
-  html=html.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,HANDOUT_HEADER);
+  html=html.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,renderShareHeader('handout', {nativeBrandIcon}));
   html=html.replace(/<button\b[^>]*\bid="print-guide"[^>]*>[\s\S]*?<\/button>\s*<p class="small-note">打印[^<]*<\/p>/g,'')
     .replace(/<button\b[^>]*\bid="(?:print-current|print-all)"[^>]*>[\s\S]*?<\/button>/g,'')
     .replace(/<div>\s*<\/div>/g,'')
     .replaceAll(' · 可打印','')
     .replace(' · 可直接分享给同学，也可通过浏览器打印整份讲义。','')
     .replace('仍可使用目录锚点和浏览器打印。','仍可使用目录锚点阅读。');
-  html=html.replace(/(assets\/js\/dse-(?:writing-(?:course|lesson)|reading-(?:inference|tfng|language-effects))\.js)(?:\?[^"']*)?/g,`$1?v=${READER_VERSION}`);
+  html=html.replace(/(assets\/js\/dse-(?:writing-(?:course|lesson)|reading-(?:inference|tfng|language-effects|comparison))\.js)(?:\?[^"']*)?/g,`$1?v=${READER_VERSION}`);
   html=html.replace(/<div class="lesson-card green"><h3>同系列继续学习<\/h3>[\s\S]*?<\/div>/g,'');
   html=html.replace(/<a class="reading-link"[^>]*>[\s\S]*?<\/a>/g,'');
   // Only the owner-approved branded home entry survives; no lesson directory or peer handout links.
@@ -90,7 +89,7 @@ function renderRelease(release) {
   const pages=new Map();
   for (const item of items) {
     const raw=item.module ? isolateModule(files[item.source],course.modules.find(m=>m.id===item.module),sources,overrides[item.module] || []) : files[item.source];
-    const html=independentPage(raw,map.links[item.id],policy);
+    const html=independentPage(raw,map.links[item.id],policy,item.nativeBrandIcon === true);
     if ((html.match(/class="resource-topbar handout-topbar share-header"/g)||[]).length!==1 || /data-resource-share|id="(?:copy-lesson|print-lesson|print-guide|print-current|print-all)"/.test(html)) throw new Error('Invalid student handout header or action controls.');
     const opaque=[...new Set(html.match(/h-[a-f0-9]{48}\.html/g)||[])];
     if (opaque.length!==1 || opaque[0]!==map.links[item.id]) throw new Error('A handout exposes another share identity.');

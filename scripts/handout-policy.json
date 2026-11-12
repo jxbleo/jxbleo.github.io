@@ -30,6 +30,14 @@
       "description": "语言手法、表达效果与答题方法。"
     },
     {
+      "id": "dse-reading-comparison",
+      "source": "dse-reading-comparison.html",
+      "title": "阅读 · 比较 Comparison",
+      "topic": "阅读",
+      "description": "同维度配对、共同点与差异，含原创精讲与综合阅读。",
+      "nativeBrandIcon": true
+    },
+    {
       "id": "dse-writing-guide",
       "source": "dse-writing-guide.html",
       "title": "写作 · DSE English Writing 完整备考讲义",
@@ -56,6 +64,7 @@
     "dse-reading-inference.html",
     "dse-reading-tfng.html",
     "dse-reading-language-effects.html",
+    "dse-reading-comparison.html",
     "dse-writing-guide.html",
     "dse-writing-formats.html",
     "dse-writing-course.html",
