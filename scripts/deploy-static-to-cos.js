@@ -357,9 +357,18 @@ async function deploy() {
     );
   }
 
+  // Four writing handouts are published independently of dist. Keep their
+  // unlisted URLs private by identifying only the exact SHA-256 object keys.
+  const retainedWritingKeyDigests = new Set([
+    "03e53dc31a708318a3f6c7b4ea9c3fc7743f05857a6cbf13312c310ec272e2e6",
+    "1d8fac6afbaebad5b967b6554a4640d02dd36d01514def108ca431940853bfaa",
+    "367456845639355a2420e083c536bda7aa972e6dcc60426594058de093f93628",
+    "1188ae85c12329c6e75b1a78662d2221a054430af09414cf2849b94115e176d9",
+  ]);
   const obsoleteKeys = remoteObjects
     .map((object) => object.key)
-    .filter((key) => !localKeys.has(key));
+    .filter((key) => !localKeys.has(key))
+    .filter((key) => !retainedWritingKeyDigests.has(crypto.createHash("sha256").update(key).digest("hex")));
   if (obsoleteKeys.length > 0) {
     deploymentLog("log", `Removing ${obsoleteKeys.length} obsolete remote files ...`);
     await runConcurrent(obsoleteKeys, (key) =>
