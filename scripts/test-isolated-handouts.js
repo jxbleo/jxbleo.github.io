@@ -4,6 +4,7 @@ const {spawnSync}=require('node:child_process');
 const fixture=require('./handout-test-fixture');
 const {loadRelease,privatePath}=require('./handout-store');
 const {renderRelease,independentPage}=require('./render-handouts');
+const nativeIconIds = ['dse-reading-comparison', 'dse-reading-context-vocabulary', 'dse-reading-reference-cohesion', 'dse-reading-main-ideas'];
 function checkStudentHeader(html, nativeBrandIcon = false) {
   const header=html.match(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/);
   assert(header,'Each student handout must have a header');
@@ -40,7 +41,7 @@ if (process.argv.includes('--artifact')) {
   for(const item of release.items) {
     const href=release.map.links[item.id],actual=fs.readFileSync(path.join(root,'dist',href),'utf8');
     assert(actual===expected.get(href),'Published handout bytes must match the authenticated source and current isolation rules');
-    checkStudentHeader(actual, item.id === 'dse-reading-comparison');
+    checkStudentHeader(actual, nativeIconIds.includes(item.id));
     assert(actual.includes('权威资料参考'),'Every handout includes student-facing references');
     const body=actual.replace(/<header\b[^>]*\bdata-resource-topbar\b[^>]*>[\s\S]*?<\/header>/g,'');
     assert(!/<a\b[^>]*href="(?:https?:|#source-)/.test(body),'Reference titles and citations are plain text');
@@ -59,7 +60,7 @@ if (process.argv.includes('--artifact')) {
   const publicCatalog=fs.readFileSync(path.join(root,'dist/content/share-materials.json'),'utf8');
   for(const href of Object.values(release.map.links)) assert(!publicCatalog.includes(href),'Public catalogs must not expose handout URLs');
   assert(release.policy.retiredPaths.every(file=>!fs.existsSync(path.join(root,'dist',file))));
-  console.log('Real handout artifact passed: all 40 byte matches, unique IDs, working local anchors/assets, complete single-lesson exercises, no retired routes or public source/catalog leaks.');
+  console.log('Real handout artifact passed: all 43 byte matches, unique IDs, working local anchors/assets, complete single-lesson exercises, no retired routes or public source/catalog leaks.');
   process.exit(0);
 }
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mrcat-isolated-handouts-'));
@@ -67,8 +68,8 @@ const env={...process.env,MRCAT_HANDOUT_LINKS_JSON:'',MRCAT_HANDOUT_CONTENT_KEY:
 try {
   const {map,policy}=fixture(dir);
   const release=loadRelease(dir,env),pages=renderRelease(release);
-  assert.equal(pages.size,40);
-  assert.ok(pages.has(map.links['dse-reading-comparison']));
+  assert.equal(pages.size,43);
+  assert.ok(nativeIconIds.every(id => pages.has(map.links[id])));
   const full=pages.get(map.links['dse-writing-course']);
   for(let n=1;n<=32;n++) {
     const id=String(n).padStart(2,'0'),html=pages.get(map.links['dse-writing-module-'+id]);
@@ -79,7 +80,7 @@ try {
     assert(html.includes('dse-writing-lesson.js') && !html.includes('dse-writing-course.js'));
   }
   for(const [href,html] of pages) {
-    checkStudentHeader(html, href === map.links['dse-reading-comparison']);
+    checkStudentHeader(html, nativeIconIds.some(id => map.links[id] === href));
     assert.deepEqual([...new Set(html.match(/h-[a-f0-9]{48}\.html/g))],[href]);
     assert(html.includes('noindex,nofollow,noarchive') && html.includes('no-referrer'));
     assert(policy.retiredPaths.every(p=>!html.includes(p)));
@@ -112,5 +113,5 @@ try {
   fs.writeFileSync(path.join(dir,policy.retiredPaths[0]),'Accidental public plaintext');rejected();fs.unlinkSync(path.join(dir,policy.retiredPaths[0]));
   const sealedFile=path.join(dir,'scripts/handouts.sealed.json'),sealed=JSON.parse(fs.readFileSync(sealedFile,'utf8'));
   sealed.tag=Buffer.alloc(16,9).toString('base64');fs.writeFileSync(sealedFile,JSON.stringify(sealed));rejected();
-  console.log('Isolated handouts passed: 40 independent targets, complete/single content scopes, no discovery controls or peer URLs, robots/referrer, and fail-closed source/map handling.');
+  console.log('Isolated handouts passed: 43 independent targets, complete/single content scopes, no discovery controls or peer URLs, robots/referrer, and fail-closed source/map handling.');
 } finally {fs.rmSync(dir,{recursive:true,force:true});}

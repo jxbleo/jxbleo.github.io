@@ -38,6 +38,30 @@
       "nativeBrandIcon": true
     },
     {
+      "id": "dse-reading-context-vocabulary",
+      "source": "dse-reading-context-vocabulary.html",
+      "title": "阅读 · 语境词义与同义替换",
+      "topic": "阅读",
+      "description": "根据语境选择义项，区分近义词、词性、搭配及摘词要求。",
+      "nativeBrandIcon": true
+    },
+    {
+      "id": "dse-reading-reference-cohesion",
+      "source": "dse-reading-reference-cohesion.html",
+      "title": "阅读 · 指代与上下文衔接",
+      "topic": "阅读",
+      "description": "追踪指代、事件和变化，辨认替代、省略与逻辑衔接。",
+      "nativeBrandIcon": true
+    },
+    {
+      "id": "dse-reading-main-ideas",
+      "source": "dse-reading-main-ideas.html",
+      "title": "阅读 · 段意、标题与主旨",
+      "topic": "阅读",
+      "description": "分清主题与主张、细节与概括，完成段落配标题和全文标题选择。",
+      "nativeBrandIcon": true
+    },
+    {
       "id": "dse-writing-guide",
       "source": "dse-writing-guide.html",
       "title": "写作 · DSE English Writing 完整备考讲义",
@@ -65,6 +89,9 @@
     "dse-reading-tfng.html",
     "dse-reading-language-effects.html",
     "dse-reading-comparison.html",
+    "dse-reading-context-vocabulary.html",
+    "dse-reading-reference-cohesion.html",
+    "dse-reading-main-ideas.html",
     "dse-writing-guide.html",
     "dse-writing-formats.html",
     "dse-writing-course.html",
